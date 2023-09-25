@@ -2,195 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5932C7AD29A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E877AD29E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjIYIBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S232589AbjIYICQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjIYIBw (ORCPT
+        with ESMTP id S232548AbjIYICO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:01:52 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA3EB3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:01:45 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3226cc3e324so4856169f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695628903; x=1696233703; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rWe8PJs1b9Dtx41y65X4Zg8v33gAtzucrNuB8pJG71o=;
-        b=rJ5RRUzxyuTzIcsWT7mnEv/BcKRD1IMkugBK/s3zqkkPFpTJ1F5Q2lquPvvrE66F4z
-         YdXtZ4NeyFTbjVLE5sSOftkvY/5/ml65ZNo2llUuoVMiayedj9s/y5USP21+PXJL5/vv
-         ryx76baUHgZDNb7m4IajkNXBNEBNlufRB6HhyoWT59otNnss+yRYBKcfciBa3KJWEqSa
-         JDkiGcSjlqy+mnLxEKwSCRNDCAfJxMRJC5FQVZrcP9nC2kLIeOmIbPH5w7LiV+Of5ksg
-         Nfdbk29XlOOQfC2Z5bF9N4LjK4LkqGP+jOXGWxd8qDrAoCdzP8be2Gb0WuU5KBFmMVa1
-         gwXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695628903; x=1696233703;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rWe8PJs1b9Dtx41y65X4Zg8v33gAtzucrNuB8pJG71o=;
-        b=HJkYf4eP8VJeEgR4RAf99Ef60H4JI49KMkLxOtWy875O41Wrt9ASckPYazLtiWXm7Q
-         aGpU2J4HwVrLAyHIntVPVt+e1fn2kywuvesG3m1ceh/WrpJZJPXecNQN/V0XN1G6t6+8
-         vinQnkq9gTzphxF8J/zLJbt61SlOiUnN6lNWiZFPzfzq2NVXlh6zR18meGPtZ+zGFdj6
-         PJgqQp7eNhPm02hbJNe9IfRyYygMEJa4qab5fZI6SYVvDKyp56Jmm6u/k1Mftix8cWed
-         HTvdPVwVGzmFpqaYVSNM9zw2Sbx5Fz0rAmHcMXTpsNnIxVfI3h7BYi2MEUpFiv27AMOb
-         D08w==
-X-Gm-Message-State: AOJu0YxkkCGLzAzP3LU7/2qczEFJQkZdMXbUQuLiREVwvzBSqXGdHbhy
-        8217Ou/yeqSHC6hncGtD/CvGEmyxjYPiRPHcB0U=
-X-Google-Smtp-Source: AGHT+IGPHi04IuhEVziXdKrF4Eir2m0JTdxZ8yPrSSjcye7UJVhAbXNkIXcWqsC9Mg7mjJPUsvD/qQ==
-X-Received: by 2002:a05:6000:1081:b0:31a:e73f:3fe7 with SMTP id y1-20020a056000108100b0031ae73f3fe7mr4867071wrw.3.1695628903388;
-        Mon, 25 Sep 2023 01:01:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id o5-20020a056000010500b0031ddf6cc89csm10984021wrx.98.2023.09.25.01.01.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 01:01:42 -0700 (PDT)
-Message-ID: <bbc8dd05-8589-44ec-87dd-f2d7b4368245@linaro.org>
-Date:   Mon, 25 Sep 2023 10:01:40 +0200
+        Mon, 25 Sep 2023 04:02:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031BBE3;
+        Mon, 25 Sep 2023 01:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695628927; x=1727164927;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2BzDBwKAVGWZW5bjYPETPn/FpFO36BDHugTlU76Wjg0=;
+  b=EESii5ZLB9D//wcnDipV2Xw7g/FPEQIEgw78h8f1O+lDd840RPZEfkhW
+   kCxQnh98wZagLfFDohwhOcwYknHfhV4rrRF4Etpgo1DTlYSWJLdpBrden
+   u3ffB9EY3k0HS6s7yLXYXvBnzd54i36qoFJV0Zi6JNkfD04Cj5SB76Ucs
+   HKdjeiW5ucYBmKqchH1Nq3T/9vTbK8prPzXdCao2jHCXD4QBw7WARvxgx
+   IVlkAaalMa0RyqzmQw3H0Gfzg1Wv+MR71tKRmteuS5mgfHMBDDPKcLnV2
+   nmjZngZYb0MWdXVOfIIMq2sT/z/X7Uy/L0g2gUyQei/5OEcRjkxW6NtLo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="383956260"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="383956260"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 01:02:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="783388156"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="783388156"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.168.76]) ([10.249.168.76])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 01:01:58 -0700
+Message-ID: <473d4050-2f2a-f9a2-6c40-3efd5b582b4e@linux.intel.com>
+Date:   Mon, 25 Sep 2023 16:01:55 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] dt-bindings: media: imx-jpeg: Assign slot for imx
- jpeg encoder/decoder
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
+ domain_alloc_user op
+To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
+        robin.murphy@arm.com
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-2-yi.l.liu@intel.com>
+ <4b17d331-957b-44d3-8a19-0b2ccc59150b@linux.intel.com>
+ <15831871-cace-f954-6af1-328039ffda16@intel.com>
 Content-Language: en-US
-To:     Ming Qian <ming.qian@nxp.com>, mirela.rabulea@oss.nxp.com,
-        robh+dt@kernel.org, shawnguo@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230925074131.10133-1-ming.qian@nxp.com>
- <20230925074131.10133-2-ming.qian@nxp.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230925074131.10133-2-ming.qian@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <15831871-cace-f954-6af1-328039ffda16@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 09:41, Ming Qian wrote:
-> There are total 4 slots available in the IP,
-> and we only need to use one slot in one os,
-> assign a single slot,
-> configure interrupt and power domain only for 1 slot,
-> not for the all 4 slots.
-
-No changelog and I do not see much of improvements. Do not ignore the
-feedback but respond to it or fix the patch. Really, what happened here?
-
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
-
+On 2023/9/25 14:22, Yi Liu wrote:
+> On 2023/9/21 20:10, Baolu Lu wrote:
+>> On 2023/9/21 15:51, Yi Liu wrote:
+>>> +/**
+>>> + * iommu_copy_user_data - Copy iommu driver specific user space data
+>>> + * @dst_data: Pointer to an iommu driver specific user data that is 
+>>> defined in
+>>> + *            include/uapi/linux/iommufd.h
+>>> + * @src_data: Pointer to a struct iommu_user_data for user space 
+>>> data info
+>>> + * @data_len: Length of current user data structure, i.e. 
+>>> sizeof(struct _dst)
+>>> + * @min_len: Initial length of user data structure for backward 
+>>> compatibility.
+>>> + *           This should be offsetofend using the last member in the 
+>>> user data
+>>> + *           struct that was initially added to 
+>>> include/uapi/linux/iommufd.h
+>>> + */
+>>> +static inline int iommu_copy_user_data(void *dst_data,
+>>> +                       const struct iommu_user_data *src_data,
+>>> +                       size_t data_len, size_t min_len)
+>>> +{
+>>> +    if (WARN_ON(!dst_data || !src_data))
+>>> +        return -EINVAL;
+>>> +    if (src_data->len < min_len || data_len < src_data->len)
+>>> +        return -EINVAL;
+>>> +    return copy_struct_from_user(dst_data, data_len,
+>>> +                     src_data->uptr, src_data->len);
+>>> +}
+>>
+>> I am not sure that I understand the purpose of "min_len" correctly. It
+>> seems like it would always be equal to data_len?
 > 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
->  .../bindings/media/nxp,imx8-jpeg.yaml         | 42 ++++++++-----------
->  1 file changed, 18 insertions(+), 24 deletions(-)
+> no, it will not be equal to data_len once there is extension in the
+> uAPI structure.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> index 3d9d1db37040..df381b21336d 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> @@ -32,25 +32,29 @@ properties:
->      maxItems: 1
->  
->    interrupts:
-> -    description: |
-> -      There are 4 slots available in the IP, which the driver may use
-> -      If a certain slot is used, it should have an associated interrupt
-> -      The interrupt with index i is assumed to be for slot i
-> -    minItems: 1               # At least one slot is needed by the driver
-> -    maxItems: 4               # The IP has 4 slots available for use
-> +    description:
-> +      Interrupt number for slot
-> +    maxItems: 1
->  
->    power-domains:
->      description:
->        List of phandle and PM domain specifier as documented in
->        Documentation/devicetree/bindings/power/power_domain.txt
-> -    minItems: 2               # Wrapper and 1 slot
-> -    maxItems: 5               # Wrapper and 4 slots
-> +    minItems: 1               # VPUMIX
-> +    maxItems: 2               # Wrapper and 1 slot
-> +
-> +  nxp,slot:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Integer number of slot index used.
-> +    minimum: 0
-> +    maximum: 3
+>> Or, it means the minimal data length that the iommu driver requires?
+> 
+> it is the minimal data length the uAPI requires. min_len is finalized
+> per the upstream of the first version of the uAPI.
 
-Nothing explains what is a slot and nothing explains why do you need
-this property.
-
->  
->  required:
->    - compatible
->    - reg
->    - interrupts
->    - power-domains
-> +  - nxp,slot
-
-NAK, that's an ABI break.
+So, it looks like a constant. Perhaps we should document it in the
+uapi/iommuf.h and avoid using it as a parameter of a helper function?
 
 Best regards,
-Krzysztof
-
+baolu
