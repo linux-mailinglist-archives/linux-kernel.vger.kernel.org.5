@@ -2,148 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 454357AD90B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA95C7AD914
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjIYN0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        id S231706AbjIYN2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjIYN02 (ORCPT
+        with ESMTP id S231685AbjIYN2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:26:28 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9A9FE;
-        Mon, 25 Sep 2023 06:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1695648364; x=1696253164; i=w_armin@gmx.de;
- bh=HuxM/YA2tL+Nxb3XbOiEayEMzeuXm9d7Y7jDyRhIyiI=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=VKVc/BWvHKGaj+bdhNV7t6yB429gQ6Bt6haE/svnGm63xPd2Dy2oDDq4/KDA7J26meRsL7Iw3/o
- nYGleMmIBdgUo8NOwdxznnGewqRxuOdDLCgMXdZ6CvW4f51DjUD4gkxUa2kFzm532AEwAcG3/bQdN
- LjBB1VkMR6APrX7pkbQBzpo5aW2w/P7UifE1E/Nh1Yf8xqcQgaLRelSrKt0c611VJP/LVwJHBLw5J
- O9mKDS1dArKNlNia5VmFAD6kDDFdl0gmBwH7uwfVc+H9e3mbGDoO7/+hQIk14s6sVC16p7lPofZVD
- xBge58yq4t8TkkZbwsvHhJb8sIlD2dRJicJA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MBUqL-1qxAaR1PJv-00D3cD; Mon, 25 Sep 2023 15:26:04 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     markpearson@lenovo.com, jorge.lopez2@hp.com
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] platform/x86: hp-bioscfg: Fix reference leak
-Date:   Mon, 25 Sep 2023 15:25:57 +0200
-Message-Id: <20230925132557.72138-3-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230925132557.72138-1-W_Armin@gmx.de>
-References: <20230925132557.72138-1-W_Armin@gmx.de>
+        Mon, 25 Sep 2023 09:28:13 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCB6B8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:28:06 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59c0a7d54bdso75861537b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:28:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695648485; x=1696253285; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ZknO15oVls1exzOXk3a1gfVWqzfAFBCtfmB4d9YaDI=;
+        b=CjaNwOUgaN9kphDDqfk+caA5xvxe9EaF3mujwBMbNVVB0gOoN5JMGviiz98SM+nqvH
+         tpd5sJdMtI9zKP0ULZycP90Apv7ykDhUNSFoEJwMRTO9hiMHjHVdbSSX62cJMhIyTymO
+         A7ViWfVrjb2HTxjcxXHvrCcyMbow76WRI5HF/F2Yu4pf3R9L1Z4xq8njlD3VK3FAvWlT
+         a67959d7nWPHnoc+66f38pPL+L5U5bNSt+OBNSL0BwsX2Sx4xzz1bM95EnJ1d2KemhTF
+         4BK7ldzmQQqixHlTFHoXBmDz4+lhu6SqIBqiQAaMOLYPw4O5KkmrwaYOyTZGlqz+I84h
+         4UIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695648485; x=1696253285;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5ZknO15oVls1exzOXk3a1gfVWqzfAFBCtfmB4d9YaDI=;
+        b=AJycjqsMQtl8ryFo7jvm71h/V9dLxe7oAmhcA8uM3kbitvS8jSvAYEtoQHQrMW63eD
+         OEfMrurga6uA+A46WHErmQ3Vr7zq9hlD7M1FK3MRVTbLBNQAgc/yP1EugnbD39WPNQXO
+         xwhdd/8DHUzgoMgyiPd0a2NPptQ1ntsuti0lywuOZMfOGOaDW5IzC5TYeD+VuNUdDlKa
+         cabtFQG80xnIg1M2kwxZGFySpPkXAbtmuCRfintmKd5+OTq4jOeSijZ0u7zZ9Lv1LciE
+         JhNVk/CCxOw67XJNhOOqBm2Ul+GvsG6Q+iAirHi4R5LNsGHxXR0MCfDtc85VtRlYh10k
+         c+hQ==
+X-Gm-Message-State: AOJu0YxTDbU9fl/2xV8ubPVm3rC0PwEOxN2yGROqXWl5+shrxHHgi18s
+        47HpBcqxkxXPW7fvCVabXz0JbHm5b1VyxPcxTi3kSg==
+X-Google-Smtp-Source: AGHT+IGM7YPpQZLlMQolSiJosvS1gnpdsPSQVS9F7veXMpyagz9PcCbXUT5Cp+eVJ/Vi8PV88//TltYGmv0SU/0+xwA=
+X-Received: by 2002:a25:c804:0:b0:d74:6cdc:290d with SMTP id
+ y4-20020a25c804000000b00d746cdc290dmr5021839ybf.36.1695648485671; Mon, 25 Sep
+ 2023 06:28:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230916081615.4237-1-iuncuim@gmail.com>
+In-Reply-To: <20230916081615.4237-1-iuncuim@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 25 Sep 2023 15:27:54 +0200
+Message-ID: <CACRpkdZeDpyy812ijbKr2gC5zfhDSuEPHydrCNpRyUnRW1QpWA@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: sunxi: h616: add extra gpio banks
+To:     Mikhail Kalashnikov <iuncuim@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9azWTG25P1Zwv+Vklh1b4AJuOY/Ayb+9h38VSE0fLLG1HLeCbpT
- IYO0wioZb73wugkZrI2dd8cAED4fhiYRCKCo4c1r87FS0qSsGDSMQAQj0BwF5Wb7Rw/2XWT
- Zf+EmGW/yuvsqMH3+mXXt8kTtojsNzZ9TbIxmuyvxL229rJwQbTcIy9CUMhIjer6pUuo+/a
- Yyl1nt0BlK58Wk/PfiJAA==
-UI-OutboundReport: notjunk:1;M01:P0:BxGyA+hcLDo=;ji+C+bzn2UDVWoQ3hjpkQAPx4+w
- uVsI5UdC3pFqp/cn4mMOrSPn1g6o5o/6JkhzOfB4nYIV470qYisKbSRFJfmbRwDjufkRjg3kV
- 0dN0N9JIcRGnPu12Jts0mI36rrS6FJSt7cZKIZlaDY4cN8JWvlpzzuW9lewQfp2Z4nj4hk89x
- E4rjpwO7a4PcLwPUJ9b9cMwoWzynCfSthJn7jsgbZ5A/ZoKXjY3VUchnqPqZ+c+wu2LySdtlE
- rYNgXyIhDZzob8QDSfIKSmLWJZE6pECVhA1vim5ljzgZa4lijbtK1ntzqhQIWJeWtVHXD23Rq
- Ac/D1KOUs32iBw3yFPw1/iCb2FD3cseR3+Ead4Eo/60dYiubtpW9kD0HMqme6w6Sg0/BykJw9
- QcH/aimCA80cxS2Y0+H4iDc5W4GDHyDNE0hvP+YvbuUrgGElbdujD8E/llpYgIWy3Gdcf5cgZ
- 6bZeTJWcyHqtcC/z65i0ArrKxdDcaZ/D04UNDroKVUgwd6UOhbWTxtrgzBu0fio1Coty3dPN9
- XNK348ibeblWi7ZshqxXEwToVF+mGBLqspUwlk3MZ4avAFb79YnbSVcPl1g/w4CunnHNXeKBs
- 3whFd4SBwg12lGYb+09KpFKhZTRHfIM3K+lVt2rFvU26fMITtP2LO+z0pj6VJGGKGlXyObuH0
- vkygQahNijZilicVIQTscveAMsQMVp+XQZRu0O+RZlw4oxoDnLJo71pCz/U/7y2krlVrpWDny
- spwuxouhBhWw8rTUfC5jwz+KD1XxKhsXYV2HP3eC+sd0pRwmwwI64Cjjg4XHb4FnqdRqcZtC+
- nZi6ukjK/BJW0ibJTyeBkxRufDXL0LVZ2mXcU2m1zhT/+q64aPmSKc8OzlQu3SvJRb9zHicDV
- U4awbguxuGYJFU122MAWstQ+bRqW7V+4tujYJ+NIv8Kol/oxblIoUQ3XXnmKnjwzTtgJaWHmE
- s9e92aUPgqY4UrKtnahBHheMYlM=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a duplicate attribute is found using kset_find_obj(), a reference
-to that attribute is returned which needs to be disposed accordingly
-using kobject_put(). Use kobject_put() to dispose the duplicate
-attribute in such a case.
-As a side note, a very similar bug was fixed in
-commit 7295a996fdab ("platform/x86: dell-sysman: Fix reference leak"),
-so it seems that the bug was copied from that driver.
+On Sat, Sep 16, 2023 at 10:16=E2=80=AFAM Mikhail Kalashnikov <iuncuim@gmail=
+.com> wrote:
 
-Compile-tested only.
+> From: iuncuim <iuncuim@gmail.com>
+>
+> Some SoCs from the H616 family (such as the T507) have the same die but
+> more output pins that are used for additional peripherals. The T507 SoC
+> don't have a built-in multiphy like the AC200 or AC300 connected to the
+> bank A. With the T507 these pins can be freely used for any other applica=
+tion.
+> This patch adds the missing muxes on banks A, D and E.
+>
+> Signed-off-by: Mikhail Kalashnikov <iuncuim@gmail.com>
 
-Fixes: a34fc329b189 ("platform/x86: hp-bioscfg: bioscfg")
-Suggested-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
-Changes in v2:
-- add patch
-=2D--
- drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+Patch applied, fixed up the commit message in the process,
+thanks!
 
-diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platfo=
-rm/x86/hp/hp-bioscfg/bioscfg.c
-index 8c4f9e12f018..0c83e66f8d0b 100644
-=2D-- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-+++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-@@ -659,7 +659,7 @@ static int hp_init_bios_package_attribute(enum hp_wmi_=
-data_type attr_type,
- 					  const char *guid, int min_elements,
- 					  int instance_id)
- {
--	struct kobject *attr_name_kobj;
-+	struct kobject *attr_name_kobj, *duplicate;
- 	union acpi_object *elements;
- 	struct kset *temp_kset;
-
-@@ -704,8 +704,11 @@ static int hp_init_bios_package_attribute(enum hp_wmi=
-_data_type attr_type,
- 	}
-
- 	/* All duplicate attributes found are ignored */
--	if (kset_find_obj(temp_kset, str_value)) {
-+	duplicate =3D kset_find_obj(temp_kset, str_value);
-+	if (duplicate) {
- 		pr_debug("Duplicate attribute name found - %s\n", str_value);
-+		/* kset_find_obj() returns a reference */
-+		kobject_put(duplicate);
- 		goto pack_attr_exit;
- 	}
-
-@@ -768,7 +771,7 @@ static int hp_init_bios_buffer_attribute(enum hp_wmi_d=
-ata_type attr_type,
- 					 const char *guid, int min_elements,
- 					 int instance_id)
- {
--	struct kobject *attr_name_kobj;
-+	struct kobject *attr_name_kobj, *duplicate;
- 	struct kset *temp_kset;
- 	char str[MAX_BUFF_SIZE];
-
-@@ -794,8 +797,11 @@ static int hp_init_bios_buffer_attribute(enum hp_wmi_=
-data_type attr_type,
- 		temp_kset =3D bioscfg_drv.main_dir_kset;
-
- 	/* All duplicate attributes found are ignored */
--	if (kset_find_obj(temp_kset, str)) {
-+	duplicate =3D kset_find_obj(temp_kset, str);
-+	if (duplicate) {
- 		pr_debug("Duplicate attribute name found - %s\n", str);
-+		/*kset_find_obj() returns a reference */
-+		kobject_put(duplicate);
- 		goto buff_attr_exit;
- 	}
-
-=2D-
-2.39.2
-
+Yours,
+Linus Walleij
