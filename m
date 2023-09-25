@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF7F7AD3E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778A77AD3E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 10:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbjIYI46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 04:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
+        id S233100AbjIYI6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 04:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbjIYI45 (ORCPT
+        with ESMTP id S233081AbjIYI56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 04:56:57 -0400
-Received: from out-204.mta0.migadu.com (out-204.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A117DF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:56:49 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695632208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kyckiC55caP9KWh/3WatOnX5yiAYCuwEaRClig5LT6Y=;
-        b=ZCi899+4Hxeiwo5hoDEXrXPS765wHNZlDs5vt+ZMbQoCuu3P3uUqcWgF30jTKCbMA9+WtP
-        cEe40Ea8WIWQ5jrUh5it9uKUqewGRRGVZ8BW0ZdfGrz2H98vcgVSNh9sYyDxs5/fvrSxe4
-        ZwqN9uppcIv1uYipsp++zO5A8YMyUcI=
-Mime-Version: 1.0
-Subject: Re: [PATCH v5 2/8] hugetlb: restructure pool allocations
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230925003953.142620-3-mike.kravetz@oracle.com>
-Date:   Mon, 25 Sep 2023 16:56:03 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
+        Mon, 25 Sep 2023 04:57:58 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43829DA
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:57:51 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9adb9fa7200so1365931666b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 01:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695632270; x=1696237070; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WQmd5YE9MyP7uhp/mbVtxmJE/LKRazeYO5qAyNu7Lqk=;
+        b=yqNdFd6elqHeZ/VzaU3DVx3mmkE7N/ozgSPhUR32vhuLerAWqt9THi7N8w2lKuyGwB
+         AU4rEVgTzwigBFLSWSv6r3C83o6I+YZqLEOATjwPdnNothEdzFh7f/AM1f877CUxaNXP
+         NoTVbtZniDFxc9xgtRCLjgIeo2Chi3PpOkRHhhsb9JLnEoos2XSymxGQEfycriczH0cb
+         nWN6cLQ/d7jO20XBbl+SZySG5rQ/nm2R7ZhCK4yZvAiKTDFt33QSXjFVmJsGx5NFp6qX
+         /9NoN0AIyhefNzc9yjl2TMUQ+Sw3jvdQnrcAL7Qb4hsg+wARO1rxvMVm+1JGjRgu2KHN
+         dUXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695632270; x=1696237070;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WQmd5YE9MyP7uhp/mbVtxmJE/LKRazeYO5qAyNu7Lqk=;
+        b=VYLtRHC9FgY+lP1tm3Xf6x7vcOnT7M8dwOE/QQ7FYYN9kRzKD+pWXbwJobO2lM3Yfy
+         oYcWryeB/CkuebhCBH7TR+o12nULxdjXIIfZu82/chzVO+Gn2p2nhET9fF1766Uj47f8
+         MZtItPjIE3QPJt59ypFGs8npORIlw5tu/MM3VdmEM1wpbM0XCeetx2xBBb/UMc2DBGlh
+         QyCFVx9Ay3sBKVUeMjyFIFO/ivQjHzo4/zNLWdAV6I/KsRGVPsReB0AhoUHZE8Wm/iBI
+         5+SSD96wecPs6Jj8vlMp/q/Ihrz6wNAZa+7NcX7x+nZFKhnFs+zwmgmzzx3nSi7mVYH/
+         eBhw==
+X-Gm-Message-State: AOJu0YwxETbaiLYCl7H3Gywr4oFEyGVB6DTHRxw2exf7iiACXnr/poTz
+        eYUFYg/IZLbsWLkQbmkMf2W2dQ==
+X-Google-Smtp-Source: AGHT+IHP36aQS6ALpUTPI7ydd5L2seI7Qiy6BJ/G0j2CKfyIwQElC198nfAuq+y7wn2ZA9ZhzXvxzA==
+X-Received: by 2002:a17:906:4fce:b0:9aa:206d:b052 with SMTP id i14-20020a1709064fce00b009aa206db052mr14447299ejw.27.1695632269683;
+        Mon, 25 Sep 2023 01:57:49 -0700 (PDT)
+Received: from [192.168.101.165] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id s25-20020a170906061900b00997d76981e0sm5952185ejb.208.2023.09.25.01.57.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 01:57:49 -0700 (PDT)
+Message-ID: <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
+Date:   Mon, 25 Sep 2023 10:57:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com
+Cc:     andersson@kernel.org, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, abel.vesa@linaro.org
+References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <9D82738C-AF1D-44E6-8982-8A5A13F04687@linux.dev>
-References: <20230925003953.142620-1-mike.kravetz@oracle.com>
- <20230925003953.142620-3-mike.kravetz@oracle.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24.09.2023 18:07, Manivannan Sadhasivam wrote:
+> PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
+> the bandwidth support in the driver. Otherwise, the default bandwidth of
+> 985 MBps will be used.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 297442c969b6..6853123f92c1 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>  	case 2:
+>  		bw = MBps_to_icc(500);
+>  		break;
+> +	case 3:
+> +		bw = MBps_to_icc(985);
+> +		break;
+>  	default:
+>  		WARN_ON_ONCE(1);
+>  		fallthrough;
+> -	case 3:
+> -		bw = MBps_to_icc(985);
+> +	case 4:
+> +		bw = MBps_to_icc(1969);
+>  		break;
+Are you adding case 4 under `default`? That looks.. bizzare..
 
-
-> On Sep 25, 2023, at 08:39, Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> 
-> Allocation of a hugetlb page for the hugetlb pool is done by the routine
-> alloc_pool_huge_page.  This routine will allocate contiguous pages from
-> a low level allocator, prep the pages for usage as a hugetlb page and
-> then add the resulting hugetlb page to the pool.
-> 
-> In the 'prep' stage, optional vmemmap optimization is done.  For
-> performance reasons we want to perform vmemmap optimization on multiple
-> hugetlb pages at once.  To do this, restructure the hugetlb pool
-> allocation code such that vmemmap optimization can be isolated and later
-> batched.
-> 
-> The code to allocate hugetlb pages from bootmem was also modified to
-> allow batching.
-> 
-> No functional changes, only code restructure.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-Thanks.
+Konrad
