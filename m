@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A197ADAD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE2A7ADAD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbjIYPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S232444AbjIYPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbjIYPA6 (ORCPT
+        with ESMTP id S232413AbjIYPBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:00:58 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A730C103
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:00:51 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bdae1ef38so199152507b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:00:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695654051; x=1696258851; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TtKOMgyIwOtWr+3ya9qqTPlv0NwOjHuIvkjyb/DX+BE=;
-        b=3BKev9YVvnPzsfrAugS3qRJHaxjmFwEMekowJymJNS8gawsESmtKsJN2kFkpCXwMXZ
-         jrggdFI0wUbCk7G0+nOxNdcydxktW/EtKmZR2BTh7TGYCzTpHeHdvHy6VttykOp8ZBOs
-         9CFyGUOny6BnAVC4yPQBUKgc/MJ7TTmxe528GnE0MJiohl8foN75iCoxr0i+njtQZFw+
-         VfHi2wKCc9JmhjehqYmnBWTUbWLO4pApFqxxNBDgqEyvgx8JxusNwL8qsXpgj4lA3nzl
-         o5raaRWbYquHgMB/MBfjZ+TqOY1IEjB4XuI89lKWuxk0aZqq57JeyBDLcCdNIXepmGtG
-         b4Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695654051; x=1696258851;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TtKOMgyIwOtWr+3ya9qqTPlv0NwOjHuIvkjyb/DX+BE=;
-        b=HnKZxcXAG/k1FLvcBZCZlb6dsyBlAyUJ9ZQwjT3VjZMaySeAJl0aF9eeF+lQs3BnuU
-         qRbTjC4M2Q466GUYNa9kqDYXBrU8XyrKg3wNSxzblHjg5WLl9t0tB4cjqfwPZB7ptjVh
-         4coCy95afFfj1S7Lcey1Y6/tckpXO0JlcYANIoYCJPIEVgp5mLiQuALR2uknupAQyT2W
-         eY/Wt08QBmxdVnHmlIPLDMD8gD/mLbqFAZgQBhkos4rsqwDSe6TdP1prtb4X7+Mzr4dr
-         49viFaHpUSZfRDzDMaNxsy6V20346Q4I9/QNjgK7KN92YCZ8HV9GTwauNzovXfe1MZz4
-         KefQ==
-X-Gm-Message-State: AOJu0YxiszMEUK1GOLZA1MGg51vrHghA9WBd+xA4Wqps6QNDYKCIE9Ef
-        4Gpa9V/GVaEg0rC/7XpJZSj+kV2PV7L1IKk=
-X-Google-Smtp-Source: AGHT+IFwQVMuwmH5yhXVSkx3BMOINalxrfSul/+4LRz1fJCra4cA/e2tR6cK5GnZtIBLaO635mvVxcuNt6jqq20=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:b249:0:b0:56c:e9fe:3cb4 with SMTP id
- q70-20020a81b249000000b0056ce9fe3cb4mr144361ywh.1.1695654050860; Mon, 25 Sep
- 2023 08:00:50 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 15:00:47 +0000
-In-Reply-To: <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
+        Mon, 25 Sep 2023 11:01:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4255A111;
+        Mon, 25 Sep 2023 08:01:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE86C433C8;
+        Mon, 25 Sep 2023 15:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695654060;
+        bh=GUTPMlEVCxAI4XqyqO0Rqf3KWAa3RuxtFqcc2gmHP1w=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=pOGJqd26WmXtEWG9MwBrMWw6yfwLBt3Fw2NdJtV5xHWOD9eyLgAixcnEsCAXLJ0c4
+         7TJ5DR4cATHHVbGVNr+Q3jly+GM51Q2ZlonAvbt1NhNKnW31AscOFyc1S4kvdkUiFM
+         NWQyqQHZ5bj9XsrhrHNcluOpevJyyVSBpDTTYVHhmrH7/OVKUA4aUkIQWJdMfNAII+
+         Hj8TmgzsACQLRXu6XyBY01uCt3rFzIl5g88tina/t3F2zrwDagissLn4I2EDC7UG+A
+         Rv+zkYxxCros8yPuumZmQe9IYfZiz7vyqRTKGDzfZ1aP8XOR9pCn6QybtRugRVLJVo
+         0+wnUc4uR62/Q==
 Mime-Version: 1.0
-References: <ZRGd4lsNP30L2yB3@Boquns-Mac-mini.home>
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230925150047.1961646-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     boqun.feng@gmail.com
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, walmeida@microsoft.com,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 25 Sep 2023 18:00:52 +0300
+Message-Id: <CVS371QBH3QK.3354DSBK53OFS@suppilovahvero>
+Subject: Re: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions
+ in task work
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Shuai Xue" <xueshuai@linux.alibaba.com>, <rafael@kernel.org>,
+        <wangkefeng.wang@huawei.com>, <tanxiaofei@huawei.com>,
+        <mawupeng1@huawei.com>, <tony.luck@intel.com>,
+        <linmiaohe@huawei.com>, <naoya.horiguchi@nec.com>,
+        <james.morse@arm.com>, <gregkh@linuxfoundation.org>,
+        <will@kernel.org>
+Cc:     <linux-acpi@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-edac@vger.kernel.org>,
+        <acpica-devel@lists.linuxfoundation.org>, <stable@vger.kernel.org>,
+        <x86@kernel.org>, <justin.he@arm.com>, <ardb@kernel.org>,
+        <ying.huang@intel.com>, <ashish.kalra@amd.com>,
+        <baolin.wang@linux.alibaba.com>, <bp@alien8.de>,
+        <tglx@linutronix.de>, <mingo@redhat.com>,
+        <dave.hansen@linux.intel.com>, <lenb@kernel.org>, <hpa@zytor.com>,
+        <robert.moore@intel.com>, <lvying6@huawei.com>,
+        <xiexiuqi@huawei.com>, <zhuo.song@linux.alibaba.com>
+X-Mailer: aerc 0.14.0
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20230919022127.69732-3-xueshuai@linux.alibaba.com>
+In-Reply-To: <20230919022127.69732-3-xueshuai@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> I'm concerned about this change, because an `&WithRef<T>` only has
->>> immutable permissions for the allocation. No pointer derived from it
->>> may be used to modify the value in the Arc, however, the drop
->>> implementation of Arc will do exactly that. 
->> 
->> That is indeed a problem. We could put the value in an `UnsafeCell`, but
->> that would lose us niche optimizations and probably also other optimizations.
->> 
-> 
-> Not sure I understand the problem here, why do we allow modifying the
-> value in the Arc if you only have a shared ownership?
+On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
+> Hardware errors could be signaled by synchronous interrupt, e.g.  when an
+> error is detected by a background scrubber, or signaled by synchronous
+> exception, e.g. when an uncorrected error is consumed. Both synchronous a=
+nd
+> asynchronous error are queued and handled by a dedicated kthread in
+> workqueue.
+>
+> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
+> synchronous errors") keep track of whether memory_failure() work was
+> queued, and make task_work pending to flush out the workqueue so that the
+> work for synchronous error is processed before returning to user-space.
+> The trick ensures that the corrupted page is unmapped and poisoned. And
+> after returning to user-space, the task starts at current instruction whi=
+ch
+> triggering a page fault in which kernel will send SIGBUS to current proce=
+ss
+> due to VM_FAULT_HWPOISON.
+>
+> However, the memory failure recovery for hwpoison-aware mechanisms does n=
+ot
+> work as expected. For example, hwpoison-aware user-space processes like
+> QEMU register their customized SIGBUS handler and enable early kill mode =
+by
+> seting PF_MCE_EARLY at initialization. Then the kernel will directy notif=
+y
+> the process by sending a SIGBUS signal in memory failure with wrong
+> si_code: the actual user-space process accessing the corrupt memory
+> location, but its memory failure work is handled in a kthread context, so
+> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
+> process instead of BUS_MCEERR_AR in kill_proc().
+>
+> To this end, separate synchronous and asynchronous error handling into
+> different paths like X86 platform does:
+>
+> - valid synchronous errors: queue a task_work to synchronously send SIGBU=
+S
+>   before ret_to_user.
+> - valid asynchronous errors: queue a work into workqueue to asynchronousl=
+y
+>   handle memory failure.
+> - abnormal branches such as invalid PA, unexpected severity, no memory
+>   failure config support, invalid GUID section, OOM, etc.
+>
+> Then for valid synchronous errors, the current context in memory failure =
+is
+> exactly belongs to the task consuming poison data and it will send SIBBUS
+> with proper si_code.
+>
+> Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for syn=
+chronous errors")
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Well, usually it's when you have exclusive access even though the value
-is in an `Arc`.
+Did 7f17b4a121d0 actually break something that was not broken before?
 
-The main example of this is the destructor of the `Arc`. When the last
-refcount drops to zero, this gives you exclusive access. This lets you
-run the destructor. The destructor requires mutable access.
+If not, this is (afaik) not a bug fix.
 
-Another example would be converting the `Arc` back into an `UniqueArc`
-by checking that the refcount is 1. Once you have a `UniqueArc`, you can
-use it to mutate the inner value.
+BR, Jarkko
 
-Finally, there are methods like `Arc::get_mut_unchecked`, where you
-unsafely assert that nobody else is using the value while you are
-modifying it. We don't have that in our version of `Arc` right now, but
-we might want to add it later.
-
-> Also I fail to see why `ArcBorrow` doesn't have the problem. Maybe I'm
-> missing something subtle here? Could you provide an example?
-
-It's because `ArcBorrow` just has a raw pointer inside it. Immutable
-references give up write permissions, but raw pointers don't even if
-they are `*const T`.
-
-Alice
