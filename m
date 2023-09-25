@@ -2,187 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8F87AD7AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86DB7AD7B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjIYMHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        id S231570AbjIYMIW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 08:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbjIYMHb (ORCPT
+        with ESMTP id S231391AbjIYMIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:07:31 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758CC139
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:06:45 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-277564f049dso1042053a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695643604; x=1696248404; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FVUt6ZlZlt1P8Ceh/hubtNxz/DIJsD3wgxBUc0MmUI4=;
-        b=w4saT8oIzQkG+JYGgqyG+F32lUbbWI9jtiblAasfHRhPIHkfG0ew4wOIatOi0CL9cD
-         8zMYm+Nohxgk3/iynUo9+ZOjXT8p/Lxfmzge8bdHbDbhi3B2lppxsFlru0JZUnF5j8HF
-         jYnPAlDB7mX+fuJPEEGv5BP0p0P2y4AyOgFSCIhMghbMOr9MqJmgx/eLDOLhMbxmLROB
-         jwo6thYC7J1soJJDAyaROGbWR3ByE/O0qPk7OthI3RMKpig1VLnTOY8iafy9cAdbTF/t
-         LFWQXZ1xu17ZVGFKOM2EqD8OdrNKrRbjvdPys2GVeB1qwnRofpSxABH7V4m19pARb4LF
-         HgKQ==
+        Mon, 25 Sep 2023 08:08:06 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82CCE58
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:07:21 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59f82ad1e09so14280197b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:07:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695643604; x=1696248404;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FVUt6ZlZlt1P8Ceh/hubtNxz/DIJsD3wgxBUc0MmUI4=;
-        b=jOHnJxmMgYcGmuYuT65kdKvw8H6/Nv4IM4UVdPvCukMrQoiGhn8WrH2jjqh+eTPZBO
-         uTjoq37QvTVrHX3Mkh4AH8wu4IVWCfvJjBcHPXgF3OApydEIrrzisg5ZBdMWXGMFiSCD
-         GyTvKnWWtFLrIyH7s22kC4na0Ifw+uy3BTckpUXuMJuQJwTssLemY42ytfWQXhDZiYyc
-         xNM+Ob6wgNB/nFlLXkYqmbhZvSqoZUw4tfobsWfBZgW49j5Z/BBYVhjizVSxLzQahO4o
-         sUYTjCzkyQ0+mCZ/TqU3eVd/w12wUv5U05JC/1iM9bKbX46hcKZ6yYkAr4W4xIyyxsXu
-         ns4w==
-X-Gm-Message-State: AOJu0Yy5wNUIIQ3gHr2xMOlaSRYbItsVE894dRYCMCJftIGiOmtXXIIB
-        kVW28yYxpXVgr10B0obMqmVR+JzHQsOfaAaF106LlQ==
-X-Google-Smtp-Source: AGHT+IHTZAYH6v2yVOscns05lwBAjB14afRWd6clMBTAdvhJtdZPNbdfJYyNaZhnqQS2GA/pbd76KDTydWoU80lawxU=
-X-Received: by 2002:a17:90a:5a81:b0:268:b0b:a084 with SMTP id
- n1-20020a17090a5a8100b002680b0ba084mr4015345pji.46.1695643604484; Mon, 25 Sep
- 2023 05:06:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695643640; x=1696248440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bFBEfegJ3qKvlKJFWO80BnWRWZIHZ0dmFMA8YWuzIyA=;
+        b=FCbhKAxQrN02QyiOFLTnO9RM8/7UvQso8HYPa+HXrw+MJwaZHXmE3BwQXgG5NVYBkW
+         VC7+TJB9LN3LZuu8RVmiCK26MFBuPYHMjF96DxjJFSlyfJHB5hzxqhme22JGgyYT5veW
+         Et9GSweCIQDUyJ9j/vFDsT6bm3GOmSvRndxGd/byrHhqsGTq85Pb096STqGTxMu5Bz9n
+         jT7yKqwiaAb59gP3N2QEE7h4RD2mqvrVhFNQwBcNzWKVu0fDqYJ0NetTz3mfYm6NppxJ
+         2GmDFotVglruzBhiFAm6HpDjwHI7Mud4h9nFbFmlcFxYdg+AahVrl2CLJvIdTUWvmRI/
+         payQ==
+X-Gm-Message-State: AOJu0Yz2EGOmRupe2ri2FxmGzeigaHqqDSD6P7g2DRn6vw8K9axYe0uX
+        KQ4w8fDzwfne1FMolDKns462CofaPFWSWA==
+X-Google-Smtp-Source: AGHT+IFd1aAKSfFydD5AS54DFcm3PUqFv3MxyZUvOoEr2mZ14fRo9ogv831m8YyefncMKfOpTb0GGA==
+X-Received: by 2002:a0d:f5c4:0:b0:599:8bd:5bdf with SMTP id e187-20020a0df5c4000000b0059908bd5bdfmr6025409ywf.50.1695643640598;
+        Mon, 25 Sep 2023 05:07:20 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id a184-20020a0df1c1000000b00577269ba9e9sm2352319ywf.86.2023.09.25.05.07.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 05:07:20 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d8181087dc9so6811207276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:07:20 -0700 (PDT)
+X-Received: by 2002:a25:ce53:0:b0:d77:8fd3:36e with SMTP id
+ x80-20020a25ce53000000b00d778fd3036emr6855294ybe.20.1695643639909; Mon, 25
+ Sep 2023 05:07:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901130312.247719-1-vincent.guittot@linaro.org>
- <20230901130312.247719-4-vincent.guittot@linaro.org> <ZQwKnnXbjLOYUSjO@arm.com>
-In-Reply-To: <ZQwKnnXbjLOYUSjO@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 25 Sep 2023 14:06:32 +0200
-Message-ID: <CAKfTPtCM_dsWcD6qru_nLYpDH9_OoziMy5d3zAofXNsXzG94xQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] cpufreq/schedutil: use a fixed reference frequency
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
-        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+References: <202309222350.hCUFrIQ1-lkp@intel.com>
+In-Reply-To: <202309222350.hCUFrIQ1-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 25 Sep 2023 14:07:07 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUn1n47=nV_WMe9Yx1aTzYgsDKoj_AuZUPoAH7gJpCuGw@mail.gmail.com>
+Message-ID: <CAMuHMdUn1n47=nV_WMe9Yx1aTzYgsDKoj_AuZUPoAH7gJpCuGw@mail.gmail.com>
+Subject: Re: {standard input}:1198: Error: value of ffffff6c too large for
+ field of 1 byte at 00000533
+To:     kernel test robot <lkp@intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sept 2023 at 11:19, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> On Friday 01 Sep 2023 at 15:03:11 (+0200), Vincent Guittot wrote:
-> > cpuinfo_max_freq can change at runtime because of boost as example. This
-> > implies that the value could not be the same than the one that has been
-> > used when computing the capacity of a CPU.
-> >
-> > The new arch_scale_freq_ref() returns a fixed and coherent frequency
-> > reference that can be used when computing a frequency based on utilization.
-> >
-> > Use this arch_scale_freq_ref() when available and fallback to
-> > cpuinfo.max_freq otherwise.
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >  kernel/sched/cpufreq_schedutil.c | 29 +++++++++++++++++++++++++++--
-> >  1 file changed, 27 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 4492608b7d7f..9996ef429e2b 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -114,6 +114,31 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
-> >       }
-> >  }
-> >
-> > +#ifdef arch_scale_freq_ref
-> > +/**
-> > + * arch_scale_freq_ref_policy - get the reference frequency of a given CPU that
-> > + * has been used to correlate frequency and compute capacity.
-> > + * @cpu: the CPU in question.
-> > + *
-> > + * Return: the reference CPU frequency.
-> > + */
-> > +static __always_inline
-> > +unsigned long  arch_scale_freq_ref_policy(struct cpufreq_policy *policy)
->
-> This should not be an arch_ function as it's only a wrapper over an
-> arch_ function and not a function that different architectures might
-> implement differently usually in architecture specific code.
+Dear robot,
 
-I expect this function to disappear at some point once all arch will
-use it that why I named it arch_* but I can rename it
+On Fri, Sep 22, 2023 at 5:23 PM kernel test robot <lkp@intel.com> wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   27bbf45eae9ca98877a2d52a92a188147cd61b07
+> commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
+> date:   9 weeks ago
+> config: m68k-randconfig-r025-20230123 (https://download.01.org/0day-ci/archive/20230922/202309222350.hCUFrIQ1-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230922/202309222350.hCUFrIQ1-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309222350.hCUFrIQ1-lkp@intel.com/
 
->
-> > +{
-> > +     return arch_scale_freq_ref(policy->cpu);
->
-> It might make it easier to read if arch_scale_freq_ref() had a default
-> implementation that returned 0.
+Thanks for your report!
 
-I will use the suggestion made by Peter to have only one function
+> All errors (new ones prefixed by >>):
+>
+>    {standard input}: Assembler messages:
+>    {standard input}:1198: Error: value -148 out of range
+> >> {standard input}:1198: Error: value of ffffff6c too large for field of 1 byte at 00000533
 
+Do you have more context (e.g. which source file is being compiled)?
+Thanks!
 
->
-> Then this code would simply become:
->
-> freq = arch_scale_freq_ref(policy->cpu);
-> if (freq)
->         return freq;
-> else if (arch_scale_freq_invariant())
->         return ..
-> ..
->
-> This approach is similar to the use of arch_freq_get_on_cpu() in
-> cpufreq.c, and, as there, having a chosen maximum frequency of 0 would
-> not be a valid value.
->
-> > +}
-> > +#else
-> > +static __always_inline
-> > +unsigned long  arch_scale_freq_ref_policy(struct cpufreq_policy *policy)
-> > +{
-> > +     if (arch_scale_freq_invariant())
-> > +             return policy->cpuinfo.max_freq;
-> > +
-> > +
-> > +     return policy->cur;
-> > +}
-> > +#endif
-> > +
-> >  /**
-> >   * get_next_freq - Compute a new frequency for a given cpufreq policy.
-> >   * @sg_policy: schedutil policy object to compute the new frequency for.
-> > @@ -139,11 +164,11 @@ static void sugov_deferred_update(struct sugov_policy *sg_policy)
-> >  static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> >                                 unsigned long util, unsigned long max)
-> >  {
-> > +     unsigned int freq;
-> >       struct cpufreq_policy *policy = sg_policy->policy;
-> > -     unsigned int freq = arch_scale_freq_invariant() ?
-> > -                             policy->cpuinfo.max_freq : policy->cur;
-> >
-> >       util = map_util_perf(util);
-> > +     freq = arch_scale_freq_ref_policy(policy);
->
-> Given its single use here, it would likely be better to place the code
-> above directly here, rather than create a wrapper over a few lines of
-> code.
->
-> Hope it helps,
-> Ionela.
->
-> >       freq = map_util_freq(util, freq, max);
-> >
-> >       if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> > --
-> > 2.34.1
-> >
-> >
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
