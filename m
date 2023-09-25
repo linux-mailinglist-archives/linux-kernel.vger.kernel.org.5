@@ -2,201 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFB37AD669
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E077AD672
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjIYKwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        id S229757AbjIYKzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIYKwG (ORCPT
+        with ESMTP id S229449AbjIYKzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:52:06 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4382AB8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 03:51:57 -0700 (PDT)
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230925105155epoutp016f831e932d74ca78e756a3245ac53b8f~IHsqlJD4M3144431444epoutp01d
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 10:51:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230925105155epoutp016f831e932d74ca78e756a3245ac53b8f~IHsqlJD4M3144431444epoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695639115;
-        bh=8AxotcjtTh/WUu5XLTzy/Vm2FEZz/hdvdsSBNKi/2z0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=n5H+GJiDJn1TN6ZblIxtip5HVrjOIHOkAZ71koFjozsofvRKKCoRqXaBuKGe6ICe2
-         MMoanf/YiC6It3EUi8uxA00X1UPpNeIaM3xc5YBuwI7FjNAK8uISUx9VYU4W0i+GVp
-         97puyyIQwR32Au+siJpqcA+109FNGkm7hKNhJvwU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20230925105154epcas1p348eb675942d16e9d5c204d1bd07107c6~IHsqDoKaj1443414434epcas1p3O;
-        Mon, 25 Sep 2023 10:51:54 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.36.227]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RvKSV3Y9tz4x9Pr; Mon, 25 Sep
-        2023 10:51:54 +0000 (GMT)
-X-AuditID: b6c32a33-4e9ff700000021d1-cc-6511664a83fa
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CE.F8.08657.A4661156; Mon, 25 Sep 2023 19:51:54 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
- adjust_va_to_fit_type
-Reply-To: jason.sim@samsung.com
-Sender: Jaeseon Sim <jason.sim@samsung.com>
-From:   Jaeseon Sim <jason.sim@samsung.com>
-To:     "bhe@redhat.com" <bhe@redhat.com>,
-        "urezki@gmail.com" <urezki@gmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <ZQ1ha+wIaTJ9+aU8@MiWiFi-R3L-srv>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230925105154epcms1p782c335c2355f39a9b583489c56e972f6@epcms1p7>
-Date:   Mon, 25 Sep 2023 19:51:54 +0900
-X-CMS-MailID: 20230925105154epcms1p782c335c2355f39a9b583489c56e972f6
+        Mon, 25 Sep 2023 06:55:38 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2861DAB;
+        Mon, 25 Sep 2023 03:55:32 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qkjFS-0001bi-FM; Mon, 25 Sep 2023 12:55:30 +0200
+Message-ID: <0d84fb59-4628-4c7f-ab1a-f58889ef2c9b@leemhuis.info>
+Date:   Mon, 25 Sep 2023 12:55:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, de-DE
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+Subject: s2idle stopped working with 6.6-rc on Thinkpad T14 G1 (AMD)
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmnq5XmmCqwb0mMYs569ewWZx/8IvN
-        4vSERUwWve9fMVlc3jWHzeLemv+sFne+zWO3WH2RxYHDY+esu+wem1doeWz6NInd48SM3ywe
-        7/ddZfPo27KK0ePzJrkA9qhsm4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE
-        3FRbJRefAF23zBygm5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BWYFesWJucWl
-        eel6eaklVoYGBkamQIUJ2Rkd286wFOySqXi1dh9rA2OHaBcjJ4eEgInE5a/HWboYuTiEBHYw
-        Sixcdoa9i5GDg1dAUOLvDmEQU1ggXGLjnnKQciEBeYmzWxoYQWxhAW2JUysvMoPYbAKaEl0X
-        trCD2CICPhLnvh9iAxnJLLCCSeLx0SdsELt4JWa0P2WBsKUlti/fCjaIU0BP4nLrUWaIuKjE
-        zdVv2WHs98fmM0LYIhKt985C1QhKPPi5GyouJXGmbQnUzGKJ9WuuM0HYNRJHn+yHiptLNLxd
-        CXYDr4CvxOZb38DmsAioSsyaeA7qNheJqffegcWZgZ7c/nYOM8jvzECPrd+lD1GiKLHz91xG
-        iBI+iXdfe1hh3tox7wnUWmWJj98uMIK0SghISkzYZQ4R9pDY+XQlKyQI7zJKrFrGNoFRYRYi
-        nGch2TsLYe8CRuZVjGKpBcW56anJhgWG8KhNzs/dxAhOnFrGOxgvz/+nd4iRiYPxEKMEB7OS
-        CO+vZ3ypQrwpiZVVqUX58UWlOanFhxhNgT6eyCwlmpwPTN15JfGGJpYGJmZGJhbGlsZmSuK8
-        ihNmpwgJpCeWpGanphakFsH0MXFwSjUwLVh0w97tn0xtRkqdy2krJ+u/taXC5prBBWqTraSm
-        9izcEpp0LWTCyhMMVbf4DdxmiOW9fv5QVSxE2kHEJePRjy+92k0Xl+rdqC2YyqAjfFWT/8kO
-        1t3Gi7Y3OlRsfvKI5XvMsW2JRZKxP7ysDGx3qJecZ3wVkiN6cfcSrdKZW99HcDnIKjW67r27
-        /rqxvN+8+Ycmbv17qCXOOIXjOuuhAxKvWj4/SF9Sc//33Jkv2x/UbHkTNyuOaWIL09cjq+Ze
-        3n/gsDk738RoxfdeLL1vlwmJ/qjznj5l8v2anOQZ5/RMo0ymrp1q1znvzKd4oefbTytqSdZx
-        hj6vcP3yWXi1gd1lkzVCt+7+uBd79mbgTSWW4oxEQy3mouJEAKc28ZslBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65
-References: <ZQ1ha+wIaTJ9+aU8@MiWiFi-R3L-srv>
-        <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
-        <ZQ1ftk5yDBv+p6A4@MiWiFi-R3L-srv>
-        <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p7>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1695639332;c09e7da7;
+X-HE-SMSGID: 1qkjFS-0001bi-FM
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 09/22/23 at 05:34pm, Baoquan He wrote:
-> > Hi Jaeseon,
-Hello Baoquan,
-> > 
-> > On 09/22/23 at 03:27pm, Jaeseon Sim wrote:
-> > > There's panic issue as follows when do alloc_vmap_area:
-> > > 
-> > > Kernel panic - not syncing: kernel: panic_on_warn set ...
-> > > 
-> > > page allocation failure: order:0, mode:0x800(GFP_NOWAIT)
-> > > Call Trace:
-> > > warn_alloc+0xf4/0x190
-> > > __alloc_pages_slowpath+0xe0c/0xffc
-> > > __alloc_pages+0x250/0x2d0
-> > > new_slab+0x17c/0x4e0
-> > > ___slab_alloc+0x4e4/0x8a8
-> > > __slab_alloc+0x34/0x6c
-> > > kmem_cache_alloc+0x20c/0x2f0
-> > > adjust_va_to_fit_type
-> > > __alloc_vmap_area
-> > > alloc_vmap_area+0x298/0x7fc
-> > > __get_vm_area_node+0x10c/0x1b4
-> > > __vmalloc_node_range+0x19c/0x7c0
+Hi Mario! Did you by chance hear anything about lock-ups on resume with
+mainline affecting AMD systems? I'm asking, as s2idle stopped working
+for me with 6.6-rc on my Thinkpad T14 G1 (AMD). I'm as of now not sure
+exactly when the problem started, as 6.6-rc1 didn't boot for me due to
+another regression fixed for -rc2. But 6.6-rc2 was affected and -rc3
+still is. Haven't found time for a bisection yet and will unlikely to be
+so in the next two or three days, that's why I thought "ask Mario, with
+a bit of luck he might be aware of a problem or even a fix".
 
-To Uladzislau,
-Sorry. The path is as below.
+FWIW, I ran your amd_s2idle.py script, but the machine seems to lock up
+hard on resume, so I guess it's not much or help.
 
-Call trace:
- alloc_vmap_area+0x298/0x7fc
- __get_vm_area_node+0x10c/0x1b4
- __vmalloc_node_range+0x19c/0x7c0
- dup_task_struct+0x1b8/0x3b0
- copy_process+0x170/0xc40
+https://www.leemhuis.info/files/misc/s2idle_report-6.5.4-2023-09-25.txt
+https://www.leemhuis.info/files/misc/s2idle_report-6.6_rc3-2023-09-25.txt
 
-> > > 
-> > > Commit 1b23ff80b399 ("mm/vmalloc: invoke classify_va_fit_type() in
-> > > adjust_va_to_fit_type()") moved classify_va_fit_type() into
-> > > adjust_va_to_fit_type() and used WARN_ON_ONCE() to handle return
-> > > value of adjust_va_to_fit_type(), just as classify_va_fit_type()
-> > > was handled.
-> > 
-> > I don't get what you are fixing. In commit 1b23ff80b399, we have
->                                    ~~ s/In/Before/, typo
-> > "if (WARN_ON_ONCE(type == NOTHING_FIT))", it's the same as the current
-> > code. You set panic_on_warn, it will panic in old code before commit
-> > 1b23ff80b399. Isn't it an expected behaviour?
-There is a call path which didn't panic in old code, but does on the current.
+Dmesg for 6.6-rc3 (with a USB-C dock, but problem happens without it, too):
+https://www.leemhuis.info/files/misc/dmesg-6.6_rc3
 
-static __always_inline int adjust_va_to_fit_type()
+Ciao, Thorsten
 
-} else if (type == NE_FIT_TYPE) {
-	lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
-	if (!lva)
-		return -1;
-
-If the above path is taken, Retry path should be triggred at alloc_vmap_area(). 
-But it is currenly unable to so.
-
-> > 
-> > > 
-> > > There is another path in adjust_va_to_fit_type() which could
-> > > return failure and will be handled in alloc_vmap_area().
-> > > Remove WARN_ON_ONCE() for this case.
-> > > 
-> > > Fixes: 45c62fc2897d ("mm/vmalloc: Remove WARN_ON_ONCE related to adjust_va_to_fit_type")
-> > 
-> > The commit id for Fixes tag is wrong.
-> > 
-> > > Signed-off-by: Jaeseon Sim <jason.sim@samsung.com>
-> > > ---
-> > >  mm/vmalloc.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > > index ef8599d394fd..4a82b6525d48 100644
-> > > --- a/mm/vmalloc.c
-> > > +++ b/mm/vmalloc.c
-> > > @@ -1522,7 +1522,7 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
-> > >  
-> > >          /* Update the free vmap_area. */
-> > >          ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
-> > > -        if (WARN_ON_ONCE(ret))
-> > > +        if (ret)
-> > >                  return vend;
-> > >  
-> > >  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
-> > > @@ -4143,7 +4143,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
-> > >                  ret = adjust_va_to_fit_type(&free_vmap_area_root,
-> > >                                              &free_vmap_area_list,
-> > >                                              va, start, size);
-> > > -                if (WARN_ON_ONCE(unlikely(ret)))
-> > > +                if (unlikely(ret))
-> > >                          /* It is a BUG(), but trigger recovery instead. */
-> > >                          goto recovery;
-> > >  
-> > > -- 
-> > > 2.17.1
-> > > 
-> > 
->
+#regzbot introduced v6.5..v6.6-rc2
