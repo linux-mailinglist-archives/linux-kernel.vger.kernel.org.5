@@ -2,48 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF9E7AD4A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A357AD4A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbjIYJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
+        id S229680AbjIYJiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIYJiU (ORCPT
+        with ESMTP id S229520AbjIYJit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:38:20 -0400
+        Mon, 25 Sep 2023 05:38:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68950A3;
-        Mon, 25 Sep 2023 02:38:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE46C433C7;
-        Mon, 25 Sep 2023 09:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695634694;
-        bh=FBty1aJ2KqEfT3F/9J9e39s5G3Gp0wbyl1YPLGW6wkY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BSPUX2AdEO2Kmh6FqpBUTi3dvd79HBqhVLypLNHP4My2tHDAmCzBLuoMIIRYcty0Q
-         KVh8T2XstG74tAxrHyzYcqu19Z3tXwHqxOILzJObNAzre6JeIf18oUM6HgHGx/+lk5
-         aMfhaIAJHaZP8feRKmRNSM2n2I0f1Lz0kFUv+CKGgvQfJ0CtrMkeu5MlVqpmyFZQSP
-         27nAaxt7xX4ct/v9uNGGu4AiGWG4IwWvqijRpi8w0118YbWxVdmYatBGw0NID6mvWC
-         wr30NUyR8vNhlQgKBriq/XSphj/9khFvM3RT0u3OKKfBxSGRxtn+3sMSTyXq3C28BJ
-         kpZjpT+K/u5kA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Zorro Lang <zlang@redhat.com>
-Subject: Re: [PATCH] ovl: disable IOCB_DIO_CALLER_COMP
-Date:   Mon, 25 Sep 2023 11:38:03 +0200
-Message-Id: <20230925-perfide-enzianblau-5f6059909fd2@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
-References: <71897125-e570-46ce-946a-d4729725e28f@kernel.dk>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997C8C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:38:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBEDC433C7;
+        Mon, 25 Sep 2023 09:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695634722;
+        bh=w98WX9GtUfJr2k0V0ZENqYfnjhsG5byDSk+WCEeWMiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CXkKKrc0fzsVjfzljmFv06D2WO8dJoUKDI8raenhe71O2BYHK67s0K2Pk9vrSXU8R
+         RMF5oiDvKAtpwOuNJzb9Qc0CVZWPQFtB8uVKnRYhJeaaJFKf9jVZlqXlNOgQWEC1rQ
+         tKss7wtHEa0s2AL/fInrkIDomLsZs3e3OtPJrXlA=
+Date:   Mon, 25 Sep 2023 11:38:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jia-Ju Bai <baijiaju@buaa.edu.cn>
+Cc:     hminas@synopsys.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: dwc2: fix possible NULL pointer dereference caused
+ by driver concurrency
+Message-ID: <2023092552-tulip-yo-yo-cbb3@gregkh>
+References: <20230925091741.797863-1-baijiaju@buaa.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1250; i=brauner@kernel.org; h=from:subject:message-id; bh=FBty1aJ2KqEfT3F/9J9e39s5G3Gp0wbyl1YPLGW6wkY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQKhrwVdZZgu23uom5bvSW9yVzg1qt4vX1qf/Z9Upx1PU2W /1ZuRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETmL2RkeLntbGjUqRfZ509b5sZufG cx/yDjpc2FXfU/vH1mvDVM/87IcFNV5wG3g4Zq1oSdzH9WWk5Mf3Cizdb06+/iJS9XsE4pYgMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925091741.797863-1-baijiaju@buaa.edu.cn>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,32 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 00:21:35 -0600, Jens Axboe wrote:
-> overlayfs copies the kiocb flags when it sets up a new kiocb to handle
-> a write, but it doesn't properly support dealing with the deferred
-> caller completions of the kiocb. This means it doesn't get the final
-> write completion value, and hence will complete the write with '0' as
-> the result.
+On Mon, Sep 25, 2023 at 05:17:41PM +0800, Jia-Ju Bai wrote:
+> In _dwc2_hcd_urb_enqueue(), "urb->hcpriv = NULL" is executed without 
+> holding the lock "hsotg->lock". In _dwc2_hcd_urb_dequeue():
 > 
-> We could support the caller completions in overlayfs, but for now let's
-> just disable them in the generated write kiocb.
+>     spin_lock_irqsave(&hsotg->lock, flags);
+>     ...
+> 	if (!urb->hcpriv) {
+> 		dev_dbg(hsotg->dev, "## urb->hcpriv is NULL ##\n");
+> 		goto out;
+> 	}
+>     rc = dwc2_hcd_urb_dequeue(hsotg, urb->hcpriv); // Use urb->hcpriv
+>     ...
+> out:
+>     spin_unlock_irqrestore(&hsotg->lock, flags);
 > 
-> [...]
+> When _dwc2_hcd_urb_enqueue() and _dwc2_hcd_urb_dequeue() are 
+> concurrently executed, the NULL check of "urb->hcpriv" can be executed
+> before "urb->hcpriv = NULL". After urb->hcpriv is NULL, it can be used 
+> in the function call to dwc2_hcd_urb_dequeue(), which can cause a NULL 
+> pointer dereference. 
 
-Applied to the vfs.fixes branch of the vfs/vfs.git tree.
-Patches in the vfs.fixes branch should appear in linux-next soon.
+Odd trailing spaces in your changelog text, is that intentional?
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+> 
+> To fix this possible bug, "urb->hcpriv = NULL" should be executed with
+> holding the lock "hsotg->lock".
+> 
+> Signed-off-by: Jia-Ju Bai <baijiaju@buaa.edu.cn>
+> ---
+>  drivers/usb/dwc2/hcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+> index 657f1f659ffa..35c7a4df8e71 100644
+> --- a/drivers/usb/dwc2/hcd.c
+> +++ b/drivers/usb/dwc2/hcd.c
+> @@ -4769,8 +4769,8 @@ static int _dwc2_hcd_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
+>  	if (qh_allocated && qh->channel && qh->channel->qh == qh)
+>  		qh->channel->qh = NULL;
+>  fail2:
+> -	spin_unlock_irqrestore(&hsotg->lock, flags);
+>  	urb->hcpriv = NULL;
+> +	spin_unlock_irqrestore(&hsotg->lock, flags);
+>  	kfree(qtd);
+>  fail1:
+>  	if (qh_allocated) {
+> -- 
+> 2.34.1
+> 
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+What commit id does this fix?
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+And how did you test this to verify it works properly?
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fixes
+And how was it found?
 
-[1/1] ovl: disable IOCB_DIO_CALLER_COMP
-      https://git.kernel.org/vfs/vfs/c/2d1b3bbc3dd5
+thanks,
+
+greg k-h
