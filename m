@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC7B7ACE5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584527ACE56
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbjIYCio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S231847AbjIYCiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbjIYCik (ORCPT
+        with ESMTP id S231872AbjIYCik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 24 Sep 2023 22:38:40 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB2A136
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:38:30 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59c0d329a8bso65663907b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:38:30 -0700 (PDT)
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581401A5
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:38:32 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59bebd5bdadso66411917b3.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:38:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695609509; x=1696214309; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695609511; x=1696214311; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JJbsnopL5cu7DbnphUxyfvgHw2IoJrSW0tHSHF1oQbU=;
-        b=Ztf+/RBK7/DfdKM716gDLwSs7CfJLsddLx3RMIR81Xu+HZvJj9IInORX4iMZfcGOv+
-         URdbHltuvT4vKu2lNMfIorJcL6Hfup+ZQEGIhkPhZfJ7g375YdTte/rUE7bVnYsvWHTx
-         p3IvWe3wS4zNA1ktV1a8uOvHsOJUc+mvG8HkIiX1XGAWu8pFqVGpZ9qhrK0sQQYq7QaQ
-         WHxNwVZ1zbKoqYNfVsVwksqfgXwXjHKhBunZF7hbmFQaMld8ttNKhE1B0F9iq2wIk/uu
-         g/j9UfejLRRR/7xNlnSRidbqBhxgr7Blc6gvI1nJonPZprtnuyYsVMfTuNWlW2NATbY2
-         o+nw==
+        bh=Q5XEvYirztCmygWgA/YyclPRF8/aR4iz+4trJcZQ1vs=;
+        b=Z1lzMyTdLTGVjUpL1AU94XTKABwqKLX7oujhYDXtiKUiHAmDO21DkkCpltRHJN3Y5b
+         qLYnoZ7T168q+GQmrOmHeeIMVt3lIdjpXRSTFmM2pHQYQrib8tYI3kOa6f/XiOut/L6L
+         ClBdoqzQ1nZD01VLXGEkCvT5geHHtIHgfBaXK7O7vBNQ6VDGZKilv9El695btJykonLV
+         +VMBkcYc4+TQOGce/KHaRM3fO0iOyUSSIpHiuFxJ9pa4vVxogiDN4WtO2ux1QIyy9c/d
+         da2ObZULoQ7oXARvW3oFDLAfoX71rrGTA92xHO1BC26HDNqlPjkLUqGDADklHKp+UHjK
+         jmxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695609509; x=1696214309;
+        d=1e100.net; s=20230601; t=1695609511; x=1696214311;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JJbsnopL5cu7DbnphUxyfvgHw2IoJrSW0tHSHF1oQbU=;
-        b=xHNTDMRCYA4qx0t+2XDadJALWYScMDMCAnP6SeBQ8LXzFuQC2hsvD/gOtfRSJHjAiP
-         L8ccJrEt7Yi2VtTY65yxNJj/nrvaYBcGGIcUGuMkm0hkzCxmeGiAj8O06/UKdxnMU9R0
-         pBQmlgY1B6Xjj8Cv5Qs3yIeZmP5S1yK4RW84DozrB292fC5NdPb0LFStfcy7TGtwvckF
-         lHKjg3+mU62q4404Tbe6cC0Y0pP/AZL3BCaAMhQuT15NGZH3aAeFKSq+aNUN7i2By7yA
-         TXt9je1hYOTO7WSETympOMqukqO3DB07UrpSZgg3PEw4FvutEjoxYwEgYJM8YMYrnBuz
-         w4rg==
-X-Gm-Message-State: AOJu0Yzrkvy/X/4WG48ZD/r4XDKqdpd8XpGDrfCLp8u5iVnGS6eiNq/U
-        +pojydbAvcqLIGKI1+1Gjw7q28u5BGE=
-X-Google-Smtp-Source: AGHT+IHEdvAHT1bH+ey90Nwlvx2NR/b9T3G43eoC61WsR2z3FZurWPVSOhy2dPnRIRlNZotV9PHkNg==
-X-Received: by 2002:a81:4958:0:b0:592:97c3:18d2 with SMTP id w85-20020a814958000000b0059297c318d2mr5260261ywa.15.1695609509188;
-        Sun, 24 Sep 2023 19:38:29 -0700 (PDT)
+        bh=Q5XEvYirztCmygWgA/YyclPRF8/aR4iz+4trJcZQ1vs=;
+        b=b/vkrw5U0X7cikOP12puC3gjrFQOmWUhB2vzTQrvqX3hS75MmeOKlrJi6fkLnZTm3c
+         F5MlBlMi9G+YcXkCwR+EGgpJ+q9342xFIhtmfo2YfI+I4h/rKR89wHV7WQ1ahnNoRqKS
+         GgxRU4QjjmrVgaVJoETDdLFNPOKDqZYPurF2UDQXkCooHTs+VNoY5v5ntZrsKNPp3MMV
+         euyw6fRWLR03qwv7n6O65X5uR+K/a5KXBcgsOUOE6vMaiYrQ8EQprv+Di4NtSIwJccGC
+         lUBCmrjqb/8/PgBWYStBiuZTRdPcnz879/qBEl0MQHVZQIP4Y5QeOiBmi4twdUZzkrZV
+         xyWQ==
+X-Gm-Message-State: AOJu0YxXt7sRM6N7fNGldWjtxOjHb7Lh2FElW5IL3oAImdfh97bkZAyp
+        Lkpx36EKQ7C01z4RmJRlB1jX6YF3XZE=
+X-Google-Smtp-Source: AGHT+IF0GHcs1mVP2hs9Qn4EFWSTl2IaQvlt9Ej6mQTI05TqIPT1Yd/nQgbjSvbJoEGgWE7w1u1eZg==
+X-Received: by 2002:a05:690c:3685:b0:59f:4c3a:711d with SMTP id fu5-20020a05690c368500b0059f4c3a711dmr5181430ywb.11.1695609510977;
+        Sun, 24 Sep 2023 19:38:30 -0700 (PDT)
 Received: from localhost ([2607:fb90:3eac:cd78:b6b5:ba0f:9e64:f2e1])
-        by smtp.gmail.com with ESMTPSA id i69-20020a819148000000b005869f734036sm2173971ywg.19.2023.09.24.19.38.28
+        by smtp.gmail.com with ESMTPSA id w62-20020a0ded41000000b005837633d9cbsm2147926ywe.64.2023.09.24.19.38.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Sep 2023 19:38:28 -0700 (PDT)
+        Sun, 24 Sep 2023 19:38:30 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v5 5/8] bitmap: replace _reg_op(REG_OP_RELEASE) with bitmap_clear()
-Date:   Sun, 24 Sep 2023 19:38:14 -0700
-Message-Id: <20230925023817.782509-6-yury.norov@gmail.com>
+Subject: [PATCH v5 6/8] bitmap: replace _reg_op(REG_OP_ISFREE) with find_next_bit()
+Date:   Sun, 24 Sep 2023 19:38:15 -0700
+Message-Id: <20230925023817.782509-7-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230925023817.782509-1-yury.norov@gmail.com>
 References: <20230925023817.782509-1-yury.norov@gmail.com>
@@ -73,7 +73,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_reg_op(REG_OP_RELEASE) duplicates bitmap_clear().
+_reg_op(REG_OP_ISFREE) can be trivially replaced with find_next_bit().
+Doing that opens room for potential small_const_nbits() optimization.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
@@ -81,18 +82,18 @@ Signed-off-by: Yury Norov <yury.norov@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/bitmap.c b/lib/bitmap.c
-index a463125560c3..4dba15f2e970 100644
+index 4dba15f2e970..9345a6ffe39d 100644
 --- a/lib/bitmap.c
 +++ b/lib/bitmap.c
-@@ -1333,7 +1333,7 @@ EXPORT_SYMBOL(bitmap_find_free_region);
-  */
- void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order)
+@@ -1352,7 +1352,7 @@ int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order)
  {
--	__reg_op(bitmap, pos, order, REG_OP_RELEASE);
-+	bitmap_clear(bitmap, pos, BIT(order));
- }
- EXPORT_SYMBOL(bitmap_release_region);
+ 	unsigned int len = BIT(order);
  
+-	if (!__reg_op(bitmap, pos, order, REG_OP_ISFREE))
++	if (find_next_bit(bitmap, pos + len, pos) < pos + len)
+ 		return -EBUSY;
+ 	bitmap_set(bitmap, pos, len);
+ 	return 0;
 -- 
 2.39.2
 
