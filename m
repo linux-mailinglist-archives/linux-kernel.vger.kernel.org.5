@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941D97AD50F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BDB7AD504
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjIYJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        id S231136AbjIYJ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbjIYJ4E (ORCPT
+        with ESMTP id S230114AbjIYJzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:56:04 -0400
+        Mon, 25 Sep 2023 05:55:55 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F324121
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDDD100
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:48 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJc-0008Ac-Ef; Mon, 25 Sep 2023 11:55:44 +0200
+        id 1qkiJc-0008Ar-NY; Mon, 25 Sep 2023 11:55:44 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJc-008q11-1g; Mon, 25 Sep 2023 11:55:44 +0200
+        id 1qkiJc-008q15-Ap; Mon, 25 Sep 2023 11:55:44 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJb-004dmo-Os; Mon, 25 Sep 2023 11:55:43 +0200
+        id 1qkiJc-004dms-1k; Mon, 25 Sep 2023 11:55:44 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Nishanth Menon <nm@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 38/40] soc/ti: smartreflex: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:55:29 +0200
-Message-Id: <20230925095532.1984344-39-u.kleine-koenig@pengutronix.de>
+        kernel@pengutronix.de
+Subject: [PATCH 39/40] soc/ti: wkup_m3_ipc: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:55:30 +0200
+Message-Id: <20230925095532.1984344-40-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1895; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=4d422s6IfK+PZd49xO16KIpO0P7Pb3ZoYCNlxGHe6UU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhqi4q+YX2/ODz50t5a28eJtr2XsnuzvYPbP DbLVwZkIoaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYagAKCRCPgPtYfRL+ TnvhB/9W+/ztDY/B6mFgKPRJGOLWPay5fz2LE+GwCJwYG3J+xWdj3UHzQ7CoOdzms8DROx2+OOv 7HBEsORfaLju3D+s0fk4eriQzpt6IF4tJ5gd7WPMwg1hzV91tXDZ/sUP36U5hXZgslSrWjAqr0G aGtXkA0O5XXpgZEXDtFs43B3FYypbG+11R7ZiToT+OELuJUbnuJNTywcHPimwT8dEXf6RdnRRUV VBwiwpzFkQdSEin4w1L9CrBck5ST1PQJ7EYguG1BkbLmVWkf1FPTIG3sbysqEyo/w2klJL8/TPw 6kLJR0m1jq5LiLk21/fKqs8Z0BpQDhMthlhA3qrjKFuMFaD/
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1865; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=uKW31zoDaSRnidHyxwgUspOOB3QVRh8Uu/IMjh6/dVw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhreqDzPwrtv2WQm2i+IxS/5UArlWfx0Rx+z c0iw41zTrGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYawAKCRCPgPtYfRL+ Tgj7B/sEJhCf+1WQJSVdnoeJx+FmTbUzIRWuDSgAgygIwuy13zVj7Ku/cIffjU3ntQqe4ybLY+3 oU4/yc7ndjFJ+5zLPHhetU84byJyVn7RArFqSKG9OdOTWP3YXELqmaQYmO7MZMMNo2ttNAoLsox ILAZEc4X/eUWLJ3voeH0ICDFS8xrPh9Kb7EwWZWZ2slwFMxh9DFW4kLF/H4WITAm/ezT8TglhxY IzuSMW1NCA3IRIilWP04/MPRZ/kSWpzzItf9r4jFtqGEAsPsyYG5ct8xPlhIFjBHZ7AcSaGKF1x dQdTNWpzC8dUmqKbNSAB/5qIV2xFv/ouz8ZyzCWyj4N1PWdv
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -71,39 +71,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/ti/smartreflex.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/soc/ti/wkup_m3_ipc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/ti/smartreflex.c b/drivers/soc/ti/smartreflex.c
-index 62b2f1464e46..d6219060b616 100644
---- a/drivers/soc/ti/smartreflex.c
-+++ b/drivers/soc/ti/smartreflex.c
-@@ -933,7 +933,7 @@ static int omap_sr_probe(struct platform_device *pdev)
+diff --git a/drivers/soc/ti/wkup_m3_ipc.c b/drivers/soc/ti/wkup_m3_ipc.c
+index 3aff106fc11a..6a1c6b34c414 100644
+--- a/drivers/soc/ti/wkup_m3_ipc.c
++++ b/drivers/soc/ti/wkup_m3_ipc.c
+@@ -713,7 +713,7 @@ static int wkup_m3_ipc_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int omap_sr_remove(struct platform_device *pdev)
-+static void omap_sr_remove(struct platform_device *pdev)
+-static int wkup_m3_ipc_remove(struct platform_device *pdev)
++static void wkup_m3_ipc_remove(struct platform_device *pdev)
  {
- 	struct device *dev = &pdev->dev;
- 	struct omap_sr *sr_info = platform_get_drvdata(pdev);
-@@ -945,7 +945,6 @@ static int omap_sr_remove(struct platform_device *pdev)
- 	pm_runtime_disable(dev);
- 	clk_unprepare(sr_info->fck);
- 	list_del(&sr_info->node);
+ 	wkup_m3_ipc_dbg_destroy(m3_ipc_state);
+ 
+@@ -723,8 +723,6 @@ static int wkup_m3_ipc_remove(struct platform_device *pdev)
+ 	rproc_put(m3_ipc_state->rproc);
+ 
+ 	m3_ipc_state = NULL;
+-
 -	return 0;
  }
  
- static void omap_sr_shutdown(struct platform_device *pdev)
-@@ -970,7 +969,7 @@ MODULE_DEVICE_TABLE(of, omap_sr_match);
+ static int __maybe_unused wkup_m3_ipc_suspend(struct device *dev)
+@@ -760,7 +758,7 @@ MODULE_DEVICE_TABLE(of, wkup_m3_ipc_of_match);
  
- static struct platform_driver smartreflex_driver = {
- 	.probe		= omap_sr_probe,
--	.remove         = omap_sr_remove,
-+	.remove_new     = omap_sr_remove,
- 	.shutdown	= omap_sr_shutdown,
- 	.driver		= {
- 		.name	= DRIVER_NAME,
+ static struct platform_driver wkup_m3_ipc_driver = {
+ 	.probe = wkup_m3_ipc_probe,
+-	.remove = wkup_m3_ipc_remove,
++	.remove_new = wkup_m3_ipc_remove,
+ 	.driver = {
+ 		.name = "wkup_m3_ipc",
+ 		.of_match_table = wkup_m3_ipc_of_match,
 -- 
 2.40.1
 
