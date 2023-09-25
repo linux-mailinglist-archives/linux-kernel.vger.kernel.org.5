@@ -2,232 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C0D7ACF82
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621897ACF84
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 07:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbjIYFfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 01:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S231946AbjIYFfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 01:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjIYFf3 (ORCPT
+        with ESMTP id S231925AbjIYFff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 01:35:29 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2125.outbound.protection.outlook.com [40.107.96.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EED6E8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 22:35:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F4PL1XIOSjmwoy6gdf7vyVsXuOmZuuMVKa6rTMK65C/5hWR17lJOKXNMJDLjFLEQYSsjZdm3XM+2yOyEKBlVmNAB0w+7e7R2SaiVbXjVaxWTK6jlaT1hSWbDlzMhZcfEU9wkGtzgcQtRXul2CerxKDb5HbVn8p2kbCp+JmEh5qwC5p7F6SJ5zI6VEgMZM/U3i9KzyItStvyedWAq1jua1INRDBMkhz7S+Zx7//kBRED6uR6ZXQZyEGxmVCQYzWLE0lr4cBnCvDbj4fUlkI+6GOlLgtkAcErhIdKQv5BYeqx6Qsgq4qlPuJpX41lz6gYzf/Fdnx2YIOj1oPnuEru3EA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6RETtGZR03y1MrVCKuHzhmdPWQgwDDdKkhQhCKpcJis=;
- b=SeamloV2ywC4ZVs+GX9xrLkeuschgpDoyEVAFmY//HndMHOVE/zP0jfTIq9pIv88qOB+N1oQIaX3nwftbPS1uAzMeIoeU0ZgYv2Kgnh5qWyAUsWwlzesRhnKPs8XH5ZhvGp4uVKIyEsfdwAvHg1DTjfi/Hq5JmPXFnoq3n2KrbTER1Y0X8QKWjd3mUWujHRpyuxR0XpPgY4iP0myiTYCODIj97szqaFQmq2Mu5BkiHw3e87VM93bFXSjunp0jUa6lUSZEHIdyQUW/Mqb7uDfXEtuee3nfvUxqUNvqLbHENYUrysQugstveyQ9yZmbe8kznygYw7Q0GmrDbBE3xik7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6RETtGZR03y1MrVCKuHzhmdPWQgwDDdKkhQhCKpcJis=;
- b=ZOGHFqKpF3FJlieJqjja92f/kGJo5tZ5t5RoTIZYt0VWejTL3D1jkUiVoT546mDhKk4nKv3Vkq+AXiwP68Y8frJgXTDRVJzQjY6obvEwIYlrHdctNm8taSeIFpaUstSNGoB0Y7tprxZdHPjiZQAeKNHE9DuewaQEhZfFNn/HkoU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SJ2PR01MB8101.prod.exchangelabs.com (2603:10b6:a03:4f6::10) by
- BL3PR01MB6964.prod.exchangelabs.com (2603:10b6:208:35b::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.28; Mon, 25 Sep 2023 05:35:15 +0000
-Received: from SJ2PR01MB8101.prod.exchangelabs.com
- ([fe80::d686:ac07:89b3:e724]) by SJ2PR01MB8101.prod.exchangelabs.com
- ([fe80::d686:ac07:89b3:e724%3]) with mapi id 15.20.6792.026; Mon, 25 Sep 2023
- 05:35:14 +0000
-Message-ID: <45a2d1c6-821e-d55f-f59f-c214a11e0df0@os.amperecomputing.com>
-Date:   Mon, 25 Sep 2023 11:05:03 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/2] KVM: arm64: timers: Save restore CVAL of a ptimer
- across guest entry and exits
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, Christoffer.Dall@arm.com,
-        eauger@redhat.com, miguel.luis@oracle.com,
-        darren@os.amperecomputing.com, scott@os.amperecomputing.com
-References: <20230904114218.590304-1-gankulkarni@os.amperecomputing.com>
- <20230904114218.590304-3-gankulkarni@os.amperecomputing.com>
- <86bkeadzf0.wl-maz@kernel.org>
- <ec322123-bfe7-6019-7f35-de326ee7b6c3@os.amperecomputing.com>
- <8634zben3d.wl-maz@kernel.org>
- <38722ba7-b7d9-368b-f946-b6c0c0a661b8@os.amperecomputing.com>
- <87v8bz52bq.wl-maz@kernel.org>
+        Mon, 25 Sep 2023 01:35:35 -0400
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6261E3;
+        Sun, 24 Sep 2023 22:35:28 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4053d53a1bfso44278465e9.1;
+        Sun, 24 Sep 2023 22:35:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695620126; x=1696224926;
+        h=content-transfer-encoding:autocrypt:subject:from:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ycf6Wya8ID6XmixPWSJ0vO/RRGDPjUVO7FYG5IN3BB4=;
+        b=SWdHUFVPNRfA6hQgaSnVn6lcyQpVp823siaCaS2m86iHRwXX29aK0HFKSD6iP3eZlw
+         tSWE96tz5MZ/Dx1XyeqH9QcN3oW90S+x3+seNwsISLAeBhVOZGvSKYtXfTHelRx4UQ5b
+         H6A3Ha+GqXsCw7yVdfMzWxHwj/qArp6I0JvWi0FGI37Y48UOFmfIiTd3CpdtZSWkZ6z0
+         DIFE6sVGFyEvWzWOJu0YShlsQ40Yh4iDDppdGJP19OuA0Vr3bkNwc7dEknrQkuXkmBry
+         jCJPUcEshX7VoWknOxlkvvAcAAaUfwuLVJrXkqqOUtMjkd04I14EAg5NsBq7CCynP/1b
+         llSw==
+X-Gm-Message-State: AOJu0Yy3THwC0ilwblNhFknH2DSWlBKeHBlDD4NePH9R/Cw/yORa8yAO
+        6agp1YQaYvi0CmmWd6GY3K3eSuMOrys=
+X-Google-Smtp-Source: AGHT+IEBiJpPI3V9L7bnJ0vKKLWADLc2B/KsUYrdQQriv4CldZCKNYGIcVx9fTl7Xu39XOEKuIMZjQ==
+X-Received: by 2002:adf:e288:0:b0:31f:e1b4:583d with SMTP id v8-20020adfe288000000b0031fe1b4583dmr4215607wri.56.1695620126427;
+        Sun, 24 Sep 2023 22:35:26 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id sd18-20020a170906ce3200b009a198078c53sm5753897ejb.214.2023.09.24.22.35.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Sep 2023 22:35:25 -0700 (PDT)
+Message-ID: <047d3c51-0a9e-4c3e-beef-625a7aa4f3c3@kernel.org>
+Date:   Mon, 25 Sep 2023 07:35:25 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Content-Language: en-US
-From:   Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-In-Reply-To: <87v8bz52bq.wl-maz@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, hmh@hmh.eng.br
+Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: WARNING at drivers/acpi/platform_profile.c:74 in
+ platform_profile_show()
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CY8PR12CA0065.namprd12.prod.outlook.com
- (2603:10b6:930:4c::9) To SJ2PR01MB8101.prod.exchangelabs.com
- (2603:10b6:a03:4f6::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR01MB8101:EE_|BL3PR01MB6964:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ba1edb9-6dfe-40e5-1311-08dbbd89312b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6KLQCm7xwVdmBWb0f8tOKuvZJ38yNdYtJ7T8/fzaG3TRUQuq1DyVkxxP8whDAXAv5P2AITJexD5yC66oZ6P7k3ApQrAICClGartWiDVDr2tuWkNIPRD9CR88lsH7F+geLn54ysjJZE8dX1mNODDPFxoftntpBKijdYPVvclQD06YbU+YgHLW2dAiYFOpZ/5iqXktwnqocPwBPJDQngDzwUrfSgUB32vovjUz243d+JKlzjDgq1uABtK+SPaJ1wbWKmXh/38f55c8SKGVVXp820zw5ZmvH3gk2ghwKiZ04SsuCYdnA7Cb3zjJtcALhbooOHOZogoeR/tIaNmmwpR/CQb/CTUt1AdVt6oAU4IzFgE/T+gMvXJy320+pv5sYRG7JmkEXe+Yp6P3j0XKBUT5MqBpJwi6mDK/qxp+eMVkcih764l7h0S7s+spVSyzwMib9Dv21nL1Z65KEuJj9wqupRhb0LBRAu0+0lfyOL1/Fq45X7fkgWHWBskxBaWvbb4/la3DvLj3ROKGzYpGw57ZH0W+VwFtwqsnvS9qjZ6mobwo46+niBhyxdUYO1qaweXQn765R3Pne1n3j6JeCk1Y8gPhDo787J4OtN/Rx6rCNCSUB3Xkg6+ciIdTmxGwsX0M
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR01MB8101.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(346002)(396003)(376002)(366004)(230922051799003)(1800799009)(451199024)(186009)(107886003)(2616005)(26005)(6506007)(6486002)(6512007)(53546011)(38100700002)(31696002)(86362001)(83380400001)(4326008)(8676002)(8936002)(41300700001)(6916009)(316002)(66946007)(66476007)(66556008)(5660300002)(31686004)(2906002)(6666004)(478600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWtvaFVySTlrODl4VCtZZEgreE5oYld2aE9aK1lQeDRXbGlWWXRTTldBVHo5?=
- =?utf-8?B?bFlOVllVdllqY1ZmL0dLT3BHTGUyMXJxYlk3TE5zYmZjaXNPcHFteEd6QVg4?=
- =?utf-8?B?VFZCM3RJZlpqeHV1c2lOQ2lraWg3RXFEc2k1ZUdMSm5FSzBtM1R2K3lSZHlX?=
- =?utf-8?B?d0VMb1dwOHB6NWgwN2p6ZEtYbHNORXViVENoeWJwR1hVTXo0MTNIQjNKOGQ3?=
- =?utf-8?B?QkhFN2Y1L3pvVStEbDRoQUZDbGplMUlYSTRLRVNEYi8vYzBwQXFtQWEyU1hI?=
- =?utf-8?B?Q2pIekVEZmo5Y0NlV3ZOanBUOS9RQ3U1VGVKY3dJOVNCNDB2TkhCT3FETXBk?=
- =?utf-8?B?cmZjNjkzcTFiMElLWENmWVloQ2lJUmV3dFZmems3UGFCcnVPUDBTYnE4V3ZG?=
- =?utf-8?B?NlhWRVZINHJBa3ZVaUFnMDlSTlJkSE4xby9sSFRRcU1XRDQxWlpBVFJXbGJ5?=
- =?utf-8?B?V3NqL2RoR0cwSStZaHVIalJUbE1TSTRpN2xuN1p3VTNKZ2xYS0poaXlmUDZR?=
- =?utf-8?B?TVVjRTJTcWhOaFhXNVhEZzZCL0h3NlZWRmRadlhQTHZsYzlHdnZrUytYT2px?=
- =?utf-8?B?SXlWeXZRa0c5YzEwdFBWeGlkbEU3YW1Kd1JzSkpzbzF5QnhIWFRqdGFDcXFx?=
- =?utf-8?B?R0FaZG1VYWM5TDRtVTEwU2F5NElmYi9xQnIzbGhOQzcrUzNpQlRHMXZGZ0Yr?=
- =?utf-8?B?bm5ZaWVMYTkxU0ZLOHg1ci9JMGlPMnk1Vzd1N1RUWXhjRDVjNDd3ZlpiQjQ5?=
- =?utf-8?B?NXBDbjhkeU9FY1VHcWx4ZHh5Q2VLNVlPZ2lrZ1VWUDJyM0VvZ3AxQXFDaUFO?=
- =?utf-8?B?aXp1VElGY2x4ckRsR3JDZ1hEK0pQci9VOHB1Q0kraFo1V1JjeHpLeXBOQ0xF?=
- =?utf-8?B?cDhiczQzYiszZTZhUllRb25EUytKcitpbFVOOUFuSGd1MTBndms3VjV5N1NU?=
- =?utf-8?B?UFRPRDJ6ZS9sSlJSRU1UM3kzZjBKVUFxUVJkdHYwZU5GcllUUVpJTEtjcnI1?=
- =?utf-8?B?YUEwT0lMK3ZMcXNrWEh0ZlNkUjNLNVEwZGdkYmlTelJucUFIOUJVNFlHWGE2?=
- =?utf-8?B?bGkzN1h5QTBpcmxMcG9oQktLMHV6MHgyT3hEaGdZejNkOFVjbUZQaGNteTRQ?=
- =?utf-8?B?dFRoVThJL1V3SDRnUkgxUmY0ek45cGZld1hxWHV1bFltMmFBRVB0dSs3RmFY?=
- =?utf-8?B?a3NuazFHN3gxRmxDSVZmQW1pdGhUdCtlSlA2cytWYXY2S3FrZVEzS2JEMHg4?=
- =?utf-8?B?K2w4MDREWFp4KzNucXBPcHJYK0tCK28vSk5STDlPcU9rS2oxMWZvZEQreU5U?=
- =?utf-8?B?R25nSkFpQ0VoQm9yZkdIR1gvT2p1WnFIaHltY2FRdDBJVzQ1RHljUFlTWmZu?=
- =?utf-8?B?aEh6Njdxb2pDK01mL0dkM3A1WW82Y3ExcEZXazRqR2JMY1BRd2UvRm4vMVlw?=
- =?utf-8?B?YkY5a1dpbGlYU05MZkVaTURNc04wNzFncjhOWlUyRFFYeTM2Z1lsYk5UQWxj?=
- =?utf-8?B?bzJHWW5JSW03OXZtb2RyYmYxdUdTUisxOEhBdTU5NDhZWFI5djkvbW9hZytV?=
- =?utf-8?B?eEtmcjQ3UVZtOGVNejNaSERKdzByUVdNYlhzYkQrOFA0MGhSTHZuNG56MWgz?=
- =?utf-8?B?TndFMTM2NERKQVZZYkxERVZrWkh0VWxUZ1VrK1duZ1I5Y2E2VS9zaWQzLzRz?=
- =?utf-8?B?WVExOXk5eWl5ZWdKSEpGWmcybXZSWG1WQTBra2pKNDNZdkxLMitxcmIrRWlt?=
- =?utf-8?B?WnZjdDZFWjVaczdMT0wzSVNRcjlndUhrT1pnVG5sMkgveDFDZHVodWhKM2xq?=
- =?utf-8?B?T1BEV0ZTWCtCc0VvenZNd0VNN0NoSzl0NFZzTEVzSkkrc09uY0pZZ2tiTUN1?=
- =?utf-8?B?bGg4KzdGMXBlTmZDZk1PT3MzdURLeVBreXQrQjNkMEZCMjlQQW5FQmVOblps?=
- =?utf-8?B?R1dtMWVTelVzL2lRNEQ5TEwwOEtZRTROaXlQaVphRFVIak9QRXh0UlRJeXZE?=
- =?utf-8?B?c2JwdnNzUTBMeVBvalkxMW90YVZXZFFvQzVXYXc1YXg2THZCYUxMcXM2WjNz?=
- =?utf-8?B?aHpIdzhFa09neDN4aGlDSWdlaEEzZlc3UXI0cnFVMGpJclBVUzBjU2szT01E?=
- =?utf-8?B?OHRWbVJKZmo2U2dlL2pJQmc5WHIzMm1Td25jYy9kMWNXSmxYU1M5RHhJT2gv?=
- =?utf-8?Q?nZxB90OXWxgVRTVTdGEm6W5O/+DisoSQxbQUkxwFZTkk?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ba1edb9-6dfe-40e5-1311-08dbbd89312b
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR01MB8101.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 05:35:14.1730
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: km0HLRBwXfNvdGhGcCgNWB5M76VAEza8yWr1nOAP9YV9di4Q4/mkoHv6qMZMxJ4zcqiOXc8zBsc87eiMd3H04Nbc3dZ+Q64ch/nZ1CR0o4N9W14bmkePoNv0PwZc0BLb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR01MB6964
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+according to logs, since 6.3 (up to 6.5.4 now), I repeatedly see:
+ > WARNING: CPU: 14 PID: 962 at drivers/acpi/platform_profile.c:74 
+platform_profile_show+0xb1/0x100 [platform_profile]
+ > Modules linked in: ccm michael_mic ...
+ > CPU: 14 PID: 962 Comm: power-profiles- Kdump: loaded Not tainted 
+6.5.4-6-default #1 openSUSE Tumbleweed (unreleased) 
+dd37106c593be78644bb80e3c1534d801bf4cb36
+ > Hardware name: LENOVO 21CRS0K83K/21CRS0K83K, BIOS R22ET60W (1.30 ) 
+02/09/2023
+ > RIP: 0010:platform_profile_show+0xb1/0x100 [platform_profile]
+ > Code: d0 a8 ...
+ > RSP: 0018:ffff9c1ac0b97db0 EFLAGS: 00010296
+ > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000008fc35be0
+ > RDX: 0000000000000000 RSI: ffff9c1ac0b97db4 RDI: ffffffffc0a8b0a0
+ > RBP: ffff8955ca540000 R08: ffff895b9f1ed180 R09: ffff895559ea1bc0
+ > R10: 00000000031a400e R11: 000000000003f680 R12: ffff895b9f1ed180
+ > R13: ffff9c1ac0b97e50 R14: 0000000000000001 R15: ffff9c1ac0b97ee8
+ > FS:  00007f71b0e71900(0000) GS:ffff895b9f100000(0000) 
+knlGS:0000000000000000
+ > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ > CR2: 00007fe402ea3400 CR3: 000000012004c000 CR4: 0000000000750ee0
+ > PKRU: 55555554
+ > Call Trace:
+ >  <TASK>
+ >  sysfs_kf_seq_show+0xab/0x100
+ >  seq_read_iter+0x123/0x480
+ >  vfs_read+0x1b8/0x300
 
-On 24-09-2023 03:18 pm, Marc Zyngier wrote:
-> On Tue, 19 Sep 2023 07:15:44 +0100,
-> Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
->>
->>
->>
->> On 18-09-2023 04:59 pm, Marc Zyngier wrote:
->>> On Fri, 15 Sep 2023 10:57:46 +0100,
->>> Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
->>>>
->>>> This patch did not work.
->>>> After adding changes as in below diff, it is started working.
->>>
->>> Thanks for looking into this.
->>>
->>>>
->>>> diff --git a/arch/arm64/kvm/hyp/vhe/switch.c
->>>> b/arch/arm64/kvm/hyp/vhe/switch.c
->>>> index b0b07658f77d..91d2cfb03e26 100644
->>>> --- a/arch/arm64/kvm/hyp/vhe/switch.c
->>>> +++ b/arch/arm64/kvm/hyp/vhe/switch.c
->>>> @@ -117,7 +117,7 @@ static void __activate_traps(struct kvm_vcpu *vcpu)
->>>>                           val = __vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2);
->>>>
->>>>                   if (map.direct_ptimer) {
->>>> -                       write_sysreg_s(val, SYS_CNTP_CVAL_EL0);
->>>> +                       write_sysreg_el0(val, SYS_CNTP_CVAL);
->>>
->>> Duh, of course. Silly me.
->>>
->>>>                           isb();
->>>>                   }
->>>>           }
->>>> @@ -161,8 +161,6 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
->>>>
->>>>           ___deactivate_traps(vcpu);
->>>>
->>>> -       write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
->>>> -
->>>>           if (has_cntpoff()) {
->>>>                   struct timer_map map;
->>>>                   u64 val, offset;
->>>> @@ -173,7 +171,7 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
->>>>                    * We're exiting the guest. Save the latest CVAL value
->>>>                    * to memory and apply the offset now that TGE is set.
->>>>                    */
->>>> -               val = read_sysreg_s(SYS_CNTP_CVAL_EL0);
->>>> +               val = read_sysreg_el0(SYS_CNTP_CVAL);
->>>>                   if (map.direct_ptimer == vcpu_ptimer(vcpu))
->>>>                           __vcpu_sys_reg(vcpu, CNTP_CVAL_EL0) = val;
->>>>                   if (map.direct_ptimer == vcpu_hptimer(vcpu))
->>>> @@ -182,12 +180,13 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
->>>>                   offset = read_sysreg_s(SYS_CNTPOFF_EL2);
->>>>
->>>>                   if (map.direct_ptimer && offset) {
->>>> -                       offset = read_sysreg_s(SYS_CNTPOFF_EL2);
->>>> -                       write_sysreg_s(val + offset, SYS_CNTP_CVAL_EL0);
->>>> +                       write_sysreg_el0(val + offset, SYS_CNTP_CVAL);
->>>>                           isb();
->>>>                   }
->>>>           }
->>>>
->>>> +       write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
->>>
->>> Why moving the HCR_EL2 update? I don't grok what it changes. Or is it
->>
->> This the line of code which flips the TGE and making timer cval ready
->> to handle the TGE flip is more safe way(avoids even corner case of
->> false interrupt triggers) than changing after the flipping?
-> 
-> That's pretty dubious. Do you actually see it firing on your HW?
-> 
->>
->>> that you end-up with spurious interrupts because your GIC is slow to
->>> retire interrupts that are transiently pending?
->>
->> IIUC, If there are any transient interrupts or asserted already,
->> anyway they will be handled when irq is unmasked.
-> 
-> That's the idea. But my question is whether you observe spurious
-> interrupts when not changing the ordering.
+It's:
+WARN_ON((profile < 0) || (profile >= ARRAY_SIZE(profile_names))))
 
-I tried with keeping the ordering (i.e flip TGE then change cval) and i 
-don't see any issue as such. IMO, it is better to have cval updated 
-before TGE flip, anyway either way works for us.
+So I put there one more print:
+dev_warn(dev, "profile=%d profile_get=%ps\n",
+          profile, cur_profile->profile_get);
 
-> 
-> Thanks,
-> 
-> 	M.
-> 
+and I see:
+: profile=-1883022368 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-1510173440 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-1510173440 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-966231712 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-1578420592 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-1578420592 profile_get=dytc_profile_get [thinkpad_acpi]
+: profile=-1578420592 profile_get=dytc_profile_get [thinkpad_acpi]
 
-Thanks,
-Ganapat
+where the profile values in hex are like:
+ffffffff8fc35be0
+ffffffffa5fc9500
+ffffffffc6687960
+
+Looking at simplicity of dytc_profile_get(), I wonder how that can happen.
+
+I also wonder about dev passed to dytc_profile_get() having empty name 
+(nothing before colon above)? Is that expected?
+
+Any ideas?
+
+thanks,
+-- 
+js
+suse labs
