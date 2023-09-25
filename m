@@ -2,237 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C547AD157
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828287AD18E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbjIYHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
+        id S230289AbjIYHXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjIYHVg (ORCPT
+        with ESMTP id S231816AbjIYHW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:21:36 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14BEC0;
-        Mon, 25 Sep 2023 00:21:28 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B888FF812;
-        Mon, 25 Sep 2023 07:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695626487;
+        Mon, 25 Sep 2023 03:22:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A1FCC1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695626519;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8mW/LhaMZ6C8T9Ul4CHk8qHTKhJA/foMq45GY45NOR0=;
-        b=ZlnkQHc60r6J3wd2dZP/cYKxILn0bxKYukv/OkkSmvgkE18IIjcfgpNU26e1xi/o4Nch67
-        oD6+c1pJkQkZ3sYg+Bht63SC/7Ncy7MmxImhrKsHPzByzIqWnONyDShI4i2RuC1LDB1SWb
-        /HaNVl60+WIY4MHmTJMm9MlJ53jPhbxlWA06cJT1xK0Y86w6FCyVbg3/I7BEihXLdBcwD8
-        lVhi+YO+I6wn61/EeCAdf/tQDGvBu/nqYUT+5cLPpmnbwQbe1MiDBfpAlgZRx2wua4A+JX
-        MY4f9+FEh5Q0hUyrUVnWceGbmiCKgpneO87BI53cvcJ4BCfOZByWUnmlMaR2Cw==
-Date:   Mon, 25 Sep 2023 09:21:22 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-Message-ID: <20230925092122.0b615f25@xps-13>
-In-Reply-To: <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-        <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
-        <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
-        <20230922174649.GA3320366-robh@kernel.org>
-        <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
-        <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
-        <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=gzztqiTccNd/WUIopmBC+PbliphbDEU0hH26bTuwFVE=;
+        b=JstlfAO3GcJ1DmIg11x9J54fmqC3CtU4Y04dyjk9KGbytqL8UjaSKJR1Ay8a+fcSwFZJSU
+        DS0i3880IwB7ZQjJuecXObygUvXmerRHuO/i5seq+Wt6jWFmJpFlQIM2yjJfNEhPSsay4P
+        jdERT4Y+VLoYpjFsH+OiIHiDUICxMjM=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-PCdRBHgWNq6mmCV6ZPuwTA-1; Mon, 25 Sep 2023 03:21:58 -0400
+X-MC-Unique: PCdRBHgWNq6mmCV6ZPuwTA-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-692b5134675so4358229b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:21:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695626517; x=1696231317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gzztqiTccNd/WUIopmBC+PbliphbDEU0hH26bTuwFVE=;
+        b=rxtJ4NRRsK5t0DCL0TG6p1GlzqwmbY03+9jFZjjzR0hqz67P/h1rg/xzFW2QKtC6Zy
+         Bqk8JK7pCWXHWyAiT02SOe0bayMLoUAXtzhhN00Za0JJd2o6uCz22t83CSb68CudhXae
+         yTVyUtdQ9yBiguZiaXRtQ2KfcfY6EVLCmCNtfgTGwORgUgMBjBZHlx88IBFm/TuW8kMF
+         8h4iynUKWS9yW5c761Lhv+itq35o867/QC4hLQYQFx9GTFI2lKjHnzmfsQAhGN15PYD+
+         H20Uv6IZhPfonYSIKXqiGYxDtyU42wmKpmV4NCYwz/T2h5SWCFX2B61TQatCBuvetCFk
+         TCIw==
+X-Gm-Message-State: AOJu0Yya+WynKWam8KGS7J7vPk4EHvc2ipQwu59GHILmejVjAMgvt6q3
+        sXxiA/OSVyOYnmrPgXXjV6TefQkjrpiyXIclWt1XXdxadgjZOTbPXxTXh7TtowwwqwAMn7Iru7Z
+        jifNW6mCQyo4oW3p2wbtrsOixx4f5PGFQqAddc939
+X-Received: by 2002:a05:6a20:f392:b0:14d:396e:6e1c with SMTP id qr18-20020a056a20f39200b0014d396e6e1cmr3937739pzb.28.1695626517216;
+        Mon, 25 Sep 2023 00:21:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGJGOJfpxHnsNy6HUSrcPHkZKwrs+s1jrli3TQ1B3bFrk79pIC+NE3vVlCSfd8E9+GPVWsiNkvel8RS82ZzTfM=
+X-Received: by 2002:a05:6a20:f392:b0:14d:396e:6e1c with SMTP id
+ qr18-20020a056a20f39200b0014d396e6e1cmr3937728pzb.28.1695626516919; Mon, 25
+ Sep 2023 00:21:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230828020021.2489641-1-yukuai1@huaweicloud.com> <20230828020021.2489641-4-yukuai1@huaweicloud.com>
+In-Reply-To: <20230828020021.2489641-4-yukuai1@huaweicloud.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Mon, 25 Sep 2023 15:21:45 +0800
+Message-ID: <CALTww2-5F=C5N6YZ-3weD9xSWhpT6Mx8NkaevfXZWqR6=Bwc4A@mail.gmail.com>
+Subject: Re: [PATCH -next v2 03/28] md: add new helpers to suspend/resume array
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
+        song@kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
+On Mon, Aug 28, 2023 at 10:04=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Advantages for new apis:
+>  - reconfig_mutex is not required;
+>  - the weird logical that suspend array hold 'reconfig_mutex' for
+>    mddev_check_recovery() to update superblock is not needed;
+>  - the specail handling, 'pers->prepare_suspend', for raid456 is not
+>    needed;
+>  - It's safe to be called at any time once mddev is allocated, and it's
+>    designed to be used from slow path where array configuration is change=
+d;
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 85 +++++++++++++++++++++++++++++++++++++++++++++++--
+>  drivers/md/md.h |  3 ++
+>  2 files changed, 86 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 7fa311a14317..6236e2e395c1 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -443,12 +443,22 @@ void mddev_suspend(struct mddev *mddev)
+>                         lockdep_is_held(&mddev->reconfig_mutex));
+>
+>         WARN_ON_ONCE(thread && current =3D=3D thread->tsk);
+> -       if (mddev->suspended++)
+> +
+> +       /* can't concurrent with __mddev_suspend() and __mddev_resume() *=
+/
+> +       mutex_lock(&mddev->suspend_mutex);
+> +       if (mddev->suspended++) {
+> +               mutex_unlock(&mddev->suspend_mutex);
+>                 return;
+> +       }
+> +
+>         wake_up(&mddev->sb_wait);
+>         set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+>         percpu_ref_kill(&mddev->active_io);
+>
+> +       /*
+> +        * TODO: cleanup 'pers->prepare_suspend after all callers are rep=
+laced
+> +        * by __mddev_suspend().
+> +        */
+>         if (mddev->pers && mddev->pers->prepare_suspend)
+>                 mddev->pers->prepare_suspend(mddev);
+>
+> @@ -459,14 +469,21 @@ void mddev_suspend(struct mddev *mddev)
+>         del_timer_sync(&mddev->safemode_timer);
+>         /* restrict memory reclaim I/O during raid array is suspend */
+>         mddev->noio_flag =3D memalloc_noio_save();
+> +
+> +       mutex_unlock(&mddev->suspend_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(mddev_suspend);
+>
+>  void mddev_resume(struct mddev *mddev)
+>  {
+>         lockdep_assert_held(&mddev->reconfig_mutex);
+> -       if (--mddev->suspended)
+> +
+> +       /* can't concurrent with __mddev_suspend() and __mddev_resume() *=
+/
+> +       mutex_lock(&mddev->suspend_mutex);
+> +       if (--mddev->suspended) {
+> +               mutex_unlock(&mddev->suspend_mutex);
+>                 return;
+> +       }
+>
+>         /* entred the memalloc scope from mddev_suspend() */
+>         memalloc_noio_restore(mddev->noio_flag);
+> @@ -477,9 +494,72 @@ void mddev_resume(struct mddev *mddev)
+>         set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>         md_wakeup_thread(mddev->thread);
+>         md_wakeup_thread(mddev->sync_thread); /* possibly kick off a resh=
+ape */
+> +
+> +       mutex_unlock(&mddev->suspend_mutex);
+>  }
+>  EXPORT_SYMBOL_GPL(mddev_resume);
+>
+> +void __mddev_suspend(struct mddev *mddev)
+> +{
+> +
+> +       /*
+> +        * hold reconfig_mutex to wait for normal io will deadlock, becau=
+se
+> +        * other context can't update super_block, and normal io can rely=
+ on
+> +        * updating super_block.
+> +        */
+> +       lockdep_assert_not_held(&mddev->reconfig_mutex);
+> +
+> +       mutex_lock(&mddev->suspend_mutex);
+> +
+> +       if (mddev->suspended) {
+> +               WRITE_ONCE(mddev->suspended, mddev->suspended + 1);
+> +               mutex_unlock(&mddev->suspend_mutex);
+> +               return;
+> +       }
+> +
+> +       percpu_ref_kill(&mddev->active_io);
+> +       wait_event(mddev->sb_wait, percpu_ref_is_zero(&mddev->active_io))=
+;
+> +
+> +       /*
+> +        * For raid456, io might be waiting for reshape to make progress,
+> +        * allow new reshape to start while waiting for io to be done to
+> +        * prevent deadlock.
+> +        */
+> +       WRITE_ONCE(mddev->suspended, mddev->suspended + 1);
 
-sjg@chromium.org wrote on Fri, 22 Sep 2023 13:51:14 -0600:
+It changes the order of setting suspended and checking active_io.
+suspended is used to stop I/O. Now it checks active_io first and then
+adds suspended, if the i/o doesn't stop, it looks like active_io can't
+be 0. So it will stuck at waiting active_io to be 0?
 
-> Hi Rob,
->=20
-> On Fri, 22 Sept 2023 at 13:43, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Sep 22, 2023 at 1:12=E2=80=AFPM Simon Glass <sjg@chromium.org> =
-wrote: =20
-> > >
-> > > Hi Rob,
-> > >
-> > > On Fri, 22 Sept 2023 at 11:46, Rob Herring <robh@kernel.org> wrote: =
-=20
-> > > >
-> > > > On Fri, Sep 22, 2023 at 11:01:18AM -0600, Simon Glass wrote: =20
-> > > > > Hi Rob,
-> > > > >
-> > > > > On Fri, 22 Sept 2023 at 10:00, Rob Herring <robh@kernel.org> wrot=
-e: =20
-> > > > > >
-> > > > > > On Thu, Sep 21, 2023 at 1:45=E2=80=AFPM Simon Glass <sjg@chromi=
-um.org> wrote: =20
-> > > > > > >
-> > > > > > > Binman[1] is a tool for creating firmware images. It allows y=
-ou to
-> > > > > > > combine various binaries and place them in an output file.
-> > > > > > >
-> > > > > > > Binman uses a DT schema to describe an image, in enough detai=
-l that
-> > > > > > > it can be automatically built from component parts, disassemb=
-led,
-> > > > > > > replaced, listed, etc.
-> > > > > > >
-> > > > > > > Images are typically stored in flash, which is why this bindi=
-ng is
-> > > > > > > targeted at mtd. Previous discussion is at [2] [3].
-> > > > > > >
-> > > > > > > [1] https://u-boot.readthedocs.io/en/stable/develop/package/b=
-inman.html
-> > > > > > > [2] https://lore.kernel.org/u-boot/20230821180220.2724080-3-s=
-jg@chromium.org/
-> > > > > > > [3] https://www.spinics.net/lists/devicetree/msg626149.html =
-=20
-> > > > > >
-> > > > > > You missed:
-> > > > > >
-> > > > > > https://github.com/devicetree-org/dt-schema/pull/110
-> > > > > >
-> > > > > > where I said: We certainly shouldn't duplicate the existing par=
-titions
-> > > > > > bindings. What's missing from them (I assume we're mostly talki=
-ng
-> > > > > > about "fixed-partitions" which has been around forever I think =
-(before
-> > > > > > me))?
-> > > > > >
-> > > > > > To repeat, unless there is some reason binman partitions confli=
-ct with
-> > > > > > fixed-partitions, you need to start there and extend it. From w=
-hat's
-> > > > > > posted here, it neither conflicts nor needs extending. =20
-> > > > >
-> > > > > I think at this point I am just hopelessly confused. Have you tak=
-en a
-> > > > > look at the binman schema? [1] =20
-> > > >
-> > > > Why do I need to? That's used for some tool and has nothing to do w=
-ith a
-> > > > device's DTB. However, I thought somewhere in this discussion you s=
-howed
-> > > > it under a flash device node. =20
-> > >
-> > > Yes, that is the intent (under a flash node).
-> > > =20
-> > > > Then I care because then it overlaps with
-> > > > what we already have for partitions. If I misunderstood that, then =
-just
-> > > > put your schema with your tool. Only users of the tool should care =
-about
-> > > > the tool's schema. =20
-> > >
-> > > OK. I believe that binman will fit into both camps, since its input is
-> > > not necessarily fully formed. E.g. if you don't specify the offset of
-> > > an entry, then it will be packed automatically. But the output is
-> > > fully formed, in that Binman now knows the offset so can write it to
-> > > the DT. =20
-> >
-> > I suppose it could take its own format as input and then write out
-> > something different for the "on the device" format (i.e.
-> > fixed-partitions). At least for the dynamic offsets, we may need
-> > something allowed for binman input, but not allowed on device. In
-> > general, there is support for partitions without addresses/offsets,
-> > but only for partitions that have some other way to figure that out
-> > (on disk partition info).
-> >
-> > There's also the image filename which doesn't really belong in the on
-> > device partitions. So maybe the input and output schemas should be
-> > separate. =20
->=20
-> OK, I'll focus on the output schema for now. I suspect this will be a
-> grey area though.
->=20
-> As an example, if you replace a binary in the firmware, Binman can
-> repack the firmware to make room, respecting the alignment and size
-> constraints. So these need to be in the output schema somehow.
->=20
-> > =20
-> > > > > I saw this file, which seems to extend a partition.
-> > > > >
-> > > > > Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-par=
-titions.yaml =20
-> > > >
-> > > > IIRC, that's a different type where partition locations are stored =
-in
-> > > > the flash, so we don't need location and size in DT. =20
-> > >
-> > > OK.
-> > > =20
-> > > > =20
-> > > > >
-> > > > > I was assuming that I should create a top-level compatible =3D "b=
-inman"
-> > > > > node, with subnodes like compatible =3D "binman,bl31-atf", for ex=
-ample.
-> > > > > I should use the compatible string to indicate the contents, righ=
-t? =20
-> > > >
-> > > > Yes for subnodes, and we already have some somewhat standard ones f=
-or
-> > > > "u-boot" and "u-boot-env". Though historically, "label" was used. =
-=20
-> > >
-> > > Binman has common properties for all entries, including "compress"
-> > > which sets the compression algorithm. =20
-> >
-> > I see no issue with adding that. It seems useful and something missing
-> > in the existing partition schemas. =20
->=20
-> OK I sent a patch with that.
->=20
-> > =20
-> > > So perhaps I should start by defining a new binman,bl31-atf which has
-> > > common properties from an "binman,entry" definition? =20
-> >
-> > I don't understand the binman prefix. The contents are ATF (or TF-A
-> > now). Who wrote it to the flash image is not relevant. =20
->=20
-> Are you suggesting just "atf-bl31", or "arm,atf-bl31" ? Or should we
-> change it to "tfa-bl31"?
+Best Regards
+Xiao
 
-I don't really understand the relationship with TF-A here. Can't we
-just have a kind of fixed-partitions with additional properties like
-the compression?
+> +
+> +       del_timer_sync(&mddev->safemode_timer);
+> +       /* restrict memory reclaim I/O during raid array is suspend */
+> +       mddev->noio_flag =3D memalloc_noio_save();
+> +
+> +       mutex_unlock(&mddev->suspend_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(__mddev_suspend);
+> +
+> +void __mddev_resume(struct mddev *mddev)
+> +{
+> +       lockdep_assert_not_held(&mddev->reconfig_mutex);
+> +
+> +       mutex_lock(&mddev->suspend_mutex);
+> +       WRITE_ONCE(mddev->suspended, mddev->suspended - 1);
+> +       if (mddev->suspended) {
+> +               mutex_unlock(&mddev->suspend_mutex);
+> +               return;
+> +       }
+> +
+> +       /* entred the memalloc scope from __mddev_suspend() */
+> +       memalloc_noio_restore(mddev->noio_flag);
+> +
+> +       percpu_ref_resurrect(&mddev->active_io);
+> +       wake_up(&mddev->sb_wait);
+> +
+> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+> +       md_wakeup_thread(mddev->thread);
+> +       md_wakeup_thread(mddev->sync_thread); /* possibly kick off a resh=
+ape */
+> +
+> +       mutex_unlock(&mddev->suspend_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(__mddev_resume);
+> +
+>  /*
+>   * Generic flush handling for md
+>   */
+> @@ -667,6 +747,7 @@ int mddev_init(struct mddev *mddev)
+>         mutex_init(&mddev->open_mutex);
+>         mutex_init(&mddev->reconfig_mutex);
+>         mutex_init(&mddev->sync_mutex);
+> +       mutex_init(&mddev->suspend_mutex);
+>         mutex_init(&mddev->bitmap_info.mutex);
+>         INIT_LIST_HEAD(&mddev->disks);
+>         INIT_LIST_HEAD(&mddev->all_mddevs);
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index fb3b123f16dd..1103e6b08ad9 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -316,6 +316,7 @@ struct mddev {
+>         unsigned long                   sb_flags;
+>
+>         int                             suspended;
+> +       struct mutex                    suspend_mutex;
+>         struct percpu_ref               active_io;
+>         int                             ro;
+>         int                             sysfs_active; /* set when sysfs d=
+eletes
+> @@ -811,6 +812,8 @@ extern void md_rdev_clear(struct md_rdev *rdev);
+>  extern void md_handle_request(struct mddev *mddev, struct bio *bio);
+>  extern void mddev_suspend(struct mddev *mddev);
+>  extern void mddev_resume(struct mddev *mddev);
+> +extern void __mddev_suspend(struct mddev *mddev);
+> +extern void __mddev_resume(struct mddev *mddev);
+>
+>  extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+>  extern void md_update_sb(struct mddev *mddev, int force);
+> --
+> 2.39.2
+>
 
-> > We already have some compatibles in use. We should reuse them if
-> > possible. Not sure about TF-A though. =20
->=20
-> OK.
->=20
-
-Also, I still don't understand the purpose of this schema. So binman
-generates an image, you want to flash this image and you would like the
-tool to generate the corresponding (partition) DT snippet automatically.
-Do I get this right? I don't get why you would need new compatibles for
-that.
-
-Thanks, Miqu=C3=A8l
