@@ -2,176 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBA77AD5F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213777AD5E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbjIYK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        id S231444AbjIYK3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjIYK3j (ORCPT
+        with ESMTP id S229475AbjIYK3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:29:39 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11058E;
-        Mon, 25 Sep 2023 03:29:32 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38P9Ublr021060;
-        Mon, 25 Sep 2023 10:29:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=bih0g4dycmaTUji9/KI8JMhRgvzpmPyPyMqn7Zh/OiY=;
- b=beMeHMNqqNdpWz92aNbYdlZLObpmjHkMPUvCHZ37t91TFF8raOrREJjN549iDKhTZSjI
- 2qipti3rfC3yM5rIdNgafhc1N7sICu3HRsgX/yAxrJtW4l43uDXtks+hfyO5D6Yls1gh
- tfhYqftaqEdI/Gsxh2vT7fhwPiyQefY/Is73BHeRwjUzVQgLl67/HJ5duauwST1l0iXx
- Fv8wpJFZwHEAd4wuKaYfJEkXav58eVbuue9nuUMMZbwTdkxb8jC4wwkgHqOH1kYbLYZq
- OMFk4DSHhkJpt4HxpKdBeL1aNAJD5q6rfXwMG4cIye5bHx1jmwrGLUKxQJcVJLPsJ3rI 8Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb5n88cw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 10:29:19 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38PASw7g031592
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Sep 2023 10:28:58 GMT
-Received: from hu-gokulsri-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 25 Sep 2023 03:28:53 -0700
-From:   Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-To:     <dmitry.baryshkov@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <jassisinghbrar@gmail.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
-        <quic_gokulsri@quicinc.com>
-Subject: [PATCH V3 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
-Date:   Mon, 25 Sep 2023 15:58:26 +0530
-Message-ID: <20230925102826.405446-4-quic_gokulsri@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230925102826.405446-1-quic_gokulsri@quicinc.com>
-References: <20230925102826.405446-1-quic_gokulsri@quicinc.com>
+        Mon, 25 Sep 2023 06:29:02 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9548E;
+        Mon, 25 Sep 2023 03:28:56 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvJvK2MGYz6D981;
+        Mon, 25 Sep 2023 18:26:37 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
+ 2023 11:28:53 +0100
+Date:   Mon, 25 Sep 2023 11:28:52 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Andreas Kemnade <andreas@kemnade.info>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <bcousson@baylibre.com>, <tony@atomide.com>,
+        <jean-baptiste.maneyrol@tdk.com>, <chenhuiz@axis.com>,
+        <andy.shevchenko@gmail.com>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: iio: imu: mpu6050: Add level shifter
+Message-ID: <20230925112852.00007d34@Huawei.com>
+In-Reply-To: <6db5b758-2ae6-46fb-a699-d73a2b98b4c2@linaro.org>
+References: <20230924222559.2038721-1-andreas@kemnade.info>
+        <20230924222559.2038721-2-andreas@kemnade.info>
+        <6db5b758-2ae6-46fb-a699-d73a2b98b4c2@linaro.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9XKjpmcXF0Eyltqx7WMTuzUffxYbBGXP
-X-Proofpoint-GUID: 9XKjpmcXF0Eyltqx7WMTuzUffxYbBGXP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_07,2023-09-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- clxscore=1015 malwarescore=0 mlxlogscore=890 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309250077
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the APCS, A53 PLL, cpu-opp-table nodes to set
-the CPU frequency at 800MHz (idle) or 1.008GHz.
+On Mon, 25 Sep 2023 08:54:08 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 40 +++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+> On 25/09/2023 00:25, Andreas Kemnade wrote:
+> > Found in ancient platform data struct:
+> > level_shifter: 0: VLogic, 1: VDD
+> > 
+> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > ---
+> >  .../devicetree/bindings/iio/imu/invensense,mpu6050.yaml         | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
+> > index 1db6952ddca5e..6aae2272fa15c 100644
+> > --- a/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/imu/invensense,mpu6050.yaml
+> > @@ -48,6 +48,8 @@ properties:
+> >  
+> >    mount-matrix: true
+> >  
+> > +  invensense,level-shifter: true  
+> 
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 9f13d2dcdfd5..56f3c5260bbd 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2023 The Linux Foundation. All rights reserved.
-  */
- 
-+#include <dt-bindings/clock/qcom,apss-ipq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
- #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
-@@ -36,6 +37,8 @@ CPU0: cpu@0 {
- 			reg = <0x0>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		CPU1: cpu@1 {
-@@ -44,6 +47,8 @@ CPU1: cpu@1 {
- 			reg = <0x1>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			clocks = <&apcs_glb APCS_ALIAS0_CORE_CLK>;
-+			operating-points-v2 = <&cpu_opp_table>;
- 		};
- 
- 		L2_0: l2-cache {
-@@ -54,6 +59,23 @@ L2_0: l2-cache {
- 		};
- 	};
- 
-+	cpu_opp_table: opp-table-cpu {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp-800000000 {
-+			opp-hz = /bits/ 64 <800000000>;
-+			opp-microvolt = <1100000>;
-+			clock-latency-ns = <200000>;
-+		};
-+
-+		opp-1008000000 {
-+			opp-hz = /bits/ 64 <1008000000>;
-+			opp-microvolt = <1100000>;
-+			clock-latency-ns = <200000>;
-+		};
-+	};
-+
- 	firmware {
- 		scm {
- 			compatible = "qcom,scm-ipq5018", "qcom,scm";
-@@ -181,6 +203,24 @@ v2m1: v2m@1000 {
- 			};
- 		};
- 
-+		apcs_glb: mailbox@b111000 {
-+			compatible = "qcom,ipq5018-apcs-apps-global",
-+				     "qcom,ipq6018-apcs-apps-global";
-+			reg = <0x0b111000 0x1000>;
-+			#clock-cells = <1>;
-+			clocks = <&a53pll>, <&xo_board_clk>, <&gcc GPLL0>;
-+			clock-names = "pll", "xo", "gpll0";
-+			#mbox-cells = <1>;
-+		};
-+
-+		a53pll: clock@b116000 {
-+			compatible = "qcom,ipq5018-a53pll";
-+			reg = <0x0b116000 0x40>;
-+			#clock-cells = <0>;
-+			clocks = <&xo_board_clk>;
-+			clock-names = "xo";
-+		};
-+
- 		timer@b120000 {
- 			compatible = "arm,armv7-timer-mem";
- 			reg = <0x0b120000 0x1000>;
--- 
-2.34.1
+Also this one isn't obvious - give it a description in the binding doc.
+
+I'm not sure of the arguement for calling it level shift in general.
+
+Jonathan
 
