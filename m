@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8377AD558
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B2B7AD55E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 12:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjIYKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 06:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S230466AbjIYKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 06:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjIYKHz (ORCPT
+        with ESMTP id S230461AbjIYKIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 06:07:55 -0400
+        Mon, 25 Sep 2023 06:08:31 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86931FC;
-        Mon, 25 Sep 2023 03:07:48 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvJSD1NTPz6K7TJ;
-        Mon, 25 Sep 2023 18:06:36 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED95CFA;
+        Mon, 25 Sep 2023 03:08:10 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvJSf1Frqz6K9P9;
+        Mon, 25 Sep 2023 18:06:58 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 25 Sep
- 2023 11:07:45 +0100
-Date:   Mon, 25 Sep 2023 11:07:45 +0100
+ 2023 11:08:07 +0100
+Date:   Mon, 25 Sep 2023 11:08:06 +0100
 From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To:     Jeongtae Park <jtp.park@samsung.com>
 CC:     Dan Williams <dan.j.williams@intel.com>,
@@ -40,11 +40,11 @@ CC:     Dan Williams <dan.j.williams@intel.com>,
         Junhyeok Im <junhyeok.im@samsung.com>,
         Jehoon Park <jehoon.park@samsung.com>,
         "Jeongtae Park" <jeongtae.park@gmail.com>
-Subject: Re: [PATCH v2 2/7] cxl/region: Fix a checkpatch warning
-Message-ID: <20230925110745.00001127@Huawei.com>
-In-Reply-To: <20230922113520.3298976-1-jtp.park@samsung.com>
-References: <CGME20230922113233epcas2p2cd57df10dde36b0da3b2fc5a916132e8@epcas2p2.samsung.com>
-        <20230922113520.3298976-1-jtp.park@samsung.com>
+Subject: Re: [PATCH v2 3/7] cxl/mem: Fix a checkpatch error
+Message-ID: <20230925110806.00001eec@Huawei.com>
+In-Reply-To: <20230922113533.3299401-1-jtp.park@samsung.com>
+References: <CGME20230922113247epcas2p1c22bf16ed783e3b4415ab3810758c109@epcas2p1.samsung.com>
+        <20230922113533.3299401-1-jtp.park@samsung.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
@@ -63,56 +63,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 20:35:20 +0900
+On Fri, 22 Sep 2023 20:35:33 +0900
 Jeongtae Park <jtp.park@samsung.com> wrote:
 
-> WARNING: else is not generally useful after a break or return
+> ERROR: spaces required around that '=' (ctx:WxV)
 > 
 > Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
 > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
-This one is a little ugly. I'd prefer to see the error
-condition remain out of line (vs the warning one)
-
-		if (!IS_ENABLED(CONFIG_CXL_REGION_INVALIDATION_TEST)) {
-			dev_err(&cxlr->dev,
-				"Failed ...");
-			return -ENOXIO
-		}
-
-		dev_warn_once(...
-
-		return 0;
-
-Or keep the else.
-
-Not that important though as code is small enough that less
-than ideal in / out of line doesn't matter that much to readability.
-
-Jonathan
-
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 > ---
->  drivers/cxl/core/region.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+>  drivers/cxl/cxlmem.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index e115ba382e04..1fc9d01c1ac0 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -133,11 +133,10 @@ static int cxl_region_invalidate_memregion(struct cxl_region *cxlr)
->  				&cxlr->dev,
->  				"Bypassing cpu_cache_invalidate_memregion() for testing!\n");
->  			return 0;
-> -		} else {
-> -			dev_err(&cxlr->dev,
-> -				"Failed to synchronize CPU cache state\n");
-> -			return -ENXIO;
->  		}
-> +
-> +		dev_err(&cxlr->dev, "Failed to synchronize CPU cache state\n");
-> +		return -ENXIO;
->  	}
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 79e99c873ca2..1ac3eb2be84f 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -183,7 +183,7 @@ struct cxl_mbox_cmd_rc {
+>  };
 >  
->  	cpu_cache_invalidate_memregion(IORES_DESC_CXL);
+>  static const
+> -struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] ={ CMD_CMD_RC_TABLE };
+> +struct cxl_mbox_cmd_rc cxl_mbox_cmd_rctable[] = { CMD_CMD_RC_TABLE };
+>  #undef C
+>  
+>  static inline const char *cxl_mbox_cmd_rc2str(struct cxl_mbox_cmd *mbox_cmd)
 
