@@ -2,365 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA417AD3FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D168A7AD3FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbjIYJAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
+        id S233133AbjIYJBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjIYJAL (ORCPT
+        with ESMTP id S232159AbjIYJBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:00:11 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E8D86100;
-        Mon, 25 Sep 2023 02:00:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC8A11424;
-        Mon, 25 Sep 2023 02:00:41 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A02E83F5A1;
-        Mon, 25 Sep 2023 02:00:00 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 09:59:58 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        devicetree@vger.kernel.org, Alan Ma <tech@biqu3d.com>,
-        Luke Harrison <bttuniversity@biqu3d.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rogerio Goncalves <rogerlz@gmail.com>,
-        Martin Botka <martin@biqu3d.com>
-Subject: Re: [PATCH 4/6] cpufreq: sun50i: Add H616 support
-Message-ID: <20230925095958.746d3f69@donnerap.manchester.arm.com>
-In-Reply-To: <20230904-cpufreq-h616-v1-4-b8842e525c43@somainline.org>
-References: <20230904-cpufreq-h616-v1-0-b8842e525c43@somainline.org>
-        <20230904-cpufreq-h616-v1-4-b8842e525c43@somainline.org>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Mon, 25 Sep 2023 05:01:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9117FAB;
+        Mon, 25 Sep 2023 02:00:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478E2C433C8;
+        Mon, 25 Sep 2023 09:00:53 +0000 (UTC)
+Message-ID: <71cadec5-06df-4490-9b06-e3af6bb43498@xs4all.nl>
+Date:   Mon, 25 Sep 2023 11:00:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to decoder
+ driver
+To:     Jeffrey Kardatzke <jkardatzke@google.com>
+Cc:     =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
+        <Yunfei.Dong@mediatek.com>,
+        "nicolas.dufresne@collabora.com" <nicolas.dufresne@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "frkoenig@chromium.org" <frkoenig@chromium.org>,
+        "stevecho@chromium.org" <stevecho@chromium.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        "nhebert@chromium.org" <nhebert@chromium.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "hsinyi@chromium.org" <hsinyi@chromium.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "nfraprado@collabora.com" <nfraprado@collabora.com>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-13-yunfei.dong@mediatek.com>
+ <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
+ <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl>
+ <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
+ <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl>
+ <CA+ddPcN6EaFERC60_Z_-ZmWzqyUEwxiDCZwt_U6Y-gpaAu76tA@mail.gmail.com>
+ <ff7aa575-c820-4dfa-853f-77438b8b149a@xs4all.nl>
+ <b7d661637eacbda3e83d192b1126fc3970c4f50d.camel@collabora.com>
+ <c3d14f64-bf04-46b9-ac7b-af7ef9014335@xs4all.nl>
+ <00302ac675af858eb11d8398f100921af806bc30.camel@mediatek.com>
+ <3e053387-4ba6-49bc-a59a-46854e0a7c26@xs4all.nl>
+ <CA+ddPcOaCKq5Nd_3eWwJ3=oAf=5t-Z+w51NqapXN8VBuvbTw3g@mail.gmail.com>
+Content-Language: en-US, nl
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <CA+ddPcOaCKq5Nd_3eWwJ3=oAf=5t-Z+w51NqapXN8VBuvbTw3g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Sep 2023 17:57:04 +0200
-Martin Botka <martin.botka@somainline.org> wrote:
-
-Hi Martin,
-
-> AllWinner H616 SoC has few revisions that support different list
-> of uV and frequencies.
+On 22/09/2023 21:17, Jeffrey Kardatzke wrote:
+> On Fri, Sep 22, 2023 at 1:44 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>>
+>> On 22/09/2023 05:28, Yunfei Dong (董云飞) wrote:
+>>> Hi Hans,
+>>>
+>>> Thanks for your help to give some good advice.
+>>> On Wed, 2023-09-20 at 09:20 +0200, Hans Verkuil wrote:
+>>>>
+>>>>>>>> In any case, using a control to switch to secure mode and using
+>>>> a control
+>>>>>>>> to convert a dmabuf fd to a secure handle seems a poor choice to
+>>>> me.
+>>>>>>>>
+>>>>>>>> I was wondering if it wouldn't be better to create a new
+>>>> V4L2_MEMORY_ type,
+>>>>>>>> e.g. V4L2_MEMORY_DMABUF_SECURE (or perhaps _DMABUF_OPTEE). That
+>>>> ensures that
+>>>>>>>> once you create buffers for the first time, the driver can
+>>>> switch into secure
+>>>>>>>> mode, and until all buffers are released again you know that the
+>>>> driver will
+>>>>>>>> stay in secure mode.
+>>>>>>>
+>>>>>>> Why do you think the control for setting secure mode is a poor
+>>>> choice?
+>>>>>>> There's various places in the driver code where functionality
+>>>> changes
+>>>>>>> based on being secure/non-secure mode, so this is very much a
+>>>> 'global'
+>>>>>>> setting for the driver. It could be inferred based off a new
+>>>> memory
+>>>>>>> type for the queues...which then sets that flag in the driver;
+>>>> but
+>>>>>>> that seems like it would be more fragile and would require
+>>>> checking
+>>>>>>> for incompatible output/capture memory types. I'm not against
+>>>> another
+>>>>>>> way of doing this; but didn't see why you think the proposed
+>>>> method is
+>>>>>>> a poor choice.
+>>>>>>
+>>>>>> I assume you are either decoding to secure memory all the time, or
+>>>> not
+>>>>>> at all. That's something you would want to select the moment you
+>>>> allocate
+>>>>>> the first buffer. Using the V4L2_MEMORY_ value would be the
+>>>> natural place
+>>>>>> for that. A control can typically be toggled at any time, and it
+>>>> makes
+>>>>>> no sense to do that for secure streaming.
+>>>>>>
+>>>>>> Related to that: if you pass a dmabuf fd you will need to check
+>>>> somewhere
+>>>>>> if the fd points to secure memory or not. You don't want to mix
+>>>> the two
+>>>>>> but you want to check that at VIDIOC_QBUF time.
+>>>>>>
+>>>>>> Note that the V4L2_MEMORY_ value is already checked in the v4l2
+>>>> core,
+>>>>>> drivers do not need to do that.
+>>>>>
+>>>>> Just to clarify a bit, and make sure I understand this too. You are
+>>>> proposing to
+>>>>> introduce something like:
+>>>>>
+>>>>>    V4L2_MEMORY_SECURE_DMABUF
+>>>>>
+>>>>> Which like V4L2_MEMORY_DMABUF is meant to import dmabuf, while
+>>>> telling the
+>>>>> driver that the memory is secure according to the definition of
+>>>> "secure" for the
+>>>>> platform its running on.
+>>>>>
+>>>>> This drivers also allocate secure SHM (a standard tee concept) and
+>>>> have internal
+>>>>> allocation for reconstruction buffer and some hw specific reference
+>>>> metadata. So
+>>>>> the idea would be that it would keep allocation using the dmabuf
+>>>> heap internal
+>>>>> APIs ? And decide which type of memory based on the memory type
+>>>> found in the
+>>>>> queue?
+>>>>
+>>>> Yes. Once you request the first buffer you basically tell the driver
+>>>> whether it
+>>>> will operate in secure or non-secure mode, and that stays that way
+>>>> until all
+>>>> buffers are freed. I think that makes sense.
+>>>>
+>>>
+>>> According to iommu's information, the dma operation for secure and non-
+>>> secure are the same, whether just need to add one memory type in v4l2
+>>> framework the same as V4L2_MEMORY_DMABUF? The dma operation in
+>>> videobuf2-dma-contig.c can use the same functions.
+>>
+>> So if I pass a non-secure dma fd to the capture queue of the codec, who
+>> will check that it can't write the data to that fd? Since doing so would
+>> expose the video. Presumably at some point the tee code will prevent that?
+>> (I sincerely hope so!)
 > 
-> Some revisions have the same NVMEM value and thus we have to check
-> the SoC revision from SMCCC to differentiate between them.
+> It is entirely the job of the TEE to prevent this. Nothing in the
+> kernel should allow exploitation of what happens in the TEE no matter
+> what goes on in the kernel
 > 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
->  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 149 ++++++++++++++++++++++++++++-----
->  1 file changed, 126 insertions(+), 23 deletions(-)
+>>
+>> Having a separate V4L2_MEMORY_DMABUF_SECURE type is to indicate to the
+>> driver that 1) it can expect secure dmabuf fds, 2) it can configure itself
+>> for that (that avoids using a control to toggle between normal and secure mode),
+>> and at VIDIOC_QBUF time it is easy for the V4L2 core to verify that the
+>> fd that is passed in is for secure memory. This means that mistakes by
+>> userspace are caught at QBUF time.
+>>
+>> Of course, this will not protect you (people can disable this check by
+>> recompiling the kernel), that still has to be done by the firmware, but
+>> it catches userspace errors early on.
+>>
+>> Also, while for this hardware the DMA operation is the same, that might
+>> not be the case for other hardware.
 > 
-> diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> index 4321d7bbe769..19c126fb081e 100644
-> --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> @@ -10,6 +10,7 @@
->  
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->  
-> +#include <linux/arm-smccc.h>
->  #include <linux/cpu.h>
->  #include <linux/module.h>
->  #include <linux/nvmem-consumer.h>
-> @@ -23,20 +24,94 @@
->  #define NVMEM_MASK	0x7
->  #define NVMEM_SHIFT	5
->  
-> +struct sunxi_cpufreq_soc_data {
-> +	int (*efuse_xlate)(u32 *versions, u32 *efuse, char *name, size_t len);
-> +	u8 ver_freq_limit;
-> +};
-> +
->  static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
->  
-> +static int sun50i_h616_efuse_xlate(u32 *versions, u32 *efuse, char *name, size_t len)
-> +{
-> +	int value = 0;
-> +	u32 speedgrade = 0;
-> +	u32 i;
-> +	int ver_bits = arm_smccc_get_soc_id_revision();
-> +
-> +	if (len > 4) {
-> +		pr_err("Invalid nvmem cell length\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	for (i = 0; i < len; i++)
-> +		speedgrade |= (efuse[i] << (i * 8));
-> +
-> +	switch (speedgrade) {
-> +	case 0x2000:
-> +		value = 0;
-> +		break;
-> +	case 0x2400:
-> +	case 0x7400:
-> +	case 0x2c00:
-> +	case 0x7c00:
-> +		if (ver_bits <= 1) {
-> +			/* ic version A/B */
-> +			value = 1;
-> +		} else {
-> +			/* ic version C and later version */
-> +			value = 2;
-> +		}
-> +		break;
-> +	case 0x5000:
-> +	case 0x5400:
-> +	case 0x6000:
-> +		value = 3;
-> +		break;
-> +	case 0x5c00:
-> +		value = 4;
-> +		break;
-> +	case 0x5d00:
-> +	default:
-> +		value = 0;
-> +	}
-> +	*versions = (1 << value);
-> +	snprintf(name, MAX_NAME_LEN, "speed%d", value);
-> +	return 0;
-> +}
-> +
-> +static int sun50i_h6_efuse_xlate(u32 *versions, u32 *efuse, char *name, size_t len)
-> +{
-> +	int efuse_value = (*efuse >> NVMEM_SHIFT) & NVMEM_MASK;
-> +
-> +	/*
-> +	 * We treat unexpected efuse values as if the SoC was from
-> +	 * the slowest bin. Expected efuse values are 1-3, slowest
-> +	 * to fastest.
-> +	 */
-> +	if (efuse_value >= 1 && efuse_value <= 3)
-> +		*versions = efuse_value - 1;
-> +	else
-> +		*versions = 0;
-> +
-> +	snprintf(name, MAX_NAME_LEN, "speed%d", *versions);
-> +	return 0;
-> +}
-> +
->  /**
->   * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
-> + * @soc_data: Struct containing soc specific data & functions
->   * @versions: Set to the value parsed from efuse
-> + * @name: Set to the name of speed
->   *
->   * Returns 0 if success.
->   */
-> -static int sun50i_cpufreq_get_efuse(u32 *versions)
-> +static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data *soc_data,
-> +				    u32 *versions, char *name)
->  {
->  	struct nvmem_cell *speedbin_nvmem;
->  	struct device_node *np;
->  	struct device *cpu_dev;
-> -	u32 *speedbin, efuse_value;
-> +	u32 *speedbin;
->  	size_t len;
->  	int ret;
->  
-> @@ -48,9 +123,9 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
->  	if (!np)
->  		return -ENOENT;
->  
-> -	ret = of_device_is_compatible(np,
-> -				      "allwinner,sun50i-h6-operating-points");
-> -	if (!ret) {
-> +	if (of_device_is_compatible(np, "allwinner,sun50i-h6-operating-points")) {
-> +	} else if (of_device_is_compatible(np, "allwinner,sun50i-h616-operating-points")) {
-> +	} else {
->  		of_node_put(np);
->  		return -ENOENT;
->  	}
-> @@ -66,17 +141,9 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
->  	if (IS_ERR(speedbin))
->  		return PTR_ERR(speedbin);
->  
-> -	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
-> -
-> -	/*
-> -	 * We treat unexpected efuse values as if the SoC was from
-> -	 * the slowest bin. Expected efuse values are 1-3, slowest
-> -	 * to fastest.
-> -	 */
-> -	if (efuse_value >= 1 && efuse_value <= 3)
-> -		*versions = efuse_value - 1;
-> -	else
-> -		*versions = 0;
-> +	ret = soc_data->efuse_xlate(versions, speedbin, name, len);
-> +	if (ret)
-> +		return ret;
->  
->  	kfree(speedbin);
->  	return 0;
-> @@ -84,25 +151,30 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
->  
->  static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  {
-> +	const struct of_device_id *match;
-> +	const struct sunxi_cpufreq_soc_data *soc_data;
->  	int *opp_tokens;
->  	char name[MAX_NAME_LEN];
->  	unsigned int cpu;
-> -	u32 speed = 0;
-> +	u32 version = 0;
->  	int ret;
->  
-> +	match = dev_get_platdata(&pdev->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +	soc_data = match->data;
-> +
->  	opp_tokens = kcalloc(num_possible_cpus(), sizeof(*opp_tokens),
->  			     GFP_KERNEL);
->  	if (!opp_tokens)
->  		return -ENOMEM;
->  
-> -	ret = sun50i_cpufreq_get_efuse(&speed);
-> +	ret = sun50i_cpufreq_get_efuse(match->data, &version, name);
->  	if (ret) {
->  		kfree(opp_tokens);
->  		return ret;
->  	}
->  
-> -	snprintf(name, MAX_NAME_LEN, "speed%d", speed);
-> -
->  	for_each_possible_cpu(cpu) {
->  		struct device *cpu_dev = get_cpu_device(cpu);
->  
-> @@ -117,6 +189,16 @@ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  			pr_err("Failed to set prop name\n");
->  			goto free_opp;
->  		}
-> +
-> +		if (soc_data->ver_freq_limit) {
-> +			opp_tokens[cpu] = dev_pm_opp_set_supported_hw(cpu_dev,
-> +								  &version, 1);
-
-This will overwrite opp_tokens[cpu] from the dev_pm_opp_set_prop_name()
-call above. As the DTs stand today, only one of them would actually
-provide OPPs, but still they reserve data structures and return discrete
-tokens, so all of them would need to be "put" at cleanup/removal.
-
-One solution I found is to pull in the two wrappers of
-dev_pm_opp_set_prop_name() and dev_pm_opp_set_supported_hw(), and combine them in one call.
-The dev_pm_opp_config struct can have multiple fields set, and
-dev_pm_opp_set_config() will try all of them.
-
-> +			if (opp_tokens[cpu] < 0) {
-> +				ret = opp_tokens[cpu];
-> +				pr_err("Failed to set hw\n");
-> +				goto free_opp;
-> +			}
-> +		}
->  	}
->  
->  	cpufreq_dt_pdev = platform_device_register_simple("cpufreq-dt", -1,
-> @@ -132,6 +214,8 @@ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  free_opp:
->  	for_each_possible_cpu(cpu)
->  		dev_pm_opp_put_prop_name(opp_tokens[cpu]);
-> +		if (soc_data->ver_freq_limit)
-> +			dev_pm_opp_put_supported_hw(opp_tokens[cpu]);
-
-See above, that does not make sense, since you "put" the same token again
-as in the dev_pm_opp_put_prop_name() call right before. Would be
-automatically solved by using only one dev_pm_opp_set_config() above.
-
->  	kfree(opp_tokens);
->  
->  	return ret;
-> @@ -140,12 +224,21 @@ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  static int sun50i_cpufreq_nvmem_remove(struct platform_device *pdev)
->  {
->  	int *opp_tokens = platform_get_drvdata(pdev);
-> +	const struct of_device_id *match;
-> +	const struct sunxi_cpufreq_soc_data *soc_data;
->  	unsigned int cpu;
->  
-> +	match = dev_get_platdata(&pdev->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +	soc_data = match->data;
-> +
->  	platform_device_unregister(cpufreq_dt_pdev);
->  
->  	for_each_possible_cpu(cpu)
->  		dev_pm_opp_put_prop_name(opp_tokens[cpu]);
-> +		if (soc_data->ver_freq_limit)
-> +			dev_pm_opp_put_supported_hw(opp_tokens[cpu]);
->  
->  	kfree(opp_tokens);
->  
-> @@ -160,8 +253,18 @@ static struct platform_driver sun50i_cpufreq_driver = {
->  	},
->  };
->  
-> +static const struct sunxi_cpufreq_soc_data sun50i_h616_data = {
-> +	.efuse_xlate = sun50i_h616_efuse_xlate,
-> +	.ver_freq_limit = true,
-
-As hinted above, the framework allows for both to be tried, and will do
-the right thing depending on what the DT provides, so there is no need for
-this flag.
-
-Cheers,
-Andre
-
-> +};
-> +
-> +static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
-> +	.efuse_xlate = sun50i_h6_efuse_xlate,
-> +};
-> +
->  static const struct of_device_id sun50i_cpufreq_match_list[] = {
-> -	{ .compatible = "allwinner,sun50i-h6" },
-> +	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
-> +	{ .compatible = "allwinner,sun50i-h616", .data = &sun50i_h616_data },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, sun50i_cpufreq_match_list);
-> @@ -197,8 +300,8 @@ static int __init sun50i_cpufreq_init(void)
->  		return ret;
->  
->  	sun50i_cpufreq_pdev =
-> -		platform_device_register_simple("sun50i-cpufreq-nvmem",
-> -						-1, NULL, 0);
-> +		platform_device_register_data(NULL, "sun50i-cpufreq-nvmem",
-> +						-1, match, sizeof(*match));
->  	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
->  	if (ret == 0)
->  		return 0;
+> That's a really good point. So one of the other models that is used
+> for secure video decoding is to send the encrypted buffer into the
+> video decoder directly (i.e. V4L2_MEMORY_MMAP) and then also send in
+> all the corresponding crypto parameters (i.e. algorithm, IV,
+> encryption pattern, etc.). Then the video driver internally does the
+> decryption and decode in one operation.  That's not what we want to
+> use here for Mediatek; but I've done other integrations that work that
+> way (that was for VAAPI [1], not V4L2...but there are other ARM
+> implementations that do operate that way).  So if we end up requiring
+> V4L2_MEMORY_DMABUF_SECURE to indicate secure mode and enforce it on
+> output+capture, that'll close off other potential solutions in the
+> future.
 > 
+> Expanding on your point about DMA operations being different on
+> various hardware, that also makes me think a general check for this in
+> v4l2 code may also be limiting. There are various ways secure video
+> pipelines are done, so leaving these checks up to the individual
+> drivers that implement secure video decode may be more pragmatic. If
+> there's a generic V4L2 _CID_SECURE_MODE control, that makes it more
+> general for how drivers can handle secure video decode.
+
+No, using a control for this is really wrong.
+
+The reason why I want it as a separate memory type is that that is
+what you use when you call VIDIOC_REQBUFS, and that ioctl is also
+when things are locked down in a driver. As long as no buffers have
+been allocated, you can still change formats, parameters, etc. But
+once buffers are allocated, most of that can't be changed, since
+changing e.g. the format would also change the buffer sizes.
+
+It also locks down who owns the buffers by storing the file descriptor.
+This prevents other processes from hijacking the I/O streaming, only
+the owner can stream buffers.
+
+So it is a natural point in the sequence for selecting secure
+buffers.
+
+If you request V4L2_MEMORY_DMABUF_SECURE for the output, then the
+capture side must also use DMABUF_SECURE. Whether or not you can
+use regular DMABUF for the output side and select DMABUF_SECURE
+on the capture side is a driver decision. It can be useful to
+support this for testing the secure capture using regular video
+streams (something Nicolas discussed as well), but it depends on
+the hardware whether you can use that technique.
+
+Regards,
+
+	Hans
+
+> 
+> [1] - https://github.com/intel/libva/blob/master/va/va.h#L2177
+> 
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>>>
+>>> Best Regards,
+>>> Yunfei Dong
+>>>
+>>
 
