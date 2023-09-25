@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8757AD9B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFC57AD9B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbjIYOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 10:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        id S232099AbjIYOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjIYOG1 (ORCPT
+        with ESMTP id S229584AbjIYOHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 10:06:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A418BC0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:06:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87208C433C8;
-        Mon, 25 Sep 2023 14:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695650781;
-        bh=z+beOv8eP8i270vZ1KGKwTfsMp2RfL6DAYL5zKJa3/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MG32E4D4v6lLAVuXEpIB0vGfmaXdid2BgKg/yfGteT0SAlvD/+tl/NWbfdW2wbqq6
-         eO8lAvso0JbMOjcKr3Z4ZKmomaScWlzWun6AWg9kIK/BMlEj6vYruZwA41b/cqbX9R
-         lls3NzvHM1USHU/uhE1FszvWEz5ZGOAiEUp5tQhXZJ/0nBr2ygi3bpMiYk53uHqUnF
-         0XnAVdpzLOGgC9nKlOV5agNM3wcH59ka2pivMJLD/H5aBJbuNau5NkASuklgK77834
-         klvPEiJbjd8Kg+h7egHmthYazXTXyfnr/DLaF6J76m+d1lENd4oaHHa8bYV/jvQqln
-         N0+6fybY3WkEw==
-Date:   Mon, 25 Sep 2023 16:06:18 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     wangweidong.a@awinic.com
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
-        herve.codina@bootlin.com, shumingf@realtek.com,
-        ryans.lee@analog.com, 13916275206@139.com,
-        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
-        povik+lin@cutebit.org, harshit.m.mogalapalli@oracle.com,
-        arnd@arndb.de, yijiangtao@awinic.com, yang.lee@linux.alibaba.com,
-        liweilei@awinic.com, u.kleine-koenig@pengutronix.de,
-        colin.i.king@gmail.com, trix@redhat.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 4/7] ASoC: codecs: Add code for bin parsing compatible
- with aw87390
-Message-ID: <ZRGT2oLQaJBVVYFH@finisterre.sirena.org.uk>
-References: <20230919105724.105624-1-wangweidong.a@awinic.com>
- <20230919105724.105624-5-wangweidong.a@awinic.com>
+        Mon, 25 Sep 2023 10:07:17 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E513C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:11 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81f079fe73so7392335276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695650830; x=1696255630; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pbeInWKlUN3Z2QQBrR4UtpzNoToZLCsYpJRewAj23h8=;
+        b=u6KT1EOy4DnS7okQTzXwROIFx2P8jddoRYL+AKF9JeJKCFdlFeZ1mz8ZmqzNoLjtKA
+         1ux1WoOTPuvTMB1EZXr982mOOOxj89bC+SNRrFWtB6IMGJwqLENeWovlgeyBmFmLK5Kl
+         GzP9/9gPBmw3qe50jgBsnCdJg93PAeo1LkNWWoCoZwsfW/YBQKL6nG8xgTgC9N0Yvgrf
+         Mcb/Xn4/3CZlxmfxiFXkTA5rCT4l6YY5lLu92g5buyRh0nSGfFdFdKu7aeR65y04P0YM
+         aS7BAVKv+jRpsxdkT9SRanDPGkqXjNIYAVkKMWI72p9C2PCNq1cUtjir5+H0mLLdK53n
+         q/Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695650830; x=1696255630;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pbeInWKlUN3Z2QQBrR4UtpzNoToZLCsYpJRewAj23h8=;
+        b=mCEafJOJI+PGwKE2vf+SwwIXk5/IKTLR27/+zxEQo6d76N5AkWz9qAH8HjH/mxv4hX
+         bzWxzCAnXp2BLx9UHx11XOC7aGNXnN2eDilvUc3GGoDpnJNG8DzhRXgYdy2jdLkam1Cl
+         4jKxVJqVdJvj30GLEaP4T18gq4OsoUIMAswIXJT/XdQtwP2FCn+boYSmVzWXlxq1NV3H
+         oUnIFGHy0UKJum2ulo9HShRi9sQOIxmg2Li1YMgsZMRherjNtLYHscSGFi7MEVrKyIXC
+         TLMFZarTCuY3SeeaU1J8V3KdyinvnAUznqcW+irLM7wkyWIrNK2H0Uyk/ZRlXYaS1fkt
+         X+EQ==
+X-Gm-Message-State: AOJu0YxVzpsOUZP0h5/JmhOE7Ce1gNadGzEjQ6x6VL2f9+8IrYmPHT22
+        6Ji8AgAfbh3haCqhsrNOsT40WqZ1aaXdzda7Io4PMkLwSWsSCfokW1Q=
+X-Google-Smtp-Source: AGHT+IGybh6b+QMCWVSNtS3PoG9odUy0INJ8lN7t0nCkj2GqRCzX4hr4FBHQ6scP86ZT8zt2NFX8jVlVz6abd2tcvGs=
+X-Received: by 2002:a25:ce4c:0:b0:d80:9ef:928e with SMTP id
+ x73-20020a25ce4c000000b00d8009ef928emr5922448ybe.33.1695650830416; Mon, 25
+ Sep 2023 07:07:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QFIK27TUvqKWMvSN"
-Content-Disposition: inline
-In-Reply-To: <20230919105724.105624-5-wangweidong.a@awinic.com>
-X-Cookie: HELLO, everybody, I'm a HUMAN!!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230921203426.638262-1-beanhuo@iokpp.de>
+In-Reply-To: <20230921203426.638262-1-beanhuo@iokpp.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 25 Sep 2023 16:06:34 +0200
+Message-ID: <CAPDyKFqN9xASjqJWmjtkTGdYEG0AauMzCVkR7VJ10Va0oF-B4w@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
+ eMMC Q2J54A
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
+        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 21 Sept 2023 at 22:35, Bean Huo <beanhuo@iokpp.de> wrote:
+>
+> From: Bean Huo <beanhuo@micron.com>
+>
+> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
+> operation be allowed only after a write has occurred. Otherwise, the
+> cache flush command or subsequent commands will time out.
+>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Co-developed-by: Rafael Beims <rafael.beims@toradex.com>
+> Cc: stable@vger.kernel.org
+> ---
+> Changelog:
+>
+> v2--v3:
+>     1. Set card->written_flag in mmc_blk_mq_issue_rq().
+> v1--v2:
+>     1. Add Rafael's test-tag, and Co-developed-by.
+>     2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
+> ---
+>  drivers/mmc/core/block.c  | 4 ++++
+>  drivers/mmc/core/mmc.c    | 5 +++++
+>  drivers/mmc/core/quirks.h | 7 ++++---
+>  include/linux/mmc/card.h  | 2 ++
+>  4 files changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 3a8f27c3e310..14d0dc7942de 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2387,6 +2387,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>                                 ret = mmc_blk_cqe_issue_rw_rq(mq, req);
+>                         else
+>                                 ret = mmc_blk_mq_issue_rw_rq(mq, req);
+> +
+> +                       if (host->card->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH &&
 
---QFIK27TUvqKWMvSN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please add an inline helper function for this in
+drivers/mmc/core/card.h, along with the others.
 
-On Tue, Sep 19, 2023 at 06:57:21PM +0800, wangweidong.a@awinic.com wrote:
-> From: Weidong Wang <wangweidong.a@awinic.com>
->=20
-> Add aw87390 compatible code to the aw88395_lib.c file
-> so that it can parse aw87390's bin file
-> Modify the function return value
+[...]
 
-This breaks an x86 allmodconfig build:
-
-/build/stage/linux/sound/soc/codecs/aw88395/aw88395.c: In function =E2=80=
-=98aw88395_prof
-ile_info=E2=80=99:
-/build/stage/linux/sound/soc/codecs/aw88395/aw88395.c:199:21: error: too fe=
-w arg
-uments to function =E2=80=98aw88395_dev_get_prof_name=E2=80=99
-  199 |         prof_name =3D aw88395_dev_get_prof_name(aw88395->aw_pa, cou=
-nt);
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from /build/stage/linux/sound/soc/codecs/aw88395/aw88395.c=
-:17:
-/build/stage/linux/sound/soc/codecs/aw88395/aw88395_device.h:184:5: note: d=
-eclar
-ed here
-  184 | int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, =
-char=20
-**prof_name);
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~
-
---QFIK27TUvqKWMvSN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmURk8wACgkQJNaLcl1U
-h9AbHAf9GUfsbOtVMPrTo9cIihIM3OVqHie4TXTSEVdAf9Lg9U2Z9NDs92Cbjc9N
-7uisNTtQA6NMvc1UAYTYm7R2yRyHiaJRkW8gYmh2opw7WZgO7nbMAchxGMGvZjH8
-huc1lVOvgxbdcRnaZYG4RA8l4htTrMQTD2P+8fMmWQNW16d/xn+1/q0baZ/v8KWJ
-lAHGTem14Ry7ocS3WxxCJRrCYIp98a7SbyL3t0EbFHFFZM4JQ019PwaI7poDXRTx
-CeQmqsUQwnBwqSDCF+pFl15TEmlXEC7QFPm9B+zGjRN+TLD2ilsT3XgJfDfs9tn5
-u7FBcRLo6DeHIqOKu41HCAOkMVenfw==
-=xBek
------END PGP SIGNATURE-----
-
---QFIK27TUvqKWMvSN--
+Kind regards
+Uffe
