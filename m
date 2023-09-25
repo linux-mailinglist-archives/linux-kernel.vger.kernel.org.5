@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CDF7AD7D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E187AD7DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 14:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbjIYMTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 08:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
+        id S231354AbjIYMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 08:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbjIYMTB (ORCPT
+        with ESMTP id S231395AbjIYMTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 08:19:01 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24F1106
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:18:54 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3231dff4343so1582106f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 05:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695644333; x=1696249133; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QpHP0gjZZ+jc1OAptTHEyzuPC8yYPxjo1qi8MGdPaIY=;
-        b=DnwKPmdYB4qo1hQkqy3sakSiILAshNdmn2LaBg/xbt+Kwfx4DhR6YTZLHRGVWKwB77
-         pfRfIpg98sBIS2oe3wCFHeFFUKD1MD7zt5+85V2kTYmIjG0e01KgndKXCz4UXfCS77ZW
-         tyaO0dWWXVRPvAMskKl70jyO1EVlvyZDrmo6+gmMLm/cXv/8Bsc2/SrfvzCEt38wYNGx
-         0HGkX+iNstFBxq2bDlV08OrArrl3IXVBXgZuFlHGwLABK+YpaNk84FAhBl5SRJ34oAFC
-         3qi3ikr/faKLMEa1qoQkOWdg7d8ojnFpRiT8yxKUysn4OeXefKP0vrUK8FPNmpqsPDTU
-         Yh5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695644333; x=1696249133;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QpHP0gjZZ+jc1OAptTHEyzuPC8yYPxjo1qi8MGdPaIY=;
-        b=i0043KvD5mqAEnrBNiizED5jb14D3TfHJN4Wu/h3p28Np6Er6bsWsC3aAgq2v1hYuk
-         4rHaPcBuIsT5/Tzlh0bnD6L0mn4JLoux9Kp8GKDkEeUHSHEVqf4isyLShDGSPA1/+nS5
-         Kk4nFfSFIAonnUizP4lNQYoDq/3/9fDHYnt4PjTYkrKyDatJZi+IYIDJJ1pnEB6g9ESy
-         BpJZzZPWpJSDYwg5dUSAeIWDFa9waRCvBPhHECSkrgzBLvAnDZ2BYtAf70ieVB4bQlM9
-         Cgd1kaAxNMGldg7xlaXUae4ObWZGdATYJVSaopYpHjIeHNSE7TDwVaDu9GYjVISw5bLc
-         FDRQ==
-X-Gm-Message-State: AOJu0YzC1PQfpZLJy1q8qf3BUgrrsflfybST+i9g8pCAcsbI6VBnXYvd
-        AbcP/BJ5qNNVC3K/S/E9yjEZXg==
-X-Google-Smtp-Source: AGHT+IHrPi2LM0A+JOTQ15e6//++oAczdtZHV4J+jHAxcEA4WLivxDqwPJrKvih9F9TC8lgmR2L8pQ==
-X-Received: by 2002:a05:6000:1e18:b0:323:2288:40ef with SMTP id bj24-20020a0560001e1800b00323228840efmr3530120wrb.14.1695644333441;
-        Mon, 25 Sep 2023 05:18:53 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n3-20020a05600c3b8300b004053a6b8c41sm10408693wms.12.2023.09.25.05.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 05:18:53 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 15:18:50 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Umang Jain <umang.jain@ideasonboard.com>
-Cc:     linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrien Thierry <athierry@redhat.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v11 1/5] staging: vc04_services: vchiq_arm: Add new bus
- type and device type
-Message-ID: <62363da5-39c4-40f2-bfca-fed182845eb8@kadam.mountain>
-References: <20230913195354.835884-1-umang.jain@ideasonboard.com>
- <20230913195354.835884-2-umang.jain@ideasonboard.com>
- <e815e9d6-450c-4dcf-b562-f302dd9e22e5@kadam.mountain>
- <700e11e4-057d-78ed-8b52-dd2df97198bf@ideasonboard.com>
+        Mon, 25 Sep 2023 08:19:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BDD11D;
+        Mon, 25 Sep 2023 05:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695644342; x=1727180342;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=apuZ6KIw6/15l+S9Oovo3skg9jLDHcGg6Hd8Ts4y2co=;
+  b=f3bWwCjGPi+VS/sIOXmxXihxsAS3oVbznC1tmR9/vmQwW5U8m6AbEJO6
+   Oia9kMBK0lfEuGu9cRXUU0aeJdYiTUfRSj5PzqnAm9Zy7mhTNlsIqwVZn
+   o1oAxINhUJ5A0ir59KwFfN1gB1bwZO/V88G+6IN9S61H1Z3GydJlvt4eE
+   XA6nGtgAihShkmMI/uPbbwMrOE7SIfhrPaL0AQ2WjrwFDz150OwivS4eE
+   Gx5hcbtmHa9XfRW5rFrxU6vhUntHfBHl6NoUZOkL4E5YHnYksaFN0YoVU
+   ltH2PTqe9VRjShGHjTtbFJ0OciJvdrA7QNd84yry2wCii6MIdp/rxZzKT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="383996204"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="383996204"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 05:19:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="748329392"
+X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
+   d="scan'208";a="748329392"
+Received: from stamengx-mobl1.ger.corp.intel.com ([10.249.32.149])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 05:18:58 -0700
+Date:   Mon, 25 Sep 2023 15:18:56 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Fernando Eckhardt Valle (FIPT)" <fevalle@ipt.br>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "hmh@hmh.eng.br" <hmh@hmh.eng.br>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "ibm-acpi-devel@lists.sourceforge.net" 
+        <ibm-acpi-devel@lists.sourceforge.net>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: Re: [PATCH v4] platform/x86: thinkpad_acpi: sysfs interface to
+ auxmac
+In-Reply-To: <CPVP152MB50535F32391251E1AF02FA00D8FFA@CPVP152MB5053.LAMP152.PROD.OUTLOOK.COM>
+Message-ID: <cc894b7-8513-cd0-f59d-7647541da92@linux.intel.com>
+References: <20230921143622.72387-1-fevalle@ipt.br> <946285e6-6064-4084-a1a7-f5ba7dea3e7d@linux.intel.com> <CPVP152MB50535F32391251E1AF02FA00D8FFA@CPVP152MB5053.LAMP152.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <700e11e4-057d-78ed-8b52-dd2df97198bf@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 07:57:51PM +0530, Umang Jain wrote:
-> Hi Dan,
-> 
-> On 9/14/23 12:25 PM, Dan Carpenter wrote:
-> > On Thu, Sep 14, 2023 at 01:23:50AM +0530, Umang Jain wrote:
-> > > +static int vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
-> > > +{
-> > > +	if (dev->bus == &vchiq_bus_type &&
-> > > +	    strcmp(dev_name(dev), drv->name) == 0)
-> > > +		return 1;
-> > > +
-> > > +	return 0;
-> > > +}
-> > I was not going to comment on this, because it's unfair to nitpick a
-> > v11 patch...  But since you're going to have to redo it anyway, could
-> > you make this function bool and change it to return true/false.
-> > 
-> > static bool vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
-> 
-> Perhaps the return value can be true/false, but return type should always be
-> 'int'
-> 
+On Fri, 22 Sep 2023, Fernando Eckhardt Valle (FIPT) wrote:
 
-Oh.  Sorry, I didn't look carefully.
+> Thanks for the feedback again!
+> 
+> > Okay, I wasn't expecting this change as this relies on the nul termination
+> > by strscpy() since the original buffer does not have one but the #
+> > character there. But I guess it isn't harmful either.
+> Yes, precisely because strscpy() put the 'nul terminator' I thought it 
+> would be ok. In the tests I did, everything always worked fine too.
 
-Btw, you don't need to tip toe around telling me I'm wrong.  Just say
-"That won't compile, dummy."  I'm a big boy, and I can admit when I make
-mistakes.  ;)
+It was a bit unorthodox way to take advantage of the way strscpy() works
+but like I said, doesn't look harmful.
 
-regards,
-dan carpenter
+> >  AUXMAC_START is an offset ??? It should be AUXMAC_LEN.
+>
+> I thought that since the string 'disabled' has length 8, then I would 
+> use AUXMAC_START which is defined as 9 , because that way strscpy would 
+> copy the 8 characters of 'disabled' + the nul terminator. Wouldn't that 
+> be correct? Or would it be better to use AUXMAC_LEN which is defined to 
+> 12? 
+
+strscpy() is takes the size of the destination:
+
+ * @size: Size of destination buffer
+
+...so please use AUXMAC_LEN.
+
+In anycase, "disabled" as the source is itself nul-terminated so strscpy() 
+won't copy beyond its length.
+
+
+-- 
+ i.
 
