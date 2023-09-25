@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BEE7AD1A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D028B7AD198
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjIYH0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        id S229846AbjIYH0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 03:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjIYH0e (ORCPT
+        with ESMTP id S229582AbjIYHZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:26:34 -0400
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A726AFF;
-        Mon, 25 Sep 2023 00:26:25 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.190.70.223])
-        by mail-app3 (Coremail) with SMTP id cC_KCgBHT8PENRFlRNjOAA--.43102S4;
-        Mon, 25 Sep 2023 15:24:58 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Alexander Aring <alex.aring@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Harry Morris <harrymorris12@gmail.com>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ieee802154: ca8210: Fix a potential UAF in ca8210_probe
-Date:   Mon, 25 Sep 2023 15:24:22 +0800
-Message-Id: <20230925072423.24772-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgBHT8PENRFlRNjOAA--.43102S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4fGFW5ury5Cry8tw48tFb_yoW8XFy3pa
-        1Y9a4UJryjqF4j9a18A3y8Zry5C3W7Ka4ruF95K39ruas8ZryxKan7AFW3JF4rArWUCa1f
-        A3yUAw15urs5AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0HBmUNoyAhBwAOsN
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        Mon, 25 Sep 2023 03:25:58 -0400
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDFEC6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 00:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1695626746; x=1698218746;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=93rMHGvdAme1AeDl4W450VE6qEyXJijOqeQ0sdUbEmo=;
+        b=Kf770LpR2EWWK+zoF5BbBVNUMCl8QgfWoNZQ2JqRoQS/mtRhLaGx/PVgKf1gFcbj
+        Xlg2DfQQvx+rcjaOgvRehp8sP1/MoIvvJ5deXSshcsp5wPhgDsWZ3G7cIa74XsiP
+        Ji66/RQwF8TLPEIMmiuBBCMLIIerIdANgAe+IaMlTw8=;
+X-AuditID: ac14000a-6d65670000001e37-4e-651135f9e358
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 60.5C.07735.9F531156; Mon, 25 Sep 2023 09:25:45 +0200 (CEST)
+Received: from lws-moog.phytec.de (172.25.0.11) by Berlix.phytec.de
+ (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 25 Sep
+ 2023 09:25:45 +0200
+From:   Yannic Moog <y.moog@phytec.de>
+Subject: [PATCH v2 0/2] Add support for the phyGATE-Tauri-L IoT Gateway
+Date:   Mon, 25 Sep 2023 09:25:17 +0200
+Message-ID: <20230925-tauri_upstream_support-v2-0-62a6dfc48e31@phytec.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAN41EWUC/3WNQQ6CMBBFr0Jmbc20BCmuvIchpLaDdCE000Ikh
+ Ltbce3yveS/v0Ek9hThWmzAtPjopzGDOhVgBzM+SXiXGRSqErXSIpmZfTeHmJjMq4tzCBMngbo
+ 3Vsm6khVCHgem3r+P8L3NPPiYJl6Pn0V+7S/ZoPyXXKRAQa5Ee3F9rZvHLQxrInt2BO2+7x+r/
+ I8rvAAAAA==
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <upstream@lists.phytec.de>,
+        Yannic Moog <y.moog@phytec.de>,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnkeLIzCtJLcpLzFFi42JZI8nAo/vTVDDVoGW9lcWaveeYLKZs2sFu
+        Mf/IOVaLh1f9LVZN3cli0ffiIbPFoeYDTBabHl9jtej6tZLZ4vKuOWwWrXuPsFv83b6JxeLF
+        FnGL7nfqDnweO2fdZffYtKqTzePOtT1sHpuX1Hv0d7ewetz5sZTRY+O7HUwe/X8NPD5vkgvg
+        jOKySUnNySxLLdK3S+DK2LhmM3vBTvaKvXOqGxg72boYOTkkBEwkVjzazQRiCwksYZJ4s8+i
+        i5ELyH7EKHH41RGwBJuAisTjF/dYQWxhAXeJthdfWLoYOThYBFQlVnZVg4R5BTwlbm/7ywZh
+        C0qcnPkErIRZQFNi/S59kDCzgLzE9rdzmEHGSwh8ZpT42NTPBOKICLxgkjg27QcriMMscJlR
+        4vf7NewQ1wlLtC+6BXWdrMSL871QcXmJaedeM0PYoRJHNq1mmsAoOAvJ8lkIy2chWb6AkXkV
+        o1BuZnJ2alFmtl5BRmVJarJeSuomRlBkiTBw7WDsm+NxiJGJg/EQowQHs5II769nfKlCvCmJ
+        lVWpRfnxRaU5qcWHGKU5WJTEee/3MCUKCaQnlqRmp6YWpBbBZJk4OKUaGEOjv5r5ct+9y/k1
+        WuBhuOurIJcZz7eHeEz/tYBnf0vqvLsxbWJrDPvuuMU5HF913N6qaluddjaP7ALDnK+PZZdl
+        vS98ddLOXUdnl2bE0bvrZ2lP6BSoDnysGZw77eTRo187U1gEj5e27DT51t35nmWSgvJZH9kp
+        Xqk6phpe70MmVqYYXftro8RSnJFoqMVcVJwIAD2Wg2KaAgAA
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,43 +82,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If of_clk_add_provider() fails in ca8210_register_ext_clock(),
-it calls clk_unregister() to release priv->clk and returns an
-error. However, the caller ca8210_probe() then calls ca8210_remove(),
-where priv->clk is freed again in ca8210_unregister_ext_clock(). In
-this case, a use-after-free may happen in the second time we call
-clk_unregister().
+The phyGATE-Tauri-L is a SBC that uses the phyCORE-i.MX8MM SoM, but has
+a different carrier board.
+This series adds support for the board and most of its interfaces.
+Notably, RS485 support is missing.
 
-Fix this by nulling priv->clk after the first clk_unregister(). Also
-refine the pointer checking in ca8210_unregister_ext_clock().
-
-Fixes: ded845a781a5 ("ieee802154: Add CA8210 IEEE 802.15.4 device driver")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Yannic Moog <y.moog@phytec.de>
 ---
- drivers/net/ieee802154/ca8210.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes in v2:
+- change license of tauri devicetree file.
+- fix devicetree style issues, no functional change
 
-diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/ca8210.c
-index aebb19f1b3a4..1d545879c000 100644
---- a/drivers/net/ieee802154/ca8210.c
-+++ b/drivers/net/ieee802154/ca8210.c
-@@ -2760,6 +2760,7 @@ static int ca8210_register_ext_clock(struct spi_device *spi)
- 	ret = of_clk_add_provider(np, of_clk_src_simple_get, priv->clk);
- 	if (ret) {
- 		clk_unregister(priv->clk);
-+		priv->clk = NULL;
- 		dev_crit(
- 			&spi->dev,
- 			"Failed to register external clock as clock provider\n"
-@@ -2780,7 +2781,7 @@ static void ca8210_unregister_ext_clock(struct spi_device *spi)
- {
- 	struct ca8210_priv *priv = spi_get_drvdata(spi);
- 
--	if (!priv->clk)
-+	if (IS_ERR_OR_NULL(priv->clk))
- 		return
- 
- 	of_clk_del_provider(spi->dev.of_node);
+---
+Yannic Moog (2):
+      dt-bindings: arm: fsl: add phyGATE-Tauri-L board
+      arm64: dts: freescale: add phyGATE-Tauri i.MX 8M Mini Support
+
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   4 +-
+ arch/arm64/boot/dts/freescale/Makefile             |   1 +
+ .../boot/dts/freescale/imx8mm-phygate-tauri-l.dts  | 489 +++++++++++++++++++++
+ 3 files changed, 493 insertions(+), 1 deletion(-)
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230828-tauri_upstream_support-08fac2175150
+
+Best regards,
 -- 
-2.17.1
+Yannic Moog <y.moog@phytec.de>
 
