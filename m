@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2D87ADC52
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8757AD9B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 16:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjIYPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
+        id S230436AbjIYOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 10:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbjIYPu3 (ORCPT
+        with ESMTP id S229584AbjIYOG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:50:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38C7CF1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:48:49 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695656928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nIxg/Ujz545pz1uUk69VdG7hAbXi7YxGHlSiBDExfco=;
-        b=cwKuH7UHAWvwZUJXR1Lg1hIyKppXvQ8bGNN6CIcvVo1KLyXw/zKMHWHQH8tSe5DPrKbmyr
-        AXeHF9NLlhhF4sOJRbiTtGHS3j/LY7ZAQa2wKcE8nP5Qjrh6Jy0q3hLHohl9CYDCD4DYRt
-        B2ry7GeBKZgKeZ5O9Gqz29IyjIykdExP2yKMIZ9K1eUdkdUDWC64abXOnRgEU8XkV4GVhI
-        YDCt9s2uM5ofoX+uE0LU5gBpVsjdGb1X4JIYrxM6hM6NYqr6I9U1Hhohe28xMYa7Zjeyq0
-        THmTfFyN87bdL2SmSQ6jHfPHVENmdCzXvs8UpnUir8Emjsq4Y1nti0j+NB2XWw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695656928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nIxg/Ujz545pz1uUk69VdG7hAbXi7YxGHlSiBDExfco=;
-        b=lN+JgiMYFuPX8AEASevQMSklh5h+a5SPgjL1BLvcupYaPU7zyUh0jF6GNY5rSoUJmrIuKq
-        6NjZVUxonRMtfWDw==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 12/30] x86/microcode/intel: Reuse
- intel_cpu_collect_info()
-In-Reply-To: <20230921104220.GHZQweDKyaJmkYdt4f@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.530637507@linutronix.de>
- <20230921104220.GHZQweDKyaJmkYdt4f@fat_crate.local>
-Date:   Mon, 25 Sep 2023 12:47:16 +0200
-Message-ID: <87zg1afs23.ffs@tglx>
+        Mon, 25 Sep 2023 10:06:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A418BC0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 07:06:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87208C433C8;
+        Mon, 25 Sep 2023 14:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695650781;
+        bh=z+beOv8eP8i270vZ1KGKwTfsMp2RfL6DAYL5zKJa3/k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MG32E4D4v6lLAVuXEpIB0vGfmaXdid2BgKg/yfGteT0SAlvD/+tl/NWbfdW2wbqq6
+         eO8lAvso0JbMOjcKr3Z4ZKmomaScWlzWun6AWg9kIK/BMlEj6vYruZwA41b/cqbX9R
+         lls3NzvHM1USHU/uhE1FszvWEz5ZGOAiEUp5tQhXZJ/0nBr2ygi3bpMiYk53uHqUnF
+         0XnAVdpzLOGgC9nKlOV5agNM3wcH59ka2pivMJLD/H5aBJbuNau5NkASuklgK77834
+         klvPEiJbjd8Kg+h7egHmthYazXTXyfnr/DLaF6J76m+d1lENd4oaHHa8bYV/jvQqln
+         N0+6fybY3WkEw==
+Date:   Mon, 25 Sep 2023 16:06:18 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     wangweidong.a@awinic.com
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
+        herve.codina@bootlin.com, shumingf@realtek.com,
+        ryans.lee@analog.com, 13916275206@139.com,
+        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
+        povik+lin@cutebit.org, harshit.m.mogalapalli@oracle.com,
+        arnd@arndb.de, yijiangtao@awinic.com, yang.lee@linux.alibaba.com,
+        liweilei@awinic.com, u.kleine-koenig@pengutronix.de,
+        colin.i.king@gmail.com, trix@redhat.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 4/7] ASoC: codecs: Add code for bin parsing compatible
+ with aw87390
+Message-ID: <ZRGT2oLQaJBVVYFH@finisterre.sirena.org.uk>
+References: <20230919105724.105624-1-wangweidong.a@awinic.com>
+ <20230919105724.105624-5-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QFIK27TUvqKWMvSN"
+Content-Disposition: inline
+In-Reply-To: <20230919105724.105624-5-wangweidong.a@awinic.com>
+X-Cookie: HELLO, everybody, I'm a HUMAN!!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,49 +63,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21 2023 at 12:42, Borislav Petkov wrote:
 
-> On Tue, Sep 12, 2023 at 09:58:02AM +0200, Thomas Gleixner wrote:
->>  static int collect_cpu_info(int cpu_num, struct cpu_signature *csig)
->
-> You can get rid of that silly wrapper too and use
-> intel_collect_cpu_info() in the function pointer assignment directly.
->
-> Diff ontop:
->
-> ---
->
-> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-> index 4066dd3734ba..581ecfbaf134 100644
-> --- a/arch/x86/include/asm/cpu.h
-> +++ b/arch/x86/include/asm/cpu.h
-> @@ -75,7 +75,7 @@ extern __noendbr void cet_disable(void);
->  
->  struct cpu_signature;
->  
-> -void intel_collect_cpu_info(struct cpu_signature *sig);
-> +void intel_collect_cpu_info(int unused, struct cpu_signature *sig);
+--QFIK27TUvqKWMvSN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Eew. That's a function exposed to code outside of microcode and just
-grows that unused argument for no value and you obviously forgot to
-fixup the extern callsite :)
-  
-> diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
-> index 051b7956d4fd..b3753025cd4a 100644
-> --- a/arch/x86/kernel/cpu/microcode/internal.h
-> +++ b/arch/x86/kernel/cpu/microcode/internal.h
-> @@ -30,7 +30,7 @@ struct microcode_ops {
->  	 * See also the "Synchronization" section in microcode_core.c.
->  	 */
->  	enum ucode_state (*apply_microcode)(int cpu);
-> -	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
-> +	void (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
->  	void (*finalize_late_load)(int result);
+On Tue, Sep 19, 2023 at 06:57:21PM +0800, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+>=20
+> Add aw87390 compatible code to the aw88395_lib.c file
+> so that it can parse aw87390's bin file
+> Modify the function return value
 
-Making this void makes sense, but that's a separate change.
+This breaks an x86 allmodconfig build:
 
-Thanks,
+/build/stage/linux/sound/soc/codecs/aw88395/aw88395.c: In function =E2=80=
+=98aw88395_prof
+ile_info=E2=80=99:
+/build/stage/linux/sound/soc/codecs/aw88395/aw88395.c:199:21: error: too fe=
+w arg
+uments to function =E2=80=98aw88395_dev_get_prof_name=E2=80=99
+  199 |         prof_name =3D aw88395_dev_get_prof_name(aw88395->aw_pa, cou=
+nt);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /build/stage/linux/sound/soc/codecs/aw88395/aw88395.c=
+:17:
+/build/stage/linux/sound/soc/codecs/aw88395/aw88395_device.h:184:5: note: d=
+eclar
+ed here
+  184 | int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, =
+char=20
+**prof_name);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-        tglx
+--QFIK27TUvqKWMvSN
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmURk8wACgkQJNaLcl1U
+h9AbHAf9GUfsbOtVMPrTo9cIihIM3OVqHie4TXTSEVdAf9Lg9U2Z9NDs92Cbjc9N
+7uisNTtQA6NMvc1UAYTYm7R2yRyHiaJRkW8gYmh2opw7WZgO7nbMAchxGMGvZjH8
+huc1lVOvgxbdcRnaZYG4RA8l4htTrMQTD2P+8fMmWQNW16d/xn+1/q0baZ/v8KWJ
+lAHGTem14Ry7ocS3WxxCJRrCYIp98a7SbyL3t0EbFHFFZM4JQ019PwaI7poDXRTx
+CeQmqsUQwnBwqSDCF+pFl15TEmlXEC7QFPm9B+zGjRN+TLD2ilsT3XgJfDfs9tn5
+u7FBcRLo6DeHIqOKu41HCAOkMVenfw==
+=xBek
+-----END PGP SIGNATURE-----
+
+--QFIK27TUvqKWMvSN--
