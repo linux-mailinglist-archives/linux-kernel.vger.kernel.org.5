@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 685027AE24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D397AE24D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 01:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbjIYXcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 19:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S233540AbjIYXc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 19:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjIYXcI (ORCPT
+        with ESMTP id S230125AbjIYXcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:32:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5508C101
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 16:32:01 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8191a1d5acso11454107276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 16:32:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695684720; x=1696289520; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJxrMaSceLhoHUwbSBQFNIWRaTVumnsiZsfe8eDrUVE=;
-        b=mCtQHIkxCWdPRJCpfXNxlDtHqd5VzC4UAbNobaAoCz+dNJLfU6+PkKf9wdOGEgZzkn
-         A5cpxXemND6MbXna7ivH4ur2DoIXkIZKQJhjshrNGuZ/PLcCYJMO2dhqyxWycKTtsaoM
-         gGcc/x7pEzLpMa5koTkdp4KGDnKlnXOHRXhpRAbeW80Qkb5tYxeRVdy6IXX0EtVSQLkK
-         bYkuAaR4s+pIK3Sa7X/CIbGelyNIQE31Yrms8YTF7lh3/MC5XMJ6/WjZDVxPcjqPGCJ3
-         fJRYiM1T9RPirFMGdP/JIRXeVXXJ8xc2pbLMQPr4PbvkLbdyjTcG6/3moJHKdQeJ4uNP
-         W+pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695684720; x=1696289520;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eJxrMaSceLhoHUwbSBQFNIWRaTVumnsiZsfe8eDrUVE=;
-        b=WTvrCAtiQGvb1EIu5hJXamRgy40PHS/2J3jmRIpxw1zSK214HxGaJPyMv+PwEJ9E2c
-         VKw/I8ByVW6JsoNunVHxG8YQCWmGkrDH5zRAGth1QDxIN05JsEuVrAtz/yxpgcezDAji
-         uIhfHSWt4QppiIalNzvwkhKpKF024bwZjRy9QrUl2zF0l7zO+1QTDsIyVMxF2lXLXy6x
-         3zRcdO2eVTKW8JXBKxZM3Ve1s+vmbxc/4FbCfKHSI+We6QM2b/J20OC7Vl4GHsCnEdds
-         33EMg8D8ZPnraBLaYv3Nz1DRahsqtsM1VjuWG3fR6te0FLUQJdcoTcfMCNMxbhEumck4
-         t4IA==
-X-Gm-Message-State: AOJu0Yyq3y4lN5zr9drGjdW8EAMFVx+uuWyzwXoJlBfICMbswWbvMJxj
-        rYrdOU/vCIp/bkNDkNZXM7tG3sN5/qc=
-X-Google-Smtp-Source: AGHT+IFTqVuabA4IX6I79lZE8Po3HLmVzOgwsHJv/8IxUVryjzy3Tnr/aVhfQOI5OAp5xFG794veSUT8RFE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:50ce:0:b0:d74:93a1:70a2 with SMTP id
- e197-20020a2550ce000000b00d7493a170a2mr83729ybb.5.1695684720550; Mon, 25 Sep
- 2023 16:32:00 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 16:31:58 -0700
-In-Reply-To: <6ee140c9-ccd5-9569-db17-a542a7e28d5c@gmail.com>
-Mime-Version: 1.0
-References: <20230407085646.24809-1-likexu@tencent.com> <ZDA4nsyAku9B2/58@google.com>
- <6ee140c9-ccd5-9569-db17-a542a7e28d5c@gmail.com>
-Message-ID: <ZRIYbu4wSVW9a+8i@google.com>
-Subject: Re: [PATCH V2] KVM: x86/pmu: Disable vPMU if EVENTSEL_GUESTONLY bit
- doesn't exist
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Manali Shukla <manali.shukla@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 25 Sep 2023 19:32:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17431101;
+        Mon, 25 Sep 2023 16:32:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CBEC433C8;
+        Mon, 25 Sep 2023 23:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695684738;
+        bh=g6tAy6hdSxc4KI8v9obT1Yl+ADKftmXOjG6GSK2ZkhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dmXc/1pXGW2+/HEeumfywZ51IU4Hs5ACQTZujqaS/qyTSxTlsOeh8HFq8IulI9qqu
+         1uX2Fb+M5C9jdIceHxJ1lmQxiJY1GZm8asgiujFw5MmKrRdh/QqKflnkizvac1oZAB
+         57w1VbzOAW4CAdDxdRUSaAZ1MUUHO5yPdcSK6Pn0pNnC+iWKqOsC7AOJ0o67I2FRR7
+         sdLEBHKlWv1K4WaxL5E4yVIntF7vVbXJMupEw8UY/QrIXCEeSO57MNDIjKjWtiWMh9
+         i66AoBMSH7j1uMEHB8iVA7n5QrRXc1LJyz/LJhnIATMmUI/mgPf4X9RUbC+8AQotBg
+         SRix/cACrcuKw==
+Date:   Tue, 26 Sep 2023 01:32:15 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/10] userfaultfd.2: comment on feature detection in the
+ example program
+Message-ID: <fgavhpky2ba3tfv6abkln7kzzayfxl5mnu5vzzzop5ct5mtmdl@dbdf2w4d4fva>
+References: <20230919190206.388896-1-axelrasmussen@google.com>
+ <20230919190206.388896-4-axelrasmussen@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7eflzcifipfkwrsh"
+Content-Disposition: inline
+In-Reply-To: <20230919190206.388896-4-axelrasmussen@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023, Like Xu wrote:
-> On 7/4/2023 11:37 pm, Sean Christopherson wrote:
-> > On Fri, Apr 07, 2023, Like Xu wrote:
-> /*
->  * The guest vPMU counter emulation depends on the EVENTSEL_GUESTONLY bit.
->  * If this bit is present on the host, the host needs to support at least
-> the PERFCTR_CORE.
->  */
 
-...
+--7eflzcifipfkwrsh
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 03/10] userfaultfd.2: comment on feature detection in the
+ example program
+MIME-Version: 1.0
 
-> > 	/*
-> > 	 * KVM requires guest-only event support in order to isolate guest PMCs
-> > 	 * from host PMCs.  SVM doesn't provide a way to atomically load MSRs
-> > 	 * on VMRUN, and manually adjusting counts before/after VMRUN is not
-> > 	 * accurate enough to properly virtualize a PMU.
-> > 	 */
-> > 
-> > But now I'm really confused, because if I'm reading the code correctly, perf
-> > invokes amd_core_hw_config() for legacy PMUs, i.e. even if PERFCTR_CORE isn't
-> > supported.  And the APM documents the host/guest bits only for "Core Performance
-> > Event-Select Registers".
-> > 
-> > So either (a) GUESTONLY isn't supported on legacy CPUs and perf is relying on AMD
-> > CPUs ignoring reserved bits or (b) GUESTONLY _is_ supported on legacy PMUs and
-> > pmu_has_guestonly_mode() is checking the wrong MSR when running on older CPUs.
-> > 
-> > And if (a) is true, then how on earth does KVM support vPMU when running on a
-> > legacy PMU?  Is vPMU on AMD just wildly broken?  Am I missing something?
-> > 
-> 
-> (a) It's true and AMD guest vPMU have only been implemented accurately with
-> the help of this GUESTONLY bit.
-> 
-> There are two other scenarios worth discussing here: one is support L2 vPMU
-> on the PERFCTR_CORE+ host and this proposal is disabling it; and the other
-> case is to support AMD legacy vPMU on the PERFCTR_CORE+ host.
+Hi Axel,
 
-Oooh, so the really problematic case is when PERFCTR_CORE+ is supported but
-GUESTONLY is not, in which case KVM+perf *think* they can use GUESTONLY (and
-HOSTONLY).
+On Tue, Sep 19, 2023 at 12:01:59PM -0700, Axel Rasmussen wrote:
+> The example program doesn't depend on any extra features, so it does not
+> make use of the two-step feature handshake process. This is fine, but it
+> might set a bad example for programs which *do* depend on specific
+> features (e.g. they may conclude they don't need to do anything to
+> enable / detect them).
+>=20
+> No need to make the example program more complicated: let's just add a
+> comment indicating why we do it the way we do it in the example, and
+> describing briefly what a more complicated program would need to do
+> instead.
+>=20
+> The comment is kept rather brief; a full description of this feature
+> will be included in ioctl_userfaultfd.2 instead.
+>=20
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-That's a straight up KVM (as L0) bug, no?  I don't see anything in the APM that
-suggests those bits are optional, i.e. KVM is blatantly violating AMD's architecture
-by ignoring those bits.
+Patch applied.
 
-I would rather fix KVM (as L0).  It doesn't seem _that_ hard to support, e.g.
-modify reprogram_counter() to disable the counter if it's supposed to be silent
-for the current mode, and reprogram all counters if EFER.SVME is toggled, and on
-all nested transitions.
+Thanks,
+Alex
+
+> ---
+>  man2/userfaultfd.2 | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+> index 00d94e514..b2b79f61d 100644
+> --- a/man2/userfaultfd.2
+> +++ b/man2/userfaultfd.2
+> @@ -881,6 +881,13 @@ main(int argc, char *argv[])
+>      if (uffd =3D=3D \-1)
+>          err(EXIT_FAILURE, "userfaultfd");
+>  \&
+> +    /* NOTE: Two-step feature handshake is not needed here, since this
+> +       example doesn't require any specific features.
+> +
+> +       Programs that *do* should call UFFDIO_API twice: once with
+> +       `features =3D 0` to detect features supported by this kernel, and
+> +       again with the subset of features the program actually wants to
+> +       enable. */
+>      uffdio_api.api =3D UFFD_API;
+>      uffdio_api.features =3D 0;
+>      if (ioctl(uffd, UFFDIO_API, &uffdio_api) =3D=3D \-1)
+> --=20
+> 2.42.0.459.ge4e396fd5e-goog
+>=20
+
+--7eflzcifipfkwrsh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUSGH8ACgkQnowa+77/
+2zJTTxAAlq3w3g9XKdtWdAY0IFZ8OLHqDNS4ORRDwwc6CYY0LLe7lTDsHVO0jDTl
+Bl4F7WF+OcvPNu9gVwI9Ry8q3uZlOkr6WVi/2wvYV0j6FOmcYf1F4s9mRADGaadZ
+qvjuQbXsXfV6es4zi1j7HpoJ4mh2UwWyYvzm4HHaiGFCeErkj7JOUPCiIY0YjtCu
+HZtSMtKEzq8bhawccBa1yKABrKteu/zykDuo620dybqiDivfrvpLwjRJMJ+uZXXQ
+wis+GPLry0B6ZmfhzIptVQVsm/03bNZU0YrCyGU9VoX/u6W0PqQHRmuedX61F0XI
+8BmVBRpEL7F1tdGe6nCUpWmVVHTSAcb24L2hQ6n3eGOWPDNL3wAXbsIy+Vxfa5nY
+DEkIttpfc4sdfU7UEJ3y/hWkZX/ZKm+CI7opeqkyiw4Qg+sZQGjgudeZ0mSccert
+xgpsLgPT02ZCEqoEFjAK4z50PSrhVxycja1nbMd5ycUzS7Uy72+izckT16YsFf5b
+kgvxXo4BEwps4Sfc2yhXejuVwixzvuoBfTR+GXaiLSfyj3ai/No7wtQZPt2myXT2
+A7xnYpqfR9ilNaug3ZiXY+e28SAcKWCRM8OpEqIy14RKEzkMhf22zzfE6rBOkQ9g
+u0wgcrNXyq4RBjKa3tQxnYeB2/3nNgAK8AT2jgKwZZ9XrFfYCCI=
+=hPpM
+-----END PGP SIGNATURE-----
+
+--7eflzcifipfkwrsh--
