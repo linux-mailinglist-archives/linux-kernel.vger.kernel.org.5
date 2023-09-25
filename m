@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FBB7ACE13
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B85E7ACE1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 04:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjIYC0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 22:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        id S231713AbjIYCab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 22:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYC0c (ORCPT
+        with ESMTP id S229561AbjIYCaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 22:26:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A92ED3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695608786; x=1727144786;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IQrxVgl8y8yaPgVD3QfYOV/eCDXVY3Nhh6n5sv8QaGQ=;
-  b=dbgm7cwYxaJI/nvez/upTeTh/cm9/daIKUW0XK9YWaKFW6M4RMuGqOAJ
-   27EC0CvdoBfRkpzooPJbDleieBo06+CdIvi7t20LvhqECYBGWV5v477p1
-   oQxbwmWv8cXcDVhGGtE8T8kgv9Y2KPUh1P3d0CqFH/hU7V941SMlYRQAk
-   36dWIaDSuAixAGGYJH+CWUZdRkehvI662gGImEmFMB03fBUJNHCr3XoTg
-   DafDV/EXbewdhgP85xoq6Nv8vg4EdDdOtpOwzEMc7Zh5/bfBMYuin7pA1
-   +yFc1WYoJeg2z6sjhWGfiGDEUQ6VEp4zR0yFAgNjGtN6juAwkH+V4pBBE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="384980186"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="384980186"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2023 19:26:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="891494260"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="891494260"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Sep 2023 19:25:15 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qkbIc-0000nF-26;
-        Mon, 25 Sep 2023 02:26:14 +0000
-Date:   Mon, 25 Sep 2023 10:25:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ma Ke <make_ruc2021@163.com>, perex@perex.cz, tiwai@suse.com,
-        cujomalainey@chromium.org, maciej.szmigiero@oracle.com,
-        clecigne@google.com
-Cc:     oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: control: do not access controls without possession
- of r_w lock
-Message-ID: <202309251036.Yjiuc0Lq-lkp@intel.com>
-References: <20230912084530.3307329-1-make_ruc2021@163.com>
+        Sun, 24 Sep 2023 22:30:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA76C2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 19:30:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 96557C433CA;
+        Mon, 25 Sep 2023 02:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695609023;
+        bh=0jDwZ96nyJhTF4nmVXocUav9QlceaTK+fsd1hTcuQrQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=prDohBtJO9880AllSqZPuVLeO5pSLOAWQukM68p11IT6YUwQ9CkWU7RniZFdEFV7E
+         Nt/v/hT+u3N4BN4a0HbN4afaVVz+Wc5rqHEi8AhyONnIqQ4G0nXT6y0xNvF566IWnG
+         rfNM2owzp6jW9j2ZlkeRCvm0MNWrfEw4q2VPV5JDiRKDhLicr1ku4TYyrxGMNNHB6T
+         HRHZafrHXNYBnNfuUbVYJFPHQ8G/R3TUHXZOj2TUg8d8ySkXAVDvKoWDwvTB0kOiCM
+         sadS1mh56zJBBPi9/Burjre+j9G0lOzNU0kuK5rWRGq0wqcGjBvGHUG63nollnp/U9
+         SUfr5gi1x70/A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79FA6E29AFD;
+        Mon, 25 Sep 2023 02:30:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912084530.3307329-1-make_ruc2021@163.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] platform/chrome: wilco_ec: Annotate struct ec_event_queue
+ with __counted_by
+From:   patchwork-bot+chrome-platform@kernel.org
+Message-Id: <169560902349.21032.13563278253669519579.git-patchwork-notify@kernel.org>
+Date:   Mon, 25 Sep 2023 02:30:23 +0000
+References: <20230922175146.work.219-kees@kernel.org>
+In-Reply-To: <20230922175146.work.219-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     bleung@chromium.org, tzungbi@kernel.org, set_pte_at@outlook.com,
+        dmitry.torokhov@gmail.com, luzmaximilian@gmail.com,
+        u.kleine-koenig@pengutronix.de, gregkh@linuxfoundation.org,
+        jiangjian@cdjrlc.com, chrome-platform@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        hdegoede@redhat.com, lee@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ma,
+Hello:
 
-kernel test robot noticed the following build errors:
+This patch was applied to chrome-platform/linux.git (for-kernelci)
+by Tzung-Bi Shih <tzungbi@kernel.org>:
 
-[auto build test ERROR on tiwai-sound/for-next]
-[also build test ERROR on tiwai-sound/for-linus linus/master v6.6-rc3 next-20230921]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Fri, 22 Sep 2023 10:51:47 -0700 you wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct ec_event_queue.
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ma-Ke/ALSA-control-do-not-access-controls-without-possession-of-r_w-lock/20230912-164832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230912084530.3307329-1-make_ruc2021%40163.com
-patch subject: [PATCH] ALSA: control: do not access controls without possession of r_w lock
-config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20230925/202309251036.Yjiuc0Lq-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230925/202309251036.Yjiuc0Lq-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - platform/chrome: wilco_ec: Annotate struct ec_event_queue with __counted_by
+    https://git.kernel.org/chrome-platform/c/1aa8df90f456
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309251036.Yjiuc0Lq-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   sound/core/control.c: In function '__snd_ctl_remove':
->> sound/core/control.c:593:9: error: 'count' undeclared (first use in this function); did you mean 'd_count'?
-     593 |         count = kcontrol->count;
-         |         ^~~~~
-         |         d_count
-   sound/core/control.c:593:9: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +593 sound/core/control.c
-
-   576	
-   577	static int __snd_ctl_remove(struct snd_card *card,
-   578				    struct snd_kcontrol *kcontrol,
-   579				    bool remove_hash)
-   580	{
-   581		unsigned int idx;
-   582	
-   583		lockdep_assert_held_write(&card->controls_rwsem);
-   584	
-   585		if (snd_BUG_ON(!card || !kcontrol))
-   586			return -EINVAL;
-   587		list_del(&kcontrol->list);
-   588	
-   589		if (remove_hash)
-   590			remove_hash_entries(card, kcontrol);
-   591	
-   592		card->controls_count -= kcontrol->count;
- > 593		count = kcontrol->count;
-   594		for (idx = 0; idx < count; idx++)
-   595			snd_ctl_notify_one(card, SNDRV_CTL_EVENT_MASK_REMOVE, kcontrol, idx);
-   596		snd_ctl_free_one(kcontrol);
-   597		return 0;
-   598	}
-   599	
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
