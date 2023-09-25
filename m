@@ -2,218 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182637AE1D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B7C7AE1DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbjIYWnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        id S232883AbjIYWpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIYWnv (ORCPT
+        with ESMTP id S230038AbjIYWpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:43:51 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C05109;
-        Mon, 25 Sep 2023 15:43:43 -0700 (PDT)
-X-QQ-mid: bizesmtp81t1695681815tls4ddg5
-Received: from linux-lab-host.localdomain ( [116.30.124.152])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 26 Sep 2023 06:43:33 +0800 (CST)
-X-QQ-SSF: 01200000002000E0Y000B00A0000000
-X-QQ-FEAT: aBJFcW+uBGYffXzygR0k5C/WLWWZcLSCd2TbMPG0O7Tlzn1m+5D3uZe31rmrB
-        aujFQULia5dBlILNDRUyEjx57EpMsxaL6Hz0UfpOimP01EPYwODfLNDt/08+rViZ0kDvJPS
-        c/l6PK5eg6fwnuRPIEYFxcxK83ddGI9AWtGlJq/Ee72+sNa4MrAQ3EN8Qe34Np4jqLArABG
-        JS2WsLg0nT+US7V5b/8yFqpM/D3X+G29I8CLiztdDhT1Y7JbtyMwz8ftGBL0fuh92PguYE4
-        IKeAjeoyg3J6mOYoYZE003kMKygyo6u/CV03ypKigE7GsLxTYVFe5MpxCrKElLULeYxae/d
-        HtHN7uvHgeUIKpoUbjQ3Dfq7OGBezfWvX3+if5KLWzLVYk17ZVHC2GUJSVYzHQJ1NQ/1p5y
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4775298546958751858
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
-Cc:     falcon@tinylab.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
-        paulburton@kernel.org, paulmck@kernel.org,
-        tsbogend@alpha.franken.de, w@1wt.eu,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Tim Bird <tim.bird@sony.com>
-Subject: [PATCH v1 7/7] DCE/DSE: riscv: trim syscall tables
-Date:   Tue, 26 Sep 2023 06:43:32 +0800
-Message-Id: <aad452c57bce2ab7983e723d78bd2cc7b6f533c1.1695679700.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1695679700.git.falcon@tinylab.org>
-References: <cover.1695679700.git.falcon@tinylab.org>
+        Mon, 25 Sep 2023 18:45:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC96126;
+        Mon, 25 Sep 2023 15:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695681937; x=1727217937;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=zUDSVdchkkkfvB06x5QdbcNsbfxlSREH70QteQRmCcs=;
+  b=J+e2Emjb592zI+qjGG0LfhPEP2vaKsTjnz9MchB9FvafSiEQkdkp040I
+   yYmDcR34WsSpd1p1/aWmFz8rJTYqq0B1xtUZHDXAQHF932f3Frhsj1GdH
+   9QScpZ15U3IFUAs2y/1kSeV/DlzwK2yzQgFYME0lU0NT72WiTYptRqZA/
+   M20QWnJbD7MSX72eMyeKsnblPYr8jgTL3ZTyruXJwqx5SxblX+cNnGa53
+   4dxQDn9q8OVrfBRaEPVlZhOLlCneZcHNCBTkQbr5wmATcnxPHetj/rcwW
+   A/NHbWNV7H8KKsCjDSwqQ8BjOqJeSsvH9E/S5UJfTZiPzmRwwqBdKFuwd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="380292392"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="380292392"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 15:45:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="995579627"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="995579627"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 15:45:36 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 25 Sep 2023 15:45:35 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 25 Sep 2023 15:45:35 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 15:45:35 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 25 Sep 2023 15:45:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JhomtWpSB84ez3itfBdKR/1FFjMC0cNpObjWn/xyDlT1fU7pV6P0NMk5WT1nl+BSsJcrsw+I5XicmgfzX4vosgrmJM7ON4LDzF9bPlNWZ4w2PGOhwlmiquay2BJBgPXmKOE8I5COdWLJoBLzA9PrXhWgGp+zll1AMK/jwDsH4pQpWnZK/M/SMlbF2pgDUmvnqyiZjRQ95odEgcvH+7e8718hVRhc9ql9KhMQr8Lb9bKC513i/X8xiailOjLF1k4uHse1W1Ma0jVtbuBwPFJEBebmfzjPrxG6sLLYobHYB2TyYaoZEwpLNHIvoGB8tW1kxFsXn54MnwoShm7ZPzvpCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/v9Cb19b5MsG5fVOsPQ3Nb5niq1qbjgKwSwbP1QDRg4=;
+ b=DyafIZ+Fg1g/6AzPwF1e2fBsmNKJedKfVwukJTeWLIiP0WRJL2ogMr57D5Juts6cFQvS66pYLIqSuEI6Y7Q/ycoZEL+I6kl40uEPlr3kztR1i3YxkKm99HzYOgWxjEcHQWOjOFaYm3r0yJqTiJ+hWfEiq5vLlGCIp/2uGjQ+WNg0Gc88q7uGh3PWMzb4TEJKOnMAguYO03ZGNNZW9uyrdM7d8cG9ObOhwjnB3FiEYlo+aKrZ2p7rZMJQmzEqD9v3aZxDXaBmlbssWQBs0aakoTMLmH9tR9mTBpDj+qTwTAaTfsgBCaiI7vICvQj9Wf9V5hgsd/OJEE+lA3rzgd5SPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by PH0PR11MB5829.namprd11.prod.outlook.com (2603:10b6:510:140::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Mon, 25 Sep
+ 2023 22:45:27 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::9654:610d:227a:104f]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::9654:610d:227a:104f%4]) with mapi id 15.20.6813.018; Mon, 25 Sep 2023
+ 22:45:26 +0000
+Message-ID: <d708c1a8-1b7a-c772-9457-f06b59d6235e@intel.com>
+Date:   Mon, 25 Sep 2023 15:45:23 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+CC:     Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Yury Norov <ynorov@nvidia.com>
+References: <20230925020528.777578-1-yury.norov@gmail.com>
+ <20230925020528.777578-2-yury.norov@gmail.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20230925020528.777578-2-yury.norov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0283.namprd04.prod.outlook.com
+ (2603:10b6:303:89::18) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_PBL,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|PH0PR11MB5829:EE_
+X-MS-Office365-Filtering-Correlation-Id: fcd0a46e-c0d9-48e7-f073-08dbbe191c8f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ndlyy9qj4Kw2V7xBlvN1mxGoZFPOcAjvG0dv9AKyZmrChQVMo0xJRsjKhkR6i0juVxQOzesMAsp1mFs0bawHkL8q9jotcAuceJugOiPEX8JprOfCD326GiaD3dHLz1MgwHId+434KxzM0xpK5DZV2HS3cGeaMVOmxnakqgxfSJ4t0tFl9CKlgu99gkolE1trQFEwulmuDSHA/0CeurawDuTHjxMjYwLWaVyEpL7LFj2I+hs3Sy85txhw+jsKmFXA3eMUNzIcT4yXiVOL/aYoBnyUuk30S52LE387Xc2tOhOP6V+mo/8a1LH1VzrIyur+Xxza7LlUZNsKInKwpQmTcKvkhD3W/sZZxtabzbHWHu0Y9tf5L+fbkrxkngSZSvFTFeQEMzzEIuvwb/+EGmmt4z41UsgpNoN2oXvOFgLJB45wCWVLyf9dtXcFeAcjab/dvl+8qeididw2a9eFWycksPn5wNyUc3YqGb9r4GtbCfwp9LruhAePr5ECTLrpuYblMGRQzVtE/kPdJIABE+iyIKP/gvhXWfTtZc15fb2bEHWhFU4nTsY17ShU8xQUGed6gnvz2B+yjPLL95AXsIQJwR/wu0KAlDlfYpgOO3m8AZ+pgMUK+F5yH1RJxPAlH7g/jdGTF4oD7D0W0qZJCpRYpA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(346002)(39860400002)(366004)(230922051799003)(1800799009)(186009)(451199024)(26005)(6666004)(478600001)(2616005)(36756003)(83380400001)(31696002)(86362001)(82960400001)(6486002)(53546011)(5660300002)(6506007)(38100700002)(6512007)(2906002)(4326008)(8676002)(31686004)(54906003)(41300700001)(316002)(66946007)(66556008)(66476007)(7416002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUhiK29qV21zcnhjNHZEaFdIOVdlRURuSjZwRmpnY0dDeXdOY1hYeHQwOWNs?=
+ =?utf-8?B?c21xdlpmT05FZWNVTm9ZUVlRUjVJbkNBUXpLTWpkU3d3SkREVGNuUHdENzF0?=
+ =?utf-8?B?Z0FMeUlIWUFuS29RcWdWQUJCeDJTbkpIUGpsbEc0dGxuQ2o3TmhuK3VLQkZ5?=
+ =?utf-8?B?RC9YOVoxT2lFUjhncHUzU0dvWVBsbDFmZlJZYnBocWRCdlh1N2NKSFdrOXo5?=
+ =?utf-8?B?TVpZU0JoRUMxM3lycUNFQnVzSW5kNTNSbFp2S1NUTytyNTFqa2VZQ1JXdmJP?=
+ =?utf-8?B?dGJKUmZaeXIzakxOc2h2dm9hUWFpQnRKbnJ3QjZHemFaQSt0aE94TDNMN1FC?=
+ =?utf-8?B?VHBiWWJwdjBFb3QySHZpUmJVZWJ5YVgycmt5ZGRDVWR0Y01aSzFkK0N1NUlq?=
+ =?utf-8?B?S2ZEMnkvbnNOZ0RqaWxWUDR4aXRlZUJ0Ymc5cUxZZnBrRUlGZEJRTHJaUjBU?=
+ =?utf-8?B?Y2xWK0RkMHRXU0JaWWFQQk1DQTdvYjh2cUJxNkdQRUJxMExTTW1VckxZRDBz?=
+ =?utf-8?B?dzR3Q0lMdm1Mb0RuaStwOUxhemFyVUgzRzM4NHR6WmhudnlVTmxTS1lycmti?=
+ =?utf-8?B?TWlBSGkyOVJNQXROeU9zQXQrWmc3akJnbmtmamtzMG0xa0FlMldYZWo2TitJ?=
+ =?utf-8?B?THBaUk9wbUt2bXJMTWIya3F3aXJLbU1KMmZXcXpNeHBjZW5nN0ZNT1ZOQThx?=
+ =?utf-8?B?aUU4ajVVZFVraW9RV0Y4R0Q2NDRmeTFuMy9vM2hjMUNVU0UzRHpNSXJhY2x3?=
+ =?utf-8?B?UG5lbkpZYnJseVFpbTdFTTYyVjc1bVJ3ZlZrd2l3cmVSOHZYQ015aUpwVE9L?=
+ =?utf-8?B?MFpuZFk4QWh2dUNrMy9pSHB4NUNWQ3p4OWE3ekhHQmZtT0cwY3RsTzR3Y3px?=
+ =?utf-8?B?QnJ4VHhpdHdRQzFDYUg4NDhmVnNNbVFBaXJjOEE0YmdsSFlDWWxwUmk0bkRI?=
+ =?utf-8?B?YW5MNWJFbllZSEtoMHI2SFRXL2hSQkZKUno1N1pUUFNWSmZHdFZrOGNFUjcr?=
+ =?utf-8?B?QmZpUkRKV3B5dDhJVzVnYjFxSHRIVURROFIwZERUMU9mSlhiK1VMcHg0TUFh?=
+ =?utf-8?B?Z0VTeGFWakJxbllNS0Q2dTBOVFRuY3JyWi8rZ1pTUE16Q0hMZHRYeno4OXVL?=
+ =?utf-8?B?NTN0UW01dFhQU0FaRUdrU1MrS1YvYUxLNFdIVjQ5RlRVS1RLVlNOZUFHSWJo?=
+ =?utf-8?B?bCtENEF0TG40K0h0MzBObTJrVllMYnh5di9YUW1lODNmZHVBUENwdUIwVEFv?=
+ =?utf-8?B?K3FVK1FWSTF2ek5FdFJjRkdRbEJlR0pZdTRuQkpSWUVnZVM2d3dyb25lYjNX?=
+ =?utf-8?B?c0RGME1GU2VzbG1Ld0FEM25ZSzZrM2hQTnpmbTNKbEpnVmpWVjdIVFFWcllk?=
+ =?utf-8?B?QXc1ZC80ZXR0UlozRU5aZytyVVhRVlhIUWJXczBUN2F4TmJOdmtKT0tMTEFw?=
+ =?utf-8?B?UlMzN1RhMWxFWWI3Zi9ZdFdXRnh0eEtlRmY1ckpacjk1dGVQWGZKcWdLNWl1?=
+ =?utf-8?B?QmFjQmVMUDZSbTRGYnRLd0g5NlRsbWF3ZHk3SktPUU8wWkw0TGlObVk3VHBm?=
+ =?utf-8?B?OHdLb3VBY3NPT3J2ZWN5Y2lOLzZCaU4xK0VIUVNXdEd6RWZBUEZoUERNRmtt?=
+ =?utf-8?B?SC84a1ZPWmVMNFJiTDdnLzVGS1dMbTNCc2xEOVlJeHQ3aWVoRTVVampkQmli?=
+ =?utf-8?B?bHdyQ3RQL2ZQTW1MVlBPOCsrMDlmYzk5QStqSHExWG9XY1pHNm02VGJUamF6?=
+ =?utf-8?B?WjB1MmxGUjFSd3ZmcHNuM3ZLNXBNV3phaWhVdGZlTVNwOUZDdmhjZmFQQUIr?=
+ =?utf-8?B?aXI5TGNtbkRXRUVMUmxhVEgyUzk5TEh3Nk1NNlU2VXJzd0h6OHNkWVFKVHY2?=
+ =?utf-8?B?QVVicWFTZVRCUnlwWVZ3OVZzeTJSSS91T1lDVCtJVnQ1RGhnRVY5Z0hiaHBW?=
+ =?utf-8?B?eWtHREkwQUloU0U4L0N3VFVFUEJlWUg1OEpHVkVCVUhzOWRESGVxMHMzdXVw?=
+ =?utf-8?B?SG1lcXlhcGhNdGpiRnZmRTVlWWVXbFdZUjFIZnhEY1FJOFB4NTVHUzFkcXZK?=
+ =?utf-8?B?d1NsL1lYb0ErUTRRa2NaQklUbDdkZ0FOV3RPa21ycmNaeUNLWnk3SXR4eWxF?=
+ =?utf-8?B?cVNSbTZ5b3JIM1JTcTZuT1ZTSGhWcEw2Ky9OajJJNDllMEVyT0h1b2g1VmhN?=
+ =?utf-8?B?WUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fcd0a46e-c0d9-48e7-f073-08dbbe191c8f
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 22:45:26.6744
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1vMCf2FkZWvb0VzHNm3Bl1Sk0tqyOp04fHa9yrNJ68JRzpcVPz1GspKqG4JZ4YTGWK4SFOUhTakx6Abdobe/9IpqdPM9mXljaqv7drp3hVM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5829
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [43.154.54.12 listed in list.dnswl.org]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [43.154.54.12 listed in zen.spamhaus.org]
-        *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [43.154.54.12 listed in bl.score.senderscore.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the maximum nr of the used syscalls is smaller than __NR_syscalls
-(original syscalls total). It is able to update __NR_syscalls to
-(maximum nr + 1) and further trim the '>= (maximum nr + 1)' part of the
-syscall tables:
 
-For example:
 
-    sys_call_table [143] = {
-	[0 ... 143 - 1] = sys_ni_syscall,
-        [64] = sys_write,
-        [93] = sys_exit,
-        [142] = sys_reboot,
-    }
+On 9/24/2023 7:05 PM, Yury Norov wrote:
+> The function duplicates existing cpumask_local_spread(), and it's O(N),
+> while cpumask_local_spread() implementation is based on bsearch, and
+> thus is O(log n), so drop mlx5_cpumask_default_spread() and use generic
+> cpumask_local_spread().
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Yury Norov <ynorov@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 28 ++------------------
+>  1 file changed, 2 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> index ea0405e0a43f..bd9f857cc52d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> @@ -828,30 +828,6 @@ static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
+>  	mlx5_irq_release_vector(irq);
+>  }
+>  
 
-The >= 143 part of the syscall tables can be trimmed.
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
-At the same time, the syscall >= 143 from user space must be ignored
-from do_trap_ecall_u() of traps.c.
-
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- arch/riscv/include/asm/unistd.h               |  2 ++
- arch/riscv/kernel/Makefile                    |  2 ++
- arch/riscv/kernel/syscalls/Makefile           | 22 +++++++++++++++++++
- .../kernel/syscalls/compat_syscall_table.c    |  4 ++--
- arch/riscv/kernel/syscalls/syscall_table.c    |  4 ++--
- 5 files changed, 30 insertions(+), 4 deletions(-)
-
-diff --git a/arch/riscv/include/asm/unistd.h b/arch/riscv/include/asm/unistd.h
-index 221630bdbd07..4d8e41f446ff 100644
---- a/arch/riscv/include/asm/unistd.h
-+++ b/arch/riscv/include/asm/unistd.h
-@@ -23,4 +23,6 @@
- 
- #include <uapi/asm/unistd.h>
- 
-+#ifndef NR_syscalls
- #define NR_syscalls (__NR_syscalls)
-+#endif
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 40aebbf06880..e75424c10729 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -49,7 +49,9 @@ obj-y	+= signal.o
- obj-y	+= syscalls/
- obj-y	+= sys_riscv.o
- obj-y	+= time.o
-+ifneq ($(CONFIG_TRIM_UNUSED_SYSCALLS),y)
- obj-y	+= traps.o
-+endif
- obj-y	+= riscv_ksyms.o
- obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
-diff --git a/arch/riscv/kernel/syscalls/Makefile b/arch/riscv/kernel/syscalls/Makefile
-index 3b5969aaa9e8..f1a0597c8b24 100644
---- a/arch/riscv/kernel/syscalls/Makefile
-+++ b/arch/riscv/kernel/syscalls/Makefile
-@@ -14,9 +14,18 @@ else # CONFIG_TRIM_UNUSED_SYSCALLS
- 
- include $(srctree)/scripts/Makefile.syscalls
- 
-+# calculate syscalls total from $(obj)/syscall_table_used.i
-+ifneq ($(used_syscalls),)
-+  NR_syscalls := $$(($$(sed -E -n -e '/^\[([0-9]+|\([0-9]+ \+ [0-9]+\))\] = /{s/^\[(.*)\].*/\1/gp}' $(obj)/syscall_table_used.i | bc | sort -g | tail -1 | grep '[0-9]' || echo -1) + 1))
-+else
-+  NR_syscalls := 0
-+endif
-+
-+CFLAGS_traps_used.o                += -DNR_syscalls=$(NR_syscalls)
- CFLAGS_syscall_table_used.o        += $(call cc-option,-Wno-override-init,)
- CFLAGS_compat_syscall_table_used.o += $(call cc-option,-Wno-override-init,)
- 
-+obj-y                += traps_used.o
- obj-y                += syscall_table_used.o
- obj-$(CONFIG_COMPAT) += compat_syscall_table_used.o
- 
-@@ -24,15 +33,26 @@ obj-$(CONFIG_COMPAT) += compat_syscall_table_used.o
- quiet_cmd_used = USED    $@
-       cmd_used = sed -E -e '/^\[([0-9]+|\([0-9]+ \+ [0-9]+\))\] = /{/= *__riscv_(__sys_|sys_|compat_)*($(used_syscalls)),/!{s%^%/* %g;s%$$% */%g}}' -i $@;
- 
-+# update the syscalls total
-+quiet_cmd_snr = SNR     $@
-+      cmd_snr = snr=$(NR_syscalls); if [ $$snr -ne 0 ]; then \
-+		sed -i -e "s/sys_call_table\[.*\] =/sys_call_table[($$snr)] =/g;s/\[0 ... (.*) - 1\] = __riscv_sys_ni_syscall/[0 ... ($$snr) - 1] = __riscv_sys_ni_syscall/g" $@; \
-+		fi;
-+
-+$(obj)/traps_used.c: $(src)/../traps.c $(obj)/syscall_table_used.i FORCE
-+	$(Q)cp $< $@
-+
- $(obj)/syscall_table_used.c: $(src)/syscall_table.c
- 	$(Q)cp $< $@
- 
- $(obj)/syscall_table_used.i: $(src)/syscall_table_used.c $(used_syscalls_deps) FORCE
- 	$(call if_changed_dep,cpp_i_c)
- 	$(call cmd,used)
-+	$(call cmd,snr)
- 
- $(obj)/syscall_table_used.o: $(obj)/syscall_table_used.i FORCE
- 	$(call if_changed,cc_o_c)
-+	$(call cmd,force_checksrc)
- 
- $(obj)/compat_syscall_table_used.c: $(src)/compat_syscall_table.c
- 	$(Q)cp $< $@
-@@ -40,8 +60,10 @@ $(obj)/compat_syscall_table_used.c: $(src)/compat_syscall_table.c
- $(obj)/compat_syscall_table_used.i: $(src)/compat_syscall_table_used.c $(used_syscalls_deps) FORCE
- 	$(call if_changed_dep,cpp_i_c)
- 	$(call cmd,used)
-+	$(call cmd,snr)
- 
- $(obj)/compat_syscall_table_used.o: $(obj)/compat_syscall_table_used.i FORCE
- 	$(call if_changed,cc_o_c)
-+	$(call cmd,force_checksrc)
- 
- endif # CONFIG_TRIM_UNUSED_SYSCALLS
-diff --git a/arch/riscv/kernel/syscalls/compat_syscall_table.c b/arch/riscv/kernel/syscalls/compat_syscall_table.c
-index ad7f2d712f5f..4756b6858eac 100644
---- a/arch/riscv/kernel/syscalls/compat_syscall_table.c
-+++ b/arch/riscv/kernel/syscalls/compat_syscall_table.c
-@@ -17,7 +17,7 @@
- 
- asmlinkage long compat_sys_rt_sigreturn(void);
- 
--void * const compat_sys_call_table[__NR_syscalls] = {
--	[0 ... __NR_syscalls - 1] = __riscv_sys_ni_syscall,
-+void * const compat_sys_call_table[NR_syscalls] = {
-+	[0 ... NR_syscalls - 1] = __riscv_sys_ni_syscall,
- #include <asm/unistd.h>
- };
-diff --git a/arch/riscv/kernel/syscalls/syscall_table.c b/arch/riscv/kernel/syscalls/syscall_table.c
-index dda913764903..d2b3233ae5d4 100644
---- a/arch/riscv/kernel/syscalls/syscall_table.c
-+++ b/arch/riscv/kernel/syscalls/syscall_table.c
-@@ -16,7 +16,7 @@
- #undef __SYSCALL
- #define __SYSCALL(nr, call)	[nr] = __riscv_##call,
- 
--void * const sys_call_table[__NR_syscalls] = {
--	[0 ... __NR_syscalls - 1] = __riscv_sys_ni_syscall,
-+void * const sys_call_table[NR_syscalls] = {
-+	[0 ... NR_syscalls - 1] = __riscv_sys_ni_syscall,
- #include <asm/unistd.h>
- };
--- 
-2.25.1
-
+> -static int mlx5_cpumask_default_spread(int numa_node, int index)
+> -{
+> -	const struct cpumask *prev = cpu_none_mask;
+> -	const struct cpumask *mask;
+> -	int found_cpu = 0;
+> -	int i = 0;
+> -	int cpu;
+> -
+> -	rcu_read_lock();
+> -	for_each_numa_hop_mask(mask, numa_node) {
+> -		for_each_cpu_andnot(cpu, mask, prev) {
+> -			if (i++ == index) {
+> -				found_cpu = cpu;
+> -				goto spread_done;
+> -			}
+> -		}
+> -		prev = mask;
+> -	}
+> -
+> -spread_done:
+> -	rcu_read_unlock();
+> -	return found_cpu;
+> -}
+> -
+>  static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *dev)
+>  {
+>  #ifdef CONFIG_RFS_ACCEL
+> @@ -873,7 +849,7 @@ static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
+>  	int cpu;
+>  
+>  	rmap = mlx5_eq_table_get_pci_rmap(dev);
+> -	cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
+> +	cpu = cpumask_local_spread(vecidx, dev->priv.numa_node);
+>  	irq = mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
+>  	if (IS_ERR(irq))
+>  		return PTR_ERR(irq);
+> @@ -1125,7 +1101,7 @@ int mlx5_comp_vector_get_cpu(struct mlx5_core_dev *dev, int vector)
+>  	if (mask)
+>  		cpu = cpumask_first(mask);
+>  	else
+> -		cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vector);
+> +		cpu = cpumask_local_spread(vector, dev->priv.numa_node);
+>  
+>  	return cpu;
+>  }
