@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5957ADCF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54337ADCF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 18:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbjIYQU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 12:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbjIYQUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232767AbjIYQUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 25 Sep 2023 12:20:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B952B8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 09:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695658849; x=1727194849;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=Yf7IcjRJVtzW/bXfGeBPr9SsluJ6EaaPaNr8xdAnOcQ=;
-  b=P9Ud3M5PX4tWZVOhrX96nlHP0RRdKeS648Imq6zkrb4bksAaF9y/uQyX
-   1NhzTG9Vpmj1G3hjGu2eWfosNtAMwH8JOiLYc8uU9hLulkG3mPUYSTRVf
-   lbxko1/jRGlXLmjo09vmbrnywuA8WJLV6J33Cm7UE7SKF7ZiynA6hii7e
-   3ObL7OZ6UWgZNZazVflYV4Kzjm+KuVnykIDe2RdYmN20aMtaqQZHvic9n
-   AkzMJU4XcjfmhckBJzM+XmZHn+aRzZlFGnt+WghOxhbGXDNOKTtplXH07
-   /Ctq+O6uzSw2VCkndzC2KPhP394+1krK4BA8/Op2cZf6wjqwqXe2xbER5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="378576643"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="378576643"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 09:20:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="838610701"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="838610701"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 09:20:39 -0700
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     tglx@linutronix.de
-Cc:     arjan@linux.intel.com, ashok.raj@intel.com, bp@alien8.de,
-        chang.seok.bae@intel.com, linux-kernel@vger.kernel.org,
-        nik.borisov@suse.com, x86@kernel.org, qiuxu.zhuo@intel.com
-Subject: Re: [patch V3 30/30] x86/microcode/intel: Add a minimum required revision for late-loads
-Date:   Tue, 26 Sep 2023 00:20:32 +0800
-Message-Id: <20230925162032.56408-1-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230912065502.631634574@linutronix.de>
-References: <20230912065502.631634574@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231689AbjIYQUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Sep 2023 12:20:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222BECE;
+        Mon, 25 Sep 2023 09:20:47 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8AA086607083;
+        Mon, 25 Sep 2023 17:20:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695658845;
+        bh=hLrIxPnIrH+CavuOWQVjMQm2fM6kCBplHnPFlCTy1Fs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i9hHKlbf+AxbsU9Vfk8qvmq56+Cd8O1+RlbISjcVCQ4M+mAbPiUF7L+/E1dtIYXz6
+         zBWeW/7XUOOnnx7hlIJ7Y/zCIsYxyh1MlSGprZLj2bxkI+0wScsuFw3nCY3Il2jYIE
+         VDVBpLsDIVu1fAxpbuxmTnSuNJpS+7NiOTpjo91hsDEheYJlarbisBIIGrxJ1pMhnc
+         ezfxL/DybGO3ZEziv44mB17mQVtJEgoAoiNOR/w4Uixuxkl+nb6H0iCbAKxKVrWKEO
+         tnOXU25RBIWzHqBVXHA4irjsQPeKlLd8EjUPOd1TAXAVyDnkXfynqJvzP9i3ztOuOB
+         b6Q46VZn5t6mA==
+Date:   Mon, 25 Sep 2023 12:20:40 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>, kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] thermal: core: Check correct temperature for thermal
+ trip notification
+Message-ID: <4b38b84a-7427-45b1-b8e6-c68c5dbce676@notapiano>
+References: <20230922192724.295129-1-nfraprado@collabora.com>
+ <7558dd96-0d96-9463-9a97-7ea8bac2046e@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7558dd96-0d96-9463-9a97-7ea8bac2046e@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ...
-> From: Ashok Raj <ashok.raj@intel.com>
+On Mon, Sep 25, 2023 at 12:19:18PM +0200, Daniel Lezcano wrote:
 > 
-> In general users don't have the necessary information to determine whether
-> late loading of a new microcode version is safe and does not modify
-> anything which the currently running kernel uses already, e.g. removal of
-> CPUID bits or behavioural changes of MSRs.
-> ...
+> Hi Nicolas,
 > 
-> The check is always enabled, but by default not enforced. It can be
-> enforced via Kconfig or kernel command line.
+> On 22/09/2023 21:27, Nícolas F. R. A. Prado wrote:
+> > The thermal trip down notification should be triggered when the
+> > temperature goes below the trip temperature minus the hysteresis. But
+> > while the temperature is correctly checked against that, the last
+> > temperature is instead compared against the trip point temperature. The
+> > end result is that the notification won't always be triggered, only when
+> > the temperature happens to drop quick enough so that the last
+> > temperature was still above the trip point temperature.
+> > 
+> > Fix the incorrect check.
+> > 
+> > Fixes: 55cdf0a283b8 ("thermal: core: Add notifications call in the framework")
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > 
+> > ---
+> > 
+> >   drivers/thermal/thermal_core.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> > index 58533ea75cd9..120fcf23b8e5 100644
+> > --- a/drivers/thermal/thermal_core.c
+> > +++ b/drivers/thermal/thermal_core.c
+> > @@ -361,7 +361,7 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip_id)
+> >   		    tz->temperature >= trip.temperature)
+> >   			thermal_notify_tz_trip_up(tz->id, trip_id,
+> >   						  tz->temperature);
+> > -		if (tz->last_temperature >= trip.temperature &&
+> > +		if (tz->last_temperature >= (trip.temperature - trip.hysteresis) &&
+> >   		    tz->temperature < (trip.temperature - trip.hysteresis))
+> >   			thermal_notify_tz_trip_down(tz->id, trip_id,
+> >   						    tz->temperature);
 > 
-> If enforced, the kernel refuses to late load microcode with a minium
-
-s/minium/minimum/
-
-> required version field which is zero or when the currently loaded microcode
-> revision is smaller than the minimum required revision.
+> We already did a try to fix the thermal trip cross notification but this is
+> not sufficient for a full fix.
 > 
-> ...
-> --- a/arch/x86/kernel/cpu/microcode/intel.c
-> +++ b/arch/x86/kernel/cpu/microcode/intel.c
-> @@ -463,16 +463,40 @@ static enum ucode_state apply_microcode_
->  	return ret;
->  }
->  
-> +static bool ucode_validate_minrev(struct microcode_header_intel *mc_header)
-> +{
-> +	int cur_rev = boot_cpu_data.microcode;
-> +
-> +	/*
-> +	 * When late-loading, ensure the header declares a minimum revision
-> +	 * required to perform a late-load. The previously reserved field
-> +	 * is 0 in older microcode blobs.
-> +	 */
-> +	if (!mc_header->min_req_ver) {
-> +		pr_info("Unsafe microcode update: Microcode header does not specify a required min version\n");
-> +		return false;
-> +	}
-> +
-> +	/*
-> +	 * Check whether the minimum revision specified in the header is either
-> +	 * greater or equal to the current revision.
-> +	 */
+> We are receiving multiple notifications from the same event, all this due to
+> the hysteresis.
+> 
+> Let's say, we have a trip point T and a hysteresis H.
+> 
+> There is a trip point crossed the way up when:
+> 
+> 	last_temperature < T and temperature >= T
+> 
+> At this point, we send a notification
+> 
+> Now, the temperature decreases but it stays in the hysteresis:
+> 
+> 	last_temperature >= T and temperature > (T - H)
+> 
+> And then, the temperature increases again and is greater than T.
+> 
+> 	last_temperature > (T - H) and temperature >= T
+> 
+> We send a second notification.
 
-Seems like the above comment doesn't match the following 'if' check.
-Perhaps the comment is:
+Right, I've observed this issue in the logic that updates the trip points, and
+just sent the v2 fix for it:
 
-   "Check whether the current revision is either greater or
-    equal to the minimum revision specified in the header."
+https://lore.kernel.org/all/20230922184425.290894-1-nfraprado@collabora.com
 
-> +	if (cur_rev < mc_header->min_req_ver) {
-> +		pr_info("Unsafe microcode update: Current revision 0x%x too old\n", cur_rev);
-> +		pr_info("Current should be at 0x%x or higher. Use early loading instead\n", mc_header->min_req_ver);
-> +		return false;
-> +	}
-> +	return true;
-> +}
-> ...
+I wasn't aware of the cleanups you pointed to below, but at least in their
+current form it doesn't seem they would take care of fixing the trip point
+update logic like I did in that patch. So please do take a look.
+
+It was while testing that patch that I stumbled upon this code for the
+notification and just quickly fixed it. But indeed this patch is not a full fix
+as the one you pointed to, so let's wait for that one.
+
+Thanks,
+Nícolas
+
+> 
+> With the mitigation kicking in at temp >= T, we end up with multiple events
+> 'temperature crossed the trip point the way up"'. That forces the receiver
+> of the events to detect duplicate events in order to ignore them.
+> 
+> More info:
+> 
+> 	https://lore.kernel.org/all/20220718145038.1114379-4-daniel.lezcano@linaro.org/
+> 	
+> We have done a lot of cleanups to use the 'generic trip points' and remove
+> those get_trip_* ops. So the trip point structure is a core component being
+> reused by the drivers and registered as an array.
+> 
+> Next step is to make sure the trip points are ordered in the array, so we
+> can implement the correct trip point crossing detection.
+> 
+> 
+> 
+> 
+> -- 
+> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
+> 
