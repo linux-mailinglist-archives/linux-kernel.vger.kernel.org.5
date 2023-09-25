@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E373A7ADB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAD37ADB3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjIYPUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S232782AbjIYPVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjIYPUe (ORCPT
+        with ESMTP id S231577AbjIYPVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:20:34 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F70101
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:20:26 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so65599765e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695655225; x=1696260025; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WwdRv5aVN9xU2mSH7g7d6aBuPnLFDsHKoLa5WhXFbCE=;
-        b=y7od0ohrht64GM+Ikt4PU16+Ju+V0IVLfMk+6AXwo7X8swsMOeBFfmK1cWM2okF1Rj
-         MM9SQd+wmSw+vwH7F7K1C4RwuDv8VS/VNCGG0b5KfRv9fKBqZA0CTQVABR44S65KbBJ6
-         oyPgfEUbsB7iTv5ZXGQgdrESOcydTrRO+If3UyBReF/6IJ4Cm39Q/zcKbsKj47r/dfl7
-         wv+ly9vGKAhMltZ0hLNVkY+2oOdWvn1OUW9gP9m1F8EeO9Z9dkhpZ4MCstPm4ZE2lrSy
-         GDX2wyjqqZcG0QTn/9uZn/DI3kmRxWmFpl7fFpHzcTMdTvYSQaFRjlKUps0eU1s2FFtr
-         31jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695655225; x=1696260025;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WwdRv5aVN9xU2mSH7g7d6aBuPnLFDsHKoLa5WhXFbCE=;
-        b=kXp+H3yJ4KMu48RlzcQvJO9a2lx/VTOptfBX3dyVJe1GbPC3rzlUbj2GPtQLXKSE27
-         Bq5/syfiD8MdkPXDFMqufQNXA7tXcPl32lkOQPwLryLj6hflrkwcL0y6CmocTf4pVeHF
-         KoWnojVDLYNCphtXZ4uXrtYTnEdGjFzLCp+leOdtK8/Emqwblm6wDnyVh98X6qihn/WZ
-         RB3Wd8wibJeqSGVet2A2LLG9uV92hqN1/0HZio/CPytpu/HKAatdhoy8Pj+GteC+LtYJ
-         xSbTiKSRMFkHn5pK4Ii9SuxDAYUr+40Asa9oGUoD6cEuFWGEkFHQ2omXCOJToxAEPOwF
-         PP1g==
-X-Gm-Message-State: AOJu0YxjY2KxY/ziCm2Hfym0FQLJPTVKYd2LBHFH0ijstn1M/6Y7gp9m
-        6EUZOgwG9C5TeG8S3PXb/rDRkGg61nI9HrOOPrs=
-X-Google-Smtp-Source: AGHT+IEyqtvyt8M63600CsswwYaGAw+I840ewLcBmPaTTvcNX1ue3/W4c1jbBAzGZBzNMOz4IjxoHQ==
-X-Received: by 2002:a05:6000:1048:b0:31f:e980:df87 with SMTP id c8-20020a056000104800b0031fe980df87mr5715145wrx.38.1695655225062;
-        Mon, 25 Sep 2023 08:20:25 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c0e1:63ab:648b:6287? ([2a05:6e02:1041:c10:c0e1:63ab:648b:6287])
-        by smtp.googlemail.com with ESMTPSA id w12-20020a5d608c000000b003179d5aee67sm12152132wrt.94.2023.09.25.08.20.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 08:20:24 -0700 (PDT)
-Message-ID: <acb102d2-c44b-f9a6-671f-d157d1827468@linaro.org>
-Date:   Mon, 25 Sep 2023 17:20:23 +0200
+        Mon, 25 Sep 2023 11:21:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D6D101;
+        Mon, 25 Sep 2023 08:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695655269; x=1727191269;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=+dPD40sRFrtUd5JAcB/1MYn442cJfUxBOmEFl6kxeFU=;
+  b=f5terSgmmJrvKDTFdZtNO5gCBPfDjktcCyVXqIEWDlgEL/bDxeZ2C4or
+   75e1xNAhm25ihn71Wp1eoKDUxR9jVf0GAkGTQxP9HY/64wfVyMuYx3eiW
+   opOafg1zB/VeuM36Xn8/pvTj6Yekc3q6P17kCyZaWmRA97xWSZF2d3jJj
+   q15Inot26WaBIPuhivDGscbe9eDqZNQ37D8gcdbOtHA+YATWZa63JjA4K
+   jKRXbcdjP2OngjKvfc92fwvQKKYDFNFzYrc2H+6j0y5fRVEJunhr83kcj
+   8CSbIG7VsErUxE3YpPmJhvrLwpe2kiQhR9EZP5fxmkYsZpdff/PLKRvm5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="371599287"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="371599287"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:21:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="814011272"
+X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
+   d="scan'208";a="814011272"
+Received: from stamengx-mobl1.ger.corp.intel.com ([10.249.32.149])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:20:54 -0700
+Date:   Mon, 25 Sep 2023 18:20:51 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
+        ravi.v.shankar@intel.com, pengfei.xu@intel.com
+Subject: Re: [PATCH v2 2/9] platform/x86/intel/ifs: Refactor image loading
+ code
+In-Reply-To: <20230922232606.1928026-3-jithu.joseph@intel.com>
+Message-ID: <61944596-ce90-f883-2f6e-c372a42459c2@linux.intel.com>
+References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230922232606.1928026-1-jithu.joseph@intel.com> <20230922232606.1928026-3-jithu.joseph@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/9] ACPI: thermal: Simplify initialization of critical
- and hot trips
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <5708760.DvuYhMxLoT@kreacher> <4858652.31r3eYUQgx@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <4858652.31r3eYUQgx@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1473190008-1695655259=:2147"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 20:35, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1473190008-1695655259=:2147
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 22 Sep 2023, Jithu Joseph wrote:
+
+> IFS image loading flow is slightly different for newer IFS generations.
 > 
-> Use the observation that the critical and hot trip points are never
-> updated by the ACPI thermal driver, because the flags passed from
-> acpi_thermal_notify() to acpi_thermal_trips_update() do not include
-> ACPI_TRIPS_CRITICAL or ACPI_TRIPS_HOT, to move the initialization
-> of those trip points directly into acpi_thermal_get_trip_points() and
-> reduce the size of __acpi_thermal_trips_update().
+> In preparation for adding support for newer IFS generations, refactor
+> portions of existing image loading code for reuse.
 > 
-> Also make the critical and hot trip points initialization code more
-> straightforward and drop the flags that are not needed any more.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 > ---
-
-[ ... ]
-
-> +static void acpi_thermal_get_critical_trip(struct acpi_thermal *tz)
+>  drivers/platform/x86/intel/ifs/load.c | 31 ++++++++++++++++-----------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
+> index cefd0d886cfd..851c97cc6a6b 100644
+> --- a/drivers/platform/x86/intel/ifs/load.c
+> +++ b/drivers/platform/x86/intel/ifs/load.c
+> @@ -80,6 +80,23 @@ static struct metadata_header *find_meta_data(void *ucode, unsigned int meta_typ
+>  	return NULL;
+>  }
+>  
+> +static void hashcopy_err_message(struct device *dev, u32 err_code)
 > +{
-> +	unsigned long long tmp;
-> +	acpi_status status;
-> +
-> +	if (crt > 0) {
-> +		tmp = celsius_to_deci_kelvin(crt);
-> +		goto set;
-> +	}
-> +	if (crt == -1) {
-> +		acpi_handle_debug(tz->device->handle, "Critical threshold disabled\n");
-> +		goto fail;
-> +	}
-> +
-> +	status = acpi_evaluate_integer(tz->device->handle, "_CRT", NULL, &tmp);
-> +	if (ACPI_FAILURE(status)) {
-> +		acpi_handle_debug(tz->device->handle, "No critical threshold\n");
-> +		goto fail;
-> +	}
-> +	if (tmp <= 2732) {
-> +		/*
-> +		 * Below zero (Celsius) values clearly aren't right for sure,
-> +		 * so discard them as invalid.
-> +		 */
-> +		pr_info(FW_BUG "Invalid critical threshold (%llu)\n", tmp);
-> +		goto fail;
-> +	}
-> +
-> +set:
-> +	tz->trips.critical.valid = true;
-> +	tz->trips.critical.temperature = tmp;
-> +	acpi_handle_debug(tz->device->handle, "Critical threshold [%lu]\n",
-> +			  tz->trips.critical.temperature);
-> +	return;
-> +
-> +fail:
-
-nit: 'notset' may be more adequate
-
-> +	tz->trips.critical.valid = false;
-> +	tz->trips.critical.temperature = THERMAL_TEMP_INVALID;
+> +	if (err_code >= ARRAY_SIZE(scan_hash_status))
+> +		dev_err(dev, "invalid error code 0x%x for hash copy\n", err_code);
+> +	else
+> +		dev_err(dev, "Hash copy error : %s\n", scan_hash_status[err_code]);
 > +}
+> +
+> +static void auth_err_message(struct device *dev, u32 err_code)
+> +{
+> +	if (err_code >= ARRAY_SIZE(scan_authentication_status))
+> +		dev_err(dev, "invalid error code 0x%x for authentication\n", err_code);
+> +	else
+> +		dev_err(dev, "Chunk authentication error : %s\n",
+> +			scan_authentication_status[err_code]);
+> +}
+> +
+>  /*
+>   * To copy scan hashes and authenticate test chunks, the initiating cpu must point
+>   * to the EDX:EAX to the test image in linear address.
+> @@ -109,11 +126,7 @@ static void copy_hashes_authenticate_chunks(struct work_struct *work)
+>  
+>  	if (!hashes_status.valid) {
+>  		ifsd->loading_error = true;
+> -		if (err_code >= ARRAY_SIZE(scan_hash_status)) {
+> -			dev_err(dev, "invalid error code 0x%x for hash copy\n", err_code);
+> -			goto done;
+> -		}
+> -		dev_err(dev, "Hash copy error : %s", scan_hash_status[err_code]);
+> +		hashcopy_err_message(dev, err_code);
+>  		goto done;
+>  	}
+>  
+> @@ -133,13 +146,7 @@ static void copy_hashes_authenticate_chunks(struct work_struct *work)
+>  
+>  		if (err_code) {
+>  			ifsd->loading_error = true;
+> -			if (err_code >= ARRAY_SIZE(scan_authentication_status)) {
+> -				dev_err(dev,
+> -					"invalid error code 0x%x for authentication\n", err_code);
+> -				goto done;
+> -			}
+> -			dev_err(dev, "Chunk authentication error %s\n",
+> -				scan_authentication_status[err_code]);
+> +			auth_err_message(dev, err_code);
+>  			goto done;
+>  		}
+>  	}
+> 
 
-Other than that,
-
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
 -- 
-<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
+ i.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+--8323329-1473190008-1695655259=:2147--
