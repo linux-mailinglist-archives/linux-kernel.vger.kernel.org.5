@@ -2,479 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ABE7AD01B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF357AD01E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 08:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjIYGYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 02:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        id S232031AbjIYGYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 02:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbjIYGXr (ORCPT
+        with ESMTP id S232348AbjIYGYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 02:23:47 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 390F0CF8;
-        Sun, 24 Sep 2023 23:23:10 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-        id 70DD5212C806; Sun, 24 Sep 2023 23:23:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 70DD5212C806
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695622989;
-        bh=2xrhzkEViEfVOiT8nto8oySFIi+FFmL6zAlrDVeCJAE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=r/qr8X+iyVbBWH3ahnaAqPvmG4DKsR1CsaFJv4pznhyJ+ZINQ2VBZEiXwJ7JYwEB0
-         kqKlABFRHMkbUs7w3GTDDPdRvLp/K4Wn3I3DoDQn4yjbUaAa3N6ZpkMo6wiNXrNa40
-         Hr70943Ctuq6zuDmBK9W2xm8vjT0uGHespGRhxpM=
-From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
-        Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH v7] hv/hv_kvp_daemon:Support for keyfile based connection profile
-Date:   Sun, 24 Sep 2023 23:23:07 -0700
-Message-Id: <1695622987-17527-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 25 Sep 2023 02:24:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBC5E5C
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:24:29 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59beea5ce93so163511067b3.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 23:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695623068; x=1696227868; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=66Z0VZtyUYys0PdxQ7OWuDfLkowOhrBXRt1ENvc5Q34=;
+        b=jB3XHqWs6yBx5WFm/ZvWhL3vJyZ1RrstswS1CHBYQVjA+5yQleA1IiP+oAmzBPQSL2
+         7xD4uw80BXZGQgLJcxx9rIGZSU+SQZSzzH4ODoMx4WwCI5YSs2c+bSHUbtOPU6lgz97r
+         +VEiygMmgyY+sIEOkVBXK+piu9eAoY0UVApJF8AnDzsDgRx5kY3SnpKNBsqzziszXEoo
+         p41MadR22mNGWgqUUvIHLAXSF8xbyGK3q38etf++L7EyOxPAxaWRHwel0as+IL5K7nlp
+         C1MngSYx50qnvyzCSAPl8gJNIlhygFOL5yO8kB10lTaVjTAbUattbnOIJbkDWH0W6/be
+         /L5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695623068; x=1696227868;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=66Z0VZtyUYys0PdxQ7OWuDfLkowOhrBXRt1ENvc5Q34=;
+        b=o3b4hXlZMvWeG4MeqJ3ssKYbgv/cMrKdFLlrgC10tW+vOHp4fi1wfioHA74r/9tvB8
+         R9pb8nIDbzqgSRnVmB5zEh3xG4gPLfj9ynhDNrhLQclowlS3xRFdPx2mP2KrOu+6cvXC
+         hacYIGMVpLzvWQSGOaUeXNd/clTBF5KkZgp172wCtDFa8FcTqS+kUrzZDRT6/AV+MYYr
+         ZTtjet5PKmQv1DgRXjZKk3L+79SA0Q33/otMkvN1wHKs4N4Dg14U6Hsd+DH1Z1BtXqGv
+         ReVFVJT+Vxs0lJVAC2oQgrUGEli3aXQMnvcVk5c/HDUMkZtbVU9yGaIe257+Dn5lAp9Y
+         p8Sg==
+X-Gm-Message-State: AOJu0Ywn9ZNBWfw/qwmSIB1IbCZ4qG08rFZeDT3j69hq2E+Yp8t2+qmL
+        tyLEQ9q4wXBtGD2t6USOapOQ7TfFsTXQ
+X-Google-Smtp-Source: AGHT+IFRzYD0MmvHuqoLSZgcjVTtth3pN3U1O0gxgnvc+hmvYLHm63JgsQnLUn8tN4x1rYF1tgr5YJW0Dle/
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a8a5:e1ea:d5a4:5980])
+ (user=irogers job=sendgmr) by 2002:a81:4c90:0:b0:59e:8f97:27ed with SMTP id
+ z138-20020a814c90000000b0059e8f9727edmr156885ywa.1.1695623068705; Sun, 24 Sep
+ 2023 23:24:28 -0700 (PDT)
+Date:   Sun, 24 Sep 2023 23:23:23 -0700
+Message-Id: <20230925062323.840799-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Subject: [PATCH v1] perf pmus: Make PMU alias name loading lazy
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ifcfg config file support in NetworkManger is deprecated. This patch
-provides support for the new keyfile config format for connection
-profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
-to generate the new network configuration in keyfile
-format(.ini-style format) along with a ifcfg format configuration.
-The ifcfg format configuration is also retained to support easy
-backward compatibility for distro vendors. These configurations are
-stored in temp files which are further translated using the
-hv_set_ifconfig.sh script. This script is implemented by individual
-distros based on the network management commands supported.
-For example, RHEL's implementation could be found here:
-https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
-Debian's implementation could be found here:
-https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
+PMU alias names were computed when the first perf_pmu is created,
+scanning all PMUs in event sources for a file called alias that
+generally doesn't exist. Switch to trying to load the file when all
+PMU related files are loaded in lookup. This would cause a PMU name
+lookup of an alias name to fail if no PMUs were loaded, so in that
+case all PMUs are loaded and the find repeated. The overhead is
+similar but in the (very) general case not all PMUs are scanned for
+the alias file.
 
-The next part of this support is to let the Distro vendors consume
-these modified implementations to the new configuration format.
+As the overhead occurs once per invocation it doesn't show in perf
+bench internals pmu-scan. On a tigerlake machine, the number of openat
+system calls for an event of cpu/cycles/ with perf stat reduces from
+94 to 69 (ie 25 fewer openat calls).
 
-Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- Changes v6->v7
- * fix freeing mac_addr variable in error cases
----
- tools/hv/hv_kvp_daemon.c    | 225 +++++++++++++++++++++++++++++++-----
- tools/hv/hv_set_ifconfig.sh |  39 ++++++-
- 2 files changed, 229 insertions(+), 35 deletions(-)
+ tools/perf/arch/x86/util/pmu.c | 139 ---------------------------------
+ tools/perf/util/pmu.c          |  39 ++++-----
+ tools/perf/util/pmu.h          |   2 -
+ tools/perf/util/pmus.c         |  10 +++
+ 4 files changed, 31 insertions(+), 159 deletions(-)
 
-diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-index 27f5e7dfc2f7..c41b3c26111d 100644
---- a/tools/hv/hv_kvp_daemon.c
-+++ b/tools/hv/hv_kvp_daemon.c
-@@ -1171,13 +1171,80 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
- 	return 0;
- }
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index f428cffb0378..8b53ca468a50 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -17,15 +17,6 @@
+ #include "../../../util/pmus.h"
+ #include "env.h"
  
-+/*
-+ * Only IPv4 subnet strings needs to be converted to plen
-+ * For IPv6 the subnet is already privided in plen format
-+ */
-+static int kvp_subnet_to_plen(char *subnet_addr_str)
-+{
-+	int plen = 0;
-+	struct in_addr subnet_addr4;
-+
-+	/*
-+	 * Convert subnet address to binary representation
-+	 */
-+	if (inet_pton(AF_INET, subnet_addr_str, &subnet_addr4) == 1) {
-+		uint32_t subnet_mask = ntohl(subnet_addr4.s_addr);
-+
-+		while (subnet_mask & 0x80000000) {
-+			plen++;
-+			subnet_mask <<= 1;
-+		}
-+	} else {
-+		return -1;
-+	}
-+
-+	return plen;
-+}
-+
-+static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-+				int is_ipv6)
-+{
-+	char addr[INET6_ADDRSTRLEN];
-+	char subnet_addr[INET6_ADDRSTRLEN];
-+	int error, i = 0;
-+	int ip_offset = 0, subnet_offset = 0;
-+	int plen;
-+
-+	memset(addr, 0, sizeof(addr));
-+	memset(subnet_addr, 0, sizeof(subnet_addr));
-+
-+	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-+				   (MAX_IP_ADDR_SIZE * 2)) &&
-+				   parse_ip_val_buffer(subnet,
-+						       &subnet_offset,
-+						       subnet_addr,
-+						       (MAX_IP_ADDR_SIZE *
-+							2))) {
-+		if (!is_ipv6)
-+			plen = kvp_subnet_to_plen((char *)subnet_addr);
-+		else
-+			plen = atoi(subnet_addr);
-+
-+		if (plen < 0)
-+			return plen;
-+
-+		error = fprintf(f, "address%d=%s/%d\n", ++i, (char *)addr,
-+				plen);
-+		if (error < 0)
-+			return error;
-+
-+		memset(addr, 0, sizeof(addr));
-+		memset(subnet_addr, 0, sizeof(subnet_addr));
-+	}
-+
-+	return 0;
-+}
-+
- static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+-struct pmu_alias {
+-	char *name;
+-	char *alias;
+-	struct list_head list;
+-};
+-
+-static LIST_HEAD(pmu_alias_name_list);
+-static bool cached_list;
+-
+ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
  {
- 	int error = 0;
- 	char if_file[PATH_MAX];
--	FILE *file;
-+	char nm_file[PATH_MAX];
-+	FILE *ifcfg_file, *nmfile;
- 	char cmd[PATH_MAX];
- 	char *mac_addr;
-+	int is_ipv6;
- 	int str_len;
- 
- 	/*
-@@ -1197,7 +1264,7 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	 * in a given distro to configure the interface and so are free
- 	 * ignore information that may not be relevant.
- 	 *
--	 * Here is the format of the ip configuration file:
-+	 * Here is the ifcfg format of the ip configuration file:
- 	 *
- 	 * HWADDR=macaddr
- 	 * DEVICE=interface name
-@@ -1220,6 +1287,32 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	 * tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
- 	 * IPV6NETMASK.
- 	 *
-+	 * Here is the keyfile format of the ip configuration file:
-+	 *
-+	 * [ethernet]
-+	 * mac-address=macaddr
-+	 * [connection]
-+	 * interface-name=interface name
-+	 *
-+	 * [ipv4]
-+	 * method=<protocol> (where <protocol> is "auto" if DHCP is configured
-+	 *                       or "manual" if no boot-time protocol should be used)
-+	 *
-+	 * address1=ipaddr1/plen
-+	 * address2=ipaddr2/plen
-+	 *
-+	 * gateway=gateway1;gateway2
-+	 *
-+	 * dns=dns1;dns2
-+	 *
-+	 * [ipv6]
-+	 * address1=ipaddr1/plen
-+	 * address2=ipaddr2/plen
-+	 *
-+	 * gateway=gateway1;gateway2
-+	 *
-+	 * dns=dns1;dns2
-+	 *
- 	 * The host can specify multiple ipv4 and ipv6 addresses to be
- 	 * configured for the interface. Furthermore, the configuration
- 	 * needs to be persistent. A subsequent GET call on the interface
-@@ -1227,14 +1320,29 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	 * call.
- 	 */
- 
-+	/*
-+	 * We are populating both ifcfg and nmconnection files
-+	 */
- 	snprintf(if_file, sizeof(if_file), "%s%s%s", KVP_CONFIG_LOC,
--		"/ifcfg-", if_name);
-+		 "/ifcfg-", if_name);
- 
--	file = fopen(if_file, "w");
-+	ifcfg_file = fopen(if_file, "w");
- 
--	if (file == NULL) {
-+	if (!ifcfg_file) {
- 		syslog(LOG_ERR, "Failed to open config file; error: %d %s",
--				errno, strerror(errno));
-+		       errno, strerror(errno));
-+		return HV_E_FAIL;
-+	}
-+
-+	snprintf(nm_file, sizeof(nm_file), "%s%s%s%s", KVP_CONFIG_LOC,
-+		 "/", if_name, ".nmconnection");
-+
-+	nmfile = fopen(nm_file, "w");
-+
-+	if (!nmfile) {
-+		syslog(LOG_ERR, "Failed to open config file; error: %d %s",
-+		       errno, strerror(errno));
-+		fclose(ifcfg_file);
- 		return HV_E_FAIL;
- 	}
- 
-@@ -1248,14 +1356,31 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 		goto setval_error;
- 	}
- 
--	error = kvp_write_file(file, "HWADDR", "", mac_addr);
--	free(mac_addr);
-+	error = kvp_write_file(ifcfg_file, "HWADDR", "", mac_addr);
-+	if (error < 0)
-+		goto setmac_error;
-+
-+	error = kvp_write_file(ifcfg_file, "DEVICE", "", if_name);
-+	if (error < 0)
-+		goto setmac_error;
-+
-+	error = fprintf(nmfile, "\n[connection]\n");
-+	if (error < 0)
-+		goto setmac_error;
-+
-+	error = kvp_write_file(nmfile, "interface-name", "", if_name);
- 	if (error)
--		goto setval_error;
-+		goto setmac_error;
-+
-+	error = fprintf(nmfile, "\n[ethernet]\n");
-+	if (error < 0)
-+		goto setmac_error;
- 
--	error = kvp_write_file(file, "DEVICE", "", if_name);
-+	error = kvp_write_file(nmfile, "mac-address", "", mac_addr);
- 	if (error)
--		goto setval_error;
-+		goto setmac_error;
-+
-+	free(mac_addr);
- 
- 	/*
- 	 * The dhcp_enabled flag is only for IPv4. In the case the host only
-@@ -1263,47 +1388,87 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	 * proceed to parse and pass the IPv6 information to the
- 	 * disto-specific script hv_set_ifconfig.
- 	 */
-+
-+	/*
-+	 * First populate the ifcfg file format
-+	 */
- 	if (new_val->dhcp_enabled) {
--		error = kvp_write_file(file, "BOOTPROTO", "", "dhcp");
-+		error = kvp_write_file(ifcfg_file, "BOOTPROTO", "", "dhcp");
- 		if (error)
- 			goto setval_error;
--
- 	} else {
--		error = kvp_write_file(file, "BOOTPROTO", "", "none");
-+		error = kvp_write_file(ifcfg_file, "BOOTPROTO", "", "none");
- 		if (error)
- 			goto setval_error;
- 	}
- 
--	/*
--	 * Write the configuration for ipaddress, netmask, gateway and
--	 * name servers.
--	 */
--
--	error = process_ip_string(file, (char *)new_val->ip_addr, IPADDR);
-+	error = process_ip_string(ifcfg_file, (char *)new_val->ip_addr,
-+				  IPADDR);
- 	if (error)
- 		goto setval_error;
- 
--	error = process_ip_string(file, (char *)new_val->sub_net, NETMASK);
-+	error = process_ip_string(ifcfg_file, (char *)new_val->sub_net,
-+				  NETMASK);
- 	if (error)
- 		goto setval_error;
- 
--	error = process_ip_string(file, (char *)new_val->gate_way, GATEWAY);
-+	error = process_ip_string(ifcfg_file, (char *)new_val->gate_way,
-+				  GATEWAY);
- 	if (error)
- 		goto setval_error;
- 
--	error = process_ip_string(file, (char *)new_val->dns_addr, DNS);
-+	error = process_ip_string(ifcfg_file, (char *)new_val->dns_addr, DNS);
- 	if (error)
- 		goto setval_error;
- 
--	fclose(file);
-+	if (new_val->addr_family == ADDR_FAMILY_IPV6) {
-+		error = fprintf(nmfile, "\n[ipv6]\n");
-+		is_ipv6 = 1;
-+		if (error < 0)
-+			goto setval_error;
-+	} else {
-+		error = fprintf(nmfile, "\n[ipv4]\n");
-+		if (error < 0)
-+			goto setval_error;
-+	}
-+
-+	if (new_val->dhcp_enabled) {
-+		error = kvp_write_file(nmfile, "method", "", "auto");
-+		if (error < 0)
-+			goto setval_error;
-+	} else {
-+		error = kvp_write_file(nmfile, "method", "", "manual");
-+		if (error < 0)
-+			goto setval_error;
-+	}
-+
-+	/*
-+	 * Write the configuration for ipaddress, netmask, gateway and
-+	 * name services
-+	 */
-+	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-+				     (char *)new_val->sub_net, is_ipv6);
-+	if (error < 0)
-+		goto setval_error;
-+
-+	error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-+	if (error < 0)
-+		goto setval_error;
-+
-+	error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-+	if (error < 0)
-+		goto setval_error;
-+
-+	fclose(nmfile);
-+	fclose(ifcfg_file);
- 
- 	/*
- 	 * Now that we have populated the configuration file,
- 	 * invoke the external script to do its magic.
- 	 */
- 
--	str_len = snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s",
--			   "hv_set_ifconfig", if_file);
-+	str_len = snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s %s",
-+			   "hv_set_ifconfig", if_file, nm_file);
- 	/*
- 	 * This is a little overcautious, but it's necessary to suppress some
- 	 * false warnings from gcc 8.0.1.
-@@ -1316,14 +1481,16 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 
- 	if (system(cmd)) {
- 		syslog(LOG_ERR, "Failed to execute cmd '%s'; error: %d %s",
--				cmd, errno, strerror(errno));
-+		       cmd, errno, strerror(errno));
- 		return HV_E_FAIL;
- 	}
- 	return 0;
--
-+setmac_error:
-+	free(mac_addr);
- setval_error:
- 	syslog(LOG_ERR, "Failed to write config file");
--	fclose(file);
-+	fclose(ifcfg_file);
-+	fclose(nmfile);
- 	return error;
+ #ifdef HAVE_AUXTRACE_SUPPORT
+@@ -41,136 +32,6 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
+ 	return NULL;
  }
  
-diff --git a/tools/hv/hv_set_ifconfig.sh b/tools/hv/hv_set_ifconfig.sh
-index d10fe35b7f25..ae5a7a8249a2 100755
---- a/tools/hv/hv_set_ifconfig.sh
-+++ b/tools/hv/hv_set_ifconfig.sh
-@@ -18,12 +18,12 @@
- #
- # This example script is based on a RHEL environment.
- #
--# Here is the format of the ip configuration file:
-+# Here is the ifcfg format of the ip configuration file:
- #
- # HWADDR=macaddr
- # DEVICE=interface name
- # BOOTPROTO=<protocol> (where <protocol> is "dhcp" if DHCP is configured
--#                       or "none" if no boot-time protocol should be used)
-+# 			or "none" if no boot-time protocol should be used)
- #
- # IPADDR0=ipaddr1
- # IPADDR1=ipaddr2
-@@ -41,6 +41,32 @@
- # tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
- # IPV6NETMASK.
- #
-+# Here is the keyfile format of the ip configuration file:
-+#
-+# [ethernet]
-+# mac-address=macaddr
-+# [connection]
-+# interface-name=interface name
-+#
-+# [ipv4]
-+# method=<protocol> (where <protocol> is "auto" if DHCP is configured
-+#                       or "manual" if no boot-time protocol should be used)
-+#
-+# address1=ipaddr1/plen
-+# address=ipaddr2/plen
-+#
-+# gateway=gateway1;gateway2
-+#
-+# dns=dns1;
-+#
-+# [ipv6]
-+# address1=ipaddr1/plen
-+# address2=ipaddr1/plen
-+#
-+# gateway=gateway1;gateway2
-+#
-+# dns=dns1;dns2
-+#
- # The host can specify multiple ipv4 and ipv6 addresses to be
- # configured for the interface. Furthermore, the configuration
- # needs to be persistent. A subsequent GET call on the interface
-@@ -48,18 +74,19 @@
- # call.
- #
- 
+-static void pmu_alias__delete(struct pmu_alias *pmu_alias)
+-{
+-	if (!pmu_alias)
+-		return;
 -
+-	zfree(&pmu_alias->name);
+-	zfree(&pmu_alias->alias);
+-	free(pmu_alias);
+-}
 -
- echo "IPV6INIT=yes" >> $1
- echo "NM_CONTROLLED=no" >> $1
- echo "PEERDNS=yes" >> $1
- echo "ONBOOT=yes" >> $1
- 
+-static struct pmu_alias *pmu_alias__new(char *name, char *alias)
+-{
+-	struct pmu_alias *pmu_alias = zalloc(sizeof(*pmu_alias));
 -
- cp $1 /etc/sysconfig/network-scripts/
+-	if (pmu_alias) {
+-		pmu_alias->name = strdup(name);
+-		if (!pmu_alias->name)
+-			goto out_delete;
+-
+-		pmu_alias->alias = strdup(alias);
+-		if (!pmu_alias->alias)
+-			goto out_delete;
+-	}
+-	return pmu_alias;
+-
+-out_delete:
+-	pmu_alias__delete(pmu_alias);
+-	return NULL;
+-}
+-
+-static int setup_pmu_alias_list(void)
+-{
+-	int fd, dirfd;
+-	DIR *dir;
+-	struct dirent *dent;
+-	struct pmu_alias *pmu_alias;
+-	char buf[MAX_PMU_NAME_LEN];
+-	FILE *file;
+-	int ret = -ENOMEM;
+-
+-	dirfd = perf_pmu__event_source_devices_fd();
+-	if (dirfd < 0)
+-		return -1;
+-
+-	dir = fdopendir(dirfd);
+-	if (!dir)
+-		return -errno;
+-
+-	while ((dent = readdir(dir))) {
+-		if (!strcmp(dent->d_name, ".") ||
+-		    !strcmp(dent->d_name, ".."))
+-			continue;
+-
+-		fd = perf_pmu__pathname_fd(dirfd, dent->d_name, "alias", O_RDONLY);
+-		if (fd < 0)
+-			continue;
+-
+-		file = fdopen(fd, "r");
+-		if (!file)
+-			continue;
+-
+-		if (!fgets(buf, sizeof(buf), file)) {
+-			fclose(file);
+-			continue;
+-		}
+-
+-		fclose(file);
+-
+-		/* Remove the last '\n' */
+-		buf[strlen(buf) - 1] = 0;
+-
+-		pmu_alias = pmu_alias__new(dent->d_name, buf);
+-		if (!pmu_alias)
+-			goto close_dir;
+-
+-		list_add_tail(&pmu_alias->list, &pmu_alias_name_list);
+-	}
+-
+-	ret = 0;
+-
+-close_dir:
+-	closedir(dir);
+-	return ret;
+-}
+-
+-static const char *__pmu_find_real_name(const char *name)
+-{
+-	struct pmu_alias *pmu_alias;
+-
+-	list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
+-		if (!strcmp(name, pmu_alias->alias))
+-			return pmu_alias->name;
+-	}
+-
+-	return name;
+-}
+-
+-const char *pmu_find_real_name(const char *name)
+-{
+-	if (cached_list)
+-		return __pmu_find_real_name(name);
+-
+-	setup_pmu_alias_list();
+-	cached_list = true;
+-
+-	return __pmu_find_real_name(name);
+-}
+-
+-static const char *__pmu_find_alias_name(const char *name)
+-{
+-	struct pmu_alias *pmu_alias;
+-
+-	list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
+-		if (!strcmp(name, pmu_alias->name))
+-			return pmu_alias->alias;
+-	}
+-	return NULL;
+-}
+-
+-const char *pmu_find_alias_name(const char *name)
+-{
+-	if (cached_list)
+-		return __pmu_find_alias_name(name);
+-
+-	setup_pmu_alias_list();
+-	cached_list = true;
+-
+-	return __pmu_find_alias_name(name);
+-}
+-
+ int perf_pmus__num_mem_pmus(void)
+ {
+ 	/* AMD uses IBS OP pmu and not a core PMU for perf mem/c2c */
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 0d81c059c91c..0f5c6ed257a8 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -937,16 +937,27 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+ 	return NULL;
+ }
  
-+chmod 600 $2
-+interface=$(echo $2 | awk -F - '{ print $2 }')
-+filename="${2##*/}"
+-const char * __weak
+-pmu_find_real_name(const char *name)
++static char *pmu_find_alias_name(struct perf_pmu *pmu, int dirfd)
+ {
+-	return name;
+-}
++	FILE *file = perf_pmu__open_file_at(pmu, dirfd, "alias");
++	char *line = NULL;
++	size_t line_len = 0;
++	ssize_t ret;
+ 
+-const char * __weak
+-pmu_find_alias_name(const char *name __maybe_unused)
+-{
+-	return NULL;
++	if (!file)
++		return NULL;
 +
-+sed '/\[connection\]/a autoconnect=true' $2 > /etc/NetworkManager/system-connections/${filename}
++	ret = getline(&line, &line_len, file);
++	if (ret < 0) {
++		fclose(file);
++		return NULL;
++	}
++	/* Remove trailing newline. */
++	if (ret > 0 && line[ret - 1] == '\n')
++		line[--ret] = '\0';
++
++	fclose(file);
++	return line;
+ }
  
--interface=$(echo $1 | awk -F - '{ print $2 }')
+ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+@@ -957,12 +968,10 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+ 	return max_precise;
+ }
  
- /sbin/ifdown $interface 2>/dev/null
- /sbin/ifup $interface 2>/dev/null
+-struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *lookup_name)
++struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
+ {
+ 	struct perf_pmu *pmu;
+ 	__u32 type;
+-	const char *name = pmu_find_real_name(lookup_name);
+-	const char *alias_name;
+ 
+ 	pmu = zalloc(sizeof(*pmu));
+ 	if (!pmu)
+@@ -995,18 +1004,12 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
+ 	pmu->is_core = is_pmu_core(name);
+ 	pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
+ 
+-	alias_name = pmu_find_alias_name(name);
+-	if (alias_name) {
+-		pmu->alias_name = strdup(alias_name);
+-		if (!pmu->alias_name)
+-			goto err;
+-	}
+-
+ 	pmu->type = type;
+ 	pmu->is_uncore = pmu_is_uncore(dirfd, name);
+ 	if (pmu->is_uncore)
+ 		pmu->id = pmu_id(name);
+ 	pmu->max_precise = pmu_max_precise(dirfd, pmu);
++	pmu->alias_name = pmu_find_alias_name(pmu, dirfd);
+ 	pmu->events_table = perf_pmu__find_events_table(pmu);
+ 	pmu_add_sys_aliases(pmu);
+ 	list_add_tail(&pmu->list, pmus);
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 04b317b17d66..bc807729a7cd 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -251,8 +251,6 @@ void perf_pmu__warn_invalid_formats(struct perf_pmu *pmu);
+ 
+ int perf_pmu__match(const char *pattern, const char *name, const char *tok);
+ 
+-const char *pmu_find_real_name(const char *name);
+-const char *pmu_find_alias_name(const char *name);
+ double perf_pmu__cpu_slots_per_cycle(void);
+ int perf_pmu__event_source_devices_scnprintf(char *pathname, size_t size);
+ int perf_pmu__pathname_scnprintf(char *buf, size_t size,
+diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+index 64e798e68a2d..ce4931461741 100644
+--- a/tools/perf/util/pmus.c
++++ b/tools/perf/util/pmus.c
+@@ -37,6 +37,8 @@ static LIST_HEAD(other_pmus);
+ static bool read_sysfs_core_pmus;
+ static bool read_sysfs_all_pmus;
+ 
++static void pmu_read_sysfs(bool core_only);
++
+ int pmu_name_len_no_suffix(const char *str, unsigned long *num)
+ {
+ 	int orig_len, len;
+@@ -124,6 +126,14 @@ struct perf_pmu *perf_pmus__find(const char *name)
+ 	pmu = perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirfd, name);
+ 	close(dirfd);
+ 
++	if (!pmu) {
++		/*
++		 * Looking up an inidividual PMU failed. This may mean name is
++		 * an alias, so read the PMUs from sysfs and try to find again.
++		 */
++		pmu_read_sysfs(core_pmu);
++		pmu = pmu_find(name);
++	}
+ 	return pmu;
+ }
+ 
 -- 
-2.34.1
+2.42.0.515.g380fc7ccd1-goog
 
