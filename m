@@ -2,160 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70427AD48C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72AC7AD48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbjIYJdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S233247AbjIYJdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbjIYJcz (ORCPT
+        with ESMTP id S233227AbjIYJdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:32:55 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BAAE8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:32:47 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32179d3c167so5058672f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695634366; x=1696239166; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4nJpZG2tAtobghc3P3l7oo6Kb3vx53cUibE5PZ7QWTY=;
-        b=PqAGTbP/DwNoorNrvOP2t8UqzutyDK4/p9idASGy0z9xvbXEiHz2V57DKkznVuGaG0
-         pl6QsGcO4rUZFl06eubF7CvlAgLdxJH5mU9+z0lfpsAl9ZUfcy05OFkFT4Ql+xZTPKYD
-         kjdteMC2ZBGMGW8MiWTKyBTF0oJNZEYDDepMYBqAqO0H2m9hx/jrO8sUlD5NHJs7t2gT
-         7DNCTNJ+xrgQ5LjuLuWqLGENqpJ//O46CLuGSwIckVu3+7rfSQixdoAtiZXfjhtNQd42
-         OlE9r96Vkb1+T+DqJbCVONGDxQmmnXajsruW+eMkYneZtffSNtoMmzGggf/XannR5bcq
-         aArg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695634366; x=1696239166;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4nJpZG2tAtobghc3P3l7oo6Kb3vx53cUibE5PZ7QWTY=;
-        b=fiuvBEesZfeFmucewR5zOEwU4somruTR/gDzf5JOsu4GBhlDoDnlglrCANJnu5XZcM
-         daYOolEAqajfKLiDqm9MGKSeKaKhXsEu8PmJOCv0ncNKusD2F2ud7bGgA3dvy1ovVJCF
-         pYh8lpo0Ticb6LRCHMkckKFeMQm3PgDlFzpbsWYjYmqnTUHk7K9YYOYcyhQ1YzVn23XZ
-         ZNPzAWtu3soRlglf5tP35pfvenHx8S6/7A/f77ANmY2MaomIO4poqv2ChChQ+iCT6oFv
-         SEkQgJ9n140mmJv8VR/eQoNvOEQMKLCoBArAlvWfKsq1pyIhERdmz4GXCOBugJbkbVlf
-         TVqA==
-X-Gm-Message-State: AOJu0YxDfITE2Ch+Acuhv+IEbSSj1gq3DWn12pp/ya1mT53DGY0W0GHr
-        Zr+m6+hTbRsoUlC3RJjwsXW+eA==
-X-Google-Smtp-Source: AGHT+IHJRhI5foNqhxWUfb0gniemoWHSVz5JsodxJnr+Xxx+Nz8D1PLe/CE6YNxn6l5nVwOF1ZvQiw==
-X-Received: by 2002:a5d:49c1:0:b0:321:7093:53f5 with SMTP id t1-20020a5d49c1000000b00321709353f5mr4947605wrs.64.1695634366110;
-        Mon, 25 Sep 2023 02:32:46 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.100])
-        by smtp.gmail.com with ESMTPSA id h16-20020adffd50000000b0031ad5fb5a0fsm11395139wrs.58.2023.09.25.02.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 02:32:45 -0700 (PDT)
-Message-ID: <af0060ef-5e18-44ed-a7ca-c2a42b1ce151@linaro.org>
-Date:   Mon, 25 Sep 2023 11:32:43 +0200
+        Mon, 25 Sep 2023 05:33:04 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5531ADA;
+        Mon, 25 Sep 2023 02:32:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RvHjJ6gBlz4f3pC8;
+        Mon, 25 Sep 2023 17:32:52 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBn+djEUxFlNbFlBQ--.26897S3;
+        Mon, 25 Sep 2023 17:32:53 +0800 (CST)
+Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
+ transition
+To:     Donald Buczek <buczek@molgen.mpg.de>,
+        Yu Kuai <yukuai1@huaweicloud.com>,
+        Dragan Stancevic <dragan@stancevic.com>, song@kernel.org
+Cc:     guoqing.jiang@linux.dev, it+raid@molgen.mpg.de,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        msmith626@gmail.com, "yangerkun@huawei.com" <yangerkun@huawei.com>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <CAPhsuW6R11y6vETeZ4vmFGmV6DRrj2gwhp1-Nm+csvtHb2nQYg@mail.gmail.com>
+ <20230822211627.1389410-1-dragan@stancevic.com>
+ <ab757e2b-3ff0-33d9-d30c-61669b738664@huaweicloud.com>
+ <2061b123-6332-1456-e7c3-b713752527fb@stancevic.com>
+ <07d5c7c2-c444-8747-ed6d-ca24231decd8@huaweicloud.com>
+ <cf765117-7270-1b98-7e82-82a1ca1daa2a@stancevic.com>
+ <0d79d1f9-00e8-93be-3c7c-244030521cd7@huaweicloud.com>
+ <ff996ffb-cba5-cc9b-2740-49ba4a1869b5@huaweicloud.com>
+ <07ef7b78-66d4-d3de-4e25-8a889b902e14@stancevic.com>
+ <63c63d93-30fc-0175-0033-846b93fe9eff@molgen.mpg.de>
+ <de7f6fba-c6e0-7549-199e-36548b68a862@stancevic.com>
+ <d48c6c4a-9b0e-20bc-7d40-2a88aa37524a@molgen.mpg.de>
+ <f79867f5-befb-0d7d-0c01-a42caa5d1466@molgen.mpg.de>
+ <fb261b77-4859-07bb-e586-8589741e0c9e@molgen.mpg.de>
+ <80e0f8aa-6d53-3109-37c0-b07c5a4b558c@huaweicloud.com>
+ <aef8af9e-a9bb-20ac-12b4-3e57e6062bd8@molgen.mpg.de>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <326fefc1-93a1-8dd8-e9ca-36d87d3c1c23@huaweicloud.com>
+Date:   Mon, 25 Sep 2023 17:32:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
-Content-Language: en-US
-To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "kw@linux.com" <kw@linux.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
-References: <20230830090707.278136-4-thippeswamy.havalige@amd.com>
- <20230906172500.GA231799@bhelgaas>
- <SN7PR12MB720159F33F53B40453111D128BFAA@SN7PR12MB7201.namprd12.prod.outlook.com>
- <c53958d2-d7bb-c859-b4d1-37e7c61f6107@linaro.org>
- <SN7PR12MB72017F144833876216DE74F28BFCA@SN7PR12MB7201.namprd12.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <SN7PR12MB72017F144833876216DE74F28BFCA@SN7PR12MB7201.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <aef8af9e-a9bb-20ac-12b4-3e57e6062bd8@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: gCh0CgBn+djEUxFlNbFlBQ--.26897S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtFWxurW7Gw13ArWrGF4fGrg_yoW3Jr4fpr
+        ySqF15Kr4kArW8Zw4jkwn7X340qa1kXw15Wr93Jr13Kan09ryFvrW3ZayY9a4UAw4rWFy7
+        XFW5GasxZrWDJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUq38nUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 11:22, Havalige, Thippeswamy wrote:
-> ++Krzysztof Wilczyński
+Hi,
+
+在 2023/09/25 17:11, Donald Buczek 写道:
+> On 9/25/23 03:11, Yu Kuai wrote:
+>> Hi,
+>>
+>> 在 2023/09/24 22:35, Donald Buczek 写道:
+>>> On 9/17/23 10:55, Donald Buczek wrote:
+>>>> On 9/14/23 08:03, Donald Buczek wrote:
+>>>>> On 9/13/23 16:16, Dragan Stancevic wrote:
+>>>>>> Hi Donald-
+>>>>>> [...]
+>>>>>> Here is a list of changes for 6.1:
+>>>>>>
+>>>>>> e5e9b9cb71a0 md: factor out a helper to wake up md_thread directly
+>>>>>> f71209b1f21c md: enhance checking in md_check_recovery()
+>>>>>> 753260ed0b46 md: wake up 'resync_wait' at last in 
+>>>>>> md_reap_sync_thread()
+>>>>>> 130443d60b1b md: refactor idle/frozen_sync_thread() to fix deadlock
+>>>>>> 6f56f0c4f124 md: add a mutex to synchronize idle and frozen in 
+>>>>>> action_store()
+>>>>>> 64e5e09afc14 md: refactor action_store() for 'idle' and 'frozen'
+>>>>>> a865b96c513b Revert "md: unlock mddev before reap sync_thread in 
+>>>>>> action_store"
+>>>>>
+>>>>> Thanks!
+>>>>>
+>>>>> I've put these patches on v6.1.52. I've started a script which 
+>>>>> transitions the three md-devices of a very active backup server 
+>>>>> through idle->check->idle every 6 minutes a few ours ago.  It went 
+>>>>> through ~400 iterations till now. No lock-ups so far.
+>>>>
+>>>> Oh dear, looks like the deadlock problem is _not_fixed with these 
+>>>> patches.
+>>>
+>>> Some more info after another incident:
+>>>
+>>> - We've hit the deadlock with 5.15.131 (so it is NOT introduced by 
+>>> any of the above patches)
+>>> - The symptoms are not exactly the same as with the original year-old 
+>>> problem. Differences:
+>>> - - mdX_raid6 is NOT busy looping
+>>> - - /sys/devices/virtual/block/mdX/md/array_state says "active" not 
+>>> "write pending"
+>>> - - `echo active > /sys/devices/virtual/block/mdX/md/array_state` 
+>>> does not resolve the deadlock
+>>> - - After hours in the deadlock state the system resumed operation 
+>>> when a script of mine read(!) lots of sysfs files.
+>>> - But in both cases, `echo idle > 
+>>> /sys/devices/virtual/block/mdX/md/sync_action` hangs as does all I/O 
+>>> operation on the raid.
+>>>
+>>> The fact that we didn't hit the problem for many month on 5.15.94 
+>>> might hint that it was introduced between 5.15.94 and 5.15.131
+>>>
+>>> We'll try to reproduce the problem on a test machine for analysis, 
+>>> but this make take time (vacation imminent for one...).
+>>>
+>>> But its not like these patches caused the problem. Any maybe they 
+>>> _did_ fix the original problem, as we didn't hit that one.
+>>
+>> Sorry for the late reply, yes, this looks like a different problem. I'm
+>> pretty confident that the orignal problem is fixed since that echo
+>> idle/frozen doesn't hold the lock 'reconfig_mutex' to wait for
+>> sync_thread to be done.
+>>
+>> I'll check patches between 5.15.94 and 5.15.131.
 > 
-> Can you please provide any update on this patch series.
+> We've got another event today. Some more information to save you work. 
+> I'm sorry, this comes dripping in, but as I said, currently we can't 
+> reproduce it and hit it on production machines only, where we have 
+> limited time to analyze:
 
-And now please think... how can he comment on this one liner since he
-did not receive anything else? Since he was not Cced on original
-submission, he has nothing from this thread in inbox. Only this one
-email with one line above.
+There is a way to clarify if io is stuck in underlying disks:
 
-How any reviewer can understand something without context? This does not
-work like that. You cannot just add someone to Cc to one line comment
-and expect that maintainers will start looking for your patches so they
-can perform the review, just because you need it.
+Once the problem is triggered and there are no disk activity:
 
-You must resend your patchset following Linux kernel process - Ccing all
-respective maintainers, not just some.
+cat /sys/kernel/debug/block/[disk]/hctx*/sched_tags | grep busy
+cat /sys/kernel/debug/block/[disk]/hctx*/tags | grep busy
 
-You have experienced contributors and maintainers in Xilinx/AMD, so
-please talk with them how the process should look like.
+If busy is not 0, means that io is stuck in underlying disk, then this
+problem is not related to raid, otherwise raid doesn't issue any io to
+underlyiung dikss and this problem is related to raid.
 
-Best regards,
-Krzysztof
+> 
+> * In the last two events, "echo idle > 
+> sys/devices/virtual/block/mdX/md/sync_action" was not even executing. 
+> This is not a trigger, but was a random victim when it happened the 
+> first time. This deceived me to believe this is some variation of the 
+> old problem.
+> 
+> * It's not filesystem related, yesterday `blkid -o value -s LABEL 
+> /dev/md1` was hanging, too, and today, for example, `df`.
+> 
+> * /sys/devices/virtual/block/md0/inflight today was (frozen at) "2      
+> 579"
+> 
+> * iotop showed no disk activity (on the raid) at all. Only a single 
+> member device had activity from time to time (usually after ~30 seconds, 
+> but sometimes after a few seconds) with usually 1-4 tps, but sometimes 
+> more, max 136 tps.
+> 
+> * As I said, I use a script to take a snapshot of various /sys and /proc 
+> information and running this script resolved the deadlock twice.
+> 
+> * The recorded stack traces of mdX_raid6 of the hanging raid recorded in 
+> the two events were
+> 
+>      [<0>] md_bitmap_unplug.part.0+0xce/0x100
+>      [<0>] raid5d+0xe4/0x5a0
+>      [<0>] md_thread+0xab/0x160
+>      [<0>] kthread+0x127/0x150
+>      [<0>] ret_from_fork+0x22/0x30
+> 
+> and
+> 
+>      [<0>] md_super_wait+0x72/0xa0
+>      [<0>] md_bitmap_unplug.part.0+0xce/0x100
+>      [<0>] raid5d+0xe4/0x5a0
+>      [<0>] md_thread+0xab/0x160
+>      [<0>] kthread+0x127/0x150
+>      [<0>] ret_from_fork+0x22/0x30
+
+Above stack shows that raid issue bitmap io to underlying disk and is
+waiting for such io to be done, except for bitmap io is broken in raid,
+this problem should not related to raid, above debugfs can help to
+clarify this.
+
+Thanks,
+Kuai
+
+> 
+> But note, that these probably were taken after the previous commands in 
+> the script already unfroze the system. Today I've manually looked at the 
+> stack while the system was still frozen, and it was just
+> 
+>      [<0>] md_thread+0x122/0x160
+>      [<0>] kthread+0x127/0x150
+>      [<0>] ret_from_fork+0x22/0x30
+> 
+> * Because I knew that my script seems to unblock the system, I've run it 
+> slowly line by line to see what actually unfreezes the system. There is 
+> one loop which takes "comm" "cmdline" and "stack" of all threads:
+> 
+>      for task in /proc/*/task/*; do
+>          echo  "# # $task: $(cat $task/comm) : $(cat $task/cmdline | 
+> xargs -0 echo)"
+>          cmd cat $task/stack
+>      done
+> 
+> I've added a few "read" to single-step it. Unfortunately, when it came 
+> to the 64 nfsd threads, I've got a bit impatient and hit "return" faster 
+> then I should have and when the unfreeze happened, I couldn't say 
+> exactly were it was triggered. But it must have been somewhere in this 
+> tail:
+> 
+> # # /proc/1299/task/1299: nfsd
+> 
+> [<0>] svc_recv+0x7a7/0x8c0 [sunrpc]
+> [<0>] nfsd+0xd6/0x140 [nfsd]
+> [<0>] kthread+0x127/0x150
+> [<0>] ret_from_fork+0x22/0x30
+> 
+> # # /proc/13/task/13: ksoftirqd/0
+> 
+> [<0>] smpboot_thread_fn+0xf3/0x140
+> [<0>] kthread+0x127/0x150
+> [<0>] ret_from_fork+0x22/0x30
+> 
+> # # /proc/130/task/130: cpuhp/22
+> 
+> [<0>] smpboot_thread_fn+0xf3/0x140
+> [<0>] kthread+0x127/0x150
+> [<0>] ret_from_fork+0x22/0x30
+> 
+> # # /proc/1300/task/1300: nfsd
+> 
+> [<0>] svc_recv+0x7a7/0x8c0 [sunrpc]
+> [<0>] nfsd+0xd6/0x140 [nfsd]
+> [<0>] kthread+0x127/0x150
+> [<0>] ret_from_fork+0x22/0x30
+> 
+> ## (3 more repetitions of other nfsd threads which exactly the same 
+> stack skipped here ##
+> 
+> So it appears, that possibly a cat /proc/PID/stack of a "ksoftirqd" or a 
+> (maybe) a "cpuhp" thread unblocks the system. "nfsd" seems unlikely, as 
+> there shouldn't and wasn't anything nfs-mounted from this system.
+> 
+> Conclusion: This is probably not related to mdraid at all and might be a 
+> problem of the block or some infrastructure subsystem. Do you agree?
+> 
+> Best
+> 
+>    Donald
 
