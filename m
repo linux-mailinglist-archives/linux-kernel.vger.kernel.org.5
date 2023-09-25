@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC39E7AD1AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13A37AD1B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 09:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbjIYHbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 03:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+        id S231441AbjIYHcX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 03:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIYHa7 (ORCPT
+        with ESMTP id S229561AbjIYHcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 03:30:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC9FC2;
-        Mon, 25 Sep 2023 00:30:53 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="412119813"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="412119813"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 00:30:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="697891983"
-X-IronPort-AV: E=Sophos;i="6.03,174,1694761200"; 
-   d="scan'208";a="697891983"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 00:30:48 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andy@kernel.org>)
-        id 1qkg3I-00000000HOB-1tpD;
-        Mon, 25 Sep 2023 10:30:44 +0300
-Date:   Mon, 25 Sep 2023 10:30:44 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RFC 1/6] ARM: pxa: Convert Spitz OHCI to GPIO descriptors
-Message-ID: <ZRE3JNVNqFN0knHl@smile.fi.intel.com>
-References: <20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr>
- <20230924-pxa-gpio-v1-1-2805b87d8894@skole.hr>
+        Mon, 25 Sep 2023 03:32:20 -0400
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE13CE;
+        Mon, 25 Sep 2023 00:32:14 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-59f82ad1e09so8742087b3.0;
+        Mon, 25 Sep 2023 00:32:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695627133; x=1696231933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xThiWU+H5y1zPVxgj/ULPXRi0AJOVCXd78/fbyAqgmg=;
+        b=uAbJMuub9pOa9N5Ha/hsAIk/p+BDxM2jWdLfhSWwQ+p8kJPovc7gqFq7L5dhpJ4oUf
+         R2A30bd/trmLhWjnXQq/d8tADp65XM6VQBWG4zf//APJcwDBW3CSo755P+5DxBYn56XE
+         EZ4LxwcS7f7ku9J79SzXE3CaBRDEIIlBsDZ9pL4vRHBnrzV4CP3hHO5nN/23sGvtvzCD
+         Sn4iTjKUmJ7+FaLVA3x4uyLUscQ89OvtOVP8NBvK1rk1RfolB3yq3mhakWHLhxC140aI
+         7qMOhBATQ/VYjlQnv6id0CnC6h2sfLK3OmQBom4K1bxiDijO2ppxhDYTa/gNu/N/GAI3
+         R6aA==
+X-Gm-Message-State: AOJu0YxBZc/s2MHXZfNuvLBvcEBFusAEcIXy6vPqSYLsC4SDNWkRAOnh
+        NZG3IPIUieOSkOvC+toPSlqqa7v+MI7ZjQ==
+X-Google-Smtp-Source: AGHT+IEvQzYxT9r00rsUVKsh5Moqkn6GgZLJE7uewZ7n1ZLSRrLFJ/ka7lxDnp2EBFr16oL7OGxg0Q==
+X-Received: by 2002:a81:bf48:0:b0:59b:6c4:b822 with SMTP id s8-20020a81bf48000000b0059b06c4b822mr6756049ywk.36.1695627132945;
+        Mon, 25 Sep 2023 00:32:12 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id x125-20020a0dee83000000b0057a918d6644sm2274542ywe.128.2023.09.25.00.32.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 00:32:12 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d815a5eee40so6369733276.2;
+        Mon, 25 Sep 2023 00:32:12 -0700 (PDT)
+X-Received: by 2002:a25:ec0c:0:b0:d81:bb7e:f47f with SMTP id
+ j12-20020a25ec0c000000b00d81bb7ef47fmr6282466ybh.44.1695627132454; Mon, 25
+ Sep 2023 00:32:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230924-pxa-gpio-v1-1-2805b87d8894@skole.hr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202309130632.LS04CPWu-lkp@intel.com> <feadd6a5-0f56-4575-9891-3a7d88e69e64@infradead.org>
+In-Reply-To: <feadd6a5-0f56-4575-9891-3a7d88e69e64@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 25 Sep 2023 09:32:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVRyaq5xT+2GGREHS95Nm86wHmmU0cE_qR5-eza1vMExw@mail.gmail.com>
+Message-ID: <CAMuHMdVRyaq5xT+2GGREHS95Nm86wHmmU0cE_qR5-eza1vMExw@mail.gmail.com>
+Subject: Re: sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:undefined reference
+ to `fb_io_read'
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-fbdev@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 06:42:54PM +0200, Duje Mihanović wrote:
-> Sharp's Spitz board still uses the legacy GPIO interface for controlling
-> a GPIO pin related to the USB host controller.
-> 
-> Convert this function to use the new GPIO descriptor interface.
+Hi Randy,
 
-...
+On Wed, Sep 13, 2023 at 7:13 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 9/12/23 15:42, kernel test robot wrote:
+> > FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   3669558bdf354cd352be955ef2764cde6a9bf5ec
+> > commit: 5f86367006c6a0662faaf36f753f437afe42fb63 fbdev/sh7760fb: Use fbdev I/O helpers
+> > date:   6 weeks ago
+> > config: sh-randconfig-r012-20230913 (https://download.01.org/0day-ci/archive/20230913/202309130632.LS04CPWu-lkp@intel.com/config)
+> > compiler: sh4-linux-gcc (GCC) 13.2.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309130632.LS04CPWu-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202309130632.LS04CPWu-lkp@intel.com/
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
+> >    sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x39c): undefined reference to `fb_alloc_cmap'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
+> >    sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
+> >    sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
+> >    sh4-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
+> >>> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
+> >>> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
+> >    sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
+> >    sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
+> >    sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
+>
+> The problem is CONFIG_FB=m and CONFIG_FB_SH7760=y.
+>
+> This can be fixed by this simple change ... if it's correct.
+>
+> or this Kconfig entry can be made into a tristate, but that may not
+> help with booting a system.
 
-> +	pxa_ohci->usb_host = gpiod_get(&pdev->dev, "usb-host", GPIOD_OUT_LOW);
-> +	if (IS_ERR(pxa_ohci->usb_host)) {
-> +		dev_warn(&pdev->dev, "failed to get USB host GPIO with %d\n",
-> +				(int) pxa_ohci->usb_host);
+What kind of problem do you foresee? Users could still configure it builtin
+when needed.
 
-Casting is no go in 99.9% cases in printf(), so use proper specifier.
-Hint: Nice looking message can be obtained by using %pe.
+I see no reason to restrict this to builtin.
+The driver already has all MODULE_*() boilerplate.
 
-> +		pxa_ohci->usb_host = NULL;
+> --- a/drivers/video/fbdev/Kconfig
+> +++ b/drivers/video/fbdev/Kconfig
+> @@ -1762,7 +1762,7 @@ config FB_COBALT
+>
+>  config FB_SH7760
+>         bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
+> -       depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
+> +       depends on FB=y && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
+>                 || CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
+>         select FB_IOMEM_HELPERS
+>         help
 
-Instead, call for _optional() API.
+Gr{oetje,eeting}s,
 
-> +	}
-
-...
-
-> +	if (pxa_ohci->usb_host)
-> +		gpiod_put(pxa_ohci->usb_host);
-
-Linus, Bart, do we have misdesigned _optinal() GPIO APIs?
-
-In GPIOLIB=n, the above requires that redundant check. Shouldn't we replace
-gpiod_put() stub to be simply no-op?
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
