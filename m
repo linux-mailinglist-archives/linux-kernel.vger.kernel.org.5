@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F047AD74C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAEC7AD74F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 13:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbjIYLzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 07:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        id S229972AbjIYL6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 07:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIYLze (ORCPT
+        with ESMTP id S229456AbjIYL6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 07:55:34 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBADDA
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:55:27 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3ae214a02a6so12244854b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:55:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695642926; x=1696247726;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJysYUBTudzCJaC5ycCUZJm2e0YF/I5kcWtF15e4Fdc=;
-        b=HNFK61kkWKQIx33Vhpjk9n300yKnXt9FUGA2RW4qdrMR2WIrLhiQF8IqhOUVpGLgfX
-         RU5b0UKdBJ1f7lfvwftTKreHeKZHYNJyOW7bOuYf4+CZGj3vfq6f95VIHc+NriCJ/8jK
-         ShdpM/1FqguiRE387p+GF4s9L96PjqPqLjAgLqo/tPldc03EKSrLhQtdUK2oAr5Iajz5
-         wnMQPowgj45TkFv2ENr3lj3gT0qKq8KpKPcXA7bvBsyQzmi0VPqIMoqqzCmh/d9T5VXH
-         w9nQ7/siz/GFB7Zwpy2shxJjnk46lBVBB4ymCMqMH0Z3I+DF+466e6LCyyWey52nyluW
-         oN3g==
-X-Gm-Message-State: AOJu0YxEGdiwucCIeI4f4Vl20P4imKIrie2XjF25T+ka9Fif8EiQUwqK
-        Cg2kzLxOqnRiVm/33Qupxdhx16mGeBxbuhRmKNhP8jeOqrmx
-X-Google-Smtp-Source: AGHT+IFAcAn45kItchAUgSWnxHagzXzt3p5LJ66zKO8Mh4B2rhrC/tnR+O9EXoGAIhW/7FdiZUGHPECMYUufV71m7IQn1sjj2jDB
+        Mon, 25 Sep 2023 07:58:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1FAA9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 04:58:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D001AC433C9;
+        Mon, 25 Sep 2023 11:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695643093;
+        bh=fnrScfrKmcUIyzu4ZV2T/hRDgwvbstyPfcJB+K3Mt+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T2+C6At+KWCOneZdF9ndelbxD6lIlwEqLD5B4GkLJVvPLAugbJF8PLgU/BjUeBdo5
+         cgcVcJLgJrZ1DRyBNc4dy5vsGnQ4z381cE68hRpDY1CFhHHGl81GpaRPzqjnmiQ4rU
+         OiLAys6htFg9zDX3e/XxSGLwRwakQQbhf14KxSVafObTTeKY6yjLw15m8UvpsJNZGA
+         slYjF1U0+VbCdXV8JqrjgI/daRFJFKbQ1s3+uHG5Zv8saXDZzbbnIzNeNmpD8e6dkV
+         TeTyhnrONUryeHgjgFn3fJ7Rh8SCcCyV9TjK4KlpCPcbiQAp2KB5y8FeeNECF2jvkS
+         xyJspr24HZCXw==
+Date:   Mon, 25 Sep 2023 19:58:03 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
+Cc:     pawell@cadence.com, pavel@denx.de, rogerq@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] usb: cdns3: Modify the return value of
+ cdns_set_active () to void when CONFIG_PM_SLEEP is disabled
+Message-ID: <20230925115803.GD2070044@nchen-desktop>
+References: <20230920144045.2165758-1-xiaolei.wang@windriver.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2199:b0:3ae:c95:ad2c with SMTP id
- be25-20020a056808219900b003ae0c95ad2cmr3860207oib.0.1695642926434; Mon, 25
- Sep 2023 04:55:26 -0700 (PDT)
-Date:   Mon, 25 Sep 2023 04:55:26 -0700
-In-Reply-To: <00000000000035aab005ec690a00@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004bd00c06062da279@google.com>
-Subject: Re: [syzbot] [serial?] KASAN: use-after-free Read in gsm_cleanup_mux
-From:   syzbot <syzbot+893c55305230e719a203@syzkaller.appspotmail.com>
-To:     daniel.starke@siemens.com, gregkh@linuxfoundation.org,
-        hdanton@sina.com, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920144045.2165758-1-xiaolei.wang@windriver.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On 23-09-20 22:40:45, Xiaolei Wang wrote:
+> The return type of cdns_set_active () is inconsistent
+> depending on whether CONFIG_PM_SLEEP is enabled, so the
+> return value is modified to void type.
+> 
+> Reported-by: Pavel Machek <pavel@denx.de>
+> Closes: https://lore.kernel.org/all/ZP7lIKUzD68XA91j@duo.ucw.cz/
+> Fixes: 2319b9c87fe2 ("usb: cdns3: Put the cdns set active part outside the spin lock")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+> Reviewed-by: Pavel Machek <pavel@denx.de>
+> Reviewed-by: Roger Quadros <rogerq@kernel.org>
+> ---
+> 
+> Changes in v3:
+> - Add Cc: stable@vger.kernel.org
+> 
+> ---
 
-commit 01aecd917114577c423f07cec0d186ad007d76fc
-Author: Daniel Starke <daniel.starke@siemens.com>
-Date:   Fri Jul 1 06:16:45 2022 +0000
+Above "---" doesn't need.
 
-    tty: n_gsm: fix tty registration before control channel open
+Peter
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10d431ea680000
-start commit:   a4412fdd49dc error-injection: Add prompt for function erro..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12d431ea680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d431ea680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cc4b2e0a8e8a8366
-dashboard link: https://syzkaller.appspot.com/bug?extid=893c55305230e719a203
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b1ca83880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1023c5e3880000
+>  drivers/usb/cdns3/core.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
+> index 4a4dbc2c1561..81a9c9d6be08 100644
+> --- a/drivers/usb/cdns3/core.h
+> +++ b/drivers/usb/cdns3/core.h
+> @@ -131,8 +131,7 @@ void cdns_set_active(struct cdns *cdns, u8 set_active);
+>  #else /* CONFIG_PM_SLEEP */
+>  static inline int cdns_resume(struct cdns *cdns)
+>  { return 0; }
+> -static inline int cdns_set_active(struct cdns *cdns, u8 set_active)
+> -{ return 0; }
+> +static inline void cdns_set_active(struct cdns *cdns, u8 set_active) { }
+>  static inline int cdns_suspend(struct cdns *cdns)
+>  { return 0; }
+>  #endif /* CONFIG_PM_SLEEP */
+> -- 
+> 2.25.1
+> 
 
-Reported-by: syzbot+893c55305230e719a203@syzkaller.appspotmail.com
-Fixes: 01aecd917114 ("tty: n_gsm: fix tty registration before control channel open")
+-- 
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks,
+Peter Chen
