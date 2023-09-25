@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ADA7AE1C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257BB7AE1C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjIYWis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
+        id S232024AbjIYWjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjIYWio (ORCPT
+        with ESMTP id S229585AbjIYWjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:38:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0727126
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0fDLKihRWQLrfuSj3jvyM87kiZ324I5dyke0dlSl6/U=; b=gVOU3bZEWFPlb/ZscqM+AjKdYV
-        bCmLwRJ+59OVEzBJriTe2B7GbFwbQ6vEVu9iPU7z0GJ2T6cQ8ENFzjfR9YCl4aUUD7fr/my2J2C+n
-        zSj36KmLk3alHQJqWSesv90jvAZgD+6Alq+PVVVYsmRVHvrf9SgLPjw+Hqgm6i26FW7Hzi+QP/1wW
-        tbjtLgdagf77505qd5gO0L9Rja0Zm1fFfiC1274yQhTS6PpBAO6fsZreRVAnJqBKaOANLNqBPHDbc
-        4StzGMWtGZwnKGvWLytSfTmNf0h141i7DtUYN5cL/52Q9Mt1DIPxyCtAaqWL7LosUXNyXLTwTIHE2
-        yKDoHDaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qkuDZ-0043Wy-Lo; Mon, 25 Sep 2023 22:38:18 +0000
-Date:   Mon, 25 Sep 2023 23:38:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 06/12] mempolicy trivia: use pgoff_t in shared mempolicy
- tree
-Message-ID: <ZRIL2XaGQl1nQJVq@casper.infradead.org>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
- <d09b9c35-2856-f749-6a13-64dfe6415ef1@google.com>
- <ZRIKTFaPOmD8RFDQ@casper.infradead.org>
+        Mon, 25 Sep 2023 18:39:19 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EBB9C;
+        Mon, 25 Sep 2023 15:39:11 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1695681542tdrh3qq7
+Received: from linux-lab-host.localdomain ( [116.30.124.152])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 26 Sep 2023 06:38:56 +0800 (CST)
+X-QQ-SSF: 01200000002000E0Y000B00A0000000
+X-QQ-FEAT: SFhf6fKhx//PtbsvyVYEL/gCYQ5xMD8J6LwaCKhulpVEfmJppGRkMmjMj3Bxv
+        8wdytKPzLVFJlPA82FjC2Ti02tsIHXGhP+Tb7KY7NXZeQX14PHTRUwY1uNtWxj7nVvdw5N8
+        ypB+bBYPZTiHwLTOfPVZ2o3kvUQu/slgqaqTTvxwiXKKuRoubwr8vyOsZC+zpBmOn8ghMQm
+        AG5bLu8EeQJF77jcZcCDh8tBPzUgxyBcq+ybkOO584JaaHxdkRqP9QMqdLVLQkwKUzkpjRx
+        8jfcH0gidHmiUdV76m98gNAlJ0swOV9yXGIUaa85PdpJ4c+AiLAPLqrLnY0hvGmFDffugib
+        /YpU8n7ZB5APg72lHoVQhLN1V/LOaRguiP/XLXevf0Z/Nx5UZypKAyBjtff2CMVyBvswmd1
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11640928319628299727
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
+Cc:     falcon@tinylab.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
+        paulburton@kernel.org, paulmck@kernel.org,
+        tsbogend@alpha.franken.de, w@1wt.eu,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Tim Bird <tim.bird@sony.com>
+Subject: [PATCH v1 3/7] DCE/DSE: Add a new scripts/Makefile.syscalls
+Date:   Tue, 26 Sep 2023 06:38:56 +0800
+Message-Id: <df1ce8c514c3efc1323d5ed69e6ecbdb2542b960.1695679700.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1695679700.git.falcon@tinylab.org>
+References: <cover.1695679700.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRIKTFaPOmD8RFDQ@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_PBL,RCVD_IN_SBL_CSS,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
+        *      [43.154.54.12 listed in zen.spamhaus.org]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [43.154.54.12 listed in list.dnswl.org]
+        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [43.154.54.12 listed in bl.score.senderscore.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 11:31:40PM +0100, Matthew Wilcox wrote:
-> On Mon, Sep 25, 2023 at 01:28:14AM -0700, Hugh Dickins wrote:
-> > Prefer the more explicit "pgoff_t" to "unsigned long" when dealing with
-> > a shared mempolicy tree.  Delete confusing comment about pseudo mm vmas.
-> 
-> Yes, with three quibbles
+When CONFIG_TRIM_UNUSED_SYSCALLS is enabled, get used syscalls from
+CONFIG_USED_SYSCALLS. CONFIG_USED_SYSCALLS may be a list of used
+syscalls or a file to store such a list.
 
-Actually, a fourth has occurred to me
+If CONFIG_USED_SYSCALLS is configured as a list of the used syscalls,
+directly record them in a used_syscalls variable, if it is a file to
+store the list, record the file name to the used_syscalls_file variable
+and put its content to the used_syscalls variable.
 
-> >  struct sp_node {
-> >  	struct rb_node nd;
-> > -	unsigned long start, end;
-> > +	pgoff_t start, end;
-> >  	struct mempolicy *policy;
-> >  };
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ scripts/Makefile.syscalls | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 scripts/Makefile.syscalls
 
-This data structure is unused outside mempolicy.c today, and you don't
-add any.  Perhaps we could move it from mempolicy.h to mempolicy.c?
+diff --git a/scripts/Makefile.syscalls b/scripts/Makefile.syscalls
+new file mode 100644
+index 000000000000..5864d3a85996
+--- /dev/null
++++ b/scripts/Makefile.syscalls
+@@ -0,0 +1,29 @@
++# SPDX-License-Identifier: GPL-2.0
++
++ifndef SCRIPTS_MAKEFILE_SYSCALLS
++  SCRIPTS_MAKEFILE_SYSCALLS = 1
++
++  ifdef CONFIG_TRIM_UNUSED_SYSCALLS
++    ifneq ($(wildcard $(CONFIG_USED_SYSCALLS)),)
++      used_syscalls_file = $(CONFIG_USED_SYSCALLS)
++      ifeq ($(shell test -s $(used_syscalls_file); echo $$?),0)
++        used_syscalls != cat $(CONFIG_USED_SYSCALLS)
++      endif
++    else
++      ifeq ($(subst /,,$(CONFIG_USED_SYSCALLS)),$(CONFIG_USED_SYSCALLS))
++        used_syscalls = $(CONFIG_USED_SYSCALLS)
++      else
++        $(error No such file: $(CONFIG_USED_SYSCALLS))
++      endif
++    endif
++
++    ifneq ($(used_syscalls),)
++      used_syscalls := $(subst $(space),|,$(strip $(used_syscalls)))
++    endif
++
++    used_syscalls_deps = $(used_syscalls_file) $(objtree)/.config
++
++    export used_syscalls used_syscalls_deps
++  endif # CONFIG_TRIM_UNUSED_SYSCALLS
++
++endif # SCRIPTS_MAKEFILE_SYSCALLS
+-- 
+2.25.1
+
