@@ -2,153 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21497ADBE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2207ADBD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbjIYPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S232978AbjIYPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbjIYPl3 (ORCPT
+        with ESMTP id S232660AbjIYPlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:41:29 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6CB1B5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:41:18 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-405417465aaso55420215e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:41:18 -0700 (PDT)
+        Mon, 25 Sep 2023 11:41:21 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F12121
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:41:13 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a65f9147ccso824047566b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:41:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695656477; x=1696261277; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ULa3MlvTg8hdkVamNSIOKh6gGISQMp+o/MnpLuMkMw=;
-        b=Jvgf32aOulSysep/r2PHBiTBZdzYWRtf4K6wg4FZgROpmxdftdMCKf94lamDtcClzp
-         2Ir/1RJ+EGwrzudCUpJ31V2eI9zwkhYH8htAOU/fluIvRAUJ8ZjzEKdLl1zmyCG0o6RS
-         Tpuk0OofYBaKTJXBNYIe1C2VcDTP7iUDR8UqHIAsxMnovc6Zpak82sd5jPu8EWS0/6e0
-         q52W9eVrT/uxRJURvueaDUuLt3m9I/0NzBhBv1tp0zirBvNMZtFrXj6TVFujwb7i8SDa
-         m2dAwXf9DgAXOwpAfGAHu7FTJowSPQKVneG/bDGwpVkAjRf/YXbKFfO7LxNW4YNGpndF
-         LTkQ==
+        d=linux-foundation.org; s=google; t=1695656472; x=1696261272; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sm7sOARsZZGXTiHqGHX7p0Bo9SfB/BQShVjUnQbebW0=;
+        b=JnIJxUgSc5i7nq8yqlPlGNsN86fRxw7kK3ZTfAWcKmWzTl8Y6WfCZBgo7TbC1Izui9
+         I1dWnCHcCMyThY7NNd7bdx39s06ENk9SgSmMbmbY99XgXbj7t5iSlYS4vaWcPdD1R9cK
+         Kr/Z6rhC+XKermGhza8ggPlRmJ1LrZVomtC08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695656477; x=1696261277;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5ULa3MlvTg8hdkVamNSIOKh6gGISQMp+o/MnpLuMkMw=;
-        b=UCFTHk2KmTefMIJCe7EvNO0NJA31by8XebHirnQiEfzk+IKmFlWuOQDakusb60zAe3
-         kaWTSIigyyW+NKZvddSQt1e4IUWeTZ9lpce+tR2aG/xe0To0L22PWeocMs40b8p4ff8k
-         OFH70dMBjh3sgGQulFqvUlubs2Ntr7reql+zerhQ5G7NGc2pdzvnys7h+CELz22hLZKb
-         WWOqKEC9y1zM77WQuaxsgwfWfABQon6TpEXmRdgi+7ln1OuxQVo+qfAbej6B9S6Passg
-         Ke4iFOEQFThdBVkbNWRgOWmfV4GEJiOoRHcb8/nc/PgAwM2H0a5ndfrKSHCs8SKO5eh3
-         3nfg==
-X-Gm-Message-State: AOJu0Yw5NpdKmukAzFnHNuqPvZoSVpXh/Wl8dBeJ5j4WBf2mt6fbRXua
-        UwRv5sF7qj2Ql7XiqVtVjZuvig==
-X-Google-Smtp-Source: AGHT+IHb0jMKHPIrHUVmhHGE2t1zsKfSVm5s11XMuXywDJehqNKi1IBjv6fCXsmLPchBNH+joVm2yg==
-X-Received: by 2002:a7b:ca56:0:b0:3fb:df34:176e with SMTP id m22-20020a7bca56000000b003fbdf34176emr5970660wml.31.1695656477042;
-        Mon, 25 Sep 2023 08:41:17 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id m15-20020a7bca4f000000b003fe4548188bsm15206155wml.48.2023.09.25.08.41.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 08:41:16 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        robert.foss@linaro.org, todor.too@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: [PATCH v6 11/17] media: qcom: camss: Allow clocks vfeN vfe_liteN or vfe_lite
-Date:   Mon, 25 Sep 2023 16:40:53 +0100
-Message-ID: <20230925154059.837152-12-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230925154059.837152-1-bryan.odonoghue@linaro.org>
-References: <20230925154059.837152-1-bryan.odonoghue@linaro.org>
+        d=1e100.net; s=20230601; t=1695656472; x=1696261272;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sm7sOARsZZGXTiHqGHX7p0Bo9SfB/BQShVjUnQbebW0=;
+        b=O+lHRqjTqjWftNle518Afhtzt4FkNq91sMYXEb3JwR/Be9S71XjmyOacotNl5J6Jt8
+         VcL5bvJ48NB5UljkO/Low2Cbz2ItCdlW4PtDRA57j5LAoCL69CUDYi/K0OtchNlq30Zj
+         Rpq9bEI/B1vhFFjOaSbZLMP7ZyibrhdYxFElQqZppiomKNTJsXtzfeScIRxHEsTTSLue
+         Mn+MYgeCOy7wuL766w1pckCYZD4KNwUJdQQIr/5pTIfO0CiM7jYRd52tjmmGY/W29RJ7
+         IamcTp8aDIsEaTjVKqSVc7i1DmFKlxym+lvKF4NHCRqcnFelZqmIBxSOkYS3EV7cUHTy
+         UbxA==
+X-Gm-Message-State: AOJu0Yxo0tA/rjQbqU/JJTriRWfB5bd1vBYdtBeKbuW8VOK/OoHA5tdT
+        cxd4zlF1X+WPSv/VFYoIasdQFepwS1q9HbL1OSD8Zw==
+X-Google-Smtp-Source: AGHT+IEA0obgVSTbxbOxjgkOBDcMqXVHTV9RwPKYtPE0d938NcyYll+LzAB4/mJoSEaANNKRkeCHmw==
+X-Received: by 2002:a17:906:5a44:b0:9ae:5253:175b with SMTP id my4-20020a1709065a4400b009ae5253175bmr6162949ejc.34.1695656472138;
+        Mon, 25 Sep 2023 08:41:12 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id s12-20020a170906168c00b009737b8d47b6sm6432190ejd.203.2023.09.25.08.41.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 08:41:11 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-9aa2c6f0806so821917566b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 08:41:11 -0700 (PDT)
+X-Received: by 2002:a17:906:3299:b0:9ae:6196:a4d0 with SMTP id
+ 25-20020a170906329900b009ae6196a4d0mr6349094ejw.17.1695656471127; Mon, 25 Sep
+ 2023 08:41:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230923191420.10c42e4f@rorschach.local.home> <CAHk-=wh=aOhPAJn-E8T+GofoBeCtXuoEXZcw6A009MO4s3mNAA@mail.gmail.com>
+ <20230925105335.5d8f6af0@rorschach.local.home>
+In-Reply-To: <20230925105335.5d8f6af0@rorschach.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Sep 2023 08:40:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjnHNfd8BqA=CxiAeOnPRDw=5DUJCakCJqtRJ8t=JWCZQ@mail.gmail.com>
+Message-ID: <CAHk-=wjnHNfd8BqA=CxiAeOnPRDw=5DUJCakCJqtRJ8t=JWCZQ@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes for 6.6-rc2
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of Video Front End - VFE or Image Front End - IFE supported
-with new SoCs can vary both for the full and lite cases.
+On Mon, 25 Sept 2023 at 07:53, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> These dentries and inodes are allocated for the top level directory and
+> wasting memory for most users. When an instance is created it makes
+> matters even worse.
 
-For example sdm845 has one vfe_lite and two vfe interfaces with the vfe
-clock called simply "vfe_lite" with no integer postfix. sc8280xp has four
-vfe and four vfe lite blocks.
+So honestly, dentries are *tiny*. They are probably not any bigger
+than the backing data structures you use to keep track of the names in
+teh first place.
 
-At the moment we declare vfe_lite0 and vfe_lite1 for sm8250 but never set
-those clocks because we don't match the strings.
+The memory cost is likely almost from the inodes, which are indeed
+pretty big and fat.
 
-We need to support the following clock name formats
+> If there's a better way to achieve the same thing, I'll happily do it.
 
-- vfeN
-- vfe_liteN
-- vfe_lite
+Do you actually *need* individual inodes for each of the entries in tracefd?
 
-with N being any reasonably sized integer.
+Because I think the *big* memory savings would be to use one single
+inode for every file (make directories have individual inodes,
+anything else will confuse user-space 'pwd' etc mightily)
 
-There are two sites in this code which need to do the same thing,
-constructing and matching strings with the pattern above, so encapsulate
-the logic in one function.
+Then you'd
 
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/camss-vfe.c | 22 ++++++++++++++-----
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ (a) have the actual tracefs-specific data in dentry->d_fsdata
 
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index db8f68819ded9..4db0d0a1c6a51 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -431,6 +431,20 @@ void vfe_isr_reset_ack(struct vfe_device *vfe)
- 	complete(&vfe->reset_complete);
- }
- 
-+static int vfe_match_clock_names(struct vfe_device *vfe,
-+				 struct camss_clock *clock)
-+{
-+	char vfe_name[7]; /* vfeXXX\0 */
-+	char vfe_lite_name[12]; /* vfe_liteXXX\0 */
-+
-+	snprintf(vfe_name, sizeof(vfe_name), "vfe%d", vfe->id);
-+	snprintf(vfe_lite_name, sizeof(vfe_lite_name), "vfe_lite%d", vfe->id);
-+
-+	return (!strcmp(clock->name, vfe_name) ||
-+		!strcmp(clock->name, vfe_lite_name) ||
-+		!strcmp(clock->name, "vfe_lite"));
-+}
-+
- /*
-  * vfe_set_clock_rates - Calculate and set clock rates on VFE module
-  * @vfe: VFE device
-@@ -454,9 +468,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
- 	for (i = 0; i < vfe->nclocks; i++) {
- 		struct camss_clock *clock = &vfe->clock[i];
- 
--		if (!strcmp(clock->name, "vfe0") ||
--		    !strcmp(clock->name, "vfe1") ||
--		    !strcmp(clock->name, "vfe_lite")) {
-+		if (vfe_match_clock_names(vfe, clock)) {
- 			u64 min_rate = 0;
- 			long rate;
- 
-@@ -537,9 +549,7 @@ static int vfe_check_clock_rates(struct vfe_device *vfe)
- 	for (i = 0; i < vfe->nclocks; i++) {
- 		struct camss_clock *clock = &vfe->clock[i];
- 
--		if (!strcmp(clock->name, "vfe0") ||
--		    !strcmp(clock->name, "vfe1") ||
--		    !strcmp(clock->name, "vfe_lite")) {
-+		if (vfe_match_clock_names(vfe, clock)) {
- 			u64 min_rate = 0;
- 			unsigned long rate;
- 
--- 
-2.42.0
+ (b) use "-inode->i_op->getattr()" to make the stat() info look
+different for different files (if you even care, but you might)
 
+and I think that would be most of it.
+
+You might hit some gotcha somewhere - things like "dcache_readdir()
+will take the inode number just from the inode, and there's no
+callback for it", so if you care about showing unique inode numbers to
+user space, we might need to help you out some way.
+
+But that "reuse a single inode" is actually a very traditional
+pattern, even if I suspect that pattern doesn't remain anywhere. /proc
+used to do things like that, iirc.
+
+                        Linus
