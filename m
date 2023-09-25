@@ -2,184 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 093BC7ACCFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 01:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17E17ACD00
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 02:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjIXX7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Sep 2023 19:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S230034AbjIYAAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Sep 2023 20:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjIXX7d (ORCPT
+        with ESMTP id S229480AbjIYAAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Sep 2023 19:59:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56463E8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 16:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695599925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ets5PYkEN00cN7wgOm2RwQsLcoaUgwsPfQGHKYG1F6g=;
-        b=N0VUEXtr0AZhVLjjPVU4v94tWsDLMCxSn9xIIhBXdJ7/NqmCwlWsmj2YTXiRhlyEEnAkHu
-        AmvcR2WlJvH0Em3LdVZ7ZCXk6g9AII+NSce2r+WpQUiFGCQpI5BkOEWSjYuvkGsak32Puy
-        3pZ12SpE5wA6aAKMTMDveczR0tsm4LA=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-553-wLJ9tVN7O06TolqwfWoeIA-1; Sun, 24 Sep 2023 19:58:43 -0400
-X-MC-Unique: wLJ9tVN7O06TolqwfWoeIA-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2748327f37dso3715990a91.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Sep 2023 16:58:43 -0700 (PDT)
+        Sun, 24 Sep 2023 20:00:38 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A25DF;
+        Sun, 24 Sep 2023 17:00:30 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68cc1b70e05so1370761b3a.1;
+        Sun, 24 Sep 2023 17:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695600030; x=1696204830; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SRArSTXJud9iO+LuiOtWiYL7QKMVDyDtJlWe0NRhArI=;
+        b=Ux+GYKEIRxhpvtAB8yPxfzpokmw1YPXF3ghA5EnflkLv9vab91p0Ys9JmUdOhxdMI3
+         GTzhAu0UGYAoe4/Q8fEs1+T3+7TvucrRY/m6SOuU4MV2w4kXTx7zD69OS4HOa844dQaI
+         /ILeLILZEQ2gzFa7q2uOp2UI+4Okl9tjTWIIyxxfeNDPV/wHmA11gcLT3Qgjwj7evMyf
+         0sChrnfi2aoNYjTcrDMRErMmITGsVmuvPI5jMDbx6yzxW34qcK5m7f+opT1788V9/ifV
+         lPB3CzYHiOWCo/HELuaJVLLiMMHCpGQtCSRVVTc6F94NA9nJLjTHSQ9ij4Fb7+ClQjDa
+         vzqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695599922; x=1696204722;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ets5PYkEN00cN7wgOm2RwQsLcoaUgwsPfQGHKYG1F6g=;
-        b=Np5SkTWBKkeVUvBbD/UQI+tEK2zrdg/q/r/+JWt89hXLT+6VgDTn2zU4oVhuzIyxXj
-         yQiiV0Au5Tur7U/DtOPEOT3th4SScFQSgc2tRi/TZRqK7Xhsch7ldXtBuRlKSaYBdiFG
-         8Xt+2G/rWeOTa85nS/QRbmZS/EWH2pn7cnuIFfZ0HiuRkLaP+fxsbUApAvRUoPsVC/Zx
-         sXJYM/gyonoFUQEBg83C8f/dv/ccOCkJ1drc6x4+d35/ULLE984Jbe0sEUAGxDRd/I4V
-         34p1+Ykh5rhLgeWjp3sBthhUcv+P9GAor7LSSmf0xL5RBBrpj4Kgke3cfh4Pz14kThhI
-         CQhw==
-X-Gm-Message-State: AOJu0YzshuflS5wbQSw1fBTNmxQS6a0a99RimlKSYjaflZlFn5tnuHI7
-        z0gUzftQAsofA2MBBkp9fkPcDWfyekokG6pSux8vMHbcsuJQ/nsTD8hZirYCp4ULB/r1iZVU1nf
-        XTAv4p2QHRybMWG8COnxUKIRyMK6MzJyA
-X-Received: by 2002:a17:90a:2ca1:b0:26d:ae3:f6a6 with SMTP id n30-20020a17090a2ca100b0026d0ae3f6a6mr2819269pjd.18.1695599922199;
-        Sun, 24 Sep 2023 16:58:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFDUhf4oGjVLqD6nDiU8Yq56LBZmA3ph1fj5hxXW40AUTIUnA8R3a4yi1/uEa5ZPgJxtHjHow==
-X-Received: by 2002:a17:90a:2ca1:b0:26d:ae3:f6a6 with SMTP id n30-20020a17090a2ca100b0026d0ae3f6a6mr2819265pjd.18.1695599921841;
-        Sun, 24 Sep 2023 16:58:41 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id y9-20020a17090a16c900b002772faee740sm1216900pje.5.2023.09.24.16.58.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Sep 2023 16:58:40 -0700 (PDT)
-Message-ID: <9efb4685-7c28-d51d-fd5b-aa2de8e5ded2@redhat.com>
-Date:   Mon, 25 Sep 2023 09:58:35 +1000
+        d=1e100.net; s=20230601; t=1695600030; x=1696204830;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SRArSTXJud9iO+LuiOtWiYL7QKMVDyDtJlWe0NRhArI=;
+        b=B/LBQ/B4L1lrQJlQoQTsV35hvDT4jDDSf9f2Axq3ov5wtUUfhEc5V+i3DKd2W55135
+         TmcRFGUlJDnVG/uLj3JGqE9Iet+6SwZSo9YVxAqKFfMUFKv81U+CFddA7srCchbC7ctr
+         gpnIqPvKfQJeNyEa0ZuZ+oFbF0/fGPNZaN7GLml45y4YO+D8UhBNjNmfKjrT43uaVZLu
+         c/fAtOd3yWzyKsZEFo3G8+xUTo4QYbrqwlTNTq/TvRhiw2psK7gPQXmoYdPjDeiusGcg
+         1RShZMMA4lheN0uvhDbd9ddC2rYApCeV7eDg2EM8CjoUXRglgjPpEGl73Wi3QIjWI74K
+         aYqg==
+X-Gm-Message-State: AOJu0YzPtSR3VA5WdKd/YGbdhOfTd+AoS9Z0Oqg00QU2qJzJ/hRmRENf
+        S9wygJXHraneUsKUx/XO4mE=
+X-Google-Smtp-Source: AGHT+IFZjXcxo45vH04/tXWEB8aCKMyp6ne0ynOxQ45vG4yDpii988ZdHDNwsDmu48yUh4yj+Ln/+w==
+X-Received: by 2002:a05:6a00:999:b0:690:2ab8:2d67 with SMTP id u25-20020a056a00099900b006902ab82d67mr6461931pfg.1.1695600029966;
+        Sun, 24 Sep 2023 17:00:29 -0700 (PDT)
+Received: from sivslab-System-Product-Name ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id g23-20020aa78197000000b0068be348e35fsm6730219pfi.166.2023.09.24.17.00.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Sep 2023 17:00:29 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 08:00:26 +0800
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     kys@microsoft.com
+Cc:     haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tools: hv: kvp: fix memory leak in realloc failure
+ handling
+Message-ID: <20230925000026.GA1101960@sivslab-System-Product-Name>
+References: <20230924055148.1074754-1-visitorckw@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] virtio_balloon: Fix endless deflation and inflation on
- arm64
-Content-Language: en-US
-From:   Gavin Shan <gshan@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     xuanzhuo@linux.alibaba.com, mst@redhat.com,
-        linux-kernel@vger.kernel.org, zhenyzha@redhat.com,
-        shan.gavin@gmail.com, David Hildenbrand <david@redhat.com>
-References: <20230831011007.1032822-1-gshan@redhat.com>
-In-Reply-To: <20230831011007.1032822-1-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230924055148.1074754-1-visitorckw@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David and Michael,
-
-On 8/31/23 11:10, Gavin Shan wrote:
-> The deflation request to the target, which isn't unaligned to the
-> guest page size causes endless deflation and inflation actions. For
-> example, we receive the flooding QMP events for the changes on memory
-> balloon's size after a deflation request to the unaligned target is
-> sent for the ARM64 guest, where we have 64KB base page size.
+On Sun, Sep 24, 2023 at 01:51:48PM +0800, Kuan-Wei Chiu wrote:
+> In the previous code, there was a memory leak issue where the
+> previously allocated memory was not freed upon a failed realloc
+> operation. This patch addresses the problem by releasing the old memory
+> before setting the pointer to NULL in case of a realloc failure. This
+> ensures that memory is properly managed and avoids potential memory
+> leaks.
 > 
->    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64      \
->    -accel kvm -machine virt,gic-version=host -cpu host          \
->    -smp maxcpus=8,cpus=8,sockets=2,clusters=2,cores=2,threads=1 \
->    -m 1024M,slots=16,maxmem=64G                                 \
->    -object memory-backend-ram,id=mem0,size=512M                 \
->    -object memory-backend-ram,id=mem1,size=512M                 \
->    -numa node,nodeid=0,memdev=mem0,cpus=0-3                     \
->    -numa node,nodeid=1,memdev=mem1,cpus=4-7                     \
->      :                                                          \
->    -device virtio-balloon-pci,id=balloon0,bus=pcie.10
-> 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693272173, "microseconds": 88667},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272174, "microseconds": 89704},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272175, "microseconds": 90819},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272176, "microseconds": 91961},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272177, "microseconds": 93040},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272178, "microseconds": 94117},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272179, "microseconds": 95337},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272180, "microseconds": 96615},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272181, "microseconds": 97626},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272182, "microseconds": 98693},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->    {"timestamp": {"seconds": 1693272183, "microseconds": 99698},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272184, "microseconds": 100727},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272185, "microseconds": 90430},   \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    {"timestamp": {"seconds": 1693272186, "microseconds": 102999},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073676288}}
->       :
->    <The similar QMP events repeat>
-> 
-> Fix it by aligning the target up to the guest page size, 64KB in this
-> specific case. With this applied, no flooding QMP events are observed
-> and the memory balloon's size can be stablizied to 0x3ffe0000 soon
-> after the deflation request is sent.
-> 
->    { "execute" : "balloon", "arguments": { "value" : 1073672192 } }
->    {"return": {}}
->    {"timestamp": {"seconds": 1693273328, "microseconds": 793075},  \
->     "event": "BALLOON_CHANGE", "data": {"actual": 1073610752}}
->    { "execute" : "query-balloon" }
->    {"return": {"actual": 1073610752}}
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Zhenyu Zhang <zhenyzha@redhat.com>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 > ---
-> v2: Align @num_pages up to the guest page size in towards_target()
->      directly as David suggested.
-> ---
->   drivers/virtio/virtio_balloon.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
+>  tools/hv/hv_kvp_daemon.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
 > 
+> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> index 27f5e7dfc2f7..af180278d56d 100644
+> --- a/tools/hv/hv_kvp_daemon.c
+> +++ b/tools/hv/hv_kvp_daemon.c
+> @@ -209,11 +209,13 @@ static void kvp_update_mem_state(int pool)
+>  			 * We have more data to read.
+>  			 */
+>  			num_blocks++;
+> -			record = realloc(record, alloc_unit * num_blocks);
+> +			struct kvp_record *record_tmp =
+> +				realloc(record, alloc_unit * num_blocks);
+>  
+> -			if (record == NULL) {
+> +			if (record_tmp == NULL) {
+>  				syslog(LOG_ERR, "malloc failed");
+>  				kvp_release_lock(pool);
+> +				free(record);
+>  				exit(EXIT_FAILURE);
+>  			}
+>  			continue;
+> @@ -345,11 +347,15 @@ static int kvp_key_add_or_modify(int pool, const __u8 *key, int key_size,
+>  	 */
+>  	if (num_records == (ENTRIES_PER_BLOCK * num_blocks)) {
+>  		/* Need to allocate a larger array for reg entries. */
+> -		record = realloc(record, sizeof(struct kvp_record) *
+> -			 ENTRIES_PER_BLOCK * (num_blocks + 1));
+> +		struct kvp_record *record_tmp = realloc(
+> +			record, sizeof(struct kvp_record) * ENTRIES_PER_BLOCK *
+> +					(num_blocks + 1));
+>  
+> -		if (record == NULL)
+> +		if (record_tmp == NULL) {
+> +			free(record);
+>  			return 1;
+> +		}
+> +		record = record_tmp;
+>  		kvp_file_info[pool].num_blocks++;
+>  
+>  	}
+> -- 
+> 2.25.1
+>
+After tracing the code more thoroughly, I have come to the realization
+that the original codebase already handles memory management correctly.
+It verifies the success of the realloc operation before updating the
+pointer, which means there is no memory leak issue, and there is no
+need to release memory explicitly.
 
-If the patch looks good, could you please merge this to Linux 6.6.rc4 since
-it's something needed by our downstream. I hope it can land upstream as early
-as possible, thanks a lot.
+Consequently, my proposed changes are unnecessary and could potentially
+introduce problems if implemented.
 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 5b15936a5214..2d5d252ef419 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -395,7 +395,11 @@ static inline s64 towards_target(struct virtio_balloon *vb)
->   	virtio_cread_le(vb->vdev, struct virtio_balloon_config, num_pages,
->   			&num_pages);
->   
-> -	target = num_pages;
-> +	/*
-> +	 * Aligned up to guest page size to avoid inflating and deflating
-> +	 * balloon endlessly.
-> +	 */
-> +	target = ALIGN(num_pages, VIRTIO_BALLOON_PAGES_PER_PAGE);
->   	return target - vb->num_pages;
->   }
->   
-
-Thanks,
-Gavin
+Best regards,
+Kuan-Wei Chiu
 
