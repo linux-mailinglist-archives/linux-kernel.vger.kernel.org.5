@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 505BB7AD89B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1577AD886
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 15:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjIYNIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 09:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
+        id S231303AbjIYND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 09:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjIYNH6 (ORCPT
+        with ESMTP id S229595AbjIYND4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 09:07:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC19F;
-        Mon, 25 Sep 2023 06:07:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BC9B52184B;
-        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695647269;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
-        b=WuWEKx9uZNgebRn1eXtir9EL0GP9mnPuaumM2XM5cW+RLX12hK6xegeqM1q2kkX83OB7jJ
-        u3dUveWRAftHa6zIdyE+ykmq0sqYx1hq3we3sJ3jnrR8RocOEC6cp9olX+gwdnSgMX/IMn
-        /DTfy8hKpQJPCzfF8tEmTcH481J21jA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695647269;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uogSkl/Z/WJ9T6hoo/bSUzNSf4lFK3ehh10RUHSsUbk=;
-        b=dZm2wZEDU14MGy4UEhTV0Ga3DgrWFnu/B+ar28xBiul6F1kx4A8yuuBn8jC5n7B5ztwP5b
-        oOqWTQwozvJo8ZBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 75B4313580;
-        Mon, 25 Sep 2023 13:07:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id H8xEGyWGEWU6BAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 25 Sep 2023 13:07:49 +0000
-Date:   Mon, 25 Sep 2023 15:01:12 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
- previous transaction commit
-Message-ID: <20230925130112.GK13697@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230924131529.1275335-1-sashal@kernel.org>
- <20230924131529.1275335-13-sashal@kernel.org>
+        Mon, 25 Sep 2023 09:03:56 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E271103
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:03:47 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-77410032cedso397709785a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 06:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695647026; x=1696251826; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PLJaBCun5muI3mMA2tWhuILomu/amJZWSYYuZNcnf18=;
+        b=gwaDysEmb2VcMsThnsiWUuOuMnjK9+uKn5MTHtj8Rux/bUc/lS/peXSt7aSmqVUcGO
+         gDWGG08dPb0JRBbSDy56aQDaWYrRRzm4EVg0aHSx00ah47dfgHrX6tEmuSZ0QWHPvIvJ
+         BepsOL1VJAHPOGBnYaGJC9KnEEWaUbcsNwbjKdv2Aahia3aOp0EhtIAstXQZYIjBqqib
+         PBm96m2Hsj+PYmn1s+oXPKVfjMPvV8ONBvbsZZjOg8dyLbxi5dYqwDpWjgB+ep2NOk5U
+         dJfCGYOzZcTArVtu/FKvcZf09aEZhthBVdfCgydtvHTsmNwDLUZyVTZLaUJ7yNDh9Ip8
+         W6lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695647026; x=1696251826;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLJaBCun5muI3mMA2tWhuILomu/amJZWSYYuZNcnf18=;
+        b=Dtj0xbaMwn6HdxLidBfWcU3TwdC8Qc/etdNXqpJEeriUl9Fxtgg51yZSyaQ7gYeVCW
+         2m+MIwLUy4ro25Zuzlf8XNUDm54Tse0DXiqZw7AeYNW1rRNCO5EzhWpsZ7Eo9HerNi3e
+         5YKbbOPCNCmj3R0nHJtf9/LewORJbW1GOwtQO48IcH60X+vEH1sBb2W7ZDvj6QdMfASp
+         KrHqZjFqY55d6uFnGoRex8oYvfQt8+LiBDrbNA2sSynM/pooxW6VwaFaUBoCw46TRqhD
+         5QeKLNPvzja6NoWIRXAvZ5hWLSvfL9XELbp7MY5/TlfPZcpWC80KZsSCqvNaBi8zHtQc
+         yptA==
+X-Gm-Message-State: AOJu0YwMyZrmtw0C+gkh0z9vR/2rLEtLl4AK8or9Mil+iE/tt9dStf08
+        PFHcSsfr6tdav72r8/Y3sow=
+X-Google-Smtp-Source: AGHT+IFuRsomuLYw1c1/Gh5zNIZOFxMD/3ZFWSGrbzNA1H+GlhIDkoKlrX3x955Kav9y5K4KeTvwSQ==
+X-Received: by 2002:a05:620a:c86:b0:76d:aa23:f8e1 with SMTP id q6-20020a05620a0c8600b0076daa23f8e1mr6091192qki.27.1695647026300;
+        Mon, 25 Sep 2023 06:03:46 -0700 (PDT)
+Received: from GLSVMLIN.INI.CMU.EDU (GLSVMLIN.INI.CMU.EDU. [128.2.16.9])
+        by smtp.gmail.com with ESMTPSA id w8-20020ae9e508000000b0076cdc3b5beasm615381qkf.86.2023.09.25.06.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 06:03:45 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 09:03:43 -0400
+From:   "Gabriel L. Somlo" <gsomlo@gmail.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 12/40] soc/litex: litex_soc_ctrl: Convert to platform
+ remove callback returning void
+Message-ID: <ZRGFL+Z2Pw+EF5oe@GLSVMLIN.INI.CMU.EDU>
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+ <20230925095532.1984344-13-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230924131529.1275335-13-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230925095532.1984344-13-u.kleine-koenig@pengutronix.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
-> From: Josef Bacik <josef@toxicpanda.com>
+On Mon, Sep 25, 2023 at 11:55:03AM +0200, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new() which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
-> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 > 
-> Internally I got a report of very long stalls on normal operations like
-> creating a new file when auto relocation was running.  The reporter used
-> the 'bpf offcputime' tracer to show that we would get stuck in
-> start_transaction for 5 to 30 seconds, and were always being woken up by
-> the transaction commit.
-> 
-> Using my timing-everything script, which times how long a function takes
-> and what percentage of that total time is taken up by its children, I
-> saw several traces like this
-> 
-> 1083 took 32812902424 ns
->         29929002926 ns 91.2110% wait_for_commit_duration
->         25568 ns 7.7920e-05% commit_fs_roots_duration
->         1007751 ns 0.00307% commit_cowonly_roots_duration
->         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
->         271980 ns 0.00082% btrfs_run_delayed_items_duration
->         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
->         9656 ns 2.9427e-05% switch_commit_roots_duration
->         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
->         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
-> 
-> Here I was only tracing functions that happen where we are between
-> START_COMMIT and UNBLOCKED in order to see what would be keeping us
-> blocked for so long.  The wait_for_commit() we do is where we wait for a
-> previous transaction that hasn't completed it's commit.  This can
-> include all of the unpin work and other cleanups, which tends to be the
-> longest part of our transaction commit.
-> 
-> There is no reason we should be blocking new things from entering the
-> transaction at this point, it just adds to random latency spikes for no
-> reason.
-> 
-> Fix this by adding a PREP stage.  This allows us to properly deal with
-> multiple committers coming in at the same time, we retain the behavior
-> that the winner waits on the previous transaction and the losers all
-> wait for this transaction commit to occur.  Nothing else is blocked
-> during the PREP stage, and then once the wait is complete we switch to
-> COMMIT_START and all of the same behavior as before is maintained.
-> 
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Please postpone adding this patch to stable trees until 6.6 is
-released. Thanks.
+Thanks!
+Acked-by: Gabriel Somlo <gsomlo@gmail.com>
+
+> ---
+>  drivers/soc/litex/litex_soc_ctrl.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+> index f75790091d38..10813299aa10 100644
+> --- a/drivers/soc/litex/litex_soc_ctrl.c
+> +++ b/drivers/soc/litex/litex_soc_ctrl.c
+> @@ -120,12 +120,11 @@ static int litex_soc_ctrl_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static int litex_soc_ctrl_remove(struct platform_device *pdev)
+> +static void litex_soc_ctrl_remove(struct platform_device *pdev)
+>  {
+>  	struct litex_soc_ctrl_device *soc_ctrl_dev = platform_get_drvdata(pdev);
+>  
+>  	unregister_restart_handler(&soc_ctrl_dev->reset_nb);
+> -	return 0;
+>  }
+>  
+>  static struct platform_driver litex_soc_ctrl_driver = {
+> @@ -134,7 +133,7 @@ static struct platform_driver litex_soc_ctrl_driver = {
+>  		.of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
+>  	},
+>  	.probe = litex_soc_ctrl_probe,
+> -	.remove = litex_soc_ctrl_remove,
+> +	.remove_new = litex_soc_ctrl_remove,
+>  };
+>  
+>  module_platform_driver(litex_soc_ctrl_driver);
+> -- 
+> 2.40.1
+> 
