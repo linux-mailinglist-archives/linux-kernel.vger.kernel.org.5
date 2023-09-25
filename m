@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 828367AD4F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D412A7AD513
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 11:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjIYJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 05:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S230500AbjIYJ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 05:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjIYJzw (ORCPT
+        with ESMTP id S230219AbjIYJ4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 05:55:52 -0400
+        Mon, 25 Sep 2023 05:56:03 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F88CF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B45111
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 02:55:49 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJV-0007m4-Cv; Mon, 25 Sep 2023 11:55:37 +0200
+        id 1qkiJV-0007m5-FZ; Mon, 25 Sep 2023 11:55:37 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJT-008pye-W7; Mon, 25 Sep 2023 11:55:36 +0200
+        id 1qkiJU-008pyh-5O; Mon, 25 Sep 2023 11:55:36 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qkiJT-004dkQ-My; Mon, 25 Sep 2023 11:55:35 +0200
+        id 1qkiJT-004dkT-SK; Mon, 25 Sep 2023 11:55:35 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Joel Stanley <joel@jms.id.au>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 01/40] soc/aspeed: aspeed-lpc-ctrl: Convert to platform remove callback returning void
-Date:   Mon, 25 Sep 2023 11:54:52 +0200
-Message-Id: <20230925095532.1984344-2-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 02/40] soc/aspeed: aspeed-lpc-snoop: Convert to platform remove callback returning void
+Date:   Mon, 25 Sep 2023 11:54:53 +0200
+Message-Id: <20230925095532.1984344-3-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1863; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=T10onqHn9x5uUIg8BoRhKK1riwY5cUpQ2GEK0NPd3eU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhBGcn3H1WzwJha96bFOmLylL/5ZWUmdaf+6 I2kmTRasseJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYQQAKCRCPgPtYfRL+ ToJXB/oDQK1c2RVaj3HT1cFLqS0t5Kj2Z4VO1+1stBxATVkTrh6M5YnZnCd5X/oBGqZs4sEphpl 2qN2hiWYtlB6QsVkZph+lRVoYde9LJPTabvgU7DVh53UJ9fsgB17OzTx8QDiAEbjY9wb39AzvcH pIsyBU5Bzc2ueb8GILG8TOXMys5h1xMwnXUItIDFyDjCxWv4m7Jx0HVmlrVndL1l7b7LFzGr3IA 2FDDbEU85VC5GwjuTEqj1EKtN4zdSoVF9ZIe+/5nV3720fM5fomOwB0GLiAN7giPAtGPbADbCxn up/TSd62i75ftljnxjNYZrdiZubkMV9A+rLSx30ht7XOr5QR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1980; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=s5OXo8IjgAIoOI++baFbct5qYs8LXAKnsMuTokxyM5s=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlEVhCYZmwTQwRwpaBlgiWgdCOR1poUdZzdTNfO 289e8PgCMWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRFYQgAKCRCPgPtYfRL+ TiiWCACkZztwtGfEP0fOadeVp7hs+MCNN6d4UUjfO6Zsy8gNVffQtSyDmsLykYeJXelouzQRYYb BV/LFAVygkQaOKh3jf5umpHqgvB/j+1p0WYnHMhgi/EzjsAblt3X7nhl+ehDVrNJiO+X1oe1LY2 yAFJr2tQ4/XNl4TrglNSENIWhYK7QbOeIhJrFyth0VFyPhSKPbI6YJUrMG5xQvQaVJDQzoQk61t Y+v5GPuJXG24/9N7pHC15ECE7JRkBQ7iNgQHlXOm7LKxrz7+HJODd0SeUVh6geBJRZQvFpEiV7X 1/nFgf9ZLG5LPLeKPdfK76vs5hzCWmvhi3ByV3saEVaOrmEu
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -73,38 +74,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soc/aspeed/aspeed-lpc-ctrl.c | 6 ++----
+ drivers/soc/aspeed/aspeed-lpc-snoop.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-index 258894ed234b..e87038009d1b 100644
---- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-@@ -332,14 +332,12 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
+diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+index 773dbcbc03a6..888b5840c015 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
++++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+@@ -331,7 +331,7 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
  	return rc;
  }
  
--static int aspeed_lpc_ctrl_remove(struct platform_device *pdev)
-+static void aspeed_lpc_ctrl_remove(struct platform_device *pdev)
+-static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
++static void aspeed_lpc_snoop_remove(struct platform_device *pdev)
  {
- 	struct aspeed_lpc_ctrl *lpc_ctrl = dev_get_drvdata(&pdev->dev);
+ 	struct aspeed_lpc_snoop *lpc_snoop = dev_get_drvdata(&pdev->dev);
  
- 	misc_deregister(&lpc_ctrl->miscdev);
- 	clk_disable_unprepare(lpc_ctrl->clk);
+@@ -340,8 +340,6 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 1);
+ 
+ 	clk_disable_unprepare(lpc_snoop->clk);
 -
 -	return 0;
  }
  
- static const struct of_device_id aspeed_lpc_ctrl_match[] = {
-@@ -355,7 +353,7 @@ static struct platform_driver aspeed_lpc_ctrl_driver = {
- 		.of_match_table = aspeed_lpc_ctrl_match,
+ static const struct aspeed_lpc_snoop_model_data ast2400_model_data = {
+@@ -368,7 +366,7 @@ static struct platform_driver aspeed_lpc_snoop_driver = {
+ 		.of_match_table = aspeed_lpc_snoop_match,
  	},
- 	.probe = aspeed_lpc_ctrl_probe,
--	.remove = aspeed_lpc_ctrl_remove,
-+	.remove_new = aspeed_lpc_ctrl_remove,
+ 	.probe = aspeed_lpc_snoop_probe,
+-	.remove = aspeed_lpc_snoop_remove,
++	.remove_new = aspeed_lpc_snoop_remove,
  };
  
- module_platform_driver(aspeed_lpc_ctrl_driver);
+ module_platform_driver(aspeed_lpc_snoop_driver);
 -- 
 2.40.1
 
