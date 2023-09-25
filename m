@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838297AE1EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22227AE1EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 00:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbjIYWxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 18:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S233389AbjIYWxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 18:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIYWxD (ORCPT
+        with ESMTP id S229585AbjIYWxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 18:53:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E4411C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 15:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ObkMnogjR7AT/LW1zAxdgV1u7K5H5MNfT3ojmGk6Yp0=; b=t3zEN7V96HofLExgV+tpCTi2ve
-        UfkkqdQyE2SpZ00limGpIAdfAGYNqueYc0XVkjGiVFcPAP3ZlMtjQ1xbILOtj0AgKtSyl9gc7MxSD
-        h6YLtz06Mxju+HOmboVu4PxIlh+Rl3WlDQsw3X2/P+neK9oENv9N6BcHp01VPpZRv96b1A63tNqqj
-        QNZycvHPoizJsIOL/oprx19I5UAivPl8fKwiG2Nd/9JIpYvp0ePXHMkiX1oA9SeiDLDSEUb1mmy5n
-        gRQrzPwh+KZtQMcLeQRY1THaYViadVu8S3QUy2HubWxQ1Wuu8mz8ahlxi+7k2oVSlPXmC2FRM/Gl+
-        GrKoMkZA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qkuRR-0048aP-JD; Mon, 25 Sep 2023 22:52:37 +0000
-Date:   Mon, 25 Sep 2023 23:52:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 08/12] mempolicy: remove confusing MPOL_MF_LAZY dead code
-Message-ID: <ZRIPNSRSDH2PfG74@casper.infradead.org>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com>
- <2cb8b08a-a96c-2a61-94dd-4cd51ad0605d@google.com>
+        Mon, 25 Sep 2023 18:53:31 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC041101;
+        Mon, 25 Sep 2023 15:53:24 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c131ddfeb8so113976821fa.3;
+        Mon, 25 Sep 2023 15:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695682402; x=1696287202; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bTFA7XirNBxx9izY+xP7nJZlF6f4Z4aS9x4DgH10L+w=;
+        b=JOqkatnus5ajmrCEQEebjMr7QGKo3cOwW0b4FGF29eNiGmEPdFlLRKhkzC+XRXfNhk
+         45bWyGKGjHKmMYV6FgV9Vzmy6suYK9SnT23absVd2mn4mHB1Ure4rU7ZjN8R8zape8/n
+         A5kuhKElwwC/9sJm4BDZLCZp5tjOCnWgTtTo5+YpwOMCroEAtnZ565iIDyv5cQx7pFag
+         D/oyJR2B7NoDkcz/Chp7B8qUGDWbscI+GDokeOOayD90dZUTBlD9PIDleN4jLg/KS3hF
+         ygdNg93ID9TOB9HC+qd6vtika5h6HCkzhqx1OGb/cl6zyskAOHbUC6sMHhQfvvmJyln5
+         t69g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695682402; x=1696287202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bTFA7XirNBxx9izY+xP7nJZlF6f4Z4aS9x4DgH10L+w=;
+        b=q2So6PGqkdPQ3P8h2X7V2GOCiT5xynajPQntX8a3fB+DQoTvLTx3xYuc0nnFRKTGeW
+         Uxs8Sfby5USfMjbknuDILIB+x7pyKugVNgioTw2nD7IN2m1Rku6CZoRxpcv5pnsQKZDC
+         yRFuYnCMoc2Zdr/FIMO5UGIqyYr1mv29Yo+38cxQNZ0+n0+PlkyoGnB4fC7qO8yVgNpV
+         IGcal4wGvINThT5qJdVXmkDlnR29923WjoPugVOQBPXXT0LdEIhIuJI/Ih0nqaUItjpH
+         /lNucCcAYCOX4zbNgVKU1V+HymH6BUoiFINoADe5cxU9N6KFfKK+7Omlui2skuO88bI4
+         NnNw==
+X-Gm-Message-State: AOJu0Yyzo4X921sK5k5Bjw+hKJNqh5wBKgh+taJOrkxe3UqtZLqqPSE4
+        hm/w3Ni2gQrtvSld5NDGsEIomC5p5GLnV3pqNv8=
+X-Google-Smtp-Source: AGHT+IE3p/Ug53ilumG37rIY9wsCWRONmji0077f8KgSsK8jFRtg3RQHJxRz6SpWKAfhT9zEh+9HLkp9rVeABMCd5hg=
+X-Received: by 2002:a2e:960e:0:b0:2c0:21b6:e80c with SMTP id
+ v14-20020a2e960e000000b002c021b6e80cmr5797194ljh.35.1695682401626; Mon, 25
+ Sep 2023 15:53:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cb8b08a-a96c-2a61-94dd-4cd51ad0605d@google.com>
+References: <20230925020528.777578-1-yury.norov@gmail.com> <20230925020528.777578-5-yury.norov@gmail.com>
+ <dbfd06ab-26f3-7b32-6025-2c55e223c576@intel.com>
+In-Reply-To: <dbfd06ab-26f3-7b32-6025-2c55e223c576@intel.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Mon, 25 Sep 2023 15:53:10 -0700
+Message-ID: <CAAH8bW9azQv=bB0yGVTsMb0icboqsEZhig50d2YFdq0Qmo4g5Q@mail.gmail.com>
+Subject: Re: [PATCH 4/4] lib/cpumask: don't mention for_each_numa_hop_mask in cpumask_local_spread()"
+To:     Jacob Keller <jacob.e.keller@intel.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Yury Norov <ynorov@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:30:51AM -0700, Hugh Dickins wrote:
-> v3.8 commit b24f53a0bea3 ("mm: mempolicy: Add MPOL_MF_LAZY") introduced
-> MPOL_MF_LAZY, and included it in the MPOL_MF_VALID flags; but a720094ded8
-> ("mm: mempolicy: Hide MPOL_NOOP and MPOL_MF_LAZY from userspace for now")
-> immediately removed it from MPOL_MF_VALID flags, pending further review.
-> "This will need to be revisited", but it has not been reinstated.
-> 
-> The present state is confusing: there is dead code in mm/mempolicy.c to
-> handle MPOL_MF_LAZY cases which can never occur.  Remove that: it can be
-> resurrected later if necessary.  But keep the definition of MPOL_MF_LAZY,
-> which must remain in the UAPI, even though it always fails with EINVAL.
-> 
-> https://lore.kernel.org/linux-mm/1553041659-46787-1-git-send-email-yang.shi@linux.alibaba.com/
-> links to a previous request to remove MPOL_MF_LAZY.
-> 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On Mon, Sep 25, 2023 at 3:48=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
+com> wrote:
+>
+>
+>
+> On 9/24/2023 7:05 PM, Yury Norov wrote:
+> > Now that for_each_numa_hop_mask() is reverted, also revert reference to
+> > it in the comment to cpumask_local_spread().
+> >
+> > This partially reverts commit 2ac4980c57f5 ("lib/cpumask: update commen=
+t
+> > for cpumask_local_spread()")
+> >
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Signed-off-by: Yury Norov <ynorov@nvidia.com>
+> > ---
+>
+> Interesting to see both sign-offs here. Not sure what that implies here
+> since both represent you :)
+>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Thanks for the review, Jacob. The 2nd sign-off is nothing interesting,
+just bureaucracy.
