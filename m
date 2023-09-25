@@ -2,330 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4057ADB4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701057ADB4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Sep 2023 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbjIYPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 11:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        id S232855AbjIYPYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 11:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbjIYPYL (ORCPT
+        with ESMTP id S232819AbjIYPYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 11:24:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722B210E;
-        Mon, 25 Sep 2023 08:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695655444; x=1727191444;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Xr85p+nCqA9z6SThqHccizQFme6MLwwsXroiHy+uQIs=;
-  b=Bz+j6y5dfV7Yn7jNsIrkowIftHZjnEXiexLbOONNePJISn2vdthMNnFD
-   Pw13aaGsGPa1FNiuVAZeFoPra/P86/cU4cLVU3KvaK5pRwkQwunW9xLif
-   Y09lVP4d36A1iGcDy07FS3E1kGyQrggU4rHur2QtLDGObrSD18sQJ8qZg
-   0IftuPVRCpzk/1AMUijZ0etG1B9FKeJqf83eHw8g7e1/jn6G6jjqhZG4l
-   bVhr7jeIgFuzRtC1dpOK4zV+fN9YQnIbGNd5efaR6wfaFusz4kCFqDBs/
-   5Q4Us1+9MSUq80N1uDTTyNs1+6YZeC3vVnA6/tYNGK4D3YRTJCON0Yuh7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="371600439"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="371600439"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:24:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="814012513"
-X-IronPort-AV: E=Sophos;i="6.03,175,1694761200"; 
-   d="scan'208";a="814012513"
-Received: from stamengx-mobl1.ger.corp.intel.com ([10.249.32.149])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 08:23:57 -0700
-Date:   Mon, 25 Sep 2023 18:23:55 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Jithu Joseph <jithu.joseph@intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com
-Subject: Re: [PATCH v2 3/9] platform/x86/intel/ifs: Gen2 scan image loading
-In-Reply-To: <20230922232606.1928026-4-jithu.joseph@intel.com>
-Message-ID: <7461a59-251d-541d-9db8-28bdce1a61f@linux.intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com> <20230922232606.1928026-1-jithu.joseph@intel.com> <20230922232606.1928026-4-jithu.joseph@intel.com>
+        Mon, 25 Sep 2023 11:24:21 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153D7124;
+        Mon, 25 Sep 2023 08:24:11 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-564b6276941so4804296a12.3;
+        Mon, 25 Sep 2023 08:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695655450; x=1696260250; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T5ybRVZT1cW4nXmDPTqgLs+kI1T5x0D6yue8JAAazx0=;
+        b=GlEJvuYidUIowHYkxFnZf3aVnId8iBj1SiIu2INuRIvbRuewcgxUiqatWFAG/Dsnk2
+         Wu3YG5SnuDGxqj8OsJVGWvsTlsbzjDsjGM+aNZXmBe8l37xYrWfAu8tRuNb/ElzMfmyD
+         28DNZjHAgldYyxNmsnQB5icLLYkOA77GVurvrxHKAkxvVj9C6dRGx9A69Wb2EJgf8+92
+         Xpk3TCNRSWklb7GTz1ktjJvFNhXAQ+hlZr2r5Y7cZuKIxHb6N7T5lUXuSNoJRQJsnfDG
+         LvUvHoc3tCGwQBeSQ+X4Z8SAIiwvM2C9y9Dd/50+wD54uN6UCZkLRgX+9zT06hvUi4dB
+         3gVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695655450; x=1696260250;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=T5ybRVZT1cW4nXmDPTqgLs+kI1T5x0D6yue8JAAazx0=;
+        b=EhvI8sRyKP14ld9VNUvGrD/ASRreQWXal8GlyOlGaoUP+Evv9H911wkGaRYx3TfMOl
+         fK/kPA/su0kGBXAZzDYGWP8+cZHV6aF67gw7d1dYdoE/Rsud5lmyN3vEDSlxCr5rti1K
+         QakQlOfUQTofnrZNjAoUsRJNIIqeCZ56Fgg1gXnrUzOS+iWXgCBn2J33Nq0thSPBMyUV
+         x2FgNkLOVbodmy+R96VZjfDNvet8nMplltcUr8ONM+ZV+cajiMi9/OQnzIUXNfcL5Mmw
+         qFZ7sjaQfHA6a48DgC3Q3aXAXohfF+RRz7nbAPXU1gyhlmbssAumty9Ah0vPUFBl+RjM
+         S5vg==
+X-Gm-Message-State: AOJu0YzDOUdb1Y7F3XeOGcd7LHJEVRjsxj08GnPPnsHEMJemWm8ARkMO
+        kMv+g2CvG0E/3EUXID3O+i7H0qRD/yYwavQy
+X-Google-Smtp-Source: AGHT+IGOAHinrrHklUFxRe2JSCVRJhN2lCgcrlmD+JUUOU2GLf1STbT0IVyftZCkx5guJVAvsv32wA==
+X-Received: by 2002:a17:902:f682:b0:1c6:25b2:b71a with SMTP id l2-20020a170902f68200b001c625b2b71amr1289541plg.2.1695655450150;
+        Mon, 25 Sep 2023 08:24:10 -0700 (PDT)
+Received: from [192.168.255.10] ([101.80.250.8])
+        by smtp.gmail.com with ESMTPSA id jh13-20020a170903328d00b001bc2831e1a8sm9017480plb.80.2023.09.25.08.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 08:24:09 -0700 (PDT)
+Message-ID: <281006fa-2db6-123e-3fb8-f99acaab2fcb@gmail.com>
+Date:   Mon, 25 Sep 2023 23:24:02 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1557655662-1695655441=:2147"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] KVM: irqbypass: Convert producers/consumers single
+ linked list to XArray
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20230802051700.52321-1-likexu@tencent.com>
+ <20230802051700.52321-3-likexu@tencent.com>
+ <20230802123017.5695fe0a.alex.williamson@redhat.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <20230802123017.5695fe0a.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1557655662-1695655441=:2147
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 22 Sep 2023, Jithu Joseph wrote:
-
-> Scan image loading flow for newer IFS generations are slightly different
-> from that of current generation. In newer schemes, loading need not be
-> done once for each socket as was done in gen0.
+On 2023/8/3 02:30, Alex Williamson wrote:
+> On Wed,  2 Aug 2023 13:17:00 +0800
+> Like Xu <like.xu.linux@gmail.com> wrote:
 > 
-> Also the width of NUM_CHUNKS bitfield in SCAN_HASHES_STATUS MSR has
-> increased from 8 -> 16 bits. Similarly there are width differences for
-> CHUNK_AUTHENTICATION_STATUS too.
+>> From: Like Xu <likexu@tencent.com>
+>>
+>> Replace producers/consumers linked list with XArray. There are no changes
+>> in functionality, but lookup performance has been improved.
+>>
+>> The producers and consumers in current IRQ bypass manager are stored in
+>> simple linked lists, and a single mutex is held while traversing the lists
+>> and connecting a consumer to a producer (and vice versa). With this design
+>> and implementation, if there are a large number of KVM agents concurrently
+>> creating irqfds and all requesting to register their irqfds in the global
+>> consumers list, the global mutex contention will exponentially increase
+>> the avg wait latency, which is no longer tolerable in modern systems with
+>> a large number of CPU cores. For example:
+>>
+>> the wait time latency to acquire the mutex in a stress test where 174000
+>> irqfds were created concurrently on an 2.70GHz ICX w/ 144 cores:
+>>
+>> - avg = 117.855314 ms
+>> - min = 20 ns
+>> - max = 11428.340858 ms
+>>
+>> To reduce latency introduced by the irq_bypass_register_consumer() in
+>> the above usage scenario, the data structure XArray and its normal API
+>> is applied to track the producers and consumers so that lookups don't
+>> require a linear walk since the "tokens" used to match producers and
+>> consumers are just kernel pointers.
+>>
+>> Thanks to the nature of XArray (more memory-efficient, parallelisable
+>> and cache friendly), the latecny is significantly reduced (compared to
+>> list and hlist proposal) under the same environment and testing:
+>>
+>> - avg = 314 ns
+>> - min = 124 ns
+>> - max = 47637 ns
+>>
+>> In this conversion, the non-NULL opaque token to match between producer
+>> and consumer () is used as the XArray index. The list_for_each_entry() is
+>> replaced by xa_load(), and list_add/del() is replaced by xa_store/erase().
+>> The list_head member for linked list is removed, along with comments.
+>>
+>> Cc: Alex Williamson <alex.williamson@redhat.com>
+>> Reported-by: Yong He <alexyonghe@tencent.com>
+>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217379
+>> Suggested-by: Sean Christopherson <seanjc@google.com>
+>> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+>> Signed-off-by: Like Xu <likexu@tencent.com>
+>> ---
+>>   include/linux/irqbypass.h |   8 +--
+>>   virt/lib/irqbypass.c      | 127 +++++++++++++++++++-------------------
+>>   2 files changed, 63 insertions(+), 72 deletions(-)
+>>
+>> diff --git a/include/linux/irqbypass.h b/include/linux/irqbypass.h
+>> index 9bdb2a781841..dbcc1b4d0ccf 100644
+>> --- a/include/linux/irqbypass.h
+>> +++ b/include/linux/irqbypass.h
+>> @@ -8,14 +8,12 @@
+>>   #ifndef IRQBYPASS_H
+>>   #define IRQBYPASS_H
+>>   
+>> -#include <linux/list.h>
+>> -
+>>   struct irq_bypass_consumer;
+>>   
+>>   /*
+>>    * Theory of operation
+>>    *
+>> - * The IRQ bypass manager is a simple set of lists and callbacks that allows
+>> + * The IRQ bypass manager is a simple set of xarrays and callbacks that allows
+>>    * IRQ producers (ex. physical interrupt sources) to be matched to IRQ
+>>    * consumers (ex. virtualization hardware that allows IRQ bypass or offload)
+>>    * via a shared token (ex. eventfd_ctx).  Producers and consumers register
+>> @@ -30,7 +28,6 @@ struct irq_bypass_consumer;
+>>   
+>>   /**
+>>    * struct irq_bypass_producer - IRQ bypass producer definition
+>> - * @node: IRQ bypass manager private list management
+>>    * @token: opaque token to match between producer and consumer (non-NULL)
+>>    * @irq: Linux IRQ number for the producer device
+>>    * @add_consumer: Connect the IRQ producer to an IRQ consumer (optional)
+>> @@ -43,7 +40,6 @@ struct irq_bypass_consumer;
+>>    * for a physical device assigned to a VM.
+>>    */
+>>   struct irq_bypass_producer {
+>> -	struct list_head node;
+>>   	void *token;
+>>   	int irq;
+>>   	int (*add_consumer)(struct irq_bypass_producer *,
+>> @@ -56,7 +52,6 @@ struct irq_bypass_producer {
+>>   
+>>   /**
+>>    * struct irq_bypass_consumer - IRQ bypass consumer definition
+>> - * @node: IRQ bypass manager private list management
+>>    * @token: opaque token to match between producer and consumer (non-NULL)
+>>    * @add_producer: Connect the IRQ consumer to an IRQ producer
+>>    * @del_producer: Disconnect the IRQ consumer from an IRQ producer
+>> @@ -69,7 +64,6 @@ struct irq_bypass_producer {
+>>    * portions of the interrupt handling to the VM.
+>>    */
+>>   struct irq_bypass_consumer {
+>> -	struct list_head node;
+>>   	void *token;
+>>   	int (*add_producer)(struct irq_bypass_consumer *,
+>>   			    struct irq_bypass_producer *);
+>> diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
+>> index e0aabbbf27ec..3f8736951e92 100644
+>> --- a/virt/lib/irqbypass.c
+>> +++ b/virt/lib/irqbypass.c
+>> @@ -15,15 +15,15 @@
+>>    */
+>>   
+>>   #include <linux/irqbypass.h>
+>> -#include <linux/list.h>
+>>   #include <linux/module.h>
+>>   #include <linux/mutex.h>
+>> +#include <linux/xarray.h>
+>>   
+>>   MODULE_LICENSE("GPL v2");
+>>   MODULE_DESCRIPTION("IRQ bypass manager utility module");
+>>   
+>> -static LIST_HEAD(producers);
+>> -static LIST_HEAD(consumers);
+>> +static DEFINE_XARRAY(producers);
+>> +static DEFINE_XARRAY(consumers);
+>>   static DEFINE_MUTEX(lock);
+>>   
+>>   /* @lock must be held when calling connect */
+>> @@ -78,11 +78,12 @@ static void __disconnect(struct irq_bypass_producer *prod,
+>>    * irq_bypass_register_producer - register IRQ bypass producer
+>>    * @producer: pointer to producer structure
+>>    *
+>> - * Add the provided IRQ producer to the list of producers and connect
+>> - * with any matching token found on the IRQ consumers list.
+>> + * Add the provided IRQ producer to the xarray of producers and connect
+>> + * with any matching token found on the IRQ consumers xarray.
+>>    */
+>>   int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+>>   {
+>> +	unsigned long token = (unsigned long)producer->token;
+>>   	struct irq_bypass_producer *tmp;
+>>   	struct irq_bypass_consumer *consumer;
+>>   	int ret;
+>> @@ -97,24 +98,23 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+>>   
+>>   	mutex_lock(&lock);
+>>   
+>> -	list_for_each_entry(tmp, &producers, node) {
+>> -		if (tmp->token == producer->token || tmp == producer) {
+>> -			ret = -EBUSY;
+>> +	tmp = xa_load(&producers, token);
+>> +	if (tmp || tmp == producer) {
+>> +		ret = -EBUSY;
+>> +		goto out_err;
+>> +	}
+>> +
+>> +	ret = xa_err(xa_store(&producers, token, producer, GFP_KERNEL));
+>> +	if (ret)
+>> +		goto out_err;
+>> +
+>> +	consumer = xa_load(&consumers, token);
+>> +	if (consumer) {
+>> +		ret = __connect(producer, consumer);
+>> +		if (ret)
+>>   			goto out_err;
 > 
-> Further the parameter to AUTHENTICATE_AND_COPY_CHUNK is passed
-> differently in newer generations.
+> This doesn't match previous behavior, the producer is registered to the
+> xarray regardless of the result of the connect operation and the caller
+> cannot distinguish between failures.  The module reference is released
+> regardless of xarray item.  Nak.
+
+Hi Alex,
+
+Thanks for your comments and indeed, the additional error throwing logic
+breaks the caller's expectations as you said.
+
+What if we use LIST as a fallback option for XARRAY? Specifically, when
+xa_err(xa_store()) is true, then fallback to use LIST to check for
+producers/consumers, and in most cases it still takes the XARRAY path:
+
+     static DEFINE_XARRAY(xproducers);
+     ...
+     if (xa_err(xa_store(&xproducers, (unsigned long)producer->token,
+			    producer, GFP_KERNEL)))
+		list_add(&producer->node, &producers);
+     ...
+
+There will also be a LIST option on the lookup path.
+
+The rough code already works, could we move in this direction (combining
+XARRAY with LIST to hidden the memory allocation error from xa_store) ?
+
 > 
-> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> ---
->  drivers/platform/x86/intel/ifs/ifs.h  |  27 +++++++
->  drivers/platform/x86/intel/ifs/load.c | 112 +++++++++++++++++++++++++-
->  2 files changed, 137 insertions(+), 2 deletions(-)
+>> -		}
+>>   	}
+>>   
+>> -	list_for_each_entry(consumer, &consumers, node) {
+>> -		if (consumer->token == producer->token) {
+>> -			ret = __connect(producer, consumer);
+>> -			if (ret)
+>> -				goto out_err;
+>> -			break;
+>> -		}
+>> -	}
+>> -
+>> -	list_add(&producer->node, &producers);
+>> -
+>>   	mutex_unlock(&lock);
+>>   
+>>   	return 0;
+>> @@ -129,11 +129,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_producer);
+>>    * irq_bypass_unregister_producer - unregister IRQ bypass producer
+>>    * @producer: pointer to producer structure
+>>    *
+>> - * Remove a previously registered IRQ producer from the list of producers
+>> + * Remove a previously registered IRQ producer from the xarray of producers
+>>    * and disconnect it from any connected IRQ consumer.
+>>    */
+>>   void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+>>   {
+>> +	unsigned long token = (unsigned long)producer->token;
+>>   	struct irq_bypass_producer *tmp;
+>>   	struct irq_bypass_consumer *consumer;
+>>   
+>> @@ -143,24 +144,18 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+>>   	might_sleep();
+>>   
+>>   	if (!try_module_get(THIS_MODULE))
+>> -		return; /* nothing in the list anyway */
+>> +		return; /* nothing in the xarray anyway */
+>>   
+>>   	mutex_lock(&lock);
+>>   
+>> -	list_for_each_entry(tmp, &producers, node) {
+>> -		if (tmp != producer)
+>> -			continue;
+>> +	tmp = xa_load(&producers, token);
+>> +	if (tmp == producer) {
+>> +		consumer = xa_load(&consumers, token);
+>> +		if (consumer)
+>> +			__disconnect(producer, consumer);
+>>   
+>> -		list_for_each_entry(consumer, &consumers, node) {
+>> -			if (consumer->token == producer->token) {
+>> -				__disconnect(producer, consumer);
+>> -				break;
+>> -			}
+>> -		}
+>> -
+>> -		list_del(&producer->node);
+>> +		xa_erase(&producers, token);
+>>   		module_put(THIS_MODULE);
+>> -		break;
+>>   	}
+>>   
+>>   	mutex_unlock(&lock);
+>> @@ -173,11 +168,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_unregister_producer);
+>>    * irq_bypass_register_consumer - register IRQ bypass consumer
+>>    * @consumer: pointer to consumer structure
+>>    *
+>> - * Add the provided IRQ consumer to the list of consumers and connect
+>> - * with any matching token found on the IRQ producer list.
+>> + * Add the provided IRQ consumer to the xarray of consumers and connect
+>> + * with any matching token found on the IRQ producer xarray.
+>>    */
+>>   int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+>>   {
+>> +	unsigned long token = (unsigned long)consumer->token;
+>>   	struct irq_bypass_consumer *tmp;
+>>   	struct irq_bypass_producer *producer;
+>>   	int ret;
+>> @@ -193,24 +189,23 @@ int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+>>   
+>>   	mutex_lock(&lock);
+>>   
+>> -	list_for_each_entry(tmp, &consumers, node) {
+>> -		if (tmp->token == consumer->token || tmp == consumer) {
+>> -			ret = -EBUSY;
+>> +	tmp = xa_load(&consumers, token);
+>> +	if (tmp || tmp == consumer) {
+>> +		ret = -EBUSY;
+>> +		goto out_err;
+>> +	}
+>> +
+>> +	ret = xa_err(xa_store(&consumers, token, consumer, GFP_KERNEL));
+>> +	if (ret)
+>> +		goto out_err;
+>> +
+>> +	producer = xa_load(&producers, token);
+>> +	if (producer) {
+>> +		ret = __connect(producer, consumer);
+>> +		if (ret)
+>>   			goto out_err;
 > 
-> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-> index d666aeed20fc..43281d456a09 100644
-> --- a/drivers/platform/x86/intel/ifs/ifs.h
-> +++ b/drivers/platform/x86/intel/ifs/ifs.h
-> @@ -137,6 +137,8 @@
->  #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
->  #define MSR_ACTIVATE_SCAN			0x000002c6
->  #define MSR_SCAN_STATUS				0x000002c7
-> +#define MSR_SAF_CTRL				0x000004f0
-> +
->  #define SCAN_NOT_TESTED				0
->  #define SCAN_TEST_PASS				1
->  #define SCAN_TEST_FAIL				2
-> @@ -158,6 +160,19 @@ union ifs_scan_hashes_status {
->  	};
->  };
->  
-> +union ifs_scan_hashes_status_gen2 {
-> +	u64	data;
-> +	struct {
-> +		u16	chunk_size;
-> +		u16	num_chunks;
-> +		u32	error_code	:8;
-> +		u32	chunks_in_stride :9;
-
-If you need to respin, it would be nice to align these but don't do 
-another version of the series just because of that.
-
-> +		u32	rsvd		:2;
-> +		u32	max_core_limit	:12;
-> +		u32	valid		:1;
-> +	};
-> +};
-> +
->  /* MSR_CHUNKS_AUTH_STATUS bit fields */
->  union ifs_chunks_auth_status {
->  	u64	data;
-> @@ -170,6 +185,16 @@ union ifs_chunks_auth_status {
->  	};
->  };
->  
-> +union ifs_chunks_auth_status_gen2 {
-> +	u64	data;
-> +	struct {
-> +		u16	valid_chunks;
-> +		u16	total_chunks;
-> +		u32	error_code	:8;
-> +		u32	rsvd2		:24;
-> +	};
-> +};
-> +
->  /* MSR_ACTIVATE_SCAN bit fields */
->  union ifs_scan {
->  	u64	data;
-> @@ -230,6 +255,7 @@ struct ifs_test_caps {
->   * @scan_details: opaque scan status code from h/w
->   * @cur_batch: number indicating the currently loaded test file
->   * @generation: IFS test generation enumerated by hardware
-> + * @chunk_size: size of a test chunk
->   */
->  struct ifs_data {
->  	int	loaded_version;
-> @@ -240,6 +266,7 @@ struct ifs_data {
->  	u64	scan_details;
->  	u32	cur_batch;
->  	u32	generation;
-> +	u32	chunk_size;
->  };
->  
->  struct ifs_work {
-> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
-> index 851c97cc6a6b..6b827247945b 100644
-> --- a/drivers/platform/x86/intel/ifs/load.c
-> +++ b/drivers/platform/x86/intel/ifs/load.c
-> @@ -2,6 +2,7 @@
->  /* Copyright(c) 2022 Intel Corporation. */
->  
->  #include <linux/firmware.h>
-> +#include <linux/sizes.h>
->  #include <asm/cpu.h>
->  #include <asm/microcode.h>
->  
-> @@ -26,6 +27,11 @@ union meta_data {
->  
->  #define IFS_HEADER_SIZE	(sizeof(struct microcode_header_intel))
->  #define META_TYPE_IFS	1
-> +#define INVALIDATE_STRIDE	0x1UL
-> +#define IFS_GEN_STRIDE_AWARE	2
-> +#define AUTH_INTERRUPTED_ERROR	5
-> +#define IFS_AUTH_RETRY_CT	10
-> +
->  static  struct microcode_header_intel *ifs_header_ptr;	/* pointer to the ifs image header */
->  static u64 ifs_hash_ptr;			/* Address of ifs metadata (hash) */
->  static u64 ifs_test_image_ptr;			/* 256B aligned address of test pattern */
-> @@ -44,7 +50,10 @@ static const char * const scan_hash_status[] = {
->  static const char * const scan_authentication_status[] = {
->  	[0] = "No error reported",
->  	[1] = "Attempt to authenticate a chunk which is already marked as authentic",
-> -	[2] = "Chunk authentication error. The hash of chunk did not match expected value"
-> +	[2] = "Chunk authentication error. The hash of chunk did not match expected value",
-> +	[3] = "Reserved",
-> +	[4] = "Chunk outside the current stride",
-> +	[5] = "Authentication flow interrupted",
->  };
->  
->  #define MC_HEADER_META_TYPE_END		(0)
-> @@ -154,6 +163,102 @@ static void copy_hashes_authenticate_chunks(struct work_struct *work)
->  	complete(&ifs_done);
->  }
->  
-> +static int get_num_chunks(int gen, union ifs_scan_hashes_status_gen2 status)
-> +{
-> +	return gen >= IFS_GEN_STRIDE_AWARE ? status.chunks_in_stride : status.num_chunks;
-> +}
-> +
-> +static bool need_copy_scan_hashes(struct ifs_data *ifsd)
-> +{
-> +	return !ifsd->loaded ||
-> +		ifsd->generation < IFS_GEN_STRIDE_AWARE ||
-> +		ifsd->loaded_version != ifs_header_ptr->rev;
-> +}
-> +
-> +static int copy_hashes_authenticate_chunks_gen2(struct device *dev)
-> +{
-> +	union ifs_scan_hashes_status_gen2 hashes_status;
-> +	union ifs_chunks_auth_status_gen2 chunk_status;
-> +	u32 err_code, valid_chunks, total_chunks;
-> +	int i, num_chunks, chunk_size;
-> +	union meta_data *ifs_meta;
-> +	int starting_chunk_nr;
-> +	struct ifs_data *ifsd;
-> +	u64 linear_addr, base;
-> +	u64 chunk_table[2];
-> +	int retry_count;
-> +
-> +	ifsd = ifs_get_data(dev);
-> +
-> +	if (need_copy_scan_hashes(ifsd)) {
-> +		wrmsrl(MSR_COPY_SCAN_HASHES, ifs_hash_ptr);
-> +		rdmsrl(MSR_SCAN_HASHES_STATUS, hashes_status.data);
-> +
-> +		/* enumerate the scan image information */
-> +		chunk_size = hashes_status.chunk_size * SZ_1K;
-> +		err_code = hashes_status.error_code;
-> +
-> +		num_chunks = get_num_chunks(ifsd->generation, hashes_status);
-> +
-> +		if (!hashes_status.valid) {
-> +			hashcopy_err_message(dev, err_code);
-> +			return -EIO;
-> +		}
-> +		ifsd->loaded_version = ifs_header_ptr->rev;
-> +		ifsd->chunk_size = chunk_size;
-> +	} else {
-> +		num_chunks = ifsd->valid_chunks;
-> +		chunk_size = ifsd->chunk_size;
-> +	}
-> +
-> +	if (ifsd->generation >= IFS_GEN_STRIDE_AWARE) {
-> +		wrmsrl(MSR_SAF_CTRL, INVALIDATE_STRIDE);
-> +		rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-> +		if (chunk_status.valid_chunks != 0) {
-> +			dev_err(dev, "Couldn't invalidate installed stride - %d\n",
-> +				chunk_status.valid_chunks);
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	base = ifs_test_image_ptr;
-> +	ifs_meta = (union meta_data *)find_meta_data(ifs_header_ptr, META_TYPE_IFS);
-> +	starting_chunk_nr = ifs_meta->starting_chunk;
-> +
-> +	/* scan data authentication and copy chunks to secured memory */
-> +	for (i = 0; i < num_chunks; i++) {
-> +		retry_count = IFS_AUTH_RETRY_CT;
-> +		linear_addr = base + i * chunk_size;
-> +
-> +		chunk_table[0] = starting_chunk_nr + i;
-> +		chunk_table[1] = linear_addr;
-> +		do {
-> +			wrmsrl(MSR_AUTHENTICATE_AND_COPY_CHUNK, (u64)chunk_table);
-> +			rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
-> +			err_code = chunk_status.error_code;
-> +		} while (err_code == AUTH_INTERRUPTED_ERROR && --retry_count);
-> +
-> +		if (err_code) {
-> +			ifsd->loading_error = true;
-> +			auth_err_message(dev, err_code);
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	valid_chunks = chunk_status.valid_chunks;
-> +	total_chunks = chunk_status.total_chunks;
-> +
-> +	if (valid_chunks != total_chunks) {
-> +		ifsd->loading_error = true;
-> +		dev_err(dev, "Couldn't authenticate all the chunks. Authenticated %d total %d.\n",
-> +			valid_chunks, total_chunks);
-> +		return -EIO;
-> +	}
-> +	ifsd->valid_chunks = valid_chunks;
-> +
-> +	return 0;
-> +}
-> +
->  static int validate_ifs_metadata(struct device *dev)
->  {
->  	struct ifs_data *ifsd = ifs_get_data(dev);
-> @@ -206,7 +311,9 @@ static int scan_chunks_sanity_check(struct device *dev)
->  		return ret;
->  
->  	ifsd->loading_error = false;
-> -	ifsd->loaded_version = ifs_header_ptr->rev;
-> +
-> +	if (ifsd->generation > 0)
-> +		return copy_hashes_authenticate_chunks_gen2(dev);
->  
->  	/* copy the scan hash and authenticate per package */
->  	cpus_read_lock();
-> @@ -226,6 +333,7 @@ static int scan_chunks_sanity_check(struct device *dev)
->  		ifs_pkg_auth[curr_pkg] = 1;
->  	}
->  	ret = 0;
-> +	ifsd->loaded_version = ifs_header_ptr->rev;
->  out:
->  	cpus_read_unlock();
->  
+> Same.  Thanks,
 > 
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
---8323329-1557655662-1695655441=:2147--
+> Alex
+> 
+>> -		}
+>>   	}
+>>   
+>> -	list_for_each_entry(producer, &producers, node) {
+>> -		if (producer->token == consumer->token) {
+>> -			ret = __connect(producer, consumer);
+>> -			if (ret)
+>> -				goto out_err;
+>> -			break;
+>> -		}
+>> -	}
+>> -
+>> -	list_add(&consumer->node, &consumers);
+>> -
+>>   	mutex_unlock(&lock);
+>>   
+>>   	return 0;
+>> @@ -225,11 +220,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_consumer);
+>>    * irq_bypass_unregister_consumer - unregister IRQ bypass consumer
+>>    * @consumer: pointer to consumer structure
+>>    *
+>> - * Remove a previously registered IRQ consumer from the list of consumers
+>> + * Remove a previously registered IRQ consumer from the xarray of consumers
+>>    * and disconnect it from any connected IRQ producer.
+>>    */
+>>   void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>>   {
+>> +	unsigned long token = (unsigned long)consumer->token;
+>>   	struct irq_bypass_consumer *tmp;
+>>   	struct irq_bypass_producer *producer;
+>>   
+>> @@ -239,24 +235,18 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>>   	might_sleep();
+>>   
+>>   	if (!try_module_get(THIS_MODULE))
+>> -		return; /* nothing in the list anyway */
+>> +		return; /* nothing in the xarray anyway */
+>>   
+>>   	mutex_lock(&lock);
+>>   
+>> -	list_for_each_entry(tmp, &consumers, node) {
+>> -		if (tmp != consumer)
+>> -			continue;
+>> +	tmp = xa_load(&consumers, token);
+>> +	if (tmp == consumer) {
+>> +		producer = xa_load(&producers, token);
+>> +		if (producer)
+>> +			__disconnect(producer, consumer);
+>>   
+>> -		list_for_each_entry(producer, &producers, node) {
+>> -			if (producer->token == consumer->token) {
+>> -				__disconnect(producer, consumer);
+>> -				break;
+>> -			}
+>> -		}
+>> -
+>> -		list_del(&consumer->node);
+>> +		xa_erase(&consumers, token);
+>>   		module_put(THIS_MODULE);
+>> -		break;
+>>   	}
+>>   
+>>   	mutex_unlock(&lock);
+>> @@ -264,3 +254,10 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>>   	module_put(THIS_MODULE);
+>>   }
+>>   EXPORT_SYMBOL_GPL(irq_bypass_unregister_consumer);
+>> +
+>> +static void __exit irqbypass_exit(void)
+>> +{
+>> +	xa_destroy(&producers);
+>> +	xa_destroy(&consumers);
+>> +}
+>> +module_exit(irqbypass_exit);
+> 
