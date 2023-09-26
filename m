@@ -2,64 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509547AEFF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735837AEFFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbjIZPrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
+        id S235173AbjIZPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235107AbjIZPqy (ORCPT
+        with ESMTP id S235153AbjIZPwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:46:54 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B15126;
-        Tue, 26 Sep 2023 08:46:46 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 7BABD836FC;
-        Tue, 26 Sep 2023 17:46:36 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Tue, 26 Sep 2023 17:46:27 +0200
-Subject: [PATCH RFC v2 6/6] ARM: pxa: Convert gumstix Bluetooth to GPIO
- descriptors
+        Tue, 26 Sep 2023 11:52:34 -0400
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276F1FB;
+        Tue, 26 Sep 2023 08:52:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695743539; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=QSB/k4SM+ZPC+rXVe8CqUuiCVzZuzDRIKnTi3eSZ/uTyUPg9nJzHzHchvW+q1kANOdLsfY1S2QOSYptz65rMEs5bl6N/WvG1yCzBM/5oVgA472Z+HNQ+A4AJJwP4R8R8Edu6WSt9bwZHVSF2IsepOWwKOeFRQQ+JzGfOqBaLQG4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1695743539; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=WO8SVjTncRLx7HMaK60oW6mYfhlwoa7SM53KjXm8HCo=; 
+        b=hU/RDj/+fgfHUeP1Pq7Zb3LwxsGBAnHeuqDgHwh/sBldeKs9G7BKeaO3twyofda9fNVawIG2gl8lIQA4dW15rcUN4LgOyOp+++nUqyjPFSwEUFrBVe5ZASrY/NCPgG3E0JKXq3RWJ3LuvjC84qb6ypoB0r2AlOfBMA0ClnM0Z7w=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=marliere.net;
+        spf=pass  smtp.mailfrom=ricardo@marliere.net;
+        dmarc=pass header.from=<ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695743539;
+        s=zmail; d=marliere.net; i=ricardo@marliere.net;
+        h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
+        bh=WO8SVjTncRLx7HMaK60oW6mYfhlwoa7SM53KjXm8HCo=;
+        b=ghw8B2NlgiuuWqDfewUpsnPIzhQySmAs5Cs2y+PzPKTdmAXkyNv5ye3EhiRdGWnE
+        kHVCKEtqXIkKSob1Hk0Pt+VbsHr2Nes2LMz24VGIWaSs497jKLiunOHNJs7UTlVZgEk
+        o6oFDvMr8bTmCdVyuwhp0Jte1Kl1YUQPxP8/PkVU=
+Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
+        with SMTPS id 1695743536583822.5407712159156; Tue, 26 Sep 2023 08:52:16 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 12:52:19 -0300
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+To:     syzbot <syzbot+1c41b2e045dc086f58be@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, sean@mess.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [media?] [usb?] WARNING in imon_probe
+Message-ID: <kwwrx7p4nfr4qkv5xxpo5nidyyjdbytsulpu7lj6yujmzrnxb6@q63vtmlo3dqa>
+References: <00000000000019b2b105fe424f00@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230926-pxa-gpio-v2-6-984464d165dd@skole.hr>
-References: <20230926-pxa-gpio-v2-0-984464d165dd@skole.hr>
-In-Reply-To: <20230926-pxa-gpio-v2-0-984464d165dd@skole.hr>
-To:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2065;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=H9m5GKPOjDqHvnoQunanjp8s8qAFx4LJD9KoCMZ/UEw=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlEvzXcuEUSDa/D4G1iSz3FE96zRXUsszhKfvO/
- cfAj0gBIZWJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRL81wAKCRCaEZ6wQi2W
- 4T5tD/9Sqn/4LVKN8ztfsrZ5hkncZIFXvDxSfs5cOa2nTPv38vr826JczlpZafwRDsS8+m5RD6M
- pzXm4nww5abZCdDcJTjAOyh+G2Jr0Sukz/NUu3780UqtwoQ+Jdw62DMHDR1a+C5mLROhhpiwF4u
- 5ZbYAok22ye3Bu4GCTkJYXO88pqUbQz+/7fE/hDRVubiGxgTkkctd7zspd/yc3a9FFGMfqvASoB
- ZkPrDWyeQLAk8kjERXayQ1lXmkwkCf0XfecgtURaxZ8W9XAkLgZD1hLKoJJE06Ef9P0AlqBKzv/
- boRgyucdS8SOG3tyvZa8ZYBNlIp1clSVAAh0yYrxjWluTWIZVVtcPkr3qpPXd1DdZqgvxZKlq4s
- AWNWUgDIN6KblADH5NVyy7tL+Pt3AtDKM/h75b03cnvrD7r33DG0oymTR4zDJ7WaZMs2mp7eNc1
- BuY0jk+gbzDrZf3a355NboaHrrr5LgKV9XVWicQ/Ru/EWi27TIuEn+4chKdAq6v9RAXzREL64EX
- FKevE9Kkoj2eLNkT/yXAWz7AP7op8fVP/KkyvlG84Fvyn9quSOuYkYclYvzCpj/LljmKvywccGa
- HL9Oyy5lEqU5oCMNzgE+K+B49J7FNd8aE61WT87uPQWJlpxA5NciewsTw/5M4+83IvI9dcQmUdl
- oVVYhEoJPJdNUFA==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000019b2b105fe424f00@google.com>
+X-ZohoMailClient: External
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,76 +59,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
-device.
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git a48fa7efaf1161c1c898931fe4c7f0070964233a
 
-Convert it to use the GPIO descriptor interface.
-
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- arch/arm/mach-pxa/gumstix.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm/mach-pxa/gumstix.c b/arch/arm/mach-pxa/gumstix.c
-index c9f0f62187bd..14e1b9274d7a 100644
---- a/arch/arm/mach-pxa/gumstix.c
-+++ b/arch/arm/mach-pxa/gumstix.c
-@@ -20,8 +20,8 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/machine.h>
--#include <linux/gpio.h>
- #include <linux/err.h>
- #include <linux/clk.h>
- 
-@@ -129,6 +129,9 @@ static void gumstix_udc_init(void)
- #endif
- 
- #ifdef CONFIG_BT
-+GPIO_LOOKUP_SINGLE(gumstix_bt_gpio_table, "pxa2xx-uart.1", "pxa-gpio",
-+		GPIO_GUMSTIX_BTRESET, "BTRST", GPIO_ACTIVE_LOW);
-+
- /* Normally, the bootloader would have enabled this 32kHz clock but many
- ** boards still have u-boot 1.1.4 so we check if it has been turned on and
- ** if not, we turn it on with a warning message. */
-@@ -153,24 +156,23 @@ static void gumstix_setup_bt_clock(void)
- 
- static void __init gumstix_bluetooth_init(void)
- {
--	int err;
-+	struct gpio_desc *desc;
-+
-+	gpiod_add_lookup_table(&gumstix_bt_gpio_table);
- 
- 	gumstix_setup_bt_clock();
- 
--	err = gpio_request(GPIO_GUMSTIX_BTRESET, "BTRST");
--	if (err) {
-+	desc = gpiod_get(&pxa_device_btuart.dev, "BTRST", GPIOD_OUT_HIGH);
-+	if (IS_ERR(desc)) {
- 		pr_err("gumstix: failed request gpio for bluetooth reset\n");
- 		return;
+diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
+index 74546f7e3469..5719dda6e0f0 100644
+--- a/drivers/media/rc/imon.c
++++ b/drivers/media/rc/imon.c
+@@ -2427,6 +2427,12 @@ static int imon_probe(struct usb_interface *interface,
+ 		goto fail;
  	}
- 
--	err = gpio_direction_output(GPIO_GUMSTIX_BTRESET, 1);
--	if (err) {
--		pr_err("gumstix: can't reset bluetooth\n");
--		return;
--	}
--	gpio_set_value(GPIO_GUMSTIX_BTRESET, 0);
-+	gpiod_set_value(desc, 0);
- 	udelay(100);
--	gpio_set_value(GPIO_GUMSTIX_BTRESET, 1);
-+	gpiod_set_value(desc, 1);
+
++	if (first_if->dev.driver != interface->dev.driver) {
++		dev_err(&interface->dev, "inconsistent driver matching\n");
++		ret = -EINVAL;
++		goto fail;
++	}
 +
-+	gpiod_put(desc);
- }
- #else
- static void gumstix_bluetooth_init(void)
-
--- 
-2.42.0
-
-
+ 	if (ifnum == 0) {
+ 		ictx = imon_init_intf0(interface, id);
+ 		if (!ictx) {
