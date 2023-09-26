@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB8F7AEE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07017AEE31
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbjIZNrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        id S234873AbjIZNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234828AbjIZNrh (ORCPT
+        with ESMTP id S234866AbjIZNsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:47:37 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4303FC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:47:29 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31f71b25a99so8715584f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:47:29 -0700 (PDT)
+        Tue, 26 Sep 2023 09:48:33 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD001B4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:48:25 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401d6f6b2e0so66699435e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:48:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695736048; x=1696340848; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695736104; x=1696340904; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tUZoMLnKwsOq3aRDz3SQyOis9iaqsJSI3quNHiMxzyw=;
-        b=zzVesboSwQ66H+eSPvGYQlKK+AxGLJu7YJm6g5ArfznDMTAU+lJ8YGkjX90cdKkW2M
-         w6U9amZ+aGUJGAGvxsJZdvpTgLqKVg0N9hi1ynhEQPs8ibOsb8Pu1Ds5DhLeXjoAh6Uz
-         7EgO+k9OxuqjmQ/91Lwd8pg1q8Z8SIeipsqyJCeSHzLv75XsrIOE9NRnThR20gLlwfBp
-         Hcyx2Aa1fOLgEf6jAcCgd6i7BVvCCUXAAM15+5q9pNhX9eXrNZaEBM84AET27+7eKcZL
-         daQ26suBm9JAkM39Un578FepC1Qe0jXIuN+MP3JO2z1gDRGAqkfk4Un0vaSHX/v/yzVW
-         aa9w==
+        bh=vzS+keettZOd01HN2xZh16fkUfdIkcS5wOJyuirXrFQ=;
+        b=vBDycfenJxqwpInoOeWzjshvAsTBnOy4MDP/9EtSvgNA3r7lEi1kUHh6eIWm8z0Rqw
+         fVdg7sIKs/bYqN6a9QibDGgj2zN2Z5Ac5Xz1g/WvvIbQUT79vBh17aDjiZoHo6I5WQR8
+         DhCMWijYspd9CVMwHyVJfbETZlkl0QYFU5rRTEreaWcmbO51gPIzFuyZFREpVQSgteNb
+         F+BB9zxVNoETQuXuSgiN0vxCFu2YCZNrAXhaAChp6Us/1BhZJKSMxSm8nmiVCwlcD5Sp
+         RpJold6epqwjTcj0YI2PW74i5g/Vf1uw/Z1/ERl4zQesX2Lu5mmFxLIDU2mTXjn+UC8r
+         juRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695736048; x=1696340848;
+        d=1e100.net; s=20230601; t=1695736104; x=1696340904;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tUZoMLnKwsOq3aRDz3SQyOis9iaqsJSI3quNHiMxzyw=;
-        b=bjv8ZgDFDeY2To+k7sGxQS0lWMRQbhoFGj22VnTj/cvvRvCbL21K/AcOzEpktdqBl4
-         Xuk7y9XSN8NNgh5SwTJAneEfupcwzneFIXDxIydU4SkuoYw7qIUjvA89JZdt5nbDPZaq
-         pgofRfMnUDuUpPEt2EY4h2X9e5AQa7chdBpnk8Fbc5rGZj4spRgqBnqCBBkzNio/pNtY
-         OawWPsJwkrL8UapTMTY4d1XT6nTAb1AXYh0nYr58F1PUvqq0SMFSJVwlUovgupfejG5c
-         6AydVZ6LEBB+5VpwhvpJym7MijX5bPooyoGfqXUd5DfSdOO8BIYQB6vWQCqc8SSKPLyX
-         FsBA==
-X-Gm-Message-State: AOJu0YzQW5EbUiq5Wv/NbTKmUw5mey3iAUpORdYAFxEI0kKhLXISdg2q
-        QqZHe9T4qYb8Ym2r+nwojQVvSQ==
-X-Google-Smtp-Source: AGHT+IFvaxin1673zlwprQP4SWnLVcctslXPms1at5HtCDaXdk2NYjuV3/YZ8ECXZqwv+B7HcAX/nw==
-X-Received: by 2002:a05:6000:1d0:b0:319:7abf:d8e2 with SMTP id t16-20020a05600001d000b003197abfd8e2mr8005672wrx.24.1695736048279;
-        Tue, 26 Sep 2023 06:47:28 -0700 (PDT)
+        bh=vzS+keettZOd01HN2xZh16fkUfdIkcS5wOJyuirXrFQ=;
+        b=Pj/H6sCw9cxxYSq3UEkEQTesutLZAjG62+pI8/rEFtdBwAPLV3WVvwvw984NrO6RRM
+         Vcd8fLwuPMRubcIXt6CQRpxZQdMvUtCbpw2+yLFWAHVMcZGnR16cULYe+oommVHsLGh9
+         BtTadVa0Ev1pvrQ2qyE8Bhk0D2jJ+Cqt6rNFnyfiPI1548zuUqtdyiI2MCtPSDF4xPzC
+         c+GkUrR15VqNEUWEA9/6LGGlg+0B4sXIQmAZT2N6UVVoptJ1WZnM4vCAqsiB6QLmcmjM
+         Rz23j0FIxWXXc7lqsqgCS9EoVAotLwVSNI1unnwUxRacCwCit37LYy1TSRKIIdVFO9Rp
+         EdSg==
+X-Gm-Message-State: AOJu0Yyo54M9oWNKJXLNo0oMzIW/6G0zP7a2leJ2LjMRJYWXj9kJC2mU
+        y6U6dRdeE1UKpIXvhQj/lLx9OQ==
+X-Google-Smtp-Source: AGHT+IERVS/jYe1PG1KyYRy/F1EQXclRDoumeocBI+M/3oUk+8PNCCJR/U8ukqVLE4zRvT80MMsuBw==
+X-Received: by 2002:a5d:63c9:0:b0:31f:335b:f436 with SMTP id c9-20020a5d63c9000000b0031f335bf436mr2092424wrw.22.1695736104266;
+        Tue, 26 Sep 2023 06:48:24 -0700 (PDT)
 Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id l24-20020adfa398000000b003232e5de745sm4351819wrb.55.2023.09.26.06.47.27
+        by smtp.googlemail.com with ESMTPSA id v11-20020a5d610b000000b0031435731dfasm14715049wrt.35.2023.09.26.06.48.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 06:47:27 -0700 (PDT)
-Message-ID: <c5eb5bea-264b-0084-af6c-2d95580c8f33@linaro.org>
-Date:   Tue, 26 Sep 2023 15:47:27 +0200
+        Tue, 26 Sep 2023 06:48:23 -0700 (PDT)
+Message-ID: <fd90773d-eb70-920d-fe33-30c37453b4fb@linaro.org>
+Date:   Tue, 26 Sep 2023 15:48:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v1 9/9] ACPI: thermal: Drop valid flag from struct
- acpi_thermal_trip
+Subject: Re: [PATCH v1] thermal: core: Drop redundant trips check from
+ for_each_thermal_trip()
 Content-Language: en-US
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
+        Linux PM <linux-pm@vger.kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
         Zhang Rui <rui.zhang@intel.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <5708760.DvuYhMxLoT@kreacher> <9162925.CDJkKcVGEf@kreacher>
+References: <5981326.lOV4Wx5bFT@kreacher>
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <9162925.CDJkKcVGEf@kreacher>
+In-Reply-To: <5981326.lOV4Wx5bFT@kreacher>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,19 +78,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 20:47, Rafael J. Wysocki wrote:
+On 19/09/2023 20:59, Rafael J. Wysocki wrote:
 > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Notice that the valid flag in struct acpi_thermal_trip is in fact
-> redundant, because the temperature field of invalid trips is always
-> equal to THERMAL_TEMP_INVALID, so drop it from there and adjust the
-> code accordingly.
+> It is invalid to call for_each_thermal_trip() on an unregistered thermal
+> zone anyway, and as per thermal_zone_device_register_with_trips(), the
+> trips[] table must be present if num_trips is greater than zero for the
+> given thermal zone.
 > 
-> No intentional functional impact.
+> Hence, the trips check in for_each_thermal_trip() is redundant and so it
+> can be dropped.
 > 
 > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
 -- 
 <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
