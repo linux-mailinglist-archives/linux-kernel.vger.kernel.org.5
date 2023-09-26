@@ -2,117 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 903A47AF0D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7157AF0D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbjIZQh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
+        id S235291AbjIZQgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbjIZQhZ (ORCPT
+        with ESMTP id S235282AbjIZQgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:37:25 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89968FC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:37:18 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9adca291f99so1128588166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695746237; x=1696351037; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PDQZ6VUDnoTTKC96aCmIgqY/EHvU1MbBCnEVpCOMyPY=;
-        b=TkvJDazRArnR7Gib2w5YNpCxfoDM4wEd8MSwJVbzcCfOHU8wvI3wjJOjowbNI+cTYH
-         AIgNACCMwVEZFXCOyknv6N5yaV/XHqElsahQfwMxNC9KTB829Xc63Unp3myEtm0mGyUZ
-         onYXWs0taPfDXEJaOP2R9HAhTHVAuKgfRcto4CyIqOeLgFLfH/bxCjpuIi+yttpIFUeI
-         RyAVrnmXC3Ix6w8mzgrtUCh2s0Oo14XHAkgxxzpx9g0wVVW2pdS/z6cgzCBowf9qokD5
-         bEPExFepbAK/0kUyW6Hk7D8Vtbs/ZWGIFNdHGK4mdkOsuFUztY+Yrqk3mg8Q5bdVwG9f
-         SYiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695746237; x=1696351037;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PDQZ6VUDnoTTKC96aCmIgqY/EHvU1MbBCnEVpCOMyPY=;
-        b=KYMtN382YHaD6sYMI/0yrzQva4zZvfFkUw/KMAYCxovZ2KXxsDJF5PlqGn4uc2qLPB
-         bMKDgwlxftLP+UB30UU5JGAAFHFAC2gwHkbT6IUfrXDRarXSQMJLbob7ojN+8DibTXM+
-         yM8rMcKk+U4Qu3pjGh3b7SidbImhfpRl3CjpxnRTTQCLF53wdyiWU5SSVdR1z9AHkFTJ
-         8yDS61muqI/BQRKqCwekn74q3fnDlV+a0LkH749LVcrq4ZccbLVQbszPLW+Ff3i7GSb2
-         phiIy6IDw+tLjpSph2AUSSqvMcNnsxrdMEqaUJi/jCzWBYB2pv8nDUqDyBhjJpiz6DdE
-         q+Bg==
-X-Gm-Message-State: AOJu0YwxZzwwBD/SRQHv9fRSWfTYIYvWlGtTo9I36QgJBN0qTADxjYQa
-        MeZ6ovU7f3OuQbxU1Oa2yXo=
-X-Google-Smtp-Source: AGHT+IHztCpV0zwYGO9mtUGJh7/73Xp2TUG6349qGUHIfcMufXXnbuIM4V5idrhCOM7H38Mdi3f9AQ==
-X-Received: by 2002:a17:907:2d0f:b0:9ae:4e81:4580 with SMTP id gs15-20020a1709072d0f00b009ae4e814580mr11549589ejc.66.1695746236663;
-        Tue, 26 Sep 2023 09:37:16 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8109:8c00:3664:cd3b:be94:a5ef:c18f])
-        by smtp.gmail.com with ESMTPSA id t4-20020a1709064f0400b00992f2befcbcsm7938688eju.180.2023.09.26.09.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 09:37:15 -0700 (PDT)
-From:   Nik Bune <n2h9z4@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        skhan@linuxfoundation.org, Jakub Kicinski <kuba@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Nik Bune <n2h9z4@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] include/linux/dcache.h: fix warning in doc comment
-Date:   Tue, 26 Sep 2023 18:36:31 +0200
-Message-Id: <20230926163631.116405-1-n2h9z4@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 26 Sep 2023 12:36:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2554124;
+        Tue, 26 Sep 2023 09:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695746199; x=1727282199;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W9JR7UKiiB5qX/Bnbhhy9qpsfgN7ArWX+EkyPOjLqrU=;
+  b=PVug25ZFyqoRbxS2OTEc6WKP+MQj1KgVq9JkX0l1QhazQcIEq2eeZyPO
+   WCCELkgbPkU8MLqFZMM+mzxWwSYs5XKsrMVxd9ffwStO1Q0rDddIVAf90
+   VQdGkDlzSjVyCLz5tM0hKJtG3j93pyKIeay13uJGirEQVJO2jFR0X7Bao
+   d5rfXxbTb5wdmale1bSqtFlFwwKIwqevv+STXrhB83N2K9hobRGdqu+50
+   Fihu2AsTvq8wi5MgPTbU9uhm87dyT/FER5E++WlKN4ds2/bB2JQXnx71m
+   jIZUM0VWNcDjBSzhhmc99+hqq0Ksxrp+Ov4Il41ZpC6fLOrejvSU/LtX5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="380480448"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="380480448"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:36:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="1079766210"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="1079766210"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:36:38 -0700
+Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 120E3580BBE;
+        Tue, 26 Sep 2023 09:36:35 -0700 (PDT)
+Message-ID: <bb2db7bf-a1cb-c109-80f5-7e7be23c8b95@linux.intel.com>
+Date:   Tue, 26 Sep 2023 12:36:35 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 23/25] perf stat: Fix a return error issue in
+ hardware-grouping
+Content-Language: en-US
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+ <20230925061824.3818631-24-weilin.wang@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230925061824.3818631-24-weilin.wang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When run make htmldocs there is a warning appears
-./include/linux/dcache.h:311: warning: expecting prototype for dget, dget_dlock(). Prototype was for dget_dlock() instead
-
-The comment over the dget_dlock function describes both dget_dlock and dget functions. dget goes right after dget_dlock.
-
-Removed "dget" from dget_dlock function comment.
-Copied the same block to the dget function below.
 
 
-Signed-off-by: Nik Bune <n2h9z4@gmail.com>
----
- include/linux/dcache.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
+> 
+> Update the hw_aware_parse_ids() goto to improve error handling.
+> 
 
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 6b351e009f59..47adb8dda4a9 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -300,7 +300,7 @@ extern char *dentry_path(const struct dentry *, char *, int);
- /* Allocation counts.. */
- 
- /**
-- *	dget, dget_dlock -	get a reference to a dentry
-+ *	dget_dlock -	get a reference to a dentry
-  *	@dentry: dentry to get a reference to
-  *
-  *	Given a dentry or %NULL pointer increment the reference count
-@@ -314,6 +314,14 @@ static inline struct dentry *dget_dlock(struct dentry *dentry)
- 	return dentry;
- }
- 
-+/**
-+ *	dget -	get a reference to a dentry
-+ *	@dentry: dentry to get a reference to
-+ *
-+ *	Given a dentry or %NULL pointer increment the reference count
-+ *	if appropriate and return the dentry. A dentry will not be 
-+ *	destroyed when it has references.
-+ */
- static inline struct dentry *dget(struct dentry *dentry)
- {
- 	if (dentry)
--- 
-2.34.1
+Seems like a bug fix. Please merge it with the patch which introduces
+the issue.
 
+Thanks,
+Kan
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> ---
+>  tools/perf/util/metricgroup.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 07a82fa21..6a4404226 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -2196,11 +2196,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+>  	*out_evlist = NULL;
+>  	ret = hw_aware_build_grouping(ids, &grouping);
+>  	if (ret)
+> -		goto err_out;
+> +		goto out;
+>  	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier,
+>  						      tool_events, &grouping);
+>  	if (ret)
+> -		goto err_out;
+> +		goto out;
+>  
+>  	parsed_evlist = evlist__new();
+>  	if (!parsed_evlist) {
+> @@ -2225,10 +2225,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+>  	*out_evlist = parsed_evlist;
+>  	parsed_evlist = NULL;
+>  err_out:
+> -	metricgroup__free_group_list(&grouping);
+> -	metricgroup__free_grouping_strs(&grouping_str);
+>  	parse_events_error__exit(&parse_error);
+>  	evlist__delete(parsed_evlist);
+> +out:
+> +	metricgroup__free_group_list(&grouping);
+> +	metricgroup__free_grouping_strs(&grouping_str);
+>  	return ret;
+>  }
+>  
