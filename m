@@ -2,150 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD72D7AF30E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA047AF312
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjIZSiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        id S235540AbjIZSj7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 14:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235449AbjIZSiF (ORCPT
+        with ESMTP id S229674AbjIZSj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:38:05 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A20F3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:37:57 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31ff985e292so9199442f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695753476; x=1696358276; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o9U+hyK0DC2msywzl8E5WSklE3JM2O4AFWpd5vWieyg=;
-        b=qZoEA6tNGIf86kFye+vtDlYn0NwynKxS3QN5nciFYrgAmUK+uRSaQHEQf7u5/wDYK6
-         hM1a3uHc+MQFEMUrpu+yhNvb43T3OaQYEUWV0WpxPtI/hfXeqSFkmdUfDzduZSGp+Otm
-         ssFK8lf3Nog/PDg/eHN12j9h5C5WhIhj73NfA/Gf6OTVzVEjuQO/q9HeWiGx8wNIuV79
-         b5c2tqq7eoiqdOtCroAKV/rCQ54GcGKOKUiQGl6dZYHIwQCnj5w9oxJdygkOlbQsz7F6
-         rgphE2wOT/+vIVQdizptmp96tzLuL+J5EsYbha3312iJ2dDyQ1APs0Y32KfikCcuXaC3
-         mVcw==
+        Tue, 26 Sep 2023 14:39:58 -0400
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1495310A;
+        Tue, 26 Sep 2023 11:39:52 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-57bf04841ccso220722eaf.0;
+        Tue, 26 Sep 2023 11:39:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695753476; x=1696358276;
+        d=1e100.net; s=20230601; t=1695753591; x=1696358391;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o9U+hyK0DC2msywzl8E5WSklE3JM2O4AFWpd5vWieyg=;
-        b=nNB4wM6ivWNddnhrcPNIna2KnUi/QYZCLgti4furCFfn4RuNXtc1dIBSkVRP25Qioc
-         aKWsWcnfK0v2S8VNKgTrE7nnRZoRrrXR17vQlNRjV9Bm8rr10XADp0priNRWRljfXI7D
-         YlSbkW2QffFca15vd+rkMxa0B3ZfZU3HqhO3UqNX47RsYybZ9/eBfd4zbjHG5cZcLgzH
-         MJGyer2iP4XtpInSo3KZqFaEM8xUjQaNadCQDm3M9g/92J2BxKhYnzEzHadl9GP7lIYY
-         DHnHjvfzdUbLqfFEhxM14fGfaK6Qm1lqJOnQYXjaKrCwPDm8ctDz2P1gLHDuznuTdToT
-         T6zw==
-X-Gm-Message-State: AOJu0Yza0yDe1kuijb6ugPhe0c5ITB1uNwxWDpUmgWuj82WcD+3ry/j2
-        S25I5H9lF1qA3sQflNkn0FI/YER/g3ukgY+FcGRTYA==
-X-Google-Smtp-Source: AGHT+IFAjP8KuW4iDeZ3x3Vs1/DfJYlj4R1eAd9xqe2b40gmueIHHWwtEC+M5UyEkHoWh5saxpwpLNX+V8ZCpHBn5MM=
-X-Received: by 2002:a5d:404d:0:b0:31f:e534:2d6f with SMTP id
- w13-20020a5d404d000000b0031fe5342d6fmr10166471wrp.11.1695753476063; Tue, 26
- Sep 2023 11:37:56 -0700 (PDT)
+        bh=lqH8J6lTpK2M+bzzcxGFMsEPF/8uShQKGeKMcDCVBbo=;
+        b=GCDwT56KQJ8gxkSbpJjcqCK+K9MVhOyCHHfgx1pRZnOhPrXEoz4diubNc8Yln70QK3
+         ElnUVQjB5IIQcIlg5UlWrZlo4IdLflee39La9WLvQRPp743IJ0C5gJ6rx8MFgmOZ+nQ5
+         +3MKavXPEYUCRl2s3weL4h6N9xMDXdljqJo4KfwtF0L6YDysOwzsjvvTyaraPZe2Jye+
+         QrPUwbrHj6c7QMu0QjudVpuAn24+dLkqjPrH7f8nhpdz/KYz+6Gys0NFmPMefEpxvhBk
+         3nMBESVRcMDb0iVKEiJZttgjDO9KCjIXnkPfEQCVAQUWa9/CZGxWcth6YH115tBTh9pu
+         d3XA==
+X-Gm-Message-State: AOJu0YwJBKLg6pFb9zjGbb8KOhKVZ9PcD1qVBOzFdek9Sb2xXiDpxqyS
+        KAkGB0Ktge7JnybSxNs/M2erAAEcvLuxbrja138=
+X-Google-Smtp-Source: AGHT+IHn5x6NKFJ0NIxGDOjTFHB3bf1b7k1LV0Mxfh9IsSJulttVCD75geLnmF+hdNPhm9REdjdLlyXid/siRCdoy7s=
+X-Received: by 2002:a4a:de15:0:b0:57b:7804:9d72 with SMTP id
+ y21-20020a4ade15000000b0057b78049d72mr9769263oot.1.1695753591340; Tue, 26 Sep
+ 2023 11:39:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230919171447.2712746-1-nphamcs@gmail.com> <20230919171447.2712746-2-nphamcs@gmail.com>
- <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com> <20230926182436.GB348484@cmpxchg.org>
-In-Reply-To: <20230926182436.GB348484@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 26 Sep 2023 11:37:17 -0700
-Message-ID: <CAJD7tkYN=S8uMeXthJ1rqsRwFar-nzDGESevtM_+C6yVB1VatQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
+References: <20230925081139.1305766-1-lukasz.luba@arm.com> <20230925081139.1305766-6-lukasz.luba@arm.com>
+In-Reply-To: <20230925081139.1305766-6-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Sep 2023 20:39:40 +0200
+Message-ID: <CAJZ5v0hyeKGuC5-jJDoxBpNksMg1cZ7eoCysjx7O8Ey1i8YSDg@mail.gmail.com>
+Subject: Re: [PATCH v4 05/18] PM: EM: Refactor a new function em_compute_costs()
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:24=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
+On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
-> > +Chris Li
-> >
-> > On Tue, Sep 19, 2023 at 10:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
-wrote:
-> > >
-> > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> > >
-> > > Currently, we only have a single global LRU for zswap. This makes it
-> > > impossible to perform worload-specific shrinking - an memcg cannot
-> > > determine which pages in the pool it owns, and often ends up writing
-> > > pages from other memcgs. This issue has been previously observed in
-> > > practice and mitigated by simply disabling memcg-initiated shrinking:
-> > >
-> > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.co=
-m/T/#u
-> > >
-> > > This patch fully resolves the issue by replacing the global zswap LRU
-> > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> > >
-> > > a) When a store attempt hits an memcg limit, it now triggers a
-> > >    synchronous reclaim attempt that, if successful, allows the new
-> > >    hotter page to be accepted by zswap.
-> > > b) If the store attempt instead hits the global zswap limit, it will
-> > >    trigger an asynchronous reclaim attempt, in which an memcg is
-> > >    selected for reclaim in a round-robin-like fashion.
-> >
-> > Hey Nhat,
-> >
-> > I didn't take a very close look as I am currently swamped, but going
-> > through the patch I have some comments/questions below.
-> >
-> > I am not very familiar with list_lru, but it seems like the existing
-> > API derives the node and memcg from the list item itself. Seems like
-> > we can avoid a lot of changes if we allocate struct zswap_entry from
-> > the same node as the page, and account it to the same memcg. Would
-> > this be too much of a change or too strong of a restriction? It's a
-> > slab allocation and we will free memory on that node/memcg right
-> > after.
+> Refactor a dedicated function which will be easier to maintain and re-use
+> in future. The upcoming changes for the modifiable EM perf_state table
+> will use it (instead of duplicating the code).
 >
-> My 2c, but I kind of hate that assumption made by list_lru.
->
-> We ran into problems with it with the THP shrinker as well. That one
-> strings up 'struct page', and virt_to_page(page) results in really fun
-> to debug issues.
->
-> IMO it would be less error prone to have memcg and nid as part of the
-> regular list_lru_add() function signature. And then have an explicit
-> list_lru_add_obj() that does a documented memcg lookup.
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 
-I also didn't like/understand that assumption, but again I don't have
-enough familiarity with the code to judge, and I don't know why it was
-done that way. Adding memcg and nid as arguments to the standard
-list_lru API makes the pill easier to swallow. In any case, this
-should be done in a separate patch to make the diff here more focused
-on zswap changes.
+If I'm not mistaken, this patch by itself is not going to change the
+observable functionality in any way and it would be good to say that
+in the changelog.
 
+This also applies to some other patches in this series.
+
+> ---
+>  kernel/power/energy_model.c | 72 ++++++++++++++++++++++---------------
+>  1 file changed, 43 insertions(+), 29 deletions(-)
 >
-> Because of the overhead, we've been selective about the memory we
-> charge. I'd hesitate to do it just to work around list_lru.
-
-On the other hand I am worried about the continuous growth of struct
-zswap_entry. It's now at ~10 words on 64-bit? That's ~2% of the size
-of the page getting compressed if I am not mistaken. So I am skeptical
-about storing the nid there.
-
-A middle ground would be allocating struct zswap_entry on the correct
-node without charging it. We don't need to store the nid and we don't
-need to charge struct zswap_entry. It doesn't get rid of
-virt_to_page() though.
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 3dafdd7731c4..7ea882401833 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -103,14 +103,52 @@ static void em_debug_create_pd(struct device *dev) {}
+>  static void em_debug_remove_pd(struct device *dev) {}
+>  #endif
+>
+> +static int em_compute_costs(struct device *dev, struct em_perf_state *table,
+> +                           struct em_data_callback *cb, int nr_states,
+> +                           unsigned long flags)
+> +{
+> +       unsigned long prev_cost = ULONG_MAX;
+> +       u64 fmax;
+> +       int i, ret;
+> +
+> +       /* Compute the cost of each performance state. */
+> +       fmax = (u64) table[nr_states - 1].frequency;
+> +       for (i = nr_states - 1; i >= 0; i--) {
+> +               unsigned long power_res, cost;
+> +
+> +               if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
+> +                       ret = cb->get_cost(dev, table[i].frequency, &cost);
+> +                       if (ret || !cost || cost > EM_MAX_POWER) {
+> +                               dev_err(dev, "EM: invalid cost %lu %d\n",
+> +                                       cost, ret);
+> +                               return -EINVAL;
+> +                       }
+> +               } else {
+> +                       power_res = table[i].power;
+> +                       cost = div64_u64(fmax * power_res, table[i].frequency);
+> +               }
+> +
+> +               table[i].cost = cost;
+> +
+> +               if (table[i].cost >= prev_cost) {
+> +                       table[i].flags = EM_PERF_STATE_INEFFICIENT;
+> +                       dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
+> +                               table[i].frequency);
+> +               } else {
+> +                       prev_cost = table[i].cost;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+>                                 int nr_states, struct em_data_callback *cb,
+>                                 unsigned long flags)
+>  {
+> -       unsigned long power, freq, prev_freq = 0, prev_cost = ULONG_MAX;
+> +       unsigned long power, freq, prev_freq = 0;
+>         struct em_perf_state *table;
+>         int i, ret;
+> -       u64 fmax;
+>
+>         table = kcalloc(nr_states, sizeof(*table), GFP_KERNEL);
+>         if (!table)
+> @@ -154,33 +192,9 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+>                 table[i].frequency = prev_freq = freq;
+>         }
+>
+> -       /* Compute the cost of each performance state. */
+> -       fmax = (u64) table[nr_states - 1].frequency;
+> -       for (i = nr_states - 1; i >= 0; i--) {
+> -               unsigned long power_res, cost;
+> -
+> -               if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
+> -                       ret = cb->get_cost(dev, table[i].frequency, &cost);
+> -                       if (ret || !cost || cost > EM_MAX_POWER) {
+> -                               dev_err(dev, "EM: invalid cost %lu %d\n",
+> -                                       cost, ret);
+> -                               goto free_ps_table;
+> -                       }
+> -               } else {
+> -                       power_res = table[i].power;
+> -                       cost = div64_u64(fmax * power_res, table[i].frequency);
+> -               }
+> -
+> -               table[i].cost = cost;
+> -
+> -               if (table[i].cost >= prev_cost) {
+> -                       table[i].flags = EM_PERF_STATE_INEFFICIENT;
+> -                       dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
+> -                               table[i].frequency);
+> -               } else {
+> -                       prev_cost = table[i].cost;
+> -               }
+> -       }
+> +       ret = em_compute_costs(dev, table, cb, nr_states, flags);
+> +       if (ret)
+> +               goto free_ps_table;
+>
+>         pd->table = table;
+>         pd->nr_perf_states = nr_states;
+> --
+> 2.25.1
+>
