@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5BC7AEF52
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036467AEF3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbjIZPE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        id S235115AbjIZPFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235187AbjIZPEm (ORCPT
+        with ESMTP id S235120AbjIZPEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:04:42 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED5DE72
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:24 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d77ad095f13so10182788276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:24 -0700 (PDT)
+        Tue, 26 Sep 2023 11:04:52 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD2E10E7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:29 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d865c441a54so7408315276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695740663; x=1696345463; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695740668; x=1696345468; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hi8I/a7o7wwNWCt1t7ekaKgHNV+vsdHqCcY2PQYg2QI=;
-        b=zkXj+jWgCXTz8EVcqT4K+5J9FTmhy1AsGvuhiNbT9vvQiDkcI3FPAbt4cZAawG8rs9
-         5D+mhHmhlKrnfMafXDymPIALL4dxUoEdQuO7rE4Avjpn/o156+PJEygwEQUKPMqkGgcn
-         mSOVtlhzNODEU0wMJLZzGesogWeqngupnEgAlGLaE1yKskTv34Jc32fI3IrXqy6Naw+L
-         n43c9h5yeXBsXaEqmpfu/JAcm4llYv9giN6H0tgCLAiEC3OwSDqYNv26XDeSO2gEKLGN
-         aOH6ufFWeXvyy85tFU+amTHC8nboW0SkHXHjAVeis2y/L35Mlc8W11ctEGKAhbvXWexy
-         EQ4g==
+        bh=XkQznAxnykGoHMZeYaAftpnWpVTscvRnJk62iXg78HM=;
+        b=mWapybL+1/A3XLRBjQDmHzpK5v3VTC8lDZtmtWEj+ofqk5Wazm/8o2mxEl4Utd4G8V
+         +expOdb5lsNySpUW2Yct++3EpdAvHjHoOnJeKIxW5j0Jms1ciMYBX1HWF/LFT8SLt+do
+         SDrCrSSJs5sTGuMlLyhvVS9Pc6XoSA1d50mSSlsZQYKGZ6nBLO50UUZ+odkapIbXKwO/
+         5vRCaQIHW+AFleevxdX8mHqQb5JPRO3CpvGgFJ4Wnn1Tj54dYuHEbhC3181SSEQPvS/B
+         Ug92D2pQQa69E/Bb+l5ieiHDkUNZSQrepXwNY4vmnGyuv9uJydhI1ql/yItkiz4hiO1g
+         0+9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695740663; x=1696345463;
+        d=1e100.net; s=20230601; t=1695740668; x=1696345468;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Hi8I/a7o7wwNWCt1t7ekaKgHNV+vsdHqCcY2PQYg2QI=;
-        b=u9y3zsVxbNuHzSmwmglzo+dZnjZxGDViAqbkfd9yXMoxW0W4rSjYTdBfhK2L2MTtvN
-         Ie68Dsyrq8vcvV6MxxQoS2Dk7sCrD1gpBQJsClKFpD4BFoUDz686Ly88PT6zOqL5ji+D
-         e1qRvOu00AxvBTEzo3s54xUzK+m/GOmLtMclAFdo++ggG6v325a1qc28twFiXvUP0QAV
-         f8+iWAXgo/jeij2uIWAcD+UI4vHFIPThZe5A6Rkdy3SjX8yKLoaaOlVMPqy9KfrBuuG8
-         AE6WorDY7G+eWEKZ6M24jsKmTRD5orsXqCjRIouTmJvmpBv9puwJS0yu4DyenNt0p9ak
-         Ad4Q==
-X-Gm-Message-State: AOJu0YzV1ngE2DxsWc5duHXUgK+l8DcmgejiJ2iKtITWlkgbU8gixKWq
-        rGOMJpDh296x+9/t6VfBOvloz94K2FDSndGVUduHJQ==
-X-Google-Smtp-Source: AGHT+IGQ+cDmUBy1mScBjOKjo++Q7IVdwaEUb7YBFTbK5U0lEpvDf6oS2L6LJvgIzbDQlTFsBZNTNRnN7t9lk62BZKU=
-X-Received: by 2002:a5b:54b:0:b0:d84:90c5:4e1f with SMTP id
- r11-20020a5b054b000000b00d8490c54e1fmr7705526ybp.63.1695740663508; Tue, 26
- Sep 2023 08:04:23 -0700 (PDT)
+        bh=XkQznAxnykGoHMZeYaAftpnWpVTscvRnJk62iXg78HM=;
+        b=le+8dHBdFZ9HsRxTzWgNrUBarqPOWAWaL66vMxCDdcoidKTwpcByKJTMMCZ1kOyELm
+         sCKlFMgpkfZifLIKhcXwH1uNQUqkwTnhbe9hwz4+L2GTwr9R+B6Ywt7uX+3tSpfMsmPr
+         f5IAJX0bsZvW3xe29dJI5XeF/SFRx/Y3QxOa2eefKLn9yWm0nJU/1malN1RWXQ9FzHVb
+         Fm5mdhHWjFp8Ec5Q3rEnWkrU69pKOUQtrbXj5cj5J1/yr2gGBtOKRTFwvfIS1gBt8116
+         eJxx3JgKuurAOtfwX8f7s9wsN61KZXMxG/7haIWcT9LHhT7n5EjR9JBOgOzN2ynTLfJg
+         q/YA==
+X-Gm-Message-State: AOJu0YxjflxGIBoz7CmpWEWKRVjWhjJDpROvK0Gs/ESia/ap/gRmvG8t
+        mJWrzhslzWfl1MW5Mbq01xFU9zRTkaX2gDxY3SCYz5NIwEdxySjT
+X-Google-Smtp-Source: AGHT+IGROsfk06tbY4aJKZhfnAsRPVgtpSRAqvTPi3Sls9eZA1D2bKhA+BHNmXVH+vsas51sqXcQAJy04/XqDr1WP1M=
+X-Received: by 2002:a25:b11c:0:b0:d81:a0c5:f275 with SMTP id
+ g28-20020a25b11c000000b00d81a0c5f275mr9271834ybj.15.1695740668497; Tue, 26
+ Sep 2023 08:04:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230922175249.work.593-kees@kernel.org>
-In-Reply-To: <20230922175249.work.593-kees@kernel.org>
+References: <20230925030647.40283-1-andrew@codeconstruct.com.au>
+In-Reply-To: <20230925030647.40283-1-andrew@codeconstruct.com.au>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 26 Sep 2023 17:03:47 +0200
-Message-ID: <CAPDyKFo2CeV2Gw-MCbYvA=SRMrb+BptK3hW7f3sz2m1ChmgMAw@mail.gmail.com>
-Subject: Re: [PATCH] memstick: jmb38x_ms: Annotate struct jmb38x_ms with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>, Tom Rix <trix@redhat.com>,
-        Len Baker <len.baker@gmx.com>,
-        Dan Carpenter <error27@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-mmc@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
+Date:   Tue, 26 Sep 2023 17:03:52 +0200
+Message-ID: <CAPDyKFrFxYxSTa=z2VnCk4m_d-wEgd17wBokzyNCCRLtSUnFKw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: aspeed: Update Andrew's email address
+To:     Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc:     joel@jms.id.au, andrew@aj.id.au, linux-aspeed@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sept 2023 at 19:52, Kees Cook <keescook@chromium.org> wrote:
+On Mon, 25 Sept 2023 at 05:07, Andrew Jeffery
+<andrew@codeconstruct.com.au> wrote:
 >
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+> I've changed employers, have company email that deals with patch-based
+> workflows without too much of a headache, and am trying to steer some
+> content out of my personal mail.
 >
-> As found with Coccinelle[1], add __counted_by for struct jmb38x_ms.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
->
-> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
-> Cc: Alex Dubov <oakad@yahoo.com>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Tom Rix <trix@redhat.com>
-> Cc: Len Baker <len.baker@gmx.com>
-> Cc: Dan Carpenter <error27@gmail.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: linux-mmc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
-Applied for next, thanks!
+I guess it doesn't really matter what tree this gets funneled through,
+so I decided to pick this up via my mmc tree.
+
+So, applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
->  drivers/memstick/host/jmb38x_ms.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
-> index 21cb2a786058..e77eb8b0eb12 100644
-> --- a/drivers/memstick/host/jmb38x_ms.c
-> +++ b/drivers/memstick/host/jmb38x_ms.c
-> @@ -66,7 +66,7 @@ struct jmb38x_ms_host {
->  struct jmb38x_ms {
->         struct pci_dev        *pdev;
->         int                   host_cnt;
-> -       struct memstick_host  *hosts[];
-> +       struct memstick_host  *hosts[] __counted_by(host_cnt);
->  };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b19995690904..1965cee433b0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1963,7 +1963,7 @@ F:        drivers/irqchip/irq-aspeed-i2c-ic.c
 >
->  #define BLOCK_COUNT_MASK       0xffff0000
+>  ARM/ASPEED MACHINE SUPPORT
+>  M:     Joel Stanley <joel@jms.id.au>
+> -R:     Andrew Jeffery <andrew@aj.id.au>
+> +R:     Andrew Jeffery <andrew@codeconstruct.com.au>
+>  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+>  S:     Supported
+> @@ -3058,7 +3058,7 @@ F:        Documentation/devicetree/bindings/peci/peci-aspeed.yaml
+>  F:     drivers/peci/controller/peci-aspeed.c
+>
+>  ASPEED PINCTRL DRIVERS
+> -M:     Andrew Jeffery <andrew@aj.id.au>
+> +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
+>  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+>  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
+>  L:     linux-gpio@vger.kernel.org
+> @@ -3075,7 +3075,7 @@ F:        drivers/irqchip/irq-aspeed-scu-ic.c
+>  F:     include/dt-bindings/interrupt-controller/aspeed-scu-ic.h
+>
+>  ASPEED SD/MMC DRIVER
+> -M:     Andrew Jeffery <andrew@aj.id.au>
+> +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
+>  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+>  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
+>  L:     linux-mmc@vger.kernel.org
 > --
-> 2.34.1
+> 2.39.2
 >
