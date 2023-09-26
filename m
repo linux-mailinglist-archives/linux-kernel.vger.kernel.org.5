@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098257AEDD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B27B7AEDD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbjIZNNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
+        id S234831AbjIZNNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjIZNNb (ORCPT
+        with ESMTP id S229604AbjIZNNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:13:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC01F3;
-        Tue, 26 Sep 2023 06:13:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E27C433C7;
-        Tue, 26 Sep 2023 13:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695734004;
-        bh=vjOeXtIHqXffBP35xpftmPrN/668KBUpvIaJoM0J6cc=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=MKb9vZvU/hjsLPftWfzS/YkYEdoCgh3gm5x6Sx6bszhopiWlVQ+bRlNhY40lDkBDb
-         ffu6LG/6Ne3LTJ4NgsEwppFVISSTKLeaUR9RJFG7xS2rQOH7NvpXaUUYrUHgTCLj8b
-         x+mSTtAklURfVjQI867VlAlwmV6pf5adiH+y/3xmgfVP71vxChN4ZGbytAiL5q4Nai
-         tU9CwliuCmK1WTU9jZ3XL64bFD5znu8ax53FMj2Cb51cJwGQ8LdQ4qNMKZgqLub5HR
-         zyQrPr6C5qhsqAdMwiuRusQuZs2VlVQiV7w8DpXGaDSeehUjLXuMfJ6Kvh0ZxBt89r
-         m6a2Dqjz51xVw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 26 Sep 2023 16:13:18 +0300
-Message-Id: <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
- CSS events
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.15.2
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-2-haitao.huang@linux.intel.com>
- <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
- <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
-In-Reply-To: <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Tue, 26 Sep 2023 09:13:53 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641D4101;
+        Tue, 26 Sep 2023 06:13:46 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QDDfrW074505;
+        Tue, 26 Sep 2023 08:13:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695734021;
+        bh=kTTthXlSUBAhupfVmcCdkV/3LZHpU0fBU0nJVar5vHc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=b4NlryyNrFGGcmJTlo4lUBT+ZpeBJGXWFOGpZXGe3u80onfG0ZGhPgEE7LiPgLaAF
+         u7v60OCS6k+I6WuMwvw/Fg95fwlSRM6VHd+i0xYFG1iOI1mDqAN1YOY5ZlxRm051AC
+         83B/d2c3ppwG/8JGIfvUCEZSapzIazhVC2uY0VmY=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QDDfn1015820
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 08:13:41 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 08:13:41 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 08:13:41 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QDDeKe094423;
+        Tue, 26 Sep 2023 08:13:40 -0500
+Date:   Tue, 26 Sep 2023 18:43:39 +0530
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH V2] spi: spi-cadence-quadspi: Fix missing unwind goto
+ warnings
+Message-ID: <20230926131339.nigj6gp35r74yban@dhruva>
+References: <20230919074658.41666-1-d-gole@ti.com>
+ <ZRK+oDrT4vaZ0R/G@finisterre.sirena.org.uk>
+ <20230926114046.5ukretunoud3yv45@dhruva>
+ <ZRLHVReL9Bq4PNvS@finisterre.sirena.org.uk>
+ <20230926121908.mcyyj42buqr4ov3m@dhruva>
+ <ZRLTG4pogXW5FTgJ@finisterre.sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZRLTG4pogXW5FTgJ@finisterre.sirena.org.uk>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,183 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Sep 26, 2023 at 4:10 PM EEST, Jarkko Sakkinen wrote:
-> On Tue Sep 26, 2023 at 6:04 AM EEST, Haitao Huang wrote:
-> > Hi Jarkko
-> >
-> > On Mon, 25 Sep 2023 12:09:21 -0500, Jarkko Sakkinen <jarkko@kernel.org>=
- =20
-> > wrote:
-> >
-> > > On Sat Sep 23, 2023 at 6:06 AM EEST, Haitao Huang wrote:
-> > >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > >>
-> > >> The misc cgroup controller (subsystem) currently does not perform
-> > >> resource type specific action for Cgroups Subsystem State (CSS) even=
-ts:
-> > >> the 'css_alloc' event when a cgroup is created and the 'css_free' ev=
-ent
-> > >> when a cgroup is destroyed, or in event of user writing the max valu=
-e to
-> > >> the misc.max file to set the usage limit of a specific resource
-> > >> [admin-guide/cgroup-v2.rst, 5-9. Misc].
-> > >>
-> > >> Define callbacks for those events and allow resource providers to
-> > >> register the callbacks per resource type as needed. This will be
-> > >> utilized later by the EPC misc cgroup support implemented in the SGX
-> > >> driver:
-> > >> - On css_alloc, allocate and initialize necessary structures for EPC
-> > >> reclaiming, e.g., LRU list, work queue, etc.
-> > >> - On css_free, cleanup and free those structures created in alloc.
-> > >> - On max_write, trigger EPC reclaiming if the new limit is at or bel=
-ow
-> > >> current usage.
-> > >>
-> > >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> > >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> > >> ---
-> > >> V5:
-> > >> - Remove prefixes from the callback names (tj)
-> > >> - Update commit message (Jarkko)
-> > >>
-> > >> V4:
-> > >> - Moved this to the front of the series.
-> > >> - Applies on cgroup/for-6.6 with the overflow fix for misc.
-> > >>
-> > >> V3:
-> > >> - Removed the released() callback
-> > >> ---
-> > >>  include/linux/misc_cgroup.h |  5 +++++
-> > >>  kernel/cgroup/misc.c        | 32 +++++++++++++++++++++++++++++---
-> > >>  2 files changed, 34 insertions(+), 3 deletions(-)
-> > >>
-> > >> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup=
-.h
-> > >> index e799b1f8d05b..96a88822815a 100644
-> > >> --- a/include/linux/misc_cgroup.h
-> > >> +++ b/include/linux/misc_cgroup.h
-> > >> @@ -37,6 +37,11 @@ struct misc_res {
-> > >>  	u64 max;
-> > >>  	atomic64_t usage;
-> > >>  	atomic64_t events;
-> > >> +
-> > >> +	/* per resource callback ops */
-> > >> +	int (*alloc)(struct misc_cg *cg);
-> > >> +	void (*free)(struct misc_cg *cg);
-> > >> +	void (*max_write)(struct misc_cg *cg);
-> > >>  };
-> > >>
-> > >>  /**
-> > >> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> > >> index 79a3717a5803..62c9198dee21 100644
-> > >> --- a/kernel/cgroup/misc.c
-> > >> +++ b/kernel/cgroup/misc.c
-> > >> @@ -276,10 +276,13 @@ static ssize_t misc_cg_max_write(struct =20
-> > >> kernfs_open_file *of, char *buf,
-> > >>
-> > >>  	cg =3D css_misc(of_css(of));
-> > >>
-> > >> -	if (READ_ONCE(misc_res_capacity[type]))
-> > >> +	if (READ_ONCE(misc_res_capacity[type])) {
-> > >>  		WRITE_ONCE(cg->res[type].max, max);
-> > >> -	else
-> > >> +		if (cg->res[type].max_write)
-> > >> +			cg->res[type].max_write(cg);
-> > >> +	} else {
-> > >>  		ret =3D -EINVAL;
-> > >> +	}
-> > >>
-> > >>  	return ret ? ret : nbytes;
-> > >>  }
-> > >> @@ -383,23 +386,39 @@ static struct cftype misc_cg_files[] =3D {
-> > >>  static struct cgroup_subsys_state *
-> > >>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
-> > >>  {
-> > >> +	struct misc_cg *parent_cg;
-> > >>  	enum misc_res_type i;
-> > >>  	struct misc_cg *cg;
-> > >> +	int ret;
-> > >>
-> > >>  	if (!parent_css) {
-> > >>  		cg =3D &root_cg;
-> > >> +		parent_cg =3D &root_cg;
-> > >>  	} else {
-> > >>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
-> > >>  		if (!cg)
-> > >>  			return ERR_PTR(-ENOMEM);
-> > >> +		parent_cg =3D css_misc(parent_css);
-> > >>  	}
-> > >>
-> > >>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
-> > >>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-> > >>  		atomic64_set(&cg->res[i].usage, 0);
-> > >> +		if (parent_cg->res[i].alloc) {
-> > >> +			ret =3D parent_cg->res[i].alloc(cg);
-> > >> +			if (ret)
-> > >> +				goto alloc_err;
-> > >> +		}
-> > >>  	}
-> > >>
-> > >>  	return &cg->css;
-> > >> +
-> > >> +alloc_err:
-> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> > >> +		if (parent_cg->res[i].free)
-> > >> +			cg->res[i].free(cg);
-> > >> +	kfree(cg);
-> > >> +	return ERR_PTR(ret);
-> > >>  }
-> > >>
-> > >>  /**
-> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state =20
-> > >> *parent_css)
-> > >>   */
-> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
-> > >>  {
-> > >> -	kfree(css_misc(css));
-> > >> +	struct misc_cg *cg =3D css_misc(css);
-> > >> +	enum misc_res_type i;
-> > >> +
-> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
-> > >> +		if (cg->res[i].free)
-> > >> +			cg->res[i].free(cg);
-> > >> +
-> > >> +	kfree(cg);
-> > >>  }
-> > >>
-> > >>  /* Cgroup controller callbacks */
-> > >> --
-> > >> 2.25.1
-> > >
-> > > Since the only existing client feature requires all callbacks, should
-> > > this not have that as an invariant?
-> > >
-> > > I.e. it might be better to fail unless *all* ops are non-nil (e.g. to
-> > > catch issues in the kernel code).
-> > >
-> >
-> > These callbacks are chained from cgroup_subsys, and they are defined =
-=20
-> > separately so it'd be better follow the same pattern.  Or change togeth=
-er =20
-> > with cgroup_subsys if we want to do that. Reasonable?
->
-> I noticed this one later:
->
-> It would better to create a separate ops struct and declare the instance
-> as const at minimum.
->
-> Then there is no need for dynamic assigment of ops and all that is in
-> rodata. This is improves both security and also allows static analysis
-> bit better.
->
-> Now you have to dynamically trace the struct instance, e.g. in case of
-> a bug. If this one done, it would be already in the vmlinux.
+On Sep 26, 2023 at 14:48:27 +0200, Mark Brown wrote:
+> On Tue, Sep 26, 2023 at 05:49:08PM +0530, Dhruva Gole wrote:
+> 
+> > Umm I don't think the commit being fixed is there in 6.6?
+> > I am not really sure how I should base/format the patch? Please can you
+> > tell me what's expected in such a case ideally?
+> 
+> Including a full 12 character commit hash would help with matching,
 
-I.e. then in the driver you can have static const struct declaration
-with *all* pointers pre-assigned.
+I have given the full 12 chars, else checkpatch would've caught me :)
 
-Not sure if cgroups follows this or not but it is *objectively*
-better. Previous work is not always best possible work...
+> there were only 10 there.  Not mix'n'matching Link:/Close: with links in
+> the body of the commit message would help as well.
 
-BR, Jarkko
+OK, I have fixed the links and sent the patch V3
+
+Again, I have based on your for-next, as I don't see the fixes: commit in
+the 6.6 tree.
+
+
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
