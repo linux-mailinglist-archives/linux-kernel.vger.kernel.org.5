@@ -2,211 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 488BC7AF68C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E977AF6B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjIZXFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 19:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S231460AbjIZXYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 19:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjIZXDw (ORCPT
+        with ESMTP id S232648AbjIZXWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 19:03:52 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A797DB9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:20:28 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-418157e979eso44761cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695763228; x=1696368028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+yfCPJ+h1vKT/btr1jZvB3H+pqknpmQhzFvkl0ehzB0=;
-        b=porLy9Nf/CvM4T5KPhRvXoRRB8oCDEt/RP7LAuYpmLeTLjehCEwKDDwpvuL+CYIYsh
-         bIJLw+ulc4DB+fpnh7x+0PwZu2QIUoihAD8jokNQtg/Jkl5kuAyt6p8skqeTA8J8aP67
-         w92qhkFzRDnol7/aT5B4YKrjy6oNBzyUqDdz3YixUHC9ifD/oPCDgXdxHI7cbzwe4xmt
-         Rsp4E13BuVMFJpzyWpnId0t1Qed4PrM70tx8KFMIeD6QuhVvmK1oSirshXsfpWM/wpLi
-         NUiV2rpmUHOmLzQLA1p65+Y59qNPSe9SSVlGnwfao28MnO480AtAqE0h4H1e//Lv4VTu
-         reuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695763228; x=1696368028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+yfCPJ+h1vKT/btr1jZvB3H+pqknpmQhzFvkl0ehzB0=;
-        b=qEYrVVqU8EBnl1vhockUobekU5VVWjvXYOgoG7+/v9wPrnflQ5MpmiCvQQKTHFmkiX
-         1JxqrNWKDFq3Xs9wyW3tbvsXaR6WalPn2exMtYqvwjWKEtqcRbCPOeAXpYhgraUCNYjF
-         3todwEisQrc9nIbhm2WV8ZFWEicmL4QW2XBCcPW3CnQXEOrout2ZB2stOlbnOrg6mdvo
-         l3gBKLqTVOLgxPgCNxuVU1LRKDXYNyxotw+UB8zyGaT24F9HiCtV7KmKjY+25a4Lw3vo
-         WHcWJYPzyX/7sNFM2L3f5T0bNin6JCiITSR4vhpacaKRmvC7SnFwinhjIKgklOPIpQdQ
-         Q1gQ==
-X-Gm-Message-State: AOJu0YyOcchNOSnQ3eDNSlEGgNlNQswJ1pa1g0XVLcqcQjB0SSOY66Fm
-        6GIrbYo1i/4rnB4WO28wFUCV1cyfjO7bejSuYnJswQ==
-X-Google-Smtp-Source: AGHT+IGlC2Cfe5ksujev4GRMEvbJr3s/cuOJfP0+eExFS0lmCzk+qbaTOLoUEVFab0BBpr3Ih/5JbGIbUb328dtOH0c=
-X-Received: by 2002:a05:622a:5cf:b0:403:e1d1:8b63 with SMTP id
- d15-20020a05622a05cf00b00403e1d18b63mr447837qtb.24.1695763227794; Tue, 26 Sep
- 2023 14:20:27 -0700 (PDT)
+        Tue, 26 Sep 2023 19:22:02 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id A119BA27A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 15:24:21 -0700 (PDT)
+Received: (qmail 1476453 invoked by uid 1000); 26 Sep 2023 17:24:19 -0400
+Date:   Tue, 26 Sep 2023 17:24:19 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
+        quic_jackp@quicinc.com
+Subject: Re: [PATCH v4] usb: gadget: udc: Handle gadget_connect failure
+ during bind operation
+Message-ID: <9384ac6a-f877-4835-b1ec-0e620a5ba8ba@rowland.harvard.edu>
+References: <20230926193708.22405-1-quic_kriskura@quicinc.com>
+ <2178cf29-5e5c-4ed6-8d1c-916bc7036589@rowland.harvard.edu>
+ <62083b55-0b78-4ebc-ab78-1c1d99f92507@quicinc.com>
+ <f2bd7593-eff9-46ac-a94b-964eb4787740@quicinc.com>
 MIME-Version: 1.0
-References: <20230921061641.273654-1-mic@digikod.net> <20230921061641.273654-6-mic@digikod.net>
- <CALmYWFubLv+yd9NWMMwt4FUdYnbghMC=GHeZm4oaSOctqnwbVA@mail.gmail.com> <20230926.di9Esee2xahi@digikod.net>
-In-Reply-To: <20230926.di9Esee2xahi@digikod.net>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Tue, 26 Sep 2023 14:19:51 -0700
-Message-ID: <CALmYWFuerqvZ3HoUnc9xXYhR8vBgg9qAyA-ncHai4ksN-c-gGQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 5/7] landlock: Log file-related requests
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-        Paul Moore <paul@paul-moore.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Ben Scarlato <akhna@google.com>,
-        =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>,
-        Jorge Lucangeli Obes <jorgelo@google.com>,
-        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f2bd7593-eff9-46ac-a94b-964eb4787740@quicinc.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 6:35=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
-od.net> wrote:
->
-> On Mon, Sep 25, 2023 at 06:26:28PM -0700, Jeff Xu wrote:
-> > On Wed, Sep 20, 2023 at 11:17=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@=
-digikod.net> wrote:
-> > >
-> > > Add audit support for mkdir, mknod, symlink, unlink, rmdir, truncate,
-> > > and open requests.
-> > >
-> > > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> > > ---
-> > >  security/landlock/audit.c | 114 ++++++++++++++++++++++++++++++++++++=
-++
-> > >  security/landlock/audit.h |  32 +++++++++++
-> > >  security/landlock/fs.c    |  62 ++++++++++++++++++---
-> > >  3 files changed, 199 insertions(+), 9 deletions(-)
-> > >
->
-> > > +static void
-> > > +log_request(const int error, struct landlock_request *const request,
-> > > +           const struct landlock_ruleset *const domain,
-> > > +           const access_mask_t access_request,
-> > > +           const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCE=
-SS_FS])
-> > > +{
-> > > +       struct audit_buffer *ab;
-> > > +
-> > > +       if (WARN_ON_ONCE(!error))
-> > > +               return;
-> > > +       if (WARN_ON_ONCE(!request))
-> > > +               return;
-> > > +       if (WARN_ON_ONCE(!domain || !domain->hierarchy))
-> > > +               return;
-> > > +
-> > > +       /* Uses GFP_ATOMIC to not sleep. */
-> > > +       ab =3D audit_log_start(audit_context(), GFP_ATOMIC | __GFP_NO=
-WARN,
-> > > +                            AUDIT_LANDLOCK);
-> > > +       if (!ab)
-> > > +               return;
-> > > +
-> > > +       update_request(request, domain, access_request, layer_masks);
-> > > +
-> > > +       log_task(ab);
-> > > +       audit_log_format(ab, " domain=3D%llu op=3D%s errno=3D%d missi=
-ng-fs-accesses=3D",
-> > > +                        request->youngest_domain,
-> > > +                        op_to_string(request->operation), -error);
-> > > +       log_accesses(ab, request->missing_access);
-> > > +       audit_log_lsm_data(ab, &request->audit);
-> > > +       audit_log_end(ab);
-> > > +}
-> > > +
-> > > +// TODO: Make it generic, not FS-centric.
-> > > +int landlock_log_request(
-> > > +       const int error, struct landlock_request *const request,
-> > > +       const struct landlock_ruleset *const domain,
-> > > +       const access_mask_t access_request,
-> > > +       const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_F=
-S])
-> > > +{
-> > > +       /* No need to log the access request, only the missing access=
-es. */
-> > > +       log_request(error, request, domain, access_request, layer_mas=
-ks);
-> > > +       return error;
-> > > +}
->
-> > > @@ -636,7 +638,8 @@ static bool is_access_to_paths_allowed(
-> > >  }
-> > >
-> > >  static int current_check_access_path(const struct path *const path,
-> > > -                                    access_mask_t access_request)
-> > > +                                    access_mask_t access_request,
-> > > +                                    struct landlock_request *const r=
-equest)
-> > >  {
-> > >         const struct landlock_ruleset *const dom =3D
-> > >                 landlock_get_current_domain();
-> > > @@ -650,7 +653,10 @@ static int current_check_access_path(const struc=
-t path *const path,
-> > >                                        NULL, 0, NULL, NULL))
-> > >                 return 0;
-> > >
-> > > -       return -EACCES;
-> > > +       request->audit.type =3D LSM_AUDIT_DATA_PATH;
-> > > +       request->audit.u.path =3D *path;
-> > > +       return landlock_log_request(-EACCES, request, dom, access_req=
-uest,
-> > > +                                   &layer_masks);
-> >
-> > It might be more readable to let landlock_log_request return void.
-> > Then the code will look like below.
-> >
-> > landlock_log_request(-EACCES, request, dom, access_request,  &layer_mas=
-ks);
-> > return -EACCES;
-> >
-> > The allow/deny logic will be in this function, i.e. reader
-> > doesn't need to check landlock_log_request's implementation to find
-> > out it never returns 0.
->
-> I did that in an early version of this patch, but I finally choose to wri=
-te
-> 'return lanlock_log_request();` for mainly two reasons:
-> * to help not forget to call this function at any non-zero return values
->   (which can easily be checked with grep),
+On Wed, Sep 27, 2023 at 01:54:34AM +0530, Krishna Kurapati PSSNV wrote:
+> 
+> 
+> On 9/27/2023 1:36 AM, Krishna Kurapati PSSNV wrote:
+> > > >   drivers/usb/gadget/udc/core.c | 23 +++++++++++++++++++----
+> > > >   1 file changed, 19 insertions(+), 4 deletions(-)
+> > > > 
+> > > >   static void vbus_event_work(struct work_struct *work)
+> > > > @@ -1604,12 +1608,23 @@ static int gadget_bind_driver(struct
+> > > > device *dev)
+> > > >       }
+> > > >       usb_gadget_enable_async_callbacks(udc);
+> > > >       udc->allow_connect = true;
+> > > > -    usb_udc_connect_control_locked(udc);
+> > > > +    ret = usb_udc_connect_control_locked(udc);
+> > > > +    if (ret) {
+> > > > +        mutex_unlock(&udc->connect_lock);
+> > > > +        goto err_connect_control;
+> > > > +    }
+> > > > +
+> > > >       mutex_unlock(&udc->connect_lock);
+> > > >       kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+> > > >       return 0;
+> > > > + err_connect_control:
+> > > > +    usb_gadget_disable_async_callbacks(udc);
+> > > > +    if (gadget->irq)
+> > > > +        synchronize_irq(gadget->irq);
+> > > > +    usb_gadget_udc_stop_locked(udc);
+> > > 
+> > > Not good -- usb_gadget_udc_stop_locked() expects you to be holding
+> > > udc->connect_lock, but you just dropped the lock!  Also, you never set
+> > > udc->allow_connect back to false.
+> > > 
+> > > You should move the mutex_unlock() call from inside the "if" statement
+> > > to down here, and add a line for udc->allow_connect.
+> > > 
+> > 
+> > Hi Alan,
+> > 
+> >   Thanks for the review. Will push v5 addressing the changes.
+> > 
+> > 
+> Hi Alan,
+> 
+> I tried out the following diff:
+> 
+> -       usb_udc_connect_control_locked(udc);
+> +       ret = usb_udc_connect_control_locked(udc);
+> +       if (ret)
+> +               goto err_connect_control;
+> +
+>         mutex_unlock(&udc->connect_lock);
+> 
+>         kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+>         return 0;
+> 
+> + err_connect_control:
+> +       udc->allow_connect = false;
+> +       usb_gadget_disable_async_callbacks(udc);
+> +       if (gadget->irq)
+> +               synchronize_irq(gadget->irq);
+> +       usb_gadget_udc_stop_locked(udc);
+> +       mutex_unlock(&udc->connect_lock);
+> +
+> 
+> If I clear UDC and fail dwc3 soft reset on purpose, I see UDC_store failing:
+> 
+> #echo a600000.usb > /sys/kernel/config/usb_gadget/g1/UDC
+> [  127.394087] dwc3 a600000.usb: request 000000003f43f907 was not queued to
+> ep0out
+> [  127.401637] udc a600000.usb: failed to start g1: -110
+> [  127.406841] configfs-gadget.g1: probe of gadget.0 failed with error -110
+> [  127.413809] UDC core: g1: couldn't find an available UDC or it's busy
+> 
+> The same output came when I tested v4 as well. Every time soft_reset would
+> fail when I try to write to UDC, UDC_store fails and above log will come up.
 
-"grep -A 2 landlock_log_request" would serve the same purpose though.
+Isn't that what you want?  I thought the whole purpose of this patch was 
+to make it so that configfs would realize when 
+usb_udc_connect_control_locked() had failed.   So you should be happy 
+that the log shows a failure occurred.
 
-> * to do tail calls.
->
-> I guess compiler should be smart enough to do tail calls with a variable
-> set indirection, but I'd like to check that.
->
+> Can you help confirm if the diff above is proper as I don't see any diff in
+> the logs in v4 and about to push v5.
 
-What are tail calls and what is the benefit of this code pattern ?
-i.e. pass the return value into landlock_log_request() and make it a
-single point of setting return value for all landlock hooks.
+"Diff in the logs in v4"?  What does that mean?  A diff is a comparison 
+between two text files (often between before-and-after versions of a 
+source code file).  Why would you expect a diff to show up in the logs?
 
-> To make it easier to read (and to not forget returning the error), the
-> landlock_log_request() calls a void log_request() helper, and returns
-> the error itself. It is then easy to review and know what's happening
-> without reading log_request().
->
-> I'd like the compiler to check itself that every LSM hook returned
-> values are either 0 or comming from landlock_log_request() but I think
-> it's not possible right now. Coccinelle might help here though.
->
-> BTW, in a next version, we might have landlock_log_request() called even
-> for allowed requests (i.e. returned value of 0).
+This revised patch looks okay to me.
+
+Alan Stern
