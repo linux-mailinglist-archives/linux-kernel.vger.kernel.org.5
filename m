@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CEF7AE598
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C707AE59A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbjIZGNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
+        id S233717AbjIZGOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233717AbjIZGNu (ORCPT
+        with ESMTP id S233753AbjIZGOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:13:50 -0400
-Received: from muru.com (unknown [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5B82E9;
-        Mon, 25 Sep 2023 23:13:40 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 155DA80E2;
-        Tue, 26 Sep 2023 06:13:22 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Udit Kumar <u-kumar1@ti.com>,
-        Thomas Richard <thomas.richard@bootlin.com>
-Subject: [PATCH] serial: 8250_omap: Fix errors with no_console_suspend
-Date:   Tue, 26 Sep 2023 09:13:17 +0300
-Message-ID: <20230926061319.15140-1-tony@atomide.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 26 Sep 2023 02:14:01 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4799E9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:13:54 -0700 (PDT)
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38Q6DK1r1929152
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 25 Sep 2023 23:13:24 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38Q6DK1r1929152
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1695708805;
+        bh=nNwOzyqfEzLt1zDWttF1YMiYKoXzfh/V3dbwJJ7gl5s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gBqMBgNBpIDGd5cUuIWQ6YV+PbFTrIYT/NNXbe2NsE5T7WEtq6IYB11ZCxkUXZMiV
+         cQF78ZOnXpCM5O5iesps5qw81iWSk1cRq8X7btxdw/HayCk9iE7l21qF4tHMZbBcYw
+         q/MUvXUMFHNhuxxhYNzukJbkuk5qsh9hvevvsG4gEf8XnuFROq1Oqa86SM3MhCCPH0
+         Zzawh5LJ8XT9YdNodEGqZw9T3PD/NDJpVzmTnOHWZ1b9zz5laAzcYUiA9/7FyCXW1n
+         ssrhzllEhjQo75H7TAoHXeksHjG15Vx+RXZ/77wYV/m1nc1EPIwV1njdKpmGIb+GLY
+         fWdRhqhC5UFgA==
+From:   xin@zytor.com
+To:     linux-kernel@vger.kernel.org
+Cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com
+Subject: [PATCH 1/1] x86/entry: remove unused argument %rsi passed to exc_nmi()
+Date:   Mon, 25 Sep 2023 23:13:19 -0700
+Message-Id: <20230926061319.1929127-1-xin@zytor.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_NONE,T_SPF_HELO_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We now get errors on system suspend if no_console_suspend is set as
-reported by Thomas. The errors started with commit 20a41a62618d ("serial:
-8250_omap: Use force_suspend and resume for system suspend").
+From: "Xin Li (Intel)" <xin@zytor.com>
 
-Let's fix the issue by checking for console_suspend_enabled in the system
-suspend and resume path.
+exc_nmi() only takes one argument of type struct pt_regs *, but
+asm_exc_nmi() calls it with 2 arguments. The second one passed
+in %rsi seems a leftover, so simply remove it.
 
-Note that with this fix the checks for console_suspend_enabled in
-omap8250_runtime_suspend() become useless. We now keep runtime PM usage
-count for an attached kernel console starting with commit bedb404e91bb
-("serial: 8250_port: Don't use power management for kernel console").
+BTW, fix 2 slips in the comments.
 
-Fixes: 20a41a62618d ("serial: 8250_omap: Use force_suspend and resume for system suspend")
-Cc: Udit Kumar <u-kumar1@ti.com>
-Reported-by: Thomas Richard <thomas.richard@bootlin.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+ arch/x86/entry/entry_64.S | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -1617,7 +1617,7 @@ static int omap8250_suspend(struct device *dev)
- {
- 	struct omap8250_priv *priv = dev_get_drvdata(dev);
- 	struct uart_8250_port *up = serial8250_get_port(priv->line);
--	int err;
-+	int err = 0;
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index f71664dea1a3..9b4b512f2a75 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1163,8 +1163,8 @@ SYM_CODE_START(asm_exc_nmi)
+ 	 * anyway.
+ 	 *
+ 	 * To handle this case we do the following:
+-	 *  Check the a special location on the stack that contains
+-	 *  a variable that is set when NMIs are executing.
++	 *  Check a special location on the stack that contains a
++	 *  variable that is set when NMIs are executing.
+ 	 *  The interrupted task's stack is also checked to see if it
+ 	 *  is an NMI stack.
+ 	 *  If the variable is not set and the stack is not the NMI
+@@ -1237,7 +1237,6 @@ SYM_CODE_START(asm_exc_nmi)
+ 	 */
  
- 	serial8250_suspend_port(priv->line);
+ 	movq	%rsp, %rdi
+-	movq	$-1, %rsi
+ 	call	exc_nmi
  
-@@ -1627,7 +1627,8 @@ static int omap8250_suspend(struct device *dev)
- 	if (!device_may_wakeup(dev))
- 		priv->wer = 0;
- 	serial_out(up, UART_OMAP_WER, priv->wer);
--	err = pm_runtime_force_suspend(dev);
-+	if (uart_console(&up->port) && console_suspend_enabled)
-+		err = pm_runtime_force_suspend(dev);
- 	flush_work(&priv->qos_work);
+ 	/*
+@@ -1295,8 +1294,8 @@ SYM_CODE_START(asm_exc_nmi)
+ 	 * end_repeat_nmi, then we are a nested NMI.  We must not
+ 	 * modify the "iret" frame because it's being written by
+ 	 * the outer NMI.  That's okay; the outer NMI handler is
+-	 * about to about to call exc_nmi() anyway, so we can just
+-	 * resume the outer NMI.
++	 * about to call exc_nmi() anyway, so we can just resume
++	 * the outer NMI.
+ 	 */
  
- 	return err;
-@@ -1636,11 +1637,15 @@ static int omap8250_suspend(struct device *dev)
- static int omap8250_resume(struct device *dev)
- {
- 	struct omap8250_priv *priv = dev_get_drvdata(dev);
-+	struct uart_8250_port *up = serial8250_get_port(priv->line);
- 	int err;
+ 	movq	$repeat_nmi, %rdx
+@@ -1451,7 +1450,6 @@ end_repeat_nmi:
+ 	UNWIND_HINT_REGS
  
--	err = pm_runtime_force_resume(dev);
--	if (err)
--		return err;
-+	if (uart_console(&up->port) && console_suspend_enabled) {
-+		err = pm_runtime_force_resume(dev);
-+		if (err)
-+			return err;
-+	}
-+
- 	serial8250_resume_port(priv->line);
- 	/* Paired with pm_runtime_resume_and_get() in omap8250_suspend() */
- 	pm_runtime_mark_last_busy(dev);
-@@ -1717,16 +1722,6 @@ static int omap8250_runtime_suspend(struct device *dev)
+ 	movq	%rsp, %rdi
+-	movq	$-1, %rsi
+ 	call	exc_nmi
  
- 	if (priv->line >= 0)
- 		up = serial8250_get_port(priv->line);
--	/*
--	 * When using 'no_console_suspend', the console UART must not be
--	 * suspended. Since driver suspend is managed by runtime suspend,
--	 * preventing runtime suspend (by returning error) will keep device
--	 * active during suspend.
--	 */
--	if (priv->is_suspending && !console_suspend_enabled) {
--		if (up && uart_console(&up->port))
--			return -EBUSY;
--	}
- 
- 	if (priv->habit & UART_ERRATA_CLOCK_DISABLE) {
- 		int ret;
+ 	/* Always restore stashed SPEC_CTRL value (see paranoid_entry) */
 -- 
-2.42.0
+2.40.1
+
