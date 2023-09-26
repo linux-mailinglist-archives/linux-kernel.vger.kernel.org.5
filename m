@@ -2,160 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72BF7AE3AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9867AE3B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbjIZCe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 22:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S233505AbjIZClX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 22:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjIZCe1 (ORCPT
+        with ESMTP id S229525AbjIZClU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 22:34:27 -0400
-Received: from out-203.mta0.migadu.com (out-203.mta0.migadu.com [91.218.175.203])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76DBBF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 19:34:20 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695695659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O4gdwyymXhv1akvvXy7XdiAE7b0Qw7mzBDzL0vbfvGE=;
-        b=PNjKmnQwnMzOqfxuvKSAPWIU9KnNN9QPLkyG+c8Bbg3eJ+YE/ZJRFcltMVXWxRXclXOp5l
-        SBjkLkc7wMzfjBEMZdLVjld0qCtwi8EYwfcACs9pVGrHfuMREpjA35wI9a23uLHLs361w/
-        MqGUo/p8Q4mUx+NYuq4q0YEpessgzzY=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     akpm@linux-foundation.org, rppt@kernel.org
-Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v3 2/2] mm: Init page count in reserve_bootmem_region when MEMINIT_EARLY
-Date:   Tue, 26 Sep 2023 10:33:41 +0800
-Message-Id: <20230926023341.991124-3-yajun.deng@linux.dev>
-In-Reply-To: <20230926023341.991124-1-yajun.deng@linux.dev>
-References: <20230926023341.991124-1-yajun.deng@linux.dev>
+        Mon, 25 Sep 2023 22:41:20 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB5610A;
+        Mon, 25 Sep 2023 19:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695696072;
+        bh=lHFDEW0kq8NtsAXpBZ++Cp7iz9lotlz7DmLLsh5/l20=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M69x6LKc4uJ4uFRycLqidqnGAxfhWCADft1UAL+Qzr79X5I4vs5X4gqDWcHl42JlU
+         6KW+ZHYRqfc+ZGchPVGzhX02kbW+wCsCaGLLj2bqLSFRrUF32LTBQTKD9vsPolPRh6
+         XouktsWpvCV+qMQPTamUzCGpBzqrvktrX4X/sP43kcO13w0ohjNwFc116RB7YTIpwl
+         bWPCOqO9taeBlpmJ0Gx4rIPOl5uEXeBSR2bcfAzQMjrtg0QJXSrdbUFNaR7IhQ2tGb
+         k4MVlcNa0Ym4JYD1oZbalJCaXgu+brGm8DAno3VymqMy3t+AmQEfLbPMZu3AlHPwWa
+         izGJax7MBdRQg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RvkWq63BNz4xP9;
+        Tue, 26 Sep 2023 12:41:11 +1000 (AEST)
+Date:   Tue, 26 Sep 2023 12:41:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the wireless-next tree with the
+ wireless tree
+Message-ID: <20230926124111.29103070@canb.auug.org.au>
+In-Reply-To: <20230926120253.4f1e5730@canb.auug.org.au>
+References: <20230926120253.4f1e5730@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/ZKHl_fTBWpCZtF5YDNHFwqc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memmap_init_range() would set page count of all pages, but the free
-pages count would be reset in __free_pages_core(). There are opposite
-operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
-context.
+--Sig_/ZKHl_fTBWpCZtF5YDNHFwqc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Init page count in reserve_bootmem_region when in MEMINIT_EARLY context,
-and check the page count before reset it.
+Hi all,
 
-At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
-need, as it already done in __init_single_page.
+On Tue, 26 Sep 2023 12:02:53 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the wireless-next tree got conflicts in:
+>=20
+>   net/mac80211/cfg.c
+>=20
+> between commit:
+>=20
+>   31db78a4923e ("wifi: mac80211: fix potential key use-after-free")
+>=20
+> from the wireless tree and commit:
+>=20
+>   4d3acf4311a0 ("wifi: mac80211: remove sta_mtx")
+>=20
+> from the wireless-next tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-The following data was tested on an x86 machine with 190GB of RAM.
+That wasn't quite right.  The final resolution is below.
+--=20
+Cheers,
+Stephen Rothwell
 
-before:
-free_low_memory_core_early()    341ms
+diff --cc net/mac80211/cfg.c
+index 0e3a1753a51c,5bc6b1329465..3e7bb883137c
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@@ -472,8 -470,9 +470,10 @@@ static int ieee80211_add_key(struct wip
+  	struct ieee80211_local *local =3D sdata->local;
+  	struct sta_info *sta =3D NULL;
+  	struct ieee80211_key *key;
+ +	int err;
+ =20
++ 	lockdep_assert_wiphy(local->hw.wiphy);
++=20
+  	if (!ieee80211_sdata_running(sdata))
+  		return -ENETDOWN;
+ =20
+@@@ -565,15 -561,7 +562,11 @@@
+  		break;
+  	}
+ =20
+ -	return ieee80211_key_link(key, link, sta);
+ +	err =3D ieee80211_key_link(key, link, sta);
+ +	/* KRACK protection, shouldn't happen but just silently accept key */
+ +	if (err =3D=3D -EALREADY)
+ +		err =3D 0;
+-=20
+-  out_unlock:
+- 	mutex_unlock(&local->sta_mtx);
+-=20
+ +	return err;
+  }
+ =20
+  static struct ieee80211_key *
 
-after:
-free_low_memory_core_early()    285ms
+--Sig_/ZKHl_fTBWpCZtF5YDNHFwqc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
-v3: same with v2.
-v2: check page count instead of check context before reset it.
-v1: https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
----
- mm/mm_init.c    | 18 +++++++++++++-----
- mm/page_alloc.c | 20 ++++++++++++--------
- 2 files changed, 25 insertions(+), 13 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 07fe7e489769..af1b3e7b0f52 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -718,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
- 		if (zone_spans_pfn(zone, pfn))
- 			break;
- 	}
--	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
-+	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
- }
- #else
- static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
-@@ -756,8 +756,8 @@ void __meminit reserve_bootmem_region(phys_addr_t start,
- 
- 			init_reserved_page(start_pfn, nid);
- 
--			/* Avoid false-positive PageTail() */
--			INIT_LIST_HEAD(&page->lru);
-+			/* Set page count for the reserved region */
-+			init_page_count(page);
- 
- 			/*
- 			 * no need for atomic set_bit because the struct
-@@ -888,9 +888,17 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
- 		}
- 
- 		page = pfn_to_page(pfn);
--		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
--		if (context == MEMINIT_HOTPLUG)
-+
-+		/* If the context is MEMINIT_EARLY, we will set page count and
-+		 * mark page reserved in reserve_bootmem_region, the free region
-+		 * wouldn't have page count and we will check the pages count
-+		 * in __free_pages_core.
-+		 */
-+		__init_single_page(page, pfn, zone, nid, 0);
-+		if (context == MEMINIT_HOTPLUG) {
-+			init_page_count(page);
- 			__SetPageReserved(page);
-+		}
- 
- 		/*
- 		 * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 06be8821d833..b868caabe8dc 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1285,18 +1285,22 @@ void __free_pages_core(struct page *page, unsigned int order)
- 	unsigned int loop;
- 
- 	/*
--	 * When initializing the memmap, __init_single_page() sets the refcount
--	 * of all pages to 1 ("allocated"/"not free"). We have to set the
--	 * refcount of all involved pages to 0.
-+	 * When initializing the memmap, memmap_init_range sets the refcount
-+	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
-+	 * have to set the refcount of all involved pages to 0. Otherwise,
-+	 * we don't do it, as reserve_bootmem_region only set the refcount on
-+	 * reserve region ("reserved") in early context.
- 	 */
--	prefetchw(p);
--	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
--		prefetchw(p + 1);
-+	if (page_count(page)) {
-+		prefetchw(p);
-+		for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
-+			prefetchw(p + 1);
-+			__ClearPageReserved(p);
-+			set_page_count(p, 0);
-+		}
- 		__ClearPageReserved(p);
- 		set_page_count(p, 0);
- 	}
--	__ClearPageReserved(p);
--	set_page_count(p, 0);
- 
- 	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
- 
--- 
-2.25.1
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUSRMcACgkQAVBC80lX
+0GwEggf/TpfEL0JAdGjvNEPw9ytkOvN59ikvJc+qHM/Z1gVYUr+DRYqCq5xew2de
+JhVLx+++FPoX8mg5rtEfwBLVst6E7BaWWTTE7dXHXT0ZYihTfc7efZ9kzs9zWuco
+I54+9WUG0l7qdbmAhQAO50qDyKpy0FD2ONLNbbB1DbiFZJoJWtvyQ4jEO8yK2V1I
+EruqpiwoAip+sjMIG73NrZkD5kcD4NkpoFVRojYrhnZzMwV8u9vYfumHm37SsHCT
+Y8AzrrHCwMRIgSwg6GoPUYHo2QVERQtqlwiXZeIhogp6YiyKoPvCCe4CBFiF6Mzk
+/cSwnFj3FrE+pLSAzxlsLqIlvjA2ZA==
+=uduE
+-----END PGP SIGNATURE-----
 
+--Sig_/ZKHl_fTBWpCZtF5YDNHFwqc--
