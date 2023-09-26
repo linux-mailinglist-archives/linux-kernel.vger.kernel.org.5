@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F46E7AF14E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F777AF14D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235464AbjIZQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
+        id S235461AbjIZQwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjIZQwH (ORCPT
+        with ESMTP id S235406AbjIZQwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:52:07 -0400
+        Tue, 26 Sep 2023 12:52:04 -0400
 Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DBF11F;
-        Tue, 26 Sep 2023 09:52:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87035136;
+        Tue, 26 Sep 2023 09:51:56 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; t=1695747101; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=nkG3qo4wxa6uPpr8wezU1QB3J9gPmARwh2pUsEBIO4644ypuWj3bpf4jKsNSGPvWsG
-    nl/MuQeFBWPMKOUYuANpUr9YbI3GtmsAz98pY+MR3fF399SvTCEQIYNE+9tFSBW4n9uo
-    dOrXyYy9YhviBsVcejoXiOUB3OFdAwXN/Mao0I+mZMqc3+9GU+dDg2A6yvPh2Rg9rr90
-    YaOUAK6OAhYR0JAZbzHGQxdu2EBgeHpVRfmevT7IxMYgdKGhTRUlRXEuWbp0cmgTPVGJ
-    OWI4GctFmkqzvS9etyeH3uQXQPz39SZdEVVfLsfpVbDEYrGaoJBXNUG8+3dp9lc8Wqql
-    biWw==
+    b=oX0OUl60dqkGoVI54R7HrEoRF04f6UnPz6Y8x5nxA4PGCc8BafGVmfqPGNo/YV1Yel
+    eySgDh9M3pIQ8v14bnXSeXSUm/0/Ym/xSMSCe6fCrgFHmAIvYvbDguHQRQbOoDX85kRG
+    Dz2V2PSp8ordMPy17avmBAJHajOEsKWfbZX32/N6wLj8KYYe/PU3iHuP5KdTMsXq9BDp
+    4sW9aU807i8IcfSMfuy9Vf3dy9sgJvqbAy72RoNh9Fcuhai+/h68QPnOa+VpauafXKs0
+    oqUPYFwBvGW4vxlwCpDeC3DZB2IQNXFDYkaQI+BALtP1EtFyMzOiNCEK2coHCrRMNOwM
+    x8Jg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747101;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=tufcaIR3gqhuRrY5aJ18aw1wfuMM/cmSUyyyezmaDvk=;
-    b=M28tOYed4a+uDYp3SoHeC+ceSs4//LjQgD/5ycLgv4AdtTpGim06TmHxZXG/jakZMM
-    87fcbONDMmIGaaZLoibW/DUKlPJs/22vqL56EOAgSqNk/JpcmeRPnnIGsr5MV9D6gzzP
-    ncgBOxfn55AyDy1Fzcg3nY80B8stlFSdsGbAepZ3hgm5awLqzw0ofluuoSec6fCz0NMb
-    b4OpQR5ePCD4tim2FMamSNjVRr25f/2zGExPXPkC26cdNpBJ3CVYrBOa+oX9lYIkc2fk
-    oNHE9TbepYh7m6BLwP1MeqZVsUssdzs1kDRzmkjl0dKZLunwIVc7P+7+bnrsx0428sIF
-    EMmA==
+    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
+    b=GF6ucFMhmQXy2sl3bo0J6xsMwDFf1CHSCn+obpe4CyTPf9NNqOMocH5cBLlj0FAuiO
+    y4ocj5CrZADOaB/l+VSCUCzh18zPxyHiyV3+nStxynC267yk9mmWDZ33pl22EN1HC1jA
+    g8rXHveREBVdy1qG9ajvB5eMDHgVrHfrMfPIgccfCO+kwCAr1Fqb7WiGJ4781SOGjYQJ
+    yiQtjH0rGt5yc+lC1nEHvXO4F7Cko9FDoxGwWsgcgkErv8qCLy3FVD99kszUHNHeqb/T
+    mEMRu9qDjjKcQXH9hpEEqmUfrbEb7wINzW4mOcHtwL0zsz02pePMcIemSsi7uOrMDXTf
+    OKpw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
@@ -42,35 +42,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747101;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=tufcaIR3gqhuRrY5aJ18aw1wfuMM/cmSUyyyezmaDvk=;
-    b=MpeJFR55+/Kra0BqLqqlt8ubm8S6O6XtQqKaj4XZPWGn1lG//QsIOEhcgoThOYgN3C
-    /Xe7X7fSTuMqKkBdp88GFh2QHVE5VgflVpDzVhm78C+Ncqj3o6x8w7F6C5DhBUDuK8cJ
-    uK6ncWrZa6EU5JAi8Oc65/nw0K9ajxpQp2f20z8Nd2VnPd5oJkK5NV7buJkKONEx0rrH
-    LvrzI7l2MTX9oAhndIqPRF/wcKiWXpl7V7Xon3T32aouvXxpuVVFs5dExqN8biUjNA4t
-    /EBVm+zcT0yP+cpAEyp44eqK1EaWSoLJxwdnMtpOQpdWWVgtyNL3fxu9QoAnM7roS45m
-    TUew==
+    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
+    b=deevSVjmGYXJYdSJ5qhdXybM8kGnZhulYYmEd7SZnWdLHrSutbOoEGwDDge5OVzsB3
+    hVht+7bAJJECkRlzJWtQ+zsqXH/vu4CQ1tNkUMaiSLszOHjaA/3Yu3KXxYm1b9xGnaE3
+    VSsSDt0jw6heR8hkhF4bnBAFctuMEUiQz7CmXK+Yn3ApBX+RXjTe6Sxyr4KtWu4APquj
+    3Pta4/NforJvntynXzHCbtDVFDEDmEPro5qFA+8DEnJKZXLCErez8zIXQlTkzF9kaVoH
+    B/r+fy97B7LD123yrs78uMiykJS78YEPXh5UaApj7q4++k2vEAm7/xpbQM5ZLPmJX6ov
+    9JGA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695747101;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=tufcaIR3gqhuRrY5aJ18aw1wfuMM/cmSUyyyezmaDvk=;
-    b=DSs3zEBZOD9PDojf0ZDEnz39N/bXVBh80JJXu3OOaptca1U40I7321k1R3mY0/Rv0q
-    M9SzyIlCTUqrcKTGjxBg==
+    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
+    b=3iq7OZgpqQgWUjkQ6WtVAavIeXJZhZyeuPqsqoeqgNeOlFtEtLejP6NvJnqixJskxw
+    WATb2Bp8ui6wlurOdKDQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOH+nz0="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
-    with ESMTPSA id R04c57z8QGpfg5j
+    with ESMTPSA id R04c57z8QGpfg5k
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
     Tue, 26 Sep 2023 18:51:41 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 26 Sep 2023 18:51:26 +0200
-Subject: [PATCH 12/13] arm64: dts: qcom: msm8916-samsung-j5: Add sound and
+Date:   Tue, 26 Sep 2023 18:51:27 +0200
+Subject: [PATCH 13/13] arm64: dts: qcom: msm8939-samsung-a7: Add sound and
  modem
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-msm8916-modem-v1-12-398eec74bac9@gerhold.net>
+Message-Id: <20230926-msm8916-modem-v1-13-398eec74bac9@gerhold.net>
 References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
 In-Reply-To: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -81,8 +81,7 @@ Cc:     Andy Gross <agross@kernel.org>,
         ~postmarketos/upstreaming@lists.sr.ht,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         Stephan Gerhold <stephan@gerhold.net>,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
-        Markuss Broks <markuss.broks@gmail.com>
+        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -95,85 +94,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
 
-Enable sound and modem for the Samsung J5 smartphones. The setup is
-similar to most MSM8916 devices, i.e.:
+Enable sound and modem for the Samsung A7. The setup is similar to most
+MSM8916 devices, i.e.:
 
  - QDSP6 audio
- - Speaker/earpiece/headphones/microphones via digital/analog codec
-   in MSM8916/PM8916
+ - Earpiece/headphones/microphones via digital/analog codec in
+   MSM8916/PM8916
  - WWAN Internet via BAM-DMUX
 
-except:
+except for the same differences as the MSM8916-based Samsung A2015
+devices:
 
- - There is no secondary microphone, so a different "model" is used to
-   differentiate that in the UCM configuration.
+ - NXP TFA9895 codec for speaker on Quaternary MI2S
  - Samsung-specific audio jack detection (not supported yet)
 
-Co-developed-by: Markuss Broks <markuss.broks@gmail.com>
-Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
 Signed-off-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
 [Stephan: Add consistent commit message]
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi | 15 +++++++++++++++
- arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts         |  4 ++++
- 2 files changed, 19 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts | 54 +++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
-index fe59be3505fe..2caa820b0c26 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
+index fccd8fec8b8f..4951b3e265d2 100644
+--- a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
++++ b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
+@@ -3,10 +3,12 @@
+ /dts-v1/;
  
- #include "msm8916-pm8916.dtsi"
+ #include "msm8939-pm8916.dtsi"
 +#include "msm8916-modem-qdsp6.dtsi"
-+
+ 
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/input/input.h>
  #include <dt-bindings/interrupt-controller/irq.h>
-@@ -135,6 +137,10 @@ &blsp_uart2 {
++#include <dt-bindings/sound/apq8016-lpass.h>
+ 
+ / {
+ 	model = "Samsung Galaxy A7 (2015)";
+@@ -287,6 +289,18 @@ muic: extcon@25 {
+ 	};
+ };
+ 
++&blsp_i2c2 {
++	status = "okay";
++
++	speaker_codec: audio-codec@34 {
++		compatible = "nxp,tfa9895";
++		reg = <0x34>;
++		vddd-supply = <&pm8916_l5>;
++		sound-name-prefix = "Speaker";
++		#sound-dai-cells = <0>;
++	};
++};
++
+ &blsp_i2c5 {
+ 	status = "okay";
+ 
+@@ -309,6 +323,17 @@ &blsp_uart2 {
  	status = "okay";
  };
  
++&lpass {
++	dai-link@3 {
++		reg = <MI2S_QUATERNARY>;
++		qcom,playback-sd-lines = <1>;
++	};
++};
++
 +&mpss_mem {
 +	reg = <0x0 0x86800000 0x0 0x5800000>;
 +};
 +
  &pm8916_resin {
- 	status = "okay";
  	linux,code = <KEY_VOLUMEDOWN>;
-@@ -154,6 +160,15 @@ &sdhc_2 {
- 	cd-gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
+@@ -321,6 +346,13 @@ pm8916_l17: l17 {
+ 	};
+ };
+ 
++&q6afedai {
++	dai@22 {
++		reg = <QUATERNARY_MI2S_RX>;
++		qcom,sd-lines = <1>;
++	};
++};
++
+ &sdhc_1 {
+ 	status = "okay";
+ };
+@@ -335,6 +367,28 @@ &sdhc_2 {
+ 	status = "okay";
  };
  
 +&sound {
-+	model = "msm8916-1mic";
++	model = "samsung-a2015";
 +	audio-routing =
 +		"AMIC1", "MIC BIAS External1",
 +		"AMIC2", "MIC BIAS Internal2",
 +		"AMIC3", "MIC BIAS External1";
++
++	pinctrl-0 = <&cdc_pdm_default &sec_mi2s_default>;
++	pinctrl-1 = <&cdc_pdm_sleep &sec_mi2s_sleep>;
++	pinctrl-names = "default", "sleep";
++
 +	status = "okay";
++};
++
++&sound_dai_quaternary {
++	status = "okay";
++
++	codec {
++		sound-dai = <&speaker_codec>;
++	};
 +};
 +
  &usb {
  	extcon = <&muic>, <&muic>;
  	status = "okay";
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts
-index 58c2f5a70e78..ba8650971d6a 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts
-@@ -19,6 +19,10 @@ &blsp_i2c5 {
- 	status = "disabled";
- };
- 
-+&pm8916_codec {
-+	qcom,micbias1-ext-cap;
-+};
-+
- &touchscreen {
- 	/* FIXME: Missing sm5703-mfd driver to power up vdd-supply */
- };
 
 -- 
 2.42.0
