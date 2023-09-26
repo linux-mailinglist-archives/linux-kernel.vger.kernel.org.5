@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8697AE65A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C6B7AE65E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjIZG7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S231298AbjIZHBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIZG7b (ORCPT
+        with ESMTP id S229585AbjIZHBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:59:31 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7ACFC
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:59:23 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86a3574662so10345864276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:59:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695711563; x=1696316363; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=U+nMD7o5PWsEvgu0yQwljZkcod7HvATgSWdAFYmTAx4=;
-        b=JMJ36pedV06u4rIIxWngWv74moobNEuXt8LlDgdwhp1Hz2Q23iUE87uLKVBEf3CCpb
-         PfnBhGYMTwArCgAvtO9VfFeMWlDsOEaIobG1UiXPVhDGAtk6niBlUKf9pKVYgQfLYT39
-         BbCERnf1t38hXvRWzP2ox3Wdo0B8UWBTIEGqzUlSujnBpjZKmNVfnrzydJFPwAJrGT+v
-         xwnc2fKRkgbltEVO4FoxQZvgbQSNbyjD7VmBDQUL8O6IGvyWFvOV9JF95C1KaGGrgP7E
-         CpPpz4C9428xj+8h68yh5yShNKqfUZMXXy1Qs1KJ2zc0mzWRTFEpYEVdRQF4bCfZ93oh
-         JBUQ==
+        Tue, 26 Sep 2023 03:01:00 -0400
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECBEF3;
+        Tue, 26 Sep 2023 00:00:54 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-690bf8fdd1aso6222627b3a.2;
+        Tue, 26 Sep 2023 00:00:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695711563; x=1696316363;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U+nMD7o5PWsEvgu0yQwljZkcod7HvATgSWdAFYmTAx4=;
-        b=i4Bz7ETHM/G1GvkI/SyN1z1DxpuFQ+LejQTlma8Sdde4mYVq867BkkTgDwVuKveyo4
-         YIRQT14hQkelIG4xvxXoEgLCCEf9JRpHLbpFOsmEoPY8zr9WASSxfzi65ppdT2jAh966
-         a6cUaGDJvQbsHbH0bGb0W0KbFVWPdHETyVEzKJBxSAQKRFor0k3nBj99fmY8dG4QDWWi
-         KTZMNSoerD0Z0njcl5ZirmgSUmZgjpDR/qUyAAImbAlL0jjuQxvvzM38wn1/i+9OvAuq
-         bHXgXUjS8/lmrsgJplQSQjd9lUSdow7WFRrM1NChYHvoKsZ46SsHvgyTm7QYOEV/TKnu
-         bfiw==
-X-Gm-Message-State: AOJu0YySNf9xdkR4M/AHZiqXRdKx9RuBdYuGQ6EkQ1pTQXsHEM87X7Ej
-        /bKsLqdgsspPVj4WwtbKMRXQrWHsHnCfv0wvOQ==
-X-Google-Smtp-Source: AGHT+IEalOsuOkrw0PFbRbPepFJKIdXUdRSVW3fSIYT0u8PgtBxCC7b1X9J/XpGmhHFvrr7tPLt9Cv042105vVEcSQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1085:b0:d7b:b648:f0da with
- SMTP id v5-20020a056902108500b00d7bb648f0damr32014ybu.6.1695711562907; Mon,
- 25 Sep 2023 23:59:22 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 06:59:15 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAEKBEmUC/53NQW7DIBCF4atErDsVDBCbrHqPKoocPNhItbHAI
- oki3704K1dZucv3Ft//ZImip8ROhyeLlH3yYSxDfxyY7ZuxI/Bt2Qw5Sm6EgjTH0U4PaKPPFBP
- 0tyGM0NjJX6Zwo3gZaKYIFqxx2NZcyys5VrgpkvP3V+r7XHbv0xzi41XOYn3/EckCBBiu0VSqM
- o7qry6E7oc+bRjYWsm4lc0OGYtcS1Urie1RKXyT5UZGsUOWRZa80hrtkax0b7LaynqHrFb52th KS+UE/ysvy/ILL0f0+e8BAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695711561; l=2263;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=2U9Nj4BmlrBIbcimiE1QZuM/UADBB5VoZJZ4/Ueo3o4=; b=PJIyqZcfUPI3uGAZNaGrFzr6nWv8+WcrrjFCp55EuwvjiG33+XJ3P9t8fs6cCaCoeyXmpwQC+
- Z8S44VtvCGkDKT0oXjksgmxMWD55HBnSW2VEKzzHia5zdb8jK2RQTK3
-X-Mailer: b4 0.12.3
-Message-ID: <20230926-strncpy-drivers-hwmon-acpi_power_meter-c-v5-1-3fc31a9daf99@google.com>
-Subject: [PATCH v5] hwmon: (acpi_power_meter) replace open-coded kmemdup_nul
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695711653; x=1696316453;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uR0xWP82gOq4UfhGc/Rjgf6bHjjZPrvgKTMMsFTyoXc=;
+        b=D9Hdwq0uH0ax7wyAhsl8J8Y73/cgRTVDaFqmKWc628AEIGqysmkXd8X38/a21vpoy5
+         ZYKFbNLEQtZ9VVztdK3/LQ7JbS5DVQZRE4Hf6WiY1m22Hd4kaJuI5qe0SOZIgFJb1hdi
+         50OKmAfAuREWvluvrZs05YrMrFmFqDstoFWkqax3CH4pafYB2x2Q17hztnezx/S0cvoH
+         V/9SBCmBos/VIB9eqI6L1NL4+VKINlT4myoB5mAklm25CUO1gEyL3nXINJavafcKs/lT
+         iqb6H15Qj+D8tjyjvkaL/mRhR56OAgROiqUcM5OD2MjTJXLuo2a/EOo8tw7uoy3zVKWF
+         zYPQ==
+X-Gm-Message-State: AOJu0YwSHylYQUARUOYWTZL/nVjTX2ZoWBhqMDEKd4/2zKrw308mfElB
+        4uyzA8k4jyTiwnXZcXRaBBU=
+X-Google-Smtp-Source: AGHT+IG7reiq4YR2nW+K3Ubyh0wSSTKINIDXIAk+Q1Yd5ato0Gf272jWIsPO/R5L/eqwd1TqnYIetw==
+X-Received: by 2002:a05:6a20:8e08:b0:15a:836:7239 with SMTP id y8-20020a056a208e0800b0015a08367239mr8319847pzj.11.1695711653490;
+        Tue, 26 Sep 2023 00:00:53 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id jk13-20020a170903330d00b001b9da8b4eb7sm4710872plb.35.2023.09.26.00.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 00:00:53 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 07:00:51 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Message-ID: <ZRKBo5Nbw+exPkAj@liuwe-devbox-debian-v2>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023092342-staunch-chafe-1598@gregkh>
+ <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
+ <2023092630-masculine-clinic-19b6@gregkh>
+ <ZRJyGrm4ufNZvN04@liuwe-devbox-debian-v2>
+ <2023092614-tummy-dwelling-7063@gregkh>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023092614-tummy-dwelling-7063@gregkh>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Tue, Sep 26, 2023 at 08:31:03AM +0200, Greg KH wrote:
+> On Tue, Sep 26, 2023 at 05:54:34AM +0000, Wei Liu wrote:
+> > On Tue, Sep 26, 2023 at 06:52:46AM +0200, Greg KH wrote:
+> > > On Mon, Sep 25, 2023 at 05:07:24PM -0700, Nuno Das Neves wrote:
+> > > > On 9/23/2023 12:58 AM, Greg KH wrote:
+> > > > > Also, drivers should never call pr_*() calls, always use the proper
+> > > > > dev_*() calls instead.
+> > > > > 
+> > > > 
+> > > > We only use struct device in one place in this driver, I think that is the
+> > > > only place it makes sense to use dev_*() over pr_*() calls.
+> > > 
+> > > Then the driver needs to be fixed to use struct device properly so that
+> > > you do have access to it when you want to print messages.  That's a
+> > > valid reason to pass around your device structure when needed.
+> > 
+> > Greg, ACRN and Nitro drivers do not pass around the device structure.
+> > Instead, they rely on a global struct device. We can follow the same.
+> 
+> A single global struct device is wrong, please don't do that.
+> 
+> Don't copy bad design patterns from other drivers, be better :)
+> 
 
-Let's refactor this kcalloc() + strncpy() into a kmemdup_nul() which has
-more obvious behavior and is less error prone.
+If we're working with real devices like network cards or graphics cards
+I would agree -- it is easy to imagine that we have several cards of the
+same model in the system -- but in real world there won't be two
+hypervisor instances running on the same hardware.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v5:
-- fix indentation (thanks Kees)
-- Link to v4: https://lore.kernel.org/r/20230925-strncpy-drivers-hwmon-acpi_power_meter-c-v4-1-3bac7534f10f@google.com
+We can stash the struct device inside some private data fields, but that
+doesn't change the fact that we're still having one instance of the
+structure. Is this what you want? Or do you have something else in mind?
 
-Changes in v4:
-- drop +1 from length arg (thanks Kees)
-- reword subject line (thanks Kees)
-- rebase onto 6465e260f4879080
-- Link to v3: https://lore.kernel.org/r/20230921-strncpy-drivers-hwmon-acpi_power_meter-c-v3-1-307552c6ec3f@google.com
+Thanks,
+Wei.
 
-Changes in v3:
-- refactor to use kmemdup_nul() (thanks Thomas and Kees)
-- change commit msg to reflect ^
-- rebase onto 2cf0f71562387282
-- Link to v2: https://lore.kernel.org/r/20230919-strncpy-drivers-hwmon-acpi_power_meter-c-v2-1-8348432d6442@google.com
-
-Changes in v2:
-- use memcpy over strscpy (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230914-strncpy-drivers-hwmon-acpi_power_meter-c-v1-1-905297479fe8@google.com
----
- drivers/hwmon/acpi_power_meter.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
-index fa28d447f0df..8db740214ffd 100644
---- a/drivers/hwmon/acpi_power_meter.c
-+++ b/drivers/hwmon/acpi_power_meter.c
-@@ -796,14 +796,13 @@ static int read_capabilities(struct acpi_power_meter_resource *resource)
- 			goto error;
- 		}
- 
--		*str = kcalloc(element->string.length + 1, sizeof(u8),
--			       GFP_KERNEL);
-+		*str = kmemdup_nul(element->string.pointer, element->string.length,
-+				   GFP_KERNEL);
- 		if (!*str) {
- 			res = -ENOMEM;
- 			goto error;
- 		}
- 
--		strncpy(*str, element->string.pointer, element->string.length);
- 		str++;
- 	}
- 
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230914-strncpy-drivers-hwmon-acpi_power_meter-c-c9f2d8053bef
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> thanks,
+> 
+> greg k-h
+> 
