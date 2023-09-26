@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B72F7AEF6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162507AEF73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235066AbjIZPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
+        id S235070AbjIZPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbjIZPH0 (ORCPT
+        with ESMTP id S235064AbjIZPH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:07:26 -0400
+        Tue, 26 Sep 2023 11:07:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F370A124;
-        Tue, 26 Sep 2023 08:07:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD77C433C7;
-        Tue, 26 Sep 2023 15:07:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BDB10E;
+        Tue, 26 Sep 2023 08:07:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0919FC433CB;
+        Tue, 26 Sep 2023 15:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695740839;
-        bh=YgyUUelmSbsG7ziMjbWSkUrWyVIsm22R5YCaeqmUTk8=;
+        s=k20201202; t=1695740841;
+        bh=utr3s0fcBZor2mmaSb4QCUFmubnfG2v96GrxEnd9zyY=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Bsc/9n4kTBtU/blSBxHlzKuhcsekjE7mJ1oU+xPOFgxboIeKOMJXHc9NKuG2hAXey
-         NI7tGFm66OCS0u8hBFgd6ZtTk68wDNP7B2darhg9LSJecrewOrWrm5/t2CKszEIneK
-         kgB8Ts7OSq5ybEw2gkDe4VhUtEUZNOU/egw6JOFwdNZd9DwyLh7mjH52kN9Rz/PhPq
-         zsdBVF59crsKyXBHymqMhYs19z9iWUwNC94fYaOOIcvlyOqWynWrOnq65mDtQgXNEu
-         szFkLmj7dYigiTZIWMGHoQPwDyd5Fmi/EP1sS6hBmLqQ2rObJjErPWI4aSHetryzAZ
-         cjTIImow6AmIg==
+        b=qP2xjaVabQ72EiPfkWl4nZUd1ArM3pwru0fvtQM1Ee/0GwZhQ5IhYQavjBfQNpOYt
+         PDyAjDd1yBBMjqb/8n14TwkUhMVZr21AgeQwjVrBbyIuuulB9bpUi9cf9YL/nE4FeX
+         3wzD2H3VxuKWWtxuEtkg33Yua5zU4I4Kix1CRtu604NR/hZgPfbT/xa3A18/5T3ZRm
+         p3Y/rmqg4ujVmbqw6F3UglGoqAHM3PdZM28Lvy1dyDzMlQGkXuU6tyFN/X1i+VpUBo
+         xuustMpS5sv/7P4x57EkMEWSrXMWkItlJ8smbUW7XwEp8989h+kmfOTNJJI5pAV3PP
+         ThgBKg1GqTvVg==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org, Vaishnav Achath <vaishnav.a@ti.com>
-Cc:     d-gole@ti.com, vigneshr@ti.com, linux-kernel@vger.kernel.org,
-        u-kumar1@ti.com
-In-Reply-To: <20230926113812.30692-1-vaishnav.a@ti.com>
-References: <20230926113812.30692-1-vaishnav.a@ti.com>
-Subject: Re: [PATCH v2] spi: omap2-mcspi: Fix hardcoded reference clock
-Message-Id: <169574083816.2649563.11311626349884860645.b4-ty@kernel.org>
-Date:   Tue, 26 Sep 2023 17:07:18 +0200
+To:     Dhruva Gole <d-gole@ti.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+In-Reply-To: <20230926130926.314751-1-d-gole@ti.com>
+References: <20230926130926.314751-1-d-gole@ti.com>
+Subject: Re: [PATCH V3] spi: spi-cadence-quadspi: Fix missing unwind goto
+ warnings
+Message-Id: <169574083974.2649563.4476641080804661499.b4-ty@kernel.org>
+Date:   Tue, 26 Sep 2023 17:07:19 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -49,14 +52,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 17:08:12 +0530, Vaishnav Achath wrote:
-> A hardcoded reference clock of 48 MHz is used to calculate the
-> clock divisor values, but the reference clock frequency can be
-> different across devices and can be configured which can cause
-> a mismatch between the reported frequency and actual SPI clock
-> frequency observed. Fix this by fetching the clock rate from
-> the clock provider and falling back to hardcoded reference only
-> if the clock is not supplied.
+On Tue, 26 Sep 2023 18:39:27 +0530, Dhruva Gole wrote:
+> The following smatch warnings were recently introduced:
+> 
+> drivers/spi/spi-cadence-quadspi.c:1882 cqspi_probe() warn: missing
+> unwind goto?
+> 
+> Fix these warnings by releasing dma channel and adding a goto fail probe.
 > 
 > [...]
 
@@ -66,8 +68,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: omap2-mcspi: Fix hardcoded reference clock
-      commit: 2d9f4877988f64f0f336983de65c365b6a7debfb
+[1/1] spi: spi-cadence-quadspi: Fix missing unwind goto warnings
+      commit: 86401132d7bbb550d80df0959ad9fa356ebc168d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
