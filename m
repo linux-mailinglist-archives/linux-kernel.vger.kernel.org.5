@@ -2,117 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8020B7AF20A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BDC7AF212
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbjIZR4g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 13:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
+        id S235352AbjIZR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjIZR4e (ORCPT
+        with ESMTP id S235005AbjIZR7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:56:34 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CFE9F;
-        Tue, 26 Sep 2023 10:56:27 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-57b68555467so688110eaf.0;
-        Tue, 26 Sep 2023 10:56:27 -0700 (PDT)
+        Tue, 26 Sep 2023 13:59:04 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB19120
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:58:57 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9936b3d0286so1181010966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695751135; x=1696355935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OFnOg1pHsHZEv3DUGjzvzkoO5rnnk2Rnu4AXIw+yFKI=;
+        b=wX60CbIeQh+tZtmzVGhcb/WG62PNRktNYJFV+wAUHcrprB7RSSqoo+JmL7zaPW/kuz
+         Yh2Q7NVdaBmsLTgvzB/7KBF5S9lgfZQSgbUwZRdCaPqiguXiVslauwi/9vdCpM6PiqLP
+         w4Gef7ashNTZ9WMzH6ZxgbOLuOzOep6CQWlX5hFFuZFRG6sWUTTaTTw7kF3ufhrDFqXH
+         qa7LjBckV3yfinUygvcNRw4e8aknPG2/Q6NA1M7OLlokavrdgoZMZo/sWLv973QklgdS
+         bnBgI1pbNhk2tQ58r1sV53Xg9DVzV5ducMU9w+TMATUAdl1U5bHhSoj+NzzEeyYK2d4g
+         3i8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695750986; x=1696355786;
+        d=1e100.net; s=20230601; t=1695751135; x=1696355935;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2yqXaetlVLQEcWlksdWUaZspSGSc2dTGLE72sp01bYI=;
-        b=SvCdznlUpca8WZ9D5D4EuekT4+1JoiEQKDqPoA7/gJXS7pv7dPZKm+zrfszFgrOxws
-         dOMi8EKrICyWmDCtJNQbiR1kEi9BjLZwfAf9GPZL89tjDSix5+bB2sbTcMFh0EYXGGlW
-         UZVsGUqj+kiplzeLzxw8Ie5ZfZb34W3B0bgcPokZoyliXwxeIlSV86JK1k1wwQxGH0yL
-         yR7F4NW0vPizz2uh3hBeeSDpx8OKWPeGPm6g77MtoDiYTmERRFKuqXjYfjMCUzL0R9tf
-         MCopj5WbsGx+fqDk3r0Ty4jVsSLCD5ZCK0LZpHAZ74HieskbAeNZLLRgCSbKNiAL/CBG
-         hncw==
-X-Gm-Message-State: AOJu0Yx7KXL/9jX5YeB7nBdeyWX0ayngV9NSDqjskZCJHcIj5swvUCJo
-        5UeVoqWQtA1RrgfMI6AdYWpFeAkipl1g/3bdXbE=
-X-Google-Smtp-Source: AGHT+IG92Y5OWwELWyPqUjJ1G1ken/HOqivotisiJ5rtf/jKwT5sn4buOWxVaJSYKgtRvTciMEezzQgseewhKy3WVIc=
-X-Received: by 2002:a4a:e8c4:0:b0:57b:73f6:6f80 with SMTP id
- h4-20020a4ae8c4000000b0057b73f66f80mr9468857ooe.0.1695750986553; Tue, 26 Sep
- 2023 10:56:26 -0700 (PDT)
+        bh=OFnOg1pHsHZEv3DUGjzvzkoO5rnnk2Rnu4AXIw+yFKI=;
+        b=FdYN86Y8RJ+RZX9n+0pt7qRpVuAzJV0wPRnx4p9wd2wKV4WQjah4sqP6/IoojwD2Qw
+         LPPBlwfMP5OrHtstiv6tWREPDbrD80fOGorFovEalA6zHqQNZsOuuSCTU0c7mwRDczER
+         wfnuBRHnt1d9kzGf2F+OG5mp0UyNIW+yEwKVFlTX1aNMEw8P0NX+LF3VFksgIvBeO1nv
+         2ik/T5Ed4bw8YzRaGq5ElzgH0+NxV6bothEr2uSDLbe/9WYQkyeCCEMthuozqUh0YBOF
+         66HxJ6TBaz5OuqUPDTHuSz8b879OxFwqvRD5trpjvEekxpmYQZeiERFIDrRWheXiIq1b
+         uITw==
+X-Gm-Message-State: AOJu0YyPxR0t7NgoMXY4KEiHi0292gajxPMz4NeORyWDy8Mcb9INEjoJ
+        yU8FRWcY3bS4v746QjEgeMHOqrekAZeudorMp+x3cQ==
+X-Google-Smtp-Source: AGHT+IH1UvbPZN+AYVuNOlZ5+jvqeSn4QL2gxS1iQykyVPMWg3fp23GOvge4u4/OO7F77GHkmagIn5MVyEy5F7QLAnU=
+X-Received: by 2002:a17:906:319a:b0:9ae:659f:4d2b with SMTP id
+ 26-20020a170906319a00b009ae659f4d2bmr9062850ejy.56.1695751134910; Tue, 26 Sep
+ 2023 10:58:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <1957441.PYKUYFuaPT@kreacher> <3534976.iIbC2pHGDl@kreacher> <38ea14aa-ecc2-c40e-34ea-05b348158cfb@linaro.org>
-In-Reply-To: <38ea14aa-ecc2-c40e-34ea-05b348158cfb@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 Sep 2023 19:56:15 +0200
-Message-ID: <CAJZ5v0iww__Kd2e8bSarXL5ugjL1zuCaXgOfzLp-VGdmHBBabQ@mail.gmail.com>
-Subject: Re: [PATCH v1 02/13] ACPI: thermal: Collapse trip devices update functions
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20230919190206.388896-1-axelrasmussen@google.com>
+ <20230919190206.388896-9-axelrasmussen@google.com> <s4p5qch6llhedcr736vityb6ttvajk5xip7ebdijgw6zt4jbkk@nt2qh2ixmi3e>
+In-Reply-To: <s4p5qch6llhedcr736vityb6ttvajk5xip7ebdijgw6zt4jbkk@nt2qh2ixmi3e>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 26 Sep 2023 10:58:18 -0700
+Message-ID: <CAJHvVcjTBmQewEUKPCa-ZFEEv_Lczx5Pp9=vgnnTPSrqc4RhVA@mail.gmail.com>
+Subject: Re: [PATCH 08/10] ioctl_userfaultfd.2: clarify the state of the
+ uffdio_api structure on error
+To:     Alejandro Colomar <alx@kernel.org>
+Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 7:18 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On Mon, Sep 25, 2023 at 4:56=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
+wrote:
 >
-> On 21/09/2023 19:49, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > In order to reduce code duplication, merge update_passive_devices() and
-> > update_active_devices() into one function called update_trip_devices()
-> > that will be used for updating both the passive and active trip points.
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/acpi/thermal.c |   53 ++++++++++++++++++-------------------------------
-> >   1 file changed, 20 insertions(+), 33 deletions(-)
-> >
-> > Index: linux-pm/drivers/acpi/thermal.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/thermal.c
-> > +++ linux-pm/drivers/acpi/thermal.c
-> > @@ -43,6 +43,8 @@
-> >   #define ACPI_THERMAL_MAX_ACTIVE             10
-> >   #define ACPI_THERMAL_MAX_LIMIT_STR_LEN      65
-> >
-> > +#define ACPI_THERMAL_TRIP_PASSIVE    (-1)
-> > +
-> >   /*
-> >    * This exception is thrown out in two cases:
-> >    * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
-> > @@ -202,18 +204,25 @@ static void acpi_thermal_update_passive_
-> >               ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
-> >   }
-> >
-> > -static bool update_passive_devices(struct acpi_thermal *tz, bool compare)
-> > +static bool update_trip_devices(struct acpi_thermal *tz,
-> > +                             struct acpi_thermal_trip *acpi_trip,
-> > +                             int index, bool compare)
-> >   {
-> > -     struct acpi_thermal_trip *acpi_trip = &tz->trips.passive.trip;
-> >       struct acpi_handle_list devices;
-> > +     char method[] = "_PSL";
-> >       acpi_status status;
-> >
-> > +     if (index != ACPI_THERMAL_TRIP_PASSIVE) {
-> > +             method[1] = 'A';
-> > +             method[2] = 'L';
-> > +             method[3] = '0' + index;
-> > +     }
+> Hi Axel,
 >
-> Could be index > 9 ?
+> On Tue, Sep 19, 2023 at 12:02:04PM -0700, Axel Rasmussen wrote:
+> > The old FIXME noted that the zeroing was done to differentiate the two
+> > EINVAL cases. It's possible something like this was true historically,
+> > but in current Linux we zero it in *both* EINVAL cases, so this is at
+> > least no longer true.
+> >
+> > After reading the code, I can't determine any clear reason why we zero
+> > it in some cases but not in others. So, some simple advice we can give
+> > userspace is: if an error occurs, treat the contents of the structure a=
+s
+> > unspecified. Just re-initialize it before retrying UFFDIO_API again.
+> >
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>
+> I can't apply this patch due to conflicts (due to not having applied two
+> of the previous ones).  Please resend all remaining patches in following
+> revisions of the patch set.
+>
+> The applied ones are here:
+>
+> <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=3Dcon=
+trib>
+>
+> It's kind of like Linux's 'next' branch.
 
-I can add a check, but it will never be called with index > 9 anyway.
+Thanks for the review Alex! I'll fix up the issues noted and send the
+remaining few patches this week. :)
+
+>
+> Cheers,
+> Alex
+>
+> > ---
+> >  man2/ioctl_userfaultfd.2 | 16 ++++++++--------
+> >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> > index 1aa9654be..29dca1f6b 100644
+> > --- a/man2/ioctl_userfaultfd.2
+> > +++ b/man2/ioctl_userfaultfd.2
+> > @@ -272,6 +272,14 @@ operation returns 0 on success.
+> >  On error, \-1 is returned and
+> >  .I errno
+> >  is set to indicate the error.
+> > +If an error occurs,
+> > +the kernel may zero the provided
+> > +.I uffdio_api
+> > +structure.
+> > +The caller should treat its contents as unspecified,
+> > +and reinitialize it before re-attempting another
+> > +.B UFFDIO_API
+> > +call.
+> >  Possible errors include:
+> >  .TP
+> >  .B EFAULT
+> > @@ -305,14 +313,6 @@ twice,
+> >  the first time with no features set,
+> >  is explicitly allowed
+> >  as per the two-step feature detection handshake.
+> > -.\" FIXME In the above error case, the returned 'uffdio_api' structure=
+ is
+> > -.\" zeroed out. Why is this done? This should be explained in the manu=
+al page.
+> > -.\"
+> > -.\" Mike Rapoport:
+> > -.\"     In my understanding the uffdio_api
+> > -.\"     structure is zeroed to allow the caller
+> > -.\"     to distinguish the reasons for -EINVAL.
+> > -.\"
+> >  .SS UFFDIO_REGISTER
+> >  (Since Linux 4.3.)
+> >  Register a memory address range with the userfaultfd object.
+> > --
+> > 2.42.0.459.ge4e396fd5e-goog
+> >
