@@ -2,40 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5A67AE673
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAFA7AE676
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjIZHLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        id S230373AbjIZHLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIZHLb (ORCPT
+        with ESMTP id S229585AbjIZHLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:11:31 -0400
-Received: from out-201.mta0.migadu.com (out-201.mta0.migadu.com [91.218.175.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759CEDE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:11:24 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695712282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=syqQR+9bPrQHdilL6zKTkrPq1VgSbRvVhw85Q7F9WZ4=;
-        b=B7R2Klencrq0fTtMQPjIqR9iGvs7PJvaVFQliMgF9PNe5Ko1WkYEf6kFLTERkfM5/cf8eh
-        Wu7gwqHpeVik7TI2jErLTf5Uj4xokGz0Gtf2RTq+RaTN/778O4FWJji7emfynVtBDp+U3D
-        lGakHMqUulc7Nj2VfjrRSWWhAZd2It4=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        jacob.e.keller@intel.com, gregkh@linuxfoundation.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH RESEND] i40e: fix the wrong PTP frequency calculation
-Date:   Tue, 26 Sep 2023 15:10:59 +0800
-Message-Id: <20230926071059.1239033-1-yajun.deng@linux.dev>
+        Tue, 26 Sep 2023 03:11:41 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B903AEB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:11:34 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A28776607313;
+        Tue, 26 Sep 2023 08:11:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695712293;
+        bh=Un9kNmibt/1LyNRx3dilYTDLfKHRNSrtYcTFTDYcqVI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=izubzpAdJUmlqw799jWDhJJwlf44rQt8twSWJ7JGD6gmAbR0lsGYGZ+Wte/v0Q54c
+         zNTE9YVhhw3sSa9DUuHDZ+O5e4UuZ9uRPjYMWoZDNhKz/caK/sAK7ggb7gIIs6VU3B
+         yFJHRTNBtugS2K+RNTtxYSOdac2NG/W7kwMLyiI66eJW2jJSuFGD+LTb+M2I9wNEMq
+         hi+2wAcXJ8pojhmqHY1yHpTndhNuQe6uVj+CQ0Vez2pbR35Sg2ueuG18L5CwBesRQ8
+         9YsR8MpuMCbjSBb0INtNmhH2oo2M0LiMFp+MPQedfmdCLsXdGNGLxbStHcoq09Z46+
+         sIytARsTNr70Q==
+Date:   Tue, 26 Sep 2023 09:11:29 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        faith.ekstrand@collabora.com, luben.tuikov@amd.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Donald Robson <Donald.Robson@imgtec.com>,
+        Frank Binns <Frank.Binns@imgtec.com>,
+        Sarah Walker <sarah.walker@imgtec.com>
+Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
+ control
+Message-ID: <20230926091129.2d7d7472@collabora.com>
+In-Reply-To: <c6ec9ab4-d63b-0a72-4abf-682b94739877@amd.com>
+References: <20230924224555.15595-1-dakr@redhat.com>
+        <20230925145513.49abcc52@collabora.com>
+        <c6ec9ab4-d63b-0a72-4abf-682b94739877@amd.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -45,50 +64,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new adjustment should be based on the base frequency, not the
-I40E_PTP_40GB_INCVAL in i40e_ptp_adjfine().
+On Mon, 25 Sep 2023 19:55:21 +0200
+Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
 
-This issue was introduced in commit 3626a690b717 ("i40e: use
-mul_u64_u64_div_u64 for PTP frequency calculation"), frequency is left
-just as base I40E_PTP_40GB_INCVAL before the commit. After the commit,
-frequency is the I40E_PTP_40GB_INCVAL times the ptp_adj_mult value.
-But then the diff is applied on the wrong value, and no multiplication
-is done afterwards.
+> Am 25.09.23 um 14:55 schrieb Boris Brezillon:
+> > +The imagination team, who's probably interested too.
+> >
+> > On Mon, 25 Sep 2023 00:43:06 +0200
+> > Danilo Krummrich <dakr@redhat.com> wrote:
+> > =20
+> >> Currently, job flow control is implemented simply by limiting the amou=
+nt
+> >> of jobs in flight. Therefore, a scheduler is initialized with a
+> >> submission limit that corresponds to a certain amount of jobs.
+> >>
+> >> This implies that for each job drivers need to account for the maximum
+> >> job size possible in order to not overflow the ring buffer.
+> >>
+> >> However, there are drivers, such as Nouveau, where the job size has a
+> >> rather large range. For such drivers it can easily happen that job
+> >> submissions not even filling the ring by 1% can block subsequent
+> >> submissions, which, in the worst case, can lead to the ring run dry.
+> >>
+> >> In order to overcome this issue, allow for tracking the actual job size
+> >> instead of the amount job jobs. Therefore, add a field to track a job's
+> >> submission units, which represents the amount of units a job contribut=
+es
+> >> to the scheduler's submission limit. =20
+> > As mentioned earlier, this might allow some simplifications in the
+> > PowerVR driver where we do flow-control using a dma_fence returned
+> > through ->prepare_job(). The only thing that'd be missing is a way to
+> > dynamically query the size of a job (a new hook?), instead of having the
+> > size fixed at creation time, because PVR jobs embed native fence waits,
+> > and the number of native fences will decrease if some of these fences
+> > are signalled before ->run_job() is called, thus reducing the job size.=
+ =20
+>=20
+> Exactly that is a little bit questionable since it allows for the device=
+=20
+> to postpone jobs infinitely.
+>=20
+> It would be good if the scheduler is able to validate if it's ever able=20
+> to run the job when it is pushed into the entity.
 
-It was accidentally fixed in commit 1060707e3809 ("ptp: introduce helpers
-to adjust by scaled parts per million"). It uses adjust_by_scaled_ppm
-correctly performs the calculation and uses the base adjustment, so
-there's no error here. But it is a new feature and doesn't need to
-backported to the stable releases.
-
-This issue affects both v6.0 and v6.1, and the v6.1 version is an LTS
-release. Therefore, the patch only needs to be applied to v6.1 stable.
-
-Fixes: 3626a690b717 ("i40e: use mul_u64_u64_div_u64 for PTP frequency calculation")
-Cc: <stable@vger.kernel.org> # 6.1
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_ptp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ptp.c b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
-index ffea0c9c82f1..97a9efe7b713 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ptp.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
-@@ -361,9 +361,9 @@ static int i40e_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
- 				   1000000ULL << 16);
- 
- 	if (neg_adj)
--		adj = I40E_PTP_40GB_INCVAL - diff;
-+		adj = freq - diff;
- 	else
--		adj = I40E_PTP_40GB_INCVAL + diff;
-+		adj = freq + diff;
- 
- 	wr32(hw, I40E_PRTTSYN_INC_L, adj & 0xFFFFFFFF);
- 	wr32(hw, I40E_PRTTSYN_INC_H, adj >> 32);
--- 
-2.25.1
+Yes, we do that already. We check that the immutable part of the job
+(everything that's not a native fence wait) fits in the ringbuf.
 
