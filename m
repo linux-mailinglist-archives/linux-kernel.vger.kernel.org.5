@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164ED7AE3A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC917AE3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbjIZC22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 22:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
+        id S233449AbjIZCeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 22:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjIZC20 (ORCPT
+        with ESMTP id S233194AbjIZCeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 22:28:26 -0400
-Received: from out-197.mta0.migadu.com (out-197.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB36BF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 19:28:20 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695695298;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=24R2pLWXym7jBk3gQ8do08nmij8cuCrMpT9bPlzajlk=;
-        b=TEhoScQTWSZIipzs1D9pe1uyEHGfcmmtCj9ptoytsHPVwo6AiBuhJ1JR95a+JRUOSoFjS/
-        gHwT0E6TXXEd3Eln8SKeOPWdcqYTdIgFO/3Hicn4e6PpFMPb+a2x56VusG6YNCKPiU5YH1
-        wBmnoWDIzOB7cfm/8tl1kRC22cJrXAM=
-Mime-Version: 1.0
-Subject: Re: [PATCH v6 4/8] hugetlb: perform vmemmap restoration on a list of
- pages
+        Mon, 25 Sep 2023 22:34:13 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [IPv6:2001:41d0:1004:224b::d2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99971BF
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 19:34:04 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230925234837.86786-5-mike.kravetz@oracle.com>
-Date:   Tue, 26 Sep 2023 10:27:39 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <21cnbao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <7DF23E7C-F039-44F4-8204-BA463534B09F@linux.dev>
-References: <20230925234837.86786-1-mike.kravetz@oracle.com>
- <20230925234837.86786-5-mike.kravetz@oracle.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695695642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xYGJKvwyxelEGCoj1HuYpU6D4jZuMAySPDKkIDk1zzk=;
+        b=dtXZzdddcfgmm91xsstxtvbhsnkuaL5tSssrG5UTXNSeMgTm7JdLSYAKxliEbQURWLOQJB
+        h4+dUxOzS/5kuysRV3GAV2gX9yWJwtl6BVv6xCp/P7ywx+Thzkc+fM9Ii2CmYGa9Zm7CCJ
+        YW5vTjm6SaDw8+sbPt1Okx7xiYxoViA=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     akpm@linux-foundation.org, rppt@kernel.org
+Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
+        willy@infradead.org, david@redhat.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH v3 0/2] mm: Don't set and reset page count in MEMINIT_EARLY
+Date:   Tue, 26 Sep 2023 10:33:39 +0800
+Message-Id: <20230926023341.991124-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+__init_single_page would set page count and __free_pages_core would
+reset it. A lot of pages don't need to do this when in MEMINIT_EARLY
+context. It's unnecessary and time-consuming.
 
+The 1st patch is pass page count and reserved to __init_single_page.
+It's in preparation for the 2nd patch, it didn't change anything.
 
-> On Sep 26, 2023, at 07:48, Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> 
-> The routine update_and_free_pages_bulk already performs vmemmap
-> restoration on the list of hugetlb pages in a separate step.  In
-> preparation for more functionality to be added in this step, create a
-> new routine hugetlb_vmemmap_restore_folios() that will restore
-> vmemmap for a list of folios.
-> 
-> This new routine must provide sufficient feedback about errors and
-> actual restoration performed so that update_and_free_pages_bulk can
-> perform optimally.
-> 
-> Special care must be taken when encountering an error from
-> hugetlb_vmemmap_restore_folios.  We want to continue making as much
-> forward progress as possible.  A new routine bulk_vmemmap_restore_error
-> handles this specific situation.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+The 2nd patch only set page count for the reserved region, not all
+of the region.
 
-Thanks for your continue working on this.
+Yajun Deng (2):
+  mm: pass page count and reserved to __init_single_page
+  mm: Init page count in reserve_bootmem_region when MEMINIT_EARLY
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+ mm/hugetlb.c    |  2 +-
+ mm/internal.h   |  8 +++++++-
+ mm/mm_init.c    | 45 ++++++++++++++++++++++++++++-----------------
+ mm/page_alloc.c | 20 ++++++++++++--------
+ 4 files changed, 48 insertions(+), 27 deletions(-)
 
+-- 
+2.25.1
 
