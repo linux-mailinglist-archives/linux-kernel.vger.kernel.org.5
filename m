@@ -2,105 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26BC7AEB24
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0352F7AEB2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbjIZLOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
+        id S231204AbjIZLPM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 07:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjIZLOh (ORCPT
+        with ESMTP id S229507AbjIZLPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:14:37 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCDEE9;
-        Tue, 26 Sep 2023 04:14:31 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QB6MbT028500;
-        Tue, 26 Sep 2023 11:14:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SVmZkxj6SA3hzapomKc3tjR/6ySaAdnYPzjaecJ/A6k=;
- b=cDU9yZQ1VZWTpkoyMCNxxBlw+FMkr0sWUE6gPN8uAvsxAzfUc5AxQZG2ogTe4kvxbiA0
- 824xW2lvns1Esk4q6urv2dPZ1c+Y/EOqjh7OJ7vHayCP1biQpVAgMGVr7Ro7fR5nn2ie
- n4OwZipqqWkyFXZ8x0mNKhf7UiUSKD7ir7loVMN5QV/CsRjNKtOaeRxXYczxwoLpoO+t
- CgXmCIY05gQLIawrx/+8ZxEaquP3PFFPHTWLi57znLGIppwubdStSsiDPYvz13BEnkd7
- R+pD5ZGoe5KdU5Ju2YbfeRaMyMzVuqMa98pJH19wMpjY7axNPb/3Rhz6Zgg9k2/8dPbU Qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tbwueghwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 11:14:09 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38QB6xDq032579;
-        Tue, 26 Sep 2023 11:14:09 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tbwueghwc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 11:14:08 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38QB17k1008126;
-        Tue, 26 Sep 2023 11:14:08 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3taaqyb6pu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 11:14:08 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38QBE4W722610496
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 11:14:05 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E27C720043;
-        Tue, 26 Sep 2023 11:14:04 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A918220040;
-        Tue, 26 Sep 2023 11:14:04 +0000 (GMT)
-Received: from [9.152.224.54] (unknown [9.152.224.54])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Sep 2023 11:14:04 +0000 (GMT)
-Message-ID: <76a74084-a900-d559-1f63-deff84e5848a@linux.ibm.com>
-Date:   Tue, 26 Sep 2023 13:14:04 +0200
+        Tue, 26 Sep 2023 07:15:09 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72EDE5;
+        Tue, 26 Sep 2023 04:15:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RvxbH6zKSz9v7cV;
+        Tue, 26 Sep 2023 18:59:55 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDHH5ELvRJlT9ARAQ--.20978S2;
+        Tue, 26 Sep 2023 12:14:32 +0100 (CET)
+Message-ID: <66249824469de1edefd42b42f72cab17ea331d09.camel@huaweicloud.com>
+Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Tue, 26 Sep 2023 13:14:17 +0200
+In-Reply-To: <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
- containers.
-Content-Language: en-US
-To:     Leon Romanovsky <leon@kernel.org>,
-        Albert Huang <huangjie.albert@bytedance.com>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
- <20230926104831.GJ1642130@unreal>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20230926104831.GJ1642130@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZDkRJrc-8DDCrdra6qNLwn3HL9C1tAGf
-X-Proofpoint-GUID: 5cpoe31gYOgKmzBmR1uCO4D8uepyTSlx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- bulkscore=0 clxscore=1011 mlxlogscore=540 lowpriorityscore=0
- suspectscore=0 spamscore=0 priorityscore=1501 adultscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309260095
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CM-TRANSID: LxC2BwDHH5ELvRJlT9ARAQ--.20978S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryrXF4ftryxWF4furW7Arb_yoWrCrWrpF
+        Wrt3WrCw4rGFW7Wrn5Ja17uanaga45WrW7XrWvgw1jyFn7tr17tF13K34UCr13GrW8Wr9F
+        q3ZFvrsxCwn8ZwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5RUFAAAss
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,14 +71,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 26.09.23 12:48, Leon Romanovsky wrote:
-> This patch made me wonder, why doesn't SMC use RDMA-CM like all other
-> in-kernel ULPs which work over RDMA?
+On Mon, 2023-09-04 at 15:34 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> Thanks
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_setattr hook.
+> 
+> It is useful for EVM to recalculate the HMAC on modified file attributes
+> and other file metadata, after it verified the HMAC of current file
+> metadata with the inode_setattr hook.
+> 
+> LSMs should use the new hook instead of inode_setattr, when they need to
+> know that the operation was done successfully (not known in inode_setattr).
+> The new hook cannot return an error and cannot cause the operation to be
+> reverted.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  fs/attr.c                     |  1 +
 
-The idea behind SMC is that it should look an feel to the applications
-like TCP sockets. So for connection management it uses TCP over IP;
-RDMA is just used for the data transfer.
+Hi Christian, Al
+
+could you please review and ack patches 12-19, which touch the VFS?
+
+Thanks a lot!
+
+Roberto
+
+>  include/linux/lsm_hook_defs.h |  2 ++
+>  include/linux/security.h      |  7 +++++++
+>  security/security.c           | 16 ++++++++++++++++
+>  4 files changed, 26 insertions(+)
+> 
+> diff --git a/fs/attr.c b/fs/attr.c
+> index 431f667726c7..3c309eb456c6 100644
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -486,6 +486,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+>  
+>  	if (!error) {
+>  		fsnotify_change(dentry, ia_valid);
+> +		security_inode_post_setattr(idmap, dentry, ia_valid);
+>  		ima_inode_post_setattr(idmap, dentry, ia_valid);
+>  		evm_inode_post_setattr(idmap, dentry, ia_valid);
+>  	}
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index fdf075a6b1bb..995d30336cfa 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -136,6 +136,8 @@ LSM_HOOK(int, 0, inode_follow_link, struct dentry *dentry, struct inode *inode,
+>  LSM_HOOK(int, 0, inode_permission, struct inode *inode, int mask)
+>  LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *idmap, struct dentry *dentry,
+>  	 struct iattr *attr)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap,
+> +	 struct dentry *dentry, int ia_valid)
+>  LSM_HOOK(int, 0, inode_getattr, const struct path *path)
+>  LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
+>  	 struct dentry *dentry, const char *name, const void *value,
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index dcb3604ffab8..820899db5276 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -355,6 +355,8 @@ int security_inode_follow_link(struct dentry *dentry, struct inode *inode,
+>  int security_inode_permission(struct inode *inode, int mask);
+>  int security_inode_setattr(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, struct iattr *attr);
+> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 int ia_valid);
+>  int security_inode_getattr(const struct path *path);
+>  int security_inode_setxattr(struct mnt_idmap *idmap,
+>  			    struct dentry *dentry, const char *name,
+> @@ -856,6 +858,11 @@ static inline int security_inode_setattr(struct mnt_idmap *idmap,
+>  	return 0;
+>  }
+>  
+> +static inline void
+> +security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			    int ia_valid)
+> +{ }
+> +
+>  static inline int security_inode_getattr(const struct path *path)
+>  {
+>  	return 0;
+> diff --git a/security/security.c b/security/security.c
+> index 2b24d01cf181..764a6f28b3b9 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2124,6 +2124,22 @@ int security_inode_setattr(struct mnt_idmap *idmap,
+>  }
+>  EXPORT_SYMBOL_GPL(security_inode_setattr);
+>  
+> +/**
+> + * security_inode_post_setattr() - Update the inode after a setattr operation
+> + * @idmap: idmap of the mount
+> + * @dentry: file
+> + * @ia_valid: file attributes set
+> + *
+> + * Update inode security field after successful setting file attributes.
+> + */
+> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 int ia_valid)
+> +{
+> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +		return;
+> +	call_void_hook(inode_post_setattr, idmap, dentry, ia_valid);
+> +}
+> +
+>  /**
+>   * security_inode_getattr() - Check if getting file attributes is allowed
+>   * @path: file
+
