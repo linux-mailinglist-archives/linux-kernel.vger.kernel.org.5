@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7F97AEF48
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9DE7AEF4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbjIZPFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S235006AbjIZPGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234991AbjIZPFA (ORCPT
+        with ESMTP id S233134AbjIZPGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:05:00 -0400
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62F3FCCA;
-        Tue, 26 Sep 2023 08:04:32 -0700 (PDT)
-Received: from 8bytes.org (pd9fe9df8.dip0.t-ipconnect.de [217.254.157.248])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id CA82A1A21CC;
-        Tue, 26 Sep 2023 17:04:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1695740670;
-        bh=o8oWUCyKGLr6aRpJEcyERxcIW3a0GD0rf9gmZgpvK2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=6TpFhndRPNvIgt7yzA2/aJMoYkdnS16cebzf4UtP23CQlpQ+Gak1eYrm6l6OjKYEx
-         6ov9MN4xTFyWr54bLnOpm430Hupplf8W0SxvaQlB6FgmJn2Bupf3Brid8BS/nZqAQO
-         hvu4Svos9D+f462V9LsyrLj63TJ5HQrEH7+hL9EoBYr83zCI6QFPn3sNZtjggMsFkX
-         51VP71UAzDGONwXr20Y36QdQJVa+iP+T27lz3G41fM7pXzHksLzD0rpLSvyCctLemD
-         t/LuaiNXAWO/0BIuVB8b3mYUK3IzpvwsvgMpvM9qZ4RAN8ZffK3kqVvFnLVTK8C6cL
-         klQPepXng8EOg==
-Date:   Tue, 26 Sep 2023 17:04:28 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
- IOTLB flushing
-Message-ID: <ZRLy_AaJiXxZ2AfK@8bytes.org>
-References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
+        Tue, 26 Sep 2023 11:06:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F99510A;
+        Tue, 26 Sep 2023 08:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695740768; x=1727276768;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=pn0F+kwsoTyRCnoC07T8ZrXe1y1Q9keK+1limegx/Wo=;
+  b=nrx6WWc2IhIJwfqAyLuCIgGqTLSLHVvyMXepPSPelrwP7PLhSgiYhAu1
+   sXE0HqWcJ/cc9Z7JRAbVRJt85ddgZifGE0YNDzHzXoF0e+O0gNjaVxRgE
+   qdjN/UHzN1ErmEF8QinZ0y+x0mnjcFuog/8NQLabynYUjjYIVpdBspHBv
+   CKH+/n58tdZKn2K4lYKmOainyXSgZ8dF04BB9heKQwzSJwgt2pZYUxJp7
+   8vTgQpvB9b1laMj/ju2GmTzplnNzNwYpJiAGFij5MaP0YtSscFRYj+1r7
+   2etlv/1lYnNdZfrH7yBqw7hT1ISZxGtqntZtKaQ49cQPWmBDjgbSENJXE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="378864419"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="378864419"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:04:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="839058453"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="839058453"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.212.206.185])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:04:47 -0700
+Message-ID: <9cab732f92d529d76b9e40f91ede1460320f1da4.camel@linux.intel.com>
+Subject: Re: [PATCH 3/3] platform/x86: intel_speed_select_if: Remove
+ hardcoded map size
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 26 Sep 2023 08:04:46 -0700
+In-Reply-To: <ZRLZmDmIkOo0YVz6@smile.fi.intel.com>
+References: <20230925194555.966743-1-srinivas.pandruvada@linux.intel.com>
+         <20230925194555.966743-4-srinivas.pandruvada@linux.intel.com>
+         <ZRLZmDmIkOo0YVz6@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Niklas,
+On Tue, 2023-09-26 at 16:16 +0300, Andy Shevchenko wrote:
+> On Mon, Sep 25, 2023 at 12:45:55PM -0700, Srinivas Pandruvada wrote:
+> > The driver is using 256 as the size while calling devm_ioremap().
+> > The
+> > maximum offset is already part of struct isst_mmio_range. Use the
+> > maximum offset (end field of the struct) plus 4 as the map size to
+> > remove
+> > hardcoded value of 256.
+>=20
+> ...
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0punit_dev->mmio_range =3D (s=
+truct isst_mmio_range *) ent-
+> > >driver_data;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0punit_dev->punit_mmio =3D de=
+vm_ioremap(&pdev->dev, base_addr,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 punit_dev-
+> > >mmio_range[1].end + sizeof(u32));
+>=20
+> Can we rather fix the mmio_range driver data to have end be actually
+> not the
+> offset of the last dword? (Better maybe to keep length there.)
+>=20
+We can. But that has to be separate patch on top as there are other
+places this range is used.
 
-On Fri, Aug 25, 2023 at 12:11:15PM +0200, Niklas Schnelle wrote:
-> Niklas Schnelle (6):
->       iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM return
->       s390/pci: prepare is_passed_through() for dma-iommu
->       s390/pci: Use dma-iommu layer
->       iommu/s390: Disable deferred flush for ISM devices
->       iommu/dma: Allow a single FQ in addition to per-CPU FQs
->       iommu/dma: Use a large flush queue and timeout for shadow_on_flush
 
-Turned out this series has non-trivial conflicts with Jasons
-default-domain work so I had to remove it from the IOMMU tree for now.
-Can you please rebase it to the latest iommu/core branch and re-send? I
-will take it into the tree again then.
+> With help of
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct resource r;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0...
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0r =3D DEFINE_RES_MEM(base=
+_addr, mmio_range.beg +
+> mmio_range.len);
+>=20
+> you can switch to devm_ioremap_resource() API.
+What is the advantage of creating a resource and then call
+devm_ioremap_resource()?
 
 Thanks,
+Srinivas
 
-	Joerg
+>=20
+
