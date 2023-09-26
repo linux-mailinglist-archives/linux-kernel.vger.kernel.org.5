@@ -2,62 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4390D7AEFBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905027AEEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjIZPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
+        id S234907AbjIZOAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbjIZPay (ORCPT
+        with ESMTP id S229519AbjIZOAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:30:54 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B01010A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:30:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1695742244;
-        bh=OnohBIbzxshPyEmMWAh4gOX+hda/cp3tuqHCS6jOsUI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BA1Aa3rOB6wid579Ks59TXZr7TnH8DbyKrk50K4zQAtEx1peEQ/AHSyTlyPz8bh1S
-         Vy51Ppme5FxAxdI7z4vUnrwVGQmjmdyqq1cUG5PAosyoB4SKNJbVR6WRIxZHUZrDL5
-         XKEpaVaBLVhqq+YGdfG7xreNvbGfSXm3IcbSdMyiGsKz3zanRcgC2hcbycSMBs3WuQ
-         oq7kM+/fwXMIFGQisrnyFjYIAIqR/5v6amZnxN5VnH6uF6wI6mevBne8jvwIXqBztW
-         96+plrvTcleIs2Y0fsdOtNb/YJd6o5zwag2DSwV05qoCZVSq6mXQc4iYmqzHSoh+GF
-         WIOCQm+p4TLHQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rw3bm0Nrkz1R9H;
-        Tue, 26 Sep 2023 11:30:44 -0400 (EDT)
-Message-ID: <677cd7ab-4347-ed09-bf56-4c2a9833ae50@efficios.com>
-Date:   Tue, 26 Sep 2023 06:29:40 -0400
+        Tue, 26 Sep 2023 10:00:41 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2043.outbound.protection.outlook.com [40.107.13.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02162E9;
+        Tue, 26 Sep 2023 07:00:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AWb8qQneDuuqSDxsgUo3+RopZrDM9r4QKsKyITXvR2XmEJ/az03eaylRcmyeQYAW5IU8Bza2hE4wr0+g+kcs7Za0VUKfICnusGQvM6qet6Zk6G4WDDXOX0xxwfo35naebMomxwqSMvZpCwTjK0+dudxV8HsHSSATbtczh/vgCpyl0oZLVSZnXFi/u6bFfkFUL9BckMuQdbAbicdHRLZ6b+YUTfkRgArZ6tOx8xYsmJqc8oVNoWVK3l7dS0MkJkJoz/YODPIB/w2Gm9Oz5PEt78X+LMd4AC390ptmfPU1NTSRlgxTtJCMIrTgyzkdUg6YundGf8E5SnB+6jc/zyKGhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yn43rfHET6DXaSDlUmpGZixca78ritdYAzW44QgFm4c=;
+ b=crhMdKwZX6nrCQ6jOk1PTzSaFvBsO7YWr7aTRS1wiRChiHPRStkGmrNCiVJGqWIOGxSxQq/mu4URIifmQR+6dR7diieLX3lzef9bEw19Fj3JYNojX754irAUHslDQohde4q9Cu7eJCD3u0CZtbGquL6YEzwOHF6q6C005YwnI11sAWWiB56zlLWEQsghQz3Ew+/Dgiek6he/de5aqqWLf6iDm8iPcZpJK7k+rnKG0wzvIy/Yz1rjJTzmUwTlBIa8hQQoeS7qPLrIe+phlk8s5r3qF6UwtdOwja5wDVqk9fOxvNXCDBA/avZlzWVzfX9lb5XGIlk91WNdeCjjRCXWsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yn43rfHET6DXaSDlUmpGZixca78ritdYAzW44QgFm4c=;
+ b=YpNPVnNQHv2Q0NlZwTW0b5/59+ApnPi24ZquYyHtdTytJ6KfTtYgAWy8rOBcuUDHw4CipVDDiT4nWT/qQXCJKofKSJ6F1TrwvxgxouHqOzeEFxVh292KreudWvA7q0HC4FRx212wM94MpSWmgldbVF9IGMgXkuC1VD+u9sGapDA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM9PR04MB8923.eurprd04.prod.outlook.com (2603:10a6:20b:40a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 14:00:29 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
+ 14:00:29 +0000
+Date:   Tue, 26 Sep 2023 10:00:18 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     christophe.jaillet@wanadoo.fr, bhelgaas@google.com,
+        imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v2 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Message-ID: <ZRLj8nHJrXB1DkkO@lizhi-Precision-Tower-5810>
+References: <20230922042836.3311689-1-Frank.Li@nxp.com>
+ <ZRKH5CTucrT5BFwC@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRKH5CTucrT5BFwC@infradead.org>
+X-ClientProxiedBy: BY5PR13CA0008.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::21) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] sched/fair: Record the short sleeping time of a task
-Content-Language: en-US
-To:     Chen Yu <yu.c.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org, Chen Yu <yu.chen.surf@gmail.com>
-References: <cover.1695704179.git.yu.c.chen@intel.com>
- <b17a3db703494bdae8492843f7303c13b0dbd0fc.1695704179.git.yu.c.chen@intel.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <b17a3db703494bdae8492843f7303c13b0dbd0fc.1695704179.git.yu.c.chen@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB8923:EE_
+X-MS-Office365-Filtering-Correlation-Id: bdd9632a-704a-4d9e-aba3-08dbbe98f0ca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IGUgPTBSj5bANXhEicKQTcoC9JliBJ3CUQLEdxlFEewT64dD/TRgXV9jlWpOnQpyr84D/o5Z2gZ1ZwY9IknZQfJRvPxZHM1nk6S3IeanOc0uozPgDig9Bl65GVt+JV6aDK46n2AoTx8ha/ZbCLUYTEXPFe6/KoweqmVOovqM7hHZUGA6PFqelxCd+6CjIlIdftfeoMwE9pk73N5t7PCSyhY1rfoOpSnNkVCQ6M+HoXZNPDReXeNCH3FirN6RjOUzMKDOTFpjAdvXYRa1gEk/NLdRljxwn7gbWDhatp8+mWyAadursJH3Dvi8QfDjjKgI+9n8x/94KFWeCFAQpEUq1x7HHk9jyfxKhM+04dmEASbzh7KtUaz5088MFWiLyDsHh+tzoBrR5hNcBlu9uoyldATkmVsPyQDloVm/MKA7tG8Smu9/uh4H9YQ4/i7FkvY4YFylxvLOJVxbv8aiBoU4du0dGEFuAIV/xe7vr6b9yTa9Z71wSZI1QqrWemnVPJ+45z+FxMw/iuHPQV0vnB86+Rb7pQ1GJElaO/BVff1SJFZmckxYrdv38QmtCBmAnKX8rALmmsEu+gLEjcsbu6wvo9hymHSA02ZZz2zqYp/qZYIRo4Rl3FSR5BOCPqHkEURK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(1800799009)(451199024)(186009)(7416002)(4326008)(4744005)(2906002)(5660300002)(316002)(41300700001)(6916009)(8676002)(8936002)(66946007)(66476007)(86362001)(66556008)(6666004)(52116002)(6506007)(9686003)(6486002)(6512007)(26005)(38100700002)(38350700002)(33716001)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M49ymGOOQwP2cwMW1GZV8o29L3yoIPXUdCmVM+i4ngvNVkI/fzRPLunZUi+o?=
+ =?us-ascii?Q?1vKRD/0yeWd0Gi31Szi1a8ixbrrUgFRikiKJ9Q3ocXCC2AyeDvkfAlHjiOw+?=
+ =?us-ascii?Q?udop1Svj0tSzoqCypvHniEdyMymkQ6ct44Lp2c3h3ljBzf4rJtTjUTy3QAoa?=
+ =?us-ascii?Q?02U5scc1SzneMnL6Kn6NLQ1pJmtiUSiw6bgls2I4sASTnYuvrNnqsn5oxU+J?=
+ =?us-ascii?Q?1H+jId4brTRKu8OB3aUAogcpZuVHTfhmsbRkutE3ju/whzmOk8xn5O10wfyF?=
+ =?us-ascii?Q?/A5wQosKjwSnd/2CM0Tk7uMk1RHBe6x0cwEBXtHiD9Gccm2c75g4a2MVDCrC?=
+ =?us-ascii?Q?3nXeoCvsyWuHnuHO7/gWMNaSC6mp0uno+w2H4dlqr4s7M4+T6H2bZF+yYDJP?=
+ =?us-ascii?Q?fzrT6HqXxGCwoExfMnn2ItN53cuAE7l1TdpmtHuHRIMFlCazRdvy/tJg3UMu?=
+ =?us-ascii?Q?IWwG1ATrwEif2IXC9hj0GCeCLNszLon8DtOKKdeyAzqoAodnF2hKEe1UEnj7?=
+ =?us-ascii?Q?NIjlHo0ExsaVpkunKnNk5vNZ9GGGowU54+ROPmcXLTwvvABdnNrUBJ/oaeQM?=
+ =?us-ascii?Q?2Zna8PJRyD6V5e4LcwHwCm5fxeO0GhBXIr/eBVLqvAOmBG7hs+WXwz+l0xpH?=
+ =?us-ascii?Q?i4hDwQ1UcEeVdfL039TLbhGLNs8Gly+Mq7v+9T5vHa6upEM0E727iF2aWa+B?=
+ =?us-ascii?Q?gD0EmsNz7GaZfAXVd2NoKF6YJrdOWcfOdQq2mQOvOvsAsiu1Y+i1yqJwqXMq?=
+ =?us-ascii?Q?oioxP+p6PkJGCAV1iDu7gCwEzSYcXrdNSbQUjUD1v+NV5Vu2EaeZKu8cZ3OX?=
+ =?us-ascii?Q?tFK9WEqNcRu7U57L1VaLs3V/JA+4Au3pj7G1Sg11pGaIddXJsKeGpX1xkMl8?=
+ =?us-ascii?Q?JGIQweMCYM8w802zCUv+3OvfOubUhC1jDay9jpJfVXJjY83OQ2omJvJni1T1?=
+ =?us-ascii?Q?IMlDffpLak022oIVPP8W3+OY+X5vXzmGZpPRKoQLvEIy7lA4AgHFN8QIhxu8?=
+ =?us-ascii?Q?hCz0+tRfKUyBB9S1/55PfNDhEMIb36MdET/DnAWHqYW1WkJ2hozf8YmGRZSv?=
+ =?us-ascii?Q?huR7l2X388Vb2DYvkn4tV/lDThtAx75AoseyNYjcY9HnbLlfA9xi6E/WoBLC?=
+ =?us-ascii?Q?At4NXYViVx18KDwHEzbsNVSUaSVnEAVr6mbeKthdzUwNJsDARSylyC6so4Mq?=
+ =?us-ascii?Q?5s3UYZJRahPUJMFDbx3albJhLDAg6/msrzQlecNbHpQTMaT+YuyeBlriR3rr?=
+ =?us-ascii?Q?tcbcAnJK2CXysV06hRN3jw+nSGhCX9bziLshwcvIWXRoQxEz1nHdUrZ7zVSh?=
+ =?us-ascii?Q?r3OIDHdKE2s6wcAZfLWBlJojlrxuSD5M2VquQIINvLq3aFGracoHVNE/tuBC?=
+ =?us-ascii?Q?sB4C31ET76m8RjKs+mT1YvINE7aINohctYsPzmD3/j4MdMEzYRWWixgZHHiy?=
+ =?us-ascii?Q?HZMZVwmG5mCaewjm7cqOkKAKKLE97zgCwZGyCL6eJOvrAWyJbOFOU9Zqbb65?=
+ =?us-ascii?Q?HQfKAEuub6WuSE9rlJKPGphd7aaqRnYg223ScMn60IVIPWIKLITl2gkXm539?=
+ =?us-ascii?Q?V82p2/HrBRyHai3Ivmg=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdd9632a-704a-4d9e-aba3-08dbbe98f0ca
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 14:00:28.8704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CNYGWIaWW8PwVJbOmNBlRL5i3oo9uWkGearFF2JLuNg/75Hdp5rRH8SR36EEpoq6hUL3r5ZXz7DzpIwXweZ0Gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8923
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,105 +117,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 06:11, Chen Yu wrote:
-> During task wakeup, the wakee firstly checks if its previous
-> running CPU is idle. If yes, choose that CPU as its first
-> choice. However, in most cases, the wakee's previous CPU
-> could be chosen by someone else, which breaks the cache
-> locality.
+On Tue, Sep 26, 2023 at 12:27:32AM -0700, Christoph Hellwig wrote:
+> > +	/* set 64-bit DMA mask and coherent DMA mask */
+> > +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
 > 
-> Proposes a mechanism to reserve the task's previous
-> CPU for a short while. In this reservation period, other
-> tasks are not allowed to pick that CPU until a timeout.
-> The reservation period is defined as the average short
-> sleep time of the task. To be more specific, it is the
-> time delta between this task being dequeued and enqueued.
-> Only the sleep time shorter than sysctl_sched_migration_cost
-> will be recorded. If the sleep time is longer than
-> sysctl_sched_migration_cost, give the reservation period
-> a penalty by shrinking it to half. In this way, the 'burst'
-> sleeping time of the task is honored, meanwhile, if that
-> task becomes a long-sleeper, the reservation time of that
-> task is shrunk to reduce the impact on task wakeup.
+> The comment is a bit silly :)
 > 
-> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->   include/linux/sched.h |  3 +++
->   kernel/sched/fair.c   | 21 +++++++++++++++++++++
->   2 files changed, 24 insertions(+)
+> > +	if (ret)
+> > +		return ret;
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index dc37ae787e33..4a0ac0276384 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -561,6 +561,9 @@ struct sched_entity {
->   	u64				vruntime;
->   	s64				vlag;
->   	u64				slice;
-> +	u64				prev_dequeue_time;
-> +	/* the reservation period of this task during wakeup */
-> +	u64				sis_rsv_avg;
->   
->   	u64				nr_migrations;
->   
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d0877878bcdb..297b9470829c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6456,6 +6456,24 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->   	struct sched_entity *se = &p->se;
->   	int idle_h_nr_running = task_has_idle_policy(p);
->   	int task_new = !(flags & ENQUEUE_WAKEUP);
-> +	u64 last_dequeue = p->se.prev_dequeue_time;
-> +	u64 now = sched_clock_cpu(task_cpu(p));
-> +
-> +	/*
-> +	 * If the task is a short-sleepting task, there is no need
-> +	 * to migrate it to other CPUs. Estimate the average short sleeping
-> +	 * time of the wakee. This sleep time is used as a hint to reserve
-> +	 * the dequeued task's previous CPU for a short while. During this
-> +	 * reservation period, select_idle_cpu() prevents other wakees from
-> +	 * choosing this CPU. This could bring a better cache locality.
+> Also no need to check the return value when setting a 64-bit mask,
+> but I guess it desn't hurt here.
+> 
 
-"This could bring a better cache locality." could be rephrased as
-"This improves cache locality for short-sleeping tasks."
-
-Please add my:
-
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-> +	 */
-> +	if ((flags & ENQUEUE_WAKEUP) && last_dequeue && cpu_online(task_cpu(p)) &&
-> +	    now > last_dequeue) {
-> +		if (now - last_dequeue < sysctl_sched_migration_cost)
-> +			update_avg(&p->se.sis_rsv_avg, now - last_dequeue);
-> +		else
-> +			p->se.sis_rsv_avg >>= 1;
-> +	}
->   
->   	/*
->   	 * The code below (indirectly) updates schedutil which looks at
-> @@ -6550,6 +6568,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->   	int task_sleep = flags & DEQUEUE_SLEEP;
->   	int idle_h_nr_running = task_has_idle_policy(p);
->   	bool was_sched_idle = sched_idle_rq(rq);
-> +	u64 now;
->   
->   	util_est_dequeue(&rq->cfs, p);
->   
-> @@ -6611,6 +6630,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->   dequeue_throttle:
->   	util_est_update(&rq->cfs, p, task_sleep);
->   	hrtick_update(rq);
-> +	now = sched_clock_cpu(cpu_of(rq));
-> +	p->se.prev_dequeue_time = task_sleep ? now : 0;
->   }
->   
->   #ifdef CONFIG_SMP
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+You are right, let me remove check.
