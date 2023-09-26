@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35A67AF0F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2D57AF0FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235333AbjIZQlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S235354AbjIZQmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235370AbjIZQlB (ORCPT
+        with ESMTP id S235370AbjIZQmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:41:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBD0196
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:40:10 -0700 (PDT)
+        Tue, 26 Sep 2023 12:42:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DEF19A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:41:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695746409;
+        s=mimecast20190719; t=1695746465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Kd2LSMGaFyIyYUQYhYS2fW0pNR+YDpbhEtxru5Iz2s=;
-        b=PPPexshFB6h0Z4V1gK3M4M0+pC4wq2iCLCeGwgw71/IPzLQzrll+0s/6W8yAJgrpMc/d9i
-        O4rEMvNApm0s79Z2cDyvljCALOMhBRusCCr4sizy/zH25P3bjxNzVKzxQQPZyN06s1y+DY
-        6B0MyQw9YKcvzlgd7TO9uM6+e+8lwEg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=9YAyRg25y1ds+4WMOQ2HhwyFuV1Nm/hS+8w3y9qqUyQ=;
+        b=ZKerJDtjqwgwk7OOFSz2q/lUaiN7G5diUcDWRF6AO8uOFmLyjwkcnx/7lZIv0EBGcnYsoL
+        39TFpfJpUZ/d9+KegKhycJqOgeQyCA2f78khQ9aYijgvm+jYFRwksHTub/KsMnHF4r/GVN
+        SVF/mzLuQd69yH+M5cuvWDhz5xGcqUM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-61-HR91xuAeOj2gUi4pjOBz0w-1; Tue, 26 Sep 2023 12:40:07 -0400
-X-MC-Unique: HR91xuAeOj2gUi4pjOBz0w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40554735995so65272505e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:40:07 -0700 (PDT)
+ us-mta-358--e5a4y6SPwu5nm-8diJOAg-1; Tue, 26 Sep 2023 12:41:04 -0400
+X-MC-Unique: -e5a4y6SPwu5nm-8diJOAg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a355cf318so793625466b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:41:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695746406; x=1696351206;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Kd2LSMGaFyIyYUQYhYS2fW0pNR+YDpbhEtxru5Iz2s=;
-        b=wuLce1HggfXHW1ryHXE0nf7xEZTSvzv5HvVtisvBhFK5bqk3qddT93gOL/w79CcHsL
-         HVZhFbKahrbzR3qmWQNReQchEXBZ0ZARRfnfDIXLFQDK00n0u7zuge6vL3VK9drAhfHF
-         tZyIhlPTalUaludYe0ec2sE3mOIKSwlU/Y7AMSc2ywe8rIRCZbDwBreL2MHM9FecG/tt
-         eVvc5RHw/STjoyuPQzPA4mE0DIIEvlkAKCMj74LQydjGjKRcOQPeidJvHUOd1lcV4CVU
-         HsUAAxvVCwLRTT8GUEHjtmihB8r6A2cR1bdB1VB+Kxg77M5ngHJvovcusmgNdQJa87Ud
-         4L3Q==
-X-Gm-Message-State: AOJu0YyCUvNFGJyNsResIBL2kUVWj8u5O/Zti1t1v7zdo5yrSkWkWnkV
-        GW9HCv3a/OoTCLdR/VIk9QWZjqfdfryYAPsRfLFVNKBYppxMeN5dr8VnrV06pIli7OsotXrHs+D
-        nT5Z2Rc3AiQTwzrCIMhUiI7up
-X-Received: by 2002:a05:600c:216:b0:401:b2c7:34a8 with SMTP id 22-20020a05600c021600b00401b2c734a8mr8676659wmi.7.1695746406283;
-        Tue, 26 Sep 2023 09:40:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGhRVYxVcPQvs5mPR9xOjo4Wtr2On7+M2C4AejZs1aj6gskkn2/daaPqmz/7ZOdP8NT2H+dXA==
-X-Received: by 2002:a05:600c:216:b0:401:b2c7:34a8 with SMTP id 22-20020a05600c021600b00401b2c734a8mr8676641wmi.7.1695746405923;
-        Tue, 26 Sep 2023 09:40:05 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id s16-20020a7bc390000000b00401c595fcc7sm12722715wmj.11.2023.09.26.09.40.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 09:40:05 -0700 (PDT)
-Message-ID: <3524fd5b-d846-ffae-0134-fef4447d8d72@redhat.com>
-Date:   Tue, 26 Sep 2023 18:40:03 +0200
+        d=1e100.net; s=20230601; t=1695746463; x=1696351263;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9YAyRg25y1ds+4WMOQ2HhwyFuV1Nm/hS+8w3y9qqUyQ=;
+        b=w7c0k9tVj2IrZXaVzNsatgoGsd9f/DIBDwqI8bpbAW9KFEiqOQdqjSusH01x9z5mS2
+         rzQklGJ/VifYu9nA8KnWrwv8cpngipsQU7l4usauWCVpv5MGnens8oEYPq1jYiprC3Cv
+         vzdoQa8Mf1N7X4ZWIhl533KAe/2eQv5PMP6KiFNDf6neEtuYg4jljM1BuH5tjlcn4dn8
+         pubjRFRmqy8U7n5X5aQRuYd6hnBQuQox/gntQfyEFfXiLixOplItccc2F6p6/nNc/8Pj
+         +a4zXcMdtPljZLPGey9XClkSuH2GYdxfFWVOG9sVhthweHu4Yx89wmDkV3Ns2rUuxiIj
+         GWUw==
+X-Gm-Message-State: AOJu0Yz/GUmCp8EukOK6KTEA7KXoZ5IcvjNHoi36wOv9nZ9RhMpRdcv/
+        8A0nWCd3s2OemsWaWvW61j2VTe/+A+S4tMOAWMjJc7P0LMS1mbsx6BLNczFwP1Tkgs/zic3DAAn
+        Gvxjt9zSlQAxVnHj/V057z/hUGdR8PmYY7izMFY0c
+X-Received: by 2002:a17:906:218a:b0:9ad:7d5c:3d4b with SMTP id 10-20020a170906218a00b009ad7d5c3d4bmr9170357eju.35.1695746462966;
+        Tue, 26 Sep 2023 09:41:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFyLnGtjl16ZbEydnXM+tv4CysWF7HTsyNruFiTtg08cjTqOpFUagw9oPsSkwzQbGl91B9XtcGprebhtCWXQ+0=
+X-Received: by 2002:a17:906:218a:b0:9ad:7d5c:3d4b with SMTP id
+ 10-20020a170906218a00b009ad7d5c3d4bmr9170343eju.35.1695746462665; Tue, 26 Sep
+ 2023 09:41:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/4] KVM: x86: add more information to kvm_exit
- tracepoint
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-References: <20230924124410.897646-1-mlevitsk@redhat.com>
- <20230924124410.897646-4-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230924124410.897646-4-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926032244.11560-1-dinghao.liu@zju.edu.cn>
+ <20230926100202.011ab841@xps-13> <adf9d668-0906-3004-d4e8-a7775844a985@datenfreihafen.org>
+In-Reply-To: <adf9d668-0906-3004-d4e8-a7775844a985@datenfreihafen.org>
+From:   Alexander Aring <aahringo@redhat.com>
+Date:   Tue, 26 Sep 2023 12:40:51 -0400
+Message-ID: <CAK-6q+gfN7GtwfpUvOjNsNE9LSMTGrdLE6+-dgUEkVaA6SK1zw@mail.gmail.com>
+Subject: Re: [PATCH] [v2] ieee802154: ca8210: Fix a potential UAF in ca8210_probe
+To:     Stefan Schmidt <stefan@datenfreihafen.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Alexander Aring <alex.aring@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Harry Morris <harrymorris12@gmail.com>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/23 14:44, Maxim Levitsky wrote:
-> +		__field(	bool,		guest_mode      )	     \
-> +		__field(	u64,		requests        )	     \
-> +		__field(	bool,		req_imm_exit	)	     \
+Hi,
 
-I am not sure about adding guest_mode or req_imm_exit here, because they 
-should always match kvm_entry.
+On Tue, Sep 26, 2023 at 4:29=E2=80=AFAM Stefan Schmidt
+<stefan@datenfreihafen.org> wrote:
+>
+> Hello.
+>
+> On 26.09.23 10:02, Miquel Raynal wrote:
+> > Hi Dinghao,
+> >
+> > dinghao.liu@zju.edu.cn wrote on Tue, 26 Sep 2023 11:22:44 +0800:
+> >
+> >> If of_clk_add_provider() fails in ca8210_register_ext_clock(),
+> >> it calls clk_unregister() to release priv->clk and returns an
+> >> error. However, the caller ca8210_probe() then calls ca8210_remove(),
+> >> where priv->clk is freed again in ca8210_unregister_ext_clock(). In
+> >> this case, a use-after-free may happen in the second time we call
+> >> clk_unregister().
+> >>
+> >> Fix this by removing the first clk_unregister(). Also, priv->clk could
+> >> be an error code on failure of clk_register_fixed_rate(). Use
+> >> IS_ERR_OR_NULL to catch this case in ca8210_unregister_ext_clock().
+> >>
+> >> Fixes: ded845a781a5 ("ieee802154: Add CA8210 IEEE 802.15.4 device driv=
+er")
+> >
+> > Missing Cc stable, this needs to be backported.
+> >
+> >> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> >> ---
+> >>
+> >> Changelog:
+> >>
+> >> v2: -Remove the first clk_unregister() instead of nulling priv->clk.
+> >> ---
+> >>   drivers/net/ieee802154/ca8210.c | 3 +--
+> >>   1 file changed, 1 insertion(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/=
+ca8210.c
+> >> index aebb19f1b3a4..b35c6f59bd1a 100644
+> >> --- a/drivers/net/ieee802154/ca8210.c
+> >> +++ b/drivers/net/ieee802154/ca8210.c
+> >> @@ -2759,7 +2759,6 @@ static int ca8210_register_ext_clock(struct spi_=
+device *spi)
+> >>      }
+> >>      ret =3D of_clk_add_provider(np, of_clk_src_simple_get, priv->clk)=
+;
+> >>      if (ret) {
+> >> -            clk_unregister(priv->clk);
+> >>              dev_crit(
+> >>                      &spi->dev,
+> >>                      "Failed to register external clock as clock provi=
+der\n"
+> >
+> > I was hoping you would simplify this function a bit more.
+> >
+> >> @@ -2780,7 +2779,7 @@ static void ca8210_unregister_ext_clock(struct s=
+pi_device *spi)
+> >>   {
+> >>      struct ca8210_priv *priv =3D spi_get_drvdata(spi);
+> >>
+> >> -    if (!priv->clk)
+> >> +    if (IS_ERR_OR_NULL(priv->clk))
+> >>              return
+> >>
+> >>      of_clk_del_provider(spi->dev.of_node);
+> >
+> > Alex, Stefan, who handles wpan and wpan/next this release?
+>
+> IIRC it would be me for wpan and Alex for wpan-next.
 
-Paolo
+That's okay for me.
+
+- Alex
 
