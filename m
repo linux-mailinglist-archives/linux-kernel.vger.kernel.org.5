@@ -2,233 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595E67AE4FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE207AE50A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjIZFWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 01:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        id S232066AbjIZF23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 01:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbjIZFWJ (ORCPT
+        with ESMTP id S229461AbjIZF20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 01:22:09 -0400
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F329FD7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 22:22:01 -0700 (PDT)
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230926052159epoutp02d01a6ba1f7f1d4936891ea89f7f97e89~IW14o9aFB0552905529epoutp023
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:21:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230926052159epoutp02d01a6ba1f7f1d4936891ea89f7f97e89~IW14o9aFB0552905529epoutp023
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1695705719;
-        bh=Ae3csVniCNOtjKr88euFOzMx2vv3dPx0MYaEJq/LpAo=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=gla8zA8qMvNF7CHu8mcgO4vFftD0Vi7RQ+2UHWCmD5bnTuZ+uUTewPFTlObaSnMgZ
-         qkvIn9Tu7NkyvvikbFysgUpWOm/2+Hrs93YgF8SwAK60dGHA8yqM2gAc1/XPR27MJh
-         B4NfiL7SEb91kTtkcNJguxhXXCcq2sDEsW1apRUU=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230926052158epcas1p2f56142adfac6451bad63f56b67d5d326~IW134ulon1275612756epcas1p2-;
-        Tue, 26 Sep 2023 05:21:58 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.36.222]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Rvp5L33snz4x9Px; Tue, 26 Sep
-        2023 05:21:58 +0000 (GMT)
-X-AuditID: b6c32a38-28bff700000027b3-cb-65126a76827a
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A3.ED.10163.67A62156; Tue, 26 Sep 2023 14:21:58 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
- adjust_va_to_fit_type
-Reply-To: jason.sim@samsung.com
-Sender: Jaeseon Sim <jason.sim@samsung.com>
-From:   Jaeseon Sim <jason.sim@samsung.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-CC:     "bhe@redhat.com" <bhe@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Tue, 26 Sep 2023 01:28:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA69FD7;
+        Mon, 25 Sep 2023 22:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695706099; x=1727242099;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qU02SKhLV+5F1Wsibfq7UXiKGERHgZpxl8ElTV38DgI=;
+  b=eKjBGaZX+goN8Up8txzXKtfUmK4zyqlmhG5llEMzqtww5e5IwApGAbST
+   sqkMZetuZCTiNzch4gRmEwFS8frujKa2Is7fGCxbbST01DjQ+zsrjkuLq
+   ojnx9vj/NPyl5HyAUWbFPIT9ehRYU8jIVsfoBx/nyIDQJkoxanQ57+vZX
+   p/Jp7aAAQI9hVwAJrILYMI4vZQ6tcLnX0KLWb1yvaBqY+aK6rjp1qKx93
+   akFoIr7s9xx5qJZ3uzOxIz0rRvXgfugPBVJULu1LWB+Rf9K0SvsNXuYxz
+   ilsZ3gWllJ/tkfuT3YG8u9FFEzYOj5vcsPhW44XToCxJlGczUCiIoFLB7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="366548625"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="366548625"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 22:28:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="818919836"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="818919836"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Sep 2023 22:28:18 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 25 Sep 2023 22:28:18 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 25 Sep 2023 22:28:18 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.49) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 25 Sep 2023 22:28:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y2t0KfoiKQKjonT4I8wzQtCzv0zCFFdpuwipSlIclnrIOSA7hukIZFz3p1sRpUHbA72QEpFUc7YuIB5j+qqu2UnMOWBlht1NnPQRAVr+nmt+wDfUPONvj3M9belrOa+yKm8XSSQ4N9HsOgSYonY5RFPrhUgKpD+Iev3xH+k2h8itFuHZvNUClIp8YkQm3Z2EFeKjmiNgcHc459K84zULP0Hritelmjy3dRr86sp762ZB1G4QXbIgU55ESLckXHX15fET4S6MCYBdpIIWu1ZkLkhlmRngmULjm6iacwUs71SFbfFwT9l+3oIafen914DWQFMugL/NJ6KfBWHNus19Tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oACOxItz1sMA9epf1QWJqJJBHjAPJSfjwZua66ISpJ4=;
+ b=DCof8RgGr3I88LLgWurFz5/4hFjmNFxWl5UzleCdKQmz3tvlqLBHbz1u6AahLhliAnlFw1s5Id5hdokLYjnSqzzFQ9aIQg31QDtsa9D/ebamRm4FtvjJtssbJi3HOm2qkrYnCle6pvsOHGeb4Sjz2nwowf7IMMRQsdvpHUIQtW0zuKtGGXplQlkK74tSv6Mjcefknb5UKvxqmm9rA2YSb8avLsDzzJ/5Jsv7TZYZ3FG1eGo3Sc1GniTbDWX1LDGlcASxMsfQBOVxUlar0nWxGlvbrITaNGjTBdugs6cfz+xKVPUA1KkgR85Db+duXRjFjCSVNgHphZv+/UJQZLzYHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by PH8PR11MB7966.namprd11.prod.outlook.com (2603:10b6:510:25d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 05:28:15 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Tue, 26 Sep 2023
+ 05:28:15 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <ZRGN0DkJ/MHsYloz@pc636>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230926052158epcms1p7fd7f3e3f523e5209977d3f5c62e85afa@epcms1p7>
-Date:   Tue, 26 Sep 2023 14:21:58 +0900
-X-CMS-MailID: 20230926052158epcms1p7fd7f3e3f523e5209977d3f5c62e85afa
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmnm5ZllCqwb6HYhZz1q9hszj/4Beb
-        xekJi5gset+/YrK4vGsOm8W9Nf9ZLe58m8dusfoiiwOHx85Zd9k9Nq/Q8tj0aRK7x4kZv1k8
-        3u+7yubRt2UVo8fnTXIB7FHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJ
-        uam2Si4+AbpumTlANykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCswK9IoTc4tL
-        89L18lJLrAwNDIxMgQoTsjNm3f7BXrBRuWLCrvPsDYxnpboYOTkkBEwkZl67yNTFyMUhJLCD
-        UeL/3h4gh4ODV0BQ4u8OYRBTWCBcYuOecpByIQF5ibNbGhhBbGEBbYlTKy8yg9hsApoSXRe2
-        sIPYIgLqEg8f/GQGGckscJpJonPfdmaIXbwSM9qfskDY0hLbl29lBJnPKaAqcW5rMURYVOLm
-        6rfsMPb7Y/MZIWwRidZ7Z6HGCEo8+LkbKi4lcaZtCdTIYon1a64zQdg1Ekef7IeKm0s0vF3J
-        BmLzCvhKvPvcxQaylgVo7dHN5RAlLhLHD50DK2EGenH72znMICXMQG+t36UPUaIosfP3XEaI
-        Ej6Jd197WGGe2jHvCdRWZYmP3y6APSUhICkxYZc5RNhDYufTlayQMN7FJNE68zrzBEaFWYhg
-        noVk8SyExQsYmVcxiqUWFOempxYbFpjAYzY5P3cTIzhtalnsYJz79oPeIUYmDsZDjBIczEoi
-        vL+e8aUK8aYkVlalFuXHF5XmpBYfYjQF+ngis5Rocj4wceeVxBuaWBqYmBmZWBhbGpspifMe
-        e9WbIiSQnliSmp2aWpBaBNPHxMEp1cBk5HV700OtFQUV2a5dmWrFf/R39TDP2Lq+0OhT4M3D
-        pi+e8/Z4m1g89ruzcf2hYiWPRJFH6rGzp8+wrpz1gj32oekv5UdbNb6tLw+bKx49k3PprRfG
-        niy+2UzCe597Tuko95zKrWdSNueG04b0C16r69pSbTOWc+tIKAYrN7WpaDies99zUzkmblNB
-        feWjn4faV3s9zlrkObtct+t82vLaypNr8ng5Pa+lPP7auXOHjsCxGJ6U5iMMurskV2WteCXI
-        Pr8u9enPUHvz+h6hW5GPyh79TBCd8DNJat2fW4XWVza/vHVBepNYTsym+KKuyokeXQdzmNsP
-        Op1eFrpw13ym4/delP37antkxoeg+3eVWIozEg21mIuKEwGO5+evJAQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65
-References: <ZRGN0DkJ/MHsYloz@pc636> <ZQ1ha+wIaTJ9+aU8@MiWiFi-R3L-srv>
-        <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
-        <ZQ1ftk5yDBv+p6A4@MiWiFi-R3L-srv>
-        <20230925105154epcms1p782c335c2355f39a9b583489c56e972f6@epcms1p7>
-        <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p7>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+Subject: RE: [PATCH 1/6] iommu: Add new iommu op to create domains owned by
+ userspace
+Thread-Topic: [PATCH 1/6] iommu: Add new iommu op to create domains owned by
+ userspace
+Thread-Index: AQHZ6ttG+pOroHJpaUK6j3B03cTda7AsnJDg
+Date:   Tue, 26 Sep 2023 05:28:13 +0000
+Message-ID: <BN9PR11MB5276A8E4869C48A2419CBA5F8CC3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230919092523.39286-1-yi.l.liu@intel.com>
+ <20230919092523.39286-2-yi.l.liu@intel.com>
+In-Reply-To: <20230919092523.39286-2-yi.l.liu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH8PR11MB7966:EE_
+x-ms-office365-filtering-correlation-id: 2bb9f8f5-d1e7-48d8-22a5-08dbbe516135
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CZG6LfJGd3KYz+4Wy1dffgOu0HddpY9n8fT5saXsJ6btanr0fLv46rcEPHmrHyJGZdqRZowEACKr/p8SSnVHSfSaIWOw6IWAa0Bc67oTqN/TPol395XS3liRT5/HTKGPAyRtruj5rDwIm6i4XC/BGeDQGuovjDPqwhR6fOHJ/Xi91BwUbcT1H1Dad6xIajEPD5dwMlGs6l3wXmZCBTczDlrwgfg63l680muMe2oDR5n4v9ZAzkiT7X62brV5oUH/vXc6d6JG70j4o4eBUcK6b1+8mVnupHcUeu2NoQZM0tr0qKuvsB1p8mFUmI+Esn0kQABJJ8gzXNLndL8KW32jdfgBXztP3Yfn4D9NUwlDddYsRGoOjz9R4rSQlO0/DbdJKE09jQio07GHmyqo9TctoaPYQPUIwLuiXQfEAxtnYkOTIwPxzYjicEczuCsi6SNhCqv8i1mFNmrnRkdMTLQSulskL2JQKlT3+4wFrE34VyOoP1fp6E3uw03YaYNpBjFRp5Ptqx9mJQxXpNsX6WCZnjl6EzGuqEwO0xHRMYzCB1wXHJXOvfN3vT6V7P6YAbut2ClKf/Pf4xjEv4KrR8RkQj8xhtYU8vRF1roXRiFX6PRs6G9UrLd48gQiQYcJf4a+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(346002)(136003)(366004)(230922051799003)(186009)(1800799009)(451199024)(38070700005)(33656002)(38100700002)(82960400001)(86362001)(55016003)(66476007)(2906002)(52536014)(66556008)(316002)(41300700001)(5660300002)(478600001)(76116006)(54906003)(64756008)(66446008)(110136005)(66946007)(6506007)(7696005)(7416002)(71200400001)(122000001)(9686003)(83380400001)(4326008)(8936002)(8676002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AaRtiRwTEQ3ajEOHmGENwsHBOTVC+SLM2frqmvmMTOvBJ2eGu4W+7GqQRcU3?=
+ =?us-ascii?Q?oOMLVTwwKslqTCweYxjEtJN7oHi8Pc2ytfmQ9/GV8r02s7OlmbaWaZ2IysLR?=
+ =?us-ascii?Q?kotI1fcW8XrqZeBx510KS4Ki4tbQW8HpnUoIsYBXCO/F0YkXWNm7O9vjBHLn?=
+ =?us-ascii?Q?viU1zClF2hfu/lHZLs+sXfABY+vAGXAwhu8a5usP3SU03SYQPuxaH4qIrfMe?=
+ =?us-ascii?Q?Ww8U06r2vMOT3f8N5vO/OCCsRlHVBpoNnsUWF7F6kx52A9Ab4zIlleO6YcXH?=
+ =?us-ascii?Q?SP+ZiY8WZA8omBFxv6tzVODSy7TP73a0fo0fF0RA6AHTODQ9fsJMnc6wSD7g?=
+ =?us-ascii?Q?m4wsIvjVgcggRcgm28tFbzwzw889jcAW9GeiVyjyalvi4et8jAyBFEiniHL+?=
+ =?us-ascii?Q?+f7nYJT/Y1onUTVnHvEJGN61n0KIlZdadkPINOkH0tlL6RLD1h5lI5OiBoWS?=
+ =?us-ascii?Q?igPol+8ZsEHiUbSAJt8PmKOUvvAW6FcLC2tZWDvvFhLnHp0k1m+UekZUaHIc?=
+ =?us-ascii?Q?O+5Iq778Ok2axvgOWiHNRGJJUWS/p26VdY+UGpV6dbHlvjJwsBNeJxDTRNdV?=
+ =?us-ascii?Q?K8MvJoZixqxarvrEAwN9jqZi3GAybVri2KsyO4HoJHdanLSz3mYAkAgwrC5l?=
+ =?us-ascii?Q?AcfGGEQOGlXX+cgKt/KTIYAYwMOjUlZhC+x4puifmSid209UltJ+so93DiWA?=
+ =?us-ascii?Q?Co9NooNb/l3goM6JbnFJ29IxsR4Nou1OF+BMERYoeb2hYwMsAc9rG34fQAmg?=
+ =?us-ascii?Q?hHHokVS/BjUxAWejBPY0aYpUQOG2BIgt4mSKxU3o8i4c8bKNuvPVgVs8sBL1?=
+ =?us-ascii?Q?uVjI/Cz5SNglvszzFbxrbil+wU6pYQylFxI/iRvekbkTr4HXuXQUpGNMtkng?=
+ =?us-ascii?Q?uJmS2D4GXdypOHDsPu9yypmUJn/DFizSb9xZS8ySK1b2WzkUH3dLTALxdkKi?=
+ =?us-ascii?Q?ulLAntMnuztp3FczTGcglgJNOQkheH13fM6Qz4VykXWu79QYO4p3HSZi6Qgn?=
+ =?us-ascii?Q?Y1B3lwaatw29WYUYAn3TGPRum+zkzWqmNXmaQfjc7MU5rGp514B+sr6zDfRX?=
+ =?us-ascii?Q?RbRFlySA45tNJvKs2E8eIJfz8UAM558VYa2Jgm0n0hkg2iJU0SRmHi5vbY9T?=
+ =?us-ascii?Q?G2myHFXWaJONzELBbCw02KPgLMpYmr9XAkNdroo4uv2l17vLuIjNCZyqjRV9?=
+ =?us-ascii?Q?g3oCr5JdTMt+eRHdTfsJxh5GquZwQSlHF7NA+9+tFXfKGsA/uct43HjLVc5b?=
+ =?us-ascii?Q?AN08fh3a/z8XmdEB4f6YuBEShvUqNZrEmlPmWxksM839cfZsUXWtH81jIa2r?=
+ =?us-ascii?Q?w5HaEjAWWR9rujrUCX/sr8CE1MXjExiIJZdAAaQpFbsLc0F8STlu2QcYzR9P?=
+ =?us-ascii?Q?mc0i71cKBw9WJCu9WrRUxRwPOt7ZeZHnlb0Dgin3YByYcRtiGlDgcNTAOmfq?=
+ =?us-ascii?Q?1WDe7SwkaMStC1Gzhxn3UqrBuYsBTIf10BcDgLiq6I2/yBsbh4cKwHVb45vz?=
+ =?us-ascii?Q?vopnUgzUidy2z4pQkbVbgHYNQqX2A9m4qd2v5CQ4L7ofOqolD5kWJqwIceZ/?=
+ =?us-ascii?Q?CSKj29npVhB/jT5X0zQ/A0LKvByz1cQMDTlE30oG?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bb9f8f5-d1e7-48d8-22a5-08dbbe516135
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2023 05:28:13.5345
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v9gIp4YUucOqUdz0p8hzyprsN3Hd+wEqAEhCP3l/afr20YElLBCY1B4obWt+4s8AQeTZCaYv6IiTX2z6mXJitw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7966
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Sep 25, 2023 at 07:51:54PM +0900, Jaeseon Sim wrote:
-> > > On 09/22/23 at 05:34pm, Baoquan He wrote:
-> > > > Hi Jaeseon,
-> > Hello Baoquan,
-> > > > 
-> > > > On 09/22/23 at 03:27pm, Jaeseon Sim wrote:
-> > > > > There's panic issue as follows when do alloc_vmap_area:
-> > > > > 
-> > > > > Kernel panic - not syncing: kernel: panic_on_warn set ...
-> > > > > 
-> > > > > page allocation failure: order:0, mode:0x800(GFP_NOWAIT)
-> > > > > Call Trace:
-> > > > > warn_alloc+0xf4/0x190
-> > > > > __alloc_pages_slowpath+0xe0c/0xffc
-> > > > > __alloc_pages+0x250/0x2d0
-> > > > > new_slab+0x17c/0x4e0
-> > > > > ___slab_alloc+0x4e4/0x8a8
-> > > > > __slab_alloc+0x34/0x6c
-> > > > > kmem_cache_alloc+0x20c/0x2f0
-> > > > > adjust_va_to_fit_type
-> > > > > __alloc_vmap_area
-> > > > > alloc_vmap_area+0x298/0x7fc
-> > > > > __get_vm_area_node+0x10c/0x1b4
-> > > > > __vmalloc_node_range+0x19c/0x7c0
-> > 
-> > To Uladzislau,
-> > Sorry. The path is as below.
-> > 
-> > Call trace:
-> >  alloc_vmap_area+0x298/0x7fc
-> >  __get_vm_area_node+0x10c/0x1b4
-> >  __vmalloc_node_range+0x19c/0x7c0
-> >  dup_task_struct+0x1b8/0x3b0
-> >  copy_process+0x170/0xc40
-> > 
-> > > > > 
-> > > > > Commit 1b23ff80b399 ("mm/vmalloc: invoke classify_va_fit_type() in
-> > > > > adjust_va_to_fit_type()") moved classify_va_fit_type() into
-> > > > > adjust_va_to_fit_type() and used WARN_ON_ONCE() to handle return
-> > > > > value of adjust_va_to_fit_type(), just as classify_va_fit_type()
-> > > > > was handled.
-> > > > 
-> > > > I don't get what you are fixing. In commit 1b23ff80b399, we have
-> > >                                    ~~ s/In/Before/, typo
-> > > > "if (WARN_ON_ONCE(type == NOTHING_FIT))", it's the same as the current
-> > > > code. You set panic_on_warn, it will panic in old code before commit
-> > > > 1b23ff80b399. Isn't it an expected behaviour?
-> > There is a call path which didn't panic in old code, but does on the current.
-> > 
-> > static __always_inline int adjust_va_to_fit_type()
-> > 
-> > } else if (type == NE_FIT_TYPE) {
-> > 	lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
-> > 	if (!lva)
-> > 		return -1;
-> > 
-> >
-> We do not have above code anymore:
-Sorry, I tried to say it in a simplified way and it caused a misunderstanding.
+> From: Liu, Yi L <yi.l.liu@intel.com>
+> Sent: Tuesday, September 19, 2023 5:25 PM
+>=20
+> @@ -235,6 +235,13 @@ struct iommu_iotlb_gather {
+>   *           use. The information type is one of enum iommu_hw_info_type
+> defined
+>   *           in include/uapi/linux/iommufd.h.
+>   * @domain_alloc: allocate iommu domain
 
-<snip>
-static __always_inline int
-adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
-		      struct vmap_area *va, unsigned long nva_start_addr,
-		      unsigned long size)
+Given now we have two @alloc ops it'd be clearer to also update the
+comment here so the explanation for @domain_alloc_user() is easier
+to be understood, e.g.:
 
-	} else if (type == NE_FIT_TYPE) {
-		/*
-		 * Split no edge of fit VA.
-		 *
-		 *     |       |
-		 *   L V  NVA  V R
-		 * |---|-------|---|
-		 */
-		lva = __this_cpu_xchg(ne_fit_preload_node, NULL);
-		if (unlikely(!lva)) {
-			/*
-			 * For percpu allocator we do not do any pre-allocation
-			 * and leave it as it is. The reason is it most likely
-			 * never ends up with NE_FIT_TYPE splitting. In case of
-			 * percpu allocations offsets and sizes are aligned to
-			 * fixed align request, i.e. RE_FIT_TYPE and FL_FIT_TYPE
-			 * are its main fitting cases.
-			 *
-			 * There are a few exceptions though, as an example it is
-			 * a first allocation (early boot up) when we have "one"
-			 * big free space that has to be split.
-			 *
-			 * Also we can hit this path in case of regular "vmap"
-			 * allocations, if "this" current CPU was not preloaded.
-			 * See the comment in alloc_vmap_area() why. If so, then
-			 * GFP_NOWAIT is used instead to get an extra object for
-			 * split purpose. That is rare and most time does not
-			 * occur.
-			 *
-			 * What happens if an allocation gets failed. Basically,
-			 * an "overflow" path is triggered to purge lazily freed
-			 * areas to free some memory, then, the "retry" path is
-			 * triggered to repeat one more time. See more details
-			 * in alloc_vmap_area() function.
-			 */
-			lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
-			if (!lva)
-				return -1;
-		}
-<snip>
+@domain_alloc: allocate and return an iommu domain if success. Otherwise
+               NULL is returned. The domain is not fully initialized until
+               the caller iommu_domain_alloc() returns.
 
-Above allocation fail will meet WARN_ON_ONCE in the current kernel now.
-Should It be handled by alloc_vmap_area()?, as you described in a comment.
+> + * @domain_alloc_user: Allocate an iommu domain corresponding to the
+> input
+> + *                     parameters like flags defined as enum
+> iommufd_ioas_map_flags
+> + *                     in include/uapi/linux/iommufd.h. Different from t=
+he
 
-Thanks!
-Jaeseon
+"to the input parameters as defined in include/uapi/linux/iommufd.h".
 
-> 
-> <snip>
-> commit 82dd23e84be3ead53b6d584d836f51852d1096e6
-> Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Date:   Thu Jul 11 20:58:57 2019 -0700
-> 
->     mm/vmalloc.c: preload a CPU with one object for split purpose
-> 
-> <snip>
-> 
-> Which kernel are you testing?
+> + *                     domain_alloc op, it requires iommu driver to full=
+y
+> + *                     initialize a new domain including the generic iom=
+mu_domain
 
-I'm currently testing v6.1. 
-The panic occurred during power on/off test.
-> 
-> Thanks!
-> 
-> --
-> Uladzislau Rezki
+"Unlike @domain_alloc, it is called only by iommufd and must fully initiali=
+ze
+the new domain before return".
+
+*domain* here already refers to the generic iommu_domain struct.
+
