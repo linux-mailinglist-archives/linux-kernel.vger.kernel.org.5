@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C50407AEB15
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002D57AEB1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjIZLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        id S230059AbjIZLM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIZLL2 (ORCPT
+        with ESMTP id S229556AbjIZLM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:11:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BD9E5;
-        Tue, 26 Sep 2023 04:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695726682; x=1727262682;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bcmQvoUINisqkhRF3+IALIewrp6wbQqm3oJ9C0S/4TA=;
-  b=RXnBsy8mpST3Z2ZMBNgSyldOTxXPkdQwYo2ZkhsYHksfvBDVXkswpOcp
-   fE9042hAaYNEViOFgvh3U97Xgwuk/5NVhKmpi4/7z06JZo71HRYwR0cqp
-   kcWc5vM8ZMjVusgz778KS7qHK3mxpVqhMoNZk1YSctj+ijgAFD/JzpKUQ
-   2K8e9m3ljY9fyGFxFoRAdd1k11Okav+WaYQFeO/bT5CX3z4xam1tBmOA5
-   wcIPGu1Zik0tL6Q0bYmR7Rfye0NEGJuwAOxPVUL0XeuJucC1g9ZJZlKt+
-   UDV84KWHzPI6+XJBWOEyEn3b1dSY5xZu6jJkrnnS9tzdfqRVgBz35VDNl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="448039810"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="448039810"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:11:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="698432385"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="698432385"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:11:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ql5yF-00000000aM0-0723;
-        Tue, 26 Sep 2023 14:11:15 +0300
-Date:   Tue, 26 Sep 2023 14:11:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 4/5] gpio: xilinx: Replace bitmap_bitremap() calls
-Message-ID: <ZRK8Uq699oeSOOg6@smile.fi.intel.com>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-5-andriy.shevchenko@linux.intel.com>
- <ZRK1PA2vZBdfAozG@sol>
+        Tue, 26 Sep 2023 07:12:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0664FE5;
+        Tue, 26 Sep 2023 04:12:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A136C433C8;
+        Tue, 26 Sep 2023 11:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695726769;
+        bh=RCT3ksFfxXJUFEFoooNTpXtMGpORVm3wt6SDo0yzwmE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PnSQ4fEY9EzdNCHhk5QjY7a7Lr6P7QiEj7kurskRLU+lPsoG8n2MMxSPQuWYUfus/
+         6JfLmXgWJinhzUbLWYvfRgn9PGR3JOc76sxGakLjyXP9cPSSK71LGuZ/Atco6Nq5DE
+         SJJBmHOiqR4C1E6XlOebea00znq68BFinA5mj+gC11ziLIwtl02ECX1Ye76uabp/SH
+         hbppwmjIlZ/tMX6DPMbqPfO6rf7AntkbdRujTam9AO/Mcn1SzGi2ItClO+iSI0sDmU
+         fy+pF5ntNp/g5rRWMSgXeVzQsNUxTgfV3JKY/tYhqAJf/K5kxJl7i0rV4j5n/xX1mJ
+         3TojyEDcyRcDg==
+Date:   Tue, 26 Sep 2023 12:12:45 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] riscv: fix out of bounds in walk_stackframe
+Message-ID: <20230926-shorter-acetone-25a93d7ab27c@spud>
+References: <0000000000000170df0605ccf91a@google.com>
+ <20230926105949.1025995-2-twuufnxlz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="MisKy8cQA+A+qNEs"
 Content-Disposition: inline
-In-Reply-To: <ZRK1PA2vZBdfAozG@sol>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230926105949.1025995-2-twuufnxlz@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 06:41:00PM +0800, Kent Gibson wrote:
-> On Tue, Sep 26, 2023 at 08:20:06AM +0300, Andy Shevchenko wrote:
-> > We have sparse and dence masks of the line mappings based on
-> 
-> dense
-> 
-> > the view point (Linux numbering or hardware numbering). Since
-> > the Linux side uses sequential bits for the mask, we can simply
-> > convert a Linux number to the hardware one and vise versa by
-> 
-> vice
-> 
-> > counting set bits in the respective mask. Hence replace
-> > bitmap_bitremap() calls by simpler equivalents.
-> > 
-> > With this done the dence mask is not needed and thus dropped.
-> 
-> And dense again.
 
-Thank you, Kent, I really appreciate your help with my poor English,
-nevertheless it would be nice if you can look at the last patch and
-maybe even test it, so we have a bit of confidence that it works
-as expected.
+--MisKy8cQA+A+qNEs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(The spelling will be fixed in the next version.)
+Hey Edward,
 
--- 
-With Best Regards,
-Andy Shevchenko
+Where did you come up with the CC list for this patch from? Please run
+get_maintainer.pl on your patches and CC the output. You've not CCed any
+relevant developers on this mail :(
 
+On Tue, Sep 26, 2023 at 06:59:50PM +0800, Edward AD wrote:
+> Increase the check on the frame after assigning its value. This is to pre=
+vent=20
+> frame access from crossing boundaries.
+>=20
+> Reported-and-tested-by: syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail=
+=2Ecom
 
+Please also add a Fixes: tag & a Closes: tag with a link to the report
+when you do so.
+
+Thanks,
+Conor.
+
+> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> ---
+>  arch/riscv/kernel/stacktrace.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrac=
+e.c
+> index 64a9c093aef9..53bd18672329 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -54,6 +54,8 @@ void notrace walk_stackframe(struct task_struct *task, =
+struct pt_regs *regs,
+>  			break;
+>  		/* Unwind stack frame */
+>  		frame =3D (struct stackframe *)fp - 1;
+> +		if (!virt_addr_valid(frame))
+> +			break;
+>  		sp =3D fp;
+>  		if (regs && (regs->epc =3D=3D pc) && (frame->fp & 0x7)) {
+>  			fp =3D frame->ra;
+> --=20
+> 2.25.1
+>=20
+
+--MisKy8cQA+A+qNEs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRK8rQAKCRB4tDGHoIJi
+0kqjAP90g4/G1TGVcQIXrpJ/IpCj6h9HaqBw4HfNIj6uQ/YO8gD/WqV+EnH6Ri0n
+4R16KfJi3y1+MrAgywo2gRnpSYCSfQA=
+=OI2P
+-----END PGP SIGNATURE-----
+
+--MisKy8cQA+A+qNEs--
