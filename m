@@ -2,218 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 593157AED3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE6A7AED41
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjIZMxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
+        id S229827AbjIZMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233739AbjIZMxo (ORCPT
+        with ESMTP id S230125AbjIZMyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:53:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F49C9;
-        Tue, 26 Sep 2023 05:53:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0A2C433C7;
-        Tue, 26 Sep 2023 12:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695732817;
-        bh=bis2VMKHfbkY+mqA/mrUJLJ6UGG4PPEWntsQJucYsDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qBnctzk0hXAsV9OcjQkOyyekh1qZoXKVwFEeG5AtApG3SUmdftsRptz2PTX1pU0UW
-         bS3NNxYiSDX/+LBthO3WQoG2MG9ISMX9nb2B+X/rzSJzTpqbTFtlQyfH0RLZrsmcLY
-         3UlAcNFyIps2wDqKcfNoSxqMlOKvVvOjL+ddmsEGE8XMAy64wLRzEdBPeSGSDFrz84
-         kqCBvtWtAIo2F2IOJ+2fC8FZ2jWr+SDJ2Je+YnKKXZuDVK19XdXB05lXfDcMLh5LpR
-         ed/boMquYTP2U7K++lYjTrqUvT/EBfYFmNrVT6uWPL6r9wtwu1qDFP+0grxLWW5cUI
-         IlNZ7cOUXFZeg==
-Date:   Tue, 26 Sep 2023 13:53:31 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>,
-        wuxy23@lenovo.com, luolm1@lenovo.com,
-        hung poyu <poyu_hung@himax.corp-partner.google.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
- device
-Message-ID: <20230926-reverence-unlit-d0027225cc43@spud>
-References: <20230919-cc4646dbfb953bd34e05658c@fedora>
- <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
- <20230922-unclothed-bottom-5531329f9724@spud>
- <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
- <20230922-removable-footwork-f1d4d96d38dd@spud>
- <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
- <20230925-cod-vacancy-08dc8d88f90e@wendy>
- <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
- <20230926-action-sludge-ec8e51fdd6d4@spud>
- <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
+        Tue, 26 Sep 2023 08:54:13 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9B7116;
+        Tue, 26 Sep 2023 05:54:06 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rw06x2LHmz4f3lfR;
+        Tue, 26 Sep 2023 20:54:01 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgD3jd1p1BJlyCfFBQ--.58358S3;
+        Tue, 26 Sep 2023 20:54:03 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] md: factor out a new helper to put mddev
+To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, song@kernel.org, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230926025827.671407-1-yukuai1@huaweicloud.com>
+ <20230926025827.671407-2-yukuai1@huaweicloud.com>
+ <20230926144536.0000017d@linux.intel.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <3d304e39-60c1-8f3c-f8b3-de8850d70b82@huaweicloud.com>
+Date:   Tue, 26 Sep 2023 20:54:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aKiteRl7FCx1h6xV"
-Content-Disposition: inline
-In-Reply-To: <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230926144536.0000017d@linux.intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3jd1p1BJlyCfFBQ--.58358S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1kWFW5WF18CFWxJw4Dtwb_yoW8uw1xpF
+        WFga98Cr1UXry5X39ruanxu3WYgw1v9rWDKryfK3s8ZFyDurn3W3WFgw45Ww1kCa1fXan0
+        v3WUGa4Uur18CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---aKiteRl7FCx1h6xV
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ÔÚ 2023/09/26 20:45, Mariusz Tkaczyk Ð´µÀ:
+> On Tue, 26 Sep 2023 10:58:26 +0800
+> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> 
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> There are no functional changes, the new helper will still hold
+>> 'all_mddevs_lock' after putting mddev, and it will be used to simplify
+>> md_seq_ops.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/md.c | 18 +++++++++++++++---
+>>   1 file changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 10cb4dfbf4ae..a5ef6f7da8ec 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -616,10 +616,15 @@ static inline struct mddev *mddev_get(struct mddev
+>> *mddev)
+>>   static void mddev_delayed_delete(struct work_struct *ws);
+>>   
+>> -void mddev_put(struct mddev *mddev)
+>> +static void __mddev_put(struct mddev *mddev, bool locked)
+>>   {
+>> -	if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+>> +	if (locked) {
+>> +		spin_lock(&all_mddevs_lock);
+>> +		if (!atomic_dec_and_test(&mddev->active))
+>> +			return;
+> 
+> It is "locked" and we are taking lock? It seems weird to me. Perhaps "do_lock"
+> would be better? Do you meant "lockdep_assert_held(&all_mddevs_lock);"
 
-On Tue, Sep 26, 2023 at 05:52:39PM +0800, yang tylor wrote:
-> On Tue, Sep 26, 2023 at 5:02=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrote:
-> > > On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor.dooley@mi=
-crochip.com> wrote:
-> > > >
-> > > > On Mon, Sep 25, 2023 at 09:44:21AM +0800, yang tylor wrote:
-> > > > > On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kern=
-el.org> wrote:
-> > > > > >
-> > > > > > On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
-> > > > > > > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@k=
-ernel.org> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
-> > > > > > > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <con=
-or@kernel.org> wrote:
-> > > > > > > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wr=
-ote:
-> > > > > > > >
-> > > > > > > > > > > The behavior of "himax,boot_time_fw_upgrade" seems no=
-t stable and
-> > > > > > > > > > > should be removed. "himax,fw_in_flash", I use the ker=
-nel config for
-> > > > > > > > > > > user to select.
-> > > > > > > > > >
-> > > > > > > > > > That seems like a bad idea, we want to be able to build=
- one kernel that
-> > > > > > > > > > works for all hardware at the same time.
-> > > > > > > > > >
-> > > > > > > > > I see, so I should take that back?
-> > > > > > > > > I'll explain more about it.
-> > > > > > > >
-> > > > > > > > Are there particular ICs where the firmware would always be=
- in flash and
-> > > > > > > > others where it would never be? Or is this a choice made by=
- the board or
-> > > > > > > > system designer?
-> > > > > > > >
-> > > > > > > Most cases it's about the system designer's decision. But som=
-e ICs may be forced
-> > > > > > > to use flash because of its architecture(multiple IC inside, =
-need to
-> > > > > > > load firmware to
-> > > > > > > multiple IC's sram by master IC). But if there is no limitati=
-on on
-> > > > > > > this part, most system
-> > > > > > > designers will prefer flashless.
-> > > > > >
-> > > > > > Forgive me if I am not understanding correctly, there are some =
-ICs that
-> > > > > > will need to load the firmware from flash and there are some wh=
-ere it
-> > > > > > will be a decision made by the designer of the board. Is the fl=
-ash part
-> > > > > > of the IC or is it an external flash chip?
-> > > > > >
-> > > > >
-> > > > > Both are possible, it depends on the IC type. For TDDI, the IC is=
- long
-> > > > > and thin, placed on panel PCB, flash will be located at the exter=
-nal
-> > > > > flash chip. For the OLED TP, IC is usually placed at FPC and its =
-flash
-> > > > > is embedded, thus the IC size is large compared to TDDI. But from=
- the
-> > > > > driver's perspective either external flash or embedded flash, the=
- IC
-> > > > > itself will load firmware from flash automatically when reset pin=
- is
-> > > > > released. Only if firmware is loading from the host storage syste=
-m,
-> > > > > the driver needs to operate the IC in detail.
-> > > >
-> > > >
-> > > > Since there are ICs that can use the external flash or have it load=
-ed
-> > > > from the host, it sounds like you do need a property to differentia=
-te
-> > > > between those cases.
-> > > Yep.
-> > >
-> > > > Is it sufficient to just set the firmware-name property for these c=
-ases?
-> > > > If the property exists, then you know you need to load firmware & w=
-hat
-> > > > its name is. If it doesn't, then the firmware either isn't needed or
-> > > > will be automatically loaded from the external flash.
-> >
-> > > We have a default prefix firmware name(like himax_xxxx.bin) in the dr=
-iver code.
-> >
-> > How do you intend generating the name of the firmware file? I assume the
-> > same firmware doesn't work on every IC, so you'll need to pick a
-> > different one depending on the compatible?
-> >
-> If considering a firmware library line-up for all the incoming panels
-> of this driver.
-> We would use PID as part of the file name. Because all the support panels=
- would
-> have a unique PID associated. Which will make the firmware name like
-> himax_xxx_{$PID}.bin. The problem is, we need to know PID before firmware=
- load
-> at no flash condition. Thus PID information is required in dts when
-> no-flash-flag
-> is specified.
+Yes, do_lock is a better name, true means this function will return with
+lock held.
+> 
+> Something is wrong here, we have two paths and in both cases we are
+> taking lock.
 
-Firstly, where does the "xxx" come from?
-And you're making it sound more like having firmware-name is suitable
-for this use case, given you need to determine the name of the file to
-use based on something that is hardware specific but is not
-dynamically detectable.
+No, in the first path, lock is held unconditionaly, that's what we
+expected in md_seq_show(); in the next path, lock will only be held if
+active is decreased to 0.
 
 Thanks,
-Conor.
+Kuai
 
-> > > So we'll look for it when no-flash-flag is specified. In our experien=
-ce,
-> > > forcing a prefix firmware name helps the user to aware what firmware
-> > > they are dealing with.
->=20
-> If a more simple solution for no-flash condition is needed, as you mentio=
-ned,
-> specifying a firmware name in dts would be the best. Otherwise, a
-> no-flash-flag and
-> PID information needs to be added in dts.
+> 
+>> +	} else if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+>>   		return;
+>> +
+>>   	if (!mddev->raid_disks && list_empty(&mddev->disks) &&
+>>   	    mddev->ctime == 0 && !mddev->hold_active) {
+>>   		/* Array is not configured at all, and not held active,
+>> @@ -633,7 +638,14 @@ void mddev_put(struct mddev *mddev)
+>>   		 */
+>>   		queue_work(md_misc_wq, &mddev->del_work);
+>>   	}
+>> -	spin_unlock(&all_mddevs_lock);
+>> +
+>> +	if (!locked)
+>> +		spin_unlock(&all_mddevs_lock);
+> As above, I'm not sure if it is correct.
+> 
+> Thanks,
+> Mariusz
+> 
+> .
+> 
 
-
-
---aKiteRl7FCx1h6xV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLUNAAKCRB4tDGHoIJi
-0lw1AQCtzcottmF2HEejKyT7ni6EWwqsANzf9Q45iBNCON4uqQEAi7ND92FhS7T+
-hlUuDk8lJPdWZlxT3WST5rvdB6qARgA=
-=7PKF
------END PGP SIGNATURE-----
-
---aKiteRl7FCx1h6xV--
