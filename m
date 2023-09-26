@@ -2,98 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CC27AEB7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0E77AEB81
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbjIZLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        id S232542AbjIZLcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjIZLbD (ORCPT
+        with ESMTP id S229726AbjIZLcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:31:03 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E134FC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 04:30:54 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40535597f01so85306865e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 04:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695727853; x=1696332653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PZ8NWxX3XZ8O0amBBB9fjrfirMGFwy+I6ljBSmFsWZ8=;
-        b=O+p4iHf+mYTPSokCOVLWZBbouNEqzZvpLJUSYs//oCs2QjVgSUYhKIxmOgFCJGfJ1e
-         x9QKfVdnXAAKSNSuIuiajKbL6ypvqMstZHiS9aQXMSKeP3FGoP+POmr1Cgv5VCnd9z1P
-         JWogQISp57s4HqnMv5/Vlt32qN0yIKsi7OMx6W0EvrHw/VILe0dykwTaal8Wm86e1fy8
-         JtBnCZaHdSDD/fETAWftJI1Yz+ayZXP9nCVfCuPNoDdQsUQMVKifLx4YaMCbNGRZB3RE
-         n1KFhOZ/P/p3CItvup0JEwFmKAQWzMD7RFGW74LLM7dIpx6zm2YekiF0Jv312MRPYub1
-         dDgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695727853; x=1696332653;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PZ8NWxX3XZ8O0amBBB9fjrfirMGFwy+I6ljBSmFsWZ8=;
-        b=udUpL0BwmlEoMWuHRyEyb5q+8hSffYLo8sCVxdl/7fVNzwY9jbHZPTI7fRqT+MLMYQ
-         0X+laFNBGqr3t3pZIDQRWAme3I5B9a5yen71gXZQcIrpRVjYCtqdzdMbwxPhaQVwaLZZ
-         x6Tu4ZEo3/MUMSUM4LOvwEHi47oAXPiCP2v2KYUIe+D5Vs/Uq+JMyc0vVbAJkcYv76Pt
-         qxAMyGwldTsRgB6nvIkMIdqDLQ5kmd02bR/8eIHe0WF1W44QKuqcAinF3r/UDxvgce40
-         KQQrptUstvmJSB/fNPaog9PSh1sbJ5XsPZVfX4FifVtWuekifQpWPr4GK4RmHHQjz+Ov
-         ay6Q==
-X-Gm-Message-State: AOJu0YwMEyS+ZumpuRoGAjGMy5kCCAqxrIFK8T0ZLnh6q8XM/ubrYRrK
-        KjiyU7ChtG2mylvH2VVUaYBwCw==
-X-Google-Smtp-Source: AGHT+IFI9K3AxHawduGMPqjVMpMA9N0DyVZyAB8v27F5UVumfSRQyiThJ7rvhwgT6V4mmVLgMuR3LA==
-X-Received: by 2002:a7b:cc85:0:b0:402:ee9e:ed98 with SMTP id p5-20020a7bcc85000000b00402ee9eed98mr8069517wma.34.1695727852468;
-        Tue, 26 Sep 2023 04:30:52 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id z9-20020a05600c114900b004058e6379d8sm6210637wmz.23.2023.09.26.04.30.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 04:30:52 -0700 (PDT)
-Message-ID: <e3dd5e8c-7bdd-8ff5-5f47-3e3b09f2d97c@linaro.org>
-Date:   Tue, 26 Sep 2023 13:30:51 +0200
+        Tue, 26 Sep 2023 07:32:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1975DE5;
+        Tue, 26 Sep 2023 04:31:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FE5C433C8;
+        Tue, 26 Sep 2023 11:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695727918;
+        bh=VavTLqfwPyOPHMccoFChylXmFFUo8P7qlBTJ/DhQa2w=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QV5akLE8cAQWKD8DSqGm3T3eFEgO4cqRzRheD5AXFFAGZjfZohBsvWfJu1z1/3Z/c
+         McIfFKUws9d2IsYbPe2f6eQwitPBCTmUwrW8L+rcqrGDI3l8T0XzHzZtyOCqGWUYl3
+         w9yvUNiNJnXyLQBL+qr9frj8ed4Fo9NlUQgF3sXPq3XAK2Q+XvDxjFA7kWCxz02wCB
+         M6lgQY/XvGaeVFTzeW0DTG+4CUYuOxJvvfSzYX+8mcxjGhE8Se9B9k/Tli5Xoi/Syt
+         4KxlktRKXg6+TLBEF1i51FpePUzCV8uSSX4n0yM25izPFG5e0Dv7apQz2Xy0gfGziV
+         T90RTT72Nl3gg==
+Message-ID: <54e79ca9adfd52a8d39e158bc246173768a0aa0d.camel@kernel.org>
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Date:   Tue, 26 Sep 2023 07:31:55 -0400
+In-Reply-To: <ZRIKj0E8P46kerqa@dread.disaster.area>
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+         <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
+         <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
+         <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
+         <ZRC1pjwKRzLiD6I3@dread.disaster.area>
+         <77d33282068035a3b42ace946b1be57457d2b60b.camel@kernel.org>
+         <ZRIKj0E8P46kerqa@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 6/9] ACPI: thermal: Untangle initialization and updates
- of the passive trip
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <5708760.DvuYhMxLoT@kreacher> <1942063.PYKUYFuaPT@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1942063.PYKUYFuaPT@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 20:43, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Separate the code needed to update the passive trip (in a response to a
-> notification from the platform firmware) as well as to initialize it
-> from the code that is only necessary for its initialization and cleanly
-> divide it into functions that each carry out a specific action.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, 2023-09-26 at 08:32 +1000, Dave Chinner wrote:
+> On Mon, Sep 25, 2023 at 06:14:05AM -0400, Jeff Layton wrote:
+> > On Mon, 2023-09-25 at 08:18 +1000, Dave Chinner wrote:
+> > > On Sat, Sep 23, 2023 at 05:52:36PM +0300, Amir Goldstein wrote:
+> > > > On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel=
+.org> wrote:
+> > > > >=20
+> > > > > On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
+> > > > > > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@ke=
+rnel.org> wrote:
+> > > > > > >=20
+> > > > > > > My initial goal was to implement multigrain timestamps on mos=
+t major
+> > > > > > > filesystems, so we could present them to userland, and use th=
+em for
+> > > > > > > NFSv3, etc.
+> > > > > > >=20
+> > > > > > > With the current implementation however, we can't guarantee t=
+hat a file
+> > > > > > > with a coarse grained timestamp modified after one with a fin=
+e grained
+> > > > > > > timestamp will always appear to have a later value. This coul=
+d confuse
+> > > > > > > some programs like make, rsync, find, etc. that depend on str=
+ict
+> > > > > > > ordering requirements for timestamps.
+> > > > > > >=20
+> > > > > > > The goal of this version is more modest: fix XFS' change attr=
+ibute.
+> > > > > > > XFS's change attribute is bumped on atime updates in addition=
+ to other
+> > > > > > > deliberate changes. This makes it unsuitable for export via n=
+fsd.
+> > > > > > >=20
+> > > > > > > Jan Kara suggested keeping this functionality internal-only f=
+or now and
+> > > > > > > plumbing the fine grained timestamps through getattr [1]. Thi=
+s set takes
+> > > > > > > a slightly different approach and has XFS use the fine-graine=
+d attr to
+> > > > > > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
+> > > > > > >=20
+> > > > > > > While we keep fine-grained timestamps in struct inode, when p=
+resenting
+> > > > > > > the timestamps via getattr, we truncate them at a granularity=
+ of number
+> > > > > > > of ns per jiffy,
+> > > > > >=20
+> > > > > > That's not good, because user explicitly set granular mtime wou=
+ld be
+> > > > > > truncated too and booting with different kernels (HZ) would cha=
+nge
+> > > > > > the observed timestamps of files.
+> > > > > >=20
+> > > > >=20
+> > > > > Thinking about this some more, I think the first problem is easil=
+y
+> > > > > addressable:
+> > > > >=20
+> > > > > The ctime isn't explicitly settable and with this set, we're alre=
+ady not
+> > > > > truncating the atime. We haven't used any of the extra bits in th=
+e mtime
+> > > > > yet, so we could just carve out a flag in there that says "this m=
+time
+> > > > > was explicitly set and shouldn't be truncated before presentation=
+".
+> > > > >=20
+> > > >=20
+> > > > I thought about this option too.
+> > > > But note that the "mtime was explicitly set" flag needs
+> > > > to be persisted to disk so you cannot store it in the high nsec bit=
+s.
+> > > > At least XFS won't store those bits if you use them - they have to
+> > > > be translated to an XFS inode flag and I don't know if changing
+> > > > XFS on-disk format was on your wish list.
+> > >=20
+> > > Remember: this multi-grain timestamp thing was an idea to solve the
+> > > NFS change attribute problem without requiring *any* filesystem with
+> > > sub-jiffie timestamp capability to change their on-disk format to
+> > > implement a persistent change attribute that matches the new
+> > > requires of the kernel nfsd.
+> > >=20
+> > > If we now need to change the on-disk format to support
+> > > some whacky new timestamp semantic to do this, then people have
+> > > completely lost sight of what problem the multi-grain timestamp idea
+> > > was supposed to address.
+> > >=20
+> >=20
+> > Yep. The main impetus for all of this was to fix XFS's change attribute
+> > without requiring an on-disk format change. If we have to rev the on-
+> > disk format, we're probably better off plumbing in a proper i_version
+> > counter and tossing this idea aside.
+> >=20
+> > That said, I think all we'd need for this scheme is a single flag per
+> > inode (to indicate that the mtime shouldn't be truncated before
+> > presentation). If that's possible to do without fully revving the inode
+> > format, then we could still pursue this. I take it that's probably not
+> > the case though.
+>=20
+> Older kernels that don't know what the flag means, but that should
+> be OK for an inode flag. The bigger issue is that none of the
+> userspace tools (xfs_db, xfs_repair, etc) know about it, so they
+> would have to be taught about it. And then there's testing it, which
+> likely means userspace needs visibility of the flag (e.g. FS_XFLAG
+> for it) and then there's more work....
+>=20
+> It's really not worth it.
+>=20
+>
+> I think that Linus's suggestion of the in-memory inode timestamp
+> always being a 64bit, 100ns granularity value instead of a timespec
+> that gets truncated at sample time has merit as a general solution.
+>=20
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Changing how we store timestamps in struct inode is a good idea, and
+reducing the effective granularity to 100ns seems reasonable, but that
+alone won't fix XFS's i_version counter, or the ordering problems that
+we hit with the multigrain series that had to be reverted.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> We also must not lose sight of the fact that the lazytime mount
+> option makes atime updates on XFS behave exactly as the nfsd/NFS
+> client application wants. That is, XFS will do in-memory atime
+> updates unless the atime update also sets S_VERSION to explicitly
+> bump the i_version counter if required. That leads to another
+> potential nfsd specific solution without requiring filesystems to
+> change on disk formats: the nfsd explicitly asks operations for lazy
+> atime updates...
+>=20
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Not exactly. The problem with XFS's i_version is that it also bumps it
+on atime updates. lazytime reduces the number of atime updates to
+~1/day. To be exactly what nfsd wants, you'd need to make that 0. I
+suppose you can work around it with noatime, but that has problems of
+its own.
 
+> And we must also keep in sight the fact that io_uring wants
+> non-blocking timestamp updates to be possible (for all types of
+> updates). Hence it looks to me like we have more than one use case
+> for per-operation/application specific timestamp update semantics.
+> Perhaps there's a generic solution to this problem (e.g.  operation
+> specific non-blocking, in-memory pure timestamp updates) that does
+> what everyone needs...
+
+--=20
+Jeff Layton <jlayton@kernel.org>
