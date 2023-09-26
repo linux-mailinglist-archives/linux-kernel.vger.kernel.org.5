@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8BE7AEEFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91FC7AEF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbjIZOwK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 10:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S234979AbjIZOzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjIZOwI (ORCPT
+        with ESMTP id S229726AbjIZOzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:52:08 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9824E6;
-        Tue, 26 Sep 2023 07:52:01 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a1d0fee86aso38019487b3.2;
-        Tue, 26 Sep 2023 07:52:01 -0700 (PDT)
+        Tue, 26 Sep 2023 10:55:01 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F84E6;
+        Tue, 26 Sep 2023 07:54:53 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6927528c01dso1396453b3a.0;
+        Tue, 26 Sep 2023 07:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695740093; x=1696344893; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eUg7RA9AWENnAEvjktXw0Q0VX8Hq+Jj1QvlmV23RBnY=;
+        b=ANYBt44+/IwPebLXa0MyLXFpGzZTlK96CifKfSLSiTzy4VHZMIpvbYqYapLkme9pIK
+         i9hfvr2HDCUoAivcMPVfYOtBg9YxmatI0FaNxfogqbQ2oqO9bLwCBN5BSN+6K4VCrvw4
+         DMtFgr4lkFtNLuXUdE8/5lw1nS1U/veY36+hirQYHVlj/WncU2OlP1d/qraBJsmpIM9g
+         xIIgBd3qjTvlCc6i3WQJleFcQN2b4iBAowQLsB/hMVpTJ4KO933boZixWGZjckOpb6wJ
+         Pv62Bsfa90S//khiikZGSDmYdrEv5zvzQ/QVOhA/0HWKIp3JhbIOc3cQXCe1dCKvGKiy
+         tM5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695739921; x=1696344721;
+        d=1e100.net; s=20230601; t=1695740093; x=1696344893;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GeJt2kDkJDREmJCiOFGlfnsT2tn2qZEwAJk2/hTfX/A=;
-        b=mKZfX09dwIW1CL9VUU/k7AKmdtn5FLzmKXuJ7CWMrrDzz3YcoFb1fG9Yt4QwHztf1C
-         kUKFwQDi0ad9YpxYk9vXLHy5iO+c+o+P/1zlOs1FVmc1UUSK34br7gpSV7ekKpOVMv69
-         Zedm9svPQ4pBc4QTvUlKn9Yax1OdO0U66WIBbhYdncbCup/BCdj46NosCizDgryZ9plX
-         klKxszuXMx2nWE9r0n6HOW2mJXVyZdAlpBkCo0AtF6kZaeqax5Lo5f/oDtR29WpJEm1I
-         oa86k5o+Fhoubdlt6Eag4RdKOyhwxgMEige5al2ayRUmKvjFS+3g9a+0BtulFgF3lVh6
-         fnKw==
-X-Gm-Message-State: AOJu0Yzy6dF7+7g4vrqcR3GzVFAYqNMvnBcCQTJ1TZNVHueuwyXvW1DZ
-        NtN82qrKmLT8MhjcgpG4aUpkKGQlIyEmdA==
-X-Google-Smtp-Source: AGHT+IHA9Kwv8b9RsIF/btN0XIzdlR77dl0BD83zmSktk2GgARGXV6ketpyUafK+4HljurNDkPRSKA==
-X-Received: by 2002:a81:5245:0:b0:59b:e72a:e40b with SMTP id g66-20020a815245000000b0059be72ae40bmr10149177ywb.6.1695739920709;
-        Tue, 26 Sep 2023 07:52:00 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id c7-20020a0dc107000000b0058e37788bf7sm3029319ywd.72.2023.09.26.07.51.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 07:51:58 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7f0a60a159so10242142276.0;
-        Tue, 26 Sep 2023 07:51:58 -0700 (PDT)
-X-Received: by 2002:a25:f211:0:b0:d86:b9d5:124d with SMTP id
- i17-20020a25f211000000b00d86b9d5124dmr5899090ybe.16.1695739918497; Tue, 26
- Sep 2023 07:51:58 -0700 (PDT)
+        bh=eUg7RA9AWENnAEvjktXw0Q0VX8Hq+Jj1QvlmV23RBnY=;
+        b=ON8iwdTgOESD/wRyhPcoD/jwUv03wQ2ic+WegpQFwQv4hNCz+otXLW3h5O21xjtIEC
+         XqraEnYAqGPl54+cqftPnNBFylWI3T3U64i8qHgu2UtGMaRuztY/OU4ivDScbkyDBkys
+         OXxLKnF2eK18xdWHh/QVm/5vD5C9ED6+/+QkLs8KFdBMK5s+XUcnSUg755meI3S8jycd
+         waWCVo+nAV4w//97Bfv7/lPnXPN7cyOaoM/NALAP8XzGCzq4YZQgFrb+bZC30ORwgxug
+         jwPFUKQPAu8LwB1ZbR/CDJNhKebc4fKSx/rezRYnFViU3Wldp8wTUwgNMxS9Fsa6OJ1+
+         nI8Q==
+X-Gm-Message-State: AOJu0YzcSAwgEVULvtjhdM/FBf5LVIfnOr+9n36MUTaVGoqVYS+bABSX
+        QlviNIWyULp4/n6IKFz9PlvksfGKTH7uz+HPNgQ=
+X-Google-Smtp-Source: AGHT+IGppKOdOzhPvyCP7PuxYQZxIRXjPesiJpWn0izFZt6xiJeROoTqfOhhXOSb2Cksmwz8hbvNIH79Vu8b2i/Q4a4=
+X-Received: by 2002:a05:6a20:8e19:b0:15a:f7fd:dd97 with SMTP id
+ y25-20020a056a208e1900b0015af7fddd97mr10735996pzj.2.1695740092640; Tue, 26
+ Sep 2023 07:54:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1694767208.git.geert+renesas@glider.be> <CAMuHMdWfBTKdXvZutg4LvWqBjuz-X=ZjzX0LKPqD=JxYuLoPRw@mail.gmail.com>
- <20230919152428.GB18426@pendragon.ideasonboard.com>
-In-Reply-To: <20230919152428.GB18426@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 26 Sep 2023 16:51:46 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUwBXQ2X6hOm+kcZOteDLMau8x5xUcRJr2zy9dXyVf9Xw@mail.gmail.com>
-Message-ID: <CAMuHMdUwBXQ2X6hOm+kcZOteDLMau8x5xUcRJr2zy9dXyVf9Xw@mail.gmail.com>
-Subject: Re: [GIT PULL] drm: renesas: shmobile: Atomic conversion + DT support
- (was: Re: [PATCH v4 00/41] drm: renesas: shmobile: Atomic conversion + DT support)
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+References: <20230926-vf610-gpio-v4-0-b57b7f6e8368@nxp.com> <20230926-vf610-gpio-v4-1-b57b7f6e8368@nxp.com>
+In-Reply-To: <20230926-vf610-gpio-v4-1-b57b7f6e8368@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 26 Sep 2023 11:54:41 -0300
+Message-ID: <CAOMZO5BXb02NAEd32vr5OoPXyL=Xm46FwomT2L7nDzLYZQGF1w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/7] dt-bindings: gpio: vf610: update gpio-ranges
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent, David, Daniel,
-
-On Tue, Sep 19, 2023 at 5:24 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Tue, Sep 19, 2023 at 04:28:40PM +0200, Geert Uytterhoeven wrote:
-> > The following changes since commit 0663e1da5ba8e6459e3555ac12c62741668c0d30:
-> >
-> >   drm/dp_mst: Tune down error message during payload addition
-> > (2023-09-18 16:38:21 +0300)
-> >
-> > are available in the Git repository at:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
-> > tags/shmob-drm-atomic-dt-tag1
-> >
-> > for you to fetch changes up to bfea0fa9052aa8d235b24957eb84d9ff20cb87b7:
-> >
-> >   drm: renesas: shmobile: Add DT support (2023-09-19 15:58:04 +0200)
-> >
-> > ----------------------------------------------------------------
-> > drm: renesas: shmobile: Atomic conversion + DT support
-> >
-> > Currently, there are two drivers for the LCD controller on Renesas
-> > SuperH-based and ARM-based SH-Mobile and R-Mobile SoCs:
-> >   1. sh_mobile_lcdcfb, using the fbdev framework,
-> >   2. shmob_drm, using the DRM framework.
-> > However, only the former driver is used, as all platform support
-> > integrates the former.  None of these drivers support DT-based systems.
-> >
-> > Convert the SH-Mobile DRM driver to atomic modesetting, and add DT
-> > support, complemented by the customary set of fixes and improvements.
-> >
-> > Link: https://lore.kernel.org/r/cover.1694767208.git.geert+renesas@glider.be/
-> >
-> > This PR is based on today's drm-misc/for-linux-next, to avoid a
-> > conflict with commit 775b0669e19f2e4a ("drm/shmobile: Convert to
-> > platform remove callback returning void") in drm-misc/for-linux-next
-
-Now drm-misc/for-linux-next (which is still at v6.5-rc2) has been
-merged into drm/drm-next (which is at v6.6-rc2), do you want me to
-rebase my branch to current drm/drm-next, or any other commit?
-
-Thanks!
-
-> > Thanks for pulling!
-> > ----------------------------------------------------------------
-> > Geert Uytterhoeven (36):
-> >       MAINTAINER: Create entry for Renesas SH-Mobile DRM drivers
+On Tue, Sep 26, 2023 at 12:28=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.c=
+om> wrote:
 >
-> I'm technically listed as the maintainer for this driver until Geert
-> takes over, so for this pull request,
+> From: Peng Fan <peng.fan@nxp.com>
 >
-> Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> i.MX93 supports four gpio-ranges at max. To fix below issue:
+> "gpio@43820080: gpio-ranges: [[30, 0, 84, 8], [30, 8, 66, 18],
+>  [30, 26, 34, 2], [30, 28, 0, 4]] is too long"
 >
-> And after that, shmobile won't need my ack to merge further changes :-)
+>  Update the gpio-ranges property
 >
-> This is very nice work Geert. I'm looking forward to dropping the
-> sh_mobile_lcdcfb driver.
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-Thank you!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
