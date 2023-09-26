@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3719E7AF1AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2647AF1B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjIZRVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S233756AbjIZRXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjIZRVd (ORCPT
+        with ESMTP id S232053AbjIZRX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:21:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9758DCE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695748838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hl8P0PehXe7JNy/kAUbNrPxe3ImQTd0Amx2bvocE0Xk=;
-        b=gb0m8jZcRHvSDdvXSmNAfPRHH6ibgme5xawboY0+kT0wHaY9RAJTvs7sA8U5ritv8hhmJz
-        QFL1ZGYoWjQzWMLCclZ3T+hVnSKDUdN5em/P5pFU47Myrk/BAC4LV7YRs531GTkdGhL0Tj
-        puaOKlFohXnIdT3KBYTF/wR2C8tZI4k=
-Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
- [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-327-wJ9wqXIGOqKzK0G9d48-FA-1; Tue, 26 Sep 2023 13:20:37 -0400
-X-MC-Unique: wJ9wqXIGOqKzK0G9d48-FA-1
-Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-45289b05c67so5110583137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:20:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695748836; x=1696353636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hl8P0PehXe7JNy/kAUbNrPxe3ImQTd0Amx2bvocE0Xk=;
-        b=ELY8SPYD5oyvhispsx25B+PIevd6OHMvAzUET6oqzqLCK5nQTByXWdTZiKsJqs2tIA
-         tOj3w3jSnlfn9bSqMzEqapITwFcLGKJGG82j1l+Ug618rg1N88MwPNPB+l+aaayXGor9
-         ZlQNpdn7wvRJFs1inSE6a+a8FfzplAaCf/IUNQSW2IHLn4gTUFm1bh0jRtxpWceE6WQL
-         shZ81Uhy075h+hLTuEB2YdiQqi0tBom21svDipGdmOzRv0lLVK+DhV2XgvNhhImTY6no
-         hYOd18u11NXl5eE3dcpyY8PyTLZI8Zn/V+N9D4Y4OWKsYbZI4mvjWiKpTmOI7p+GU+1V
-         waNA==
-X-Gm-Message-State: AOJu0Yz3BBWM90el1eIt8sPWNQbpPQ6F0ii0wU3u7Z8aRaM6z61iVgpw
-        7J2iE1FiUM+ZtZbkcstG35fK+hd4V/iob5tOwP68UQdX2L9t2THBiGNoBAIdnJ+OkPTBe9sQS8z
-        g9d61vtxb7XRIzyyL8qI08xR8nvxBwMv3JhavfVtN
-X-Received: by 2002:a67:b40c:0:b0:452:5df8:b951 with SMTP id x12-20020a67b40c000000b004525df8b951mr7866122vsl.25.1695748836514;
-        Tue, 26 Sep 2023 10:20:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHtG5ssRygCikczLM//vmZQQ56XN5Yc2hah1+LcfqviSBpBhHmQW1yO2wDZk2XQOdJfhfItOO2+2CVLUvw5E8M=
-X-Received: by 2002:a67:b40c:0:b0:452:5df8:b951 with SMTP id
- x12-20020a67b40c000000b004525df8b951mr7866096vsl.25.1695748836240; Tue, 26
- Sep 2023 10:20:36 -0700 (PDT)
+        Tue, 26 Sep 2023 13:23:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E55180;
+        Tue, 26 Sep 2023 10:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695749002; x=1727285002;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qjVC/s4j7SxQRGeSzIg7naJ8oHI9PB59wRQgY2RtkPE=;
+  b=Gq6PY16UWxKVSSvV5/9Oh9wXMb/Tk7I/EsLqoPWGppz/RUQMt8/FLnmX
+   DKnNKJOPpPy06ucDcbGexVuQjHJfmpjrKQiQOP/J6NZ2C5djUkDgTyqVP
+   ET7qEeu66QeQBHDFH0w8RC8FqbaU7CIjZVUKlQRYhTyD4O+W1yK/Tzv4N
+   w9AHvvfpqg3tvnWdTrdJM4zrAZf2KTAP99k0tJ3FsDQC/JmeZ7rO6d2S9
+   saM2NUmqza2BvdbGzT7ZgLkCK2IKYI7staLqWcu08v1iMUEbiPm8E/llj
+   b1B+umLtG3xZ0XLFXO9E3Aa/nQv0000BQNrzh6BkE5SKz66grtCmAziRO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381520625"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="381520625"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 10:21:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="235632"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 26 Sep 2023 10:21:23 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlBkp-0003Ap-2V;
+        Tue, 26 Sep 2023 17:21:48 +0000
+Date:   Wed, 27 Sep 2023 01:21:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com
+Subject: Re: [PATCH v4 11/18] PM: EM: Add runtime update interface to modify
+ EM power
+Message-ID: <202309270106.c56Z2Tci-lkp@intel.com>
+References: <20230925081139.1305766-12-lukasz.luba@arm.com>
 MIME-Version: 1.0
-References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
- <CABgObfZgYXaXqP=6s53=+mYWvOnbgYJiCRct-0ob444sK9SvGw@mail.gmail.com>
- <faec494b6df5ebee5644017c9415e747bd34952b.camel@infradead.org>
- <3dc66987-49c7-abda-eb70-1898181ef3fe@redhat.com> <d3e0c3e9-4994-4808-a8df-3d23487ff9c4@amazon.de>
-In-Reply-To: <d3e0c3e9-4994-4808-a8df-3d23487ff9c4@amazon.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Tue, 26 Sep 2023 19:20:24 +0200
-Message-ID: <CABgObfZb4CvzpnSJxz9saw8PJeo1Y2=0uB9y4_K+Cu9P9FpF6g@mail.gmail.com>
-Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT, else yield
- on MWAIT
-To:     Alexander Graf <graf@amazon.de>
-Cc:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@amazon.es>,
-        "Griffoul, Fred" <fgriffo@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925081139.1305766-12-lukasz.luba@arm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,46 +69,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 6:44=E2=80=AFPM Alexander Graf <graf@amazon.de> wro=
-te:
-> On 23.09.23 11:24, Paolo Bonzini wrote:
-> > Why do you need it?  You can just use KVM_RUN to go to sleep, and if yo=
-u
-> > get another job you kick out the vCPU with pthread_kill.  (I also didn'=
-t
-> > get the VSM reference).
->
-> With the original VSM patches, we used to make a vCPU aware of the fact
-> that it can morph into one of many VTLs. That approach turned out to be
-> insanely intrusive and fragile and so we're currently reimplementing
-> everything as VTLs as vCPUs. That allows us to move the majority of VSM
-> functionality to user space. Everything we've seen so far looks as if
-> there is no real performance loss with that approach.
+Hi Lukasz,
 
-Yes, that was also what I remember, sharing the FPU somehow while
-having separate vCPU file descriptors.
+kernel test robot noticed the following build warnings:
 
-> One small problem with that is that now user space is responsible for
-> switching between VTLs: It determines which VTL is currently running and
-> leaves all others (read: all other vCPUs) as stopped. That means if you
-> are running happily in KVM_RUN in VTL0 and VTL1 gets an interrupt, user
-> space needs to stop VTL0 and unpause VTL1 until it triggers VTL_RETURN
-> at which point VTL1 stops execution and VTL0 runs again.
+[auto build test WARNING on rafael-pm/linux-next]
+[also build test WARNING on rafael-pm/thermal linus/master v6.6-rc3 next-20230926]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-That's with IPIs in VTL1, right? I understand now. My idea was, since
-we need a link from VTL1 to VTL0 for the FPU, to use the same link to
-trigger a vmexit to userspace if source VTL > destination VTL. I am
-not sure how you would handle the case where the destination vCPU is
-not running; probably by detecting the IPI when VTL0 restarts on the
-destination vCPU?
+url:    https://github.com/intel-lab-lkp/linux/commits/Lukasz-Luba/PM-EM-Add-missing-newline-for-the-message-log/20230925-181243
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20230925081139.1305766-12-lukasz.luba%40arm.com
+patch subject: [PATCH v4 11/18] PM: EM: Add runtime update interface to modify EM power
+config: i386-randconfig-063-20230926 (https://download.01.org/0day-ci/archive/20230927/202309270106.c56Z2Tci-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230927/202309270106.c56Z2Tci-lkp@intel.com/reproduce)
 
-In any case, making vCPUs poll()-able is sensible.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309270106.c56Z2Tci-lkp@intel.com/
 
-Paolo
+sparse warnings: (new ones prefixed by >>)
+   kernel/power/energy_model.c:125:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct em_perf_table *tmp @@     got struct em_perf_table [noderef] __rcu *runtime_table @@
+   kernel/power/energy_model.c:125:13: sparse:     expected struct em_perf_table *tmp
+   kernel/power/energy_model.c:125:13: sparse:     got struct em_perf_table [noderef] __rcu *runtime_table
+>> kernel/power/energy_model.c:613:27: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> kernel/power/energy_model.c:613:27: sparse:    struct em_perf_table [noderef] __rcu *
+>> kernel/power/energy_model.c:613:27: sparse:    struct em_perf_table *
 
-> Nicolas built a patch that exposes "interrupt on vCPU is pending" as an
-> ioeventfd user space can request. That way, user space can know whenever
-> a currently paused vCPU has a pending interrupt and can act accordingly.
-> You could use the same mechanism if you wanted to implement HLT in user
-> space, but still use an in-kernel LAPIC.
+vim +613 kernel/power/energy_model.c
 
+   569	
+   570	/**
+   571	 * em_dev_unregister_perf_domain() - Unregister Energy Model (EM) for a device
+   572	 * @dev		: Device for which the EM is registered
+   573	 *
+   574	 * Unregister the EM for the specified @dev (but not a CPU device).
+   575	 */
+   576	void em_dev_unregister_perf_domain(struct device *dev)
+   577	{
+   578		struct em_perf_table __rcu *runtime_table;
+   579		struct em_perf_domain *pd;
+   580	
+   581		if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
+   582			return;
+   583	
+   584		if (_is_cpu_device(dev))
+   585			return;
+   586	
+   587		pd = dev->em_pd;
+   588		/*
+   589		 * The mutex separates all register/unregister requests and protects
+   590		 * from potential clean-up/setup issues in the debugfs directories.
+   591		 * The debugfs directory name is the same as device's name.
+   592		 * The lock also protects the updater of the runtime modifiable
+   593		 * EM and this remover.
+   594		 */
+   595		mutex_lock(&em_pd_mutex);
+   596	
+   597		em_debug_remove_pd(dev);
+   598	
+   599		runtime_table = pd->runtime_table;
+   600	
+   601		/*
+   602		 * Safely destroy runtime modifiable EM. By using the call
+   603		 * synchronize_rcu() we make sure we don't progress till last user
+   604		 * finished the RCU section and our update got applied.
+   605		 */
+   606		rcu_assign_pointer(pd->runtime_table, NULL);
+   607		synchronize_rcu();
+   608	
+   609		/*
+   610		 * After the sync no updates will be in-flight, so free the
+   611		 * memory allocated for runtime table (if there was such).
+   612		 */
+ > 613		if (runtime_table != pd->default_table) {
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
