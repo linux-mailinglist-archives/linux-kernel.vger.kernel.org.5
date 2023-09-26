@@ -2,348 +2,544 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 447757AEF7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BBF7AEF7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjIZPRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S230330AbjIZPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjIZPR1 (ORCPT
+        with ESMTP id S229513AbjIZPTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:17:27 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C71211D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:17:20 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QEhiog024937;
-        Tue, 26 Sep 2023 15:16:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=1rNGkJ3noGcC7S69NLaWaZgLZcs//1awToXO+JuS/wA=;
- b=1uaUEW6+ShcUt/B+SAFPHV7E49jiQFW6jGtLUXchY7i4CRV1e9Lbd96/TzigYWBBDaaQ
- 8OO7w5JiNlmyBCkqnGhUUAwCpUsQoIvJBSg30qnZRhstt/CaQPdJO6vBMCv5oOHbsyjI
- 6JjlvAztkc4LAANCvj2YNyEhjVw/rvbhz69zjLcQlIR6pUeFjON0HLga3msWJns6nZw1
- y8CKxm/JGkFKJ9kC1CliWUvZhCy1L9EpyNm+twgCCFq6E9vjoecGKYEGMNqRdPzOMkd4
- P4LGFVOMEadSEanCNFz/WKIrSk3X8uFPVFPywu3hpUzmQ7L/ZJh3ltx5nJk5n1srZQAp Ag== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9r2dexqy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 15:16:50 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38QE4465039482;
-        Tue, 26 Sep 2023 15:16:50 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfcb60e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 15:16:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMrMWoAjH/XTIZJIecsFb2dTzV3xDsjD6EuKIVRFJyggntxLXpHdBCTFXqjn3pX0HgSvrwwVS3aPcdmCcMSr/2DuGuxPKNJBrgYfcKG7Kn0avjYPD4z0b6cQUsY8suiUd2XpmxwBW4QjVoWwOb/0iectnWugnddTg2S2w5h74mwCFOB3tSrx+huXh3Mkq51M+OnHrH0tNsLkDQICbXs6CO0T5VnE8AV9tb4knmF6hPkoY+kHsS+9C1ESHMC/m2h/mfAsnRAPgpDmDy49Xd2maKhi8Lz9ssRR+pEI+4SpTdkLEdOjQDho7M5J+AxXerBco7eyYv87KXVS5IegmKkhLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1rNGkJ3noGcC7S69NLaWaZgLZcs//1awToXO+JuS/wA=;
- b=T+CODVpjfgOQHEZDYlaSlRGjr4ebFDLovC82VvPPy+uMtPWrLR+B4IJGqHZznDfJPDpUANk0PZ9xsMr1yR1Sf1rDMcRwsVcmB657D+cAJmqC+qvw3RNzFT4wXY5AWvyxekWoTRLn/nPZvhId9rkaLlYvnRjs5+XqqbYdIf11j1kn+sVaEW8svzPshvhEIUPbAZEKsgwAKdWMIqaBPj1g6O3xMVSJnxb+xry5e4LQ1m8wdJEoXgtbov8S5Re2RyiNluwEcKZt9SeYZxBImN5jcoWwJXR1VwXkKic66lVlj4JeLtrL/Qj3DpKA2pmNtp9IfwuE4g/d/tV39u2Ag7Fr7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1rNGkJ3noGcC7S69NLaWaZgLZcs//1awToXO+JuS/wA=;
- b=WsZBecpuOnzOFHSLmTyG5eC6tI4bj3CSQxHvpsWg+J8sC+Fv4vklEv0XSa9vtiBVArtV4KeivMDklMzR4YPW3dGmv5YzbwLIvnwVc1UQCFi9TuTs1HsNyDBo+YSm+WHZhkxx3tO3hWrf1llwlkbTEyjYJFwKCx3am9pKCeie/sY=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by CY8PR10MB6539.namprd10.prod.outlook.com (2603:10b6:930:59::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 15:16:47 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 15:16:47 +0000
-Date:   Tue, 26 Sep 2023 11:16:44 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Erhard Furtner <erhard_f@mailbox.org>,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Maple Tree <maple-tree@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [Bisected] PowerMac G4 getting "BUG: Unable to handle kernel
- data access on write at 0x00001ff0" at boot with CONFIG_VMAP_STACK=y on
- kernels 6.5.x (regression over 6.4.x)
-Message-ID: <20230926151644.ogvk4n2hnfgffszv@revolver>
-References: <20230926010159.0f25161c@yea>
- <ZRIfyp5YKH36_9df@debian.me>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRIfyp5YKH36_9df@debian.me>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0337.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:fc::12) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+        Tue, 26 Sep 2023 11:19:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AA810A;
+        Tue, 26 Sep 2023 08:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695741544; x=1727277544;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=u7xItCAFktBTCZ+ZX96seTx2TlThUvaUZ0G6ebc0fqg=;
+  b=eENn9te/KPR4zr5DEpu7vq1pwpbKFQPd0mQSoXeWQM1wNZTZPJX6BW8A
+   PvPkB/u8D9XZ/oRRzpWf6J5cPzjDQ4LvXXFmxv+0F2/X/kI06UMk7IEZ7
+   innFkgVewFuItKRjd37bsH5EhDn/D1/ZeQSCduOPlnpCWuqQmZ2yyuvck
+   Eu7cdVES+zJ8+iiyFmNgViaY3JcP1gf8dhl/+jQVcU/jDtI+iG+2RomaP
+   VZOlt5x1t3sQwSbbXBRZdf90Y2A9qgqh6XX6IxzzMy9hUUin3FsKny7pF
+   IyVqShNck3Zpgs+fmAQKThH18RkfvacGCqyq+q8duWVPp3Lvpj5q9B7dL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="360968669"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="360968669"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:17:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="188842"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:17:11 -0700
+Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 7BB18580BBE;
+        Tue, 26 Sep 2023 08:17:08 -0700 (PDT)
+Message-ID: <9756d1cd-096f-d1d9-af6f-0c3e38e251f2@linux.intel.com>
+Date:   Tue, 26 Sep 2023 11:17:07 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|CY8PR10MB6539:EE_
-X-MS-Office365-Filtering-Correlation-Id: d64d173a-ac09-40ef-a9b8-08dbbea399bf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8qxEac0PhwMAu3wDuwuAAjPQ0eZjwkTp5nC50an5EPjFnF+ZCd+yj8PZ+Uj+3V9x+V0tviS5pR+FKTQcGP4iBBq7ESF4HPR50kGYDm3eBoObD9PH2xUiqEB35iIZh8aUYRzFdbvpIFfNkRT5DG1HBHxPdEmETPnzJVVyx8VMPUHU//N5YA4KGsLsAoD1jcGLIOTzBc/6s5B++v9Lm2BqfeYQDMWGlafqaDyzEIqEtckKS9VlclGZ0YA+jRQl7236FLvAlu/6745VFvseiNYyORwkM3MhNNr6OGnpoc3ycTiphTkDAcwVgPaQ5HDisg0IMjerhRADpylVSsvtUmtNYRvOrDNg6AjgLCmxsznEc4fYFft0D45CggBkub7SQPkyqsWzbOwt9PBCbwURXciIX2jD0ZqibNkwx9WXPSoRhEC7AmBSWg8QQ3kNmIoYriphQPBjYj0gvuLaj+39GIYpAW/9ixQaEVmg/05SDWHHnfEMjRpEE+wuR5mytuoAs0vnteH6b29EhgYdqaW8Y6+q3NvW+7PXUQgkD1o9vFm0wSrod6mBrsGvcA45EiSqBwxBV3DrVKYaPsTHY11KM3V9Zg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(396003)(346002)(376002)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(6506007)(6666004)(9686003)(6512007)(6486002)(26005)(66946007)(1076003)(45080400002)(966005)(33716001)(478600001)(38100700002)(83380400001)(54906003)(2906002)(8676002)(4326008)(8936002)(86362001)(66476007)(66556008)(41300700001)(5660300002)(6916009)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q8j+q1xp2CeNhaCDh42PaLEWOK8JWehcpnRlqTKymJsFDWnybatSV5aU8Eb0?=
- =?us-ascii?Q?3UadBhhMA9Qyn0PBYzOLmcHvbA/QcqegyDXXUsdHyBfAdMv/zYsCT5fKIxaF?=
- =?us-ascii?Q?lnNZFdNw9VyVaeAZ1eNvrGusi9vzB1zGdCDKROHohol8BnGnVTP4xl3OJ8fe?=
- =?us-ascii?Q?BlzJh/tg37HtDRfAMlH9JdxRf92cdeHt29i81XDQnezi4jGRq0ufMZXl49Am?=
- =?us-ascii?Q?BUCPSI6vCEzoeQE8DDCl6FNISE0MBhwQ8X+YnTg64cZ8/HJ4ZxUAR31rHi3H?=
- =?us-ascii?Q?fOIyqlCP9FO24nOmA5suZvV4Fzysqr15e2OLVaB4VqaX+BHFk6hrN8yRwFyT?=
- =?us-ascii?Q?66DpT8e5SdnFNR6OV9AXbYBibHRpfShBI9T13oQl2x0YV2VnKxFEgdN2chgI?=
- =?us-ascii?Q?n++dbo1wqcWYg/DeDvlrN0z+GJxESoEvT65QGLwf78XTzLMhtwO+wSgA3sIe?=
- =?us-ascii?Q?KaPtq6PVfke8TukyFbj0SmmoyZio2WcAJI0+zcvptM5iVxtRfqU6C5sPZ3Xs?=
- =?us-ascii?Q?cjNC8tLNQRXoHvcS5rYTiqZY8Kx+7hz09UYTYO2cCogiTT2HDcLklI6d7sQc?=
- =?us-ascii?Q?xxgy+w4cNI+3kpl9oIcgjnwaeomyDWIaoD93YiVYwKiV0QYG1TuB4Z2mD0qd?=
- =?us-ascii?Q?56Po1AZwOL0uGZcXe+SZ6PTygw3M4Ec/+XzGDvfDrvmbqrcROjUuHMQFoS5n?=
- =?us-ascii?Q?syTIqjzBwL/n6Urm5es1WSatoralTmY8pT6Z2zSM6ZTtsRBn5QbOfZfDbTfb?=
- =?us-ascii?Q?iQIFJF0cgSknVX8meJTLYZ46esTfN/lwiCK4QhyxnPAPoYTa1MXjzOmeh1Ba?=
- =?us-ascii?Q?4svnjxGP+0MAfwEoY54J3HAU+Pc80dyH1bmnwGkLmfty877KGi8Xzgxh7+DV?=
- =?us-ascii?Q?/lModBPj+XZhzc6DU6l+CoElzZ3af5xZEWOEbWASHP/3W58u/4YFMdOZu0ai?=
- =?us-ascii?Q?xjrITM1RSex2e3d3SnkQ4cCzmqZqqG2KyRXD+M+itIiJRfBDIIR66Jqxs/zs?=
- =?us-ascii?Q?YR4/zuZCR2HcYeHKhQ7+kJTLQ1+Nk+L2RpF0aXiMDH732dgUN+qnGL0kNnI0?=
- =?us-ascii?Q?nyiIAQSFDzjj7cfX7rR/6Vt7mFUpsEn4WJcIsGWKLPF6eGGsb7xQX2iWZK2v?=
- =?us-ascii?Q?dFF5eVdHgGEl81fK577hrTWVvqoZaOyTBhmu7U9KpOeBBqWrVzEn2D2D9+9s?=
- =?us-ascii?Q?CNJz6GoqvOy1wXyb2tHH44IDBDwBP22W1yDD1D0XepMIDzeExkfDBxMmV3wJ?=
- =?us-ascii?Q?D3gFEb9LiFxA1sLmbt3E8fVqhzRl9Nqp/EtRJ9GSe6tBYk8GqdFzeK7vkeCt?=
- =?us-ascii?Q?BshA7t8aEzBVrF0kUBM5XhxMSNKmmoYRz/ZXw5XZKwFqXMzBIbyW/0LQYFpG?=
- =?us-ascii?Q?UzbkSBjlIrw3QFHsL0bmUMlAQzs6d69e8M13tglKWJRfqmJ1jwE40AfLIIQh?=
- =?us-ascii?Q?sYzDyHBkoGaYf2aau6KelnRlm0PBSOw8E2DItSnq2xfI/XJqNyvNxUpFxXXj?=
- =?us-ascii?Q?R3g5a1IJcd0itWm7fiJjhILSMwx32TT0+TzrGOdNoSTnjDm8IntU7o5S1aQ7?=
- =?us-ascii?Q?MyEhIkT+zqvFKvuhmdR/G8iRyt3kaS4O05p8QsDd?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?ZmbHYxk/bestXfCq9HskXG+anJMW3AZv0ZL+a6nnwl77mgrm2LPlw/xU0NkN?=
- =?us-ascii?Q?Vej8u8tVTxjsmgbiWxB9kuw79km6mtIKFlVNIWYeD6PBkg/tUJ2mQkx3DfO3?=
- =?us-ascii?Q?DqBRzlUvYwfX1UWwqY3aa2s9iCHxKhuHyl/6/e+aEN6TIDjhxAa5rkPMoyuu?=
- =?us-ascii?Q?qyl34eTAvxEKFoiMXD1yl61Z0X+7MljCoKXHF42nxOc4PiY6HrxzEd/9oHYs?=
- =?us-ascii?Q?BIoDpTkt0UUV7AEcRvK36PKURiVRgJo7jueFcsemzNTabmImU6WVsxWDilNP?=
- =?us-ascii?Q?D6B5eI1C496vfTnY8y7TJKAqN88tnYWz29XAwU38B3YZQzBfyBYZ7/WvinQ3?=
- =?us-ascii?Q?HUOuuS3k0g5Hb2rzSlthdPR3q1ovJXKhhQjNUZd0O8mmdwRSHi0PEt+uuJLr?=
- =?us-ascii?Q?do5z5mi45nIdLuBXAgrqi7VGcJhu2O6LsmUMsqoEhfB/XZ4btc8pK9lBQO6q?=
- =?us-ascii?Q?+YcWHySOBHaBMZwS6O8u0ztbWSuzBBpPECZhKfVlB2t/XeUfpTdmqpeDTMY9?=
- =?us-ascii?Q?9ZZ1/lC0Pyq7eelEV/kTRpLaJMC3XWaOh1oadt8txHMktgT3HCtKJZWah/xC?=
- =?us-ascii?Q?fnK/rs93/rfD93SRztcRtH/Ha+fx0QUDzxTc5HntuMZpPl/YNE52b7Bu9SQh?=
- =?us-ascii?Q?0uF/PU+VOmPAIglCb3ip4E9RPi9mFnbwlKmiKXCWqT4sjL60o8/XOHlxWjc4?=
- =?us-ascii?Q?8Rv0PMZZqfyKnhyQeKXyysI4tbE45+7l/+fk25MS1zp6ZhZfcHEOEV32A6P3?=
- =?us-ascii?Q?+Jrseae3PeVUnD2X++IdnM0k+jlbo7fbk2CvlzNDP/z7KwEyUbV+iHBi6IzW?=
- =?us-ascii?Q?KVn5tBVS0tVc4w5WmqXue2rJndsg8LRTmRpnYG4xlMMwpfJMAagIWLqOUYuw?=
- =?us-ascii?Q?iq7rN/3S47ErQ2gfasuZ2Jb1SmfEOOQFE2kMWuJzUVjMdsWCbPat9B/5Ute2?=
- =?us-ascii?Q?RUK6XEohyTwveDCVydaHJtD6DlhDTf4uyQLjNyzFSWpw1cPSVlnGpgwl5bjE?=
- =?us-ascii?Q?LRYXcndt3VetYZhmBhwg5XiIuHI1M/1AXJwjz++7iEwEcMs=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d64d173a-ac09-40ef-a9b8-08dbbea399bf
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 15:16:47.3491
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v9TXd6AskRr54GcUVP2Du4ZF7G6vkeOT0wAb1MHi3vgmU3CttczTA2DtDE3DjVmYl6SoucIyNEu40nN79I3bdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6539
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_12,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=816 bulkscore=0
- suspectscore=0 adultscore=0 phishscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309260133
-X-Proofpoint-GUID: f0_u3gXCFNCOc25f2gmE012JJoT4VXT-
-X-Proofpoint-ORIG-GUID: f0_u3gXCFNCOc25f2gmE012JJoT4VXT-
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 03/25] perf pmu-events: Add functions in jevent.py
+Content-Language: en-US
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+ <20230925061824.3818631-4-weilin.wang@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230925061824.3818631-4-weilin.wang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Bagas Sanjaya <bagasdotme@gmail.com> [230925 20:03]:
-> On Tue, Sep 26, 2023 at 01:01:59AM +0200, Erhard Furtner wrote:
-> > Greetings!
-> > 
-> > Had a chat on #gentoo-powerpc with another user whose G4 Mini fails booting kernel 6.5.0 when CONFIG_VMAP_STACK=y is enabled. I was able to replicate the issue on my PowerMac G4. Also I was able to bisect the issue.
-> > 
-> > Kernels 6.4.x boot ok with CONFIG_VMAP_STACK=y but on 6.5.5 I get:
-> > 
-> > [...]
-> > Kernel attempted to write user page (1ff0) - exploit attempt? (uid: 0)
-> > BUG: Unable to handle kernel data access on write at 0x00001ff0
-> > Faulting instruction address: 0xc0008750
-> > Oops: Kernel access of bad area, sig: 11 [#1]
-> > BE PAGE_SIZE=4K MMU=Hash PowerMac
-> > Modules linked in:
-> > CPU: 0 PID: 0 Comm: swapper Not tainted 6.5.5-PMacG4 #5
-> > Hardware name: PowerMac3,6 7455 0x80010303 PowerMac
-> > NIP:  c0008750 LR: c0041848 CTR: c0070988
-> > REGS: c0d3dcd0 TRAP: 0300   Not tainted (6.5.5-PMacG4)
-> > MSR:  00001032 <ME,IR,DR,RI>  CR: 22d3ddc0 XER: 20000000
-> > DAR: 00001ff0 DSISR: 42000000
-> > GPR00: c0041848 c0d3dd90 c0d06360 c0d3ddd0 c0d06360 c0d3dea8 c0d3adc0 00000000
-> > GPR08: 00000000 c0d40000 00000000 c0d3ddc0 00000000 00000000 00000000 00000004
-> > GPR16: 00000002 00000000 00000002 00402dc2 00402dc2 00002000 f1004000 00000000
-> > GPR24: c0d45220 c0d06644 c0843c34 00000002 c0d06360 c0d0ce00 c0d06360 00000000
-> > NIP [c0008750] do_softirq_own_stack+0x18/0x3c
-> > LR [c0041848] irq_exit+0x98/0xc4
-> > Call Trace:
-> > [c0d3dd90] [c0d69564] 0xc0d69564 (unreliable)
-> > [c0d3ddb0] [c0041848] irq_exit+0x98/0xc4
-> > [c0d3ddc0] [c0004a98] Decrementer_virt+0x108/0x10c
-> > --- interrupt: 900 at __schedule+0x43c/0x4e0
-> > NIP:  c0843940 LR: c084398c CTR: c0070988
-> > REGS: c0d3ddd0 TRAP: 0900   Not tainted  (6.5.5-PMacG4)
-> > MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22024484  XER: 00000000
-> > 
-> > GPR00: c0843574 c0d3de90 c0d06360 c0d06360 c0d06360 c0d3dea8 00000001 00000000
-> > GPR08: 00000000 00009032 c099ce2c 0007ffbf 22024484 00000000 00000000 00000004
-> > GPR16: 00000002 00000000 00000002 00402dc2 00402dc2 00002000 f1004000 00000000
-> > GPR24: c0d45220 c0d06644 c0843c34 00000002 c0d06360 c0d0ce00 c0d06360 c0d063ac
-> > NIP [c0843940] __schedule+0x43c/0x4e0
-> > LR [c084390c] __schedule+0x408/0x4e0
-> > --- interrupt: 900
-> > [c0d3de90] [c0843574] __schedule+0x70/0x4e0 (unreliable)
-> > [c0d3ded0] [c0843c34] __cond_resched+0x34/0x54
-> > [c0d3dee0] [c0141068] __vmalloc_node_range+0x27c/0x64c
-> > [c0d3de60] [c0141794] __vmalloc_node+0x44/0x54
-> > [c8d3df80] [c0c06510] init_IRQ+0x34/0xd4
-> > [c8d3dfa0] [c0c03440] start_kernel+0x424/0x558
-> > [c8d3dff0] [00003540] 0x3540
-> > Code: 39490999 7d4901a4 39290aaa 7d2a01a4 4c00012c 4bffff20 9421ffe0 7c08002a6 3d20c0d4 93e1001c 90010024 83e95278 <943f1ff0> 7fe1fb78 48840c6d 80210000
-> > ---[ end trace 0000000000000000 ]---
-> > 
-> > Kernel panic - not syncing: Attempted to kill the idle task!
-> > Rebooting in 48 seconds..
-> > 
-> > 
-> > The bisect revealed this commit:
-> >  # git bisect good
-> > cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b is the first bad commit
-> > commit cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b
-> > Author: Liam R. Howlett <Liam.Howlett@oracle.com>
-> > Date:   Fri Aug 18 20:43:55 2023 -0400
-> > 
-> >     maple_tree: disable mas_wr_append() when other readers are possible
-> >     
-> >     The current implementation of append may cause duplicate data and/or
-> >     incorrect ranges to be returned to a reader during an update.  Although
-> >     this has not been reported or seen, disable the append write operation
-> >     while the tree is in rcu mode out of an abundance of caution.
-> >     
-> >     During the analysis of the mas_next_slot() the following was
-> >     artificially created by separating the writer and reader code:
-> >     
-> >     Writer:                                 reader:
-> >     mas_wr_append
-> >         set end pivot
-> >         updates end metata
-> >         Detects write to last slot
-> >         last slot write is to start of slot
-> >         store current contents in slot
-> >         overwrite old end pivot
-> >                                             mas_next_slot():
-> >                                                     read end metadata
-> >                                                     read old end pivot
-> >                                                     return with incorrect range
-> >         store new value
-> >     
-> >     Alternatively:
-> >     
-> >     Writer:                                 reader:
-> >     mas_wr_append
-> >         set end pivot
-> >         updates end metata
-> >         Detects write to last slot
-> >         last lost write to end of slot
-> >         store value
-> >                                             mas_next_slot():
-> >                                                     read end metadata
-> >                                                     read old end pivot
-> >                                                     read new end pivot
-> >                                                     return with incorrect range
-> >         set old end pivot
-> >     
-> >     There may be other accesses that are not safe since we are now updating
-> >     both metadata and pointers, so disabling append if there could be rcu
-> >     readers is the safest action.
-> >     
-> >     Link: https://lkml.kernel.org/r/20230819004356.1454718-2-Liam.Howlett@oracle.com
-> >     Fixes: 54a611b60590 ("Maple Tree: add new data structure")
-> >     Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> >     Cc: <stable@vger.kernel.org>
-> >     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > 
-> >  lib/maple_tree.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > 
-> > And indeed when I revert commit cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b kernel 6.5.5 succeeds booting with CONFIG_VMAP_STACK=y enabled. dmesg of the successful boot with the reverted commit attached, also kernel .config and the bisect.log.
-> > 
-> > Regards,
-> > Erhard F.
-> 
-> 
-> 
-> > git bisect start
-> > # Status: warte auf guten und schlechten Commit
-> > # bad: [2309983b0ac063045af3b01b0251dfd118d45449] Linux 6.5.5
-> > git bisect bad 2309983b0ac063045af3b01b0251dfd118d45449
-> > # good: [6995e2de6891c724bfeb2db33d7b87775f913ad1] Linux 6.4
-> > git bisect good 6995e2de6891c724bfeb2db33d7b87775f913ad1
-> > # good: [6c1561fb900524c5bceb924071b3e9b8a67ff3da] Merge tag 'soc-dt-6.5' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-> > git bisect good 6c1561fb900524c5bceb924071b3e9b8a67ff3da
-> > # good: [9f57c13f7ed70a94ecc135645bc764efdd378acd] Merge tag 'soc-fixes-6.5-1' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-> > git bisect good 9f57c13f7ed70a94ecc135645bc764efdd378acd
-> > # good: [b9f052dc68f69dac89fe1e24693354c033daa091] netfilter: nf_tables: fix false-positive lockdep splat
-> > git bisect good b9f052dc68f69dac89fe1e24693354c033daa091
-> > # bad: [7e2229d14234bbea8fbb5e426d5f3533b0f1b262] arm64: dts: qcom: sc8180x-pmics: add missing qcom,spmi-gpio fallbacks
-> > git bisect bad 7e2229d14234bbea8fbb5e426d5f3533b0f1b262
-> > # good: [93f5de5f648d2b1ce3540a4ac71756d4a852dc23] Merge tag 'acpi-6.5-rc8' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-> > git bisect good 93f5de5f648d2b1ce3540a4ac71756d4a852dc23
-> > # bad: [25130b27e0352acb83e91c467853eb9afad3b644] OPP: Fix potential null ptr dereference in dev_pm_opp_get_required_pstate()
-> > git bisect bad 25130b27e0352acb83e91c467853eb9afad3b644
-> > # good: [4942fed84b98cfb71d3cdff1a3df0072a57bbdfa] Merge tag 'riscv-for-linus-6.5-rc8' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux
-> > git bisect good 4942fed84b98cfb71d3cdff1a3df0072a57bbdfa
-> > # bad: [ecd7e1c562cb08e41957fcd4b0e404de5ab38e20] ksmbd: fix slub overflow in ksmbd_decode_ntlmssp_auth_blob()
-> > git bisect bad ecd7e1c562cb08e41957fcd4b0e404de5ab38e20
-> > # bad: [7d2f353b2682dcfe5f9bc71e5b61d5b61770d98e] Merge tag 'clk-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
-> > git bisect bad 7d2f353b2682dcfe5f9bc71e5b61d5b61770d98e
-> > # good: [2f406263e3e954aa24c1248edcfa9be0c1bb30fa] madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check
-> > git bisect good 2f406263e3e954aa24c1248edcfa9be0c1bb30fa
-> > # bad: [e5548f85b4527c4c803b7eae7887c10bf8f90c97] shmem: fix smaps BUG sleeping while atomic
-> > git bisect bad e5548f85b4527c4c803b7eae7887c10bf8f90c97
-> > # bad: [cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b] maple_tree: disable mas_wr_append() when other readers are possible
-> > git bisect bad cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b
-> > # good: [0e0e9bd5f7b9d40fd03b70092367247d52da1db0] madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
-> > git bisect good 0e0e9bd5f7b9d40fd03b70092367247d52da1db0
-> > # first bad commit: [cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b] maple_tree: disable mas_wr_append() when other readers are possible
-> 
-> Thanks for the regression report. I'm adding it to regzbot:
-> 
-> #regzbot ^introduced: cfeb6ae8bcb96c
-> #regzbot title: CONFIG_VMAP_STACK kernel data write access bug due to disabling mas_wr_append()
 
-Let's see if I get this right..
+"perf pmu-events: Add functions in jevent.py"
 
-#regzbot title: PF_IDLE issue in rcu_tiny
-#regzbot fix: cff9b2332ab762b7e0586c793c431a8f2ea4db04
-#regzbot dup-of: https://lore.kernel.org/linux-mm/3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org/
+It's better to have a meaningful title. Most of titles in the patch
+series are "Add functions to ...", which doesn't provide any useful
+information.
 
+Try something like, Support counter information in jevent.py
 
+On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
 > 
-> -- 
-> An old man doll... just what I always wanted! - Clara
+> These functions are added to parse event counter restrictions and counter
+> availability info from json files so that the metric grouping method could
+> do grouping based on the counter restriction of events and the counters
+> that are available on the system.
+> 
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> ---
+>  tools/perf/pmu-events/jevents.py   | 174 ++++++++++++++++++++++++++++-
+>  tools/perf/pmu-events/pmu-events.h |  25 ++++-
+>  2 files changed, 191 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index a7e883322..2809f68d2 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -23,6 +23,8 @@ _metric_tables = []
+>  _sys_metric_tables = []
+>  # Mapping between sys event table names and sys metric table names.
+>  _sys_event_table_to_metric_table_mapping = {}
+> +# List of regular PMU counter layout tables.
+> +_pmu_layouts_tables = []
+>  # Map from an event name to an architecture standard
+>  # JsonEvent. Architecture standard events are in json files in the top
+>  # f'{_args.starting_dir}/{_args.arch}' directory.
+> @@ -31,6 +33,9 @@ _arch_std_events = {}
+>  _pending_events = []
+>  # Name of events table to be written out
+>  _pending_events_tblname = None
+> +# PMU counter layout to write out when the table is closed
+> +_pending_pmu_counts = [] # Name of PMU counter layout table to be written out
+> +_pending_pmu_counts_tblname = None
+>  # Metrics to write out when the table is closed
+>  _pending_metrics = []
+>  # Name of metrics table to be written out
+> @@ -47,10 +52,17 @@ _json_event_attributes = [
+>      'event',
+>      # Short things in alphabetical order.
+>      'compat', 'deprecated', 'perpkg', 'unit',
+> +    # Counter this event could use
+> +    'counter',
+>      # Longer things (the last won't be iterated over during decompress).
+>      'long_desc'
+>  ]
+>  
+> +# Attributes that are in pmu_unit_layout.
+> +_json_layout_attributes = [
+> +    'pmu', 'desc', 'size', 'fixed_size'
+> +]
+> +
+>  # Attributes that are in pmu_metric rather than pmu_event.
+>  _json_metric_attributes = [
+>      'metric_name', 'metric_group', 'metric_expr', 'metric_threshold',
+> @@ -58,7 +70,9 @@ _json_metric_attributes = [
+>      'default_metricgroup_name', 'aggr_mode', 'event_grouping'
+>  ]
+>  # Attributes that are bools or enum int values, encoded as '0', '1',...
+> -_json_enum_attributes = ['aggr_mode', 'deprecated', 'event_grouping', 'perpkg']
+> +_json_enum_attributes = ['aggr_mode', 'deprecated', 'event_grouping', 'perpkg',
+> +    'size', 'fixed_size'
+> +]
+>  
+>  def removesuffix(s: str, suffix: str) -> str:
+>    """Remove the suffix from a string
+> @@ -289,6 +303,7 @@ class JsonEvent:
+>            'cpu_core': 'cpu_core',
+>            'cpu_atom': 'cpu_atom',
+>            'ali_drw': 'ali_drw',
+> +          'Core': 'core',
+>        }
+>        return table[unit] if unit in table else f'uncore_{unit.lower()}'
+>  
+> @@ -314,6 +329,9 @@ class JsonEvent:
+>      if 'Errata' in jd:
+>        extra_desc += '  Spec update: ' + jd['Errata']
+>      self.pmu = unit_to_pmu(jd.get('Unit'))
+> +    self.counter = jd.get('Counter')
+> +    self.size = jd.get('Size')
+> +    self.fixed_size = jd.get('FixedSize')
+>      filter = jd.get('Filter')
+>      self.unit = jd.get('ScaleUnit')
+>      self.perpkg = jd.get('PerPkg')
+> @@ -377,8 +395,16 @@ class JsonEvent:
+>          s += f'\t{attr} = {value},\n'
+>      return s + '}'
+>  
+> -  def build_c_string(self, metric: bool) -> str:
+> +  def build_c_string(self, metric: bool, layout: bool = False) -> str:
+>      s = ''
+> +    if layout:
+> +      for attr in _json_layout_attributes:
+> +        x = getattr(self, attr)
+> +        if attr in _json_enum_attributes:
+> +          s += x if x else '0'
+> +        else:
+> +          s += f'{x}\\000' if x else '\\000'
+> +      return s
+>      for attr in _json_metric_attributes if metric else _json_event_attributes:
+>        x = getattr(self, attr)
+>        if metric and x and attr == 'metric_expr':
+> @@ -393,10 +419,10 @@ class JsonEvent:
+>          s += f'{x}\\000' if x else '\\000'
+>      return s
+>  
+> -  def to_c_string(self, metric: bool) -> str:
+> +  def to_c_string(self, metric: bool, layout: bool = False) -> str:
+>      """Representation of the event as a C struct initializer."""
+>  
+> -    s = self.build_c_string(metric)
+> +    s = self.build_c_string(metric, layout)
+>      return f'{{ { _bcs.offsets[s] } }}, /* {s} */\n'
+>  
+>  
+> @@ -413,6 +439,8 @@ def read_json_events(path: str, topic: str) -> Sequence[JsonEvent]:
+>      event.topic = topic
+>      if event.metric_name and '-' not in event.metric_name:
+>        metrics.append((event.pmu, event.metric_name, event.metric_expr))
+> +    elif event.size:
+> +      print(f"Unit: {event.pmu}, Size: {event.size}, FixedSize: {event.fixed_size}")
+>    updates = metric.RewriteMetricsInTermsOfOthers(metrics)
+>    if updates:
+>      for event in events:
+> @@ -433,6 +461,8 @@ def preprocess_arch_std_files(archpath: str) -> None:
+>            _arch_std_events[event.name.lower()] = event
+>          if event.metric_name:
+>            _arch_std_events[event.metric_name.lower()] = event
+> +        if event.size:
+> +          _arch_std_events[event.pmu.lower()] = event
+>  
+>  
+>  def add_events_table_entries(item: os.DirEntry, topic: str) -> None:
+> @@ -442,6 +472,8 @@ def add_events_table_entries(item: os.DirEntry, topic: str) -> None:
+>        _pending_events.append(e)
+>      if e.metric_name:
+>        _pending_metrics.append(e)
+> +    if e.size:
+> +      _pending_pmu_counts.append(e)
+>  
+>  
+>  def print_pending_events() -> None:
+> @@ -555,6 +587,33 @@ const struct pmu_table_entry {_pending_metrics_tblname}[] = {{
+>  """)
+>    _args.output_file.write('};\n\n')
+>  
+> +def print_pending_pmu_counts() -> None:
+> +
+> +  def pmu_counts_cmp_key(j: JsonEvent) -> Tuple[bool, str, str]:
+> +    def fix_none(s: Optional[str]) -> str:
+> +      if s is None:
+> +        return ''
+> +      return s
+> +
+> +    return (j.desc is not None, fix_none(j.pmu), fix_none(j.size))
+> +
+> +  global _pending_pmu_counts
+> +  if not _pending_pmu_counts:
+> +    return
+> +
+> +  global _pending_pmu_counts_tblname
+> +  global pmu_layouts_tables
+> +  _pmu_layouts_tables.append(_pending_pmu_counts_tblname)
+> +
+> +  _args.output_file.write(
+> +      f'static const struct compact_pmu_event {_pending_pmu_counts_tblname}[] = {{\n')
+> +
+> +  for pmu_layout in sorted(_pending_pmu_counts, key=pmu_counts_cmp_key):
+> +    _args.output_file.write(pmu_layout.to_c_string(metric=False, layout=True))
+> +    _pending_pmu_counts = []
+> +
+> +  _args.output_file.write('};\n\n')
+> +
+>  def get_topic(topic: str) -> str:
+>    if topic.endswith('metrics.json'):
+>      return 'metrics'
+> @@ -595,6 +654,8 @@ def preprocess_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+>      if event.metric_name:
+>        _bcs.add(pmu_name, metric=True)
+>        _bcs.add(event.build_c_string(metric=True), metric=True)
+> +    if event.size:
+> +      _bcs.add(event.build_c_string(metric=False, layout=True))
+>  
+>  def process_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+>    """Process a JSON file during the main walk."""
+> @@ -608,11 +669,14 @@ def process_one_file(parents: Sequence[str], item: os.DirEntry) -> None:
+>    if item.is_dir() and is_leaf_dir(item.path):
+>      print_pending_events()
+>      print_pending_metrics()
+> +    print_pending_pmu_counts()
+>  
+>      global _pending_events_tblname
+>      _pending_events_tblname = file_name_to_table_name('pmu_events_', parents, item.name)
+>      global _pending_metrics_tblname
+>      _pending_metrics_tblname = file_name_to_table_name('pmu_metrics_', parents, item.name)
+> +    global _pending_pmu_counts_tblname
+> +    _pending_pmu_counts_tblname = file_name_to_table_name('pmu_layouts_', parents, item.name)
+>  
+>      if item.name == 'sys':
+>        _sys_event_table_to_metric_table_mapping[_pending_events_tblname] = _pending_metrics_tblname
+> @@ -646,6 +710,12 @@ struct pmu_metrics_table {
+>          uint32_t num_pmus;
+>  };
+>  
+> +/* Struct used to make the PMU counter layout table implementation opaque to callers. */
+> +struct pmu_layouts_table {
+> +        const struct compact_pmu_event *entries;
+> +        size_t length;
+> +};
+> +
+>  /*
+>   * Map a CPU to its table of PMU events. The CPU is identified by the
+>   * cpuid field, which is an arch-specific identifier for the CPU.
+> @@ -659,6 +729,7 @@ struct pmu_events_map {
+>          const char *cpuid;
+>          struct pmu_events_table event_table;
+>          struct pmu_metrics_table metric_table;
+> +        struct pmu_layouts_table layout_table;
+>  };
+>  
+>  /*
+> @@ -703,6 +774,12 @@ const struct pmu_events_map pmu_events_map[] = {
+>                metric_size = '0'
+>              if event_size == '0' and metric_size == '0':
+>                continue
+> +            layout_tblname = file_name_to_table_name('pmu_layouts_', [], row[2].replace('/', '_'))
+> +            if layout_tblname in _pmu_layouts_tables:
+> +              layout_size = f'ARRAY_SIZE({layout_tblname})'
+> +            else:
+> +              layout_tblname = 'NULL'
+> +              layout_size = '0'
+>              cpuid = row[0].replace('\\', '\\\\')
+>              _args.output_file.write(f"""{{
+>  \t.arch = "{arch}",
+> @@ -714,6 +791,10 @@ const struct pmu_events_map pmu_events_map[] = {
+>  \t.metric_table = {{
+>  \t\t.pmus = {metric_tblname},
+>  \t\t.num_pmus = {metric_size}
+> +\t}},
+> +\t.layout_table = {{
+> +\t\t.entries = {layout_tblname},
+> +\t\t.length = {layout_size}
+>  \t}}
+>  }},
+>  """)
+> @@ -724,6 +805,7 @@ const struct pmu_events_map pmu_events_map[] = {
+>  \t.cpuid = 0,
+>  \t.event_table = { 0, 0 },
+>  \t.metric_table = { 0, 0 },
+> +\t.layout_table = { 0, 0 },
+>  }
+>  };
+>  """)
+> @@ -812,6 +894,24 @@ static void decompress_metric(int offset, struct pmu_metric *pm)
+>        _args.output_file.write('\twhile (*p++);')
+>    _args.output_file.write("""}
+>  
+> +static void decompress_layout(int offset, struct pmu_layout *pm)
+> +{
+> +\tconst char *p = &big_c_string[offset];
+> +""")
+> +  for attr in _json_layout_attributes:
+> +    _args.output_file.write(f'\n\tpm->{attr} = ')
+> +    if attr in _json_enum_attributes:
+> +      _args.output_file.write("*p - '0';\n")
+> +    else:
+> +      _args.output_file.write("(*p == '\\0' ? NULL : p);\n")
+> +    if attr == _json_layout_attributes[-1]:
+> +      continue
+> +    if attr in _json_enum_attributes:
+> +      _args.output_file.write('\tp++;')
+> +    else:
+> +      _args.output_file.write('\twhile (*p++);')
+> +  _args.output_file.write("""}
+> +
+>  static int pmu_events_table__for_each_event_pmu(const struct pmu_events_table *table,
+>                                                  const struct pmu_table_entry *pmu,
+>                                                  pmu_event_iter_fn fn,
+> @@ -967,6 +1067,21 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
+>          return 0;
+>  }
+>  
+> +int pmu_layouts_table__for_each_layout(const struct pmu_layouts_table *table,
+> +                                     pmu_layout_iter_fn fn,
+> +                                     void *data) {
+> +        for (size_t i = 0; i < table->length; i++) {
+> +                struct pmu_layout pm;
+> +                int ret;
+> +
+> +                decompress_layout(table->entries[i].offset, &pm);
+> +                ret = fn(&pm, data);
+> +                if (ret)
+> +                        return ret;
+> +        }
+> +        return 0;
+> +}
+> +
+>  const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
+>  {
+>          const struct pmu_events_table *table = NULL;
+> @@ -1031,6 +1146,33 @@ const struct pmu_metrics_table *perf_pmu__find_metrics_table(struct perf_pmu *pm
+>          return table;
+>  }
+>  
+> +const struct pmu_layouts_table *perf_pmu__find_layouts_table(struct perf_pmu *pmu)
+> +{
+> +        const struct pmu_layouts_table *table = NULL;
+> +        char *cpuid = perf_pmu__getcpuid(pmu);
+> +        int i;
+> +
+> +        /* on some platforms which uses cpus map, cpuid can be NULL for
+> +         * PMUs other than CORE PMUs.
+> +         */
+> +        if (!cpuid)
+> +                return NULL;
+> +
+> +        i = 0;
+> +        for (;;) {
+> +                const struct pmu_events_map *map = &pmu_events_map[i++];
+> +                if (!map->arch)
+> +                        break;
+> +
+> +                if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
+> +                        table = &map->layout_table;
+> +                        break;
+> +                }
+> +        }
+> +        free(cpuid);
+> +        return table;
+> +}
+> +
+>  const struct pmu_events_table *find_core_events_table(const char *arch, const char *cpuid)
+>  {
+>          for (const struct pmu_events_map *tables = &pmu_events_map[0];
+> @@ -1052,6 +1194,16 @@ const struct pmu_metrics_table *find_core_metrics_table(const char *arch, const
+>          }
+>          return NULL;
+>  }
+> +const struct pmu_layouts_table *find_core_layouts_table(const char *arch, const char *cpuid)
+> +{
+> +        for (const struct pmu_events_map *tables = &pmu_events_map[0];
+> +             tables->arch;
+> +             tables++) {
+> +                if (!strcmp(tables->arch, arch) && !strcmp_cpuid_str(tables->cpuid, cpuid))
+> +                        return &tables->layout_table;
+> +        }
+> +        return NULL;
+> +}
+>  
+>  int pmu_for_each_core_event(pmu_event_iter_fn fn, void *data)
+>  {
+> @@ -1080,6 +1232,19 @@ int pmu_for_each_core_metric(pmu_metric_iter_fn fn, void *data)
+>          return 0;
+>  }
+>  
+> +int pmu_for_each_core_layout(pmu_layout_iter_fn fn, void *data)
+> +{
+> +        for (const struct pmu_events_map *tables = &pmu_events_map[0];
+> +             tables->arch;
+> +             tables++) {
+> +                int ret = pmu_layouts_table__for_each_layout(&tables->layout_table, fn, data);
+> +
+> +                if (ret)
+> +                        return ret;
+> +        }
+> +        return 0;
+> +}
+> +
+>  const struct pmu_events_table *find_sys_events_table(const char *name)
+>  {
+>          for (const struct pmu_sys_events *tables = &pmu_sys_event_tables[0];
+> @@ -1236,6 +1401,7 @@ struct pmu_table_entry {
+>      ftw(arch_path, [], process_one_file)
+>      print_pending_events()
+>      print_pending_metrics()
+> +    print_pending_pmu_counts()
+>  
+>    print_mapping_table(archs)
+>    print_system_mapping_table()
+> diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+> index f5aa96f16..65e0c5dd8 100644
+> --- a/tools/perf/pmu-events/pmu-events.h
+> +++ b/tools/perf/pmu-events/pmu-events.h
+> @@ -45,6 +45,7 @@ struct pmu_event {
+>  	const char *desc;
+>  	const char *topic;
+>  	const char *long_desc;
+> +	const char *counter;
+>  	const char *pmu;
+>  	const char *unit;
+>  	bool perpkg;
+> @@ -67,8 +68,16 @@ struct pmu_metric {
+>  	enum metric_event_groups event_grouping;
+>  };
+>  
+> +struct pmu_layout {
+> +	const char *pmu;
+> +	const char *desc;
+> +	int size;
+> +	int fixed_size;
+> +};
 
+What's the size and fixed_size for?
 
+Can you please add some comments?
+
+Thanks,
+Kan
+
+> +
+>  struct pmu_events_table;
+>  struct pmu_metrics_table;
+> +struct pmu_layouts_table;
+>  
+>  typedef int (*pmu_event_iter_fn)(const struct pmu_event *pe,
+>  				 const struct pmu_events_table *table,
+> @@ -78,15 +87,20 @@ typedef int (*pmu_metric_iter_fn)(const struct pmu_metric *pm,
+>  				  const struct pmu_metrics_table *table,
+>  				  void *data);
+>  
+> +typedef int (*pmu_layout_iter_fn)(const struct pmu_layout *pm,
+> +				  void *data);
+> +
+>  int pmu_events_table__for_each_event(const struct pmu_events_table *table,
+>  				    struct perf_pmu *pmu,
+>  				    pmu_event_iter_fn fn,
+>  				    void *data);
+>  int pmu_events_table__find_event(const struct pmu_events_table *table,
+> -                                 struct perf_pmu *pmu,
+> -                                 const char *name,
+> -                                 pmu_event_iter_fn fn,
+> -				 void *data);
+> +				struct perf_pmu *pmu,
+> +				const char *name,
+> +				pmu_event_iter_fn fn,
+> +				void *data);
+> +int pmu_layouts_table__for_each_layout(const struct pmu_layouts_table *table, pmu_layout_iter_fn fn,
+> +				     void *data);
+>  size_t pmu_events_table__num_events(const struct pmu_events_table *table,
+>  				    struct perf_pmu *pmu);
+>  
+> @@ -95,10 +109,13 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table, pm
+>  
+>  const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu);
+>  const struct pmu_metrics_table *perf_pmu__find_metrics_table(struct perf_pmu *pmu);
+> +const struct pmu_layouts_table *perf_pmu__find_layouts_table(struct perf_pmu *pmu);
+>  const struct pmu_events_table *find_core_events_table(const char *arch, const char *cpuid);
+>  const struct pmu_metrics_table *find_core_metrics_table(const char *arch, const char *cpuid);
+> +const struct pmu_layouts_table *find_core_layouts_table(const char *arch, const char *cpuid);
+>  int pmu_for_each_core_event(pmu_event_iter_fn fn, void *data);
+>  int pmu_for_each_core_metric(pmu_metric_iter_fn fn, void *data);
+> +int pmu_for_each_core_layout(pmu_layout_iter_fn fn, void *data);
+>  
+>  const struct pmu_events_table *find_sys_events_table(const char *name);
+>  const struct pmu_metrics_table *find_sys_metrics_table(const char *name);
