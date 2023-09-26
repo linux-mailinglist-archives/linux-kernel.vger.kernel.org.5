@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5847AF38D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45CC7AF39A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235680AbjIZTAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        id S235707AbjIZTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbjIZTAd (ORCPT
+        with ESMTP id S235643AbjIZTAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:00:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47B11A5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:25 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so1140195466b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:25 -0700 (PDT)
+        Tue, 26 Sep 2023 15:00:49 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46B31A5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:42 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so15222533e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695754824; x=1696359624; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=s173qssf1hSEtheDxpw+ukvaF+2Io1KlydoI9zAe+yM=;
-        b=NdB0fWLWqvnDRGVXRW45jYQQWDHubZLk3lIgLI4HStAfFV1nqNd2X2NckC/MZB0e1/
-         Hh6erFWTvdrj+rxRunraPdGflV4Qrfs2OusWlceFgMYjffV4z0iiyP6IuCahbV7vo0F9
-         GGoGdvwxIZVf3rLG/AcHTuLDl3+aShR3l1TBM=
+        d=linaro.org; s=google; t=1695754840; x=1696359640; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TrjPMuhWwAih9+asoSrsIQ1qfY984QVYCQpToXUHupg=;
+        b=Fv6TWSadzlZ76k8mMys7Lp1gzuGtXQz7EzvmWOho5k7ricGAldaXw07FzyfzR3geWJ
+         fx3oO1ILaHAXL1KXdTDQ+/UhWdp8bKRZo4HX3cgA/S77ScfyFAhQytQSOPbxnnVi/4vB
+         bBI3y82yjm+95zMFOg3+s+qtqzj7qqMnpE8JLpS3JQJYp2Z/MzK48y6Ytvhr5lyfidnR
+         l9QEwm7rn7+Lnpqckq7nU5VIjnT2FDpj6fspnMtiW3TWicvoE3gHiClimSQ7qPfD3+TF
+         dME+k5DbUbQp9A1U797p/ZNgXmfVT2fFe+P1h5c0R9uKP69UhLGaL7bw9oqa1QdreoFc
+         6ebA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695754824; x=1696359624;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s173qssf1hSEtheDxpw+ukvaF+2Io1KlydoI9zAe+yM=;
-        b=Lcx67Yx435UEEzvWQ+IIaRigU4B2X5NZJ08+2Zg1HLRSolRN9LYoKnQQlbTJr7zIhh
-         TrUa73J4QPe4fsWLDRZy4gGz9Zv4Blrzc9iyA+VUIOAFE0uiCNvyOq6WrVVR9pmnCJUg
-         ZD9rsBhLygj6uICq1ro5pTjjBTmsyUld/CaSmjqaFyDkUv3MXQzFCaJd/f2uehzihpYX
-         R5A5wkemee298fBj5om79elj0mLsxGFVe/RQDK0WsFOl7Oym/O/GUwk2NAiu0lNIGTwJ
-         w1Ciy1TxMZXF1oBM56mw0v00L4xZ5JPoUUC1QYG1sk/sq/0mFPQZ+in8+N6M4saIfYUg
-         HV1A==
-X-Gm-Message-State: AOJu0YzrUFG00IgLy5NP39RcB3KxLvroRg1E2qBkg6GXWWJXWWTxDhZv
-        8gq8LHQm41R4XTwwCr1uOLFbaQi69Kt5iAN533gJpw==
-X-Google-Smtp-Source: AGHT+IGxuhS85yoAO47RTwAE+DRJ7pV9uVPvn3M2cLLwGQbcSLf9qxEbdiwio2JVdKWr6J61kGCP3w==
-X-Received: by 2002:a17:907:86a1:b0:9a5:a701:2b90 with SMTP id qa33-20020a17090786a100b009a5a7012b90mr11041996ejc.40.1695754823901;
-        Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id n19-20020a170906165300b009a1c05bd672sm8029499ejd.127.2023.09.26.12.00.23
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1695754840; x=1696359640;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TrjPMuhWwAih9+asoSrsIQ1qfY984QVYCQpToXUHupg=;
+        b=cOukmsN+yXJW2tE0fYkJ5mEmEm3hN00z0tIHFDPaaxcPSHUbf4SWHupdOaELHaKlxw
+         ZCko08b+DIf7msEBXb8RI2lHODvYhO/1jwt3wOp7VtTUiUcwxMuyVVTrcSN9URGMvqvD
+         4CpPRl3TnQESqywmWmpqiPOXhPWHpC+frVfLl9iY3c7emE34mNq3s77QIswO0FzPtdOn
+         3yGGD3vUtzWhyOIpKHeYOH4fsttxthqXrkuoZa8wnqyqd0zx53DiBQEu/tz3nLfzJSn0
+         Jkd2UEV2P7ffaSU+/xBqeAQKWzvyHGWGoQijzy6sQGhfTnSJemX69Ahf8w1egyAguAaY
+         3V9w==
+X-Gm-Message-State: AOJu0Yzzy1kxDeIydyQP2C+ydWGzl2986ClaQZ6Ok2RJWq1q6v8Ecz59
+        jmfWfhoPxhdRJFaKwNZXRbtKxA==
+X-Google-Smtp-Source: AGHT+IEJQU86v6Kth8wNwtzMBFKr22BnpqlSF/2gkWPwQK35EQXX1JPTQzoMEkcQia3P9FtfoB2bEg==
+X-Received: by 2002:a05:6512:3b9f:b0:500:7696:200 with SMTP id g31-20020a0565123b9f00b0050076960200mr11141126lfv.59.1695754840427;
+        Tue, 26 Sep 2023 12:00:40 -0700 (PDT)
+Received: from [192.168.33.189] ([178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id f15-20020a50ee8f000000b0052a19a75372sm7088795edr.90.2023.09.26.12.00.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so11449661a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
-X-Received: by 2002:a05:6402:22cd:b0:534:5e2a:d443 with SMTP id
- dm13-20020a05640222cd00b005345e2ad443mr2604911edb.29.1695754822856; Tue, 26
- Sep 2023 12:00:22 -0700 (PDT)
+        Tue, 26 Sep 2023 12:00:40 -0700 (PDT)
+Message-ID: <01d7386b-fe2f-4193-a4ef-04707a17b639@linaro.org>
+Date:   Tue, 26 Sep 2023 21:00:38 +0200
 MIME-Version: 1.0
-References: <20230926162228.68666-1-mjguzik@gmail.com>
-In-Reply-To: <20230926162228.68666-1-mjguzik@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 26 Sep 2023 12:00:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
-Message-ID: <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/13] arm64: dts: qcom: msm8916-longcheer-l8910: Add
+ sound and modem
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>
+References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
+ <20230926-msm8916-modem-v1-10-398eec74bac9@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230926-msm8916-modem-v1-10-398eec74bac9@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sept 2023 at 09:22, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> +void fput_badopen(struct file *file)
-> +{
-> +       if (unlikely(file->f_mode & (FMODE_BACKING | FMODE_OPENED))) {
-> +               fput(file);
-> +               return;
-> +       }
+On 26.09.2023 18:51, Stephan Gerhold wrote:
+> From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> 
+> Enable sound and modem for the Longcheer L8910 (BQ Aquaris X5).
+> The setup is similar to most MSM8916 devices, i.e.:
+> 
+>  - QDSP6 audio
+>  - Earpiece/headphones/microphones via digital/analog codec in
+>    MSM8916/PM8916
+>  - Audio jack detection via analog codec in PM8916
+>  - WWAN Internet via BAM-DMUX
+> 
+> except:
+> 
+>  - Awinic AW8738 connected to HPH_R (headphones) output of the analog
+>    codec. Note that unlike for wingtech-wt88047 there is no analog
+>    switch that would allow disabling output via the headphone jack
+>    when the speaker is enabled.
+> 
+> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I don't understand.
-
-Why the FMODE_BACKING test?
-
-The only thing that sets FMODE_BACKING is alloc_empty_backing_file(),
-and we know that isn't involved, because the file that is free'd is
-
-        file = alloc_empty_file(op->open_flag, current_cred());
-
-so that test makes no sense.
-
-It might make sense as another WARN_ON_ONCE(), but honestly, why even
-that?  Why worry about FMODE_BACKING?
-
-Now, the FMODE_OPENED check makes sense to me, in that it most
-definitely can be set, and means we need to call the ->release()
-callback and a lot more. Although I get the feeling that this test
-would make more sense in the caller, since path_openat() _already_
-checks for FMODE_OPENED in the non-error path too.
-
-> +       if (WARN_ON_ONCE(atomic_long_cmpxchg(&file->f_count, 1, 0) != 1)) {
-> +               fput(file);
-> +               return;
-> +       }
-
-Ok, I kind of see why you'd want this safety check.  I don't see how
-f_count could be validly anything else, but that's what the
-WARN_ON_ONCE is all about.
-
-Anyway, I think I'd be happier about this if it was more of a "just
-the reverse of alloc_empty_file()", and path_openat() literally did
-just
-
-        if (likely(file->f_mode & FMODE_OPENED))
-                release_empty_file(file);
-        else
-                fput(file);
-
-instead of having this fput_badopen() helper that feels like it needs
-to care about other cases than alloc_empty_file().
-
-Don't take this email as a NAK, though. I don't hate the patch. I just
-feel it could be more targeted, and more clearly "this is explicitly
-avoiding the cost of 'fput()' in just path_openat() if we never
-actually filled things in".
-
-                   Linus
+Konrad
