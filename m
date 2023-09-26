@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A3B7AF410
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905C97AF411
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbjIZTXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
+        id S235712AbjIZTXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbjIZTW7 (ORCPT
+        with ESMTP id S235695AbjIZTXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:22:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7483E192;
-        Tue, 26 Sep 2023 12:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695756173; x=1727292173;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tlhQ45iZYHZ8Hm8Kzdj8LITXLLm2eTGdDO0Sb7N4hUw=;
-  b=BlXn+iAqYYWDsZtPkMP5MMw5UfGxKmdpxcW+rubqPlRGI1X0xC7zQY+k
-   5waZygRa75KHxjK1jN92Ik+Y3qEvs//kbeeP1iVvrxscjv0RcNyN8GTBR
-   2PFhiF4MV4esnWs8DZ2YKh5GY2rM0G9GvGThXfeY53b7+k367OX9eenuO
-   jReluQBwGC8Akdmy7I9R00+dSL9MT5XvFUZpt0GeANT9nXGeOamB8MN/N
-   Xt42JiRVJ5Sp6vWKXntASpHBlGjxbEMguvfyT3jCDdute4hM/ZsuKLaqe
-   lTqBOZZfhf54fRLryeLAFfyljsXvMWwj9kzRN5O9YgpJn6IV5Yz2ISpaU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="378930648"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="378930648"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 12:22:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="864509026"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="864509026"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 12:22:39 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qlDdl-00000000hR1-01Jq;
-        Tue, 26 Sep 2023 22:22:37 +0300
-Date:   Tue, 26 Sep 2023 22:22:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: intel_speed_select_if: Use
- devm_ioremap_resource
-Message-ID: <ZRMvfL+BqacV/Y+D@smile.fi.intel.com>
-References: <20230926175840.989732-1-srinivas.pandruvada@linux.intel.com>
+        Tue, 26 Sep 2023 15:23:01 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D65411D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:22:55 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 8CE9F1820AC;
+        Tue, 26 Sep 2023 21:22:53 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1695756173; bh=MXZZPvWBYrRdnVtDy0NSVMWn0yB2k/fF634A/Y0Nhvc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XEO3TAJzMJJQZcOY+p9BZosiitw+bixBdP2sPB/lfqP+XTTQz9tKskBTYt98x9/AE
+         KEmEMJbd3lxuMjYziNPa/rQyXfXsTYEEcH9pMKfm3mUke+5h7r2K/2FRaF6yLFr7Hy
+         9YMqDvOlxZC7ZNh5q8UH8NFDyXK3hl0NB3ywYzEPuug2JeV/11OzhiMTjibUHIuABQ
+         ia3k9kisPYU0ag12u/qSrzU/4LlwvmXTcaV1vZ49XuqMmFEB+H1bmfV6HNzXRD40aE
+         137lYdRrpPoDjaXXkhxC3ApBx+WhMcPkIAll9YkUd+J+YZrC3VfmuLNdIBTy54sd29
+         tlkJ8DUzmwBdQ==
+Date:   Tue, 26 Sep 2023 21:22:52 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH] checkpatch: warn about multi-line comments without an
+ empty /* line
+Message-ID: <20230926212252.3e44bd22@meshulam.tesarici.cz>
+In-Reply-To: <20230926192006.18351-1-petr@tesarici.cz>
+References: <20230926192006.18351-1-petr@tesarici.cz>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926175840.989732-1-srinivas.pandruvada@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:58:40AM -0700, Srinivas Pandruvada wrote:
-> Replace devm_ioremap() with devm_ioremap_resource() by defining a
-> resource.
-> 
-> No functional impact is expected.
+V Tue, 26 Sep 2023 21:20:06 +0200
+Petr Tesarik <petr@tesarici.cz> naps=C3=A1no:
 
-Resource(s) will be monitored via resource management framework.
-Dunno if this will affect functionality of a code.
+> According to Documentation/process/coding-style.rst, the preferred style
+> for multi-line comments outside net/ and drivers/net/ is:
+>=20
+> .. code-block:: c
+>=20
+>         /*
+>          * This is the preferred style for multi-line
+>          * comments in the Linux kernel source code.
+>          * Please use it consistently.
+>          *
+>          * Description:  A column of asterisks on the left side,
+>          * with beginning and ending almost-blank lines.
+>          */
+>=20
+> Signed-off-by: Petr Tesarik <petr@tesarici.cz>
+> ---
+>  scripts/checkpatch.pl | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7d16f863edf1..0fc3427a9ec9 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -4006,6 +4006,14 @@ sub process {
+>  			     "networking block comments don't use an empty /* line, use /* Co=
+mment...\n" . $hereprev);
+>  		}
+> =20
+> +# Non-networking without an initial /*
+> +		if ($realfile !~ m@^(drivers/net/|net/)@ &&
+> +		    $prevrawline =3D~ /^\+[ \t]*\/\*.*[^ \t]$/ &&
+> +		    $rawline =3D~ /^\+[ \t]*\*/) {
+> +			WARN("MULTILINE_BLOCK_COMMENT_STYLE",
 
-> Suggested-by: Andriy Shevchenko <andriy.shevchenko@linux.intel.com>
+Oops. This should be just BLOCK_COMMENT_STYLE, without MULTILINE; v2 is
+on the way...
 
-Andy
+Petr T
 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-
-Reviewed-by: From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> +			     "multi-line block comments should start with an empty /* line\n"=
+ . $hereprev);
+> +		}
+> +
+>  # Block comments use * on subsequent lines
+>  		if ($prevline =3D~ /$;[ \t]*$/ &&			#ends in comment
+>  		    $prevrawline =3D~ /^\+.*?\/\*/ &&		#starting /*
 
