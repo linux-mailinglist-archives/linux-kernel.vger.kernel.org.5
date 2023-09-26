@@ -2,152 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF687AED10
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB6E7AED14
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234646AbjIZMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S234656AbjIZMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbjIZMmZ (ORCPT
+        with ESMTP id S233232AbjIZMnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:42:25 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A7EB;
-        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79f92726f47so291539539f.3;
-        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
+        Tue, 26 Sep 2023 08:43:31 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37818E5;
+        Tue, 26 Sep 2023 05:43:24 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5344d996bedso2768329a12.3;
+        Tue, 26 Sep 2023 05:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695732138; x=1696336938; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KwZZXUR06hKxqMjAtAVkXjuDv/1BvCb8Sk0gpiHu+5I=;
-        b=T0cQYIVX/Wv2kEiqHtAk+y7maIKtmPtURs04EdORtH2qRakTjKk0r9y+vBJVi7jfLE
-         4wDJEM/nxcvBylOELVMfNkXhRQX1M9tnU5mmtpa6BrCWd0Bn127m9f8mST1J2KsDT2NN
-         mwQzXMmByaurHXFuUS4eyJg+k9dd3MIDIxUVlMnulm6hWvpHAjq/CVQZeBBM4O1SRO4e
-         7B37RiYUYX5MoIvJwjBOigRdu9wlg5yygl++IQ79LuZQJs4aGtlBQes0eczzJ8eQ2fr/
-         pnxdEpgJjLgdmhQz98OSqqZZc6cyh3aeALy6MVo9FX6mtoLNu7x0MCMFds0i8o8tqYP+
-         p9/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695732138; x=1696336938;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1695732202; x=1696337002; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KwZZXUR06hKxqMjAtAVkXjuDv/1BvCb8Sk0gpiHu+5I=;
-        b=tpOCQtOR/TARsNC1yQtkPmXhHw6bpomn1NJFp8URKRw0w/vb665ITp1dWGEzayEpq7
-         wTQaH0TV9ByQH+gQ0ID9yMNGWLnkRJIcKIswFVn29lU8zwLXvMuJJM/e6XSXRTsmU8gG
-         1lg1yH8ShPXE7DoYUMDFdCNGfvwR1DyDNjERWJ3qvconIIBUnCppuNwvTANEYTih/6He
-         VMoB6HnAGRIBGBzSpFNAFsCbuxFUsm7DyDiOl4gCaqwYPuZ51sIHmjyGs1p0qU65hHRL
-         ln0T0yjUAf4tlZSr4QJLLKYcuMz1AqQODKVGCitUxDnyPNL4yG7yBsYQe56/CdJ6sf8e
-         KaZQ==
-X-Gm-Message-State: AOJu0YzyFVDZMdQh2mAKxMRMJI9qfO4Y+A1biKUMYUhCmU5QZdulpUA+
-        A/NSlVILXjbvhTGspeMn12M=
-X-Google-Smtp-Source: AGHT+IEOiSkG0mndUGYjrWRyD1gPI2GcUvEPRN/qCsJi6tg1cwQOicv8XV55FV90Nh5byZmbTyqpHw==
-X-Received: by 2002:a05:6e02:1946:b0:34b:aef9:60d4 with SMTP id x6-20020a056e02194600b0034baef960d4mr12605847ilu.27.1695732138129;
-        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m13-20020a056638408d00b0042b326ed1ebsm9584jam.48.2023.09.26.05.42.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 05:42:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 26 Sep 2023 05:42:16 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH 3/3] hwmon: (xgene) Migrate to use generic PCC shmem
- related macros
-Message-ID: <667915e2-3c3f-4afd-a055-d010d55b741e@roeck-us.net>
-References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
- <20230926-pcc_defines-v1-3-0f925a1658fd@arm.com>
+        bh=1hA28nfmDNZCbL4Ew/7n+0PE3pEqWXZnhkySX1hHyL4=;
+        b=Kv93Zju4/FKUwKzWH79hP/4d4Batk8oKPirBimT8+9QBRDVtdQz6y+PHmtDTsaF6Bn
+         8PJHey3yotRq7f80QaoDSgzVVwfql+EbVkHE+c9gSRkAvtMy2g9KHhxE/ex+Ylim0onE
+         BeoexZpjuj9MwmC1glCxLh8moMrTmyC/Htloj6vpJxGF1EevZEwc5hEVWGrp6JQ/7YS2
+         /EjxonCreYv9CaHK8tIsGyfQUoLLA7bV22RvQR9Q6j6EcVppiD6lahRGQo4hZUPEn4+z
+         oZjiGOLschMqQKaOQG2CNhNJSabzS/T5ZLxkF14cYmU5EurxSaJ6CEsw1wbCeft6kP6n
+         hEVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695732202; x=1696337002;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1hA28nfmDNZCbL4Ew/7n+0PE3pEqWXZnhkySX1hHyL4=;
+        b=QGnyyYKc6a3YuGFR17s7+dQpXsa4lqx+ZKS/G591xV+5ujH6F/xNJUtcb6R86X81kb
+         /z9gCO0JF01MRWtdQXXVIP+nJzRyl90i7Xyg9FY5KRF/2P4SpJx+pykstYQBIcXu7XKy
+         ZMjvcjpEKMC+4MfZR7L69npaRHpL6hAzDkbwHNRusCJkDxTl1e7syOSHg5oqGG5wOqmq
+         liYn4E6RxeWqed97y1mPSrvBhuMAMSbhzkR5NwxCM4nmmoHtCz6hTgJ8NpWq/TtbrHRN
+         zrR10UL7nSuCUbAkbM1GnFJEvJzy2y4D9yTFFMqSsavDjGoOEgJ+8IGeOGFl8ddW4W5B
+         oiyw==
+X-Gm-Message-State: AOJu0Yz6BTeubo59TTFn8VJSykEVpzUn/hI+cbOBEnZVvJrJK+krAsgl
+        ND3RU/RONJ1gxs/0fPW4M/gY1Bdl//w=
+X-Google-Smtp-Source: AGHT+IGNoam+P9Q0Tdh3q3qXJ2zE2RGt+wQ8R2+1xFs1gsVP2rUGMVnrwZIrAT0CNxOm20fyT33QLQ==
+X-Received: by 2002:a05:6402:150d:b0:530:8801:47aa with SMTP id f13-20020a056402150d00b00530880147aamr8268057edw.19.1695732202444;
+        Tue, 26 Sep 2023 05:43:22 -0700 (PDT)
+Received: from [192.168.1.10] ([95.43.220.235])
+        by smtp.googlemail.com with ESMTPSA id l24-20020aa7c318000000b00533349696f1sm6736617edq.16.2023.09.26.05.43.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Sep 2023 05:43:22 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] media: rc: remove ir-rx51 in favour of generic
+ pwm-ir-tx
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Timo Kokkonen <timo.t.kokkonen@iki.fi>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>,
+        "Sicelo A . Mhlongo" <absicsz@gmail.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+References: <cover.1693577725.git.sean@mess.org>
+ <e5325e826935f0bd8566152b6a5fa799b2429d43.1693577725.git.sean@mess.org>
+ <99f0042f-538c-bcaf-96fd-bac24a87f88e@gmail.com>
+ <ZRKFUb1vRtn82bgn@gofer.mess.org>
+From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Message-ID: <1715e2bf-5d02-4f20-1476-29a1fdf350b1@gmail.com>
+Date:   Tue, 26 Sep 2023 15:43:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926-pcc_defines-v1-3-0f925a1658fd@arm.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZRKFUb1vRtn82bgn@gofer.mess.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 01:28:02PM +0100, Sudeep Holla wrote:
-> Use the newly defined common and generic PCC shared memory region
-> related macros in this driver to replace the locally defined ones.
-> 
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-> ---
->  drivers/hwmon/xgene-hwmon.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
+On 26.09.23 г. 10:16 ч., Sean Young wrote:
+> On Mon, Sep 25, 2023 at 07:06:44PM +0300, Ivaylo Dimitrov wrote:
+>> On 1.09.23 г. 17:18 ч., Sean Young wrote:
+>>> The ir-rx51 is a pwm-based TX driver specific to the N900. This can be
+>>> handled entirely by the generic pwm-ir-tx driver, and in fact the
+>>> pwm-ir-tx driver has been compatible with ir-rx51 from the start.
+>>>
+>>
+>> Unfortunately, pwm-ir-tx does not work on n900. My investigation shows that
+>> for some reason usleep_range() sleeps for at least 300-400 us more than what
+>> interval it is requested to sleep. I played with cyclictest from rt-tests
+>> package and it gives similar results - increasing the priority helps, but I
+>> was not able to make it sleep for less that 300 us in average. I tried
+>> cpu_latency_qos_add_request() in pwm-ir-tx, but it made no difference.
+>>
+>> I get similar results on motorola droid4 (OMAP4), albeit there average sleep
+>> is in 200-300 us range, which makes me believe that either OMAPs have issues
+>> with hrtimers or the config we use has some issue which leads to scheduler
+>> latency. Or, something else...
 > 
-> diff --git a/drivers/hwmon/xgene-hwmon.c b/drivers/hwmon/xgene-hwmon.c
-> index 78d9f52e2a71..1ccdd61b6d13 100644
-> --- a/drivers/hwmon/xgene-hwmon.c
-> +++ b/drivers/hwmon/xgene-hwmon.c
-> @@ -57,12 +57,6 @@
->  	(MSG_TYPE_SET(MSG_TYPE_PWRMGMT) | \
->  	MSG_SUBTYPE_SET(hndl) | TPC_CMD_SET(cmd) | type)
->  
-> -/* PCC defines */
-> -#define PCC_SIGNATURE_MASK		0x50424300
-> -#define PCCC_GENERATE_DB_INT		BIT(15)
-> -#define PCCS_CMD_COMPLETE		BIT(0)
-> -#define PCCS_SCI_DOORBEL		BIT(1)
-> -#define PCCS_PLATFORM_NOTIFICATION	BIT(3)
->  /*
->   * Arbitrary retries in case the remote processor is slow to respond
->   * to PCC commands
-> @@ -142,15 +136,15 @@ static int xgene_hwmon_pcc_rd(struct xgene_hwmon_dev *ctx, u32 *msg)
->  
->  	/* Write signature for subspace */
->  	WRITE_ONCE(generic_comm_base->signature,
-> -		   cpu_to_le32(PCC_SIGNATURE_MASK | ctx->mbox_idx));
-> +		   cpu_to_le32(PCC_SIGNATURE | ctx->mbox_idx));
->  
->  	/* Write to the shared command region */
->  	WRITE_ONCE(generic_comm_base->command,
-> -		   cpu_to_le16(MSG_TYPE(msg[0]) | PCCC_GENERATE_DB_INT));
-> +		   cpu_to_le16(MSG_TYPE(msg[0]) | PCC_CMD_GENERATE_DB_INTR));
->  
->  	/* Flip CMD COMPLETE bit */
->  	val = le16_to_cpu(READ_ONCE(generic_comm_base->status));
-> -	val &= ~PCCS_CMD_COMPLETE;
-> +	val &= ~PCC_STATUS_CMD_COMPLETE;
->  	WRITE_ONCE(generic_comm_base->status, cpu_to_le16(val));
->  
->  	/* Copy the message to the PCC comm space */
-> @@ -544,7 +538,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
->  	msg = generic_comm_base + 1;
->  	/* Check if platform sends interrupt */
->  	if (!xgene_word_tst_and_clr(&generic_comm_base->status,
-> -				    PCCS_SCI_DOORBEL))
-> +				    PCC_STATUS_SCI_DOORBELL))
->  		return;
->  
->  	/*
-> @@ -566,7 +560,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
->  	      TPC_CMD(((u32 *)msg)[0]) == TPC_ALARM))) {
->  		/* Check if platform completes command */
->  		if (xgene_word_tst_and_clr(&generic_comm_base->status,
-> -					   PCCS_CMD_COMPLETE)) {
-> +					   PCC_STATUS_CMD_COMPLETE)) {
->  			ctx->sync_msg.msg = ((u32 *)msg)[0];
->  			ctx->sync_msg.param1 = ((u32 *)msg)[1];
->  			ctx->sync_msg.param2 = ((u32 *)msg)[2];
+> The pwm-ir-tx driver does suffer from this problem, but I was under the
+> impression that the ir-rx51 has the same problem.
 > 
-> -- 
-> 2.42.0
+
+Could you elaborate on the "pwm-ir-tx driver does suffer from this 
+problem"? Where do you see that?
+
+ir-rx51 does not suffer from the same problem (albeit it has its own 
+one, see bellow)
+
+>> In either case help is appreciated to dig further trying to find the reason
+>> for such a big delay.
+> 
+> pwm-ir-tx uses usleep_range() and ir-rx51 uses hrtimers. I thought that
+> usleep_range() uses hrtimers; however if you're not seeing the same delay
+> on ir-rx51 then maybe it's time to switch pwm-ir-tx to hrtimers.
+> 
+
+usleep_range() is backed by hrtimers already, however the difference 
+comes from how hrtimer is used in ir-rx51: it uses timer callback 
+function that gets called in softirq context, while usleep_range() puts 
+the task in TASK_UNINTERRUPTIBLE state and then calls 
+schedule_hrtimeout_range(). For some reason it takes at least 200-400 us 
+(on average) even on OMAP4 to switch back to TASK_RUNNING state.
+
+The issue with ir-rx51 and the way it uses hrtimers is that it calls 
+pwm_apply_state() from hrtimer function, which is not ok, per the 
+comment here 
+https://elixir.bootlin.com/linux/v6.6-rc3/source/drivers/pwm/core.c#L502
+
+I can make pwm-ir-tx switch to hrtimers, that's not an issue, but I am 
+afraid that there is some general scheduler or timers (or something 
+else) issue that manifests itself with usleep_range() misbehaving.
+
+> I don't have a n900 to test on, unfortunately.
+> 
+
+I have and once I have an idea what's going on will port pwm-ir-tx to 
+hrtimers, if needed. Don't want to do it now as I am afraid the 
+completion I will have to use will have the same latency problems as 
+usleep_range()
+
+Thanks,
+Ivo
+
+> Thanks
+> Sean
 > 
