@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 882227AEA46
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5287AEA4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjIZKXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S234285AbjIZKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIZKXm (ORCPT
+        with ESMTP id S231509AbjIZKZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:23:42 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576C3BE;
-        Tue, 26 Sep 2023 03:23:36 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c328b53aeaso74277785ad.2;
-        Tue, 26 Sep 2023 03:23:36 -0700 (PDT)
+        Tue, 26 Sep 2023 06:25:07 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB8BF3;
+        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-274c05edb69so5135408a91.2;
+        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695723816; x=1696328616; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695723900; x=1696328700; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tMHH68coiyikCq+WsDtMwndQkQZOfF+YA1O85uD6LCA=;
-        b=OneQs8q89+CyECkSv2oP0JGYAw6uHgjowio2XT7HpsyXXaKIo/xBBYIJ3Dw/teRJFB
-         mbckTjfHGRgD80iZ39l3Or+cNFKi4K+j1tmnFdJF7VH+Pu1let+WgUYHnUnvXAwHwg8J
-         GUy7NZbaI7sQw+xpT5SWVJw+VJ8k3zYpfI8kQED36W3xRGRc1+haR0TMuTPfVV0ITU1f
-         gwih5ZhfkU+fsEWJX3n1kTsooAfP4OCk3tqeAmvhayN1h75NEGu5l1bTLTyKrq5Ro/WC
-         uP/IpOOEZGz4ipVr+u42wNDvZUt/48YPBji2BOY2gRDjJweovBt6tLoPwFzFtg7+LSfh
-         VWAQ==
+        bh=belzVqUXupbj+p/ftaInrev5zFhyd2pVAAHE2DEJScA=;
+        b=IiZsP55AfxbNyD0Zc7Zw/UOvQnHpKbPK0IeIcg1H3JWVtJ9JzQYPtz90g8c9mq4NYk
+         IubZebWtTh0aCHlxH/rFHBKRGHFrX2Mf9BSsDIeun3vabomYkMYymDsXm+s00cCuZL6G
+         mv8lISHgV1hOsbCoD8P3Ndt7PYHOgkDfxC+mqDmARuXEkvFAV16lSUGBndkVPfTXzhG9
+         iJWJZ8lhVqMYOqqEesAMc0J14iJglSdWQymIwPePQt2pe/qhA3WwF/UvM2It1oRS+DOP
+         YGoB55YycIlPQGmrb/CYi9rskIToKUQ71E20NawX74EUpgeLwjIIjZUhnl1J1NF/p43l
+         4fiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695723816; x=1696328616;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695723900; x=1696328700;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tMHH68coiyikCq+WsDtMwndQkQZOfF+YA1O85uD6LCA=;
-        b=CQUi0hZcNy29SJTlVJkAqR17F+URd9BZkDoi/DM/ba2iBOuifMZ1ru8O7OY1Rz+nWQ
-         CtSJxHZoFadd7X5kQ1tkmNTt49ukW5Yd3I1aj1ARufFfQzEEm/Ys86XDCjNVLiUfv0pw
-         7HJyMV71EwtXV78JOkbcO/MJkS4+LVP6eJ2utn0TVlYru7y9XFsvZiKrWN5znDyeP7kH
-         D09+RDJh1VQhrST63bMitXT2UaMs76CFLwdnkqlLBE4uCX9TgCdE42HN31pGlaDMLS+P
-         qa0MJoYbD7Uatpg2LdEp4Ydsi3ESDVMVDYOQx+s53iUUG32RqZ5SF89UtJp6dTkqWwkz
-         iAaA==
-X-Gm-Message-State: AOJu0YyZiq3CkA+nsRHm1I8LwVGGFG+Ni+sVRLMU3sSjLLQjAgjsVIAF
-        kg5nSXngWGbFbJGsoH2ykas=
-X-Google-Smtp-Source: AGHT+IEF0wgtiaw9tXX8b+HUFgzNZEGl0UzCfgId4g4ZQ389XUyUmdKLlhXgn4a+7n6QYnbA2hrCGw==
-X-Received: by 2002:a17:902:d507:b0:1c3:dafa:b1e9 with SMTP id b7-20020a170902d50700b001c3dafab1e9mr11285170plg.10.1695723815663;
-        Tue, 26 Sep 2023 03:23:35 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id p16-20020a170902e75000b001c3a8b135ebsm10572902plf.282.2023.09.26.03.23.33
+        bh=belzVqUXupbj+p/ftaInrev5zFhyd2pVAAHE2DEJScA=;
+        b=HE3lF+deH7tbGqEOe+0FgDxiwJA/Ks30WqdcSaQVF7Fe/4bXzDQ+uUj9obHVUbfN3b
+         /Fgm7TsSaF5qG26ICuzo+J8juyyGEYGjLTHNefQnkArhiAWW4aaj4ZAkZZfght+WJZUf
+         2j3z9Dwm5LZnf8KTXGAErg5Q2iM7FU+KBVfHNr0+cLeOnhSiTVmYqL9PGPMC80FoRpAr
+         63/nWUfhK7fbCK1MsZnFSgbRPbSQHd1uIa5fnMSx/WvSTz51ph/LDMEXnseWRz3z5dKI
+         S571RMTJl4utnwjCDuuqTyIVp0a06or8oelTAl2uh5e5910dOeLS1+Df72l1qR4hCvd2
+         70gg==
+X-Gm-Message-State: AOJu0YzT12HmdJUh4e7s7eDXmtUQV6ugqAIaIukM+ImohFg8lxi99yb7
+        nme96K9mmta2/ouLXJL4VQ8=
+X-Google-Smtp-Source: AGHT+IE4bRabF4Tz8fVRFjoJCKeKdherUx2wMHpu1l6uFKHg1l6krNDijIoGangTlLVTiq+Cdp2VaA==
+X-Received: by 2002:a17:90a:f298:b0:269:6c5:11a7 with SMTP id fs24-20020a17090af29800b0026906c511a7mr6883549pjb.17.1695723900206;
+        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
+Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
+        by smtp.gmail.com with ESMTPSA id gk15-20020a17090b118f00b00274b9dd8519sm9623829pjb.35.2023.09.26.03.24.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 03:23:35 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] RDMA: Fix potential deadlock on &dev->rdi.pending_lock
-Date:   Tue, 26 Sep 2023 10:23:31 +0000
-Message-Id: <20230926102331.5095-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 03:24:59 -0700 (PDT)
+From:   Edward AD <twuufnxlz@gmail.com>
+To:     syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com
+Cc:     akpm@linux-foundation.org, hughd@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: [PATCH] fs/hfsplus: expand s_vhdr_buf size to avoid slab oob
+Date:   Tue, 26 Sep 2023 18:24:55 +0800
+Message-ID: <20230926102454.992535-2-twuufnxlz@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000820e380606161640@google.com>
+References: <000000000000820e380606161640@google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qib_7322intr() could introduce double locks on &dev->rdi.pending_lock
-if it preempts other execution units requiring the same locks.
+The memory allocated to s_vhdr_buf in the function hfsplus-read_wrapper is 
+too small, resulting in a slab out of bounds issue when copying data with 
+copy_page_from_iter_atomic.
 
-<Deadlock #1>
-qib_notify_error_qp()
---> spin_lock(&dev->rdi.pending_lock)
-<interrupt>
-   --> qib_7322intr()
-   --> qib_ib_piobufavail()
-   --> spin_lock_irqsave(&dev->rdi.pending_lock)
+When allocating memory to s_vhdr_buf, take the maximum value between 
+hfsplus_min_io_size(sb) and PAGE_SIZE to avoid similar issues.
 
-<Deadlock #2>
-qib_flush_qp_waiters()
---> spin_lock(&dev->rdi.pending_lock)
-<interrupt>
-   --> qib_7220intr()
-   --> qib_ib_piobufavail()
-   --> spin_lock_irqsave(&dev->rdi.pending_lock)
-
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
-
-To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-on &dev->rdi.pending_lock inside qib_notify_error_qp() and
-qib_flush_qp_waiters() to prevent the possible deadlock scenario.
-
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+Reported-and-tested-by: syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com
+Signed-off-by: Edward AD <twuufnxlz@gmail.com>
 ---
- drivers/infiniband/hw/qib/qib_qp.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/hfsplus/wrapper.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_qp.c b/drivers/infiniband/hw/qib/qib_qp.c
-index 1974ceb9d405..05a107fb6ebc 100644
---- a/drivers/infiniband/hw/qib/qib_qp.c
-+++ b/drivers/infiniband/hw/qib/qib_qp.c
-@@ -241,13 +241,14 @@ void qib_notify_error_qp(struct rvt_qp *qp)
- {
- 	struct qib_qp_priv *priv = qp->priv;
- 	struct qib_ibdev *dev = to_idev(qp->ibqp.device);
-+	unsigned long flags;
+diff --git a/fs/hfsplus/wrapper.c b/fs/hfsplus/wrapper.c
+index 0b791adf02e5..56bee8dbe532 100644
+--- a/fs/hfsplus/wrapper.c
++++ b/fs/hfsplus/wrapper.c
+@@ -163,7 +163,7 @@ int hfsplus_read_wrapper(struct super_block *sb)
+ 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(sb);
+ 	struct hfsplus_wd wd;
+ 	sector_t part_start, part_size;
+-	u32 blocksize;
++	u32 blocksize, bufsize;
+ 	int error = 0;
  
--	spin_lock(&dev->rdi.pending_lock);
-+	spin_lock_irqsave(&dev->rdi.pending_lock, flags);
- 	if (!list_empty(&priv->iowait) && !(qp->s_flags & RVT_S_BUSY)) {
- 		qp->s_flags &= ~RVT_S_ANY_WAIT_IO;
- 		list_del_init(&priv->iowait);
- 	}
--	spin_unlock(&dev->rdi.pending_lock);
-+	spin_unlock_irqrestore(&dev->rdi.pending_lock, flags);
+ 	error = -EINVAL;
+@@ -175,10 +175,11 @@ int hfsplus_read_wrapper(struct super_block *sb)
+ 		goto out;
  
- 	if (!(qp->s_flags & RVT_S_BUSY)) {
- 		qp->s_hdrwords = 0;
-@@ -367,11 +368,12 @@ void qib_flush_qp_waiters(struct rvt_qp *qp)
- {
- 	struct qib_qp_priv *priv = qp->priv;
- 	struct qib_ibdev *dev = to_idev(qp->ibqp.device);
-+	unsigned long flags;
+ 	error = -ENOMEM;
+-	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
++	bufsize = max_t(u32, hfsplus_min_io_size(sb), PAGE_SIZE);
++	sbi->s_vhdr_buf = kmalloc(bufsize, GFP_KERNEL);
+ 	if (!sbi->s_vhdr_buf)
+ 		goto out;
+-	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
++	sbi->s_backup_vhdr_buf = kmalloc(bufsize, GFP_KERNEL);
+ 	if (!sbi->s_backup_vhdr_buf)
+ 		goto out_free_vhdr;
  
--	spin_lock(&dev->rdi.pending_lock);
-+	spin_lock_irqsave(&dev->rdi.pending_lock, flags);
- 	if (!list_empty(&priv->iowait))
- 		list_del_init(&priv->iowait);
--	spin_unlock(&dev->rdi.pending_lock);
-+	spin_unlock_irqrestore(&dev->rdi.pending_lock, flags);
- }
- 
- /**
 -- 
-2.17.1
+2.25.1
 
