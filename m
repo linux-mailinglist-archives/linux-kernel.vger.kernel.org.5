@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07017AEE31
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579617AEE3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjIZNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S234886AbjIZNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjIZNsd (ORCPT
+        with ESMTP id S234878AbjIZNt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:48:33 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD001B4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:48:25 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401d6f6b2e0so66699435e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695736104; x=1696340904; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vzS+keettZOd01HN2xZh16fkUfdIkcS5wOJyuirXrFQ=;
-        b=vBDycfenJxqwpInoOeWzjshvAsTBnOy4MDP/9EtSvgNA3r7lEi1kUHh6eIWm8z0Rqw
-         fVdg7sIKs/bYqN6a9QibDGgj2zN2Z5Ac5Xz1g/WvvIbQUT79vBh17aDjiZoHo6I5WQR8
-         DhCMWijYspd9CVMwHyVJfbETZlkl0QYFU5rRTEreaWcmbO51gPIzFuyZFREpVQSgteNb
-         F+BB9zxVNoETQuXuSgiN0vxCFu2YCZNrAXhaAChp6Us/1BhZJKSMxSm8nmiVCwlcD5Sp
-         RpJold6epqwjTcj0YI2PW74i5g/Vf1uw/Z1/ERl4zQesX2Lu5mmFxLIDU2mTXjn+UC8r
-         juRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695736104; x=1696340904;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vzS+keettZOd01HN2xZh16fkUfdIkcS5wOJyuirXrFQ=;
-        b=Pj/H6sCw9cxxYSq3UEkEQTesutLZAjG62+pI8/rEFtdBwAPLV3WVvwvw984NrO6RRM
-         Vcd8fLwuPMRubcIXt6CQRpxZQdMvUtCbpw2+yLFWAHVMcZGnR16cULYe+oommVHsLGh9
-         BtTadVa0Ev1pvrQ2qyE8Bhk0D2jJ+Cqt6rNFnyfiPI1548zuUqtdyiI2MCtPSDF4xPzC
-         c+GkUrR15VqNEUWEA9/6LGGlg+0B4sXIQmAZT2N6UVVoptJ1WZnM4vCAqsiB6QLmcmjM
-         Rz23j0FIxWXXc7lqsqgCS9EoVAotLwVSNI1unnwUxRacCwCit37LYy1TSRKIIdVFO9Rp
-         EdSg==
-X-Gm-Message-State: AOJu0Yyo54M9oWNKJXLNo0oMzIW/6G0zP7a2leJ2LjMRJYWXj9kJC2mU
-        y6U6dRdeE1UKpIXvhQj/lLx9OQ==
-X-Google-Smtp-Source: AGHT+IERVS/jYe1PG1KyYRy/F1EQXclRDoumeocBI+M/3oUk+8PNCCJR/U8ukqVLE4zRvT80MMsuBw==
-X-Received: by 2002:a5d:63c9:0:b0:31f:335b:f436 with SMTP id c9-20020a5d63c9000000b0031f335bf436mr2092424wrw.22.1695736104266;
-        Tue, 26 Sep 2023 06:48:24 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id v11-20020a5d610b000000b0031435731dfasm14715049wrt.35.2023.09.26.06.48.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 06:48:23 -0700 (PDT)
-Message-ID: <fd90773d-eb70-920d-fe33-30c37453b4fb@linaro.org>
-Date:   Tue, 26 Sep 2023 15:48:23 +0200
+        Tue, 26 Sep 2023 09:49:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936C110C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695736141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4a0+/j3wqqmi1vR/kPX5Kqapr51Hnx898rdCOogEsLU=;
+        b=BEzsnhIAJFuHg5/vBw0yXAxQ53zKFrFp2dYvamwG/o/o/YDUfcaYA1HdE2WEVd0C4ylCUH
+        jRhVDyFVQ6ZFpn+npqH65vWdtGs3vdegAZ5qxbJZc1nxxYihEVKaLlnUAeMbapFPDxBN8k
+        IFrkviWQtRzHaln6mIMvpplTC4DeM9A=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-75-td5N-bvqNoevhu9VjagDWQ-1; Tue, 26 Sep 2023 09:48:57 -0400
+X-MC-Unique: td5N-bvqNoevhu9VjagDWQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2B45101A529;
+        Tue, 26 Sep 2023 13:48:56 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3291A140273D;
+        Tue, 26 Sep 2023 13:48:53 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+        <20230913152238.905247-3-mszeredi@redhat.com>
+        <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+        <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+        <20230914-lockmittel-verknallen-d1a18d76ba44@brauner>
+        <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+        <20230918-grafik-zutreffen-995b321017ae@brauner>
+        <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+Date:   Tue, 26 Sep 2023 15:48:51 +0200
+In-Reply-To: <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+        (Miklos Szeredi's message of "Mon, 18 Sep 2023 16:14:02 +0200")
+Message-ID: <871qeloxj0.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] thermal: core: Drop redundant trips check from
- for_each_thermal_trip()
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <5981326.lOV4Wx5bFT@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <5981326.lOV4Wx5bFT@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2023 20:59, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> It is invalid to call for_each_thermal_trip() on an unregistered thermal
-> zone anyway, and as per thermal_zone_device_register_with_trips(), the
-> trips[] table must be present if num_trips is greater than zero for the
-> given thermal zone.
-> 
-> Hence, the trips check in for_each_thermal_trip() is redundant and so it
-> can be dropped.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+* Miklos Szeredi:
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> On Mon, Sep 18, 2023 at 3:51=E2=80=AFPM Christian Brauner <brauner@kernel=
+.org> wrote:
+>
+>> I really would prefer a properly typed struct and that's what everyone
+>> was happy with in the session as well. So I would not like to change the
+>> main parameters.
+>
+> I completely  agree.  Just would like to understand this point:
+>
+>   struct statmnt *statmnt(u64 mntid, u64 mask, unsigned int flags);
+>
+> What's not properly typed about this interface?
+>
+> I guess the answer is that it's not a syscall interface, which will
+> have an added [void *buf, size_t bufsize], while the buffer sizing is
+> done by a simple libc wrapper.
+>
+> Do you think that's a problem?  If so, why?
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Try-and-resize interfaces can be quite bad for data obtained from the
+network.  If the first call provides the minimum buffer size (like
+getgroups, but unlike readlink or the glibc *_r interfaces for NSS),
+this could at least allow us to avoid allocating too much.  In
+userspace, we cannot reduce the size of the heap allocation without
+knowing where the pointers are and what they mean.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I also don't quite understand the dislike of variable-sized records.
+Don't getdents, inotify, Netlink all use them?  And I think at least for
+Netlink, more stuff is added all the time?
+
+Thanks,
+Florian
 
