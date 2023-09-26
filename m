@@ -2,40 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4027AE61D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188FF7AE620
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbjIZGig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S233827AbjIZGjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbjIZGia (ORCPT
+        with ESMTP id S233757AbjIZGjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:38:30 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8BE110A;
-        Mon, 25 Sep 2023 23:38:23 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 8EEC480B4;
-        Tue, 26 Sep 2023 06:38:21 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, Dhruva Gole <d-gole@ti.com>
-Subject: [PATCH v3 2/2] Input: gpio-keys - Add system suspend support for dedicated wakeirqs
-Date:   Tue, 26 Sep 2023 09:38:09 +0300
-Message-ID: <20230926063809.25654-2-tony@atomide.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230926063809.25654-1-tony@atomide.com>
-References: <20230926063809.25654-1-tony@atomide.com>
+        Tue, 26 Sep 2023 02:39:09 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F8B116;
+        Mon, 25 Sep 2023 23:39:02 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bfed7c4e6dso135128941fa.1;
+        Mon, 25 Sep 2023 23:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695710340; x=1696315140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xOK6OfHsH5UzXX07PzrwQsARRjCcdnyHQS4dDua03nw=;
+        b=eVBYK/fZZ8sArYAzt80NlSEYz5YueAeTBmFrv1BxvFdVsIuLC4Plueq9E4SW7V8rhp
+         s0dZhrb1JdrjoCvTmSTdp2ls3R+6aM39VBwALow+xq5vA8+RRcOm6Imv8gBuqb7guN8V
+         1gP4qqiy/lCJbysGtH1PypTLuJJ+QJupGB26gyo0hcthkRkTtOR1CpJFTo8gW9tHlyZC
+         CJF47ol8t5pS0yo47UKX94fsrKP7hdwj/oy4H53ngC+xgXPoBgFjVA2MiEP/xaLReqQ6
+         ATTpzkY2ji093g6ulAkz/uiZlfgUiE5oPhNi5FhiiKw36ornbV7f1jxVeFuZ0WrLmDzC
+         LDYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695710340; x=1696315140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xOK6OfHsH5UzXX07PzrwQsARRjCcdnyHQS4dDua03nw=;
+        b=HiBM1U6+j7skFecrjJqGdh2k2btq/9VzXwzu4c7j9imRN0GVwP3KzVUhk957ThpJRu
+         yKOZdjzkxwrJ/4Dzd3OHQWV3o5h/EfOcHmnncxu8eyOq5mB/rV7xKmZpnMl/o64RWFov
+         KoA3OaZVIs/38b5yiAOuZZON+FeGPOzsWbjNQ2b3SAzV5/yrG5POBAi2LrIvCgmkYFjo
+         W42e951IsjObh78peF7uO/sAT7FissUuB49iqL6eBkYr0PlyBalD3VejtC52HBIhIokH
+         OnC+Dn2ypjRmB+66ecbI7MOeFVWqGgXvD8/wKHl2jcb5HJkDV14R8ikaeDFYQ+OCfX/q
+         ursw==
+X-Gm-Message-State: AOJu0YwK0qcMxI/sfNM87/ayn7DBxLjZf446QYx1wNrYHp6hVXtAdfIx
+        SEC/WR/X/oVYicsoJUbWhIpi9mL6U60H9g==
+X-Google-Smtp-Source: AGHT+IEZbAEvu9lgt5JJh/Z2GjloOrBpRgTUgnNCYG3KavjqfNt/qHcgljINrUwUMAXGwze8s6FBiQ==
+X-Received: by 2002:a2e:97c8:0:b0:2bc:e954:4203 with SMTP id m8-20020a2e97c8000000b002bce9544203mr7159098ljj.26.1695710340426;
+        Mon, 25 Sep 2023 23:39:00 -0700 (PDT)
+Received: from f (cst-prg-24-34.cust.vodafone.cz. [46.135.24.34])
+        by smtp.gmail.com with ESMTPSA id lw3-20020a170906bcc300b009ade1a4f795sm7244603ejb.168.2023.09.25.23.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 23:38:59 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 08:38:57 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     John Johansen <john.johansen@canonical.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        linux-security-module@vger.kernel.org, apparmor@lists.ubuntu.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [apparmor] use per-cpu refcounts for apparmor labels?
+Message-ID: <20230926063857.h3afce5hagnlkoob@f>
+References: <CAGudoHFfG7mARwSqcoLNwV81-KX4Bici5FQHjoNG4f9m83oLyg@mail.gmail.com>
+ <87a5t9bypm.fsf@intel.com>
+ <c6379a39-42f2-b3f9-c835-bbebe516ba3a@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c6379a39-42f2-b3f9-c835-bbebe516ba3a@canonical.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,185 +74,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoCs have a separate dedicated wake-up interrupt controller that can
-be used to wake up the system from deeper idle states. We already support
-configuring a separate interrupt for a gpio-keys button to be used with a
-gpio line. However, we are lacking support system suspend for cases where
-a separate interrupt needs to be used in deeper sleep modes.
+On Mon, Sep 25, 2023 at 11:21:26PM -0700, John Johansen wrote:
+> On 9/25/23 16:49, Vinicius Costa Gomes wrote:
+> > Hi Mateusz,
+> > 
+> > Mateusz Guzik <mjguzik@gmail.com> writes:
+> > 
+> > > I'm sanity-checking perf in various microbenchmarks and I found
+> > > apparmor to be the main bottleneck in some of them.
+> > > 
+> > > For example: will-it-scale open1_processes -t 16, top of the profile:
+> > >    20.17%  [kernel]                   [k] apparmor_file_alloc_security
+> > >    20.08%  [kernel]                   [k] apparmor_file_open
+> > >    20.05%  [kernel]                   [k] apparmor_file_free_security
+> > >    18.39%  [kernel]                   [k] apparmor_current_getsecid_subj
+> > > [snip]
+> > > 
+> > > This serializes on refing/unrefing apparmor objs, sounds like a great
+> > > candidate for per-cpu refcounting instead (I'm assuming they are
+> > > expected to be long-lived).
+> > > 
+> > > I would hack it up myself, but I failed to find a clear spot to switch
+> > > back from per-cpu to centalized operation and don't want to put
+> > > serious effort into it.
+> > > 
+> > > Can you sort this out?
+> > 
+> 
+> I will add looking into it on the todo list. Its going to have to come
+> after some other major cleanups land, and I am not sure we can make
+> the semantic work well for some of these. For other we might get away
+> with switching to a critical section like Vinicius's patch has done
+> for apparmor_current_getsecid_subj.
+> 
 
-Because of it's nature, gpio-keys does not know about the runtime PM state
-of the button gpios, and may have several gpio buttons configured for each
-gpio-keys device instance. Implementing runtime PM support for gpio-keys
-does not help, and we cannot use drivers/base/power/wakeirq.c support. We
-need to implement custom wakeirq support for gpio-keys.
+Is there an eta?
 
-For handling a dedicated wakeirq for system suspend, we enable and disable
-it with gpio_keys_enable_wakeup() and gpio_keys_disable_wakeup() that we
-already use based on device_may_wakeup().
+I looked at dodging ref round trips myself, but then found that ref
+manipulation in apparmor_file_alloc_security and the free counterpart
+cannot be avoided. Thus per-cpu refs instead.
 
-Some systems may have a dedicated wakeirq that can also be used as the
-main interrupt, this is already working for gpio-keys. Let's add some
-wakeirq related comments while at it as the usage with a gpio line and
-separate interrupt line may not be obvious.
+Perhaps making the label as stale would be a good enough switching
+point? Is it *guaranteed* to get labelled as stale before it gets freed?
 
-Tested-by: Dhruva Gole <d-gole@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
+btw, __aa_proxy_redirect open-codes setting the flag.
 
-No changes from v1
-
----
- drivers/input/keyboard/gpio_keys.c | 69 ++++++++++++++++++++++++++++--
- include/linux/gpio_keys.h          |  2 +
- 2 files changed, 67 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/input/keyboard/gpio_keys.c b/drivers/input/keyboard/gpio_keys.c
---- a/drivers/input/keyboard/gpio_keys.c
-+++ b/drivers/input/keyboard/gpio_keys.c
-@@ -45,7 +45,9 @@ struct gpio_button_data {
- 	unsigned int software_debounce;	/* in msecs, for GPIO-driven buttons */
- 
- 	unsigned int irq;
-+	unsigned int wakeirq;
- 	unsigned int wakeup_trigger_type;
-+
- 	spinlock_t lock;
- 	bool disabled;
- 	bool key_pressed;
-@@ -511,6 +513,7 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 	struct gpio_button_data *bdata = &ddata->data[idx];
- 	irq_handler_t isr;
- 	unsigned long irqflags;
-+	const char *wakedesc;
- 	int irq;
- 	int error;
- 
-@@ -575,6 +578,14 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 					!gpiod_cansleep(bdata->gpiod);
- 		}
- 
-+		/*
-+		 * If an interrupt was specified, use it instead of the gpio
-+		 * interrupt and use the gpio for reading the state. A separate
-+		 * interrupt may be used as the main button interrupt for
-+		 * runtime PM to detect events also in deeper idle states. If a
-+		 * dedicated wakeirq is used for system suspend only, see below
-+		 * for bdata->wakeirq setup.
-+		 */
- 		if (button->irq) {
- 			bdata->irq = button->irq;
- 		} else {
-@@ -672,6 +683,36 @@ static int gpio_keys_setup_key(struct platform_device *pdev,
- 		return error;
- 	}
- 
-+	if (!button->wakeirq)
-+		return 0;
-+
-+	/* Use :wakeup suffix like drivers/base/power/wakeirq.c does */
-+	wakedesc = devm_kasprintf(dev, GFP_KERNEL, "%s:wakeup", desc);
-+	if (!wakedesc)
-+		return -ENOMEM;
-+
-+	bdata->wakeirq = button->wakeirq;
-+	irqflags |= IRQF_NO_SUSPEND;
-+
-+	/*
-+	 * Wakeirq shares the handler with the main interrupt, it's only
-+	 * active during system suspend. See gpio_keys_button_enable_wakeup()
-+	 * and gpio_keys_button_disable_wakeup().
-+	 */
-+	error = devm_request_any_context_irq(dev, bdata->wakeirq, isr,
-+					     irqflags, wakedesc, bdata);
-+	if (error < 0) {
-+		dev_err(dev, "Unable to claim wakeirq %d; error %d\n",
-+			bdata->irq, error);
-+		return error;
-+	}
-+
-+	/*
-+	 * Disable wakeirq until suspend. IRQF_NO_AUTOEN won't work if
-+	 * IRQF_SHARED was set based on !button->can_disable.
-+	 */
-+	disable_irq_nosync(bdata->wakeirq);
-+
- 	return 0;
- }
- 
-@@ -728,7 +769,7 @@ gpio_keys_get_devtree_pdata(struct device *dev)
- 	struct gpio_keys_platform_data *pdata;
- 	struct gpio_keys_button *button;
- 	struct fwnode_handle *child;
--	int nbuttons;
-+	int nbuttons, irq;
- 
- 	nbuttons = device_get_child_node_count(dev);
- 	if (nbuttons == 0)
-@@ -750,9 +791,19 @@ gpio_keys_get_devtree_pdata(struct device *dev)
- 	device_property_read_string(dev, "label", &pdata->name);
- 
- 	device_for_each_child_node(dev, child) {
--		if (is_of_node(child))
--			button->irq =
--				irq_of_parse_and_map(to_of_node(child), 0);
-+		if (is_of_node(child)) {
-+			irq = of_irq_get_byname(to_of_node(child), "irq");
-+			if (irq > 0)
-+				button->irq = irq;
-+
-+			irq = of_irq_get_byname(to_of_node(child), "wakeup");
-+			if (irq > 0)
-+				button->wakeirq = irq;
-+
-+			if (!button->irq && !button->wakeirq)
-+				button->irq =
-+					irq_of_parse_and_map(to_of_node(child), 0);
-+		}
- 
- 		if (fwnode_property_read_u32(child, "linux,code",
- 					     &button->code)) {
-@@ -921,6 +972,11 @@ gpio_keys_button_enable_wakeup(struct gpio_button_data *bdata)
- 		}
- 	}
- 
-+	if (bdata->wakeirq) {
-+		enable_irq(bdata->wakeirq);
-+		disable_irq_nosync(bdata->irq);
-+	}
-+
- 	return 0;
- }
- 
-@@ -929,6 +985,11 @@ gpio_keys_button_disable_wakeup(struct gpio_button_data *bdata)
- {
- 	int error;
- 
-+	if (bdata->wakeirq) {
-+		enable_irq(bdata->irq);
-+		disable_irq_nosync(bdata->wakeirq);
-+	}
-+
- 	/*
- 	 * The trigger type is always both edges for gpio-based keys and we do
- 	 * not support changing wakeup trigger for interrupt-based keys.
-diff --git a/include/linux/gpio_keys.h b/include/linux/gpio_keys.h
---- a/include/linux/gpio_keys.h
-+++ b/include/linux/gpio_keys.h
-@@ -21,6 +21,7 @@ struct device;
-  *			disable button via sysfs
-  * @value:		axis value for %EV_ABS
-  * @irq:		Irq number in case of interrupt keys
-+ * @wakeirq:		Optional dedicated wake-up interrupt
-  */
- struct gpio_keys_button {
- 	unsigned int code;
-@@ -34,6 +35,7 @@ struct gpio_keys_button {
- 	bool can_disable;
- 	int value;
- 	unsigned int irq;
-+	unsigned int wakeirq;
- };
- 
- /**
--- 
-2.42.0
+> > I was looking at this same workload, and proposed a patch[1] some time
+> > ago, see if it helps:
+> > 
+> > https://lists.ubuntu.com/archives/apparmor/2023-August/012914.html
+> > 
+> > But my idea was different, in many cases, we are looking at the label
+> > associated with the current task, and there's no need to take the
+> > refcount.
+> > 
+> 
+> yes, and thanks for that.
+> 
