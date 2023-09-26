@@ -2,89 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DE07AEABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29297AEACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbjIZKvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S234467AbjIZKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjIZKvS (ORCPT
+        with ESMTP id S234387AbjIZKw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:51:18 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF4A120
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:51:10 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6c4d625da40so3657663a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1695725470; x=1696330270; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oVHWYYZF7IWZQwYjRKgttRtydqd0ImaiVelgwSHmu9k=;
-        b=jQ/RX7sPZiCQL9S/d41bA4SDhVxJH3Whqw1Sqi1+/QX4N1GghutSVqVt1AgCmEJ2V1
-         eU2nOpqOei6HEuNo2t/zIJePWzd8Zutt/h1uzZTn85zuSJ5UMe5r7fr/4jVgwMRkiUkn
-         96uWmrBPwZV9eo5dDOLwr4cM3c7orzPQ2W093WubD+yDkMmtgmO8Tw0eFr3pFAOThgyq
-         vQW1CG8ezEXCkfHCBMKW+tEAWXv450QmVv98DKHuNMtdMhquLSza++z5AbscS2y7ucvQ
-         EZm6Z4EjUYpB1pMpghfBVEEhFwUYcULwj499bRL9vkZesa/hbT2aeRjXX9dMNAuXd1oU
-         ZyjQ==
+        Tue, 26 Sep 2023 06:52:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4354FB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695725522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=X4uB88kvmb2OybCMfZJsL98qGlQf9b7gdl07NjAzN9g=;
+        b=JWZyz3tcs7LkUpAvGqLbqcX9NpEYju7XdjJDlRlRigC4eJSvLnEjUJovhDpo+6NCt1NeqB
+        Sd0eV6HCYscF6ME3yfQMX1MoklLz/D7CQw1n4XO+TudwfQAoZS38IlPO639eL+/oCOWqbQ
+        HDlLsK3ee2HCidOOkwLWv2pKL+fBXKk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-AobS1yzVOduO_Jw3IC8KIw-1; Tue, 26 Sep 2023 06:52:00 -0400
+X-MC-Unique: AobS1yzVOduO_Jw3IC8KIw-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-531373ea109so6577865a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:52:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695725470; x=1696330270;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oVHWYYZF7IWZQwYjRKgttRtydqd0ImaiVelgwSHmu9k=;
-        b=Tgt7o5rgn1G1ErkkRdmkQ7h0KSEMX4Q9yOv8LUUO4gqA9PnqKNHWOdnwKgUgi6ozgl
-         GCRzfnlPbfqUEsR2pX3vw8ezhVtLSgOg45IlMJQVNwKMnZwRN03g3+5FGVdqODxNMhqQ
-         c6jlQABrA5CTfBDIRASyhN3alOrIAl7tD7SqNAxUIFVoS0f/5j8CPJlg8ve9w69er7O8
-         pZkJV6gjukXA6TKNI/ODJmxjnI3qjS2UHmx2Ju629NkSznUBXXlPcMc5ak+8BfEND77q
-         K7Q6J0KMOlG8iiO0SEIhCt3WxwxkPk+CD/nnsVCnNbVmSwGhGEYJkawl3OS2wmFOKvoC
-         TQpw==
-X-Gm-Message-State: AOJu0YzqUxp/zVhTaBO5rSxPURjBm7MhU/ih+65j0qzIBpzwl8pswA7h
-        Z05UUILvB46wMnDRtSPETGmTujvcejnsyxuOcMo=
-X-Google-Smtp-Source: AGHT+IGD2gKm9S/Z2injrtRA6YnUVtxM9Rzs8I/X6/ewsVn04nFVPko57tLZcoS4O5n8ld0EJ7u4dA==
-X-Received: by 2002:a9d:62c6:0:b0:6bf:1f5f:ed18 with SMTP id z6-20020a9d62c6000000b006bf1f5fed18mr9878036otk.1.1695725470335;
-        Tue, 26 Sep 2023 03:51:10 -0700 (PDT)
-Received: from [10.54.24.10] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
-        by smtp.gmail.com with ESMTPSA id j17-20020aa78dd1000000b0068c1ac1784csm9723150pfr.59.2023.09.26.03.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 03:51:10 -0700 (PDT)
-Message-ID: <16513744-f6db-d96e-92df-15184e6bbb7f@shopee.com>
-Date:   Tue, 26 Sep 2023 18:51:06 +0800
+        d=1e100.net; s=20230601; t=1695725519; x=1696330319;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X4uB88kvmb2OybCMfZJsL98qGlQf9b7gdl07NjAzN9g=;
+        b=QfUZo/ME+yqA/PugiOZzdJ6UfnOtXoqS5fQz9BY+0aF+GGNjEwEbmaw5ANt3PFvm8v
+         aB2/hnxfUCwM5IHQk8O8HmJg0T0/MA43AEmdwQpEgQf8bjZsEdipToFm0F9KXRVybaZ/
+         Cmuh7KYj6I9vVqUs2ixMCdqOOEc3x97w9w55aglLkce/VDrIlPHQg9SrdXfugGC5OtXn
+         aXvryiDcgW+zbI8+I7zKc0o7PNFfDsi+/sBTRnaUGrAu2YWlQZv6J7LbL19sRMAov61o
+         f7ZWbi4SaF73D2UsM0ZbRkUmCNdUCCdNXrJmh6/LOpRxPpHyTIhAx1EDMUFsf6XrCYAQ
+         x+6g==
+X-Gm-Message-State: AOJu0Yy3FBmNQUS0N/5H8K3Z1GL2qI2A+5xSo0gvQa1TvcrYzcJbR3nW
+        VdPee94Sjk4+KTY5V/iFyQ6FwZISgVSYv0O7/5RbTlDQjrd+mL8dbLY3aq4vFXTfdmY36XBwxRG
+        HkBuCWMKg7ZWqSEeRHnpKTu+W
+X-Received: by 2002:a05:6402:656:b0:522:3d36:ff27 with SMTP id u22-20020a056402065600b005223d36ff27mr8070678edx.31.1695725519472;
+        Tue, 26 Sep 2023 03:51:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEH8nf0IVOQ5bt/LShjdqPKghaz5yxg+NopLj8GcqKnHIkhSFwCF49cSfbnTsxDOW26ExwKZQ==
+X-Received: by 2002:a05:6402:656:b0:522:3d36:ff27 with SMTP id u22-20020a056402065600b005223d36ff27mr8070663edx.31.1695725519158;
+        Tue, 26 Sep 2023 03:51:59 -0700 (PDT)
+Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
+        by smtp.gmail.com with ESMTPSA id d15-20020aa7d68f000000b005333922efb0sm6627881edr.78.2023.09.26.03.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 03:51:58 -0700 (PDT)
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     dri-devel@lists.freedesktop.org, sfr@canb.auug.org.au
+Cc:     daniel.vetter@ffwll.ch, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>
+Subject: [PATCH] drm/gpuvm: doc: fix filename references
+Date:   Tue, 26 Sep 2023 12:51:28 +0200
+Message-ID: <20230926105146.10808-1-dakr@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH] sched/psi: bail out early from irq time accounting
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     surenb@google.com, linux-kernel@vger.kernel.org
-References: <20230925102143.462545-1-haifeng.xu@shopee.com>
- <20230925123106.GB347250@cmpxchg.org>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <20230925123106.GB347250@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit f72c2db47080 ("drm/gpuvm: rename struct drm_gpuva_manager to
+struct drm_gpuvm") did also change the corresponding filenames which are
+referenced from the documentation, but were not adjusted accordingly.
+Hence, fix up those filenames.
 
+Fixes: f72c2db47080 ("drm/gpuvm: rename struct drm_gpuva_manager to struct drm_gpuvm")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/dri-devel/20230926150725.4cca5fc5@canb.auug.org.au/
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+---
+ Documentation/gpu/drm-mm.rst | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-On 2023/9/25 20:31, Johannes Weiner wrote:
-> On Mon, Sep 25, 2023 at 10:21:43AM +0000, Haifeng Xu wrote:
->> We could bail out early when psi was disabled.
->>
->> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> 
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Can you please resend this with Peter Ziljstra <peterz@infradead.org>
-> in CC? Thanks
+diff --git a/Documentation/gpu/drm-mm.rst b/Documentation/gpu/drm-mm.rst
+index c19b34b1c0ed..602010cb6894 100644
+--- a/Documentation/gpu/drm-mm.rst
++++ b/Documentation/gpu/drm-mm.rst
+@@ -466,40 +466,40 @@ DRM MM Range Allocator Function References
+ .. kernel-doc:: drivers/gpu/drm/drm_mm.c
+    :export:
+ 
+-DRM GPU VA Manager
+-==================
++DRM GPUVM
++=========
+ 
+ Overview
+ --------
+ 
+-.. kernel-doc:: drivers/gpu/drm/drm_gpuva_mgr.c
++.. kernel-doc:: drivers/gpu/drm/drm_gpuvm.c
+    :doc: Overview
+ 
+ Split and Merge
+ ---------------
+ 
+-.. kernel-doc:: drivers/gpu/drm/drm_gpuva_mgr.c
++.. kernel-doc:: drivers/gpu/drm/drm_gpuvm.c
+    :doc: Split and Merge
+ 
+ Locking
+ -------
+ 
+-.. kernel-doc:: drivers/gpu/drm/drm_gpuva_mgr.c
++.. kernel-doc:: drivers/gpu/drm/drm_gpuvm.c
+    :doc: Locking
+ 
+ Examples
+ --------
+ 
+-.. kernel-doc:: drivers/gpu/drm/drm_gpuva_mgr.c
++.. kernel-doc:: drivers/gpu/drm/drm_gpuvm.c
+    :doc: Examples
+ 
+-DRM GPU VA Manager Function References
+---------------------------------------
++DRM GPUVM Function References
++-----------------------------
+ 
+-.. kernel-doc:: include/drm/drm_gpuva_mgr.h
++.. kernel-doc:: include/drm/drm_gpuvm.h
+    :internal:
+ 
+-.. kernel-doc:: drivers/gpu/drm/drm_gpuva_mgr.c
++.. kernel-doc:: drivers/gpu/drm/drm_gpuvm.c
+    :export:
+ 
+ DRM Buddy Allocator
+-- 
+2.41.0
 
-thanks, I'll send a new mail later.
