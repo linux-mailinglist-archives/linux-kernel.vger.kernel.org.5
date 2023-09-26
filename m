@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF8D7AF647
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C807AF682
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjIZWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 18:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
+        id S231808AbjIZW7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 18:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbjIZWXt (ORCPT
+        with ESMTP id S232013AbjIZW5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 18:23:49 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3617815EBF
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:33:24 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-307d58b3efbso8370505f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695764002; x=1696368802; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZieSTgMmUxr/NfrkjbwSgNBNg4r3Zk2KAXB7myr0pX4=;
-        b=LeF/fgiUcq3PBpwMTeTs20NQ+6zTGiMrhFzQvGfQOczpdv4mB/bqLouRDav9rC7inT
-         YR2FQ54CuvN836AaA5aVTi5Rm8GIEuyynMklnF+Kb6RDkxVYmMcAhwGDf6NH/+A7K0WU
-         +3Y5w3MB9mkvtFLgVqXt7hzcsemtvDtoFTknkmYrX3uxKfBlolRivauc8GyFI7xiV2LP
-         hsT/9evepJAG7TRVf/FEEihpLOHHiuH+q5tqB1iPB4pPumKMNzqxkLUd+oBJ5AtUW/FT
-         EAhpsc312xu8C3ArStLw3v4ibgh6J5yKcSyJOTJkfkcZ1cB5/kbqbawvziF/4MeUwgH6
-         LPGw==
+        Tue, 26 Sep 2023 18:57:51 -0400
+Received: from mail-oi1-x246.google.com (mail-oi1-x246.google.com [IPv6:2607:f8b0:4864:20::246])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48A917EB6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:38:29 -0700 (PDT)
+Received: by mail-oi1-x246.google.com with SMTP id 5614622812f47-3ae4cefe17dso10016492b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:38:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695764002; x=1696368802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1695764307; x=1696369107;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZieSTgMmUxr/NfrkjbwSgNBNg4r3Zk2KAXB7myr0pX4=;
-        b=pW/irUBYGVIIycrLM7HGAZgQ9qyIsrl4kOMdiCPpb/i6OssR/SxOXuxJ/HFq3cfFto
-         zMlsgKKHpdyRGq5/KG1zW23y//FmqkNsVwQkw9ULZDlWMKO6oBPztNrEIigwN/l8oSmb
-         2/4i2smUoRq4IUtgziy9MXOundW0kvJLiIpfGrAZmnOBaXSBwVdwgBQk+2VgKk9cFWtP
-         9V/5qJeFQ1WhyQJ5A1qc1pJ3+YBSLTCe93IqOdx4E4TBLkrQ2oHKRlA3OdyN34LebUW8
-         gwYN3Af5rO+mdTAf2s01Rwb9T3rVqRKlFJGqbX0VHAiLwE9pZCaXKhQpYYeg4f5psSq+
-         vitQ==
-X-Gm-Message-State: AOJu0YynUg4HKsRTLB2p5KRNsOP2mxGHjqanGtYhmGw2bJ9ilBOqmM6G
-        4X+cJcTYUGzLsTZFSbcqcoN9Wg==
-X-Google-Smtp-Source: AGHT+IFOOMgkDp4RpIOH4fcxCTjyZKjvfOrC5prP7B4X4f0NsVWVwuRAKhYSlLCC9KDKAJF1jpA7Mw==
-X-Received: by 2002:a5d:4fc9:0:b0:31f:f99c:6009 with SMTP id h9-20020a5d4fc9000000b0031ff99c6009mr11016450wrw.22.1695764002559;
-        Tue, 26 Sep 2023 14:33:22 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id m16-20020a056000009000b0031c71693449sm15709182wrx.1.2023.09.26.14.33.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 14:33:21 -0700 (PDT)
-Message-ID: <44f9b368-395e-eaf7-b548-7906b33e039b@linaro.org>
-Date:   Tue, 26 Sep 2023 23:33:21 +0200
+        bh=MrujW9fuUJnGCukcO08Sc48BocArkHwApSrdDVAkMsU=;
+        b=EHJuNeuTkfvCm4HKCRnY2Lxm4BpYvx+0OT6toVkS6bFk6QJfVZFMl9QAWmfe/ZSadc
+         ZTIRoyuZA5a2l/Mtf6f+QwISKPLzoUZMPnfhzsmcMxmiPDgz89sRBcLVbtOGJDJNTlnV
+         HiNLwhW9cVvkG+Pr0943C1QvdB2VsPVdBRlSexWs3EY83vd+xaImIri1ZE3uYiBI3iJb
+         2KbI9PHZpyY/4xlfwJhAE0CteKpfV4VxZBp1x811HDH3MAT7DyMmqoC4EBt45JPSwXLa
+         PnRFWAq3iIf9N9NfoYBoThKHWrrgAaA1YYPVQp7iFt8Qg0R5BaZ1gI0TXVr3Vtj1onGi
+         kMXg==
+X-Gm-Message-State: AOJu0YxxeWIR2hFfM7b45OuQJShQXScO2BvNOSxH14lG9gGtT4D4K+j2
+        N8tgWfh6SK1KWcv4Yk1T4U6bimggYl9ppMU85TAWzzX9QHXV
+X-Google-Smtp-Source: AGHT+IHqUNvgj8r/sXHE/1psfIuTkefZXsSeZ3RVACSIBoFlYFfchd4gvfMw4G4oZMJnX1y+ZSBluLCG4GwUpEjncSbmx9hI9CeO
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 02/13] ACPI: thermal: Collapse trip devices update
- functions
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <3534976.iIbC2pHGDl@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <3534976.iIbC2pHGDl@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2018:b0:3ae:1e08:41e7 with SMTP id
+ q24-20020a056808201800b003ae1e0841e7mr90974oiw.9.1695764306911; Tue, 26 Sep
+ 2023 14:38:26 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:38:26 -0700
+In-Reply-To: <0000000000002c6cf80606492f14@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022eedd060649e522@google.com>
+Subject: Re: [syzbot] [bpf?] WARNING in bpf_mprog_pos_before
+From:   syzbot <syzbot+b97d20ed568ce0951a06@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 19:49, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> In order to reduce code duplication, merge update_passive_devices() and
-> update_active_devices() into one function called update_trip_devices()
-> that will be used for updating both the passive and active trip points.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+syzbot has bisected this issue to:
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+commit e420bed025071a623d2720a92bc2245c84757ecb
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Wed Jul 19 14:08:52 2023 +0000
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+    bpf: Add fd-based tcx multi-prog infra with link support
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116ab4b6680000
+start commit:   a59addacf899 drivers/net: process the result of hdlc_open(..
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=136ab4b6680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=156ab4b6680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
+dashboard link: https://syzkaller.appspot.com/bug?extid=b97d20ed568ce0951a06
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10dc3946680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=107f4e1e680000
 
+Reported-by: syzbot+b97d20ed568ce0951a06@syzkaller.appspotmail.com
+Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
