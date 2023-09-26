@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5FF7AF0DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1097AF0DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235304AbjIZQif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        id S235305AbjIZQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235266AbjIZQid (ORCPT
+        with ESMTP id S235313AbjIZQij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:38:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DEE10A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695746267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=olHH16K9BvQoXzjahxJj5u8UpcYEntLBlINdOts8tao=;
-        b=RGmlp5Ia5ZYWS3sCpYOSSkHEuhMGOh5gR+B3VIS9zcQHg97qoin328CQZx2s+7wT36H08D
-        rPwwehnS0heTajcNafJS6pSZrUHVjT4CCMv7wugwWwbpfNKNhpcA5AGOe/NsFn2rUgACtw
-        JQzXEBgTr7H/Sn0+ETma/WWSfyS9wg4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-619-GV_VwOrAPa-Y3K83EJU2JA-1; Tue, 26 Sep 2023 12:37:45 -0400
-X-MC-Unique: GV_VwOrAPa-Y3K83EJU2JA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32001e60fb3so5307177f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:37:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695746264; x=1696351064;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=olHH16K9BvQoXzjahxJj5u8UpcYEntLBlINdOts8tao=;
-        b=Rrr5AGqZEyDZcmtj1ha7A+jkIrFHXX2LRKmVKI8DPkd7bpRHFZbsULZQaIR61ynV4S
-         Frn34kUpxFIx7tDd9WF0zbzezac7CIttOxakXrgHND/D/BMigrnirGjcvemWTNJYEeDr
-         rRtMsCDy50SIXsz4BkqLvB+I7Fscl1cbgSuUa6idrKP8LbAle0v9BuOqTm7gWX2NjzLb
-         vy58XTKV6l4waEx2IPxF7Xe3LCDBHKboMdBq+mAAtKlW80CK/jaVY+ScbObkecHAAfUU
-         a/FtveaekpsImsZqejK90HvlNBExUQ1hNjABpUSFIpSTn3rbzoarDHtZ3rzjM/IZYeHm
-         Wi8Q==
-X-Gm-Message-State: AOJu0Yw7Ge4yEviR9brGF3h7/G6hhznlinnnvX+kTWuqkx2TsqHzjGWG
-        uUicFN2QXGfe9X5FfRKj3Vzqw7Hs1+en4fnxc7UE6jjgbXLStZa9mK27NWF8N1jfN1RRpx9CqRl
-        /WW52BBBtZ3vu2J/kvLmuTHla
-X-Received: by 2002:adf:cc8e:0:b0:321:57a5:6e6c with SMTP id p14-20020adfcc8e000000b0032157a56e6cmr2519236wrj.34.1695746264310;
-        Tue, 26 Sep 2023 09:37:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGl/ZH40pmiUvkHdPVTCvZkTGst6ZXTmi2dp95rjHnSSeD0+rkA+891XRo53UHfvkTg5H5IZw==
-X-Received: by 2002:adf:cc8e:0:b0:321:57a5:6e6c with SMTP id p14-20020adfcc8e000000b0032157a56e6cmr2519221wrj.34.1695746263945;
-        Tue, 26 Sep 2023 09:37:43 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id p8-20020a7bcc88000000b003fbe4cecc3bsm10654668wma.16.2023.09.26.09.37.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 09:37:43 -0700 (PDT)
-Message-ID: <93396a36-30fe-74d6-d812-a93dafa771cb@redhat.com>
-Date:   Tue, 26 Sep 2023 18:37:42 +0200
+        Tue, 26 Sep 2023 12:38:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F134124;
+        Tue, 26 Sep 2023 09:38:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695746312; x=1727282312;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=qxRetNThkLRt2VSTMX62YNW9UWmr4QSEEA0eYnn+ivk=;
+  b=iNl4LX6pCLQX5kKZmzuureQnaa7gdgAwcPPDypXzJgx24F4tIUNRuL9D
+   /lkGmbIoMim4OsBcpPZpqBe0n7Sd1dhELMcN+7513QEy1D+jXfOsnIpPz
+   rHZnKjqfn2laZIQCnLJwcD1lH6HNNPuLCYSYq2Y6cWHUjUWM5YCdkKuhZ
+   BHe38BXsS75D107ytm5AjWDqnA+84o22LXyxM7W0s2naZb6KvVvdXo74T
+   ArHy2vj87Ezew5NBJK/GWMrVvIJIAAs7Lf18Hb4jE4Wr4vJWtGCTRF5ha
+   JyINZCEfe+SD5gmCvHNg+Kfh3iuieoeEXPsmpT1ckZcoGKFzuYXO8UPSg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="445743874"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="445743874"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:38:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="922487397"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="922487397"
+Received: from hhalmen-mobl.ger.corp.intel.com ([10.251.219.207])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:38:19 -0700
+Date:   Tue, 26 Sep 2023 19:38:16 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, vigneshr@ti.com,
+        r-gunasekaran@ti.com, srk@ti.com
+Subject: Re: [PATCH v2] PCI: keystone: Fix race condition when initializing
+ PHYs
+In-Reply-To: <20230926063638.1005124-1-s-vadapalli@ti.com>
+Message-ID: <cb19cfd1-22ed-7880-9fe-8b31488b6bb1@linux.intel.com>
+References: <20230926063638.1005124-1-s-vadapalli@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/4] KVM: x86: refactor req_immediate_exit logic
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-References: <20230924124410.897646-1-mlevitsk@redhat.com>
- <20230924124410.897646-2-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230924124410.897646-2-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/23 14:44, Maxim Levitsky wrote:
-> +	if (vcpu->arch.req_immediate_exit)
->   		kvm_make_request(KVM_REQ_EVENT, vcpu);
-> -		static_call(kvm_x86_request_immediate_exit)(vcpu);
-> -	}
+On Tue, 26 Sep 2023, Siddharth Vadapalli wrote:
 
-Is it enough for your use case to add a new tracepoint here, instead of 
-adding req_immediate_exit to both entry and exit?
+> The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
+> function. The PHY in this case is the Serdes. It is possible that the
+> PCI instance is configured for 2 lane operation across two different
+> Serdes instances, using 1 lane of each Serdes. In such a configuration,
+> if the reference clock for one Serdes is provided by the other Serdes,
+> it results in a race condition. After the Serdes providing the reference
+> clock is initialized by the PCI driver by invoking its PHY APIs, it is
+> not guaranteed that this Serdes remains powered on long enough for the
+> PHY APIs based initialization of the dependent Serdes. In such cases,
+> the PLL of the dependent Serdes fails to lock due to the absence of the
+> reference clock from the former Serdes which has been powered off by the
+> PM Core.
+> 
+> Fix this by obtaining reference to the PHYs before invoking the PHY
+> initialization APIs and releasing reference after the initialization is
+> complete.
+> 
+> Fixes: 49229238ab47 ("PCI: keystone: Cleanup PHY handling")
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
+> 
+> NOTE: This patch is based on linux-next tagged next-20230925.
+> 
+> v1:
+> https://lore.kernel.org/r/20230926054200.963803-1-s-vadapalli@ti.com/
+> 
+> Changes since v1:
+> - Add code to release reference(s) to the phy(s) when
+>   ks_pcie_enable_phy(ks_pcie) fails.
+> 
+> Regards,
+> Siddharth.
+> 
+>  drivers/pci/controller/dwc/pci-keystone.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 49aea6ce3e87..e4d43306a7e3 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -1218,12 +1218,24 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+>  		goto err_link;
+>  	}
+>  
+> +	/* Obtain reference(s) to the phy(s) */
+> +	for (i = 0; i < num_lanes; i++)
+> +		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
+> +
+>  	ret = ks_pcie_enable_phy(ks_pcie);
 
-Paolo
+You could do the put loop here before checking ret to avoid duplicating 
+the put loop.
+
+>  	if (ret) {
+>  		dev_err(dev, "failed to enable phy\n");
+> +		/* Release reference(s) to the phy(s) */
+> +		for (i = 0; i < num_lanes; i++)
+> +			phy_pm_runtime_put_sync(ks_pcie->phy[i]);
+> +
+>  		goto err_link;
+>  	}
+>  
+> +	/* Release reference(s) to the phy(s) */
+> +	for (i = 0; i < num_lanes; i++)
+> +		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
+> +
+>  	platform_set_drvdata(pdev, ks_pcie);
+>  	pm_runtime_enable(dev);
+>  	ret = pm_runtime_get_sync(dev);
+> 
+
+-- 
+ i.
+
 
