@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF797AEB9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A1B7AEBA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbjIZLlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
+        id S233444AbjIZLnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233303AbjIZLlT (ORCPT
+        with ESMTP id S230231AbjIZLnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:41:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A101127;
-        Tue, 26 Sep 2023 04:41:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0700C433C8;
-        Tue, 26 Sep 2023 11:41:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695728471;
-        bh=xayddD/UkGvMFL+wjIXW7FBKA1JN27wJEBHqp+aZGc0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pD2rkyKidfdtF/GsiBFXYbwt5HP0gHPAGz4mexcij7dv0gTpQ3Eh9ZokjHii72WOJ
-         dxf6FVK18gYzSBkS7CPt+hctajmRYIuUd/2z9HvY6Rag6l70skrZCL57kApl/+afsj
-         V8SXRPJvt/v957XRfnojIoznopkeHvFbm8xU6aMOoFrR8pgn62jZ4gCYYEdluO48iP
-         rsC5m1j6pwv5Rak1ZNOUHOwXKE/CHdMCNFVJVdk/E8xP1sEl5f+U2Y/mg4UB4uWZTk
-         YqYU1RYkFPK8y93ClqRko9awFHAfWZ0VKGnhNjzKOnj5LgvIFtec4Fr1BUjVCRvFju
-         2NYjMZpT/aBmQ==
-Date:   Tue, 26 Sep 2023 14:41:04 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alexandra Winter <wintera@linux.ibm.com>
-Cc:     Albert Huang <huangjie.albert@bytedance.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
+        Tue, 26 Sep 2023 07:43:12 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8D1DE;
+        Tue, 26 Sep 2023 04:43:05 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id B004B3200930;
+        Tue, 26 Sep 2023 07:43:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 26 Sep 2023 07:43:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695728583; x=1695814983; bh=rAbItrXU3DjBe
+        WT6zjvCvCs+hZImWYb77PlbQjt+Gtk=; b=GoXutLAlWTYBq2WBbmt9rkR/5Ww66
+        o8C17Gcf06+SBEzqQfA3ajzVDLeipwbokWndu6Rwg4GPzMr+nMG28FAOHL/JKpoV
+        yjuh6TrHDn7OWEsItqBYSQU3ZzjfmB+aifDxy9Sfw3aBGB+ye58hIYuKlIkZILFi
+        BFI0Hb+AJhowyZB8peVw5pmsu9tsR63yr3xQEpkbighP+KIVuhASXp/VyL6B+FH/
+        PYe54U/Dyyt0dZu6NsOo3sZ4SXmsQ/NRgUzFprRosDDbEW5HSPmMIRZi/uaBJYdP
+        Wrv2MhvhYAhWz3xDevbdmi9glU07EUJ1J66cLZYYkh0ritk8PZCqV9+vQ==
+X-ME-Sender: <xms:xsMSZRP876q_BHVbbi-YNj1T9XOhylRXDJjHTIAUEQeXURn8ASz9pg>
+    <xme:xsMSZT-CIYij4BwVmZUps6kyFyUB7LY58CabWbqKlRhnZbrXVsoQ6iBZ8c6ijwXvA
+    ky5GSaQfI1nvdU>
+X-ME-Received: <xmr:xsMSZQRnvbwEfdTULcKCvoMt6bGrwEiMajp48z_pv9L2hGVa0uQXJejxIPduZkiVLbxMtNGBTMryrOpP3_6sYk8cRsf_Gg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddtgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeejgeeg
+    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
+    hoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:xsMSZdvgxTuLwdLisWHUolZ3Q_fVXaOa-Iv_MJvViPHfDqCsyysvEQ>
+    <xmx:xsMSZZdDbauG14716H_adsIGMSGk19f1MN9QqTO7sUrt3f9KS7JfcQ>
+    <xmx:xsMSZZ0NWuqq7INlywIQ_YCcESf2DmaORKTsrXSEBrB1uSiZUr28MA>
+    <xmx:x8MSZZ8Sr0UIqXFwQD96dVXBwB7O3j1Ht-MG1I4v26vrqi1JxfP-6Q>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Sep 2023 07:43:02 -0400 (EDT)
+Date:   Tue, 26 Sep 2023 14:42:59 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Nikolay Aleksandrov <razor@blackwall.org>
+Cc:     Johannes Nixdorf <jnixdorf-oss@avm.de>,
         "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
- containers.
-Message-ID: <20230926114104.GL1642130@unreal>
-References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
- <20230926104831.GJ1642130@unreal>
- <76a74084-a900-d559-1f63-deff84e5848a@linux.ibm.com>
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v4 5/6] net: bridge: Add a configurable default
+ FDB learning limit
+Message-ID: <ZRLDw45mpeU6tBaK@shredder>
+References: <20230919-fdb_limit-v4-0-39f0293807b8@avm.de>
+ <20230919-fdb_limit-v4-5-39f0293807b8@avm.de>
+ <cc14cd4a-f3bb-3d6f-5b38-ec73cad32570@blackwall.org>
+ <ZQv5aNbgqxCuOKyr@u-jnixdorf.ads.avm.de>
+ <50814314-55a3-6cff-2e9e-2abf93fa5f1b@blackwall.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <76a74084-a900-d559-1f63-deff84e5848a@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <50814314-55a3-6cff-2e9e-2abf93fa5f1b@blackwall.org>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,20 +88,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 01:14:04PM +0200, Alexandra Winter wrote:
-> 
-> 
-> On 26.09.23 12:48, Leon Romanovsky wrote:
-> > This patch made me wonder, why doesn't SMC use RDMA-CM like all other
-> > in-kernel ULPs which work over RDMA?
-> > 
-> > Thanks
-> 
-> The idea behind SMC is that it should look an feel to the applications
-> like TCP sockets. So for connection management it uses TCP over IP;
-> RDMA is just used for the data transfer.
+On Thu, Sep 21, 2023 at 01:19:44PM +0300, Nikolay Aleksandrov wrote:
+> I'm not strongly against, just IMO it is unnecessary. I won't block the set
+> because of this, but it would be nice to get input from others as
+> well. If you can recompile your kernel to set a limit, it should be easier
+> to change your app to set the same limit via netlink, but I'm not familiar
+> with your use case.
 
-I think that it is not different from other ULPs. For example, RDS works
-over sockets and doesn't touch or reimplement GID management logic.
-
-Thanks
+I agree with keeping it out. We don't have it for similar knobs (e.g.,
+MDB limits) and it would create a precedence for other bridge options
+instead of simply using netlink and improving user space applications.
