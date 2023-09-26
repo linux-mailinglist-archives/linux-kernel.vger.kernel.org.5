@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C74D7AF1AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB907AF1B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbjIZRWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        id S232400AbjIZRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjIZRWo (ORCPT
+        with ESMTP id S232053AbjIZRXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:22:44 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F05116
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690ba63891dso6923595b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695748956; x=1696353756; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eK09SY9XnKtYYEeKZnb21txziNbHU1j+5dHVgQL9+WE=;
-        b=EzNqOJcWhoQu55QHV5ATgucEkI8yC9eG01YtNr77TYEo3WAlc8EknHgCJOeE/fmQJZ
-         s0JpAZAirENnb5UvSDEZ7IHhnpZC7+SVGseond3/6k3k1Q1+NMJa9fe9EGiGb45dhTom
-         ImsDC+dGNOWkqCgfowCRSyjO7BHyZnlndo3iYJb7UQ5Fb8CCD8hQdjvMateNIR3ADBMo
-         +fK2rICM+amkrpYP/oYYaq6eNJGRWCEfcUWSuE+0OHETBKqGPoCAUcN4P5DxWoHG82C/
-         YIpVCoDdivWQMH2BanUDwzekStOSSVXT2P7GeSYclhCrtspEXyMzmFY3eg+H1ybzg7cJ
-         2yDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695748956; x=1696353756;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eK09SY9XnKtYYEeKZnb21txziNbHU1j+5dHVgQL9+WE=;
-        b=X5SoG1Ikjov95OC7FbMf1yXl8vJ560ZkAogUzpppNXtIzpr3+ArXXPd1LDVaOdlD8w
-         sFpg4JZzvsrimyRXVZhn+zAQfEQ2p5n87BE7FMozAR1AfhkjVsR/lTFQXwMUk/bkir4s
-         FVvlh7b2eyZJg/JmhZ4AWccWCoB8USRgYUShzUZvDluxkYmcmDofKNQaT6xMTpZyu++X
-         MG5qAGORjfPlaIjsBnVBw298aHgQaOFyxDK7m/fuJHR/p9z146QyHWirhnvy0lzv/2bH
-         +LzHOgCjpsVxJzPzRIgqaMSpvG5/U+pdlr7HcmLT0xH2mDUeX5Ua8LTqQgLqlmOEXLJC
-         x5PQ==
-X-Gm-Message-State: AOJu0YwERcuctTBP8h63GrRrBLoHwZ957r7wWWq4wrd6P+zE5DdcF8sn
-        IOPaxIn8KvhC5uvg2nNclvU=
-X-Google-Smtp-Source: AGHT+IEyc2uv0p8+Qf+SIjOHIOliLqbPagqqIfNSHAsdtOegXTnGbScLJOuA2pDRhbgeHoPJH3rflA==
-X-Received: by 2002:a05:6a20:139a:b0:154:e7e6:85bd with SMTP id hn26-20020a056a20139a00b00154e7e685bdmr7271605pzc.20.1695748956241;
-        Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id i15-20020aa7908f000000b006661562429fsm10510857pfa.97.2023.09.26.10.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 10:22:35 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     hch@lst.de, sagi@grimberg.me, kch@nvidia.com
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] nvmet-rdma: use spin_lock_bh() on rsp_wr_wait_lock
-Date:   Tue, 26 Sep 2023 17:22:08 +0000
-Message-Id: <20230926172208.55478-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 13:23:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74E1124
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:22:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06493C433C7;
+        Tue, 26 Sep 2023 17:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695748979;
+        bh=de4PaIe+gi6uEbnNSfbPH0YnkVx5n1zdlOSbQRUr3R0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hBLd32l3ouSF4pP2Rfe6jGzyEY4zTZRNbyPjNq7hLseYmzVm3j2mIUM080MmsQVXB
+         Y3qIu2vb44eRdlLzw4FbbydqVtacnC79Z8gVDEuhIvvPoBKOGPYTr44ud9D/sI2YOw
+         UDRMIGZQnKhqjGjt1U8SB5wHI7g/nSl4bw5byXzjrSiH7x0rDmx/Vr4eYzxSJJXPQq
+         h4itxT41PNAfrYanOcTwQO5windtKNu6XVTGV+iyLJIecsiHPoYV9hzgSKd422/aLO
+         DZPyDai3P+nm9c9EN7oKhGJPMNis3CE7uiXHvgvrNUuOjJs8aLyYULQVA9m69EnOLT
+         FXpL4whjGsjeg==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     patches@armlinux.org.uk
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ARM: make <linux/uaccess.h> self-contained for ARM
+Date:   Wed, 27 Sep 2023 02:22:53 +0900
+Message-Id: <20230926172253.73204-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems to me that read_cqe.done could be executed under softirq
-context, as done callbacks always do, and it acquires rsp_wr_wait_lock
-along the following call chain.
+When I compiled the following code for ARM, I encountered numerous
+errors.
 
-   nvmet_rdma_read_data_done()
-   --> nvmet_rdma_release_rsp()
-   --> spin_lock(&queue->rsp_wr_wait_lock)
+[Test Code]
 
-So it seems more reasonable to use spin_lock_bh() on it, otherwise
-there could be following potential deadlocks.
+    #include <linux/compiler.h>
+    #include <linux/uaccess.h>
 
-nvmet_rdma_queue_response()
---> nvmet_rdma_release_rsp()
---> spin_lock(&queue->rsp_wr_wait_lock)
-<interrupt>
-   --> nvmet_rdma_read_data_done()
-   --> nvmet_rdma_release_rsp()
-   --> spin_lock(&queue->rsp_wr_wait_lock)
+    int foo(int *x, int __user *ptr)
+    {
+            return get_user(*x, ptr);
+    }
 
-nvmet_rdma_cm_handler()
---> nvmet_rdma_handle_command()
---> spin_lock(&queue->rsp_wr_wait_lock)
-<interrupt>
-   --> nvmet_rdma_read_data_done()
-   --> nvmet_rdma_release_rsp()
-   --> spin_lock(&queue->rsp_wr_wait_lock)
+To fix them, make some asm headers self-contained:
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+ 1. In arch/arm/include/asm/traps.h, include <linux/init.h> for __init,
+    and <linux/linkage.h> for asmlinkage.
+
+ 2. In arch/arm/include/asm/domain.h, include <linux/thread_info.h>
+    for current_thread_info().
+
+ 3. In arch/arm/include/asm/uaccess.h, include <linux/kernel.h> for
+    might_fault().
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/nvme/target/rdma.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index 4597bca43a6d..a01ed29fbd8a 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -520,7 +520,7 @@ static int nvmet_rdma_post_recv(struct nvmet_rdma_device *ndev,
+KernelVersion: v6.6-rc1
+
+ arch/arm/include/asm/domain.h  | 2 +-
+ arch/arm/include/asm/traps.h   | 2 ++
+ arch/arm/include/asm/uaccess.h | 1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/include/asm/domain.h b/arch/arm/include/asm/domain.h
+index 41536feb4392..d48859fdf32c 100644
+--- a/arch/arm/include/asm/domain.h
++++ b/arch/arm/include/asm/domain.h
+@@ -8,8 +8,8 @@
+ #define __ASM_PROC_DOMAIN_H
  
- static void nvmet_rdma_process_wr_wait_list(struct nvmet_rdma_queue *queue)
- {
--	spin_lock(&queue->rsp_wr_wait_lock);
-+	spin_lock_bh(&queue->rsp_wr_wait_lock);
- 	while (!list_empty(&queue->rsp_wr_wait_list)) {
- 		struct nvmet_rdma_rsp *rsp;
- 		bool ret;
-@@ -529,16 +529,16 @@ static void nvmet_rdma_process_wr_wait_list(struct nvmet_rdma_queue *queue)
- 				struct nvmet_rdma_rsp, wait_list);
- 		list_del(&rsp->wait_list);
+ #ifndef __ASSEMBLY__
++#include <linux/thread_info.h>
+ #include <asm/barrier.h>
+-#include <asm/thread_info.h>
+ #endif
  
--		spin_unlock(&queue->rsp_wr_wait_lock);
-+		spin_unlock_bh(&queue->rsp_wr_wait_lock);
- 		ret = nvmet_rdma_execute_command(rsp);
--		spin_lock(&queue->rsp_wr_wait_lock);
-+		spin_lock_bh(&queue->rsp_wr_wait_lock);
+ /*
+diff --git a/arch/arm/include/asm/traps.h b/arch/arm/include/asm/traps.h
+index 0aaefe3e1700..d44df9eac170 100644
+--- a/arch/arm/include/asm/traps.h
++++ b/arch/arm/include/asm/traps.h
+@@ -2,6 +2,8 @@
+ #ifndef _ASMARM_TRAP_H
+ #define _ASMARM_TRAP_H
  
- 		if (!ret) {
- 			list_add(&rsp->wait_list, &queue->rsp_wr_wait_list);
- 			break;
- 		}
- 	}
--	spin_unlock(&queue->rsp_wr_wait_lock);
-+	spin_unlock_bh(&queue->rsp_wr_wait_lock);
- }
++#include <linux/init.h>
++#include <linux/linkage.h>
+ #include <linux/list.h>
  
- static u16 nvmet_rdma_check_pi_status(struct ib_mr *sig_mr)
-@@ -994,9 +994,9 @@ static void nvmet_rdma_handle_command(struct nvmet_rdma_queue *queue,
- 		goto out_err;
- 
- 	if (unlikely(!nvmet_rdma_execute_command(cmd))) {
--		spin_lock(&queue->rsp_wr_wait_lock);
-+		spin_lock_bh(&queue->rsp_wr_wait_lock);
- 		list_add_tail(&cmd->wait_list, &queue->rsp_wr_wait_list);
--		spin_unlock(&queue->rsp_wr_wait_lock);
-+		spin_unlock_bh(&queue->rsp_wr_wait_lock);
- 	}
- 
- 	return;
+ struct pt_regs;
+diff --git a/arch/arm/include/asm/uaccess.h b/arch/arm/include/asm/uaccess.h
+index bb5c81823117..6a2cc57f015a 100644
+--- a/arch/arm/include/asm/uaccess.h
++++ b/arch/arm/include/asm/uaccess.h
+@@ -8,6 +8,7 @@
+ /*
+  * User space memory access functions
+  */
++#include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <asm/page.h>
+ #include <asm/domain.h>
 -- 
-2.17.1
+2.39.2
 
