@@ -2,75 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 038F87AE311
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A187AE314
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbjIZAtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S232220AbjIZAu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIZAtp (ORCPT
+        with ESMTP id S229495AbjIZAuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:49:45 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802B5B3;
-        Mon, 25 Sep 2023 17:49:39 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5789ffc8ae0so4947834a12.0;
-        Mon, 25 Sep 2023 17:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695689379; x=1696294179; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JqABUg4Xa7t7luyvOxZ/d67MGJaTAXsL+8PXX+Bo8IQ=;
-        b=gy2672S071+NORSj+4r1IW5CVJ/RIg8lpyoyjdwvAnl4BCtag03PQcgwAGkgdglfmo
-         VKcIpk4efUpEHlgnFU8+qhOjaSYGmCMP/KuYY+EBkiZF9gg7jk66zT4EjZ8/Sb8/CurO
-         Qbj3yPvD2uY6/40Uu7C3MHLB+jydHTNrCA86NEAaNAhauGPyrU2YxRbJqM6V/wFtJH2o
-         t7otlZ/QBVNk3sTs2v68065tal/GzTMW9iqxD0gcV5sYdHOB9BITwntLt24monvZpQF0
-         rrMt5iN/os9jJgwpJHHxwU+dbGsZBg33vqJv71kE9zT3gG2i+DgrJZCUWP5uweB345BN
-         i7Og==
+        Mon, 25 Sep 2023 20:50:54 -0400
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBE3D9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:50:47 -0700 (PDT)
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1d66b019a27so17404986fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:50:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695689379; x=1696294179;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JqABUg4Xa7t7luyvOxZ/d67MGJaTAXsL+8PXX+Bo8IQ=;
-        b=e9wj2o4+x+P+Cd8r/+Y4YekX0IprgTfdoMuV2/RG+FIgEdwvnLCRc2vcSRlEYqGJvS
-         jAjV2GDqQs48SkBFpx8C1NBwIMnI/z7t324Es62WklqnAS+uaHtBGRunWfhHIUKXCUho
-         APzy2umg0NbK/oyjEs25SHrckI29elaQdr7DtDmUaxK7ZMYhagH8XMjSyqmKi7qaenOu
-         FDSzxya31UksQbjkaYPkXcurCxVFq2mamgTp5qIb8w4/ZYdoGi2WULyWZa3bXdWBPN3S
-         BgEh5Lh8TevPWukv4x7Z7rJRnCq4H5OBBEWPzhdBXgjpm1ZqnINinh0Ul7oyep3ZEPzq
-         zJWA==
-X-Gm-Message-State: AOJu0YwcugYPPW2IcANV/rmUIHuhcXer8Mb0Pr58UFdPfI45Lw+K3zky
-        9cRqne1iyHFmI1dAtdY8tHG9pOFNWBbNXw==
-X-Google-Smtp-Source: AGHT+IF2fdCU386NjzNRFdfoWXHJ5nCCt8hffaO7qUJ6NGt1OWpSqbq34clR6isrcu4YMrpDCIO54Q==
-X-Received: by 2002:a05:6a20:9704:b0:15d:42d5:6cc1 with SMTP id hr4-20020a056a20970400b0015d42d56cc1mr5813780pzc.33.1695689378885;
-        Mon, 25 Sep 2023 17:49:38 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170902f68d00b001b54d064a4bsm9529216plg.259.2023.09.25.17.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 17:49:38 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C539380696DC; Tue, 26 Sep 2023 07:49:35 +0700 (WIB)
-Date:   Tue, 26 Sep 2023 07:49:35 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, greg@greg.net.au
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Network File System <linux-nfs@vger.kernel.org>
-Subject: Re: Fwd: kernel 6.4/6.5 nfs 4.1 unresponsive
-Message-ID: <ZRIqn6zmc4jEimwj@debian.me>
-References: <d9255749-bf1e-c498-ace6-048d36fa962f@gmail.com>
+        d=1e100.net; s=20230601; t=1695689447; x=1696294247;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lWrmFvMBgmd2E9A2/IZBDlEi37hiVfb+8ziAWHoSO0A=;
+        b=JdE6LSaaWrXXeP81jJh6MpFd6RRWErdEMhJnOx3Y1cwqJ6ho2+78lKvDZdeE3TzRlS
+         V3x7z/IYRMnMHNUkz9tlRrJvUkMa4oJltdIDkhzZJjnqYPN9HVMurLcwIlaWfUXRFiPA
+         FEmyGlXKtiY+HG/8lz7QaaEj+djeO5YN/1loPafdBF3Nncgepl2060dopV+mskeyuloA
+         AOEaZ3WBSoXyO2g5jsNpLNsojSJxydxnjDWW085i8QAJ3/jdpd4UUIABNxFYkifHPHlp
+         +OmtkMndVGNBQb+TkeVE5LAcgTnL+g/4X/wxhsDAWlCkD42FhBgldlJZq4c1cVObTbvV
+         PZnA==
+X-Gm-Message-State: AOJu0YzxXoRfb+3Nl8xo6W/WRmYe6/Bvh2T+ckkrBZ5iLQwoWeNbwl5S
+        CD0IeHupso951w6AYLxj166Z+LHmVu0MCvokCNg8eQtw4z4/
+X-Google-Smtp-Source: AGHT+IFUYnY3QIuGGHwhggyqIoNOs14V8RYDfiBYOV/7ZS0nrSh2ckuO4vkLtMi0o8ECyJkPAPdL8DEpuEidDl+hAetjb7ZmRNZM
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UccGjiI+YGKADNfL"
-Content-Disposition: inline
-In-Reply-To: <d9255749-bf1e-c498-ace6-048d36fa962f@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6870:5a86:b0:1c0:e7d3:3b2d with SMTP id
+ dt6-20020a0568705a8600b001c0e7d33b2dmr3744568oab.7.1695689446901; Mon, 25 Sep
+ 2023 17:50:46 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 17:50:46 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000021e24406063877ff@google.com>
+Subject: [syzbot] [overlayfs?] KASAN: invalid-free in ovl_copy_up_one
+From:   syzbot <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,38 +55,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---UccGjiI+YGKADNfL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-On Wed, Aug 23, 2023 at 06:14:03PM +0700, Bagas Sanjaya wrote:
-> #regzbot introduced: v6.3..v6.4 https://bugzilla.kernel.org/show_bug.cgi?=
-id=3D217815
-> #regzbot title: nfs server not responding loop on Synology NAS devices
->=20
+HEAD commit:    940fcc189c51 Add linux-next specific files for 20230921
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=158b9424680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1f140ae6e669ac24
+dashboard link: https://syzkaller.appspot.com/bug?extid=477d8d8901756d1cbba1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120e0dba680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f3767a680000
 
-The reporter replied on Bugzilla that this regression is caused by out-of-t=
-ree
-i40 driver, so:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b8921b235c24/disk-940fcc18.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c80a9f6bcdd4/vmlinux-940fcc18.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ed10a4df6950/bzImage-940fcc18.xz
 
-#regzbot invalid: out-of-tree module regression
+The issue was bisected to:
 
-Thanks.
+commit 44ef23e481b02df2f17599a24f81cf0045dc5256
+Author: Amir Goldstein <amir73il@gmail.com>
+Date:   Wed Aug 16 13:47:59 2023 +0000
 
---=20
-An old man doll... just what I always wanted! - Clara
+    ovl: do not encode lower fh with upper sb_writers held
 
---UccGjiI+YGKADNfL
-Content-Type: application/pgp-signature; name="signature.asc"
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1364cda6680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10e4cda6680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1764cda6680000
 
------BEGIN PGP SIGNATURE-----
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com
+Fixes: 44ef23e481b0 ("ovl: do not encode lower fh with upper sb_writers held")
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRIqnwAKCRD2uYlJVVFO
-oxqWAQDU673SqON3sxt5Uzny90pqdeRMG9m6KOEk5JtlxLeU+gD9EHzplPl2ghuX
-TPFJVnPZukADvFovkU/y3agd8Ahr4wA=
-=BzE9
------END PGP SIGNATURE-----
+RAX: ffffffffffffffda RBX: 00007ffd8d25ca30 RCX: 00007f15a9d353e9
+RDX: 00007f15a9d344b0 RSI: 00007ffd8d25ca30 RDI: 0000000020000200
+RBP: 0000000000000002 R08: 00007ffd8d25c7a6 R09: 00007ffd8d2d51a0
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007ffd8d25ca2c
+R13: 00007ffd8d25ca70 R14: 00007ffd8d25ca50 R15: 0000000000000002
+ </TASK>
+==================================================================
+BUG: KASAN: invalid-free in slab_free mm/slub.c:3809 [inline]
+BUG: KASAN: invalid-free in __kmem_cache_free+0xb8/0x2d0 mm/slub.c:3822
+Free of addr ffff888078b14650 by task syz-executor360/5060
 
---UccGjiI+YGKADNfL--
+CPU: 0 PID: 5060 Comm: syz-executor360 Not tainted 6.6.0-rc2-next-20230921-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report_invalid_free+0xab/0xd0 mm/kasan/report.c:550
+ ____kasan_slab_free+0x1a0/0x1b0 mm/kasan/common.c:216
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2d0 mm/slub.c:3822
+ ovl_do_copy_up fs/overlayfs/copy_up.c:973 [inline]
+ ovl_copy_up_one+0x15ac/0x3250 fs/overlayfs/copy_up.c:1137
+ ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1192
+ ovl_nlink_start+0x391/0x470 fs/overlayfs/util.c:1144
+ ovl_do_remove+0x16d/0xd50 fs/overlayfs/dir.c:893
+ vfs_unlink+0x2f1/0x900 fs/namei.c:4313
+ do_unlinkat+0x3da/0x6d0 fs/namei.c:4379
+ __do_sys_unlink fs/namei.c:4427 [inline]
+ __se_sys_unlink fs/namei.c:4425 [inline]
+ __x64_sys_unlink+0xc8/0x110 fs/namei.c:4425
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f15a9d353e9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd8d25ca08 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 00007ffd8d25ca30 RCX: 00007f15a9d353e9
+RDX: 00007f15a9d344b0 RSI: 00007ffd8d25ca30 RDI: 0000000020000200
+RBP: 0000000000000002 R08: 00007ffd8d25c7a6 R09: 00007ffd8d2d51a0
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007ffd8d25ca2c
+R13: 00007ffd8d25ca70 R14: 00007ffd8d25ca50 R15: 0000000000000002
+ </TASK>
+
+Allocated by task 5060:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x215/0x670 mm/slub.c:3509
+ __d_alloc+0x32/0xac0 fs/dcache.c:1768
+ d_alloc+0x4e/0x220 fs/dcache.c:1848
+ lookup_one_qstr_excl+0xc7/0x180 fs/namei.c:1604
+ do_unlinkat+0x294/0x6d0 fs/namei.c:4365
+ __do_sys_unlink fs/namei.c:4427 [inline]
+ __se_sys_unlink fs/namei.c:4425 [inline]
+ __x64_sys_unlink+0xc8/0x110 fs/namei.c:4425
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
+ dentry_free+0xc2/0x160 fs/dcache.c:377
+ __dentry_kill+0x4c1/0x640 fs/dcache.c:621
+ dentry_kill fs/dcache.c:745 [inline]
+ dput+0x6de/0xf80 fs/dcache.c:913
+ handle_mounts fs/namei.c:1554 [inline]
+ step_into+0x1192/0x2230 fs/namei.c:1839
+ walk_component+0xfc/0x5a0 fs/namei.c:2007
+ lookup_last fs/namei.c:2458 [inline]
+ path_lookupat+0x17f/0x770 fs/namei.c:2482
+ filename_lookup+0x1e7/0x5b0 fs/namei.c:2511
+ vfs_statx+0x160/0x430 fs/stat.c:240
+ vfs_fstatat+0xb3/0x140 fs/stat.c:295
+ __do_sys_newfstatat+0x98/0x110 fs/stat.c:459
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888078b145e0
+ which belongs to the cache dentry of size 312
+The buggy address is located 112 bytes inside of
+ 312-byte region [ffff888078b145e0, ffff888078b14718)
+
+The buggy address belongs to the physical page:
+page:ffffea0001e2c500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x78b14
+head:ffffea0001e2c500 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+ksm flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff88814000a8c0 ffffea0001e2d080 dead000000000003
+raw: 0000000000000000 0000000000150015 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Reclaimable, gfp_mask 0xd20d0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_RECLAIMABLE), pid 4515, tgid 4515 (udevd), ts 47959600386, free_ts 28011797989
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
+ prep_new_page mm/page_alloc.c:1537 [inline]
+ get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2305
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc_lru+0x4e1/0x670 mm/slub.c:3509
+ __d_alloc+0x32/0xac0 fs/dcache.c:1768
+ d_alloc+0x4e/0x220 fs/dcache.c:1848
+ d_alloc_parallel+0xe9/0x12d0 fs/dcache.c:2637
+ lookup_open.isra.0+0xaa4/0x13b0 fs/namei.c:3401
+ open_last_lookups fs/namei.c:3544 [inline]
+ path_openat+0x931/0x29c0 fs/namei.c:3774
+ do_filp_open+0x1de/0x430 fs/namei.c:3804
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1448
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1130 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
+ free_contig_range+0xb6/0x190 mm/page_alloc.c:6372
+ destroy_args+0x7c9/0xa10 mm/debug_vm_pgtable.c:1028
+ debug_vm_pgtable+0x1d79/0x3e00 mm/debug_vm_pgtable.c:1408
+ do_one_initcall+0x11c/0x640 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x8f0 init/main.c:1547
+ kernel_init+0x1c/0x2a0 init/main.c:1437
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Memory state around the buggy address:
+ ffff888078b14500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888078b14580: 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00 00
+>ffff888078b14600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                                 ^
+ ffff888078b14680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888078b14700: 00 00 00 fc fc fc fc fc fc fc fc 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
