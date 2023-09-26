@@ -2,214 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2916A7AF3C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FC27AF3CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235715AbjIZTGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        id S235772AbjIZTGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235687AbjIZTGc (ORCPT
+        with ESMTP id S235769AbjIZTGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:06:32 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EFF11D;
-        Tue, 26 Sep 2023 12:06:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695755180; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=FhZ8x2pDtr4FnxuNgqL0n8dJB9ry2Nwqm6i/vZ0Ufd+HD1SlSqq5qxnLYbN5m97g9o
-    VboYSaC9ji/wqnIAOCHueym9FbaqTiIFzPVgslZ4v3vJgmhgzw19XeDVqIMZDbpULzWI
-    zFVf1aK3Ss/TGvkBg4dM5cAi816h+laviP1DdTBQ6m2nT6Kokr40uh/Fz1BdAsEbU1HD
-    vhFf1vscDCwzhrNDtVFVW/0SliLV6To/Uoayn+UyQHK6PngwEUNlM1jwkhzsdcYBtW4x
-    6ftNb5qrbtDaWC+tiUJ+CgCyB9AGFZy3rB5E8k/wZOoJ6IQ+KHSoCiFWEf/YDuB0zQNa
-    7fZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695755180;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=itS1ErekKPc+u+bCJwSyYH3l8tgYgk3gKJxDoF6V9q0=;
-    b=YfZNyP7Pnm97bMg6/TE3E66k+qBNT6AyKaFMS7olvdtYyFJoN8xPT3TcuWKFRE9N/N
-    7wjA/Nak1tNvYe+r/VLpJSEPHaLF47INdf9lWIKT2IiFDOvmJ4Sf+Z21SUE0AbIJ6s1C
-    NyQRxaDSXpA92+TxM0+dV56QaRuBoUfw52AM8OeQDGytJCGzq5LY2t45CZHurWesx/AY
-    v0cduXJhgMrdpnwnx0H8YGJ/u7ZDEQaCifcYw1F3o204YcHJi4zjvl0hmS0Jvc+s13M1
-    7GbIsEgXQQn0nGLS5/Pgry33s4NhXNGv3RaTuZCPAStK1GTuOssX8w/DUGKZuehT5h+U
-    m+7A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695755180;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=itS1ErekKPc+u+bCJwSyYH3l8tgYgk3gKJxDoF6V9q0=;
-    b=MzbJw+gbrzd65D/gLBYc0TEmgThxnnGu7mw6YiwcethsUa7f4C98MBaYnPtr0RKA8I
-    cGi5HlW7Mdl1SMcPZSXkV951/6bUZWiyJcod1Nc3GqkL0NHNlCptAq+Uov9aMGiFoSkN
-    PCV+gnZpOKm5JY3JJxHi18hu6YVJvzgTH6hZjDZU+luP6XJSp9ULwdV63wwq2unYAeCQ
-    fhR27L8AH6FrM3hKKE9THucmUS2WJbb6YjEoZcFvUUciEDzyKKQeGozEeyrXz6Jp8+MO
-    Ivl1zjBbVz/Miph/zNi24WZUvSkcIv1TNIW+7hhctmuLP2XooFshkNYOzUwGNo7hEDOH
-    rNIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695755180;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=itS1ErekKPc+u+bCJwSyYH3l8tgYgk3gKJxDoF6V9q0=;
-    b=bH1ozSTNp4r7zE/PC7rLVd1oPdRH8dIT86EbUy97iavtwnQG8mBV5bZKeKwt1ZpRD6
-    t2pC+OLggrXiUaXdrpCQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8piJ1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
-    with ESMTPSA id R04c57z8QJ6KgKW
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Sep 2023 21:06:20 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 21:06:18 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH 03/13] arm64: dts: qcom: msm8916: Add common
- msm8916-modem-qdsp6.dtsi
-Message-ID: <ZRMrqsZ0QeDNFHFj@gerhold.net>
-References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
- <20230926-msm8916-modem-v1-3-398eec74bac9@gerhold.net>
- <45665b43-3be9-4f27-aa88-12cdef56346d@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45665b43-3be9-4f27-aa88-12cdef56346d@linaro.org>
-Content-Transfer-Encoding: 7bit
+        Tue, 26 Sep 2023 15:06:40 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C24213A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:06:32 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4060b623e64so20092875e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1695755191; x=1696359991; darn=vger.kernel.org;
+        h=in-reply-to:references:message-id:to:from:subject:cc:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0WhT3I1HoyzXvrF4bNIAgqqZZC+4W+J5yKlGXFNwrb0=;
+        b=xT9mI7pRhQ0ktJdTvbx9kmBaq+XPr9CzwEeuIgFIXMyBB6xMOhnAYpFGPAcpFKdj4H
+         C2u1hPJYYZbFxJmLPfgscZb0Q856XJ5tmRrFQnwTDMBIiCHsYGBaL4Zxy3ZBvW6bg+N+
+         WdmaUAFZI+22Dxkw05dFh8kdhIJYGU6sBTaoVjKLvwQL0zx0D0IEJtOIRrnrqT/OcSCo
+         UfWWOCIWYOQ51q8oRz0eezv5O+r2CPoXFWy7aifFkCfPpoEBINhrbXxCeTbWcs426ocT
+         cgg/mjuV+UEhhmtn3hQ2hBmVYJIQBp5icgh1ACmxF/1nkvEOS1csavjMUZE3v8joeJoo
+         /gAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695755191; x=1696359991;
+        h=in-reply-to:references:message-id:to:from:subject:cc:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0WhT3I1HoyzXvrF4bNIAgqqZZC+4W+J5yKlGXFNwrb0=;
+        b=hDs8emjX2PEWzFhksn+bvAGrFfTykdi2OCUI7XxEJhFNIQJ719le5RSNGdnBm9we+v
+         ftAH+NZzED4z926CaKMNy3Jwzbc+ei7iUMXrgSoz2zR2FJL8LWac5SLz1FRzBvtzjzH4
+         sT2KMC51AMjBU7kodUvPBKn0ta5tsZag0oEaPzOTq/IBGlQdmrVq8KKorPFniZhYCLgE
+         fSeMeMujkgfzE1GyEbcArDgULnZbUJHNaGea44Trng6Im+0mfZ94741quRc8LzVuuLRo
+         Oes8yKVBdU5DhA6p14ODLrTLrlu+H+o9T/wCj5a4gWWr3DEdsBzEDFDxDfww5w2MJWGz
+         24TA==
+X-Gm-Message-State: AOJu0Yza1Zro/zc5mlRsrAUfgM1K9ej92DRQjckbCHooJ3pgmQRWqAHM
+        zU+fBrJUKgnp7zedTZXNoHfPsw==
+X-Google-Smtp-Source: AGHT+IGaUXN/N9KEtl6bp24m+BoEu1jQER0zYBcCo8xTUVE52B6AjkzCayrdZDCq5883ChqfuRarjA==
+X-Received: by 2002:a7b:ce0a:0:b0:3fe:1587:fdf3 with SMTP id m10-20020a7bce0a000000b003fe1587fdf3mr2743086wmc.14.1695755190970;
+        Tue, 26 Sep 2023 12:06:30 -0700 (PDT)
+Received: from localhost ([213.144.205.82])
+        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b003fefcbe7fa8sm3624996wmj.28.2023.09.26.12.06.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 12:06:30 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 26 Sep 2023 21:06:30 +0200
+Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 5/7] dt-bindings: pinctrl: qcom,sc7280: Allow
+ gpio-reserved-ranges
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Luca Weiss" <luca.weiss@fairphone.com>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Viresh Kumar" <viresh.kumar@linaro.org>
+Message-Id: <CVT30PLQGDL5.3A3O07UX6YCL2@otso>
+X-Mailer: aerc 0.15.2
+References: <20230919-fp5-initial-v2-0-14bb7cedadf5@fairphone.com>
+ <20230919-fp5-initial-v2-5-14bb7cedadf5@fairphone.com>
+In-Reply-To: <20230919-fp5-initial-v2-5-14bb7cedadf5@fairphone.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 08:49:24PM +0200, Konrad Dybcio wrote:
-> On 26.09.2023 18:51, Stephan Gerhold wrote:
-> > Most MSM8916/MSM8939 devices use very similar setups for the modem,
-> > because most of the device-specific details are abstracted by the modem
-> > firmware. There are several definitions (status switches, DAI links
-> > etc) that will be exactly the same for every board.
-> > 
-> > Introduce a common msm8916-modem-qdsp6.dtsi include that can be used to
-> > simplify enabling the modem for such devices. By default the
-> > digital/analog codec in the SoC/PMIC is used, but boards can define
-> > additional codecs using the templates for Secondary and Quaternary
-> > MI2S.
-> > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> I'd rather see at least one usage so that you aren't introducing
-> effectively non-compiled code..
-> 
+On Tue Sep 19, 2023 at 2:45 PM CEST, Luca Weiss wrote:
+> Allow the gpio-reserved-ranges property on SC7280 TLMM.
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-There are 10 usages in the rest of the patch series.
-Is that enough? :D
+Hi Linus,
 
-IMHO it doesn't make sense to squash this with one of the device
-patches, especially considering several of them are primarily authored
-by others.
+the rest of this series is merged so would be great if you could pick up
+this patch (as you wrote in v1) :)
 
-> >  arch/arm64/boot/dts/qcom/msm8916-modem-qdsp6.dtsi | 163 ++++++++++++++++++++++
-> >  1 file changed, 163 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/msm8916-modem-qdsp6.dtsi b/arch/arm64/boot/dts/qcom/msm8916-modem-qdsp6.dtsi
-> > new file mode 100644
-> > index 000000000000..ddd74d428406
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/qcom/msm8916-modem-qdsp6.dtsi
-> > @@ -0,0 +1,163 @@
-> > +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-> > +/*
-> > + * msm8916-modem-qdsp6.dtsi describes the typical modem setup on MSM8916 devices
-> > + * (or similar SoCs) with audio routed via the QDSP6 services provided by the
-> > + * modem firmware. The digital/analog codec in the SoC/PMIC is used by default,
-> > + * but boards can define additional codecs using the templates for Secondary and
-> > + * Quaternary MI2S.
-> > + */
-> > +
-> > +#include <dt-bindings/sound/qcom,q6afe.h>
-> > +#include <dt-bindings/sound/qcom,q6asm.h>
-> > +
-> > +&apr {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&bam_dmux {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&bam_dmux_dma {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&lpass {
-> > +	status = "reserved"; /* Controlled by QDSP6 */
-> > +};
-> > +
-> > +&lpass_codec {
-> > +	status = "okay";
-> > +};
-> Any reason for it to stay disabled?
-> 
+Regards
+Luca
 
-You mean in msm8916.dtsi? For the SoC dtsi we don't make assumptions
-what devices use or not. There could be devices that ignore the internal
-codec entirely. If there is nothing connected to the codec lpass_codec
-should not be enabled (e.g. the msm8916-ufi.dtsi devices).
+> ---
+>  Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml | 4 +=
++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctr=
+l.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+> index 368d44ff5468..c8735ab97e40 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+> @@ -41,6 +41,10 @@ properties:
+>    gpio-ranges:
+>      maxItems: 1
+> =20
+> +  gpio-reserved-ranges:
+> +    minItems: 1
+> +    maxItems: 88
+> +
+>    gpio-line-names:
+>      maxItems: 175
+> =20
 
-This include is a bit more "opinionated", to reduce duplication for
-the most common setup. But it's separate and optional to use. The SoC
-dtsi is included by everyone.
-
-> > +
-> > +&mba_mem {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&mpss {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&mpss_mem {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&pm8916_codec {
-> > +	status = "okay";
-> > +};
-> Ditto
-> 
-
-Same as above.
-
-> > +	multimedia1-dai-link {
-> > +		link-name = "MultiMedia1";
-> Newline before last property and subnodes, please
-> 
-
-Thanks, will change this!
-> 
-> > +	sound_dai_secondary: mi2s-secondary-dai-link {
-> > +		link-name = "Secondary MI2S";
-> > +		status = "disabled"; /* Needs extra codec configuration */
-> Hmm.. Potential good user of /omit-if-no-ref/?
-> 
-
-AFAICT /omit-if-no-ref/ is for phandle references only. Basically it
-would only work if you would somewhere reference the phandle:
-
-	list-of-sound-dais = <&sound_dai_primary &sound_dai_secondary>;
-
-But this doesn't exist so /omit-if-no-ref/ cannot be used here.
-
-Thanks,
-Stephan
