@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A687AF385
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5847AF38D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbjIZTAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
+        id S235680AbjIZTAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235689AbjIZTAD (ORCPT
+        with ESMTP id S235679AbjIZTAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:00:03 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D10719E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:59:56 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so10967307a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:59:55 -0700 (PDT)
+        Tue, 26 Sep 2023 15:00:33 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47B11A5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:25 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so1140195466b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695754794; x=1696359594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fVEGG5cPSm9VHVnnB3IjMGencP439qzAgXCSoy2L0Mw=;
-        b=dysdhWVVNJzTgIDxKpqcsfm30jvpLsWQiEHEep60ZOkTD7e9lnsFiceAW/2tpTfSj5
-         QiKUeYlpcHlnmsp8Rl9s+KxfoaLwRSz+9jXiQLPfTQhKwi80ul2++6lK1s5qiFD+k8St
-         Z9ipSD/ZK49wZlDpL9HeYXqR+V57sRLxn77goCHs6+bJFMBh56SqqwJb29GxVqT29Qc7
-         dLldapaGuLZCZQA1gwlRnXdawW/MwaCZkqE4DSZ8n3OaqtYwFSEaYB3HDUX1fymo/Eol
-         S14Nm62SnKuqEjpL2OT4XkmLgrlsOnnIfgjui2v1JYNv/dxKHEsSGp1f6p3oPq76008u
-         XD4A==
+        d=linux-foundation.org; s=google; t=1695754824; x=1696359624; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s173qssf1hSEtheDxpw+ukvaF+2Io1KlydoI9zAe+yM=;
+        b=NdB0fWLWqvnDRGVXRW45jYQQWDHubZLk3lIgLI4HStAfFV1nqNd2X2NckC/MZB0e1/
+         Hh6erFWTvdrj+rxRunraPdGflV4Qrfs2OusWlceFgMYjffV4z0iiyP6IuCahbV7vo0F9
+         GGoGdvwxIZVf3rLG/AcHTuLDl3+aShR3l1TBM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695754794; x=1696359594;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fVEGG5cPSm9VHVnnB3IjMGencP439qzAgXCSoy2L0Mw=;
-        b=w7D32pWT7tY7pn2GHw+Aqb4uct4eCCgC1Ld4g1SI5NLzv8wCSOvTX0LHz0Lfu5FahV
-         ToVulZtSqDBNO/W1YkVBcKYKkw27ipCZ4buT6pRXM8BkGtmRGeNRUFgihunJm6ZsHbb2
-         e8CFvtoCXpy9CqvlH7LmrCLl79Lzco6yhLy3InSPVKK4dp3g1pVJ5ZjWx2Tkwxsf9Q5A
-         bQrAabd0IOCVxGaNi16EZsyvNZfKtjlTvkhhjuZ15xo4TQdACKfPRIc2KHMpmDX8YHdZ
-         sfCoxXp9blut71cH1yk/p7DKZFmcQf8zWq2/aeMM1cBr+/5LLa78I4Q/lX0elTiDNIyi
-         f4IQ==
-X-Gm-Message-State: AOJu0YxPThf2hlEZuZBHr1Kz9UqQnk3tLjITKk9fT6s7+ZABkrGIdei5
-        eWSbZu9lBBRTwnLCjusBsXlOHg==
-X-Google-Smtp-Source: AGHT+IHsu61Z9x4vrJKedh9oOSEm3NJB8PkqYqCsBbhGw+9yEsafoynTupdU5NEDPPhy09XdrcXISw==
-X-Received: by 2002:a05:6402:5148:b0:533:39da:6ffb with SMTP id n8-20020a056402514800b0053339da6ffbmr9467391edd.14.1695754794563;
-        Tue, 26 Sep 2023 11:59:54 -0700 (PDT)
-Received: from [192.168.33.189] ([178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id f15-20020a50ee8f000000b0052a19a75372sm7088795edr.90.2023.09.26.11.59.53
+        d=1e100.net; s=20230601; t=1695754824; x=1696359624;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s173qssf1hSEtheDxpw+ukvaF+2Io1KlydoI9zAe+yM=;
+        b=Lcx67Yx435UEEzvWQ+IIaRigU4B2X5NZJ08+2Zg1HLRSolRN9LYoKnQQlbTJr7zIhh
+         TrUa73J4QPe4fsWLDRZy4gGz9Zv4Blrzc9iyA+VUIOAFE0uiCNvyOq6WrVVR9pmnCJUg
+         ZD9rsBhLygj6uICq1ro5pTjjBTmsyUld/CaSmjqaFyDkUv3MXQzFCaJd/f2uehzihpYX
+         R5A5wkemee298fBj5om79elj0mLsxGFVe/RQDK0WsFOl7Oym/O/GUwk2NAiu0lNIGTwJ
+         w1Ciy1TxMZXF1oBM56mw0v00L4xZ5JPoUUC1QYG1sk/sq/0mFPQZ+in8+N6M4saIfYUg
+         HV1A==
+X-Gm-Message-State: AOJu0YzrUFG00IgLy5NP39RcB3KxLvroRg1E2qBkg6GXWWJXWWTxDhZv
+        8gq8LHQm41R4XTwwCr1uOLFbaQi69Kt5iAN533gJpw==
+X-Google-Smtp-Source: AGHT+IGxuhS85yoAO47RTwAE+DRJ7pV9uVPvn3M2cLLwGQbcSLf9qxEbdiwio2JVdKWr6J61kGCP3w==
+X-Received: by 2002:a17:907:86a1:b0:9a5:a701:2b90 with SMTP id qa33-20020a17090786a100b009a5a7012b90mr11041996ejc.40.1695754823901;
+        Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id n19-20020a170906165300b009a1c05bd672sm8029499ejd.127.2023.09.26.12.00.23
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 11:59:54 -0700 (PDT)
-Message-ID: <14262938-4150-429f-a730-df1b2fadd9ff@linaro.org>
-Date:   Tue, 26 Sep 2023 20:59:52 +0200
+        Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so11449661a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:00:23 -0700 (PDT)
+X-Received: by 2002:a05:6402:22cd:b0:534:5e2a:d443 with SMTP id
+ dm13-20020a05640222cd00b005345e2ad443mr2604911edb.29.1695754822856; Tue, 26
+ Sep 2023 12:00:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] arm64: dts: qcom: msm8916-longcheer-l8150: Add
- sound and modem
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Nikita Travkin <nikita@trvn.ru>
-References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
- <20230926-msm8916-modem-v1-9-398eec74bac9@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230926-msm8916-modem-v1-9-398eec74bac9@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230926162228.68666-1-mjguzik@gmail.com>
+In-Reply-To: <20230926162228.68666-1-mjguzik@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 26 Sep 2023 12:00:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+Message-ID: <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.09.2023 18:51, Stephan Gerhold wrote:
-> From: Nikita Travkin <nikita@trvn.ru>
-> 
-> Enable sound and modem for the Longcheer L8150 (e.g. Wileyfox Swift).
-e.g. -> i.e., or is that thing sold under many labels?
+On Tue, 26 Sept 2023 at 09:22, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>
+> +void fput_badopen(struct file *file)
+> +{
+> +       if (unlikely(file->f_mode & (FMODE_BACKING | FMODE_OPENED))) {
+> +               fput(file);
+> +               return;
+> +       }
 
-[...]
+I don't understand.
 
->  	reserved-memory {
-> +		/delete-node/ mpss@86800000;
->  		/delete-node/ wcnss;
-delete by label, please
+Why the FMODE_BACKING test?
 
-Konrad
+The only thing that sets FMODE_BACKING is alloc_empty_backing_file(),
+and we know that isn't involved, because the file that is free'd is
+
+        file = alloc_empty_file(op->open_flag, current_cred());
+
+so that test makes no sense.
+
+It might make sense as another WARN_ON_ONCE(), but honestly, why even
+that?  Why worry about FMODE_BACKING?
+
+Now, the FMODE_OPENED check makes sense to me, in that it most
+definitely can be set, and means we need to call the ->release()
+callback and a lot more. Although I get the feeling that this test
+would make more sense in the caller, since path_openat() _already_
+checks for FMODE_OPENED in the non-error path too.
+
+> +       if (WARN_ON_ONCE(atomic_long_cmpxchg(&file->f_count, 1, 0) != 1)) {
+> +               fput(file);
+> +               return;
+> +       }
+
+Ok, I kind of see why you'd want this safety check.  I don't see how
+f_count could be validly anything else, but that's what the
+WARN_ON_ONCE is all about.
+
+Anyway, I think I'd be happier about this if it was more of a "just
+the reverse of alloc_empty_file()", and path_openat() literally did
+just
+
+        if (likely(file->f_mode & FMODE_OPENED))
+                release_empty_file(file);
+        else
+                fput(file);
+
+instead of having this fput_badopen() helper that feels like it needs
+to care about other cases than alloc_empty_file().
+
+Don't take this email as a NAK, though. I don't hate the patch. I just
+feel it could be more targeted, and more clearly "this is explicitly
+avoiding the cost of 'fput()' in just path_openat() if we never
+actually filled things in".
+
+                   Linus
