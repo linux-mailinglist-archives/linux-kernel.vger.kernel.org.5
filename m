@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C787AE2FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027C37AE303
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjIZAhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        id S230343AbjIZAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjIZAhe (ORCPT
+        with ESMTP id S229460AbjIZAkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:37:34 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FC6109
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:37:28 -0700 (PDT)
-Received: from [192.168.2.47] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id ADFE06607243;
-        Tue, 26 Sep 2023 01:37:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695688645;
-        bh=Awnj1HSyG7f4LqqDwPj+Y+XJIJXRPsKOZA+pJHfGHi4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VPEP6kAqHgihHX6Y5wkrwMDH0KClVvOCpYGfCA1LoxlHg97uVlJh/hAiRDkxxB2ql
-         wRTOPQFe0TxbJyDG+qLQ934ehIw2pJOWKDqB2lA4AbBbCt+MLgy5lL0gp/stGnNrVe
-         5vvyP0SeJDE9ZRYaPGgCANmzvsLdl/3TYwPBFoGdNCnTxqO3jpqcQPJOZMo+Hr1i/Z
-         s6RncAYU+wElW629MX1xdnA1+0gBb5jN2oZwm6tz9EKvVCSFzGH/oRjoangxPd05ML
-         SuQL+Ibij6hxwqvniV4zuBwS1bm0fo8i6hHzzc7NfvM/eghDseAAleTep+RHNMIOx3
-         oE2SFqjnNSgNQ==
-Message-ID: <64e8708a-bb73-96ae-90af-f7b51317613b@collabora.com>
-Date:   Tue, 26 Sep 2023 03:37:22 +0300
+        Mon, 25 Sep 2023 20:40:14 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545E1109
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:40:08 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so8016647a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695688806; x=1696293606; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZnEgEKAhGM5JWN8y/Tiqur2/djSzZqgbL2OPyciIbQ0=;
+        b=f9/VlFzYGdX6Q31H9Wyps+y8Qw7eWoHJ0sa8CWXv2Q0GwTTHKduyxPgQIzY1FmzJyr
+         0XWxrL2urYrfMOaUH9LLmapQks+J2rbDYODUh0tZJVcaAqdrn5IHcdLgfjO1yQ05eFoQ
+         bl9COZT+u+5oKAxCcN4AdDXSnvbnhmg2Y0wWc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695688806; x=1696293606;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZnEgEKAhGM5JWN8y/Tiqur2/djSzZqgbL2OPyciIbQ0=;
+        b=QiASqgCHwrBz6GGw575XGScBT9g9DK10TnpPxAJkXB8zaQErGOq7HxIQp/uWmm9rAa
+         k9K/z236Y4zhyVJ3ANhrTkaVCZ+XWbY3QPWVK4h+zPwWxULMv7hnIA/VK3PHe8PDPnG6
+         oCXLCtGnhDVGJSHhmclq2S4FL9HkT8Wd8aCG06F145VwqMO9kfNtD0Md1Vk16LrRz8eg
+         0W2QLL1J/KFAUr42SbAqG3OcWC/7DANQUoPysIUuZBqQYEzVUatMjOID56A+tfh9ut82
+         8oa+Iti9vmqBm9OnCifs1AUJmCBknK1LirnXVFf0VkVfLD4vwy3VtzwRM/lm863o0gtk
+         7fpg==
+X-Gm-Message-State: AOJu0Yzblf2pI8QSkEH6z2PqLaOtxD8BjzDFJzJ5M+qFt5cdY8Gs94HR
+        qjVXKkaKJvRIbh6KMZLW2b9+tZS5ZHgUFqrIqrxYCj24
+X-Google-Smtp-Source: AGHT+IGO3/O3VGRw9aYw36ctfuvi+ghcby9yzaSKLleBQpdJTOllrK69UGoQlrYbyn9W0XjAteZigg==
+X-Received: by 2002:a17:907:7627:b0:9ae:540c:90ef with SMTP id jy7-20020a170907762700b009ae540c90efmr7822239ejc.18.1695688806340;
+        Mon, 25 Sep 2023 17:40:06 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b0099ca4f61a8bsm7048575ejh.92.2023.09.25.17.40.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Sep 2023 17:40:06 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-53317e29b00so9029a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:40:06 -0700 (PDT)
+X-Received: by 2002:a05:600c:3b90:b0:405:35bf:7362 with SMTP id
+ n16-20020a05600c3b9000b0040535bf7362mr54102wms.0.1695688785170; Mon, 25 Sep
+ 2023 17:39:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v17 13/18] drm/shmem-helper: Add memory shrinker
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
- <20230914232721.408581-14-dmitry.osipenko@collabora.com>
- <20230915104633.0d5c3932@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230915104633.0d5c3932@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230906160505.2431857-1-dianders@chromium.org> <20230906090246.v13.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
+In-Reply-To: <20230906090246.v13.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 25 Sep 2023 17:39:32 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UBw1-9=LPUydewyOg8oL2WMG+ZCQ=PBpe0CiCs-ToWSg@mail.gmail.com>
+Message-ID: <CAD=FV=UBw1-9=LPUydewyOg8oL2WMG+ZCQ=PBpe0CiCs-ToWSg@mail.gmail.com>
+Subject: Re: [PATCH v13 3/7] arm64: smp: Remove dedicated wakeup IPI
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Tomohiro Misono <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-perf-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wenst@chromium.org>, jpoimboe@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        philmd@linaro.org, samitolvanen@google.com,
+        scott@os.amperecomputing.com, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,42 +96,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/23 11:46, Boris Brezillon wrote:
->> -static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
->> +static int
->> +drm_gem_shmem_acquire_pages(struct drm_gem_shmem_object *shmem, bool init)
->>  {
->>  	struct drm_gem_object *obj = &shmem->base;
->>  	struct page **pages;
->>  
->>  	dma_resv_assert_held(shmem->base.resv);
->>  
->> -	if (refcount_inc_not_zero(&shmem->pages_use_count))
->> +	if (shmem->madv < 0) {
->> +		drm_WARN_ON(obj->dev, shmem->pages);
->> +		return -ENOMEM;
->> +	}
->> +
->> +	if (shmem->pages) {
->> +		drm_WARN_ON(obj->dev, !shmem->evicted);
->>  		return 0;
->> +	}
->> +
->> +	if (drm_WARN_ON(obj->dev, !(init ^ refcount_read(&shmem->pages_use_count))))
->> +		return -EINVAL;
-> OOC, why do we care? Is there any difference between initial and re-pin
-> that make the page allocation impossible? Feels like, if there's a
-> check to do, it should be done in the caller instead, and you can drop
-> the init param here.
+Mark,
 
-This is a sanity check that addresses additional refcnt tracking
-complexity imposed by shrinker.
+On Wed, Sep 6, 2023 at 9:06=E2=80=AFAM Douglas Anderson <dianders@chromium.=
+org> wrote:
+>
+> +#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+> +void arch_send_wakeup_ipi(unsigned int cpu)
+> +{
+> +       /*
+> +        * We use a scheduler IPI to wake the CPU as this avoids the need=
+ for a
+> +        * dedicated IPI and we can safely handle spurious scheduler IPIs=
+.
+> +        */
+> +       arch_smp_send_reschedule(cpu);
 
-This function is used by both init and re-pin that is invoked from
-several places in the code. It's not trivial to move that check to the
-callers.
+I was backporting this to our ChromeOS kernels and our build test bot
+noticed that arch_smp_send_reschedule() didn't exist in older kernels.
+That's fine--I can always adjust this patch when backporting or
+cherry-pick extra patches, but it made me wonder. Is there a reason
+you chose to use arch_smp_send_reschedule() directly here instead of
+smp_send_reschedule()? I guess the only difference is that you're
+bypassing the tracing. Is that on purpose? Should we add a comment
+about it, or change this to smp_send_reschedule()?
 
--- 
-Best regards,
-Dmitry
+Thanks!
 
+-Doug
