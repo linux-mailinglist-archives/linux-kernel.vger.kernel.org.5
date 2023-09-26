@@ -2,148 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D86A27AE6CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D398D7AE6CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjIZH1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        id S232820AbjIZH1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIZH1F (ORCPT
+        with ESMTP id S232621AbjIZH1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:27:05 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC40126
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:26:57 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99de884ad25so1007783466b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695713216; x=1696318016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SL9jzjX9Dj4vINipwZ1Fop5IYAbBFu+z+Vj4h2wF/5E=;
-        b=o09YdU0mmxxsksjNEi04O/LiJIVtHroN558/hfqDMu37IqW2kmIKmpqYJqj5rk9h3D
-         +RU/q2AkDJTYvIPH5kxKcss9HnDthvlShxpzLIBZwwnBuHww7cSbbGPCbHMt59OHB/zq
-         NCl7IiLsIGJa5uZLtk+LsowqKWhyfIkvW4IFhHJTYOg5AztA7m2iGolyUd1xzvCyYAfz
-         nReqoMK4KFdySkmsrBcBqbg5HZ2SkgVK4sCaj6hLz4ziWrBO7703AH/1Pt4sn2r+aC7e
-         6+s3flZx7nD0IFE/qFn51mOLd5MNX74z+yVa4GaD6Ue77mFwz/gP2xNCJyDJhqZf3wJg
-         7dPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695713216; x=1696318016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SL9jzjX9Dj4vINipwZ1Fop5IYAbBFu+z+Vj4h2wF/5E=;
-        b=ao3tpTE/GNTAqf1H0vDNbsasjC+kNHbOGvodrVRYgkwDE7ZYnErpoC9gVuwuCHT8Rg
-         msOlKhlPIHGq828deheNxqzSXgdcxNJHSbHLd4yhgCusyWNt5DKSjKU9XzFc3jSm5aOP
-         shxYrwWGYlm6jS1p4Lq6D6LkRPXadewBrCV06YjaknucotIT1NvNAOIFS1B4cQui3gN7
-         kYtoQq216uO80zV0O9JcASu984DZwZe9l3lYYZtJ6KrtPbq0JM5TcCIKHvttMw5HMEQq
-         j0go3bshKcph7afXfa6qOAl6K6X82P8kKaPjNGqZ/VHJGblGustqnVUW/1nxR4cKP9V9
-         cmwQ==
-X-Gm-Message-State: AOJu0Yyh7W/gzW5xIHZxPdl0ENxG7jwsI35tJSlnqK3R7Uu6XhdcFcw3
-        y/z2O2mHnqXfgOd1DtzLh2v+M3sGtaKl0asOpaNXhA==
-X-Google-Smtp-Source: AGHT+IFD2+LPuamDwfHmqmOw1Eb5LDk2z4fOwwV3qDU7j4eyB/9B7AGlGQS6QABciR6k3DepbtJwkJ2DH3H9480eta8=
-X-Received: by 2002:a17:906:1d5:b0:9a5:da6c:6539 with SMTP id
- 21-20020a17090601d500b009a5da6c6539mr8145437ejj.75.1695713216164; Tue, 26 Sep
- 2023 00:26:56 -0700 (PDT)
+        Tue, 26 Sep 2023 03:27:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9B8FB;
+        Tue, 26 Sep 2023 00:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C1EY996H2+nH9kVv7VeJU7gdej000u01sa7M392CTh8=; b=GgDOX9CWEbDc4YMM/aQ26SsUk2
+        b9PNZ3qRQ6wNjEp8D24yZ6pSz/DQ5m1/YwEnvv/vklPcFF5gm0sMGut4fYDXCa853VmHgFPt2DDsI
+        Gyc7MZtPtTnNdZYMJoJ/J0l4z9YT8UojXVzWfacia1N+QBRRUcrzKF/d9LD+Kl0yiAQoSgXgVqWU1
+        Xvocw4+WXqLTIH8G9ThPqN+WWHPYGyfTe0RRIAp7d6WbjXXqN9BISlhYc5K3Yt00i0/yOOkaj06ii
+        YkyyObq/BrQCFSHSN4HbNzEfnoXd8Xaza4pACStfXRAxPAEcvrAWy95GTZ3Gw7wo9RsnXSw7DKlY0
+        8woO0Dcg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1ql2Tk-00FnKk-0i;
+        Tue, 26 Sep 2023 07:27:32 +0000
+Date:   Tue, 26 Sep 2023 00:27:32 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     christophe.jaillet@wanadoo.fr, bhelgaas@google.com,
+        hch@infradead.org, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v2 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Message-ID: <ZRKH5CTucrT5BFwC@infradead.org>
+References: <20230922042836.3311689-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-In-Reply-To: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 26 Sep 2023 16:26:45 +0900
-Message-ID: <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>, linux-input@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922042836.3311689-1-Frank.Li@nxp.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey all,
+> +	/* set 64-bit DMA mask and coherent DMA mask */
+> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
 
-Gentle ping on this patch. Looking to get this patch and [1] slated
-for 6.7 wherein we can start getting cleaner kselftests builds.
+The comment is a bit silly :)
 
-I do not think I am able to successfully run the hid/bpf selftests due
-to my kernel version being too low (and an inability to upgrade it as
-I'm on a corp rolling release). I'd appreciate some insight on how to
-get the tests running or if someone could actually build+run the tests
-with this patch applied.
+> +	if (ret)
+> +		return ret;
 
-On Sat, Sep 9, 2023 at 7:22=E2=80=AFAM Justin Stitt <justinstitt@google.com=
-> wrote:
->
-> Hi, I am sending this series on behalf of myself and Benjamin Tissoires. =
-There
-> existed an initial n=3D3 patch series which was later expanded to n=3D4 a=
-nd
-> is now back to n=3D3 with some fixes added in and rebased against
-> mainline.
->
-> This patch series aims to ensure that the hid/bpf selftests can be built
-> without errors.
->
-> Here's Benjamin's initial cover letter for context:
-> |  These fixes have been triggered by [0]:
-> |  basically, if you do not recompile the kernel first, and are
-> |  running on an old kernel, vmlinux.h doesn't have the required
-> |  symbols and the compilation fails.
-> |
-> |  The tests will fail if you run them on that very same machine,
-> |  of course, but the binary should compile.
-> |
-> |  And while I was sorting out why it was failing, I realized I
-> |  could do a couple of improvements on the Makefile.
-> |
-> |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c1=
-53dcb2@redhat.com/T/#t
->
-> Changes from v1 -> v2:
-> - roll Justin's fix into patch 1/3
-> - add __attribute__((preserve_access_index)) (thanks Eduard)
-> - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
-> - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c86=
-2769020a8@kernel.org/
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/6=
-1
-> ---
-> Benjamin Tissoires (3):
->       selftests/hid: ensure we can compile the tests on kernels pre-6.3
->       selftests/hid: do not manually call headers_install
->       selftests/hid: force using our compiled libbpf headers
->
->  tools/testing/selftests/hid/Makefile               | 10 ++---
->  tools/testing/selftests/hid/progs/hid.c            |  3 --
->  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++=
-++++++
->  3 files changed, 53 insertions(+), 9 deletions(-)
-> ---
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
+Also no need to check the return value when setting a 64-bit mask,
+but I guess it desn't hurt here.
 
-[1]: https://lore.kernel.org/all/20230912-kselftest-param_test-c-v1-1-80a6c=
-ffc7374@google.com/
-
-Thanks
-Justin
