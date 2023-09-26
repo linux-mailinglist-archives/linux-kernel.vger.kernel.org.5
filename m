@@ -2,202 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9077AF09D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2CC7AF09E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbjIZQWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S235053AbjIZQYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbjIZQWo (ORCPT
+        with ESMTP id S231137AbjIZQYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:22:44 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CCE193;
-        Tue, 26 Sep 2023 09:22:36 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bdcade7fbso1114626166b.1;
-        Tue, 26 Sep 2023 09:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695745355; x=1696350155; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=isZM+KwQz6FTkMCGH532kqIWoaREk87BS2KHMsM0vxI=;
-        b=Du8aKXzXnXcB9Blv6K7GkXTPf23dFYXchl+3MC/9QrTedHKSCpQilNi6/sLJqohkRj
-         +lw0Xeen8lMAxGuGwuuAMNeGcP+nAMcNdZVLQNldBiUjzZRJnp+rAwxhDOAJqOKCDsq2
-         XZAAzVAcWOCJgDaMtgDiobkEuowhlFFHxKL2K0EnlSwsi/q7S+Ib9gAyBdlL4rbGVHmS
-         WfFgva88XG11XmvBHP7+cqzoRXsNmm6ksnFwitt0BtJfqWcgIvwj299p5inlSKxB9HIu
-         QZLOdG7J56Gu1/kqPjinK1lO8uK0UBcLrdGRbhx4WIbgqX2IFrnArWDpa5kun+SzUPuv
-         ovHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695745355; x=1696350155;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=isZM+KwQz6FTkMCGH532kqIWoaREk87BS2KHMsM0vxI=;
-        b=suxSAkm2Z7C8mzptFmhr1zzSEGJp4wgxj+4+onRkn53t5BlM1KIh2ZPPIXEwIRSVf3
-         Wz0ivtf2Zgi+YZTsy8yyvmJx5/3jSBeaAW2m+m5R/hk4hXWPZVtaE6VGkyZ5xvvZaIOo
-         aL/HrdKl/O75JMMlpjPmfMtndaYhz1g51N+pE3eN7kzzHi8ctzXBznhr2k8KJPxlu5Nv
-         PsVM89wB1GBew1p8lFXm4UMulGcLaypyOKJzkL+NrKf3u4NJPQF6FisHggxIrLH+bavr
-         YqzFGg4SGboLE8hCZAYLaOtnwtEMuNcZjlgglEghbHamQLpvkLsnsHzWZ5T5MCS5Ekz0
-         08Og==
-X-Gm-Message-State: AOJu0YyaTSN4oiE9jwsSLRbfnNYF4GHKJVa6+Pm2MpYfNSoAejH7WMah
-        uWiPc+VNez9TgVJ9gz6R6fw=
-X-Google-Smtp-Source: AGHT+IGCHG2a21RArwSr62WMP93eCUhZBNB4pDl+jjjmBDHchjYALy1n+C6/trhIJHsw1JzfzZG3VA==
-X-Received: by 2002:a17:906:844f:b0:9a1:c991:a521 with SMTP id e15-20020a170906844f00b009a1c991a521mr8627387ejy.4.1695745354996;
-        Tue, 26 Sep 2023 09:22:34 -0700 (PDT)
-Received: from f.. (cst-prg-24-34.cust.vodafone.cz. [46.135.24.34])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009ad829ed144sm7951148ejd.130.2023.09.26.09.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 09:22:33 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     brauner@kernel.org
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
-        Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH v2] vfs: shave work on failed file open
-Date:   Tue, 26 Sep 2023 18:22:28 +0200
-Message-Id: <20230926162228.68666-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 26 Sep 2023 12:24:01 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1457A8E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:23:52 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id F14B5180D70;
+        Tue, 26 Sep 2023 18:23:49 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1695745430; bh=qJ0lkRvUdqr0kqwT3a+4Y09zi1t3fU/A9MJSdq9iPXU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cn2ylJsdjsO6gSWuNnVSjaT/EVyC7emGbtJ2mWZnYby+od13lz9jKuB1C+04cB02M
+         ehyyplkXbobbZaLEex5LhTVJnWtednXJV3QDhDtdDDpd+JOSyUt4Fgn+Gn06nBij6C
+         KnEMvx263XpqyxiAtanXdV7gHb5T792sOynv3eQ2qEzXVOl34HotdAgsmhB5HfQmmv
+         ipZCiW8RXrNyorGZ45/vuGyLoOsGKEnTSEEpMjlwEX6/KynvKB5XQcPMjDl1RN82a+
+         B5HjoST0AYNDcjgymiO+G/VujgSWv6MAit73WOBMRUzayVSgZQAM1QgO4AMbonMIQF
+         3NwaLc3GaMUjQ==
+From:   Petr Tesarik <petr@tesarici.cz>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Petr Tesarik <petr@tesarici.cz>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v2] swiotlb: fix the check whether a device has used software IO TLB
+Date:   Tue, 26 Sep 2023 18:23:39 +0200
+Message-ID: <20230926162339.12940-1-petr@tesarici.cz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Failed opens (mostly ENOENT) legitimately happen a lot, for example here
-are stats from stracing kernel build for few seconds (strace -fc make):
+When CONFIG_SWIOTLB_DYNAMIC=y, devices which do not use the software IO TLB
+can avoid swiotlb lookup. A flag is added by commit 1395706a1490 ("swiotlb:
+search the software IO TLB only if the device makes use of it"), the flag
+is correctly set, but it is then never checked. Add the actual check here.
 
-  % time     seconds  usecs/call     calls    errors syscall
-  ------ ----------- ----------- --------- --------- ------------------
-    0.76    0.076233           5     15040      3688 openat
+Note that this code is an alternative to the default pool check, not an
+additional check, because:
 
-(this is tons of header files tried in different paths)
+1. swiotlb_find_pool() also searches the default pool;
+2. if dma_uses_io_tlb is false, the default swiotlb pool is not used.
 
-In the common case of there being nothing to close (only the file object
-to free) there is a lot of overhead which can be avoided.
+Tested in a KVM guest against a QEMU RAM-backed SATA disk over virtio and
+*not* using software IO TLB, this patch increases IOPS by approx 2% for
+4-way parallel I/O.
 
-This is most notably delegation of freeing to task_work, which comes
-with an enormous cost (see 021a160abf62 ("fs: use __fput_sync in
-close(2)" for an example).
+The write memory barrier in swiotlb_dyn_alloc() is not needed, because a
+newly allocated pool must always be observed by swiotlb_find_slots() before
+an address from that pool is passed to is_swiotlb_buffer().
 
-Benchmarked with will-it-scale with a custom testcase based on
-tests/open1.c, stuffed into tests/openneg.c:
-[snip]
-        while (1) {
-                int fd = open("/tmp/nonexistent", O_RDONLY);
-                assert(fd == -1);
+Correctness was verified using the following litmus test:
 
-                (*iterations)++;
-        }
-[/snip]
+C swiotlb-new-pool
 
-Sapphire Rapids, openneg_processes -t 1 (ops/s):
-before:	1950013
-after:	2914973 (+49%)
+(*
+ * Result: Never
+ *
+ * Check that a newly allocated pool is always visible when the
+ *  corresponding swiotlb buffer is visible.
+ *)
 
-file refcount is checked as a safety belt against buggy consumers with
-an atomic cmpxchg. Technically it is not necessary, but it happens to
-not be measurable due to several other atomics which immediately follow.
-Optmizing them away to make this atomic into a problem is left as an
-exercise for the reader.
+{
+	mem_pools = default;
+}
 
-v2:
-- unexport fput_badopen and move to fs/internal.h
-- handle the refcount with cmpxchg, adjust commentary accordingly
-- tweak the commit message
+P0(int **mem_pools, int *pool)
+{
+	/* add_mem_pool() */
+	WRITE_ONCE(*pool, 999);
+	rcu_assign_pointer(*mem_pools, pool);
+}
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+P1(int **mem_pools, int *flag, int *buf)
+{
+	/* swiotlb_find_slots() */
+	int *r0;
+	int r1;
+
+	rcu_read_lock();
+	r0 = READ_ONCE(*mem_pools);
+	r1 = READ_ONCE(*r0);
+	rcu_read_unlock();
+
+	if (r1) {
+		WRITE_ONCE(*flag, 1);
+		smp_mb();
+	}
+
+	/* device driver (presumed) */
+	WRITE_ONCE(*buf, r1);
+}
+
+P2(int **mem_pools, int *flag, int *buf)
+{
+	/* device driver (presumed) */
+	int r0 = READ_ONCE(*buf);
+
+	/* is_swiotlb_buffer() */
+	int r1;
+	int *r2;
+	int r3;
+
+	smp_rmb();
+	r1 = READ_ONCE(*flag);
+	if (r1) {
+		/* swiotlb_find_pool() */
+		rcu_read_lock();
+		r2 = READ_ONCE(*mem_pools);
+		r3 = READ_ONCE(*r2);
+		rcu_read_unlock();
+	}
+}
+
+exists (2:r0<>0 /\ 2:r3=0) (* Not found. *)
+
+Fixes: 1395706a1490 ("swiotlb: search the software IO TLB only if the device makes use of it")
+Reported-by: Jonathan Corbet <corbet@lwn.net>
+Closes: https://lore.kernel.org/linux-iommu/87a5uz3ob8.fsf@meer.lwn.net/
+Signed-off-by: Petr Tesarik <petr@tesarici.cz>
 ---
- fs/file_table.c | 35 +++++++++++++++++++++++++++++++++++
- fs/internal.h   |  2 ++
- fs/namei.c      |  2 +-
- 3 files changed, 38 insertions(+), 1 deletion(-)
+ include/linux/swiotlb.h | 22 +++++++++++++++-------
+ kernel/dma/swiotlb.c    | 25 +++++++++++++++++++------
+ 2 files changed, 34 insertions(+), 13 deletions(-)
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index ee21b3da9d08..6cbd5bc551d0 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -82,6 +82,16 @@ static inline void file_free(struct file *f)
- 	call_rcu(&f->f_rcuhead, file_free_rcu);
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index b4536626f8ff..93b400d9be91 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -172,14 +172,22 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ 	if (!mem)
+ 		return false;
+ 
+-	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
+-		/* Pairs with smp_wmb() in swiotlb_find_slots() and
+-		 * swiotlb_dyn_alloc(), which modify the RCU lists.
+-		 */
+-		smp_rmb();
+-		return swiotlb_find_pool(dev, paddr);
+-	}
++#ifdef CONFIG_SWIOTLB_DYNAMIC
++	/* All SWIOTLB buffer addresses must have been returned by
++	 * swiotlb_tbl_map_single() and passed to a device driver.
++	 * If a SWIOTLB address is checked on another CPU, then it was
++	 * presumably loaded by the device driver from an unspecified private
++	 * data structure. Make sure that this load is ordered before reading
++	 * dev->dma_uses_io_tlb here and mem->pools in swiotlb_find_pool().
++	 *
++	 * This barrier pairs with smp_mb() in swiotlb_find_slots().
++	 */
++	smp_rmb();
++	return READ_ONCE(dev->dma_uses_io_tlb) &&
++		swiotlb_find_pool(dev, paddr);
++#else
+ 	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
++#endif
  }
  
-+static inline void file_free_badopen(struct file *f)
-+{
-+	BUG_ON(f->f_mode & (FMODE_BACKING | FMODE_OPENED));
-+	security_file_free(f);
-+	put_cred(f->f_cred);
-+	if (likely(!(f->f_mode & FMODE_NOACCOUNT)))
-+		percpu_counter_dec(&nr_files);
-+	kmem_cache_free(filp_cachep, f);
-+}
-+
- /*
-  * Return the total number of open files in the system
-  */
-@@ -468,6 +478,31 @@ void __fput_sync(struct file *file)
- EXPORT_SYMBOL(fput);
- EXPORT_SYMBOL(__fput_sync);
- 
-+/*
-+ * Clean up after failing to open (e.g., open(2) returns with -ENOENT).
-+ *
-+ * This represents opportunities to shave on work in the common case of
-+ * FMODE_OPENED not being set:
-+ * 1. there is nothing to close, just the file object to free and consequently
-+ *    no need to delegate to task_work
-+ * 2. as nobody else had seen the file then there is no need to delegate
-+ *    freeing to RCU
-+ */
-+void fput_badopen(struct file *file)
-+{
-+	if (unlikely(file->f_mode & (FMODE_BACKING | FMODE_OPENED))) {
-+		fput(file);
-+		return;
-+	}
-+
-+	if (WARN_ON_ONCE(atomic_long_cmpxchg(&file->f_count, 1, 0) != 1)) {
-+		fput(file);
-+		return;
-+	}
-+
-+	file_free_badopen(file);
-+}
-+
- void __init files_init(void)
- {
- 	filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
-diff --git a/fs/internal.h b/fs/internal.h
-index d64ae03998cc..93da6d815e90 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -95,6 +95,8 @@ struct file *alloc_empty_file(int flags, const struct cred *cred);
- struct file *alloc_empty_file_noaccount(int flags, const struct cred *cred);
- struct file *alloc_empty_backing_file(int flags, const struct cred *cred);
- 
-+void fput_badopen(struct file *);
-+
- static inline void put_file_access(struct file *file)
- {
- 	if ((file->f_mode & (FMODE_READ | FMODE_WRITE)) == FMODE_READ) {
-diff --git a/fs/namei.c b/fs/namei.c
-index 567ee547492b..67579fe30b28 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3802,7 +3802,7 @@ static struct file *path_openat(struct nameidata *nd,
- 		WARN_ON(1);
- 		error = -EINVAL;
+ static inline bool is_swiotlb_force_bounce(struct device *dev)
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 394494a6b1f3..ab7101ed1461 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -729,9 +729,6 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
  	}
--	fput(file);
-+	fput_badopen(file);
- 	if (error == -EOPENSTALE) {
- 		if (flags & LOOKUP_RCU)
- 			error = -ECHILD;
+ 
+ 	add_mem_pool(mem, pool);
+-
+-	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
+-	smp_wmb();
+ }
+ 
+ /**
+@@ -1152,9 +1149,25 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
+ 
+ found:
+-	dev->dma_uses_io_tlb = true;
+-	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
+-	smp_wmb();
++	WRITE_ONCE(dev->dma_uses_io_tlb, true);
++
++	/* The general barrier orders reads and writes against a presumed store
++	 * of the SWIOTLB buffer address by a device driver (to a driver private
++	 * data structure). It serves two purposes.
++	 *
++	 * First, the store to dev->dma_uses_io_tlb must be ordered before the
++	 * presumed store. This guarantees that the returned buffer address
++	 * cannot be passed to another CPU before updating dev->dma_uses_io_tlb.
++	 *
++	 * Second, the load from mem->pools must be ordered before the same
++	 * presumed store. This guarantees that the returned buffer address
++	 * cannot be observed by another CPU before an update of the RCU list
++	 * that was made by swiotlb_dyn_alloc() on a third CPU (cf. multicopy
++	 * atomicity).
++	 *
++	 * See also the comment in is_swiotlb_buffer().
++	 */
++	smp_mb();
+ 
+ 	*retpool = pool;
+ 	return index;
 -- 
-2.39.2
+2.42.0
 
