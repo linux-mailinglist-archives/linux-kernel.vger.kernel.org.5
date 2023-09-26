@@ -2,129 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E230B7AEA7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172537AEA81
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjIZKf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
+        id S234384AbjIZKg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjIZKfz (ORCPT
+        with ESMTP id S229845AbjIZKgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:35:55 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CB8BF;
-        Tue, 26 Sep 2023 03:35:49 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6907e44665bso7434152b3a.1;
-        Tue, 26 Sep 2023 03:35:49 -0700 (PDT)
+        Tue, 26 Sep 2023 06:36:54 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98543E5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:36:44 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690bfd4f3ebso6346187b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:36:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695724549; x=1696329349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JI22u4oFcSIyGcZiwVeeO4sm05tqY+QDbtPIh5RQo1w=;
-        b=Ta95eXlBEe8uw1ZXLKbttCxboZ7Z64pposu2U2lP7kZAUWePPV9rF+HLpezhVEVAwH
-         sddxCpWLi5XO8Jua08takSmakpQhqXTuXZBXi/yTyRFrgsMaIedi2uc38C1DY+i2Qeuz
-         0QxU+L5YHIPDLZ0WGfAxBjQDSDUU96toM6hUKjUk73p/SHUod+5CN3q0ckzKS3W9kzKz
-         4dwTeiPLtMX+Lpyr/uZ54CXeUcRtxy+wEswVFKPq/JaZqP5LieD4SGaxeBdH28M6L1En
-         ntDYeBNu75IdsloukPn84TZJzvMfrfaBaTV34gfVwWHl99L1gvxGwh1E7BpczT5XyzaG
-         NPaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695724549; x=1696329349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1695724604; x=1696329404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JI22u4oFcSIyGcZiwVeeO4sm05tqY+QDbtPIh5RQo1w=;
-        b=wXDjvDn74zOx7EfOULiZH1RqV/VDtSdp5UMTQBS5f8rPEY//TpS5CfgZ5z+J3aqWKI
-         6LMJcw/yzStSd9ufjUs3DsPhjvZcwjhirtG7HLNGn3BUyqYJNPLBRXPQDAdq0AXlLWWW
-         e7WHCNuyu4reksBuI6Rr6hYODDCSSzrSQ/IPwB4MVTLcPAKArnGOVbY1j+NyOkKPPTJM
-         bvNnUe500EMjjgLqwXal3L+NhdmcxRfoByLoMuLn5xQewgv4OBZnUXvDK+qO5wDDZ5K8
-         IZZetE3TX8lFJH+kReczo4GcF0h30RuCtVexNphb03KmYMWXLGGylHRsi/GEqmE5y6Ef
-         zAvQ==
-X-Gm-Message-State: AOJu0Yx54JI7AtVIeW/w41girBqT9QmEz1Sh6g/Un7/QNULfS8sk3qyu
-        LrTcnD59eDiSgjBcv4lOJKw=
-X-Google-Smtp-Source: AGHT+IHPgxQLC3Tuaq5fkXY5EnNUthvz5JnG4AAGGsD5gZCBIyiEtOP5iIEm+MeIHUqJYXsXLl7SMg==
-X-Received: by 2002:a05:6a00:a22:b0:691:21:d9b7 with SMTP id p34-20020a056a000a2200b006910021d9b7mr10322863pfh.27.1695724548760;
-        Tue, 26 Sep 2023 03:35:48 -0700 (PDT)
-Received: from sol (14-201-140-18.tpgi.com.au. [14.201.140.18])
-        by smtp.gmail.com with ESMTPSA id q18-20020a638c52000000b0058264a3c942sm3792389pgn.69.2023.09.26.03.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 03:35:48 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 18:35:40 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 1/5] lib/test_bitmap: Excape space symbols when
- printing input string
-Message-ID: <ZRKz/G8y397MmVoc@sol>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-2-andriy.shevchenko@linux.intel.com>
+        bh=6rx4sePY/rSBccbkTwzXRYI99umtH2PVsvZS0TGK67Q=;
+        b=Lk9+uCBA/hkurNJdqm3YWh4t9+7VSFyP1Hhp5gT2qDcPROAUkecHwXTQ5qCDGvOL5w
+         I3uAeQPyCZKnVkkm0nKMgu0qSCXDimI77V4kGrXF8KS6e8lFdhy61aq6F+GWxWwTcjyw
+         6KFLIPz49hm+TwnS68zNJfJJX8UZKrZ3haxJ3x+CQS7RPb1jRSxEra6AaF/QA9ZP+YsO
+         KUeQBhoHWfRgfOOibrYDKb7zb/uchjIf6JQYkeIfpsYfRVezoDIrlwx2VrjZjmvs7Dqn
+         NmqaLZwNDAuU3YzT6oExXaobze70Io9i84ZSdH7B3EoQ7feoEFsJlymNQEtebetcGPFo
+         18+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695724604; x=1696329404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6rx4sePY/rSBccbkTwzXRYI99umtH2PVsvZS0TGK67Q=;
+        b=sy+JINr6D/sFjO1Cuy043tkowsPq1XtAze3RyQQ5E4x69hxgjN7IjCXrlpzb/WIsOa
+         qthljrsiWMRgTqq2VeKDuoqyroD4JooaWcgk7BQamqDSo/H8l8nnX7HHzpeRghr3npVH
+         NsFZBhDkkqsq7STHEXPHVjzZZsstFf6XN/x4QQE1oH4pKF+f7UAzL0upy6MYhx2GS/L2
+         D6MnHn6vOalcMykE+2arYMX1Np1CDDX+v8nc2MNX38j0MkXBlsYMqQRo3IW0DPVu3RXi
+         fgMU90tSfeztLHj4e6uCVZeZEMq1ZdPv2v0m1HVtcFvQSXlb4Z6pLmX0/vQddylWMx1p
+         RX4A==
+X-Gm-Message-State: AOJu0YzRuR7yMLdDeyVkveIYiCv7haM1bvwOS1+T5HPLCqva9drJ9jyM
+        fpyqtoUA5U1690ZudqewyCS0gZMo90Q4isgnYowfHQ==
+X-Google-Smtp-Source: AGHT+IHIRi9ZVDlNT1ohN+8nCSAnjQwp3jtFP6KIrnSHcB3eCSMzD8i9SanrNqP/YOG1gVgtwBdM2u2LAbTydBhfjQk=
+X-Received: by 2002:a05:6a20:12cd:b0:137:2f8c:fab0 with SMTP id
+ v13-20020a056a2012cd00b001372f8cfab0mr8383450pzg.49.1695724603930; Tue, 26
+ Sep 2023 03:36:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926052007.3917389-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926102801.1591126-1-dunaev@tecon.ru>
+In-Reply-To: <20230926102801.1591126-1-dunaev@tecon.ru>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Tue, 26 Sep 2023 16:06:31 +0530
+Message-ID: <CAK9=C2UiBNQtv0Q2yJMKqc5pMX_jam+ZmfRz3Rme0ZYuqN68HA@mail.gmail.com>
+Subject: Re: [PATCH] irqchip/riscv-intc: Mark INTC nodes for secondary CPUs as initialized.
+To:     Dmitry Dunaev <dunaev@tecon.ru>
+Cc:     dunaich@mail.ru, Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 08:20:03AM +0300, Andy Shevchenko wrote:
-> test_bitmap_printlist() prints the input string which contains
-> a new line character. Instead of stripping it, escape that kind
-> of characters, so developer will see the actual input string
-
-Grammar nit:
-
-"that kind of characters" -> "those kinds of characters" or "that kind
-of character" or "such characters" or ...
-
-> that has been used. Without this change the new line splits
-> the string to two, and the first one is not guaranteed to be
-> followed by the first part immediatelly.
-
-immediately
-
-And the second "first" should be "second"??
-
-"the second part is not guaranteed to immediately follow the first" is
-clearer (and hopefully what you mean), IMHO.
-
-Cheers,
-Kent.
-
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Tue, Sep 26, 2023 at 3:59=E2=80=AFPM Dmitry Dunaev <dunaev@tecon.ru> wro=
+te:
+>
+> The current Linux driver irq-riscv-intc initialize IRQ domain only once,
+> when init function called on primary hart. In other cases no IRQ domain i=
+s
+> created and no operation on interrupt-controller node is performed.
+> This is cause of that no common Linux driver can use per-cpu interrupts
+> mapped to several CPUs because fwnode of secondary cores INTC is not
+> marked as initialized. This device is always will be marked as deferred.
+> For example the system with devicetree
+>
+>     cpu0: cpu@0 {
+>         cpu0_intc: interrupt-controller {
+>             interrupt-controller;
+>             compatible =3D riscv,cpu-intc;
+>         };
+>     };
+>
+>     cpu1: cpu@1 {
+>         cpu1_intc: interrupt-controller {
+>             interrupt-controller;
+>             compatible =3D riscv,cpu-intc;
+>         };
+>     };
+>
+>     buserr {
+>         compatible =3D riscv,buserr;
+>         interrupts-extended =3D <&cpu0_intc 16 &cpu1_intc 16>;
+>     };
+>
+> will always report 'buserr' node as deferred without calling any
+> bus probe function.
+>
+> This patch will mark all secondary nodes passed to irq-riscv-intc
+> driver init function as initialized to be able to act as correct
+> IRQ phandle node.
+>
+> Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
 > ---
->  lib/test_bitmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-> index f2ea9f30c7c5..1f2dc7fef17f 100644
-> --- a/lib/test_bitmap.c
-> +++ b/lib/test_bitmap.c
-> @@ -523,7 +523,7 @@ static void __init test_bitmap_printlist(void)
->  		goto out;
->  	}
->  
-> -	pr_err("bitmap_print_to_pagebuf: input is '%s', Time: %llu\n", buf, time);
-> +	pr_err("bitmap_print_to_pagebuf: input is '%*pEs', Time: %llu\n", ret, buf, time);
->  out:
->  	kfree(buf);
->  	kfree(bmap);
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
+>  drivers/irqchip/irq-riscv-intc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv=
+-intc.c
+> index 4adeee1bc391..c01a4e8d4983 100644
+> --- a/drivers/irqchip/irq-riscv-intc.c
+> +++ b/drivers/irqchip/irq-riscv-intc.c
+> @@ -155,8 +155,10 @@ static int __init riscv_intc_init(struct device_node=
+ *node,
+>          * for each INTC DT node. We only need to do INTC initialization
+>          * for the INTC DT node belonging to boot CPU (or boot HART).
+>          */
+> -       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id())
+> +       if (riscv_hartid_to_cpuid(hartid) !=3D smp_processor_id()) {
+> +               fwnode_dev_initialized(of_node_to_fwnode(node), true);
+
+There is already a patch on LKML to address this.
+https://www.spinics.net/lists/kernel/msg4929886.html
+
+>                 return 0;
+> +       }
+>
+>         return riscv_intc_init_common(of_node_to_fwnode(node));
+>  }
+> @@ -179,8 +181,10 @@ static int __init riscv_intc_acpi_init(union acpi_su=
+btable_headers *header,
+>          * for each INTC. We only do INTC initialization
+>          * for the INTC belonging to the boot CPU (or boot HART).
+>          */
+> -       if (riscv_hartid_to_cpuid(rintc->hart_id) !=3D smp_processor_id()=
+)
+> +       if (riscv_hartid_to_cpuid(rintc->hart_id) !=3D smp_processor_id()=
+) {
+> +               fwnode_dev_initialized(of_node_to_fwnode(node), true);
+>                 return 0;
+> +       }
+
+We don't need this change for ACPI because we don't have devlink
+dependency between devices and INTC.
+
+Regards,
+Anup
+
+>
+>         fn =3D irq_domain_alloc_named_fwnode("RISCV-INTC");
+>         if (!fn) {
+> --
+> 2.34.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
