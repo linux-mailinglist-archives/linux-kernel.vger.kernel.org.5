@@ -2,318 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 288797AF286
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1097D7AF287
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbjIZSUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
+        id S235316AbjIZSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjIZSUj (ORCPT
+        with ESMTP id S229809AbjIZSUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:20:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E72E5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695752386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X9Od3GBBiFpA3zXzyNR6oM6boLSTS87ppA/tBVrGnKQ=;
-        b=InyiX5Vv1DG+5PPrltJg02UuDNSdbeiaZELTeNd3twOL3QZWZjs3yQotgKc8CrVVcIFTdg
-        AdY6rY7a3SoWy6Yb3aydhIkEBE+ihvrbDfe5zszuBxS0Csii9AmJNDF6LJi1jzrATN2sqO
-        CYy3fFtHCtpZggEo8PzBog9fIxyqp/s=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-Z-EtqyDHO_K1EcoTYN3O3A-1; Tue, 26 Sep 2023 14:19:44 -0400
-X-MC-Unique: Z-EtqyDHO_K1EcoTYN3O3A-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso80156075e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:19:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752383; x=1696357183;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X9Od3GBBiFpA3zXzyNR6oM6boLSTS87ppA/tBVrGnKQ=;
-        b=jQPbco4vIUifVpx82IaTY6RGVFNOD9jHW9pvGuC/U8lldJiMhk3ueUUA/+gwjSN/dp
-         X4uXvLkhDhrzNCvUIvdNsuOOpxOxxFHtnWkV3HUbSzxmMKwio5ytEJ3gRXP+NsU8Q7jD
-         Jb0szUieGfFrjLhCJNuYjVRx6BPWuRZvgili2b+HtwessOmkTHmZ2Vu4T3szi0Wk3Vdl
-         Xb5VelBZpsto6w47WooX3yap7gIQ2vEUG2Ljts6OwarbnxGD2RGLwcYxq7lIj64dWmHY
-         iOFtgFisih/RxDgIsOzeK1E3RMMV0TNk79ZeCK0KC9wSLEFFlwlTR1g0q9aqbNo2GM1M
-         hUpQ==
-X-Gm-Message-State: AOJu0YwlPHYTVgJQwW6T7/v796FiQ2eyid0eXya6s6OpgMwxA/IbiRIk
-        NftpLlpAweIcDuyvbmcYz7/4IEAnfOyANHaSF257T6TxQjJYjEBZajGMpZS0lqQiObvyY44YH2P
-        AegNhNt/yKBDYmZF28EWX382/
-X-Received: by 2002:a1c:6a0c:0:b0:402:8c7e:ba5 with SMTP id f12-20020a1c6a0c000000b004028c7e0ba5mr9417688wmc.18.1695752383261;
-        Tue, 26 Sep 2023 11:19:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGmhqLCNiRYXEG41MMFujunrgzezSxSvnBsvLDMRqCRPSe56rzeBH0g/lAUjuBkyU8VQ19Jjg==
-X-Received: by 2002:a1c:6a0c:0:b0:402:8c7e:ba5 with SMTP id f12-20020a1c6a0c000000b004028c7e0ba5mr9417666wmc.18.1695752382738;
-        Tue, 26 Sep 2023 11:19:42 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c73f:600:933b:ca69:5a80:230d? (p200300cbc73f0600933bca695a80230d.dip0.t-ipconnect.de. [2003:cb:c73f:600:933b:ca69:5a80:230d])
-        by smtp.gmail.com with ESMTPSA id z4-20020a05600c220400b0040472ad9a3dsm2716493wml.14.2023.09.26.11.19.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 11:19:42 -0700 (PDT)
-Message-ID: <98f3e433-153d-5dd8-c868-30f703baeb46@redhat.com>
-Date:   Tue, 26 Sep 2023 20:19:41 +0200
+        Tue, 26 Sep 2023 14:20:40 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2012.outbound.protection.outlook.com [40.92.48.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1594126;
+        Tue, 26 Sep 2023 11:20:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lX4VCeefxByhbkilyddsIBTV47N02eoAp+umG0dZP3d+zgjq/6dTk5g60dmX+xLVM2UKWiKfeSj+lTYJH8MwAGyKnSldU05lNfsHD/tbYKjvM6jq5yp1at7W3Jx0nWyLgvPHku9RoDyMbn9cWCEOWEwyAgTwIhAjf7nNw78DiKh2/Qmr1X9sFd4vS1ygv/sO6dD/cbIMnLKNp+9gyAqEsrDqHkI48zwO9tq7uvnLSCtg3lOhn8jdeQgxE5iWyJM/xi0BbBRgHZy0RZpuI733ekS5oFdfSdUyx4/3u5zrNHR/iJPOGTjVkODxs5V7nQNXF5cmjX2ADvVQAHeFTFTHkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NVM8wUWpsLD51AyWhDWjK6FIdwXC8vGtLgVBzAfi9Ak=;
+ b=HfigqPYHtlwpsC9E0mjJS4EVLJpdPmLemP2HvZA8BpbhlMBx/vUFoxrusq3A4K1xrlVNQMtGS9xjw6hqgV4MUncHmmlTqsD3vGsy2jUwJgixNFaW0ArlgEkdqqBez0KUGYD51BZs5WV8wxF2rEh5Co1zKZviZrPAAfuP5gvGxQkrDxsBn0kid/K8aK7ZZqiu9eDXhht8MG1y821mt9yDXqmA1kRFA1dTz722h7BzgAAmWPtXSvxrqLmchMItfXrogRbIxowai1Y1uL74XrnigHdt2v79mwHSQ8E6nXP6VmGpiB6/IU1QYdWrwlHujr3WY9pdaXavJCO9adr+1P1eBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NVM8wUWpsLD51AyWhDWjK6FIdwXC8vGtLgVBzAfi9Ak=;
+ b=dbvGaguXHba0TJSV1nO3WqquEaQIFlUxw5sCTdPduFs/cFpNtq4oc95nJ1sqayBDt8Qq6QczmVA8TpymKa3RxCMDBlt5H+uHskKs8hlPu8TZNoQZVPnwRWexqlNrlk4R+KFMvSROL6Id99q1aHbYb2TpHlCN07D9T+8Xbgy3gC0HMVVxk8VTt8F/TuQ7w2LDkR93qSIjzAnRl9urrpxSs2g7BAQSgzIguAFbcjivLu0XdmBY9pivUbWfnQPCSAy1jZ4VoEa+39cKC6nkumiLa8j/MdsLYGL2dNNh2Fbi43frdIZA2lXkp2jegM/zm8r/S64kPQwwO2hMT0JGrjcWZw==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AM8P193MB0916.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1ed::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 18:20:31 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Tue, 26 Sep 2023
+ 18:20:31 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     akpm@linux-foundation.org, shuah@kernel.org
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] selftests/mm: Fix awk usage in charge_reserved_hugetlb.sh and hugetlb_reparenting_test.sh that may cause error
+Date:   Wed, 27 Sep 2023 02:19:44 +0800
+Message-ID: <VI1P193MB075228810591AF2FDD7D42C599C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [xILr9DlG3sQtR9dc1DzJCCLG8cuXEP7L]
+X-ClientProxiedBy: AS4P195CA0022.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d6::10) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230926181944.24179-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
- <20230918145204.GB16104@cmpxchg.org> <20230918174037.GA112714@monkey>
- <20230919064914.GA124289@cmpxchg.org> <20230919184731.GC112714@monkey>
- <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
- <20230920003239.GD112714@monkey>
- <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
- <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
- <20230920134811.GB124289@cmpxchg.org> <20230920160400.GC124289@cmpxchg.org>
- <762CA634-053A-41DD-8ED7-895374640858@nvidia.com>
- <D4F59724-61EB-4DA5-94DF-59E79F0F1FB3@nvidia.com>
- <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
- <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
-In-Reply-To: <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AM8P193MB0916:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f755ffb-d0b7-4ef0-21b7-08dbbebd44c4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vGTQ28tI/nv7wHjMyYFpLcKQV1B2pkIVz2b7z7uhlZp++lww9EPNrYDRxaI+RuzLOvOpbidffRuh1+eEMft2+TjARKnqBFdTxaq7TOCabXJpjGNqrzTP7UEunJA/k1odHwmn/OgmuuFcGDS03740z0LPxmZUcG3n15c1np8F2cfQfYPNFMMoC/vHuxmhUmGI1EwD8SQwfhVTm9kDYa/onPLF2+3OZ++/uj5OtsJtUVicz4fVg+/DJLj9acqdVsGKKTkqQkbmvHWamEasA8D71RZdGBDM1r9sjMekXVZ3yDFccrwPD9DWUVqScq3L/4/pQwTPVaFcTJOHkigsEqA3wNKAjP3A+pDmd1i2W0lOsf8oZfMNP1M88FYc0fK+TnoZ8bUSbzLXBc0zNGiuFcY184jIN6ERbMy58qTzPQvXDTArRHBLakxye6CIWCErKXTOCUZC4b0VYoXPyympTcXxPBuK8CLdmgVytUcvw874O7335e9MpMn7se7flIA6hTDojRis5WOqc8Zsdvip6Yg+obgKhkgT/RUmIY459vJmd24EgMaKOHS12nY3lqDH2hlj
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?akGJZ1AGyAIBlpxOBKKHKRWD6hPUhNwU1f84jZiyyz8IntRDlsiatAxR2UDq?=
+ =?us-ascii?Q?eniEzjCVJ03DwrsNWLxhKJvsKHW4psZrm3GW79vmTLTeF1lIEMihLrtZH07g?=
+ =?us-ascii?Q?HQZay9sOH2aoI4tYtnJ+EWnkXc3JzSfNmmSWOo4l0IUTcP46ZQ0qtukqFL6s?=
+ =?us-ascii?Q?c3Pz4ymron9RWLh/ao2TrvzS4PKDVxYE0Qyv686Sk8ypOti6bCSHDcEeZBSe?=
+ =?us-ascii?Q?JSvuY0ENLmsgwtrXxlx6mxdAsN0LQbjldN2MhPy2tZqehNAcjqAa9hm4ATSg?=
+ =?us-ascii?Q?bBJIg6W+TeNN3vILe3S7gpaC5Sp7BLh5CalT7ZOyAkIWorDAfVr8t2YWgVfz?=
+ =?us-ascii?Q?QG1WDC7InwH7T12YLh0smJwLv4wbvLx/AMdIL7wakslaZrI3bOR/YqnqjiXh?=
+ =?us-ascii?Q?yMasCtjJKRY+yu1IoQVoR7xwi2g5achkU6O/0gRkY/Zn0EgZ0oX/R5YB0vnp?=
+ =?us-ascii?Q?8AKCr0wDoAEFVSHW1+FVjbjcmzYtS+zErvYi/lPFfdxGB56xoY0ow95kg8Aj?=
+ =?us-ascii?Q?nnpWluZhTuvD4jaxsO7O19lpu6s5CccDwaHSRSSoYHB/nleqVU2B0R4Fwhq5?=
+ =?us-ascii?Q?KsaTw+iCSz12AYdU/1C0umJbf2rXdF8GN+yckg9XTCsjqZ6Z6AR1y83JBCbE?=
+ =?us-ascii?Q?Xi5gua+HHUdWLfW6nBmrDkPwlursb7mZ3WgBasNWcXUtnBPkOkva1tiuXFEn?=
+ =?us-ascii?Q?mklu9Luj6xtNY8WV4PiqFZWD7/36dsxSflB7VKtpaohLdNLxE/ztnani4Eqd?=
+ =?us-ascii?Q?/qV0Bq29IwOm8hdeqYV8oV3wu1eL74SoacO/xj4wRyr9nvUq6hoPIzhEpQFV?=
+ =?us-ascii?Q?J0x1TGdTWweEs1ao2MED0rLyAEqVzJikvBM3NPNehdUoGGga17/5lBDpbwVX?=
+ =?us-ascii?Q?FvB4Dg8XiKldto6MmvL6cbyIWDyjKkS/kvNNiPRaIsaJGyEUaqECZgEF4h82?=
+ =?us-ascii?Q?cyr0GGpnrIPBqSbeL/7IHnMi/aBOWxpzAjxqF4znPDXwZU8Out+vF3nMHXBI?=
+ =?us-ascii?Q?jJIbO7SZ8lFCtNMxs0p5FN1mOW7xbLKsQawDBiPAOI0iU5BYmJj4l7QJnIHM?=
+ =?us-ascii?Q?G39NdvwS7Kw1SQVClaooXHUjN1MyE3Q45Zxv2lfpq2aRboTYBMvkUg5Wt5GB?=
+ =?us-ascii?Q?BxH+mF/jTX4zf5inSKCM/RX1IOfFbouv8KYUJygASeWWt0FsnjmG5AnDkLeU?=
+ =?us-ascii?Q?fiDWXoAYUV3EX0TTZ7czC5jG7l7m6pj5YaCs5E9VpJHR2unb2koZBibqb+I?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f755ffb-d0b7-4ef0-21b7-08dbbebd44c4
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 18:20:31.6529
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P193MB0916
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.09.23 16:47, Zi Yan wrote:
-> On 21 Sep 2023, at 6:19, David Hildenbrand wrote:
-> 
->> On 21.09.23 04:31, Zi Yan wrote:
->>> On 20 Sep 2023, at 13:23, Zi Yan wrote:
->>>
->>>> On 20 Sep 2023, at 12:04, Johannes Weiner wrote:
->>>>
->>>>> On Wed, Sep 20, 2023 at 09:48:12AM -0400, Johannes Weiner wrote:
->>>>>> On Wed, Sep 20, 2023 at 08:07:53AM +0200, Vlastimil Babka wrote:
->>>>>>> On 9/20/23 03:38, Zi Yan wrote:
->>>>>>>> On 19 Sep 2023, at 20:32, Mike Kravetz wrote:
->>>>>>>>
->>>>>>>>> On 09/19/23 16:57, Zi Yan wrote:
->>>>>>>>>> On 19 Sep 2023, at 14:47, Mike Kravetz wrote:
->>>>>>>>>>
->>>>>>>>>>> 	--- a/mm/page_alloc.c
->>>>>>>>>>> 	+++ b/mm/page_alloc.c
->>>>>>>>>>> 	@@ -1651,8 +1651,13 @@ static bool prep_move_freepages_block(struct zone *zone, struct page *page,
->>>>>>>>>>>    		end = pageblock_end_pfn(pfn) - 1;
->>>>>>>>>>>
->>>>>>>>>>>    		/* Do not cross zone boundaries */
->>>>>>>>>>> 	+#if 0
->>>>>>>>>>>    		if (!zone_spans_pfn(zone, start))
->>>>>>>>>>> 			start = zone->zone_start_pfn;
->>>>>>>>>>> 	+#else
->>>>>>>>>>> 	+	if (!zone_spans_pfn(zone, start))
->>>>>>>>>>> 	+		start = pfn;
->>>>>>>>>>> 	+#endif
->>>>>>>>>>> 	 	if (!zone_spans_pfn(zone, end))
->>>>>>>>>>> 	 		return false;
->>>>>>>>>>> 	I can still trigger warnings.
->>>>>>>>>>
->>>>>>>>>> OK. One thing to note is that the page type in the warning changed from
->>>>>>>>>> 5 (MIGRATE_ISOLATE) to 0 (MIGRATE_UNMOVABLE) with my suggested change.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Just to be really clear,
->>>>>>>>> - the 5 (MIGRATE_ISOLATE) warning was from the __alloc_pages call path.
->>>>>>>>> - the 0 (MIGRATE_UNMOVABLE) as above was from the alloc_contig_range call
->>>>>>>>>     path WITHOUT your change.
->>>>>>>>>
->>>>>>>>> I am guessing the difference here has more to do with the allocation path?
->>>>>>>>>
->>>>>>>>> I went back and reran focusing on the specific migrate type.
->>>>>>>>> Without your patch, and coming from the alloc_contig_range call path,
->>>>>>>>> I got two warnings of 'page type is 0, passed migratetype is 1' as above.
->>>>>>>>> With your patch I got one 'page type is 0, passed migratetype is 1'
->>>>>>>>> warning and one 'page type is 1, passed migratetype is 0' warning.
->>>>>>>>>
->>>>>>>>> I could be wrong, but I do not think your patch changes things.
->>>>>>>>
->>>>>>>> Got it. Thanks for the clarification.
->>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> One idea about recreating the issue is that it may have to do with size
->>>>>>>>>>> of my VM (16G) and the requested allocation sizes 4G.  However, I tried
->>>>>>>>>>> to really stress the allocations by increasing the number of hugetlb
->>>>>>>>>>> pages requested and that did not help.  I also noticed that I only seem
->>>>>>>>>>> to get two warnings and then they stop, even if I continue to run the
->>>>>>>>>>> script.
->>>>>>>>>>>
->>>>>>>>>>> Zi asked about my config, so it is attached.
->>>>>>>>>>
->>>>>>>>>> With your config, I still have no luck reproducing the issue. I will keep
->>>>>>>>>> trying. Thanks.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Perhaps try running both scripts in parallel?
->>>>>>>>
->>>>>>>> Yes. It seems to do the trick.
->>>>>>>>
->>>>>>>>> Adjust the number of hugetlb pages allocated to equal 25% of memory?
->>>>>>>>
->>>>>>>> I am able to reproduce it with the script below:
->>>>>>>>
->>>>>>>> while true; do
->>>>>>>>    echo 4 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages&
->>>>>>>>    echo 2048 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages&
->>>>>>>>    wait
->>>>>>>>    echo 0 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
->>>>>>>>    echo 0 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
->>>>>>>> done
->>>>>>>>
->>>>>>>> I will look into the issue.
->>>>>>
->>>>>> Nice!
->>>>>>
->>>>>> I managed to reproduce it ONCE, triggering it not even a second after
->>>>>> starting the script. But I can't seem to do it twice, even after
->>>>>> several reboots and letting it run for minutes.
->>>>>
->>>>> I managed to reproduce it reliably by cutting the nr_hugepages
->>>>> parameters respectively in half.
->>>>>
->>>>> The one that triggers for me is always MIGRATE_ISOLATE. With some
->>>>> printk-tracing, the scenario seems to be this:
->>>>>
->>>>> #0                                                   #1
->>>>> start_isolate_page_range()
->>>>>     isolate_single_pageblock()
->>>>>       set_migratetype_isolate(tail)
->>>>>         lock zone->lock
->>>>>         move_freepages_block(tail) // nop
->>>>>         set_pageblock_migratetype(tail)
->>>>>         unlock zone->lock
->>>>>                                                        del_page_from_freelist(head)
->>>>>                                                        expand(head, head_mt)
->>>>>                                                          WARN(head_mt != tail_mt)
->>>>>       start_pfn = ALIGN_DOWN(MAX_ORDER_NR_PAGES)
->>>>>       for (pfn = start_pfn, pfn < end_pfn)
->>>>>         if (PageBuddy())
->>>>>           split_free_page(head)
->>>>>
->>>>> IOW, we update a pageblock that isn't MAX_ORDER aligned, then drop the
->>>>> lock. The move_freepages_block() does nothing because the PageBuddy()
->>>>> is set on the pageblock to the left. Once we drop the lock, the buddy
->>>>> gets allocated and the expand() puts things on the wrong list. The
->>>>> splitting code that handles MAX_ORDER blocks runs *after* the tail
->>>>> type is set and the lock has been dropped, so it's too late.
->>>>
->>>> Yes, this is the issue I can confirm as well. But it is intentional to enable
->>>> allocating a contiguous range at pageblock granularity instead of MAX_ORDER
->>>> granularity. With your changes below, it no longer works, because if there
->>>> is an unmovable page in
->>>> [ALIGN_DOWN(start_pfn, MAX_ORDER_NR_PAGES), pageblock_start_pfn(start_pfn)),
->>>> the allocation fails but it would succeed in current implementation.
->>>>
->>>> I think a proper fix would be to make move_freepages_block() split the
->>>> MAX_ORDER page and put the split pages in the right migratetype free lists.
->>>>
->>>> I am working on that.
->>>
->>> After spending half a day on this, I think it is much harder than I thought
->>> to get alloc_contig_range() working with the freelist migratetype hygiene
->>> patchset. Because alloc_contig_range() relies on racy migratetype changes:
->>>
->>> 1. pageblocks in the range are first marked as MIGRATE_ISOLATE to prevent
->>> another parallel isolation, but they are not moved to the MIGRATE_ISOLATE
->>> free list yet.
->>>
->>> 2. later in the process, isolate_freepages_range() is used to actually grab
->>> the free pages.
->>>
->>> 3. there was no problem when alloc_contig_range() works on MAX_ORDER aligned
->>> ranges, since MIGRATE_ISOLATE cannot be set in the middle of free pages or
->>> in-use pages. But it is not the case when alloc_contig_range() work on
->>> pageblock aligned ranges. Now during isolation phase, free or in-use pages
->>> will need to be split to get their subpages into the right free lists.
->>>
->>> 4. the hardest case is when a in-use page sits across two pageblocks, currently,
->>> the code just isolate one pageblock, migrate the page, and let split_free_page()
->>> to correct the free list later. But to strictly enforce freelist migratetype
->>> hygiene, extra work is needed at free page path to split the free page into
->>> the right freelists.
->>>
->>> I need more time to think about how to get alloc_contig_range() properly.
->>> Help is needed for the bullet point 4.
->>
->>
->> I once raised that we should maybe try making MIGRATE_ISOLATE a flag that preserves the original migratetype. Not sure if that would help here in any way.
-> 
-> I have that in my backlog since you asked and have been delaying it. ;) Hopefully
+According to the awk manual, the -e option does not need to be specified
+in front of 'program' (unless you need to mix program-file).
 
-It's complicated and I wish I would have had more time to review it
-back then ... or now to clean it up later.
+The redundant -e option can cause error when users use awk tools other
+than gawk (for example, mawk does not support the -e option).
 
-Unfortunately, nobody else did have the time to review it back then ... maybe we can
-do better next time. David doesn't scale.
+Error Example:
+awk: not an option: -e
 
-Doing page migration from inside start_isolate_page_range()->isolate_single_pageblock()
-really is sub-optimal (and mostly code duplication from alloc_contig_range).
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 4 ++--
+ tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> I can do it after I fix this. That change might or might not help only if we make
-> some redesign on how migratetype is managed. If MIGRATE_ISOLATE does not
-> overwrite existing migratetype, the code might not need to split a page and move
-> it to MIGRATE_ISOLATE freelist?
-
-Did someone test how memory offlining plays along with that? (I can try myself
-within the next 1-2 weeks)
-
-There [mm/memory_hotplug.c:offline_pages] we always cover full MAX_ORDER ranges,
-though.
-
-ret = start_isolate_page_range(start_pfn, end_pfn,
-			       MIGRATE_MOVABLE,
-			       MEMORY_OFFLINE | REPORT_FAILURE,
-			       GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL);
-
-> 
-> The fundamental issue in alloc_contig_range() is that to work at
-> pageblock level, a page (>pageblock_order) can have one part is isolated and
-> the rest is a different migratetype. {add_to,move_to,del_page_from}_free_list()
-> now checks first pageblock migratetype, so such a page needs to be removed
-> from its free_list, set MIGRATE_ISOLATE on one of the pageblock, split, and
-> finally put back to multiple free lists. This needs to be done at isolation stage
-> before free pages are removed from their free lists (the stage after isolation).
-
-One idea was to always isolate larger chunks, and handle movability checks/split/etc
-at a later stage. Once isolation would be decoupled from the actual/original migratetype,
-the could have been easier to handle (especially some corner cases I had in mind back then).
-
-> If MIGRATE_ISOLATE is a separate flag and we are OK with leaving isolated pages
-> in their original migratetype and check migratetype before allocating a page,
-> that might help. But that might add extra work (e.g., splitting a partially
-> isolated free page before allocation) in the really hot code path, which is not
-> desirable.
-
-With MIGRATE_ISOLATE being a separate flag, one idea was to have not a single
-separate isolate list, but one per "proper migratetype". But again, just some random
-thoughts I had back then, I never had sufficient time to think it all through.
-
+diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+index a5cb4b09a46c..0899019a7fcb 100755
+--- a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
++++ b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+@@ -25,7 +25,7 @@ if [[ "$1" == "-cgroup-v2" ]]; then
+ fi
+ 
+ if [[ $cgroup2 ]]; then
+-  cgroup_path=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
++  cgroup_path=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+   if [[ -z "$cgroup_path" ]]; then
+     cgroup_path=/dev/cgroup/memory
+     mount -t cgroup2 none $cgroup_path
+@@ -33,7 +33,7 @@ if [[ $cgroup2 ]]; then
+   fi
+   echo "+hugetlb" >$cgroup_path/cgroup.subtree_control
+ else
+-  cgroup_path=$(mount -t cgroup | grep ",hugetlb" | awk -e '{print $3}')
++  cgroup_path=$(mount -t cgroup | grep ",hugetlb" | awk '{print $3}')
+   if [[ -z "$cgroup_path" ]]; then
+     cgroup_path=/dev/cgroup/memory
+     mount -t cgroup memory,hugetlb $cgroup_path
+diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+index bf2d2a684edf..14d26075c863 100755
+--- a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
++++ b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+@@ -20,7 +20,7 @@ fi
+ 
+ 
+ if [[ $cgroup2 ]]; then
+-  CGROUP_ROOT=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
++  CGROUP_ROOT=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+   if [[ -z "$CGROUP_ROOT" ]]; then
+     CGROUP_ROOT=/dev/cgroup/memory
+     mount -t cgroup2 none $CGROUP_ROOT
+@@ -28,7 +28,7 @@ if [[ $cgroup2 ]]; then
+   fi
+   echo "+hugetlb +memory" >$CGROUP_ROOT/cgroup.subtree_control
+ else
+-  CGROUP_ROOT=$(mount -t cgroup | grep ",hugetlb" | awk -e '{print $3}')
++  CGROUP_ROOT=$(mount -t cgroup | grep ",hugetlb" | awk '{print $3}')
+   if [[ -z "$CGROUP_ROOT" ]]; then
+     CGROUP_ROOT=/dev/cgroup/memory
+     mount -t cgroup memory,hugetlb $CGROUP_ROOT
 -- 
-Cheers,
-
-David / dhildenb
+2.39.2
 
