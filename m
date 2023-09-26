@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3837AECCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCCF7AECD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbjIZM2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
+        id S234676AbjIZM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234644AbjIZM2Z (ORCPT
+        with ESMTP id S234657AbjIZM2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:28:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BD93FC;
-        Tue, 26 Sep 2023 05:28:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F7841480;
-        Tue, 26 Sep 2023 05:28:56 -0700 (PDT)
-Received: from e103737-lin.cambridge.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 475BB3F6C4;
-        Tue, 26 Sep 2023 05:28:17 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Tue, 26 Sep 2023 13:28:02 +0100
-Subject: [PATCH 3/3] hwmon: (xgene) Migrate to use generic PCC shmem
- related macros
+        Tue, 26 Sep 2023 08:28:54 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FB11A5;
+        Tue, 26 Sep 2023 05:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:Cc:To:From; bh=B09MzM/TLs1PzA5TRnuzEjsOtggWBnrkMeoYkUGuGKk=; b=QAYOf1
+        fmReXNeJoRd80+Kkv0ldSwh90cwqP8ZBJBKTEsegk4Z+HcI9h6hJ3jVO3ZVSVaTMqINNuSR7YOiLs
+        kyg8BmI3EKk89fh/Uq7sB2iT6miW3N0EiJwN/xV9ZDKIJ/e5ohrALz4QBp6FP+Ie0yDyOaVnk/vYk
+        Xl7ASusxJfI=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1ql7B4-0000SA-VX; Tue, 26 Sep 2023 12:28:34 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1ql7B4-00028i-If; Tue, 26 Sep 2023 12:28:34 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: [PATCH v6 RESEND 00/11] KVM: xen: update shared_info and vcpu_info handling
+Date:   Tue, 26 Sep 2023 12:28:28 +0000
+Message-Id: <20230926122828.867447-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-pcc_defines-v1-3-0f925a1658fd@arm.com>
-References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
-In-Reply-To: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
-To:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2535; i=sudeep.holla@arm.com;
- h=from:subject:message-id; bh=xAB9DO9/WuBfrCyxIgct5Wml2oQRa0x+hPVPHrXNjoA=;
- b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlEs5dgRCkg3Q8R+TXzB+/wrKszSybk6z9171cI
- 3pqISWetFmJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZRLOXQAKCRAAQbq8MX7i
- mLEGEACl2JMbMOB+9OV8WlvKM7hyGqeLYE6pFW9p0ZqGXyCXsWZaZiAtXXFKjl9/l7Yi5oeoIrE
- dOK4RA1guAGaulOWlUZRn3E1VfZLwtUTztToPY6AP7sqXUbIouIRHajm6e6AEKs1PQlMIH6TSSQ
- HJa24nPd863GDeAgwSTO6Zc2vxv4A6ea+L40qP1U13f1xlj0vEaarNJ1qMfVo+T+xh2NyxpSlOB
- ptpiVoGj4JCBAFfm5bXKwegkaN/sXGe6G8vrJq9mpaCmtJ6eeAzimJIuufvmanNUGi8q/CMwKOJ
- avyx9YuhtVdlNhKN0eR5Yzs9blKq9nxQU2tGHKObR/2cUG41MZ4j3aJ4x5p9K0+91bn0G5VzdG9
- SzoZ2ehCblxfvjQP+15G1HLGfzfN2LBiyzi49cC48k72DxdLf1kxg2QOGfhCSuL8tb/eqeF6NAw
- m/aiGnxi7tVr53hP9aZ3XFUzpnuiz2r4wJs9n+kxV7srdj+CTa0U9LWKicfw2oQsjJYtnvyBqtF
- Pp+GxV2/2412qdNkjkAmnwOlU7aUW7FXkyfPOOBs5owBjoId3PxXttnqBTN009QwoiySA2ns4jZ
- lNv2UOxRJ2sGlZBdlbBvhTWfOnBX57RVNb0jXtNhmSBh8uZvvmYPUbmGm6sz0jRuAQNYUqygubF
- 4WxWWr0QKYreLMA==
-X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp;
- fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the newly defined common and generic PCC shared memory region
-related macros in this driver to replace the locally defined ones.
+From: Paul Durrant <pdurrant@amazon.com>
 
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Apologies. I missed the Cc list...
+
+The following text from the original cover letter still serves as an
+introduction to the series:
+
+"Currently we treat the shared_info page as guest memory and the VMM
+informs KVM of its location using a GFN. However it is not guest memory as
+such; it's an overlay page. So we pointlessly invalidate and re-cache a
+mapping to the *same page* of memory every time the guest requests that
+shared_info be mapped into its address space. Let's avoid doing that by
+modifying the pfncache code to allow activation using a fixed userspace HVA
+as well as a GPA."
+
+As with the previous version of the series, both the shared_info and
+vcpu_info caches can now be activated using an HVA but the commit comment
+on "map shared_info using HVA rather than GFN" has been extended to
+explain why mapping shared_info using HVA is a particularly good idea.
+
+This version of the series also includes an extra patch to "allow
+vcpu_info content to be 'safely' copied. Currently there is a race window
+when the VMM performs the copy; this patch allows the VMM to avoid that
+race.
+
+Paul Durrant (11):
+  KVM: pfncache: add a map helper function
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: add a helper to get the gpa
+  KVM: pfncache: base offset check on khva rather than gpa
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: allow vcpu_info to be mapped by fixed HVA
+  KVM: selftests / xen: map shared_info using HVA rather than GFN
+  KVM: selftests / xen: re-map vcpu_info using HVA rather than GPA
+  KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  KVM: xen: allow vcpu_info content to be 'safely' copied
+
+ Documentation/virt/kvm/api.rst                |  53 +++++--
+ arch/x86/kvm/x86.c                            |   5 +-
+ arch/x86/kvm/xen.c                            |  92 +++++++++----
+ include/linux/kvm_host.h                      |  43 ++++++
+ include/linux/kvm_types.h                     |   3 +-
+ include/uapi/linux/kvm.h                      |   9 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++++++--
+ virt/kvm/pfncache.c                           | 129 +++++++++++++-----
+ 8 files changed, 302 insertions(+), 91 deletions(-)
 ---
- drivers/hwmon/xgene-hwmon.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/hwmon/xgene-hwmon.c b/drivers/hwmon/xgene-hwmon.c
-index 78d9f52e2a71..1ccdd61b6d13 100644
---- a/drivers/hwmon/xgene-hwmon.c
-+++ b/drivers/hwmon/xgene-hwmon.c
-@@ -57,12 +57,6 @@
- 	(MSG_TYPE_SET(MSG_TYPE_PWRMGMT) | \
- 	MSG_SUBTYPE_SET(hndl) | TPC_CMD_SET(cmd) | type)
- 
--/* PCC defines */
--#define PCC_SIGNATURE_MASK		0x50424300
--#define PCCC_GENERATE_DB_INT		BIT(15)
--#define PCCS_CMD_COMPLETE		BIT(0)
--#define PCCS_SCI_DOORBEL		BIT(1)
--#define PCCS_PLATFORM_NOTIFICATION	BIT(3)
- /*
-  * Arbitrary retries in case the remote processor is slow to respond
-  * to PCC commands
-@@ -142,15 +136,15 @@ static int xgene_hwmon_pcc_rd(struct xgene_hwmon_dev *ctx, u32 *msg)
- 
- 	/* Write signature for subspace */
- 	WRITE_ONCE(generic_comm_base->signature,
--		   cpu_to_le32(PCC_SIGNATURE_MASK | ctx->mbox_idx));
-+		   cpu_to_le32(PCC_SIGNATURE | ctx->mbox_idx));
- 
- 	/* Write to the shared command region */
- 	WRITE_ONCE(generic_comm_base->command,
--		   cpu_to_le16(MSG_TYPE(msg[0]) | PCCC_GENERATE_DB_INT));
-+		   cpu_to_le16(MSG_TYPE(msg[0]) | PCC_CMD_GENERATE_DB_INTR));
- 
- 	/* Flip CMD COMPLETE bit */
- 	val = le16_to_cpu(READ_ONCE(generic_comm_base->status));
--	val &= ~PCCS_CMD_COMPLETE;
-+	val &= ~PCC_STATUS_CMD_COMPLETE;
- 	WRITE_ONCE(generic_comm_base->status, cpu_to_le16(val));
- 
- 	/* Copy the message to the PCC comm space */
-@@ -544,7 +538,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
- 	msg = generic_comm_base + 1;
- 	/* Check if platform sends interrupt */
- 	if (!xgene_word_tst_and_clr(&generic_comm_base->status,
--				    PCCS_SCI_DOORBEL))
-+				    PCC_STATUS_SCI_DOORBELL))
- 		return;
- 
- 	/*
-@@ -566,7 +560,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
- 	      TPC_CMD(((u32 *)msg)[0]) == TPC_ALARM))) {
- 		/* Check if platform completes command */
- 		if (xgene_word_tst_and_clr(&generic_comm_base->status,
--					   PCCS_CMD_COMPLETE)) {
-+					   PCC_STATUS_CMD_COMPLETE)) {
- 			ctx->sync_msg.msg = ((u32 *)msg)[0];
- 			ctx->sync_msg.param1 = ((u32 *)msg)[1];
- 			ctx->sync_msg.param2 = ((u32 *)msg)[2];
-
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: x86@kernel.org
 -- 
-2.42.0
+2.39.2
 
