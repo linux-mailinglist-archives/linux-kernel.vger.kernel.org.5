@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7827AE2D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333917AE2E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjIZAR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        id S231240AbjIZAUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIZAR2 (ORCPT
+        with ESMTP id S229460AbjIZAUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:17:28 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EF410A;
-        Mon, 25 Sep 2023 17:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695687440;
-        bh=6pA/zaPvex5yELwVfoOjyd303wllUNzvBUF8400bCWo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pTNyKe50ZmrVhi1KeLlFt+dD/+nQn+4vhUD3Tj6LF44QXfBdQMtHl+7dII8tQbUaD
-         zCBUiFCW5Uh7kMSUK0cyY5oOAGQl6Vy/Ho+73lqtZI5Ri2LVn270RhZauNVf0q4alw
-         E87ZHx7gPsOOEqlzSYPUDq5Xm2jhSnprw0TKjLA78VtGkofDtS/0WICkHcwBlR9VBQ
-         91wfoOKK1YPgoSHQe9wA8O0jtbz9FcAMnuZT1RM1/pBK+2pJSZonxMWGdyTXbnpGg6
-         0lRCRJhfR4aFnb4iat8KOq66w6SPX54nVQ5oWQT5/ZRgGVTBH/DvaUL2fmjs3yW67W
-         6xuGxWP0bIZng==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RvgKq33jSz4xGC;
-        Tue, 26 Sep 2023 10:17:19 +1000 (AEST)
-Date:   Tue, 26 Sep 2023 10:17:17 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: linux-next: manual merge of the btrfs tree with the mm tree
-Message-ID: <20230926101717.0237a18a@canb.auug.org.au>
+        Mon, 25 Sep 2023 20:20:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC09710A;
+        Mon, 25 Sep 2023 17:20:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D62AC433C7;
+        Tue, 26 Sep 2023 00:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695687635;
+        bh=e3Yoq9pOLHOvljpOv+ix7wrGoqb64GYOUno0SrLgHPA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hIGlYoo/q44hoAwjR1Aux0HDlWYTPdNwBSFKBGCPSIoX9kEVVU2hmyChA7N9dYcDz
+         ODnctHmhKndFZcpKA+0zX5k2sBv5aGMhnoXkqQA9wy9IbIpvtJcG5qnu2Fl1QwjFIg
+         InpcRinxeduXnYkLMwE2GvadD7r5pUtGcxJ33ugDqljrHdEMFrsP7ucvnVktNX+aIR
+         rfuU9EUA6x2fFwblj5aygUw3IdCjaLwpd+ONI3IgZcOQ0iPj5c+82JYRsw48Nzu5XI
+         8xM5hlwYm/MHRQ24vTUMXxEqmf3DzkzQqXmva2YYp8pcBwjAeYAFi9hh2h77mMoiH0
+         UaFHCoIwluBbA==
+Date:   Tue, 26 Sep 2023 02:20:30 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-man@vger.kernel.org, linux-api@vger.kernel.org,
+        hughd@google.com, p.raghav@samsung.com, da.gomez@samsung.com,
+        rohan.puri@samsung.com, rpuri.linux@gmail.com,
+        a.manzanares@samsung.com, dave@stgolabs.net, yosryahmed@google.com,
+        keescook@chromium.org, patches@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tmpfs.5: extend with new noswap documentation
+Message-ID: <klaavttirlzwac4ztov777srbgmxngi7uc6jngoctvceatmjxh@tt4cgqnwnu5f>
+References: <20230920235022.1070752-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_id7ysS3XdMqtj_gQ9I9Q9R";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ezffmyq2fe7k4oep"
+Content-Disposition: inline
+In-Reply-To: <20230920235022.1070752-1-mcgrof@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_id7ysS3XdMqtj_gQ9I9Q9R
-Content-Type: text/plain; charset=US-ASCII
+
+--ezffmyq2fe7k4oep
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] tmpfs.5: extend with new noswap documentation
+MIME-Version: 1.0
 
-Hi all,
+Hi Luis,
 
-Today's linux-next merge of the btrfs tree got a conflict in:
+On Wed, Sep 20, 2023 at 04:50:22PM -0700, Luis Chamberlain wrote:
+> Linux commit 2c6efe9cf2d7 ("shmem: add support to ignore swap")
+> merged as of v6.4 added support to disable swap for tmpfs mounts.
+>=20
+> This extends the man page to document that.
+>=20
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-  fs/btrfs/super.c
+Patch applied.
 
-between commit:
+Thanks,
+Alex
 
-  a95330e8e416 ("fs: super: dynamically allocate the s_shrink")
+> ---
+>=20
+> changes on v2:
+>=20
+>  - Use semantic newlines
+>=20
+>  man5/tmpfs.5 | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/man5/tmpfs.5 b/man5/tmpfs.5
+> index 5274e632d6fd..047a17a78ee0 100644
+> --- a/man5/tmpfs.5
+> +++ b/man5/tmpfs.5
+> @@ -103,6 +103,12 @@ suffixes like
+>  .BR size ,
+>  but not a % suffix.
+>  .TP
+> +.BR noswap "(since Linux 6.4)"
+> +.\" commit 2c6efe9cf2d7841b75fe38ed1adbd41a90f51ba0
+> +Disables swap.
+> +Remounts must respect the original settings.
+> +By default swap is enabled.
+> +.TP
+>  .BR mode "=3D\fImode\fP"
+>  Set initial permissions of the root directory.
+>  .TP
+> --=20
+> 2.39.2
+>=20
 
-from the mm tree and commit:
-
-  dd99b78be273 ("btrfs: open block devices after superblock creation")
-
-from the btrfs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/btrfs/super.c
-index b1798bed68f2,c41ed5a78ea4..000000000000
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@@ -1518,10 -1457,24 +1457,24 @@@ static struct dentry *btrfs_mount_root(
-  		if ((flags ^ s->s_flags) & SB_RDONLY)
-  			error =3D -EBUSY;
-  	} else {
-- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
-+ 		struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
-+=20
-+ 		mutex_lock(&uuid_mutex);
-+ 		error =3D btrfs_open_devices(fs_devices, sb_open_mode(flags), s);
-+ 		mutex_unlock(&uuid_mutex);
-+ 		if (error)
-+ 			goto error_deactivate;
-+=20
-+ 		if (!(flags & SB_RDONLY) && fs_devices->rw_devices =3D=3D 0) {
-+ 			error =3D -EACCES;
-+ 			goto error_deactivate;
-+ 		}
-+=20
-+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg",
-+ 			 fs_devices->latest_dev->bdev);
- -		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s", fs_type->name,
- +		shrinker_debugfs_rename(s->s_shrink, "sb-%s:%s", fs_type->name,
-  					s->s_id);
-- 		btrfs_sb(s)->bdev_holder =3D fs_type;
-+ 		btrfs_sb(s)->bdev_holder =3D s;
-  		error =3D btrfs_fill_super(s, fs_devices, data);
-  	}
-  	if (!error)
-
---Sig_/_id7ysS3XdMqtj_gQ9I9Q9R
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--ezffmyq2fe7k4oep
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUSIw0ACgkQAVBC80lX
-0GxkBwf/aelgXOkPAHAzzfOSFStjrMFp13Fxem/Furtxm+TRrr2dKzKhIbdUjVLP
-I8yZsjxmHsOog50iLMakPRzWUSSkUUNWKxaDYgOHMyfzSINUqc55D5flmnOdz6ds
-YVguGbZlLefjTei9Uc2Yzo+nVVdS3C+cExTPLQHgW6tMG8nqupagb5NU/w7oakyU
-ERFgQ/1cOV/43UsXQKnuQdVAv0QHcZGOx8s3DOfA0h2kQuoYT6C03yNvkOSmBO5O
-ouKX1DCtPfmvYkUFhVjlTbeBGJU6wQqR8IawPtwTG6Pudu7n2LuePlx242ktVkTe
-7CzuN94mVgFUxJQ4y/Iq1+T79vulFQ==
-=gsGP
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUSI84ACgkQnowa+77/
+2zJtahAAqgPqzQ/Py592AplsMuBWu30BMai3jki60tNkEL0DjUP0aVYdRag0H8ja
+q7nKAC/Biqw+poS4EGFeZoaa0WqKfi6kVJhDKhlFXVa0l37l78CfJ38ldJDuENA2
++hkW531e1HBtz4xKPAJ56zRsbecmbIcc70FOHcE6k6rHTI3oy/WZ8MFVHKy1lALb
+KwkTM9v/DmM2MdgWX5TFugZRP2X+gWG+AZYsO6nF7NgOI2/BSAw8FhrKeE9d/IG8
+cO1iKXo3mecz86WRlbc72Flo4PnKezGVNJCddcV6gu6yD/Oy2nvFtV6Ni+WbVTU1
+qMmfR5sLyKMUcY1kMMTdRhjHwu1B0wk9i/0bK2bGbrAmjo/pvsHlPBssRqXjWAib
+Gdj+eCMqo81kV6bZwOHqYdVKZYrTy83Ou6Gn7x3KhMhubayrvkaHKOBgT4q15V97
+B7dk7Zqh/zdPHyXap0CjYfIH20B1xMr7bblI1dIJsHbLAx0RtPue67/sK0F6ZiWn
+tjdjcQ+EgvpQJVQqUpKGMQeR4450Dfd2thcWtFfRAzmoP+dCnmyxBAb2IEDj8WiZ
+Q2kWzVG2++EWGCDKSltiAylNGKqZSzyWYgCr5K5CYDX1X2GOmo12MoFdi1mAovEt
+ByI4/w92XL0glZCrsQQGRtE4bVeD/qMKVe/HPKVIUMm0yGiMkwQ=
+=6UrE
 -----END PGP SIGNATURE-----
 
---Sig_/_id7ysS3XdMqtj_gQ9I9Q9R--
+--ezffmyq2fe7k4oep--
