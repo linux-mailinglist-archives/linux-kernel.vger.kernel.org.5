@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 039EB7AF75C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63F37AF762
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjI0AWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 20:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
+        id S233661AbjI0AWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 20:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232929AbjI0AT6 (ORCPT
+        with ESMTP id S232739AbjI0AUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 20:19:58 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131641D2B4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:40:17 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f4f2a9ef0so164475167b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:40:17 -0700 (PDT)
+        Tue, 26 Sep 2023 20:20:02 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD751F29F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:40:19 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d815354ea7fso14536499276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695771617; x=1696376417; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695771618; x=1696376418; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SOO0Owg6z13+zclWBI3i6GF1p4XONQg1yPDHHPPUyLA=;
-        b=DHepmkfgWlel3knvQquHJzCQ8ZKck9Yz2hkmrdfNLTCRienjO8TbVRa5yjwBde5K+Z
-         /ofyEpxYBJ17obopzTwZAuBeUt6yFtXj42Mjzmg/qOmYhmjCwBMY99cIBaHcXd581SdO
-         NXh1fL6tLeWBPcNTUNU5ClvcDiEBOGJ5pb1QpGYJRgzMozwiXaOBKLpWzFKULKlSy0iW
-         HBIU0Wz83mpwIxEQCjHeSNgsTTNQVUBf+KROs9p+n2tvwxve3P1edBQwxG1+jdreCiff
-         5wcM2SMS10brlJHVnv8l8WKDoNLjl9LGP6rXUpl5wbnSka3C0BlmePdwedJA8U/SSnjo
-         yEog==
+        bh=IlRDb3sPh92VS5kLeieLP8ax0GBGWHRDMXJHtV/6RiM=;
+        b=3n69TdAD+inxWl54OeXtZBzAmG2dre8vYh6aqh4nfvQbRqXkfTMW109OSobAxIkIH+
+         3s18OF/mMxQ+v/p3Wugisdj+SULHCnilGILc7gz5xUZQzsKzKbGWtU9GDrXiBsuKAxok
+         u4jQ0Ctf5YGLGq/GjilRgp7o6ySu0Edw/5eg9JBTM5gcmpoko1QbAsxg6NjcaxPPgvWg
+         GsJDu0MUCCGESs5VXK4PT//73rAgPLjS6CZ4O//FeskybxHIctAsud5KOhnx4JtKwQvH
+         xqDPXyBYas62Dy19YZjZvQ8ego+ktf+u4REni4dN35K9xi6Q1lHa31TJ7ObHHQa1cbDT
+         kTuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695771617; x=1696376417;
+        d=1e100.net; s=20230601; t=1695771618; x=1696376418;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SOO0Owg6z13+zclWBI3i6GF1p4XONQg1yPDHHPPUyLA=;
-        b=Ec4ilWqqD0tJOyBvjzHVHjXzn8Vm0+1ERROH6JM8DIUQAyzuiYAWB5Mv8IzxrHT+hi
-         cBxK60EJ9/3Jh7qxFmQbF99enztfJZfIJW+2PCZ+zcd3LpjdU/PLvxIiwnYVINfyaSd/
-         jzIZknDprMh9p7oLPD7GllLX1DLscsjWyvZ1sYxAO49qhThesNWhTAkeAmGZv4uLaHE8
-         i51lS9UoNimpQv53lY8ROj6UaJdPtcrhPFgaWgazPPMIoFxndAnGZ4LGQ71RLpqcA/og
-         OVFlBNpP2YQQQ7+dLZ7A3OI1jAiARgVxsq5/yWaKy9OIvJAoqbfn1SsPnL8D2QfiWam1
-         yq+g==
-X-Gm-Message-State: AOJu0Yz3UwMegbabD9c5JfFOaRKqQ472bWaClGTT3G+8btwyAbJdyf80
-        ENxM8R3jnqet+nVc41l7r9XsOFkfAmR5
-X-Google-Smtp-Source: AGHT+IGUgid3XJfM7WrI6SnBJ34jSBPnUHYgXF7YKekwIi79TmqyisbuzEStEJAn2EbwUP4ouzwhqXm/LTHk
+        bh=IlRDb3sPh92VS5kLeieLP8ax0GBGWHRDMXJHtV/6RiM=;
+        b=CMGj4WN51e8EuguE0QwiWAbvkEfczUrM1/1CCNVXDwP1iPE69+MwbfuaxrbZJ/YeU+
+         +taJ4S0Yid9dng44CMe8YlKAG3fnpH8kC2YtHtNQI5LWeDMeBArLxXdTNZ74wFci+ffB
+         axHkLvPaix3TRUsB1In7dgM/zQg4DP52IevSpMUwDr3SvSqVFsIaBG1APUtLq0yl6bnn
+         jrvieXToF1RqJua/nodsQ0jqJnwyoOo95LHEEWWE/QtjNvKElFe7iR9hyZmzsmhQa0Zg
+         H8epV6rtobFnA+spZpq4IKfNnkkmgmml24RK1jeN62z6BXqtVArYmjvOCQeiuojfKQ7x
+         xIVQ==
+X-Gm-Message-State: AOJu0YxK1XVU10jqe19L2FM1sE55eIXrzHxV0WF5vkPMsZbefZu4zOKo
+        99b94O/j0eh+iI57+YUtAsVAoHBePuUx
+X-Google-Smtp-Source: AGHT+IHnSaDa/G+O/EI/N5IPFgR3Fp6P/KgiOcPWpbujdZg0NMzaFMsN8C54q4E3eV9+BasQHInZLDyUjFVh
 X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:20a1])
- (user=rananta job=sendgmr) by 2002:a25:ae01:0:b0:d89:4776:5d6b with SMTP id
- a1-20020a25ae01000000b00d8947765d6bmr4133ybj.5.1695771616728; Tue, 26 Sep
- 2023 16:40:16 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 23:40:02 +0000
+ (user=rananta job=sendgmr) by 2002:a05:6902:1613:b0:d80:ff9:d19e with SMTP id
+ bw19-20020a056902161300b00d800ff9d19emr4336ybb.9.1695771618758; Tue, 26 Sep
+ 2023 16:40:18 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 23:40:04 +0000
 In-Reply-To: <20230926234008.2348607-1-rananta@google.com>
 Mime-Version: 1.0
 References: <20230926234008.2348607-1-rananta@google.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230926234008.2348607-6-rananta@google.com>
-Subject: [PATCH v6 05/11] KVM: arm64: PMU: Add a helper to read a vCPU's PMCR_EL0
+Message-ID: <20230926234008.2348607-8-rananta@google.com>
+Subject: [PATCH v6 07/11] KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N
+ for the guest
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>
@@ -70,9 +71,9 @@ Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,166 +82,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Reiji Watanabe <reijiw@google.com>
 
-Add a helper to read a vCPU's PMCR_EL0, and use it when KVM
-reads a vCPU's PMCR_EL0.
+KVM does not yet support userspace modifying PMCR_EL0.N (With
+the previous patch, KVM ignores what is written by userspace).
+Add support userspace limiting PMCR_EL0.N.
 
-The PMCR_EL0 value is tracked by a sysreg file per each vCPU.
-The following patches will make (only) PMCR_EL0.N track per guest.
-Having the new helper will be useful to combine the PMCR_EL0.N
-field (tracked per guest) and the other fields (tracked per vCPU)
-to provide the value of PMCR_EL0.
+Disallow userspace to set PMCR_EL0.N to a value that is greater
+than the host value as KVM doesn't support more event counters
+than what the host HW implements. Also, make this register
+immutable after the VM has started running. To maintain the
+existing expectations, instead of returning an error, KVM
+returns a success for these two cases.
 
-No functional change intended.
+Finally, ignore writes to read-only bits that are cleared on
+vCPU reset, and RES{0,1} bits (including writable bits that
+KVM doesn't support yet), as those bits shouldn't be modified
+(at least with the current KVM).
 
 Signed-off-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 ---
- arch/arm64/kvm/arm.c      |  3 +--
- arch/arm64/kvm/pmu-emul.c | 21 +++++++++++++++------
- arch/arm64/kvm/sys_regs.c |  6 +++---
- include/kvm/arm_pmu.h     |  6 ++++++
- 4 files changed, 25 insertions(+), 11 deletions(-)
+ arch/arm64/kvm/sys_regs.c | 58 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 56 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 4866b3f7b4ea3..86cafe5a6010b 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -801,8 +801,7 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
- 		}
- 
- 		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
--			kvm_pmu_handle_pmcr(vcpu,
--					    __vcpu_sys_reg(vcpu, PMCR_EL0));
-+			kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
- 
- 		if (kvm_check_request(KVM_REQ_RESYNC_PMU_EL0, vcpu))
- 			kvm_vcpu_pmu_restore_guest(vcpu);
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index 998e1bbd5310d..d89438956f7d3 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -72,7 +72,7 @@ static bool kvm_pmc_is_64bit(struct kvm_pmc *pmc)
- 
- static bool kvm_pmc_has_64bit_overflow(struct kvm_pmc *pmc)
- {
--	u64 val = __vcpu_sys_reg(kvm_pmc_to_vcpu(pmc), PMCR_EL0);
-+	u64 val = kvm_vcpu_read_pmcr(kvm_pmc_to_vcpu(pmc));
- 
- 	return (pmc->idx < ARMV8_PMU_CYCLE_IDX && (val & ARMV8_PMU_PMCR_LP)) ||
- 	       (pmc->idx == ARMV8_PMU_CYCLE_IDX && (val & ARMV8_PMU_PMCR_LC));
-@@ -250,7 +250,7 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
- 
- u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
- {
--	u64 val = __vcpu_sys_reg(vcpu, PMCR_EL0) >> ARMV8_PMU_PMCR_N_SHIFT;
-+	u64 val = kvm_vcpu_read_pmcr(vcpu) >> ARMV8_PMU_PMCR_N_SHIFT;
- 
- 	val &= ARMV8_PMU_PMCR_N_MASK;
- 	if (val == 0)
-@@ -272,7 +272,7 @@ void kvm_pmu_enable_counter_mask(struct kvm_vcpu *vcpu, u64 val)
- 	if (!kvm_vcpu_has_pmu(vcpu))
- 		return;
- 
--	if (!(__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E) || !val)
-+	if (!(kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E) || !val)
- 		return;
- 
- 	for (i = 0; i < ARMV8_PMU_MAX_COUNTERS; i++) {
-@@ -324,7 +324,7 @@ static u64 kvm_pmu_overflow_status(struct kvm_vcpu *vcpu)
- {
- 	u64 reg = 0;
- 
--	if ((__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E)) {
-+	if ((kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E)) {
- 		reg = __vcpu_sys_reg(vcpu, PMOVSSET_EL0);
- 		reg &= __vcpu_sys_reg(vcpu, PMCNTENSET_EL0);
- 		reg &= __vcpu_sys_reg(vcpu, PMINTENSET_EL1);
-@@ -426,7 +426,7 @@ static void kvm_pmu_counter_increment(struct kvm_vcpu *vcpu,
- {
- 	int i;
- 
--	if (!(__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E))
-+	if (!(kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E))
- 		return;
- 
- 	/* Weed out disabled counters */
-@@ -569,7 +569,7 @@ void kvm_pmu_handle_pmcr(struct kvm_vcpu *vcpu, u64 val)
- static bool kvm_pmu_counter_is_enabled(struct kvm_pmc *pmc)
- {
- 	struct kvm_vcpu *vcpu = kvm_pmc_to_vcpu(pmc);
--	return (__vcpu_sys_reg(vcpu, PMCR_EL0) & ARMV8_PMU_PMCR_E) &&
-+	return (kvm_vcpu_read_pmcr(vcpu) & ARMV8_PMU_PMCR_E) &&
- 	       (__vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & BIT(pmc->idx));
- }
- 
-@@ -1084,3 +1084,12 @@ u8 kvm_arm_pmu_get_pmuver_limit(void)
- 					      ID_AA64DFR0_EL1_PMUVer_V3P5);
- 	return FIELD_GET(ARM64_FEATURE_MASK(ID_AA64DFR0_EL1_PMUVer), tmp);
- }
-+
-+/**
-+ * kvm_vcpu_read_pmcr - Read PMCR_EL0 register for the vCPU
-+ * @vcpu: The vcpu pointer
-+ */
-+u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
-+{
-+	return __vcpu_sys_reg(vcpu, PMCR_EL0);
-+}
 diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 66b9e1de54230..5ae7399f2b822 100644
+index d1db1f292645e..a0efc71dbee1e 100644
 --- a/arch/arm64/kvm/sys_regs.c
 +++ b/arch/arm64/kvm/sys_regs.c
-@@ -803,7 +803,7 @@ static bool access_pmcr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 		 * Only update writeable bits of PMCR (continuing into
- 		 * kvm_pmu_handle_pmcr() as well)
- 		 */
--		val = __vcpu_sys_reg(vcpu, PMCR_EL0);
-+		val = kvm_vcpu_read_pmcr(vcpu);
- 		val &= ~ARMV8_PMU_PMCR_MASK;
- 		val |= p->regval & ARMV8_PMU_PMCR_MASK;
- 		if (!kvm_supports_32bit_el0())
-@@ -811,7 +811,7 @@ static bool access_pmcr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- 		kvm_pmu_handle_pmcr(vcpu, val);
- 	} else {
- 		/* PMCR.P & PMCR.C are RAZ */
--		val = __vcpu_sys_reg(vcpu, PMCR_EL0)
-+		val = kvm_vcpu_read_pmcr(vcpu)
- 		      & ~(ARMV8_PMU_PMCR_P | ARMV8_PMU_PMCR_C);
- 		p->regval = val;
- 	}
-@@ -860,7 +860,7 @@ static bool pmu_counter_idx_valid(struct kvm_vcpu *vcpu, u64 idx)
- {
- 	u64 pmcr, val;
+@@ -16,6 +16,7 @@
+ #include <linux/mm.h>
+ #include <linux/printk.h>
+ #include <linux/uaccess.h>
++#include <linux/perf/arm_pmu.h>
  
--	pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0);
-+	pmcr = kvm_vcpu_read_pmcr(vcpu);
- 	val = (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
- 	if (idx >= val && idx != ARMV8_PMU_CYCLE_IDX) {
- 		kvm_inject_undefined(vcpu);
-diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-index b80c75d80886b..c6a5e49b850ab 100644
---- a/include/kvm/arm_pmu.h
-+++ b/include/kvm/arm_pmu.h
-@@ -103,6 +103,7 @@ void kvm_vcpu_pmu_resync_el0(void);
- u8 kvm_arm_pmu_get_pmuver_limit(void);
- int kvm_arm_set_default_pmu(struct kvm *kvm);
- 
-+u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu);
- #else
- struct kvm_pmu {
- };
-@@ -180,6 +181,11 @@ static inline int kvm_arm_set_default_pmu(struct kvm *kvm)
- 	return -ENODEV;
+ #include <asm/cacheflush.h>
+ #include <asm/cputype.h>
+@@ -1087,6 +1088,59 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+ 	return 0;
  }
  
-+static inline u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
++static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
++		    u64 val)
 +{
++	struct kvm *kvm = vcpu->kvm;
++	u64 new_n, mutable_mask;
++
++	mutex_lock(&kvm->arch.config_lock);
++
++	/*
++	 * Make PMCR immutable once the VM has started running, but do
++	 * not return an error (-EBUSY) to meet the existing expectations.
++	 */
++	if (kvm_vm_has_ran_once(vcpu->kvm)) {
++		mutex_unlock(&kvm->arch.config_lock);
++		return 0;
++	}
++
++	new_n = (val >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
++	if (new_n != kvm->arch.pmcr_n) {
++		u8 pmcr_n_limit = kvm->arch.arm_pmu->num_events - 1;
++
++		/*
++		 * The vCPU can't have more counters than the PMU hardware
++		 * implements. Ignore this error to maintain compatibility
++		 * with the existing KVM behavior.
++		 */
++		if (new_n <= pmcr_n_limit)
++			kvm->arch.pmcr_n = new_n;
++	}
++	mutex_unlock(&kvm->arch.config_lock);
++
++	/*
++	 * Ignore writes to RES0 bits, read only bits that are cleared on
++	 * vCPU reset, and writable bits that KVM doesn't support yet.
++	 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
++	 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
++	 * But, we leave the bit as it is here, as the vCPU's PMUver might
++	 * be changed later (NOTE: the bit will be cleared on first vCPU run
++	 * if necessary).
++	 */
++	mutable_mask = (ARMV8_PMU_PMCR_MASK |
++			(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT));
++	val &= mutable_mask;
++	val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
++
++	/* The LC bit is RES1 when AArch32 is not supported */
++	if (!kvm_supports_32bit_el0())
++		val |= ARMV8_PMU_PMCR_LC;
++
++	__vcpu_sys_reg(vcpu, r->reg) = val;
 +	return 0;
 +}
 +
- #endif
+ /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
+ #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
+ 	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
+@@ -2150,8 +2204,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
+ 	{ SYS_DESC(SYS_SVCR), undef_access },
  
- #endif
+-	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
+-	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
++	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
++	  .reg = PMCR_EL0, .get_user = get_pmcr, .set_user = set_pmcr },
+ 	{ PMU_SYS_REG(PMCNTENSET_EL0),
+ 	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
+ 	{ PMU_SYS_REG(PMCNTENCLR_EL0),
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
