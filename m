@@ -2,211 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D38B7AE60E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A9C7AE610
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbjIZGg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S233774AbjIZGhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbjIZGg5 (ORCPT
+        with ESMTP id S233764AbjIZGhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:36:57 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CAAAF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:36:50 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so45048295e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695710208; x=1696315008; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KreDf2vqHk/Hd5rmmn0d7G8cM8MDnpKHn6UOoJPSFwk=;
-        b=dtEv8mgHJPdjmzfVbT04HtND1Su4mHTU2nsycQ295kRVY3zBadjWmZ39p1d+zR4hMl
-         TzoXc7fbzz97+N/ITZA2w9xL0NZal6iU+f+IXq+oEIYaFBqcVV1vGusXkDe0o0Pmk8uI
-         bIlikl1bBkd5JCEi4DFBYKWOq+a4AhW3X0VDZinvcg+fSikVscxX6k6B4s5y5cl/u2w9
-         9LbOEe2LXtz6RHFvi/oD/SN11Fwv/ztRQDY3JiH137O4nZRcdnFoIeV3X2bASjEsdWz3
-         mUHxDcNq0dH/1a/Eq43Vhbk1MFHEqw1WueH3tv7rxK5DHt4IXrsrUDgLLUkJYNTaer8+
-         Cp1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695710208; x=1696315008;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KreDf2vqHk/Hd5rmmn0d7G8cM8MDnpKHn6UOoJPSFwk=;
-        b=bbvu8p2mCGAFilt4SmEh2GDJOAMe0S3MiNgJ5m3Z1lg4fzrqO0Cw7UxQWKKn9PCDQO
-         8c/QJXyqbXO+pgSxClBaDcqXRhJPKDxCP5yBSXp6PFOqiZESQfC6eIGlgKYEi1PjASSZ
-         qfmYpNgZnMoE2sqp2yppSGrBye+1L/6bUhvGP0UFh7T8CsgiqoaG3hp0v9VjWd0UhSbS
-         MSB2tKjELy0AGSrcnnGTOJGLvxxRTlPWaCL9RiPPdTmJhlBSxjsX/lUrnJkK2bYdYbGw
-         MW0BaIEjc4wx4YIMx8PSPYqTUtJiLLLhPMe4IGMQkOehbTAu7/0khRqWye0xjZlZdsZ/
-         UF4Q==
-X-Gm-Message-State: AOJu0YwcXfHWkUzJV9LAxHEY6mqVx7W2xRfNTNDwVqWSfCUU8cnC6an+
-        /YfvjjQ3EYFsVFVDQBcSZSJU5CdZ+soRSg6bQuU=
-X-Google-Smtp-Source: AGHT+IEaU5YkQqHlQmnHzRUHg7mR59R0MLXXsISp7ntSN3OgCFSbPjBCBjUuOPnmuwQypcZA3pjocg==
-X-Received: by 2002:a05:600c:22d8:b0:3fb:b3aa:1c8a with SMTP id 24-20020a05600c22d800b003fbb3aa1c8amr7142927wmg.16.1695710208403;
-        Mon, 25 Sep 2023 23:36:48 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f49a600529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f49:a600:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id s16-20020a7bc390000000b00401c595fcc7sm11270639wmj.11.2023.09.25.23.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 23:36:48 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fs/splice: don't block splice_direct_to_actor() after data was read
-Date:   Tue, 26 Sep 2023 08:36:09 +0200
-Message-Id: <20230926063609.2451260-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230925-erstklassig-flausen-48e1bc11be30@brauner>
-References: <20230925-erstklassig-flausen-48e1bc11be30@brauner>
+        Tue, 26 Sep 2023 02:37:04 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19823F0;
+        Mon, 25 Sep 2023 23:36:56 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38Q6aheP079982;
+        Tue, 26 Sep 2023 01:36:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695710203;
+        bh=FGTt6eLB4oWILXc84fH5qn5fVFwcTXa3+q1FG3J3WFI=;
+        h=From:To:CC:Subject:Date;
+        b=SY8If1Yw83kP8SripQaV9umxbvHJZhSsg+otzKiGFSWdSgSgnvFg5P13DPfLEXjD1
+         3qyBK4//o0AgpR9uM5iTWMSGyPrbI0v3ran3b+EqAegJdClaqD7T/Q68t1H4dofQ63
+         NoXDHU8GvNmW9dzQP2nsm5LVdRb8njCDQhF2vN34=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38Q6ahBp066236
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 01:36:43 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 01:36:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 01:36:42 -0500
+Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38Q6adwB010320;
+        Tue, 26 Sep 2023 01:36:39 -0500
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
+        <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v2] PCI: keystone: Fix race condition when initializing PHYs
+Date:   Tue, 26 Sep 2023 12:06:38 +0530
+Message-ID: <20230926063638.1005124-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If userspace calls sendfile() with a very large "count" parameter, the
-kernel can block for a very long time until 2 GiB (0x7ffff000 bytes)
-have been read from the hard disk and pushed into the socket buffer.
+The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
+function. The PHY in this case is the Serdes. It is possible that the
+PCI instance is configured for 2 lane operation across two different
+Serdes instances, using 1 lane of each Serdes. In such a configuration,
+if the reference clock for one Serdes is provided by the other Serdes,
+it results in a race condition. After the Serdes providing the reference
+clock is initialized by the PCI driver by invoking its PHY APIs, it is
+not guaranteed that this Serdes remains powered on long enough for the
+PHY APIs based initialization of the dependent Serdes. In such cases,
+the PLL of the dependent Serdes fails to lock due to the absence of the
+reference clock from the former Serdes which has been powered off by the
+PM Core.
 
-Usually, that is not a problem, because the socket write buffer gets
-filled quickly, and if the socket is non-blocking, the last
-direct_splice_actor() call will return -EAGAIN, causing
-splice_direct_to_actor() to break from the loop, and sendfile() will
-return a partial transfer.
+Fix this by obtaining reference to the PHYs before invoking the PHY
+initialization APIs and releasing reference after the initialization is
+complete.
 
-However, if the network happens to be faster than the hard disk, and
-the socket buffer keeps getting drained between two
-generic_file_read_iter() calls, the sendfile() system call can keep
-running for a long time, blocking for disk I/O over and over.
-
-That is undesirable, because it can block the calling process for too
-long.  I discovered a problem where nginx would block for so long that
-it would drop the HTTP connection because the kernel had just
-transferred 2 GiB in one call, and the HTTP socket was not writable
-(EPOLLOUT) for more than 60 seconds, resulting in a timeout:
-
-  sendfile(4, 12, [5518919528] => [5884939344], 1813448856) = 366019816 <3.033067>
-  sendfile(4, 12, [5884939344], 1447429040) = -1 EAGAIN (Resource temporarily unavailable) <0.000037>
-  epoll_wait(9, [{EPOLLOUT, {u32=2181955104, u64=140572166585888}}], 512, 60000) = 1 <0.003355>
-  gettimeofday({tv_sec=1667508799, tv_usec=201201}, NULL) = 0 <0.000024>
-  sendfile(4, 12, [5884939344] => [8032418896], 2147480496) = 2147479552 <10.727970>
-  writev(4, [], 0) = 0 <0.000439>
-  epoll_wait(9, [], 512, 60000) = 0 <60.060430>
-  gettimeofday({tv_sec=1667508869, tv_usec=991046}, NULL) = 0 <0.000078>
-  write(5, "10.40.5.23 - - [03/Nov/2022:21:5"..., 124) = 124 <0.001097>
-  close(12) = 0 <0.000063>
-  close(4)  = 0 <0.000091>
-
-In newer nginx versions (since 1.21.4), this problem was worked around
-by defaulting "sendfile_max_chunk" to 2 MiB:
-
- https://github.com/nginx/nginx/commit/5636e7f7b4
-
-Instead of asking userspace to provide an artificial upper limit, I'd
-like the kernel to block for disk I/O at most once, and then pass back
-control to userspace.
-
-There is prior art for this kind of behavior in filemap_read():
-
-	/*
-	 * If we've already successfully copied some data, then we
-	 * can no longer safely return -EIOCBQUEUED. Hence mark
-	 * an async read NOWAIT at that point.
-	 */
-	if ((iocb->ki_flags & IOCB_WAITQ) && already_read)
-		iocb->ki_flags |= IOCB_NOWAIT;
-
-This modifies the caller-provided "struct kiocb", which has an effect
-on repeated filemap_read() calls.  This effect however vanishes
-because the "struct kiocb" is not persistent; splice_direct_to_actor()
-doesn't have one, and each generic_file_splice_read() call initializes
-a new one, losing the "IOCB_NOWAIT" flag that was injected by
-filemap_read().
-
-There was no way to make generic_file_splice_read() aware that
-IOCB_NOWAIT was desired because some data had already been transferred
-in a previous call:
-
-- checking whether the input file has O_NONBLOCK doesn't work because
-  this should be fixed even if the input file is not non-blocking
-
-- the SPLICE_F_NONBLOCK flag is not appropriate because it affects
-  only whether pipe operations are non-blocking, not whether
-  file/socket operations are non-blocking
-
-Since there are no other parameters, I suggest adding the
-SPLICE_F_NOWAIT flag, which is similar to SPLICE_F_NONBLOCK, but
-affects the "non-pipe" file descriptor passed to sendfile() or
-splice().  It translates to IOCB_NOWAIT for regular files, just like
-RWF_NOWAIT does.
-
-Changes v1 -> v2:
-- value of SPLICE_F_NOWAIT changed to 0x10
-- added SPLICE_F_NOWAIT to SPLICE_F_ALL to make it part of uapi
-
-Cc: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Fixes: 49229238ab47 ("PCI: keystone: Cleanup PHY handling")
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
 ---
- fs/splice.c            | 14 ++++++++++++++
- include/linux/splice.h |  4 +++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/fs/splice.c b/fs/splice.c
-index d983d375ff11..c192321d5e37 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -361,6 +361,8 @@ ssize_t copy_splice_read(struct file *in, loff_t *ppos,
- 	iov_iter_bvec(&to, ITER_DEST, bv, npages, len);
- 	init_sync_kiocb(&kiocb, in);
- 	kiocb.ki_pos = *ppos;
-+	if (flags & SPLICE_F_NOWAIT)
-+		kiocb.ki_flags |= IOCB_NOWAIT;
- 	ret = call_read_iter(in, &kiocb, &to);
+NOTE: This patch is based on linux-next tagged next-20230925.
+
+v1:
+https://lore.kernel.org/r/20230926054200.963803-1-s-vadapalli@ti.com/
+
+Changes since v1:
+- Add code to release reference(s) to the phy(s) when
+  ks_pcie_enable_phy(ks_pcie) fails.
+
+Regards,
+Siddharth.
+
+ drivers/pci/controller/dwc/pci-keystone.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index 49aea6ce3e87..e4d43306a7e3 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -1218,12 +1218,24 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+ 		goto err_link;
+ 	}
  
- 	if (ret > 0) {
-@@ -1070,6 +1072,18 @@ ssize_t splice_direct_to_actor(struct file *in, struct splice_desc *sd,
- 		if (unlikely(ret <= 0))
- 			goto read_failure;
- 
-+		/*
-+		 * After at least one byte was read from the input
-+		 * file, don't wait for blocking I/O in the following
-+		 * loop iterations; instead of blocking for arbitrary
-+		 * amounts of time in the kernel, let userspace decide
-+		 * how to proceed.  This avoids excessive latency if
-+		 * the output is being consumed faster than the input
-+		 * file can fill it (e.g. sendfile() from a slow hard
-+		 * disk to a fast network).
-+		 */
-+		flags |= SPLICE_F_NOWAIT;
++	/* Obtain reference(s) to the phy(s) */
++	for (i = 0; i < num_lanes; i++)
++		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
 +
- 		read_len = ret;
- 		sd->total_len = read_len;
- 
-diff --git a/include/linux/splice.h b/include/linux/splice.h
-index 6c461573434d..06ce58b1f408 100644
---- a/include/linux/splice.h
-+++ b/include/linux/splice.h
-@@ -21,7 +21,9 @@
- #define SPLICE_F_MORE	(0x04)	/* expect more data */
- #define SPLICE_F_GIFT	(0x08)	/* pages passed in are a gift */
- 
--#define SPLICE_F_ALL (SPLICE_F_MOVE|SPLICE_F_NONBLOCK|SPLICE_F_MORE|SPLICE_F_GIFT)
-+#define SPLICE_F_NOWAIT	(0x10) /* do not wait for data which is not immediately available */
+ 	ret = ks_pcie_enable_phy(ks_pcie);
+ 	if (ret) {
+ 		dev_err(dev, "failed to enable phy\n");
++		/* Release reference(s) to the phy(s) */
++		for (i = 0; i < num_lanes; i++)
++			phy_pm_runtime_put_sync(ks_pcie->phy[i]);
 +
-+#define SPLICE_F_ALL (SPLICE_F_MOVE|SPLICE_F_NONBLOCK|SPLICE_F_MORE|SPLICE_F_GIFT|SPLICE_F_NOWAIT)
+ 		goto err_link;
+ 	}
  
- /*
-  * Passed to the actors
++	/* Release reference(s) to the phy(s) */
++	for (i = 0; i < num_lanes; i++)
++		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
++
+ 	platform_set_drvdata(pdev, ks_pcie);
+ 	pm_runtime_enable(dev);
+ 	ret = pm_runtime_get_sync(dev);
 -- 
-2.39.2
+2.34.1
 
