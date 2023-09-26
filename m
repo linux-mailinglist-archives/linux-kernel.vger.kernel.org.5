@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D48957AE8CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16387AE8CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbjIZJUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        id S234118AbjIZJUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjIZJUF (ORCPT
+        with ESMTP id S231491AbjIZJUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:20:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA9AE9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:19:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD47C433C8;
-        Tue, 26 Sep 2023 09:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695719998;
-        bh=HzbEbZtASjTJB3RhDRnx8gM/YjcynxWzT3Xudsg8SzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fh1cHwzf9nvtQopCJS14ZitmlFtcO6JBJQ+SjXMsK7rStxkaojY/85hVHUmBCCOpI
-         nxVNgBBj5Swv9zmMrn5HWJY6TL6h5BOO/FgaEqimaRk5hSVUpNfQ51pD1kU7HyGMJ0
-         3WgHkA/VnC5z504019Da4BpaA6NH6Hv/QTClY2zU=
-Date:   Tue, 26 Sep 2023 11:19:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Tree Davies <tdavies@darkphysics.net>,
-        Yogesh Hegde <yogi.kernel@gmail.com>,
-        Sumitra Sharma <sumitraartsy@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] staging: rtl8192e: fix structure alignment
-Message-ID: <2023092618-finally-dropbox-6bff@gregkh>
-References: <20230925155413.471287-1-arnd@kernel.org>
- <9d96db4f-0b79-0940-ef95-d9bd70dc9a18@gmail.com>
+        Tue, 26 Sep 2023 05:20:35 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB6ABE;
+        Tue, 26 Sep 2023 02:20:28 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 423AD215E6;
+        Tue, 26 Sep 2023 09:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695720027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9ubSji0XDPEOBVnTbBKRyr/HLsbPg3Su+gignwc5fUs=;
+        b=BbaR/gVVPxxyYnB52OZ4s1av2WTX2jiGwKOnEojCmPgU/OXetpZ+5NT6gDAUqkIimBneTo
+        8Cg05UaX1YDiFYAWe3x28j5iEeYzTAvUptDq2pkMPNTAwFNJOF57HU1pakSdn56jGbBrla
+        8yrVrG22Zf/QwglPPcH88r6Cns1dPm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695720027;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9ubSji0XDPEOBVnTbBKRyr/HLsbPg3Su+gignwc5fUs=;
+        b=16Eucii0LhbAGVV/yMBofHtzU1AJNU3AesM8Fa5T6kGqyXZnAMl5yt8ckJFVjOHC0l0PIU
+        gBxXMKXOdFyqFYDA==
+Received: from suse.de (mgorman.tcp.ovpn2.nue.suse.de [10.163.32.246])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C2EFE2C142;
+        Tue, 26 Sep 2023 09:20:22 +0000 (UTC)
+Date:   Tue, 26 Sep 2023 10:20:20 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        torvalds@linux-foundation.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Message-ID: <20230926092020.3alsvg6vwnc4g3td@suse.de>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+ <20230726091752.GA3802077@hirez.programming.kicks-ass.net>
+ <ZMMH1WiYlipR0byf@slm.duckdns.org>
+ <20230817124457.b5dca734zcixqctu@suse.de>
+ <ZOfMNEoqt45Qmo00@slm.duckdns.org>
+ <ZQngsfCdj0TJbEUL@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <9d96db4f-0b79-0940-ef95-d9bd70dc9a18@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZQngsfCdj0TJbEUL@slm.duckdns.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 09:11:14PM +0200, Philipp Hortmann wrote:
-> On 9/25/23 17:54, Arnd Bergmann wrote:
-> > From: Arnd Bergmann<arnd@arndb.de>
-> > 
-> > A recent cleanup changed the rtl8192e from using the custom misaligned
-> > rtllib_hdr_3addr structure to the generic ieee80211_hdr_3addr definition
-> > that enforces 16-bit structure alignment in memory.
-> > 
-> > This causes a gcc warning about conflicting alignment requirements:
-> > 
-> > drivers/staging/rtl8192e/rtllib.h:645:1: error: alignment 1 of 'struct rtllib_authentication' is less than 2 [-Werror=packed-not-aligned]
-> >    645 | } __packed;
-> >        | ^
-> > rtllib.h:650:1: error: alignment 1 of 'struct rtllib_disauth' is less than 2 [-Werror=packed-not-aligned]
-> > rtllib.h:655:1: error: alignment 1 of 'struct rtllib_disassoc' is less than 2 [-Werror=packed-not-aligned]
-> > rtllib.h:661:1: error: alignment 1 of 'struct rtllib_probe_request' is less than 2 [-Werror=packed-not-aligned]
-> > rtllib.h:672:1: error: alignment 1 of 'struct rtllib_probe_response' is less than 2 [-Werror=packed-not-aligned]
-> > rtllib.h:683:1: error: alignment 1 of 'struct rtllib_assoc_request_frame' is less than 2 [-Werror=packed-not-aligned]
-> > rtllib.h:691:1: error: alignment 1 of 'struct rtllib_assoc_response_frame' is less than 2 [-Werror=packed-not-aligned]
-> > 
-> > Change all of the structure definitions that include this one to also
-> > use 16-bit alignment. This assumes that the objects are actually aligned
-> > in memory, but that is normally guaranteed by the slab allocator already.
-> > 
-> > All members of the structure definitions are already 16-bit aligned,
-> > so the layouts do not change. As an added benefit, 16-bit accesses are
-> > generally faster than 8-bit accesses, so architectures without unaligned
-> > load/store instructions can produce better code now by avoiding byte-wise
-> > accesses.
-> > 
-> > Fixes: 71ddc43ed7c71 ("staging: rtl8192e: Replace struct rtllib_hdr_3addr in structs of rtllib.h")
-> > Signed-off-by: Arnd Bergmann<arnd@arndb.de>
+On Tue, Sep 19, 2023 at 07:56:01AM -1000, Tejun Heo wrote:
+> Hello, Mel.
 > 
-> Hi,
+> I don't think the discussion has reached a point where the points of
+> disagreements are sufficiently laid out from both sides. Do you have any
+> further thoughts?
 > 
-> thanks for your support.
-> 
-> your patches cannot be applied on top of the 24 patches which are in the
-> queue. But may be Greg will not accept all of the patches send in.
-> 
-> Will see what happens when Greg sorts them out.
-> 
-> I tried your patches on hardware without the 24 patches send in. All OK
-> 
-> Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 
-The first one didn't apply as it was already sent by someone else, but
-the second one applied fine, thanks.
+Plenty, but I'm not sure how to reconcile this. I view pluggable scheduler
+as something that would be a future maintenance nightmare and our "lived
+experience" or "exposure bias" with respect to the expertise of users differs
+drastically. Some developers will be mostly dealing with users that have
+extensive relevant expertise, a strong incentive to maximise performance
+and full control of their stack, others do not and the time cost of
+supporting such users is high. While I can see advantages to having specific
+schedulers targeting either a specific workload or hardware configuration,
+the proliferation of such schedulers and the inevitable need to avoid
+introducing any new regressions in deployed schedulers will be cumbersome.
 
-greg k-h
+I generally worry that certain things may not have existed in the shipped
+scheduler if plugging was an option including EAS, throttling control,
+schedutil integration, big.Little, adapting to chiplets and picking preferred
+SMT siblings for turbo boost. In each case, integrating support was time
+consuming painful and a pluggable scheduler would have been a relatively
+easy out that would ultimately cost us if it was never properly integrated.
+While no one wants the pain, a few of us also want to avoid the problem
+of vendors publishing a hacky scheduler for their specific hardware and
+discontinuing the work at that point.
+
+I see that some friction with the current state is due to tuning knobs
+moving to debugfs. FWIW, I didn't 100% agree with that move either and
+carried an out-of-tree revert that displayed warnings for a time but I
+understood the logic behind it. However, if the tuning parameters are
+insufficient, and there is good reason to change them then the answer
+is to add tuning knobs with defined semantics and document them -- not
+pluggable schedulers. We've seen something along those lines recently
+with nice_latency even if it turned into EEVDF instead of a new interface,
+so I guess we'll see how that pans out.
+
+I get most of your points. Maybe most users will not care about a pluggable
+scheduler but *some will* and they will the maintenance burden. I get your
+point as well that if there is a bug and the pluggable scheduler then the
+first step would be "reproduce without the pluggable scheduler" and again,
+you'd be right, that is a great first step *except* sometimes they can't or
+sometimes they simply won't without significant proof and that's incurs a
+maintenance burden. Even if the pluggable schedulers are GPL, there still
+is a burden to understood any scheduler that is loaded to see if it's the
+source of a problem which means. Instead of understanding a defined number
+of schedulers that are developed over time with the history in changelogs,
+we may have to understand N schedulers that may be popular and that also
+is painful. That's leaving aside the difficulty of what happens when
+more than 1 can be loaded and interacting once containers are involved
+assuming that such support would exist in the future. It's already known
+that interacting IO schedulers are a nightmare so presumably interacting
+CPU schedulers within the same host would also be zero fun.
+
+Pluggable schedulers are effectively a change that we cannot walk back
+from if it turns out to be a bad idea because it potentially comes under
+the "you cannot break userspace" rule if a particular pluggable scheduler
+becomes popular. As I strongly believe it will be a nightmare to support
+within distributions where there is almost no control over the software
+stack of managing user expectations, I'm opposed to crossing that line with
+pluggable schedulers. While my nightmare scenarios may never be realised
+and could be overblown, it'll be hard to convince me it'll not kick me in
+the face eventually.
+
+-- 
+Mel Gorman
+SUSE Labs
