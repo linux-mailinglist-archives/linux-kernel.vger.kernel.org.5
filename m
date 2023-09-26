@@ -2,127 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CED7AED52
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3454C7AED4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbjIZMzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S234711AbjIZMzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjIZMzu (ORCPT
+        with ESMTP id S232303AbjIZMzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:55:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2FBF3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695732900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2uW5BPkL7G62EXjKucVaT4hjcyiDQF9d1Ksud/nFSa4=;
-        b=F2uh2LRekgMw6h7iAASK4puNgf47moQBrHHV9zbt4iArrZCvarzcQl8kRlER7L3WZVDVPF
-        lgZUk6csC65UEYfebH7mHXVT0CRtJQEedTzJuSLimKtBnuQS7Qi0xpomu7n1j2fNRNJtfo
-        3UjjVFS6SYBsfFzvfS5frMXHT8DPLw8=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-w0xhm0A_NF-uFPFhrnWkQw-1; Tue, 26 Sep 2023 08:54:58 -0400
-X-MC-Unique: w0xhm0A_NF-uFPFhrnWkQw-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c15572d8c5so81656201fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:54:58 -0700 (PDT)
+        Tue, 26 Sep 2023 08:55:10 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091F2124;
+        Tue, 26 Sep 2023 05:55:03 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ad8a822508so1088582166b.0;
+        Tue, 26 Sep 2023 05:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695732901; x=1696337701; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YtZUjiYxLryjulqmofSoSPz/vXsvJQv9EIQwllIJJ1Q=;
+        b=h8ZIpWWKZEn6JxNXgelUeup/cHgYFZFzuh2hYdfEI9OeiIxBuAuw0TvhPz8oRLh4zO
+         pM8SQ8Wlg4AnBNqMLUS/5uFRX4GYBtg2gyja0cNY0p8X/XpjvHjnKUlvwgQcIzff6K42
+         ZGCA07WDG1JfhxmpbBet8jInPfsB2PRia0s8OqtNn3IKZPpgrdsm696ziiNCV9UkruQm
+         L7/RrWHFSOUDeRY46Z4jOG7C6S44Xbtqz11x1b/PlnEcrB+6M+wCOJCV4G1RvHDqwKPu
+         Y7WCb0JEgCbZtda6I4VXeaGjpAG0JlokEHC5DhhVTyJ9dSiswPqVHEXwDEztk/h/t3hQ
+         AlOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695732897; x=1696337697;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2uW5BPkL7G62EXjKucVaT4hjcyiDQF9d1Ksud/nFSa4=;
-        b=gESZm8NLDlAeqs0DXiMF8g2bjpGdDbMPdnOzQIvpECF2FRt+afSXNTaP/ggYB7Lnok
-         HK+qJhhXH3aHgGaAXIpsrVRzYQfEaosOB+vMrZL8rAdopoLzF6sXYLfiPYnnTm/UruPV
-         /9ryh4CHtEYkhT/e+yyNmR5ywsK2UNpPf23IiyDVAjemirJshbtqSJScLxA+9muKsj4t
-         kQhHYC1SuMLf+LUXmxwR1c07uUhn2SzN488My18kuKAvSvClUPzV4ELBB46Eli/FXEUy
-         7gvQaMbCfxhL7dXWZeuz+Hc3OsfuFcvxM71gLL+tgX0WblKoQ+XxTorPREFvicdG2fWm
-         uKdg==
-X-Gm-Message-State: AOJu0YwxOzV0Ibnydb+lYK3uzDFjg+D2P+21CBzkNAlsrG7J/6dyAO3L
-        A1hBjsrt26a3owue2rJY0PuMBD3jWC5oJ4XkWwFsGOju4+Ujam/kWd6prPB1pxK4pnWe3KN84s1
-        44jzb6KoPReUsz+FWZSweIJgS
-X-Received: by 2002:a2e:b04c:0:b0:2bb:a28b:58e1 with SMTP id d12-20020a2eb04c000000b002bba28b58e1mr8106221ljl.41.1695732897302;
-        Tue, 26 Sep 2023 05:54:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5q2QvU/4B+w5gQ4LBJ4yGShJuspgZAbJhAjCh9mTkszev9SWItBdbop+W/rBkb0q5Yimnxw==
-X-Received: by 2002:a2e:b04c:0:b0:2bb:a28b:58e1 with SMTP id d12-20020a2eb04c000000b002bba28b58e1mr8106195ljl.41.1695732896938;
-        Tue, 26 Sep 2023 05:54:56 -0700 (PDT)
-Received: from sgarzare-redhat ([46.6.146.182])
-        by smtp.gmail.com with ESMTPSA id j17-20020a170906279100b0099329b3ab67sm7735262ejc.71.2023.09.26.05.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 05:54:56 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 14:54:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v1 01/12] vsock: fix EPOLLERR set on non-empty
- error queue
-Message-ID: <lj3wjq4ccplc6ia7mehuu4onzpgntaykvwpyzlavqj5uek2amg@oo3vyfiteysx>
-References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
- <20230922052428.4005676-2-avkrasnov@salutedevices.com>
+        d=1e100.net; s=20230601; t=1695732901; x=1696337701;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YtZUjiYxLryjulqmofSoSPz/vXsvJQv9EIQwllIJJ1Q=;
+        b=X+IfY2L+fT8ynDm9+/WIShlPTRlZZrbeibQQpBVOjUWY/WeUBfg2vHsCtjdwqBB0eM
+         QTYtMi1NGDrTzZthst5K89saJrXZvD/i5eg9ESuGOW6s95+ZWPd53/MaZD2mgi7lM/xc
+         Z7X2vWbwIWmz9wjib0P3lABP9nTShvSgk2xVfi50T7a5wmm1+CnJsIGwhZWtbV//i5QH
+         dAGjkcv7UU9q/8qwOFhFWeBGhQm7wIZqyXcE8zuieJasTcDxZmNCZ46W9IFYAjzvxfH9
+         d22wuJNHT0Unrr+8sfSzkXH9xbJWGh2Jol8hdWZ0QWbh7nAelJsZRY93aQW6PV0xECDx
+         zm3Q==
+X-Gm-Message-State: AOJu0YyEZNtLA7FlS3zYnXt8x9a8IzmVhzFAdOR2/B3Y9AXeC9XxQp6a
+        y/z2Ne/ouyRGFEJPKAOOM5BKKSmP3us=
+X-Google-Smtp-Source: AGHT+IEIgSOnM9nWgU3CH6MFtsFoLHrezbgSdcz6k5Y/bnAqqO4VUway+4TqF0ssjOolYPUjg/uFrw==
+X-Received: by 2002:a17:906:5386:b0:9ae:614f:2037 with SMTP id g6-20020a170906538600b009ae614f2037mr9035770ejo.61.1695732901234;
+        Tue, 26 Sep 2023 05:55:01 -0700 (PDT)
+Received: from [192.168.1.10] ([95.43.220.235])
+        by smtp.googlemail.com with ESMTPSA id ez23-20020a1709070bd700b009b285351817sm1411385ejc.116.2023.09.26.05.55.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Sep 2023 05:55:01 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] media: rc: remove ir-rx51 in favour of generic
+ pwm-ir-tx
+To:     Tony Lindgren <tony@atomide.com>, Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Timo Kokkonen <timo.t.kokkonen@iki.fi>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>,
+        "Sicelo A . Mhlongo" <absicsz@gmail.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+References: <cover.1693577725.git.sean@mess.org>
+ <e5325e826935f0bd8566152b6a5fa799b2429d43.1693577725.git.sean@mess.org>
+ <99f0042f-538c-bcaf-96fd-bac24a87f88e@gmail.com>
+ <ZRKFUb1vRtn82bgn@gofer.mess.org> <20230926073744.GA5285@atomide.com>
+From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Message-ID: <f2ca8923-2e25-3748-e44f-a5b6e7222320@gmail.com>
+Date:   Tue, 26 Sep 2023 15:54:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230922052428.4005676-2-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230926073744.GA5285@atomide.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 08:24:17AM +0300, Arseniy Krasnov wrote:
->If socket's error queue is not empty, EPOLLERR must be set. Otherwise,
->reader of error queue won't detect data in it using EPOLLERR bit.
->Currently for AF_VSOCK this is reproducible only with MSG_ZEROCOPY, as
->this feature is the only user of an error queue of the socket.
 
-So this is not really a fix. I'd use a different title to avoid
-confusion on backporting this on stable branches or not.
 
-Maybe just "vsock: set EPOLLERR on non-empty error queue"
+On 26.09.23 г. 10:37 ч., Tony Lindgren wrote:
+> * Sean Young <sean@mess.org> [230926 07:16]:
+>> On Mon, Sep 25, 2023 at 07:06:44PM +0300, Ivaylo Dimitrov wrote:
+>>> On 1.09.23 г. 17:18 ч., Sean Young wrote:
+>>>> The ir-rx51 is a pwm-based TX driver specific to the N900. This can be
+>>>> handled entirely by the generic pwm-ir-tx driver, and in fact the
+>>>> pwm-ir-tx driver has been compatible with ir-rx51 from the start.
+>>>>
+>>>
+>>> Unfortunately, pwm-ir-tx does not work on n900. My investigation shows that
+>>> for some reason usleep_range() sleeps for at least 300-400 us more than what
+>>> interval it is requested to sleep. I played with cyclictest from rt-tests
+>>> package and it gives similar results - increasing the priority helps, but I
+>>> was not able to make it sleep for less that 300 us in average. I tried
+>>> cpu_latency_qos_add_request() in pwm-ir-tx, but it made no difference.
+>>>
+>>> I get similar results on motorola droid4 (OMAP4), albeit there average sleep
+>>> is in 200-300 us range, which makes me believe that either OMAPs have issues
+>>> with hrtimers or the config we use has some issue which leads to scheduler
+>>> latency. Or, something else...
+>>
+>> The pwm-ir-tx driver does suffer from this problem, but I was under the
+>> impression that the ir-rx51 has the same problem.
+>>
+>>> In either case help is appreciated to dig further trying to find the reason
+>>> for such a big delay.
+>>
+>> pwm-ir-tx uses usleep_range() and ir-rx51 uses hrtimers. I thought that
+>> usleep_range() uses hrtimers; however if you're not seeing the same delay
+>> on ir-rx51 then maybe it's time to switch pwm-ir-tx to hrtimers.
+> 
+> Maybe using fsleep() fixes this issue? See commit c6af13d33475 ("timer: add
+> fsleep for flexible sleeping"), and Documentation/timers/timers-howto.rst.
+> 
 
-The change LGTM.
+I doubt, time intervals we are talking about are > 500 us, which means 
+fsleep will always use usleep_range() (or even worse, msleep()), see 
+https://elixir.bootlin.com/linux/v6.6-rc3/source/include/linux/delay.h#L82
 
-Stefano
+> The long wake-up time for an idle state could explain the values. I think
+> Ivaylo already tested with most cpuidle states disabled via sysfs though.
+> 
 
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> net/vmw_vsock/af_vsock.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 013b65241b65..d841f4de33b0 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1030,7 +1030,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
-> 	poll_wait(file, sk_sleep(sk), wait);
-> 	mask = 0;
->
->-	if (sk->sk_err)
->+	if (sk->sk_err || !skb_queue_empty_lockless(&sk->sk_error_queue))
-> 		/* Signify that there has been an error on this socket. */
-> 		mask |= EPOLLERR;
->
->-- 
->2.25.1
->
+Yes, I disabled all idle states on both n900 and droid4 (when doing 
+cyclictest experiments), with no difference. I also locked frequency on 
+n900 to 500MHz, which improved the things a bit, by some 20-50 us 
+(IIRC), which makes sense, but also makes me think frequency scaling is 
+not the one to blame either.
 
+>> I don't have a n900 to test on, unfortunately.
+> 
+> If you want one for development, the maemo folks cc:ed here likely have
+> some available devices.
+> 
+
+I think we can arrange one, yes, but my gut feeling tells me the issue 
+is not n900 specific, it is just a bit worse there as the device is 
+relatively slow already. I have no sane explanation why one would see 
+similar latencies on droid4, given that it is times faster than n900.
+
+Regards,
+
+Ivo
+
+> Regards,
+> 
+> Tony
+> 
