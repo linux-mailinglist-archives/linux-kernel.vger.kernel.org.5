@@ -2,168 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6327AF4EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4F97AF4EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbjIZUST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
+        id S235822AbjIZUSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbjIZUSR (ORCPT
+        with ESMTP id S235810AbjIZUS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:18:17 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2085.outbound.protection.outlook.com [40.107.94.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F8D193;
-        Tue, 26 Sep 2023 13:18:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JAPb4ddjouvb5d7HUqn9bNbFod/DbsWlyz0gYL7R8PWbAI/c4jS88Az9mZ4Ps9SWt9VluVMK5Pqn0hs+bP5vs+QrtGt0osPtIwA2zv3a/DHKJLqoBmbjO+dAW5On1aPoI3TjILG5ZMZPwLtjtKLtXZIupkDLXEAMRVUWg+5sFeST2v2ISghupUPay1cWTqYqgpOfvHnRdnsMqh/zCmZBw2m/CU7qY2otmZWsZMfsAzWwVnq09Q1LnwFLILAEKG2NaLt4/ZAL5c4IYJ2aP3WiimMjw76ATgTLtZnWBhiCBIJlSxkGUMwcJdz8mKfOcZ8tzWOCa2nK53nrixBaCxYZcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rURzeWuaPmtLdQQhJUepyN3wKraV/Qi2F3fYGw0kO/s=;
- b=HYL8pVEGaJi+1+SdxiDnB1e2Kx0EeRcZl1F+BFXTud4tJDrCIGNTRjThrWB2VLrNqhvlKSdMVUtzC6qMEDtUZFxn741NIod0xi17yxkmqf5w6xsg9xeS+JlA0RvtvBzWj4RNxX1adz8T0CxgislEbOaBShhium+U4PjFlHkn6ql0w69OUW2VZKro3gbS7x7sK/S7+y9p7X3HVGvO3Q7VelYch8DddREYuULxX4kuOYAe/f7beju5b+wC5J7wc9E+EHDdAzzVez4p19cozXnAwUs4R7lvBFhu1KIvZ4do9WF5/XynrXR2sxeQiRDulAgFpKHIkhyhlmsNys+mczHlZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rURzeWuaPmtLdQQhJUepyN3wKraV/Qi2F3fYGw0kO/s=;
- b=GRC2UReoc4j5EXlXwflzTe2XzHmtcW70P/khU/KcaZtFCU09QIee7B8B0wXPnLIyr9vxaZ5vokYLvOAsLbzPBm04fLqdYJ8r66SUu5CHQEuGy7b2CcgqxSkMjsywOzS+aVQ6NHhABAY7CuuktLmYW+hhoMSGLx12kSW5lrFqKOw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by BN9PR12MB5035.namprd12.prod.outlook.com (2603:10b6:408:134::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Tue, 26 Sep
- 2023 20:18:07 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6838.016; Tue, 26 Sep 2023
- 20:18:06 +0000
-Message-ID: <4b011314-aa9b-1a92-d15a-5baabc77f1d2@amd.com>
-Date:   Tue, 26 Sep 2023 15:18:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v5 6/8] x86/resctrl: Sub NUMA Cluster detection and enable
-Content-Language: en-US
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-References: <20230722190740.326190-1-tony.luck@intel.com>
- <20230829234426.64421-1-tony.luck@intel.com>
- <20230829234426.64421-7-tony.luck@intel.com>
- <ceff3d3a-92a2-2e67-76a1-da5639f91162@amd.com>
- <SJ1PR11MB60838A29873FAAA50C9E9536FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <3d0b98e7-9aeb-3a97-9861-707ed7a1db69@amd.com>
- <SJ1PR11MB60836E94B5DC0A2D7B5ED2C3FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From:   "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <SJ1PR11MB60836E94B5DC0A2D7B5ED2C3FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR03CA0083.namprd03.prod.outlook.com
- (2603:10b6:5:333::16) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+        Tue, 26 Sep 2023 16:18:29 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5698120
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:18:22 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id E979E1000B2; Tue, 26 Sep 2023 21:18:16 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1695759496; bh=T2t6tUV8F3RVHU1NTNGqT5xpfoZaTbVdG1BjZ0eXs5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZPjwXYcjtXvLSniQ86lo5+xTlypyv4zAqmj+uztkYev+AEyI6GDQFsBV4FpN+6E9h
+         dYIJ33tUeCJWG/DXqk1vajUIKdUTys4INNIVAMcykCeiHPxsGoNBTd1DEDjpfeImKh
+         1LWROf7Sk2j4Bdh0rGx/9jg3KZrLqEZCbSlrRZ6MUW4vcsOtC95Ktwlqg5qfCwis/H
+         Ve2d/qmWEd3JXm0YmYkd/vyn7t2Dy5wvGeIlw0ed1daTMe19aBbCJNNwYgKWQASKog
+         J7ytGkPbUAuDR1XLprXZ1wzig+zhfz2EoEq/qWwvqviy4zYAV2qxfBTtxfaX4s96Ja
+         Tzk/e6bII+G5w==
+Date:   Tue, 26 Sep 2023 21:18:16 +0100
+From:   Sean Young <sean@mess.org>
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     linux-media@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Timo Kokkonen <timo.t.kokkonen@iki.fi>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>,
+        "Sicelo A . Mhlongo" <absicsz@gmail.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] media: rc: remove ir-rx51 in favour of generic
+ pwm-ir-tx
+Message-ID: <ZRM8iLORjKw3z/h5@gofer.mess.org>
+References: <cover.1693577725.git.sean@mess.org>
+ <e5325e826935f0bd8566152b6a5fa799b2429d43.1693577725.git.sean@mess.org>
+ <99f0042f-538c-bcaf-96fd-bac24a87f88e@gmail.com>
+ <ZRKFUb1vRtn82bgn@gofer.mess.org>
+ <1715e2bf-5d02-4f20-1476-29a1fdf350b1@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|BN9PR12MB5035:EE_
-X-MS-Office365-Filtering-Correlation-Id: d63493d4-85af-46c4-30a0-08dbbecdb1ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sK+xEdyXDfGnxDyXQsry5Rcw9hOErQHCqrl5ZaIwe9q968tIncNEp7r7HFWnFyWHWfQHuPbJetskiO0NNqfaar/lGLFzLp3gvd3FHE0AnqwPf05nC4vuRUMaOjHWt+9LNOc89MQ2SVu0wMlPnI20hqHjnFa4W35QxBVI4o0bJSTU/b5nlnRH/i4l5qrTWPVY4ynA4CYcsVYBCUtXxfCesLYydSeBKL9T2It8pDwG6O8rpoC2giWjMYQ1nh4XU8zTcPrkzecNef8+jzks1cwUi5b9QT5DenBQHm6n3kJ9NfMt0FOw4wTzeO/23Fm+cxmhe7Ktn9N0Vx0RDbADALUUUFNjn56OzyEF715Mwc4QEKUu0vHCK66DjP5V6g9bAa6V2x7s3kgi/KA3BS33vn8r0TlSqE1nvRdaIdBRWbu73qOuD3oW1VGTMuV6jLP8g7TaQEOKJA6sMCUccUhddKqGd+ctkCoiJOCeeRHwnTmCw6yYjUQC1meQ5kCGDQCNGGF8uMyuis+m1Bf2TekDK69GexEbcDrdY98ngXsXVyaUHbr2RgDnEI6n9l6c+Fgu7GvMWWKz7oU4y+TOzBAfnLQ+WIT8og1nUp9itpUkuJnobk8yBUUegMzR/+tbW/7aUjBTQ/xcDnpuFgBFD7HJIepieFFd099+70l1BizJgSAEnUg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(346002)(39860400002)(396003)(230922051799003)(451199024)(1800799009)(186009)(6506007)(3450700001)(6512007)(54906003)(2616005)(7416002)(316002)(26005)(53546011)(110136005)(4326008)(8936002)(66556008)(4744005)(6666004)(478600001)(66946007)(66476007)(6486002)(41300700001)(2906002)(8676002)(31696002)(86362001)(38100700002)(36756003)(5660300002)(921005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVBUSi9OZVptc3IxNFI1K3pOaERxOXFJVE12dzIyaFFZQ3pNNHpZWkxPYnNj?=
- =?utf-8?B?YXRBT0w0d08ySldWa1Q2U1hqSUhRNE9YZy85a3hCaVovVGNOa2V2UDVQOEto?=
- =?utf-8?B?NS9QaDNqQXY4enZSMEU2bS96azc0K1E0RnhHYlRHdHBMaEF1ZUdmQUREL3hG?=
- =?utf-8?B?NTNOQXk3aVR5OW5JdGRDYngzWnA4c2lXUFBZdlBBK0ZYN1VmSi85S29pY2xZ?=
- =?utf-8?B?b01iTDN2ZWozSG1YT3B5RW9kb0dVZGJmS1VNNmxWejFmbFU0bHdQVFY5VnRC?=
- =?utf-8?B?NGlsYisyU096R0NwVEZ2T25NMHY3cFVXQXN3TUl4OEd3WlFxbGtKYjZEZkpr?=
- =?utf-8?B?dUdtTHZZSzUyL0VmTW0rZlFxL3Y3Qkg2L3pna0lnL0hPK2tYQnpPcXBmYWsw?=
- =?utf-8?B?UzMzMzkwemxtYXMrVnRCc3FZRzQ2RnJkbzFiYkRrUXhnWldVV0hiTUlsUzBM?=
- =?utf-8?B?YktEOXhKb1I5MmQ3K1d6aTlpaXFVZjVienVKTkxhQUpMTjdQNzZ0Y0paZXEz?=
- =?utf-8?B?dFV3a0FNWWVmRTlSNFU2ZDZSK2szcWVZMlI0OU1xV2JVU0ZhTjdPemRFM21s?=
- =?utf-8?B?T0xkcHFUVFZjbzE3ekVhTU50SGJ0bFc1TUw1MVhwckQ2MlZ2SnY4c2hnVkhE?=
- =?utf-8?B?YXZyYnVxVWdXWTltR1JvaWRHS2ZqRmEwM0RDNjF0Q2JZVDhPT2RoR0JhR2R1?=
- =?utf-8?B?VnN6ZUZvVHlYTS9oSHhkOE9IT2k5cUM4cGlvaHZSNEZQK2FTeFJmWldiREds?=
- =?utf-8?B?SnJtMFlpNDdNc3ltRkVHNEhGSDVyUm1sdFVvRHdEd0IyaDR1UG1mSyttVi9M?=
- =?utf-8?B?RWZvUU5Eb281MUk5aTQ3a21meDdnbHV5TmJ6RGZxZ2RKRld0K2pKSmNFcWc3?=
- =?utf-8?B?aFBiWXYwNXZwa2dEL25Sam5VT1FMc0V6TnF3cTV5UkJDazJEL3k5RnJWK1FJ?=
- =?utf-8?B?ZmhSMlVpcVJsYi8zanFRRWxRYUFoRWVpOEg0RkhWdi8rZUhTcVpKRDZiRjdD?=
- =?utf-8?B?c0pOdXk3MVVyT0t4MFd5dSs4VnZOQktWaG1ObHlUMUdvV1lDL2dIZS9WVlV2?=
- =?utf-8?B?VWZaNlVub0xGRUwrdDdqaWpJd003Y3k4S0tpUW9iUlc5TDNqc0dxdXBBRytB?=
- =?utf-8?B?Y3U2cFhYUnFwOWRiT00yTTE2bnVqYnUxZUZacEZXN2x4dkpYNkI1T25rZENI?=
- =?utf-8?B?WXVmcktIN1pibnl4dEI2bDdGcmtNQUFycVVKN3JaNmF3aDJZN1ZTMWphWW40?=
- =?utf-8?B?ajRzSFBOUjd3ZnQ1WmVFRVpiTkxXdFJ3c0pSWmxCSHFnMG15emxDa0hXYVlH?=
- =?utf-8?B?WERxRlVDWDJnR3ppYzYzUHNQVmhHWFF5b2RKbDBmYnhGTHFoWEhxdmo1NmdC?=
- =?utf-8?B?S3BFR2xQUE9URDhvdXZxSG54TWdwdW1QelZRUGVGSnY1b2NHNlVYOERsWG5P?=
- =?utf-8?B?dUR1ZDZqd2VVRnNrTkRHYUxmOUJyKytDbHV2L3g4a3BvLzVZTVlhMzBpWENU?=
- =?utf-8?B?ZEhuTVUxY3lRenVaeW4xengwY1UyZnpIaFBpQXIrODlXS2hUeGthaU9PVzJH?=
- =?utf-8?B?MENvelpJeXdEMnQyM0QvTnowK0F4UGpaZUg2M2pNcjNUbWwvVGwxU1N2Ly96?=
- =?utf-8?B?djdJOFIzR1pzTTlVa2o4S1ZwcmY0Vlc5cWVVQU5DblZGOVpGTklQV2YyNDFo?=
- =?utf-8?B?d2Z0cG94U3pCRFgwWGQyeTBuZjc2SUhtR2tOVElGdVovVE5aNzdWdUE3YkJR?=
- =?utf-8?B?ZlFtckRFZmV1cE5qYkVSUm1UQktiTzNGQUxsdWFVeUxOa3VoRk1qc2gyaUNC?=
- =?utf-8?B?c3MxT2JRZExBcDhieXVmR3Myb0o3SHUxRThKRVNnMHMxRXhudEVXYXhOWHNh?=
- =?utf-8?B?VkdRbjBJck1MN1VicG03eHhNa3cvc2xIUC9sakZYMHR6dXJ1c09XSE9sODlo?=
- =?utf-8?B?WG5yU3B6Z3JISmxkazJueXBTdmtqSndtKy9KUlpZUnRxUG1aVzl2Y2w0ZFZF?=
- =?utf-8?B?ci9rMWYvT0Q1SjRETENGWHplU3RDcE5UZFJ0Q3A5Y0JXRHl6VVh0eHk4UElX?=
- =?utf-8?B?TVB0Nm54M3FHb1VLd0hYVnB2WmMydWs1bWFYSDJkVmd5QisyOGxwSWdidE80?=
- =?utf-8?Q?Q1c+UuNhQBAraxur50Bco2S+X?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d63493d4-85af-46c4-30a0-08dbbecdb1ee
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 20:18:06.7082
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dqb93Hx1o+kVgc+65XUyqm9im1AerFcudjKrJITqWK6e+gptGI/pD2dYVGuEYdM6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5035
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1715e2bf-5d02-4f20-1476-29a1fdf350b1@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/26/23 15:02, Luck, Tony wrote:
->>>>> +#include <linux/mod_devicetable.h>
->>>>
->>>> I didn't see the need for this include.
->>>
->>> struct x86_cpu_id is defined in this #include file.
->>
->> Actually, the file <asm/cpu_device_id.h> already includes the above file.
+On Tue, Sep 26, 2023 at 03:43:18PM +0300, Ivaylo Dimitrov wrote:
+> On 26.09.23 г. 10:16 ч., Sean Young wrote:
+> > On Mon, Sep 25, 2023 at 07:06:44PM +0300, Ivaylo Dimitrov wrote:
+> > > On 1.09.23 г. 17:18 ч., Sean Young wrote:
+> > > > The ir-rx51 is a pwm-based TX driver specific to the N900. This can be
+> > > > handled entirely by the generic pwm-ir-tx driver, and in fact the
+> > > > pwm-ir-tx driver has been compatible with ir-rx51 from the start.
+> > > > 
+> > > 
+> > > Unfortunately, pwm-ir-tx does not work on n900. My investigation shows that
+> > > for some reason usleep_range() sleeps for at least 300-400 us more than what
+> > > interval it is requested to sleep. I played with cyclictest from rt-tests
+> > > package and it gives similar results - increasing the priority helps, but I
+> > > was not able to make it sleep for less that 300 us in average. I tried
+> > > cpu_latency_qos_add_request() in pwm-ir-tx, but it made no difference.
+> > > 
+> > > I get similar results on motorola droid4 (OMAP4), albeit there average sleep
+> > > is in 200-300 us range, which makes me believe that either OMAPs have issues
+> > > with hrtimers or the config we use has some issue which leads to scheduler
+> > > latency. Or, something else...
+> > 
+> > The pwm-ir-tx driver does suffer from this problem, but I was under the
+> > impression that the ir-rx51 has the same problem.
+> > 
 > 
-> It does today. Will it include it next week when somebody has to
-> re-arrange things to resolve some #include dependency?
+> Could you elaborate on the "pwm-ir-tx driver does suffer from this problem"?
+> Where do you see that?
+
+So on a raspberry pi (model 3b), if I use the pwm-ir-tx driver, I get random
+delays of up to 100us. It's a bit random and certainly depends on the load.
+
+I'm measuring using a logic analyzer.
+
+There have been reports by others on different machines with random delays
+and/or transmit failures (as in the receiver occassionally fails to decode
+the IR). I usually suggest they use the gpio-ir-tx driver, which does work
+as far as I know (the signal looks perfect with a logic analyzer).
+
+So far I've taken the view that the driver works ok for most situations,
+since IR is usually fine with upto 100us missing here or there.
+
+The gpio-ir-tx driver works much better because it does the entire send 
+under spinlock - obviously that has its own problems, because an IR transmit
+can be 10s or even 100s of milliseconds.
+
+I've never known of a solution to the pwm-ir-tx driver. If using hrtimers
+directly improves the situation even a bit, then that would be great.
+
+> ir-rx51 does not suffer from the same problem (albeit it has its own one,
+> see bellow)
 > 
-> I thought there was a guideline somewhere that says to #include
-> the files that define the things you use. Not just rely on chains of
-> #includes. But some simple grep's haven't found that written in
-> Documentation/*
+> > > In either case help is appreciated to dig further trying to find the reason
+> > > for such a big delay.
+> > 
+> > pwm-ir-tx uses usleep_range() and ir-rx51 uses hrtimers. I thought that
+> > usleep_range() uses hrtimers; however if you're not seeing the same delay
+> > on ir-rx51 then maybe it's time to switch pwm-ir-tx to hrtimers.
+> > 
+> 
+> usleep_range() is backed by hrtimers already, however the difference comes
+> from how hrtimer is used in ir-rx51: it uses timer callback function that
+> gets called in softirq context, while usleep_range() puts the task in
+> TASK_UNINTERRUPTIBLE state and then calls schedule_hrtimeout_range(). For
+> some reason it takes at least 200-400 us (on average) even on OMAP4 to
+> switch back to TASK_RUNNING state.
+> 
+> The issue with ir-rx51 and the way it uses hrtimers is that it calls
+> pwm_apply_state() from hrtimer function, which is not ok, per the comment
+> here
+> https://elixir.bootlin.com/linux/v6.6-rc3/source/drivers/pwm/core.c#L502
+> 
+> I can make pwm-ir-tx switch to hrtimers, that's not an issue, but I am
+> afraid that there is some general scheduler or timers (or something else)
+> issue that manifests itself with usleep_range() misbehaving.
 
-Yea. correct. There is no guidelines. Lets keep the #include
-<linux/mod_devicetable.h>
+If we can switch pwm-ir-tx to hrtimers, that would be great.
 
--- 
-Thanks
-Babu Moger
+The ir-rx51 removal patches have already been queued to media_staging;
+we may have to remove them from there if we can't solve this problem.
+
+> > I don't have a n900 to test on, unfortunately.
+> > 
+> 
+> I have and once I have an idea what's going on will port pwm-ir-tx to
+> hrtimers, if needed. Don't want to do it now as I am afraid the completion I
+> will have to use will have the same latency problems as usleep_range()
+
+That would be fantastic. Please do keep us up to date with how you are
+getting on. Like I said, it would be nice to this resolved before the next
+merge window.
+
+Thanks,
+Sean
