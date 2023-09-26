@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8E77AE639
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9D47AE63E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjIZGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S230230AbjIZGvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjIZGr3 (ORCPT
+        with ESMTP id S229585AbjIZGvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:47:29 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3378E6;
-        Mon, 25 Sep 2023 23:47:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0Vsvn-Og_1695710837;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vsvn-Og_1695710837)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 14:47:19 +0800
-Message-ID: <9ae398ff-c6a2-fde8-a767-3b42a86b9c38@linux.alibaba.com>
-Date:   Tue, 26 Sep 2023 14:47:17 +0800
+        Tue, 26 Sep 2023 02:51:00 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E01FE6;
+        Mon, 25 Sep 2023 23:50:54 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2588267373; Tue, 26 Sep 2023 08:50:50 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 08:50:49 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Fang Hui <hui.fang@nxp.com>, Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, anle.pan@nxp.com, xuegang.liu@nxp.com
+Subject: Re: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Message-ID: <20230926065049.GA5606@lst.de>
+References: <20230914145812.12851-1-hui.fang@nxp.com> <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v2 1/9] pstore: move pstore creator id, section type
- and record struct to common header
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tony.luck@intel.com, gpiccoli@igalia.com, rafael@kernel.org,
-        lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        robert.moore@intel.com, linux-hardening@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org,
-        baolin.wang@linux.alibaba.com
-References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
- <20230925074426.97856-2-xueshuai@linux.alibaba.com>
- <202309251012.AD87704BB@keescook>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <202309251012.AD87704BB@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/26 01:13, Kees Cook wrote:
-> On Mon, Sep 25, 2023 at 03:44:18PM +0800, Shuai Xue wrote:
->> Move pstore creator id, section type and record struct to the common
->> header, so that it can be use by MCE and GHES driver.
+On Wed, Sep 20, 2023 at 04:41:08PM +0900, Tomasz Figa wrote:
+> On Thu, Sep 14, 2023 at 4:41 PM Fang Hui <hui.fang@nxp.com> wrote:
+> >
+> > On system with "CONFIG_ZONE_DMA32=y", if the allocated physical address is
 > 
-> I would prefer this was not in the pstore header -- this is a backend
-> detail that should stay in backend headers.
+> First of all, thanks a lot for the patch! Please check my review comments below.
 > 
-> -Kees
+> Is CONFIG_ZONE_DMA32 really the factor that triggers the problem? My
+> understanding was that the problem was that the hardware has 32-bit
+> DMA, but the system has physical memory at addresses beyond the first
+> 4G.
+
+You should NEVER disable CONFIG_ZONE_DMA32 for a system that has
+memory > 4GB.  I've made this point repeatedly, but the ARM64 maintainers
+insist on making it configurable instead of selecting it like most other
+64-bit architetures that aren't guaranteed to always use a IOMMU.
+
+We need to stop that.
+
+> Hmm, when I was proposing dma_alloc_pages(), I missed that it returns
+> a DMA handle. That on its own can be handled by saving the returned
+> handles somewhere in struct vb2_dma_sg_buf, but there is a bigger
+> problem - the function would actually create a mapping if the DMA
+> device requires some mapping management (e.g. is behind an IOMMU),
+> which is undesirable, because we create the mapping ourselves below
+> anyway...
 > 
+> @Christoph Hellwig @Robin Murphy  I need your thoughts on this as
+> well. Would it make sense to have a variant of dma_alloc_pages() that
+> only allocates the pages, but doesn't perform the mapping? (Or a flag
+> that tells the implementation to skip creating a mapping.)
 
-Hi, Kees,
+dma_map_pages needs to map the pages as part of finding out that the
+allocation actually works.  So skipping it can't really be done.
 
-Which file do you prefer? Do you mean "include/linux/cper.h", it defines
-the standard CPER sections, e.g. CPER_SEC_PLATFORM_MEM, CPER_SEC_PCIE, etc.
+So why do you want to create your own mapping anyway?
 
-Thank you for comments.
-
-Best Regards,
-Shuai
