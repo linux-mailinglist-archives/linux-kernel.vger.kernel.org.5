@@ -2,72 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575237AF567
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246257AF56A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbjIZUlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S235891AbjIZUmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235891AbjIZUlR (ORCPT
+        with ESMTP id S232008AbjIZUmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:41:17 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381429F;
-        Tue, 26 Sep 2023 13:41:11 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c5cd27b1acso86300785ad.2;
-        Tue, 26 Sep 2023 13:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695760870; x=1696365670; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qDGh2bfYFEdmujy/uEQ8v6m9bD4HO3qMXiBWaHUJXwQ=;
-        b=iizb+0mMo9pfx/eNixNWYm1ja6dmk5maQzuDvr8w4wwRA7/AHwWdCZJmGMmFgaeu0G
-         DZJLLbJyWGTaJHcLe9eubfySTHYcJcPP8tboOeVYaKlcV4t6PkX8cgw3jTtWLvmRv3sb
-         t/eoVr1g+VZaNZTTA+EbspUF3B2tKTaN0gaT0aBmZ1cpfeJ67GQsn7UVmS92t9K/Ff4i
-         XjcrchteOxBSPvqg/MCBMZ5z34rtUl8JQ0ZnlPY+mJCy3qQKy+/sxEjKuPr05+8y5nNC
-         jrY0EDTPT+2yx61028z8GYKnv9lgLjl2J/jFawQMHM2CumoBsDpbegqFqVeNmjW8kFTa
-         1g+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695760870; x=1696365670;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qDGh2bfYFEdmujy/uEQ8v6m9bD4HO3qMXiBWaHUJXwQ=;
-        b=Z9pHfCxh71Ym+1cLhRR1sjQptycP99HIxG8lKv5lL0YtAPkCztunc0CircmCciVnmh
-         CVBP/fc7s9xLuQi97s0OEwdBvlo0/eVNOtqS8PcPG8JIlF6qSgtO3zikKRIYzvPscZ9x
-         3eWizc7RBLI1Ohsce2GKqZq6ZvV3jgZ55s9aOfkMu3KeBEvzMQHZXxWh7uXIJuSdyGoO
-         3fg4d3CcLq6ah/Ll6YSGrCKmOVrG/3HCGcbuD1TWRcHN/m9dB6X3qE4VzQB4pKaPiaj7
-         L3bmBLDspauOXnLDZEl75Xu7pxWYiWvU9lvO92f1p9x0VBwwhhnQltLmdr6D6wCDq+yN
-         rtsQ==
-X-Gm-Message-State: AOJu0YyaVybxA792uMKZjUvtx7PjKsGEdvLIRMq6OT9mqMvoRlWzQx9o
-        u5QVTP2n8JCe0uysvFf1crk=
-X-Google-Smtp-Source: AGHT+IEagb5BPqw9DlNSXZX9HSucCdM4hLntye4ZbKexj1B5SxNJIHCvr/UMM1KQke88rXaG4Xu/lg==
-X-Received: by 2002:a17:903:110d:b0:1b8:4f93:b210 with SMTP id n13-20020a170903110d00b001b84f93b210mr12673893plh.45.1695760869764;
-        Tue, 26 Sep 2023 13:41:09 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-002.fbsv.net. [2a03:2880:ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id z9-20020a170903018900b001bd99fd1114sm4198499plg.288.2023.09.26.13.41.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 13:41:09 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/2] selftests: add a selftest to verify hugetlb usage in memcg
-Date:   Tue, 26 Sep 2023 13:41:08 -0700
-Message-Id: <20230926204108.2931076-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926194949.2637078-3-nphamcs@gmail.com>
-References: <20230926194949.2637078-3-nphamcs@gmail.com>
+        Tue, 26 Sep 2023 16:42:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C029120;
+        Tue, 26 Sep 2023 13:41:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72EC6C433C7;
+        Tue, 26 Sep 2023 20:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695760913;
+        bh=N2QpnX4X8HwQVgjzeeJZ7MIIAWZJSRZ5g3bKytjYUhI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZS5hgKLGvGY2GRwRYPGitNJPG8okzPN1/yY2HHQ9wbn23wvKmBUbmDlGgIIawb2C/
+         JNB+b7DgYdDU7T2pcfaDyiKt0HD3AYyHZzlNP9G1p+0yS23P9kdRFKhk/csFQ9a4Rg
+         +1j0OLB/N3NS+mV7Kb7ss1xGc8jEeCoVmNwZ67FwY9M6X/XSPtUVXsm5t7vkqsF09v
+         aOBZ8Td9pKgS+R3O5hWy0VzsXXBWBmm3nn6zp6cnbIhS8JgkCeirLOwVBqM7aY9Ogy
+         LcAzVocL9rMpZ8yp1aK1B8Q+n81hTFfD0OqoPL7zpSYnqBnuRS+sahImFU7xaYDDF1
+         K6GxHr0gvKzBw==
+Date:   Tue, 26 Sep 2023 15:41:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Suma Hegde <suma.hegde@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, borislav.petkov@amd.com,
+        hdegoede@redhat.com, nchatrad@amd.com,
+        Muralidhara M K <muralidhara.mk@amd.com>
+Subject: Re: [PATCH v2] x86/amd_nb: Add AMD Family MI300 PCI IDs
+Message-ID: <20230926204151.GA427239@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926051932.193239-1-suma.hegde@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,54 +50,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ooops I forgot to commit this change.
-Basically just moving the nr_hugepages check inside the test program
-run within the cgroup. This should apply cleanly:
+On Tue, Sep 26, 2023 at 05:19:32AM +0000, Suma Hegde wrote:
+> From: Muralidhara M K <muralidhara.mk@amd.com>
+> 
+> Add new Root, Device 18h Function 3, and Function 4 PCI IDS
+> for AMD F19h Model 90h-9fh (MI300A).
+> 
+> Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
+> Signed-off-by: Suma Hegde <suma.hegde@amd.com>
 
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-index 9651f6af6914..436522257cd2 100644
---- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -100,6 +100,14 @@ static int hugetlb_test_program(const char *cgroup, void *arg)
- 	int ret = EXIT_FAILURE;
- 
- 	old_current = cg_read_long(test_group, "memory.current");
-+	set_nr_hugepages(20);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current;
-+	if (!values_close(expected_current, current, 10)) {
-+		ksft_print_msg(
-+			"memory usage should not increase after setting nr_hugepages.\n");
-+		return EXIT_FAILURE;
-+	}
- 
- 	addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, 0, 0);
- 	if (addr == MAP_FAILED) {
-@@ -152,10 +160,8 @@ static int test_hugetlb_memcg(char *root)
- {
- 	int ret = KSFT_FAIL;
- 	char *test_group;
--	long old_current, expected_current, current;
- 
- 	test_group = cg_name(root, "hugetlb_memcg_test");
--
- 	if (!test_group || cg_create(test_group)) {
- 		ksft_print_msg("fail to create cgroup.\n");
- 		goto out;
-@@ -171,16 +177,6 @@ static int test_hugetlb_memcg(char *root)
- 		ksft_print_msg("fail to disable swap.\n");
- 		goto out;
- 	}
--	old_current = cg_read_long(test_group, "memory.current");
--
--	set_nr_hugepages(20);
--	current = cg_read_long(test_group, "memory.current");
--	expected_current = old_current;
--	if (!values_close(expected_current, current, 10)) {
--		ksft_print_msg(
--			"memory usage should not increase after setting nr_hugepages.\n");
--		goto out;
--	}
- 
- 	if (!cg_run(test_group, hugetlb_test_program, (void *)test_group))
- 		ret = KSFT_PASS;
+As long as the pci_ids.h addition meets the criteria at the top of the
+file, which I assume it does because you add other IDs to amd_nb.c:
+
+ *      Do not add new entries to this file unless the definitions
+ *      are shared between multiple drivers.
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# for pci_ids.h
+
+> ---
+> v1 of this patch was submitted as part of
+> https://lore.kernel.org/linux-edac/20230720125425.3735538-1-muralimk@amd.com/T/#m577beb44c3eceb0371cb0306c9ea0cb51f16b16d
+> Submitting this patch separately because this change is needed for HSMP
+> driver submitted at
+> https://lore.kernel.org/platform-driver-x86/166b4e9d-71e7-a95d-e11a-895f2c5dd2f8@linux.intel.com/T/#u to work on mi300 platform.
+> 
+>  arch/x86/kernel/amd_nb.c | 5 +++++
+>  include/linux/pci_ids.h  | 1 +
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
+> index 356de955e78d..10c2a3c9114e 100644
+> --- a/arch/x86/kernel/amd_nb.c
+> +++ b/arch/x86/kernel/amd_nb.c
+> @@ -27,6 +27,7 @@
+>  #define PCI_DEVICE_ID_AMD_1AH_M00H_ROOT		0x153a
+>  #define PCI_DEVICE_ID_AMD_1AH_M20H_ROOT		0x1507
+>  #define PCI_DEVICE_ID_AMD_MI200_ROOT		0x14bb
+> +#define PCI_DEVICE_ID_AMD_MI300_ROOT		0x14f8
+>  
+>  #define PCI_DEVICE_ID_AMD_17H_DF_F4		0x1464
+>  #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F4	0x15ec
+> @@ -43,6 +44,7 @@
+>  #define PCI_DEVICE_ID_AMD_19H_M78H_DF_F4	0x12fc
+>  #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4	0x12c4
+>  #define PCI_DEVICE_ID_AMD_MI200_DF_F4		0x14d4
+> +#define PCI_DEVICE_ID_AMD_MI300_DF_F4		0x152c
+>  
+>  /* Protect the PCI config register pairs used for SMN. */
+>  static DEFINE_MUTEX(smn_mutex);
+> @@ -62,6 +64,7 @@ static const struct pci_device_id amd_root_ids[] = {
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_ROOT) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_ROOT) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_ROOT) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_ROOT) },
+>  	{}
+>  };
+>  
+> @@ -93,6 +96,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F3) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F3) },
+>  	{}
+>  };
+>  
+> @@ -115,6 +119,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4) },
+>  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F4) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F4) },
+>  	{}
+>  };
+>  
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index 5fb3d4c393a9..91b457de262e 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -579,6 +579,7 @@
+>  #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3 0x12c3
+>  #define PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3 0x16fb
+>  #define PCI_DEVICE_ID_AMD_MI200_DF_F3	0x14d3
+> +#define PCI_DEVICE_ID_AMD_MI300_DF_F3	0x152b
+>  #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+>  #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+>  #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
+> -- 
+> 2.25.1
+> 
