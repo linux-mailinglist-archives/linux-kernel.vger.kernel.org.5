@@ -2,135 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC807AEEB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B8B7AEEF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjIZOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        id S233757AbjIZOYG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 10:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjIZOVe (ORCPT
+        with ESMTP id S230330AbjIZOYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:21:34 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3866DCE;
-        Tue, 26 Sep 2023 07:21:28 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-4180f5c51f8so26154471cf.1;
-        Tue, 26 Sep 2023 07:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695738087; x=1696342887; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nRGa0U9FQCtSnVtZP5ZEvcMMAX0AVtjNp21OId7BT6Q=;
-        b=Edk2+4ncL3lX4gOHNlwyVfm3DOThsDFGs8UlO8EkqRWFkBzWNrLH+esXCy9MALcq1J
-         um2HOkTliorQ/McHmTe6fU0z/3HWabBONQ2oeute0agP58y8oySGjNxXcHNUR6+hl7bf
-         pslzfq8ujxCb1WhOPsZ4xiY8ro1fJ5gRF8iMaXe+930j2caty+KX0qRbUilw8R+gntFX
-         2Ewv6GdYKWbKVBrXozBNpiRCFBRvFxlywLr6tKp98VXg8kcDAMYNXGMn/0Wxr5uDGQsU
-         zoGmL113RO7IAvc1fv5Ji1C+HQyJ9skpcuWyAFsPjW4xib1BNhP4xiJ9odrBCt/iqcUf
-         aTCQ==
+        Tue, 26 Sep 2023 10:24:04 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803AD101;
+        Tue, 26 Sep 2023 07:23:56 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59f6492b415so68293317b3.0;
+        Tue, 26 Sep 2023 07:23:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695738087; x=1696342887;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nRGa0U9FQCtSnVtZP5ZEvcMMAX0AVtjNp21OId7BT6Q=;
-        b=mzsPQCmODDurvNx+2v7F2bQ+Z82I6RLB990R9h1F7p+Vtz17Kaxjq3NpeFVVtk+sW6
-         fYRhIBACzs60MifLaAs4E80fHkL2801eGp9jquWX68peSbgCFIOTDROEDJm7HUtY8yEo
-         T67ikxZRsJtzVU/aMnSqSIRBozNP0pY4DPeZWo8y1Z7f+YZ/V+t1vmeFtSxgIhsunUVF
-         qlHHhJ7UOVzgzkM95VhG52cgschp6Zy0EqIrlikqJln9n5PVqh59bHBa6oummg9gLZoG
-         prmzA9qmX36KtlOE1s7phau6dc1fmrDlTk8UB6+O8ay8nqV9q/wpCU1lQV4+iiUjR3E0
-         NLnA==
-X-Gm-Message-State: AOJu0YzqMY61EJJ/xuIPlJUg7woZUAAnhJ++ZBx/emvoz/wyYsvbIw0i
-        QhFPgbnO6SAySrII2yXgVRE=
-X-Google-Smtp-Source: AGHT+IECmHjkfhI6XFRhqcGUFyLG9B4Zu8ufS+Y/RJgQoP2Pa1gEzDRwpyDM99Tj/C7FbktYK2D5Bg==
-X-Received: by 2002:a05:622a:207:b0:417:8b47:8486 with SMTP id b7-20020a05622a020700b004178b478486mr2879985qtx.34.1695738087285;
-        Tue, 26 Sep 2023 07:21:27 -0700 (PDT)
-Received: from US-B32Y0T3.na.ds.lexmark.com (ip98-166-230-239.hr.hr.cox.net. [98.166.230.239])
-        by smtp.gmail.com with ESMTPSA id fp6-20020a05622a508600b004181aa90b46sm1521496qtb.89.2023.09.26.07.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 07:21:26 -0700 (PDT)
-From:   Nicholas Lowell <nicholas.lowell@gmail.com>
-X-Google-Original-From: Nicholas Lowell <Nicholas.Lowell@gmail.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Nicholas Lowell <nlowell@lexmark.com>
-Subject: [PATCH] trace: tracing_event_filter: fast path when no subsystem filters
-Date:   Tue, 26 Sep 2023 10:20:58 -0400
-Message-Id: <20230926142058.1370-1-Nicholas.Lowell@gmail.com>
-X-Mailer: git-send-email 2.39.1.windows.1
+        d=1e100.net; s=20230601; t=1695738235; x=1696343035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b6GInBInFecR+uHBKFfmOCInwlwyJcLVJtZLCIykOZs=;
+        b=ZUZMHEsZto/UkzaDFCGwHe9Z/OJ5naLg3jyeu+5PKrKkJSTvrWPJzxUNX5tw3bGisU
+         TqP3lzoxrMpjtgL1APQU4o9ctAlwYR/70SVoaX83LRFLuurHGVh9LUDMf7olbILQ7zgG
+         i4wIKBfi0vbpEDA5Y4TUFrBmysrBd3YCpyPFMddSR9noX+zxaNu8cN5QImJO35TVIQTV
+         oI14Ghj9yTpnufcI9zsYBw6kd1KxJEixxBz98/9g6Xc5FtXsbKA3awYAFBbgdawc7ZVu
+         RvZ/qBBCxynG7EaZ80s7RGWqwEbsQuLtGMtzg8RgUsXmMMMYD1Pjny/WQiVaIAXDAd4i
+         w6WQ==
+X-Gm-Message-State: AOJu0YzbQ0pihNRBZRM3PzDwe84+K9QIGDI0kH2M3Zh17pa/BQUt3au6
+        +WBS/22K58jB2I2fEEof5FlGVS0XWGJ7Sg==
+X-Google-Smtp-Source: AGHT+IHoy5K5uGXt4Am/NdtVvpfIGtR5dl61OjDvtiyjuLMl/jpu53XB8kamVMkIdz8McXQ2X06j5Q==
+X-Received: by 2002:a05:690c:4808:b0:59f:6440:7eff with SMTP id hc8-20020a05690c480800b0059f64407effmr2242894ywb.15.1695738235335;
+        Tue, 26 Sep 2023 07:23:55 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id x184-20020a0deec1000000b005463e45458bsm3041260ywe.123.2023.09.26.07.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 07:23:54 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59e88a28b98so126177077b3.1;
+        Tue, 26 Sep 2023 07:23:54 -0700 (PDT)
+X-Received: by 2002:a0d:e8c5:0:b0:59f:6489:75ac with SMTP id
+ r188-20020a0de8c5000000b0059f648975acmr1898989ywe.19.1695738234682; Tue, 26
+ Sep 2023 07:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-26-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVkttQpA-s0MrKbTVxJ6K+xXmhV3sNNLTAPSbDa0f8XYA@mail.gmail.com> <1f1b5174-cfd4-4393-3a86-9adfc8c2cce1@tuxon.dev>
+In-Reply-To: <1f1b5174-cfd4-4393-3a86-9adfc8c2cce1@tuxon.dev>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Sep 2023 16:23:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXL=MpBin208aXe95Mp+NunGLGugtDG0MSs1XtYxyZ71Q@mail.gmail.com>
+Message-ID: <CAMuHMdXL=MpBin208aXe95Mp+NunGLGugtDG0MSs1XtYxyZ71Q@mail.gmail.com>
+Subject: Re: [PATCH 25/37] pinctrl: renesas: rzg2l: adapt function number for RZ/G3S
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Lowell <nlowell@lexmark.com>
+Hi Claudiu,
 
-If there are no filters in the event subsystem, then there's no
-reason to continue and hit the potentially time consuming
-tracepoint_synchronize_unregister function.  This should give
-a speed up for initial disabling/configuring
+On Tue, Sep 26, 2023 at 11:55 AM claudiu beznea
+<claudiu.beznea@tuxon.dev> wrote:
+> On 21.09.2023 15:51, Geert Uytterhoeven wrote:
+> > On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>
+> >> On RZ/G3S PFC register allow setting 8 functions for individual ports
+> >> (function1 to function8). For function1 register need to be configured
+> >> with 0, for function8 register need to be configured with 7.
+> >> We cannot use zero based addressing when requesting functions from
+> >> different code places as documentation (RZG3S_pinfunction_List_r1.0.xlsx)
+> >> states explicitly that function0 has different meaning.
+> >
+> > According to that table, function0 is GPIO.
+>
+> Yes, I'll mention it like this in the next version.
+>
+> >> For this add a new member to struct rzg2l_hwcfg that will keep the
+> >> offset that need to be substracted before applying a value to PFC register.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >
+> > But one question below...
+> >
+> >> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> >> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> >> @@ -136,9 +136,11 @@ struct rzg2l_register_offsets {
+> >>  /**
+> >>   * struct rzg2l_hwcfg - hardware configuration data structure
+> >>   * @regs: hardware specific register offsets
+> >> + * @func_base: base number for port function (see register PFC)
+> >>   */
+> >>  struct rzg2l_hwcfg {
+> >>         const struct rzg2l_register_offsets regs;
+> >> +       u8 func_base;
+> >>  };
+> >>
+> >>  struct rzg2l_dedicated_configs {
+> >> @@ -221,6 +223,7 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+> >>                                  unsigned int group_selector)
+> >>  {
+> >>         struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> >> +       const struct rzg2l_hwcfg *hwcfg = pctrl->data->hwcfg;
+> >>         const struct pinctrl_pin_desc *pin_desc;
+> >>         unsigned int i, *psel_val, *pin_data;
+> >>         struct function_desc *func;
+> >> @@ -247,9 +250,9 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
+> >>                 off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
+> >>
+> >>                 dev_dbg(pctrl->dev, "port:%u pin: %u off:%x PSEL:%u\n", port,
+> >> -                       pin, off, psel_val[i]);
+> >> +                       pin, off, psel_val[i] - hwcfg->func_base);
+> >>
+> >> -               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i]);
+> >> +               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i] - hwcfg->func_base);
+> >>         }
+> >>
+> >>         return 0;
+> >
+> > Perhaps the adjustment should be done in rzg2l_dt_subnode_to_map()
+> > instead, when obtaining MUX_FUNC() from DT? That would allow you to do
+> > some basic validation on it too, which is currently completely missing
+> > (reject out-of-range values overflowing into adjacent PFC fields,
+> > reject zero on RZ/G3S).
+>
+> I'll have a look on this. I see .set_mux() can also be called from sysfs
+> though pinmux-select exported file thus, I don't know at the moment if
+> validating it on rzg2l_dt_subnode_to_map() will be enough.
 
-Signed-off-by: Nicholas Lowell <nlowell@lexmark.com>
----
- kernel/trace/trace_events_filter.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+OK, that's a good reason to keep it as-is.
 
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 33264e510d16..93653d37a132 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -1317,22 +1317,29 @@ void free_event_filter(struct event_filter *filter)
- 	__free_filter(filter);
- }
- 
--static inline void __remove_filter(struct trace_event_file *file)
-+static inline int __remove_filter(struct trace_event_file *file)
- {
- 	filter_disable(file);
--	remove_filter_string(file->filter);
-+	if (file->filter)
-+		remove_filter_string(file->filter);
-+	else
-+		return 0;
-+
-+	return 1;
- }
- 
--static void filter_free_subsystem_preds(struct trace_subsystem_dir *dir,
-+static int filter_free_subsystem_preds(struct trace_subsystem_dir *dir,
- 					struct trace_array *tr)
- {
- 	struct trace_event_file *file;
-+	int i = 0;
- 
- 	list_for_each_entry(file, &tr->events, list) {
- 		if (file->system != dir)
- 			continue;
--		__remove_filter(file);
-+		i += __remove_filter(file);
- 	}
-+	return i;
- }
- 
- static inline void __free_subsystem_filter(struct trace_event_file *file)
-@@ -2411,7 +2418,9 @@ int apply_subsystem_event_filter(struct trace_subsystem_dir *dir,
- 	}
- 
- 	if (!strcmp(strstrip(filter_string), "0")) {
--		filter_free_subsystem_preds(dir, tr);
-+		if (filter_free_subsystem_preds(dir, tr) == 0)
-+			goto out_unlock;
-+
- 		remove_filter_string(system->filter);
- 		filter = system->filter;
- 		system->filter = NULL;
+> Would it be OK to have this outside of this series or you would prefer it now?
+
+That can be done later. I believe currently there is no validation against
+the register field size limit anyway.
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
