@@ -2,187 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A097AE5C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03497AE5DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbjIZGYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S233767AbjIZG2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbjIZGXz (ORCPT
+        with ESMTP id S229776AbjIZG2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:23:55 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E69C121;
-        Mon, 25 Sep 2023 23:23:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0VsvlMsY_1695709421;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsvlMsY_1695709421)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 14:23:44 +0800
-Message-ID: <b3e8777d-7621-3842-53b0-2b43ffc25d34@linux.alibaba.com>
-Date:   Tue, 26 Sep 2023 14:23:40 +0800
+        Tue, 26 Sep 2023 02:28:36 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2081.outbound.protection.outlook.com [40.107.241.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E22792
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:28:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YyfFSae9cQsPEcQy1jD+VIwedH9Ps7Qx9SiWIl34FLaxEqq7Oh5sLZtxEOzTFYEDy/E+oB4WnvY0t+0gyHh0OdMwzHMetgWTVTeOU3XtbPlDn6lHXs3bEeHw24I9wF5Pd5QNvbdXI5NLG8J505TrhcwQydk4IRnBT76IG393hXIQtqSKDao5GUEvpnlXY5MuvFJfaT8k3b8PmnRz7vDiRiF0E0q6wAAvOZ2ggw5ZHAMsQtTpQFHQ/9nVL+fKFwmCyIpFG+LPGj5Gp9HMpNnlamCczSk3LJZguzb5e2vvczaLvaKeCfKW8N/hJpAOPII/whm9hhq/gZvb/OZQ65kl2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KwS+WLRhVEWDotGTB0W0NJVMD6IE9HewF8JIo+EeZKQ=;
+ b=Ay+UylYB8V6tfAEkZYVx7MAMyY6bwb5UQE1DSLKZoJwgHGh4P90vbVAHcuuJh3WDc/44CWJcH1xZ3X5ol/t9rylocVcHeiS9zRYRFbX06Qu72HOUHPW5xKZj55FmzFh0fWvKNELkA9WU07pEfSJBRGpf1C/XXUoJVVYxSBtnoJG8ivWpzwSBPAGgaADgEE0+MI3MfAI5MX75N5BYm0zNcdjYVKGr2qisCYxB44nA9/I3xQ+LnFyGDqxiMegpE21bEZVkb6ZSZWH3Xbhwt56EZH5pUGknHVB42LAfyx5ca+fjayntngl47W/oBg5Ltkw8w3bmlGEL2Pmf/BM/bKtiuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KwS+WLRhVEWDotGTB0W0NJVMD6IE9HewF8JIo+EeZKQ=;
+ b=OqC+VgcZgBUxvHKqLocMm6bbRQy7KdAuwsdFSWuP2HzG7KdbVbvG6zU3g/CuvBfO1oAv64cnjlFILDOEWaU3kgLAnwiw0xt6SAIMHS1AJvEEERQyXmPYbFeivmXLq0rgGghxDm+8YhmkvVLspGvgr+ycFD39LWaL+czZxnnAauA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27) by AS8PR04MB8310.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3b2::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 06:28:25 +0000
+Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::ad16:42a5:193f:6396]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
+ ([fe80::ad16:42a5:193f:6396%7]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
+ 06:28:24 +0000
+Date:   Tue, 26 Sep 2023 09:28:20 +0300
+From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Document that the NXP i.MX 8MQ DCSS driver
+ goes thru drm-misc
+Message-ID: <20230926062820.ir4j4plavd4vnjfb@fsr-ub1664-121.ea.freescale.net>
+References: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
+X-ClientProxiedBy: AM8P191CA0021.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21a::26) To VI1PR0402MB3902.eurprd04.prod.outlook.com
+ (2603:10a6:803:22::27)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RESEND PATCH v8 1/2] ACPI: APEI: set memory failure flags as
- MF_ACTION_REQUIRED on synchronous events
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, rafael@kernel.org,
-        wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
-        mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
-        naoya.horiguchi@nec.com, james.morse@arm.com,
-        gregkh@linuxfoundation.org, will@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20230919022127.69732-2-xueshuai@linux.alibaba.com>
- <CVS2TK6J4193.2X0455FSP2MLQ@suppilovahvero>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <CVS2TK6J4193.2X0455FSP2MLQ@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3902:EE_|AS8PR04MB8310:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0e4ccaa-1f53-47f4-0eea-08dbbe59c93d
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w4Q6+DrRs8x8WfEIaoUu8kzqFxAdRz1DlygyFU9VO60wLewhUAyAKV1Po49GfA7ufwllOtz+i3vjCF1LOuN7R6bxK66KVcvpU9YWJN184WmWPxu0klEHwiRjUAoVFaT5fTORsenLwA/ekAwlEo8vX12kHr6H/zYcQKf0i95BNWMSr2VxubrNUTnxPVBukJVJ+deoBNBNFUD/m2ICHy97joaIv82yB3S4VRjkXD9lNr/x8ojqgoqg2FtLKJJuVg6AlmAOu8pYy/1ZkE/XF+gAXjVq6wiYZH334X13kNhxoPDL901SqpjBdTJKObu7RK6kcyTnn8Ec/AHTM1mC07eq2LiEoHZMBq2hIY6XIub+TcwPXAQqAidhDtstc9XGB96o32LTiKNAK6sfEKDHeASBVfRkZcwON47mS3b9DVqt6Dq2VfiI3Fde3qNnfBvaq9Ydp0NzZ2acigy9CX5YbM6CmuMdNjdGdHMLqHwFVBYp5hGY9jt5IuTtg0Tvrrq48K/Q+/EM0F4pR3VHAB1F0M8o76EBM0ofnlxH+LDc4FZY/LQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(346002)(366004)(230922051799003)(451199024)(1800799009)(186009)(5660300002)(4744005)(2906002)(316002)(6916009)(44832011)(41300700001)(8936002)(8676002)(4326008)(66476007)(66556008)(66946007)(1076003)(9686003)(6486002)(966005)(6512007)(6666004)(6506007)(86362001)(26005)(38100700002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4Oi0L3cCYMC9bcJJsAh6lTIvcqrFtiTQ4uiTOLhgxmjHAmO6RNZcb1nv22Y9?=
+ =?us-ascii?Q?W4jKZwK82RT2pZ+Jsr6JqkYfwSI7ST23Tm0D5Shd10puEMX60v+wIzYQXOot?=
+ =?us-ascii?Q?Lgx+stdcmGv1orvv3pRyiHjOrxKRsmaelqKNtqPtJPhFmIrkPypN8ww0GDQ3?=
+ =?us-ascii?Q?KMRfxTVqfYRPLTgv8wje0/h0EbDPmsRnS2a6o1YLZPrQnQbvxHQqrFlvBSaY?=
+ =?us-ascii?Q?tC8ZCqUxm1CLBRd0KD1rL8UEXv7aDxkpWFrWQYUmLmZVh/NYdvBmAUX7p/iR?=
+ =?us-ascii?Q?8gReqbyGAukP+3NP+ZqJ/INVnYQFwYdRThiqxsoKPYYJ0lUQi+/KTRoB4Ef2?=
+ =?us-ascii?Q?lH9Uz8f6y73vvdtU/tTrvjhsCT2C4JDLta86j8Lr4EuUVyI4+llIPyGwzB3H?=
+ =?us-ascii?Q?kqD8IAtv1ve794Cy2+ZN+oLzCfX305EKqb8Tenlt0hiFmSqFLxDK4PGmdvyj?=
+ =?us-ascii?Q?ncM+Aocpu+PAHVLvl2QJkc8Ctr312ejtC0eRFFFy5Nr/WDkKfcxi5lBJEPBk?=
+ =?us-ascii?Q?DvWutYJKJkVKBAQZC90NucWvPX/JkyoNJXrxB09wp8hw3Yl4Iemma2V1TGW0?=
+ =?us-ascii?Q?qstgG7CPHk7U0o0dIZHHRX3JgLB6Z5dn0g4NQrSvNMdBPmLbWVxNm4pE2ZiP?=
+ =?us-ascii?Q?zsFolwkCGhbWLhXmRFEPu1By/+1TzouDQWLa+rpA9N0RpI3VWkb4lcR9CBiR?=
+ =?us-ascii?Q?ndY2VKh70fYA19ZUaqnhK/DIptwmTENU2nEnOXkVKxyyUr2O73o1H14Zk1Dt?=
+ =?us-ascii?Q?LW+amHK7sTiQy1w+ctFYDHEnIQUR6g5KPT9jxWa/Vd4oWE7Y0q0hwM5UcKay?=
+ =?us-ascii?Q?LfHQegrZOgo1jJSPrqA34wmlrzMaxb3jk9cvwHSUczGb7J0nIaybiIdzYAgi?=
+ =?us-ascii?Q?O4jYS+7vUCWap4gkESKHY4WrmArb7Ivlz6QaF3RGCUvR1hFn2UVW48dGGpQD?=
+ =?us-ascii?Q?M7QoITbsYFJhNIcwJTVehjOrQEDSP+O97p0in3M/ClCMk2kjjsjHjrpG88lj?=
+ =?us-ascii?Q?FAAA+PiC2KQ9/q5HQHkO8SNFywghQNjcPdlqnbqFNL+PCiBqCi1X0XqSar4Z?=
+ =?us-ascii?Q?vnZnUVQLqH36b+BjWmgfB8k4TVufy4dPIi/JwT2FuC6dKUuV7dBBomeJe0p5?=
+ =?us-ascii?Q?vjHNlhYRddDevr4Qw8TFdEWKsvPYEyOCIbk0Ug6qQAFRJm0Ged/2/6Q6vOUr?=
+ =?us-ascii?Q?8nMZiL6m7mWbA5BI9SK2aZ888K07k/jySNvFlDh4ylL3FrKtj22OimJ/eQWo?=
+ =?us-ascii?Q?R4ZO1T6zYjf5sXxUGl2SU189b/hhq7Ve0UHhg6IpgNKYO05CGvvNfi42XEOq?=
+ =?us-ascii?Q?zrm3N3PzMGAn8UrnAzgAKGMWmoDU7Gj2D9KBCgAhyT/rJy2fEvixhRwelf1E?=
+ =?us-ascii?Q?PhQ9lisSoAlCH6xVMoMEPaAd+29dhO1og2bobGH0vm4ZNdT43N5rTnCwJmRj?=
+ =?us-ascii?Q?Lx5Cm7N1GFM2WIkFoqEdr9KZIr/5/cNxDei+tddhFV/uuRRobI7WFR6TcSdN?=
+ =?us-ascii?Q?/x8nD86zWczudWlb+YpEOl+hk8DWrFLlmeRfOp/VGi1U1v/LcOxW+9LAg2kF?=
+ =?us-ascii?Q?/LDZ6EPi0SavCbLLpyHEUoJEkXrBbzvhIaadFw4PMHepjIjfeG38N6sCe4d+?=
+ =?us-ascii?Q?ew=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0e4ccaa-1f53-47f4-0eea-08dbbe59c93d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 06:28:24.4453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t9PFwQ3BiVIO/2Z/UIyKNKFKPHxVM9NsOOR6MoonUM3agqDCBdmNhH2NFeZ5HmzT1QmVbCejewcpsic0MMVW+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8310
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/25 22:43, Jarkko Sakkinen wrote:
-> On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
->> There are two major types of uncorrected recoverable (UCR) errors :
->>
->> - Action Required (AR): The error is detected and the processor already
->>   consumes the memory. OS requires to take action (for example, offline
->>   failure page/kill failure thread) to recover this uncorrectable error.
->>
->> - Action Optional (AO): The error is detected out of processor execution
->>   context. Some data in the memory are corrupted. But the data have not
->>   been consumed. OS is optional to take action to recover this
->>   uncorrectable error.
->>
->> The essential difference between AR and AO errors is that AR is a
->> synchronous event, while AO is an asynchronous event. The hardware will
->> signal a synchronous exception (Machine Check Exception on X86 and
->> Synchronous External Abort on Arm64) when an error is detected and the
->> memory access has been architecturally executed.
->>
->> When APEI firmware first is enabled, a platform may describe one error
->> source for the handling of synchronous errors (e.g. MCE or SEA notification
->> ), or for handling asynchronous errors (e.g. SCI or External Interrupt
->> notification). In other words, we can distinguish synchronous errors by
->> APEI notification. For AR errors, kernel will kill current process
->> accessing the poisoned page by sending SIGBUS with BUS_MCEERR_AR. In
->> addition, for AO errors, kernel will notify the process who owns the
->> poisoned page by sending SIGBUS with BUS_MCEERR_AO in early kill mode.
->> However, the GHES driver always sets mf_flags to 0 so that all UCR errors
->> are handled as AO errors in memory failure.
->>
->> To this end, set memory failure flags as MF_ACTION_REQUIRED on synchronous
->> events.
->>
->> Fixes: ba61ca4aab47 ("ACPI, APEI, GHES: Add hardware memory error recovery support")'
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
->> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
->> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->>  drivers/acpi/apei/ghes.c | 29 +++++++++++++++++++++++------
->>  1 file changed, 23 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
->> index ef59d6ea16da..88178aa6222d 100644
->> --- a/drivers/acpi/apei/ghes.c
->> +++ b/drivers/acpi/apei/ghes.c
->> @@ -101,6 +101,20 @@ static inline bool is_hest_type_generic_v2(struct ghes *ghes)
->>  	return ghes->generic->header.type == ACPI_HEST_TYPE_GENERIC_ERROR_V2;
->>  }
->>  
->> +/*
->> + * A platform may describe one error source for the handling of synchronous
->> + * errors (e.g. MCE or SEA), or for handling asynchronous errors (e.g. SCI
->> + * or External Interrupt). On x86, the HEST notifications are always
->> + * asynchronous, so only SEA on ARM is delivered as a synchronous
->> + * notification.
->> + */
->> +static inline bool is_hest_sync_notify(struct ghes *ghes)
->> +{
->> +	u8 notify_type = ghes->generic->notify.type;
->> +
->> +	return notify_type == ACPI_HEST_NOTIFY_SEA;
->> +}
->> +
->>  /*
->>   * This driver isn't really modular, however for the time being,
->>   * continuing to use module_param is the easiest way to remain
->> @@ -475,7 +489,7 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->>  }
->>  
->>  static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->> -				       int sev)
->> +				       int sev, bool sync)
->>  {
->>  	int flags = -1;
->>  	int sec_sev = ghes_severity(gdata->error_severity);
->> @@ -489,7 +503,7 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->>  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
->>  		flags = MF_SOFT_OFFLINE;
->>  	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->> -		flags = 0;
->> +		flags = sync ? MF_ACTION_REQUIRED : 0;
+On Mon, Sep 25, 2023 at 03:49:29PM -0700, Douglas Anderson wrote:
+> As per the discussion on the lists [1], changes to this driver
+> generally flow through drm-misc. Add a tag in MAINTAINERS to document
+> this
 > 
-> Not my territory but this branching looks a bit weird to my
-> eyes so just in case putting a comment.
+> [1] https://lore.kernel.org/r/20230925054710.r3guqn5jzdl4giwd@fsr-ub1664-121.ea.freescale.net
 > 
-> What *if* the previous condition sets MF_SOFT_OFFLINE and
-> this condition overwrites the value?
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Acked-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+
+Thanks,
+Laurentiu
+
+> ---
 > 
-> I know that earlier it could have been overwritten by zero.
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Neither the function comment has any explanation why it is
-> ok overwrite like this.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d72d3af551fb..d20a375ecd7d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15225,6 +15225,7 @@ M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+>  R:	Lucas Stach <l.stach@pengutronix.de>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+> +T:	git git://anongit.freedesktop.org/drm/drm-misc
+>  F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
+>  F:	drivers/gpu/drm/imx/dcss/
+>  
+> -- 
+> 2.42.0.515.g380fc7ccd1-goog
 > 
-> Or if these cannot happen simultaenously why there is not
-> immediate return after settting MF_SOFT_OFFLINE?
-> 
-> For someone like me the functions logic is tediously hard
-> to understand tbh.
-> 
-> BR, Jarkko
-
-Hi, Jarkko,
-
-I hope the original source code can help to understand:
-
-	/* iff following two events can be handled properly by now */
-	if (sec_sev == GHES_SEV_CORRECTED &&
-	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
-		flags = MF_SOFT_OFFLINE;
-	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
-		flags = 0;
-
-	if (flags != -1)
-		return ghes_do_memory_failure(mem_err->physical_addr, flags);
-
-The sec_sev of gdata is either GHES_SEV_CORRECTED or GHES_SEV_RECOVERABLE.
-So the two if-conditions are independent of each other and these cannot
-happen simultaneously. ghes_do_memory_failure() then handle the two events
-with a proper seted flags.
-
-Thanks.
-
-Best Regards,
-Shuai
