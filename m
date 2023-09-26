@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A4A7AEBC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A7D7AEBEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbjIZLtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
+        id S234269AbjIZLuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbjIZLti (ORCPT
+        with ESMTP id S233899AbjIZLu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:49:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCC9DE;
-        Tue, 26 Sep 2023 04:49:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EDFEC433C9;
-        Tue, 26 Sep 2023 11:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695728971;
-        bh=BDIUttsZQQFkLvxRNL0OyVkQfC2FmRbuUcsXNdRp1pY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kW0wi9LEkIMVJnvXmXp+torrf3YvFpAzeV7qP8iLknnUYyG3mXazThOmML5lS+zg5
-         deyni9oM3UNTFP71+6qqIheiTpN2SKneXqjLO6TQ2vvn+eyLvzkEI953nC2qXEQt+I
-         dR+tZnHfXMfwDhD4DJ92hqFzCS7BoixKb8h7RHeQ=
-Date:   Tue, 26 Sep 2023 13:49:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Edward AD <twuufnxlz@gmail.com>
-Cc:     conor@kernel.org,
-        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
-        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, guoren@kernel.org, alexghiti@rivosinc.com,
-        liushixin2@huawei.com, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] riscv: fix out of bounds in walk_stackframe
-Message-ID: <2023092617-polish-modify-3acb@gregkh>
-References: <0000000000000170df0605ccf91a@google.com>
- <20230926114343.1061739-2-twuufnxlz@gmail.com>
+        Tue, 26 Sep 2023 07:50:29 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEDF10C;
+        Tue, 26 Sep 2023 04:50:17 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38QBnng97882002, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38QBnng97882002
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Sep 2023 19:49:50 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Tue, 26 Sep 2023 19:49:50 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Tue, 26 Sep
+ 2023 19:49:49 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: [PATCH net-next v8 00/13] Add Realtek automotive PCIe driver
+Date:   Tue, 26 Sep 2023 19:49:30 +0800
+Message-ID: <20230926114943.16340-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926114343.1061739-2-twuufnxlz@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.210.160]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 07:43:44PM +0800, Edward AD wrote:
-> Increase the check on the frame after assigning its value. This is to prevent 
-> frame access from crossing boundaries.
-> 
-> Closes: https://lore.kernel.org/all/20230926105949.1025995-2-twuufnxlz@gmail.com/
-> Fixes: 5d8544e2d007 ("RISC-V: Generic library routines and assembly")
-> Reported-and-tested-by: syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/all/0000000000000170df0605ccf91a@google.com/T/
-> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
-> ---
->  arch/riscv/kernel/stacktrace.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-> index 64a9c093aef9..53bd18672329 100644
-> --- a/arch/riscv/kernel/stacktrace.c
-> +++ b/arch/riscv/kernel/stacktrace.c
-> @@ -54,6 +54,8 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
->  			break;
->  		/* Unwind stack frame */
->  		frame = (struct stackframe *)fp - 1;
-> +		if (!virt_addr_valid(frame))
-> +			break;
->  		sp = fp;
->  		if (regs && (regs->epc == pc) && (frame->fp & 0x7)) {
->  			fp = frame->ra;
-> -- 
-> 2.25.1
-> 
+This series includes adding realtek automotive ethernet driver 
+and adding rtase ethernet driver entry in MAINTAINERS file.
 
-Hi,
+This ethernet device driver for the PCIe interface of 
+Realtek Automotive Ethernet Switch,applicable to 
+RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+v1 -> v2:
+- Remove redundent debug message.
+- Modify coding rule.
+- Remove other function codes not related to netdev.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+v2 -> v3:
+- Remove SR-IOV function - We will add the SR-IOV function together when
+uploading the vf driver in the future.
+- Remove other unnecessary code and macro.
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documetnation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+v3 -> v4:
+- Remove function prototype - Our driver does not use recursion, so we
+have reordered the code and removed the function prototypes.
+- Define macro precisely - Improve macro code readability to make the
+source code cleaner.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
 
-thanks,
+v5 -> v6:
+- Some old macro definitions have been removed and replaced with the
+lastest usage.
+- Replace s32 with int to ensure consistency.
+- Clearly point out the objects of the service and remove unnecessary
+struct.
 
-greg k-h's patch email bot
+v6 -> v7:
+- Split this driver into multiple patches.
+- Reorganize this driver code and remove redundant code to make this
+driver more concise.
+
+v7 -> v8:
+- Add the function to calculate time mitigation and the function to 
+calculate packet number mitigation. Users can use these two functions 
+to calculate the reg value that needs to be set for the mitigation value
+they want to set.
+- This device is usually used in automotive embedded systems. The page
+pool api will use more memory in receiving packets and requires more 
+verification, so we currently do not plan to use it in this patch.
+
+Justin Lai (13):
+  net:ethernet:realtek:rtase: Add pci table supported in this module
+  net:ethernet:realtek:rtase: Implement the .ndo_open function
+  net:ethernet:realtek:rtase: Implement the rtase_down function
+  net:ethernet:realtek:rtase: Implement the interrupt routine and
+    rtase_poll
+  net:ethernet:realtek:rtase: Implement hardware configuration function
+  net:ethernet:realtek:rtase: Implement .ndo_start_xmit function
+  net:ethernet:realtek:rtase: Implement a function to receive packets
+  net:ethernet:realtek:rtase: Implement net_device_ops
+  net:ethernet:realtek:rtase: Implement pci_driver suspend and resume
+    function
+  net:ethernet:realtek:rtase: Implement ethtool function
+  net:ethernet:realtek:rtase: Add a Makefile in the rtase folder
+  net:ethernet:realtek: Update the Makefile and Kconfig in the realtek
+    folder
+  MAINTAINERS: Add the rtase ethernet driver entry
+
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  341 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2492 +++++++++++++++++
+ 6 files changed, 2868 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
+-- 
+2.34.1
+
