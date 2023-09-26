@@ -2,143 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2189D7AF05C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12257AF05E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjIZQNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S229513AbjIZQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIZQNJ (ORCPT
+        with ESMTP id S229601AbjIZQN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:13:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC4711D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:13:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5333DC433C7;
-        Tue, 26 Sep 2023 16:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695744782;
-        bh=uSXdGdxsPB5JC+uPl71FUtLzcgGHJBssq0n/qF6bCV8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XP2MnAnA+MjumXfxkPNzLFVJds/5L7CytDBZlLrquGKjUXaQUVREIYZsN6mRrhpjl
-         pdbXjddUGkzJ6GsuidqaQ+lSl/WgL2wfIGcc31YQ82fbToAzYzTH5b+fkDwAUezuG6
-         aftvqR8UU/XgLrrmhFvHUs9onEwJVSJA6nJeuhVmi6UP4OkOdSJaTTwM9BBrxFdhJM
-         njmD5nbgc3nZjAhJjaqA2XFrKKuYB48ibU8ZoXTw3MOJfIo9z+1XWwoWdEG7cIlM6t
-         31D11f+utSle5eJ8eurcN9xBFRaG4GhIIhRfzI547+ETtCcJx4mvyQEQhq+q3Bwb2d
-         ThorEh/f0eg9w==
-Date:   Tue, 26 Sep 2023 18:12:55 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
-        maz@kernel.org, oliver.upton@linux.dev, will@kernel.org,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZRMDB6ANeA5WCSP0@lpieralisi>
-References: <20230907181459.18145-1-ankita@nvidia.com>
- <20230907181459.18145-3-ankita@nvidia.com>
- <ZP8q71+YXoU6O9uh@lpieralisi>
- <ZP9MQdRYmlawNsbC@nvidia.com>
- <ZQHUifAfJ+lZikAn@lpieralisi>
- <ZQIFfqgR5zcidRR3@nvidia.com>
- <ZRKW6uDR/+eXYMzl@lpieralisi>
- <ZRLiDf204zCpO6Mv@arm.com>
+        Tue, 26 Sep 2023 12:13:29 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736B0BE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:13:23 -0700 (PDT)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3add3240d52so23393961b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:13:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695744802; x=1696349602;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ghMxj6Q7DUFUv4QcWBQyCNlsSSFlP9qfCWzVXyW67xc=;
+        b=jCoDWDCHSynW8Uba2CEpDkiGsgGrmaHhBgo8G5cQTiQ1ELv/TZcbDm9roH6rfAztUq
+         Q4PVqkNL28GVxMEJLBK7Ui0d6QuyVGFQ0BIPje0rYWzqdVw59sQ5I1DkJd5QpZyLOKnJ
+         MrkNwfvpQixPmh0y1SfG36KnAq4vWt8l8BP6ApyXBbQks6GZc7SrSpYlFSzJfhmQ7Rjt
+         KSF0zGv+CrSXIA+6v7B4lmMDLZjIU7TMWnKXd+xc6UaBjn2p+BVMTLfxqHG2t2myLHlq
+         wFwZT/tKd6Eb+YnGN1KzM3kePKFiJOHCSCtn245FUlGuiSjbsW2+lpMNO7RQfGHMEAB8
+         pLPA==
+X-Gm-Message-State: AOJu0YxkgabHr+8wk5oGLgYSgskXWzsRpOy73+upNeNTy6i60hh7RjqU
+        hJNigdCgZku413j0Fl9Gs0lY4H8J7O40J+VhKywzuVizqFvWWA0=
+X-Google-Smtp-Source: AGHT+IFJu8R7r6R/i2Zmu5Lzt88ngYl65Fkgewf10P4lhSnqWqJcx4CHcghNoc/QOaFcSeISwiqKvZzltzos2fW8FQSYP/dbTcd2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZRLiDf204zCpO6Mv@arm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2a65:b0:3ae:526e:2634 with SMTP id
+ fu5-20020a0568082a6500b003ae526e2634mr1596935oib.9.1695744802823; Tue, 26 Sep
+ 2023 09:13:22 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 09:13:22 -0700
+In-Reply-To: <kwwrx7p4nfr4qkv5xxpo5nidyyjdbytsulpu7lj6yujmzrnxb6@q63vtmlo3dqa>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009a28dd0606455a6b@google.com>
+Subject: Re: [syzbot] [usb?] [media?] WARNING in imon_probe
+From:   syzbot <syzbot+1c41b2e045dc086f58be@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org,
+        ricardo@marliere.net, sean@mess.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 02:52:13PM +0100, Catalin Marinas wrote:
-> On Tue, Sep 26, 2023 at 10:31:38AM +0200, Lorenzo Pieralisi wrote:
-> > Currently, KVM for ARM64 maps at stage 2 memory that is
-> > considered device (ie using pfn_is_map_memory() to discern
-> > between device memory and memory itself) with DEVICE_nGnRE
-> > memory attributes; this setting overrides (as per the ARM
-> > architecture [1]) any device MMIO mapping present at stage
-> > 1, resulting in a set-up whereby a guest operating system
-> > can't determine device MMIO mapping memory attributes on its
-> > own but it is always overriden by the KVM stage 2 default.
-> > 
-> > This set-up does not allow guest operating systems to map
-> > device memory on a page by page basis with combined attributes
-> > other than DEVICE_nGnRE,
-> 
-> Well, it also has the option of DEVICE_nGnRnE ;).
+Hello,
 
-That's true - we have to fix it up.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-"This set-up does not allow guest operating systems to choose
-device memory attributes on a page by page basis independently
-from KVM stage 2 mappings,..."
+failed to apply patch:
+checking file drivers/media/rc/imon.c
+patch: **** unexpected end of file in patch
 
-> > which turns out to be an issue in that
-> > guest operating systems (eg Linux) may request to map
-> > devices MMIO regions with memory attributes that guarantee
-> > better performance (eg gathering attribute - that for some
-> > devices can generate larger PCIe memory writes TLPs)
-> > and specific operations (eg unaligned transactions) such as
-> > the NormalNC memory type.
-> > 
-> > The default device stage 2 mapping was chosen in KVM
-> > for ARM64 since it was considered safer (ie it would
-> > not allow guests to trigger uncontained failures
-> > ultimately crashing the machine) but this turned out
-> > to be imprecise.
-> > 
-> > Failures containability is a property of the platform
-> > and is independent from the memory type used for MMIO
-> > device memory mappings (ie DEVICE_nGnRE memory type is
-> > even more problematic than NormalNC in terms of containability
-> > since eg aborts triggered on loads cannot be made synchronous,
-> > which make them harder to contain); this means that,
-> > regardless of the combined stage1+stage2 mappings a
-> > platform is safe if and only if device transactions cannot trigger
-> > uncontained failures; reworded, the default KVM device
-> > stage 2 memory attributes play no role in making device
-> > assignment safer for a given platform and therefore can
-> > be relaxed.
-> > 
-> > For all these reasons, relax the KVM stage 2 device
-> > memory attributes from DEVICE_nGnRE to NormalNC.
-> > 
-> > This puts guests in control (thanks to stage1+stage2
-> > combined memory attributes rules [1]) of device MMIO
-> > regions memory mappings, according to the rules
-> > described in [1] and summarized here ([(S1) = Stage1][(S2) = Stage2]):
-> > 
-> > �S1���������� |�� S2��������� |� Result
-> > �NORMAL-WB����|� NORMAL-NC����|� NORMAL-NC
-> > �NORMAL-WT����|� NORMAL-NC����|� NORMAL-NC
-> > �NORMAL-NC����|� NORMAL-NC����|� NORMAL-NC
-> > �DEVICE<attr>�|� NORMAL-NC����|� DEVICE<attr>
-> 
-> Not sure what's wrong with my font setup as I can't see the above table
-> but I know it from the Arm ARM.
-> 
-> Anyway, the text looks fine to me. Thanks for putting it together
-> Lorenzo.
-> 
-> One thing not mentioned here is that pci-vfio still maps such memory as
-> Device-nGnRnE in user space and relaxing this potentially creates an
-> alias. But such alias is only relevant of both the VMM and the VM try to
-> access the same device which I doubt is a realistic scenario.
 
-I can update the log and repost, fixing the comment above as well (need
-to check what's wrong with the table characters).
 
-Thanks,
-Lorenzo
+Tested on:
+
+commit:         a48fa7ef Merge tag 'drm-next-2023-09-08' of git://anon..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=150188feee7071a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1c41b2e045dc086f58be
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17cadccc680000
+
