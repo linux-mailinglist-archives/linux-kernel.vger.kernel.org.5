@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CD17AF6C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2758D7AF63F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjIZXjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 19:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S231357AbjIZWSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 18:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjIZXhx (ORCPT
+        with ESMTP id S231447AbjIZWP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 19:37:53 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2454F1F9DA
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:58:29 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d8164e661abso11238363276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695765508; x=1696370308; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C6kFfoWUpW/8kB893AEctkntP41wPPc2fMMmzCd25kM=;
-        b=oMe82goYUhFUGkbP9M7+GVSaD2GO2sYBSIO3bc1WzZEoEL6x/x2kbUkP89taW5fdya
-         KfDvFPvQraWuqnqh9ad2vFfab3VbaBcGKkVtd6zGw9p97ebdqp24dY5cjCHL2hQ2roM1
-         MIHXv2upKzOt2o4RLP/Lhr1XEzsatE5M+kfuGQLMzK8AT5pNxV/pldzMrj2Ufhz1PP1f
-         bBArWKoQE/xsMaSSZww2OX2Okqn/OR8k9Qg06zUdFO9XN7NEWrufHShlaQLN+Lu5x1gG
-         VTcQNQ47uRA1cDK4c0IqZf6GKTOQx5r97Y0A1Opltsh/vpYeu92F3dXeWmHW9DljGoEJ
-         cXvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695765508; x=1696370308;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C6kFfoWUpW/8kB893AEctkntP41wPPc2fMMmzCd25kM=;
-        b=s4P1R8VSghzpfOfD6T2PIAHXM8roxc7lMSd/BvBvjS9w0DsrjnZdGG9o0gc+HoWPU/
-         it8HKSh700xqyiqHQF4efWXuG4kvH6ymqNKQwQFYRE/bbGijPxfaUkglurS8upd+yd6J
-         DqRz23Zeo9V7Ht0ZCtDHTpQKzL5HzmwSJerwv9fM5ZqzvCuBG2TOaoiEpm9kuQMHtHV/
-         d/XKiJIkkJGwtprD53E5SPOVHjtnv1me2ykHqxcvkV+M30pi71HE68GZChYEsBLxTgWG
-         5ZiLClm79vcC+oAV+reK4c+jYflrKQC7KueuuSX0gzYIJQR14T9ZgvSF6ZJqV7uYKR/E
-         DMoQ==
-X-Gm-Message-State: AOJu0YwvkAXjo2wS72JCaojjHHqDV6OSQNe4dENReV18lqbb9pDOPV2j
-        KGkz6Kjt5npQy8IJMilpTZoSPg==
-X-Google-Smtp-Source: AGHT+IF1lC9gZTVPKEK6v5XtwRFX9u+Q/KPjl3ek/67xFlemq2bGgHxn41G26C6x9G8iwO4SwapdLA==
-X-Received: by 2002:a25:c590:0:b0:d81:5240:679f with SMTP id v138-20020a25c590000000b00d815240679fmr220291ybe.16.1695765508147;
-        Tue, 26 Sep 2023 14:58:28 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i137-20020a25d18f000000b00d81425266c1sm2981515ybg.42.2023.09.26.14.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 14:58:27 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 14:58:24 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 09/12] mm: add page_rmappable_folio() wrapper
-In-Reply-To: <ZRIQjZOZJ2ZFkY8C@casper.infradead.org>
-Message-ID: <8bfe25ca-def2-f33d-fdba-8ce5fbb5efd0@google.com>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com> <f4dc7bb6-be3a-c1b-c30-37c4e0c16e4d@google.com> <ZRIQjZOZJ2ZFkY8C@casper.infradead.org>
+        Tue, 26 Sep 2023 18:15:59 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B70423128;
+        Tue, 26 Sep 2023 15:05:28 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QLs9jb012012;
+        Tue, 26 Sep 2023 22:04:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=PKb/D0HqamWxi3Wj4ngvJzC8qkJDnebrZ+o4mvzqv1s=;
+ b=p6d1x0TQkx3wzOuyLL7onb4u6LtHYEyn58xaDH3eS1aUpaDUsCbNKDwzQPiZeyzoJYOA
+ oUDklgXR5Ihtz6bX2D0bOsAf0wWfm5FlYytvmoSmCg6XhPcft7YWhVLY2uva3jdO6tJY
+ ldY+w8pRI36mlun8k4uvucDoqmy5blVkHjl2oY+9cgn5fnyMnrn42Z5elGaJwhovMwPv
+ YoOVL5V5dyJ6oFK28j5hkUkxP7r51RXHN5+O90Ma43OTqQNVYw1f3tb1X45lnVNrY4MZ
+ 4qB4dq2GCme6pGC8Q5fVhOEdwwWh661OtPaSLr9Ra2W0zzHM4byK2DLeFWPToYRm70+I 0w== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbgfv37v8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 22:04:49 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38QM4miu006581
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 22:04:48 GMT
+Received: from [10.110.53.84] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 26 Sep
+ 2023 15:04:45 -0700
+Message-ID: <7db6eaee-af6d-492a-bc7c-23c6aa6bbdf8@quicinc.com>
+Date:   Tue, 26 Sep 2023 15:04:44 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] Avoid spurious freezer wakeups
+To:     Carlos Llamas <cmllamas@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        "Prakash Viswalingam" <quic_prakashv@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <stable@vger.kernel.org>
+References: <20230908-avoid-spurious-freezer-wakeups-v4-0-6155aa3dafae@quicinc.com>
+ <ZRMEHb3_0Ku1UuK_@google.com>
+ <20230926200238.GB13828@noisy.programming.kicks-ass.net>
+ <ZRNFeXZ4tRbT7ws6@google.com>
+Content-Language: en-US
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <ZRNFeXZ4tRbT7ws6@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: xtoe0jaJDYGL5l2tozlam7dUcuC-zwrx
+X-Proofpoint-ORIG-GUID: xtoe0jaJDYGL5l2tozlam7dUcuC-zwrx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_15,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=793 mlxscore=0
+ spamscore=0 adultscore=0 priorityscore=1501 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260189
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023, Matthew Wilcox wrote:
-> On Mon, Sep 25, 2023 at 01:32:02AM -0700, Hugh Dickins wrote:
-> >  {
-> >  	struct page *page = __alloc_pages(gfp | __GFP_COMP, order,
-> > -			preferred_nid, nodemask);
-> > +					  preferred_nid, nodemask);
+
+
+On 9/26/2023 1:56 PM, Carlos Llamas wrote:
+> On Tue, Sep 26, 2023 at 10:02:38PM +0200, Peter Zijlstra wrote:
+>> On Tue, Sep 26, 2023 at 04:17:33PM +0000, Carlos Llamas wrote:
+>>>
+>>> This issue is hurting the performance of our stable 6.1 releases. Does
+>>> it make sense to backport these patches into stable branches once they
+>>> land in mainline? I would assume we want to fix the perf regression
+>>> there too?
+>>
+>> Note that these patches are in tip/sched/core, slated for the next merge
+>> window.
 > 
-> I really prefer not to do this "align arguments with opening bracket"
-> style.  As long as they're indented enough to make them visually distinct
-> from indentation-for-if-blocks, I find it annoying when functions get
-> renamed to something with a different length and somebody then wastes
-> time reindenting all the arguments to match.
+> We can wait, no problem. I just wanted to make sure we also patch stable
+> if needed. Elliot, would you be able to send a backport of your patches
+> to stable once they land in mainline on the next merge window?
 
-Okay, I don't care much about inserting spaces to align with the bracket,
-but didn't like those continuation args leftward of function name above.
-I'll adjust in v2, and eventually we reach a compromise.
+Yep, happy to send it. There's a trivial conflict to resolve w/older
+kernels not having the new guard(...)(...) macros.
 
 > 
-> > +	return page_rmappable_folio(page);
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: stable@vger.kernel.org
 > 
-> I don't particularly object to the main thrust of this patch.  I'm not
-> sure I like it in huge_mm.h though.  Maybe in mm/internal.h?  I
-> wouldn't want anyone outside mm/ calling it.
-
-I was expecting more resistance :)  Right, I put it in huge_mm.h to be
-next to your folio_prep_large_rmappable() declaration, but it doesn't
-have to be there.  Ooh, there's a folio_undo_large_rmappable() in
-mm/internal.h, I'll move page_rmappable_folio() next to that.
-
-Hugh
+> --
+> Carlos Llamas
