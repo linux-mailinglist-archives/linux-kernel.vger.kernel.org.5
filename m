@@ -2,83 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D520B7AF586
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636A97AF583
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjIZUry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S235924AbjIZUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235933AbjIZUrv (ORCPT
+        with ESMTP id S235855AbjIZUrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:47:51 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA12139
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:43 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59f6441215dso75978257b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695761262; x=1696366062; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1S9w5O9YAxaryW06sBN3R7x44RvnVfU5wnpnkpC1rZI=;
-        b=KzJb7Z7+fBbtsaJkh7VA8o+cRCEo2EH/Ek6OfhYL/qm0ZYKpC3IKZvVZ5mwKSkTFU/
-         RmX2KLWnRMX7hZI8+02NVlETyhjaBbnRheq07umtXH56KpVMCDzcrXGNjvQtSeTR99jU
-         6bdXMYvbvww28p6ncRk61+SEPzv6ReLJluEHejMHUayN7/haYL/DUH6lHOSVe8FlYxhr
-         8T7pG2WfbHAPIciwasVpxjRLc8PxmycLlC4GjVk4Gmzs5yzd6n99o+c00tuzd5OORfc8
-         GqbxlbJiyRzCS0WuMUeoHjkaZUtPcYz74G6zBhtOL0zTW7tjAuVvy9kKh5VAjVc17B/T
-         gylg==
+        Tue, 26 Sep 2023 16:47:43 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A63139
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:35 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-573b8245f9bso18646801eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695761262; x=1696366062;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1S9w5O9YAxaryW06sBN3R7x44RvnVfU5wnpnkpC1rZI=;
-        b=pzOO/VeGiLfUedGUzMMCSJRVQIPLu++YVAf2r1J4sbcVOD74OdmkecjI+oUE+KU+Bh
-         Qj2JVQ36UJdiYw53qvTaQIENG0MyPY1MiZD2So9co/NDqNfIHvqTzvdA1OgV0k5ztly1
-         0wl5CcuOvwYuwzEt4wYMl1mbePAgOFpYSYkJhzJ+qOwiO5HgAuxoQjV3y/4jtxiqaDdh
-         MzRT1RAuDabY7DKvomIvvDTKNglY0q2jSVBSHWDYPrnyalPUdEsqkuri0dMRbNgfcpWz
-         Zb4/Y5LkPBClzYQ9/E2U7XifjnsloAbzae0977STTMnKpnISXeHvIpydB7KhDR5A6run
-         8UNw==
-X-Gm-Message-State: AOJu0YzaeXZGVfrua7XcWr1OLyTzPtC8HX/CbO9n+RAPOhbT2tDIRgRX
-        qOnBKhOZ+/DQqzHdF9JMhnngMA==
-X-Google-Smtp-Source: AGHT+IEj95JDcUk9vMCjVVUOULMct3B5wjZR/7G6kto4XvQuG7gqpKuMfEuLi4DrhE2dbIxBDgfzrQ==
-X-Received: by 2002:a81:7286:0:b0:59b:bacb:a84f with SMTP id n128-20020a817286000000b0059bbacba84fmr111050ywc.47.1695761262182;
-        Tue, 26 Sep 2023 13:47:42 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y206-20020a81a1d7000000b00592a0cad26esm3201981ywg.26.2023.09.26.13.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 13:47:40 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 13:47:33 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 03/12] mempolicy: fix migrate_pages(2) syscall return
- nr_failed
-In-Reply-To: <ZRIIIFm5IMnkGh3T@casper.infradead.org>
-Message-ID: <20de9b0-39fd-76bf-ea7f-3e9df0dd79d9@google.com>
-References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com> <ddad2cee-cbad-7b5d-935a-59f961b7c3a@google.com> <ZRIIIFm5IMnkGh3T@casper.infradead.org>
+        d=1e100.net; s=20230601; t=1695761254; x=1696366054;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7/zDMVC/fYmKPYBhxu9c4/EG5uLEdTJncjl69CxbpaI=;
+        b=KZ6iw9roz+KSEL7pniosRcgd62NxOJRWzAsxw4YtOcL/b1vnKrpT+TW97T9UKtbQ2u
+         cYK0oSAoOQNKoanFdxWB2hY4qIjXnh040N/H8/fQ6F3toteDFLTTamEQm215oqYN3KCU
+         47vWMnMiqLAd/cQdsdjs0UhdtnkWBiSIDlTSGPLtMmzwKlikGL9p2o1dK+YgT54Y0b4b
+         NvHOMupXOODzc3HEMq6/yEQbAto/NQgVSj4FagOLhTPf6a1iSrElLrkdEf0A9oE3fvGe
+         GtQz1monMdOavF5VistznqRSwGssx4mn3bYSD4RY8PktpiJl9hJJmZoReNpGW5ZajfzH
+         zqUA==
+X-Gm-Message-State: AOJu0YynoDnOJao7qW+zTmoeAM9V0y1mp1FAZylJRaCz63WWSZuS8IfU
+        R9SUgX/q8ggiBmLiWa/FpQFXviLcSye/AKlh9OxAB7jxyMhe
+X-Google-Smtp-Source: AGHT+IF5/b+N+5KGxuCTJnyIeBi3zIXcRokuHfKRpscL+qHJZH2/jepRo1bLPhfFTY1CnjK/K8w70tXdwtAnk32eJTe64zohFvmr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Received: by 2002:a05:6871:6a87:b0:1c5:87d6:b779 with SMTP id
+ zf7-20020a0568716a8700b001c587d6b779mr54027oab.8.1695761254376; Tue, 26 Sep
+ 2023 13:47:34 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 13:47:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000030ed510606492f24@google.com>
+Subject: [syzbot] [bpf?] WARNING in bpf_mprog_attach
+From:   syzbot <syzbot+baa44e3dbbe48e05c1ad@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,99 +57,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023, Matthew Wilcox wrote:
-> On Mon, Sep 25, 2023 at 01:24:02AM -0700, Hugh Dickins wrote:
-> > "man 2 migrate_pages" says "On success migrate_pages() returns the number
-> > of pages that could not be moved".  Although 5.3 and 5.4 commits fixed
-> > mbind(MPOL_MF_STRICT|MPOL_MF_MOVE*) to fail with EIO when not all pages
-> > could be moved (because some could not be isolated for migration),
-> > migrate_pages(2) was left still reporting only those pages failing at the
-> > migration stage, forgetting those failing at the earlier isolation stage.
-> > 
-> > Fix that by accumulating a long nr_failed count in struct queue_pages,
-> > returned by queue_pages_range() when it's not returning an error, for
-> > adding on to the nr_failed count from migrate_pages() in mm/migrate.c.
-> > A count of pages?  It's more a count of folios, but changing it to pages
-> > would entail more work (also in mm/migrate.c): does not seem justified.
-> 
-> I certainly see what you're saying.  If a folio is only partially mapped
-> (in an extreme case, the VMA is PAGE_SIZE and maps one page of a 512-page
-> folio), then setting nr_failed to folio_nr_pages() is misleading at best.
+Hello,
 
-Actually, that wasn't what I was thinking when I said that: but thank you
-for the comment, you've helped me to see that what I'm actually doing is
-not what is claimed there.
+syzbot found the following issue on:
 
-What I was thinking, something I'm taking as an axiom, is that the units
-of failure when isolating must match the units of failure when migrating,
-whatever they are.
+HEAD commit:    bf6547d8715b Merge branches 'for-next/sve-remove-pseudo-re..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15e15266680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87bf2bd0cc8825ea
+dashboard link: https://syzkaller.appspot.com/bug?extid=baa44e3dbbe48e05c1ad
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1429fe12680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135744cc680000
 
-And migrate_pages(), the internal one, has this helpfully explicit comment:
- * Returns the number of {normal folio, large folio, hugetlb} that were not
- * migrated, or an error code. The number of large folio splits will be
- * considered as the number of non-migrated large folio, no matter how many
- * split folios of the large folio are migrated successfully.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ce9077c94d96/disk-bf6547d8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a846fe1c61d3/vmlinux-bf6547d8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b4436f7e6852/Image-bf6547d8.gz.xz
 
-(TBH I haven't spent long enough to actually understand what the second
-sentence is saying: I do realize that splits complicate the issue, but the
-function wouldn't be expected to return a "number of large folio splits"
-anyway.  One day, I should work out what the code is actually doing, and
-try to reword that sentence better.)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+baa44e3dbbe48e05c1ad@syzkaller.appspotmail.com
 
-So above I was trying to say that migrate_pages(), the syscall, returns
-that quantity: totalling the failed-isolation and failed-migration folios.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_pos_before kernel/bpf/mprog.c:200 [inline]
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_attach+0x584/0xb88 kernel/bpf/mprog.c:258
+Modules linked in:
+CPU: 1 PID: 6072 Comm: syz-executor183 Not tainted 6.6.0-rc3-syzkaller-gbf6547d8715b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+pc : bpf_mprog_pos_before kernel/bpf/mprog.c:200 [inline]
+pc : bpf_mprog_attach+0x584/0xb88 kernel/bpf/mprog.c:258
+lr : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+lr : bpf_mprog_pos_before kernel/bpf/mprog.c:200 [inline]
+lr : bpf_mprog_attach+0x584/0xb88 kernel/bpf/mprog.c:258
+sp : ffff800096767920
+x29: ffff800096767a00 x28: 0000000000000040 x27: 1fffe0001983e841
+x26: 0000000000000000 x25: ffff0000cc1f4208 x24: 00000000ffffffde
+x23: ffff8000967679a0 x22: ffff8000967679c0 x21: ffff0000cc1f4008
+x20: ffff0000cc1f4628 x19: dfff800000000000 x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008a576f00 x15: 0000000000000002
+x14: 1ffff00012cecf34 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : ffff0000d4921bc0 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : 0000000000000008 x4 : 0000000000000000 x3 : 0000000000000010
+x2 : 0000000000000000 x1 : 0000000000000040 x0 : 000000000000003f
+Call trace:
+ bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+ bpf_mprog_pos_before kernel/bpf/mprog.c:200 [inline]
+ bpf_mprog_attach+0x584/0xb88 kernel/bpf/mprog.c:258
+ tcx_prog_attach+0x23c/0x6ac kernel/bpf/tcx.c:39
+ bpf_prog_attach+0x19c/0x340 kernel/bpf/syscall.c:3848
+ __sys_bpf+0x2e8/0x5dc kernel/bpf/syscall.c:5344
+ __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
+ __arm64_sys_bpf+0x80/0x98 kernel/bpf/syscall.c:5437
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+irq event stamp: 576
+hardirqs last  enabled at (575): [<ffff800080034500>] local_daif_restore+0x1c/0x3c arch/arm64/include/asm/daifflags.h:75
+hardirqs last disabled at (576): [<ffff80008a625394>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
+softirqs last  enabled at (562): [<ffff8000805caa34>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (562): [<ffff8000805caa34>] bpf_prog_by_id+0x144/0x168 kernel/bpf/syscall.c:4083
+softirqs last disabled at (560): [<ffff8000805ca92c>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (560): [<ffff8000805ca92c>] bpf_prog_by_id+0x3c/0x168 kernel/bpf/syscall.c:4077
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_insert+0x2bc/0x3f8 kernel/bpf/mprog.c:131
+Modules linked in:
+CPU: 1 PID: 6072 Comm: syz-executor183 Tainted: G        W          6.6.0-rc3-syzkaller-gbf6547d8715b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+pc : bpf_mprog_insert+0x2bc/0x3f8 kernel/bpf/mprog.c:131
+lr : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+lr : bpf_mprog_insert+0x2bc/0x3f8 kernel/bpf/mprog.c:131
+sp : ffff8000967678c0
+x29: ffff8000967678c0 x28: 0000000000000040 x27: 1fffe0001983e841
+x26: dfff800000000000 x25: 0000000000000040 x24: 0000000000000008
+x23: ffff0000cc1f4008 x22: 00000000ffffffff x21: ffff0000cc1f4208
+x20: ffff8000967679c0 x19: ffff800096767ac0 x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008a576f00 x15: 0000000000000002
+x14: 1ffff00012cecf34 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : ffff0000d4921bc0 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : 0000000000000008 x4 : 0000000000000008 x3 : 00000000ffffffff
+x2 : ffff8000967679c0 x1 : 0000000000000040 x0 : 000000000000003f
+Call trace:
+ bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+ bpf_mprog_insert+0x2bc/0x3f8 kernel/bpf/mprog.c:131
+ bpf_mprog_attach+0xa40/0xb88 kernel/bpf/mprog.c:288
+ tcx_prog_attach+0x23c/0x6ac kernel/bpf/tcx.c:39
+ bpf_prog_attach+0x19c/0x340 kernel/bpf/syscall.c:3848
+ __sys_bpf+0x2e8/0x5dc kernel/bpf/syscall.c:5344
+ __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
+ __arm64_sys_bpf+0x80/0x98 kernel/bpf/syscall.c:5437
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+irq event stamp: 724
+hardirqs last  enabled at (723): [<ffff80008a6253dc>] el1_dbg+0x6c/0x80 arch/arm64/kernel/entry-common.c:439
+hardirqs last disabled at (724): [<ffff80008a625394>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
+softirqs last  enabled at (594): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (594): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
+softirqs last disabled at (579): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_entry_grow include/linux/bpf_mprog.h:277 [inline]
+WARNING: CPU: 1 PID: 6072 at include/linux/bpf_mprog.h:198 bpf_mprog_insert+0x2d0/0x3f8 kernel/bpf/mprog.c:142
+Modules linked in:
+CPU: 1 PID: 6072 Comm: syz-executor183 Tainted: G        W          6.6.0-rc3-syzkaller-gbf6547d8715b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+pc : bpf_mprog_entry_grow include/linux/bpf_mprog.h:277 [inline]
+pc : bpf_mprog_insert+0x2d0/0x3f8 kernel/bpf/mprog.c:142
+lr : bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+lr : bpf_mprog_entry_grow include/linux/bpf_mprog.h:277 [inline]
+lr : bpf_mprog_insert+0x2d0/0x3f8 kernel/bpf/mprog.c:142
+sp : ffff8000967678c0
+x29: ffff8000967678c0 x28: 1fffe0001983e882 x27: 1fffe0001983e841
+x26: dfff800000000000 x25: 0000000000000040 x24: ffff0000cc1f4628
+x23: ffff0000cc1f4410 x22: 0000000000000000 x21: ffff0000cc1f4210
+x20: ffff8000967679c0 x19: ffff800096767ac0 x18: 0000000000000000
+x17: 0000000000000000 x16: ffff80008a576ca0 x15: ffff80009503e000
+x14: ffff80009509e000 x13: ffff80009503e000 x12: ffff80009509e000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : ffff0000d4921bc0 x7 : ffff800093fee000 x6 : ffff80009501e000
+x5 : ffff0000cc1f4410 x4 : ffff0000cc1f4208 x3 : ffff0000cc1f4390
+x2 : fffffffffffffff0 x1 : 0000000000000040 x0 : 000000000000003f
+Call trace:
+ bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
+ bpf_mprog_entry_grow include/linux/bpf_mprog.h:277 [inline]
+ bpf_mprog_insert+0x2d0/0x3f8 kernel/bpf/mprog.c:142
+ bpf_mprog_attach+0xa40/0xb88 kernel/bpf/mprog.c:288
+ tcx_prog_attach+0x23c/0x6ac kernel/bpf/tcx.c:39
+ bpf_prog_attach+0x19c/0x340 kernel/bpf/syscall.c:3848
+ __sys_bpf+0x2e8/0x5dc kernel/bpf/syscall.c:5344
+ __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
+ __arm64_sys_bpf+0x80/0x98 kernel/bpf/syscall.c:5437
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+irq event stamp: 746
+hardirqs last  enabled at (745): [<ffff80008a627868>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
+hardirqs last  enabled at (745): [<ffff80008a627868>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
+hardirqs last disabled at (746): [<ffff80008a625394>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
+softirqs last  enabled at (740): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (740): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
+softirqs last disabled at (727): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
+---[ end trace 0000000000000000 ]---
 
-But you've alerted me to how in fact I'm doing an nr_failed++ for each
-PTE of a failing-to-isolate folio, not as claimed.  It looks like I need
-to record "qp->large" in the case of failure as well as success.  (And
-then bother about when isolation fails on the first PTE, but succeeds
-by the time of a later PTE? maybe, or maybe that just gets silly.)
-I must fix that in v2.
 
-> 
-> > +static void queue_folios_pmd(pmd_t *pmd, spinlock_t *ptl, unsigned long addr,
-> >  				unsigned long end, struct mm_walk *walk)
-...
-> > +	if (!(qp->flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL)) ||
-> > +	    !vma_migratable(walk->vma) ||
-> > +	    !migrate_folio_add(folio, qp->pagelist, qp->flags))
-> > +		qp->nr_failed++;
-> 
-> However, I think here, we would do well to increment by HPAGE_PMD_NR.
-> Or whatever equivalent is flavour of the week.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I *really* wanted to do that (and increment nr_failed PTE by PTE as I'm
-doing, rather than as I claimed), and gave it some thought: but I don't
-think it can be done - or not without abandoning the axiom (in which
-case it's impossible to say what migrate_pages(2) is counting), or
-adding a layer of complication which simply isn't justifiable.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Certainly we could change the definition of what migrate_pages(internal)
-returns (though I haven't researched who depends on it: IIRC-long-ago
-there's maybe only one other caller who cares, to update a stat); but
-that still would not help.  Because whether migrate_pages(internal)
-returns 1 or HPAGE_PMD_NR for an unmigratable and unsplittable THP, it
-has no idea whether that THP got into the pagelist via a PMD or via one
-or some number more of PTEs.  More info would have to be passed down
-separately, folio by folio: an auxiliary xarray perhaps, but let's not.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-If it turns out that I'm deluded, and it can be easily done, please
-clarify one point: you made this comment on queue_folios_pmd(), but
-what about queue_folios_hugetlb()?  Would you nowadays prefer hugetlb
-to count 1 or folio_nr_pages()?  I think the latter.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-> 
-> Bravo to the other changes.
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Thanks - I'm guessing your enthusiasm is mainly due to that "qp->large"
-realization, which we ought to have thought of before.  I'm afraid it's
-going to get more complicated, once COWs are feeding on Ryan's ALFalfA -
-might need large[MAX_ORDER], or some better way.  But no great hurry,
-nothing will crash if it's occasionally not-quite-right.
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-> 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Many thanks for all these rapid and encouraging reviews.
-
-Hugh
+If you want to undo deduplication, reply with:
+#syz undup
