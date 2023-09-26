@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF407AE679
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7B07AE680
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbjIZHNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S231959AbjIZHOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIZHN2 (ORCPT
+        with ESMTP id S232166AbjIZHOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:13:28 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71F3DE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:13:22 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690d9cda925so6124181b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:13:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695712402; x=1696317202; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=87h+GCoyZ7JZR2wvMjstdo1iWnzZgP8yLm+iAVVZmYo=;
-        b=cWzCCnmo+ApEgtgfHTs49L2+MDjJ5gnSSf/HuQyv4iDQ6RuLEfeXsCAPvRQai5EgKT
-         Tu1cI3tc8Fsuo1DJfz/kChS2Oa14UJr5RvCui4V5DIy66AnLwTZ12oqpfO2ddrq9dld0
-         F2akXfmBznBSuGQv6Wu3djmFdhuGhdwQfhuNXTVnymeyR1J4/lJJfDw0OCX1BuSP49AX
-         wzbrdckrubbX7nyZqN2xai3QRZLfFgxLQDt4kZnbZBKmLgUCcxyl77j99iUCOC19E7P/
-         kBxcDtTBGZ/vrRnO/O6s2JuBXC/wYzxAiJTbnr+j5+DWxgTNsSRKWoHAnZQLukm7uSMH
-         yZ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695712402; x=1696317202;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=87h+GCoyZ7JZR2wvMjstdo1iWnzZgP8yLm+iAVVZmYo=;
-        b=TrzzE4zEaqFpryw180HjBFUz5tWz0Vdc9ws2kyfIAD4tM3V2uXVFj1OXQhyGapj6ep
-         atAE4PacpL6vk+b/Ul63HX5dgwmu3+15kcb/JrUUs1FPwMcKRIjMij9cXBNGb7JcyLM0
-         WRELSy56CTvOzRVIZOH9rMNw2YNSTfvoGI6XVT9RbsHm7ed8KZZFCHFvB/S64Ym6EoLX
-         lJOT1+6JOxwsg5iFLkMAeou1zX31h++DJjTTCNb4x+ZCCwJKpgKwlFz5VgtMEuguYCFf
-         QPUUDEo/RdP0BoPjr+8bpYCU+kQ964zswonTrZy7hUkMpMTVjdtAzQebK06KojOv6wGk
-         fYkA==
-X-Gm-Message-State: AOJu0YyDJMoVE/5732x5VlR9nt9op1RYV1Qjt9yV78vqGpiM+1kHqOtT
-        hTYXu+mnC5c2i5t09FG94ao=
-X-Google-Smtp-Source: AGHT+IFhvxFIiuQd2QO1RrEAsFmMm/JK3ySEofVvDMnYzpK0MvEckVCTgtX6J87sbWMTaneW/v/2sg==
-X-Received: by 2002:a05:6a00:24cf:b0:68f:e810:e86f with SMTP id d15-20020a056a0024cf00b0068fe810e86fmr7799333pfv.28.1695712402114;
-        Tue, 26 Sep 2023 00:13:22 -0700 (PDT)
-Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.178])
-        by smtp.gmail.com with ESMTPSA id t12-20020aa7938c000000b00686236718d8sm9177662pfe.41.2023.09.26.00.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 00:13:21 -0700 (PDT)
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-To:     shaggy@kernel.org
-Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] jfs: fix array-index-out-of-bounds in diAlloc
-Date:   Tue, 26 Sep 2023 12:43:12 +0530
-Message-Id: <20230926071312.14086-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        Tue, 26 Sep 2023 03:14:42 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA37A10A;
+        Tue, 26 Sep 2023 00:14:35 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 309D8320094D;
+        Tue, 26 Sep 2023 03:14:34 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 26 Sep 2023 03:14:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695712473; x=1695798873; bh=VF
+        VeVZmTfs9bsTzTBLiILy5KA2+NCbWVhaZijAd/VUg=; b=RD/znBmfPhrGsAnVAY
+        +irDC1f47jwc/OcjLoXLDdVUlj1zpwTv0GWS7Dpasxt0ve/H43ktE5AlC/mqEMKR
+        ep1xWhoEEkI7ZY/OjixKQdAP+3ziGChjqiRAlm4Y+PfzFTLDsLcBVJ7i/fRn6Jb3
+        HMmFKjpCbGGxb18L0YIasG8OAIVmisiROiqoPRzDAQBpTbuzDbTGrhYdOqTqnkmR
+        N6RZGRkOQdmMabpuuUZ3eYqMW78/NM6NWplH74ZkFcrhvmMcsLf6mGsLOok/aVo4
+        Aj3f+SVK1GyM/VBdy7NtsjSm8LNIcS61Hlam+uhlqr+ObXhHuTP9CDlKYVO/PN1r
+        byKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695712473; x=1695798873; bh=VFVeVZmTfs9bs
+        TzTBLiILy5KA2+NCbWVhaZijAd/VUg=; b=Ahh6tOszfUEWLcNcTiHI95DQ4R64V
+        qFSrCmckpTae9k4He4XOTDs3KBomVkkso3mw+ynZIFoMiSqGV/G4ckBtZA1MJ4mm
+        7gdY8wtbyMMrjIQafA+JBk15LR/NeELV4B3EspPY8plBzzY08TeD3bt9gJ8PYm92
+        v8iw6vN92eHlDqC/lyVIiSGsbfaNzwLBQXpcfSCRnfaeuXkxXsmTBRN1Seua6n3O
+        0yAm+1GcweN6o8OLGuFTXtymeLacVGJ4O/u0WVRlUMBK4s/bxPXrT7gQ9+HzEvCj
+        ITlpEN2QCGDN9Ghljw4CeoFvJE3c1Z5sTDe+zHYWSAeHaW3hXvL/lx1Gg==
+X-ME-Sender: <xms:2IQSZXmjoEFmrLb9EKWoCoxtD3u0aXEjXfXQPS8hKWP4jPEsadNRng>
+    <xme:2IQSZa1sxi3qnBIBUVbJzRYdK5_4bVisgfksSY-XsMGzbXPgzuPcKW0Frf4i1eVqV
+    HumL6H5D9chBkVzdD0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:2IQSZdoL_O_-_O2PAecArnTaJAHWSsMp4R_MWwza4KO0Xi81nAbr7A>
+    <xmx:2IQSZflT0t41018Agk-iGSM8ZfiHxwX1uMwMXO8QobVy0Ap8Cy1ozA>
+    <xmx:2IQSZV07z2qJ_dVH0TNRbPa7ApSCu8mgd6rUxWEvxFIYwzGJCD83wg>
+    <xmx:2YQSZWuURAkURuQdAchXzcSNdwcy3aiXInl96Rj4GrGMelswsO6NFQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7A2D7B60089; Tue, 26 Sep 2023 03:14:32 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Message-Id: <fbb6f526-0db9-4bbe-9635-8cb55b4335ee@app.fastmail.com>
+In-Reply-To: <cover.1695679700.git.falcon@tinylab.org>
+References: <cover.1695679700.git.falcon@tinylab.org>
+Date:   Tue, 26 Sep 2023 09:14:11 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Zhangjin Wu" <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     "Palmer Dabbelt" <palmer@rivosinc.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>, paulburton@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Willy Tarreau" <w@1wt.eu>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        "Tim Bird" <tim.bird@sony.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Nicolas Pitre" <nico@fluxnic.net>
+Subject: Re: [PATCH v1 0/7] DCE/DSE: Add Dead Syscalls Elimination support, part1
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there is not check against the agno of the iag while
-allocating new inodes to avoid fragmentation problem. Added the check
-which is required.
+On Tue, Sep 26, 2023, at 00:33, Zhangjin Wu wrote:
+>
+> This series aims to add DCE based DSE support, here is the first
+> revision of the RFC patchset [1], the whole series includes three parts,
+> here is the Part1.
+>
+> This Part1 adds basic DCE based DSE support.
+>
+> Part2 will further eliminate the unused syscalls forcely kept by the
+> exception tables.
+>
+> Part3 will add DSE test support with nolibc-test.c.
 
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
----
- fs/jfs/jfs_imap.c | 2 ++
- 1 file changed, 2 insertions(+)
+I missed the RFC version, but I think this is a useful thing to
+have overall, though it will probably need to go through a couple
+of revisions and rewrites, mostly to ensure we are not adding
+complexity that gets in the way of other improvements I would
+like to see to the syscall entry handling.
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 799d3837e7c2..ace8a1506380 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -1355,6 +1355,8 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
- 
- 	/* get the ag number of this iag */
- 	agno = BLKTOAG(JFS_IP(pip)->agstart, JFS_SBI(pip->i_sb));
-+	if (agno < 0)
-+		return -EIO;
- 
- 	if (atomic_read(&JFS_SBI(pip->i_sb)->bmap->db_active[agno])) {
- 		/*
--- 
-2.37.2
+It would be nice to include some size numbers here for at least
+one practical use case. If you have a defconfig for a shipping
+product with a small kernel, what is the 'size -B' output you
+see comparing with and without DCE and, and with DCE+DSE?
 
+There is generally not much work going into micro-optimizing
+the size of the kernel image any more, for a number of reasons,
+but if you are able to show that this is a noticeable improvement,
+we should be able to find a way to do it. Geert is doing statistics
+about size bloat over time, and anything that undoes a couple
+of years worth of bloat would clearly be significant here.
+
+Another alternative would be to resume the work done by Nicolas
+Pitre, who added Kconfig symbols for controlling groups of
+system calls. Since we already have a number of those compile
+time options, adding more of them should generally be
+less controversial and more consistent, while bringing most
+of the same benefits.
+
+     Arnd
