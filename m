@@ -2,78 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36C97AE316
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5E97AE317
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbjIZAwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
+        id S232570AbjIZAxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjIZAwl (ORCPT
+        with ESMTP id S232218AbjIZAxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:52:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C124DB3;
-        Mon, 25 Sep 2023 17:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=u1nU5JLGvirz2IB1v8ZoAM3OrG2Ec5+6zeDs75GvXlo=; b=n+uSFqIe00KUc/NH7EKJ6RAJCB
-        trpwtKivX/CEPUqw7AcIJ2FtwgHP1JE9hD5nKie9TWqiPD1gofUOxumZ3VWerVrbj3gJHK/iMzb5N
-        UTYHDXSVWN5tj7D1CRfPtHV+2c7VF3MLiuQ33XwbR6ELgLb17BN6jvng6jD28Sumf+7JnzPrTFyQp
-        cTqFFiuKheQDyVB40ARB2afa8fD2nVqos13HRJZAdv/3ukBEq33mIQIMp5rrSZOKFOJjru8DwYfYw
-        2cznmEf1yJv6wpqJqH9sL6kHkkhQvLbgghHp3Swa7erE0prMcOIwnGPxGA3d4JMt+6ZeT95RkwjZh
-        F0B99HoA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qkwJV-00FJe6-0U;
-        Tue, 26 Sep 2023 00:52:33 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org
-Subject: [PATCH] block: fix kernel-doc for disk_force_media_change()
-Date:   Mon, 25 Sep 2023 17:52:32 -0700
-Message-ID: <20230926005232.23666-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 25 Sep 2023 20:53:18 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852C9D9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 17:53:10 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rvh4Z2q8YzrSt5;
+        Tue, 26 Sep 2023 08:50:54 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 26 Sep 2023 08:53:07 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <ying.huang@intel.com>,
+        Zi Yan <ziy@nvidia.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH -next rfc 0/9] mm: convert page cpupid functions to folios
+Date:   Tue, 26 Sep 2023 08:52:45 +0800
+Message-ID: <20230926005254.2861577-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop one function parameter's kernel-doc comment since the parameter
-was removed. This prevents a kernel-doc warning:
+The cpupid(or access time) used by numa balancing is stored in flags
+or _last_cpupid(if LAST_CPUPID_NOT_IN_PAGE_FLAGS) of page, this is to
+convert page cpupid to folio cpupid, a new _last_cpupid is added into
+folio, which make us to use folio->_last_cpupid directly, and the
+page_cpupid_reset_last(), page_cpupid_xchg_last(), xchg_page_access_time(),
+and page_cpupid_last() are converted to folio one.
 
-block/disk-events.c:300: warning: Excess function parameter 'events' description in 'disk_force_media_change'
+Kefeng Wang (9):
+  mm_types: add _last_cpupid into folio
+  mm: mprotect: use a folio in change_pte_range()
+  mm: huge_memory: use a folio in change_huge_pmd()
+  mm: convert xchg_page_access_time to xchg_folio_access_time()
+  mm: convert page_cpupid_last() to folio_cpupid_last()
+  mm: make wp_page_reuse() and finish_mkwrite_fault() to take a folio
+  mm: convert page_cpupid_xchg_last() to folio_cpupid_xchg_last()
+  mm: page_alloc: use a folio in free_pages_prepare()
+  mm: convert page_cpupid_reset_last() to folio_cpupid_reset_last()
 
-Fixes: ab6860f62bfe ("block: simplify the disk_force_media_change interface")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202309060957.vfl0mUur-lkp@intel.com
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org
----
- block/disk-events.c |    1 -
- 1 file changed, 1 deletion(-)
+ include/linux/mm.h       | 40 ++++++++++++++++++++--------------------
+ include/linux/mm_types.h | 13 +++++++++----
+ kernel/sched/fair.c      |  4 ++--
+ mm/huge_memory.c         | 17 +++++++++--------
+ mm/memory.c              | 39 +++++++++++++++++++++------------------
+ mm/migrate.c             |  4 ++--
+ mm/mm_init.c             |  1 -
+ mm/mmzone.c              |  6 +++---
+ mm/mprotect.c            | 16 +++++++++-------
+ mm/page_alloc.c          | 17 +++++++++--------
+ 10 files changed, 84 insertions(+), 73 deletions(-)
 
-diff -- a/block/disk-events.c b/block/disk-events.c
---- a/block/disk-events.c
-+++ b/block/disk-events.c
-@@ -290,7 +290,6 @@ EXPORT_SYMBOL(disk_check_media_change);
- /**
-  * disk_force_media_change - force a media change event
-  * @disk: the disk which will raise the event
-- * @events: the events to raise
-  *
-  * Should be called when the media changes for @disk.  Generates a uevent
-  * and attempts to free all dentries and inodes and invalidates all block
+-- 
+2.27.0
+
