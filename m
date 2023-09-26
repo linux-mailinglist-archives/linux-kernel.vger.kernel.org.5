@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B547AF28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47DD7AF290
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbjIZSXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S235399AbjIZSYV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 14:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjIZSXM (ORCPT
+        with ESMTP id S231300AbjIZSYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:23:12 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E4EE5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:23:04 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a1d0fee86aso44260327b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695752582; x=1696357382; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sI3UkHqqf5WmbgSUGSm/14gRHcG/M3RotLOAmkRjLvo=;
-        b=OFvQWgIcbTGASZICkY/Qt14NYxXBk9XsM6Q5o5grXFWDKk9n10eTWBYIJEeDYsfbz7
-         6uQpfI7voVHvrCsMt26oOIjiERbznX2Rwr2yVSLxhitq7mA4Vfh5ItGSKMUWIUPJGB2v
-         P0PcBNvnJKFUrj3NM7UkAlqP0eM1MtRiMWm5lr518R07m8u1j2JB/JK1AZEANdqxFiGs
-         TIYGWhscnn8+LxHklyf3SymjrAr6G42H9dgZwXPVkgYoyQIgOiYiaQD5mK5OP51i9SkC
-         +ZHlQ2KyA6QZVtwDjDk/JpG1h/lx4h3vFYkeN6v0FOtYENocc0sHdKlKy/jF38RxLtbX
-         g06w==
+        Tue, 26 Sep 2023 14:24:19 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7990910A;
+        Tue, 26 Sep 2023 11:24:12 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3a9e89fa553so647816b6e.1;
+        Tue, 26 Sep 2023 11:24:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752582; x=1696357382;
+        d=1e100.net; s=20230601; t=1695752652; x=1696357452;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sI3UkHqqf5WmbgSUGSm/14gRHcG/M3RotLOAmkRjLvo=;
-        b=MBrp8hgw2pJUMNwE2fL/Jeh0gR3sti8L3dopGys2Ds19VB3S3rhOZ1DW4IVA8FsdNy
-         AwKoeypGxcQGbJA4m4Ad5SOj2Y6X2SthoyeNKm5r/cBaz2olPopUOX/9NjoPYgT4Oe+Z
-         igYA+7ABXXpElLl/GXqqWH/7aSEQ2SPiIEvhTKXXqld991v+FLB8qjwF9fAoK1mfbXly
-         4xu7PlxfGME4dQeVdgRnP4yKYbj/P5wGaVkWOQuhhylOm3uZ3MeFO91DjauPYHm8a7ZV
-         Vx5pILbBN5yr4nTwl6dsJ9FI3vZn0HVt5xdiafboG4miQALRUX3HzyIsMbzk1N7fYpll
-         MCfg==
-X-Gm-Message-State: AOJu0YzNNF+rvUsNaxOFl0HnZdsUqOtXEgkU1KLEaGMTSeFBfk26fxeH
-        Vs4jiA1ZKxdN8L1zMrZVLdDzL+IYZlOHuBQsi9kxjQ==
-X-Google-Smtp-Source: AGHT+IE0yNG+tx7WImPxoj9f0KRcQ53cWmJ0g3FEAxxLPaxWmKXC5eVpm9tXntm6ZtPdG8k3kmVG86uNIr+Y8eKDWDg=
-X-Received: by 2002:a0d:c7c3:0:b0:59b:ce0b:7829 with SMTP id
- j186-20020a0dc7c3000000b0059bce0b7829mr10211941ywd.35.1695752582691; Tue, 26
- Sep 2023 11:23:02 -0700 (PDT)
+        bh=Z1jMRdpSdzQrDa2L4TREv6W57Utusu2tmUVuwynV3Fo=;
+        b=g3T8f0sHC8FLbHBiykGp4beqQaSbNnIgQldflljH48e29fKs0davxmV7nYDbTJ3mKy
+         UP7U0/lAJ2LqprFrr0+hJPA7ivyeHI6IVhgV0SPJO5jkolXXu39xOAw3MU2OyvlC4bmQ
+         I8LkBm01RwTHSjg8ir5qNnDgIH1qXrQDUu6l6d4t2GdRpXu4Bl1xalKZFBkcGx8BFzfH
+         BnX4/27KkHCNEO478o+rT3wDMgSons6IWJx1mr7dVK137Ah8wk6HANjQaudBSFDJ8Hyg
+         5zkfIjLGK1/aJzssuYE6j+C26Q+lVRg2JeZyANXFaS03XjnCND2sn7xfc2t91imSHhNl
+         ygig==
+X-Gm-Message-State: AOJu0YyUYbDixboNOuMzzOmXgyaJma6eD2/fROOOMVMKgn135lJujsIw
+        9vTzpNvk/+QMIcMoGE7YcZsxgEKtFIF/s/I1/D8=
+X-Google-Smtp-Source: AGHT+IEJApnyKFAVsD//6ntw+VsS6xU80ugH4FLesVFpfhfQY7QYVZANmM+g46a8zmvq9y4D85SPTRQeVGCGXaNQPvk=
+X-Received: by 2002:a05:6808:1823:b0:3ae:100d:5320 with SMTP id
+ bh35-20020a056808182300b003ae100d5320mr11905031oib.2.1695752651775; Tue, 26
+ Sep 2023 11:24:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230926132336.416612-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230926132336.416612-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 Sep 2023 20:22:50 +0200
-Message-ID: <CACRpkdZ2P7zeoRMwR=u84L_aysK2VOwVLNjFnTxvGNswd6DArw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: intel: Simplify code with cleanup helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Raag Jadav <raag.jadav@intel.com>
+References: <20230922155336.507220-1-bgeffon@google.com> <20230922160704.511283-1-bgeffon@google.com>
+In-Reply-To: <20230922160704.511283-1-bgeffon@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Sep 2023 20:24:00 +0200
+Message-ID: <CAJZ5v0gRmoSaP3T0s9Li3grBB6DkaXf6D_0oHdw3=-UJWjJEKA@mail.gmail.com>
+Subject: Re: [PATCH] PM: hibernate: clean up sync_read handling in snapshot_write_next
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 3:23=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in the driver.
+On Fri, Sep 22, 2023 at 6:07 PM Brian Geffon <bgeffon@google.com> wrote:
 >
-> While at it, unify the variables and approach in intel_gpio_irq_*().
+> In snapshot_write_next sync_read is set and unset in three different
+> spots unnecessiarly. As a result there is a subtle bug where the first
+> page after the meta data has been loaded unconditionally sets sync_read
+> to 0. If this first pfn was actually a highmem page then the returned
+> buffer will be the global "buffer," and the page needs to be loaded
+> synchronously.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> That is, I'm not sure we can always assume the following to be safe:
+>                 handle->buffer = get_buffer(&orig_bm, &ca);
+>                 handle->sync_read = 0;
+>
+> Because get_buffer can call get_highmem_page_buffer which can
+> return 'buffer'
+>
+> The easiest way to address this is just set sync_read before
+> snapshot_write_next returns if handle->buffer == buffer.
+>
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> Fixes: 8357376d3df2 ("[PATCH] swsusp: Improve handling of highmem")
+> Cc: stable@vger.kernel.org
 
-Actually this is the best part:
+If you send an update of a patch, it is always better to give it a
+higher version number to avoid any possible confusion.
 
->  drivers/pinctrl/intel/pinctrl-intel.c | 136 ++++++++++----------------
->  1 file changed, 50 insertions(+), 86 deletions(-)
+> ---
+>  kernel/power/snapshot.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 190ed707ddcc..362e6bae5891 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -2780,8 +2780,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>         if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages)
+>                 return 0;
+>
+> -       handle->sync_read = 1;
+> -
+>         if (!handle->cur) {
+>                 if (!buffer)
+>                         /* This makes the buffer be freed by swsusp_free() */
+> @@ -2824,7 +2822,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>                         memory_bm_position_reset(&zero_bm);
+>                         restore_pblist = NULL;
+>                         handle->buffer = get_buffer(&orig_bm, &ca);
+> -                       handle->sync_read = 0;
+>                         if (IS_ERR(handle->buffer))
+>                                 return PTR_ERR(handle->buffer);
+>                 }
+> @@ -2834,9 +2831,8 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>                 handle->buffer = get_buffer(&orig_bm, &ca);
+>                 if (IS_ERR(handle->buffer))
+>                         return PTR_ERR(handle->buffer);
+> -               if (handle->buffer != buffer)
+> -                       handle->sync_read = 0;
+>         }
+> +       handle->sync_read = (handle->buffer == buffer);
+>         handle->cur++;
+>
+>         /* Zero pages were not included in the image, memset it and move on. */
+> --
 
-So much easier to read the code, and lesser risk to do mistakes.
+Anyway, applied as 6.7 material with some minor edits in the subject
+and changelog.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Thanks!
