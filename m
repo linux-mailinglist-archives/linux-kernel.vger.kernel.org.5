@@ -2,104 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02E17AF264
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FC17AF269
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbjIZSE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S235558AbjIZSEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbjIZSEY (ORCPT
+        with ESMTP id S235544AbjIZSEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:04:24 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2104.outbound.protection.outlook.com [40.92.49.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3335510A;
-        Tue, 26 Sep 2023 11:04:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zfkkaaqyh6M4MPbEhgl+X+KWv1jSUBI87qzFo5q1f74llCH1ci5A8xfnfEx4LYTvB+mi8xCegvQc4yWCmpfog9gTaUHCeEwDOnO9xyxQ1HEqUTWaMo16S8/oBKwC+DMNwr7wSKeHIb2Oxh1G8CKr1Uq/IEfLWJNNkMETNOJKj70qnwCx4ufeo4abWOqWKNQxBXHmSEJyH/r2x+14IfFBljzqjcXnRFlzNXY9hJqBhBLhpV80HiMUd3JEK/pg1LodkOM6TM06gWwvGMwMF9gaqWr2Lk2v61HoSB+a9i8dz8Cr54eoHSIaniRqzNrIWHKV7R2zmxFoOBiP2GOOyX5NjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RwVWlXQeoym0mywKOq9pNSsKico5ab6LLcX/fLgmsKc=;
- b=jMsaO2cq+EWIbNhYYKNAjQfALFNkFys5/3gMFROa+DqwzkahztB1qkvsg7KjBendDzPjBsCVAAtjIjGmNQSwHWHHssFzr92l2PWDL8Hy2WaMNzdmvtnvGx9vMnMAWXyAysbVf7W98QIHXB4WnFXnbpQipkMTEoTWKK0bs47u5r8OdmoESAaLXk3IzpmAyB13QMjS+5OQ0xHd5SZP7gpKsi9GJAghKl5PNosRAhpRvH9dmBJ0+IxK2zjH8Hy2e1elaJkX39NbX+X8u9u3W2hh7a8xmmnl8KcySKCAPhSmLWbGavN5RxWP+FGcjrW7j49hsRQxDHlA7T4aRr6rTgOhUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RwVWlXQeoym0mywKOq9pNSsKico5ab6LLcX/fLgmsKc=;
- b=o8XM9qAFgMLeT6wtS5rc9bEjU2b/zTnAv4TGY/ypdoPUH94ClDw5w0BgvFJB/mCaa8f0rp6Nmg8CKYOFT9I1EQiz1JdHNF1SsP+aUWr2oLt2duCg6dyluOKuvTiK/xT9v6h8r0n0kWVWHUerf7hfDsECS9+zdOrdJwZ+ZE6C8ZuPFG3Yzwn4Ce8L2Tq1MHvyCvdWtCr4JsPcvSTCGvQCgVUZ0mjlr7bIlAA8DEZFgpaksh1JSkUhOWZl6GYNWVza3ZAwTRRF3JLPKd2l8lLxLY1w7Rq2mby4JEeb2gC2GlWp1yzQlo6JNUHJa1MpVhZdkcyot3LacZPktmbbBu/S7A==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by PAXP193MB1629.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:13f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 18:04:15 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Tue, 26 Sep 2023
- 18:04:15 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     shuah@kernel.org, mic@digikod.net, brauner@kernel.org,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] selftests: Fix wrong TARGET in kselftest top level Makefile
-Date:   Wed, 27 Sep 2023 02:03:23 +0800
-Message-ID: <VI1P193MB0752596147F224B9F921C85199C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [Ier0yVm8oTt2wRApjFme38b5i3hVTU7C]
-X-ClientProxiedBy: AM9P193CA0005.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:20b:21e::10) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20230926180323.21921-1-juntong.deng@outlook.com>
+        Tue, 26 Sep 2023 14:04:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ABD10A;
+        Tue, 26 Sep 2023 11:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695751472; x=1727287472;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BPSD5WhvXpBO3lsIdE4c7syBr8J6jYNl4IAaRzob9YA=;
+  b=D1OgvBNMHp1u53zOf1OONKlkZPkSEWYBGODnyQ/MKWso71k3HYY+KHMM
+   0AZKHUYau1kTDKXkyZFNk2g/Wv5IfBLKulqnArmJWpggLQHLyL83pOfAr
+   BxBLbT9ghi9I3vi9zSfDs/IpH2ChXa69saEiAIj0eDMmOslR0p1ka83dp
+   qg4K0ekduysrG4Hjp+j+4OCOyITmjAcKavn4Ig4N4XoXhm44X60lmKi6V
+   kqsgdN7VaC4EbzN0pzSQGhZO+7YOyEFCsWeUuj8/VYiDHnMcvZXvDck6A
+   piLYEy0RE7nCV0RAQULhOJ9BTtQknat67Z8Rl40NshMo1dWUhtbNlmu/O
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="371967682"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="371967682"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 11:04:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="725514679"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="725514679"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 11:04:28 -0700
+From:   isaku.yamahata@intel.com
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-coco@lists.linux.dev, Chao Peng <chao.p.peng@linux.intel.com>
+Subject: [PATCH] KVM: guest_memfd: Refactor kvm_gmem into inode->i_private
+Date:   Tue, 26 Sep 2023 11:03:46 -0700
+Message-Id: <8e57c347d6c461431e84ef4354dc076f363f3c01.1695751312.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|PAXP193MB1629:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61d13663-69a7-4085-66c5-08dbbebafe85
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lihTRgR9Sr4MI15Ka9DYgAztiI6JS8M9R8kNeHHgSiWGOD6CLwjqnPzla3oMZZKHt4gOLIGPynowX7M9Y3BCpscgPGFzp0tK4zMir7UEMkF49/mKgCWANTUDYtIb0HD2dZskXaLlFkusJZYCl3F7NqSt3Tewga9YsJa8BlI/DSoyAIMb3+0YKYZynaWcDvg2hUWvxM0kc0/w+jhHSKRE/el7duglX4+KW2zGEiGEyO1sC0kWTBiohkBtzyO0d3ygY3A5sBw1xheRKp88vvNDKorCbHO5yNVUKSL9izUt+j4OLlhy/aIIiE9BssakyyVL/ArenVV4EJo9zhO7yVjq/5uwiSrnxK40h+H+bNwlErLI5w4TRYZwF0CRAvEOiRihcJA/MQLVqV/t8DPF9l67cdFrMfChgnAwNlr7ZG4iZtU/dO4uDEfy7HaPXIK1zsQj3bvj/pYaJyGVmm+5/jq4DZ1akI1c+LhyJk7beOr2sopS8dsP3GF3pAiXBs5r86HZD6OpVpgsRheQBCZ+BM0Vx9JzF9a76sgJAAn4eZ3Sj7kgxq8VRZjVhndh/mDU2gAR
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pIZEGfMgfEHrNru7pYofKvThXDbVcUzHcsAxbS1Tl+BMhjkpJbjNoyFjaWUu?=
- =?us-ascii?Q?urNluKWZmTzz1yzkstF6pV+6GIL02oU0cCq0xhttsMKpMYzWs0r+LxRDGmBV?=
- =?us-ascii?Q?MRM0Pg0kwbpj8nX3IU6zMhHSFU+puFtmwwkLvg1dukkXtI2P3zUCnpI2WTPT?=
- =?us-ascii?Q?VAtv0t2sg1yd6QZ1o+0OE6QOIL3KkeN3HaBGIfcaZJf6bbbM/xrenp/hOZVz?=
- =?us-ascii?Q?kbnO/bW5Xdce+DjgY0hK7+VNE7Eai9FGOOIP6YQHUHepqEnKL8CA2TafP8E2?=
- =?us-ascii?Q?MNdPRyPSZzf3OoMRB8J9QDGMpwbUy81K0REivp1alXnIYm2ISRZhjJaRSn7l?=
- =?us-ascii?Q?0LW/Q6e2oQkuvGDpZdukTlLhcFYjtZjfs5qsjgx9nN8AUxhnthCacLuXItm/?=
- =?us-ascii?Q?WqWmcgvQMeq6UDL0w8wXzFXZZCQ72DgKHk/D+db2U9KUjzsxeCZh61XMxB73?=
- =?us-ascii?Q?6ZQ/v9CqdiTLvJpnrcU4x5ctXajI++SgNdGI8cfUQEsRdatoU0HcpCktt4z7?=
- =?us-ascii?Q?eOrmE5nPY7EPu9H7Jq3qlnxGpHzCOQNLEvmtcggRGQXyz3AtVLeP5HCsSFtw?=
- =?us-ascii?Q?4Qw0pzYnkG1wZeZFuxeJol/obp6IoO25lCC9KNWOZ9NQ2T8M6SRGvVE/1dqT?=
- =?us-ascii?Q?2u4jYoy0NeXZnj2vdiO9QGMDaRbXtqYhlmxftHcr9GGuF/x/lX1voZB2cYgp?=
- =?us-ascii?Q?01rkuNUKaBFcZCV7VGBe+hl2M8vHeaKNbbCHG2Hs/N2URQzdGY6VlOTWeKAz?=
- =?us-ascii?Q?UsrlsVOKMYs9TfKOCeqmoxcFUZhmiCORbM+XD9Ym2Aii8e0KRs3R/gubU/ia?=
- =?us-ascii?Q?QuE3Zc6upD25PVrJUmUBtNm7f86FaiOXiU9RJt8pvi4boltfTk+wEiqiSNSQ?=
- =?us-ascii?Q?iZrniHoCnq8HwWO/6Jk7SbB5oGDRW54GDJmWganLz9d/VW1ZUeW660xT3jv1?=
- =?us-ascii?Q?rSIFXwpGU7L9UUKYr8/4r5+96zckZlcAgqIMGfOUz9Lqbu5E9SIs7ILUrkVw?=
- =?us-ascii?Q?HuMKyZG0LKAvoBrhKA0/v/thgHZg5rjS/FJ5ivlb8N7cys+UcRygJ1osDQwh?=
- =?us-ascii?Q?oUbBluuObTvkrVqMpWnJdqQzFOlI61pEYAVIg+AUnK82MytVhKIkiA51OcOC?=
- =?us-ascii?Q?TS/0LQk2GobL//W/UMH43YwvMeN8CGA0JZhcwHSt2uK2fBHcPLPfe1+pawkd?=
- =?us-ascii?Q?6stuy16gPMPlT2mOsyaetg0DIz0Ni4esliPHc6a/wDZ8spYTuHizTx1eZkA?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61d13663-69a7-4085-66c5-08dbbebafe85
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 18:04:15.0017
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB1629
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,34 +62,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'uevents' subdirectory does not exist in tools/testing/selftests/
-and adding 'uevents' to the TARGETS list results in the following error:
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-make[1]: Entering directory 'xx/tools/testing/selftests/uevents'
-make[1]: *** No targets specified and no makefile found. Stop.
-make[1]: Leaving directory 'xx/tools/testing/selftests/uevents'
+Refactor guest_memfd to use inode->i_private to store info about kvm_gmem.
+Currently it is stored in the following way.
+- flags in inode->i_private
+- struct kvm_gmem in file->private_data
+- struct kvm_gmem in linked linst in inode->i_mapping->private_list
+  And this list has single entry.
 
-What actually exists in tools/testing/selftests/ is the 'uevent'
-subdirectory.
+The relationship between struct file, struct inode and struct kvm_gmem is
+1:1, not 1:many. Consolidate related info in one place.
+- Move flags into struct kvm_gmem
+- Store struct kvm_gmem in inode->i_private
+- Don't use file->private_data
+- Don't use inode->i_mapping_private_list
+- Introduce a helper conversion function from inode to kvm_gmem
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 ---
- tools/testing/selftests/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ virt/kvm/guest_memfd.c | 53 ++++++++++++++++++------------------------
+ 1 file changed, 23 insertions(+), 30 deletions(-)
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 42806add0114..1a21d6beebc6 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -92,7 +92,7 @@ endif
- TARGETS += tmpfs
- TARGETS += tpm2
- TARGETS += tty
--TARGETS += uevents
-+TARGETS += uevent
- TARGETS += user
- TARGETS += user_events
- TARGETS += vDSO
+diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+index 4f3a313f5532..66dd9b55e85c 100644
+--- a/virt/kvm/guest_memfd.c
++++ b/virt/kvm/guest_memfd.c
+@@ -14,14 +14,19 @@ static struct vfsmount *kvm_gmem_mnt;
+ struct kvm_gmem {
+ 	struct kvm *kvm;
+ 	struct xarray bindings;
+-	struct list_head entry;
++	unsigned long flags;
+ };
+ 
++static struct kvm_gmem *to_gmem(struct inode *inode)
++{
++	return inode->i_private;
++}
++
+ static struct folio *kvm_gmem_get_huge_folio(struct inode *inode, pgoff_t index)
+ {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	unsigned long huge_index = round_down(index, HPAGE_PMD_NR);
+-	unsigned long flags = (unsigned long)inode->i_private;
++	unsigned long flags = to_gmem(inode)->flags;
+ 	struct address_space *mapping  = inode->i_mapping;
+ 	gfp_t gfp = mapping_gfp_mask(mapping);
+ 	struct folio *folio;
+@@ -134,26 +139,22 @@ static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
+ 
+ static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ {
+-	struct list_head *gmem_list = &inode->i_mapping->private_list;
++	struct address_space *mapping = inode->i_mapping;
++	struct kvm_gmem *gmem = to_gmem(inode);
+ 	pgoff_t start = offset >> PAGE_SHIFT;
+ 	pgoff_t end = (offset + len) >> PAGE_SHIFT;
+-	struct kvm_gmem *gmem;
+ 
+ 	/*
+ 	 * Bindings must stable across invalidation to ensure the start+end
+ 	 * are balanced.
+ 	 */
+-	filemap_invalidate_lock(inode->i_mapping);
+-
+-	list_for_each_entry(gmem, gmem_list, entry)
+-		kvm_gmem_invalidate_begin(gmem, start, end);
++	filemap_invalidate_lock(mapping);
++	kvm_gmem_invalidate_begin(gmem, start, end);
+ 
+ 	truncate_inode_pages_range(inode->i_mapping, offset, offset + len - 1);
+ 
+-	list_for_each_entry(gmem, gmem_list, entry)
+-		kvm_gmem_invalidate_end(gmem, start, end);
+-
+-	filemap_invalidate_unlock(inode->i_mapping);
++	kvm_gmem_invalidate_end(gmem, start, end);
++	filemap_invalidate_unlock(mapping);
+ 
+ 	return 0;
+ }
+@@ -231,7 +232,7 @@ static long kvm_gmem_fallocate(struct file *file, int mode, loff_t offset,
+ 
+ static int kvm_gmem_release(struct inode *inode, struct file *file)
+ {
+-	struct kvm_gmem *gmem = file->private_data;
++	struct kvm_gmem *gmem = to_gmem(inode);
+ 	struct kvm_memory_slot *slot;
+ 	struct kvm *kvm = gmem->kvm;
+ 	unsigned long index;
+@@ -260,8 +261,6 @@ static int kvm_gmem_release(struct inode *inode, struct file *file)
+ 	kvm_gmem_invalidate_begin(gmem, 0, -1ul);
+ 	kvm_gmem_invalidate_end(gmem, 0, -1ul);
+ 
+-	list_del(&gmem->entry);
+-
+ 	filemap_invalidate_unlock(inode->i_mapping);
+ 
+ 	mutex_unlock(&kvm->slots_lock);
+@@ -305,8 +304,7 @@ static int kvm_gmem_migrate_folio(struct address_space *mapping,
+ 
+ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+ {
+-	struct list_head *gmem_list = &mapping->private_list;
+-	struct kvm_gmem *gmem;
++	struct kvm_gmem *gmem = to_gmem(mapping->host);
+ 	pgoff_t start, end;
+ 
+ 	filemap_invalidate_lock_shared(mapping);
+@@ -314,8 +312,7 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+ 	start = page->index;
+ 	end = start + thp_nr_pages(page);
+ 
+-	list_for_each_entry(gmem, gmem_list, entry)
+-		kvm_gmem_invalidate_begin(gmem, start, end);
++	kvm_gmem_invalidate_begin(gmem, start, end);
+ 
+ 	/*
+ 	 * Do not truncate the range, what action is taken in response to the
+@@ -326,8 +323,7 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+ 	 * error to userspace.
+ 	 */
+ 
+-	list_for_each_entry(gmem, gmem_list, entry)
+-		kvm_gmem_invalidate_end(gmem, start, end);
++	kvm_gmem_invalidate_end(gmem, start, end);
+ 
+ 	filemap_invalidate_unlock_shared(mapping);
+ 
+@@ -382,7 +378,6 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
+ 	if (err)
+ 		goto err_inode;
+ 
+-	inode->i_private = (void *)(unsigned long)flags;
+ 	inode->i_op = &kvm_gmem_iops;
+ 	inode->i_mapping->a_ops = &kvm_gmem_aops;
+ 	inode->i_mode |= S_IFREG;
+@@ -417,10 +412,9 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
+ 	kvm_get_kvm(kvm);
+ 	gmem->kvm = kvm;
+ 	xa_init(&gmem->bindings);
++	gmem->flags = flags;
+ 
+-	file->private_data = gmem;
+-
+-	list_add(&gmem->entry, &inode->i_mapping->private_list);
++	inode->i_private = gmem;
+ 
+ 	fd_install(fd, file);
+ 	return fd;
+@@ -476,12 +470,11 @@ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 	if (file->f_op != &kvm_gmem_fops)
+ 		goto err;
+ 
+-	gmem = file->private_data;
++	inode = file_inode(file);
++	gmem = to_gmem(inode);
+ 	if (gmem->kvm != kvm)
+ 		goto err;
+ 
+-	inode = file_inode(file);
+-
+ 	if (offset < 0 || !PAGE_ALIGNED(offset))
+ 		return -EINVAL;
+ 
+@@ -538,7 +531,7 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
+ 	if (!file)
+ 		return;
+ 
+-	gmem = file->private_data;
++	gmem = to_gmem(file_inode(file));
+ 
+ 	filemap_invalidate_lock(file->f_mapping);
+ 	xa_store_range(&gmem->bindings, start, end - 1, NULL, GFP_KERNEL);
+@@ -563,7 +556,7 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 	if (!file)
+ 		return -EFAULT;
+ 
+-	gmem = file->private_data;
++	gmem = to_gmem(file_inode(file));
+ 
+ 	if (WARN_ON_ONCE(xa_load(&gmem->bindings, index) != slot)) {
+ 		r = -EIO;
 -- 
-2.39.2
+2.25.1
 
