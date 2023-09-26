@@ -2,213 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70257AF728
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54AA7AF729
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbjI0AOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 20:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S233064AbjI0APE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 20:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231985AbjI0AMk (ORCPT
+        with ESMTP id S232081AbjI0ANC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 20:12:40 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C181F2A8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1695771029;
-        bh=MbrBGLxP+0Stq0F10v63Xe15gOAo5JV50TCT1Ux7SP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LMQfIFhVOG1WEgplNfBuehwT9eOc4eMw0UaR/IhOIewXYTTeJgZi0HeV/Kkx/0lU4
-         xUcL1blLHdBHij5VNNzhUAMrT2fU+EB66Xn8faua+DaVX+d5Gm54EJsQkewvSfDuRV
-         MD58sa5IYyzwONRABNLDX/hWmaAB/aKl1OydQ6uc=
-Date:   Wed, 27 Sep 2023 01:30:28 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Rodrigo Campos <rodrigo@sdfg.com.ar>
-Cc:     Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] tools/nolibc: Add workarounds for centos-7
-Message-ID: <e8ed17e6-8eb3-404d-9669-5e5b413904ed@t-8ch.de>
-References: <20230926133647.467179-1-rodrigo@sdfg.com.ar>
- <20230926133647.467179-2-rodrigo@sdfg.com.ar>
+        Tue, 26 Sep 2023 20:13:02 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388031F9D0;
+        Tue, 26 Sep 2023 16:31:18 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3ae5efefb89so696065b6e.1;
+        Tue, 26 Sep 2023 16:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695771077; x=1696375877; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pAVAV1GBJCwxDDAyuqk5FEpmqUfp3B71TeVssBtQ3XY=;
+        b=In1w+jj8NlzUJNM5Bh3qtanmRjZLwlJfTLNKTOOM0CZZSz+RfAacHEMDbder3p7cmM
+         CxpDM3sqJL7sCxrR7wA3Swxf7ChD8mSXWc15sVzwfHlaOE6DikK3OkzN9ECBz0TmiVXB
+         TERZ/asHa6Mm5h3XHzjS7ad09AyFwkgXbOoZF/jJUdXEhZcO+6mtjMdOr3T3fkbiazW9
+         c6dGgVanZX1mINlAfgqo+Z3jrNbHu95BuMR0K7IGD7EbVFZvYyxaTbfdwuFDHUGSMPVM
+         PHHA2jwz74ZfSbaeE/e2TStt9UUvQBPQ5J2cYflb1sScYYWb4zVg5lXWpcS5Fn8C0vhh
+         23mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695771077; x=1696375877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pAVAV1GBJCwxDDAyuqk5FEpmqUfp3B71TeVssBtQ3XY=;
+        b=laZ53eIV9Qz31MkAwGa0mEvXmGNvwzVvbJ8QF9bIyZv8vMCsQtbYpKXnholCdU3JMK
+         Z1iMwSCvFDXt5GADKTpNfWzuKzXGQXx4ermJ9gH/Ggm2imPNQnK5nPlUBf9Uopef2Nj1
+         iYQcSfYPwqNgK0zX8O88GwLtfXomULaq27wyU65qcXJ5ZRMeE+GARwOnHTIrSAts9RbJ
+         7BUP19ST1MOB0X3f5FC6qp6edh8LvQ/Tgeomyz9rrj4ftrpNLQESS532OkyGN7BXvmBP
+         Nnmb4ISk0f2rHXIcSzPpEi0MoD9bPPRYQcv5PoH/+4tc3r6J6ACHu9eF96doeQ2mV5Vl
+         CRbQ==
+X-Gm-Message-State: AOJu0YxtmWq9BODqkCnE1sHHO0QiqNe1fH2451oSiVRIdFcY56+CZ+X3
+        dWaXhnWKdlbgm/Fi9ELAORKai4WP2SwIEJ7yiKzxAW0OJ4ZVU7DK
+X-Google-Smtp-Source: AGHT+IH1yQriWlZtGSXP4SNOcv9TqmZsi0jotr3syJyfbtTczeTQe9fBhqh5dFav+DCAFYTaiG+0pms8xgPC3IbLQZk=
+X-Received: by 2002:a05:6870:5baa:b0:1d5:a3b5:d89c with SMTP id
+ em42-20020a0568705baa00b001d5a3b5d89cmr453138oab.3.1695771077390; Tue, 26 Sep
+ 2023 16:31:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230926133647.467179-2-rodrigo@sdfg.com.ar>
+References: <20230926194949.2637078-1-nphamcs@gmail.com> <CAPTztWY8eDSa1qKx35hTm5ef+e13SDnRHDrevc-1V1v7-pEP3w@mail.gmail.com>
+In-Reply-To: <CAPTztWY8eDSa1qKx35hTm5ef+e13SDnRHDrevc-1V1v7-pEP3w@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 26 Sep 2023 16:31:06 -0700
+Message-ID: <CAKEwX=PjTH8RpRbKRqyHr5-W1LFUZQu_PJKsYU5Mry70-8Td-g@mail.gmail.com>
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+To:     Frank van der Linden <fvdl@google.com>
+Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rodrigo,
+On Tue, Sep 26, 2023 at 1:50=E2=80=AFPM Frank van der Linden <fvdl@google.c=
+om> wrote:
+>
+> On Tue, Sep 26, 2023 at 12:49=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wr=
+ote:
+> >
+> > Currently, hugetlb memory usage is not acounted for in the memory
+> > controller, which could lead to memory overprotection for cgroups with
+> > hugetlb-backed memory. This has been observed in our production system.
+> >
+> > This patch series rectifies this issue by charging the memcg when the
+> > hugetlb folio is allocated, and uncharging when the folio is freed. In
+> > addition, a new selftest is added to demonstrate and verify this new
+> > behavior.
+> >
+> > Nhat Pham (2):
+> >   hugetlb: memcg: account hugetlb-backed memory in memory controller
+> >   selftests: add a selftest to verify hugetlb usage in memcg
+> >
+> >  MAINTAINERS                                   |   2 +
+> >  fs/hugetlbfs/inode.c                          |   2 +-
+> >  include/linux/hugetlb.h                       |   6 +-
+> >  include/linux/memcontrol.h                    |   8 +
+> >  mm/hugetlb.c                                  |  23 +-
+> >  mm/memcontrol.c                               |  40 ++++
+> >  tools/testing/selftests/cgroup/.gitignore     |   1 +
+> >  tools/testing/selftests/cgroup/Makefile       |   2 +
+> >  .../selftests/cgroup/test_hugetlb_memcg.c     | 222 ++++++++++++++++++
+> >  9 files changed, 297 insertions(+), 9 deletions(-)
+> >  create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+> >
+> > --
+> > 2.34.1
+> >
+>
+> We've had this behavior at Google for a long time, and we're actually
+> getting rid of it. hugetlb pages are a precious resource that should
+> be accounted for separately. They are not just any memory, they are
+> physically contiguous memory, charging them the same as any other
+> region of the same size ended up not making sense, especially not for
+> larger hugetlb page sizes.
 
-thanks for your patch!
+I agree hugetlb is a special kind of resource. But as Johannes
+pointed out, it is still a form of memory. Semantically, its usage
+should be modulated by the memory controller.
 
-Some comments below.
+We do have the HugeTLB controller for hugetlb-specific
+restriction, and where appropriate we definitely should take
+advantage of it. But it does not fix the hole we have in memory
+usage reporting, as well as (over)protection and reclaim dynamics.
+Hence the need for the userspace hack (as Johannes described):
+manually adding/subtracting HugeTLB usage where applicable.
+This is not only inelegant, but also cumbersome and buggy.
 
-On 2023-09-26 15:36:47+0200, Rodrigo Campos wrote:
-> Centos-7 doesn't include statx on its linux/stat.h file. So, let's just
-> define it if the include doesn't define STATX_BASIC_STATS.
+>
+> Additionally, if this behavior is changed just like that, there will
+> be quite a few workloads that will break badly because they'll hit
+> their limits immediately - imagine a container that uses 1G hugetlb
+> pages to back something large (a database, a VM), and 'plain' memory
+> for control processes.
+>
+> What do your workloads do? Is it not possible for you to account for
+> hugetlb pages separately? Sure, it can be annoying to have to deal
+> with 2 separate totals that you need to take into account, but again,
+> hugetlb pages are a resource that is best dealt with separately.
+>
 
-Could you mention which version of the kernel headers you compiled this
-with and with which version you tested it?
-Also which is the exact revision you use to extract nolibc?
-Does nolibc actually support statx()/stat() on centos-7 with these changes?
+Johannes beat me to it - he described our use case, and what we
+have hacked together to temporarily get around the issue.
 
-I'm asking because I tried to reproduce it and for me CentOS 7 with 
-kernel-headers 3.10.0-1160.99.1.el7 doesn't define __NR_statx.
-Without this symbol the statx() and stat() functions should just always
-return -ENOSYS.
-It seems a bit wasteful to introduce 200 new lines of code for a "feature"
-that will not do anything.
+A knob/flag to turn on/off this behavior sounds good to me.
 
-FYI the hard requirement for the statx syscall is fairly new, it was
-added in commit af93807eaef6 ("tools/nolibc: remove the old sys_stat support").
-
-As you are vendoring nolibc, if you don't need stat/statx support in
-for your usecase you could drop the support for it in your vendored
-copy.
-Or we try to reintroduce compatibility for stat() without the statx()
-syscall. But given the really limited applicability, personally I'm
-against that.
-
-Some more notes below.
-
-> This makes nolibc work on centos-7 just fine, before this patch it
-> failed with:
-> 
-> 	nolibc/sys.h:987:78: warning: ‘struct statx’ declared inside parameter list [enabled by default]
-> 	 int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
-> 
-> Please note that while on types.h we can still include linux/stat.h
-> and it won't cause any issues, it seems simpler if we just always
-> include "statx.h" instead of that file and be safe. That is why I
-> changed types.h too.
-
-All of nolibc will end up included into the same namespace by design.
-It seems weird that it would make a difference from where this file is
-included.
-
-> Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
-> ---
->  tools/include/nolibc/statx.h | 218 +++++++++++++++++++++++++++++++++++
->  tools/include/nolibc/sys.h   |   2 +-
->  tools/include/nolibc/types.h |   2 +-
->  3 files changed, 220 insertions(+), 2 deletions(-)
->  create mode 100644 tools/include/nolibc/statx.h
-> 
-> diff --git tools/include/nolibc/statx.h tools/include/nolibc/statx.h
-> new file mode 100644
-> index 000000000000..d05528754154
-> --- /dev/null
-> +++ tools/include/nolibc/statx.h
-> @@ -0,0 +1,218 @@
-
-Below you mention that this was copied from 
-tools/include/uapi/linux/stat.h, but...
-
-> +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
-
-The original code was "GPL-2.0 WITH Linux-syscall-note".
-
-> +/*
-> + * Compatibility header to allow using statx() on old distros.
-> + * Copyright (C) 2023 Rodrigo Campos Catelin <rodrigo@sdfg.com.ar>
-
-Assuming copyright for copied code is not great.
-
-> + */
-> +
-> +#ifndef _NOLIBC_STATX_H
-> +#define _NOLIBC_STATX_H
-> +
-> +/* We should always include this file instead of linux/stat.h, so nolibc works
-> + * in old distros too.
-> + *
-> + * The problem is centos-7, that doesn't have statx() defined in linux/stat.h.
-> + * We can't include sys/stat.h because it creates conflicts, so let's just
-> + * define it here.
-> + * No other distros seem affected by this, so we can remove this file when it
-> + * hits EOL (06/2024).
-> + */
-> +#include <linux/stat.h>  /* for statx() */
-> +
-> +#ifndef STATX_BASIC_STATS
-> +
-> +/* This is just a c&p from tools/include/uapi/linux/stat.h as it is in
-> + * Linux 6.6-rc3.
-> + * We don't need it all, but it's easier to just copy it all in case in the
-> + * future we start using more of it, as we won't have CI running on centos-7.
-> + */
-> +#include <linux/types.h>
-> +
-> +#if defined(__KERNEL__) || !defined(__GLIBC__) || (__GLIBC__ < 2)
-> +
-> +#define S_IFMT  00170000
-> +#define S_IFSOCK 0140000
-> +#define S_IFLNK	 0120000
-> +#define S_IFREG  0100000
-> +#define S_IFBLK  0060000
-> +#define S_IFDIR  0040000
-> +#define S_IFCHR  0020000
-> +#define S_IFIFO  0010000
-> +#define S_ISUID  0004000
-> +#define S_ISGID  0002000
-> +#define S_ISVTX  0001000
-> +
-> +#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
-> +#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
-> +#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
-> +#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
-> +#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
-> +#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
-> +#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
-> +
-> +#define S_IRWXU 00700
-> +#define S_IRUSR 00400
-> +#define S_IWUSR 00200
-> +#define S_IXUSR 00100
-> +
-> +#define S_IRWXG 00070
-> +#define S_IRGRP 00040
-> +#define S_IWGRP 00020
-> +#define S_IXGRP 00010
-> +
-> +#define S_IRWXO 00007
-> +#define S_IROTH 00004
-> +#define S_IWOTH 00002
-> +#define S_IXOTH 00001
-
-We already have all of these in types.h.
-
-> +
-> +#endif
-
-> [..]
-
-> diff --git tools/include/nolibc/sys.h tools/include/nolibc/sys.h
-> index fdb6bd6c0e2f..d3e45793682a 100644
-> --- tools/include/nolibc/sys.h
-> +++ tools/include/nolibc/sys.h
-> @@ -20,9 +20,9 @@
->  #include <linux/time.h>
->  #include <linux/auxvec.h>
->  #include <linux/fcntl.h> /* for O_* and AT_* */
-> -#include <linux/stat.h>  /* for statx() */
-
-So this means that compatibility with user applications that also
-include <linux/stat.h> on their own is broken?
-That would not be good.
-
->  #include <linux/prctl.h>
->  
-> +#include "statx.h"       /* for statx() */
->  #include "arch.h"
->  #include "errno.h"
->  #include "types.h"
-
-> [..]
+> - Frank
+Thanks for the comments, Frank!
