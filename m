@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B06F7AE954
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4787AE946
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbjIZJfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S234216AbjIZJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbjIZJfT (ORCPT
+        with ESMTP id S233835AbjIZJbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:35:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035FEF3;
-        Tue, 26 Sep 2023 02:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695720913; x=1727256913;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bZj72hwk6aGVHqUfVsQNiXvoc1GB8ZJ+RY64a2dEVnk=;
-  b=CsFHfwDjUPio3TMeQ2KS9igb5wWbW/08xnYhqcUybO0NggZHh19kwHyS
-   zfDr9YI0ht/JkwU0sUIZkmzL/dz3nLYJkZ4wIc47evQ6z8tA2v1zhUc5t
-   uOfB7Khf9qO5+w0fGR4A/6N+HDM9qkxrjpvJ+1M80GXqZVEZQ4QSNxm+m
-   30lC/HqCC9+K8kv6MZcJw/TNjs5E2YmweYPrjJQzuzW9y6o4fCzJfPmKz
-   A6T2NGk1UwqBmYDlKdv2LIv1flPwHNfxsHTAMqY9KdR9CIbwb7ELoTalM
-   Bp2FZgH+OggPdYuwpW4kUhQgVMGPOg50lLIjgbwIq+xeadLWGUVZcNihI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="412442921"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="412442921"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 02:31:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="725373049"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="725373049"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orsmga006.jf.intel.com with ESMTP; 26 Sep 2023 02:31:26 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com
-Cc:     joro@8bytes.org, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: [RFC 3/3] vfio/pci: Expose PCIe PASID capability to userspace
-Date:   Tue, 26 Sep 2023 02:31:21 -0700
-Message-Id: <20230926093121.18676-4-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926093121.18676-1-yi.l.liu@intel.com>
-References: <20230926093121.18676-1-yi.l.liu@intel.com>
+        Tue, 26 Sep 2023 05:31:40 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D50BE;
+        Tue, 26 Sep 2023 02:31:34 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1A2D668AA6; Tue, 26 Sep 2023 11:31:30 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:31:29 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
+Message-ID: <20230926093129.GA13806@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV> <20230914-zielt-einzog-00389009b293@brauner>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914-zielt-einzog-00389009b293@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exposes PCIe PASID capability to userspace and where to emulate this
-capability if wants to further expose it to VM.
+On Thu, Sep 14, 2023 at 09:56:57AM +0200, Christian Brauner wrote:
+> > BTW, this part of commit message in 2c18a63b760a is rather confused:
+> >     Recent rework moved block device closing out of sb->put_super() and into
+> >     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
+> >     blkdev_put() can end up taking s_umount again.
+> > 
+> > That was *NOT* what a recent rework had done.  Block device closing had never
+> > been inside ->put_super() - at no point since that (closing, that is) had been
+> > introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
+> 
+> I think the commit message probably just isn't clear enough. The main
+> block device of a superblock isn't closed in sb->put_super(). That's
+> always been closed in kill_block_super() after generic_shutdown_super().
 
-And this only exposes PASID capability for devices which has PCIe PASID
-extended struture in its configuration space. While for VFs, userspace
-is still unable to see this capability as SR-IOV spec forbides VF to
-implement PASID capability extended structure. It is a TODO in future.
-Related discussion can be found in below links:
+Yes.
 
-https://lore.kernel.org/kvm/20200407095801.648b1371@w520.home/
-https://lore.kernel.org/kvm/BL1PR11MB5271A60035EF591A5BE8AC878C01A@BL1PR11MB5271.namprd11.prod.outlook.com/
+> But afaict filesystem like ext4 and xfs may have additional block
+> devices open exclusively and closed them in sb->put_super():
+> 
+> xfs_fs_put_super()
+> -> xfs_close_devices()
+>    -> xfs_blkdev_put()
+>       -> blkdev_put()
+> 
+> ext4_put_super()
+> -> ext4_blkdev_remove()
+>    -> blkdev_put()
 
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/vfio/pci/vfio_pci_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index 7e2e62ab0869..dfae5ad5ebc0 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -95,7 +95,7 @@ static const u16 pci_ext_cap_length[PCI_EXT_CAP_ID_MAX + 1] = {
- 	[PCI_EXT_CAP_ID_LTR]	=	PCI_EXT_CAP_LTR_SIZEOF,
- 	[PCI_EXT_CAP_ID_SECPCI]	=	0,	/* not yet */
- 	[PCI_EXT_CAP_ID_PMUX]	=	0,	/* not yet */
--	[PCI_EXT_CAP_ID_PASID]	=	0,	/* not yet */
-+	[PCI_EXT_CAP_ID_PASID]	=	PCI_EXT_CAP_PASID_SIZEOF,
- 	[PCI_EXT_CAP_ID_DVSEC]	=	0xFF,
- };
- 
--- 
-2.34.1
-
+Yes.
