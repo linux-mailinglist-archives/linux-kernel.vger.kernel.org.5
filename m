@@ -2,250 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493947AF352
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160BF7AF356
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235638AbjIZSwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S235552AbjIZSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235623AbjIZSwc (ORCPT
+        with ESMTP id S235613AbjIZSyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:52:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0BA13A;
-        Tue, 26 Sep 2023 11:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695754344; x=1727290344;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NyzXyy5pixQrih4rZ7ZPdJr5ZoWBctlC7Bq7bMG04UE=;
-  b=HsXeLlrG0BpxIDB3vsC/4XraP82mcdMcy+HZlb0YwhvOW8eXcXrmraJq
-   gSMbcyvE1+JTeNhRKztuLHWIatgJEAS7qDVlkF5wtmIFKBIyep+G6T0mj
-   H4FYQeCXhnnLOPb6xp+CKpAkGYdAcsl3NLuKCqiNMC/OPXSRo6H+eAgJ5
-   cgBAKc/+B5qHuCz/+ug76gqG58Ax7pMkMz3ZwJU1e6yySYOtYsZCjRr6H
-   1E/WuYhuR8DruzBBP9a0I3womhmVJweR/N3AX2m962rLDIBXDcDps+DI7
-   dSzg5llWWCB50GgibsU/7s+c3C4ND3cPMh2qUsLmPSgfh4Wob2IscDIQW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361023736"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="361023736"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 11:52:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="892314128"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="892314128"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 11:51:18 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 11:52:23 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 11:52:23 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 11:52:23 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.43) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 11:52:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q4qaPO0o+mycWWot2Nx9VtNy5b4cKQyfEc2Ya89VvbffgllZw4uP4bLaZZpYiFSibw64oOfQuzdTiwdTkD9amkPH60eOhK7mGpVTT58XVNWbmXY6zzNDTQw3KOBkhl34AbZw5keiHN3rDuJV7cHpLDNSYrkESxeZ+6pveMRO8OOQ7gtjM1G7rOW29cgELstnV0+Ao9EQeGv3LEg4JmVsAUFlrU4nDAmGc2xVoB6ntLgUa0T/lukqirVgV1Oi2mVhLpUa/3iWaI/HdZVhLdGv+zeyU66q+Vo3wSMlwCPrc7jTjXC3ww5myPuxviGasSsrn3Y2KcGpV1D2TzOLsByydQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NLOcyEsQvAT5Yza8N0HpwbXRXRzGn3fQDsGtCQoLxNQ=;
- b=cns4TIyW7DKregiiPl6qMkggqN1gyQGs3S5sXamj3DU+WwHnQlOX2Nj+dIcUMXVZoCTZxSA2HNfYTK+PlZ92NpX1+dpSFH/KaQZTi+PvxuHY/boKF7CN9+U0nfvZ6um7MWPqR8DJRmfDMgXvBK7MWz5wf4NBON0sgDcasOxAR0ZGT2MNIyoH5Txl8xzXwK8D7L5qDQxuu2tiScDn4NYhz7jSmJ4FuP5hV58mDCdD0LtYFjwJz5DkwCIkJph8LNZOtNHVPf0NFJ0fs+wHZDx1Ng2XLS4siNd/WIDhVOruaQDu4vY0A8fRcGfDEwBc50Pzp+5PZcrcbjKAVAVfqK93nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by CO1PR11MB5202.namprd11.prod.outlook.com (2603:10b6:303:97::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 18:52:21 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::e9ca:a5a7:ada1:6ee8]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::e9ca:a5a7:ada1:6ee8%5]) with mapi id 15.20.6813.017; Tue, 26 Sep 2023
- 18:52:20 +0000
-Message-ID: <caf9a9e6-dea5-9dd7-846d-30d445b8ed2b@intel.com>
-Date:   Tue, 26 Sep 2023 11:52:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Betterbird/102.13.0
-Subject: Re: [PATCH v1 1/2] ACPI: NFIT: Fix memory leak, and local use of
- devm_*()
-To:     Michal Wilczynski <michal.wilczynski@intel.com>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>
-CC:     <rafael.j.wysocki@intel.com>, <andriy.shevchenko@intel.com>,
-        <lenb@kernel.org>, <dan.j.williams@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20230926184520.2239723-1-michal.wilczynski@intel.com>
- <20230926184520.2239723-2-michal.wilczynski@intel.com>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20230926184520.2239723-2-michal.wilczynski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0073.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::14) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Tue, 26 Sep 2023 14:54:41 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097A5126
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:54:33 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50305abe5f0so15070404e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695754471; x=1696359271; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8gQnbSFZtzmEFmiDkyR9oRkKnZaeQRz7XAC2B5NMUWw=;
+        b=rn2mWGwLUnrdY4GgF8lOnUe2tVkL8OmX1io/umA8vx5nubcBKP9RH40eSu9AnMzEL7
+         vr6mIK+t1anSYf378OjQpPGyyqZ5poudUmQWnmAYN5nT+WT275Ud25au37iikizL64gO
+         Rz17/1hf2HgX1+5B9tM2CJdp59L8EC5bHMJxBybWU0byib8SP6Lzy40E5ZF6p9YKPAhQ
+         ZA4MfYgxWi8R1R5PQmUPlCtuMagcvLaQbpHebkdjNASSZ9dtV+Ttiy7RZJeb3BLegaf0
+         W/et52Uv/qV+ffkDzhRaCNFCaIUpEHXv/YJR4qvEk6OFy0/EJ/ZvTXq1LCQ5qoIRzORb
+         eT5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695754471; x=1696359271;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8gQnbSFZtzmEFmiDkyR9oRkKnZaeQRz7XAC2B5NMUWw=;
+        b=g3noc4u4jfZho+cj/jiZaqACk5oryiMZn5xDQ9BGIAwEqmfmibYu9SwOM9iU8qGU4T
+         ozkW747+uwOfpb3HkXhHwIeuPWL+p0iF6Uysbjv5wpth448z7di8JuUpTdOvs0cpEZae
+         U3jR60oyXC2/U1eb/24yk1gUg6wVrLUbpYWE1gszPiUXD//2NVKxNcCSIOpOjXYm7HuO
+         R0qwRdD0FDuHFLqNVvzVNoC9vqIz+/qqVICp5IWDAxTOggxyfgzUZ07D8tbgfcOX1MHN
+         izb6/rzX59c4e0rvTxcntVg1PR/lL/dSjcvmYu3mXoF2NgVIbJ5emiHSj+GGfalW1fF2
+         2d8A==
+X-Gm-Message-State: AOJu0Yx53MIyVBhzJnGJKI1qous4u9kCMuyp2R0ERvEo+aQXsrGoaHoT
+        W9Rt0vS1bcPFrvNc983tsACqlw==
+X-Google-Smtp-Source: AGHT+IE5Qc4gGyVdOepdESFyp3jn/od8ANoFp10Oc3ukn24PRxkGTRnFtONelL8dA/bKHYT7HB9HIQ==
+X-Received: by 2002:a05:6512:1287:b0:503:95b:db02 with SMTP id u7-20020a056512128700b00503095bdb02mr11290246lfs.18.1695754471250;
+        Tue, 26 Sep 2023 11:54:31 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id c6-20020ac244a6000000b00504230986fbsm2271509lfm.52.2023.09.26.11.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 11:54:30 -0700 (PDT)
+Message-ID: <2c9eda54-a90e-483a-abc2-865d82854b80@linaro.org>
+Date:   Tue, 26 Sep 2023 20:54:29 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|CO1PR11MB5202:EE_
-X-MS-Office365-Filtering-Correlation-Id: e182da62-b0f1-4573-64d3-08dbbec1b6af
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eFSoiS6amaoeTQ7PrQ4+POGO5NdEDyuCQGcoNPijjbTZ5zwxgBJFZsdYjanE3InPKZHJ7l+7Y8PAnr9qEO0PBUEUYYKxhzTv1hmNsNtxOjwDFuj8QgV0CSIoXcvlKoz/CP0FQLoOyBrE9hJiToiBxJQ5npMQLE4YPXZgIH0ss15Ro1Ll+JvdE1Z3K+YEVJVL9g0sfBM/Gz9kI8QzsHlnDNO1xKd7/umkI6Q0YZ1ZuQer4m+blm8Rg5gwzAhjlljojp3T+St4CZw0bzZvgmvmrOX7eqXUoBgtz4rzomhTNE/65FEQlKnpZgTwWCKGpnK4qKVl9dpGX7CTE6eP0X32WdoQGg9dm12yYC8uv+g2i/XE0xaSS1tq33w59U3T+12sva5eE2dPK6daDYtgqy9v6fm8XoDbKpyuveTSMW2psnwHVb1ZVJ0ZYg/KQawRKO2Ii2pQ9cqY/cHOa02nbWS1g/pmy9YrGcusCr+ZOqXXTPZMX39DYDcmMoJyUp+gO++MTtStn1YdEAWHMsCckUaG2b1w52V2YFu84OKzCwIJm7or9hsI1wenvuhb9KZTKIpCYJJDlvHaU91jJstdcE56irBvoE7LTfkw/1w8pG8MUCp0hxkCbHveRmdoQaZ8GrxyajugYaxtegJ1YcM9fq/pig==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(1800799009)(186009)(451199024)(2906002)(86362001)(6486002)(36756003)(26005)(6666004)(83380400001)(38100700002)(82960400001)(2616005)(6512007)(6506007)(31696002)(53546011)(8936002)(41300700001)(8676002)(4326008)(316002)(44832011)(5660300002)(66946007)(31686004)(478600001)(66556008)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDJZQnRJdXg5S2V3bm1FYUtVMGdOWXF0ZU51elN2RE45OXVXdTVSaHlYcDJU?=
- =?utf-8?B?WlR5U29wZGRNTDBnU2I5Yk04SlJFQnZnekZUREFjRUk0V1FmZEZHY3hhaXdQ?=
- =?utf-8?B?MUs2cDR6Ty9MenZMUVFHZ0h4QmRoc3lPSmkrOUpxOGhpYTdOcE9Wa01JVHZU?=
- =?utf-8?B?K01VSDFVcTluMDBpMElnbE1nU2JUcFdwcENKK0FBSEhXaHZWOEs1OUhncXlO?=
- =?utf-8?B?USs1aUJtY3ZxQXFvSkcrN096L2FhNHNiMEU5M1V2S09pOXMxbFk4ZC9TNk04?=
- =?utf-8?B?SFdKdXQrSVpSWStXaVRrSjRvdUVGdXB2YUVGcUJWTTgyeEpLTkdIa1lpaEd3?=
- =?utf-8?B?YTFseXhrbnlhb2dYaFh0dmRYU2RMdnlET25XbXFxOEZBREpULzBsbWdON1NP?=
- =?utf-8?B?UTZtTzFZd2c0YXdaRTExRVB0TjQ5NkdjUStOK2J6NEJWbnpzcThXMG5zVkN2?=
- =?utf-8?B?YTJWS04zZHFDb2JRYXNmNFR3cGtPeUpZQVpOemRYTEJkeWtQT0N1S2xxd2J3?=
- =?utf-8?B?anZzbW8rbzlCK0RLbjJvOGlORlB5MnphNnhpR2J2TCswRFZjVDdYTGoxaVlr?=
- =?utf-8?B?WmxnSmJsZXlxVmRPR243MklXNFBjVFdvQzk3RVp3MTB3REkrQzhXQW9NbSta?=
- =?utf-8?B?ZnpuZzBPTGsvVjNRYWZKUE93RjAzU0lRZjRLWW5PdlBkTGdmOVZHd25Ga0tJ?=
- =?utf-8?B?c053c2pGcjZrRklPOGxEYjcwUTdhbm11bFpRbkFRc2NXUFd4eStWcmlKclpZ?=
- =?utf-8?B?RlJBZUVva2FlaGZ6cFJqVFpld0RUajhnS0VSbGNhSVBNTkxtcWxFQmkreTdr?=
- =?utf-8?B?eDNNdmtDcjZYa0Rmb2daZHNDcjNUZzFSN3FpSTdqaW1ZSE1yRGxTeVhmSkJt?=
- =?utf-8?B?cEdkdWVmaXZwL3A2YXI0WkFSRDdMcnlSbDZYZVltVXo0cEp4YkF3bUUvbFd1?=
- =?utf-8?B?NEh4Slh2a0lqemdILzhVYi9WVk1xRTRDZGpRMUZITTJOSUdwK20vbk9jWk9h?=
- =?utf-8?B?UzZYYUFPUXhNSmFBTGU3ZERqYnpSajY4VFV4a3lUdjBVaVVKZFB4UTNiNTdL?=
- =?utf-8?B?WXlleHozdmJPazdyMWt6N21rdndkd3pSZm50OXJ0aUdwWGRMYXJsMTRKZVFo?=
- =?utf-8?B?dmZyOExLMklrbXNMM2EzcHZ2OVV0OGl1ZC8zUGV3ancyZkk1SFA0aCtLOTNH?=
- =?utf-8?B?ZFJSbDZpZnJ1TzhrR280M2JtejNMTFhWa0VFWTl3ODVucU9keWdBOXl4Qk1z?=
- =?utf-8?B?VG1sUFV5WlZtb1dqRGJaL0Q3RTVudWc4TlRnOGJBc1JDaUxYWjZZbGUyYysv?=
- =?utf-8?B?VmZuMzdEelJQMXBxNENzTmU5dEdxSzVMNDlrVWFoRDNEZ09RcXgrbkF0ZG40?=
- =?utf-8?B?UDVRdDhVUEhHck0yQmZvdXB3UVF6b2RsQThMU3dlQmJKUUQrd3Y1OTU4QkVC?=
- =?utf-8?B?N2Q3bHJON2gxYUgyem1iWTcyUmdTYktCTkxaNExweHlFNnFWVFhiZEdadTZq?=
- =?utf-8?B?cXk4NGZjbGg2aFBWaXRRNUlhTlBRdzN0UlJoUHJPRHYrY1JmckVrS3ZZMVBq?=
- =?utf-8?B?MjgwMW02dVRsNndFTkxwd1hYdHhPODMvWVZTQlRxQXo3cTRPWW1sbDNoTXBj?=
- =?utf-8?B?eFVGbHBVOTJUVnJMWVFOdU5QdXVWcDNJNldZRTI1QWZkekoybHcwcWdUQ0NG?=
- =?utf-8?B?bkdNRzUvQU9rUkRUN0tZYWViNWxlbmVYRWNzRFJUOVg0VUhHVyszc1FZRzlS?=
- =?utf-8?B?Nng3cW0ycXBjczdDYTdoUjBvZ2pscG1ENUtpQ2owZnNWd1pDRDlyaW5IaXp0?=
- =?utf-8?B?cjgxK1ROR3A4YzI0UndjUUpHYW14M3c5Q0pmL1pmeDVwVnpORW1nSVpjTW0w?=
- =?utf-8?B?bUJWNTJTQzRENVpGbzlEOHJRTWhpRi9yeENWbk1zQ3NSV2tXWTE2SnlxWmlI?=
- =?utf-8?B?TEthMzN0L2JJazJKUTdLTlc1MHpnR0FzYnNETGtWNGJlRjIwR0hEMFh6Tk94?=
- =?utf-8?B?a01VelpYREcwTEVIQ2xoUFpSQktGZTlrM0ZONGR5Q2lkdEg5YU5TQXdsNlhC?=
- =?utf-8?B?Mm1TSURqMm1vM0VmUFBmT056UEFjRE9DdjlsaHBhb0tPOVZPeVZSZlJxVmZG?=
- =?utf-8?B?UVBReWZZeUZpOG9pS2QzbFhJdVZzY1dVdmxEWWRoREt5QXJ2ckJ3dGR1RXBq?=
- =?utf-8?B?M0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e182da62-b0f1-4573-64d3-08dbbec1b6af
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 18:52:20.7807
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jNPkji7et47PvF4VLh+3POJohvyzdKi0FY6VIB3bAIQl2J15+vwn7sM70r2cJn3o5WYSKTJfAY5Tpwaz9w6k2g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5202
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/13] arm64: dts: qcom: msm8916-samsung-a2015: Add sound
+ and modem
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
+ <20230926-msm8916-modem-v1-4-398eec74bac9@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230926-msm8916-modem-v1-4-398eec74bac9@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/26/23 11:45, Michal Wilczynski wrote:
-> devm_*() family of functions purpose is managing memory attached to a
-> device. So in general it should only be used for allocations that should
-> last for the whole lifecycle of the device. This is not the case for
-> acpi_nfit_init_interleave_set(). There are two allocations that are only
-> used locally in this function. What's more - if the function exits on
-> error path memory is never freed. It's still attached to dev and would
-> be freed on device detach, so this leak could be called a 'local leak'.
+On 26.09.2023 18:51, Stephan Gerhold wrote:
+> Enable sound and modem for the Samsung A2015 based devices (A3, A5, E5,
+> E7, Grand Max). The setup is similar to most MSM8916 devices, i.e.:
 > 
-> Fix this by switching from devm_kcalloc() to kcalloc(), and adding
-> proper rollback.
+>  - QDSP6 audio
+>  - Earpiece/headphones/microphones via digital/analog codec in
+>    MSM8916/PM8916
+>  - WWAN Internet via BAM-DMUX
 > 
-> Fixes: eaf961536e16 ("libnvdimm, nfit: add interleave-set state-tracking infrastructure")
-> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> except:
+> 
+>  - NXP TFA9895 codec for speaker on Quaternary MI2S
+>  - Samsung-specific audio jack detection (not supported yet)
+> 
+> [Lin: Add e2015 and grandmax]
+> Co-developed-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+> Signed-off-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
->  drivers/acpi/nfit/core.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
+>  .../dts/qcom/msm8916-samsung-a2015-common.dtsi     | 55 ++++++++++++++++++++++
+>  .../dts/qcom/msm8916-samsung-e2015-common.dtsi     |  4 ++
+>  .../boot/dts/qcom/msm8916-samsung-grandmax.dts     |  4 ++
+>  3 files changed, 63 insertions(+)
 > 
-> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-> index f0e6738ae3c9..78f0f855c4de 100644
-> --- a/drivers/acpi/nfit/core.c
-> +++ b/drivers/acpi/nfit/core.c
-> @@ -2262,6 +2262,7 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
->  	u16 nr = ndr_desc->num_mappings;
->  	struct nfit_set_info2 *info2;
->  	struct nfit_set_info *info;
-> +	int err = 0;
->  	int i;
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> index 0b29132b74e1..f71b18d89bf9 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> @@ -1,10 +1,13 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
 >  
->  	nd_set = devm_kzalloc(dev, sizeof(*nd_set), GFP_KERNEL);
-> @@ -2269,13 +2270,15 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
->  		return -ENOMEM;
->  	import_guid(&nd_set->type_guid, spa->range_guid);
->  
-> -	info = devm_kcalloc(dev, nr, sizeof(*info), GFP_KERNEL);
-> +	info = kcalloc(nr, sizeof(*info), GFP_KERNEL);
->  	if (!info)
->  		return -ENOMEM;
->  
-> -	info2 = devm_kcalloc(dev, nr, sizeof(*info2), GFP_KERNEL);
-> -	if (!info2)
-> -		return -ENOMEM;
-> +	info2 = kcalloc(nr, sizeof(*info2), GFP_KERNEL);
-> +	if (!info2) {
-> +		err = -ENOMEM;
-> +		goto free_info;
-> +	}
->  
->  	for (i = 0; i < nr; i++) {
->  		struct nd_mapping_desc *mapping = &ndr_desc->mapping[i];
-> @@ -2289,7 +2292,8 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
->  
->  		if (!memdev || !nfit_mem->dcr) {
->  			dev_err(dev, "%s: failed to find DCR\n", __func__);
-> -			return -ENODEV;
-> +			err = -ENODEV;
-> +			goto free_info2;
->  		}
->  
->  		map->region_offset = memdev->region_offset;
-> @@ -2337,10 +2341,13 @@ static int acpi_nfit_init_interleave_set(struct acpi_nfit_desc *acpi_desc,
->  	}
->  
->  	ndr_desc->nd_set = nd_set;
-> -	devm_kfree(dev, info);
-> -	devm_kfree(dev, info2);
->  
-> -	return 0;
-> +free_info2:
-> +	kfree(info2);
-> +free_info:
-> +	kfree(info);
+>  #include "msm8916-pm8916.dtsi"
+> +#include "msm8916-modem-qdsp6.dtsi"
 > +
-> +	return err;
->  }
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+> +#include <dt-bindings/sound/apq8016-lpass.h>
 >  
->  static int ars_get_cap(struct acpi_nfit_desc *acpi_desc,
+>  / {
+>  	aliases {
+> @@ -196,6 +199,18 @@ vibrator: vibrator {
+>  	};
+>  };
+>  
+> +&blsp_i2c1 {
+> +	status = "okay";
+> +
+> +	speaker_codec: audio-codec@34 {
+> +		compatible = "nxp,tfa9895";
+> +		reg = <0x34>;
+> +		vddd-supply = <&pm8916_l5>;
+> +		sound-name-prefix = "Speaker";
+> +		#sound-dai-cells = <0>;
+> +	};
+> +};
+> +
+>  &blsp_i2c2 {
+>  	status = "okay";
+>  
+> @@ -243,6 +258,13 @@ &gpu {
+>  	status = "okay";
+>  };
+>  
+> +&lpass {
+> +	dai-link@3 {
+> +		reg = <MI2S_QUATERNARY>;
+> +		qcom,playback-sd-lines = <1>;
+> +	};
+> +};
+Is that not status = reserved?
+
+Konrad
