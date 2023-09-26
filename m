@@ -2,384 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8840C7AE96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005497AE988
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbjIZJjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S232723AbjIZJsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbjIZJiu (ORCPT
+        with ESMTP id S232646AbjIZJsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:38:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8A9BE;
-        Tue, 26 Sep 2023 02:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695721123; x=1727257123;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=D6J5R/1H9NYmwj1HBb/6nCFtRveDV5ws9Ss+Z61Hsv4=;
-  b=SWcNJ2+XF6d3nEB0mPf+3yFGrik6yA5YHXeHG3+3B2B/E/Dy7iotwRdG
-   5k3DdIgmT92eU006og4YCJ7J3OynrJBQcX9gJDUYvoNeTM3XiYKhIDdKP
-   UsoHvmhqo6mULzBOZ5Vb8QNV7hi8PlkR5bqgxSSJ9a8fH0BCo+aXxiAwb
-   DxNKl/+quCeTc+kdoPCFjB2NB5tkWoaMVN+Jz5+8VGSTUwTq4b4zDzabQ
-   LoCXqX2MPxAy9hxJ5jQDP/Ihdrp2sj1qASwBtiZgiHCe6jtW69lGH/I84
-   Tl2MVoHDclKpESPQshV4o4KynMkcE4vzrVPKi7IgkllNVpoXhHJ2dGUdZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="361773054"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="361773054"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 02:38:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="995767959"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="995767959"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Sep 2023 02:38:40 -0700
-From:   Xiao Wang <xiao.w.wang@intel.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org
-Cc:     anup@brainfault.org, haicheng.li@intel.com,
-        ajones@ventanamicro.com, yujie.liu@intel.com,
-        linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiao Wang <xiao.w.wang@intel.com>
-Subject: [PATCH v3 2/2] riscv: Optimize bitops with Zbb extension
-Date:   Tue, 26 Sep 2023 17:46:55 +0800
-Message-Id: <20230926094655.3102758-3-xiao.w.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230926094655.3102758-1-xiao.w.wang@intel.com>
-References: <20230926094655.3102758-1-xiao.w.wang@intel.com>
+        Tue, 26 Sep 2023 05:48:04 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270C3B3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:47:56 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690bccb0d8aso6276247b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20230601.gappssmtp.com; s=20230601; t=1695721675; x=1696326475; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XKP3MzLWO9YF43zV3hOBWrQ0vFnkikx+qy/eqoZksLU=;
+        b=Vblyh2mnu7teGYwlha0L1TZCdy2fZ6gOM/cwZSTZofzOG3EjAzb/sVLkH5pckR2eOW
+         9fQyS2e3NWAyUTU0yr5jYkmX/rCaVOsqi6CzeMsbVi7qs5kJb1oaDT3GqLtJqfmncV3V
+         SSIMHsds2wd4aDN04B1jyBc5tzaxoOAeTXX0rmGBgyYI7MU2z1454tLWBOzajQZgsx1v
+         WLPxcCsAZSkWgwHvSX9GBYtFhiPZ8UqmTqj7Chtx85AV0tf33Ag5GeOuWkpXMvzwhCdk
+         4K5Ng2ICahY9ki6SMr8GJ+vuSsdFsuytQopNHOGorYr6HksnEMS5tKa/et5B+xgdV+MN
+         RW6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695721675; x=1696326475;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKP3MzLWO9YF43zV3hOBWrQ0vFnkikx+qy/eqoZksLU=;
+        b=D0/S+rFi4swfydpJy1BfLVkjxzTCgU3Pl0/Aci0VM46u99u2IBtfprtw8GsNU4OwPu
+         LXspDHSckeI8LMGPpLicoSPFMF2T9SfVFsof/pL4Gvtj7tpOf1v1PxciHY46z7/Jai3y
+         7E8VHZRus4x/WHL660xEyzvekTC2RCH2fLc2KOcXmKNAlUG57l6g0JBa+VqAy9VgBwSr
+         7ijlynA7tXLg1qlVoEWxBW4OivKqtLIhQbAcRWoiSr+3yJHUS9f3YMTO8kFxTsgeut5T
+         KeVvqDC/CVo2r7tleLC0rRxaGdFc5+d5VEodce+05MJ3t/gKXROnHi5MYtJbQ81TxK/U
+         kWxg==
+X-Gm-Message-State: AOJu0Yx9krwT8BbXB2QJQc2fYy+HFYyZY/HPhtie0wOZdckbITNE5tLb
+        /FWbcdd3bfq3JKQSyhLM+f7e1g==
+X-Google-Smtp-Source: AGHT+IHkkACOh7dgZFFa/QbHIqytll0Y6aTqu1t2IA0bc5L6Z2iD4zYiqDdeRy5IKT8/Mkf7zM31ag==
+X-Received: by 2002:a05:6a00:80b:b0:690:d48a:2acc with SMTP id m11-20020a056a00080b00b00690d48a2accmr9641454pfk.29.1695721675490;
+        Tue, 26 Sep 2023 02:47:55 -0700 (PDT)
+Received: from [10.16.161.199] (napt.igel.co.jp. [219.106.231.132])
+        by smtp.gmail.com with ESMTPSA id l22-20020a62be16000000b0068fe9c7b199sm5641837pff.105.2023.09.26.02.47.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 02:47:55 -0700 (PDT)
+Message-ID: <fe309259-01f0-871f-4620-3a4bdc56a186@igel.co.jp>
+Date:   Tue, 26 Sep 2023 18:47:50 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC] Proposal of QEMU PCI Endpoint test environment
+To:     Kishon Vijay Abraham I <kvijayab@amd.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, vaishnav.a@ti.com
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        qemu-devel@nongnu.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+References: <CANXvt5oKt=AKdqv24LT079e+6URnfqJcfTJh0ajGA17paJUEKw@mail.gmail.com>
+ <d096e88e-aec5-9920-8d5a-bd8200560c2c@amd.com>
+Content-Language: en-US
+From:   Shunsuke Mie <mie@igel.co.jp>
+In-Reply-To: <d096e88e-aec5-9920-8d5a-bd8200560c2c@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch leverages the alternative mechanism to dynamically optimize
-bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
-Zbb ext is not supported by the runtime CPU, legacy implementation is
-used. If Zbb is supported, then the optimized variants will be selected
-via alternative patching.
 
-The legacy bitops support is taken from the generic C implementation as
-fallback.
+On 2023/09/21 18:11, Kishon Vijay Abraham I wrote:
+> +Vaishnav
+>
+> Hi Shunsuke,
+>
+> On 8/18/2023 7:16 PM, Shunsuke Mie wrote:
+>> Hi all,
+>>
+>> We are proposing to add a new test syste to Linux for PCIe Endpoint. 
+>> That
+>> can be run on QEMU without real hardware. At present, partially we have
+>> confirmed that pci-epf-test is working, but it is not yet complete.
+>> However, we would appreciate your comments on the architecture design.
+>>
+>> # Background
+>> The background is as follows.
+>>
+>> PCI Endpoint function driver is implemented using the PCIe Endpoint
+>> framework, but it requires physical boards for testing, and it is 
+>> difficult
+>> to test sufficiently. In order to find bugs and hardware-dependent
+>> implementations early, continuous testing is required. Since it is
+>> difficult to automate tests that require hardware, this RFC proposes a
+>> virtual environment for testing PCI endpoint function drivers.
+>
+> This would be quite useful and thank you for attempting it! I would 
+> like to compare other mechanisms available in-addition to QEMU before 
+> going with the QEMU approach.
 
-If the parameter is a build-time constant, we leverage compiler builtin to
-calculate the result directly, this approach is inspired by x86 bitops
-implementation.
+I got it. I'll make a table to compare some methods that includes 
+greybus to realize this emulation environment.
 
-EFI stub runs before the kernel, so alternative mechanism should not be
-used there, this patch introduces a macro NO_ALTERNATIVE for this purpose.
 
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
----
- arch/riscv/include/asm/bitops.h       | 266 +++++++++++++++++++++++++-
- drivers/firmware/efi/libstub/Makefile |   2 +-
- 2 files changed, 264 insertions(+), 4 deletions(-)
+Best,
 
-diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bitops.h
-index 3540b690944b..c97e774cb647 100644
---- a/arch/riscv/include/asm/bitops.h
-+++ b/arch/riscv/include/asm/bitops.h
-@@ -15,13 +15,273 @@
- #include <asm/barrier.h>
- #include <asm/bitsperlong.h>
- 
-+#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
- #include <asm-generic/bitops/__ffs.h>
--#include <asm-generic/bitops/ffz.h>
--#include <asm-generic/bitops/fls.h>
- #include <asm-generic/bitops/__fls.h>
-+#include <asm-generic/bitops/ffs.h>
-+#include <asm-generic/bitops/fls.h>
-+
-+#else
-+#include <asm/alternative-macros.h>
-+#include <asm/hwcap.h>
-+
-+#if (BITS_PER_LONG == 64)
-+#define CTZW	"ctzw "
-+#define CLZW	"clzw "
-+#elif (BITS_PER_LONG == 32)
-+#define CTZW	"ctz "
-+#define CLZW	"clz "
-+#else
-+#error "Unexpected BITS_PER_LONG"
-+#endif
-+
-+static __always_inline unsigned long variable__ffs(unsigned long word)
-+{
-+	int num;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"ctz %0, %1\n"
-+		".option pop\n"
-+		: "=r" (word) : "r" (word) :);
-+
-+	return word;
-+
-+legacy:
-+	num = 0;
-+#if BITS_PER_LONG == 64
-+	if ((word & 0xffffffff) == 0) {
-+		num += 32;
-+		word >>= 32;
-+	}
-+#endif
-+	if ((word & 0xffff) == 0) {
-+		num += 16;
-+		word >>= 16;
-+	}
-+	if ((word & 0xff) == 0) {
-+		num += 8;
-+		word >>= 8;
-+	}
-+	if ((word & 0xf) == 0) {
-+		num += 4;
-+		word >>= 4;
-+	}
-+	if ((word & 0x3) == 0) {
-+		num += 2;
-+		word >>= 2;
-+	}
-+	if ((word & 0x1) == 0)
-+		num += 1;
-+	return num;
-+}
-+
-+/**
-+ * __ffs - find first set bit in a long word
-+ * @word: The word to search
-+ *
-+ * Undefined if no set bit exists, so code should check against 0 first.
-+ */
-+#define __ffs(word)				\
-+	(__builtin_constant_p(word) ?		\
-+	 (unsigned long)__builtin_ctzl(word) :	\
-+	 variable__ffs(word))
-+
-+static __always_inline unsigned long variable__fls(unsigned long word)
-+{
-+	int num;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"clz %0, %1\n"
-+		".option pop\n"
-+		: "=r" (word) : "r" (word) :);
-+
-+	return BITS_PER_LONG - 1 - word;
-+
-+legacy:
-+	num = BITS_PER_LONG - 1;
-+#if BITS_PER_LONG == 64
-+	if (!(word & (~0ul << 32))) {
-+		num -= 32;
-+		word <<= 32;
-+	}
-+#endif
-+	if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
-+		num -= 16;
-+		word <<= 16;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
-+		num -= 8;
-+		word <<= 8;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
-+		num -= 4;
-+		word <<= 4;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
-+		num -= 2;
-+		word <<= 2;
-+	}
-+	if (!(word & (~0ul << (BITS_PER_LONG-1))))
-+		num -= 1;
-+	return num;
-+}
-+
-+/**
-+ * __fls - find last set bit in a long word
-+ * @word: the word to search
-+ *
-+ * Undefined if no set bit exists, so code should check against 0 first.
-+ */
-+#define __fls(word)							\
-+	(__builtin_constant_p(word) ?					\
-+	 (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :	\
-+	 variable__fls(word))
-+
-+static __always_inline int variable_ffs(int x)
-+{
-+	int r;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"bnez %1, 1f\n"
-+		"li %0, 0\n"
-+		"j 2f\n"
-+		"1:\n"
-+		CTZW "%0, %1\n"
-+		"addi %0, %0, 1\n"
-+		"2:\n"
-+		".option pop\n"
-+		: "=r" (r) : "r" (x) :);
-+
-+	return r;
-+
-+legacy:
-+	r = 1;
-+	if (!x)
-+		return 0;
-+	if (!(x & 0xffff)) {
-+		x >>= 16;
-+		r += 16;
-+	}
-+	if (!(x & 0xff)) {
-+		x >>= 8;
-+		r += 8;
-+	}
-+	if (!(x & 0xf)) {
-+		x >>= 4;
-+		r += 4;
-+	}
-+	if (!(x & 3)) {
-+		x >>= 2;
-+		r += 2;
-+	}
-+	if (!(x & 1)) {
-+		x >>= 1;
-+		r += 1;
-+	}
-+	return r;
-+}
-+
-+/**
-+ * ffs - find first set bit in a word
-+ * @x: the word to search
-+ *
-+ * This is defined the same way as the libc and compiler builtin ffs routines.
-+ *
-+ * ffs(value) returns 0 if value is 0 or the position of the first set bit if
-+ * value is nonzero. The first (least significant) bit is at position 1.
-+ */
-+#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_ffs(x))
-+
-+static __always_inline int variable_fls(unsigned int x)
-+{
-+	int r;
-+
-+	asm_volatile_goto(
-+		ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-+		: : : : legacy);
-+
-+	asm volatile (
-+		".option push\n"
-+		".option arch,+zbb\n"
-+		"bnez %1, 1f\n"
-+		"li %0, 0\n"
-+		"j 2f\n"
-+		"1:\n"
-+		CLZW "%0, %1\n"
-+		"neg %0, %0\n"
-+		"addi %0, %0, 32\n"
-+		"2:\n"
-+		".option pop\n"
-+		: "=r" (r) : "r" (x) :);
-+
-+	return r;
-+
-+legacy:
-+	r = 32;
-+	if (!x)
-+		return 0;
-+	if (!(x & 0xffff0000u)) {
-+		x <<= 16;
-+		r -= 16;
-+	}
-+	if (!(x & 0xff000000u)) {
-+		x <<= 8;
-+		r -= 8;
-+	}
-+	if (!(x & 0xf0000000u)) {
-+		x <<= 4;
-+		r -= 4;
-+	}
-+	if (!(x & 0xc0000000u)) {
-+		x <<= 2;
-+		r -= 2;
-+	}
-+	if (!(x & 0x80000000u)) {
-+		x <<= 1;
-+		r -= 1;
-+	}
-+	return r;
-+}
-+
-+/**
-+ * fls - find last set bit in a word
-+ * @x: the word to search
-+ *
-+ * This is defined in a similar way as ffs, but returns the position of the most
-+ * significant set bit.
-+ *
-+ * fls(value) returns 0 if value is 0 or the position of the last set bit if
-+ * value is nonzero. The last (most significant) bit is at position 32.
-+ */
-+#define fls(x)								\
-+	(__builtin_constant_p(x) ?					\
-+	 (int)(((x) != 0) ?						\
-+	  (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :		\
-+	 variable_fls(x))
-+
-+#endif
-+
-+#include <asm-generic/bitops/ffz.h>
- #include <asm-generic/bitops/fls64.h>
- #include <asm-generic/bitops/sched.h>
--#include <asm-generic/bitops/ffs.h>
- 
- #include <asm-generic/bitops/hweight.h>
- 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index a1157c2a7170..d68cacd4e3af 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)		+= -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
- 				   -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
- 				   -DEFI_HAVE_STRCMP -fno-builtin -fpic \
- 				   $(call cc-option,-mno-single-pic-base)
--cflags-$(CONFIG_RISCV)		+= -fpic
-+cflags-$(CONFIG_RISCV)		+= -fpic -DNO_ALTERNATIVE
- cflags-$(CONFIG_LOONGARCH)	+= -fpie
- 
- cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)	+= -I$(srctree)/scripts/dtc/libfdt
--- 
-2.25.1
+Shunsuke
 
+> Though I don't understand this fully, Looking at 
+> https://osseu2023.sched.com/event/1OGk8/emulating-devices-in-linux-using-greybus-subsystem-vaishnav-mohandas-achath-texas-instruments, 
+> Vaishnav seems to solve the same problem using greybus for multiple 
+> type s of devices.
+>
+> Vaishnav, we'd wait for your OSS presentation but do you have any 
+> initial thoughts on how greybus could be used to test PCIe endpoint 
+> drivers?
+>
+> Thanks,
+> Kishon
+>
+>>
+>> # Architecture
+>> The overview of the architecture is as follows.
+>>
+>>    Guest 1                        Guest 2
+>> +-------------------------+    +----------------------------+
+>> | Linux kernel            |    | Linux kernel               |
+>> |                         |    |                            |
+>> | PCI EP function driver  |    |                            |
+>> | (e.g. pci-epf-test)     |    |                            |
+>> |-------------------------|    | PCI Device Driver          |
+>> | (2) QEMU EPC Driver     |    | (e.g. pci_endpoint_test)   |
+>> +-------------------------+    +----------------------------+
+>> +-------------------------+    +----------------------------+
+>> | QEMU                    |    | QEMU                       |
+>> |-------------------------|    |----------------------------|
+>> | (1) QEMU PCI EPC Device *----* (3) QEMU EPF Bridge Device |
+>> +-------------------------+    +----------------------------+
+>>
+>> At present, it is designed to work guests only on the same host, and
+>> communication is done through Unix domain sockets.
+>>
+>> The three parts shown in the figure were introduced this time.
+>>
+>> (1) QEMU PCI Endpoint Controller(EPC) Device
+>> PCI Endpoint Controller implemented as QEMU PCI device.
+>> (2) QEMU PCI Endpoint Controller(EPC) Driver
+>> Linux kernel driver that drives the device (1). It registers a epc 
+>> device
+>> to linux kernel and handling each operations for the epc device.
+>> (3) QEMU PCI Endpoint function(EPF) Bridge Device
+>> QEMU PCI device that cooperates with (1) and performs accesses to pci
+>> configuration space, BAR and memory space to communicate each guests, 
+>> and
+>> generates interruptions to the guest 1.
+>>
+>> Each projects are:
+>> (1), (3) https://github.com/ShunsukeMie/qemu/tree/epf-bridge/v1 
+>> <https://github.com/ShunsukeMie/qemu/tree/epf-bridge/v1>
+>> files: hw/misc/{qemu-epc.{c,h}, epf-bridge.c}
+>> (2) https://github.com/ShunsukeMie/linux-virtio-rdma/tree/qemu-epc 
+>> <https://github.com/ShunsukeMie/linux-virtio-rdma/tree/qemu-epc>
+>> files: drivers/pci/controller/pcie-qemu-ep.c
+>>
+>> # Protocol
+>>
+>> PCI, PCIe has a layer structure that includes Physical, Data Lane and
+>> Transaction. The communicates between the bridge(3) and controller (1)
+>> mimic the Transaction. Specifically, a protocol is implemented for
+>> exchanging fd for communication protocol version check and 
+>> communication,
+>> in addition to the interaction equivalent to PCIe Transaction Layer 
+>> Packet
+>> (Read and Write of I/O, Memory, Configuration space and Message). In my
+>> mind, we need to discuss the communication mor.
+>>
+>> We also are planning to post the patch set after the code is 
+>> organized and
+>> the protocol discussion is matured.
+>>
+>> Best regards,
+>> Shunsuke
