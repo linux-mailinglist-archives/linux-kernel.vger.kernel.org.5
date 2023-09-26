@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53D07AEB07
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50407AEB15
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbjIZLEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        id S229865AbjIZLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjIZLEA (ORCPT
+        with ESMTP id S229437AbjIZLL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:04:00 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E593E95;
-        Tue, 26 Sep 2023 04:03:53 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-690d2441b95so6291929b3a.1;
-        Tue, 26 Sep 2023 04:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695726233; x=1696331033; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wfI3/3LVivFD+ycaQCKtXt9/80PRWkq6i+B9OsvgUoQ=;
-        b=bzci90ACmcptF/MQKv5EkyN4cbSOgieX17pjigBppRjlLjcHw1l1DD5LF/PO6CIYzH
-         Hjt6FRx3O07cRk8gv9M5t/q5kt2NDlgOl3yn3HorLE7PL3bRY7Uo2Jw+na0KwfWWCB76
-         HlW/jU2sKCgkdeTiK+m5m3rGNddVqj8vNL1gfZvJj7/hEOKcs8HEZAVf15m/GnhF12rL
-         8KwdnLgSLC4Gp060DW7XWMlbx2eP+s2WYJUSbQDTfpBFlZykrptgrEFFezY5djzQ2+Wi
-         AWKGnjAcm9t2K01jGNpAkLBHwK5wtohfMPZiqAYYL1il4xx3K7Bkk1l/vYX8GjV563Ns
-         9dUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695726233; x=1696331033;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wfI3/3LVivFD+ycaQCKtXt9/80PRWkq6i+B9OsvgUoQ=;
-        b=aXy9XlECA7xVqiNIJak7b6c+80KvP6ydmI/KsjBRgFuB3F9HWOlfNFp4AKvIH0+tkb
-         zl9SHWsDpq+LJWBHSQhHb7/kkwcYhZd1YnbNTFMyw5VoaE9j6gE+FpvGL7YTlemIoOls
-         NpQLGImqXVfSN1mt6VG/jIoDz83W2jGMmgRQdpFYtW6DCOHBGKihyRFZ8Zm+ggYdX/82
-         tf4m/Ny/wF2vvD9piY+eDcl9ZyLj/GE1B7kiRioJ/RLK+GitvZ/X/juFOhdLsQ7z+Fiy
-         08QAMxPrjllBFzuhEkImMCTVMpS3HOcGugr0NhQcuok818kLxw8Huat47Ytxm/nPlDnr
-         jkuw==
-X-Gm-Message-State: AOJu0Yzx99HEaYIxK+UQeqoS42KDz6yYXGgo4bmqur2ahITt3Dk7t3m9
-        4p5vg/WglqdC29Rm1Dy7XhY=
-X-Google-Smtp-Source: AGHT+IG0VffM5J+dFIO8rNJNuwQ3gHpDzkP1TUkNwlndvy9Ikb+nOCeOkU0giVf3RFGo/Sw4uxvCgg==
-X-Received: by 2002:a05:6a21:18f:b0:134:73f6:5832 with SMTP id le15-20020a056a21018f00b0013473f65832mr3951818pzb.16.1695726233284;
-        Tue, 26 Sep 2023 04:03:53 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id y5-20020aa78545000000b0068fd653321esm9717263pfn.58.2023.09.26.04.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 04:03:52 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     aacraid@microsemi.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] scsi: ips: Fix potential deadlock on host->host_lock
-Date:   Tue, 26 Sep 2023 11:03:41 +0000
-Message-Id: <20230926110341.12028-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 07:11:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BD9E5;
+        Tue, 26 Sep 2023 04:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695726682; x=1727262682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bcmQvoUINisqkhRF3+IALIewrp6wbQqm3oJ9C0S/4TA=;
+  b=RXnBsy8mpST3Z2ZMBNgSyldOTxXPkdQwYo2ZkhsYHksfvBDVXkswpOcp
+   fE9042hAaYNEViOFgvh3U97Xgwuk/5NVhKmpi4/7z06JZo71HRYwR0cqp
+   kcWc5vM8ZMjVusgz778KS7qHK3mxpVqhMoNZk1YSctj+ijgAFD/JzpKUQ
+   2K8e9m3ljY9fyGFxFoRAdd1k11Okav+WaYQFeO/bT5CX3z4xam1tBmOA5
+   wcIPGu1Zik0tL6Q0bYmR7Rfye0NEGJuwAOxPVUL0XeuJucC1g9ZJZlKt+
+   UDV84KWHzPI6+XJBWOEyEn3b1dSY5xZu6jJkrnnS9tzdfqRVgBz35VDNl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="448039810"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="448039810"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:11:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="698432385"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="698432385"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:11:18 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ql5yF-00000000aM0-0723;
+        Tue, 26 Sep 2023 14:11:15 +0300
+Date:   Tue, 26 Sep 2023 14:11:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v1 4/5] gpio: xilinx: Replace bitmap_bitremap() calls
+Message-ID: <ZRK8Uq699oeSOOg6@smile.fi.intel.com>
+References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
+ <20230926052007.3917389-5-andriy.shevchenko@linux.intel.com>
+ <ZRK1PA2vZBdfAozG@sol>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRK1PA2vZBdfAozG@sol>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hard interrupt do_ipsintr() could introduce double locks on
-host->host_lock.
+On Tue, Sep 26, 2023 at 06:41:00PM +0800, Kent Gibson wrote:
+> On Tue, Sep 26, 2023 at 08:20:06AM +0300, Andy Shevchenko wrote:
+> > We have sparse and dence masks of the line mappings based on
+> 
+> dense
+> 
+> > the view point (Linux numbering or hardware numbering). Since
+> > the Linux side uses sequential bits for the mask, we can simply
+> > convert a Linux number to the hardware one and vise versa by
+> 
+> vice
+> 
+> > counting set bits in the respective mask. Hence replace
+> > bitmap_bitremap() calls by simpler equivalents.
+> > 
+> > With this done the dence mask is not needed and thus dropped.
+> 
+> And dense again.
 
-<Deadlock #1>
-ips_eh_abort()
---> spin_loc(host->host_lock)
-<interrupt>
-   --> do_ipsintr()
-   --> spin_lock(host->host_lock)
+Thank you, Kent, I really appreciate your help with my poor English,
+nevertheless it would be nice if you can look at the last patch and
+maybe even test it, so we have a bit of confidence that it works
+as expected.
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+(The spelling will be fixed in the next version.)
 
-To prevent the potential deadlock, the patch use spin_lock_irqsave()
-on host->host_lock.
-
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/scsi/ips.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/ips.c b/drivers/scsi/ips.c
-index bb206509265e..3caab8233d68 100644
---- a/drivers/scsi/ips.c
-+++ b/drivers/scsi/ips.c
-@@ -776,6 +776,8 @@ int ips_eh_abort(struct scsi_cmnd *SC)
- {
- 	ips_ha_t *ha;
- 	ips_copp_wait_item_t *item;
-+	unsigned long flags;
-+
- 	int ret;
- 	struct Scsi_Host *host;
- 
-@@ -793,7 +795,7 @@ int ips_eh_abort(struct scsi_cmnd *SC)
- 	if (!ha->active)
- 		return (FAILED);
- 
--	spin_lock(host->host_lock);
-+	spin_lock_irqsave(host->host_lock, flags);
- 
- 	/* See if the command is on the copp queue */
- 	item = ha->copp_waitlist.head;
-@@ -814,7 +816,7 @@ int ips_eh_abort(struct scsi_cmnd *SC)
- 		ret = (FAILED);
- 	}
- 
--	spin_unlock(host->host_lock);
-+	spin_unlock_irqrestore(host->host_lock, flags);
- 	return ret;
- }
- 
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
