@@ -2,789 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF907AED6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0228A7AED66
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjIZM6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
+        id S234728AbjIZM5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234694AbjIZM6D (ORCPT
+        with ESMTP id S234715AbjIZM5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:58:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C073121
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695733026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bkrfd5uNYi1l8I8UjtC3dqhal18TSsmdQf1YM3qxm/0=;
-        b=A4IgWsLnriYcVMo5qmTLC+v7fNKfqmGjMH9OeRJOiRc5tMhfyJhwCyqZphmx4/zo6eyUII
-        xtUPiuR/XgD8xcrdyHgj13AO0m8NiIJssv8y0zR/0aSESS9L9rwmcl3+NpOAaHWhmYVbUX
-        mhi9fCws7qita8724NWwF5D/jC1tBM8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-582-3Lb9vVK-OAObzwiFatyM6w-1; Tue, 26 Sep 2023 08:57:04 -0400
-X-MC-Unique: 3Lb9vVK-OAObzwiFatyM6w-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ae7663e604so597687366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:57:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695733023; x=1696337823;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bkrfd5uNYi1l8I8UjtC3dqhal18TSsmdQf1YM3qxm/0=;
-        b=DXliqAknANJZmLAVcJI+7UyCAqqu9Ig0AaOVKUjKZT1wVTJLuUwUmOBi4gKZ1aPGFc
-         wI9micYc7Ke3kb0iKUGpue+0BfsIaHBS3Kpx7Kl+/4gq2s1ji6NGqy7SfpS0EaS45NZr
-         RBlfxazYlceoK4QHj8fANHSGPJr9xG1WkCICdG45sdu3fkR7UsUrRArdZ4+z92RhSdOO
-         Zp4HBBkqMY49E6FJ8dB7cgWnx2/yHHKgoeO6X+IDPVkdRPDqZdwZlB4X/wVlJzf8zCk1
-         SyIG5KOHX1wXAhmkcDAoQt+FFcevLVPfI7XS6sDyDemdFxjVYEfLb1cwpTtg076fD83L
-         Ca6w==
-X-Gm-Message-State: AOJu0YxzaJ27wo0VF6e637tHibjZp49vwNcYocPosdsDTQRKUD95c0Dz
-        L7bnTzcsP62Ir2tNbiPtAvOSc+Lsli7fLiMoeyihhUBeh8l4kC6+HdQp9aZa0Ecg0eJapEjyD+A
-        0cDzlovnIUB9CrBDKX6JW79ru
-X-Received: by 2002:a17:906:738d:b0:99e:f3b:2f78 with SMTP id f13-20020a170906738d00b0099e0f3b2f78mr8432053ejl.67.1695733023412;
-        Tue, 26 Sep 2023 05:57:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGH5/kv3UK0lmTqM1W/u88/1/swZha+PsCWp77fIGhvQZh1TZ/z82LxdxAyZKrRFcNanL6RoA==
-X-Received: by 2002:a17:906:738d:b0:99e:f3b:2f78 with SMTP id f13-20020a170906738d00b0099e0f3b2f78mr8432037ejl.67.1695733023066;
-        Tue, 26 Sep 2023 05:57:03 -0700 (PDT)
-Received: from sgarzare-redhat ([46.6.146.182])
-        by smtp.gmail.com with ESMTPSA id i16-20020a1709061cd000b00991e2b5a27dsm7737684ejh.37.2023.09.26.05.57.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 05:57:02 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 14:56:58 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v1 10/12] test/vsock: MSG_ZEROCOPY flag tests
-Message-ID: <qmjwxf242foundkffm2xs7m52v4pyq2wskkhqntm4rgid2sqxx@3ct6wjlndlyl>
-References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
- <20230922052428.4005676-11-avkrasnov@salutedevices.com>
+        Tue, 26 Sep 2023 08:57:22 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2179210A;
+        Tue, 26 Sep 2023 05:57:14 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rw08227LKzrT2w;
+        Tue, 26 Sep 2023 20:54:58 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 26 Sep 2023 20:57:12 +0800
+Message-ID: <06268327-cfed-f266-34a7-fda69411ef2a@huawei.com>
+Date:   Tue, 26 Sep 2023 20:57:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230922052428.4005676-11-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [RFC PATCH v2 00/18] scsi: scsi_error: Introduce new error handle
+ mechanism
+Content-Language: en-US
+To:     Mike Christie <michael.christie@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, Hannes Reinecke <hare@suse.de>,
+        <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>,
+        <lixiaokeng@huawei.com>
+References: <20230901094127.2010873-1-haowenchao2@huawei.com>
+ <ZRGfc73BSW0yyUtI@infradead.org>
+ <47bed3cb-f307-ec55-5c28-051687dab1ea@huawei.com>
+ <a92f5e0c-1976-4fc6-ba48-7ff49546318a@oracle.com>
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <a92f5e0c-1976-4fc6-ba48-7ff49546318a@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 08:24:26AM +0300, Arseniy Krasnov wrote:
->This adds three tests for MSG_ZEROCOPY feature:
->1) SOCK_STREAM tx with different buffers.
->2) SOCK_SEQPACKET tx with different buffers.
->3) SOCK_STREAM test to read empty error queue of the socket.
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> tools/testing/vsock/Makefile              |   2 +-
-> tools/testing/vsock/util.c                | 222 +++++++++++++++
-> tools/testing/vsock/util.h                |  19 ++
-> tools/testing/vsock/vsock_test.c          |  16 ++
-> tools/testing/vsock/vsock_test_zerocopy.c | 314 ++++++++++++++++++++++
-> tools/testing/vsock/vsock_test_zerocopy.h |  15 ++
-> 6 files changed, 587 insertions(+), 1 deletion(-)
-> create mode 100644 tools/testing/vsock/vsock_test_zerocopy.c
-> create mode 100644 tools/testing/vsock/vsock_test_zerocopy.h
->
->diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
->index 21a98ba565ab..1a26f60a596c 100644
->--- a/tools/testing/vsock/Makefile
->+++ b/tools/testing/vsock/Makefile
->@@ -1,7 +1,7 @@
-> # SPDX-License-Identifier: GPL-2.0-only
-> all: test vsock_perf
-> test: vsock_test vsock_diag_test
->-vsock_test: vsock_test.o timeout.o control.o util.o
->+vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
-> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
-> vsock_perf: vsock_perf.o
->
->diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
->index 6779d5008b27..d531dbbfa8ff 100644
->--- a/tools/testing/vsock/util.c
->+++ b/tools/testing/vsock/util.c
->@@ -11,15 +11,27 @@
-> #include <stdio.h>
-> #include <stdint.h>
-> #include <stdlib.h>
->+#include <string.h>
-> #include <signal.h>
-> #include <unistd.h>
-> #include <assert.h>
-> #include <sys/epoll.h>
->+#include <sys/mman.h>
->+#include <linux/errqueue.h>
->+#include <poll.h>
->
-> #include "timeout.h"
-> #include "control.h"
-> #include "util.h"
->
->+#ifndef SOL_VSOCK
->+#define SOL_VSOCK	287
->+#endif
->+
->+#ifndef VSOCK_RECVERR
->+#define VSOCK_RECVERR	1
->+#endif
+On 2023/9/26 1:54, Mike Christie wrote:
+> On 9/25/23 10:07 AM, Wenchao Hao wrote:
+>> On 2023/9/25 22:55, Christoph Hellwig wrote:
+>>> Before we add another new error handling mechanism we need to fix the
+>>> old one first.  Hannes' work on not passing the scsi_cmnd to the various
+>>> reset handlers hasn't made a lot of progress in the last five years and
+>>> we'll need to urgently fix that first before adding even more
+>>> complexity.
+>>>
+>> I observed Hannes's patches posted about one year ago, it has not been
+>> applied yet. I don't know if he is still working on it.
+>>
+>> My patches do not depend much on that work, I think the conflict can be
+>> solved fast between two changes.
+> 
+> I think we want to figure out Hannes's patches first.
+> 
+> For a new EH design we will want to be able to do multiple TMFs in parallel
+> on the same host/target right?
+> 
 
-Maybe better to re-define them in util.h where we include vm_socktes.h
+It's not necessary to do multiple TMFs in parallel, it's ok to make sure
+each TMFs do not affect each other.
 
->+
-> /* Install signal handlers */
-> void init_signals(void)
-> {
->@@ -444,3 +456,213 @@ unsigned long hash_djb2(const void *data, size_t len)
->
-> 	return hash;
-> }
->+
->+void enable_so_zerocopy(int fd)
->+{
->+	int val = 1;
->+
->+	if (setsockopt(fd, SOL_SOCKET, SO_ZEROCOPY, &val, sizeof(val))) {
->+		perror("setsockopt");
->+		exit(EXIT_FAILURE);
->+	}
->+}
->+
->+static void *mmap_no_fail(size_t bytes)
->+{
->+	void *res;
->+
->+	res = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
->+		   MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
->+	if (res == MAP_FAILED) {
->+		perror("mmap");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	return res;
->+}
->+
->+size_t iovec_bytes(const struct iovec *iov, size_t iovnum)
->+{
->+	size_t bytes;
->+	int i;
->+
->+	for (bytes = 0, i = 0; i < iovnum; i++)
->+		bytes += iov[i].iov_len;
->+
->+	return bytes;
->+}
->+
->+static void iovec_random_init(struct iovec *iov,
->+			      const struct vsock_test_data *test_data)
->+{
->+	int i;
->+
->+	for (i = 0; i < test_data->vecs_cnt; i++) {
->+		int j;
->+
->+		if (test_data->vecs[i].iov_base == MAP_FAILED)
->+			continue;
->+
->+		for (j = 0; j < iov[i].iov_len; j++)
->+			((uint8_t *)iov[i].iov_base)[j] = rand() & 0xff;
->+	}
->+}
->+
->+unsigned long iovec_hash_djb2(struct iovec *iov, size_t iovnum)
->+{
->+	unsigned long hash;
->+	size_t iov_bytes;
->+	size_t offs;
->+	void *tmp;
->+	int i;
->+
->+	iov_bytes = iovec_bytes(iov, iovnum);
->+
->+	tmp = malloc(iov_bytes);
->+	if (!tmp) {
->+		perror("malloc");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	for (offs = 0, i = 0; i < iovnum; i++) {
->+		memcpy(tmp + offs, iov[i].iov_base, iov[i].iov_len);
->+		offs += iov[i].iov_len;
->+	}
->+
->+	hash = hash_djb2(tmp, iov_bytes);
->+	free(tmp);
->+
->+	return hash;
->+}
->+
->+struct iovec *iovec_from_test_data(const struct vsock_test_data *test_data)
->+{
->+	const struct iovec *test_iovec;
->+	struct iovec *iovec;
->+	int i;
->+
->+	iovec = malloc(sizeof(*iovec) * test_data->vecs_cnt);
->+	if (!iovec) {
->+		perror("malloc");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	test_iovec = test_data->vecs;
->+
->+	for (i = 0; i < test_data->vecs_cnt; i++) {
->+		iovec[i].iov_len = test_iovec[i].iov_len;
->+		iovec[i].iov_base = mmap_no_fail(test_iovec[i].iov_len);
->+
->+		if (test_iovec[i].iov_base != MAP_FAILED &&
->+		    test_iovec[i].iov_base)
->+			iovec[i].iov_base += (uintptr_t)test_iovec[i].iov_base;
->+	}
->+
->+	/* Unmap "invalid" elements. */
->+	for (i = 0; i < test_data->vecs_cnt; i++) {
->+		if (test_iovec[i].iov_base == MAP_FAILED) {
->+			if (munmap(iovec[i].iov_base, iovec[i].iov_len)) {
->+				perror("munmap");
->+				exit(EXIT_FAILURE);
->+			}
->+		}
->+	}
->+
->+	iovec_random_init(iovec, test_data);
->+
->+	return iovec;
->+}
->+
->+void free_iovec_test_data(const struct vsock_test_data *test_data,
->+			  struct iovec *iovec)
->+{
->+	int i;
->+
->+	for (i = 0; i < test_data->vecs_cnt; i++) {
->+		if (test_data->vecs[i].iov_base != MAP_FAILED) {
->+			if (test_data->vecs[i].iov_base)
->+				iovec[i].iov_base -= (uintptr_t)test_data->vecs[i].iov_base;
->+
->+			if (munmap(iovec[i].iov_base, iovec[i].iov_len)) {
->+				perror("munmap");
->+				exit(EXIT_FAILURE);
->+			}
->+		}
->+	}
->+
->+	free(iovec);
->+}
->+
->+#define POLL_TIMEOUT_MS		100
->+void vsock_recv_completion(int fd, bool zerocopied, bool completion)
->+{
->+	struct sock_extended_err *serr;
->+	struct msghdr msg = { 0 };
->+	struct pollfd fds = { 0 };
->+	char cmsg_data[128];
->+	struct cmsghdr *cm;
->+	ssize_t res;
->+
->+	fds.fd = fd;
->+	fds.events = 0;
->+
->+	if (poll(&fds, 1, POLL_TIMEOUT_MS) < 0) {
->+		perror("poll");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (!(fds.revents & POLLERR)) {
->+		if (completion) {
->+			fprintf(stderr, "POLLERR expected\n");
->+			exit(EXIT_FAILURE);
->+		} else {
->+			return;
->+		}
->+	}
->+
->+	msg.msg_control = cmsg_data;
->+	msg.msg_controllen = sizeof(cmsg_data);
->+
->+	res = recvmsg(fd, &msg, MSG_ERRQUEUE);
->+	if (res) {
->+		fprintf(stderr, "failed to read error queue: %zi\n", res);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	cm = CMSG_FIRSTHDR(&msg);
->+	if (!cm) {
->+		fprintf(stderr, "cmsg: no cmsg\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (cm->cmsg_level != SOL_VSOCK) {
->+		fprintf(stderr, "cmsg: unexpected 'cmsg_level'\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (cm->cmsg_type != VSOCK_RECVERR) {
->+		fprintf(stderr, "cmsg: unexpected 'cmsg_type'\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	serr = (void *)CMSG_DATA(cm);
->+	if (serr->ee_origin != SO_EE_ORIGIN_ZEROCOPY) {
->+		fprintf(stderr, "serr: wrong origin: %u\n", serr->ee_origin);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (serr->ee_errno) {
->+		fprintf(stderr, "serr: wrong error code: %u\n", serr->ee_errno);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (zerocopied && (serr->ee_code & SO_EE_CODE_ZEROCOPY_COPIED)) {
->+		fprintf(stderr, "serr: was copy instead of zerocopy\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (!zerocopied && !(serr->ee_code & SO_EE_CODE_ZEROCOPY_COPIED)) {
->+		fprintf(stderr, "serr: was zerocopy instead of copy\n");
->+		exit(EXIT_FAILURE);
->+	}
->+}
->diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
->index e5407677ce05..8656a5ae63aa 100644
->--- a/tools/testing/vsock/util.h
->+++ b/tools/testing/vsock/util.h
->@@ -2,6 +2,7 @@
-> #ifndef UTIL_H
-> #define UTIL_H
->
->+#include <stdbool.h>
-> #include <sys/socket.h>
-> #include <linux/vm_sockets.h>
->
->@@ -18,6 +19,17 @@ struct test_opts {
-> 	unsigned int peer_cid;
-> };
->
->+#define VSOCK_TEST_DATA_MAX_IOV 4
->+
->+struct vsock_test_data {
->+	bool stream_only;	/* Only for SOCK_STREAM. */
->+	bool zerocopied;	/* Data must be zerocopied. */
->+	bool so_zerocopy;	/* Enable zerocopy mode. */
->+	int sendmsg_errno;	/* 'errno' after 'sendmsg()'. */
->+	int vecs_cnt;		/* Number of elements in 'vecs'. */
->+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
->+};
->+
-> /* A test case definition.  Test functions must print failures to stderr and
->  * terminate with exit(EXIT_FAILURE).
->  */
->@@ -53,4 +65,11 @@ void list_tests(const struct test_case *test_cases);
-> void skip_test(struct test_case *test_cases, size_t test_cases_len,
-> 	       const char *test_id_str);
-> unsigned long hash_djb2(const void *data, size_t len);
->+void enable_so_zerocopy(int fd);
->+size_t iovec_bytes(const struct iovec *iov, size_t iovnum);
->+unsigned long iovec_hash_djb2(struct iovec *iov, size_t iovnum);
->+struct iovec *iovec_from_test_data(const struct vsock_test_data *test_data);
->+void free_iovec_test_data(const struct vsock_test_data *test_data,
->+			  struct iovec *iovec);
->+void vsock_recv_completion(int fd, bool zerocopied, bool completion);
-> #endif /* UTIL_H */
->diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->index da4cb819a183..c1f7bc9abd22 100644
->--- a/tools/testing/vsock/vsock_test.c
->+++ b/tools/testing/vsock/vsock_test.c
->@@ -21,6 +21,7 @@
-> #include <poll.h>
-> #include <signal.h>
->
->+#include "vsock_test_zerocopy.h"
-> #include "timeout.h"
-> #include "control.h"
-> #include "util.h"
->@@ -1269,6 +1270,21 @@ static struct test_case test_cases[] = {
-> 		.run_client = test_stream_shutrd_client,
-> 		.run_server = test_stream_shutrd_server,
-> 	},
->+	{
->+		.name = "SOCK_STREAM MSG_ZEROCOPY",
->+		.run_client = test_stream_msgzcopy_client,
->+		.run_server = test_stream_msgzcopy_server,
->+	},
->+	{
->+		.name = "SOCK_SEQPACKET MSG_ZEROCOPY",
->+		.run_client = test_seqpacket_msgzcopy_client,
->+		.run_server = test_seqpacket_msgzcopy_server,
->+	},
->+	{
->+		.name = "SOCK_STREAM MSG_ZEROCOPY empty MSG_ERRQUEUE",
->+		.run_client = test_stream_msgzcopy_empty_errq_client,
->+		.run_server = test_stream_msgzcopy_empty_errq_server,
->+	},
-> 	{},
-> };
->
->diff --git a/tools/testing/vsock/vsock_test_zerocopy.c b/tools/testing/vsock/vsock_test_zerocopy.c
->new file mode 100644
->index 000000000000..6968555d3611
->--- /dev/null
->+++ b/tools/testing/vsock/vsock_test_zerocopy.c
->@@ -0,0 +1,314 @@
->+// SPDX-License-Identifier: GPL-2.0-only
->+/* MSG_ZEROCOPY feature tests for vsock
->+ *
->+ * Copyright (C) 2023 SaluteDevices.
->+ *
->+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
->+ */
->+
->+#include <stdio.h>
->+#include <stdlib.h>
->+#include <string.h>
->+#include <sys/mman.h>
->+#include <unistd.h>
->+#include <poll.h>
->+#include <linux/errqueue.h>
->+#include <linux/kernel.h>
->+#include <errno.h>
->+
->+#include "control.h"
->+#include "vsock_test_zerocopy.h"
->+
->+#define PAGE_SIZE		4096
->+
->+static struct vsock_test_data test_data_array[] = {
->+	/* Last element has non-page aligned size. */
->+	{
->+		.zerocopied = true,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ NULL, PAGE_SIZE },
->+			{ NULL, 200 }
->+		}
->+	},
->+	/* All elements have page aligned base and size. */
->+	{
->+		.zerocopied = true,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ NULL, PAGE_SIZE * 2 },
->+			{ NULL, PAGE_SIZE * 3 }
->+		}
->+	},
->+	/* All elements have page aligned base and size. But
->+	 * data length is bigger than 64Kb.
->+	 */
->+	{
->+		.zerocopied = true,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE * 16 },
->+			{ NULL, PAGE_SIZE * 16 },
->+			{ NULL, PAGE_SIZE * 16 }
->+		}
->+	},
->+	/* Middle element has both non-page aligned base and size. */
->+	{
->+		.zerocopied = true,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ (void *)1, 100 },
->+			{ NULL, PAGE_SIZE }
->+		}
->+	},
->+	/* Middle element is unmapped. */
->+	{
->+		.zerocopied = false,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = ENOMEM,
->+		.vecs_cnt = 3,
->+		{
->+			{ NULL, PAGE_SIZE },
->+			{ MAP_FAILED, PAGE_SIZE },
->+			{ NULL, PAGE_SIZE }
->+		}
->+	},
->+	/* Valid data, but SO_ZEROCOPY is off. This
->+	 * will trigger fallback to copy.
->+	 */
->+	{
->+		.zerocopied = false,
->+		.so_zerocopy = false,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 1,
->+		{
->+			{ NULL, PAGE_SIZE }
->+		}
->+	},
->+	/* Valid data, but message is bigger than peer's
->+	 * buffer, so this will trigger fallback to copy.
->+	 * This test is for SOCK_STREAM only, because
->+	 * for SOCK_SEQPACKET, 'sendmsg()' returns EMSGSIZE.
->+	 */
->+	{
->+		.stream_only = true,
->+		.zerocopied = false,
->+		.so_zerocopy = true,
->+		.sendmsg_errno = 0,
->+		.vecs_cnt = 1,
->+		{
->+			{ NULL, 100 * PAGE_SIZE }
->+		}
->+	},
->+};
->+
->+static void test_client(const struct test_opts *opts,
->+			const struct vsock_test_data *test_data,
->+			bool sock_seqpacket)
->+{
->+	struct msghdr msg = { 0 };
->+	ssize_t sendmsg_res;
->+	struct iovec *iovec;
->+	int fd;
->+
->+	if (sock_seqpacket)
->+		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	else
->+		fd = vsock_stream_connect(opts->peer_cid, 1234);
->+
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (test_data->so_zerocopy)
->+		enable_so_zerocopy(fd);
->+
->+	iovec = iovec_from_test_data(test_data);
->+
->+	msg.msg_iov = iovec;
->+	msg.msg_iovlen = test_data->vecs_cnt;
->+
->+	errno = 0;
->+
->+	sendmsg_res = sendmsg(fd, &msg, MSG_ZEROCOPY);
->+	if (errno != test_data->sendmsg_errno) {
->+		fprintf(stderr, "expected 'errno' == %i, got %i\n",
->+			test_data->sendmsg_errno, errno);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (!errno) {
->+		if (sendmsg_res != iovec_bytes(iovec, test_data->vecs_cnt)) {
->+			fprintf(stderr, "expected 'sendmsg()' == %li, got %li\n",
->+				iovec_bytes(iovec, test_data->vecs_cnt),
->+				sendmsg_res);
->+			exit(EXIT_FAILURE);
->+		}
->+	}
->+
->+	/* Receive completion only in case of successful 'sendmsg()'. */
->+	vsock_recv_completion(fd, test_data->zerocopied,
->+			      test_data->so_zerocopy && !test_data->sendmsg_errno);
->+
->+	if (!test_data->sendmsg_errno)
->+		control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
->+	else
->+		control_writeulong(0);
->+
->+	control_writeln("DONE");
->+	free_iovec_test_data(test_data, iovec);
->+	close(fd);
->+}
->+
->+void test_stream_msgzcopy_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		test_client(opts, &test_data_array[i], false);
->+}
->+
->+void test_seqpacket_msgzcopy_client(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++) {
->+		if (test_data_array[i].stream_only)
->+			continue;
->+
->+		test_client(opts, &test_data_array[i], true);
->+	}
->+}
->+
->+static void test_server(const struct test_opts *opts,
->+			const struct vsock_test_data *test_data,
->+			bool sock_seqpacket)
->+{
->+	unsigned long remote_hash;
->+	unsigned long local_hash;
->+	ssize_t total_bytes_rec;
->+	unsigned char *data;
->+	size_t data_len;
->+	int fd;
->+
->+	if (sock_seqpacket)
->+		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->+	else
->+		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
->+
->+	data = malloc(data_len);
->+	if (!data) {
->+		perror("malloc");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	total_bytes_rec = 0;
->+
->+	while (total_bytes_rec != data_len) {
->+		ssize_t bytes_rec;
->+
->+		bytes_rec = read(fd, data + total_bytes_rec,
->+				 data_len - total_bytes_rec);
->+		if (bytes_rec <= 0)
->+			break;
->+
->+		total_bytes_rec += bytes_rec;
->+	}
->+
->+	if (test_data->sendmsg_errno == 0)
->+		local_hash = hash_djb2(data, data_len);
->+	else
->+		local_hash = 0;
->+
->+	free(data);
->+
->+	/* Waiting for some result. */
->+	remote_hash = control_readulong();
->+	if (remote_hash != local_hash) {
->+		fprintf(stderr, "hash mismatch\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("DONE");
->+	close(fd);
->+}
->+
->+void test_stream_msgzcopy_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
->+		test_server(opts, &test_data_array[i], false);
->+}
->+
->+void test_seqpacket_msgzcopy_server(const struct test_opts *opts)
->+{
->+	int i;
->+
->+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++) {
->+		if (test_data_array[i].stream_only)
->+			continue;
->+
->+		test_server(opts, &test_data_array[i], true);
->+	}
->+}
->+
->+void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts)
->+{
->+	struct msghdr msg = { 0 };
->+	char cmsg_data[128];
->+	ssize_t res;
->+	int fd;
->+
->+	fd = vsock_stream_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	msg.msg_control = cmsg_data;
->+	msg.msg_controllen = sizeof(cmsg_data);
->+
->+	res = recvmsg(fd, &msg, MSG_ERRQUEUE);
->+	if (res != -1) {
->+		fprintf(stderr, "expected 'recvmsg(2)' failure, got %zi\n",
->+			res);
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_writeln("DONE");
->+	close(fd);
->+}
->+
->+void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts)
->+{
->+	int fd;
->+
->+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("DONE");
->+	close(fd);
->+}
->diff --git a/tools/testing/vsock/vsock_test_zerocopy.h b/tools/testing/vsock/vsock_test_zerocopy.h
->new file mode 100644
->index 000000000000..3ef2579e024d
->--- /dev/null
->+++ b/tools/testing/vsock/vsock_test_zerocopy.h
->@@ -0,0 +1,15 @@
->+/* SPDX-License-Identifier: GPL-2.0-only */
->+#ifndef VSOCK_TEST_ZEROCOPY_H
->+#define VSOCK_TEST_ZEROCOPY_H
->+#include "util.h"
->+
->+void test_stream_msgzcopy_client(const struct test_opts *opts);
->+void test_stream_msgzcopy_server(const struct test_opts *opts);
->+
->+void test_seqpacket_msgzcopy_client(const struct test_opts *opts);
->+void test_seqpacket_msgzcopy_server(const struct test_opts *opts);
->+
->+void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts);
->+void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts);
->+
->+#endif /* VSOCK_TEST_ZEROCOPY_H */
->-- 
->2.25.1
->
+For example, we have two devices: 0:0:0:0 and 0:0:0:1
+
+Both of them request device reset, they do not happened in parallel, but
+would in serial. If 0:0:0:0 is performing device reset in progress, 0:0:0:1
+just wait 0:0:0:0 to finish.
+
+> The problem is that we need to be able to make forward progress in the EH
+> path and not fail just because we can't allocate memory for a TMF related
+> struct. To accomplish this now, drivers will use mempools, preallocate TMF
+> related structs/mem/tags with their scsi_cmnd related structs, preallocate
+> per host/target/device related structs or ignore what I wrote above and just
+> fail.
+> 
+> Hannes's patches fix up the eh callouts so they don't pass in a scsi_cmnd
+> when it's not needed. That seems nice because after that, then for your new
+> EH we can begin to standardize on how to handle preallocation of drivers
+> resources needed to perform TMFs for your new EH. It could be a per
+> device/target/host callout to allow drivers to preallocate, then scsi-ml calls
+> into the drivers with that data. It doesn't have to be exactly like that or
+> anything close. It would be nice for drivers to not have to think about this
+> type of thing and scsi-ml just to handle the resource management for us when
+> there are multiple TMFs in progress.
+> 
 
