@@ -2,214 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0E77AEB81
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A077AEB86
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbjIZLcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
+        id S232738AbjIZLdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjIZLcF (ORCPT
+        with ESMTP id S229726AbjIZLdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:32:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1975DE5;
-        Tue, 26 Sep 2023 04:31:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FE5C433C8;
-        Tue, 26 Sep 2023 11:31:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695727918;
-        bh=VavTLqfwPyOPHMccoFChylXmFFUo8P7qlBTJ/DhQa2w=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QV5akLE8cAQWKD8DSqGm3T3eFEgO4cqRzRheD5AXFFAGZjfZohBsvWfJu1z1/3Z/c
-         McIfFKUws9d2IsYbPe2f6eQwitPBCTmUwrW8L+rcqrGDI3l8T0XzHzZtyOCqGWUYl3
-         w9yvUNiNJnXyLQBL+qr9frj8ed4Fo9NlUQgF3sXPq3XAK2Q+XvDxjFA7kWCxz02wCB
-         M6lgQY/XvGaeVFTzeW0DTG+4CUYuOxJvvfSzYX+8mcxjGhE8Se9B9k/Tli5Xoi/Syt
-         4KxlktRKXg6+TLBEF1i51FpePUzCV8uSSX4n0yM25izPFG5e0Dv7apQz2Xy0gfGziV
-         T90RTT72Nl3gg==
-Message-ID: <54e79ca9adfd52a8d39e158bc246173768a0aa0d.camel@kernel.org>
-Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
-Date:   Tue, 26 Sep 2023 07:31:55 -0400
-In-Reply-To: <ZRIKj0E8P46kerqa@dread.disaster.area>
-References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
-         <CAOQ4uxiNfPoPiX0AERywqjaBH30MHQPxaZepnKeyEjJgTv8hYg@mail.gmail.com>
-         <5e3b8a365160344f1188ff13afb0a26103121f99.camel@kernel.org>
-         <CAOQ4uxjrt6ca4VDvPAL7USr6_SspCv0rkRkMJ4_W2S6vzV738g@mail.gmail.com>
-         <ZRC1pjwKRzLiD6I3@dread.disaster.area>
-         <77d33282068035a3b42ace946b1be57457d2b60b.camel@kernel.org>
-         <ZRIKj0E8P46kerqa@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 26 Sep 2023 07:33:15 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69CEE9;
+        Tue, 26 Sep 2023 04:33:07 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QBWhw9043460;
+        Tue, 26 Sep 2023 06:32:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695727963;
+        bh=KlSQQh3u11EgpSDDbXEWrJRLshXYW6EsKo55WM7AJz8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=tSj+Hw5BATfgv84LpCnwE79TwBXvS4NbAKFfPstIsKcPTWNfhRAYo3KGXUdoQhNBC
+         NSmtIv99ONltmsl0rPA7IJUjNtodgMj0HyAzlciWRIM/+yp3OkVLYbvlbgDJe6cRWV
+         Bu1uSOXLlJgYGhSad1RLg4XBZnS/xGODUSdnGgSQ=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QBWh5C064580
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 06:32:43 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 06:32:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 06:32:43 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QBWfp9080419;
+        Tue, 26 Sep 2023 06:32:42 -0500
+Date:   Tue, 26 Sep 2023 17:02:41 +0530
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Thomas Richard <thomas.richard@bootlin.com>
+CC:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        Udit Kumar <u-kumar1@ti.com>
+Subject: Re: [PATCH] serial: 8250_omap: Fix errors with no_console_suspend
+Message-ID: <20230926113241.ws2tco3poeixhupi@dhruva>
+References: <20230926061319.15140-1-tony@atomide.com>
+ <652eb018-8e67-5f4b-8329-0f52159a27b1@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <652eb018-8e67-5f4b-8329-0f52159a27b1@bootlin.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-26 at 08:32 +1000, Dave Chinner wrote:
-> On Mon, Sep 25, 2023 at 06:14:05AM -0400, Jeff Layton wrote:
-> > On Mon, 2023-09-25 at 08:18 +1000, Dave Chinner wrote:
-> > > On Sat, Sep 23, 2023 at 05:52:36PM +0300, Amir Goldstein wrote:
-> > > > On Sat, Sep 23, 2023 at 1:46=E2=80=AFPM Jeff Layton <jlayton@kernel=
-.org> wrote:
-> > > > >=20
-> > > > > On Sat, 2023-09-23 at 10:15 +0300, Amir Goldstein wrote:
-> > > > > > On Fri, Sep 22, 2023 at 8:15=E2=80=AFPM Jeff Layton <jlayton@ke=
-rnel.org> wrote:
-> > > > > > >=20
-> > > > > > > My initial goal was to implement multigrain timestamps on mos=
-t major
-> > > > > > > filesystems, so we could present them to userland, and use th=
-em for
-> > > > > > > NFSv3, etc.
-> > > > > > >=20
-> > > > > > > With the current implementation however, we can't guarantee t=
-hat a file
-> > > > > > > with a coarse grained timestamp modified after one with a fin=
-e grained
-> > > > > > > timestamp will always appear to have a later value. This coul=
-d confuse
-> > > > > > > some programs like make, rsync, find, etc. that depend on str=
-ict
-> > > > > > > ordering requirements for timestamps.
-> > > > > > >=20
-> > > > > > > The goal of this version is more modest: fix XFS' change attr=
-ibute.
-> > > > > > > XFS's change attribute is bumped on atime updates in addition=
- to other
-> > > > > > > deliberate changes. This makes it unsuitable for export via n=
-fsd.
-> > > > > > >=20
-> > > > > > > Jan Kara suggested keeping this functionality internal-only f=
-or now and
-> > > > > > > plumbing the fine grained timestamps through getattr [1]. Thi=
-s set takes
-> > > > > > > a slightly different approach and has XFS use the fine-graine=
-d attr to
-> > > > > > > fake up STATX_CHANGE_COOKIE in its getattr routine itself.
-> > > > > > >=20
-> > > > > > > While we keep fine-grained timestamps in struct inode, when p=
-resenting
-> > > > > > > the timestamps via getattr, we truncate them at a granularity=
- of number
-> > > > > > > of ns per jiffy,
-> > > > > >=20
-> > > > > > That's not good, because user explicitly set granular mtime wou=
-ld be
-> > > > > > truncated too and booting with different kernels (HZ) would cha=
-nge
-> > > > > > the observed timestamps of files.
-> > > > > >=20
-> > > > >=20
-> > > > > Thinking about this some more, I think the first problem is easil=
-y
-> > > > > addressable:
-> > > > >=20
-> > > > > The ctime isn't explicitly settable and with this set, we're alre=
-ady not
-> > > > > truncating the atime. We haven't used any of the extra bits in th=
-e mtime
-> > > > > yet, so we could just carve out a flag in there that says "this m=
-time
-> > > > > was explicitly set and shouldn't be truncated before presentation=
-".
-> > > > >=20
-> > > >=20
-> > > > I thought about this option too.
-> > > > But note that the "mtime was explicitly set" flag needs
-> > > > to be persisted to disk so you cannot store it in the high nsec bit=
-s.
-> > > > At least XFS won't store those bits if you use them - they have to
-> > > > be translated to an XFS inode flag and I don't know if changing
-> > > > XFS on-disk format was on your wish list.
-> > >=20
-> > > Remember: this multi-grain timestamp thing was an idea to solve the
-> > > NFS change attribute problem without requiring *any* filesystem with
-> > > sub-jiffie timestamp capability to change their on-disk format to
-> > > implement a persistent change attribute that matches the new
-> > > requires of the kernel nfsd.
-> > >=20
-> > > If we now need to change the on-disk format to support
-> > > some whacky new timestamp semantic to do this, then people have
-> > > completely lost sight of what problem the multi-grain timestamp idea
-> > > was supposed to address.
-> > >=20
-> >=20
-> > Yep. The main impetus for all of this was to fix XFS's change attribute
-> > without requiring an on-disk format change. If we have to rev the on-
-> > disk format, we're probably better off plumbing in a proper i_version
-> > counter and tossing this idea aside.
-> >=20
-> > That said, I think all we'd need for this scheme is a single flag per
-> > inode (to indicate that the mtime shouldn't be truncated before
-> > presentation). If that's possible to do without fully revving the inode
-> > format, then we could still pursue this. I take it that's probably not
-> > the case though.
->=20
-> Older kernels that don't know what the flag means, but that should
-> be OK for an inode flag. The bigger issue is that none of the
-> userspace tools (xfs_db, xfs_repair, etc) know about it, so they
-> would have to be taught about it. And then there's testing it, which
-> likely means userspace needs visibility of the flag (e.g. FS_XFLAG
-> for it) and then there's more work....
->=20
-> It's really not worth it.
->=20
->
-> I think that Linus's suggestion of the in-memory inode timestamp
-> always being a 64bit, 100ns granularity value instead of a timespec
-> that gets truncated at sample time has merit as a general solution.
->=20
+On Sep 26, 2023 at 09:51:30 +0200, Thomas Richard wrote:
+> Hi Tony,
+> 
+> Thanks for the fix.
+> 
+> On 9/26/23 08:13, Tony Lindgren wrote:
+> > We now get errors on system suspend if no_console_suspend is set as
+> > reported by Thomas. The errors started with commit 20a41a62618d ("serial:
+> > 8250_omap: Use force_suspend and resume for system suspend").
+> > 
+> > Let's fix the issue by checking for console_suspend_enabled in the system
+> > suspend and resume path.
+> > 
+> > Note that with this fix the checks for console_suspend_enabled in
+> > omap8250_runtime_suspend() become useless. We now keep runtime PM usage
+> > count for an attached kernel console starting with commit bedb404e91bb
+> > ("serial: 8250_port: Don't use power management for kernel console").
+> > 
+> > Fixes: 20a41a62618d ("serial: 8250_omap: Use force_suspend and resume for system suspend")
+> > Cc: Udit Kumar <u-kumar1@ti.com>
+> > Reported-by: Thomas Richard <thomas.richard@bootlin.com>
 
-Changing how we store timestamps in struct inode is a good idea, and
-reducing the effective granularity to 100ns seems reasonable, but that
-alone won't fix XFS's i_version counter, or the ordering problems that
-we hit with the multigrain series that had to be reverted.
+Don't we want a closes: tag?
 
-> We also must not lose sight of the fact that the lazytime mount
-> option makes atime updates on XFS behave exactly as the nfsd/NFS
-> client application wants. That is, XFS will do in-memory atime
-> updates unless the atime update also sets S_VERSION to explicitly
-> bump the i_version counter if required. That leads to another
-> potential nfsd specific solution without requiring filesystems to
-> change on disk formats: the nfsd explicitly asks operations for lazy
-> atime updates...
->=20
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> 
+> Tested-by: Thomas Richard <thomas.richard@bootlin.com>
 
-Not exactly. The problem with XFS's i_version is that it also bumps it
-on atime updates. lazytime reduces the number of atime updates to
-~1/day. To be exactly what nfsd wants, you'd need to make that 0. I
-suppose you can work around it with noatime, but that has problems of
-its own.
+Thanks for testing Thomas
 
-> And we must also keep in sight the fact that io_uring wants
-> non-blocking timestamp updates to be possible (for all types of
-> updates). Hence it looks to me like we have more than one use case
-> for per-operation/application specific timestamp update semantics.
-> Perhaps there's a generic solution to this problem (e.g.  operation
-> specific non-blocking, in-memory pure timestamp updates) that does
-> what everyone needs...
+> 
+> > ---
+> >  drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++---------------
+> >  1 file changed, 10 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+> > --- a/drivers/tty/serial/8250/8250_omap.c
+> > +++ b/drivers/tty/serial/8250/8250_omap.c
+> > @@ -1617,7 +1617,7 @@ static int omap8250_suspend(struct device *dev)
+> >  {
+> >  	struct omap8250_priv *priv = dev_get_drvdata(dev);
+> >  	struct uart_8250_port *up = serial8250_get_port(priv->line);
+> > -	int err;
+> > +	int err = 0;
+> >  
+> >  	serial8250_suspend_port(priv->line);
+> >  
+> > @@ -1627,7 +1627,8 @@ static int omap8250_suspend(struct device *dev)
+> >  	if (!device_may_wakeup(dev))
+> >  		priv->wer = 0;
+> >  	serial_out(up, UART_OMAP_WER, priv->wer);
+> > -	err = pm_runtime_force_suspend(dev);
+> > +	if (uart_console(&up->port) && console_suspend_enabled)
+> > +		err = pm_runtime_force_suspend(dev);
+> >  	flush_work(&priv->qos_work);
+> >  
+> >  	return err;
+> > @@ -1636,11 +1637,15 @@ static int omap8250_suspend(struct device *dev)
+> >  static int omap8250_resume(struct device *dev)
+> >  {
+> >  	struct omap8250_priv *priv = dev_get_drvdata(dev);
+> > +	struct uart_8250_port *up = serial8250_get_port(priv->line);
+> >  	int err;
+> >  
+> > -	err = pm_runtime_force_resume(dev);
+> > -	if (err)
+> > -		return err;
+> > +	if (uart_console(&up->port) && console_suspend_enabled) {
+> > +		err = pm_runtime_force_resume(dev);
+> > +		if (err)
+> > +			return err;
+> > +	}
 
---=20
-Jeff Layton <jlayton@kernel.org>
+LGTM, thanks for the fix Tony.
+
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+
+> > +
+> >  	serial8250_resume_port(priv->line);
+> >  	/* Paired with pm_runtime_resume_and_get() in omap8250_suspend() */
+> >  	pm_runtime_mark_last_busy(dev);
+> > @@ -1717,16 +1722,6 @@ static int omap8250_runtime_suspend(struct device *dev)
+> >  
+> >  	if (priv->line >= 0)
+> >  		up = serial8250_get_port(priv->line);
+> > -	/*
+> > -	 * When using 'no_console_suspend', the console UART must not be
+> > -	 * suspended. Since driver suspend is managed by runtime suspend,
+> > -	 * preventing runtime suspend (by returning error) will keep device
+> > -	 * active during suspend.
+> > -	 */
+> > -	if (priv->is_suspending && !console_suspend_enabled) {
+> > -		if (up && uart_console(&up->port))
+> > -			return -EBUSY;
+> > -	}
+> >  
+> >  	if (priv->habit & UART_ERRATA_CLOCK_DISABLE) {
+> >  		int ret;
+> -- 
+> Thomas Richard
+> 
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
