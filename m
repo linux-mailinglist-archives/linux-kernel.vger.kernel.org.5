@@ -2,391 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06BF7AF4C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332E87AF4C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbjIZUGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
+        id S229880AbjIZUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235606AbjIZUGB (ORCPT
+        with ESMTP id S235803AbjIZUHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:06:01 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8D5D6;
-        Tue, 26 Sep 2023 13:05:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GCFLepEKzGuxn6PTYv4iKe1vgQzmPwQYrru1ad0fV8Vh+v6/oYQou3yfzadJ+NsLmg9xo6/T2bUot+OVKcuDlVbpLytouDFXdwr4/U85DfWqn94m5A83kdhGmPU5khfIyMyrc3OG1zrDUdVaOAS/04gMpxs95BLUyKiZpKR7RIhbOQ5yYHmsApy/j1WE01/fhogUa0nyACkH8TzLsiyOaczLKdUmt+q9KUWOZ5BuhBV8COHLzOazwbv5qH8V/ThH6BUn38GrBQklUxFNYL8a1tCi+8HT15fy4CNN+w+dqs+JMcHYa0j47JgGyELS9KHfLChTNcVgO5ns7qsAppqLlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uObNh1yKGnx9276qFxdZOOUZx9wJsTpJpILuuNVoRbQ=;
- b=M60Bhx2raTONCJL5tet4Y/ZPUPsSLFge6q9amWqs9uLF9JUu5KE+O9Vyn1/SaUpPr6kj49scoIaokvH/aCqTbBJlZiSabbwC5Y+/Bsoi7AOrJpmlAUaQS9272tH26Dj2SYsuXcFy8RWN6viMwiXpqOHdgrpvSmPbCwnwZcq5dsw4Wdr1tn5OWAUC5iS1r4T9GLXizr8+uAXMV62kgtjK3EDgtMLc9eVWMOF4MhAMutuYVm08XNuYR9SRSYaDqKbdTKlgvCutR4HEi5UY8ge/14lIXMYmxQA8ughfPY1XVxOGJShSzm6mbvWVOkL7zVKGnN6tcnLBZkcgy3WYtU54zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uObNh1yKGnx9276qFxdZOOUZx9wJsTpJpILuuNVoRbQ=;
- b=p5XLkCQ0lRQ9qO1ZW/HDYa1VQAQSP3jNHs6dxiZSqJRqaMli9GxzxrIOvyEiiKTtLABUmE5ZmhdoE5S2l2qAq1j7Ti4Gj5ziTPfCcUV8yvdJD0l1c7vnkcbeGhfsq4/jHDIUv6fqoeL4OJTH8XojHgFTC/wOyS0DfWImtb4DWFs=
-Received: from BLAPR03CA0114.namprd03.prod.outlook.com (2603:10b6:208:32a::29)
- by BN9PR12MB5033.namprd12.prod.outlook.com (2603:10b6:408:132::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Tue, 26 Sep
- 2023 20:05:52 +0000
-Received: from BL6PEPF0001AB75.namprd02.prod.outlook.com
- (2603:10b6:208:32a:cafe::f3) by BLAPR03CA0114.outlook.office365.com
- (2603:10b6:208:32a::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.35 via Frontend
- Transport; Tue, 26 Sep 2023 20:05:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB75.mail.protection.outlook.com (10.167.242.168) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Tue, 26 Sep 2023 20:05:51 +0000
-Received: from platform-dev1.pensando.io (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 26 Sep 2023 15:05:48 -0500
-From:   Brad Larson <blarson@amd.com>
-To:     <andy.shevchenko@gmail.com>
-CC:     <adrian.hunter@intel.com>, <alcooperx@gmail.com>, <arnd@arndb.de>,
-        <blarson@amd.com>, <brendan.higgins@linux.dev>,
-        <briannorris@chromium.org>, <broonie@kernel.org>,
-        <catalin.marinas@arm.com>, <conor+dt@kernel.org>,
-        <davidgow@google.com>, <devicetree@vger.kernel.org>,
-        <fancer.lancer@gmail.com>, <gerg@linux-m68k.org>,
-        <gsomlo@gmail.com>, <hal.feng@starfivetech.com>,
-        <hasegawa-hitomi@fujitsu.com>, <j.neuschaefer@gmx.net>,
-        <joel@jms.id.au>, <kernel@esmil.dk>, <krzk@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <lee.jones@linaro.org>,
-        <lee@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <p.zabel@pengutronix.de>,
-        <rdunlap@infradead.org>, <robh+dt@kernel.org>,
-        <samuel@sholland.org>, <skhan@linuxfoundation.org>,
-        <suravee.suthikulpanit@amd.com>, <thomas.lendacky@amd.com>,
-        <tonyhuang.sunplus@gmail.com>, <ulf.hansson@linaro.org>,
-        <vaishnav.a@ti.com>, <walker.chen@starfivetech.com>,
-        <will@kernel.org>, <zhuyinbo@loongson.cn>
-Subject: Re: [PATCH v16 6/6] soc: amd: Add support for AMD Pensando SoC Controller
-Date:   Tue, 26 Sep 2023 13:05:41 -0700
-Message-ID: <20230926200541.35787-1-blarson@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CAHp75VfRLv1=3M+a9pr=ZJgNwtBOrT9xi0UjDJMuY8uM9+ffSw@mail.gmail.com>
-References: <CAHp75VfRLv1=3M+a9pr=ZJgNwtBOrT9xi0UjDJMuY8uM9+ffSw@mail.gmail.com>
+        Tue, 26 Sep 2023 16:07:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D120DF3;
+        Tue, 26 Sep 2023 13:07:02 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QJmfiY005415;
+        Tue, 26 Sep 2023 20:06:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dQqGa/jQUXLnagbza23rJeg50H6E97ND1KrC/E2Pkac=;
+ b=RsAy/fq3jgAOs+F/p+D11jVbx3PIZG3rsz+jrjFffAnaNZU3vOv9QhQlBBRQGMFrr5p4
+ uN/RH4V7g/pREm0VMQT96XtWS8Rbz+fP69oJtycRbqgy0PC/sWy9XuuQdely7ZbBoWIW
+ gTx61B0kclSS/O9KvSPqRgomvacm7VLAFHRmxrcmwviM0lor6PnzjbvbgXgSkrvPWlhz
+ hgdKGDde6uueVkyuVtwpemaUUILVHS8joxpMjp/K61mIR4ue0Gbms4GB4leW/WDUzw4Y
+ 5empw8TwGwQLnqoRVTPQr9b060SBFjsRWCP+kpyUPwnlC6mDB/Diu72VWtOiEy/pd8ZZ iQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbexgk32d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 20:06:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38QK6KpN030091
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 20:06:20 GMT
+Received: from [10.216.25.31] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 26 Sep
+ 2023 13:06:15 -0700
+Message-ID: <62083b55-0b78-4ebc-ab78-1c1d99f92507@quicinc.com>
+Date:   Wed, 27 Sep 2023 01:36:10 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB75:EE_|BN9PR12MB5033:EE_
-X-MS-Office365-Filtering-Correlation-Id: b969c263-7d64-46f5-a98f-08dbbecbfc0e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vQfodNG/N7OkrYS3Cy5LSiTOK3owTPIjuJ9dtt8P7QK7MG04gMCksZUAX8Zo+C6gOqGsjFqAePndpIr7xQKcB+MO++y9n5GMcFG7I0elQlOSuHyjgPZHnVivYgZ4rxo+DR8iMSQKr7eJ8rKvoOsTReKeW3s6LEsl52xB1f1T0SIVnt9D7G6kAQbTwQJc2lMGo7pz9W1kn53kHoeVx32mHSLP3cGwCDm77d8w2j+TxKje4F9Eq1FQoNgiPqt0Lm3ka90lHpHha/iMI7B1whSjSIhrgtIoeEiiawP5Zl9CHTl51BahYDVTkKNdh9s1r6tbQIeVbd3UW0h3iug6Prw02woYpj4CrMn4hOMKC8OjeTZaI+v2ouY+vxJ5oamFL5RZt1r2/dmVljaYmdKoZSpl5O/g4lkigwO6jgQ6KqZbhGwEcuWbx81b7O1micH5uCka0TTegMgyBOoiprnaPBqbaOrJgUTMrcbgdbQXj+1HV3xlDyHJCPhUE9nroy4wKcVxb6gyaKkFlh13ZmM3FwWg2H9NwIZMfmGRr3BrzfUeNMxzKI9b+V7ayQEdTi00K0hx9moHKKNP5Kie6kopZlv5KJCFLNr5VI3hhQ1lHFZHP+18FwsEWvg42FjgvdY1yRjfzR+IAbBV0XZXwlN9rcFU81SRLhKo9AU9IndAkhP7Sl1jBEz6Qu8p3855n62sOmo/XyhbJGx4Az1Y448H91wadDoLDGYE6pxbqjwo3vRs2nQtzeGcJdcR8v3mIeEYHcnaEINXWJ1z2QnK/4QJhBribw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(82310400011)(451199024)(186009)(1800799009)(36840700001)(46966006)(40470700004)(478600001)(8936002)(70206006)(70586007)(336012)(6916009)(83380400001)(40460700003)(2616005)(1076003)(26005)(16526019)(4326008)(41300700001)(47076005)(426003)(36860700001)(54906003)(7416002)(316002)(7406005)(6666004)(2906002)(8676002)(53546011)(40480700001)(36756003)(81166007)(356005)(82740400003)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 20:05:51.8733
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b969c263-7d64-46f5-a98f-08dbbecbfc0e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB75.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5033
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] usb: gadget: udc: Handle gadget_connect failure during
+ bind operation
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20230926193708.22405-1-quic_kriskura@quicinc.com>
+ <2178cf29-5e5c-4ed6-8d1c-916bc7036589@rowland.harvard.edu>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <2178cf29-5e5c-4ed6-8d1c-916bc7036589@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CglRK2R9h9qaR4llKlQFmZQmBKa7ehka
+X-Proofpoint-GUID: CglRK2R9h9qaR4llKlQFmZQmBKa7ehka
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_14,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 clxscore=1015 bulkscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260172
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
 
-On Thu, Sep 21, 2023 at 18:19:57 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> On Thu, Sep 14, 2023 at 12:52 AM Brad Larson <blarson@amd.com> wrote:
+
+On 9/27/2023 1:24 AM, Alan Stern wrote:
+> On Wed, Sep 27, 2023 at 01:07:08AM +0530, Krishna Kurapati wrote:
+>> In the event, gadget_connect call (which invokes pullup) fails,
+> 
+> s/event,/event/
+> 
+>> propagate the error to udc bind operation which inturn sends the
+> 
+> s/inturn/in turn/
+> 
+>> error to configfs. The userspace can then retry enumeartion if
+> 
+> s/enumeartion/enumeration/
+> 
+>> it chooses to.
 >>
->> The Pensando SoC controller is a SPI connected companion device
->> that is present in all Pensando SoC board designs.  The essential
->> board management registers are accessed on chip select 0 with
->> board mgmt IO support accessed using additional chip selects.
-
-...
-
->> +#include <linux/cdev.h>
->> +#include <linux/device.h>
->> +#include <linux/err.h>
->> +#include <linux/fs.h>
->> +#include <linux/init.h>
->> +#include <linux/miscdevice.h>
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/module.h>
->> +#include <linux/mutex.h>
->> +#include <linux/reset-controller.h>
->> +#include <linux/spi/spi.h>
->
-> types.h ?
-
-I'll add types.h
-
->> +#include <linux/uaccess.h>
-
-...
-
->> +       struct penctrl_device *penctrl;
->
->> +       u8 tx_buf[PENCTRL_MAX_MSG_LEN];
->> +       u8 rx_buf[PENCTRL_MAX_MSG_LEN];
->
-> These are not DMA-safe, is this a problem?
-
-It's not a problem, the peripheral is PIO FIFO driven only.
-
->> +       struct spi_transfer t[2] = {};
->> +       struct penctrl_spi_xfer *msg;
->> +       struct spi_device *spi;
->> +       unsigned int num_msgs;
->> +       struct spi_message m;
->> +       u32 size;
->> +       int ret;
-
-...
-
->> +       /* Verify and prepare SPI message */
->> +       size = _IOC_SIZE(cmd);
->> +       num_msgs = size / sizeof(struct penctrl_spi_xfer);
->
-> sizeof (*msg) ?
-
-Yes, more compact for here and below.
-
->
->> +       if (num_msgs > 2 || size == 0 || size % sizeof(struct penctrl_spi_xfer)) {
->
-> Dito.
->
->> +               ret = -EINVAL;
->> +               goto out_unlock;
->> +       }
-
-...
-
->> +       msg = memdup_user((struct penctrl_spi_xfer *)arg, size);
->> +       if (IS_ERR(msg)) {
->> +               ret = PTR_ERR(msg);
->> +               goto out_unlock;
->> +       }
->
-> Wondering if you can start using cleanup.h.
-
-Perhaps if recommended, I don't see DEFINE_(FREE,UNLOCK,...) being used.
-
-...
-
->> +       /* Perform the transfer */
->> +       mutex_lock(&spi_lock);
->> +       ret = spi_sync(spi, &m);
->> +       mutex_unlock(&spi_lock);
-
->> +       if (ret || (num_msgs == 1))
->> +               goto out_unlock;
->
-> Second conditional will return 0. Is it by design?
-> Since it's not so obvious I would split these conditionals.
-
-I'll split this to be clear, yes return 0 for success.
-
-...
-
->> +       spi->chip_select = current_cs;
->
-> spi_set_chipselect()
-
-Yes, I'll change to inline function spi_set_chipselect(spi, 0, current_cs).  The
-second arg must be legacy as its unused.
-
-...
-
->> +static int penctrl_regs_read(struct penctrl_device *penctrl, u32 reg, u32 *val)
->> +{
->> +       struct spi_device *spi = penctrl->spi;
->> +       struct spi_transfer t[2] = {};
->> +       struct spi_message m;
->
->> +       u8 txbuf[3];
->> +       u8 rxbuf[1];
->
-> Not DMA-safe. Is it a problem?
->
-
-Not a problem, the peripheral is PIO only using FIFOs.
-
->> +       int ret;
->
->> +       txbuf[0] = PENCTRL_SPI_CMD_REGRD;
->> +       txbuf[1] = reg;
->> +       txbuf[2] = 0;
->
-> Can be assigned in the definition block
->
->       u8 txbuf[] = { ... };
->
-
-I'll change that here and below.
-
->> +       t[0].tx_buf = txbuf;
->> +       t[0].len = sizeof(txbuf);
->
->> +       rxbuf[0] = 0;
->
-> Ditto.
->
->    u8 rxbuf[] = { 0 };
->
->> +       t[1].rx_buf = rxbuf;
->> +       t[1].len = sizeof(rxbuf);
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>> Changes in v4: Fixed mutex locking imbalance during connect_control
+>> failure
+>> Link to v3: https://lore.kernel.org/all/20230510075252.31023-3-quic_kriskura@quicinc.com/
+>>
+>>   drivers/usb/gadget/udc/core.c | 23 +++++++++++++++++++----
+>>   1 file changed, 19 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
+>> index 7d49d8a0b00c..53af25a333a1 100644
+>> --- a/drivers/usb/gadget/udc/core.c
+>> +++ b/drivers/usb/gadget/udc/core.c
+>> @@ -1125,12 +1125,16 @@ EXPORT_SYMBOL_GPL(usb_gadget_set_state);
+>>   /* ------------------------------------------------------------------------- */
+>>   
+>>   /* Acquire connect_lock before calling this function. */
+>> -static void usb_udc_connect_control_locked(struct usb_udc *udc) __must_hold(&udc->connect_lock)
+>> +static int usb_udc_connect_control_locked(struct usb_udc *udc) __must_hold(&udc->connect_lock)
+>>   {
+>> +	int ret;
 >> +
->> +       spi_message_init_with_transfers(&m, t, ARRAY_SIZE(t));
->> +       ret = spi_sync(spi, &m);
->> +       if (ret)
->> +               return ret;
+>>   	if (udc->vbus)
+>> -		usb_gadget_connect_locked(udc->gadget);
+>> +		ret = usb_gadget_connect_locked(udc->gadget);
+>>   	else
+>> -		usb_gadget_disconnect_locked(udc->gadget);
+>> +		ret = usb_gadget_disconnect_locked(udc->gadget);
 >> +
->> +       *val = rxbuf[0];
->> +       return 0;
->> +}
-
-...
-
->> +static int penctrl_regs_write(struct penctrl_device *penctrl, u32 reg, u32 val)
->> +{
->> +       struct spi_device *spi = penctrl->spi;
->> +       struct spi_transfer t = {};
->> +       struct spi_message m;
->> +       u8 txbuf[4];
-
->> +       txbuf[0] = PENCTRL_SPI_CMD_REGWR;
->> +       txbuf[1] = reg;
->> +       txbuf[2] = val;
->> +       txbuf[3] = 0;
-
-> Can be assigned in the definition block.
-
->> +       t.tx_buf = txbuf;
->> +       t.len = sizeof(txbuf);
->> +       spi_message_init_with_transfers(&m, &t, 1);
->> +       return spi_sync(spi, &m);
->> +}
-
-...
-
->> +       struct penctrl_device *penctrl =
->> +               container_of(rcdev, struct penctrl_device, rcdev);
->
-> One line?
-
-I'll check/change.
-
->
->...
->
->> +       spi->chip_select = 0;
->
-> spi_set_chipselect()
-
-Yes, spi_set_chipselect(spi, 0, 0);
-
-...
-
->> +       struct penctrl_device *penctrl =
->> +               container_of(rcdev, struct penctrl_device, rcdev);
->
-> One line?
-
-I'll check/change.
-
-...
-
->> +       spi->chip_select = 0;
->
-> spi_set_chipselect()
-
-Yes, spi_set_chipselect(spi, 0, 0);
-
-...
-
->> +static int penctrl_spi_probe(struct spi_device *spi)
->> +{
->> +       int i, ret;
+>> +	return ret;
+> 
+> You don't actually need the new variable ret.  You can just do:
+> 
+> 	if (udc->vbus)
+> 		return usb_gadget_connect_locked(udc->gadget);
+> 	else
+> 		return usb_gadget_disconnect_locked(udc->gadget);
+> 
+>>   }
+>>   
+>>   static void vbus_event_work(struct work_struct *work)
+>> @@ -1604,12 +1608,23 @@ static int gadget_bind_driver(struct device *dev)
+>>   	}
+>>   	usb_gadget_enable_async_callbacks(udc);
+>>   	udc->allow_connect = true;
+>> -	usb_udc_connect_control_locked(udc);
+>> +	ret = usb_udc_connect_control_locked(udc);
+>> +	if (ret) {
+>> +		mutex_unlock(&udc->connect_lock);
+>> +		goto err_connect_control;
+>> +	}
 >> +
->> +       /* Allocate driver data */
->> +       penctrl = kzalloc(sizeof(*penctrl), GFP_KERNEL);
->
-> devm_kzalloc() ?
+>>   	mutex_unlock(&udc->connect_lock);
+>>   
+>>   	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+>>   	return 0;
+>>   
+>> + err_connect_control:
+>> +	usb_gadget_disable_async_callbacks(udc);
+>> +	if (gadget->irq)
+>> +		synchronize_irq(gadget->irq);
+>> +	usb_gadget_udc_stop_locked(udc);
+> 
+> Not good -- usb_gadget_udc_stop_locked() expects you to be holding
+> udc->connect_lock, but you just dropped the lock!  Also, you never set
+> udc->allow_connect back to false.
+> 
+> You should move the mutex_unlock() call from inside the "if" statement
+> to down here, and add a line for udc->allow_connect.
+> 
 
-Yes will change to devm_kzalloc().
+Hi Alan,
 
->> +       if (!penctrl)
->> +               return -ENOMEM;
->> +
->> +       penctrl->spi = spi;
->> +       mutex_init(&spi_lock);
->> +
->> +       for (i = 0; i < ARRAY_SIZE(penctrl_devices); i++) {
->> +               ret = misc_register(&penctrl_devices[i]);
->> +               if (ret) {
->> +                       dev_err(&spi->dev, "Failed to register device %s\n",
->> +                               penctrl_devices[i].name);
->> +                       goto cleanup;
->> +               }
->> +       }
->> +
->> +       /* Register reset controller */
->> +       penctrl->rcdev.dev = &spi->dev;
->> +       penctrl->rcdev.ops = &penctrl_reset_ops;
->> +       penctrl->rcdev.owner = THIS_MODULE;
->> +       penctrl->rcdev.of_node = spi->dev.of_node;
->> +       penctrl->rcdev.nr_resets = 1;
->> +       device_set_node(penctrl->rcdev.dev, dev_fwnode(&spi->dev));
->> +
->> +       ret = reset_controller_register(&penctrl->rcdev);
->> +       if (ret)
->> +               return dev_err_probe(&spi->dev, ret,
->> +                                    "failed to register reset controller\n");
->> +       return 0;
->
->> +cleanup:
->
-> err_cleanup: ?
+  Thanks for the review. Will push v5 addressing the changes.
 
-Will use err_cleanup:
-
->> +       for (i = 0; i < ARRAY_SIZE(penctrl_devices); i++) {
->
->  while (i--) {
->
-
-Yes, can change to while(), order doesn't matter.
-
->> +               if (penctrl_devices[i].this_device)
->> +                       misc_deregister(&penctrl_devices[i]);
->> +       }
->> +       return ret;
->> +}
 
 Regards,
-Brad
+Krishna,
