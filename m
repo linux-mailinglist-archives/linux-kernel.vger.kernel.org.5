@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638207AF292
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718B17AF2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbjIZSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S235504AbjIZSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjIZSYp (ORCPT
+        with ESMTP id S235445AbjIZSYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:24:45 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCEFE5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:38 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-65b0a54d436so26742596d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:38 -0700 (PDT)
+        Tue, 26 Sep 2023 14:24:52 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A008CBF
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:45 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-534659061afso2136785a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695752678; x=1696357478; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rhTI8dcDdjEZYE7dpMYfMSA1DN/2lzmSQcv8fWKSSFk=;
-        b=1fvEyH24SAykUGlk20UIHvgMA+IAh4UvzSsJna+6I0dS7ODbdFP6D85ZIIQ1cvdtDL
-         +QEF1ysibquPY7SaNb3ScwEyXhsu62LnTRQgxOVxxBZKFqWL5TwfYh81Zek8RhjqnXd2
-         gssMv8hXhMA/lsNXxzDvBR0G5LwgVOmOEMUba5KLbZInWS1cgTKYDmUAuB72HDYRLeZk
-         PAYvtogBHNKPqvBl7Xf3RlCGEakTolu1v19kWBA3yXD2tgPkDkdlMDF40uCfYVway3pw
-         Ob/Nx7D4FIwMoqETd6a7CxDK20DpQ8dfxVkDnhqZoNEyiOtTp10qcn31iOyOcj/pDoIZ
-         YLiw==
+        d=linaro.org; s=google; t=1695752684; x=1696357484; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rdOeaLeHcwftMyYfA8G29tOCdXwXQaoJFb0mcu8r5zw=;
+        b=i24kSgq2i8rJgR+WoHufsvGJOPIKXRKuuFpXtAdJkKiFHCf2dGEb1X1ZjjLieX90hm
+         tIDtmI9LbwoUrIYh7QjeMuSOLcmBWfjZ50bg5C7iHdOnfylSZ/02EyNGxcSX4i20TzGz
+         q7nrmI80zuurD7OUCpjWmNa0E5G0B4gUIgSclHeqQ+AX3pj/iwg779o0I6wiODgbYnJ5
+         sAu+uCS0zl0OJeKLDRyZbjNeygz+NOIGQNUZdljiChK8JYXAnvS44yMnawqa0Sf4kMq2
+         G8lk1J9wzHnhVWsgHSWJglcGVvodjSX5rvNIYH5hZFen3/n0J0zvFc4o4FGK/4026HQk
+         hRcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752678; x=1696357478;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhTI8dcDdjEZYE7dpMYfMSA1DN/2lzmSQcv8fWKSSFk=;
-        b=tvpGH2yZZMMNSGqAsXLV7R0ot34f6AlQt/vdWJaAc9CZuL2uMX3DorRh0pg1Q48VBJ
-         bK478WsLWIjTtLjj0m2qM/+cdrEulwYg/B4a487byzFB0DFBAfuMZUUFaYJhTfLvQ9+f
-         fAdUigTMAW5Jyna5AKuqd32xjR+gM4K3uJ1B2u5Jw08QZDHxaR68ESRYIXhqPtvBAd01
-         vhKFtgKJOQJAo3bFvkJ7aXa/uub/i5eWn7mgsdT2SITwquKcR7K0umSkqJFwTMHCRoug
-         DZzxHngFP6q0gp7jV3aCqqZDVXraxV59nUf41aITLUkGOY16hIjVPhaS3fdd2y/n2P7N
-         OsvQ==
-X-Gm-Message-State: AOJu0YwIN6vFVLZP/n6cL0fZB5OIyNPSyUArpY/9ZZcvGfMnrVm3CCld
-        DdJnZYF8oik6FBfL52X/V6/rpA==
-X-Google-Smtp-Source: AGHT+IGrllrqWC0EKYtowvbvW5nW/cSOOf9HD2lBbguXAWo9ez72h7EB7JcAv/d+4OtMR5uQ2cxa0A==
-X-Received: by 2002:a05:6214:2d04:b0:649:8baa:2986 with SMTP id mz4-20020a0562142d0400b006498baa2986mr10287586qvb.2.1695752677986;
-        Tue, 26 Sep 2023 11:24:37 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ba06])
-        by smtp.gmail.com with ESMTPSA id r1-20020a0c9e81000000b00656e2464719sm100717qvd.92.2023.09.26.11.24.37
+        d=1e100.net; s=20230601; t=1695752684; x=1696357484;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rdOeaLeHcwftMyYfA8G29tOCdXwXQaoJFb0mcu8r5zw=;
+        b=GYEJXPvPaxNhw0KPK8SMfxjk7HK4yYw1grevbH6vUQnibrUWiFcoYDoXWqVxG8iYe4
+         M0IEBX7kVPLaTgs+PRThByGXGmOWC7YCa4T9fKWE5+xDtFHfHMiSE61zl98x4IxgewbF
+         WyjN5rvgGGCE6gdU+wVHMuQB21E47DEU6ci5hzSksHWUyxhDFAipZlyLDTTdgvReIA0u
+         YoYc4ZXU8gckXoe0mAhTZ9pyA5DnnXXAtc1+iyPL1JESEn0mXq7n1WQfrxvHfZw931A1
+         9FeeaY5PNxhzCw15UUrMHCckHlljiJ9xH0MY7tw5k3Jo91MF7siHjjUrvRQCfWzkYRQh
+         LGpg==
+X-Gm-Message-State: AOJu0YwAsiy3w3pfizID+bycTqhVy8WCF8F1xqymhSi/O0UQjFqz5e0z
+        M7lyt0xmwUJjbND3rr0scSgZ8w==
+X-Google-Smtp-Source: AGHT+IFNPKWtqP96Z/0gyVWxTahuOivQkjQlQvuDt3caSQC/FoLkRgSGW7croA7ASQ1ChCEC2PL20g==
+X-Received: by 2002:aa7:d0c2:0:b0:51d:f5bd:5a88 with SMTP id u2-20020aa7d0c2000000b0051df5bd5a88mr10428662edo.38.1695752684159;
+        Tue, 26 Sep 2023 11:24:44 -0700 (PDT)
+Received: from [10.167.154.1] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id f19-20020a056402151300b0053090e2afafsm7020643edw.22.2023.09.26.11.24.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:24:37 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 14:24:36 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-Message-ID: <20230926182436.GB348484@cmpxchg.org>
-References: <20230919171447.2712746-1-nphamcs@gmail.com>
- <20230919171447.2712746-2-nphamcs@gmail.com>
- <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
+        Tue, 26 Sep 2023 11:24:43 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Tue, 26 Sep 2023 20:24:37 +0200
+Subject: [PATCH 2/7] drm/msm/adreno: Add ZAP firmware name to A635
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230926-topic-a643-v1-2-7af6937ac0a3@linaro.org>
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+In-Reply-To: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695752677; l=810;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=j4J3bf93En8hfomc6iMl3gRDui2N6DxaHKguZItPSOc=;
+ b=Z/8uVHWeeJiYMBhmKxURKKCY6E5ujoQW1IdowESmbyutCxeRpM55YuxSzaiPf3F/h1M6I0ebF
+ Yo50w8YlEoVB1iHo9jiNgpsMDNM+4THYBPUM/ETvorOic57gT4f4kk5
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
-> +Chris Li
-> 
-> On Tue, Sep 19, 2023 at 10:14 AM Nhat Pham <nphamcs@gmail.com> wrote:
-> >
-> > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> >
-> > Currently, we only have a single global LRU for zswap. This makes it
-> > impossible to perform worload-specific shrinking - an memcg cannot
-> > determine which pages in the pool it owns, and often ends up writing
-> > pages from other memcgs. This issue has been previously observed in
-> > practice and mitigated by simply disabling memcg-initiated shrinking:
-> >
-> > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
-> >
-> > This patch fully resolves the issue by replacing the global zswap LRU
-> > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
-> >
-> > a) When a store attempt hits an memcg limit, it now triggers a
-> >    synchronous reclaim attempt that, if successful, allows the new
-> >    hotter page to be accepted by zswap.
-> > b) If the store attempt instead hits the global zswap limit, it will
-> >    trigger an asynchronous reclaim attempt, in which an memcg is
-> >    selected for reclaim in a round-robin-like fashion.
-> 
-> Hey Nhat,
-> 
-> I didn't take a very close look as I am currently swamped, but going
-> through the patch I have some comments/questions below.
-> 
-> I am not very familiar with list_lru, but it seems like the existing
-> API derives the node and memcg from the list item itself. Seems like
-> we can avoid a lot of changes if we allocate struct zswap_entry from
-> the same node as the page, and account it to the same memcg. Would
-> this be too much of a change or too strong of a restriction? It's a
-> slab allocation and we will free memory on that node/memcg right
-> after.
+Some (many?) devices with A635 expect a ZAP shader to be loaded.
 
-My 2c, but I kind of hate that assumption made by list_lru.
+Set the file name to allow for that.
 
-We ran into problems with it with the THP shrinker as well. That one
-strings up 'struct page', and virt_to_page(page) results in really fun
-to debug issues.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-IMO it would be less error prone to have memcg and nid as part of the
-regular list_lru_add() function signature. And then have an explicit
-list_lru_add_obj() that does a documented memcg lookup.
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index fa527935ffd4..16527fe8584d 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -454,6 +454,7 @@ static const struct adreno_info gpulist[] = {
+ 		.quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT |
+ 			ADRENO_QUIRK_HAS_HW_APRIV,
+ 		.init = a6xx_gpu_init,
++		.zapfw = "a660_zap.mbn",
+ 		.hwcg = a660_hwcg,
+ 		.address_space_size = SZ_16G,
+ 		.speedbins = ADRENO_SPEEDBINS(
 
-Because of the overhead, we've been selective about the memory we
-charge. I'd hesitate to do it just to work around list_lru.
+-- 
+2.42.0
+
