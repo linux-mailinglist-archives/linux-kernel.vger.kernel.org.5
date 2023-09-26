@@ -2,193 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4667AE71B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBA77AE71F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbjIZHsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S232467AbjIZHuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIZHsa (ORCPT
+        with ESMTP id S229556AbjIZHuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:48:30 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D1BDC;
-        Tue, 26 Sep 2023 00:48:22 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 62FF41BF208;
-        Tue, 26 Sep 2023 07:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695714501;
+        Tue, 26 Sep 2023 03:50:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28BC92
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695714561;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WByilfXcf9fwVRPpSMAIkhXNNnHM8fT1soPbMgZimUo=;
-        b=UByeNvtFKGUJFu1r0cCVg4+6yFQMDRx3wfWvVNZdgBJ5aAZyYTFHXVNk8YXzQ+gqfyu7Vj
-        LwFeBNk0hjpd+S5kuzcJpVl07s4zPh+5PF9MXJAj2J7Cwa6C5nYzJzLTuzC2dwd3i2QCPm
-        uVHFHh9cTFsd1d1qCeS5kRLHIQgpfDahPO/iUmIvFY9drBLH156TnaLMrfj4GgaTWhwSR9
-        WKswhTyRPBo685G0NmpdIpmxjid0SysKvF7C/Q3nj76ii+vo7WnUVse1GiqN4XO3Uomjp/
-        x/3dlWrMw2mvxxabewSs/TLI1FpSmlooHgTCL1cYJWL49xPmAS7MJGXg3zof7A==
-Date:   Tue, 26 Sep 2023 09:48:15 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-Message-ID: <20230926094815.5802e184@xps-13>
-In-Reply-To: <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
-        <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
-        <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
-        <20230922174649.GA3320366-robh@kernel.org>
-        <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
-        <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
-        <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
-        <20230925092122.0b615f25@xps-13>
-        <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
-        <20230925164736.5efbf4c0@xps-13>
-        <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
-        <20230925172447.43dcef88@xps-13>
-        <CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
-        <CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
-        <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=TYUMFabCqShOqg91SXlnQ/MBxB7SPueU7zs/KEePW1U=;
+        b=hWxYGDQFOVrWbIScNZ+nG8Nw9RSL0kPaKFOlZmpb9UXmTVnkiieOemuW81/5Gorkmk54hz
+        Pe4R6r+GD2UOQkerzXr3JM7Vvu4JBS+aunfQ1Ig+dcjdbkpuntNyiofAZDj9aS0tWG6j+z
+        /MRA4Fdq3Syv2ysb36OCC8JmOJrRpqU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-392-OQ0OxelxN4OwyAIqhPY6wA-1; Tue, 26 Sep 2023 03:49:19 -0400
+X-MC-Unique: OQ0OxelxN4OwyAIqhPY6wA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-323334992fbso1328962f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:49:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695714558; x=1696319358;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TYUMFabCqShOqg91SXlnQ/MBxB7SPueU7zs/KEePW1U=;
+        b=KtsC/7k94Gd882yB8N4+3hp39hCFQkRfKd7epAI0wz9YwqwHxnmwhFwUASCLa1l7ZB
+         ZRMhU8XFUO0US1WzVoPmXUTnG269TYPFgAGvZz0rlTaoHlI4mZl3yr1lj6Zm+0KtYaaU
+         ukAvzXgY0FiTnHC/UqkFqr6K+s9cVq4mX5NKS2Xtf95QHEzC1embbTCTGAVECW2TsoXb
+         59FOpq22ObD2eUCy+puM6Oq37Z7+ukYvEoAvS8nprFi/FhpgraFxoORRBbcEsvS9Iyz3
+         e9RznstXKpmNkcbmycLAm8DgByYwJQCoYY0eoh3zUF9jPelgJIOWcuxRsNMTCRkdzp8i
+         bNYA==
+X-Gm-Message-State: AOJu0YxccxXdzqUJSc7EvlY5z6tDWuLPzCsZ16ov001qdBKPFb7E0Pxw
+        xT/bWosoj30X9udtbZ41k0kAaRGv/uIkyzuEpDXFyImAPdlQ54v8I0F0hP2PNM1KaJw0R253CVA
+        yBCmud11uL8rSkg52LHgLVBw2
+X-Received: by 2002:adf:cd81:0:b0:319:755c:3c1e with SMTP id q1-20020adfcd81000000b00319755c3c1emr8170018wrj.11.1695714558555;
+        Tue, 26 Sep 2023 00:49:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGExJDSP5L0Rs54wrMlcjvXXpaJBWHcVuvht4vXnT5kqrem65CKuIyx4A5vO7PM+ZqBaoWCdQ==
+X-Received: by 2002:adf:cd81:0:b0:319:755c:3c1e with SMTP id q1-20020adfcd81000000b00319755c3c1emr8170001wrj.11.1695714558169;
+        Tue, 26 Sep 2023 00:49:18 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c73f:600:933b:ca69:5a80:230d? (p200300cbc73f0600933bca695a80230d.dip0.t-ipconnect.de. [2003:cb:c73f:600:933b:ca69:5a80:230d])
+        by smtp.gmail.com with ESMTPSA id z9-20020a05600c114900b004058e6379d8sm5661368wmz.23.2023.09.26.00.49.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 00:49:17 -0700 (PDT)
+Message-ID: <b7818a38-d991-6cdd-c908-fe0ebc3677c6@redhat.com>
+Date:   Tue, 26 Sep 2023 09:49:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -next 8/9] mm: page_alloc: use a folio in
+ free_pages_prepare()
+Content-Language: en-US
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ying.huang@intel.com,
+        Zi Yan <ziy@nvidia.com>
+References: <20230926005254.2861577-1-wangkefeng.wang@huawei.com>
+ <20230926005254.2861577-9-wangkefeng.wang@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230926005254.2861577-9-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 26.09.23 02:52, Kefeng Wang wrote:
+> The page should not a tail page in free_pages_prepare(), let's use
+> a folio in free_pages_prepare() to save several compound_head() calls.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   mm/page_alloc.c | 15 ++++++++-------
+>   1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 06be8821d833..a888b9d57751 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1070,6 +1070,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>   			unsigned int order, fpi_t fpi_flags)
+>   {
+>   	int bad = 0;
+> +	struct folio *folio = page_folio(page);
 
-> > > > > These are firmware bindings, as indicated, but I
-> > > > > took them out of the /firmware node since that is for a different
-> > > > > purpose. Rob suggested that partitions was a good place. We have =
-fwupd
-> > > > > using DT to hold the firmware-update information, so I expect it =
-will
-> > > > > move to use these bindings too. =20
-> > > >
-> > > > I would definitely use fixed partitions as that's what you need the=
-n:
-> > > > registering where everything starts and ends. If you have "in-band"
-> > > > meta data you might require a compatible, but I don't think you
-> > > > do, in this case you should probably carry the content through a la=
-bel
-> > > > (which will become the partition name) and we can discuss additional
-> > > > properties if needed. =20
-> > >
-> > > I believe I am going to need a compatible string at the 'partitions'
-> > > level to indicate that this is the binman scheme. But we can leave
-> > > that until later. =20
-> >
-> > Perhaps:
-> >
-> > compatible =3D "binman", "fixed-partitions";
-> >
-> > Though I don't understand why binman couldn't just understand what
-> > "fixed-partitions" means rather than "binman". =20
->=20
-> Well so long as we don't add any binman things in here, you are right.
->=20
-> But the eventual goal is parity with current Binman functionality,
-> which writes the entire (augmented) description to the DT, allowing
-> tools to rebuild / repack / replace pieces later, maintaining the same
-> alignment constraints, etc. I am assuming that properties like 'align
-> =3D <16>' would not fit with fixed-partitions.=20
+We might have higher-order pages here that are not folios (not compound 
+pages). It looks a bit like this function really shouldn't be working 
+with folios in the generic way, for that reason.
 
-I am personally not bothered by this kind of properties. But if we plan
-on adding too much properties, I will advise to indeed use another name
-than fixed-partitions (or add the "binman" secondary compatible)
-otherwise it's gonna be hard to support in the code while still
-restraining as much as we can the other partition schema.
+Wrong level of abstraction in that function.
 
-> But if we don't preserve
-> these properties then Binman cannot do repacking reliably. Perhaps for
-> now I could put the augmented DT in its own section somewhere, but I
-> am just not sure if that will work in a real system. E.g. with VBE the
-> goal is to use the DT to figure out how to access the firmware, update
-> it, etc.
->=20
-> Is it not possible to have my own node with whatever things Binman
-> needs in it (subject to review of course)? i.e. could we discuss how
-> to encode it, but argue less about whether things are needed? I
-> kind-of feel I know what is needed, since I wrote the tool.
->=20
-> >
-> > =20
-> > > So you are suggesting 'label' for the contents. Rob suggested
-> > > 'compatible' [1], so what should I do? =20
-> >
-> > "label" is for consumption by humans, not tools/software. Compatible
-> > values are documented, label values are not. Though the partition
-> > stuff started out using label long ago and it's evolved to preferring
-> > compatible. =20
->=20
-> OK so we are agreed that we are going with 'compatible'.
+What am I missing?
 
-Still strongly disagree here.
+-- 
+Cheers,
 
-My understanding is that a compatible carries how the content is
-organized, and how this maybe specific (like you have in-band meta data
-data that needs to be parsed in a specific way or in your case
-additional specific properties in the DT which give more context about
-how the data is stored). But the real content of the partition, ie. if
-it contains a firmware, the kernel or some user data does not belong to
-the compatible.
+David / dhildenb
 
-I.e:
-- The first byte of my partition gives the compression algorithm:
-  -> compatible =3D "compressed-partition-foo";
-     or
-  -> compatible =3D "fixed-partitions" + compression-algorithm =3D "foo";
-- The partition contains a picture of my dog:
-  -> label =3D "my dog is beautiful"
-  but certainly not
-  -> compatible =3D "my-dog";
-
-I don't see why, for the binman schema, we could not constrain the
-labels?
-
-> > > With this schema, would every node be called 'partition@...' or is
-> > > there flexibility to use other names? =20
-> >
-> > The preference is to use generic names. Do you mean without a
-> > unit-address or different from "partition"? The need for the input
-> > side of binman to have dynamic addresses seems like the biggest issue.
-> > That's allowed in other cases with "partition-N" or "partition-foo"
-> > IIRC. I don't think we want to allow that for "fixed-partitions" at
-> > least in the DTB (i.e. the output side of binman). =20
->=20
-> OK I suppose this is the problem with starting small. I was hoping to
-> build up the schema piece by piece but now I am wondering whether
-> every little detail will get redirected and I'll end up with something
-> that Binman cannot use.
->=20
-> So far all I have is that I can add a 'compress' property and a
-> 'compatible' which describes the contents. I suppose it is a start.
-
-I guess defining all you need in one go would be better. At least
-showing a full and typical example might help. But some items like
-encoding if you have TF-A or U-Boot in the compatible, I'm far from
-convinced...
-
-Thanks,
-Miqu=C3=A8l
