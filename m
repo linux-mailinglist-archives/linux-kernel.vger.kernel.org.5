@@ -2,123 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ED97AEB6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3377AEB71
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjIZLY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S231685AbjIZL0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjIZLYz (ORCPT
+        with ESMTP id S229556AbjIZL0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:24:55 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C761AE9;
-        Tue, 26 Sep 2023 04:24:44 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 27AAC320091E;
-        Tue, 26 Sep 2023 07:24:43 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 26 Sep 2023 07:24:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695727482; x=1695813882; bh=8e
-        yX8AE9ekmLAMHsyT0GeS5BenFeWtINVJaFHwwMKHA=; b=cx8XGgkMMAcNeF+sP0
-        Xg3n1R6IWF1+SXDGfWQApF4gZU9gK98wjZ0TUjZLFzYcgq8P2RRJCuEdBdODa4hG
-        LwKYI47Zd+dAN2sC7uN5feNdegP+GZb7mb4cJX3pFg4zNHKKCNFUQVkLrJt7eOGy
-        av9AhHq7+EzE3QAK4jK325rz1w3OUvVLfAw7DSQa/RpNs7kW2gOSTtEgEjLwdWtt
-        7feAoyTVZ6ZTf8BytvH5XSxMWdPKa/nb5dXvC6xyPHZVayjpYoBqiW4jAorTVJja
-        tKWHNOJnDGBH7Oyl+MKk4DD1HRisrJ2FlsDSQ2niXV/P7ghs31CB4+l+dtJ2ytA4
-        zyTA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695727482; x=1695813882; bh=8eyX8AE9ekmLA
-        MHsyT0GeS5BenFeWtINVJaFHwwMKHA=; b=pKJsOAmfVoi/4sfxkVCOWL4nh8SdI
-        vTNfaOPB2+Cy4Ja/lQ3Dgdcqqf/JHimuqu1zmUPu1MzuyGpR4BlyFO2fOSqdBrJD
-        dG/SXyM6XoU2sGTJ/NWIMZUJyoecgPZl0b6nkj8lpNQjaLInMfKBHXpPk9o0zZ8N
-        f2+asD/QlnYjipjgbC2xO89dl7+ZJh/tBYo16z1ZVbUowwfDtPnG8XSWj18p/jjv
-        meBDvYSJBIu94daupGg0yGr0/hZUoiL/siu6JSFMX15KLH3A7lYiXNIDrCUb5iLE
-        h/XNs2TVtz2eqKBcgk+145ybDYVcHPe7ZyW0WxZitiwz6DTkzvjhbteiw==
-X-ME-Sender: <xms:eb8SZZEcaTZMFMpYAflPbP6DpBY0f9Jbgp7wKzhigFCtCYXkqvNtBg>
-    <xme:eb8SZeWLDfYUwqlJ229zBamM2dVDiNCtnh-GLyX9v_isYz0AZO3tkJodHRo2fUQWA
-    X280YTNERWABvT2jh8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddtgdduudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:eb8SZbKm8HNdpZENOy-r1jGJ0F1fTPCpY5PTtvi6CyNDh_zlLriqNg>
-    <xmx:eb8SZfFRNuDq8yK_KKFGXpTKP27IkbOjDlPtYdTHBP_Y0-oiCUp86w>
-    <xmx:eb8SZfUtLwmWAwAlUgE5KB6vkv-NwyElt2tvY67MHACBpgfWmUA18Q>
-    <xmx:er8SZSON_9QoBQ-aD3tFSwDaNYnpnNe3yTR1YBLYE5qoeHqhQ02ViQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 716E8B60089; Tue, 26 Sep 2023 07:24:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
+        Tue, 26 Sep 2023 07:26:12 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C65E9;
+        Tue, 26 Sep 2023 04:26:01 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b962c226ceso144683361fa.3;
+        Tue, 26 Sep 2023 04:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695727560; x=1696332360; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+La3l4QJeXsp9Kjml5oMSUKYjgR6+RcPlKBCRGbxUVA=;
+        b=NYIusXcDyH2+d0VSPOXanbSOJMrU4yFFCZUqInEdoyxxSi8DzrFjV/6RduyxoybpD+
+         YlUOwOVtTaipAkvm1lFPhMd2vMzW/D2/G2jWTcL+RYf9Y0IXCA5fCQhkMLEoh+BWE8K7
+         FQGqMMH+I2JtXQC+YomjdAt61zEpw6x+7vR/Z9S2iHpdhqjFQx0u2KbdWinbF8ebokGp
+         aFSFnnrLVtL1R9snCdI2fpTQXZgwIXhx2ewgu7Ss2s+nXyp3dxD9ahf+NJsFekZuBU65
+         P0nNQ8WbHZlHeZKfeTRPSaGqQ0MmQGJEkw47HCYtXNnpkqJrQ+Z/MyW0Y+WFDJ1wqWFv
+         gwOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695727560; x=1696332360;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+La3l4QJeXsp9Kjml5oMSUKYjgR6+RcPlKBCRGbxUVA=;
+        b=ku/yYhaeFWKk/ymy05tCjQnFbXGF4JpWhdPmNgaQVxk+xATyxH80t9HW0FHl/0FSN3
+         6yWKEcVREtpTeEtFXDWqv2+tvoaAsv9hQLNYr7J0LqkOnxx3d+gPtADktGBlawaEgA3Z
+         owcsNFoGp92lCGFB3nEplzkuD8rBfFYpJxwYHDBfYTtbZoRiKZb/0m6woX0N6aVJEfaF
+         1zsOscCHhLt8mn0n+GFK3M/1l6snRM81riK0qJvqNpaqLhqb4pmzMwcyX2NZCwYd1WIJ
+         Ka8EnbiKLwnaf6d54FhHPLB6gygd8cGSDLCVSQB2hqvpRQFvv0wSMxp53niBkaFr8wLl
+         Z9yQ==
+X-Gm-Message-State: AOJu0Yx5NIhokFPT+f05Fapkk8dCybdhsHE2ZihsPlGTTaW5G7F+/fi1
+        g5gH7S/4eI22Whr9SG1+cgM=
+X-Google-Smtp-Source: AGHT+IEvmx+5EHYSLC77siv1F1Hb04SJWpdevDTLmF9HM1gC4Y/v8GV0GGsuSP0bvyOLYr16VCNfEg==
+X-Received: by 2002:a2e:9dc3:0:b0:2bf:f5c9:2dce with SMTP id x3-20020a2e9dc3000000b002bff5c92dcemr8000692ljj.30.1695727559653;
+        Tue, 26 Sep 2023 04:25:59 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id g17-20020a2e9cd1000000b002c02f371e37sm2596182ljj.52.2023.09.26.04.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 04:25:59 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:25:56 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Rohan G Thomas <rohan.g.thomas@intel.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH net-next 1/1] net: stmmac: xgmac: EST interrupts handling
+Message-ID: <xwcwjtyy5yx6pruoa3vmssnjzkbeahmfyym4e5lrq2efcwwiym@2upf4ko4mah5>
+References: <20230923031031.21434-1-rohan.g.thomas@intel.com>
 MIME-Version: 1.0
-Message-Id: <a08e1cee-05e0-447a-b25b-6c2ebb116e8d@app.fastmail.com>
-In-Reply-To: <fbb6f526-0db9-4bbe-9635-8cb55b4335ee@app.fastmail.com>
-References: <cover.1695679700.git.falcon@tinylab.org>
- <fbb6f526-0db9-4bbe-9635-8cb55b4335ee@app.fastmail.com>
-Date:   Tue, 26 Sep 2023 13:24:21 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Zhangjin Wu" <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     "Palmer Dabbelt" <palmer@rivosinc.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>, paulburton@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Willy Tarreau" <w@1wt.eu>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        "Tim Bird" <tim.bird@sony.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Nicolas Pitre" <nico@fluxnic.net>
-Subject: Re: [PATCH v1 0/7] DCE/DSE: Add Dead Syscalls Elimination support, part1
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923031031.21434-1-rohan.g.thomas@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023, at 09:14, Arnd Bergmann wrote:
-> On Tue, Sep 26, 2023, at 00:33, Zhangjin Wu wrote:
->
-> It would be nice to include some size numbers here for at least
-> one practical use case. If you have a defconfig for a shipping
-> product with a small kernel, what is the 'size -B' output you
-> see comparing with and without DCE and, and with DCE+DSE?
+Hi Rohan
 
-To follow up on this myself, for a very rough baseline,
-I tried a riscv tinyconfig build with and without 
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION (this is currently
-not supported on arm, so I did not try it there), and
-then another build with simply *all* system calls stubbed
-out by hacking asm/syscall-wrapper.h:
+On Sat, Sep 23, 2023 at 11:10:31AM +0800, Rohan G Thomas wrote:
+> Enabled the following EST related interrupts:
+>   1) Constant Gate Control Error (CGCE)
+>   2) Head-of-Line Blocking due to Scheduling (HLBS)
+>   3) Head-of-Line Blocking due to Frame Size (HLBF)
+>   4) Base Time Register error (BTRE)
+>   5) Switch to S/W owned list Complete (SWLC)
+> Also, add EST errors into the ethtool statistic.
+> 
+> The commit e49aa315cb01 ("net: stmmac: EST interrupts handling and
+> error reporting") and commit 9f298959191b ("net: stmmac: Add EST
+> errors into ethtool statistic") add EST interrupts handling and error
+> reporting support to DWMAC4 core. This patch enables the same support
+> for XGMAC.
 
-$ size build/tmp/vmlinux-*
-   text	   data	    bss	     dec    hex	filename
-  754772  220016  71841	 1046629  ff865	vmlinux-tinyconfig
-  717500  223368  71841	 1012709  f73e5	vmlinux-tiny+nosyscalls
-  567310  176200  71473	  814983  c6f87	vmlinux-tiny+gc-sections
-  493278  170752  71433	  735463  b38e7	vmlinux-tiny+gc-sections+nosyscalls
-10120058 3572756 493701	14186515 d87813	vmlinux-defconfig
- 9953934 3529004 491525	13974463 d53bbf	vmlinux-defconfig+gc
- 9709856 3500600 489221	13699677 d10a5d	vmlinux-defconfig+gc+nosyscalls
+So, this is basically a copy of what was done for the DW QoS Eth
+IP-core (DW GMAC v4.x/v5.x). IMO it would be better to factor it out
+into a separate module together with the rest of the setup methods
+like it's done for TC or PTP. But since it implies some much more work
+I guess we can leave it as is for now...
 
-This would put us at an upper bound of 10% size savings (80kb) for
-tinyconfig, which is clearly significant. For defconfig, it's
-still 2.0% or 275kb size reduction when all syscalls are dropped.
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-     Arnd
+-Serge(y)
+
+> 
+> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  .../net/ethernet/stmicro/stmmac/dwxgmac2.h    | 27 ++++++
+>  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 89 +++++++++++++++++++
+>  2 files changed, 116 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> index 7a8f47e7b728..75782b8cdfe9 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> @@ -289,6 +289,33 @@
+>  #define XGMAC_PTOV_SHIFT		23
+>  #define XGMAC_SSWL			BIT(1)
+>  #define XGMAC_EEST			BIT(0)
+> +#define XGMAC_MTL_EST_STATUS		0x00001058
+> +#define XGMAC_BTRL			GENMASK(15, 8)
+> +#define XGMAC_BTRL_SHIFT		8
+> +#define XGMAC_BTRL_MAX			GENMASK(15, 8)
+> +#define XGMAC_CGCE			BIT(4)
+> +#define XGMAC_HLBS			BIT(3)
+> +#define XGMAC_HLBF			BIT(2)
+> +#define XGMAC_BTRE			BIT(1)
+> +#define XGMAC_SWLC			BIT(0)
+> +#define XGMAC_MTL_EST_SCH_ERR		0x00001060
+> +#define XGMAC_MTL_EST_FRM_SZ_ERR	0x00001064
+> +#define XGMAC_MTL_EST_FRM_SZ_CAP	0x00001068
+> +#define XGMAC_SZ_CAP_HBFS_MASK		GENMASK(14, 0)
+> +#define XGMAC_SZ_CAP_HBFQ_SHIFT		16
+> +#define XGMAC_SZ_CAP_HBFQ_MASK(val)	\
+> +	({					\
+> +		typeof(val) _val = (val);	\
+> +		(_val > 4 ? GENMASK(18, 16) :	\
+> +		 _val > 2 ? GENMASK(17, 16) :	\
+> +		 BIT(16));			\
+> +	})
+> +#define XGMAC_MTL_EST_INT_EN		0x00001070
+> +#define XGMAC_IECGCE			BIT(4)
+> +#define XGMAC_IEHS			BIT(3)
+> +#define XGMAC_IEHF			BIT(2)
+> +#define XGMAC_IEBE			BIT(1)
+> +#define XGMAC_IECC			BIT(0)
+>  #define XGMAC_MTL_EST_GCL_CONTROL	0x00001080
+>  #define XGMAC_BTR_LOW			0x0
+>  #define XGMAC_BTR_HIGH			0x1
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> index f352be269deb..0af0aefa6656 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> @@ -1469,9 +1469,97 @@ static int dwxgmac3_est_configure(void __iomem *ioaddr, struct stmmac_est *cfg,
+>  		ctrl &= ~XGMAC_EEST;
+>  
+>  	writel(ctrl, ioaddr + XGMAC_MTL_EST_CONTROL);
+> +
+> +	/* Configure EST interrupt */
+> +	if (cfg->enable)
+> +		ctrl = XGMAC_IECGCE | XGMAC_IEHS | XGMAC_IEHF | XGMAC_IEBE |
+> +		       XGMAC_IECC;
+> +	else
+> +		ctrl = 0;
+> +
+> +	writel(ctrl, ioaddr + XGMAC_MTL_EST_INT_EN);
+>  	return 0;
+>  }
+>  
+> +static void dwxgmac3_est_irq_status(void __iomem *ioaddr,
+> +				    struct net_device *dev,
+> +				    struct stmmac_extra_stats *x, u32 txqcnt)
+> +{
+> +	u32 status, value, feqn, hbfq, hbfs, btrl;
+> +	u32 txqcnt_mask = BIT(txqcnt) - 1;
+> +
+> +	status = readl(ioaddr + XGMAC_MTL_EST_STATUS);
+> +
+> +	value = XGMAC_CGCE | XGMAC_HLBS | XGMAC_HLBF | XGMAC_BTRE | XGMAC_SWLC;
+> +
+> +	/* Return if there is no error */
+> +	if (!(status & value))
+> +		return;
+> +
+> +	if (status & XGMAC_CGCE) {
+> +		/* Clear Interrupt */
+> +		writel(XGMAC_CGCE, ioaddr + XGMAC_MTL_EST_STATUS);
+> +
+> +		x->mtl_est_cgce++;
+> +	}
+> +
+> +	if (status & XGMAC_HLBS) {
+> +		value = readl(ioaddr + XGMAC_MTL_EST_SCH_ERR);
+> +		value &= txqcnt_mask;
+> +
+> +		x->mtl_est_hlbs++;
+> +
+> +		/* Clear Interrupt */
+> +		writel(value, ioaddr + XGMAC_MTL_EST_SCH_ERR);
+> +
+> +		/* Collecting info to shows all the queues that has HLBS
+> +		 * issue. The only way to clear this is to clear the
+> +		 * statistic.
+> +		 */
+> +		if (net_ratelimit())
+> +			netdev_err(dev, "EST: HLB(sched) Queue 0x%x\n", value);
+> +	}
+> +
+> +	if (status & XGMAC_HLBF) {
+> +		value = readl(ioaddr + XGMAC_MTL_EST_FRM_SZ_ERR);
+> +		feqn = value & txqcnt_mask;
+> +
+> +		value = readl(ioaddr + XGMAC_MTL_EST_FRM_SZ_CAP);
+> +		hbfq = (value & XGMAC_SZ_CAP_HBFQ_MASK(txqcnt)) >>
+> +			XGMAC_SZ_CAP_HBFQ_SHIFT;
+> +		hbfs = value & XGMAC_SZ_CAP_HBFS_MASK;
+> +
+> +		x->mtl_est_hlbf++;
+> +
+> +		/* Clear Interrupt */
+> +		writel(feqn, ioaddr + XGMAC_MTL_EST_FRM_SZ_ERR);
+> +
+> +		if (net_ratelimit())
+> +			netdev_err(dev, "EST: HLB(size) Queue %u Size %u\n",
+> +				   hbfq, hbfs);
+> +	}
+> +
+> +	if (status & XGMAC_BTRE) {
+> +		if ((status & XGMAC_BTRL) == XGMAC_BTRL_MAX)
+> +			x->mtl_est_btrlm++;
+> +		else
+> +			x->mtl_est_btre++;
+> +
+> +		btrl = (status & XGMAC_BTRL) >> XGMAC_BTRL_SHIFT;
+> +
+> +		if (net_ratelimit())
+> +			netdev_info(dev, "EST: BTR Error Loop Count %u\n",
+> +				    btrl);
+> +
+> +		writel(XGMAC_BTRE, ioaddr + XGMAC_MTL_EST_STATUS);
+> +	}
+> +
+> +	if (status & XGMAC_SWLC) {
+> +		writel(XGMAC_SWLC, ioaddr + XGMAC_MTL_EST_STATUS);
+> +		netdev_info(dev, "EST: SWOL has been switched\n");
+> +	}
+> +}
+> +
+>  static void dwxgmac3_fpe_configure(void __iomem *ioaddr, u32 num_txq,
+>  				   u32 num_rxq, bool enable)
+>  {
+> @@ -1541,6 +1629,7 @@ const struct stmmac_ops dwxgmac210_ops = {
+>  	.config_l4_filter = dwxgmac2_config_l4_filter,
+>  	.set_arp_offload = dwxgmac2_set_arp_offload,
+>  	.est_configure = dwxgmac3_est_configure,
+> +	.est_irq_status = dwxgmac3_est_irq_status,
+>  	.fpe_configure = dwxgmac3_fpe_configure,
+>  };
+>  
+> -- 
+> 2.26.2
+> 
+> 
