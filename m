@@ -2,115 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3765A7AED57
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3A87AED62
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbjIZM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S234707AbjIZM5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjIZM4c (ORCPT
+        with ESMTP id S234086AbjIZM5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:56:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F682FB;
+        Tue, 26 Sep 2023 08:57:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3BAFC
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695732989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CddDDC+YI+osxwaqHzSITH6Nt7h9FcyMOVgoijeQ4uU=;
+        b=JY88stOQC2k7ngNsJFDjYXTfjM2j3OqPO1LRDU6CEwv5Vxc6HZU/iRzv1G33Q9vigs7c/C
+        22VRZs5RO2XXwlljb8AItavMYGrIHou2whuGILwfqolN6MpNB54QcCwDSG9pXdLHwQSO/S
+        Fns1agtptNMHNvUja9eX+R8ydEUYQRM=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-683-iekVE3tvPGeHsXRr9q8_Xw-1; Tue, 26 Sep 2023 08:56:27 -0400
+X-MC-Unique: iekVE3tvPGeHsXRr9q8_Xw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a35b0d4ceso727361866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:56:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695732986; x=1696337786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CddDDC+YI+osxwaqHzSITH6Nt7h9FcyMOVgoijeQ4uU=;
+        b=OUOp3G36JTy8rC9mJ58BGcOIWhWt/eppTv+gIem/H+46z2XZchdGrJWpliAmt1AFvW
+         3NRseXVLZLVCUFonA2ig+8PugIXgU56ri0hU/EZSRVex+lG+GnI5w/VMGD0htmDSvmis
+         vqap9jIr/Maxqf9NtYxxoeet2J3RNibUeDLiGB6VGrxn6ot14QesNlryLY+XMpKgK4Jo
+         HEsGyYdO7aqu2Me7WnBYFBFxmDbTbCWHZ7ErxbMIEVA6vhfSX81pK/j8JJtDnuAA7yJj
+         2CJDzDNeCP60HAyyUp6VSRs5G54dKIC1s/XOeCu2GKb5xJJgMVWsoC2PetyDENMics3c
+         LkIg==
+X-Gm-Message-State: AOJu0YylvbeSj+FX41BaM+MXcydNpRAVCSAXnrrB2kEOFFNMnp5F68ez
+        LP3T6jCc6pXoJnYNoJRLnKaJEStiaX4R4k4hrGdLs2iOJPsHQtzbBc0yxE4nUT0abijGyxrDRbf
+        zKfDeVaXk+x7GFpN/1QFq0xkq
+X-Received: by 2002:a17:906:1053:b0:9ae:76a2:7022 with SMTP id j19-20020a170906105300b009ae76a27022mr7553818ejj.38.1695732986334;
+        Tue, 26 Sep 2023 05:56:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYIrhN3P+JunkiZ5FgZXx3Bbhz4TDm2/Kn4vGreEaUXS+V3cU+FHm9hTpW1zj5nQMrff4I8w==
+X-Received: by 2002:a17:906:1053:b0:9ae:76a2:7022 with SMTP id j19-20020a170906105300b009ae76a27022mr7553804ejj.38.1695732986087;
+        Tue, 26 Sep 2023 05:56:26 -0700 (PDT)
+Received: from sgarzare-redhat ([46.6.146.182])
+        by smtp.gmail.com with ESMTPSA id u12-20020a1709064acc00b009a1e73f2b4bsm7729413ejt.48.2023.09.26.05.56.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 26 Sep 2023 05:56:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D568C433C8;
-        Tue, 26 Sep 2023 12:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695732985;
-        bh=DkboLss2t1a5JtYCh172h81RMP48iGgistWARFrFkWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MbdWM83JQwKefVUx2T9uRoC5zW6mv9Iux8XOuxN/0MByxiAy8EtIhDK7yTj/LDs/y
-         7OfFuJrHJFFvr40qX2RjF2LwzCLenKrxarBApDsZLJd0OzWEPlOih9XDLGoZEakwZ2
-         ziNmOMOWYofd4pSdGww4YVWBGcAsOovQZjTVx9dhsZk7DODFQjnvXewfmI8F5AlkzC
-         BXWzHs8T+ZTq8PGBo5FLXcxdWJ+6DQBl4qbRQ7jayrFnsTROl+jAVnzl16XGTlt9zY
-         DfbYq9ADUgz6TCsF/0j7R5JfMjyEj73xzw878bV2R4/BEO6eyV42JhNn4YgY0nFzRx
-         Xb11gybOOT1sw==
-Date:   Tue, 26 Sep 2023 13:56:19 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: display: msm: Add missing
- unevaluatedProperties on child node schemas
-Message-ID: <20230926-chemo-autopilot-b9323784886a@spud>
-References: <20230925212434.1972368-1-robh@kernel.org>
+Date:   Tue, 26 Sep 2023 14:56:21 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v1 08/12] vsock: enable setting SO_ZEROCOPY
+Message-ID: <ynuctxau4ta4pk763ut7gfdaqzcuyve7uf2a2iltyspravs5uf@xrtqtbhuuvwq>
+References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
+ <20230922052428.4005676-9-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="W4wHTtiqSi8PKbBJ"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20230925212434.1972368-1-robh@kernel.org>
+In-Reply-To: <20230922052428.4005676-9-avkrasnov@salutedevices.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 22, 2023 at 08:24:24AM +0300, Arseniy Krasnov wrote:
+>For AF_VSOCK, zerocopy tx mode depends on transport, so this option must
+>be set in AF_VSOCK implementation where transport is accessible (if
+>transport is not set during setting SO_ZEROCOPY: for example socket is
+>not connected, then SO_ZEROCOPY will be enabled, but once transport will
+>be assigned, support of this type of transmission will be checked).
+>
+>To handle SO_ZEROCOPY, AF_VSOCK implementation uses SOCK_CUSTOM_SOCKOPT
+>bit, thus handling SOL_SOCKET option operations, but all of them except
+>SO_ZEROCOPY will be forwarded to the generic handler by calling
+>'sock_setsockopt()'.
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v5(big patchset) -> v1:
+>  * Compact 'if' conditions.
+>  * Rename 'zc_val' to 'zerocopy'.
+>  * Use 'zerocopy' value directly in 'sock_valbool_flag()', without
+>    ?: operator.
+>  * Set 'SOCK_CUSTOM_SOCKOPT' bit for connectible sockets only, as
+>    suggested by Bobby Eshleman <bobbyeshleman@gmail.com>.
+>
+> net/vmw_vsock/af_vsock.c | 46 ++++++++++++++++++++++++++++++++++++++--
+> 1 file changed, 44 insertions(+), 2 deletions(-)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 482300eb88e0..c05a42e02a17 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -1406,8 +1406,16 @@ static int vsock_connect(struct socket *sock, struct sockaddr *addr,
+> 			goto out;
+> 		}
+>
+>-		if (vsock_msgzerocopy_allow(transport))
+>+		if (vsock_msgzerocopy_allow(transport)) {
+> 			set_bit(SOCK_SUPPORT_ZC, &sk->sk_socket->flags);
+>+		} else if (sock_flag(sk, SOCK_ZEROCOPY)) {
+>+			/* If this option was set before 'connect()',
+>+			 * when transport was unknown, check that this
+>+			 * feature is supported here.
+>+			 */
+>+			err = -EOPNOTSUPP;
+>+			goto out;
+>+		}
+>
+> 		err = vsock_auto_bind(vsk);
+> 		if (err)
+>@@ -1643,7 +1651,7 @@ static int vsock_connectible_setsockopt(struct socket *sock,
+> 	const struct vsock_transport *transport;
+> 	u64 val;
+>
+>-	if (level != AF_VSOCK)
+>+	if (level != AF_VSOCK && level != SOL_SOCKET)
+> 		return -ENOPROTOOPT;
+>
+> #define COPY_IN(_v)                                       \
+>@@ -1666,6 +1674,34 @@ static int vsock_connectible_setsockopt(struct socket *sock,
+>
+> 	transport = vsk->transport;
+>
+>+	if (level == SOL_SOCKET) {
+>+		int zerocopy;
+>+
+>+		if (optname != SO_ZEROCOPY) {
+>+			release_sock(sk);
+>+			return sock_setsockopt(sock, level, optname, optval, optlen);
+>+		}
+>+
+>+		/* Use 'int' type here, because variable to
+>+		 * set this option usually has this type.
+>+		 */
+>+		COPY_IN(zerocopy);
+>+
+>+		if (zerocopy < 0 || zerocopy > 1) {
+>+			err = -EINVAL;
+>+			goto exit;
+>+		}
+>+
+>+		if (transport && !vsock_msgzerocopy_allow(transport)) {
+>+			err = -EOPNOTSUPP;
+>+			goto exit;
+>+		}
+>+
+>+		sock_valbool_flag(sk, SOCK_ZEROCOPY,
+>+				  zerocopy);
 
---W4wHTtiqSi8PKbBJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+it's not necessary to wrap this call.
 
-On Mon, Sep 25, 2023 at 04:24:24PM -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+>+		goto exit;
+>+	}
+>+
+> 	switch (optname) {
+> 	case SO_VM_SOCKETS_BUFFER_SIZE:
+> 		COPY_IN(val);
+>@@ -2322,6 +2358,12 @@ static int vsock_create(struct net *net, struct socket *sock,
+> 		}
+> 	}
+>
+>+	/* SOCK_DGRAM doesn't have 'setsockopt' callback set in its
+>+	 * proto_ops, so there is no handler for custom logic.
+>+	 */
+>+	if (sock_type_connectible(sock->type))
+>+		set_bit(SOCK_CUSTOM_SOCKOPT, &sk->sk_socket->flags);
+>+
+> 	vsock_insert_unbound(vsk);
+>
+> 	return 0;
+>-- 
+>2.25.1
+>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.=
-yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index f12558960cd8..dbe398f84ffb 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -114,6 +114,7 @@ properties:
-> =20
->        port@1:
->          $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
->          description: Output endpoint of the controller
->          properties:
->            endpoint:
-> --=20
-> 2.40.1
->=20
-
---W4wHTtiqSi8PKbBJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLU8wAKCRB4tDGHoIJi
-0siFAQCPIJw0ImQkf/uczQd3qHyCH5x7Fpe36rqmG+BfDzkraQD9FTGjRiM9TQXb
-q+Q5fUiiaZa7v9r6fe0HMjHSzIRytws=
-=k8M0
------END PGP SIGNATURE-----
-
---W4wHTtiqSi8PKbBJ--
