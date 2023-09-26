@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4167AF0AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9077AF09D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbjIZQ2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
+        id S235269AbjIZQWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjIZQ2r (ORCPT
+        with ESMTP id S235259AbjIZQWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:28:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D567DBF;
-        Tue, 26 Sep 2023 09:28:39 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 93A8421887;
-        Tue, 26 Sep 2023 16:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1695745718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Uo78WXp4NpI2DQI1aEMIMuXwKeeSHBd+jS5nF8ZBxc4=;
-        b=syCW5o+0ILbFHDZeaeZa0ENnHru/Nc+hTHjrs5RKmFgfSbEE+KGLFgEsUt0eStYhsi5j8T
-        EnSXjoOpsw6HDwAU7Xa8FBT3NPF1Dkp6B9JUzkfOK5+ak46pjhj6m22G9BYsqQhHMzlPVX
-        Ily3iu0fcYtTChcPIoR3fOjm7M/8mds=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 695D82C145;
-        Tue, 26 Sep 2023 16:28:38 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 09871DA832; Tue, 26 Sep 2023 18:22:01 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.6-rc4
-Date:   Tue, 26 Sep 2023 18:22:00 +0200
-Message-ID: <cover.1695744160.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 26 Sep 2023 12:22:44 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CCE193;
+        Tue, 26 Sep 2023 09:22:36 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bdcade7fbso1114626166b.1;
+        Tue, 26 Sep 2023 09:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695745355; x=1696350155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=isZM+KwQz6FTkMCGH532kqIWoaREk87BS2KHMsM0vxI=;
+        b=Du8aKXzXnXcB9Blv6K7GkXTPf23dFYXchl+3MC/9QrTedHKSCpQilNi6/sLJqohkRj
+         +lw0Xeen8lMAxGuGwuuAMNeGcP+nAMcNdZVLQNldBiUjzZRJnp+rAwxhDOAJqOKCDsq2
+         XZAAzVAcWOCJgDaMtgDiobkEuowhlFFHxKL2K0EnlSwsi/q7S+Ib9gAyBdlL4rbGVHmS
+         WfFgva88XG11XmvBHP7+cqzoRXsNmm6ksnFwitt0BtJfqWcgIvwj299p5inlSKxB9HIu
+         QZLOdG7J56Gu1/kqPjinK1lO8uK0UBcLrdGRbhx4WIbgqX2IFrnArWDpa5kun+SzUPuv
+         ovHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695745355; x=1696350155;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=isZM+KwQz6FTkMCGH532kqIWoaREk87BS2KHMsM0vxI=;
+        b=suxSAkm2Z7C8mzptFmhr1zzSEGJp4wgxj+4+onRkn53t5BlM1KIh2ZPPIXEwIRSVf3
+         Wz0ivtf2Zgi+YZTsy8yyvmJx5/3jSBeaAW2m+m5R/hk4hXWPZVtaE6VGkyZ5xvvZaIOo
+         aL/HrdKl/O75JMMlpjPmfMtndaYhz1g51N+pE3eN7kzzHi8ctzXBznhr2k8KJPxlu5Nv
+         PsVM89wB1GBew1p8lFXm4UMulGcLaypyOKJzkL+NrKf3u4NJPQF6FisHggxIrLH+bavr
+         YqzFGg4SGboLE8hCZAYLaOtnwtEMuNcZjlgglEghbHamQLpvkLsnsHzWZ5T5MCS5Ekz0
+         08Og==
+X-Gm-Message-State: AOJu0YyaTSN4oiE9jwsSLRbfnNYF4GHKJVa6+Pm2MpYfNSoAejH7WMah
+        uWiPc+VNez9TgVJ9gz6R6fw=
+X-Google-Smtp-Source: AGHT+IGCHG2a21RArwSr62WMP93eCUhZBNB4pDl+jjjmBDHchjYALy1n+C6/trhIJHsw1JzfzZG3VA==
+X-Received: by 2002:a17:906:844f:b0:9a1:c991:a521 with SMTP id e15-20020a170906844f00b009a1c991a521mr8627387ejy.4.1695745354996;
+        Tue, 26 Sep 2023 09:22:34 -0700 (PDT)
+Received: from f.. (cst-prg-24-34.cust.vodafone.cz. [46.135.24.34])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009ad829ed144sm7951148ejd.130.2023.09.26.09.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 09:22:33 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     brauner@kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, torvalds@linux-foundation.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v2] vfs: shave work on failed file open
+Date:   Tue, 26 Sep 2023 18:22:28 +0200
+Message-Id: <20230926162228.68666-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,59 +70,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Failed opens (mostly ENOENT) legitimately happen a lot, for example here
+are stats from stracing kernel build for few seconds (strace -fc make):
 
-a few more fixes and build warning fixes. Please pull, thanks.
+  % time     seconds  usecs/call     calls    errors syscall
+  ------ ----------- ----------- --------- --------- ------------------
+    0.76    0.076233           5     15040      3688 openat
 
-- delayed refs fixes:
-  - fix race when refilling delayed refs block reserve
-  - prevent transaction block reserve underflow when starting transaction
-  - error message and value adjustments
+(this is tons of header files tried in different paths)
 
-- fix build warnings with CONFIG_CC_OPTIMIZE_FOR_SIZE and -Wmaybe-uninitialized
+In the common case of there being nothing to close (only the file object
+to free) there is a lot of overhead which can be avoided.
 
-- fix for smatch report where uninitialized data from invalid extent
-  buffer range could be returned to the caller
+This is most notably delegation of freeing to task_work, which comes
+with an enormous cost (see 021a160abf62 ("fs: use __fput_sync in
+close(2)" for an example).
 
-- fix numeric overflow in statfs when calculating lower threshold for a
-  full filesystem
+Benchmarked with will-it-scale with a custom testcase based on
+tests/open1.c, stuffed into tests/openneg.c:
+[snip]
+        while (1) {
+                int fd = open("/tmp/nonexistent", O_RDONLY);
+                assert(fd == -1);
 
+                (*iterations)++;
+        }
+[/snip]
 
-----------------------------------------------------------------
-The following changes since commit 8e7f82deb0c0386a03b62e30082574347f8b57d5:
+Sapphire Rapids, openneg_processes -t 1 (ops/s):
+before:	1950013
+after:	2914973 (+49%)
 
-  btrfs: fix race between reading a directory and adding entries to it (2023-09-14 23:24:42 +0200)
+file refcount is checked as a safety belt against buggy consumers with
+an atomic cmpxchg. Technically it is not necessary, but it happens to
+not be measurable due to several other atomics which immediately follow.
+Optmizing them away to make this atomic into a problem is left as an
+exercise for the reader.
 
-are available in the Git repository at:
+v2:
+- unexport fput_badopen and move to fs/internal.h
+- handle the refcount with cmpxchg, adjust commentary accordingly
+- tweak the commit message
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc3-tag
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ fs/file_table.c | 35 +++++++++++++++++++++++++++++++++++
+ fs/internal.h   |  2 ++
+ fs/namei.c      |  2 +-
+ 3 files changed, 38 insertions(+), 1 deletion(-)
 
-for you to fetch changes up to b4c639f699349880b7918b861e1bd360442ec450:
+diff --git a/fs/file_table.c b/fs/file_table.c
+index ee21b3da9d08..6cbd5bc551d0 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -82,6 +82,16 @@ static inline void file_free(struct file *f)
+ 	call_rcu(&f->f_rcuhead, file_free_rcu);
+ }
+ 
++static inline void file_free_badopen(struct file *f)
++{
++	BUG_ON(f->f_mode & (FMODE_BACKING | FMODE_OPENED));
++	security_file_free(f);
++	put_cred(f->f_cred);
++	if (likely(!(f->f_mode & FMODE_NOACCOUNT)))
++		percpu_counter_dec(&nr_files);
++	kmem_cache_free(filp_cachep, f);
++}
++
+ /*
+  * Return the total number of open files in the system
+  */
+@@ -468,6 +478,31 @@ void __fput_sync(struct file *file)
+ EXPORT_SYMBOL(fput);
+ EXPORT_SYMBOL(__fput_sync);
+ 
++/*
++ * Clean up after failing to open (e.g., open(2) returns with -ENOENT).
++ *
++ * This represents opportunities to shave on work in the common case of
++ * FMODE_OPENED not being set:
++ * 1. there is nothing to close, just the file object to free and consequently
++ *    no need to delegate to task_work
++ * 2. as nobody else had seen the file then there is no need to delegate
++ *    freeing to RCU
++ */
++void fput_badopen(struct file *file)
++{
++	if (unlikely(file->f_mode & (FMODE_BACKING | FMODE_OPENED))) {
++		fput(file);
++		return;
++	}
++
++	if (WARN_ON_ONCE(atomic_long_cmpxchg(&file->f_count, 1, 0) != 1)) {
++		fput(file);
++		return;
++	}
++
++	file_free_badopen(file);
++}
++
+ void __init files_init(void)
+ {
+ 	filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
+diff --git a/fs/internal.h b/fs/internal.h
+index d64ae03998cc..93da6d815e90 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -95,6 +95,8 @@ struct file *alloc_empty_file(int flags, const struct cred *cred);
+ struct file *alloc_empty_file_noaccount(int flags, const struct cred *cred);
+ struct file *alloc_empty_backing_file(int flags, const struct cred *cred);
+ 
++void fput_badopen(struct file *);
++
+ static inline void put_file_access(struct file *file)
+ {
+ 	if ((file->f_mode & (FMODE_READ | FMODE_WRITE)) == FMODE_READ) {
+diff --git a/fs/namei.c b/fs/namei.c
+index 567ee547492b..67579fe30b28 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3802,7 +3802,7 @@ static struct file *path_openat(struct nameidata *nd,
+ 		WARN_ON(1);
+ 		error = -EINVAL;
+ 	}
+-	fput(file);
++	fput_badopen(file);
+ 	if (error == -EOPENSTALE) {
+ 		if (flags & LOOKUP_RCU)
+ 			error = -ECHILD;
+-- 
+2.39.2
 
-  btrfs: initialize start_slot in btrfs_log_prealloc_extents (2023-09-21 18:52:23 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (5):
-      btrfs: fix race when refilling delayed refs block reserve
-      btrfs: prevent transaction block reserve underflow when starting transaction
-      btrfs: return -EUCLEAN for delayed tree ref with a ref count not equals to 1
-      btrfs: remove redundant BUG_ON() from __btrfs_inc_extent_ref()
-      btrfs: log message if extent item not found when running delayed extent op
-
-Josef Bacik (3):
-      btrfs: properly report 0 avail for very full file systems
-      btrfs: make sure to initialize start and len in find_free_dev_extent
-      btrfs: initialize start_slot in btrfs_log_prealloc_extents
-
-Qu Wenruo (1):
-      btrfs: reset destination buffer when read_extent_buffer() gets invalid range
-
- fs/btrfs/delayed-ref.c | 46 +++++++++++++++++++++++++++++++++++-----------
- fs/btrfs/delayed-ref.h |  1 -
- fs/btrfs/extent-tree.c | 18 ++++++++++--------
- fs/btrfs/extent_io.c   |  8 +++++++-
- fs/btrfs/super.c       |  2 +-
- fs/btrfs/transaction.c |  6 +++---
- fs/btrfs/tree-log.c    |  2 +-
- fs/btrfs/volumes.c     | 13 ++++++-------
- 8 files changed, 63 insertions(+), 33 deletions(-)
