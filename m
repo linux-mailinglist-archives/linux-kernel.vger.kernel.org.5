@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E3E7AE8EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398687AE8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234144AbjIZJYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
+        id S234109AbjIZJYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233738AbjIZJYF (ORCPT
+        with ESMTP id S234177AbjIZJYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:24:05 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01D211D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:23:58 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 658506607314;
-        Tue, 26 Sep 2023 10:23:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695720237;
-        bh=ssfuBNR2PiLxi4TiFV2ZqSR5SVdNJLkRo9oKlebvEQw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cW7c5jDhuls+mD3trL29q7HBQecBadZb/c5mpADXdcWpqI8ThH4gxcTynR9pfijsn
-         k8uzNX3PnxUosg3jnhKiIeavFp0n0rvvh5cbh1hOV4LQKjSphvtWRXE4hth75i/BHD
-         0SM54hofqzMoZ+qawxCSI8q7r+B6oRWSCwQOcnJiDUAEcX4abp7AL/8J1qYXJ2mg9q
-         aL2KIZnALoJcI+CU8KwJRUVGSNCLd+BgsjlR9U2d6/vT3PpzPI2RexgfVNu/SnZJ9I
-         inQkm1TB+za1aXFbUlggJRz1b7uU7I0/Sh27IDbfAm8tPy3/CK9uo33J5PgN33w8Iw
-         8zoZS46BiX1fw==
-Message-ID: <76a36e77-ac58-c156-131c-0c471565502a@collabora.com>
-Date:   Tue, 26 Sep 2023 11:23:55 +0200
+        Tue, 26 Sep 2023 05:24:41 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F91F12A;
+        Tue, 26 Sep 2023 02:24:34 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E3A3768AA6; Tue, 26 Sep 2023 11:24:27 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:24:27 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 10/19] USB: gadget/legacy: remove sb_mutex
+Message-ID: <20230926092427.GC12504@lst.de>
+References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-11-hch@lst.de> <7f839be1-4898-41ad-8eda-10d5a0350bdf@rowland.harvard.edu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 14/40] soc/mediatek: mtk-devapc: Convert to platform
- remove callback returning void
-Content-Language: en-US
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@pengutronix.de
-References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
- <20230925095532.1984344-15-u.kleine-koenig@pengutronix.de>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230925095532.1984344-15-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f839be1-4898-41ad-8eda-10d5a0350bdf@rowland.harvard.edu>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 25/09/23 11:55, Uwe Kleine-König ha scritto:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new() which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
+On Wed, Sep 13, 2023 at 12:10:56PM -0400, Alan Stern wrote:
+> On Wed, Sep 13, 2023 at 08:10:04AM -0300, Christoph Hellwig wrote:
+> > Creating new a new super_block vs freeing the old one for single instance
+> > file systems is serialized by the wait for SB_DEAD.
+> > 
+> > Remove the superfluous sb_mutex.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
 > 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> You might mention that this is essentially a reversion of commit 
+> d18dcfe9860e ("USB: gadgetfs: Fix race between mounting and 
+> unmounting").
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+The difference we have now is that sb creation waits for the
+old one to go way, but I'll add a notice on all that.
 
