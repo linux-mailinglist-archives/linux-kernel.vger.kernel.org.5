@@ -2,122 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E06C7AEE39
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C9A7AEE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbjIZNld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
+        id S234851AbjIZNnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjIZNla (ORCPT
+        with ESMTP id S234846AbjIZNnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:41:30 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0085795;
-        Tue, 26 Sep 2023 06:41:23 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so137833251fa.3;
-        Tue, 26 Sep 2023 06:41:23 -0700 (PDT)
+        Tue, 26 Sep 2023 09:43:51 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE933F3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:43:43 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32333fb6beeso1802381f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695735682; x=1696340482; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=ionos.com; s=google; t=1695735822; x=1696340622; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bNLkBZL0rptK8jKeUGKxByFO6I6oW3HmWWY23t4bNw0=;
-        b=kuWYwtj0rz3tUaWSIjdHZs2/hGTo8XWoeC/n7Ym4A7x1cZ52rnfsWhhEitZfNRUFIu
-         7zmeB42XSraj3a1sf3hJe3oNehmstFhQ/uei039kCreu1nVmREluWbo/O1sFwj+h3PTl
-         T0sIgmICsr7QTfA6iTeFy7nnFD+etZa0luP8AQC+km9n3DPqoohTiNp+iuVJxQBgTOPi
-         m3YBWnZWTaJk2T/SxlUXFRbGZmlHB33R5w3SA1aGcwrgLPg/ExIgRiQFg7m1U1Gl/D/2
-         ht8Zm/Nr+RdKD635ckxXrISjdORhamBD6IoQRDgksUJhS78OT3ulbRoYKx57VfMeeyO6
-         F9nQ==
+        bh=ptamfMpXoJ3CODle1KvFafVhoHAycVMWOruc5QELg+E=;
+        b=gFiLzWvgNJVmF699Cqrqu4+R2LyjPqbMaVQK71IZzRhA9854OzKw8FWriPbCA9+3vO
+         TarL1CLrD40m57jQTX6e/RfvM6lz9fmFOdcAF17Eny5ebKgRpXXkc70dBGroWQZLvFMI
+         cl1mZrrM6pQ28VKoy6qf92BAmSUhUeBM5inzsfXi0NgqhNGutAqkC3qhTwy+yKp49Ows
+         tPaIFQPEbBcpMRN7unIsY8pb4bjZwAwhM7IAQyaAbA65mBPf2C0hq7ij3nMpKlIP77fg
+         a2LJTbE9DD0HgA7tcrb+6R2vnfzvjl+SQZLopnrItRI5hUvPRxFmVasvuoIKqqrloi37
+         eDaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695735682; x=1696340482;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695735822; x=1696340622;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bNLkBZL0rptK8jKeUGKxByFO6I6oW3HmWWY23t4bNw0=;
-        b=L3Axd4TB6RY9tUIWEOb7Xsi0zJ6K9+mNGmCkIHCftUs7eHTEtv8q+8hhGwtKmn9GfC
-         nyqrYANx62nfrkFYrLEEDD+sQYpwjv+irbsFk3uoCDm5HovHR3/FaN67BTCIyEiX1Gia
-         eu1G1EoA4NMvWihcs6tQkPFdT8gd8ZPL7/dj3KHnrTA3VXSVSReE2DehTvrx9b2YNudR
-         MejpA9u5iX3ggfACV9skUW1nxuJf09sbnhMCHLpKbpi1RgevyG6obxW5QfOy+NlrLKvZ
-         1RZLzNqF6B7VorZ75S/c7/WZQRiEcjPGu3PXMXzSSV1MxnM1j+NUq6ijVaZ2DoZtBT6D
-         ZMMQ==
-X-Gm-Message-State: AOJu0Ywx6HqSVEel7e+nhEH1Ulh6Qw2uYeSv/J+v8TgtaT+IfhZrnlDA
-        KJVB7HjiHCF+XVJthevYqaA=
-X-Google-Smtp-Source: AGHT+IFpzA175jENXwY647KdaoVZvXZq0i04+ef7ayW8jsXSkPkooCJWUorQVuRxt8AGPA/TgmYOdQ==
-X-Received: by 2002:a2e:9510:0:b0:2b9:f13b:6139 with SMTP id f16-20020a2e9510000000b002b9f13b6139mr8395537ljh.20.1695735681806;
-        Tue, 26 Sep 2023 06:41:21 -0700 (PDT)
-Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id d19-20020a17090692d300b009ae69c303aasm7290247ejx.137.2023.09.26.06.41.20
+        bh=ptamfMpXoJ3CODle1KvFafVhoHAycVMWOruc5QELg+E=;
+        b=s5AFdI4WSRH7iwyDRLgXb7p1l5VEyGDRLpKqX5KecByew4X7mdmEyFr9J0r1EwUtd+
+         OHRKBfnKh/zQlQQuJAj7O6jwyZRQY0EkmYTioHVblblnxJegK6+9JI0GndJF7LtFqCaS
+         bvXFqhqwMxYVsKEnBH3qyogEkOcgk7Zc/a7XFbj11tT1Oiut/FZrMbceFjAtbNtvvuCh
+         W8LFIqbRQgXmhhfgOkVnpBKvY1AuDp8YR/fGEEs3ggh6pr9vWd+1rtSAT1mDJg3DrThE
+         asWlij31v8qp7EHRm6xEl5sMA9CnFaX4i5s5nW7G0wGEO8zKg85+5TTQtET7PPx16TXC
+         5DSA==
+X-Gm-Message-State: AOJu0YxEXteohTvPDXU+tJiyGIOGb2lXw+865rpPNDkUaUOhj2raUaXP
+        GgzhTZV9WU5AHI1HloUqo6U5d2L62EcUXVILFpQ=
+X-Google-Smtp-Source: AGHT+IGQUe3IdNmMk57bmfL8PJu8M+EYO3SZyr5D1RurisMB/DzXyNogPvyzvVGvHPFXaPY+8ZIKlA==
+X-Received: by 2002:adf:ed0d:0:b0:315:9676:c360 with SMTP id a13-20020adfed0d000000b003159676c360mr8793528wro.25.1695735822316;
+        Tue, 26 Sep 2023 06:43:42 -0700 (PDT)
+Received: from heron.intern.cm-ag (p200300dc6f49a600529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f49:a600:529a:4cff:fe3d:d983])
+        by smtp.gmail.com with ESMTPSA id o13-20020a5d474d000000b003217cbab88bsm14644490wrs.16.2023.09.26.06.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 06:41:21 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 15:41:19 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     linux-tegra@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Prathamesh Shete <pshete@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] pinctrl: tegra: add OF node when logging OF parsing
- errors
-Message-ID: <ZRLff1v-dta7EZGO@orome.fritz.box>
-References: <20230926103938.334055-1-luca.ceresoli@bootlin.com>
+        Tue, 26 Sep 2023 06:43:41 -0700 (PDT)
+From:   Max Kellermann <max.kellermann@ionos.com>
+To:     alx@kernel.org, linux-man@vger.kernel.org, brauner@kernel.org,
+        axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        libc-alpha@sourceware.org,
+        Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH v2] man2/splice.2: document SPLICE_F_NOWAIT
+Date:   Tue, 26 Sep 2023 15:43:39 +0200
+Message-Id: <20230926134339.2919289-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <hq2223k3kdclg2i2ozwtw37yvtwnxwrw3ns4op4fkh76x3fz47@2frhfofkwzay>
+References: <hq2223k3kdclg2i2ozwtw37yvtwnxwrw3ns4op4fkh76x3fz47@2frhfofkwzay>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MAiZd4Qo4mVreNpi"
-Content-Disposition: inline
-In-Reply-To: <20230926103938.334055-1-luca.ceresoli@bootlin.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Patch for SPLICE_F_NOWAIT submitted to LKML:
+ https://lore.kernel.org/lkml/20230926063609.2451260-1-max.kellermann@ionos.com/
 
---MAiZd4Qo4mVreNpi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In the HISTORY section, I declared Linux 6.7 as the first version to
+have this feature, but this is only speculation, because
+SPLICE_F_NOWAIT is still under discussion and has not yet been merged.
 
-On Tue, Sep 26, 2023 at 12:39:38PM +0200, Luca Ceresoli wrote:
-> These errors are not quite clear without also logging they device tree no=
-de
-> being parsed, especially when the pinmux node has lots of subnodes. Adding
-> the node name helps a lot in finding the node that triggers the error.
->=20
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> ---
->  drivers/pinctrl/tegra/pinctrl-tegra.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ man2/splice.2 | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+diff --git a/man2/splice.2 b/man2/splice.2
+index e9a18e668..a07c001ac 100644
+--- a/man2/splice.2
++++ b/man2/splice.2
+@@ -89,13 +89,26 @@ call);
+ in the future, a correct implementation may be restored.
+ .TP
+ .B SPLICE_F_NONBLOCK
+-Do not block on I/O.
++Do not block on I/O on pipes.
+ This makes the splice pipe operations nonblocking, but
+ .BR splice ()
+ may nevertheless block because the file descriptors that
+ are spliced to/from may block (unless they have the
+ .B O_NONBLOCK
+-flag set).
++flag set or
++.B SPLICE_F_NOWAIT
++is specified).
++.TP
++.B SPLICE_F_NOWAIT
++If no data is immediately available on
++.I fd_in
++and it is not a pipe, do not wait (e.g. for backing storage or locks),
++but return immediately with
++.B EAGAIN.
++This is analogous to the
++.B RWF_NOWAIT
++flag of
++.BR preadv2 ().
+ .TP
+ .B SPLICE_F_MORE
+ More data will be coming in a subsequent splice.
+@@ -138,6 +151,8 @@ is set to indicate the error.
+ .TP
+ .B EAGAIN
+ .B SPLICE_F_NONBLOCK
++or
++.B SPLICE_F_NOWAIT
+ was specified in
+ .I flags
+ or one of the file descriptors had been marked as nonblocking
+@@ -192,6 +207,9 @@ was required to be a pipe.
+ Since Linux 2.6.31,
+ .\" commit 7c77f0b3f9208c339a4b40737bb2cb0f0319bb8d
+ both arguments may refer to pipes.
++.PP
++.B SPLICE_F_NOWAIT
++was added in Linux 6.7.
+ .SH NOTES
+ The three system calls
+ .BR splice (),
+-- 
+2.39.2
 
---MAiZd4Qo4mVreNpi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUS33wACgkQ3SOs138+
-s6GNvRAAp9rjy7ooTlvjwNMO8jUufTQ1wCgDALf+JRz9TY2bD31vmfEBuxkRkLJ1
-io3HK9mwE5nc/2bhprhxOxMS3JgXbEXJ8vhYDjowL8UhNBKMW7iR+9UWzhAmGyKe
-+g8Sjhhmsk4o538F6buVpJsy8D7j0EtMTWE0MYYiA9ImFi5jsyAVPW7++he3ytl7
-iDFxcUWWh+DxGjIwBwu7qEy1x24tZ1d1PT4lC/NdauJrKzNpjUabtCgTsDcteHQu
-BHe+RVyNE3rOA2HjVDKwHpcxGtZ5kAhX2/Nd8wMF5biytuTkym3Y8r6ngvjRUQLP
-ab/3vMojTpgVP8vU84dk87fBlsqOKjvCE4YgKUgPVxF9wrTx00VJw0eNr3RITQ0B
-G8YdwyEElr4J3cY5M5jZS24QByCjDx6y+1MB9F6jxnXdD9HgEvv7/D0GCnGi36MT
-RY3YOzC/fhNIfb+RhV3yIiIEf2LjRzgrBaLr7w7SRff9pJbZb4K6mLExf8mUPYwu
-gJFwcvN5I36QcW5TL7aTcX48IzqdOlnUnhW3AVB7uNXzfKowKt3fVFdfbbvF2pjI
-zpKyB9sRb57mO93MhwRRAg0M3vMGlw0v2XatSJLl4UhrDYAJWVTapJOG/6UNuv/+
-FHauMsHzkZbGnwuVGskmlLhSBb34QC7w4K2QciAw68HZZJnhO6E=
-=Pd1B
------END PGP SIGNATURE-----
-
---MAiZd4Qo4mVreNpi--
