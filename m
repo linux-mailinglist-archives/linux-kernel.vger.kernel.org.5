@@ -2,197 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5EA7AED0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF687AED10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234683AbjIZMli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
+        id S234646AbjIZMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234687AbjIZMlf (ORCPT
+        with ESMTP id S234536AbjIZMmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:41:35 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE9BD19F;
-        Tue, 26 Sep 2023 05:41:27 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id D890820B74C0; Tue, 26 Sep 2023 05:41:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D890820B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695732086;
-        bh=bSYSPlQMrXXrmi4kI3zyUqJNcJHpggDF9TmyAeOoxL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nAvPkYl1/cP7FGrTud/JeIWoRkrUWRU9mHZc5KaLpAcQLe8RBTDASvzTtDZG53CPr
-         9j2qq25sW2gE8tGP8z8Q3vf4AYfH26v70CAUMhsG61MuE5jAh0UDl+jbm8pKKvTNLI
-         H33MoKjfTYaruoPfeiwfAtHzDL9N2ONQM4pwRuxI=
-Date:   Tue, 26 Sep 2023 05:41:26 -0700
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
- devices
-Message-ID: <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1691132996-11706-1-git-send-email-ssengar@linux.microsoft.com>
- <2023081215-canine-fragile-0a69@gregkh>
- <PUZP153MB06350DAEA2384B996519E07EBE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <2023082246-lumping-rebate-4142@gregkh>
- <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Tue, 26 Sep 2023 08:42:25 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A7EB;
+        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79f92726f47so291539539f.3;
+        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695732138; x=1696336938; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KwZZXUR06hKxqMjAtAVkXjuDv/1BvCb8Sk0gpiHu+5I=;
+        b=T0cQYIVX/Wv2kEiqHtAk+y7maIKtmPtURs04EdORtH2qRakTjKk0r9y+vBJVi7jfLE
+         4wDJEM/nxcvBylOELVMfNkXhRQX1M9tnU5mmtpa6BrCWd0Bn127m9f8mST1J2KsDT2NN
+         mwQzXMmByaurHXFuUS4eyJg+k9dd3MIDIxUVlMnulm6hWvpHAjq/CVQZeBBM4O1SRO4e
+         7B37RiYUYX5MoIvJwjBOigRdu9wlg5yygl++IQ79LuZQJs4aGtlBQes0eczzJ8eQ2fr/
+         pnxdEpgJjLgdmhQz98OSqqZZc6cyh3aeALy6MVo9FX6mtoLNu7x0MCMFds0i8o8tqYP+
+         p9/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695732138; x=1696336938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KwZZXUR06hKxqMjAtAVkXjuDv/1BvCb8Sk0gpiHu+5I=;
+        b=tpOCQtOR/TARsNC1yQtkPmXhHw6bpomn1NJFp8URKRw0w/vb665ITp1dWGEzayEpq7
+         wTQaH0TV9ByQH+gQ0ID9yMNGWLnkRJIcKIswFVn29lU8zwLXvMuJJM/e6XSXRTsmU8gG
+         1lg1yH8ShPXE7DoYUMDFdCNGfvwR1DyDNjERWJ3qvconIIBUnCppuNwvTANEYTih/6He
+         VMoB6HnAGRIBGBzSpFNAFsCbuxFUsm7DyDiOl4gCaqwYPuZ51sIHmjyGs1p0qU65hHRL
+         ln0T0yjUAf4tlZSr4QJLLKYcuMz1AqQODKVGCitUxDnyPNL4yG7yBsYQe56/CdJ6sf8e
+         KaZQ==
+X-Gm-Message-State: AOJu0YzyFVDZMdQh2mAKxMRMJI9qfO4Y+A1biKUMYUhCmU5QZdulpUA+
+        A/NSlVILXjbvhTGspeMn12M=
+X-Google-Smtp-Source: AGHT+IEOiSkG0mndUGYjrWRyD1gPI2GcUvEPRN/qCsJi6tg1cwQOicv8XV55FV90Nh5byZmbTyqpHw==
+X-Received: by 2002:a05:6e02:1946:b0:34b:aef9:60d4 with SMTP id x6-20020a056e02194600b0034baef960d4mr12605847ilu.27.1695732138129;
+        Tue, 26 Sep 2023 05:42:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m13-20020a056638408d00b0042b326ed1ebsm9584jam.48.2023.09.26.05.42.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 05:42:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 26 Sep 2023 05:42:16 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH 3/3] hwmon: (xgene) Migrate to use generic PCC shmem
+ related macros
+Message-ID: <667915e2-3c3f-4afd-a055-d010d55b741e@roeck-us.net>
+References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
+ <20230926-pcc_defines-v1-3-0f925a1658fd@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230926-pcc_defines-v1-3-0f925a1658fd@arm.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 06, 2023 at 05:23:07AM -0700, Saurabh Singh Sengar wrote:
-> On Tue, Aug 22, 2023 at 01:48:03PM +0200, Greg KH wrote:
-> > On Mon, Aug 21, 2023 at 07:36:18AM +0000, Saurabh Singh Sengar wrote:
-> > > 
-> > > 
-> > > > -----Original Message-----
-> > > > From: Greg KH <gregkh@linuxfoundation.org>
-> > > > Sent: Saturday, August 12, 2023 4:45 PM
-> > > > To: Saurabh Sengar <ssengar@linux.microsoft.com>
-> > > > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > > > <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> > > > <decui@microsoft.com>; Michael Kelley (LINUX) <mikelley@microsoft.com>;
-> > > > corbet@lwn.net; linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org;
-> > > > linux-doc@vger.kernel.org
-> > > > Subject: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
-> > > > devices
-> > > > 
-> > > > On Fri, Aug 04, 2023 at 12:09:53AM -0700, Saurabh Sengar wrote:
-> > > > > Hyper-V is adding multiple low speed "speciality" synthetic devices.
-> > > > > Instead of writing a new kernel-level VMBus driver for each device,
-> > > > > make the devices accessible to user space through a UIO-based
-> > > > > hv_vmbus_client driver. Each device can then be supported by a user
-> > > > > space driver. This approach optimizes the development process and
-> > > > > provides flexibility to user space applications to control the key
-> > > > > interactions with the VMBus ring buffer.
-> > > > 
-> > > > Why is it faster to write userspace drivers here?  Where are those new drivers,
-> > > > and why can't they be proper kernel drivers?  Are all hyper-v drivers going to
-> > > > move to userspace now?
-> > > 
-> > > Hi Greg,
-> > > 
-> > > You are correct; it isn't faster. However, the developers working on these userspace
-> > > drivers can concentrate entirely on the business logic of these devices. The more
-> > > intricate aspects of the kernel, such as interrupt management and host communication,
-> > > can be encapsulated within the uio driver.
-> > 
-> > Yes, kernel drivers are hard, we all know that.
-> > 
-> > But if you do it right, it doesn't have to be, saying "it's too hard for
-> > our programmers to write good code for our platform" isn't exactly a
-> > good endorcement of either your programmers, or your platform :)
-> > 
-> > > The quantity of Hyper-V devices is substantial, and their numbers are consistently
-> > > increasing. Presently, all of these drivers are in a development/planning phase and
-> > > rely significantly on the acceptance of this UIO driver as a prerequisite.
-> > 
-> > Don't make my acceptance of something that you haven't submitted before
-> > a business decision that I need to make, that's disenginous.
-> > 
-> > > Not all hyper-v drivers will move to userspace, but many a new slow Hyperv-V
-> > > devices will use this framework and will avoid introducing a new kernel driver. We
-> > > will also plan to remove some of the existing drivers like kvp/vss.
-> > 
-> > Define "slow" please.
+On Tue, Sep 26, 2023 at 01:28:02PM +0100, Sudeep Holla wrote:
+> Use the newly defined common and generic PCC shared memory region
+> related macros in this driver to replace the locally defined ones.
 > 
-> In the Hyper-V environment, most devices, with the exception of network and storage,
-> typically do not require extensive data read/write exchanges with the host. Such
-> devices are considered to be 'slow' devices.
-> 
-> > 
-> > > > > The new synthetic devices are low speed devices that don't support
-> > > > > VMBus monitor bits, and so they must use vmbus_setevent() to notify
-> > > > > the host of ring buffer updates. The new driver provides this
-> > > > > functionality along with a configurable ring buffer size.
-> > > > >
-> > > > > Moreover, this series of patches incorporates an update to the fcopy
-> > > > > application, enabling it to seamlessly utilize the new interface. The
-> > > > > older fcopy driver and application will be phased out gradually.
-> > > > > Development of other similar userspace drivers is still underway.
-> > > > >
-> > > > > Moreover, this patch series adds a new implementation of the fcopy
-> > > > > application that uses the new UIO driver. The older fcopy driver and
-> > > > > application will be phased out gradually. Development of other similar
-> > > > > userspace drivers is still underway.
-> > > > 
-> > > > You are adding a new user api with the "ring buffer" size api, which is odd for
-> > > > normal UIO drivers as that's not something that UIO was designed for.
-> > > > 
-> > > > Why not just make you own generic type uiofs type kernel api if you really
-> > > > want to do all of this type of thing in userspace instead of in the kernel?
-> > > 
-> > > Could you please elaborate more on this suggestion. I couldn't understand it
-> > > completely.
-> > 
-> > Why is uio the requirement here?  Why not make your own framework to
-> > write hv drivers in userspace that fits in better with the overall goal?
-> > Call it "hvfs" or something like that, much like we have usbfs for
-> > writing usb drivers in userspace.
-> > 
-> > Bolting on HV drivers to UIO seems very odd as that is not what this
-> > framework is supposed to be providing at all.  UIO was to enable "pass
-> > through" memory-mapped drivers that only wanted an interrupt and access
-> > to raw memory locations in the hardware.
-> > 
-> > Now you are adding ring buffer managment and all other sorts of things
-> > just for your platform.  So make it a real subsystem tuned exactly for
-> > what you need and NOT try to force it into the UIO interface (which
-> > should know nothing about ring buffers...)
-> 
-> Thank you for elaborating the details. I will drop the plan to introduce a
-> new UIO driver for this effort. However, I would like to know your thoughts
-> on enhancing existing 'uio_hv_generic' driver to achieve the same.  We
-> already have 'uio_hv_generic' driver in linux kernel, which is used for
-> developing userspace drivers for 'fast Hyper-V devices'.
-> 
-> Since these newly introduced synthetic devices operate at a lower speed,
-> they do not have the capability to support monitor bits. Instead, we must
-> utilize the 'vmbus_setevent()' method to enable interrupts from the host.
-> Earlier we made an attempt to support slow devices by uio_hv_generic :
-> https://lore.kernel.org/lkml/1665685754-13971-1-git-send-email-ssengar@linux.microsoft.com/.
-> At that time, the absence of userspace code (fcopy) hindered progress
-> in this direction.
-> 
-> Acknowledging your valid concerns about introducing a new UIO driver for
-> Hyper-V, I propose exploring the potential to enhance the existing
-> 'uio_hv_generic' driver to accommodate slower devices effectively. My
-> commitment to this endeavour includes ensuring the seamless operation of
-> the existing 'fcopy' functionality with the modified 'uio_hv_generic'
-> driver. Additionally, I will undertake the task of removing the current
-> 'fcopy' kernel driver and userspace daemon as part of this effort.
-> 
-> Please let me know your thoughts. I look forward to your feedback and
-> the opportunity to discuss this proposal further. 
+> Cc: Jean Delvare <jdelvare@suse.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Greg,
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-May I know if enhancing uio_hv_generic.c to support 'slow devices' is
-an accptable approach ? I'm willing to undertake this task and propose
-the necessary modifications.
-
-- Saurabh
-
+> ---
+>  drivers/hwmon/xgene-hwmon.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
 > 
-> - Saurabh
+> diff --git a/drivers/hwmon/xgene-hwmon.c b/drivers/hwmon/xgene-hwmon.c
+> index 78d9f52e2a71..1ccdd61b6d13 100644
+> --- a/drivers/hwmon/xgene-hwmon.c
+> +++ b/drivers/hwmon/xgene-hwmon.c
+> @@ -57,12 +57,6 @@
+>  	(MSG_TYPE_SET(MSG_TYPE_PWRMGMT) | \
+>  	MSG_SUBTYPE_SET(hndl) | TPC_CMD_SET(cmd) | type)
+>  
+> -/* PCC defines */
+> -#define PCC_SIGNATURE_MASK		0x50424300
+> -#define PCCC_GENERATE_DB_INT		BIT(15)
+> -#define PCCS_CMD_COMPLETE		BIT(0)
+> -#define PCCS_SCI_DOORBEL		BIT(1)
+> -#define PCCS_PLATFORM_NOTIFICATION	BIT(3)
+>  /*
+>   * Arbitrary retries in case the remote processor is slow to respond
+>   * to PCC commands
+> @@ -142,15 +136,15 @@ static int xgene_hwmon_pcc_rd(struct xgene_hwmon_dev *ctx, u32 *msg)
+>  
+>  	/* Write signature for subspace */
+>  	WRITE_ONCE(generic_comm_base->signature,
+> -		   cpu_to_le32(PCC_SIGNATURE_MASK | ctx->mbox_idx));
+> +		   cpu_to_le32(PCC_SIGNATURE | ctx->mbox_idx));
+>  
+>  	/* Write to the shared command region */
+>  	WRITE_ONCE(generic_comm_base->command,
+> -		   cpu_to_le16(MSG_TYPE(msg[0]) | PCCC_GENERATE_DB_INT));
+> +		   cpu_to_le16(MSG_TYPE(msg[0]) | PCC_CMD_GENERATE_DB_INTR));
+>  
+>  	/* Flip CMD COMPLETE bit */
+>  	val = le16_to_cpu(READ_ONCE(generic_comm_base->status));
+> -	val &= ~PCCS_CMD_COMPLETE;
+> +	val &= ~PCC_STATUS_CMD_COMPLETE;
+>  	WRITE_ONCE(generic_comm_base->status, cpu_to_le16(val));
+>  
+>  	/* Copy the message to the PCC comm space */
+> @@ -544,7 +538,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
+>  	msg = generic_comm_base + 1;
+>  	/* Check if platform sends interrupt */
+>  	if (!xgene_word_tst_and_clr(&generic_comm_base->status,
+> -				    PCCS_SCI_DOORBEL))
+> +				    PCC_STATUS_SCI_DOORBELL))
+>  		return;
+>  
+>  	/*
+> @@ -566,7 +560,7 @@ static void xgene_hwmon_pcc_rx_cb(struct mbox_client *cl, void *msg)
+>  	      TPC_CMD(((u32 *)msg)[0]) == TPC_ALARM))) {
+>  		/* Check if platform completes command */
+>  		if (xgene_word_tst_and_clr(&generic_comm_base->status,
+> -					   PCCS_CMD_COMPLETE)) {
+> +					   PCC_STATUS_CMD_COMPLETE)) {
+>  			ctx->sync_msg.msg = ((u32 *)msg)[0];
+>  			ctx->sync_msg.param1 = ((u32 *)msg)[1];
+>  			ctx->sync_msg.param2 = ((u32 *)msg)[2];
+> 
+> -- 
+> 2.42.0
+> 
