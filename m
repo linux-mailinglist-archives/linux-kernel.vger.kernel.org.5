@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF5E7AEC1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8717AEC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbjIZMFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
+        id S234521AbjIZMEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjIZME7 (ORCPT
+        with ESMTP id S233899AbjIZMEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:04:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318E0DE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695729846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pdY0WCFjlWQnzuU/n992RL0sOmwnkSxRL4q+fOL9AbA=;
-        b=EeD5Y/bYx6M7wF4g6xZjpegfxuwOsCruq0v9qeNHxFNUEJWns/hFMQwUDZ/4D3trK+IZTa
-        lotGvMM5wJ68OYCjWCADXPaJ82tn1ABOZXhSapF8K1UxOhxyt6P0NsFRBxv8svHSi+Sqxw
-        UjSbOfSK/e3qBuGx+hvI3B2AM69OHCs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-573--n3YlA7WONiEYiCMZTpFbw-1; Tue, 26 Sep 2023 08:04:02 -0400
-X-MC-Unique: -n3YlA7WONiEYiCMZTpFbw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F696380115A;
-        Tue, 26 Sep 2023 12:04:01 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2438E1005B96;
-        Tue, 26 Sep 2023 12:03:58 +0000 (UTC)
-Date:   Tue, 26 Sep 2023 20:03:55 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Eric DeVolder <eric.devolder@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        akpm@linux-foundation.org, vschneid@redhat.com, dyoung@redhat.com,
-        sourabhjain@linux.ibm.com
-Subject: Re: [PATCH v2] Crash: add lock to serialize crash hotplug handling
-Message-ID: <ZRLIqztHflB38zYV@MiWiFi-R3L-srv>
-References: <20230925030701.338672-1-bhe@redhat.com>
- <d6bd8083-94e5-9bb3-7b1e-5bf6cc954baa@oracle.com>
+        Tue, 26 Sep 2023 08:04:20 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BE5E6;
+        Tue, 26 Sep 2023 05:04:08 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=8647860101=fe@dev.tdt.de>)
+        id 1ql6nJ-00DGsF-TT; Tue, 26 Sep 2023 14:04:01 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1ql6nJ-00FZfF-0r; Tue, 26 Sep 2023 14:04:01 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 90A63240049;
+        Tue, 26 Sep 2023 14:04:00 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id E4C63240040;
+        Tue, 26 Sep 2023 14:03:59 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 83F0E2EFEB;
+        Tue, 26 Sep 2023 14:03:59 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6bd8083-94e5-9bb3-7b1e-5bf6cc954baa@oracle.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 26 Sep 2023 14:03:59 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        pavel@ucw.cz, lee@kernel.org, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH 1/2] tty: add new helper function tty_get_mget
+In-Reply-To: <dc5ac2cb-71b3-4946-a58b-2ec353bc40a4@kernel.org>
+References: <20230926093607.59536-1-fe@dev.tdt.de>
+ <20230926093607.59536-2-fe@dev.tdt.de>
+ <dc5ac2cb-71b3-4946-a58b-2ec353bc40a4@kernel.org>
+Message-ID: <2c36a83654942416cfdcb2e40ecb539d@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-purgate-ID: 151534::1695729841-26600C1B-B82AB986/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/25/23 at 09:59am, Eric DeVolder wrote:
-> 
-> 
-> On 9/24/23 22:07, Baoquan He wrote:
-> > Eric reported that handling corresponding crash hotplug event can be
-> > failed easily when many memory hotplug event are notified in a short
-> > period. They failed because failing to take __kexec_lock.
-> > 
-> > =======
-> > [   78.714569] Fallback order for Node 0: 0
-> > [   78.714575] Built 1 zonelists, mobility grouping on.  Total pages: 1817886
-> > [   78.717133] Policy zone: Normal
-> > [   78.724423] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
-> > [   78.727207] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
-> > [   80.056643] PEFILE: Unsigned PE binary
-> > =======
-> > 
-> > The memory hotplug events are notified very quickly and very many,
-> > while the handling of crash hotplug is much slower relatively. So the
-> > atomic variable __kexec_lock and kexec_trylock() can't guarantee the
-> > serialization of crash hotplug handling.
-> > 
-> > Here, add a new mutex lock __crash_hotplug_lock to serialize crash
-> > hotplug handling specifically. This doesn't impact the usage of
-> > __kexec_lock.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> > v1->v2:
-> >   - Move mutex lock definition into CONFIG_CRASH_HOTPLUG ifdeffery
-> >     scope in kernel/crash_core.c because the lock is only needed and
-> >     used in that scope. Suggested by Eric.
-> > 
-> >   kernel/crash_core.c | 14 ++++++++++++++
-> >   1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> > index 03a7932cde0a..5951d6366b72 100644
-> > --- a/kernel/crash_core.c
-> > +++ b/kernel/crash_core.c
-> > @@ -739,6 +739,17 @@ subsys_initcall(crash_notes_memory_init);
-> >   #undef pr_fmt
-> >   #define pr_fmt(fmt) "crash hp: " fmt
-> > +/*
-> > + * Different than kexec/kdump loading/unloading/jumping/shrinking which
-> > + * usually rarely happen, there will be many crash hotplug events notified
-> > + * during one short period, e.g one memory board is hot added and memory
-> > + * regions are online. So mutex lock  __crash_hotplug_lock is used to
-> > + * serialize the crash hotplug handling specifically.
-> > + */
-> > +DEFINE_MUTEX(__crash_hotplug_lock);
-> > +#define crash_hotplug_lock() mutex_lock(&__crash_hotplug_lock)
-> > +#define crash_hotplug_unlock() mutex_unlock(&__crash_hotplug_lock)
-> > +
-> >   /*
-> >    * This routine utilized when the crash_hotplug sysfs node is read.
-> >    * It reflects the kernel's ability/permission to update the crash
-> > @@ -783,9 +794,11 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
-> >   {
-> >   	struct kimage *image;
-> > +	crash_hotplug_lock();
-> >   	/* Obtain lock while changing crash information */
-> >   	if (!kexec_trylock()) {
-> >   		pr_info("kexec_trylock() failed, elfcorehdr may be inaccurate\n");
-> > +		crash_hotplug_unlock();
-> >   		return;
-> >   	}
-> > @@ -852,6 +865,7 @@ static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
-> >   out:
-> >   	/* Release lock now that update complete */
-> >   	kexec_unlock();
-> > +	crash_hotplug_unlock();
-> >   }
-> >   static int crash_memhp_notifier(struct notifier_block *nb, unsigned long val, void *v)
-> 
-> The crash_check_update_elfcorehdr() also has kexec_trylock() and needs similar treatment.
-> Userspace (ie udev rule processing) and kernel (crash hotplug infrastrucutre) need to be
-> protected/serialized from one another.
+Thanks for your fast respond!
 
-You are right. I didn't consider the kexec_load interface. There's a
-tiny racing window which we still need to avoid. V3 will be posted.
-Thanks. 
+>> @@ -2494,6 +2494,25 @@ static int send_break(struct tty_struct *tty, 
+>> unsigned int duration)
+>>   	return retval;
+>>   }
+>>   +/**
+>> + * tty_get_mget		-	get modem status
+> 
+> Heh, the naming is funny. It apparently comes from tiocmget. But that
+> comes from:
+> tty ioctl modem get (TIOCMGET)
+> tty ioctl modem set (TIOCMSET)
+> 
+> So you should name it like tty_get_modem() not get_mget().
 
+I didn't like the name too, but I couldn't think of another.
+The function is returning the state of serial control and status 
+signals.
+
+ From your suggestion for the name, however, you can not deduce that at 
+all.
+How would it be then with the following name?
+
+tty_tioctl_state() ?
+
+> 
+> Also those extra spaces around "-" caused some issues in the generated
+> output and should be removed (everywhere).
+
+Ok, I will change this in an own commit throughout the file.
+
+
+Thanks
+
+Florian
+
+@jirislaby: Forgot to send this message to the mailing list as well!
