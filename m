@@ -2,98 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486E57AF124
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1FA7AF149
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234905AbjIZQvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S235454AbjIZQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjIZQvJ (ORCPT
+        with ESMTP id S235402AbjIZQwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:51:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3336CE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695747020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cMSoSEixyIVudOMIe40c4w7ZTQb2ifmzLk6WEIsdc9M=;
-        b=ca3cpgsBwn9cavS2p3rn+YfOGiYSCWkD2OtiJxLl1MHydmbZDti9r+zfQACXO9/WwUsjhS
-        /Y1dcKB49T8k2SkSunGEMEuHUTIv2DV+NwBiab9f8kbznFMYy/q0dAUT7WF87FNNoO5sIB
-        YkC87jrqSDDUGG6sA+kT92dTZ1O3Zdw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-yqnGM9lmO_id9lC1jUXcow-1; Tue, 26 Sep 2023 12:50:17 -0400
-X-MC-Unique: yqnGM9lmO_id9lC1jUXcow-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-404f81fe7cfso55553285e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:50:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695747016; x=1696351816;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cMSoSEixyIVudOMIe40c4w7ZTQb2ifmzLk6WEIsdc9M=;
-        b=cdr/TM474Mh+zM5dfuLeTeFIygi8gxnowNz9uOPdL7CArxzn1IzHkjVTTRjzijStPq
-         jObzZ/oHsRsWua/JCg8W0j6a9lrjfuI0wFwPlUSPFCx1amR7pWKPem9anJDscQsI8xoo
-         m0+d/vd0X+wN/gnkhy0TfibRBaDh2vK9L9IA9SGyobgZ4ttKYe7aX2cfZ2kctQNNqCIR
-         Fnzu4Jf1K24zq36VqlqMh2H96YA2xctSl02OVXS4WfVuvwv0y/RhfPKbWqJ1rZZrj9Gi
-         kpnFnuqyRs4aZNdN4JBrh3HTkIZu6rg3SA5qi5dY9ss0g7GMGWsga7vPC3W/wjEakUbS
-         gWTg==
-X-Gm-Message-State: AOJu0YxW4z6UX3SC8+e8sgcomDefzKPc1E8RTLH3swFelP7cigbXE2yW
-        XjKPWMqnGEGYsSee3t6o/46h7s9UAzhH7lin5pyxz6B3Cx1h9LcYLeyLh+ZwN5JJtUofrIxEwwV
-        TRmHEv/Ct10hWUCxTcZuUZlaQ
-X-Received: by 2002:a05:600c:1d07:b0:405:3be0:c78d with SMTP id l7-20020a05600c1d0700b004053be0c78dmr2461938wms.3.1695747016250;
-        Tue, 26 Sep 2023 09:50:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHAQkTtUETwceEQ4G2o01LtoTRv0QuDzh0I6ymLH/AgSZeWmW0OyjOaPSmROM3kZLIgnn701g==
-X-Received: by 2002:a05:600c:1d07:b0:405:3be0:c78d with SMTP id l7-20020a05600c1d0700b004053be0c78dmr2461918wms.3.1695747015913;
-        Tue, 26 Sep 2023 09:50:15 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id m28-20020a05600c3b1c00b004053a2138bfsm14051900wms.12.2023.09.26.09.50.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 09:50:15 -0700 (PDT)
-Message-ID: <0db86d5f-50d0-db25-e9ee-d92f2f463faf@redhat.com>
-Date:   Tue, 26 Sep 2023 18:50:13 +0200
+        Tue, 26 Sep 2023 12:52:04 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB046127;
+        Tue, 26 Sep 2023 09:51:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695747097; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=WU2lwHCMZgk1EsprLFii7WasIJeI/SMV3MhuNkXSajOE5YN+LFJqgDhnx8TaF1OgaY
+    Sw5G3hlOvW/whA/lY6PEhLViumKmHL1bnT9Ujg8+tE0HqOlb0gz44fXNa9C3D8SI/YKy
+    1GOI07LiOm1OoeDN4HR+MCkpb5EUjdGy5Ab3xa8X4qAqbjbmDgzZQGz5kWe44vG6QVR/
+    54lf6N7OVjQKBXBZCPzDcLVQ8g8b+FyzA9MJr1NCV7mLUNWdcUMzjDCQgO4lZttwuQhN
+    GQaPtXDZ6Kkpk/enZPzRnG+Sidpuc7zzkUOdx0E/aPETkcJBJ5Xv8VieE4GQ4c9s2dTK
+    2bBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747097;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=yRLM5+8bfAKKkXJ6kvgTOc046sJD+dLfqkmxoa1P6AY=;
+    b=knjqHNWnCjg+YVLkne4HPUszVr3VsIXAgTNLRlq+UUKZq9BgDqAHVSmcsCJKIX3R1u
+    wKLshdW1Sge7aZ26CgyaYTxlptBoXJBvUvDykEHZsv28+AcBilhZAFgz00K8gnmnzxvc
+    kno8tHZLOT+dZZnMiSuYQFFuLJvsL6u9InwnDx67hG2jzvdyi3+5gdlKyFJMYhMc1JS3
+    IVfOp2sdIUEo1vra3+t05IGyvAazRm+9xBgEINsp1sredDricTRnwUZXUbARl5XNngQg
+    9wN64caIMDV8JTl/w78LpK2yDc5hGQdG6jCxgSRJYxUISNqZXfErhmXFvzZfV4rGZI73
+    Zz/Q==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747097;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=yRLM5+8bfAKKkXJ6kvgTOc046sJD+dLfqkmxoa1P6AY=;
+    b=m9O3S61HgTh+EYajqFOLWQx5OSiKcSNXkSTc9aFJmzPPFsqbgbN0mLWDI2JC2lAuCR
+    zkzP8CKJMUf7n5WmL5Dfyfcd4DFcuT3metFCC54aXoMZRkBTbIu4DvH7jbfOQsTA70JV
+    74a7FAElDEHQ5JVeFp3448SbQrDFQqrhUgk6jrW35a88o3M+9mSPs1Ha8bPo7KP4qpKV
+    h8fPgPFO3W96vef64WpvAkNoEl6DdsigM4NGGb/lYecsNrf/mgwJZ83NFDi009HfetBB
+    mbq0Z7KZYiWEvBOUkyLsOwq4zAkxmL8r2QGiIlm+Vw9Fvvxc75rk+Ibq8Z7vWSz7I8ps
+    6Qjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695747097;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=yRLM5+8bfAKKkXJ6kvgTOc046sJD+dLfqkmxoa1P6AY=;
+    b=V/g6IdamHickOiFoCad98wOmkVTORBHTDf01aV6CvNE/24HDY+ZFVrhFMexJFzT4zo
+    TxpXYzlP4Bm0ViuvIoAg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOH+nz0="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
+    with ESMTPSA id R04c57z8QGpag5X
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 26 Sep 2023 18:51:36 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH 00/13] arm64: dts: qcom: msm8916/39: Enable sound and modem
+ with QDSP6
+Date:   Tue, 26 Sep 2023 18:51:14 +0200
+Message-Id: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 4/4] KVM: x86: add new nested vmexit tracepoints
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-References: <20230924124410.897646-1-mlevitsk@redhat.com>
- <20230924124410.897646-5-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230924124410.897646-5-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAAIME2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDSyMj3dziXAtLQzPd3PyU1FxdgxSLJLNki8SkNHMzJaCegqLUtMwKsHn
+ RsbW1AEQ4kNlfAAAA
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
+        "J.R. Divya Antony" <d.antony.jr@gmail.com>,
+        Nikita Travkin <nikita@trvn.ru>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jasper Korten <jja2000@gmail.com>,
+        Siddharth Manthan <siddharth.manthan@gmail.com>,
+        Markuss Broks <markuss.broks@gmail.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/23 14:44, Maxim Levitsky wrote:
-> +		trace_kvm_nested_page_fault(fault->address,
-> +				vcpu->arch.ept_fault_error_code,
+Enable sound and modem on most of the MSM8916/MSM8939 
+smartphones/tablets supported upstream by:
 
-Any reason to include vcpu->arch.ept_fault_error_code rather than the 
-injected exit qualification?
+ - Adding the BAM-DMUX DT nodes to msm8939.dtsi for WWAN Internet
+ - Adding the QDSP6 DT nodes to both msm8916.dtsi and msm8939.dtsi.
+   This is needed because audio must be routed through the QDSP6 
+   services provided by the modem firmware when the modem is active.
+ - Setting up the sound/codec related nodes for all the devices.
 
-Paolo
+Most of the sound/modem setup is very similar on all MSM8916/MSM8939 
+devices because the device-specific details are abstracted by the modem 
+firmware. Reduce duplication by adding "msm8916-modem-qdsp6.dtsi" which 
+contains most of the common definitions. The board-specific DT part is 
+limited to extra codecs or board-specific sound setup.
 
-> +				fault->error_code);
+With this patch set, the following functionality works on most 
+MSM8916/MSM8939 devices supported upstream:
+
+ - Sound: Speaker/earpiece/headphones/microphones
+ - Modem: Calls, SMS, WWAN Internet (e.g. with ModemManager)
+
+And with extra pending patches also:
+
+ - Voice call audio
+ - GPS
+
+These patches have been contributed by different people and have been 
+used/tested in postmarketOS for several years. Until now they had to 
+wait for other changes to be upstreamed (QDSP6 audio support for 
+MSM8916, dynamic reserved memory, ...).
+
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+J.R. Divya Antony (1):
+      arm64: dts: qcom: msm8916-asus-z00l: Add sound and modem
+
+Jasper Korten (1):
+      arm64: dts: qcom: msm8916-samsung-gt5: Add sound and modem
+
+Jonathan Albrieux (1):
+      arm64: dts: qcom: msm8916-longcheer-l8910: Add sound and modem
+
+Lin, Meng-Bo (2):
+      arm64: dts: qcom: msm8916-samsung-j5: Add sound and modem
+      arm64: dts: qcom: msm8939-samsung-a7: Add sound and modem
+
+Nikita Travkin (1):
+      arm64: dts: qcom: msm8916-longcheer-l8150: Add sound and modem
+
+Stephan Gerhold (5):
+      arm64: dts: qcom: msm8916/39: Add QDSP6
+      arm64: dts: qcom: msm8916: Add common msm8916-modem-qdsp6.dtsi
+      arm64: dts: qcom: msm8916-samsung-a2015: Add sound and modem
+      arm64: dts: qcom: msm8916-samsung-serranove: Add sound and modem
+      arm64: dts: qcom: msm8916-wingtech-wt88047: Add sound and modem
+
+Vincent Knecht (2):
+      arm64: dts: qcom: msm8939: Add BAM-DMUX WWAN
+      arm64: dts: qcom: msm8916-alcatel-idol347: Add sound and modem
+
+ .../boot/dts/qcom/msm8916-alcatel-idol347.dts      | 164 +++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8916-asus-z00l.dts     |  22 +++
+ .../boot/dts/qcom/msm8916-longcheer-l8150.dts      |  32 +++-
+ .../boot/dts/qcom/msm8916-longcheer-l8910.dts      |  54 +++++++
+ arch/arm64/boot/dts/qcom/msm8916-modem-qdsp6.dtsi  | 163 ++++++++++++++++++++
+ .../dts/qcom/msm8916-samsung-a2015-common.dtsi     |  55 +++++++
+ .../dts/qcom/msm8916-samsung-e2015-common.dtsi     |   4 +
+ .../boot/dts/qcom/msm8916-samsung-grandmax.dts     |   4 +
+ .../boot/dts/qcom/msm8916-samsung-gt5-common.dtsi  |  36 +++++
+ arch/arm64/boot/dts/qcom/msm8916-samsung-gt510.dts |  23 +++
+ arch/arm64/boot/dts/qcom/msm8916-samsung-gt58.dts  |  43 ++++++
+ .../boot/dts/qcom/msm8916-samsung-j5-common.dtsi   |  15 ++
+ arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts    |   4 +
+ .../boot/dts/qcom/msm8916-samsung-serranove.dts    |  14 ++
+ .../boot/dts/qcom/msm8916-wingtech-wt88047.dts     |  76 ++++++++++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi              |  49 ++++++
+ arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts    |  54 +++++++
+ arch/arm64/boot/dts/qcom/msm8939.dtsi              |  79 ++++++++++
+ 18 files changed, 888 insertions(+), 3 deletions(-)
+---
+change-id: 20230922-msm8916-modem-0d8b6c8abf76
+
+Best regards,
+-- 
+Stephan Gerhold <stephan@gerhold.net>
 
