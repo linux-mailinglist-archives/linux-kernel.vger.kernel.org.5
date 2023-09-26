@@ -2,88 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0227AF35A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020A77AF357
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235634AbjIZSzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        id S235624AbjIZSzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbjIZSzH (ORCPT
+        with ESMTP id S235438AbjIZSzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:55:07 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACBC11F;
-        Tue, 26 Sep 2023 11:54:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695754488; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KeSvCaQmt6W0BfrKmoFz5VRKNN26HAqtb9mp9KQRApSFhAbPtQn3PJ5zo9dokCUuPM
-    CFTmDylzZBm8TVz2661YnWN1+XbRsMpsy8QhEQuYOUi5L7EyipfMbRVI2qHYJN1aOb4o
-    RakyxGWRbpaEOaVP1CbZVtK9gNMqt+l90f75IbbiOgkW3pMHZvGarSgJj6+NJ+BHoKy+
-    ocyKoHh+0eiIocDNOX+mOnrZPbvP6Qu61YIvErOcDOo5KX86sN4k89Bh26XcF33hhx9Y
-    wzt+iHaGlv3yeB/9bP+XdcUIPbKUQv82L8hPv3qE/uMEmYDSR+Yz/qZvZJ9Cjbi69rUs
-    JBdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695754488;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
-    b=MutN6n0vgICr5S8u9p0JZmF1uInePhG/Oj+pOjPEJyhw7Bznpro2lh2OCd/jul4RHb
-    GgcmcKpfeRG8Tu7rBygig3M4IbvE9Ab1dUuvePY4fOqO9QpCX4ap0EPTalKewQVqgN+c
-    DHHOWs+qY6zWtxPWvFrIxcT5fDFNTzxqhW7UHMV/fZ5u0Z8WhlPM+ZyL0o3fe1kMVhWy
-    QJFoonZcRnKUnXBOCUhiK0Xv8PAuyhDt2fCdNH/ykZ6TZTclcw0vjuqlt/eznW/kQZOQ
-    kqgu+kWatZJO8V1WC7w8YBjVv8y0SQb6eVI6eFDPKQkFrtk9W9wrk63c9r2y4oE680pA
-    qtOQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695754488;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
-    b=Ge66tFkQKFUjVpow2D/P0hzXuhJbSj9zHekafdQT6dIqHjGPKdIb5gRTpzs/IOapvm
-    I4996INPvLUQ9OPvwGFD1FVQwpoa3yx5kgYAIr7WfM9QelrfTr/VHSLeH7rWQU/Y+nyf
-    eJNuHPmTunSLTAwEEJ14SBI6oleAhL+NKWYmBzDeF7natcHEutYyupqOPFuT9O7hZArX
-    O7wWeWLAwph043mIswZ+kuasa90ZEyYdfsb4yYaXJZ4i2AlUv8YfZB7eV9VgDD5zMyjT
-    b5KduKcU4nmGA4Sg5Y/eaYAdl6DGGZNcT9sGbt9YrimXRZ53RVNOvIV7V+DV1C98JvI2
-    Lcwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695754488;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
-    b=EqCvKOrKMrxjYaer3DHayQmv5+j/f+sOWFOq9jMJ5CRIWFJzuqA6y1wjU/7JAk2rSV
-    FHoUO3SwG+As5FEadrCg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8piJ1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
-    with ESMTPSA id R04c57z8QIsmgJR
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Sep 2023 20:54:48 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 20:54:42 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH 02/13] arm64: dts: qcom: msm8916/39: Add QDSP6
-Message-ID: <ZRMo8oxIKJIY5WG8@gerhold.net>
-References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
- <20230926-msm8916-modem-v1-2-398eec74bac9@gerhold.net>
- <698c8d60-e284-4267-8349-b327712c94cc@linaro.org>
+        Tue, 26 Sep 2023 14:55:02 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250DC198
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:54:54 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 345741827AA;
+        Tue, 26 Sep 2023 20:54:51 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1695754491; bh=y+NWnf+Kb06II2ETW/mETMbXnXhgY2bcexty4+Dog0g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ooNFStzv9LoHfj5Pyft0k0cTbj+lCNoZgcJ4czD7sWyXJCJjvoHT+8kOVMpJz5j0+
+         QYjzCfxK2mf+7uUN2TShHwwBwGX2W/iwSB+ECttRX0d9P+DL6AnuuGu74ROp1a744u
+         K2ukMN0BoiIGm8FRKMK3IozTMuFl4h79tNGAmJJyXKhFWieDOEKB9JNYmNS7mEyiIU
+         7qmrw6rk+Om1g+sxGPHrapZrTFk8Iwh2OzVqT2Y/CYTk8JQ1bAqr3T6L8Cjc/g9c0H
+         6owJZ6A3XcLG/ryakTaxEXpUa+CuUk5t07ZZgCHwn2cNDll+Np8B1jXNa4/Zm5rNog
+         dC61ap+BTaifg==
+Date:   Tue, 26 Sep 2023 20:54:50 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2] swiotlb: fix the check whether a device has used
+ software IO TLB
+Message-ID: <20230926205450.19f5cd47@meshulam.tesarici.cz>
+In-Reply-To: <ZRMgObTMkfq8Bjbe@arm.com>
+References: <20230926162339.12940-1-petr@tesarici.cz>
+        <ZRMgObTMkfq8Bjbe@arm.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <698c8d60-e284-4267-8349-b327712c94cc@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,30 +60,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 08:46:36PM +0200, Konrad Dybcio wrote:
-> On 26.09.2023 18:51, Stephan Gerhold wrote:
-> > MSM8916 and MSM8939 do not have a dedicated ADSP. Instead, the audio
-> > services via APR are also implemented by the modem DSP. Audio can be
-> > either routed via the modem DSP (necessary for voice call audio etc)
-> > or directly sent to the LPASS hardware (currently used by DB410c).
-> > Bypassing QDSP6 audio is only possible with special firmware
-> > (on DB410c) or when the modem DSP is completely disabled.
+On Tue, 26 Sep 2023 19:17:29 +0100
+Catalin Marinas <catalin.marinas@arm.com> wrote:
+
+> On Tue, Sep 26, 2023 at 06:23:39PM +0200, Petr Tesarik wrote:
+> > When CONFIG_SWIOTLB_DYNAMIC=y, devices which do not use the software IO TLB
+> > can avoid swiotlb lookup. A flag is added by commit 1395706a1490 ("swiotlb:
+> > search the software IO TLB only if the device makes use of it"), the flag
+> > is correctly set, but it is then never checked. Add the actual check here.
 > > 
-> > Add the typical nodes for QDSP6 audio to msm8916.dtsi and msm8939.dtsi.
-> > The apr node is disabled by default to avoid changing behavior for
-> > devices like DB410c that use the bypassed audio path.
+> > Note that this code is an alternative to the default pool check, not an
+> > additional check, because:
 > > 
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> I'm generally grumpy with regards to multi-soc changes that
-> have no need to be multi-soc..
+> > 1. swiotlb_find_pool() also searches the default pool;
+> > 2. if dma_uses_io_tlb is false, the default swiotlb pool is not used.
+> > 
+> > Tested in a KVM guest against a QEMU RAM-backed SATA disk over virtio and
+> > *not* using software IO TLB, this patch increases IOPS by approx 2% for
+> > 4-way parallel I/O.
+> > 
+> > The write memory barrier in swiotlb_dyn_alloc() is not needed, because a
+> > newly allocated pool must always be observed by swiotlb_find_slots() before
+> > an address from that pool is passed to is_swiotlb_buffer().
+> > 
+> > Correctness was verified using the following litmus test:  
+> [...]
+> > Fixes: 1395706a1490 ("swiotlb: search the software IO TLB only if the device makes use of it")
+> > Reported-by: Jonathan Corbet <corbet@lwn.net>
+> > Closes: https://lore.kernel.org/linux-iommu/87a5uz3ob8.fsf@meer.lwn.net/
+> > Signed-off-by: Petr Tesarik <petr@tesarici.cz>  
 > 
+> Thanks for the update.
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> 
+> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > index b4536626f8ff..93b400d9be91 100644
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -172,14 +172,22 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+> >  	if (!mem)
+> >  		return false;
+> >  
+> > -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
+> > -		/* Pairs with smp_wmb() in swiotlb_find_slots() and
+> > -		 * swiotlb_dyn_alloc(), which modify the RCU lists.
+> > -		 */
+> > -		smp_rmb();
+> > -		return swiotlb_find_pool(dev, paddr);
+> > -	}
+> > +#ifdef CONFIG_SWIOTLB_DYNAMIC
+> > +	/* All SWIOTLB buffer addresses must have been returned by
+> > +	 * swiotlb_tbl_map_single() and passed to a device driver.
+> > +	 * If a SWIOTLB address is checked on another CPU, then it was
+> > +	 * presumably loaded by the device driver from an unspecified private
+> > +	 * data structure. Make sure that this load is ordered before reading
+> > +	 * dev->dma_uses_io_tlb here and mem->pools in swiotlb_find_pool().
+> > +	 *
+> > +	 * This barrier pairs with smp_mb() in swiotlb_find_slots().
+> > +	 */  
+> 
+> Nitpick. The official multi-line comment style is:
+> 
+> 	/*
+> 	 * Text.
+> 	 */
+> 
+> i.e. it starts with an empty /* line.
 
-Well it's 100% the same diff so reviewing it separately doesn't really
-make sense IMHO. When I do "msm8916/39" patches these are generally the
-changes where strictly speaking there is no need to duplicate at all.
-It could go into a common include between both. We just haven't found
-a good solution/agreement yet how sharing SoC components could work.
+Right! I should add it to scripts/checkpatch.pl.
 
-Thanks,
-Stephan
+> > @@ -1152,9 +1149,25 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+> >  	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
+> >  
+> >  found:
+> > -	dev->dma_uses_io_tlb = true;
+> > -	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
+> > -	smp_wmb();
+> > +	WRITE_ONCE(dev->dma_uses_io_tlb, true);
+> > +
+> > +	/* The general barrier orders reads and writes against a presumed store
+> > +	 * of the SWIOTLB buffer address by a device driver (to a driver private
+> > +	 * data structure). It serves two purposes.  
+> 
+> Same here.
+
+If that's the only issue... ;-)
+
+Petr T
