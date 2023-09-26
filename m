@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB97AEE94
+	by mail.lfdr.de (Postfix) with ESMTP id 47D877AEE92
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbjIZOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S232168AbjIZOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbjIZOOq (ORCPT
+        with ESMTP id S229519AbjIZOOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:14:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AA2CE;
-        Tue, 26 Sep 2023 07:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695737680; x=1727273680;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=k7XtlASmDnnjF+7xnuTUiyTCq8kFu7NuFwlO8H4r+XA=;
-  b=nh3L7QqVUm0LQ/O1Mq+j2QwRaMa3btW4FDapH4nMggUE6I1TKJ+wu01x
-   97bLLDPIkvBj8/uFIbKlBYwq6qvpAEfzzmd+U62ZcH+9iht53lPaVirTx
-   HfwU+Zrzv0yLD/9e45CxQi4nTAwpuGWyuP64LGXNoDVk4lEPnt22epQ8I
-   VYfLDGZWWriBHDeXK0yUTJzREQtolV08Q7+1yxcn6VpqJvNneYnlQiecI
-   vhYNqZGyl/mdorb8XsigewzP5sE982ChTtJwvNl77b7Ui9vzLYOJTujXM
-   9LphdOeKOfyagIRZV+EygnIxF4t4lKQsAWmHUGHKWDDGdzlmBJSPxzLH4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381472363"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="381472363"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:09:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="742377564"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="742377564"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.249.130.254])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:09:43 -0700
-Date:   Tue, 26 Sep 2023 16:09:38 +0200
-From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, song@kernel.org, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2 2/2] md: simplify md_seq_ops
-Message-ID: <20230926160938.00001b1c@linux.intel.com>
-In-Reply-To: <20230926025827.671407-3-yukuai1@huaweicloud.com>
-References: <20230926025827.671407-1-yukuai1@huaweicloud.com>
-        <20230926025827.671407-3-yukuai1@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 26 Sep 2023 10:14:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF3CE;
+        Tue, 26 Sep 2023 07:13:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B459C433C8;
+        Tue, 26 Sep 2023 14:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695737639;
+        bh=K//I43pYNKd0hnss16g14ct+ZnACMgfq5k78PInDtpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jM72ZyHDERi5MoaOIk8F1nPCYuqmGr926Zxyt1R9Ams/B2Dmh61pjKGcF0hvpsq0J
+         JbhWAXvSVBrkGHjwDCwZClOpMIOeYIZuMhmE2rXJ87sIFv0ldHHeOojd9OTihiutVx
+         eB94jEPvPRnErhVdfvgzBhSTD3NR2eCA6ubNEKxuEno4bMTORarrO8M50qZanj2que
+         8MzAk2BTDAJw4PpZNMq9z0YwrPY2mbtWEgDfDpoI/8OIlAHGYG2pJ3pui6Ibdau4qb
+         OnNzbOELCPoRLdC9N+/kBokqQsrp7Spdz6MfHH0+dVHTfwhu3NSjfqZ6qpn4mknJzY
+         4RT8Nifedfbzg==
+Date:   Tue, 26 Sep 2023 16:13:53 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+Message-ID: <20230926-flatterhaft-nachverfolgen-4bf7f78cc0ee@brauner>
+References: <20230913152238.905247-1-mszeredi@redhat.com>
+ <20230913152238.905247-3-mszeredi@redhat.com>
+ <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
+ <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
+ <20230914-lockmittel-verknallen-d1a18d76ba44@brauner>
+ <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
+ <20230918-grafik-zutreffen-995b321017ae@brauner>
+ <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
+ <871qeloxj0.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <871qeloxj0.fsf@oldenburg.str.redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 10:58:27 +0800
-Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> I also don't quite understand the dislike of variable-sized records.
+> Don't getdents, inotify, Netlink all use them?  And I think at least for
+> Netlink, more stuff is added all the time?
 
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Before this patch, the implementation is hacky and hard to understand:
-> 
-> 1) md_seq_start set pos to 1;
-> 2) md_seq_show found pos is 1, then print Personalities;
-> 3) md_seq_next found pos is 1, then it update pos to the first mddev;
-> 4) md_seq_show found pos is not 1 or 2, show mddev;
-> 5) md_seq_next found pos is not 1 or 2, update pos to next mddev;
-> 6) loop 4-5 until the last mddev, then md_seq_next update pos to 2;
-> 7) md_seq_show found pos is 2, then print unused devices;
-> 8) md_seq_next found pos is 2, stop;
-> 
-> This patch remove the magic value and use seq_list_start/next/stop()
-> directly, and move printing "Personalities" to md_sep_start(),
-> "unsed devices" to md_seq_stop():
+Netlink is absolutely atrocious to work with because everything is
+variable sized and figuring out the correct allocation size is a
+complete nightmare even with the "helpful" macros that are provided.
 
-Typo md_sep_start()
-> 
-> 1) md_seq_start print Personalities, and then set pos to first mddev;
-> 2) md_seq_show show mddev;
-> 3) md_seq_next update pos to next mddev;
-> 4) loop 2-3 until the last mddev;
-> 5) md_seq_stop print unsed devices;
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
-LGTM. Nice one. Code looks much better now.
+The bigger problem however is the complete untypedness even of the most
+basic things. For example, retrieving the mtu of a network interface
+through netlink is a complete nightmare. getdents, inotify, fanotify,
+open_by_handle_at()'s struct fiel_handle are all fine. But let's
+absolutely not take netlink as a model for anything related to mounts.
 
-Reviewed-by: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+And no one is against again variable sized records per se. I think we're
+coming to a good compromise here.
