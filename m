@@ -2,167 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1097D7AF287
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E467AF289
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235316AbjIZSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
+        id S235315AbjIZSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjIZSUk (ORCPT
+        with ESMTP id S229809AbjIZSVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:20:40 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2012.outbound.protection.outlook.com [40.92.48.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1594126;
-        Tue, 26 Sep 2023 11:20:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lX4VCeefxByhbkilyddsIBTV47N02eoAp+umG0dZP3d+zgjq/6dTk5g60dmX+xLVM2UKWiKfeSj+lTYJH8MwAGyKnSldU05lNfsHD/tbYKjvM6jq5yp1at7W3Jx0nWyLgvPHku9RoDyMbn9cWCEOWEwyAgTwIhAjf7nNw78DiKh2/Qmr1X9sFd4vS1ygv/sO6dD/cbIMnLKNp+9gyAqEsrDqHkI48zwO9tq7uvnLSCtg3lOhn8jdeQgxE5iWyJM/xi0BbBRgHZy0RZpuI733ekS5oFdfSdUyx4/3u5zrNHR/iJPOGTjVkODxs5V7nQNXF5cmjX2ADvVQAHeFTFTHkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NVM8wUWpsLD51AyWhDWjK6FIdwXC8vGtLgVBzAfi9Ak=;
- b=HfigqPYHtlwpsC9E0mjJS4EVLJpdPmLemP2HvZA8BpbhlMBx/vUFoxrusq3A4K1xrlVNQMtGS9xjw6hqgV4MUncHmmlTqsD3vGsy2jUwJgixNFaW0ArlgEkdqqBez0KUGYD51BZs5WV8wxF2rEh5Co1zKZviZrPAAfuP5gvGxQkrDxsBn0kid/K8aK7ZZqiu9eDXhht8MG1y821mt9yDXqmA1kRFA1dTz722h7BzgAAmWPtXSvxrqLmchMItfXrogRbIxowai1Y1uL74XrnigHdt2v79mwHSQ8E6nXP6VmGpiB6/IU1QYdWrwlHujr3WY9pdaXavJCO9adr+1P1eBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NVM8wUWpsLD51AyWhDWjK6FIdwXC8vGtLgVBzAfi9Ak=;
- b=dbvGaguXHba0TJSV1nO3WqquEaQIFlUxw5sCTdPduFs/cFpNtq4oc95nJ1sqayBDt8Qq6QczmVA8TpymKa3RxCMDBlt5H+uHskKs8hlPu8TZNoQZVPnwRWexqlNrlk4R+KFMvSROL6Id99q1aHbYb2TpHlCN07D9T+8Xbgy3gC0HMVVxk8VTt8F/TuQ7w2LDkR93qSIjzAnRl9urrpxSs2g7BAQSgzIguAFbcjivLu0XdmBY9pivUbWfnQPCSAy1jZ4VoEa+39cKC6nkumiLa8j/MdsLYGL2dNNh2Fbi43frdIZA2lXkp2jegM/zm8r/S64kPQwwO2hMT0JGrjcWZw==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by AM8P193MB0916.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:1ed::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 18:20:31 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Tue, 26 Sep 2023
- 18:20:31 +0000
-From:   Juntong Deng <juntong.deng@outlook.com>
-To:     akpm@linux-foundation.org, shuah@kernel.org
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Tue, 26 Sep 2023 14:21:21 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DFAE5;
+        Tue, 26 Sep 2023 11:21:14 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so6579968a12.0;
+        Tue, 26 Sep 2023 11:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695752473; x=1696357273; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFaFCx2eXhg+kYgVes9eDxQpvEDaU+z47GYjWRCNqSM=;
+        b=MzKSnanZc14lbNKrjRbqvjQVGfq6qiAFqpFgAuLAg8E4TxIIj6Lm2nn3XNmGwi09Pk
+         ef9WB4sHL6QtGogLy6FYuh1hin8CZyAZ8a6h1R7KAjbFm60iLG5FHYAv/fR5BEg6JT/b
+         PNnJVfOOJcMpjBB9jMjeYN3FHEp5SAJqNly+4omhF5hIWPaFB26KGed39YoYM6tbjRcZ
+         vB9xc7FXlWpiugKhBGkUIPtgK2uJNoeTKP5/iRF2f48tgcaxCG1ecZBJArtiJU/2dPWa
+         vUl/GVPOVHb/nIxHfhKUqeE0jtSbEP42bpmucAG+p1ELK38fbU2+hZs/zi9Ax3kBT18V
+         8cTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695752473; x=1696357273;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IFaFCx2eXhg+kYgVes9eDxQpvEDaU+z47GYjWRCNqSM=;
+        b=Sxk+Pmh2o52L5kIqP0X0fcCuRZlfblbjJgmpxB9C8nGgoZhRB+fvPAL5Pjq/4sg4W0
+         LIHPwIye+/r+QBCFPAzUCwGY1VTEylgvPE4StQ8rLs4tSgCgxnBVMi63drMMZ/6HSuJM
+         07bb9bgCKBLKl7OgmGgYAW9tjz9fAhpdO9EBNd6If2kRAkntGADXmyp1sHPFQPs5+A1h
+         3cujgMzriM9LXCnqBrD3xFyBlV7/YxxQrdO25f+pDEdFYrDoMtJG0MAHeKbnO3FKfyLB
+         NgC9t5N/ZpuKQCeOjNAXwAgFMKcUAB3+pSfkqMD5D3nzZvTwTPjscj8pmYUG4gW09Trk
+         LJTA==
+X-Gm-Message-State: AOJu0Yx/C2KjSsupsBxnSf7nlnObPJ4UoX/amf4+kBDK8l+K4L3DS76c
+        9GLbCimZg7Jezyf2Fo1+AwM=
+X-Google-Smtp-Source: AGHT+IFB1sroSQhXMZMuX6Yue2IV2CKo7/5rEUglTcsDL5Mde2lSgpfWC3LxtXIJPVBwUfLdqiCRSQ==
+X-Received: by 2002:a17:906:9b92:b0:9a1:d915:637a with SMTP id dd18-20020a1709069b9200b009a1d915637amr11218733ejc.61.1695752472831;
+        Tue, 26 Sep 2023 11:21:12 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id p20-20020a1709060e9400b009ae587ce135sm8062937ejf.223.2023.09.26.11.21.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 11:21:12 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7256A27C005B;
+        Tue, 26 Sep 2023 14:21:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 26 Sep 2023 14:21:10 -0400
+X-ME-Sender: <xms:FSETZb_JazWP2z2KpHSxH2jPL_W0WkUKqqCDowcZPyd9TkheJBhNfQ>
+    <xme:FSETZXucMHz8PzwBRntT5IwXWfZrsD9GKufUEotRAPIsLynqcGo50zM_EDF-3JODM
+    mQkUVXrCV1J1VjOxA>
+X-ME-Received: <xmr:FSETZZB6DXBhdeSJ3d1yUbv3b5UM6yF2u4feNXaa56bmCuZFoI9Bolv7Dbo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddtgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnheptdfffeetffffjefhkeeujeelgeegtddtfeeiffefhefhudffgfduleejudfg
+    geejnecuffhomhgrihhnpehpthhrrdgrshdpghgvthdrrghmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghu
+    thhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqh
+    hunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:FSETZXf7ffN-gQLXJX5sSNPWTaA-JuCRMJBh4wpwAN8ybd4ekb56tA>
+    <xmx:FSETZQPAiBy2aUWOAtn0TbS5CQmxdOeYOXTVqi8bY_jbS1ri1xpB0g>
+    <xmx:FSETZZkPZyDlZ8jhzbsRdjqIQ-wZ4mNPW9JnoO9Jhm1aDp4pKXnRlg>
+    <xmx:FiETZZk6NLhQKXJl5IPKlNMKK_jkI2OyNbZTRppn5JzS7G15-JoBVQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Sep 2023 14:21:08 -0400 (EDT)
+Date:   Tue, 26 Sep 2023 11:20:35 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Gary Guo <gary@garyguo.net>,
+        Alice Ryhl <alice@ryhl.io>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
         linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] selftests/mm: Fix awk usage in charge_reserved_hugetlb.sh and hugetlb_reparenting_test.sh that may cause error
-Date:   Wed, 27 Sep 2023 02:19:44 +0800
-Message-ID: <VI1P193MB075228810591AF2FDD7D42C599C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [xILr9DlG3sQtR9dc1DzJCCLG8cuXEP7L]
-X-ClientProxiedBy: AS4P195CA0022.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d6::10) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <20230926181944.24179-1-juntong.deng@outlook.com>
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
+ `WithRef`
+Message-ID: <ZRMg81kOYlBP023z@boqun-archlinux>
+References: <9d6d6c94-5da6-a56d-4e85-fbf8da26a0b0@proton.me>
+ <ZRIB0hXNvmJtmyak@boqun-archlinux>
+ <edc0b599-c5d1-4e9c-a51b-eb8ceaef7acc@ryhl.io>
+ <ZRIDc_x9Qh5EJNC8@boqun-archlinux>
+ <61ccfb87-54fd-3f1b-105c-253d0350cd56@proton.me>
+ <20230926162659.6555bcdc@gary-lowrisc-laptop>
+ <ZRL3mlWXqseER8xK@Boquns-Mac-mini.home>
+ <CAH5fLggUPQtNjLg6BnYHcLmefuHdJpg0_eGVgX+dARUTRHexsA@mail.gmail.com>
+ <ZRMIOsi6-GjFaYLW@Boquns-Mac-mini.home>
+ <a4090608-d352-742b-fe5e-054db3a8e4a5@proton.me>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AM8P193MB0916:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f755ffb-d0b7-4ef0-21b7-08dbbebd44c4
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vGTQ28tI/nv7wHjMyYFpLcKQV1B2pkIVz2b7z7uhlZp++lww9EPNrYDRxaI+RuzLOvOpbidffRuh1+eEMft2+TjARKnqBFdTxaq7TOCabXJpjGNqrzTP7UEunJA/k1odHwmn/OgmuuFcGDS03740z0LPxmZUcG3n15c1np8F2cfQfYPNFMMoC/vHuxmhUmGI1EwD8SQwfhVTm9kDYa/onPLF2+3OZ++/uj5OtsJtUVicz4fVg+/DJLj9acqdVsGKKTkqQkbmvHWamEasA8D71RZdGBDM1r9sjMekXVZ3yDFccrwPD9DWUVqScq3L/4/pQwTPVaFcTJOHkigsEqA3wNKAjP3A+pDmd1i2W0lOsf8oZfMNP1M88FYc0fK+TnoZ8bUSbzLXBc0zNGiuFcY184jIN6ERbMy58qTzPQvXDTArRHBLakxye6CIWCErKXTOCUZC4b0VYoXPyympTcXxPBuK8CLdmgVytUcvw874O7335e9MpMn7se7flIA6hTDojRis5WOqc8Zsdvip6Yg+obgKhkgT/RUmIY459vJmd24EgMaKOHS12nY3lqDH2hlj
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?akGJZ1AGyAIBlpxOBKKHKRWD6hPUhNwU1f84jZiyyz8IntRDlsiatAxR2UDq?=
- =?us-ascii?Q?eniEzjCVJ03DwrsNWLxhKJvsKHW4psZrm3GW79vmTLTeF1lIEMihLrtZH07g?=
- =?us-ascii?Q?HQZay9sOH2aoI4tYtnJ+EWnkXc3JzSfNmmSWOo4l0IUTcP46ZQ0qtukqFL6s?=
- =?us-ascii?Q?c3Pz4ymron9RWLh/ao2TrvzS4PKDVxYE0Qyv686Sk8ypOti6bCSHDcEeZBSe?=
- =?us-ascii?Q?JSvuY0ENLmsgwtrXxlx6mxdAsN0LQbjldN2MhPy2tZqehNAcjqAa9hm4ATSg?=
- =?us-ascii?Q?bBJIg6W+TeNN3vILe3S7gpaC5Sp7BLh5CalT7ZOyAkIWorDAfVr8t2YWgVfz?=
- =?us-ascii?Q?QG1WDC7InwH7T12YLh0smJwLv4wbvLx/AMdIL7wakslaZrI3bOR/YqnqjiXh?=
- =?us-ascii?Q?yMasCtjJKRY+yu1IoQVoR7xwi2g5achkU6O/0gRkY/Zn0EgZ0oX/R5YB0vnp?=
- =?us-ascii?Q?8AKCr0wDoAEFVSHW1+FVjbjcmzYtS+zErvYi/lPFfdxGB56xoY0ow95kg8Aj?=
- =?us-ascii?Q?nnpWluZhTuvD4jaxsO7O19lpu6s5CccDwaHSRSSoYHB/nleqVU2B0R4Fwhq5?=
- =?us-ascii?Q?KsaTw+iCSz12AYdU/1C0umJbf2rXdF8GN+yckg9XTCsjqZ6Z6AR1y83JBCbE?=
- =?us-ascii?Q?Xi5gua+HHUdWLfW6nBmrDkPwlursb7mZ3WgBasNWcXUtnBPkOkva1tiuXFEn?=
- =?us-ascii?Q?mklu9Luj6xtNY8WV4PiqFZWD7/36dsxSflB7VKtpaohLdNLxE/ztnani4Eqd?=
- =?us-ascii?Q?/qV0Bq29IwOm8hdeqYV8oV3wu1eL74SoacO/xj4wRyr9nvUq6hoPIzhEpQFV?=
- =?us-ascii?Q?J0x1TGdTWweEs1ao2MED0rLyAEqVzJikvBM3NPNehdUoGGga17/5lBDpbwVX?=
- =?us-ascii?Q?FvB4Dg8XiKldto6MmvL6cbyIWDyjKkS/kvNNiPRaIsaJGyEUaqECZgEF4h82?=
- =?us-ascii?Q?cyr0GGpnrIPBqSbeL/7IHnMi/aBOWxpzAjxqF4znPDXwZU8Out+vF3nMHXBI?=
- =?us-ascii?Q?jJIbO7SZ8lFCtNMxs0p5FN1mOW7xbLKsQawDBiPAOI0iU5BYmJj4l7QJnIHM?=
- =?us-ascii?Q?G39NdvwS7Kw1SQVClaooXHUjN1MyE3Q45Zxv2lfpq2aRboTYBMvkUg5Wt5GB?=
- =?us-ascii?Q?BxH+mF/jTX4zf5inSKCM/RX1IOfFbouv8KYUJygASeWWt0FsnjmG5AnDkLeU?=
- =?us-ascii?Q?fiDWXoAYUV3EX0TTZ7czC5jG7l7m6pj5YaCs5E9VpJHR2unb2koZBibqb+I?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f755ffb-d0b7-4ef0-21b7-08dbbebd44c4
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 18:20:31.6529
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P193MB0916
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4090608-d352-742b-fe5e-054db3a8e4a5@proton.me>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the awk manual, the -e option does not need to be specified
-in front of 'program' (unless you need to mix program-file).
+On Tue, Sep 26, 2023 at 05:15:52PM +0000, Benno Lossin wrote:
+[...]
+> > 
+> > But here the difference it that we only derive a `*mut` from a `&`,
+> > rather than transmute to a `&mut`, right? We only use `&` to get a
+> > pointer value (a usize), so I don't think that rule applies here? Or in
+> > other words, does the following implemenation look good to you?
+> > 
+> > 	impl<T: ?Sized> Arc<T> {
+> > 	    pub fn as_with_ref(&self) -> &WithRef<T> {
+> > 		// expose
+> > 		let _ = self.ptr.as_ptr() as usize;
+> > 		unsafe { self.ptr.as_ref() }
+> > 	    }
+> > 	}
+> > 
+> > 	impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
+> > 	    fn from(b: &WithRef<T>) -> Self {
+> > 		// from exposed
+> > 		let ptr = unsafe { NonNull::new_unchecked(b as *const _ as usize as *mut _) };
+> > 		// SAFETY: The existence of `b` guarantees that the refcount is non-zero. `ManuallyDrop`
+> > 		// guarantees that `drop` isn't called, so it's ok that the temporary `Arc` doesn't own the
+> > 		// increment.
+> > 		ManuallyDrop::new(unsafe { Arc::from_inner(ptr) })
+> > 		    .deref()
+> > 		    .clone()
+> > 	    }
+> > 	}
+> > 
+> > 
+> > An equivalent code snippet is as below (in case anyone wants to try it
+> > in miri):
+> > ```rust
+> >      let raw = Box::into_raw(arc);
+> > 
+> >      // as_with_ref()
+> >      let _ = raw as usize;
+> >      let reference = unsafe { &*raw };
+> > 
+> >      // from()
+> >      let raw: *mut T = reference as *const _ as usize as  *mut _ ;
+> > 
+> >      // drop()
+> >      let arc = unsafe { Box::from_raw(raw) };
+> > ```
+> 
+> I don't understand why we are trying to use ptr2int to fix this.
+> Simply wrapping the `T` field inside `WithRef` with `UnsafeCell`
+> should be enough.
+> 
 
-The redundant -e option can cause error when users use awk tools other
-than gawk (for example, mawk does not support the -e option).
+BTW, how do you fix this with only wrapping `T` field in `WithRef`?
 
-Error Example:
-awk: not an option: -e
+Let say `WithRef` is defined as:
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 4 ++--
- tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+struct WithRef<T> {
+    refcount: Opaque<bindings::refcount_t>,
+    data: UnsafeCell<T>,
+}
 
-diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
-index a5cb4b09a46c..0899019a7fcb 100755
---- a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
-+++ b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
-@@ -25,7 +25,7 @@ if [[ "$1" == "-cgroup-v2" ]]; then
- fi
- 
- if [[ $cgroup2 ]]; then
--  cgroup_path=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
-+  cgroup_path=$(mount -t cgroup2 | head -1 | awk '{print $3}')
-   if [[ -z "$cgroup_path" ]]; then
-     cgroup_path=/dev/cgroup/memory
-     mount -t cgroup2 none $cgroup_path
-@@ -33,7 +33,7 @@ if [[ $cgroup2 ]]; then
-   fi
-   echo "+hugetlb" >$cgroup_path/cgroup.subtree_control
- else
--  cgroup_path=$(mount -t cgroup | grep ",hugetlb" | awk -e '{print $3}')
-+  cgroup_path=$(mount -t cgroup | grep ",hugetlb" | awk '{print $3}')
-   if [[ -z "$cgroup_path" ]]; then
-     cgroup_path=/dev/cgroup/memory
-     mount -t cgroup memory,hugetlb $cgroup_path
-diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
-index bf2d2a684edf..14d26075c863 100755
---- a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
-+++ b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
-@@ -20,7 +20,7 @@ fi
- 
- 
- if [[ $cgroup2 ]]; then
--  CGROUP_ROOT=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
-+  CGROUP_ROOT=$(mount -t cgroup2 | head -1 | awk '{print $3}')
-   if [[ -z "$CGROUP_ROOT" ]]; then
-     CGROUP_ROOT=/dev/cgroup/memory
-     mount -t cgroup2 none $CGROUP_ROOT
-@@ -28,7 +28,7 @@ if [[ $cgroup2 ]]; then
-   fi
-   echo "+hugetlb +memory" >$CGROUP_ROOT/cgroup.subtree_control
- else
--  CGROUP_ROOT=$(mount -t cgroup | grep ",hugetlb" | awk -e '{print $3}')
-+  CGROUP_ROOT=$(mount -t cgroup | grep ",hugetlb" | awk '{print $3}')
-   if [[ -z "$CGROUP_ROOT" ]]; then
-     CGROUP_ROOT=/dev/cgroup/memory
-     mount -t cgroup memory,hugetlb $CGROUP_ROOT
--- 
-2.39.2
 
+impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
+    fn from(b: &WithRef<T>) -> Self {
+        let data_ptr: *mut T = b.data.get();
+
+	let ptr = ?; // how to get a pointer to `WithRef<T>` with the
+                     // provenance to the whole data?
+
+        ManuallyDrop::new(unsafe { Arc::from_inner(ptr) })
+            .deref()
+            .clone()
+    }
+}
+
+The `data_ptr` above only has provenance to part of the struct for the
+similar reason that my proposal of (ab)using `b.refcount.get()`. Am I
+missing something here?
+
+Regards,
+Boqun
+
+> -- 
+> Cheers,
+> Benno
+> 
+> 
