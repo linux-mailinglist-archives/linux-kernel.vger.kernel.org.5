@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5B47AF0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACFF7AF089
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbjIZQdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S235235AbjIZQVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjIZQc6 (ORCPT
+        with ESMTP id S235188AbjIZQVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:32:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C584B3;
-        Tue, 26 Sep 2023 09:32:52 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="384389707"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="384389707"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:32:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="778188774"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="778188774"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:32:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andy@kernel.org>)
-        id 1qlAmR-00000000f0W-3RkJ;
-        Tue, 26 Sep 2023 19:19:23 +0300
-Date:   Tue, 26 Sep 2023 19:19:23 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RFC v2 5/6] ARM: pxa: Convert Spitz hsync to GPIO
- descriptors
-Message-ID: <ZRMEi6pACEx5HQZ/@smile.fi.intel.com>
-References: <20230926-pxa-gpio-v2-0-984464d165dd@skole.hr>
- <20230926-pxa-gpio-v2-5-984464d165dd@skole.hr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230926-pxa-gpio-v2-5-984464d165dd@skole.hr>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 26 Sep 2023 12:21:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9785210A;
+        Tue, 26 Sep 2023 09:20:56 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QD8X7G015172;
+        Tue, 26 Sep 2023 16:20:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=4egfuai/K1YaEUv09gPmcF8efD43YT+tVjuUW8tDWh4=;
+ b=N4WqbL7wY3jFMqFG83ksBNFNHsVOgBMlJmT0wQp0/HULRtA9zm+AC4/stwWuWho2rhm7
+ jVPDLwk01OUE0tncyka41JN5LFW7R9An/nR57zTB0IYfjMYezFv2Vo/bki3jCxMlax/h
+ iDkKSFkDbhqRShNzc4LWklr7u9L8+Uv9XeZd+PgiGhHQkJ1b13Q5bvnWq28GHjV9M4uy
+ d0LQM0FzlqR4f97ogv8ipXFqWND0dZ/nAubsB1/aq6IYuXDGcyYbBd0suZQ04EfPrG8L
+ giHduI+Sr9IfKdFw+eVrqA2+OzubGq3NkiCFJXPyuPgJR9lgwDQZg1wuMkFmGpiEwBor Sg== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb7re3rp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 16:20:48 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38QGKjw5010028;
+        Tue, 26 Sep 2023 16:20:45 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3t9s3kk6mr-1;
+        Tue, 26 Sep 2023 16:20:45 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38QGKiQ7010022;
+        Tue, 26 Sep 2023 16:20:44 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 38QGKiAf010021;
+        Tue, 26 Sep 2023 16:20:44 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id E04A8601917; Tue, 26 Sep 2023 21:50:43 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mani@kernel.org, alim.akhtar@samsung.com, bvanassche@acm.org,
+        avri.altman@wdc.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Subject: [PATCH V2 0/3] Add UFS host controller and Phy nodes for sc7280
+Date:   Tue, 26 Sep 2023 21:50:39 +0530
+Message-Id: <20230926162042.14180-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -lu74KSH2ts1NxLe9C2n0mkt1P08Xxe_
+X-Proofpoint-GUID: -lu74KSH2ts1NxLe9C2n0mkt1P08Xxe_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxlogscore=555 adultscore=0
+ priorityscore=1501 phishscore=0 clxscore=1011 spamscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260142
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 05:46:26PM +0200, Duje Mihanović wrote:
-> Sharp's Spitz still uses the legacy GPIO interface in its
-> wait_for_hsync() function.
-> 
-> Convert it to use the GPIO descriptor interface.
+This patch adds UFS host controller and Phy nodes for Qualcomm sc7280 SOC
+and sc7280 Board.
 
-...
+Changes from v1:
+- Addressed mani comment to separate soc and board change.
+- Addressed mani comment to sort ufs node in ascending order.
 
-> +static struct gpio_desc *hsync = NULL;
+Nitin Rawat (3):
+  scsi: ufs: qcom: dt-bindings: Add SC7280 compatible string
+  arm64: dts: qcom: sc7280: Add UFS nodes for sc7280 soc
+  arm64: dts: qcom: sc7280: Add UFS nodes for sc7280 IDP board
 
-Assignment is redundant.
+ .../devicetree/bindings/ufs/qcom,ufs.yaml     |  2 +
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi      | 19 ++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          | 64 +++++++++++++++++++
+ 3 files changed, 85 insertions(+)
 
-...
-
->  	gpiod_add_lookup_table(&spitz_ads7846_gpio_table);
->  	gpiod_add_lookup_table(&spitz_spi_gpio_table);
-> +	hsync = gpiod_get(NULL, "hsync", GPIOD_IN);
-> +	if (IS_ERR(hsync)) {
-> +		pr_err("Failed to get hsync GPIO: %ld\n", PTR_ERR(hsync));
-> +		return;
-> +	}
->  	pxa2xx_set_spi_info(2, &spitz_spi_info);
->  	spi_register_board_info(ARRAY_AND_SIZE(spitz_spi_devices));
-
-Yeah, but the question is, if GPIO request fails, can we instantiate at least
-one device and move on?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+--
+2.17.1
 
