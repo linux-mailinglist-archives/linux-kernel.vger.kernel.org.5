@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6207F7AED30
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4597AED34
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbjIZMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S234698AbjIZMtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjIZMsh (ORCPT
+        with ESMTP id S234560AbjIZMtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:48:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCF59F;
-        Tue, 26 Sep 2023 05:48:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D1BC433C7;
-        Tue, 26 Sep 2023 12:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695732510;
-        bh=KZMQWNVIuax7Wlh86L+MzuOV8fgqYYBNlK7DfVfqPdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cROrY4GycJmb6gp+Id3adfPD4B081HYGqiZXt21oMoQMZ8qsa/k0M8JM96tqcKzLs
-         1v1KIXfEEaBFqOJR0ie6V84V6Nn+/QfzHhEofVaF+pAkkzfpo60q/MX91Ipxw3FeuM
-         73w6vbI16eDyGYVhUFNbxvLwXZY7Hs5QE92brbMoPYJoIRE6FXPsed9PwiAUCpf0ne
-         gRnLCDPpkVNLQKLN3QmRT67b9r5ZAopuqDyK3dRbElt1sqgr9mojMaURFJCw5qVQh0
-         jtxXeJ2z8Tz/hQF3BIGmjHAsghJPnhI+q+H2DHEjC0FCaCdunRkdSP9jB3tZwkTV5i
-         hMsGCGet5fHTA==
-Date:   Tue, 26 Sep 2023 14:48:27 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     Dhruva Gole <d-gole@ti.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH V2] spi: spi-cadence-quadspi: Fix missing unwind goto
- warnings
-Message-ID: <ZRLTG4pogXW5FTgJ@finisterre.sirena.org.uk>
-References: <20230919074658.41666-1-d-gole@ti.com>
- <ZRK+oDrT4vaZ0R/G@finisterre.sirena.org.uk>
- <20230926114046.5ukretunoud3yv45@dhruva>
- <ZRLHVReL9Bq4PNvS@finisterre.sirena.org.uk>
- <20230926121908.mcyyj42buqr4ov3m@dhruva>
+        Tue, 26 Sep 2023 08:49:00 -0400
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778A7FB;
+        Tue, 26 Sep 2023 05:48:53 -0700 (PDT)
+Received: from [192.168.192.83] (unknown [50.39.103.33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 744923F1DB;
+        Tue, 26 Sep 2023 12:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1695732531;
+        bh=gsf5Dcm+oBvt0OepvgcW/nShbExlI1OvGeUPMDjYhrI=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=II5niPaDBIMHxuG6ai8j6A+VHw++umAb1/E4ACNhGAdkyVH69wgavwqr9ZPIjClHR
+         GkhrpvCUh6Sin2lx08+/pC+RXzF0HBSDDicEpaWmCUDSZUjD8jfDv3zDsxjslbtY6h
+         hr8z09Ow0rPItwwHeOTESsnnk8+4Fc8E4xfegqpIEV1mOldn5bgUhNKttg/k2/zTyv
+         OPOfMkrjEAYnEIggXcNXOdje0KMrIGUgy++xBlAk99wZSB5lgKoUMMPJF+fWKMa6rw
+         Y99dUivatZ1SI/YtvFM6C0czTelLMOLT2p3RBoY4ZKCvkjBsmjKQpanbiHUJnUv2i8
+         IV/tgYC3HBivg==
+Message-ID: <a3635704-3585-2d3e-8882-e7c9ce63a720@canonical.com>
+Date:   Tue, 26 Sep 2023 05:48:47 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mj78KMmgqMWE5ALb"
-Content-Disposition: inline
-In-Reply-To: <20230926121908.mcyyj42buqr4ov3m@dhruva>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [apparmor] use per-cpu refcounts for apparmor labels?
+Content-Language: en-US
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        linux-security-module@vger.kernel.org, apparmor@lists.ubuntu.com,
+        linux-kernel@vger.kernel.org
+References: <CAGudoHFfG7mARwSqcoLNwV81-KX4Bici5FQHjoNG4f9m83oLyg@mail.gmail.com>
+ <87a5t9bypm.fsf@intel.com>
+ <c6379a39-42f2-b3f9-c835-bbebe516ba3a@canonical.com>
+ <20230926063857.h3afce5hagnlkoob@f>
+From:   John Johansen <john.johansen@canonical.com>
+Organization: Canonical
+In-Reply-To: <20230926063857.h3afce5hagnlkoob@f>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,34 +62,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/25/23 23:38, Mateusz Guzik wrote:
+> On Mon, Sep 25, 2023 at 11:21:26PM -0700, John Johansen wrote:
+>> On 9/25/23 16:49, Vinicius Costa Gomes wrote:
+>>> Hi Mateusz,
+>>>
+>>> Mateusz Guzik <mjguzik@gmail.com> writes:
+>>>
+>>>> I'm sanity-checking perf in various microbenchmarks and I found
+>>>> apparmor to be the main bottleneck in some of them.
+>>>>
+>>>> For example: will-it-scale open1_processes -t 16, top of the profile:
+>>>>     20.17%  [kernel]                   [k] apparmor_file_alloc_security
+>>>>     20.08%  [kernel]                   [k] apparmor_file_open
+>>>>     20.05%  [kernel]                   [k] apparmor_file_free_security
+>>>>     18.39%  [kernel]                   [k] apparmor_current_getsecid_subj
+>>>> [snip]
+>>>>
+>>>> This serializes on refing/unrefing apparmor objs, sounds like a great
+>>>> candidate for per-cpu refcounting instead (I'm assuming they are
+>>>> expected to be long-lived).
+>>>>
+>>>> I would hack it up myself, but I failed to find a clear spot to switch
+>>>> back from per-cpu to centalized operation and don't want to put
+>>>> serious effort into it.
+>>>>
+>>>> Can you sort this out?
+>>>
+>>
+>> I will add looking into it on the todo list. Its going to have to come
+>> after some other major cleanups land, and I am not sure we can make
+>> the semantic work well for some of these. For other we might get away
+>> with switching to a critical section like Vinicius's patch has done
+>> for apparmor_current_getsecid_subj.
+>>
+> 
+> Is there an eta?
+> 
+sorry no
 
---mj78KMmgqMWE5ALb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> I looked at dodging ref round trips myself, but then found that ref
+> manipulation in apparmor_file_alloc_security and the free counterpart
+> cannot be avoided. Thus per-cpu refs instead.
+> 
 
-On Tue, Sep 26, 2023 at 05:49:08PM +0530, Dhruva Gole wrote:
+right for file_aloc/free, I don't see a way around keeping a ref count.
 
-> Umm I don't think the commit being fixed is there in 6.6?
-> I am not really sure how I should base/format the patch? Please can you
-> tell me what's expected in such a case ideally?
+> Perhaps making the label as stale would be a good enough switching
+> point? Is it *guaranteed* to get labelled as stale before it gets freed?
+> 
+no. the stale flag only indicates the label has been replaced, and we
+make no guarentees as to when it will get set/be in use beyond so
+point after it happens.
 
-Including a full 12 character commit hash would help with matching,
-there were only 10 there.  Not mix'n'matching Link:/Close: with links in
-the body of the commit message would help as well.
+> btw, __aa_proxy_redirect open-codes setting the flag.
+> 
+yes, I am aware.
 
---mj78KMmgqMWE5ALb
-Content-Type: application/pgp-signature; name="signature.asc"
+>>> I was looking at this same workload, and proposed a patch[1] some time
+>>> ago, see if it helps:
+>>>
+>>> https://lists.ubuntu.com/archives/apparmor/2023-August/012914.html
+>>>
+>>> But my idea was different, in many cases, we are looking at the label
+>>> associated with the current task, and there's no need to take the
+>>> refcount.
+>>>
+>>
+>> yes, and thanks for that.
+>>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUS0xsACgkQJNaLcl1U
-h9AuGAf/WhUmEmpl3HYuZJHXC8QYrYJc4tJscENSwDqJ/zeMcsjNutiMcsgHpuCN
-HG+tbjEHVYfkNjaPw/YZ0T/xIX4QhzYBeapi1td9iFq9hNkSbOe2kcjdzXg5ofWD
-mk2G4ZU0duSfAKVVqSACRSjfCp+18vJ6If5ZmUvgIU8Mzao8bGTCjlz+1Zzv9fYk
-mfN+eiA0xEQYYrRIqsh//VUGgcP/ifZ8u1/qV3h7ImojIKf0k5x9Gvkdv/aBEa60
-KJwU/KmK3i87QmADEm1Sj0zv0Rmrece4ut6ZWsk2C4DlJd3m3abFfmWi3syRN5Er
-3wBR1ctFRgPLr5GkHbrpiQ/jPqNTwQ==
-=QWxD
------END PGP SIGNATURE-----
-
---mj78KMmgqMWE5ALb--
