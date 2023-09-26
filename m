@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E257AE8E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B937AE8E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbjIZJXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
+        id S234135AbjIZJYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbjIZJXE (ORCPT
+        with ESMTP id S231491AbjIZJYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:23:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779BDBE;
-        Tue, 26 Sep 2023 02:22:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34C1C433C7;
-        Tue, 26 Sep 2023 09:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695720177;
-        bh=7bQwHcH+xWHqv+nnB0YFhg3IMMKQkz8UhvLE1d7eG8M=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=M1xplYQZkL0gLVXD6WWu6NC2lSVGCgPQjwpbfvsjP9D6W5G6vJs3/Zj99PU2el5t9
-         1sAWwaQfmb+sBCMvniIPJHBkWynklQ9WZqKyZyYN2h7Fn0Ylmai86/njsMolJSW5lt
-         jOdnhXSD9YzXlOqRcAJcRuzICo9zDSkUD8UgCQhRwCThgtlMOPSq9sd14subNz101N
-         Y1SJlV2MzEhyUX/DQBxf088+RvlBd1Vd/MlK7vQSQb8EzWyNP5uSVHBuhXoDxN5Eco
-         IgXTQBXFY63ITCIKmywywL7ZhnBnop0tmjEDdNkOuARjoy4AqACBsbzYdATlCtGt0O
-         BPwpzeok9xgqQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Erwan Leray <erwan.leray@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20230914190049.1853136-1-robh@kernel.org>
-References: <20230914190049.1853136-1-robh@kernel.org>
-Subject: Re: [PATCH] spi: dt-bindings: st,stm32-spi: Move "st,spi-midi-ns"
- to spi-peripheral-props.yaml
-Message-Id: <169572017456.2563985.7790100096745250244.b4-ty@kernel.org>
-Date:   Tue, 26 Sep 2023 11:22:54 +0200
+        Tue, 26 Sep 2023 05:24:05 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C278B3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:23:58 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 31A8B6607313;
+        Tue, 26 Sep 2023 10:23:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695720236;
+        bh=ssfuBNR2PiLxi4TiFV2ZqSR5SVdNJLkRo9oKlebvEQw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=e/E2QeiJuLaQLjK4mChhPpDb0IE9fdZgd1/doagBY164u0wL07kEwrMXr/aawC7IX
+         5Bn79I0rKXvm9Zhl+oYn/tGXJ+SMQHOzHyUwldACGahrjuwWLqnVYFpTGSk6ORlJ3N
+         vPGPBNal9ZguWK1bVzUsA7La1IAvzap6ZoYDARGLOBRElB7JtPNXS5VjiHSRiwv/8v
+         N0tSoEwLfyJsvUuGf37Jkht3vzVW/u4YiM4sq41VxNfUu7gIQjrpowpdNrvMfvqyPz
+         As+VA0bL+rwezpy4EQDPRvdHJF4kJWtK++hco0L/et1BLjY7AdQfc8B6Fq2Zc8ybKM
+         pkN24X157VT2w==
+Message-ID: <e5e0703f-a96e-dafa-34d9-a6b6d8962556@collabora.com>
+Date:   Tue, 26 Sep 2023 11:23:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 15/40] soc/mediatek: mtk-mmsys: Convert to platform remove
+ callback returning void
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@pengutronix.de
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+ <20230925095532.1984344-16-u.kleine-koenig@pengutronix.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230925095532.1984344-16-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Sep 2023 14:00:42 -0500, Rob Herring wrote:
-> In order to validate SPI peripherals, SPI controller-specific child node
-> properties need to be in a separate schema, spi-peripheral-props.yaml,
-> which SPI peripheral schemas reference. As there is just a single
-> property in this case, just add it to spi-peripheral-props.yaml directly.
+Il 25/09/23 11:55, Uwe Kleine-König ha scritto:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new() which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 > 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Applied to
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: dt-bindings: st,stm32-spi: Move "st,spi-midi-ns" to spi-peripheral-props.yaml
-      commit: 0fc57bf1b2ff178377e756761a884d4b6c69ebf9
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
