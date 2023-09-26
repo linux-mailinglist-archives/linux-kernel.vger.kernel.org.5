@@ -2,132 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532FE7AEA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042327AEA13
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbjIZKLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
+        id S234337AbjIZKM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbjIZKLc (ORCPT
+        with ESMTP id S232671AbjIZKM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:11:32 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8778BFB;
-        Tue, 26 Sep 2023 03:11:26 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c61acd1285so27943215ad.2;
-        Tue, 26 Sep 2023 03:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695723086; x=1696327886; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VZIIam7YXI/p4m2BD04trVXP4C7GhvPtTR3ftfkV7T4=;
-        b=JVmJXwKoPfw6ZirpJEjyrUnVdkXK2G0/Q4YPizuvJlMGKraUaDKBMTMQtJslRwTDMh
-         EHenHULp1jSg/AoQWPh6UbS864bM0uXaxgwSjhT9lU+vvQlfnEh0C4pfMGha6mLnA4qL
-         yioIog5A9aBYgKUe0W/3mnFFkrqqmt98RQ/32GaXjaFs2F5+ncXDRqgt/GAVRJ/NpeTx
-         LAuBl2N4gNEttGxza+za+lsC7+PowlavgYyeqHnKOwPRF5wNkZa0v9ZAKHCtRg0SG35i
-         0UeCiqn+Jzpx9Dn9KvqqaV5PU+y/aW31sINCIUtr2yiztXKZDVin1qMY7izMVotXmqQK
-         HnTA==
+        Tue, 26 Sep 2023 06:12:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF8597
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695723083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6HDo01TkaoeQ/nKb+m9TpBeIQ9htrGbC6iNDoVvDu3A=;
+        b=UWzXU//EBQqhot/82b+OISJneUSj4pssI2+ZL6UjHcsVAFEyICaM7yXTLNGlnjoRj3TnIZ
+        mjIOJmy606PT2ObYfC0kh0lVfAr6rwpNceu8llikxb7nJIRy1+5DKSoNGsEIJT9n2d4rbJ
+        wgXkFrdOHk9qLxuVTMpIyTAIVgzcm+o=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-77-9cUQAiOdOVyZ3P9VB4KoVg-1; Tue, 26 Sep 2023 06:11:21 -0400
+X-MC-Unique: 9cUQAiOdOVyZ3P9VB4KoVg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9b282c72954so325446666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:11:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695723086; x=1696327886;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VZIIam7YXI/p4m2BD04trVXP4C7GhvPtTR3ftfkV7T4=;
-        b=IS8kc32OpLAdFo7mRY4lkQ3QFZdEC+km1YnM5EKzuzgLqFrGMnPwKiIRiM6i82rB+p
-         xv2lBn03l6ygNZZgAi/T8oJz3OmEVMmCB7QQX6MldDvb/gnf6KvHHJnJPaMXHa9KCZjs
-         XHhqWhOulpvsxAX1LFKtjIfAp10FfMaqo/Ej76pADxpVAzQNo2CMAck8VAiT4uNGcw2I
-         0Fc9q0i1698p+oo9NgF6IzQpY11ZI8BcWjCjs67+h7KGLG2903lTsVTmDZJ8rHkN9lT0
-         S/O9Lrcw4Y78+QrW3B1Pkt/Ux1TSgq4bERBBKnuCNQAXaHy8giUWNWNgUgBzoTzu8TG9
-         jSIw==
-X-Gm-Message-State: AOJu0YzzQJ2qczmal9ERf/sH61KQVJZddjaNb2Yw2Q8L5jyv8uc+JfCG
-        ABUSHVSUd6ZKjfEc5v4HjJM=
-X-Google-Smtp-Source: AGHT+IHwev5GCABx9yYhrdR7YlylxBMUfO/2Hpu5MFg0PLZ8qjEuyTQ0YXuLcCJOADLN/40OAOugiA==
-X-Received: by 2002:a17:902:934a:b0:1c3:a1a8:969a with SMTP id g10-20020a170902934a00b001c3a1a8969amr7145285plp.8.1695723085804;
-        Tue, 26 Sep 2023 03:11:25 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902e54900b001bc21222e34sm10524702plf.285.2023.09.26.03.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 03:11:25 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        leon@kernel.org, dean.luick@cornelisnetworks.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] IB/hfi1: Fix potential deadlock on &irq_src_lock and &dd->uctxt_lock
-Date:   Tue, 26 Sep 2023 10:11:16 +0000
-Message-Id: <20230926101116.2797-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695723080; x=1696327880;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6HDo01TkaoeQ/nKb+m9TpBeIQ9htrGbC6iNDoVvDu3A=;
+        b=JYtrLZxVJUyNbFE8UhtLBxu+kYaAYpdZj9yimzMSi2YYZ12uAvSo2qqSwAJ02WADkG
+         G+mQHICoRR9cbaVJrr2ZLbxeXOtE5fYDggbU/1B8PH3nX+kflZ6ZboW5B+N3JTwTPy6L
+         xV+wlDoJcEshWuczMr4Bw9+2dhAvyqtCWHERsu5fQh7+1K+yAmyStsUl+1M9W5uLYZAl
+         3lzhaFLUWc0paz5wBbPyVl3NoNi7AaOSAaqt/ipDuyUy+EfUmxjObETVPUZbyKbZcenD
+         FbZt/S0aLLrhUApMuroBz7i93wo0jKlpVnHLMTosW9J4U+83O/vj8+gpo3X4X9RUh3S+
+         9omw==
+X-Gm-Message-State: AOJu0Yz5q/96p1aXj+9p/AVbVCjTOvGZJAIDP7VAu+SzXN5iMt2GahKD
+        WxCqN+qxGrp0rgKZtBHyRl1w6AhtrhyzhVYq3sIbhEkF9AqxvZFjncot0w/FxUYlXHc6cDcg0W4
+        ycC8IsJnHk9tttFCJ+eqH1BCj
+X-Received: by 2002:a17:907:2709:b0:9a1:f21e:cdff with SMTP id w9-20020a170907270900b009a1f21ecdffmr8325785ejk.23.1695723080521;
+        Tue, 26 Sep 2023 03:11:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEEbMgfypCifz4bZIXRkDJ/urgBdwhoZJZfcgXhgqJFOSEABIqgQsOcDN2+Bcmij0Vs1hAqug==
+X-Received: by 2002:a17:907:2709:b0:9a1:f21e:cdff with SMTP id w9-20020a170907270900b009a1f21ecdffmr8325775ejk.23.1695723080178;
+        Tue, 26 Sep 2023 03:11:20 -0700 (PDT)
+Received: from [192.168.1.217] ([109.37.154.108])
+        by smtp.gmail.com with ESMTPSA id kt22-20020a170906aad600b0099cf9bf4c98sm7520711ejb.8.2023.09.26.03.11.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 03:11:19 -0700 (PDT)
+Message-ID: <5755a77f-dc99-e297-b926-5651977b6525@redhat.com>
+Date:   Tue, 26 Sep 2023 12:11:17 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] platform/x86: thinkpad_acpi: sysfs interface to auxmac
+Content-Language: en-US
+To:     Fernando Eckhardt Valle <fevalle@ipt.br>,
+        mpearson-lenovo@squebb.ca, corbet@lwn.net, hmh@hmh.eng.br,
+        markgross@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+References: <20230921143622.72387-1-fevalle@ipt.br>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230921143622.72387-1-fevalle@ipt.br>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-handle_receive_interrupt_napi_sp() running inside interrupt handler
-could introduce inverse lock ordering between &dd->irq_src_lock
-and &dd->uctxt_lock, if read_mod_write() is preempted by the isr.
+Hi,
 
-          [CPU0]                                        |          [CPU1]
-hfi1_ipoib_dev_open()                                   |
---> hfi1_netdev_enable_queues()                         |
---> enable_queues(rx)                                   |
---> hfi1_rcvctrl()                                      |
---> set_intr_bits()                                     |
---> read_mod_write()                                    |
---> spin_lock(&dd->irq_src_lock)                        |
-                                                        | hfi1_poll()
-                                                        | --> poll_next()
-                                                        | --> spin_lock_irq(&dd->uctxt_lock)
-                                                        |
-                                                        | --> hfi1_rcvctrl()
-                                                        | --> set_intr_bits()
-                                                        | --> read_mod_write()
-                                                        | --> spin_lock(&dd->irq_src_lock)
-<interrupt>                                             |
-   --> handle_receive_interrupt_napi_sp()               |
-   --> set_all_fastpath()                               |
-   --> hfi1_rcd_get_by_index()                          |
-   --> spin_lock_irqsave(&dd->uctxt_lock)               |
+On 9/21/23 16:36, Fernando Eckhardt Valle wrote:
+> Newer Thinkpads have a feature called MAC Address Pass-through.
+> This patch provides a sysfs interface that userspace can use
+> to get this auxiliary mac address.
+> 
+> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
+> ---
+> Changes in v4:
+> - strscpy() in all string copies.
+> Changes in v3:
+> - Added null terminator to auxmac string when copying auxiliary
+> mac address value.
+> Changes in v2:
+> - Added documentation.
+> - All handling of the auxmac value is done in the _init function.
+> ---
+>  .../admin-guide/laptops/thinkpad-acpi.rst     | 20 +++++
+>  drivers/platform/x86/thinkpad_acpi.c          | 79 +++++++++++++++++++
+>  2 files changed, 99 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> index e27a1c3f6..98d304010 100644
+> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+> @@ -53,6 +53,7 @@ detailed description):
+>  	- Lap mode sensor
+>  	- Setting keyboard language
+>  	- WWAN Antenna type
+> +	- Auxmac
+>  
+>  A compatibility table by model and feature is maintained on the web
+>  site, http://ibm-acpi.sf.net/. I appreciate any success or failure
+> @@ -1511,6 +1512,25 @@ Currently 2 antenna types are supported as mentioned below:
+>  The property is read-only. If the platform doesn't have support the sysfs
+>  class is not created.
+>  
+> +Auxmac
+> +------
+> +
+> +sysfs: auxmac
+> +
+> +Some newer Thinkpads have a feature called MAC Address Pass-through. This
+> +feature is implemented by the system firmware to provide a system unique MAC,
+> +that can override a dock or USB ethernet dongle MAC, when connected to a
+> +network. This property enables user-space to easily determine the MAC address
+> +if the feature is enabled.
+> +
+> +The values of this auxiliary MAC are:
+> +
+> +        cat /sys/devices/platform/thinkpad_acpi/auxmac
+> +
+> +If the feature is disabled, the value will be 'disabled'.
+> +
+> +This property is read-only.
+> +
+>  Adaptive keyboard
+>  -----------------
+>  
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index d70c89d32..f430cc9ed 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10785,6 +10785,80 @@ static struct ibm_struct dprc_driver_data = {
+>  	.name = "dprc",
+>  };
+>  
+> +/*
+> + * Auxmac
+> + *
+> + * This auxiliary mac address is enabled in the bios through the
+> + * MAC Address Pass-through feature. In most cases, there are three
+> + * possibilities: Internal Mac, Second Mac, and disabled.
+> + *
+> + */
+> +
+> +#define AUXMAC_LEN 12
+> +#define AUXMAC_START 9
+> +#define AUXMAC_STRLEN 22
+> +#define AUXMAC_BEGIN_MARKER 8
+> +#define AUXMAC_END_MARKER 21
+> +
+> +static char auxmac[AUXMAC_LEN + 1];
+> +
+> +static int auxmac_init(struct ibm_init_struct *iibm)
+> +{
+> +	acpi_status status;
+> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	union acpi_object *obj;
+> +
+> +	status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
+> +
+> +	if (ACPI_FAILURE(status))
+> +		return -ENODEV;
+> +
+> +	obj = buffer.pointer;
+> +
+> +	if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
+> +		pr_info("Invalid buffer for MAC address pass-through.\n");
+> +		strscpy(auxmac, "unavailable", AUXMAC_LEN);
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+Please use sizeof(auxmac) as last parameter to strscpy() here.
 
-To prevent the potential deadlock, the patch use spin_lock_irqsave()
-on &dd->irq_src_lock inside read_mod_write() to prevent the possible
-deadlock scenario.
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (obj->string.pointer[AUXMAC_BEGIN_MARKER] != '#' ||
+> +	    obj->string.pointer[AUXMAC_END_MARKER] != '#') {
+> +		pr_info("Invalid header for MAC address pass-through.\n");
+> +		strscpy(auxmac, "unavailable", AUXMAC_LEN);
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/infiniband/hw/hfi1/chip.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Please use sizeof(auxmac) as last parameter to strscpy() here.
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 0814291a0412..9b542f7c6c11 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -13185,15 +13185,16 @@ static void read_mod_write(struct hfi1_devdata *dd, u16 src, u64 bits,
- {
- 	u64 reg;
- 	u16 idx = src / BITS_PER_REGISTER;
-+	unsigned long flags;
- 
--	spin_lock(&dd->irq_src_lock);
-+	spin_lock_irqsave(&dd->irq_src_lock, flags);
- 	reg = read_csr(dd, CCE_INT_MASK + (8 * idx));
- 	if (set)
- 		reg |= bits;
- 	else
- 		reg &= ~bits;
- 	write_csr(dd, CCE_INT_MASK + (8 * idx), reg);
--	spin_unlock(&dd->irq_src_lock);
-+	spin_unlock_irqrestore(&dd->irq_src_lock, flags);
- }
- 
- /**
--- 
-2.17.1
+
+> +		goto auxmacinvalid;
+> +	}
+> +
+> +	if (strncmp(obj->string.pointer + AUXMAC_START, "XXXXXXXXXXXX", AUXMAC_LEN) != 0)
+> +		strscpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN + 1);
+
+Please use sizeof(auxmac) as last parameter to strscpy() here.
+
+> +	else
+> +		strscpy(auxmac, "disabled", AUXMAC_START);
+
+Please use sizeof(auxmac) as last parameter to strscpy() here.
+
+(using AUXMAC_START here really makes no sense at all)
+
+Regards,
+
+Hans
+
+
+
+> +
+> +auxmacinvalid:
+> +	kfree(obj);
+> +	return 0;
+> +}
+> +
+> +static struct ibm_struct auxmac_data = {
+> +	.name = "auxmac",
+> +};
+> +
+> +static ssize_t auxmac_show(struct device *dev,
+> +			   struct device_attribute *attr,
+> +			   char *buf)
+> +{
+> +	return sysfs_emit(buf, "%s\n", auxmac);
+> +}
+> +static DEVICE_ATTR_RO(auxmac);
+> +
+> +static struct attribute *auxmac_attributes[] = {
+> +	&dev_attr_auxmac.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group auxmac_attr_group = {
+> +	.attrs = auxmac_attributes,
+> +};
+> +
+>  /* --------------------------------------------------------------------- */
+>  
+>  static struct attribute *tpacpi_driver_attributes[] = {
+> @@ -10843,6 +10917,7 @@ static const struct attribute_group *tpacpi_groups[] = {
+>  	&proxsensor_attr_group,
+>  	&kbdlang_attr_group,
+>  	&dprc_attr_group,
+> +	&auxmac_attr_group,
+>  	NULL,
+>  };
+>  
+> @@ -11414,6 +11489,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
+>  		.init = tpacpi_dprc_init,
+>  		.data = &dprc_driver_data,
+>  	},
+> +	{
+> +		.init = auxmac_init,
+> +		.data = &auxmac_data,
+> +	},
+>  };
+>  
+>  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
 
