@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BA07AF207
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8020B7AF20A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjIZRyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
+        id S235205AbjIZR4g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 13:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjIZRyN (ORCPT
+        with ESMTP id S229505AbjIZR4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:54:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5779F;
-        Tue, 26 Sep 2023 10:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695750846; x=1727286846;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8ZpXMYZAgko950/Kdxjip8wxCTn7a5ku/VCBGbQqq6E=;
-  b=cmhqCOaaI/RQF6Z+j+XnGvf020o6G68gFmZU29ZZtrn1P+I89RrJI6Ri
-   Vn3FwkcjHIlPb48oGp+RDSC6Yr5a7Xf4wXemyArBj9ElVfrt35ZG368UB
-   bOlpAQ0CTg5li67CZhPU4q/TRLGoa6ESks8UltBXopvul/g8FRyxN0fMD
-   vY0aHUfPBAJjAzyGIi3glCHBDcObcPOhJlqjxjZ5WfKtZV9l+ivDjD6P/
-   wYZGEXLSKxOumGEs4k3dIy0XoAQVAYlTX/Nx45ejknJ3o4s8wLxpXBT9E
-   e3AAbSWhM2p0mULuC8KoKmYzuhdWvAhlx8I5a9mxQmwl1X1qY3NkoDIaZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="366693051"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="366693051"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 10:53:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="864486747"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="864486747"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by fmsmga002.fm.intel.com with ESMTP; 26 Sep 2023 10:53:50 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v2 3/3] platform/x86: intel_speed_select_if: Remove hardcoded map size
-Date:   Tue, 26 Sep 2023 10:53:49 -0700
-Message-Id: <20230926175349.989618-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 26 Sep 2023 13:56:34 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CFE9F;
+        Tue, 26 Sep 2023 10:56:27 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-57b68555467so688110eaf.0;
+        Tue, 26 Sep 2023 10:56:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695750986; x=1696355786;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2yqXaetlVLQEcWlksdWUaZspSGSc2dTGLE72sp01bYI=;
+        b=SvCdznlUpca8WZ9D5D4EuekT4+1JoiEQKDqPoA7/gJXS7pv7dPZKm+zrfszFgrOxws
+         dOMi8EKrICyWmDCtJNQbiR1kEi9BjLZwfAf9GPZL89tjDSix5+bB2sbTcMFh0EYXGGlW
+         UZVsGUqj+kiplzeLzxw8Ie5ZfZb34W3B0bgcPokZoyliXwxeIlSV86JK1k1wwQxGH0yL
+         yR7F4NW0vPizz2uh3hBeeSDpx8OKWPeGPm6g77MtoDiYTmERRFKuqXjYfjMCUzL0R9tf
+         MCopj5WbsGx+fqDk3r0Ty4jVsSLCD5ZCK0LZpHAZ74HieskbAeNZLLRgCSbKNiAL/CBG
+         hncw==
+X-Gm-Message-State: AOJu0Yx7KXL/9jX5YeB7nBdeyWX0ayngV9NSDqjskZCJHcIj5swvUCJo
+        5UeVoqWQtA1RrgfMI6AdYWpFeAkipl1g/3bdXbE=
+X-Google-Smtp-Source: AGHT+IG92Y5OWwELWyPqUjJ1G1ken/HOqivotisiJ5rtf/jKwT5sn4buOWxVaJSYKgtRvTciMEezzQgseewhKy3WVIc=
+X-Received: by 2002:a4a:e8c4:0:b0:57b:73f6:6f80 with SMTP id
+ h4-20020a4ae8c4000000b0057b73f66f80mr9468857ooe.0.1695750986553; Tue, 26 Sep
+ 2023 10:56:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1957441.PYKUYFuaPT@kreacher> <3534976.iIbC2pHGDl@kreacher> <38ea14aa-ecc2-c40e-34ea-05b348158cfb@linaro.org>
+In-Reply-To: <38ea14aa-ecc2-c40e-34ea-05b348158cfb@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Sep 2023 19:56:15 +0200
+Message-ID: <CAJZ5v0iww__Kd2e8bSarXL5ugjL1zuCaXgOfzLp-VGdmHBBabQ@mail.gmail.com>
+Subject: Re: [PATCH v1 02/13] ACPI: thermal: Collapse trip devices update functions
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is using 256 as the size while calling devm_ioremap(). The
-maximum offset can be obtained from isst_mmio_range. Add a field "size"
-to the isst_mmio_range and use it instead of hardcoding.
+On Tue, Sep 26, 2023 at 7:18 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 21/09/2023 19:49, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > In order to reduce code duplication, merge update_passive_devices() and
+> > update_active_devices() into one function called update_trip_devices()
+> > that will be used for updating both the passive and active trip points.
+> >
+> > No intentional functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >   drivers/acpi/thermal.c |   53 ++++++++++++++++++-------------------------------
+> >   1 file changed, 20 insertions(+), 33 deletions(-)
+> >
+> > Index: linux-pm/drivers/acpi/thermal.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/acpi/thermal.c
+> > +++ linux-pm/drivers/acpi/thermal.c
+> > @@ -43,6 +43,8 @@
+> >   #define ACPI_THERMAL_MAX_ACTIVE             10
+> >   #define ACPI_THERMAL_MAX_LIMIT_STR_LEN      65
+> >
+> > +#define ACPI_THERMAL_TRIP_PASSIVE    (-1)
+> > +
+> >   /*
+> >    * This exception is thrown out in two cases:
+> >    * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
+> > @@ -202,18 +204,25 @@ static void acpi_thermal_update_passive_
+> >               ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+> >   }
+> >
+> > -static bool update_passive_devices(struct acpi_thermal *tz, bool compare)
+> > +static bool update_trip_devices(struct acpi_thermal *tz,
+> > +                             struct acpi_thermal_trip *acpi_trip,
+> > +                             int index, bool compare)
+> >   {
+> > -     struct acpi_thermal_trip *acpi_trip = &tz->trips.passive.trip;
+> >       struct acpi_handle_list devices;
+> > +     char method[] = "_PSL";
+> >       acpi_status status;
+> >
+> > +     if (index != ACPI_THERMAL_TRIP_PASSIVE) {
+> > +             method[1] = 'A';
+> > +             method[2] = 'L';
+> > +             method[3] = '0' + index;
+> > +     }
+>
+> Could be index > 9 ?
 
-No functional impact is expected.
-
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-Changes:
-As per Andy's comments pre calculate size
-
- .../x86/intel/speed_select_if/isst_if_mmio.c     | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
-index ff49025ec085..13e068c77d50 100644
---- a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
-+++ b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
-@@ -18,16 +18,17 @@
- struct isst_mmio_range {
- 	int beg;
- 	int end;
-+	int size;
- };
- 
- static struct isst_mmio_range mmio_range_devid_0[] = {
--	{0x04, 0x14},
--	{0x20, 0xD0},
-+	{0x04, 0x14, 0x18},
-+	{0x20, 0xD0, 0xD4},
- };
- 
- static struct isst_mmio_range mmio_range_devid_1[] = {
--	{0x04, 0x14},
--	{0x20, 0x11C},
-+	{0x04, 0x14, 0x18},
-+	{0x20, 0x11C, 0x120},
- };
- 
- struct isst_if_device {
-@@ -114,13 +115,16 @@ static int isst_if_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	pcu_base &= GENMASK(10, 0);
- 	base_addr = (u64)mmio_base << 23 | (u64) pcu_base << 12;
--	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr, 256);
-+
-+	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
-+
-+	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr,
-+					     punit_dev->mmio_range[1].size);
- 	if (!punit_dev->punit_mmio)
- 		return -ENOMEM;
- 
- 	mutex_init(&punit_dev->mutex);
- 	pci_set_drvdata(pdev, punit_dev);
--	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
- 
- 	memset(&cb, 0, sizeof(cb));
- 	cb.cmd_size = sizeof(struct isst_if_io_reg);
--- 
-2.41.0
-
+I can add a check, but it will never be called with index > 9 anyway.
