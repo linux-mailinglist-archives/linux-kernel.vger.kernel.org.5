@@ -2,166 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8FF7AF2BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05DD7AF2C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235557AbjIZSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S235505AbjIZS1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235515AbjIZSZF (ORCPT
+        with ESMTP id S235488AbjIZS1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:25:05 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A34B1A7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:55 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso4043238a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:55 -0700 (PDT)
+        Tue, 26 Sep 2023 14:27:13 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDFF1A8;
+        Tue, 26 Sep 2023 11:27:06 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-692a885f129so6004760b3a.0;
+        Tue, 26 Sep 2023 11:27:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695752694; x=1696357494; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gcsTNpsjbN2SKqWT86OIi6rzpyQaQonBZGDEar8VbjY=;
-        b=fzK/WDQr6gSfQrXmNn3vKUxX4OGgnfQ5Aac74bu5IC/6y29W15b6wJP85Qk+PCHB1i
-         GwyuUItnpZFdqB30SGAr114DJPvr9SAOhyU1cuh1YLsD6kWshR4JYW7DC+0rz0fT/KxH
-         3zC2S3Ul5sekWqQsdoynbnzBjMVJy/CZ0yxzJod9iJXEDSZV1qcUe5jRj6UzHe21PDhO
-         dDKiMNLweduxjk/PxsSoWH386R0OJ+Nb2O/p9HeJOQc1aIBNGGrYk0eqZ8cmcKcCN0Ep
-         tEjnP4CSf9riQjfu9/2i7Sc2d4CQgVLzuU0xRoAVTQhEE6/QHhC1mCeKpJT6PMd+zBUG
-         3JLQ==
+        d=gmail.com; s=20230601; t=1695752825; x=1696357625; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LFyC5gsYXKnW8lTttjRH9vTXhArvr4/9vr68HemFOfM=;
+        b=nGGnB+kktXzsxjEizSELx5hW1CP1nsAckXWTsvhopZy6VRPBJfTPv375BfefMUmXcO
+         BvwlAr8DQII5/undLh59Uma5/kyimwbgygQzJrYQgB4YtLUBTFYsG8eVSM2+s1rvGSM5
+         jGJrWBEBDQtPyM+hzZFSnSOKHcOTjfSd7owj59nOo5/s27mazNhY2sIZ+KUwAlcQkW+Z
+         EIH0DLQQxODRaztbkltwuE5VEJEvl9Nqs+5dknqFYvnc7zSub4yHpaKGx0IMRmJT7d4F
+         UtRcGxzmI9rAiszpcwVJNqZU+/vPhCnhGG4w5QclH7K0axzep9OMm53sE2BHy3r+oedW
+         bwdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752694; x=1696357494;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695752825; x=1696357625;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gcsTNpsjbN2SKqWT86OIi6rzpyQaQonBZGDEar8VbjY=;
-        b=J5ZD6hMkUBXdnLQK3EmingQvBYuwC9jKh8zfPkIVohNTc8iOBMYpinywKW4allPNj4
-         1J7DnlCRbQF/sVIxBbMFcxoJVKLq6zKItONjfJIEWz/Bn4LcSI5UQjYyFcVa+16QSTTH
-         1NmA64niwSN5hKz8p7J0DYcpmgRlGClCKOzZtP10rQkpSEoS7vO6R/17EQhzVR3rugif
-         maNINBVFSaK0CTlbIIABogx8SG9U0uI0GEFMQWQWQ3qUz/QyAtIWH0ywaRZY1z6khoGa
-         ItpPTrjWuC2hKTVbh9T+ry5lXRV6JV77ySUpdnUP3b4e/pX339NXYuhowmz2bc5Af3D/
-         5Saw==
-X-Gm-Message-State: AOJu0Yz7o6sHMyGZ9pBJ/cMiM37tE89LBVXCfWoaWlbgADUtTs6ohXqJ
-        fdmYtXMWjunNkWaTCG76lT5/vw==
-X-Google-Smtp-Source: AGHT+IHSDS5XqFLTJ3Fj4mnDdxfJXQcOrG9mYsIt1RG52uxZWsc1JdF5u15aBVAjCYJy3NW7NDbP+g==
-X-Received: by 2002:aa7:da8b:0:b0:52a:66c0:1e9b with SMTP id q11-20020aa7da8b000000b0052a66c01e9bmr8454988eds.30.1695752694412;
-        Tue, 26 Sep 2023 11:24:54 -0700 (PDT)
-Received: from [10.167.154.1] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id f19-20020a056402151300b0053090e2afafsm7020643edw.22.2023.09.26.11.24.52
+        bh=LFyC5gsYXKnW8lTttjRH9vTXhArvr4/9vr68HemFOfM=;
+        b=PYgWShx8mTSFx6m+c5HGBM4qdScIAUeZ+CQAAOEjjzSuvMIF40fyyUf2mrX7ojESAF
+         X4dxEhGsthb3vLVBdXVNmQBL23cKjsHmeQcNKymK1D4aNuZp5tyoxruPzXD8R1g3/NBs
+         WRLbTmgdBvVfSi9/yRfV17kb0W9XtcODryGkMb0MLMrp0+sMvPU35oPi7qM+Xde7J/C5
+         FYTNOCNlMnn4TDg2iKJkjVpc51IlYhEuH5a21ZMHYK5LwU3b6RK3yzYO1dmKb+BtKJLy
+         paAaI+dIBpIzj2BsJX8UbtF6qGISajFbkD+UsTz0KawjiQmZmEVbSCtnKGK7ijje0GjQ
+         8IEw==
+X-Gm-Message-State: AOJu0Ywzbo1eFPrSgq9Ofm75vdDOQ6Lyxkzfo11oJHXNXQkh/cxtT6Ja
+        Y2T8rX0mwgRqSwTGf8QT0Dw=
+X-Google-Smtp-Source: AGHT+IFXnQo18kLqTvR/7aR00M8EkW5CBKsckoF2q/087HYWXhl/5voISNcSGrfOXxPyIbIQmWURSw==
+X-Received: by 2002:a05:6a00:a1b:b0:690:d4f5:c664 with SMTP id p27-20020a056a000a1b00b00690d4f5c664mr9057118pfh.11.1695752825419;
+        Tue, 26 Sep 2023 11:27:05 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id p3-20020aa78603000000b0068b1149ea4dsm10332914pfn.69.2023.09.26.11.27.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:24:54 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 26 Sep 2023 20:24:42 +0200
-Subject: [PATCH 7/7] arm64: dts: qcom: sc7280: Add 0xac Adreno speed bin
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-topic-a643-v1-7-7af6937ac0a3@linaro.org>
-References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
-In-Reply-To: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695752677; l=2100;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=9BePAqziunVu9kZivYgvv/caBkDoTl2qS9g1hj02Wgg=;
- b=DftHVsKPD4gXQnOXwv6J08JDe4kPe9q61Uq+Yk6OGVwbAalLbxGFp7JSs/NLklUN8hzuG4ORl
- P20Q6ZH69KsAaETW8eBjDpCidhznk2dyYWm7+g8ddSZevjirhjhF8yS
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 11:27:04 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] net/sched: use spin_lock_bh() on &gact->tcf_lock
+Date:   Tue, 26 Sep 2023 18:26:25 +0000
+Message-Id: <20230926182625.72475-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A643 (A635 speedbin 0xac) tops out at 812 MHz. Fill in the
-opp-supported-hw appropriately.
+I find tcf_gate_act() acquires &gact->tcf_lock without disable
+bh explicitly, as gact->tcf_lock is acquired inside timer under
+softirq context, if tcf_gate_act() is not called with bh disable
+by default or under softirq context(which I am not sure as I cannot
+find corresponding documentation), then it could be the following 
+deadlocks.
 
-Note that fuseval 0xac is referred to as speedbin 1 downstream, but
-that was already in use upstream, so 2 was chosen instead.
+tcf_gate_act()
+--> spin_loc(&gact->tcf_lock)
+<interrupt>
+   --> gate_timer_func()
+   --> spin_lock(&gact->tcf_lock)
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/sched/act_gate.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index edaca6c2cf8c..ccc2dd6c45de 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2626,14 +2626,14 @@ opp-315000000 {
- 					opp-hz = /bits/ 64 <315000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 					opp-peak-kBps = <1804000>;
--					opp-supported-hw = <0x03>;
-+					opp-supported-hw = <0x07>;
- 				};
+diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
+index c9a811f4c7ee..b82daf7401a5 100644
+--- a/net/sched/act_gate.c
++++ b/net/sched/act_gate.c
+@@ -124,25 +124,25 @@ TC_INDIRECT_SCOPE int tcf_gate_act(struct sk_buff *skb,
+ 	tcf_lastuse_update(&gact->tcf_tm);
+ 	tcf_action_update_bstats(&gact->common, skb);
  
- 				opp-450000000 {
- 					opp-hz = /bits/ 64 <450000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
- 					opp-peak-kBps = <4068000>;
--					opp-supported-hw = <0x03>;
-+					opp-supported-hw = <0x07>;
- 				};
+-	spin_lock(&gact->tcf_lock);
++	spin_lock_bh(&gact->tcf_lock);
+ 	if (unlikely(gact->current_gate_status & GATE_ACT_PENDING)) {
+-		spin_unlock(&gact->tcf_lock);
++		spin_unlock_bh(&gact->tcf_lock);
+ 		return action;
+ 	}
  
- 				/* Only applicable for SKUs which has 550Mhz as Fmax */
-@@ -2648,28 +2648,28 @@ opp-550000000-1 {
- 					opp-hz = /bits/ 64 <550000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
- 					opp-peak-kBps = <6832000>;
--					opp-supported-hw = <0x02>;
-+					opp-supported-hw = <0x06>;
- 				};
+ 	if (!(gact->current_gate_status & GATE_ACT_GATE_OPEN)) {
+-		spin_unlock(&gact->tcf_lock);
++		spin_unlock_bh(&gact->tcf_lock);
+ 		goto drop;
+ 	}
  
- 				opp-608000000 {
- 					opp-hz = /bits/ 64 <608000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L2>;
- 					opp-peak-kBps = <8368000>;
--					opp-supported-hw = <0x02>;
-+					opp-supported-hw = <0x06>;
- 				};
+ 	if (gact->current_max_octets >= 0) {
+ 		gact->current_entry_octets += qdisc_pkt_len(skb);
+ 		if (gact->current_entry_octets > gact->current_max_octets) {
+-			spin_unlock(&gact->tcf_lock);
++			spin_unlock_bh(&gact->tcf_lock);
+ 			goto overlimit;
+ 		}
+ 	}
+-	spin_unlock(&gact->tcf_lock);
++	spin_unlock_bh(&gact->tcf_lock);
  
- 				opp-700000000 {
- 					opp-hz = /bits/ 64 <700000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
- 					opp-peak-kBps = <8532000>;
--					opp-supported-hw = <0x02>;
-+					opp-supported-hw = <0x06>;
- 				};
+ 	return action;
  
- 				opp-812000000 {
- 					opp-hz = /bits/ 64 <812000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
- 					opp-peak-kBps = <8532000>;
--					opp-supported-hw = <0x02>;
-+					opp-supported-hw = <0x06>;
- 				};
- 
- 				opp-840000000 {
-
 -- 
-2.42.0
+2.17.1
 
