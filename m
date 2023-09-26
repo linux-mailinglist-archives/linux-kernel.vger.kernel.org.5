@@ -2,47 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A274F7AE4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A615B7AE4BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbjIZEvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 00:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
+        id S233637AbjIZEw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 00:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjIZEvG (ORCPT
+        with ESMTP id S229461AbjIZEw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 00:51:06 -0400
+        Tue, 26 Sep 2023 00:52:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C683FD9;
-        Mon, 25 Sep 2023 21:51:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C384AC433C7;
-        Tue, 26 Sep 2023 04:50:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E27E6;
+        Mon, 25 Sep 2023 21:52:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B255CC433C8;
+        Tue, 26 Sep 2023 04:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695703860;
-        bh=2XWKvAekto0AapUYqHrtSRxr7WShNEyij7c26YghRAw=;
+        s=korg; t=1695703969;
+        bh=iGK9D3ZNtj+5ANQTbtas8J/bXpKtY1WHDqCBdj2Av4U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YlMYktapS25d7hZe/l5I6O7kcLKgNhHBFArEte2dwHWHKXWOD+0f/ZTSAV3im7Vz3
-         2ctnQvtA6Ecsqhsn0BAMHio9nMUxOayGBJ3Yy11vErSAX/JxVtl1AKwp8j0VUeBMl+
-         xXhRzMvHqoUG7bY16Mq0UbmQxBKdxaljMZME+W9o=
-Date:   Tue, 26 Sep 2023 06:50:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Kalle Valo <kvalo@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Aloka Dixit <quic_alokad@quicinc.com>,
-        Franziska Naepelt <franziska.naepelt@googlemail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the wireless-next tree with Linus'
- tree
-Message-ID: <2023092650-nastily-cube-30de@gregkh>
-References: <20230926115452.68a71261@canb.auug.org.au>
+        b=fLgtvJyF861iGKa4EHORO573v2aAToqpZePuQMDajTxqmvCLikWKkE2c0n+6XbKbx
+         qM8XZH3qkZOfDsne4xtW8l6LDB0d7g594/IeRt4Ed1WirTJMW8uO4hXslyZXpNJZ9C
+         1xm9TgUlfgSYHgWCafxidm53sCZfxcTmsvQlDpAU=
+Date:   Tue, 26 Sep 2023 06:52:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Message-ID: <2023092630-masculine-clinic-19b6@gregkh>
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023092342-staunch-chafe-1598@gregkh>
+ <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230926115452.68a71261@canb.auug.org.au>
+In-Reply-To: <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -53,54 +59,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:54:52AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Sep 25, 2023 at 05:07:24PM -0700, Nuno Das Neves wrote:
+> On 9/23/2023 12:58 AM, Greg KH wrote:
+> > Also, drivers should never call pr_*() calls, always use the proper
+> > dev_*() calls instead.
+> > 
 > 
-> Today's linux-next merge of the wireless-next tree got a conflict in:
-> 
->   drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> 
-> between commit:
-> 
->   1d85bb7fd66a ("staging: rtl8723bs: Fix alignment open parenthesis")
-> 
-> from Linus' tree and commit:
-> 
->   66f85d57b710 ("wifi: cfg80211: modify prototype for change_beacon")
->   bb55441c57cc ("wifi: cfg80211: split struct cfg80211_ap_settings")
-> 
-> from the wireless-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> index af155fca39b8,1e683212027c..000000000000
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> @@@ -2317,9 -2318,8 +2317,9 @@@ static int cfg80211_rtw_start_ap(struc
->   	return ret;
->   }
->   
->  -static int cfg80211_rtw_change_beacon(struct wiphy *wiphy, struct net_device *ndev,
->  -		struct cfg80211_ap_update *info)
->  +static int cfg80211_rtw_change_beacon(struct wiphy *wiphy,
->  +				      struct net_device *ndev,
-> - 				      struct cfg80211_beacon_data *info)
-> ++				      struct cfg80211_ap_update *info)
->   {
->   	struct adapter *adapter = rtw_netdev_priv(ndev);
->   
+> We only use struct device in one place in this driver, I think that is the
+> only place it makes sense to use dev_*() over pr_*() calls.
 
+Then the driver needs to be fixed to use struct device properly so that
+you do have access to it when you want to print messages.  That's a
+valid reason to pass around your device structure when needed.
 
-Looks good to me, thanks!
+thanks,
 
 greg k-h
