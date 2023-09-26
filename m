@@ -2,166 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E9E7AEC0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71577AEC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbjIZMB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
+        id S234519AbjIZMDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjIZMB1 (ORCPT
+        with ESMTP id S233884AbjIZMDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:01:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA813DE;
-        Tue, 26 Sep 2023 05:01:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AA6C433C7;
-        Tue, 26 Sep 2023 12:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695729680;
-        bh=Uim1u3XxEo9b1nioZ+X62vmG9tsbAzH8qfFqw7qnGTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LJ0PlzYdw442sQkc5VJTLS80QN9jJpgjdNJaddeEIrg3C2Sz8OARoueRt+6SMRueb
-         yBchjj77SvMjTj4Se2h79iGcprtGdsONEtcrXpW6eAKPe5bbRdZMVQff3jITcJtEc2
-         VQMlcLdDDGlRV1au5WWgJPJcWdB74IA1gG0N8adlecKz2OVh0jTysubg52T9f30kiQ
-         6/YTc0tYCMgEM5vx3S5F9EYbLvJmBtexoNEFCCJczIi6g69tb/wH+AwUQb5LHf7FXC
-         qZ7ihK7GsNTndT8eK7tU3VcP0qJT9Jcz0jybqvYluZ498GsoYIHNuWO7rqpziVotPi
-         TgbbRbAOHhb0w==
-Date:   Tue, 26 Sep 2023 14:01:16 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Max Kellermann <max.kellermann@ionos.com>
-Cc:     linux-man@vger.kernel.org, brauner@kernel.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org
-Subject: Re: [PATCH] man2/splice.2: document SPLICE_F_NOWAIT
-Message-ID: <hq2223k3kdclg2i2ozwtw37yvtwnxwrw3ns4op4fkh76x3fz47@2frhfofkwzay>
-References: <20230926070402.2452760-1-max.kellermann@ionos.com>
+        Tue, 26 Sep 2023 08:03:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E431E6;
+        Tue, 26 Sep 2023 05:02:53 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QBGOHk009562;
+        Tue, 26 Sep 2023 12:02:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=2a8ACoHIsGvcVxr5BZ9tsHiiT+SNT7xd5y69XlnJqQY=;
+ b=J7lTwAphiiWiKHxu+WgZCtz2LozTWomlVQwehhqeNAdNpUmUsFkHrS3dJSiElv3CEPZd
+ nEEQI4YoHvSE9BecfzfnLaH8/WEssbfNvTjMUQO1rZVgW3Q3RC25ExS3yMlsckIOb7yv
+ NBO6sME/INbBey7rW0sPumiS/UQ5mHPkk62FkAcfRoml7BWL1kSreVihFdquCOsLXMFR
+ Cs5LvoZ4UOxVsP9DiHcw32CabcGmYd8ZqjQTcERWLNt7XGnUorrV3JLxPEfQqdzlUXzz
+ cHtfU2uE4kVEb1SjY5xbUnS5rVCkjJX78HZbLxZdtTlc5ek7zgbPyTnhPBDPay8EMyH9 Tg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb72sk4kf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 12:02:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38QC2Ln2010849
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 12:02:21 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 26 Sep 2023 05:02:13 -0700
+Date:   Tue, 26 Sep 2023 17:32:10 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Guru Das Srinagesh <quic_gurus@quicinc.com>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Bjorn Andersson" <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <quic_pkondeti@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, <workflows@vger.kernel.org>,
+        <tools@linux.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] scripts: Add add-maintainer.py
+Message-ID: <d0711242-df00-45c7-962f-841f7cefa7e3@quicinc.com>
+References: <cover.1693037031.git.quic_gurus@quicinc.com>
+ <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="63e2vf4d5pezjcq2"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230926070402.2452760-1-max.kellermann@ionos.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <141b9fcab2208ace3001df4fc10e3dfd42b9f5d9.1693037031.git.quic_gurus@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NatgBplqSlxKxQknsktnvf_838ZElKmd
+X-Proofpoint-ORIG-GUID: NatgBplqSlxKxQknsktnvf_838ZElKmd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
+ malwarescore=0 adultscore=0 mlxlogscore=661 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260104
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 26, 2023 at 01:07:42AM -0700, Guru Das Srinagesh wrote:
+> +def gather_maintainers_of_file(patch_file):
+> +    all_entities_of_patch = dict()
+> +
+> +    # Run get_maintainer.pl on patch file
+> +    logging.info("GET: Patch: {}".format(os.path.basename(patch_file)))
+> +    cmd = ['scripts/get_maintainer.pl']
+> +    cmd.extend([patch_file])
+> +
+> +    try:
+> +        p = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
+> +    except:
+> +        sys.exit(1)
+> +
+> +    logging.debug("\n{}".format(p.stdout.decode()))
+> +
+> +    entries = p.stdout.decode().splitlines()
+> +
+> +    maintainers = []
+> +    lists = []
+> +    others = []
+> +
+> +    for entry in entries:
+> +        entity = entry.split('(')[0].strip()
+> +        if any(role in entry for role in ["maintainer", "reviewer"]):
+> +            maintainers.append(entity)
+> +        elif "list" in entry:
+> +            lists.append(entity)
+> +        else:
+> +            others.append(entity)
+> +
+> +    all_entities_of_patch["maintainers"] = set(maintainers)
+> +    all_entities_of_patch["lists"] = set(lists)
+> +    all_entities_of_patch["others"] = set(others)
+> +
+> +    return all_entities_of_patch
+> +
 
---63e2vf4d5pezjcq2
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] man2/splice.2: document SPLICE_F_NOWAIT
-MIME-Version: 1.0
+FYI, there are couple of issues found while playing around.
 
-Hi Max,
+- Some entries in MAINTAINERS could be "supporter"
+- When names contain ("company"), the script fails to extract name.
 
-On Tue, Sep 26, 2023 at 09:04:02AM +0200, Max Kellermann wrote:
-> Patch for SPLICE_F_NOWAIT submitted to LKML:
->  https://lore.kernel.org/lkml/20230926063609.2451260-1-max.kellermann@ion=
-os.com/
->=20
-> In the HISTORY section, I declared Linux 6.7 as the first version to
-> have this feature, but this is only speculation, because
-> SPLICE_F_NOWAIT is still under discussion and has not yet been merged.
->=20
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Thanks,
+Pavan
 
-Please find some formatting issues below.
+diff --git a/scripts/add-maintainer.py b/scripts/add-maintainer.py
+index 5a5cc9482b06..6aa5e7941172 100755
+--- a/scripts/add-maintainer.py
++++ b/scripts/add-maintainer.py
+@@ -29,8 +29,8 @@ def gather_maintainers_of_file(patch_file):
+     others = []
 
-Cheers,
-Alex
+     for entry in entries:
+-        entity = entry.split('(')[0].strip()
+-        if any(role in entry for role in ["maintainer", "reviewer"]):
++        entity = entry.rsplit('(', 1)[0].strip()
++        if any(role in entry for role in ["maintainer", "reviewer", "supporter"]):
+             maintainers.append(entity)
+         elif "list" in entry:
+             lists.append(entity)
 
-> ---
->  man2/splice.2 | 23 +++++++++++++++++++++--
->  1 file changed, 21 insertions(+), 2 deletions(-)
->=20
-> diff --git a/man2/splice.2 b/man2/splice.2
-> index e9a18e668..1e686b858 100644
-> --- a/man2/splice.2
-> +++ b/man2/splice.2
-> @@ -89,13 +89,27 @@ call);
->  in the future, a correct implementation may be restored.
->  .TP
->  .B SPLICE_F_NONBLOCK
-> -Do not block on I/O.
-> +Do not block on I/O on pipes.
->  This makes the splice pipe operations nonblocking, but
->  .BR splice ()
->  may nevertheless block because the file descriptors that
->  are spliced to/from may block (unless they have the
->  .B O_NONBLOCK
-> -flag set).
-> +flag set or
-> +.B SPLICE_F_NOWAIT
-> +is specified).
-> +.TP
-> +.B SPLICE_F_NOWAIT
-> +If no data is immediately available on
-> +.I fd_in
-> +and it is not a pipe, do not wait (e.g. for backing storage or locks),
-> +but return immediately with
-> +.B EAGAIN.
 
-=2EBR EAGAIN .
-
-> +This is analogous to the
-> +.B RWF_NOWAIT
-> +flag of
-> +.BR preadv2()
-
-=2EBR preadv2 ().
-
-> +.
->  .TP
->  .B SPLICE_F_MORE
->  More data will be coming in a subsequent splice.
-> @@ -138,6 +152,8 @@ is set to indicate the error.
->  .TP
->  .B EAGAIN
->  .B SPLICE_F_NONBLOCK
-> +or
-> +.B SPLICE_F_NOWAIT
->  was specified in
->  .I flags
->  or one of the file descriptors had been marked as nonblocking
-> @@ -192,6 +208,9 @@ was required to be a pipe.
->  Since Linux 2.6.31,
->  .\" commit 7c77f0b3f9208c339a4b40737bb2cb0f0319bb8d
->  both arguments may refer to pipes.
-> +.PP
-> +.B SPLICE_F_NOWAIT
-> +was added in Linux 6.7.
->  .SH NOTES
->  The three system calls
->  .BR splice (),
-> --=20
-> 2.39.2
->=20
-
---63e2vf4d5pezjcq2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUSyAwACgkQnowa+77/
-2zI3xw/9H9V6+vU/dq5hmfWLn7eM9CAUn7VoZkUoFwxUcY1j0gwBOjiFiV8cLxye
-hz5Fzld5Px4pCpoNMgAo6Ue/rmMhtkpN3GJ3/j8A1QxRHXnqYtsBv296pbkNgmN8
-6fwm4zcv8QLmXgqJsNxEz5zW2UjOsHmUaIio17NWfPNHI2MaZnNpBr7SUTMAGxUB
-Cbv31gE3d/+6469uF8Qo1Z/UB04YlbV3AhlMfFYPQDBfA8w+UFzqjLKNw9m1Jvpl
-ti2UPeXRe7Q/BR0cwhT6TJ/3+Ehy9O6YLO8UYt4LJ1Bs9CWEo+9QfGavwz3OfR7T
-mo2rdp28DcVWp5aVdSdem6+ewx71pYL9w80vPoMpZrv87xGT+Lf5gwgqdIVOeNg7
-GeOMXCmzsaZBJpn0x+swizGbBduyrTRDdmMFaUHUFwhzXshwXbQO8JGUQznDNL1V
-iZdfgu9RMNjONvi8m++cM4sIiE1OsgT+Aj8cLUOjiPi5SCRPt/T1UmzL78BKDljY
-QraeNEgxG8YvMzlqsB1q1d6gRNcvP4qhWSAh3mvWn4Tz8kcSSWioNk/PspdMUu/d
-rWyZL5rerJEIzp4TtlMT0WeMouSghGcsNzJR2QF7Fa9JCLfzzVU7HMZLCoXaEJQf
-ERgu9XQOQpBmblWI2wULErHHuFjLRprEllHme8VvQgFnOIeBdOQ=
-=n2Sj
------END PGP SIGNATURE-----
-
---63e2vf4d5pezjcq2--
+Thanks,
+Pavan
