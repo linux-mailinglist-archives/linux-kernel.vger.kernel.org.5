@@ -2,264 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D097AF040
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B32C7AF046
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbjIZQIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S235112AbjIZQIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIZQIS (ORCPT
+        with ESMTP id S234866AbjIZQIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:08:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEF495;
-        Tue, 26 Sep 2023 09:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695744491; x=1727280491;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=XleOu0rmZNejbX+DExthydiKnkRpAJ3fSZG7W2+8Emc=;
-  b=VofL/HAkwkOUeO5gUtN44I93jl8F4HDEz+uAeTbHPkvkNFlGwSRJ+vJl
-   tE2IKEbUGzRDQnN5bp6mm364yditTI70BRy51Zwg2whjDiUIhevuCSHLk
-   ZviPS2wPCM1r1sLGvfkqZW5eDNgjVUQ10WkssUmn8cY1ONnRdW41Usk81
-   owWftJlo0k9iilkPB7H26EFPfl+y2TE422TYB5LECWB7LBU+y+FfaO5hb
-   R24gvbEDAvAHWWp1Vjeecl8Y090L3mnRquupZvYMkg2tSgridcNl0kkgH
-   DugcaENNy7aW5BzzqhkbGKLMk+eXPXf4kWmgl6lgCY1n42N4eMqo1oTCc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="384383407"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="384383407"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:07:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="742405605"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="742405605"
-Received: from hhalmen-mobl.ger.corp.intel.com ([10.251.219.207])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:07:15 -0700
-Date:   Tue, 26 Sep 2023 19:07:12 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH 09/11] platform/x86/intel/pmc: Retrieve LPM information
- using Intel PMT
-In-Reply-To: <20230922213032.1770590-10-david.e.box@linux.intel.com>
-Message-ID: <50983a98-f569-382a-8a28-6c54afe8e4d@linux.intel.com>
-References: <20230922213032.1770590-1-david.e.box@linux.intel.com> <20230922213032.1770590-10-david.e.box@linux.intel.com>
+        Tue, 26 Sep 2023 12:08:42 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC9E127
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:08:35 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-49618e09f16so3121653e0c.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1695744514; x=1696349314; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6oDat+15Yv8jvHk03dbPKuk8zwd+AnRHF/euH49EJVQ=;
+        b=NuyOzP/DWf4voc16E2dj9DrPPrwOxd94+8zXYfe7+ecH6L1ZrfSIH76BWDFuYjKGsV
+         33wVqpui0drGWf4dc4v+tZEAFMWh8esOr4XwQFvS+xZGSAwwxQS7vzJRI1oFMqIqqJ8o
+         t0aBzVqYZt3WngMIWjk32+CLZMir0IetEt90yxpYQHRSAbVHupfFaNKYx2+Gt0hTJ3q/
+         YUD4zF89IGMt7Aqgt8Fy5SsablBwTB0F8RgC6cDsgU9W4W1pA2tPgPq5+cPWAtmLVq2i
+         ftNFgthNAgjRZhttvWZjCSPyW3T5bhTGtcVtOBLVJdZDKjivp/BXq5pl00zApZUPwaLP
+         33/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695744514; x=1696349314;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6oDat+15Yv8jvHk03dbPKuk8zwd+AnRHF/euH49EJVQ=;
+        b=iP/wae+5fj9L5oVAvYXbZn65A9Y2IpoZk9Kj8riIn08I/K+iWkB7db9VOHQINUO4MR
+         /eAALK5nNNGFqMoTVMbsgU2l9Fuk0xVf95W5y1MuxhgasqplzynbP2IFvRSpD8ID15rg
+         yzpa1PIcGWX0yptIb8i/jzxxMx6C1i+s4RimbtHlHFfgHpWe4T1XRWE4Qv4dzZGkVgd7
+         OIp7dXJripBsAPfllggAMKDZ298OPV/74ZvbNdZoezPqV6eL0OwGU3Wv4inaQP41sH+0
+         rO8TQgRrQDvtt8UjCgLs9+SjtybnZIjSr+LrG3+vLDIhVcBVFmcXpyVOXI040S0/JszM
+         PlUA==
+X-Gm-Message-State: AOJu0Yz/9Ki7KgwHbL0ozqjFlkH+muqidQgFg2uENXJGyM2ff4HyACaI
+        RgC0W2q8U7MjF9sQhzT7ak1YrA==
+X-Google-Smtp-Source: AGHT+IFDQgBrhIPwgsFhbivVL+D36TCzBymyRjeSj3OWewpTHgWhOtDO4u30/jSZ3MjQP6HcqK5sVA==
+X-Received: by 2002:a1f:c582:0:b0:48f:9778:2b9f with SMTP id v124-20020a1fc582000000b0048f97782b9fmr6177336vkf.11.1695744514328;
+        Tue, 26 Sep 2023 09:08:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id d8-20020a0cb2c8000000b0065b13180892sm1817688qvf.16.2023.09.26.09.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 09:08:33 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qlAbw-001Evg-HO;
+        Tue, 26 Sep 2023 13:08:32 -0300
+Date:   Tue, 26 Sep 2023 13:08:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
+ IOTLB flushing
+Message-ID: <20230926160832.GM13795@ziepe.ca>
+References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
+ <ZRLy_AaJiXxZ2AfK@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRLy_AaJiXxZ2AfK@8bytes.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023, David E. Box wrote:
-
-> From: Xi Pardee <xi.pardee@intel.com>
+On Tue, Sep 26, 2023 at 05:04:28PM +0200, Joerg Roedel wrote:
+> Hi Niklas,
 > 
-> On supported platforms, the low power mode (LPM) requirements for entering
-> each idle substate are described in Platform Monitoring Technology (PMT)
-> telemetry entries. Provide a function for platform code to attempt to find
-> and read the requirements from the telemetry entries.
+> On Fri, Aug 25, 2023 at 12:11:15PM +0200, Niklas Schnelle wrote:
+> > Niklas Schnelle (6):
+> >       iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM return
+> >       s390/pci: prepare is_passed_through() for dma-iommu
+> >       s390/pci: Use dma-iommu layer
+> >       iommu/s390: Disable deferred flush for ISM devices
+> >       iommu/dma: Allow a single FQ in addition to per-CPU FQs
+> >       iommu/dma: Use a large flush queue and timeout for shadow_on_flush
 > 
-> Signed-off-by: Xi Pardee <xi.pardee@intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/platform/x86/intel/pmc/core.h       |   3 +
->  drivers/platform/x86/intel/pmc/core_ssram.c | 135 ++++++++++++++++++++
->  2 files changed, 138 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-> index edaa70067e41..85b6f6ae4995 100644
-> --- a/drivers/platform/x86/intel/pmc/core.h
-> +++ b/drivers/platform/x86/intel/pmc/core.h
-> @@ -320,6 +320,7 @@ struct pmc_reg_map {
->  	const u32 lpm_status_offset;
->  	const u32 lpm_live_status_offset;
->  	const u32 etr3_offset;
-> +	const u8  *lpm_reg_index;
->  };
->  
->  /**
-> @@ -329,6 +330,7 @@ struct pmc_reg_map {
->   *			specific attributes
->   */
->  struct pmc_info {
-> +	u32 guid;
->  	u16 devid;
->  	const struct pmc_reg_map *map;
->  };
-> @@ -486,6 +488,7 @@ extern const struct pmc_bit_map *mtl_ioem_lpm_maps[];
->  extern const struct pmc_reg_map mtl_ioem_reg_map;
->  
->  extern void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev);
-> +extern int pmc_core_ssram_get_lpm_reqs(struct pmc_dev *pmcdev);
->  extern int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value);
->  
->  int pmc_core_resume_common(struct pmc_dev *pmcdev);
-> diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
-> index b2abaf106bc5..a0ce4e8b1b6d 100644
-> --- a/drivers/platform/x86/intel/pmc/core_ssram.c
-> +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
-> @@ -23,6 +23,140 @@
->  #define SSRAM_IOE_OFFSET	0x68
->  #define SSRAM_DEVID_OFFSET	0x70
->  
-> +/* PCH query */
-> +#define LPM_HEADER_OFFSET	1
-> +#define LPM_REG_COUNT		28
-> +#define LPM_MODE_OFFSET		1
-> +
-> +static u32 pmc_core_find_guid(struct pmc_info *list, const struct pmc_reg_map *map)
-> +{
-> +	for (; list->map; ++list)
-> +		if (list->map == map)
-> +			return list->guid;
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmc_core_get_lpm_req(struct pmc_dev *pmcdev, struct pmc *pmc)
-> +{
-> +	struct telem_endpoint *ep;
-> +	const u8 *lpm_indices;
-> +	int num_maps, mode_offset = 0;
-> +	int ret, mode, i;
-> +	int lpm_size;
-> +	u32 guid;
-> +
-> +	lpm_indices = pmc->map->lpm_reg_index;
-> +	num_maps = pmc->map->lpm_num_maps;
-> +	lpm_size = LPM_MAX_NUM_MODES * num_maps;
-> +
-> +	guid = pmc_core_find_guid(pmcdev->regmap_list, pmc->map);
-> +	if (!guid)
-> +		return -ENXIO;
-> +
-> +	ep = pmt_telem_find_and_register_endpoint(pmcdev->ssram_pcidev, guid, 0);
-> +	if (IS_ERR(ep)) {
-> +		dev_dbg(&pmcdev->pdev->dev, "couldn't get telem endpoint %ld",
-> +			PTR_ERR(ep));
-> +		return -EPROBE_DEFER;
-> +	}
-> +
-> +	pmc->lpm_req_regs = devm_kzalloc(&pmcdev->pdev->dev,
-> +					 lpm_size * sizeof(u32),
-> +					 GFP_KERNEL);
-> +	if (!pmc->lpm_req_regs) {
-> +		ret = -ENOMEM;
-> +		goto unregister_ep;
-> +	}
-> +
-> +	/*
-> +	 * PMC Low Power Mode (LPM) requirements table
-> +	 *
-> +	 * In telemetry space, the LPM table contains a 4 byte header followed
-> +	 * by 8 consecutive mode blocks (one for each LPM mode). Each block
-> +	 * has a 4 byte header followed by a set of registers that describe the
-> +	 * IP state requirements for the given mode. The IP mapping is platform
-> +	 * specific but the same for each block, making for easy analysis.
-> +	 * Platforms only use a subset of the space to track the requirements
-> +	 * for their IPs. Callers provide the requirement registers they use as
-> +	 * a list of indices. Each requirement register is associated with an
-> +	 * IP map that's maintained by the caller.
-> +	 *
-> +	 * Header
-> +	 * +----+----------------------------+----------------------------+
-> +	 * |  0 |      REVISION              |      ENABLED MODES         |
-> +	 * +----+--------------+-------------+-------------+--------------+
-> +	 *
-> +	 * Low Power Mode 0 Block
-> +	 * +----+--------------+-------------+-------------+--------------+
-> +	 * |  1 |     SUB ID   |     SIZE    |   MAJOR     |   MINOR      |
-> +	 * +----+--------------+-------------+-------------+--------------+
-> +	 * |  2 |           LPM0 Requirements 0                           |
-> +	 * +----+---------------------------------------------------------+
-> +	 * |    |                  ...                                    |
-> +	 * +----+---------------------------------------------------------+
-> +	 * | 29 |           LPM0 Requirements 27                          |
-> +	 * +----+---------------------------------------------------------+
-> +	 *
-> +	 * ...
-> +	 *
-> +	 * Low Power Mode 7 Block
-> +	 * +----+--------------+-------------+-------------+--------------+
-> +	 * |    |     SUB ID   |     SIZE    |   MAJOR     |   MINOR      |
-> +	 * +----+--------------+-------------+-------------+--------------+
-> +	 * | 60 |           LPM7 Requirements 0                           |
-> +	 * +----+---------------------------------------------------------+
-> +	 * |    |                  ...                                    |
-> +	 * +----+---------------------------------------------------------+
-> +	 * | 87 |           LPM7 Requirements 27                          |
-> +	 * +----+---------------------------------------------------------+
-> +	 *
-> +	 */
-> +	mode_offset = LPM_HEADER_OFFSET + LPM_MODE_OFFSET;
-> +	pmc_for_each_mode(i, mode, pmcdev) {
-> +		u32 *req_offset = pmc->lpm_req_regs + (mode * num_maps);
-> +		int m;
-> +
-> +		for (m = 0; m < num_maps; m++) {
-> +			u8 sample_id = lpm_indices[m] + mode_offset;
-> +
-> +			ret = pmt_telem_read32(ep, sample_id, req_offset, 1);
-> +			if (ret) {
-> +				dev_err(&pmcdev->pdev->dev,
-> +					"couldn't read Low Power Mode requirements: %d\n", ret);
-> +				devm_kfree(&pmcdev->pdev->dev, pmc->lpm_req_regs);
-> +				goto unregister_ep;
-> +			}
-> +			++req_offset;
-> +		}
-> +		mode_offset += (LPM_REG_COUNT + LPM_MODE_OFFSET);
+> Turned out this series has non-trivial conflicts with Jasons
+> default-domain work so I had to remove it from the IOMMU tree for now.
+> Can you please rebase it to the latest iommu/core branch and re-send? I
+> will take it into the tree again then.
 
-Unnecessary parenthesis.
+Niklas, I think you just 'take yours' to resolve this. All the
+IOMMU_DOMAIN_PLATFORM related and .default_domain = parts should be
+removed. Let me know if you need anything
 
--- 
- i.
-
-> +	}
-> +
-> +unregister_ep:
-> +	pmt_telem_unregister_endpoint(ep);
-> +
-> +	return ret;
-> +}
-> +
-> +int pmc_core_ssram_get_lpm_reqs(struct pmc_dev *pmcdev)
-> +{
-> +	int ret, i;
-> +
-> +	if (!pmcdev->ssram_pcidev)
-> +		return -ENODEV;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(pmcdev->pmcs); ++i) {
-> +		if (!pmcdev->pmcs[i])
-> +			continue;
-> +
-> +		ret = pmc_core_get_lpm_req(pmcdev, pmcdev->pmcs[i]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static void
->  pmc_add_pmt(struct pmc_dev *pmcdev, u64 ssram_base, void __iomem *ssram)
->  {
-> @@ -234,3 +368,4 @@ int pmc_core_ssram_init(struct pmc_dev *pmcdev)
->  	return ret;
->  }
->  MODULE_IMPORT_NS(INTEL_VSEC);
-> +MODULE_IMPORT_NS(INTEL_PMT_TELEMETRY);
-> 
-
+Thanks,
+Jason
