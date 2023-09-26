@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6577AE905
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4AC7AE8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbjIZJ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        id S234123AbjIZJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233997AbjIZJ0s (ORCPT
+        with ESMTP id S231491AbjIZJVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:26:48 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47CCEB;
-        Tue, 26 Sep 2023 02:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1695720401;
-  x=1727256401;
-  h=references:from:to:subject:date:in-reply-to:message-id:
-   mime-version;
-  bh=KKq1Mf2cJY9TfY5pJtbvTRqeM251HlM6BFsXNmbjgI4=;
-  b=TewbH6+ykYfVgle04rXMVZFdWBFDytnluldLLkZsMPnAeDrbd5xv1htj
-   1mH9u3BqxTP1SwjpmbbjMuzMrBpAlDh38I/9tqLDw1bPnJjznn2v2kT5i
-   fShAihZfqSM7D1m10k5QB8l4SXmTQt4j2QmNGErxNTJiDtS/qK3NIy7OC
-   FmZ8QSrOwwVM/Lkae9xKsx2ZjK3UOAMqw7gkJ4KPDo5qNKUrdZK9Ikkpt
-   bChoqWMf+SgTypOBg9/+/DE/SQrAOtGSQP4ZSqchgB5kqCC9RLYFZIykf
-   tbPFs/vzW/Cr8mS9ovQ2Sa3jo3BKaDxB5b/m01nr+zIdL8OxL6MfO89lm
-   Q==;
-References: <cover.1692699931.git.waqar.hameed@axis.com>
- <7b856b74c4c0f8c6c539d7c692051c9203b103c0.1692699931.git.waqar.hameed@axis.com>
-User-agent: a.out
-From:   Waqar Hameed <waqar.hameed@axis.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        <kernel@axis.com>, <linux-kernel@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] rtc: Add driver for Epson RX8111
-Date:   Tue, 26 Sep 2023 11:20:29 +0200
-In-Reply-To: <7b856b74c4c0f8c6c539d7c692051c9203b103c0.1692699931.git.waqar.hameed@axis.com>
-Message-ID: <pndsf71z3n9.fsf@axis.com>
+        Tue, 26 Sep 2023 05:21:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF170F3;
+        Tue, 26 Sep 2023 02:21:17 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 579876607313;
+        Tue, 26 Sep 2023 10:21:15 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695720076;
+        bh=FKvRcZczMijqG8YmeVx25lsAadHS5xULTP5v1ZDi/Yc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IxceUlmBtOiC/bvzFXAWd7X6itv/URlN7AFBiOcK3qw/JI6FdPQ7x2maqYXNOIF6G
+         yUaxFobcey3F38OEXcTHnoNSvnF9OZKUpzWlJwpBuzs90t8iFoc0XfWEY+vmpUv2UK
+         UR23LHeESMsF+1o6ednzjwZICOFm4La8tDnuh7xal4g/raZtu8xS4RK2YxtCaGMLfm
+         OTo1C2+tdT3+RQ54FdySt5HVa3t10HFru7Jal1XFqM/hJWDLHR7alucwLg43SaNi9A
+         Hr+DIw0bTQdt0XNdP67RoYlbIFke85DgrFfVtecKdj2ztqkwyX0v2pZ3sQJAVFINiZ
+         ikOrEbFs7/NwA==
+Message-ID: <05086c59-f6df-7a72-59be-762fdcd0a31f@collabora.com>
+Date:   Tue, 26 Sep 2023 11:21:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail02w.axis.com (10.20.40.8) To se-mail02w.axis.com
- (10.20.40.8)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: mfd: Add missing unevaluatedProperties on
+ child node schemas
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, Lee Jones <lee@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Flora Fu <flora.fu@mediatek.com>,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Chris Zhong <zyw@rock-chips.com>,
+        Zhang Qing <zhangqing@rock-chips.com>,
+        - Keerthy <j-keerthy@ti.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20230925212729.1976117-1-robh@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230925212729.1976117-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 12:25 +0200 Waqar Hameed <waqar.hameed@axis.com> wrote:
+Il 25/09/23 23:27, Rob Herring ha scritto:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
+> 
+> Add unevaluatedProperties as needed, and then add any missing properties
+> flagged by the addition.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-> Epson RX8111 is an RTC with alarm, timer and timestamp functionality.
-> Add a basic driver with support for only reading/writing time (for now).
->
-> Signed-off-by: Waqar Hameed <waqar.hameed@axis.com>
+For MediaTek:
 
-Friendly ping incoming!
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Please tell if there is anything more needed to be done here. (Or that
-the patch will simply not be accepted at all...)
+> ---
+>   Documentation/devicetree/bindings/mfd/maxim,max5970.yaml   | 5 +++++
+>   Documentation/devicetree/bindings/mfd/mediatek,mt6357.yaml | 2 ++
+>   Documentation/devicetree/bindings/mfd/rockchip,rk805.yaml  | 1 +
+>   Documentation/devicetree/bindings/mfd/rockchip,rk808.yaml  | 1 +
+>   Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml  | 3 ++-
+>   Documentation/devicetree/bindings/mfd/rockchip,rk818.yaml  | 1 +
+>   Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml   | 1 +
+>   Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml   | 1 +
+>   Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml   | 1 +
+>   9 files changed, 15 insertions(+), 1 deletion(-)
+> 
+
