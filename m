@@ -2,368 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BE97AEF7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDA17AEF51
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjIZPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
+        id S235040AbjIZPOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjIZPRf (ORCPT
+        with ESMTP id S229519AbjIZPOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:17:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0044116;
-        Tue, 26 Sep 2023 08:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695741448; x=1727277448;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1OjiblUZQOyz+rQQA1a6/d708h590ZlSSK21wpCD35Y=;
-  b=fFtnxekpsyZQLPaYrgg/TZZRzTtuUwvI/R8GKYDxs5eUoyi9NzT9hgVv
-   JroD8J4GZmtvmmpH1MNwe9f1PdVZ4r39UijyZ50gUZnmA1c6ezHvBTf1j
-   mpIEgoLiCy3+t6fMuqerBGgGtkB8wH3AxJReDjEwAytx+d5h1Bj7QfIUe
-   3WCsOpCVNW/iayifTFveGoDYx0pwgwKwaY8rq8XLM8GId+467/kx9Mk9d
-   F0a4Ny7y8UbQsPp7uzn75ZH0ydpgb/mypLKopXMTvMKYkgR7QSMlxKMlx
-   DwGmI8IP5ve4tmiH/aCfoi6uKREHiRYSFmDTIgdCYPJ+GazCLZzf2h/pp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="380459612"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="380459612"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:10:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="892228403"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="892228403"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:09:50 -0700
-Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id B8D22580BBE;
-        Tue, 26 Sep 2023 08:10:52 -0700 (PDT)
-Message-ID: <ccd091ec-d650-e522-8152-c37d00d952d8@linux.intel.com>
-Date:   Tue, 26 Sep 2023 11:10:51 -0400
+        Tue, 26 Sep 2023 11:14:42 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7A810A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:14:22 -0700 (PDT)
+Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
+        by cmsmtp with ESMTP
+        id klwaqOBN2ez0Cl9l7qZCn4; Tue, 26 Sep 2023 15:13:57 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTPS
+        id l9lSqtovALCdgl9lUqLSpA; Tue, 26 Sep 2023 15:14:20 +0000
+X-Authority-Analysis: v=2.4 cv=Vs4wvs6n c=1 sm=1 tr=0 ts=6512f54c
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=CKMxHAookNUaJbGn3r6bzg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
+ a=2s8rLCK1qyt2EROP6YQA:9 a=QEXdDO2ut3YA:10 a=rsP06fVo5MYu2ilr0aT5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tFehZFUz2mgeuaZcpcNi7NzcZi1PkHLpBmLwRVsFYbI=; b=eHisMWLMLzfIReZUFGxm1ohNEK
+        uyo3pMfKDA98Oge0kHc8Tjn5Mw5C1od5yOK2DU7hH9fhjLWHmgjpoYCLSnnfrcZZ+PQGkU/TpwzbF
+        kviXHhIOOY3z0xN8Fja9h80hz/Fzi+jpnNWSDFfm5vJb+bD+WFLneUGFKK/dEL3tkS1CI3GVvcnY6
+        0jCHsORlX6b2t72zRQrmG1f6Rrky+vP45ySrpcxC/C50DkuN2AydC0sHVHg212mfmUL0i5uM3/BMm
+        QpMcmgBz33pO9EQQmRK08+LIZRIRYAV1LVHQr6YLl3Pvk2mK/3/mHnxpSJGjpzaiiS17ruTtrO0cM
+        4OanJQnA==;
+Received: from [103.163.95.214] (port=36664 helo=[192.168.1.101])
+        by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <saravanan@linumiz.com>)
+        id 1ql9lR-004OcK-2J;
+        Tue, 26 Sep 2023 20:44:17 +0530
+Message-ID: <45bc18bf-eb2c-4dab-d610-6ce787694fe7@linumiz.com>
+Date:   Tue, 26 Sep 2023 20:44:15 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 02/25] perf stat: Add basic functions for the
- hardware-grouping stat cmd option
+Subject: Re: [PATCH 3/3] hwmon: (pmbus/mpq2286) Add a support for mpq2286
+ Power Management IC
+To:     Guenter Roeck <linux@roeck-us.net>, sravanhome@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jdelvare@suse.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230911034150.181880-1-saravanan@linumiz.com>
+ <20230911034150.181880-4-saravanan@linumiz.com>
+ <5acb9307-2be1-dcd2-fdb7-b2842c7ff24d@roeck-us.net>
 Content-Language: en-US
-To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Samantha Alt <samantha.alt@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20230925061824.3818631-1-weilin.wang@intel.com>
- <20230925061824.3818631-3-weilin.wang@intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20230925061824.3818631-3-weilin.wang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Saravanan Sekar <saravanan@linumiz.com>
+In-Reply-To: <5acb9307-2be1-dcd2-fdb7-b2842c7ff24d@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 103.163.95.214
+X-Source-L: No
+X-Exim-ID: 1ql9lR-004OcK-2J
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.101]) [103.163.95.214]:36664
+X-Source-Auth: saravanan@linumiz.com
+X-Email-Count: 3
+X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfGx0lNLidSiGhFQSyJyR4hzy6ZIB86Td8Vpiey4lojt1tAQqcqRql4C99jSzH7U0tFf9s+yazhEUyWLrxNX008VszmjqRZU4DgueUPSJO8Q8zFHkD8ag
+ fcIFO8cvzIlcqkoLB+PPyQlrsPmHPuUZj7DbS4y3Cips6sda+XQbnY8llLm9cyuVeKCvmUNYmBbqOEVfgTrhu9oM0ZNYVSXMvFM=
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
-> From: Weilin Wang <weilin.wang@intel.com>
+On 11/09/23 09:53, Guenter Roeck wrote:
+> On 9/10/23 20:41, Saravanan Sekar wrote:
+>> The MPQ2286 is a programmable, high frequency synchronous buck regulator
+>> designed to power a variety of Automotive system peripherals. Single buck
+>> converters with hardware monitoring capability is configurable over PMBus
+>> interface.
+>>
+>> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+>> ---
+>>   drivers/hwmon/pmbus/mpq7932.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/hwmon/pmbus/mpq7932.c 
+>> b/drivers/hwmon/pmbus/mpq7932.c
+>> index af3e5e9590c8..3ffeece28e2d 100644
+>> --- a/drivers/hwmon/pmbus/mpq7932.c
+>> +++ b/drivers/hwmon/pmbus/mpq7932.c
+>> @@ -21,6 +21,7 @@
+>>   #define MPQ7932_N_VOLTAGES        256
+>>   #define MPQ7932_VOUT_MAX        0xFF
+>>   #define MPQ7932_NUM_PAGES        6
+>> +#define MPQ2286_NUM_PAGES        1
+>>   #define MPQ7932_TON_DELAY        0x60
+>>   #define MPQ7932_VOUT_STARTUP_SLEW    0xA3
+>> @@ -130,12 +131,14 @@ static int mpq7932_probe(struct i2c_client *client)
+>>   static const struct of_device_id mpq7932_of_match[] = {
+>>       { .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
+>> +    { .compatible = "mps,mpq2286", .data = (void *)MPQ2286_NUM_PAGES },
+>>       {},
+>>   };
+>>   MODULE_DEVICE_TABLE(of, mpq7932_of_match);
+>>   static const struct i2c_device_id mpq7932_id[] = {
+>>       { "mpq7932", },
+>> +    { "mpq2286", },
 > 
-> Add the first set of functions for the hardware-grouping method. Function
-> hw_awre_parse_groups() is the entry point of this metric grouping method.
-> It does metric grouping on a combined list of events and will create a list
-> of grouping strings as final results of the grouping method. These grouping
-> strings will be used in the same mannor as existing metric grouping
-> process.
-> 
-> This patch needs to be used together with the following a few patches
-> together to function correctly.
+> Please keep alphabetic order.
 
-If this one depends on the later patches, you may consider to change the
-order of the patches. Let the dependent patch be first. We should only
-enable a new feature when all the pieces are ready.
+agree, will change in v2
+
+> 
+>>       { },
+>>   };
+>>   MODULE_DEVICE_TABLE(i2c, mpq7932_id);
+> 
+> This is one of those super-secret automotive chips where almost no 
+> information
+> is available to the public. I'll need authoritative confirmation that 
+> all the
+> various parameters (b. m, output voltage format, minimum and maximum output
+> voltage, step size) match mpq7932 exactly. That is rarely the case, so 
+> consider
+> me skeptic.
+
+Thanks for your time for review. yes, datasheet is not available in 
+public but Monolithic shall share on request. I confirm all the 
+parameters are match with mpq7932 datasheet and I have tested the device.
+
+> 
+> Guenter
+> 
 
 Thanks,
-Kan
-> 
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 206 ++++++++++++++++++++++++++++++++++
->  tools/perf/util/metricgroup.h |   9 ++
->  2 files changed, 215 insertions(+)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index b08af6860..063c92c71 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1432,6 +1432,101 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
->  	return ret;
->  }
->  
-> +/**
-> + * hw_aware_build_grouping - Build event groupings by reading counter
-> + * requirement of the events and counter available on the system from
-> + * pmu-events.
-> + * @ctx: the event identifiers parsed from metrics.
-> + * @groupings: header to the list of final event grouping.
-> + * @modifier: any modifiers added to the events.
-> + */
-> +static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
-> +				  struct list_head *groupings __maybe_unused,
-> +				  const char *modifier __maybe_unused)
-> +{
-> +	int ret = 0;
-> +
-> +	pr_debug("This is a placeholder\n");
-> +	return ret;
-> +}
-> +
-> +static void group_str_free(struct metricgroup__group_strs *g)
-> +{
-> +	if (!g)
-> +		return;
-> +
-> +	strbuf_release(&g->grouping_str);
-> +	free(g);
-> +}
-> +
-> +static void metricgroup__free_grouping_strs(struct list_head
-> +					   *grouping_strs)
-> +{
-> +	struct metricgroup__group_strs *g, *tmp;
-> +
-> +	list_for_each_entry_safe(g, tmp, grouping_strs, nd) {
-> +		list_del_init(&g->nd);
-> +		group_str_free(g);
-> +	}
-> +}
-> +
-> +/**
-> + * hw_aware_parse_ids - Build the event string for the ids and parse them
-> + * creating an evlist. The encoded metric_ids are decoded. Events are placed
-> + * into groups based on event counter requirements and counter availabilities of
-> + * the system.
-> + * @metric_no_merge: is metric sharing explicitly disabled.
-> + * @fake_pmu: used when testing metrics not supported by the current CPU.
-> + * @ids: the event identifiers parsed from a metric.
-> + * @modifier: any modifiers added to the events.
-> + * @out_evlist: the created list of events.
-> + */
-> +static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
-> +			     struct expr_parse_ctx *ids, const char *modifier,
-> +			     struct evlist **out_evlist)
-> +{
-> +	struct parse_events_error parse_error;
-> +	struct evlist *parsed_evlist;
-> +	LIST_HEAD(groupings);
-> +	struct metricgroup__group_strs *group;
-> +	int ret;
-> +
-> +	*out_evlist = NULL;
-> +	ret = hw_aware_build_grouping(ids, &groupings, modifier);
-> +	if (ret) {
-> +		metricgroup__free_grouping_strs(&groupings);
-> +		return ret;
-> +	}
-> +
-> +	parsed_evlist = evlist__new();
-> +	if (!parsed_evlist) {
-> +		ret = -ENOMEM;
-> +		goto err_out;
-> +	}
-> +	list_for_each_entry(group, &groupings, nd) {
-> +		struct strbuf *events = &group->grouping_str;
-> +
-> +		pr_debug("Parsing metric events '%s'\n", events->buf);
-> +		parse_events_error__init(&parse_error);
-> +		ret = __parse_events(parsed_evlist, events->buf, /*pmu_filter=*/NULL,
-> +				    &parse_error, fake_pmu, /*warn_if_reordered=*/false);
-> +		if (ret) {
-> +			parse_events_error__print(&parse_error, events->buf);
-> +			goto err_out;
-> +		}
-> +		ret = decode_all_metric_ids(parsed_evlist, modifier);
-> +		if (ret)
-> +			goto err_out;
-> +	}
-> +	*out_evlist = parsed_evlist;
-> +	parsed_evlist = NULL;
-> +err_out:
-> +	parse_events_error__exit(&parse_error);
-> +	evlist__delete(parsed_evlist);
-> +	metricgroup__free_grouping_strs(&groupings);
-> +	return ret;
-> +}
-> +
->  /**
->   * parse_ids - Build the event string for the ids and parse them creating an
->   *             evlist. The encoded metric_ids are decoded.
-> @@ -1520,6 +1615,114 @@ static int parse_ids(bool metric_no_merge, struct perf_pmu *fake_pmu,
->  	return ret;
->  }
->  
-> +static int hw_aware_parse_groups(struct evlist *perf_evlist,
-> +				const char *pmu, const char *str,
-> +				bool metric_no_threshold,
-> +				const char *user_requested_cpu_list,
-> +				bool system_wide,
-> +				struct perf_pmu *fake_pmu,
-> +				struct rblist *metric_events_list,
-> +				const struct pmu_metrics_table *table)
-> +{
-> +	struct evlist *combined_evlist = NULL;
-> +	LIST_HEAD(metric_list);
-> +	struct metric *m;
-> +	int ret;
-> +	bool metric_no_group = false;
-> +	bool metric_no_merge = false;
-> +
-> +	if (metric_events_list->nr_entries == 0)
-> +		metricgroup__rblist_init(metric_events_list);
-> +	ret = metricgroup__add_metric_list(pmu, str, metric_no_group, metric_no_threshold,
-> +					   user_requested_cpu_list,
-> +					   system_wide, &metric_list, table);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Sort metrics from largest to smallest. */
-> +	list_sort(NULL, &metric_list, metric_list_cmp);
-> +
-> +	if (!metric_no_merge) {
-> +		struct expr_parse_ctx *combined = NULL;
-> +
-> +		ret = build_combined_expr_ctx(&metric_list, &combined);
-> +
-> +		if (!ret && combined && hashmap__size(combined->ids)) {
-> +			ret = hw_aware_parse_ids(fake_pmu, combined,
-> +						/*modifier=*/NULL,
-> +						&combined_evlist);
-> +		}
-> +
-> +		if (ret)
-> +			goto out;
-> +
-> +		if (combined)
-> +			expr__ctx_free(combined);
-> +	}
-> +
-> +	list_for_each_entry(m, &metric_list, nd) {
-> +		struct metric_expr *expr;
-> +		struct metric_event *me;
-> +		struct evsel **metric_events;
-> +
-> +		ret = setup_metric_events(fake_pmu ? "all" : m->pmu, m->pctx->ids,
-> +					 combined_evlist, &metric_events);
-> +		if (ret) {
-> +			pr_debug("Cannot resolve IDs for %s: %s\n",
-> +				m->metric_name, m->metric_expr);
-> +			goto out;
-> +		}
-> +
-> +		me = metricgroup__lookup(metric_events_list, metric_events[0], true);
-> +
-> +		expr = malloc(sizeof(struct metric_expr));
-> +		if (!expr) {
-> +			ret = -ENOMEM;
-> +			free(metric_events);
-> +			goto out;
-> +		}
-> +
-> +		expr->metric_refs = m->metric_refs;
-> +		m->metric_refs = NULL;
-> +		expr->metric_expr = m->metric_expr;
-> +		if (m->modifier) {
-> +			char *tmp;
-> +
-> +			if (asprintf(&tmp, "%s:%s", m->metric_name, m->modifier) < 0)
-> +				expr->metric_name = NULL;
-> +			else
-> +				expr->metric_name = tmp;
-> +		} else {
-> +			expr->metric_name = strdup(m->metric_name);
-> +		}
-> +
-> +		if (!expr->metric_name) {
-> +			ret = -ENOMEM;
-> +			free(metric_events);
-> +			goto out;
-> +		}
-> +		expr->metric_threshold = m->metric_threshold;
-> +		expr->metric_unit = m->metric_unit;
-> +		expr->metric_events = metric_events;
-> +		expr->runtime = m->pctx->sctx.runtime;
-> +		list_add(&expr->nd, &me->head);
-> +	}
-> +
-> +	if (combined_evlist) {
-> +		evlist__splice_list_tail(perf_evlist, &combined_evlist->core.entries);
-> +		evlist__delete(combined_evlist);
-> +	}
-> +
-> +	list_for_each_entry(m, &metric_list, nd) {
-> +		if (m->evlist)
-> +			evlist__splice_list_tail(perf_evlist, &m->evlist->core.entries);
-> +	}
-> +
-> +out:
-> +	metricgroup__free_metrics(&metric_list);
-> +	return ret;
-> +}
-> +
->  static int parse_groups(struct evlist *perf_evlist,
->  			const char *pmu, const char *str,
->  			bool metric_no_group,
-> @@ -1699,6 +1902,9 @@ int metricgroup__parse_groups(struct evlist *perf_evlist,
->  		return -EINVAL;
->  	if (hardware_aware_grouping) {
->  		pr_debug("Use hardware aware grouping instead of traditional metric grouping method\n");
-> +		return hw_aware_parse_groups(perf_evlist, pmu, str,
-> +			    metric_no_threshold, user_requested_cpu_list, system_wide,
-> +			    /*fake_pmu=*/NULL, metric_events, table);
->  	}
->  
->  
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-> index 779f6ede1..89809df85 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -6,6 +6,7 @@
->  #include <linux/rbtree.h>
->  #include <stdbool.h>
->  #include "pmu-events/pmu-events.h"
-> +#include "strbuf.h"
->  
->  struct evlist;
->  struct evsel;
-> @@ -66,6 +67,14 @@ struct metric_expr {
->  	int runtime;
->  };
->  
-> +/**
-> + * Each group is one node in the group string list.
-> + */
-> +struct metricgroup__group_strs {
-> +	struct list_head nd;
-> +	struct strbuf grouping_str;
-> +};
-> +
->  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
->  					 struct evsel *evsel,
->  					 bool create);
+Saravanan
