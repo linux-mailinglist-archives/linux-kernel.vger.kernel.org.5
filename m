@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5957AEFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623707AEFD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbjIZPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        id S234533AbjIZPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbjIZPht (ORCPT
+        with ESMTP id S234339AbjIZPju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:37:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CD2EB;
-        Tue, 26 Sep 2023 08:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695742662; x=1727278662;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T6IyjL9p+uU69BamxAdtTuMWMobDIzJhylvNQq/SuzE=;
-  b=dzJd7/Qwf2zkLzbJ+ArBzSo+6FQ1rtCfb/kEIpQHkLxmwPu/G/KAlMOx
-   3XLjfrdpLuy7KGUgOcJTWKKr3MhTyNf0x7F0J+1UB3xu07w+w14zfc4hD
-   4OIX5j1GxAV/mgIvG4OM6T1tpH0UDP2y15HQtYe2QwX0PgJhI/GUO/0hM
-   8Ya/lPliLjoyRYW4FnqmZbV3Y5bgIOvuBN+HisQAlu6hlAeNzGesP3Y7r
-   5rrvTrNmv8CeKBDeZEm107rxwKanZ3WOgbEefG6tk44oCepC76h/EwIt+
-   S8quZdyAlMqkOI11L8Kp3fcsj/PMlGLSOwUWppG6xu1mNy67NCtXB38Qs
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381495887"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="381495887"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:37:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="995844198"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="995844198"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Sep 2023 08:37:31 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 89FE811D; Tue, 26 Sep 2023 18:37:29 +0300 (EEST)
-Date:   Tue, 26 Sep 2023 18:37:29 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Raag Jadav <raag.jadav@intel.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: intel: Simplify code with cleanup helpers
-Message-ID: <20230926153729.GW3208943@black.fi.intel.com>
-References: <20230926132336.416612-1-andriy.shevchenko@linux.intel.com>
+        Tue, 26 Sep 2023 11:39:50 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C783CEB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:39:43 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5334d78c5f6so10314362a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1695742782; x=1696347582; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9n/nLQKp+eqOy9dIbrRAN+znmrFw3M5Q6PTNFf2Vphk=;
+        b=fMAjOOHi6C72qOYtqTKrV2413SgggEeJrr2KSTlaIpEtFicnfQBt9Yk6YPsRrJqv6z
+         urRkhE1lTovowF32341YC+fdOX2/GboCfylpsa/G+9124xicuS//0V7/BKzOAL+8tOqv
+         h5ywGMBXfPyh36V/TLIT5OOJ53VdGpMprmcfw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695742782; x=1696347582;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9n/nLQKp+eqOy9dIbrRAN+znmrFw3M5Q6PTNFf2Vphk=;
+        b=Sc6edyLIdBCXDcNiz0XsEycudrIsqPVonEZhe8nMaQXt6Nq3XU6LpahDBmQm8iT+M3
+         6kwtEdVPVfsK8bxbkQTVHK/qCpEC4nAsEBE6BhF0yJcymfwPhaX0d6VsfW+rO8OKvenC
+         XEhmMmfg9ylD4EwOra7Qt0FhNFP5ABo7YSp1j618fAKZxnPTyVdyVsof4FWe/wvs1BmR
+         YQHG/4w02k1CGmm54hsWXnY8cMZAkJSn/8QJMks6eq90Kyh6/p4RvkAViJP3++LSX5wu
+         zcF038IIfx5mn9//xvvfmDJgH84+0074zL4ndxGFpGWQU1ILiNoE3hyqcxgicrzJ12I4
+         2sMQ==
+X-Gm-Message-State: AOJu0Yxz4tBIxTScq1Qzjl7Vuzw/TkVbJ0aB2j7BuMJq+TtWj6OyAW+u
+        Vsfaaa7/UmyySMXLZCzAuSW5YSQBGirYy6wMgDpKZndx
+X-Google-Smtp-Source: AGHT+IFZfLxRVQoD/e7Ih9fkSn06wlC6Qiy0sEUhwulHz9Y4ZbSJa5WGc8/RCqxQMrIhPVL9IFfGJg==
+X-Received: by 2002:a17:907:3f21:b0:9ae:546f:d9ad with SMTP id hq33-20020a1709073f2100b009ae546fd9admr12609930ejc.18.1695742782030;
+        Tue, 26 Sep 2023 08:39:42 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b009ad75d318ffsm8026476ejb.17.2023.09.26.08.39.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 08:39:41 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-98377c5d53eso1102666466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:39:41 -0700 (PDT)
+X-Received: by 2002:a17:906:1097:b0:9b2:948f:369e with SMTP id
+ u23-20020a170906109700b009b2948f369emr3540008eju.13.1695742780884; Tue, 26
+ Sep 2023 08:39:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230926132336.416612-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <ZRHTb8ctzeRq0-a6@slm.duckdns.org>
+In-Reply-To: <ZRHTb8ctzeRq0-a6@slm.duckdns.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 26 Sep 2023 08:39:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiH+mdeH3M6C1+5gZxoeR4f=Fi20TF8Zo_BEo70p1Ndnw@mail.gmail.com>
+Message-ID: <CAHk-=wiH+mdeH3M6C1+5gZxoeR4f=Fi20TF8Zo_BEo70p1Ndnw@mail.gmail.com>
+Subject: Re: [GIT PULL] Workqueue fixes for v6.6-rc3
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 04:23:35PM +0300, Andy Shevchenko wrote:
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in the driver.
-> 
-> While at it, unify the variables and approach in intel_gpio_irq_*().
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Mon, 25 Sept 2023 at 11:37, Tejun Heo <tj@kernel.org> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ wq-for-6.6-rc3-fixes
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+-ENOSUCHTAG.
+
+Did you forget to push out?
+
+                Linus
