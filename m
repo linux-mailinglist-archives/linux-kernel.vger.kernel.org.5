@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5287AEA4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DFF7AEA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234285AbjIZKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S231233AbjIZK2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjIZKZH (ORCPT
+        with ESMTP id S229445AbjIZK2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:25:07 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB8BF3;
-        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-274c05edb69so5135408a91.2;
-        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
+        Tue, 26 Sep 2023 06:28:02 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F30DD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:27:55 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c93638322so1883511166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 03:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695723900; x=1696328700; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=belzVqUXupbj+p/ftaInrev5zFhyd2pVAAHE2DEJScA=;
-        b=IiZsP55AfxbNyD0Zc7Zw/UOvQnHpKbPK0IeIcg1H3JWVtJ9JzQYPtz90g8c9mq4NYk
-         IubZebWtTh0aCHlxH/rFHBKRGHFrX2Mf9BSsDIeun3vabomYkMYymDsXm+s00cCuZL6G
-         mv8lISHgV1hOsbCoD8P3Ndt7PYHOgkDfxC+mqDmARuXEkvFAV16lSUGBndkVPfTXzhG9
-         iJWJZ8lhVqMYOqqEesAMc0J14iJglSdWQymIwPePQt2pe/qhA3WwF/UvM2It1oRS+DOP
-         YGoB55YycIlPQGmrb/CYi9rskIToKUQ71E20NawX74EUpgeLwjIIjZUhnl1J1NF/p43l
-         4fiA==
+        d=linaro.org; s=google; t=1695724073; x=1696328873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OJCY8Me/FNTd/3Q4t/OHKV9ApYCGDApYXH49P21T41E=;
+        b=y2UamL7UyTqHcDgoXFwDJD/dL9+5iptY8ripG7BDhERnhwba5BD6bmmcrKvdzAGwPe
+         p3mI+55WQS4yGZyeK4j60aYZTwl7H9AYlmEytwOddI1SaSdx0R0eieg1wPO050kv9K/u
+         Exm76J9SBAkjJJvpoqNItlmBm0Vw+WkjU3XGdnafwgKD3ZZlnhirqhYF7k4Rb7SWseUq
+         jzYw3GRZyGjjltWDrYwRGy4ipqf52uKsJ7NBPcNaJvfDofxVy6MuxWhvKqhij9rXErOt
+         O4Ss5piSUeeSFCqRhKxrSlEV+JP4Y0M6CZ08SvJJ/UmiEwmny+ByMMUBbGJPqALeAx0s
+         t93w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695723900; x=1696328700;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=belzVqUXupbj+p/ftaInrev5zFhyd2pVAAHE2DEJScA=;
-        b=HE3lF+deH7tbGqEOe+0FgDxiwJA/Ks30WqdcSaQVF7Fe/4bXzDQ+uUj9obHVUbfN3b
-         /Fgm7TsSaF5qG26ICuzo+J8juyyGEYGjLTHNefQnkArhiAWW4aaj4ZAkZZfght+WJZUf
-         2j3z9Dwm5LZnf8KTXGAErg5Q2iM7FU+KBVfHNr0+cLeOnhSiTVmYqL9PGPMC80FoRpAr
-         63/nWUfhK7fbCK1MsZnFSgbRPbSQHd1uIa5fnMSx/WvSTz51ph/LDMEXnseWRz3z5dKI
-         S571RMTJl4utnwjCDuuqTyIVp0a06or8oelTAl2uh5e5910dOeLS1+Df72l1qR4hCvd2
-         70gg==
-X-Gm-Message-State: AOJu0YzT12HmdJUh4e7s7eDXmtUQV6ugqAIaIukM+ImohFg8lxi99yb7
-        nme96K9mmta2/ouLXJL4VQ8=
-X-Google-Smtp-Source: AGHT+IE4bRabF4Tz8fVRFjoJCKeKdherUx2wMHpu1l6uFKHg1l6krNDijIoGangTlLVTiq+Cdp2VaA==
-X-Received: by 2002:a17:90a:f298:b0:269:6c5:11a7 with SMTP id fs24-20020a17090af29800b0026906c511a7mr6883549pjb.17.1695723900206;
-        Tue, 26 Sep 2023 03:25:00 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-        by smtp.gmail.com with ESMTPSA id gk15-20020a17090b118f00b00274b9dd8519sm9623829pjb.35.2023.09.26.03.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 03:24:59 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com
-Cc:     akpm@linux-foundation.org, hughd@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Subject: [PATCH] fs/hfsplus: expand s_vhdr_buf size to avoid slab oob
-Date:   Tue, 26 Sep 2023 18:24:55 +0800
-Message-ID: <20230926102454.992535-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <000000000000820e380606161640@google.com>
-References: <000000000000820e380606161640@google.com>
+        d=1e100.net; s=20230601; t=1695724073; x=1696328873;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJCY8Me/FNTd/3Q4t/OHKV9ApYCGDApYXH49P21T41E=;
+        b=elDe4gj8pobBvciizxczCdwNZ7ta2+BQRKjoBuyN2QTXAFa2sj6XF6aFO3BW+MTrvj
+         BSvcbgRGA2S+yyEKV26MpKjzuhR1wRCbI5mk7vG+d8hEJNmjRYfh3nKiw5o+NOLnZ4z/
+         fZL9qDVTgfvHSEM5EpRKXQv1u4njnkDxQISWiXs0U2VAXlJ/6f+u5QQW1qvAWWeIXr+3
+         R57de9VKw9QyfGBwrXLHRY2tCZIlGPePgnGeH1PMHcHJmmuRIgxNfFb90TXFYeB3Wu8C
+         vQp9t55SY+mqGecARRTl+rFS1HAInWj5gKQjklvEi5Qse+BTZ+KzIXjPBwhKBz+hRH87
+         XVfQ==
+X-Gm-Message-State: AOJu0Yw/wBUD65knylbjkSRlzkraOa2DUwoJu9u5v1hymIsbn7tRU1c4
+        0gM1q6Z6x41Sa1i1RS2W8S0+mw==
+X-Google-Smtp-Source: AGHT+IEhBfhnsnKLswFK75Zx3YExEbWoBKkgTmp+Z+ndOhuTFxnaoeLiVsYJaeT6i0mA9+tM65UF2Q==
+X-Received: by 2002:a17:907:760f:b0:9ad:e0fb:6edf with SMTP id jx15-20020a170907760f00b009ade0fb6edfmr3348436ejc.7.1695724073523;
+        Tue, 26 Sep 2023 03:27:53 -0700 (PDT)
+Received: from [192.168.86.24] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id mh2-20020a170906eb8200b00992b2c55c67sm7571754ejb.156.2023.09.26.03.27.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 03:27:52 -0700 (PDT)
+Message-ID: <90dffe7f-02c1-4965-8d48-1d689abc9323@linaro.org>
+Date:   Tue, 26 Sep 2023 11:27:51 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1] misc: fastrpc: Free DMA handles for RPC calls with no
+ arguments
+Content-Language: en-US
+To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        linux-arm-msm@vger.kernel.org
+Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+References: <1693463029-9311-1-git-send-email-quic_ekangupt@quicinc.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <1693463029-9311-1-git-send-email-quic_ekangupt@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory allocated to s_vhdr_buf in the function hfsplus-read_wrapper is 
-too small, resulting in a slab out of bounds issue when copying data with 
-copy_page_from_iter_atomic.
+Thanks Ekansh for this patch.
 
-When allocating memory to s_vhdr_buf, take the maximum value between 
-hfsplus_min_io_size(sb) and PAGE_SIZE to avoid similar issues.
+few comments below
 
-Reported-and-tested-by: syzbot+4a2376bc62e59406c414@syzkaller.appspotmail.com
-Signed-off-by: Edward AD <twuufnxlz@gmail.com>
----
- fs/hfsplus/wrapper.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+On 31/08/2023 07:23, Ekansh Gupta wrote:
+> The FDs for DMA handles to be freed is updated in fdlist by DSP over
 
-diff --git a/fs/hfsplus/wrapper.c b/fs/hfsplus/wrapper.c
-index 0b791adf02e5..56bee8dbe532 100644
---- a/fs/hfsplus/wrapper.c
-+++ b/fs/hfsplus/wrapper.c
-@@ -163,7 +163,7 @@ int hfsplus_read_wrapper(struct super_block *sb)
- 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(sb);
- 	struct hfsplus_wd wd;
- 	sector_t part_start, part_size;
--	u32 blocksize;
-+	u32 blocksize, bufsize;
- 	int error = 0;
- 
- 	error = -EINVAL;
-@@ -175,10 +175,11 @@ int hfsplus_read_wrapper(struct super_block *sb)
- 		goto out;
- 
- 	error = -ENOMEM;
--	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
-+	bufsize = max_t(u32, hfsplus_min_io_size(sb), PAGE_SIZE);
-+	sbi->s_vhdr_buf = kmalloc(bufsize, GFP_KERNEL);
- 	if (!sbi->s_vhdr_buf)
- 		goto out;
--	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
-+	sbi->s_backup_vhdr_buf = kmalloc(bufsize, GFP_KERNEL);
- 	if (!sbi->s_backup_vhdr_buf)
- 		goto out_free_vhdr;
- 
--- 
-2.25.1
+So the dsp is updating the fd list after invoke?
 
+
+> a remote call. This holds true even for remote calls with no
+> arguments. To handle this, get_args and put_args are needed to
+> be called for remote calls with no arguments also as fdlist
+> is allocated in get_args and FDs updated in fdlist is freed
+> in put_args.
+> 
+> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+> ---
+>   drivers/misc/fastrpc.c | 22 +++++++++-------------
+>   1 file changed, 9 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index 9666d28..e6df66e 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -1153,11 +1153,9 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+>   	if (IS_ERR(ctx))
+>   		return PTR_ERR(ctx);
+>   
+> -	if (ctx->nscalars) {
+
+Why do we need to remove this check?
+fastrpc_internal_invoke will have nscalars set before calling. and we 
+are not dealing with fdlist in fastrpc_get_args(), so am not sure what 
+this change is helping with.
+
+
+> -		err = fastrpc_get_args(kernel, ctx);
+> -		if (err)
+> -			goto bail;
+> -	}
+> +	err = fastrpc_get_args(kernel, ctx);
+> +	if (err)
+> +		goto bail;
+>   
+>   	/* make sure that all CPU memory writes are seen by DSP */
+>   	dma_wmb();
+> @@ -1181,14 +1179,12 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+>   	if (err)
+>   		goto bail;
+>   
+> -	if (ctx->nscalars) {
+> -		/* make sure that all memory writes by DSP are seen by CPU */
+> -		dma_rmb();
+> -		/* populate all the output buffers with results */
+> -		err = fastrpc_put_args(ctx, kernel);
+> -		if (err)
+> -			goto bail;
+> -	}
+> +	/* make sure that all memory writes by DSP are seen by CPU */
+> +	dma_rmb();
+> +	/* populate all the output buffers with results */
+
+A comment about fdlist here would be really useful
+
+> +	err = fastrpc_put_args(ctx, kernel);
+> +	if (err)
+> +		goto bail;
+>   
+>   bail:
+>   	if (err != -ERESTARTSYS && err != -ETIMEDOUT) {
