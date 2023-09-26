@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 979427AE58C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F747AE58E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbjIZGK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
+        id S233897AbjIZGKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbjIZGKV (ORCPT
+        with ESMTP id S233730AbjIZGKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:10:21 -0400
+        Tue, 26 Sep 2023 02:10:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE14CFE
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:09:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC023E5F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695708598; x=1727244598;
+  t=1695708604; x=1727244604;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=M9RgF+xRqLmrLbo/+CwFvgtwRRXK0bl1PRniucs7Q6Y=;
-  b=oGgjDvXnMi+/cRbCU6NeZy5czqALM41CnH+5E2M4MkXfLhuYvVNjpdCt
-   1HoG4G2iwSYTPPHjMBzCodPXSJ1d4r3zEWyhgRufHYWYx/FlAQPH3p8jr
-   Et2ZwE02CEv6F6U6E0AnLvNgy2zXO7dajgEEeEK2qJpZWezDxlm0geOXq
-   mw71LtALHvzMKVz4NjEA0osnwYhD7nhD2el6ZziaIn9IrYflm5ZMnWd7U
-   Fo0gmoC66DTjpaM8rVSW0z8Ra1rTQ1VSV7b9VCayK70lnv9viE1WSORd0
-   IaIJxd7dFubqwujXz9OVVRw+e8YIg/CbojAHx599cTnhqVgTX1qxfD3Ll
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="447991417"
+  bh=Y9KtfnCLPgA/SXtfssQyiyzVZDDHiki6dZr93OTwpTQ=;
+  b=LXGSa84Je5uepGb7AEOrLOXz5KWch/lhkQe7PtQuDbxpxUGLCkUPBMV6
+   u0foCItjsnM30MkWTkam7bT80hhV9Ah7/k2Ba4e3cCdtzg7LANlWUh5z+
+   CvCwsEqFhBhvg3CQdfO999ZTanPXu8z3eo6CK+lxP2rAi7sBQc8FAiakw
+   raqPUHiZ3Uzv6/FCBd38mbKFds6SjEWM3wXWEceorYUxHSwlBoGx2coEM
+   khIrPSFbQ4URkwwI1uphqpRHi9K7hGTiGp871hElCRdAi/Qd3QHqWM9JH
+   TLV0Hsao7XQrSMPKWEc/cRSb2T8qdkJeGgQPPaUohHFvVh2iOQmZ/7eKm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="447991452"
 X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="447991417"
+   d="scan'208";a="447991452"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 23:09:57 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 23:10:03 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="892075960"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="892076071"
 X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="892075960"
+   d="scan'208";a="892076071"
 Received: from aozhu-mobl.ccr.corp.intel.com (HELO yhuang6-mobl2.ccr.corp.intel.com) ([10.255.31.94])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 23:08:48 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 23:08:54 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Arjan Van De Ven <arjan@linux.intel.com>,
         Huang Ying <ying.huang@intel.com>,
         Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         David Hildenbrand <david@redhat.com>,
         Johannes Weiner <jweiner@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Matthew Wilcox <willy@infradead.org>,
         Christoph Lameter <cl@linux.com>
-Subject: [PATCH -V2 07/10] mm: tune PCP high automatically
-Date:   Tue, 26 Sep 2023 14:09:08 +0800
-Message-Id: <20230926060911.266511-8-ying.huang@intel.com>
+Subject: [PATCH -V2 08/10] mm, pcp: decrease PCP high if free pages < high watermark
+Date:   Tue, 26 Sep 2023 14:09:09 +0800
+Message-Id: <20230926060911.266511-9-ying.huang@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230926060911.266511-1-ying.huang@intel.com>
 References: <20230926060911.266511-1-ying.huang@intel.com>
@@ -71,330 +71,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The target to tune PCP high automatically is as follows,
+One target of PCP is to minimize pages in PCP if the system free pages
+is too few.  To reach that target, when page reclaiming is active for
+the zone (ZONE_RECLAIM_ACTIVE), we will stop increasing PCP high in
+allocating path, decrease PCP high and free some pages in freeing
+path.  But this may be too late because the background page reclaiming
+may introduce latency for some workloads.  So, in this patch, during
+page allocation we will detect whether the number of free pages of the
+zone is below high watermark.  If so, we will stop increasing PCP high
+in allocating path, decrease PCP high and free some pages in freeing
+path.  With this, we can reduce the possibility of the premature
+background page reclaiming caused by too large PCP.
 
-- Minimize allocation/freeing from/to shared zone
-
-- Minimize idle pages in PCP
-
-- Minimize pages in PCP if the system free pages is too few
-
-To reach these target, a tuning algorithm as follows is designed,
-
-- When we refill PCP via allocating from the zone, increase PCP high.
-  Because if we had larger PCP, we could avoid to allocate from the
-  zone.
-
-- In periodic vmstat updating kworker (via refresh_cpu_vm_stats()),
-  decrease PCP high to try to free possible idle PCP pages.
-
-- When page reclaiming is active for the zone, stop increasing PCP
-  high in allocating path, decrease PCP high and free some pages in
-  freeing path.
-
-So, the PCP high can be tuned to the page allocating/freeing depth of
-workloads eventually.
-
-One issue of the algorithm is that if the number of pages allocated is
-much more than that of pages freed on a CPU, the PCP high may become
-the maximal value even if the allocating/freeing depth is small.  But
-this isn't a severe issue, because there are no idle pages in this
-case.
-
-One alternative choice is to increase PCP high when we drain PCP via
-trying to free pages to the zone, but don't increase PCP high during
-PCP refilling.  This can avoid the issue above.  But if the number of
-pages allocated is much less than that of pages freed on a CPU, there
-will be many idle pages in PCP and it may be hard to free these idle
-pages.
-
-On a 2-socket Intel server with 224 logical CPU, we run 8 kbuild
-instances in parallel (each with `make -j 28`) in 8 cgroup.  This
-simulates the kbuild server that is used by 0-Day kbuild service.
-With the patch, the build time decreases 3.6%.  The cycles% of the
-spinlock contention (mostly for zone lock) decreases from 10.0% to
-0.7% (with PCP size == 361).  The number of PCP draining for high
-order pages freeing (free_high) decreases 63.4%.  The number of pages
-allocated from zone (instead of from PCP) decreases 80.4%.
+The high watermark checking is done in allocating path to reduce the
+overhead in hotter freeing path.
 
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Suggested-by: Mel Gorman <mgorman@techsingularity.net>
-Suggested-by: Michal Hocko <mhocko@suse.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Johannes Weiner <jweiner@redhat.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
 Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Christoph Lameter <cl@linux.com>
 ---
- include/linux/gfp.h |   1 +
- mm/page_alloc.c     | 118 ++++++++++++++++++++++++++++++++++----------
- mm/vmstat.c         |   8 +--
- 3 files changed, 98 insertions(+), 29 deletions(-)
+ include/linux/mmzone.h |  1 +
+ mm/page_alloc.c        | 22 ++++++++++++++++++++--
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 665edc11fb9f..5b917e5b9350 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -320,6 +320,7 @@ extern void page_frag_free(void *addr);
- #define free_page(addr) free_pages((addr), 0)
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index d6cfb5023f3e..8a19e2af89df 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1006,6 +1006,7 @@ enum zone_flags {
+ 					 * Cleared when kswapd is woken.
+ 					 */
+ 	ZONE_RECLAIM_ACTIVE,		/* kswapd may be scanning the zone. */
++	ZONE_BELOW_HIGH,		/* zone is below high watermark. */
+ };
  
- void page_alloc_init_cpuhp(void);
-+int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp);
- void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp);
- void drain_all_pages(struct zone *zone);
- void drain_local_pages(struct zone *zone);
+ static inline unsigned long zone_managed_pages(struct zone *zone)
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index df07580dbd53..0d482a55235b 100644
+index 0d482a55235b..08b74c65b88a 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -2160,6 +2160,40 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
- 	return i;
- }
+@@ -2409,7 +2409,13 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
+ 		return min(batch << 2, pcp->high);
+ 	}
  
-+/*
-+ * Called from the vmstat counter updater to decay the PCP high.
-+ * Return whether there are addition works to do.
-+ */
-+int decay_pcp_high(struct zone *zone, struct per_cpu_pages *pcp)
-+{
-+	int high_min, to_drain, batch;
-+	int todo = 0;
+-	if (pcp->count >= high && high_min != high_max) {
++	if (high_min == high_max)
++		return high;
 +
-+	high_min = READ_ONCE(pcp->high_min);
-+	batch = READ_ONCE(pcp->batch);
-+	/*
-+	 * Decrease pcp->high periodically to try to free possible
-+	 * idle PCP pages.  And, avoid to free too many pages to
-+	 * control latency.
-+	 */
-+	if (pcp->high > high_min) {
-+		pcp->high = max3(pcp->count - (batch << PCP_BATCH_SCALE_MAX),
-+				 pcp->high * 4 / 5, high_min);
-+		if (pcp->high > high_min)
-+			todo++;
-+	}
-+
-+	to_drain = pcp->count - pcp->high;
-+	if (to_drain > 0) {
-+		spin_lock(&pcp->lock);
-+		free_pcppages_bulk(zone, to_drain, pcp, 0);
-+		spin_unlock(&pcp->lock);
-+		todo++;
-+	}
-+
-+	return todo;
-+}
-+
- #ifdef CONFIG_NUMA
- /*
-  * Called from the vmstat counter updater to drain pagesets of this
-@@ -2321,14 +2355,13 @@ static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
- 	return true;
- }
- 
--static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
-+static int nr_pcp_free(struct per_cpu_pages *pcp, int batch, int high, bool free_high)
- {
- 	int min_nr_free, max_nr_free;
--	int batch = READ_ONCE(pcp->batch);
- 
--	/* Free everything if batch freeing high-order pages. */
-+	/* Free as much as possible if batch freeing high-order pages. */
- 	if (unlikely(free_high))
--		return pcp->count;
-+		return min(pcp->count, batch << PCP_BATCH_SCALE_MAX);
- 
- 	/* Check for PCP disabled or boot pageset */
- 	if (unlikely(high < batch))
-@@ -2343,7 +2376,7 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
- 	 * freeing of pages without any allocation.
- 	 */
- 	batch <<= pcp->free_factor;
--	if (batch < max_nr_free && pcp->free_factor < PCP_BATCH_SCALE_MAX)
-+	if (batch <= max_nr_free && pcp->free_factor < PCP_BATCH_SCALE_MAX)
- 		pcp->free_factor++;
- 	batch = clamp(batch, min_nr_free, max_nr_free);
- 
-@@ -2351,28 +2384,47 @@ static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
- }
- 
- static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
--		       bool free_high)
-+		       int batch, bool free_high)
- {
--	int high = READ_ONCE(pcp->high_min);
-+	int high, high_min, high_max;
- 
--	if (unlikely(!high || free_high))
-+	high_min = READ_ONCE(pcp->high_min);
-+	high_max = READ_ONCE(pcp->high_max);
-+	high = pcp->high = clamp(pcp->high, high_min, high_max);
-+
-+	if (unlikely(!high))
- 		return 0;
- 
--	if (!test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags))
--		return high;
-+	if (unlikely(free_high)) {
-+		pcp->high = max(high - (batch << PCP_BATCH_SCALE_MAX), high_min);
-+		return 0;
-+	}
- 
- 	/*
- 	 * If reclaim is active, limit the number of pages that can be
- 	 * stored on pcp lists
- 	 */
--	return min(READ_ONCE(pcp->batch) << 2, high);
-+	if (test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags)) {
++	if (test_bit(ZONE_BELOW_HIGH, &zone->flags)) {
 +		pcp->high = max(high - (batch << pcp->free_factor), high_min);
-+		return min(batch << 2, pcp->high);
-+	}
-+
-+	if (pcp->count >= high && high_min != high_max) {
-+		int need_high = (batch << pcp->free_factor) + batch;
-+
-+		/* pcp->high should be large enough to hold batch freed pages */
-+		if (pcp->high < need_high)
-+			pcp->high = clamp(need_high, high_min, high_max);
-+	}
-+
-+	return high;
- }
++		high = max(pcp->count, high_min);
++	} else if (pcp->count >= high) {
+ 		int need_high = (batch << pcp->free_factor) + batch;
  
- static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 				   struct page *page, int migratetype,
- 				   unsigned int order)
- {
--	int high;
-+	int high, batch;
- 	int pindex;
- 	bool free_high = false;
- 
-@@ -2387,6 +2439,7 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	list_add(&page->pcp_list, &pcp->lists[pindex]);
- 	pcp->count += 1 << order;
- 
-+	batch = READ_ONCE(pcp->batch);
- 	/*
- 	 * As high-order pages other than THP's stored on PCP can contribute
- 	 * to fragmentation, limit the number stored when PCP is heavily
-@@ -2397,14 +2450,15 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 		free_high = (pcp->free_factor &&
- 			     (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) &&
- 			     (!(pcp->flags & PCPF_FREE_HIGH_BATCH) ||
--			      pcp->count >= READ_ONCE(pcp->batch)));
-+			      pcp->count >= READ_ONCE(batch)));
- 		pcp->flags |= PCPF_PREV_FREE_HIGH_ORDER;
- 	} else if (pcp->flags & PCPF_PREV_FREE_HIGH_ORDER) {
- 		pcp->flags &= ~PCPF_PREV_FREE_HIGH_ORDER;
- 	}
--	high = nr_pcp_high(pcp, zone, free_high);
-+	high = nr_pcp_high(pcp, zone, batch, free_high);
+ 		/* pcp->high should be large enough to hold batch freed pages */
+@@ -2459,6 +2465,10 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
  	if (pcp->count >= high) {
--		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, free_high), pcp, pindex);
-+		free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, free_high),
-+				   pcp, pindex);
+ 		free_pcppages_bulk(zone, nr_pcp_free(pcp, batch, high, free_high),
+ 				   pcp, pindex);
++		if (test_bit(ZONE_BELOW_HIGH, &zone->flags) &&
++		    zone_watermark_ok(zone, 0, high_wmark_pages(zone),
++				      ZONE_MOVABLE, 0))
++			clear_bit(ZONE_BELOW_HIGH, &zone->flags);
  	}
  }
  
-@@ -2688,24 +2742,38 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
- 	return page;
- }
- 
--static int nr_pcp_alloc(struct per_cpu_pages *pcp, int order)
-+static int nr_pcp_alloc(struct per_cpu_pages *pcp, struct zone *zone, int order)
- {
--	int high, batch, max_nr_alloc;
-+	int high, base_batch, batch, max_nr_alloc;
-+	int high_max, high_min;
- 
--	high = READ_ONCE(pcp->high_min);
--	batch = READ_ONCE(pcp->batch);
-+	base_batch = READ_ONCE(pcp->batch);
-+	high_min = READ_ONCE(pcp->high_min);
-+	high_max = READ_ONCE(pcp->high_max);
-+	high = pcp->high = clamp(pcp->high, high_min, high_max);
- 
- 	/* Check for PCP disabled or boot pageset */
--	if (unlikely(high < batch))
-+	if (unlikely(high < base_batch))
- 		return 1;
- 
-+	if (order)
-+		batch = base_batch;
-+	else
-+		batch = (base_batch << pcp->alloc_factor);
-+
- 	/*
--	 * Double the number of pages allocated each time there is subsequent
--	 * refiling of order-0 pages without drain.
-+	 * If we had larger pcp->high, we could avoid to allocate from
-+	 * zone.
+@@ -2765,7 +2775,7 @@ static int nr_pcp_alloc(struct per_cpu_pages *pcp, struct zone *zone, int order)
+ 	 * If we had larger pcp->high, we could avoid to allocate from
+ 	 * zone.
  	 */
-+	if (high_min != high_max && !test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags))
-+		high = pcp->high = min(high + batch, high_max);
-+
+-	if (high_min != high_max && !test_bit(ZONE_RECLAIM_ACTIVE, &zone->flags))
++	if (high_min != high_max && !test_bit(ZONE_BELOW_HIGH, &zone->flags))
+ 		high = pcp->high = min(high + batch, high_max);
+ 
  	if (!order) {
--		max_nr_alloc = max(high - pcp->count - batch, batch);
--		batch <<= pcp->alloc_factor;
-+		max_nr_alloc = max(high - pcp->count - base_batch, base_batch);
-+		/*
-+		 * Double the number of pages allocated each time there is
-+		 * subsequent refiling of order-0 pages without drain.
-+		 */
- 		if (batch <= max_nr_alloc && pcp->alloc_factor < PCP_BATCH_SCALE_MAX)
- 			pcp->alloc_factor++;
- 		batch = min(batch, max_nr_alloc);
-@@ -2735,7 +2803,7 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
- 
- 	do {
- 		if (list_empty(list)) {
--			int batch = nr_pcp_alloc(pcp, order);
-+			int batch = nr_pcp_alloc(pcp, zone, order);
- 			int alloced;
- 
- 			alloced = rmqueue_bulk(zone, order,
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 00e81e99c6ee..2f716ad14168 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -814,9 +814,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
- 
- 	for_each_populated_zone(zone) {
- 		struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
--#ifdef CONFIG_NUMA
- 		struct per_cpu_pages __percpu *pcp = zone->per_cpu_pageset;
--#endif
- 
- 		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 			int v;
-@@ -832,10 +830,12 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
- #endif
+@@ -3226,6 +3236,14 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
  			}
  		}
--#ifdef CONFIG_NUMA
  
- 		if (do_pagesets) {
- 			cond_resched();
++		mark = high_wmark_pages(zone);
++		if (zone_watermark_fast(zone, order, mark,
++					ac->highest_zoneidx, alloc_flags,
++					gfp_mask))
++			goto try_this_zone;
++		else if (!test_bit(ZONE_BELOW_HIGH, &zone->flags))
++			set_bit(ZONE_BELOW_HIGH, &zone->flags);
 +
-+			changes += decay_pcp_high(zone, this_cpu_ptr(pcp));
-+#ifdef CONFIG_NUMA
- 			/*
- 			 * Deal with draining the remote pageset of this
- 			 * processor
-@@ -862,8 +862,8 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
- 				drain_zone_pages(zone, this_cpu_ptr(pcp));
- 				changes++;
- 			}
--		}
- #endif
-+		}
- 	}
- 
- 	for_each_online_pgdat(pgdat) {
+ 		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+ 		if (!zone_watermark_fast(zone, order, mark,
+ 				       ac->highest_zoneidx, alloc_flags,
 -- 
 2.39.2
 
