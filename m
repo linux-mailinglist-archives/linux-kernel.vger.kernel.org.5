@@ -2,148 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A6D7AE447
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606357AE44B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjIZDuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 23:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S231950AbjIZDxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 23:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIZDt6 (ORCPT
+        with ESMTP id S229882AbjIZDxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 23:49:58 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB26DC;
-        Mon, 25 Sep 2023 20:49:51 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c61bde0b4bso26918165ad.3;
-        Mon, 25 Sep 2023 20:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695700191; x=1696304991; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DEJeOj8lKjC24vEMGtxXTPjkSZb1cMn22NpZwCntJfk=;
-        b=fFac9oY464XPhMHqFPRygsyzvitGlbxt0VHsRE1ZN0Ur3p0blA6jWq9A7N/zS/Fs90
-         xmzqntdPbhIehP3j9QEMYPgkCybxWfcaDNzBuzfJhdzl7+5MsxoQeYoYW64hG5086uxC
-         ejkZOwSUfPjUfxIEssp8XAK+wlnXgYfZLaTO20IkH+naA2ZbRD/FgRhQJXIwZkOdFRhQ
-         MsWRMI/q9jhFPdzqXF0NyOva7XfMdpNvjlEm2Cvmm3JsMpO7NMDcwKyOMRED6c9gF0Xa
-         yDqzKg4rcdruxghAzMTG5nSy8v25m3DsHKCRV/UO+O0EyNeEgaPJcnMZ5S+EUIhl0Kb/
-         02Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695700191; x=1696304991;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DEJeOj8lKjC24vEMGtxXTPjkSZb1cMn22NpZwCntJfk=;
-        b=K3X3/Np58+1JwIXSNz5YNFvP1oI37Ue5LDt3xuh9Lbn+1nxu4yXdY/n1xrp4yWj5sx
-         PSK/NBEhNu/En24ENixn2XL1aqF1nFxZaAzIQciN6lqzAVojfD3RsD4phxzRIQTk1b8F
-         EQ80K468WWmCEkqaV1JLGdERWZ69o6wxMZ+RqKYX2wdxXdU7zTp7ciwAKJdtuPoRjm1A
-         MBjq3h3KJZCzsjKCXqhQgRtse6xZGmXmr6aBbDVcrbVNFDkpMFOQlDHNjLoxYtyqh+UH
-         ZR3Q+Mhxa6Uej9W7dtiis2JcfTTCJJ9FPkZGluyv6uI1LoMP5E43K6bsud07CsjtO8Nl
-         g0pA==
-X-Gm-Message-State: AOJu0Yx+bmgrfwyABY7lQvr8lkDb8ulFSdpRaJN0jKK7WvHO9313A6un
-        56Fs3GmXF1FzblKcx/TdpHU=
-X-Google-Smtp-Source: AGHT+IGkFMC4W+VruRHn+9YMP3Msz2kB5rnKpUAeN7n2f2Aty8bXz9HXWAe0sM149yP9SikRLZ6Uqg==
-X-Received: by 2002:a17:903:190:b0:1c6:15fc:999 with SMTP id z16-20020a170903019000b001c615fc0999mr5710128plg.45.1695700191016;
-        Mon, 25 Sep 2023 20:49:51 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id v24-20020a17090331d800b001c3267ae314sm9785441ple.156.2023.09.25.20.49.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 20:49:50 -0700 (PDT)
-Message-ID: <90dd2e2e-71ae-d8c4-5d3b-9628e7710337@gmail.com>
-Date:   Tue, 26 Sep 2023 11:49:44 +0800
+        Mon, 25 Sep 2023 23:53:05 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EA1DD
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 20:52:58 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 9D87D3200A62;
+        Mon, 25 Sep 2023 23:52:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 25 Sep 2023 23:52:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1695700374; x=1695786774; bh=n5
+        F6m7owvTyikPwb8qUq8E6SUtaRPWY4heCu/VudUyI=; b=xpr6rCnOy+rlnHBCVH
+        iC3XmoPJ7a0Qe+xqvyxOhQz4pcCWQGE0apFZ4BnRu2KhgeuOrltfJN1AozXjsukT
+        G7bU9HxYRehf1g/L5VdazF8WmkUphloNcHlXhXxNn4ck2Ec0hypXkFGYOAZgnvjJ
+        rp130MFz6t+7v3GxhAi+k71QSHV+1hlJv4aIFmpVT1JL/Y8+kOx67phU8xyLLAzN
+        WbRf8j5OY6cXWsIyQjpYoDmimJF3xd3RYpqhDuCuAwrHEYyK2Cm6y5hP3SXqSn53
+        YqYkRon8hwtHIt7Q3QXjnqN+NXR1j77wnM5I9Gkkwi08y19qhzlnGDZaMQOyLN4R
+        UJWQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695700374; x=1695786774; bh=n5F6m7owvTyik
+        Pwb8qUq8E6SUtaRPWY4heCu/VudUyI=; b=Doal7zx+qrN7JLg3BU7kNHBbpslwr
+        Uu/xPJcuBMTzoMUkDBVUcAPs9TQAR0vCsO0UZJd8wlkf+99pTbjiWpvq2yT+sU93
+        mAJyHpTbzGF8sKofb/A0IWQf5giUgnWe28z9RBUOIjqMzEx2jlbCrjP/eFiDe+TO
+        p3pidDwbJ86wDMZovKsGphg0wTlD0brL2Ex+o3HbeI6HufgLWnTX4vQMpNgWGd3O
+        2EJyHItMYcasvqhumLeGWgAL1Ow0eiEq0bJdKQQnlh7mKfGdJn1CnMDNmB/JYmHU
+        6mZXnNPqfQOTcbDixV9kkLF6Z3QTw5foPEZbYI+/nDQxWUxDOuwnhhk+w==
+X-ME-Sender: <xms:lVUSZcGNBCbpTqq3H7GBE9JjrscYWw0asMGSEkA-U_prjqm7eYVRlg>
+    <xme:lVUSZVXdLZtNUA1qPhtMw2ahZepDy0D1976_qz27EXl7hN_XGHULH71UJDgRxP1ek
+    lJckzhnMjLPWfmbyoI>
+X-ME-Received: <xmr:lVUSZWLzHf9a49IKSNBDLCBDWIq1mRjPz34GhMglATsL5d-kBxSLnwwkS4j_6Thvt5zG9CX2d-nDr-ObhyMSuvUGJaeCwl4yvkd2XuzvThaf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfhgfhffvvefuffgjkfggtgesthdtredttdertdenucfhrhhomhepufhtvghf
+    rghnucftohgvshgthhcuoehshhhrseguvghvkhgvrhhnvghlrdhioheqnecuggftrfgrth
+    htvghrnhepveelgffghfehudeitdehjeevhedthfetvdfhledutedvgeeikeeggefgudeg
+    uedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    hhrhesuggvvhhkvghrnhgvlhdrihho
+X-ME-Proxy: <xmx:lVUSZeEYpidBllSbDYpdXVY9ibpkVnptzhE0ZJ4IJRXPlObFp7S0pg>
+    <xmx:lVUSZSWCwmW50xjFX-wrscMy9Z5QFBC92QYLKN-xnk1b5QZjnPH0rw>
+    <xmx:lVUSZRNEwaW6hDbOmpvGGbfK-ZMbgijaoP6ope7A3krHbXUCsW_S6A>
+    <xmx:llUSZUcE0S1c5fJrh0FH8dkdi5RgbpTcbT8LG8CcmRd5AYeTgKVzKQ>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Sep 2023 23:52:52 -0400 (EDT)
+References: <20230918185816.1518366-1-shr@devkernel.io>
+ <20230918185816.1518366-2-shr@devkernel.io>
+ <b8d98257-ae01-4163-a4a7-ecd3dbee7325@redhat.com>
+User-agent: mu4e 1.10.1; emacs 28.2.50
+From:   Stefan Roesch <shr@devkernel.io>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/4] mm/ksm: add "smart" page scanning mode
+Date:   Mon, 25 Sep 2023 20:52:09 -0700
+In-reply-to: <b8d98257-ae01-4163-a4a7-ecd3dbee7325@redhat.com>
+Message-ID: <qvqwbkdp4mlq.fsf@devbig1114.prn1.facebook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH V2] KVM: x86/pmu: Disable vPMU if EVENTSEL_GUESTONLY bit
- doesn't exist
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Manali Shukla <manali.shukla@amd.com>
-References: <20230407085646.24809-1-likexu@tencent.com>
- <ZDA4nsyAku9B2/58@google.com>
- <6ee140c9-ccd5-9569-db17-a542a7e28d5c@gmail.com>
- <ZRIYbu4wSVW9a+8i@google.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZRIYbu4wSVW9a+8i@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/9/2023 7:31 am, Sean Christopherson wrote:
-> On Thu, Sep 14, 2023, Like Xu wrote:
->> On 7/4/2023 11:37 pm, Sean Christopherson wrote:
->>> On Fri, Apr 07, 2023, Like Xu wrote:
->> /*
->>   * The guest vPMU counter emulation depends on the EVENTSEL_GUESTONLY bit.
->>   * If this bit is present on the host, the host needs to support at least
->> the PERFCTR_CORE.
->>   */
-> 
-> ...
-> 
->>> 	/*
->>> 	 * KVM requires guest-only event support in order to isolate guest PMCs
->>> 	 * from host PMCs.  SVM doesn't provide a way to atomically load MSRs
->>> 	 * on VMRUN, and manually adjusting counts before/after VMRUN is not
->>> 	 * accurate enough to properly virtualize a PMU.
->>> 	 */
->>>
->>> But now I'm really confused, because if I'm reading the code correctly, perf
->>> invokes amd_core_hw_config() for legacy PMUs, i.e. even if PERFCTR_CORE isn't
->>> supported.  And the APM documents the host/guest bits only for "Core Performance
->>> Event-Select Registers".
->>>
->>> So either (a) GUESTONLY isn't supported on legacy CPUs and perf is relying on AMD
->>> CPUs ignoring reserved bits or (b) GUESTONLY _is_ supported on legacy PMUs and
->>> pmu_has_guestonly_mode() is checking the wrong MSR when running on older CPUs.
->>>
->>> And if (a) is true, then how on earth does KVM support vPMU when running on a
->>> legacy PMU?  Is vPMU on AMD just wildly broken?  Am I missing something?
->>>
->>
->> (a) It's true and AMD guest vPMU have only been implemented accurately with
->> the help of this GUESTONLY bit.
->>
->> There are two other scenarios worth discussing here: one is support L2 vPMU
->> on the PERFCTR_CORE+ host and this proposal is disabling it; and the other
->> case is to support AMD legacy vPMU on the PERFCTR_CORE+ host.
-> 
-> Oooh, so the really problematic case is when PERFCTR_CORE+ is supported but
-> GUESTONLY is not, in which case KVM+perf *think* they can use GUESTONLY (and
-> HOSTONLY).
-> 
-> That's a straight up KVM (as L0) bug, no?  I don't see anything in the APM that
-> suggests those bits are optional, i.e. KVM is blatantly violating AMD's architecture
-> by ignoring those bits.
 
-For L2 guest, it often doesn't see all the cpu features corresponding to the
-cpu model because KVM and VMM filter some of the capabilities. We can't say
-that the absence of these features violates spec, can we ?
+David Hildenbrand <david@redhat.com> writes:
 
-I treat it as a KVM flaw or a lack of emulation capability.
+>> +typedef u8 rmap_age_t;
+>> +
+>>   /**
+>>    * DOC: Overview
+>>    *
+>> @@ -193,6 +195,8 @@ struct ksm_stable_node {
+>>    * @node: rb node of this rmap_item in the unstable tree
+>>    * @head: pointer to stable_node heading this list in the stable tree
+>>    * @hlist: link into hlist of rmap_items hanging off that stable_node
+>> + * @age: number of scan iterations since creation
+>> + * @skip_age: skip rmap item until age reaches skip_age
+>>    */
+>>   struct ksm_rmap_item {
+>>   	struct ksm_rmap_item *rmap_list;
+>> @@ -212,6 +216,8 @@ struct ksm_rmap_item {
+>>   			struct hlist_node hlist;
+>>   		};
+>>   	};
+>> +	rmap_age_t age;
+>> +	rmap_age_t skip_age;
+>
+> I *think* of you move that after "oldchecksum", the size of the struct might not
+> necessarily increase.
+>
+> [...]
+>
+>>   +/*
+>> + * Calculate skip age for the ksm page age. The age determines how often
+>> + * de-duplicating has already been tried unsuccessfully. If the age is
+>> + * smaller, the scanning of this page is skipped for less scans.
+>> + *
+>> + * @age: rmap_item age of page
+>> + */
+>> +static unsigned int skip_age(rmap_age_t age)
+>> +{
+>> +	if (age <= 3)
+>> +		return 1;
+>> +	if (age <= 5)
+>> +		return 2;
+>> +	if (age <= 8)
+>> +		return 4;
+>> +
+>> +	return 8;
+>> +}
+>> +
+>> +/*
+>> + * Determines if a page should be skipped for the current scan.
+>> + *
+>> + * @page: page to check
+>> + * @rmap_item: associated rmap_item of page
+>> + */
+>> +static bool should_skip_rmap_item(struct page *page,
+>> +				  struct ksm_rmap_item *rmap_item)
+>> +{
+>> +	rmap_age_t age;
+>> +
+>> +	if (!ksm_smart_scan)
+>> +		return false;
+>> +
+>> +	/*
+>> +	 * Never skip pages that are already KSM; pages cmp_and_merge_page()
+>> +	 * will essentially ignore them, but we still have to process them
+>> +	 * properly.
+>> +	 */
+>> +	if (PageKsm(page))
+>> +		return false;
+>> +
+>> +	/*
+>> +	 * Smaller ages are not skipped, they need to get a chance to go
+>> +	 * through the different phases of the KSM merging.
+>> +	 */
+>
+> Sorry, had to set some time aside to think this through. Wouldn't it be cleaner
+> to just not rely on this overflow?
+>
+> Instead, we could track the page age (which we would freeze at U8_MAX) and
+> simply track how much more often we are allowed to skip.
+>
+> Something like the following (which, I am sure, is completely broken, but should
+> express what I have in mind)
+>
+>
+>
+> age = rmap_item->age;
+> if (age != U8_MAX)
+> 	rmap_item->age++;
+>
+> /*
+>  * Smaller ages are not skipped, they need to get a chance to go
+>  * through the different phases of the KSM merging.
+>  */
+> if (age < 3)
+> 	return false;
+>
+> /*
+>  * Are we still allowed to skip? If not, then don't skip it
+>  * and determine how much more often we are allowed to skip next.
+>  */
+> if (!rmap_item->remaining_skips) {
+> 	rmap_item->remaining_skips = skip_age(age);
+> 	return false;
+> }
+>
+> /* Skip this page. */
+> rmap_item->remaining_skips--;
+> remove_rmap_item_from_tree(rmap_item);
+> return true;
+>
+>
+>
+> Would that miss anything important? Was the overflow handling (and scanning more
+> often one we overflow again IIUC) important?
+>
 
-> 
-> I would rather fix KVM (as L0).  It doesn't seem _that_ hard to support, e.g.
-> modify reprogram_counter() to disable the counter if it's supposed to be silent
-> for the current mode, and reprogram all counters if EFER.SVME is toggled, and on
-> all nested transitions.
-
-I thought about that too, setting up EFER.SVME and VMRUN is still a little
-bit far away, and more micro-testing is needed to correct the behavior
-of the emulation here, considering KVM also has to support emulated ins.
-
-It's safe to say that there are no real user scenarios using vPMU in a nested
-guest, so I'm more inclined to disable it provisionally (for the sake of more
-stable tree users), enabling this feature is honestly at the end of my to-do list.
+That sounds reasonable. I'll incorporate the two suggestions in the next version.
