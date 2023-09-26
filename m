@@ -2,206 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 602677AE628
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBAD7AE62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233744AbjIZGlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        id S229748AbjIZGn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233655AbjIZGle (ORCPT
+        with ESMTP id S229685AbjIZGn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:41:34 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A573E6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:41:27 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32163c3ece5so936194f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:41:27 -0700 (PDT)
+        Tue, 26 Sep 2023 02:43:56 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0CEE6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:43:49 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3233799e7b8so86533f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695710485; x=1696315285; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ffVsp3XgCa3HFUWUSmx44KcvJBm4g8vYR0LbPrRFOWA=;
-        b=Pey6gtEWMIegUm5jPk53P85QRcWuFCtHLijxt6VipS6QtMmHnlDJHHi8rFVKSxlTMQ
-         N6vRhYdpSFcwzUuuHrMcZojBTsnfVzX3U8epyfnfosEcgsQQE9bRHDOBnXGh4R4t4ieu
-         ZUSrhhv8PUnUMAjuVnCU+CIVP2v10iQMtxqK8L6Y6QOVs+ELIkHXAIipeCatCk9fCLmE
-         MyywKsJsLjC/pUTkUrHqBUBe8z1swgAtvJLKmTFz4UBtXKTBpxGJDrAEbZhM8lz9IVST
-         6/5+2A4nMPOxUEobm/rApNepva2lE9yT4fOSDhC95L6WSsLy1LOvXQ3+/35g5DCojSB8
-         12qA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695710627; x=1696315427; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dU0wg62lr2xNjaScPCD+4bLIPZbMjKJ/swUkKHzUNCg=;
+        b=sGrWUYCBiJQXmND1bAGvoN10uLNOTnG11fEoheFBpk27R0lxWcpSQNdTlIlXVuA14U
+         j/L3o/m8qZpvMybFzIi9laK32dHgcJkrKALWQ2EsXorFZi9fh6Ky57J18JTY3saEk2Pu
+         Btn/+vtGoGc3mz8/wdghRydCI5VJ1F35fZjz7czh0ktRxrOYkiQj+vzX9xRriUtLChLU
+         CwFU7z4zoiIH7Qp4a1UKKCXo1GKTVYzKX72lfLkuUTre2YFro9MjcxggtOzajsoaxElH
+         6Nr5/vcno6qXT/WXHJZRtzWcKozd+Yk/9wnwsfRjVfHC+CeWv8gRs4UjID3sUIEMP+0t
+         tofg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695710485; x=1696315285;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffVsp3XgCa3HFUWUSmx44KcvJBm4g8vYR0LbPrRFOWA=;
-        b=RJdeCgZu0NQpD5kWywHUe0fIdiiOmQR3hMnLlMk5IGYAw0SqxX9GWkUorbCa9Gdfos
-         dWgsjHuB0RFHAWug6oSm78jmAheehdwx48pgcnJtnKuO8UDEQlNKhDtu/i3fOYK8IfeI
-         sXaBQtSSqXtpieBlXfeAzCwNnw1SSjHTBOdHX3Dsn0wRX3aZ5gZZAmpvK+b8Q0y8M+su
-         OV6myuOUroVkK/iX0VLrc6Wlg28ebykKCCv/CjTwUlzrSef3wlxkJk1j5JZheWXzSvIZ
-         CYjMa3myL1B4xnNCULMzVFe++zzcn6M3hKlHbIVHpslWh1xEXV3sVhMSCsVMekdYXUoo
-         YQFg==
-X-Gm-Message-State: AOJu0YxQNw4FOrDC6zAxnypcJAJ217GPDuqy/jMjMOhUMUKPWMDv5r9D
-        Ewrtgy2GTVRNv5NRg0oJhOm/y+pgzCa5VREKQawTEdiu
-X-Google-Smtp-Source: AGHT+IESscYEKAKNzE15oQfDIyUWfZoGqReJWnCIZkFy9ySvXdllwfCRKQnSo2oF1LCnCk+sDrji7w==
-X-Received: by 2002:adf:e7c7:0:b0:317:5f08:329f with SMTP id e7-20020adfe7c7000000b003175f08329fmr7964722wrn.1.1695710485575;
-        Mon, 25 Sep 2023 23:41:25 -0700 (PDT)
-Received: from [172.20.13.88] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id ay18-20020a5d6f12000000b003143cb109d5sm4624976wrb.14.2023.09.25.23.41.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 23:41:24 -0700 (PDT)
-Message-ID: <9eb0fa5e-5f8d-4a55-940c-5e1ec22bbfd9@kernel.dk>
-Date:   Tue, 26 Sep 2023 00:41:24 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/8] io_uring: add support for vectored futex waits
-Content-Language: en-US
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de
-References: <20230921182908.160080-1-axboe@kernel.dk>
- <20230921182908.160080-9-axboe@kernel.dk>
+        d=1e100.net; s=20230601; t=1695710627; x=1696315427;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dU0wg62lr2xNjaScPCD+4bLIPZbMjKJ/swUkKHzUNCg=;
+        b=Rzooo3t3qvNxIuRdHtBsVje7jnqnontr6AY6oLd7OGwxzJ/WeNI0BwT0VP7JPkuSc5
+         zouyT2HpWmU7awYtDIcvHDFUMvAJWv+k+V1OrYZNE/8XpOFwD7mrWN8ZvUF00BofsQb9
+         0hfwdJPo3VhC0JXrD80LJYj7T5nfMQuYq1ZxJqLe5HiliWTJY+HoY9NgdySvhXo6KYv1
+         TmX06tYar7wXTB1Nl0zoRQC+UCQFg6s2KAFagwEmjdlhqr4BQwy8PNltkhbyPLjPxu51
+         NavLa0RfZyZrzCPzwb4+6n5swv0o5f/V7lH8nB0TJcWH4FyrRILJPW1K5zcQtLVpD/B9
+         GJCw==
+X-Gm-Message-State: AOJu0YwU9WjrWGNy5G3NMDtkZ7gPUbncg1YCCyR6H6DDCVoWqgyUerWg
+        ATvhabW87evNGUAafnsn5BTUlomSLgX0z0NSIiHh5DB0
+X-Google-Smtp-Source: AGHT+IGDVncgjlr1M8g8f5L3NQijHmN4vBIf89YmGQkfQudDtKc3xid0isSrBgZT9hJ0XdBtdMlXPA==
+X-Received: by 2002:adf:fc89:0:b0:317:7238:336a with SMTP id g9-20020adffc89000000b003177238336amr6910141wrr.5.1695710627495;
+        Mon, 25 Sep 2023 23:43:47 -0700 (PDT)
+Received: from [127.0.0.1] ([45.147.210.162])
+        by smtp.gmail.com with ESMTPSA id j3-20020a5d5643000000b0032167e49619sm13758109wrw.5.2023.09.25.23.43.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 23:43:46 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230921182908.160080-9-axboe@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
+To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>, Christoph Hellwig <hch@lst.de>,
+        linux-block@vger.kernel.org
+In-Reply-To: <20230926005232.23666-1-rdunlap@infradead.org>
+References: <20230926005232.23666-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] block: fix kernel-doc for disk_force_media_change()
+Message-Id: <169571062634.577707.15764939880513654865.b4-ty@kernel.dk>
+Date:   Tue, 26 Sep 2023 00:43:46 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After discussing this one with Thomas yesterday at KR2023 I had this
-nagging feeling that something was still amiss. Took a closer look at
-it, and there is an issue with the odd case of
-futex_wait_multiple_setup() returning 1. It does so if a wakeup was
-triggered during setup. Which is fine, except then it also unqueues ALL
-the futexes at that point, which is unlike the normal wakeup path on the
-io_uring side.
 
-It'd be nice to unify those and leave the cleanup to the caller, but
-since we also re-loop in that setup handler if nobody was woken AND we
-use the futex_unqueue_multiple() to see if we were woken to begin with,
-I think it's cleaner to just note this fact in io_uring and deal with
-it.
+On Mon, 25 Sep 2023 17:52:32 -0700, Randy Dunlap wrote:
+> Drop one function parameter's kernel-doc comment since the parameter
+> was removed. This prevents a kernel-doc warning:
+> 
+> block/disk-events.c:300: warning: Excess function parameter 'events' description in 'disk_force_media_change'
+> 
+> 
 
-I'm folding in the below incremental for now. Has a few cleanups in
-there too that I spotted while doing that, the important bit is the
-->futexv_unqueued part.
+Applied, thanks!
 
-diff --git a/io_uring/futex.c b/io_uring/futex.c
-index 0c07df8668aa..8a2b0a260d5b 100644
---- a/io_uring/futex.c
-+++ b/io_uring/futex.c
-@@ -23,6 +23,7 @@ struct io_futex {
- 	unsigned long	futexv_owned;
- 	u32		futex_flags;
- 	unsigned int	futex_nr;
-+	bool		futexv_unqueued;
- };
- 
- struct io_futex_data {
-@@ -71,25 +72,21 @@ static void io_futexv_complete(struct io_kiocb *req, struct io_tw_state *ts)
- {
- 	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
- 	struct futex_vector *futexv = req->async_data;
--	struct io_ring_ctx *ctx = req->ctx;
--	int res = 0;
- 
--	io_tw_lock(ctx, ts);
-+	io_tw_lock(req->ctx, ts);
-+
-+	if (!iof->futexv_unqueued) {
-+		int res = futex_unqueue_multiple(futexv, iof->futex_nr);
- 
--	res = futex_unqueue_multiple(futexv, iof->futex_nr);
--	if (res != -1)
--		io_req_set_res(req, res, 0);
-+		if (res != -1)
-+			io_req_set_res(req, res, 0);
-+	}
- 
- 	kfree(req->async_data);
- 	req->flags &= ~REQ_F_ASYNC_DATA;
- 	__io_futex_complete(req, ts);
- }
- 
--static bool io_futexv_claimed(struct io_futex *iof)
--{
--	return test_bit(0, &iof->futexv_owned);
--}
--
- static bool io_futexv_claim(struct io_futex *iof)
- {
- 	if (test_bit(0, &iof->futexv_owned) ||
-@@ -238,6 +235,7 @@ int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 	}
- 
- 	iof->futexv_owned = 0;
-+	iof->futexv_unqueued = 0;
- 	req->flags |= REQ_F_ASYNC_DATA;
- 	req->async_data = futexv;
- 	return 0;
-@@ -278,6 +276,18 @@ int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags)
- 
- 	ret = futex_wait_multiple_setup(futexv, iof->futex_nr, &woken);
- 
-+	/*
-+	 * We got woken while setting up, let that side do the completion.
-+	 * Note that futex_wait_multiple_setup() will have unqueued all
-+	 * the futexes in this case. Mark us as having done that already,
-+	 * since this is different from normal wakeup.
-+	 */
-+	if (ret == 1) {
-+		iof->futexv_unqueued = 1;
-+		io_req_set_res(req, woken, 0);
-+		goto skip;
-+	}
-+
- 	/*
- 	 * The above call leaves us potentially non-running. This is fine
- 	 * for the sync syscall as it'll be blocking unless we already got
-@@ -287,29 +297,23 @@ int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags)
- 	__set_current_state(TASK_RUNNING);
- 
- 	/*
--	 * We got woken while setting up, let that side do the completion
-+	 * 0 return means that we successfully setup the waiters, and that
-+	 * nobody triggered a wakeup while we were doing so. If the wakeup
-+	 * happened post setup, the task_work will be run post this issue
-+	 * and under the submission lock.
- 	 */
--	if (io_futexv_claimed(iof)) {
-+	if (!ret) {
-+		hlist_add_head(&req->hash_node, &ctx->futex_list);
- skip:
- 		io_ring_submit_unlock(ctx, issue_flags);
- 		return IOU_ISSUE_SKIP_COMPLETE;
- 	}
- 
- 	/*
--	 * 0 return means that we successfully setup the waiters, and that
--	 * nobody triggered a wakeup while we were doing so. < 0 or 1 return
--	 * is either an error or we got a wakeup while setting up.
-+	 * Error case, ret is < 0. Mark the request as failed.
- 	 */
--	if (!ret) {
--		hlist_add_head(&req->hash_node, &ctx->futex_list);
--		goto skip;
--	}
--
- 	io_ring_submit_unlock(ctx, issue_flags);
--	if (ret < 0)
--		req_set_fail(req);
--	else if (woken != -1)
--		ret = woken;
-+	req_set_fail(req);
- 	io_req_set_res(req, ret, 0);
- 	kfree(futexv);
- 	req->flags &= ~REQ_F_ASYNC_DATA;
+[1/1] block: fix kernel-doc for disk_force_media_change()
+      commit: a578a25339aca38e23bb5af6e3fc6c2c51f0215c
 
+Best regards,
 -- 
 Jens Axboe
+
+
 
