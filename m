@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 781D87AEBFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81047AEC07
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbjIZL7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S234258AbjIZMAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbjIZL7E (ORCPT
+        with ESMTP id S230231AbjIZMAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:59:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1C2DE;
-        Tue, 26 Sep 2023 04:58:57 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="467831915"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="467831915"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:58:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="922395899"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="922395899"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 04:58:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andy@kernel.org>)
-        id 1ql6iI-00000000aw9-1RsA;
-        Tue, 26 Sep 2023 14:58:50 +0300
-Date:   Tue, 26 Sep 2023 14:58:50 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-mips@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFT PATCH] mtd: rawnand: ingenic: move the GPIO quirk to
- gpiolib-of.c
-Message-ID: <ZRLHeuohRgEtTLHz@smile.fi.intel.com>
-References: <20230926090623.35595-1-brgl@bgdev.pl>
+        Tue, 26 Sep 2023 08:00:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104C9EB;
+        Tue, 26 Sep 2023 05:00:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 587A3C433C7;
+        Tue, 26 Sep 2023 12:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695729642;
+        bh=/yLlFiYuhKy6EYECMYkjsNP2uduAHqwDcIglQN4WwtM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5lYBxyscJ5T8UW4xixnUUdC0+dsTjAsPGZ/CuNmD+wuWJCBj26RRMxsaeAfffWIw
+         4Unm5Yo1CitgA+o0Zg6/CBgnR06SGTHeLpN88rNR/U5MeddftfR+EKThQ0/j5lVOTQ
+         zplRC0et1dxoXzzdvsz6fAFaje5wKQUq0cVnawDYmP5S7jRfe97ybU+sDK+Sr/PsrU
+         AZZufERCbgkDPSAKNY3BZNLdSMy13YmFV/HQefNWRAnv+q+u2RrcqSxXt08x2EuAaQ
+         QXLLAHaQgMHAhdxpB8NDcbfzxxGmZ97CIVrudkpvzdrEpXHZO04Zt35ZiRi1BgVkfx
+         Pk9LYYQDYQ/kg==
+Date:   Tue, 26 Sep 2023 14:00:40 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Dhruva Gole <d-gole@ti.com>
+Cc:     Vaishnav Achath <vaishnav.a@ti.com>, linux-spi@vger.kernel.org,
+        vigneshr@ti.com, linux-kernel@vger.kernel.org, u-kumar1@ti.com
+Subject: Re: [PATCH v2] spi: omap2-mcspi: Fix hardcoded reference clock
+Message-ID: <ZRLH6JbEABFrfQMw@finisterre.sirena.org.uk>
+References: <20230926113812.30692-1-vaishnav.a@ti.com>
+ <20230926115554.4hpcgnu6wn4uurpy@dhruva>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wlaR+fo1N57A2AWz"
 Content-Disposition: inline
-In-Reply-To: <20230926090623.35595-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230926115554.4hpcgnu6wn4uurpy@dhruva>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:06:23AM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> We have a special place for OF polarity quirks in gpiolib-of.c. Let's
-> move this over there so that it doesn't pollute the driver.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
-> This is an alternative to the previous patch that instead of replacing
-> one active-low setter with another, just moves the quirk over to
-> gpiolib-of.c
 
-Much better than that in my opinion.
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
+--wlaR+fo1N57A2AWz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  drivers/gpio/gpiolib-of.c                       |  9 +++++++++
->  drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 12 ------------
->  2 files changed, 9 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-> index 5515f32cf19b..58c0bbe9d569 100644
-> --- a/drivers/gpio/gpiolib-of.c
-> +++ b/drivers/gpio/gpiolib-of.c
-> @@ -192,6 +192,15 @@ static void of_gpio_try_fixup_polarity(const struct device_node *np,
->  		 */
->  		{ "himax,hx8357",	"gpios-reset",	false },
->  		{ "himax,hx8369",	"gpios-reset",	false },
-> +		/*
-> +		 * The rb-gpios semantics was undocumented and qi,lb60 (along with
-> +		 * the ingenic driver) got it wrong. The active state encodes the
-> +		 * NAND ready state, which is high level. Since there's no signal
-> +		 * inverter on this board, it should be active-high. Let's fix that
-> +		 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
-> +		 * helper, and be consistent with what other drivers do.
-> +		 */
-> +		{ "qi,lb60",		"rb-gpios",	true },
->  #endif
->  	};
->  	unsigned int i;
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> index 6748226b8bd1..c816dc137245 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-> @@ -380,18 +380,6 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
->  		return ret;
->  	}
->  
-> -	/*
-> -	 * The rb-gpios semantics was undocumented and qi,lb60 (along with
-> -	 * the ingenic driver) got it wrong. The active state encodes the
-> -	 * NAND ready state, which is high level. Since there's no signal
-> -	 * inverter on this board, it should be active-high. Let's fix that
-> -	 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
-> -	 * helper, and be consistent with what other drivers do.
-> -	 */
-> -	if (of_machine_is_compatible("qi,lb60") &&
-> -	    gpiod_is_active_low(nand->busy_gpio))
-> -		gpiod_toggle_active_low(nand->busy_gpio);
-> -
->  	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
->  
->  	if (IS_ERR(nand->wp_gpio)) {
-> -- 
-> 2.39.2
-> 
+On Tue, Sep 26, 2023 at 05:25:54PM +0530, Dhruva Gole wrote:
+> On Sep 26, 2023 at 17:08:12 +0530, Vaishnav Achath wrote:
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > +	ctlr->max_speed_hz = mcspi->ref_clk_hz;
+> > +	ctlr->min_speed_hz = mcspi->ref_clk_hz >> 15;
 
+> nit: Can we improve on previous code by making 15 into a macro?
 
+I'll queue this for CI now, please send an incremental fix for this
+style issue with the constant.
+
+--wlaR+fo1N57A2AWz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUSx+cACgkQJNaLcl1U
+h9Du8AgAhY4Mb0c9WCdh+HMkR9VSRtrmoaJyuvRa4/PncocVjeK81RMCBYbHI8Lj
+tS+0CGQIj+/vS+R24GpjKhR4zqKageZT71xYHYVXgjyRB4n2ylX9f8lp6fMYfx/o
+R/WluvJ0/Xe97pTT7AP28oDH91gKR6VmLVAHUlG68/oO2hqPO1LNpcP+L+S55hYV
+NmEjLyRqNEvSneXWzdCINZBRTATOXZYWJZbOJU6wp5WVNUOS4npJj9myoCrOg4vD
+F6ic3PA67ygAo6kW6CPdoYrFn+Sz/MY39v2fto1yNzVtBw5M9deqwgYuVVInJ2kB
+9LlWrbPtw4jT2iAfcGizNt5g+CuwsQ==
+=U3go
+-----END PGP SIGNATURE-----
+
+--wlaR+fo1N57A2AWz--
