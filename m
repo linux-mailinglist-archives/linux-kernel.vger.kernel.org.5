@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E47DD7AF290
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9FB7AF298
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235399AbjIZSYV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 14:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
+        id S235432AbjIZSYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjIZSYT (ORCPT
+        with ESMTP id S235419AbjIZSYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:24:19 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7990910A;
-        Tue, 26 Sep 2023 11:24:12 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3a9e89fa553so647816b6e.1;
-        Tue, 26 Sep 2023 11:24:12 -0700 (PDT)
+        Tue, 26 Sep 2023 14:24:49 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495D1F3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:41 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-532c66a105bso10866957a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695752680; x=1696357480; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wRbJzVyzAsF5dK6nn+zhhFn0HQb3v3TAPzMsem2dH88=;
+        b=TJ3MJla1G9fry5m9KtsqemxPyC14x5o6FK4nXzjRPosJ9AKgzBargcHfd1bO89BNm8
+         zbUDn+90SKKQT7cZNbx952cOwlncYXTg+b9A9F22Z/5qL/X+A2CsDbCWH3sAlNn4oENL
+         IhTo6SsxIRbsLucUIFmcWSEdboNeNDv+c9v6DwXVpKyYX7i4mj8+HL6mxTurmc3xH2FM
+         2ejS8oNKS34Pl+NcBUWsKW7Tykhnaadko4+t/hnAu0qqnMh0prYhhxenmWkNT1oyJ32m
+         7EcNs70Sfp2szFoAcvExutgJiIcbcaQ+JO82eTaD1Zq6+9FJln28bBC46Edidc53ZoBV
+         oi8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695752652; x=1696357452;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z1jMRdpSdzQrDa2L4TREv6W57Utusu2tmUVuwynV3Fo=;
-        b=g3T8f0sHC8FLbHBiykGp4beqQaSbNnIgQldflljH48e29fKs0davxmV7nYDbTJ3mKy
-         UP7U0/lAJ2LqprFrr0+hJPA7ivyeHI6IVhgV0SPJO5jkolXXu39xOAw3MU2OyvlC4bmQ
-         I8LkBm01RwTHSjg8ir5qNnDgIH1qXrQDUu6l6d4t2GdRpXu4Bl1xalKZFBkcGx8BFzfH
-         BnX4/27KkHCNEO478o+rT3wDMgSons6IWJx1mr7dVK137Ah8wk6HANjQaudBSFDJ8Hyg
-         5zkfIjLGK1/aJzssuYE6j+C26Q+lVRg2JeZyANXFaS03XjnCND2sn7xfc2t91imSHhNl
-         ygig==
-X-Gm-Message-State: AOJu0YyUYbDixboNOuMzzOmXgyaJma6eD2/fROOOMVMKgn135lJujsIw
-        9vTzpNvk/+QMIcMoGE7YcZsxgEKtFIF/s/I1/D8=
-X-Google-Smtp-Source: AGHT+IEJApnyKFAVsD//6ntw+VsS6xU80ugH4FLesVFpfhfQY7QYVZANmM+g46a8zmvq9y4D85SPTRQeVGCGXaNQPvk=
-X-Received: by 2002:a05:6808:1823:b0:3ae:100d:5320 with SMTP id
- bh35-20020a056808182300b003ae100d5320mr11905031oib.2.1695752651775; Tue, 26
- Sep 2023 11:24:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695752680; x=1696357480;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wRbJzVyzAsF5dK6nn+zhhFn0HQb3v3TAPzMsem2dH88=;
+        b=kizJcxUl39zhbBcVorMX3PiZKohUuER4nzM5DFOl+674lM+OnHQWpaLODTnCtzAXCA
+         qGsVWX1/WeqN4a8cHVs5yaxGI6eIKbkeCxbzdOoKB7W1IJbkaLfiYqr+5GHzRwZqEBeF
+         gCES3kNXIVxbizJlw8EWVeSpoZX6aGPfvwZmW0sNSSkzZLYBBIpXGjXOi9JXk7WtA/vV
+         HWK9oVDROZbVWoicJCd6sgFLkofpLYUu+015b8+yv7tG0nDpqfCCJRDWbE2UkhMc/iYs
+         04T/In5b8D+C3TAd70pLCfo/B6DMjPRjjOhhVDb4tEKyX8uQkvsgNIDqWbCyK2RfQDkg
+         s/dw==
+X-Gm-Message-State: AOJu0YyuRl7pk93BjZUA9xBEdwG2BPaiIKvLn/qNkHSrhsvdt3ijkJGf
+        5xHg8/zUWHvtZe6jEgkJlZ89fA==
+X-Google-Smtp-Source: AGHT+IEvQPOXzH6evT1wU3sw4ZwK7LW3sBAWFWdrUZzq0HmG2Mrdkcf0x6ZDGIfcs2fl1PuQKAMnKg==
+X-Received: by 2002:a05:6402:176d:b0:534:7ae0:9789 with SMTP id da13-20020a056402176d00b005347ae09789mr875694edb.24.1695752679713;
+        Tue, 26 Sep 2023 11:24:39 -0700 (PDT)
+Received: from [10.167.154.1] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id f19-20020a056402151300b0053090e2afafsm7020643edw.22.2023.09.26.11.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 11:24:39 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/7] Adreno 643 + fixes
+Date:   Tue, 26 Sep 2023 20:24:35 +0200
+Message-Id: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
 MIME-Version: 1.0
-References: <20230922155336.507220-1-bgeffon@google.com> <20230922160704.511283-1-bgeffon@google.com>
-In-Reply-To: <20230922160704.511283-1-bgeffon@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 Sep 2023 20:24:00 +0200
-Message-ID: <CAJZ5v0gRmoSaP3T0s9Li3grBB6DkaXf6D_0oHdw3=-UJWjJEKA@mail.gmail.com>
-Subject: Re: [PATCH] PM: hibernate: clean up sync_read handling in snapshot_write_next
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOMhE2UC/x2NywqDMBAAf0X23IWYFF+/UnpY060uSBISLULw3
+ 116nIFhKhTOwgWmpkLmnxSJQaF9NOBXCgujfJTBGuvMaDvcYxKP1D0dUs9+JDOQoxY0mKkwzpm
+ CXzUJx7apTJm/cv4Pr/d13Zmw8BhxAAAA
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695752677; l=1165;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=EU9teWjPD7h5e92Oew+5MuXdWQG5NKBrkuAcC3oTWG8=;
+ b=pEgeFuwL0ONn3mJdwEhg/cTN76w/vQK27DzSYLvcj31+lB+ESvoYMsuidc9PHh2HmEbvyk91I
+ khKsQeAIVdrBCc48WPE1MOUH8l5idaZROwlYG37dWiV9yT2/HvWgkio
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 6:07 PM Brian Geffon <bgeffon@google.com> wrote:
->
-> In snapshot_write_next sync_read is set and unset in three different
-> spots unnecessiarly. As a result there is a subtle bug where the first
-> page after the meta data has been loaded unconditionally sets sync_read
-> to 0. If this first pfn was actually a highmem page then the returned
-> buffer will be the global "buffer," and the page needs to be loaded
-> synchronously.
->
-> That is, I'm not sure we can always assume the following to be safe:
->                 handle->buffer = get_buffer(&orig_bm, &ca);
->                 handle->sync_read = 0;
->
-> Because get_buffer can call get_highmem_page_buffer which can
-> return 'buffer'
->
-> The easiest way to address this is just set sync_read before
-> snapshot_write_next returns if handle->buffer == buffer.
->
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> Fixes: 8357376d3df2 ("[PATCH] swsusp: Improve handling of highmem")
-> Cc: stable@vger.kernel.org
+as it says on the can
 
-If you send an update of a patch, it is always better to give it a
-higher version number to avoid any possible confusion.
+drm/msm patches for Rob
+arm64 patches for linux-arm-msm
 
-> ---
->  kernel/power/snapshot.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index 190ed707ddcc..362e6bae5891 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -2780,8 +2780,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
->         if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages)
->                 return 0;
->
-> -       handle->sync_read = 1;
-> -
->         if (!handle->cur) {
->                 if (!buffer)
->                         /* This makes the buffer be freed by swsusp_free() */
-> @@ -2824,7 +2822,6 @@ int snapshot_write_next(struct snapshot_handle *handle)
->                         memory_bm_position_reset(&zero_bm);
->                         restore_pblist = NULL;
->                         handle->buffer = get_buffer(&orig_bm, &ca);
-> -                       handle->sync_read = 0;
->                         if (IS_ERR(handle->buffer))
->                                 return PTR_ERR(handle->buffer);
->                 }
-> @@ -2834,9 +2831,8 @@ int snapshot_write_next(struct snapshot_handle *handle)
->                 handle->buffer = get_buffer(&orig_bm, &ca);
->                 if (IS_ERR(handle->buffer))
->                         return PTR_ERR(handle->buffer);
-> -               if (handle->buffer != buffer)
-> -                       handle->sync_read = 0;
->         }
-> +       handle->sync_read = (handle->buffer == buffer);
->         handle->cur++;
->
->         /* Zero pages were not included in the image, memset it and move on. */
-> --
+for use with https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/25408
 
-Anyway, applied as 6.7 material with some minor edits in the subject
-and changelog.
+tested on QCM6490 (SC7280-IOT) Fairphone FP5
 
-Thanks!
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (7):
+      drm/msm/a6xx: Fix unknown speedbin case
+      drm/msm/adreno: Add ZAP firmware name to A635
+      drm/msm/adreno: Add A635 speedbin 0xac (A643)
+      arm64: dts: qcom: sc7280: Add ZAP shader support
+      arm64: dts: qcom: sc7280: Fix up GPU SIDs
+      arm64: dts: qcom: sc7280: Mark Adreno SMMU as DMA coherent
+      arm64: dts: qcom: sc7280: Add 0xac Adreno speed bin
+
+ arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |  2 ++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 26 ++++++++++++++++------
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  2 +-
+ drivers/gpu/drm/msm/adreno/adreno_device.c         |  2 ++
+ 4 files changed, 24 insertions(+), 8 deletions(-)
+---
+base-commit: 4ae73bba62a367f2314f6ce69e3085a941983d8b
+change-id: 20230926-topic-a643-a7ec9a08a3a1
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
