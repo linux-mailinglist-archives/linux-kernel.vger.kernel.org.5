@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1CA7AF218
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02E17AF264
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbjIZSDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
+        id S235546AbjIZSE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjIZSDJ (ORCPT
+        with ESMTP id S235524AbjIZSEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:03:09 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF3911F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:03:01 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-414ba610766so48441cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695751381; x=1696356181; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fG3vIfPo5yol0BVmzq+e6p47Tw2I82MeM0wmrspuJLQ=;
-        b=um0JECdhF1tycyiS8AeSMCzcHggcYXCl9Rk+bF6xkrCZCCCWaCwqrHNPcPD3pPcFtp
-         p7nUyCI/a/ia3ONcHi1BeiP/mKMSNZbdfmRddXHwOHnJvIx4Z5kBVF7jEMhFbpk00m59
-         E+ytKmAffpGvkD2p4fPiO3dxbxkd0GplfH11WSGEj7sX3MpV4oT3MrdMhGjPuzE+sLTH
-         o3eU6zx3B3Z8k+m0pjFCOR3/XeJVe7VJK1Qe3y4GYsE5r7pfExsv4qUSxPO1laZYNoZW
-         gf5l2dDhq0tRUUvVPatUTthym0PDd6NHYwPOKELxT0opKa7PFXeC5XKI5/u2taWY5inF
-         Iz7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751381; x=1696356181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fG3vIfPo5yol0BVmzq+e6p47Tw2I82MeM0wmrspuJLQ=;
-        b=IZIgtqKMw0e0gH+oAjGP1nlTPksmDsohFLy6vm/o4lGyt/nOGlmv3pIYGVjSPUmTqM
-         IS92+Hbn64AV9oZynLKJqQ+1rVhvojdKx8PXw7RrbvFytjlSqLPCuCYBd3lINVdYCd2c
-         vuIEyNmgAStWtEiKYWsWeS25Q/PcfEK+cPpa0R/Ku1wPj1QTTsEw08la5liIz6nFfKlK
-         bPbUiTG1LqULGisCw3mvWxInIABVpV3O6ruSWo302pIG61kI5eDW7oUltWqziNP5zjCc
-         kHWu+66/mfPtQ7Rjr1YBVh9hKa/f/S2h/K1uE+dXKX6jMCt16GflsMmcq87oJOayIhEr
-         daJw==
-X-Gm-Message-State: AOJu0YyzHcsfW7rsD2yQ0tU7O73EAO2VoxUvl/qeeTwAUYf1wX+vpFNS
-        Z0Nr3/H2t0yUaU3HVkDRRyjlcwC0Dmd8QbXdbN/1MQ==
-X-Google-Smtp-Source: AGHT+IGbzKHyIqDxIB8t2yyWwteM+BcXKq4YWgWnj5Ouj1SVxWO4HfwutwHdlSluuw25Lv08nSyys87kBbVOm6ArGbQ=
-X-Received: by 2002:ac8:7e8d:0:b0:403:b1d0:2f0a with SMTP id
- w13-20020ac87e8d000000b00403b1d02f0amr420630qtj.28.1695751380840; Tue, 26 Sep
- 2023 11:03:00 -0700 (PDT)
+        Tue, 26 Sep 2023 14:04:24 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2104.outbound.protection.outlook.com [40.92.49.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3335510A;
+        Tue, 26 Sep 2023 11:04:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zfkkaaqyh6M4MPbEhgl+X+KWv1jSUBI87qzFo5q1f74llCH1ci5A8xfnfEx4LYTvB+mi8xCegvQc4yWCmpfog9gTaUHCeEwDOnO9xyxQ1HEqUTWaMo16S8/oBKwC+DMNwr7wSKeHIb2Oxh1G8CKr1Uq/IEfLWJNNkMETNOJKj70qnwCx4ufeo4abWOqWKNQxBXHmSEJyH/r2x+14IfFBljzqjcXnRFlzNXY9hJqBhBLhpV80HiMUd3JEK/pg1LodkOM6TM06gWwvGMwMF9gaqWr2Lk2v61HoSB+a9i8dz8Cr54eoHSIaniRqzNrIWHKV7R2zmxFoOBiP2GOOyX5NjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RwVWlXQeoym0mywKOq9pNSsKico5ab6LLcX/fLgmsKc=;
+ b=jMsaO2cq+EWIbNhYYKNAjQfALFNkFys5/3gMFROa+DqwzkahztB1qkvsg7KjBendDzPjBsCVAAtjIjGmNQSwHWHHssFzr92l2PWDL8Hy2WaMNzdmvtnvGx9vMnMAWXyAysbVf7W98QIHXB4WnFXnbpQipkMTEoTWKK0bs47u5r8OdmoESAaLXk3IzpmAyB13QMjS+5OQ0xHd5SZP7gpKsi9GJAghKl5PNosRAhpRvH9dmBJ0+IxK2zjH8Hy2e1elaJkX39NbX+X8u9u3W2hh7a8xmmnl8KcySKCAPhSmLWbGavN5RxWP+FGcjrW7j49hsRQxDHlA7T4aRr6rTgOhUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RwVWlXQeoym0mywKOq9pNSsKico5ab6LLcX/fLgmsKc=;
+ b=o8XM9qAFgMLeT6wtS5rc9bEjU2b/zTnAv4TGY/ypdoPUH94ClDw5w0BgvFJB/mCaa8f0rp6Nmg8CKYOFT9I1EQiz1JdHNF1SsP+aUWr2oLt2duCg6dyluOKuvTiK/xT9v6h8r0n0kWVWHUerf7hfDsECS9+zdOrdJwZ+ZE6C8ZuPFG3Yzwn4Ce8L2Tq1MHvyCvdWtCr4JsPcvSTCGvQCgVUZ0mjlr7bIlAA8DEZFgpaksh1JSkUhOWZl6GYNWVza3ZAwTRRF3JLPKd2l8lLxLY1w7Rq2mby4JEeb2gC2GlWp1yzQlo6JNUHJa1MpVhZdkcyot3LacZPktmbbBu/S7A==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by PAXP193MB1629.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:13f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 18:04:15 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6813.024; Tue, 26 Sep 2023
+ 18:04:15 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     shuah@kernel.org, mic@digikod.net, brauner@kernel.org,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-riscv@lists.infradead.org,
+        bpf@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] selftests: Fix wrong TARGET in kselftest top level Makefile
+Date:   Wed, 27 Sep 2023 02:03:23 +0800
+Message-ID: <VI1P193MB0752596147F224B9F921C85199C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [Ier0yVm8oTt2wRApjFme38b5i3hVTU7C]
+X-ClientProxiedBy: AM9P193CA0005.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21e::10) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20230926180323.21921-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-References: <20230926031034.1201145-1-irogers@google.com> <f4b23e81-9a49-a3ba-d666-4b8f90e9720c@linux.intel.com>
-In-Reply-To: <f4b23e81-9a49-a3ba-d666-4b8f90e9720c@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 26 Sep 2023 11:02:49 -0700
-Message-ID: <CAP-5=fWx1EJjt8K=vKC=xyVWO+VXX=Cnb+6YOjExQaFVG4pL=A@mail.gmail.com>
-Subject: Re: [PATCH v1] perf vendor events intel: Fix broadwellde
- tma_info_system_dram_bw_use metric
-To:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Perry Taylor <perry.taylor@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|PAXP193MB1629:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61d13663-69a7-4085-66c5-08dbbebafe85
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lihTRgR9Sr4MI15Ka9DYgAztiI6JS8M9R8kNeHHgSiWGOD6CLwjqnPzla3oMZZKHt4gOLIGPynowX7M9Y3BCpscgPGFzp0tK4zMir7UEMkF49/mKgCWANTUDYtIb0HD2dZskXaLlFkusJZYCl3F7NqSt3Tewga9YsJa8BlI/DSoyAIMb3+0YKYZynaWcDvg2hUWvxM0kc0/w+jhHSKRE/el7duglX4+KW2zGEiGEyO1sC0kWTBiohkBtzyO0d3ygY3A5sBw1xheRKp88vvNDKorCbHO5yNVUKSL9izUt+j4OLlhy/aIIiE9BssakyyVL/ArenVV4EJo9zhO7yVjq/5uwiSrnxK40h+H+bNwlErLI5w4TRYZwF0CRAvEOiRihcJA/MQLVqV/t8DPF9l67cdFrMfChgnAwNlr7ZG4iZtU/dO4uDEfy7HaPXIK1zsQj3bvj/pYaJyGVmm+5/jq4DZ1akI1c+LhyJk7beOr2sopS8dsP3GF3pAiXBs5r86HZD6OpVpgsRheQBCZ+BM0Vx9JzF9a76sgJAAn4eZ3Sj7kgxq8VRZjVhndh/mDU2gAR
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pIZEGfMgfEHrNru7pYofKvThXDbVcUzHcsAxbS1Tl+BMhjkpJbjNoyFjaWUu?=
+ =?us-ascii?Q?urNluKWZmTzz1yzkstF6pV+6GIL02oU0cCq0xhttsMKpMYzWs0r+LxRDGmBV?=
+ =?us-ascii?Q?MRM0Pg0kwbpj8nX3IU6zMhHSFU+puFtmwwkLvg1dukkXtI2P3zUCnpI2WTPT?=
+ =?us-ascii?Q?VAtv0t2sg1yd6QZ1o+0OE6QOIL3KkeN3HaBGIfcaZJf6bbbM/xrenp/hOZVz?=
+ =?us-ascii?Q?kbnO/bW5Xdce+DjgY0hK7+VNE7Eai9FGOOIP6YQHUHepqEnKL8CA2TafP8E2?=
+ =?us-ascii?Q?MNdPRyPSZzf3OoMRB8J9QDGMpwbUy81K0REivp1alXnIYm2ISRZhjJaRSn7l?=
+ =?us-ascii?Q?0LW/Q6e2oQkuvGDpZdukTlLhcFYjtZjfs5qsjgx9nN8AUxhnthCacLuXItm/?=
+ =?us-ascii?Q?WqWmcgvQMeq6UDL0w8wXzFXZZCQ72DgKHk/D+db2U9KUjzsxeCZh61XMxB73?=
+ =?us-ascii?Q?6ZQ/v9CqdiTLvJpnrcU4x5ctXajI++SgNdGI8cfUQEsRdatoU0HcpCktt4z7?=
+ =?us-ascii?Q?eOrmE5nPY7EPu9H7Jq3qlnxGpHzCOQNLEvmtcggRGQXyz3AtVLeP5HCsSFtw?=
+ =?us-ascii?Q?4Qw0pzYnkG1wZeZFuxeJol/obp6IoO25lCC9KNWOZ9NQ2T8M6SRGvVE/1dqT?=
+ =?us-ascii?Q?2u4jYoy0NeXZnj2vdiO9QGMDaRbXtqYhlmxftHcr9GGuF/x/lX1voZB2cYgp?=
+ =?us-ascii?Q?01rkuNUKaBFcZCV7VGBe+hl2M8vHeaKNbbCHG2Hs/N2URQzdGY6VlOTWeKAz?=
+ =?us-ascii?Q?UsrlsVOKMYs9TfKOCeqmoxcFUZhmiCORbM+XD9Ym2Aii8e0KRs3R/gubU/ia?=
+ =?us-ascii?Q?QuE3Zc6upD25PVrJUmUBtNm7f86FaiOXiU9RJt8pvi4boltfTk+wEiqiSNSQ?=
+ =?us-ascii?Q?iZrniHoCnq8HwWO/6Jk7SbB5oGDRW54GDJmWganLz9d/VW1ZUeW660xT3jv1?=
+ =?us-ascii?Q?rSIFXwpGU7L9UUKYr8/4r5+96zckZlcAgqIMGfOUz9Lqbu5E9SIs7ILUrkVw?=
+ =?us-ascii?Q?HuMKyZG0LKAvoBrhKA0/v/thgHZg5rjS/FJ5ivlb8N7cys+UcRygJ1osDQwh?=
+ =?us-ascii?Q?oUbBluuObTvkrVqMpWnJdqQzFOlI61pEYAVIg+AUnK82MytVhKIkiA51OcOC?=
+ =?us-ascii?Q?TS/0LQk2GobL//W/UMH43YwvMeN8CGA0JZhcwHSt2uK2fBHcPLPfe1+pawkd?=
+ =?us-ascii?Q?6stuy16gPMPlT2mOsyaetg0DIz0Ni4esliPHc6a/wDZ8spYTuHizTx1eZkA?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61d13663-69a7-4085-66c5-08dbbebafe85
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 18:04:15.0017
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP193MB1629
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 7:02=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2023-09-25 11:10 p.m., Ian Rogers wrote:
-> > Broadwell-de has a consumer core and server uncore.
->
-> Besides this one, compared with the bdx-metrics.json, there is one
-> uncore metrics missed in the bdwde-metrics.json, uncore_frequency.
+The 'uevents' subdirectory does not exist in tools/testing/selftests/
+and adding 'uevents' to the TARGETS list results in the following error:
 
-You're right and I knew it related to this:
-https://github.com/intel/perfmon/blob/cddf6ebe4cc23b71a5d8bf7fa007b3e2cb706=
-c2e/scripts/create_perf_json.py#L760
-On Tigerlake UNC_CLOCK.SOCKET works fine so maybe the exclusion was an erro=
-r:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/pmu-events/arch/x86/tigerlake/uncore-other.json?h=3Dperf-tool=
-s-next
-On BDW-DE if I do the same trick as UNC_ARB and use the BDX resolution
-then that works too. So I'll fix that and send out a v2.
+make[1]: Entering directory 'xx/tools/testing/selftests/uevents'
+make[1]: *** No targets specified and no makefile found. Stop.
+make[1]: Leaving directory 'xx/tools/testing/selftests/uevents'
 
-Thanks,
-Ian
+What actually exists in tools/testing/selftests/ is the 'uevent'
+subdirectory.
 
-> > The uncore_arb PMU
-> > isn't present and the broadwellx style cbox PMU should be used
-> > instead. Fix the tma_info_system_dram_bw_use metric to use the server
-> > metric rather than client.>
-> > The associated converter script fix is in:
-> > https://github.com/intel/perfmon/pull/111
-> >
-> > Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell varian=
-t events/metrics")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
->
-> Thanks,
-> Kan
-> > ---
-> >  tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.j=
-son b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > index 8fc62b8f667d..d0ef46c9bb61 100644
-> > --- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > +++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> > @@ -652,7 +652,7 @@
-> >      },
-> >      {
-> >          "BriefDescription": "Average external Memory Bandwidth Use for=
- reads and writes [GB / sec]",
-> > -        "MetricExpr": "64 * (arb@event\\=3D0x81\\,umask\\=3D0x1@ + arb=
-@event\\=3D0x84\\,umask\\=3D0x1@) / 1e6 / duration_time / 1e3",
-> > +        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR) =
-/ 1e9 / duration_time",
-> >          "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
-> >          "MetricName": "tma_info_system_dram_bw_use",
-> >          "PublicDescription": "Average external Memory Bandwidth Use fo=
-r reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_bandwi=
-dth, tma_sq_full"
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ tools/testing/selftests/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 42806add0114..1a21d6beebc6 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -92,7 +92,7 @@ endif
+ TARGETS += tmpfs
+ TARGETS += tpm2
+ TARGETS += tty
+-TARGETS += uevents
++TARGETS += uevent
+ TARGETS += user
+ TARGETS += user_events
+ TARGETS += vDSO
+-- 
+2.39.2
+
