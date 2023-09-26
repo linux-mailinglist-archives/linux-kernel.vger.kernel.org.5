@@ -2,109 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D27AE867
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B147AE87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjIZI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 04:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        id S234079AbjIZI7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 04:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234017AbjIZI5u (ORCPT
+        with ESMTP id S234082AbjIZI7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 04:57:50 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D94DE;
-        Tue, 26 Sep 2023 01:57:44 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38Q5UgwX027575;
-        Tue, 26 Sep 2023 04:57:36 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tad5fmw64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 04:57:36 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 38Q8vZxS038827
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Sep 2023 04:57:35 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 26 Sep 2023 04:57:34 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 26 Sep 2023 04:57:33 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 26 Sep 2023 04:57:33 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.173])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38Q8vOYX024299;
-        Tue, 26 Sep 2023 04:57:29 -0400
-From:   Ramona Gradinariu <ramona.gradinariu@analog.com>
-To:     <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: [PATCH 1/1] iio: imu: adis16475.c: Add buffer padding after temp channel
-Date:   Tue, 26 Sep 2023 11:57:21 +0300
-Message-ID: <20230926085721.645687-2-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926085721.645687-1-ramona.gradinariu@analog.com>
-References: <20230926085721.645687-1-ramona.gradinariu@analog.com>
+        Tue, 26 Sep 2023 04:59:42 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5239193;
+        Tue, 26 Sep 2023 01:59:33 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c16757987fso50187731fa.3;
+        Tue, 26 Sep 2023 01:59:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695718772; x=1696323572; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDxyIanx1EgUP6RwXNa3/gfvrl1yPz037Py9AOoQmr8=;
+        b=WKi7/ymGOFSWaZbuwrF6EHR6WhETnz/bGYJgOSYxHtlypivwVwqYiMtvFjR9gmsjNk
+         zUGlmLcrkJgMYE5qtl3tYTNa3UcZTchG5P10MaXoojUNyXhc7XwLZWttJhXWZ3rLch4p
+         yyhraT1I+kAMG8d5vELgUXJUq0BcR1XS2dnijOslOF2qDsJCgt4kRmU0RTr2deGShmwi
+         I3WLuPUSwNKEWDqWYKqhWQrrmuXCm68tyEby1XbHuaO6cheCLMaS5pAirnYbmN+FrvcG
+         O5ComA2dn1/0TEiuVU2o754fICcUmjgDZdIYFmEQYFRunVTvIKNrn69yezxfWSxttRL6
+         HfMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695718772; x=1696323572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RDxyIanx1EgUP6RwXNa3/gfvrl1yPz037Py9AOoQmr8=;
+        b=C9TEGqZ3W7mn8S38KMqIRpJpud5nW7f2nUPxC74osztYX1LGSlUJ9/8E1QbmXVDbkJ
+         SNg2TEg8AmVKfln2oy1VJG88BFhGXHmlXZ2dGsdjy7VBq8Z5ty1oht5EGs9rIC0PD+P0
+         7/b9Ugh3Gq7QvIWtkg91RaV6kVLFq4AP4Ex8+LqVLsdfiYfZ3biONIlT7rUbei1AJtlc
+         ivW+6/QHwv1Et0ezehu+KoZmqwg2DJyQEMWodcIYiKCt5g+n+oI+sQvTzyL4HMNnTzvd
+         E1G7n2cHF+/zSmkCNsWPPfYTa81p+0hS9VjOa+hrmZydQTxFMqJ6Jz7r6ThYVKWIsu9B
+         TVhw==
+X-Gm-Message-State: AOJu0Yw74xbnlnrGC0F6SYTMMmfNKnwuJCBbjAhlcFsv0+dARDtFdCJN
+        h9+HZncJ1yg7FYDd480ls5U=
+X-Google-Smtp-Source: AGHT+IFcY99Qsw63+nqFSyAl4/ZRgH21dvMnWnaxUZA3NccBZXaLNtFD9rYkablw31Fpuvzev55HJA==
+X-Received: by 2002:a2e:964d:0:b0:2bf:f9b3:d335 with SMTP id z13-20020a2e964d000000b002bff9b3d335mr7914172ljh.15.1695718771564;
+        Tue, 26 Sep 2023 01:59:31 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id t6-20020a2e9c46000000b002bcda31af28sm2552580ljj.42.2023.09.26.01.59.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 01:59:31 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 11:59:28 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] spi: dt-bindings: Make "additionalProperties: true"
+ explicit
+Message-ID: <666tt3bztep2zapk7o7h2psx32z53leitd4sm6xicxlhxhf4pv@vm6e32xszxq2>
+References: <20230925212614.1974243-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: cyuIt3TLd5LGJpo49luKHn2ZPlZ3A1Iz
-X-Proofpoint-ORIG-GUID: cyuIt3TLd5LGJpo49luKHn2ZPlZ3A1Iz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- phishscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2309260078
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925212614.1974243-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The temperature channel has 16-bit storage size. We need to perform
-the padding to have the buffer elements naturally aligned in case
-the temperature channel is enabled and there are any 32-bit storage
-size channels enabled which have a scan index higher than the
-temperature channel scan index.
+On Mon, Sep 25, 2023 at 04:26:00PM -0500, Rob Herring wrote:
+> Make it explicit that child nodes have additional properties and the
+> child node schema is not complete. The complete schemas are applied
+> separately based the compatible strings.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Fixes: 8f6bc87d67c0 ("iio: imu: adis16475.c: Add delta angle and delta velocity channels")
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
----
- drivers/iio/imu/adis16475.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+For the DW APB/AHB SSI bindings:
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 00e4e09cdafb..9af07fec0d89 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1197,6 +1197,16 @@ static irqreturn_t adis16475_trigger_handler(int irq, void *p)
- 		switch (bit) {
- 		case ADIS16475_SCAN_TEMP:
- 			st->data[i++] = buffer[offset];
-+			/*
-+			 * The temperature channel has 16-bit storage size.
-+			 * We need to perform the padding to have the buffer
-+			 * elements naturally aligned in case there are any
-+			 * 32-bit storage size channels enabled which have a
-+			 * scan index higher than the temperature channel scan
-+			 * index.
-+			 */
-+			if (*indio_dev->active_scan_mask & GENMASK(ADIS16475_SCAN_DELTVEL_Z, ADIS16475_SCAN_DELTANG_X))
-+				st->data[i++] = 0;
- 			break;
- 		case ADIS16475_SCAN_DELTANG_X ... ADIS16475_SCAN_DELTVEL_Z:
- 			buff_offset = ADIS16475_SCAN_DELTANG_X;
--- 
-2.34.1
+-Serge(y)
 
+> ---
+>  .../devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml        | 2 ++
+>  .../devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml        | 2 ++
+>  Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml | 1 +
+>  Documentation/devicetree/bindings/spi/rockchip-sfc.yaml         | 2 ++
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml      | 2 ++
+>  5 files changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> index a6f34bdd1d3c..e1ab3f523ad6 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> @@ -46,6 +46,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> index 28b8ace63044..3b47b68b92cb 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> @@ -68,6 +68,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> index 9ae1611175f2..48e97e240265 100644
+> --- a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> @@ -50,6 +50,7 @@ properties:
+>  patternProperties:
+>    "@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>  
+>      properties:
+>        spi-rx-bus-width:
+> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> index 339fb39529f3..ac1503de0478 100644
+> --- a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> @@ -47,6 +47,8 @@ properties:
+>  patternProperties:
+>    "^flash@[0-3]$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> index a47cb144b09f..6348a387a21c 100644
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -160,6 +160,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> -- 
+> 2.40.1
+> 
