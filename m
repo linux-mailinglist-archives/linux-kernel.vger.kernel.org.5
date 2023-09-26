@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8939E7AE8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821537AE8A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbjIZJIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S234047AbjIZJJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjIZJI2 (ORCPT
+        with ESMTP id S231473AbjIZJJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:08:28 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D109DEB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:08:21 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38Q5wHRl013773
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:21 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tacvjvues-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:21 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 38Q98JsU026009
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:19 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 26 Sep 2023 05:08:19 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 26 Sep 2023 05:08:18 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 26 Sep 2023 05:08:18 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38Q988xN025467;
-        Tue, 26 Sep 2023 05:08:10 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH] MAINTAINERS: fix Analog Devices website link
-Date:   Tue, 26 Sep 2023 12:08:04 +0300
-Message-ID: <20230926090804.4540-1-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 26 Sep 2023 05:09:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3C6DE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:09:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1E8AC433C7;
+        Tue, 26 Sep 2023 09:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695719344;
+        bh=EQ3gw+CGyonVOw7q786V0KhKp+/HJVjFTRG5l5JaYvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iFUmShKbYw2TTaK8PyHkqDC57kWl3Df9SASr7IonCUhrk+Ap7zW38RMkv85o8lWMX
+         hxCTPDgAOaV7li130deJz5njt5VOIiilGEsxbTaSmcXvrwvQk7zKsYZp9BInQMUjmx
+         grzOYrqYU2cTBU5V+RJezvUaqrw/Cp3iWBn4ZlL4=
+Date:   Tue, 26 Sep 2023 11:09:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gary Rookard <garyrookard@fastmail.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] rtl8192e: renamed (1) mixed case variable
+Message-ID: <2023092617-skydiver-unsworn-18f8@gregkh>
+References: <20230925151157.3893-1-garyrookard@fastmail.org>
+ <20230925151157.3893-2-garyrookard@fastmail.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: RrrEOX0oCMS3OIW_x0rDTLEALCcCLo6k
-X-Proofpoint-GUID: RrrEOX0oCMS3OIW_x0rDTLEALCcCLo6k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 clxscore=1015
- phishscore=0 suspectscore=0 adultscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2309260080
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925151157.3893-2-garyrookard@fastmail.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The http://ez.analog.com/community/linux-device-drivers link is broken.
+On Mon, Sep 25, 2023 at 11:11:55AM -0400, Gary Rookard wrote:
+> Renamed (1) prototype variable that was written in mixed case.
+> HTUpdateDefaultSetting -> ht_update_default_setting
+> 
+> Linux kernel coding style "cleanup".
+> No change in runtime logic.
+> 
+> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> ---
+>  drivers/staging/rtl8192e/rtllib.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> index 5517b9df65be..1a3dd4dcad81 100644
+> --- a/drivers/staging/rtl8192e/rtllib.h
+> +++ b/drivers/staging/rtl8192e/rtllib.h
+> @@ -1807,7 +1807,7 @@ int rtllib_wx_get_rts(struct rtllib_device *ieee, struct iw_request_info *info,
+>  void HTSetConnectBwMode(struct rtllib_device *ieee,
+>  			enum ht_channel_width bandwidth,
+>  			enum ht_extchnl_offset Offset);
+> -void HTUpdateDefaultSetting(struct rtllib_device *ieee);
+> +void ht_update_default_setting(struct rtllib_device *ieee);
+>  void HTConstructCapabilityElement(struct rtllib_device *ieee,
+>  				  u8 *posHTCap, u8 *len,
+>  				  u8 isEncrypt, bool bAssoc);
+> -- 
+> 2.41.0
+> 
+> 
 
-Update website link to the new available one:
-https://ez.analog.com/linux-software-drivers
+You just broke the build?
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- MAINTAINERS | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Also, you sent 3 patches that do different things, yet have identical
+subject lines, that's obviously not correct.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b19995690904..94066240e475 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1119,7 +1119,7 @@ ANALOG DEVICES INC AD4130 DRIVER
- M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
- L:	linux-iio@vger.kernel.org
- S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
-+W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
- F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
- F:	drivers/iio/adc/ad4130.c
-@@ -1152,7 +1152,7 @@ ANALOG DEVICES INC AD74115 DRIVER
- M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
- L:	linux-iio@vger.kernel.org
- S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
-+W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml
- F:	drivers/iio/addac/ad74115.c
- 
-@@ -12818,7 +12818,7 @@ MAX31827 TEMPERATURE SWITCH DRIVER
- M:	Daniel Matyas <daniel.matyas@analog.com>
- L:	linux-hwmon@vger.kernel.org
- S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
-+W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
- F:	Documentation/hwmon/max31827.rst
- F:	drivers/hwmon/max31827.c
--- 
-2.42.0
+Please fix up and resend a v2 series.
 
+thanks,
+
+greg k-h
