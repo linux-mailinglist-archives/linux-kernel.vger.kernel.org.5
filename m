@@ -2,48 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D398D7AE6CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395287AE6D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbjIZH1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S233001AbjIZH2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbjIZH1r (ORCPT
+        with ESMTP id S229776AbjIZH2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:27:47 -0400
+        Tue, 26 Sep 2023 03:28:43 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9B8FB;
-        Tue, 26 Sep 2023 00:27:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12644E5;
+        Tue, 26 Sep 2023 00:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=C1EY996H2+nH9kVv7VeJU7gdej000u01sa7M392CTh8=; b=GgDOX9CWEbDc4YMM/aQ26SsUk2
-        b9PNZ3qRQ6wNjEp8D24yZ6pSz/DQ5m1/YwEnvv/vklPcFF5gm0sMGut4fYDXCa853VmHgFPt2DDsI
-        Gyc7MZtPtTnNdZYMJoJ/J0l4z9YT8UojXVzWfacia1N+QBRRUcrzKF/d9LD+Kl0yiAQoSgXgVqWU1
-        Xvocw4+WXqLTIH8G9ThPqN+WWHPYGyfTe0RRIAp7d6WbjXXqN9BISlhYc5K3Yt00i0/yOOkaj06ii
-        YkyyObq/BrQCFSHSN4HbNzEfnoXd8Xaza4pACStfXRAxPAEcvrAWy95GTZ3Gw7wo9RsnXSw7DKlY0
-        8woO0Dcg==;
+        bh=duR83MibJT6qlE9mMsYQ9/keQTqkbC/pWU3tvR9QgHY=; b=x/oew8DiFEvZNAtyPwobf/9MVe
+        zwg6pkQj3B6wkuUdQbtpy6crHeCzVMLUw9o5yk0T6YAC14cSl9guFm+2dq6kVvIseWyy49HSzhAd0
+        n9DmqvXigE+V7zNdAO4hac2Hb71I4Do0rI/9Y2k9++6uyn+QU2qdwIL6JzE787HQd08eGa4YUb74H
+        SEinanYFXxGPnzRDHdGrmoXRNbXiyqXI/KRt0M6oXa9TKa8rhLQuv2dljVJOUWipInIfkQM5dGgPi
+        6Gp5h3CfN1pf3b7G00+3pW13iMrmh6o8RLHtid5CrA1zf3FOXJJ4x09ujjHe5gFM2L8tLo0pQBYHQ
+        +7FHZT7A==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1ql2Tk-00FnKk-0i;
-        Tue, 26 Sep 2023 07:27:32 +0000
-Date:   Tue, 26 Sep 2023 00:27:32 -0700
+        id 1ql2Um-00FnQh-0f;
+        Tue, 26 Sep 2023 07:28:36 +0000
+Date:   Tue, 26 Sep 2023 00:28:36 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     christophe.jaillet@wanadoo.fr, bhelgaas@google.com,
-        hch@infradead.org, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com
-Subject: Re: [PATCH v2 1/1] PCI: layerscape-ep: set 64-bit DMA mask
-Message-ID: <ZRKH5CTucrT5BFwC@infradead.org>
-References: <20230922042836.3311689-1-Frank.Li@nxp.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] more s390 updates for 6.6 merge window
+Message-ID: <ZRKIJJNnOVNzyP/J@infradead.org>
+References: <20230907112743.6134-E-hca@linux.ibm.com>
+ <CAHk-=wgZP5uKXLmunUNotMo0cXhz=un5BzB_fB4zaefVR2Ex2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230922042836.3311689-1-Frank.Li@nxp.com>
+In-Reply-To: <CAHk-=wgZP5uKXLmunUNotMo0cXhz=un5BzB_fB4zaefVR2Ex2Q@mail.gmail.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -54,14 +53,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/* set 64-bit DMA mask and coherent DMA mask */
-> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+On Thu, Sep 07, 2023 at 11:02:23AM -0700, Linus Torvalds wrote:
+> On Thu, 7 Sept 2023 at 04:27, Heiko Carstens <hca@linux.ibm.com> wrote:
+> >
+> >   Note that the set_memory_xx() family comes with an int num_pages
+> >   parameter which overflows with 8TB. This could be addressed by
+> >   changing the num_pages parameter to unsigned long, however requires
+> >   to change all architectures, since the module code expects an int
+> >   parameter (see module_set_memory()).
+> 
+> Bah. We should just do this. Change the 'start' to a pointer, and
+> change the page count to 'unsigned long'.
+> 
+> Changing module_set_memory() to take the right kind of function
+> pointer looks trivial too.
+> 
+> I'm not even sure why we did that "unsigned long addr" thing, but I
+> assume it is because of our (very very _very_ old) historical
+> get_free_pages() model.
+> 
+> We should probably change get_free_pages() too, but that literally
+> goes back to linux-0.01. It's horrendously bad, but it's _very_
+> traditional, and it comes from the VM code historically using bitops
+> on the page pointers.
 
-The comment is a bit silly :)
-
-> +	if (ret)
-> +		return ret;
-
-Also no need to check the return value when setting a 64-bit mask,
-but I guess it desn't hurt here.
+Yes, please.  And maybe pick a better name for the void * returning
+version.  kmalloc_pages/kfree_pages?  or is that to close to
+kmalloc/kfree?
 
