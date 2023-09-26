@@ -2,246 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9557AEE3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2357AEE2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbjIZNcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S234811AbjIZNf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbjIZNcY (ORCPT
+        with ESMTP id S231362AbjIZNf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:32:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B70FC;
-        Tue, 26 Sep 2023 06:32:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8423BC433C7;
-        Tue, 26 Sep 2023 13:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695735136;
-        bh=UhBWE1Hzoh3LnzyM68s+fzN+7fsUlZ16T4JMNTg7gFY=;
+        Tue, 26 Sep 2023 09:35:27 -0400
+Received: from smtp-8fab.mail.infomaniak.ch (smtp-8fab.mail.infomaniak.ch [83.166.143.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8927BB4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:35:19 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Rw12X6Fv0zMqNvd;
+        Tue, 26 Sep 2023 13:35:16 +0000 (UTC)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Rw12W3Nlcz3c;
+        Tue, 26 Sep 2023 15:35:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1695735316;
+        bh=DaquuYbB+BuVAxp5Q2HGlWY0Bkt6IL6OFvGLP6jMVFc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hLFB6r+Otpn2MZYGQB6alKD3znEtWyTbAnLzUWlpAxBGVxiOvQs5jlTIqvv7mDlXi
-         bEvBUtRpPv47L37Th847/iuu4pJYb+vOCpRdSepXavowzAOsOGreH9GigBP7z80q2y
-         OlKSyoNBah7NMGAnNMfplj6IY4qRwf+Z8ijqmX6y6GAwrfrHYemaNAWfsvioN9ExXk
-         /0g7G1I8TdDfD0nb6R7ZGCoL4JG9KIwxCj+1eMJYbNrmhM96Fp4unod9r03LtZgOIo
-         b11RsoSuCOqz/4p8A6UAlW1GNklsOO1Kh/ps7gw6qBPFTbVAGl3VhULIlSlUue2ov3
-         EVdvr1i4hEfPg==
-Date:   Tue, 26 Sep 2023 14:32:12 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-        Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: media: i2c: add galaxycore,gc2145
- dt-bindings
-Message-ID: <20230926-skyline-absolute-a563a42b1220@spud>
-References: <20230926092825.819229-1-alain.volmat@foss.st.com>
- <20230926092825.819229-2-alain.volmat@foss.st.com>
+        b=J1dHxz9dgNb4jzA/X/Jtc8pqx/N2aZT8RbKWzxApbPwRjEfNmZELOc1L9c+eoK2xb
+         5y1UGmljikrxTDHSKUTvRjLXBFvrekLQj7p9dkTZvBpKr/tT4I4qoKTA2REUTjwb7v
+         56XQGSplcwptTzKKT2u3CW/6n2SJw59i/DCH6jpk=
+Date:   Tue, 26 Sep 2023 15:35:07 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Jeff Xu <jeffxu@google.com>
+Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Ben Scarlato <akhna@google.com>,
+        =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH v1 5/7] landlock: Log file-related requests
+Message-ID: <20230926.di9Esee2xahi@digikod.net>
+References: <20230921061641.273654-1-mic@digikod.net>
+ <20230921061641.273654-6-mic@digikod.net>
+ <CALmYWFubLv+yd9NWMMwt4FUdYnbghMC=GHeZm4oaSOctqnwbVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Q2CIXPIQPxlIZzB0"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230926092825.819229-2-alain.volmat@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALmYWFubLv+yd9NWMMwt4FUdYnbghMC=GHeZm4oaSOctqnwbVA@mail.gmail.com>
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 25, 2023 at 06:26:28PM -0700, Jeff Xu wrote:
+> On Wed, Sep 20, 2023 at 11:17 PM Mickaël Salaün <mic@digikod.net> wrote:
+> >
+> > Add audit support for mkdir, mknod, symlink, unlink, rmdir, truncate,
+> > and open requests.
+> >
+> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > ---
+> >  security/landlock/audit.c | 114 ++++++++++++++++++++++++++++++++++++++
+> >  security/landlock/audit.h |  32 +++++++++++
+> >  security/landlock/fs.c    |  62 ++++++++++++++++++---
+> >  3 files changed, 199 insertions(+), 9 deletions(-)
+> >
 
---Q2CIXPIQPxlIZzB0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > +static void
+> > +log_request(const int error, struct landlock_request *const request,
+> > +           const struct landlock_ruleset *const domain,
+> > +           const access_mask_t access_request,
+> > +           const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > +{
+> > +       struct audit_buffer *ab;
+> > +
+> > +       if (WARN_ON_ONCE(!error))
+> > +               return;
+> > +       if (WARN_ON_ONCE(!request))
+> > +               return;
+> > +       if (WARN_ON_ONCE(!domain || !domain->hierarchy))
+> > +               return;
+> > +
+> > +       /* Uses GFP_ATOMIC to not sleep. */
+> > +       ab = audit_log_start(audit_context(), GFP_ATOMIC | __GFP_NOWARN,
+> > +                            AUDIT_LANDLOCK);
+> > +       if (!ab)
+> > +               return;
+> > +
+> > +       update_request(request, domain, access_request, layer_masks);
+> > +
+> > +       log_task(ab);
+> > +       audit_log_format(ab, " domain=%llu op=%s errno=%d missing-fs-accesses=",
+> > +                        request->youngest_domain,
+> > +                        op_to_string(request->operation), -error);
+> > +       log_accesses(ab, request->missing_access);
+> > +       audit_log_lsm_data(ab, &request->audit);
+> > +       audit_log_end(ab);
+> > +}
+> > +
+> > +// TODO: Make it generic, not FS-centric.
+> > +int landlock_log_request(
+> > +       const int error, struct landlock_request *const request,
+> > +       const struct landlock_ruleset *const domain,
+> > +       const access_mask_t access_request,
+> > +       const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > +{
+> > +       /* No need to log the access request, only the missing accesses. */
+> > +       log_request(error, request, domain, access_request, layer_masks);
+> > +       return error;
+> > +}
 
-Hey Alain,
+> > @@ -636,7 +638,8 @@ static bool is_access_to_paths_allowed(
+> >  }
+> >
+> >  static int current_check_access_path(const struct path *const path,
+> > -                                    access_mask_t access_request)
+> > +                                    access_mask_t access_request,
+> > +                                    struct landlock_request *const request)
+> >  {
+> >         const struct landlock_ruleset *const dom =
+> >                 landlock_get_current_domain();
+> > @@ -650,7 +653,10 @@ static int current_check_access_path(const struct path *const path,
+> >                                        NULL, 0, NULL, NULL))
+> >                 return 0;
+> >
+> > -       return -EACCES;
+> > +       request->audit.type = LSM_AUDIT_DATA_PATH;
+> > +       request->audit.u.path = *path;
+> > +       return landlock_log_request(-EACCES, request, dom, access_request,
+> > +                                   &layer_masks);
+> 
+> It might be more readable to let landlock_log_request return void.
+> Then the code will look like below.
+> 
+> landlock_log_request(-EACCES, request, dom, access_request,  &layer_masks);
+> return -EACCES;
+> 
+> The allow/deny logic will be in this function, i.e. reader
+> doesn't need to check landlock_log_request's implementation to find
+> out it never returns 0.
 
-On Tue, Sep 26, 2023 at 11:28:19AM +0200, Alain Volmat wrote:
-> Introduction of the Galaxy Core GC2145 XVGA CMOS camera sensor.
->=20
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> ---
->  .../bindings/media/i2c/galaxycore,gc2145.yaml | 108 ++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+I did that in an early version of this patch, but I finally choose to write
+'return lanlock_log_request();` for mainly two reasons:
+* to help not forget to call this function at any non-zero return values
+  (which can easily be checked with grep),
+* to do tail calls.
 
-AFAIU, changes to the vendor-prefixes file are done as standalone
-patches.
+I guess compiler should be smart enough to do tail calls with a variable
+set indirection, but I'd like to check that.
 
->  2 files changed, 110 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycor=
-e,gc2145.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc214=
-5.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-> new file mode 100644
-> index 000000000000..e80b581498fc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/galaxycore,gc2145.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Galaxy Core 1/5'' UXGA CMOS Image Sensor
-> +
-> +maintainers:
-> +  - Alain Volmat <alain.volmat@foss.st.com>
-> +
-> +description: |
+To make it easier to read (and to not forget returning the error), the
+landlock_log_request() calls a void log_request() helper, and returns
+the error itself. It is then easy to review and know what's happening
+without reading log_request().
 
-This | seems unneeded as you have no formatting to preserve.
+I'd like the compiler to check itself that every LSM hook returned
+values are either 0 or comming from landlock_log_request() but I think
+it's not possible right now. Coccinelle might help here though.
 
-> +  The Galaxy Core GC2145 is a high quality 2 Mega CMOS image sensor, for=
- mobile
-> +  phone camera applications and digital camera products. GC2145 incorpor=
-ates a
-> +  1616V x 1232H active pixel array, on-chip 10-bit ADC, and image signal
-> +  processor. It is programmable through an I2C interface. Image data is =
-sent
-> +  either through a parallel interface or through MIPI CSI-2.
-> +
-> +allOf:
-> +  - $ref: ../video-interface-devices.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: galaxycore,gc2145
-> +
-> +  reg:
-> +    enum:
-> +      - 0x3c
-
-If this is the only permitted address, this should be a const, rather
-than an enum, no? Are you expecting the list to grow?
-
-> +
-> +  clocks:
-> +    description: Reference to the xclk clock.
-> +    maxItems: 1
-> +
-> +  powerdown-gpios:
-> +    description: GPIO descriptor for the powerdown pin.
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description: GPIO descriptor for the reset pin.
-> +    maxItems: 1
-
-Where you only have a single entry, a lot of these descriptions are
-superfluous.
-
-Generally, this looks pretty good to me.
-
-Thanks,
-Conor.
-
-> +
-> +  IOVDD-supply:
-> +    description: Power Supply for I/O circuits (1.7 - 3V).
-> +
-> +  AVDD-supply:
-> +    description: Power for analog circuit/sensor array (2.7 - 3V).
-> +
-> +  DVDD-supply:
-> +    description: Power for digital core (1.7 - 1.9V).
-> +
-> +  orientation: true
-> +
-> +  rotation: true
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +        unevaluatedProperties: false
-> +
-> +    required:
-> +      - endpoint
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - powerdown-gpios
-> +  - reset-gpios
-> +  - IOVDD-supply
-> +  - AVDD-supply
-> +  - DVDD-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c5 {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        gc2145@3c {
-> +            compatible =3D "galaxycore,gc2145";
-> +            reg =3D <0x3c>;
-> +            clocks =3D <&clk_ext_camera>;
-> +            IOVDD-supply =3D <&scmi_v3v3_sw>;
-> +            AVDD-supply =3D <&scmi_v3v3_sw>;
-> +            DVDD-supply =3D <&scmi_v3v3_sw>;
-> +            powerdown-gpios =3D <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUS=
-H_PULL)>;
-> +            reset-gpios =3D <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PU=
-LL)>;
-> +
-> +            port {
-> +                endpoint {
-> +                    remote-endpoint =3D <&mipid02_0>;
-> +                    data-lanes =3D <1 2>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
-umentation/devicetree/bindings/vendor-prefixes.yaml
-> index 573578db9509..d9df03bba5bb 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -494,6 +494,8 @@ patternProperties:
->      description: Fujitsu Ltd.
->    "^fxtec,.*":
->      description: FX Technology Ltd.
-> +  "^galaxycore,.*":
-> +    description: Galaxy Core Inc.
->    "^gardena,.*":
->      description: GARDENA GmbH
->    "^gateworks,.*":
-> --=20
-> 2.25.1
->=20
-
---Q2CIXPIQPxlIZzB0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLdXAAKCRB4tDGHoIJi
-0kqMAP0QWoaRdvEPv30Qv/ugA/+Zl/2iLS3E4Wrn0OV0tPD43wD+J7Df5bEQ4Edn
-OTpv59DRPn0rPZ8eAn6hhwdPULmHYgo=
-=p/G0
------END PGP SIGNATURE-----
-
---Q2CIXPIQPxlIZzB0--
+BTW, in a next version, we might have landlock_log_request() called even
+for allowed requests (i.e. returned value of 0).
