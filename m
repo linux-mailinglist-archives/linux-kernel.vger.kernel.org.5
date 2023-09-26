@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3D77AEAA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7E37AEAA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbjIZKmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
+        id S234431AbjIZKpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234430AbjIZKmq (ORCPT
+        with ESMTP id S234225AbjIZKpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:42:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FDE95;
-        Tue, 26 Sep 2023 03:42:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 043DCC433C7;
-        Tue, 26 Sep 2023 10:42:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695724959;
-        bh=uOv8PdrWtsLNihg1nOXjcyj4Z/6c0nVcQrp6ZYTtk2g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hHDVXVkJiaCH4ZTxAV3DGAcW+S2qikUXsr1qgSFP9PELvW+xi+lg0kJ7lGtQCcqYl
-         +/hU/c8MG5TXbiQZW3/pqTaHZrq+bAf5jrYEDAU4n4IOOqGbeYnc1lqDDIyQ1E2TEQ
-         USJmnGLwY6v9LdodPgMvUa224AI/1/jPjv458fNGlDG/d8TS15vRlKaRtq5zdtUg8E
-         kv5O7iuLCQQQDWFiHhyC/TDmIOokceUorcCUHnY+zgPiTtd7qyK4FGdeHIw3Bcf8YT
-         gwgHuWMR38mXyMsYevg/yK6ZYiIOq36yTjTBt6naKl3PK+RmBcF+Q/BoZKAd1CYLye
-         SurYRxYIqgGpQ==
-Date:   Tue, 26 Sep 2023 12:42:25 +0200
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 1/3] ARM: dts: qcom: sdx65: correct PCIe EP
- phy-names
-Message-ID: <20230926104225.GA6393@thinkpad>
-References: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230924183103.49487-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 06:45:10 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD4095;
+        Tue, 26 Sep 2023 03:45:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c451541f23so63396655ad.2;
+        Tue, 26 Sep 2023 03:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695725102; x=1696329902; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5OFg+CmpolgvCX6g/gLLkrhmgtpJ8DW+NkLUPpc1HfQ=;
+        b=hS7WywrLOjii72nUfCjhQ10/vX8QPEfVHji69BkdbiJJdHzuPwK0hFAn8HEIYSB5GX
+         9dauTFjTQxlo/5eg+8Kqn+YrMWh/kIe7joCI2dXpmBON8j4Rd6KrE57jJ0o+XvxnE4uB
+         eQGCvPMowuHYCo+OiTy/BL2BuFilNu4fA64oB1FvEV/lvwhHQKG4E+/tYlESYXJbuHta
+         WbbqsPCBrCSM8iGc6Dl6LkgTxLf8KNzBBJBWwK4mX0DErlSFvwYc5VdnJRVhC7CFmjD+
+         mbVSgnoDnFsEHrQzHlNxIlp9iIYGcnvrsjLjW3+s9mjgIZkFJs7YdR7xnxKsacWExKKw
+         DAyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695725102; x=1696329902;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5OFg+CmpolgvCX6g/gLLkrhmgtpJ8DW+NkLUPpc1HfQ=;
+        b=QVKzOe1qWRsSuvuUipWL8gCN5sB97X3x0YPjciLilijhgXNXOOEkQNJySUDlZQgKYN
+         JqHoxSRcbb5kdxdgTWMW1Bxm5KRvhNE3mBNKl5sow1GHywWozuoTn/76+5Cp4s0F855R
+         hsLIWxrFlGZYm7wTOu6vtTNObSacsZPJauOAYbXmNQYhMoQuqF1eyIXl/PT5T9knq+1y
+         Rxrc3mow5xQ0f9bsx1bkejYMBvr46G5ai5xENirO7SWqbhpv1H3VM6y6S9sVRpCq7oZ3
+         6zpVzO/tk7tqYkWN1yFy39nVYvi9sUV3/hFrs9eeWaTyPlJl4ldg4Dgrg45MQoVbVqpF
+         OQLQ==
+X-Gm-Message-State: AOJu0YzCct/UFODDG7zo9/IDd9Me621omPa8qYTqcqZDU9NR24m1HwFz
+        hRBQ1MmZMR9JJlc+LvB/9Cg=
+X-Google-Smtp-Source: AGHT+IG2Lyf2d4NWF2kkBCFKcr7v9xw7gqIca+Iq8O6LajQjKy8qgbZeoUAI6zEGd2p40qqg6XSM2w==
+X-Received: by 2002:a17:90a:f10b:b0:274:98c4:b6e8 with SMTP id cc11-20020a17090af10b00b0027498c4b6e8mr6647036pjb.5.1695725102251;
+        Tue, 26 Sep 2023 03:45:02 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id gw7-20020a17090b0a4700b00273f65fa424sm9732257pjb.8.2023.09.26.03.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 03:45:01 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     3chas3@gmail.com, davem@davemloft.net
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] atm: solos-pci: Fix potential deadlock on &cli_queue_lock and &tx_queue_lock
+Date:   Tue, 26 Sep 2023 10:44:42 +0000
+Message-Id: <20230926104442.8684-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 08:31:01PM +0200, Krzysztof Kozlowski wrote:
-> Qualcomm PCIe endpoint bindings expect phy-names to be "pciephy":
-> 
->   arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dtb: pcie-ep@1c00000: phy-names:0: 'pciephy' was expected
-> 
-> Fixes: 9c0bb38414a4 ("ARM: dts: qcom: sdx65: Add support for PCIe EP")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+As &card->cli_queue_lock and &card->tx_queue_lock are acquired under
+softirq context along the following call chain from solos_bh(), other
+acquisition of the same lock inside process context should disable
+at least bh to avoid double lock.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+<deadlock #1>
+console_show()
+--> spin_lock(&card->cli_queue_lock)
+<interrupt>
+   --> solos_bh()
+   --> spin_lock(&card->cli_queue_lock)
 
-- Mani
+<deadlock #2>
+pclose()
+--> spin_lock(&card->tx_queue_lock)
+<interrupt>
+   --> solos_bh()
+   --> fpga_tx()
+   --> spin_lock(&card->tx_queue_lock)
 
-> ---
->  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-> index dd711484dfc9..c9790217320b 100644
-> --- a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-> +++ b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-> @@ -337,7 +337,7 @@ pcie_ep: pcie-ep@1c00000 {
->  			power-domains = <&gcc PCIE_GDSC>;
->  
->  			phys = <&pcie_phy>;
-> -			phy-names = "pcie-phy";
-> +			phy-names = "pciephy";
->  
->  			max-link-speed = <3>;
->  			num-lanes = <2>;
-> -- 
-> 2.34.1
-> 
+This flaw was found by an experimental static analysis tool I am
+developing for irq-related deadlock.
 
+To prevent the potential deadlock, the patch uses spin_lock_irqsave()
+on the two locks under process context code consistently to prevent
+the possible deadlock scenario.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+---
+ drivers/atm/solos-pci.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
+index 94fbc3abe60e..247e9200e312 100644
+--- a/drivers/atm/solos-pci.c
++++ b/drivers/atm/solos-pci.c
+@@ -447,11 +447,12 @@ static ssize_t console_show(struct device *dev, struct device_attribute *attr,
+ 	struct atm_dev *atmdev = container_of(dev, struct atm_dev, class_dev);
+ 	struct solos_card *card = atmdev->dev_data;
+ 	struct sk_buff *skb;
++	unsigned long flags;
+ 	unsigned int len;
+ 
+-	spin_lock(&card->cli_queue_lock);
++	spin_lock_irqsave(&card->cli_queue_lock, flags);
+ 	skb = skb_dequeue(&card->cli_queue[SOLOS_CHAN(atmdev)]);
+-	spin_unlock(&card->cli_queue_lock);
++	spin_unlock_irqrestore(&card->cli_queue_lock, flags);
+ 	if(skb == NULL)
+ 		return sprintf(buf, "No data.\n");
+ 
+@@ -954,16 +955,17 @@ static void pclose(struct atm_vcc *vcc)
+ 	unsigned char port = SOLOS_CHAN(vcc->dev);
+ 	struct sk_buff *skb, *tmpskb;
+ 	struct pkt_hdr *header;
++	unsigned long flags;
+ 
+ 	/* Remove any yet-to-be-transmitted packets from the pending queue */
+-	spin_lock(&card->tx_queue_lock);
++	spin_lock_irqsave(&card->tx_queue_lock, flags);
+ 	skb_queue_walk_safe(&card->tx_queue[port], skb, tmpskb) {
+ 		if (SKB_CB(skb)->vcc == vcc) {
+ 			skb_unlink(skb, &card->tx_queue[port]);
+ 			solos_pop(vcc, skb);
+ 		}
+ 	}
+-	spin_unlock(&card->tx_queue_lock);
++	spin_unlock_irqrestore(&card->tx_queue_lock, flags);
+ 
+ 	skb = alloc_skb(sizeof(*header), GFP_KERNEL);
+ 	if (!skb) {
 -- 
-மணிவண்ணன் சதாசிவம்
+2.17.1
+
