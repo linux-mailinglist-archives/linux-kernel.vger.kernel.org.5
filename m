@@ -2,121 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C87A7AEE2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32EC7AEE41
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbjIZNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
+        id S234892AbjIZNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbjIZNuV (ORCPT
+        with ESMTP id S234882AbjIZNuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:50:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256EAFC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695736170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4C56luI1yIvwRHDpHVufftdIhQx84xtyzzNY7vJ9hCY=;
-        b=ik7uR6+R1gX0gvFYv6/T614hnY2BfAM/9LxaU6fhIsrpUcFMSR6738e80PK7apJ+tTefHA
-        2E7WKOsPbvO8iJM7rdoGmXvjkM1tdNBZgdWHJHuAOB59d4IuXcn+MQ2P8GNvPdvj4glRSe
-        X/k6Wz7arA9xjg+CIv4TL4BQxzKiW0U=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-SzBPXEvbOC66do4YuxTdjA-1; Tue, 26 Sep 2023 09:49:28 -0400
-X-MC-Unique: SzBPXEvbOC66do4YuxTdjA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7740b1868d5so1745626985a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:49:28 -0700 (PDT)
+        Tue, 26 Sep 2023 09:50:10 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE33CF3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:50:02 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4053cb57f02so77179845e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695736201; x=1696341001; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRs3HHfGHaH5W3/uj1x1VaVTGyeeNQR7KwXCiLuCrmM=;
+        b=bz7BUBGI6h61JBq7BxRn1D+HQiufLhNn2a2hvsJ4pr1rTZNqiOQ6xWB8MGtNINuY26
+         ofOqJ/Zq00wEW4hDfz9MuhaT/uj8dBtcw0i4kXr2JNN/DTTVU6wN1zAys0p4ZOtzz4Q+
+         9MI64iukHtMbuB7iXu4FTVIv3IjNrgEkNj3zcF/74MtSrgzWtP6eR6wODi9/CpGsBrai
+         qsSuA0IGwcCzaGMHyIA1SphmKJff+wnUp8sVheWvfR3yP7jZzf5af59UT2iFslxg87C4
+         ueY2oHMa3JAPt4q239D51f5HuxZ2CKlLJuGLxmLrZBk3EgT01JnCpkUn6ApZTb3qzi0e
+         XMIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695736168; x=1696340968;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4C56luI1yIvwRHDpHVufftdIhQx84xtyzzNY7vJ9hCY=;
-        b=PTeuUv1rPZ8qSzV+WJ/Tf6mQcswxA2PL5jbthIhEkNUktbZ+/wof90KT8QzFq+HRR7
-         0wsNCIqV+fQYFHdWKUzaitBujFgdz9knukvDemf4drSNEJvZ3a+wGbP2tpJD95RkMOFd
-         vI29WJG4iD3uYrs1swf1OkA29ryka+naJ9qH8ORvpYfKO38HXvBwmm3KyUO+E3xJafCT
-         lx+CTG0Y2yda2OPS2MwQfRwtc8Mwg7O2/576/zO+uthHkPTjxwVAElV2I06M0hrWJNUH
-         HibxEDdILbUeoKmHy1lTkllCHBOdwtBa2lB4Q2Oxt7b24WF0zGhi+whMC585THUAcQNL
-         9TWw==
-X-Gm-Message-State: AOJu0YwiZ1GeH7tfgHz2u63hY7bxC8czzgP3gIRYC+8nBlfFV30gL4rQ
-        V2h7qfjMu6Ps8oI63wsQG+NSD/YqBmDZYuXJlOYt+pQ8at9DXbLTfQq+01Tda7Ynjs4zDE+lc28
-        SVY0x/bK+3MyasKOFrYbIZTr6
-X-Received: by 2002:a05:620a:3185:b0:76f:16e9:be92 with SMTP id bi5-20020a05620a318500b0076f16e9be92mr10457492qkb.11.1695736168067;
-        Tue, 26 Sep 2023 06:49:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHYE4YAAY6cD1EUMifGhcYtTpFNaHQT4dZG6CtdR8jUzS5BwIFbjf0iNXU63ERpz4ZAYZJVsw==
-X-Received: by 2002:a05:620a:3185:b0:76f:16e9:be92 with SMTP id bi5-20020a05620a318500b0076f16e9be92mr10457476qkb.11.1695736167799;
-        Tue, 26 Sep 2023 06:49:27 -0700 (PDT)
-Received: from [10.16.200.42] (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id m19-20020ae9e713000000b0076c8fd39407sm1719099qka.113.2023.09.26.06.49.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 06:49:26 -0700 (PDT)
-Message-ID: <b965d53c-2c01-832c-736c-f7db8d4217cd@redhat.com>
-Date:   Tue, 26 Sep 2023 09:49:25 -0400
+        d=1e100.net; s=20230601; t=1695736201; x=1696341001;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cRs3HHfGHaH5W3/uj1x1VaVTGyeeNQR7KwXCiLuCrmM=;
+        b=WG62T5snGOb8MleBd6gmbPzcEmKvB26KsRromKcN6PS1JU9N5Exl2Mp2xHF7r5ingJ
+         8YfXc5Iq55OeO31aYDvehQK3ZIBuK1r2kRpt5VORLmrcFNn8JIX+1Ue1JjihE9k7GerM
+         ScXb/8WJO46sRzAQ2v9hYrJ6gOjxrelOoayWdbBp5xNO9L1i5h9GsqiHREK7ySmKRXee
+         UsMkg0A7cuVwSiwkL3AoX+1TUejmE4KlEKeCJZ2b2jhCuVf7aUqyHUnFsntJ1WLtomts
+         2xz6uvsnHE9ZH6fxLMZMtNyDyPLYlcRmgUO0Q3a4BVkOOB/7mgoPoUfOGahYgbe13us5
+         CfvQ==
+X-Gm-Message-State: AOJu0YzbZrbEKhYSMr71rDVUa8t+G3yTflFhln+9YxdSL5vBDNkov9Wi
+        ilZRPdm3CYmPL8X6LfAkcE0IzA==
+X-Google-Smtp-Source: AGHT+IF91hGN1iRDS8YgIh/vPtUJ+zpofgOyE21tn2k4Y0dzzbVuW2uJnDRcsiLSCzeUbXQdNsr/9Q==
+X-Received: by 2002:a5d:4fc9:0:b0:31a:dc2e:2db2 with SMTP id h9-20020a5d4fc9000000b0031adc2e2db2mr9310520wrw.49.1695736200924;
+        Tue, 26 Sep 2023 06:50:00 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id o11-20020a056000010b00b0031c52e81490sm14821340wrx.72.2023.09.26.06.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 06:50:00 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 16:49:57 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sebastian Ott <sebott@redhat.com>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] binfmt_elf: Support segments with 0 filesz and
+ misaligned starts
+Message-ID: <60c7fdeb-da32-4d21-9e34-368050224d6c@kadam.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: SPDX: Appletalk FW license in the kernel
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Miller <davem@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, jschlst@samba.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-spdx@vger.kernel.org
-References: <6100798b-ab1d-262a-fd5b-435d6dfc4a53@redhat.com>
- <ZRKJa+cMsFxiizKb@infradead.org> <2023092606-fiction-finlike-97a5@gregkh>
-From:   Prarit Bhargava <prarit@redhat.com>
-In-Reply-To: <2023092606-fiction-finlike-97a5@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87jzsemmsd.fsf_-_@email.froward.int.ebiederm.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 04:02, Greg KH wrote:
-> On Tue, Sep 26, 2023 at 12:34:03AM -0700, Christoph Hellwig wrote:
->> On Fri, Sep 15, 2023 at 09:39:05AM -0400, Prarit Bhargava wrote:
->>> To be clear, I am not asking for their removal, however, I do think a better
->>> license should be issued for these files.  The files were trivially modified
->>> in 2006. It could be that the code in question is now unused and it is just
->>> easier to remove them.
->>>
->>> Is there anyone you know of that we could approach to determine a proper
->>> SPDX License for these files?
->>
->> The code contains firmware that is downloaded to the device.  The proper
->> thing would be to convert them to separate binary files in the
->> linux-firmware packages.  But given that the driver has seen nothing
->> but tree wide cleanups since the dawn of git I suspect there is no
->> maintainer and probably no user left.  The best might be to indeed just
->> remove it and see if anyone screams, in which case we could bring it
->> back after doing the above.
->>
-> 
-> We should just remove them for now, I have no objection to that at all.
-> 
-> Want me to send the patch?
+Hi Eric,
 
-Yes, that would be appreciated.  Thanks :)
+kernel test robot noticed the following build warnings:
 
-P.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> 
-> thanks,
-> 
-> greg k-h
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Eric-W-Biederman/binfmt_elf-Support-segments-with-0-filesz-and-misaligned-starts/20230925-210022
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/execve
+patch link:    https://lore.kernel.org/r/87jzsemmsd.fsf_-_%40email.froward.int.ebiederm.org
+patch subject: [PATCH] binfmt_elf: Support segments with 0 filesz and misaligned starts
+config: i386-randconfig-141-20230926 (https://download.01.org/0day-ci/archive/20230926/202309261925.QvgPAYL7-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230926/202309261925.QvgPAYL7-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202309261925.QvgPAYL7-lkp@intel.com/
+
+smatch warnings:
+fs/binfmt_elf.c:431 elf_load() error: uninitialized symbol 'map_addr'.
+
+vim +/map_addr +431 fs/binfmt_elf.c
+
+a6409120b31666 Eric W. Biederman 2023-09-25  390  static unsigned long elf_load(struct file *filep, unsigned long addr,
+a6409120b31666 Eric W. Biederman 2023-09-25  391  		const struct elf_phdr *eppnt, int prot, int type,
+a6409120b31666 Eric W. Biederman 2023-09-25  392  		unsigned long total_size)
+a6409120b31666 Eric W. Biederman 2023-09-25  393  {
+a6409120b31666 Eric W. Biederman 2023-09-25  394  	unsigned long zero_start, zero_end;
+a6409120b31666 Eric W. Biederman 2023-09-25  395  	unsigned long map_addr;
+a6409120b31666 Eric W. Biederman 2023-09-25  396  
+a6409120b31666 Eric W. Biederman 2023-09-25  397  	if (eppnt->p_filesz) {
+a6409120b31666 Eric W. Biederman 2023-09-25  398  		map_addr = elf_map(filep, addr, eppnt, prot, type, total_size);
+a6409120b31666 Eric W. Biederman 2023-09-25  399  		if (BAD_ADDR(map_addr))
+a6409120b31666 Eric W. Biederman 2023-09-25  400  			return map_addr;
+a6409120b31666 Eric W. Biederman 2023-09-25  401  		if (eppnt->p_memsz > eppnt->p_filesz) {
+a6409120b31666 Eric W. Biederman 2023-09-25  402  			zero_start = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+a6409120b31666 Eric W. Biederman 2023-09-25  403  				eppnt->p_filesz;
+a6409120b31666 Eric W. Biederman 2023-09-25  404  			zero_end = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+a6409120b31666 Eric W. Biederman 2023-09-25  405  				eppnt->p_memsz;
+a6409120b31666 Eric W. Biederman 2023-09-25  406  
+a6409120b31666 Eric W. Biederman 2023-09-25  407  			/* Zero the end of the last mapped page */
+a6409120b31666 Eric W. Biederman 2023-09-25  408  			padzero(zero_start);
+a6409120b31666 Eric W. Biederman 2023-09-25  409  		}
+a6409120b31666 Eric W. Biederman 2023-09-25  410  	} else {
+a6409120b31666 Eric W. Biederman 2023-09-25  411  		zero_start = ELF_PAGESTART(addr);
+a6409120b31666 Eric W. Biederman 2023-09-25  412  		zero_end = zero_start + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+a6409120b31666 Eric W. Biederman 2023-09-25  413  			eppnt->p_memsz;
+
+For this else path, map_addr is only set if there is an error.
+
+a6409120b31666 Eric W. Biederman 2023-09-25  414  	}
+a6409120b31666 Eric W. Biederman 2023-09-25  415  	if (eppnt->p_memsz > eppnt->p_filesz) {
+a6409120b31666 Eric W. Biederman 2023-09-25  416  		/*
+a6409120b31666 Eric W. Biederman 2023-09-25  417  		 * Map the last of the segment.
+a6409120b31666 Eric W. Biederman 2023-09-25  418  		 * If the header is requesting these pages to be
+a6409120b31666 Eric W. Biederman 2023-09-25  419  		 * executable, honour that (ppc32 needs this).
+a6409120b31666 Eric W. Biederman 2023-09-25  420  		 */
+a6409120b31666 Eric W. Biederman 2023-09-25  421  		int error;
+a6409120b31666 Eric W. Biederman 2023-09-25  422  
+a6409120b31666 Eric W. Biederman 2023-09-25  423  		zero_start = ELF_PAGEALIGN(zero_start);
+a6409120b31666 Eric W. Biederman 2023-09-25  424  		zero_end = ELF_PAGEALIGN(zero_end);
+a6409120b31666 Eric W. Biederman 2023-09-25  425  
+a6409120b31666 Eric W. Biederman 2023-09-25  426  		error = vm_brk_flags(zero_start, zero_end - zero_start,
+a6409120b31666 Eric W. Biederman 2023-09-25  427  				     prot & PROT_EXEC ? VM_EXEC : 0);
+a6409120b31666 Eric W. Biederman 2023-09-25  428  		if (error)
+a6409120b31666 Eric W. Biederman 2023-09-25  429  			map_addr = error;
+a6409120b31666 Eric W. Biederman 2023-09-25  430  	}
+a6409120b31666 Eric W. Biederman 2023-09-25 @431  	return map_addr;
+a6409120b31666 Eric W. Biederman 2023-09-25  432  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
