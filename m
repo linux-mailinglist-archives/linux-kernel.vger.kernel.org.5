@@ -2,48 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4817AE8E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6F17AE8E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbjIZJXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        id S234149AbjIZJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJW7 (ORCPT
+        with ESMTP id S233940AbjIZJXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:22:59 -0400
+        Tue, 26 Sep 2023 05:23:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0F4BE;
-        Tue, 26 Sep 2023 02:22:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FBE8C433C8;
-        Tue, 26 Sep 2023 09:22:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FDBE;
+        Tue, 26 Sep 2023 02:22:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C85A0C433CD;
+        Tue, 26 Sep 2023 09:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695720172;
-        bh=5Ay18k+jPh73OS8+ssl9DFrqcOhVxl+RBRenHltQGiI=;
+        s=k20201202; t=1695720174;
+        bh=XizUt1Q7kWwQVBWeHzt2ZtzkYTGFUWffB2y0PHPGIyg=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=QpNEEZ/25PZBLK1cSeRjXuRk8hB1hpJ00YxGA5akv2L4mQxQz7hvEKPaJoaCni+Kg
-         HgZNsQK74Mytzw/jD/MWdyZrUuaS1tsuvkZlNgxN/ojco5QVZXp7rWOUJWSKaG9e0F
-         7VkrF9jMMrQQ30ja8qyLV/XI58eSY3e3huQGXBlMxkaoi20TDnIiIua6fcguek9zBV
-         1yX6h7FFoFr2SKvkfcjN2Dgpb76yMxhaoW57LImT3zSAIlAVwZN4RuAG1zhkT2LKAA
-         aL9L/wAODA00gB/IFWX5ziAoCggxmzLXj5kle79fXHhkTFa28BRf6XIl4Lp4SEaG/q
-         um/HpNdlDnGyg==
+        b=J4h5WnIkDZPA676VW6bCVSBg3R8KzghueRiwnq2ly6bSGmvJI6G2UhzKQGVAop4zD
+         zTxzyJPnVZ17ssFHT6rqIleG+ey/Ro5wbbhx1IJtDFh1plL4TkCardmpUMf48PEEGy
+         IXr+JR1TipPUKdCXC+jqw2FpCuEr/twjAtJM5iFtrfKDD7ssPNBhpn99/SHsyFeXYz
+         nvVnAxOrsoOr3p6gowjnTbmzzkhY2FyNsIo5EEr6KUz0yxwTvprqsGSl+vrf2HCa0N
+         yKeAoNqHKtTVBDS5ozvOjs0TfVmARLQkG+E1PYEgKZ/h8cwEEVLvWPpAxgdbEI2pTl
+         v6wdEK42a6k+Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230919-spi-qup-dvfs-v2-0-1bac2e9ab8db@kernkonzept.com>
-References: <20230919-spi-qup-dvfs-v2-0-1bac2e9ab8db@kernkonzept.com>
-Subject: Re: [PATCH v2 0/4] spi: qup: Allow scaling power domains and
- interconnect
-Message-Id: <169572016977.2563985.17070473917450911159.b4-ty@kernel.org>
-Date:   Tue, 26 Sep 2023 11:22:49 +0200
+To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <84eb08daf85d203b34af9d8d08abf86804211413.1694961365.git.christophe.jaillet@wanadoo.fr>
+References: <84eb08daf85d203b34af9d8d08abf86804211413.1694961365.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] spi: at91-usart: Remove some dead code
+Message-Id: <169572017245.2563985.3260563484580012452.b4-ty@kernel.org>
+Date:   Tue, 26 Sep 2023 11:22:52 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,14 +54,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 13:59:47 +0200, Stephan Gerhold wrote:
-> Make it possible to scale performance states of the power domain and
-> interconnect of the SPI QUP controller in relation to the selected SPI
-> speed / core clock. This is done separately by:
+On Sun, 17 Sep 2023 16:36:26 +0200, Christophe JAILLET wrote:
+> dma_request_chan() does not return NULL. It returns a valid pointer or an
+> error pointer.
 > 
->   - Parsing the OPP table from the device tree for performance state
->     votes of the power domain
->   - Voting for the necessary bandwidth on the interconnect path to DRAM
+> So, some dead code can be removed.
+> 
+> The IS_ERR_OR_NULL() in the error handling path are still needed, because
+> the error handling path is common to the whole function and the
+> ctlr->dma_xx are NULL when at91_usart_spi_configure_dma() is called.
 > 
 > [...]
 
@@ -75,14 +72,8 @@ Applied to
 
 Thanks!
 
-[1/4] spi: dt-bindings: qup: Document power-domains and OPP
-      commit: e6419c35f0d92632e06708c5610a31957f1bd6b3
-[2/4] spi: qup: Parse OPP table for DVFS support
-      commit: 287fcdaa35fc666640f805310095c52f2d818d26
-[3/4] spi: dt-bindings: qup: Document interconnects
-      commit: d15befc0cef42db7712714157d9483cab81149a1
-[4/4] spi: qup: Vote for interconnect bandwidth to DRAM
-      commit: ecdaa9473019f94e0ad6974a5f69b9be7de137d3
+[1/1] spi: at91-usart: Remove some dead code
+      commit: 8a771075e50bef5e2a063a9f954b36a33fb7359f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
