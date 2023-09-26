@@ -2,190 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 160BF7AF356
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0227AF35A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbjIZSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S235634AbjIZSzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbjIZSyl (ORCPT
+        with ESMTP id S235619AbjIZSzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:54:41 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097A5126
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:54:33 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50305abe5f0so15070404e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695754471; x=1696359271; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8gQnbSFZtzmEFmiDkyR9oRkKnZaeQRz7XAC2B5NMUWw=;
-        b=rn2mWGwLUnrdY4GgF8lOnUe2tVkL8OmX1io/umA8vx5nubcBKP9RH40eSu9AnMzEL7
-         vr6mIK+t1anSYf378OjQpPGyyqZ5poudUmQWnmAYN5nT+WT275Ud25au37iikizL64gO
-         Rz17/1hf2HgX1+5B9tM2CJdp59L8EC5bHMJxBybWU0byib8SP6Lzy40E5ZF6p9YKPAhQ
-         ZA4MfYgxWi8R1R5PQmUPlCtuMagcvLaQbpHebkdjNASSZ9dtV+Ttiy7RZJeb3BLegaf0
-         W/et52Uv/qV+ffkDzhRaCNFCaIUpEHXv/YJR4qvEk6OFy0/EJ/ZvTXq1LCQ5qoIRzORb
-         eT5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695754471; x=1696359271;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8gQnbSFZtzmEFmiDkyR9oRkKnZaeQRz7XAC2B5NMUWw=;
-        b=g3noc4u4jfZho+cj/jiZaqACk5oryiMZn5xDQ9BGIAwEqmfmibYu9SwOM9iU8qGU4T
-         ozkW747+uwOfpb3HkXhHwIeuPWL+p0iF6Uysbjv5wpth448z7di8JuUpTdOvs0cpEZae
-         U3jR60oyXC2/U1eb/24yk1gUg6wVrLUbpYWE1gszPiUXD//2NVKxNcCSIOpOjXYm7HuO
-         R0qwRdD0FDuHFLqNVvzVNoC9vqIz+/qqVICp5IWDAxTOggxyfgzUZ07D8tbgfcOX1MHN
-         izb6/rzX59c4e0rvTxcntVg1PR/lL/dSjcvmYu3mXoF2NgVIbJ5emiHSj+GGfalW1fF2
-         2d8A==
-X-Gm-Message-State: AOJu0Yx53MIyVBhzJnGJKI1qous4u9kCMuyp2R0ERvEo+aQXsrGoaHoT
-        W9Rt0vS1bcPFrvNc983tsACqlw==
-X-Google-Smtp-Source: AGHT+IE5Qc4gGyVdOepdESFyp3jn/od8ANoFp10Oc3ukn24PRxkGTRnFtONelL8dA/bKHYT7HB9HIQ==
-X-Received: by 2002:a05:6512:1287:b0:503:95b:db02 with SMTP id u7-20020a056512128700b00503095bdb02mr11290246lfs.18.1695754471250;
-        Tue, 26 Sep 2023 11:54:31 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id c6-20020ac244a6000000b00504230986fbsm2271509lfm.52.2023.09.26.11.54.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 11:54:30 -0700 (PDT)
-Message-ID: <2c9eda54-a90e-483a-abc2-865d82854b80@linaro.org>
-Date:   Tue, 26 Sep 2023 20:54:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/13] arm64: dts: qcom: msm8916-samsung-a2015: Add sound
- and modem
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Tue, 26 Sep 2023 14:55:07 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACBC11F;
+        Tue, 26 Sep 2023 11:54:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1695754488; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=KeSvCaQmt6W0BfrKmoFz5VRKNN26HAqtb9mp9KQRApSFhAbPtQn3PJ5zo9dokCUuPM
+    CFTmDylzZBm8TVz2661YnWN1+XbRsMpsy8QhEQuYOUi5L7EyipfMbRVI2qHYJN1aOb4o
+    RakyxGWRbpaEOaVP1CbZVtK9gNMqt+l90f75IbbiOgkW3pMHZvGarSgJj6+NJ+BHoKy+
+    ocyKoHh+0eiIocDNOX+mOnrZPbvP6Qu61YIvErOcDOo5KX86sN4k89Bh26XcF33hhx9Y
+    wzt+iHaGlv3yeB/9bP+XdcUIPbKUQv82L8hPv3qE/uMEmYDSR+Yz/qZvZJ9Cjbi69rUs
+    JBdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695754488;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
+    b=MutN6n0vgICr5S8u9p0JZmF1uInePhG/Oj+pOjPEJyhw7Bznpro2lh2OCd/jul4RHb
+    GgcmcKpfeRG8Tu7rBygig3M4IbvE9Ab1dUuvePY4fOqO9QpCX4ap0EPTalKewQVqgN+c
+    DHHOWs+qY6zWtxPWvFrIxcT5fDFNTzxqhW7UHMV/fZ5u0Z8WhlPM+ZyL0o3fe1kMVhWy
+    QJFoonZcRnKUnXBOCUhiK0Xv8PAuyhDt2fCdNH/ykZ6TZTclcw0vjuqlt/eznW/kQZOQ
+    kqgu+kWatZJO8V1WC7w8YBjVv8y0SQb6eVI6eFDPKQkFrtk9W9wrk63c9r2y4oE680pA
+    qtOQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695754488;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
+    b=Ge66tFkQKFUjVpow2D/P0hzXuhJbSj9zHekafdQT6dIqHjGPKdIb5gRTpzs/IOapvm
+    I4996INPvLUQ9OPvwGFD1FVQwpoa3yx5kgYAIr7WfM9QelrfTr/VHSLeH7rWQU/Y+nyf
+    eJNuHPmTunSLTAwEEJ14SBI6oleAhL+NKWYmBzDeF7natcHEutYyupqOPFuT9O7hZArX
+    O7wWeWLAwph043mIswZ+kuasa90ZEyYdfsb4yYaXJZ4i2AlUv8YfZB7eV9VgDD5zMyjT
+    b5KduKcU4nmGA4Sg5Y/eaYAdl6DGGZNcT9sGbt9YrimXRZ53RVNOvIV7V+DV1C98JvI2
+    Lcwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695754488;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5ZEnW6G7+a9YdYJfcVUnOTQMyExo6rsjQv9ME3mU4z8=;
+    b=EqCvKOrKMrxjYaer3DHayQmv5+j/f+sOWFOq9jMJ5CRIWFJzuqA6y1wjU/7JAk2rSV
+    FHoUO3SwG+As5FEadrCg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8piJ1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
+    with ESMTPSA id R04c57z8QIsmgJR
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 26 Sep 2023 20:54:48 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 20:54:42 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH 02/13] arm64: dts: qcom: msm8916/39: Add QDSP6
+Message-ID: <ZRMo8oxIKJIY5WG8@gerhold.net>
 References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
- <20230926-msm8916-modem-v1-4-398eec74bac9@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230926-msm8916-modem-v1-4-398eec74bac9@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
+ <20230926-msm8916-modem-v1-2-398eec74bac9@gerhold.net>
+ <698c8d60-e284-4267-8349-b327712c94cc@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <698c8d60-e284-4267-8349-b327712c94cc@linaro.org>
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.09.2023 18:51, Stephan Gerhold wrote:
-> Enable sound and modem for the Samsung A2015 based devices (A3, A5, E5,
-> E7, Grand Max). The setup is similar to most MSM8916 devices, i.e.:
+On Tue, Sep 26, 2023 at 08:46:36PM +0200, Konrad Dybcio wrote:
+> On 26.09.2023 18:51, Stephan Gerhold wrote:
+> > MSM8916 and MSM8939 do not have a dedicated ADSP. Instead, the audio
+> > services via APR are also implemented by the modem DSP. Audio can be
+> > either routed via the modem DSP (necessary for voice call audio etc)
+> > or directly sent to the LPASS hardware (currently used by DB410c).
+> > Bypassing QDSP6 audio is only possible with special firmware
+> > (on DB410c) or when the modem DSP is completely disabled.
+> > 
+> > Add the typical nodes for QDSP6 audio to msm8916.dtsi and msm8939.dtsi.
+> > The apr node is disabled by default to avoid changing behavior for
+> > devices like DB410c that use the bypassed audio path.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> I'm generally grumpy with regards to multi-soc changes that
+> have no need to be multi-soc..
 > 
->  - QDSP6 audio
->  - Earpiece/headphones/microphones via digital/analog codec in
->    MSM8916/PM8916
->  - WWAN Internet via BAM-DMUX
-> 
-> except:
-> 
->  - NXP TFA9895 codec for speaker on Quaternary MI2S
->  - Samsung-specific audio jack detection (not supported yet)
-> 
-> [Lin: Add e2015 and grandmax]
-> Co-developed-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-> Signed-off-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  .../dts/qcom/msm8916-samsung-a2015-common.dtsi     | 55 ++++++++++++++++++++++
->  .../dts/qcom/msm8916-samsung-e2015-common.dtsi     |  4 ++
->  .../boot/dts/qcom/msm8916-samsung-grandmax.dts     |  4 ++
->  3 files changed, 63 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-> index 0b29132b74e1..f71b18d89bf9 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-> @@ -1,10 +1,13 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  
->  #include "msm8916-pm8916.dtsi"
-> +#include "msm8916-modem-qdsp6.dtsi"
-> +
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-> +#include <dt-bindings/sound/apq8016-lpass.h>
->  
->  / {
->  	aliases {
-> @@ -196,6 +199,18 @@ vibrator: vibrator {
->  	};
->  };
->  
-> +&blsp_i2c1 {
-> +	status = "okay";
-> +
-> +	speaker_codec: audio-codec@34 {
-> +		compatible = "nxp,tfa9895";
-> +		reg = <0x34>;
-> +		vddd-supply = <&pm8916_l5>;
-> +		sound-name-prefix = "Speaker";
-> +		#sound-dai-cells = <0>;
-> +	};
-> +};
-> +
->  &blsp_i2c2 {
->  	status = "okay";
->  
-> @@ -243,6 +258,13 @@ &gpu {
->  	status = "okay";
->  };
->  
-> +&lpass {
-> +	dai-link@3 {
-> +		reg = <MI2S_QUATERNARY>;
-> +		qcom,playback-sd-lines = <1>;
-> +	};
-> +};
-Is that not status = reserved?
 
-Konrad
+Well it's 100% the same diff so reviewing it separately doesn't really
+make sense IMHO. When I do "msm8916/39" patches these are generally the
+changes where strictly speaking there is no need to duplicate at all.
+It could go into a common include between both. We just haven't found
+a good solution/agreement yet how sharing SoC components could work.
+
+Thanks,
+Stephan
