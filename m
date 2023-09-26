@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620427AF0E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DD97AF0E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbjIZQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S235318AbjIZQj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235322AbjIZQjK (ORCPT
+        with ESMTP id S235275AbjIZQj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:39:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCB2E5;
+        Tue, 26 Sep 2023 12:39:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2885FE5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695746346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tTQuhz6i8pETFCJEBQwLAAEUzmgG6c+WGKgQCxT5cqM=;
+        b=eFiPdBpE9q+RyXI7EdgB+0PjB0IQL/2eh3+8mbUAqiAiI9hV1MP/SWyfOUaHmIfx7CUsyv
+        I1CxACeIoM7aOn0TDaFpH5LxZInu2D4t356vN66WNv3Lm89jbquz4ShNC6IDagKiI4+T0w
+        6tpWm8pd7ooFTYWGkngl1yGtMSuadt0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-611-CGVq1eA4PxKppnKn6bz_FA-1; Tue, 26 Sep 2023 12:39:04 -0400
+X-MC-Unique: CGVq1eA4PxKppnKn6bz_FA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3200597bfc5so7023195f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695746342; x=1696351142;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tTQuhz6i8pETFCJEBQwLAAEUzmgG6c+WGKgQCxT5cqM=;
+        b=VAzkEOHEDAdpvfKzjLQEfVJFuguZ+mgyuzSYquNByMvwuOnYQFQlAELKS77GTQUxHJ
+         2Y6wBpsXvIZ0yfiPhjk4NAl8xunMfsiDTldhDW0hgvVqkR+luoo5eaC++kN2fWt/ZcGA
+         ezeI2VZUtAnn00ziABwPvuYu5UBNDfAiM47L/0/arVXyHy/4sHKhtm89tcfcieTj9x+C
+         KKYSR41VBdX8Xe4WARQDloOHLzRZl7MPxq/scwhnBeiBQfUNDoMiFmF0Yjwv81mZm085
+         F3g97QwriStIsFtpFDts5aTj/BAAnB06756nbwHA1A8+C3Jpkz/jNu0RPLWQ+031aRxf
+         Tzhg==
+X-Gm-Message-State: AOJu0YzgF9ysBFq7z3CnxCEHJ6DGDIM6nHxi3Tjxyt1iYq4f8BXxhayl
+        MhYtKbdLyK15IKROr1PEDnzunzXjR0b2w9loTdTRdXNDaar9Az1paEF/QdR7nlpg6zXEhMBePdN
+        R8oETvKerOKmxYersDHJiE8oX
+X-Received: by 2002:a5d:4571:0:b0:320:28e:b638 with SMTP id a17-20020a5d4571000000b00320028eb638mr9555565wrc.36.1695746342455;
+        Tue, 26 Sep 2023 09:39:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGy0LhaIhMp+x6DrglQYfNQsGu8JLiXNZjRQ5NtgOwYtPJlfphvtDjLSoegu8pEbBK1x4jBBA==
+X-Received: by 2002:a5d:4571:0:b0:320:28e:b638 with SMTP id a17-20020a5d4571000000b00320028eb638mr9555542wrc.36.1695746342137;
+        Tue, 26 Sep 2023 09:39:02 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id u21-20020adfa195000000b00323293bd023sm6072760wru.6.2023.09.26.09.39.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 26 Sep 2023 09:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695746341; x=1727282341;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MDDhGr3aQovmHXfUFdXU2hLWgnvXegVFBPTQjWjZprQ=;
-  b=a3ZmMJBJ57Swr3AnhBAlSNxRLlA5TqTufeGBWlYHEU3Y4fK4wUe0M24G
-   K9yo15BuMvk4Nr+xRzFJvlAsw+nwxtSSydkj2lsW/9Y0aeeZlJcBoGTgP
-   cF6VaDzfodllDMfFJbgHnbmjcVbRPYrSkNULQb6s9WuGq7dVDW1UbJUwB
-   dFlJllCBeospOUYdQX0TFGmT/2ihu4x2bx1Y3FxMCP4hMBbKanEbQjAcb
-   lqbRqU2/Q01tva7/MdflS7Js8RxkbiYmtUVKnItgg5T0Ud1vplnUmKnZJ
-   magaIHVJ+48+0ESwViNIAlliSOZsnEa7K6Piu8ovX3ohbiW3NHs4iQZGH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="378890432"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="378890432"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:39:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="864459689"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="864459689"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:39:00 -0700
-Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 6C048580BBE;
-        Tue, 26 Sep 2023 09:38:58 -0700 (PDT)
-Message-ID: <c8250aa5-452a-9e5a-b46f-98e1c35c9e27@linux.intel.com>
-Date:   Tue, 26 Sep 2023 12:38:57 -0400
+Message-ID: <27053c89-e11c-e16d-ef88-89b3cd99c487@redhat.com>
+Date:   Tue, 26 Sep 2023 18:39:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 24/25] perf stat: Add check to ensure correctness in
- platform that does not support hardware-grouping
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/4] KVM: x86: add more information to the kvm_entry
+ tracepoint
 Content-Language: en-US
-To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Samantha Alt <samantha.alt@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20230925061824.3818631-1-weilin.wang@intel.com>
- <20230925061824.3818631-25-weilin.wang@intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20230925061824.3818631-25-weilin.wang@intel.com>
-Content-Type: text/plain; charset=UTF-8
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+References: <20230924124410.897646-1-mlevitsk@redhat.com>
+ <20230924124410.897646-3-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230924124410.897646-3-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/24/23 14:44, Maxim Levitsky wrote:
+> +		__field(	u32,		inj_info	)
+> +		__field(	u32,		inj_info_err	)
+> +		__field(	bool,		guest_mode	)
+> +		__field(	bool,		req_imm_exit	)
+> +		),
 
+As anticipated in patch 1 I'm not so sure about adding req_imm_exit here 
+but also (especially) in kvm_exit.  I do believe it should be traced, 
+I'm not sure it's needed in kvm_entry+kvm_exit as opposed to just a 
+separate tracepoint.
 
-On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
-> From: Weilin Wang <weilin.wang@intel.com>
-> 
-> Add check and return with -EINVAL when event json files do not support
-> hardware aware grouping so that the program could successfully fall back to
-> normal grouping without segfault.
+Paolo
 
-Seems another bug fix. Please merge it with the patch which introduce
-the feature/bug.
-
-Thanks,
-Kan
-> 
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 6a4404226..1c89c9371 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1684,6 +1684,8 @@ static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
->  	struct metricgroup__add_metric_event_data *d = data;
->  
->  	if (!strcasecmp(pe->name, d->event_name)) {
-> +		if (!pe->counter)
-> +			return -EINVAL;
->  		event = event_info__new(d->event_id, pe->pmu, pe->counter,
->  					pe->taken_alone, /*free_counter=*/false);
->  		if (!event)
