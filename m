@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA047AF312
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BCB7AF315
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbjIZSj7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 14:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
+        id S235566AbjIZSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjIZSj6 (ORCPT
+        with ESMTP id S229674AbjIZSkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:39:58 -0400
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1495310A;
-        Tue, 26 Sep 2023 11:39:52 -0700 (PDT)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-57bf04841ccso220722eaf.0;
-        Tue, 26 Sep 2023 11:39:52 -0700 (PDT)
+        Tue, 26 Sep 2023 14:40:42 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86BE126
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:40:35 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so157726251fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695753634; x=1696358434; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Cbj7xG6ItjgyzB3JMPXb9POyuicvcin6fqpj2Mlq0nA=;
+        b=y5tE8tWGHMO0SkfEyQ0x8dftVo4zKwW+4KDdH2vv4EBAR0IzyZ8ejQ1/RKzCewigYb
+         bEBsdbhKGmZb8oWLGSZfI0iA7UJvkxJit/IwR9Z/c1ytZRMcz+0RCHOjvZBWJdn8Q3Hk
+         3tt5LeYgnBnwYQSq8A/5tj4PQf1IrEDmXQ8su82vnvTYkPlXF7MDmC+M9K4PV32ZNP/L
+         6mghR9bqtrYpu+/2uaOnJ35oRM+MroejL8seFk+dci00DQaXExmn//usLkNg/KlSi6uf
+         s1Xpdu+QH/JnaLLCa0rUB0SKxOS+nwK2cEid/cUZakk6xV/QJsKbp6JZvDt4ow9lSvis
+         fKbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695753591; x=1696358391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lqH8J6lTpK2M+bzzcxGFMsEPF/8uShQKGeKMcDCVBbo=;
-        b=GCDwT56KQJ8gxkSbpJjcqCK+K9MVhOyCHHfgx1pRZnOhPrXEoz4diubNc8Yln70QK3
-         ElnUVQjB5IIQcIlg5UlWrZlo4IdLflee39La9WLvQRPp743IJ0C5gJ6rx8MFgmOZ+nQ5
-         +3MKavXPEYUCRl2s3weL4h6N9xMDXdljqJo4KfwtF0L6YDysOwzsjvvTyaraPZe2Jye+
-         QrPUwbrHj6c7QMu0QjudVpuAn24+dLkqjPrH7f8nhpdz/KYz+6Gys0NFmPMefEpxvhBk
-         3nMBESVRcMDb0iVKEiJZttgjDO9KCjIXnkPfEQCVAQUWa9/CZGxWcth6YH115tBTh9pu
-         d3XA==
-X-Gm-Message-State: AOJu0YwJBKLg6pFb9zjGbb8KOhKVZ9PcD1qVBOzFdek9Sb2xXiDpxqyS
-        KAkGB0Ktge7JnybSxNs/M2erAAEcvLuxbrja138=
-X-Google-Smtp-Source: AGHT+IHn5x6NKFJ0NIxGDOjTFHB3bf1b7k1LV0Mxfh9IsSJulttVCD75geLnmF+hdNPhm9REdjdLlyXid/siRCdoy7s=
-X-Received: by 2002:a4a:de15:0:b0:57b:7804:9d72 with SMTP id
- y21-20020a4ade15000000b0057b78049d72mr9769263oot.1.1695753591340; Tue, 26 Sep
- 2023 11:39:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695753634; x=1696358434;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cbj7xG6ItjgyzB3JMPXb9POyuicvcin6fqpj2Mlq0nA=;
+        b=d+wLS2l2owzFZB2ZjRUPtuwtotw1V2k5QQtSj99Fd4Gl3nSlG4CUQx4c+plEqLYfMD
+         xMh6lmdERLtPIRigtHx25afxc6t8DVOfFSfSaDi/RtP8aKtd4m0jmqYtubEayoJfNAS8
+         8JZ04AkSgipofYF2n8/ahLxRMDmmYyBEvliEzy0LSsBF7228/A+ulQC5ruZVDjUkdWAd
+         XHdPjr570Z1b/yMoysdcRyF7sQNn1214dJW6UKmr7zb4PG4PVa4KSo2ZojWNwsuXAA1Z
+         uWf1EPWDiX/zLU9qPJABE5FRGOuZsDkZMXl6dl3I9us8lK7KYIYLS6XGFJS3t4hG5vdf
+         NTzw==
+X-Gm-Message-State: AOJu0YzhL6DPNoEIkST8tV3WWakznqMUpF7VtQxsiXiKpzIf5e4tqp8O
+        HUoMIx+SeLop3SA6I0F/+XmS6w==
+X-Google-Smtp-Source: AGHT+IG0KLoWhYGIScPU0gY7MREMIOVjC/ozkDwJXiLjuGVLdz5Jw6Tn3wLyJn4evDa/npr+KgmZJQ==
+X-Received: by 2002:a2e:9788:0:b0:2bc:b9c7:7ba3 with SMTP id y8-20020a2e9788000000b002bcb9c77ba3mr9035168lji.12.1695753634185;
+        Tue, 26 Sep 2023 11:40:34 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id v16-20020a2e9f50000000b002c12c2094e4sm2740700ljk.74.2023.09.26.11.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 11:40:33 -0700 (PDT)
+Message-ID: <42a1d0ab-4e8d-461d-bb2c-977a793e52b2@linaro.org>
+Date:   Tue, 26 Sep 2023 20:40:30 +0200
 MIME-Version: 1.0
-References: <20230925081139.1305766-1-lukasz.luba@arm.com> <20230925081139.1305766-6-lukasz.luba@arm.com>
-In-Reply-To: <20230925081139.1305766-6-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 Sep 2023 20:39:40 +0200
-Message-ID: <CAJZ5v0hyeKGuC5-jJDoxBpNksMg1cZ7eoCysjx7O8Ey1i8YSDg@mail.gmail.com>
-Subject: Re: [PATCH v4 05/18] PM: EM: Refactor a new function em_compute_costs()
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] drm/msm/adreno: Add support for SM7150 SoC machine
+Content-Language: en-US
+To:     Danila Tikhonov <danila@jiaxyga.com>, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
+        daniel@ffwll.ch, johan+linaro@kernel.org, andersson@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230926174243.161422-1-danila@jiaxyga.com>
+ <20230926174243.161422-2-danila@jiaxyga.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230926174243.161422-2-danila@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Refactor a dedicated function which will be easier to maintain and re-use
-> in future. The upcoming changes for the modifiable EM perf_state table
-> will use it (instead of duplicating the code).
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-
-If I'm not mistaken, this patch by itself is not going to change the
-observable functionality in any way and it would be good to say that
-in the changelog.
-
-This also applies to some other patches in this series.
-
+On 26.09.2023 19:42, Danila Tikhonov wrote:
+> SM7150 has 5 power levels which correspond to 5 speed-bin values: 0,
+> 128, 146, 167, 172. Speed-bin value is calulated as FMAX/4.8MHz round up
+> to zero decimal places.
+> 
+> Also a618 on SM7150 uses a615 zapfw. Add a squashed version (.mbn).
+> 
+> Add this as machine = "qcom,sm7150", because speed-bin values are
+> different from atoll (sc7180/sm7125).
+> 
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 > ---
->  kernel/power/energy_model.c | 72 ++++++++++++++++++++++---------------
->  1 file changed, 43 insertions(+), 29 deletions(-)
->
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index 3dafdd7731c4..7ea882401833 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -103,14 +103,52 @@ static void em_debug_create_pd(struct device *dev) {}
->  static void em_debug_remove_pd(struct device *dev) {}
->  #endif
->
-> +static int em_compute_costs(struct device *dev, struct em_perf_state *table,
-> +                           struct em_data_callback *cb, int nr_states,
-> +                           unsigned long flags)
-> +{
-> +       unsigned long prev_cost = ULONG_MAX;
-> +       u64 fmax;
-> +       int i, ret;
-> +
-> +       /* Compute the cost of each performance state. */
-> +       fmax = (u64) table[nr_states - 1].frequency;
-> +       for (i = nr_states - 1; i >= 0; i--) {
-> +               unsigned long power_res, cost;
-> +
-> +               if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
-> +                       ret = cb->get_cost(dev, table[i].frequency, &cost);
-> +                       if (ret || !cost || cost > EM_MAX_POWER) {
-> +                               dev_err(dev, "EM: invalid cost %lu %d\n",
-> +                                       cost, ret);
-> +                               return -EINVAL;
-> +                       }
-> +               } else {
-> +                       power_res = table[i].power;
-> +                       cost = div64_u64(fmax * power_res, table[i].frequency);
-> +               }
-> +
-> +               table[i].cost = cost;
-> +
-> +               if (table[i].cost >= prev_cost) {
-> +                       table[i].flags = EM_PERF_STATE_INEFFICIENT;
-> +                       dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
-> +                               table[i].frequency);
-> +               } else {
-> +                       prev_cost = table[i].cost;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
->                                 int nr_states, struct em_data_callback *cb,
->                                 unsigned long flags)
->  {
-> -       unsigned long power, freq, prev_freq = 0, prev_cost = ULONG_MAX;
-> +       unsigned long power, freq, prev_freq = 0;
->         struct em_perf_state *table;
->         int i, ret;
-> -       u64 fmax;
->
->         table = kcalloc(nr_states, sizeof(*table), GFP_KERNEL);
->         if (!table)
-> @@ -154,33 +192,9 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
->                 table[i].frequency = prev_freq = freq;
->         }
->
-> -       /* Compute the cost of each performance state. */
-> -       fmax = (u64) table[nr_states - 1].frequency;
-> -       for (i = nr_states - 1; i >= 0; i--) {
-> -               unsigned long power_res, cost;
-> -
-> -               if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
-> -                       ret = cb->get_cost(dev, table[i].frequency, &cost);
-> -                       if (ret || !cost || cost > EM_MAX_POWER) {
-> -                               dev_err(dev, "EM: invalid cost %lu %d\n",
-> -                                       cost, ret);
-> -                               goto free_ps_table;
-> -                       }
-> -               } else {
-> -                       power_res = table[i].power;
-> -                       cost = div64_u64(fmax * power_res, table[i].frequency);
-> -               }
-> -
-> -               table[i].cost = cost;
-> -
-> -               if (table[i].cost >= prev_cost) {
-> -                       table[i].flags = EM_PERF_STATE_INEFFICIENT;
-> -                       dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
-> -                               table[i].frequency);
-> -               } else {
-> -                       prev_cost = table[i].cost;
-> -               }
-> -       }
-> +       ret = em_compute_costs(dev, table, cb, nr_states, flags);
-> +       if (ret)
-> +               goto free_ps_table;
->
->         pd->table = table;
->         pd->nr_perf_states = nr_states;
-> --
-> 2.25.1
->
+What's the downstream dt name for 7150?
+
+Do you have some more complete tree published somewhere?
+
+Konrad
