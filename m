@@ -2,122 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4967AF1DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D5B7AF1E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbjIZRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S234658AbjIZRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjIZRm6 (ORCPT
+        with ESMTP id S229678AbjIZRoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:42:58 -0400
-Received: from smtp29.i.mail.ru (smtp29.i.mail.ru [95.163.41.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AEF9F;
-        Tue, 26 Sep 2023 10:42:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-        ; s=mailru; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-        X-Cloud-Ids:Disposition-Notification-To;
-        bh=Z9uKG6zMrZfIyQkxLI80ofshfSy00QOvkblD88IoIt4=; t=1695750170; x=1695840170; 
-        b=rPlEKKu9901KkTNLPFaQlNMXHiojdImZAegofRCvpXmOPjHDh/7Vu4qkTqT8/8SYp8tHbY+I9Gt
-        niM0rCR05ifUwIH3Wwj7yUF0d34k0zItUwMfjAmo8/L+7ZzBCFFhf2fxJaQdgL3dhbxjjhHfdNGzY
-        y0QzLLPH9mjE4BhX12A=;
-Received: by smtp29.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-        id 1qlC59-00EHSD-2I; Tue, 26 Sep 2023 20:42:48 +0300
-From:   Danila Tikhonov <danila@jiaxyga.com>
-To:     robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
-        konrad.dybcio@linaro.org, johan+linaro@kernel.org,
-        andersson@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        danila@jiaxyga.com
-Subject: [PATCH v2 1/1] drm/msm/adreno: Add support for SM7150 SoC machine
-Date:   Tue, 26 Sep 2023 20:42:43 +0300
-Message-Id: <20230926174243.161422-2-danila@jiaxyga.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926174243.161422-1-danila@jiaxyga.com>
-References: <20230926174243.161422-1-danila@jiaxyga.com>
+        Tue, 26 Sep 2023 13:44:09 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395C59F;
+        Tue, 26 Sep 2023 10:44:01 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5033918c09eso15000362e87.2;
+        Tue, 26 Sep 2023 10:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695750239; x=1696355039; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=u/0G7UZtp532WD4U9IqAMOL98DSIgotyWvhe40XiMkg=;
+        b=gMPJp9/s9SgjrOgSzz0ta4gA2skueshXH2kRgPvt7uVJYX374OBl3hJafPT3uWeJVb
+         DaLY5zZzGZKv2Ys3JGnpm6cAi4No3lSidclL1LK8X/vRgZRlWTs/6za3b644xdnAGC/R
+         MgM056r4EYsfrFe0yEiBAcNHQfEqGb7SM4yh2dX88tNqqnL2DIPsRov6IuYkdKW6pOfY
+         ZnV9Fe9MUS799nL44IAh3vb0G7W0hn4SIRU68D/15GXl5Ph0/sRpCWPMbrB4zn+SP0zB
+         8LwSVFnXMDQu5m7CveOCkUulh5cX0omFiwK2ZDV0n1j3quo9fUSb6ChfBA+4dPXfA+ro
+         K/KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695750239; x=1696355039;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u/0G7UZtp532WD4U9IqAMOL98DSIgotyWvhe40XiMkg=;
+        b=PrYwP+5f1FoxjFrK0MUorEjH3GGQwL9g/dcg9pwDXnvwAe2Rllar6Pn2CiL+Wi4vsG
+         75M64pLd8+DthZ068JJQAeRa21Iu7uNAZZAeyJeX39vYvyogUmjMopoH7Fh/ecdw7CaW
+         QkA97MBDOlB3QjlZTBBNTHF/nkmnZvVqCzWkhhAu6nASHnbA5PQxZA7oalZleFBTTdd9
+         SB3B425bYu1Ddo9I/KMpI4MDEn5dBLKVwm/wc+KOHnpRjasJozbJsTLiHaBCgKOMjUJC
+         GqABzX2QfMJvpuGeVGnOKZE2HfcL15oohA2dJ1wCS56mObXM0/ncZLnycqQ8JaiGLlsZ
+         FavQ==
+X-Gm-Message-State: AOJu0YwPJ7HaM8w/Zgec1ZBrnfScyBQvOBVZYZNU+eBiU1580U5zuhXo
+        5/p0EKxlKEKmHDwCRpXht4M=
+X-Google-Smtp-Source: AGHT+IFsX/wVv8Ede/cmBFlIzaEJe5rAVYEP0v4/CmTJc/zD0zRK0xlN+jAB2ZkmQAzuYZ8QcU5a2w==
+X-Received: by 2002:ac2:5e85:0:b0:502:a4f4:ced9 with SMTP id b5-20020ac25e85000000b00502a4f4ced9mr8301552lfq.62.1695750238924;
+        Tue, 26 Sep 2023 10:43:58 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id s13-20020a056402520d00b0053450b064e2sm1533521edd.3.2023.09.26.10.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 10:43:58 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 0CFEE27C0054;
+        Tue, 26 Sep 2023 13:43:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 26 Sep 2023 13:43:56 -0400
+X-ME-Sender: <xms:WxgTZR_2LsfcRzXuxNSz3XQvpRVtt44CWw7XD0CFC2bvNfh3OqOqqA>
+    <xme:WxgTZVvBqA4ROXoy_r5yeQaCrDncGwGC5zKxqXe0-IqAnwtaEA_cgC6nFpI9WjTW8
+    3-_yrqvuxQYWT_jtQ>
+X-ME-Received: <xmr:WxgTZfBt1vyaNKmlH0G_55WmakdvIkuw_dC2BNuqDedCGhMFjyl-Vbc9CgU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddtgdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpedtgeehvefghfegtdektdegtdfggfeitefgffetteetieeihfdtkeffieel
+    vdeigfenucffohhmrghinhepphhtrhdrrghspdhruhhsthdqlhgrnhhgrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
+    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
+    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
+    mhgv
+X-ME-Proxy: <xmx:WxgTZVfbNQw6e4N1yLp_oz9vDcLBkuQgTgZkPFDe3EE-sRx4Da0ojw>
+    <xmx:WxgTZWNSdngOYWeLfxGFSMC44W1lXgtIa3Ww4Qc1Y-lVQdXmYUld4g>
+    <xmx:WxgTZXmikOZ1B0b7PCdjQw9QD4zGJUa7oMlt8Se_BxVRKSl-WjUP0Q>
+    <xmx:XBgTZXlFaOkKgyRCPXqyvXBIVrUV0bQ4IXEtxo2ABbe4BBtohGGTCA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Sep 2023 13:43:54 -0400 (EDT)
+Date:   Tue, 26 Sep 2023 10:43:21 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Gary Guo <gary@garyguo.net>,
+        Alice Ryhl <alice@ryhl.io>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
+ `WithRef`
+Message-ID: <ZRMYObRby6NDKNzD@boqun-archlinux>
+References: <9d6d6c94-5da6-a56d-4e85-fbf8da26a0b0@proton.me>
+ <ZRIB0hXNvmJtmyak@boqun-archlinux>
+ <edc0b599-c5d1-4e9c-a51b-eb8ceaef7acc@ryhl.io>
+ <ZRIDc_x9Qh5EJNC8@boqun-archlinux>
+ <61ccfb87-54fd-3f1b-105c-253d0350cd56@proton.me>
+ <20230926162659.6555bcdc@gary-lowrisc-laptop>
+ <ZRL3mlWXqseER8xK@Boquns-Mac-mini.home>
+ <CAH5fLggUPQtNjLg6BnYHcLmefuHdJpg0_eGVgX+dARUTRHexsA@mail.gmail.com>
+ <ZRMIOsi6-GjFaYLW@Boquns-Mac-mini.home>
+ <a4090608-d352-742b-fe5e-054db3a8e4a5@proton.me>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp29.i.mail.ru; auth=pass smtp.auth=danila@jiaxyga.com smtp.mailfrom=danila@jiaxyga.com
-X-Mailru-Src: smtp
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD9724621A6593A829DE8CC5FE5C15A6551ED586746534D1F73182A05F538085040FE8B072895BFDE73983094E8AC5AFDC532835674666856ADA2E51A3FFBE5FFBB
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7B2F1B2566C686A20EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637F5B2F26146BDF5648638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8C8FB011FA0803ED04E377AD6966A402C117882F4460429724CE54428C33FAD305F5C1EE8F4F765FC5FC25ED3FCEC3375A471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F44604297287769387670735201E561CDFBCA1751F6FD1C55BDD38FC3FD2E47CDBA5A96583BA9C0B312567BB2376E601842F6C81A19E625A9149C048EEB28585415E75ADA97AAF5A6EB0CB4C2AD8FC6C240DEA76429C9F4D5AE37F343AA9539A8B242431040A6AB1C7CE11FEE362B3BD3CC35DA588AD7EC71F1DB88427C4224003CC836476E2F48590F00D11D6E2021AF6380DFAD1A18204E546F3947CB11811A4A51E3B096D1867E19FE1407959CC434672EE6371089D37D7C0E48F6C8AA50765F7900637FFC82D8E0B5C598BEFF80C71ABB335746BA297DBC24807EABDAD6C7F3747799A
-X-C1DE0DAB: 0D63561A33F958A5C1D3F42E873B22914FDDCF9F63C055A59CA7FDC079330CF9F87CCE6106E1FC07E67D4AC08A07B9B0B6FBD635917D924D9C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFD960616BB8431C520087BEA48F2F8A6A215663BAB114747BCD86E4D398FFBD586DD3C4C1BE61872B498C68607A7C887116AE76226CA5F7402429CDCC97DFCF3509F6894F2AE002664C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojArMfh9+zH8nn4z7Nh13k3Q==
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C73949814CD12929D710BEA1FFDBF3B44CD213E3DF76B9B9158B2F3E643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+In-Reply-To: <a4090608-d352-742b-fe5e-054db3a8e4a5@proton.me>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM7150 has 5 power levels which correspond to 5 speed-bin values: 0,
-128, 146, 167, 172. Speed-bin value is calulated as FMAX/4.8MHz round up
-to zero decimal places.
+On Tue, Sep 26, 2023 at 05:15:52PM +0000, Benno Lossin wrote:
+> On 26.09.23 18:35, Boqun Feng wrote:
+> > On Tue, Sep 26, 2023 at 05:41:17PM +0200, Alice Ryhl wrote:
+> >> On Tue, Sep 26, 2023 at 5:24 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >>>
+> >>> On Tue, Sep 26, 2023 at 04:26:59PM +0800, Gary Guo wrote:
+> >>>> On Mon, 25 Sep 2023 22:26:56 +0000
+> >>>> Benno Lossin <benno.lossin@proton.me> wrote:
+> >>>>
+> >>> [...]
+> >>>>>
+> >>>>> The pointer was originally derived by a call to `into_raw`:
+> >>>>> ```
+> >>>>>       pub fn into_raw(self) -> *const T {
+> >>>>>           let ptr = self.ptr.as_ptr();
+> >>>>>           core::mem::forget(self);
+> >>>>>           // SAFETY: The pointer is valid.
+> >>>>>           unsafe { core::ptr::addr_of!((*ptr).data) }
+> >>>>>       }
+> >>>>> ```
+> >>>>> So in this function the origin (also the origin of the provenance)
+> >>>>> of the pointer is `ptr` which is of type `NonNull<WithRef<T>>`.
+> >>>>> Raw pointers do not lose this provenance information when you cast
+> >>>>> it and when using `addr_of`/`addr_of_mut`. So provenance is something
+> >>>>> that is not really represented in the type system for raw pointers.
+> >>>>>
+> >>>>> When doing a round trip through a reference though, the provenance is
+> >>>>> newly assigned and thus would only be valid for a `T`:
+> >>>>> ```
+> >>>>> let raw = arc.into_raw();
+> >>>>> let reference = unsafe { &*raw };
+> >>>>> let raw: *const T = reference;
+> >>>>> let arc = unsafe { Arc::from_raw(raw) };
+> >>>>> ```
+> >>>>> Miri would complain about the above code.
+> >>>>>
+> >>>>
+> >>>> One thing we can do is to opt from strict provenance, so:
+> >>>>
+> >>>
+> >>> A few questions about strict provenance:
+> >>>
+> >>>> ```
+> >>>> let raw = arc.into_raw();
+> >>>> let _ = raw as usize; // expose the provenance of raw
+> >>>
+> >>> Should this be a expose_addr()?
+> >>
+> >> Pointer to integer cast is equivalent to expose_addr.
+> >>
+> >>>> let reference = unsafe { &*raw };
+> >>>> let raw = reference as *const T as usize as *const T;
+> >>>
+> >>> and this is a from_exposed_addr{_mut}(), right?
+> >>
+> >> Integer to pointer cast is equivalent to from_exposed_addr.
+> >>
+> > 
+> > Got it, thanks!
+> > 
+> >>>> let arc = unsafe { Arc::from_raw(raw) };
+> >>>> ```
+> >>>>
+> >>>
+> >>> One step back, If we were to use strict provenance API (i.e.
+> >>> expose_addr()/from_exposed_addr()), we could use it to "fix" the
+> >>> original problem? By:
+> >>>
+> >>> *       expose_addr() in as_with_ref()
+> >>> *       from_exposed_addr() in `impl From<&WithRef<T>> for Arc`
+> >>>
+> >>> right?
+> >>>
+> >>> More steps back, is the original issue only a real issue under strict
+> >>> provenance rules? Don't make me wrong, I like the ideas behind strict
+> >>> provenance, I just want to check, if we don't enable strict provenance
+> >>> (as a matter of fact, we don't do it today),
+> >>
+> >> Outside of miri, strict provenance is not really something you enable.
+> >> It's a set of rules that are stricter than the real rules, that are
+> >> designed such that when you follow them, your code will be correct
+> >> under any conceivable memory model we might end up with. They will
+> >> never be the rules that the compiler actually uses.
+> >>
+> >> I think by "opt out from strict provenance", Gary just meant "use
+> >> int2ptr and ptr2int casts to reset the provenance".
+> >>
+> >>> will the original issue found by Alice be a UB?
+> >>
+> >> Yes, it's UB under any ruleset that exists out there. There's no flag
+> >> to turn it off.
+> >>
+> >>> Or is there a way to disable Miri's check on
+> >>> strict provenance? IIUC, the cause of the original issue is that "you
+> >>> cannot reborrow a pointer derived from a `&` to get a `&mut`, even when
+> >>> there is no other alias to the same object". Maybe I'm still missing
+> >>> something, but without strict provenance, is this a problem? Or is there
+> >>> a provenance model of Rust without strict provenance?
+> >>
+> >> It's a problem under all of the memory models. The rule being violated
+> >> is exactly the same rule as the one behind this paragraph:
+> >>
+> >>> Transmuting an & to &mut is Undefined Behavior. While certain usages may appear safe, note that the Rust optimizer is free to assume that a shared reference won't change through its lifetime and thus such transmutation will run afoul of those assumptions. So:
+> >>>
+> >>> Transmuting an & to &mut is always Undefined Behavior.
+> >>> No you can't do it.
+> >>> No you're not special.
+> >> From: https://doc.rust-lang.org/nomicon/transmutes.html
+> > 
+> > But here the difference it that we only derive a `*mut` from a `&`,
+> > rather than transmute to a `&mut`, right? We only use `&` to get a
+> > pointer value (a usize), so I don't think that rule applies here? Or in
+> > other words, does the following implemenation look good to you?
+> > 
+> > 	impl<T: ?Sized> Arc<T> {
+> > 	    pub fn as_with_ref(&self) -> &WithRef<T> {
+> > 		// expose
+> > 		let _ = self.ptr.as_ptr() as usize;
+> > 		unsafe { self.ptr.as_ref() }
+> > 	    }
+> > 	}
+> > 
+> > 	impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
+> > 	    fn from(b: &WithRef<T>) -> Self {
+> > 		// from exposed
+> > 		let ptr = unsafe { NonNull::new_unchecked(b as *const _ as usize as *mut _) };
+> > 		// SAFETY: The existence of `b` guarantees that the refcount is non-zero. `ManuallyDrop`
+> > 		// guarantees that `drop` isn't called, so it's ok that the temporary `Arc` doesn't own the
+> > 		// increment.
+> > 		ManuallyDrop::new(unsafe { Arc::from_inner(ptr) })
+> > 		    .deref()
+> > 		    .clone()
+> > 	    }
+> > 	}
+> > 
+> > 
+> > An equivalent code snippet is as below (in case anyone wants to try it
+> > in miri):
+> > ```rust
+> >      let raw = Box::into_raw(arc);
+> > 
+> >      // as_with_ref()
+> >      let _ = raw as usize;
+> >      let reference = unsafe { &*raw };
+> > 
+> >      // from()
+> >      let raw: *mut T = reference as *const _ as usize as  *mut _ ;
+> > 
+> >      // drop()
+> >      let arc = unsafe { Box::from_raw(raw) };
+> > ```
+> 
+> I don't understand why we are trying to use ptr2int to fix this.
+> Simply wrapping the `T` field inside `WithRef` with `UnsafeCell`
+> should be enough.
+> 
 
-Also a618 on SM7150 uses a615 zapfw. Add a squashed version (.mbn).
+To me (and maybe the same for Wedson), it's actually Ok that we don't do
+the change (i.e. the ArcBorrow -> &WithRef) at all. It's more a
+code/concept simplification.
 
-Add this as machine = "qcom,sm7150", because speed-bin values are
-different from atoll (sc7180/sm7125).
+Fixing with an `UnsafeCell` seems more like a workaround to me, because
+there is no interior mutable requirement here, so I just don't want to
+patch something unnecessary here just to make things work.
 
-Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
----
- drivers/gpu/drm/msm/adreno/adreno_device.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Put it in another way, if `UnsafeCell` can fix this and no interior
+mutability is needed, we probably can fix this with another way or there
+is an API like `UnsafeCell` is missing here.
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-index fa527935ffd4..cb2f459cbcc4 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-@@ -293,6 +293,27 @@ static const struct adreno_info gpulist[] = {
- 			{ 157, 3 },
- 			{ 127, 4 },
- 		),
-+	}, {
-+		.machine = "qcom,sm7150",
-+		.chip_ids = ADRENO_CHIP_IDS(0x06010800),
-+		.family = ADRENO_6XX_GEN1,
-+		.fw = {
-+			[ADRENO_FW_SQE] = "a630_sqe.fw",
-+			[ADRENO_FW_GMU] = "a630_gmu.bin",
-+		},
-+		.gmem = SZ_512K,
-+		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
-+		.quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
-+		.init = a6xx_gpu_init,
-+		.zapfw = "a615_zap.mbn",
-+		.hwcg = a615_hwcg,
-+		.speedbins = ADRENO_SPEEDBINS(
-+			{ 0,   0 },
-+			{ 128, 1 },
-+			{ 146, 2 },
-+			{ 167, 3 },
-+			{ 172, 4 },
-+		),
- 	}, {
- 		.chip_ids = ADRENO_CHIP_IDS(0x06010800),
- 		.family = ADRENO_6XX_GEN1,
-@@ -507,6 +528,7 @@ MODULE_FIRMWARE("qcom/a530_zap.b00");
- MODULE_FIRMWARE("qcom/a530_zap.b01");
- MODULE_FIRMWARE("qcom/a530_zap.b02");
- MODULE_FIRMWARE("qcom/a540_gpmu.fw2");
-+MODULE_FIRMWARE("qcom/a615_zap.mbn");
- MODULE_FIRMWARE("qcom/a619_gmu.bin");
- MODULE_FIRMWARE("qcom/a630_sqe.fw");
- MODULE_FIRMWARE("qcom/a630_gmu.bin");
--- 
-2.34.1
+Sorry for being stubborn here ;-) But I really want to find a better
+solution for the similar problems.
 
+What's the shortcoming of ptr2int?
+
+Regards,
+Boqun
+
+> -- 
+> Cheers,
+> Benno
+> 
+> 
