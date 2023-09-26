@@ -2,155 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32EC7AEE41
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA0E7AEE2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbjIZNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        id S234895AbjIZNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234882AbjIZNuK (ORCPT
+        with ESMTP id S234828AbjIZNw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:50:10 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE33CF3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:50:02 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4053cb57f02so77179845e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695736201; x=1696341001; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRs3HHfGHaH5W3/uj1x1VaVTGyeeNQR7KwXCiLuCrmM=;
-        b=bz7BUBGI6h61JBq7BxRn1D+HQiufLhNn2a2hvsJ4pr1rTZNqiOQ6xWB8MGtNINuY26
-         ofOqJ/Zq00wEW4hDfz9MuhaT/uj8dBtcw0i4kXr2JNN/DTTVU6wN1zAys0p4ZOtzz4Q+
-         9MI64iukHtMbuB7iXu4FTVIv3IjNrgEkNj3zcF/74MtSrgzWtP6eR6wODi9/CpGsBrai
-         qsSuA0IGwcCzaGMHyIA1SphmKJff+wnUp8sVheWvfR3yP7jZzf5af59UT2iFslxg87C4
-         ueY2oHMa3JAPt4q239D51f5HuxZ2CKlLJuGLxmLrZBk3EgT01JnCpkUn6ApZTb3qzi0e
-         XMIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695736201; x=1696341001;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cRs3HHfGHaH5W3/uj1x1VaVTGyeeNQR7KwXCiLuCrmM=;
-        b=WG62T5snGOb8MleBd6gmbPzcEmKvB26KsRromKcN6PS1JU9N5Exl2Mp2xHF7r5ingJ
-         8YfXc5Iq55OeO31aYDvehQK3ZIBuK1r2kRpt5VORLmrcFNn8JIX+1Ue1JjihE9k7GerM
-         ScXb/8WJO46sRzAQ2v9hYrJ6gOjxrelOoayWdbBp5xNO9L1i5h9GsqiHREK7ySmKRXee
-         UsMkg0A7cuVwSiwkL3AoX+1TUejmE4KlEKeCJZ2b2jhCuVf7aUqyHUnFsntJ1WLtomts
-         2xz6uvsnHE9ZH6fxLMZMtNyDyPLYlcRmgUO0Q3a4BVkOOB/7mgoPoUfOGahYgbe13us5
-         CfvQ==
-X-Gm-Message-State: AOJu0YzbZrbEKhYSMr71rDVUa8t+G3yTflFhln+9YxdSL5vBDNkov9Wi
-        ilZRPdm3CYmPL8X6LfAkcE0IzA==
-X-Google-Smtp-Source: AGHT+IF91hGN1iRDS8YgIh/vPtUJ+zpofgOyE21tn2k4Y0dzzbVuW2uJnDRcsiLSCzeUbXQdNsr/9Q==
-X-Received: by 2002:a5d:4fc9:0:b0:31a:dc2e:2db2 with SMTP id h9-20020a5d4fc9000000b0031adc2e2db2mr9310520wrw.49.1695736200924;
-        Tue, 26 Sep 2023 06:50:00 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o11-20020a056000010b00b0031c52e81490sm14821340wrx.72.2023.09.26.06.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 06:50:00 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 16:49:57 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sebastian Ott <sebott@redhat.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] binfmt_elf: Support segments with 0 filesz and
- misaligned starts
-Message-ID: <60c7fdeb-da32-4d21-9e34-368050224d6c@kadam.mountain>
+        Tue, 26 Sep 2023 09:52:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA80AF
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:52:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24545C433C7;
+        Tue, 26 Sep 2023 13:52:15 +0000 (UTC)
+Date:   Tue, 26 Sep 2023 14:52:13 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
+        maz@kernel.org, oliver.upton@linux.dev, will@kernel.org,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZRLiDf204zCpO6Mv@arm.com>
+References: <20230907181459.18145-1-ankita@nvidia.com>
+ <20230907181459.18145-3-ankita@nvidia.com>
+ <ZP8q71+YXoU6O9uh@lpieralisi>
+ <ZP9MQdRYmlawNsbC@nvidia.com>
+ <ZQHUifAfJ+lZikAn@lpieralisi>
+ <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87jzsemmsd.fsf_-_@email.froward.int.ebiederm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZRKW6uDR/+eXYMzl@lpieralisi>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Tue, Sep 26, 2023 at 10:31:38AM +0200, Lorenzo Pieralisi wrote:
+> Currently, KVM for ARM64 maps at stage 2 memory that is
+> considered device (ie using pfn_is_map_memory() to discern
+> between device memory and memory itself) with DEVICE_nGnRE
+> memory attributes; this setting overrides (as per the ARM
+> architecture [1]) any device MMIO mapping present at stage
+> 1, resulting in a set-up whereby a guest operating system
+> can't determine device MMIO mapping memory attributes on its
+> own but it is always overriden by the KVM stage 2 default.
+> 
+> This set-up does not allow guest operating systems to map
+> device memory on a page by page basis with combined attributes
+> other than DEVICE_nGnRE,
 
-kernel test robot noticed the following build warnings:
+Well, it also has the option of DEVICE_nGnRnE ;).
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> which turns out to be an issue in that
+> guest operating systems (eg Linux) may request to map
+> devices MMIO regions with memory attributes that guarantee
+> better performance (eg gathering attribute - that for some
+> devices can generate larger PCIe memory writes TLPs)
+> and specific operations (eg unaligned transactions) such as
+> the NormalNC memory type.
+> 
+> The default device stage 2 mapping was chosen in KVM
+> for ARM64 since it was considered safer (ie it would
+> not allow guests to trigger uncontained failures
+> ultimately crashing the machine) but this turned out
+> to be imprecise.
+> 
+> Failures containability is a property of the platform
+> and is independent from the memory type used for MMIO
+> device memory mappings (ie DEVICE_nGnRE memory type is
+> even more problematic than NormalNC in terms of containability
+> since eg aborts triggered on loads cannot be made synchronous,
+> which make them harder to contain); this means that,
+> regardless of the combined stage1+stage2 mappings a
+> platform is safe if and only if device transactions cannot trigger
+> uncontained failures; reworded, the default KVM device
+> stage 2 memory attributes play no role in making device
+> assignment safer for a given platform and therefore can
+> be relaxed.
+> 
+> For all these reasons, relax the KVM stage 2 device
+> memory attributes from DEVICE_nGnRE to NormalNC.
+> 
+> This puts guests in control (thanks to stage1+stage2
+> combined memory attributes rules [1]) of device MMIO
+> regions memory mappings, according to the rules
+> described in [1] and summarized here ([(S1) = Stage1][(S2) = Stage2]):
+> 
+> �S1���������� |�� S2��������� |� Result
+> �NORMAL-WB����|� NORMAL-NC����|� NORMAL-NC
+> �NORMAL-WT����|� NORMAL-NC����|� NORMAL-NC
+> �NORMAL-NC����|� NORMAL-NC����|� NORMAL-NC
+> �DEVICE<attr>�|� NORMAL-NC����|� DEVICE<attr>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Eric-W-Biederman/binfmt_elf-Support-segments-with-0-filesz-and-misaligned-starts/20230925-210022
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/execve
-patch link:    https://lore.kernel.org/r/87jzsemmsd.fsf_-_%40email.froward.int.ebiederm.org
-patch subject: [PATCH] binfmt_elf: Support segments with 0 filesz and misaligned starts
-config: i386-randconfig-141-20230926 (https://download.01.org/0day-ci/archive/20230926/202309261925.QvgPAYL7-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230926/202309261925.QvgPAYL7-lkp@intel.com/reproduce)
+Not sure what's wrong with my font setup as I can't see the above table
+but I know it from the Arm ARM.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202309261925.QvgPAYL7-lkp@intel.com/
+Anyway, the text looks fine to me. Thanks for putting it together
+Lorenzo.
 
-smatch warnings:
-fs/binfmt_elf.c:431 elf_load() error: uninitialized symbol 'map_addr'.
-
-vim +/map_addr +431 fs/binfmt_elf.c
-
-a6409120b31666 Eric W. Biederman 2023-09-25  390  static unsigned long elf_load(struct file *filep, unsigned long addr,
-a6409120b31666 Eric W. Biederman 2023-09-25  391  		const struct elf_phdr *eppnt, int prot, int type,
-a6409120b31666 Eric W. Biederman 2023-09-25  392  		unsigned long total_size)
-a6409120b31666 Eric W. Biederman 2023-09-25  393  {
-a6409120b31666 Eric W. Biederman 2023-09-25  394  	unsigned long zero_start, zero_end;
-a6409120b31666 Eric W. Biederman 2023-09-25  395  	unsigned long map_addr;
-a6409120b31666 Eric W. Biederman 2023-09-25  396  
-a6409120b31666 Eric W. Biederman 2023-09-25  397  	if (eppnt->p_filesz) {
-a6409120b31666 Eric W. Biederman 2023-09-25  398  		map_addr = elf_map(filep, addr, eppnt, prot, type, total_size);
-a6409120b31666 Eric W. Biederman 2023-09-25  399  		if (BAD_ADDR(map_addr))
-a6409120b31666 Eric W. Biederman 2023-09-25  400  			return map_addr;
-a6409120b31666 Eric W. Biederman 2023-09-25  401  		if (eppnt->p_memsz > eppnt->p_filesz) {
-a6409120b31666 Eric W. Biederman 2023-09-25  402  			zero_start = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
-a6409120b31666 Eric W. Biederman 2023-09-25  403  				eppnt->p_filesz;
-a6409120b31666 Eric W. Biederman 2023-09-25  404  			zero_end = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
-a6409120b31666 Eric W. Biederman 2023-09-25  405  				eppnt->p_memsz;
-a6409120b31666 Eric W. Biederman 2023-09-25  406  
-a6409120b31666 Eric W. Biederman 2023-09-25  407  			/* Zero the end of the last mapped page */
-a6409120b31666 Eric W. Biederman 2023-09-25  408  			padzero(zero_start);
-a6409120b31666 Eric W. Biederman 2023-09-25  409  		}
-a6409120b31666 Eric W. Biederman 2023-09-25  410  	} else {
-a6409120b31666 Eric W. Biederman 2023-09-25  411  		zero_start = ELF_PAGESTART(addr);
-a6409120b31666 Eric W. Biederman 2023-09-25  412  		zero_end = zero_start + ELF_PAGEOFFSET(eppnt->p_vaddr) +
-a6409120b31666 Eric W. Biederman 2023-09-25  413  			eppnt->p_memsz;
-
-For this else path, map_addr is only set if there is an error.
-
-a6409120b31666 Eric W. Biederman 2023-09-25  414  	}
-a6409120b31666 Eric W. Biederman 2023-09-25  415  	if (eppnt->p_memsz > eppnt->p_filesz) {
-a6409120b31666 Eric W. Biederman 2023-09-25  416  		/*
-a6409120b31666 Eric W. Biederman 2023-09-25  417  		 * Map the last of the segment.
-a6409120b31666 Eric W. Biederman 2023-09-25  418  		 * If the header is requesting these pages to be
-a6409120b31666 Eric W. Biederman 2023-09-25  419  		 * executable, honour that (ppc32 needs this).
-a6409120b31666 Eric W. Biederman 2023-09-25  420  		 */
-a6409120b31666 Eric W. Biederman 2023-09-25  421  		int error;
-a6409120b31666 Eric W. Biederman 2023-09-25  422  
-a6409120b31666 Eric W. Biederman 2023-09-25  423  		zero_start = ELF_PAGEALIGN(zero_start);
-a6409120b31666 Eric W. Biederman 2023-09-25  424  		zero_end = ELF_PAGEALIGN(zero_end);
-a6409120b31666 Eric W. Biederman 2023-09-25  425  
-a6409120b31666 Eric W. Biederman 2023-09-25  426  		error = vm_brk_flags(zero_start, zero_end - zero_start,
-a6409120b31666 Eric W. Biederman 2023-09-25  427  				     prot & PROT_EXEC ? VM_EXEC : 0);
-a6409120b31666 Eric W. Biederman 2023-09-25  428  		if (error)
-a6409120b31666 Eric W. Biederman 2023-09-25  429  			map_addr = error;
-a6409120b31666 Eric W. Biederman 2023-09-25  430  	}
-a6409120b31666 Eric W. Biederman 2023-09-25 @431  	return map_addr;
-a6409120b31666 Eric W. Biederman 2023-09-25  432  }
+One thing not mentioned here is that pci-vfio still maps such memory as
+Device-nGnRnE in user space and relaxing this potentially creates an
+alias. But such alias is only relevant of both the VMM and the VM try to
+access the same device which I doubt is a realistic scenario.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Catalin
