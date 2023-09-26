@@ -2,367 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0167AF46C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC667AF478
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbjIZTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S235408AbjIZTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234838AbjIZTuA (ORCPT
+        with ESMTP id S233431AbjIZTwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:50:00 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88E0A3;
-        Tue, 26 Sep 2023 12:49:52 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a86a0355dfso5544960b6e.0;
-        Tue, 26 Sep 2023 12:49:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695757792; x=1696362592; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=36Ec5DlRzmoQv9z0q1zeDBidbeUYibAaRRb/G9wYEfI=;
-        b=TLHpHT/suS2GeTb8qkbTQimruiLvBzbbTpyVK5bfIhFKofkGEWFIzP5YMKapYeNH4I
-         Wog804PXTwsyuWzMbZIrBmi3zqpTAkk8r/Re1hGXTZUT47C97sox2+DiB5dCTaynTTfz
-         NQvrs4Yi9t+1hhxFkmj3lrVR77lHAKOf/NyQ7pDKl0UB5APMikiQbFUTyCjqOsI5wREQ
-         1o2Fkb0dbdUa13nfobX0JlNtg8HRx3kZNgc9CXIq39mV5LU9qKmMwH3v8wC5AlPQJtsi
-         mXzPyaRDt7SXh2ED//BUClLChL8E3DcNWh+EskEtmigB7LEW9A/Czg49OJtbefUXPI3P
-         QiQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695757792; x=1696362592;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=36Ec5DlRzmoQv9z0q1zeDBidbeUYibAaRRb/G9wYEfI=;
-        b=MWGJAASznV+WcrchYNYaTRCNngMtM6NH1dg9DnjO5n5WkiKAPKTAkonAVeVjXwJ5bh
-         jrCaCUtz7yVAELM7pAZ2XNap0stiUq5YP+NTOKzcYAResma4BhGLOb84gjFbCwNxfOBp
-         mwlniRW1e+QxgjepDytzpJraSRzpGckmFyBeTD0rj3q7SBY2Bd42U3q+vWV7+gss9+5r
-         yLE2K75Z1AhaDxhoIr1Qbq9LiC0GwwPY9/ozhYwNq1GTsqGHh+NCImetDJXJ0UYjAwTc
-         1BHtgsBZ7/ARPhMPoe0gVaDlcUvCg5b0x/MH7Ils8k/ab2Vr0FTvDywl0F/ZWh15VXzP
-         JPwg==
-X-Gm-Message-State: AOJu0YynOtYvWFKayGWZ/iL5GRbJBPBycZdXd1BrlotCukdClK8B4w46
-        hPdGe2WUc6Dc7tZrTIZ/+I8=
-X-Google-Smtp-Source: AGHT+IE9SG7tw6HLiOdoU2vIpJZrAb5VF2U/ZD9Y17VJ9SxnVN81Mx8Pnf1wdzUtPy4d45NiXjBSPQ==
-X-Received: by 2002:aca:1311:0:b0:3a6:f622:70f1 with SMTP id e17-20020aca1311000000b003a6f62270f1mr9105389oii.57.1695757792002;
-        Tue, 26 Sep 2023 12:49:52 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-016.fbsv.net. [2a03:2880:ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id i4-20020a63e444000000b0056428865aadsm10113211pgk.82.2023.09.26.12.49.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 12:49:51 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH 2/2] selftests: add a selftest to verify hugetlb usage in memcg
-Date:   Tue, 26 Sep 2023 12:49:49 -0700
-Message-Id: <20230926194949.2637078-3-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926194949.2637078-1-nphamcs@gmail.com>
-References: <20230926194949.2637078-1-nphamcs@gmail.com>
+        Tue, 26 Sep 2023 15:52:47 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208FCA3;
+        Tue, 26 Sep 2023 12:52:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VBSlC4pgAzzMx5CQc2GfwvF+RqWDpIAC7601Dwx6oazs3OVh0VvCiLKU0A4LOmVxsWE1jcOg/pOY/uNNgMfHXnbWNgqVgj6lpN5TEfYu9bF8JLTAM/yKctxw4T6hmYTjmMAO99LclgP/XlIDJwQLvYKujzTUtuG9TZXzZwkvvpc0vDHCr+z4tdN0hNMJPUbriIW/lHewnRUl6fHfFaWZQVjTF7aIGw8xh34Q133VUJFg22reS/iAOTWyggMNGqjgGQZ7o5t7uf2B/ZxrZgVzMDvb6MXFxsEXlaZw+eWAB8xekM217/shk3fcBbS7eEwRL00pB1hmvPkgsHlT6TMFrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WJ/hC/ZZhxKScRwJXFmm0EQWkWbr5Aw8Tyv9wsk9xOo=;
+ b=K4IMYNNyp+FDUDjV/1CUa3u3L3uueyGx69cLukdcKg9RoyFZu8MyNp2QdrG7fTGrYSzqU27cDPmkWnCHhJPQHao+DpAgM1j8cyrBiWUGlSgdIkjP10/eqJOpPy4P4daxKYeF42P6AS3mzTwQaKMoKg/HyfnHYulrCJijWzHeBHOs9R6TmEy+c/sEsxjlkwHlfyl7mGSUTOW9Z9R15JvL8YsM39EegbgUt+OEmrrcU+F6tI1+M6z81tLlxNUCAkWLeJ3LkC1Xv5pIRUwtz6HfsqXVRYTfVxgcm/opa9UNeXumt/rf+SQDC/i4ORlTy25hVNFahZnNjve5+snO6rLZjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WJ/hC/ZZhxKScRwJXFmm0EQWkWbr5Aw8Tyv9wsk9xOo=;
+ b=HSNDdCb1tz1CuULvweKOrFgmMNBIpjidJ7bjMKshk5cyjRVrNv6RCFp6wfK70q/D4OlX1suVItrxg8b1LPCPjuY8v/D2vpkPvxq1FUSCBA+zNoMCwe4rNiOrFYaKxI7+maTF+/XSMk15jS9hP+tH5irri0udHrcubVzbfUNW5Ak=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MN0PR12MB6319.namprd12.prod.outlook.com (2603:10b6:208:3c0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Tue, 26 Sep
+ 2023 19:52:38 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6838.016; Tue, 26 Sep 2023
+ 19:52:38 +0000
+Message-ID: <0b739da2-97b7-5a48-70c2-4be6af8ca848@amd.com>
+Date:   Tue, 26 Sep 2023 14:52:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v5 7/8] x86/resctrl: Update documentation with Sub-NUMA
+ cluster changes
+Content-Language: en-US
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-8-tony.luck@intel.com>
+ <560710e3-ce47-db07-e81e-3abd61e6ffbe@amd.com>
+ <SJ1PR11MB60831009ACAC814C4F2A6072FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <e2949d93-946f-51c5-dd08-64de4a272f3e@amd.com>
+ <SJ1PR11MB608334D3FBD41B8635E1CBFAFCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <SJ1PR11MB608334D3FBD41B8635E1CBFAFCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR03CA0014.namprd03.prod.outlook.com
+ (2603:10b6:806:20::19) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|MN0PR12MB6319:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f2b9c50-cad8-4b5b-71db-08dbbeca22bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XrgADV+Tovj5fI6PM7zPHpCMRblchg1dMNzlQi8AcVU8ArCM5WH0jatNaQYYbMRniSyoIheOumWawtxkZr8V4p39aAO7mXeDV08f7U1fUB74LiDaj+Px36NfDSHvui5BnmdPs37LboJLDNc4M4RcfqnK24IdaM6BYoITfZZH4hvwcqXOxDW2EZOZu3PWxp/BFxSz4Tlz1Q3BJi9piqJryF1V7Omw7J9gOa8boyw4joLYCMm8qZu6KzbkoNgmuW6MbhQrwc5oamO6BBUbMpAc2urrlJ1UOzEw0giYebnFy3iHPkfUhhxThWOeJAUQRF6q0/JiOx2phh/2lQeTjan2d/hTurQjlE+xVTsZfekIj9WC5ILP7XLXhSvB/RSFkgBlyNh3uVPWLxZDV1YY8dXTUl10Ik5J5zpNl5wNCfHXCzLUpe1S+fkcTTZOJQZK7vMxpuRpehq5Cjyg4dy8nOeY57PMzCgGWiTeUN/+CiACKl/DTZBP7rypj9YMkMv5iDl3KeNQU52TwN6wJBZvOVJKE4if4jEoVLf8q7s7G1msMxwz7hIer+DDhAtrd/xI73YO+5x6RV32/gJam1CMAqhLPlQMtXKYN2JMHXjWueeRIq4uHA0AUzYvo9LwtxIDkQL0oS+ljBD2MbWiWYC/ghEiElPhTUb29NHk9nJJDVH8QJs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(1800799009)(186009)(451199024)(26005)(53546011)(2616005)(6512007)(6666004)(6486002)(478600001)(7416002)(3450700001)(6506007)(2906002)(4744005)(110136005)(8936002)(8676002)(4326008)(54906003)(66556008)(66946007)(66476007)(41300700001)(316002)(5660300002)(921005)(36756003)(86362001)(38100700002)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXpucGdLZWFmZjN2dDNhckgyQXNmeDdBQTk1dTRRVVlvVS9GUXprTUpWYlRn?=
+ =?utf-8?B?RWNtWjJDZWpGV040alFCUFdybStvU09FNHJVR0RZT3h2YkZXUzFlRjJrYWcy?=
+ =?utf-8?B?SnRJVnB0SmRZaStESFJqc1Z4aXRjOUpBamlGYWhBckQ5M2FnNUtBNW1pbnF3?=
+ =?utf-8?B?T3QvWFlUWXJ2amhoZXBYTFptbGVWV0JBcGhZcmtkQ29PM3dvRXFXV3hCTENY?=
+ =?utf-8?B?QTFBcU03UVd1QlZkaTA5bXRiaHcyaThQU0Z2THY3dFJ3dkxzZmFTQk9TQkZj?=
+ =?utf-8?B?QndubDFYQ25tRGlVdFNSbTNjYnV2aXN3b21Mby84SmVPNmx3UFBLSUxEU3Ba?=
+ =?utf-8?B?SGVzZ0ZjMjBGR2UwZjFqamlOU1ZIL3orOUR5NUVyZW5tME1OcXFNNFVpc1M3?=
+ =?utf-8?B?UExmNFRXb1RTZjZhakwxSmtnVFlvc2NCZFo1VW5jSTZBSm5kbzhnN2xJWFJT?=
+ =?utf-8?B?K3R2dCt5THpwUUxzTDV3TFZ0ckNKLzg3LzZWQllPWTdGcS8wZmJsZHJ5L05a?=
+ =?utf-8?B?a3NrVHV2NEU5MWVRaVVJWjFzYkg2eHA4NWtMRHZUMWdSNm1aQk9Hc0Y4dzY4?=
+ =?utf-8?B?U0R3K1dMQTVIK2Z4UWYxdm9rbDBlRVM0SjNFZ3ZxUjVkNGRmRDVFMkFMdVAr?=
+ =?utf-8?B?T3VYREhEZ05VeVJKdVJqRGtaeCtWQlMxZjg3NTBWVGd1VW5qeTgwZmtsbzFZ?=
+ =?utf-8?B?NXRCYjlkUnpUNUwyUHNLYjNuS2luUUZvbHNhVGJ5R2JIbUVYRWJFdTN3RHhF?=
+ =?utf-8?B?c05qV3JUK0RsUGdndEVXcjY5Zitsa0ZvREdGZTR5dUxPZjVvQlVqMWpCTm9J?=
+ =?utf-8?B?MUZUb2lWOW85UG1BSTNmSTBMSTl5OGtIaUZna2VQR0VRVm9zU2NmUVhRK3Uw?=
+ =?utf-8?B?WmdiZWRRbEs5ZXhnaTdQSTJLMXUrWUh6elVDeUZ6WDJUWDNMeWFUMmRydXl6?=
+ =?utf-8?B?bVk2WEpyVmVYQkNmVmNZb3F1bDVDaUllZFNtNjlML0htZU5VbVNva1Q1eGxn?=
+ =?utf-8?B?ZUhldHE3Z3U0Rmc0QjlMMVdRQmgyR2svWjVBM0hmQmd5SGsrbVNNallEVXRq?=
+ =?utf-8?B?RUR3Y1paZVAxME9nNk9RcjhxMTJOWWNGb1BaeitHL0wrSGQvVk1pb051MEdX?=
+ =?utf-8?B?UkI0VkE4aHhvYUltNGtsblFYS0tVcUFlSFVPT3krSmxuY292WElrM2NqbkVk?=
+ =?utf-8?B?ZUc0OUcvbjJtcTVta0xjMDlnZEZHSG5UVHM5dUpzTVgwWFVTeVdRZ2JkcjVM?=
+ =?utf-8?B?ajlDa3hJb2pzZEkxTjJKMjZHa0pmdllnMnFmM2ZFSzdKWWI4cktheTZzb1pi?=
+ =?utf-8?B?QW9ONTNIZGJ4RlJia1pkV2VmYVcxT3pFUmQrbkZPYnVsSnpMdC9pc1hNWFM5?=
+ =?utf-8?B?dlVXQUNybks0Ui9YZTZEYkRrYlp0WU9HQW1FOVVydC9WTFBuVVJ6d0MyVnda?=
+ =?utf-8?B?OUJ3V2ZzNzhYanp3RlhpR24xbWY4SGpTajROaXFsT1Bpczd1L3FZejhzNFBM?=
+ =?utf-8?B?K1BkU1JsV0N2SnptNkM4RDZYV3B3b3RnL0RQYkRxcG9uZ2Q5ODJtYk5oR01u?=
+ =?utf-8?B?Szk2MDV1VjhvVlRlT3pIdmQ1KzdzdmM0UHdZVkRhZjZrUkorYWszdm1zUzBp?=
+ =?utf-8?B?bmtQYmROaFl6d2t1dXA2VXVMQXZZM2VpY0hIUVA2NnkwR3BYQzlETnY3Y2Nu?=
+ =?utf-8?B?Smw2L0RaVWVDMEYwa1FQR0MvNGpqY1BNNXQ4cDFiblk1VjRkaTlMQnR6cHZD?=
+ =?utf-8?B?bDd1OGRiNG1BN2Y0Z2Y0NHJMUkY1U2hFV2xybFNTbnNQY0ZlU1p1ZlNGZU1Z?=
+ =?utf-8?B?d3dvZHBQeXdFeFo3Rjg4bG1wMVZjYzQ0bHFyRTNxV05YZmVjTWZHTXJwaWkz?=
+ =?utf-8?B?KzJQYnF1NTJmekdFMXFtQU9GcnRwM0lKckRxQm5tQXFCVXo4T3g0Zm0zTzgr?=
+ =?utf-8?B?cS9PYmRoUWo1VzlyandFVFBtRU81eXN4MkhVWXUyQ2ZMNXZjR0ZPZ3JFRzdU?=
+ =?utf-8?B?bG5NaHJYYUJtOGMzVW5nWmxWSkJTL1ZwOEtRaXRnYURyNzVLUnIyVlNtWHNz?=
+ =?utf-8?B?LzVCLzdmYWZDWklGVDA3MjdlZ0pYM1BCSFNUbyt6cElZWE93cWpxWGNnTGdN?=
+ =?utf-8?Q?K4hw=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f2b9c50-cad8-4b5b-71db-08dbbeca22bc
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 19:52:37.9680
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ukvhs+t015jcZTTKKZtG6UIp4fXRVeLQttvYNGkB82s4LgS5HUR79a5Err+NNoX2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6319
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a new kselftest to demonstrate and verify the new
-hugetlb memcg accounting behavior.
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- MAINTAINERS                                   |   2 +
- tools/testing/selftests/cgroup/.gitignore     |   1 +
- tools/testing/selftests/cgroup/Makefile       |   2 +
- .../selftests/cgroup/test_hugetlb_memcg.c     | 222 ++++++++++++++++++
- 4 files changed, 227 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bf0f54c24f81..ce9f40bcc2ba 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5269,6 +5269,7 @@ S:	Maintained
- F:	mm/memcontrol.c
- F:	mm/swap_cgroup.c
- F:	tools/testing/selftests/cgroup/memcg_protection.m
-+F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
- F:	tools/testing/selftests/cgroup/test_kmem.c
- F:	tools/testing/selftests/cgroup/test_memcontrol.c
- 
-@@ -9652,6 +9653,7 @@ F:	include/linux/hugetlb.h
- F:	mm/hugetlb.c
- F:	mm/hugetlb_vmemmap.c
- F:	mm/hugetlb_vmemmap.h
-+F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
- 
- HVA ST MEDIA DRIVER
- M:	Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
-index af8c3f30b9c1..2732e0b29271 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -7,4 +7,5 @@ test_kill
- test_cpu
- test_cpuset
- test_zswap
-+test_hugetlb_memcg
- wait_inotify
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index c27f05f6ce9b..00b441928909 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -14,6 +14,7 @@ TEST_GEN_PROGS += test_kill
- TEST_GEN_PROGS += test_cpu
- TEST_GEN_PROGS += test_cpuset
- TEST_GEN_PROGS += test_zswap
-+TEST_GEN_PROGS += test_hugetlb_memcg
- 
- LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
- 
-@@ -27,3 +28,4 @@ $(OUTPUT)/test_kill: cgroup_util.c
- $(OUTPUT)/test_cpu: cgroup_util.c
- $(OUTPUT)/test_cpuset: cgroup_util.c
- $(OUTPUT)/test_zswap: cgroup_util.c
-+$(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-new file mode 100644
-index 000000000000..9651f6af6914
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -0,0 +1,222 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <linux/limits.h>
-+#include <sys/mman.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+#define ADDR ((void *)(0x0UL))
-+#define FLAGS (MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
-+/* mapping 8 MBs == 4 hugepages */
-+#define LENGTH (8UL*1024*1024)
-+#define PROTECTION (PROT_READ | PROT_WRITE)
-+
-+/* borrowed from mm/hmm-tests.c */
-+static long get_hugepage_size(void)
-+{
-+	int fd;
-+	char buf[2048];
-+	int len;
-+	char *p, *q, *path = "/proc/meminfo", *tag = "Hugepagesize:";
-+	long val;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0) {
-+		/* Error opening the file */
-+		return -1;
-+	}
-+
-+	len = read(fd, buf, sizeof(buf));
-+	close(fd);
-+	if (len < 0) {
-+		/* Error in reading the file */
-+		return -1;
-+	}
-+	if (len == sizeof(buf)) {
-+		/* Error file is too large */
-+		return -1;
-+	}
-+	buf[len] = '\0';
-+
-+	/* Search for a tag if provided */
-+	if (tag) {
-+		p = strstr(buf, tag);
-+		if (!p)
-+			return -1; /* looks like the line we want isn't there */
-+		p += strlen(tag);
-+	} else
-+		p = buf;
-+
-+	val = strtol(p, &q, 0);
-+	if (*q != ' ') {
-+		/* Error parsing the file */
-+		return -1;
-+	}
-+
-+	return val;
-+}
-+
-+static int set_file(const char *path, long value)
-+{
-+	FILE *file;
-+	int ret;
-+
-+	file = fopen(path, "w");
-+	if (!file)
-+		return -1;
-+	ret = fprintf(file, "%ld\n", value);
-+	fclose(file);
-+	return ret;
-+}
-+
-+static int set_nr_hugepages(long value)
-+{
-+	return set_file("/proc/sys/vm/nr_hugepages", value);
-+}
-+
-+static unsigned int check_first(char *addr)
-+{
-+	return *(unsigned int *)addr;
-+}
-+
-+static void write_data(char *addr)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < LENGTH; i++)
-+		*(addr + i) = (char)i;
-+}
-+
-+static int hugetlb_test_program(const char *cgroup, void *arg)
-+{
-+	char *test_group = (char *)arg;
-+	void *addr;
-+	long old_current, expected_current, current;
-+	int ret = EXIT_FAILURE;
-+
-+	old_current = cg_read_long(test_group, "memory.current");
-+
-+	addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, 0, 0);
-+	if (addr == MAP_FAILED) {
-+		ksft_print_msg("fail to mmap.\n");
-+		return EXIT_FAILURE;
-+	}
-+	current = cg_read_long(test_group, "memory.current");
-+	if (current - old_current >= MB(2)) {
-+		ksft_print_msg("mmap should not increase hugepage usage.\n");
-+		goto out_failed_munmap;
-+	}
-+	old_current = current;
-+
-+	/* read the first page */
-+	check_first(addr);
-+	expected_current = old_current + MB(2);
-+	current = cg_read_long(test_group, "memory.current");
-+	if (!values_close(expected_current, current, 1)) {
-+		ksft_print_msg("memory usage should increase by around 2MB.\n");
-+		goto out_failed_munmap;
-+	}
-+
-+	/* write to the whole range */
-+	write_data(addr);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current + MB(8);
-+	if (!values_close(expected_current, current, 1)) {
-+		ksft_print_msg("memory usage should increase by around 8MB.\n");
-+		goto out_failed_munmap;
-+	}
-+
-+	/* unmap the whole range */
-+	munmap(addr, LENGTH);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current;
-+	if (!values_close(expected_current, current, 1)) {
-+		ksft_print_msg("memory usage should go back down.\n");
-+		return ret;
-+	}
-+
-+	ret = EXIT_SUCCESS;
-+	return ret;
-+
-+out_failed_munmap:
-+	munmap(addr, LENGTH);
-+	return ret;
-+}
-+
-+static int test_hugetlb_memcg(char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+	long old_current, expected_current, current;
-+
-+	test_group = cg_name(root, "hugetlb_memcg_test");
-+
-+	if (!test_group || cg_create(test_group)) {
-+		ksft_print_msg("fail to create cgroup.\n");
-+		goto out;
-+	}
-+
-+	if (cg_write(test_group, "memory.max", "100M")) {
-+		ksft_print_msg("fail to set cgroup memory limit.\n");
-+		goto out;
-+	}
-+
-+	/* disable swap */
-+	if (cg_write(test_group, "memory.swap.max", "0")) {
-+		ksft_print_msg("fail to disable swap.\n");
-+		goto out;
-+	}
-+	old_current = cg_read_long(test_group, "memory.current");
-+
-+	set_nr_hugepages(20);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current;
-+	if (!values_close(expected_current, current, 10)) {
-+		ksft_print_msg(
-+			"memory usage should not increase after setting nr_hugepages.\n");
-+		goto out;
-+	}
-+
-+	if (!cg_run(test_group, hugetlb_test_program, (void *)test_group))
-+		ret = KSFT_PASS;
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int ret = EXIT_SUCCESS;
-+
-+	/* Unit is kB! */
-+	if (get_hugepage_size() != 2048) {
-+		ksft_print_msg("test_hugetlb_memcg requires 2MB hugepages\n");
-+		ksft_test_result_skip("test_hugetlb_memcg\n");
-+		return ret;
-+	}
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	switch (test_hugetlb_memcg(root)) {
-+	case KSFT_PASS:
-+		ksft_test_result_pass("test_hugetlb_memcg\n");
-+		break;
-+	case KSFT_SKIP:
-+		ksft_test_result_skip("test_hugetlb_memcg\n");
-+		break;
-+	default:
-+		ret = EXIT_FAILURE;
-+		ksft_test_result_fail("test_hugetlb_memcg\n");
-+		break;
-+	}
-+
-+	return ret;
-+}
+On 9/26/23 14:43, Luck, Tony wrote:
+>>> My original patch series added an "snc_ways" file to the info/ directory
+>>> to make this visible. But I was talked out of it because of a lack of clear
+>>> user mode use case that needs it.
+>>
+>> ok. Lets go with it.
+> 
+> Babu,
+> 
+> I'm not sure whether you are voting to bring the snc_ways patch back into
+> the series. Or to stick with the decision to drop that patch.
+> 
+
+Sorry.. for not being clear. Lets stick with the James comment to drop it.
+
 -- 
-2.34.1
-
+Thanks
+Babu Moger
