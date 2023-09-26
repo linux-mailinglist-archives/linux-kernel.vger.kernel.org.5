@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40647AE526
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A5E7AE52B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbjIZFkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 01:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
+        id S233681AbjIZFlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 01:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjIZFkW (ORCPT
+        with ESMTP id S229461AbjIZFln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 01:40:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D11DD7;
-        Mon, 25 Sep 2023 22:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=yJdqhIQUoxN3D+nrxuHC+beu2HfHdtlmGmJ8QrD3jjA=; b=3C72IN311QgUJmOTBwHef3jvHz
-        D/6BWxPdut/DNXGkeSlXZ5ZFTHHaghz591pozsAi89KC69RMYc7+wQXZU91pjgzzaBq9R6v93Q8og
-        8Lv5oamM4/cnxE7dg9deHjEazP0epHw3nQU2fYD12B0jaKPR1AT33Y7BiEqtERsNluYAteFHPkERK
-        PggJVW3Ok6D6beS2/uN+UKelEhbYBlZWvTVMKJi7BiDavEObfvWSvlamr+SpfjSXV9ykd/w6XXEmJ
-        OdQ0JrKMnY2DotAehJVemHy37Fb3eiPPD1uzq9KZKaID2gP+tQ/AgB5yOLpRyJ9/FM0Hp/Q38N45M
-        oIrtqaKQ==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1ql0nu-00FdT0-0M;
-        Tue, 26 Sep 2023 05:40:14 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Liming Sun <lsun@mellanox.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH] platform/mellanox: tmfifo: fix kernel-doc warnings
-Date:   Mon, 25 Sep 2023 22:40:11 -0700
-Message-ID: <20230926054013.11450-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Tue, 26 Sep 2023 01:41:43 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D3AE9;
+        Mon, 25 Sep 2023 22:41:36 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so5712865a12.1;
+        Mon, 25 Sep 2023 22:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695706895; x=1696311695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qq1fspIFsjirF2QJeFwHsMtLnKCKkT6CIKp3dlIQQRw=;
+        b=CM/VrL0O6+mtJkvHh/0XUpGkEmeexkPFMmLNBb5QPJSU5NnmZaLft+Ai/TDaAGuJaY
+         B1dc1UWDqidgExBzrFtghUbpBWrew6QeiPnWJQSQfVxUuZACwL/RQUbuxYmbl3VqcGNw
+         8WsYbaokZY4PPEK9kGQD4OVGRKSnLinWd0VSpUebGkfYFvP8g0anv+8Bg+DuG43DwoCI
+         evYnAVmQtme2je32qqA7V6e9Lhh7tk3YVdcHGLyLKLpOTjVcrd0msTy7o5pvN/aOujaD
+         kzw/DqZeoOP+YgwgIInquKxh4wmZGflIY2nwbk7mIywACHlxENMhppExRmymAt8byd2/
+         sVWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695706895; x=1696311695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qq1fspIFsjirF2QJeFwHsMtLnKCKkT6CIKp3dlIQQRw=;
+        b=h/SiYc7QDyDReQO/PTZwlvr16HSDqjyArCPJHi+nTKgsXm0Nx58sPfU9sZ9sGe+TKu
+         3IvlhVZTA2r6H6jPMwJdP4a9yRrnBj7zZlj4e+imyonrW5RmiogcPdz4r9YMV9WJLgo/
+         LpBA+Gbn+fCLA6G8wkevn3jritg3MLJtFHFDQZVr6K1PxZiBLI5n+a2aLvYSHJsE0OlC
+         EC9dd/ehqjMMJECkR76CwCOhFIsEUlp7hqdqg17NYfeYDhkjgq7EvSwdvgvpP/lQCukD
+         +2Q0IdyG9imK0hSmSwspZ2k2Uie87/UZ6/YkokPCGJa1BkwnDDgBJioSe/ePTSK2WToa
+         3sEg==
+X-Gm-Message-State: AOJu0Yy5EKkry1Q1Yo2lQmtE2DuHrguISZUB6+mtFoJ/6UOdz9imtJYe
+        C5ziFb7oPleItw681ZiK5U6t9MAwNy6OcnGF8h8=
+X-Google-Smtp-Source: AGHT+IHL8T+K3PDezOhxFtuYl5923Ksx/n2bdRR6YGosxAfr9eRYzXWiXuBJfq+qCm4zZrnMLynd+1j4SxpLrxUbc8E=
+X-Received: by 2002:aa7:c502:0:b0:530:9d56:c2a5 with SMTP id
+ o2-20020aa7c502000000b005309d56c2a5mr6017562edq.6.1695706894697; Mon, 25 Sep
+ 2023 22:41:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230924010214.3700150-1-william@wkennington.com>
+In-Reply-To: <20230924010214.3700150-1-william@wkennington.com>
+From:   Tali Perry <tali.perry1@gmail.com>
+Date:   Tue, 26 Sep 2023 08:41:23 +0300
+Message-ID: <CAHb3i=uOMuUAz=zY_GFvBi-9JFaaPhN4F0Ve5i1f4WhyjgH8Bw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: npcm7xx: Fix callback completion ordering
+To:     "William A. Kennington III" <william@wkennington.com>
+Cc:     tmaimon77@gmail.com, avifishman70@gmail.com, wsa@kernel.org,
+        joel@jms.id.au, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc notation for structs and struct members to prevent
-these warnings:
+On Sun, Sep 24, 2023 at 4:02=E2=80=AFAM William A. Kennington III
+<william@wkennington.com> wrote:
+>
+> Sometimes, our completions race with new master transfers and override
+> the bus->operation and bus->master_or_slave variables. This causes
+> transactions to timeout and kernel crashes less frequently.
+>
+> To remedy this, we re-order all completions to the very end of the
+> function.
+>
+> Fixes: 56a1485b102e ("i2c: npcm7xx: Add Nuvoton NPCM I2C controller drive=
+r")
+> Signed-off-by: William A. Kennington III <william@wkennington.com>
+> ---
+>  drivers/i2c/busses/i2c-npcm7xx.c | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-np=
+cm7xx.c
+> index 495a8b5f6a2b..ae4bae63ad4f 100644
+> --- a/drivers/i2c/busses/i2c-npcm7xx.c
+> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
+> @@ -694,6 +694,7 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+>  {
+>         struct i2c_msg *msgs;
+>         int msgs_num;
+> +       bool do_complete =3D false;
+>
+>         msgs =3D bus->msgs;
+>         msgs_num =3D bus->msgs_num;
+> @@ -722,23 +723,17 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+>                                  msgs[1].flags & I2C_M_RD)
+>                                 msgs[1].len =3D info;
+>                 }
+> -               if (completion_done(&bus->cmd_complete) =3D=3D false)
+> -                       complete(&bus->cmd_complete);
+> -       break;
+> -
+> +               do_complete =3D true;
+> +               break;
+>         case I2C_NACK_IND:
+>                 /* MASTER transmit got a NACK before tx all bytes */
+>                 bus->cmd_err =3D -ENXIO;
+> -               if (bus->master_or_slave =3D=3D I2C_MASTER)
+> -                       complete(&bus->cmd_complete);
+> -
+> +               do_complete =3D true;
+>                 break;
+>         case I2C_BUS_ERR_IND:
+>                 /* Bus error */
+>                 bus->cmd_err =3D -EAGAIN;
+> -               if (bus->master_or_slave =3D=3D I2C_MASTER)
+> -                       complete(&bus->cmd_complete);
+> -
+> +               do_complete =3D true;
+>                 break;
+>         case I2C_WAKE_UP_IND:
+>                 /* I2C wake up */
+> @@ -752,6 +747,8 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
+>         if (bus->slave)
+>                 bus->master_or_slave =3D I2C_SLAVE;
+>  #endif
+> +       if (do_complete)
+> +               complete(&bus->cmd_complete);
+>  }
+>
+>  static u8 npcm_i2c_fifo_usage(struct npcm_i2c *bus)
+> --
+> 2.42.0.515.g380fc7ccd1-goog
+>
 
-mlxbf-tmfifo.c:73: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_vring '
-mlxbf-tmfifo.c:128: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_vdev '
-mlxbf-tmfifo.c:146: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_irq_info '
-mlxbf-tmfifo.c:158: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_io '
-mlxbf-tmfifo.c:182: warning: cannot understand function prototype: 'struct mlxbf_tmfifo '
-mlxbf-tmfifo.c:208: warning: cannot understand function prototype: 'struct mlxbf_tmfifo_msg_hdr '
-mlxbf-tmfifo.c:138: warning: Function parameter or member 'config' not described in 'mlxbf_tmfifo_vdev'
-mlxbf-tmfifo.c:212: warning: Function parameter or member 'unused' not described in 'mlxbf_tmfifo_msg_hdr'
+Thanks William for the fix!
 
-Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox BlueField Soc")
-Fixes: bc05ea63b394 ("platform/mellanox: Add BlueField-3 support in the tmfifo driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202309252330.saRU491h-lkp@intel.com
-Cc: Liming Sun <lsun@mellanox.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Cc: Mark Gross <markgross@kernel.org>
-Cc: Vadim Pasternak <vadimp@nvidia.com>
-Cc: platform-driver-x86@vger.kernel.org
----
- drivers/platform/mellanox/mlxbf-tmfifo.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff -- a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -53,7 +53,7 @@
- struct mlxbf_tmfifo;
- 
- /**
-- * mlxbf_tmfifo_vring - Structure of the TmFifo virtual ring
-+ * struct mlxbf_tmfifo_vring - Structure of the TmFifo virtual ring
-  * @va: virtual address of the ring
-  * @dma: dma address of the ring
-  * @vq: pointer to the virtio virtqueue
-@@ -113,12 +113,13 @@ enum {
- };
- 
- /**
-- * mlxbf_tmfifo_vdev - Structure of the TmFifo virtual device
-+ * struct mlxbf_tmfifo_vdev - Structure of the TmFifo virtual device
-  * @vdev: virtio device, in which the vdev.id.device field has the
-  *        VIRTIO_ID_xxx id to distinguish the virtual device.
-  * @status: status of the device
-  * @features: supported features of the device
-  * @vrings: array of tmfifo vrings of this device
-+ * @config: non-anonymous union for cons and net
-  * @config.cons: virtual console config -
-  *               select if vdev.id.device is VIRTIO_ID_CONSOLE
-  * @config.net: virtual network config -
-@@ -138,7 +139,7 @@ struct mlxbf_tmfifo_vdev {
- };
- 
- /**
-- * mlxbf_tmfifo_irq_info - Structure of the interrupt information
-+ * struct mlxbf_tmfifo_irq_info - Structure of the interrupt information
-  * @fifo: pointer to the tmfifo structure
-  * @irq: interrupt number
-  * @index: index into the interrupt array
-@@ -150,7 +151,7 @@ struct mlxbf_tmfifo_irq_info {
- };
- 
- /**
-- * mlxbf_tmfifo_io - Structure of the TmFifo IO resource (for both rx & tx)
-+ * struct mlxbf_tmfifo_io - Structure of the TmFifo IO resource (for both rx & tx)
-  * @ctl: control register offset (TMFIFO_RX_CTL / TMFIFO_TX_CTL)
-  * @sts: status register offset (TMFIFO_RX_STS / TMFIFO_TX_STS)
-  * @data: data register offset (TMFIFO_RX_DATA / TMFIFO_TX_DATA)
-@@ -162,7 +163,7 @@ struct mlxbf_tmfifo_io {
- };
- 
- /**
-- * mlxbf_tmfifo - Structure of the TmFifo
-+ * struct mlxbf_tmfifo - Structure of the TmFifo
-  * @vdev: array of the virtual devices running over the TmFifo
-  * @lock: lock to protect the TmFifo access
-  * @res0: mapped resource block 0
-@@ -198,7 +199,7 @@ struct mlxbf_tmfifo {
- };
- 
- /**
-- * mlxbf_tmfifo_msg_hdr - Structure of the TmFifo message header
-+ * struct mlxbf_tmfifo_msg_hdr - Structure of the TmFifo message header
-  * @type: message type
-  * @len: payload length in network byte order. Messages sent into the FIFO
-  *       will be read by the other side as data stream in the same byte order.
-@@ -208,6 +209,7 @@ struct mlxbf_tmfifo {
- struct mlxbf_tmfifo_msg_hdr {
- 	u8 type;
- 	__be16 len;
-+	/* private: */
- 	u8 unused[5];
- } __packed __aligned(sizeof(u64));
- 
+Reviewed-by: Tali Perry <tali.perry1@gmail.com>
