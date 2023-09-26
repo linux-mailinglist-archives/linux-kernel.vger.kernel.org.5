@@ -2,55 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 313D37AE614
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249527AE617
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjIZGiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
+        id S233815AbjIZGia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjIZGiS (ORCPT
+        with ESMTP id S233818AbjIZGi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:38:18 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F760E6;
-        Mon, 25 Sep 2023 23:38:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vsvr0J9_1695710284;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vsvr0J9_1695710284)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 14:38:07 +0800
-Message-ID: <078b410f-e3b2-0355-d993-40ac46b99870@linux.alibaba.com>
-Date:   Tue, 26 Sep 2023 14:38:04 +0800
+        Tue, 26 Sep 2023 02:38:26 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 818E511D;
+        Mon, 25 Sep 2023 23:38:19 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id B53DC80A3;
+        Tue, 26 Sep 2023 06:38:17 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: input: gpio-keys: Allow optional dedicated wakeirq
+Date:   Tue, 26 Sep 2023 09:38:08 +0300
+Message-ID: <20230926063809.25654-1-tony@atomide.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RESEND PATCH v8 2/2] ACPI: APEI: handle synchronous exceptions
- in task work
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, rafael@kernel.org,
-        wangkefeng.wang@huawei.com, tanxiaofei@huawei.com,
-        mawupeng1@huawei.com, tony.luck@intel.com, linmiaohe@huawei.com,
-        naoya.horiguchi@nec.com, james.morse@arm.com,
-        gregkh@linuxfoundation.org, will@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20230919022127.69732-3-xueshuai@linux.alibaba.com>
- <CVS371QBH3QK.3354DSBK53OFS@suppilovahvero>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <CVS371QBH3QK.3354DSBK53OFS@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,69 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow configuring an optional dedicated wakeirq for gpio-keys that
+some SoCs have.
 
+Let's use the common interrupt naming "irq" and "wakeup" that we already
+have in use for some drivers and subsystems like i2c framework.
 
-On 2023/9/25 23:00, Jarkko Sakkinen wrote:
-> On Tue Sep 19, 2023 at 5:21 AM EEST, Shuai Xue wrote:
->> Hardware errors could be signaled by synchronous interrupt, e.g.  when an
->> error is detected by a background scrubber, or signaled by synchronous
->> exception, e.g. when an uncorrected error is consumed. Both synchronous and
->> asynchronous error are queued and handled by a dedicated kthread in
->> workqueue.
->>
->> commit 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for
->> synchronous errors") keep track of whether memory_failure() work was
->> queued, and make task_work pending to flush out the workqueue so that the
->> work for synchronous error is processed before returning to user-space.
->> The trick ensures that the corrupted page is unmapped and poisoned. And
->> after returning to user-space, the task starts at current instruction which
->> triggering a page fault in which kernel will send SIGBUS to current process
->> due to VM_FAULT_HWPOISON.
->>
->> However, the memory failure recovery for hwpoison-aware mechanisms does not
->> work as expected. For example, hwpoison-aware user-space processes like
->> QEMU register their customized SIGBUS handler and enable early kill mode by
->> seting PF_MCE_EARLY at initialization. Then the kernel will directy notify
->> the process by sending a SIGBUS signal in memory failure with wrong
->> si_code: the actual user-space process accessing the corrupt memory
->> location, but its memory failure work is handled in a kthread context, so
->> it will send SIGBUS with BUS_MCEERR_AO si_code to the actual user-space
->> process instead of BUS_MCEERR_AR in kill_proc().
->>
->> To this end, separate synchronous and asynchronous error handling into
->> different paths like X86 platform does:
->>
->> - valid synchronous errors: queue a task_work to synchronously send SIGBUS
->>   before ret_to_user.
->> - valid asynchronous errors: queue a work into workqueue to asynchronously
->>   handle memory failure.
->> - abnormal branches such as invalid PA, unexpected severity, no memory
->>   failure config support, invalid GUID section, OOM, etc.
->>
->> Then for valid synchronous errors, the current context in memory failure is
->> exactly belongs to the task consuming poison data and it will send SIBBUS
->> with proper si_code.
->>
->> Fixes: 7f17b4a121d0 ("ACPI: APEI: Kick the memory_failure() queue for synchronous errors")
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> Tested-by: Ma Wupeng <mawupeng1@huawei.com>
->> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> Reviewed-by: Xiaofei Tan <tanxiaofei@huawei.com>
->> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> 
-> Did 7f17b4a121d0 actually break something that was not broken before?
-> 
-> If not, this is (afaik) not a bug fix.
+Note that the gpio-keys interrupt property is optional. If only a gpio
+property is specified, the driver tries to translate the gpio into an
+interrupt.
 
-Hi, Jarkko,
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
 
-It did not. It keeps track of whether memory_failure() work was queued,
-and makes task_work pending to flush out the queue. But if no work queued for
-synchronous error due to abnormal branches, it does not do a force kill to
-current process resulting a hard lockup due to exception loop.
+Changes since v2:
+- Fix indentation as noted by Rob's bot
 
-It is fine to me to remove the bug fix tag if you insist on removing it.
+- Add Reviewed-by from Rob
 
-Best Regards,
-Shuai
+Changes since v1:
 
+- Run make dt_binding_check on the binding
+
+- Add better checks for interrupt-names as suggested by Rob, it is
+  now required if two interrupts are configured
+
+- Add more decription entries
+
+- Add a new example for key-wakeup
+
+---
+ .../devicetree/bindings/input/gpio-keys.yaml  | 41 ++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/input/gpio-keys.yaml b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+--- a/Documentation/devicetree/bindings/input/gpio-keys.yaml
++++ b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+@@ -31,7 +31,23 @@ patternProperties:
+         maxItems: 1
+ 
+       interrupts:
+-        maxItems: 1
++        oneOf:
++          - items:
++              - description: Optional key interrupt or wakeup interrupt
++          - items:
++              - description: Key interrupt
++              - description: Wakeup interrupt
++
++      interrupt-names:
++        description:
++          Optional interrupt names, can be used to specify a separate dedicated
++          wake-up interrupt in addition to the gpio irq
++        oneOf:
++          - items:
++              - enum: [ irq, wakeup ]
++          - items:
++              - const: irq
++              - const: wakeup
+ 
+       label:
+         description: Descriptive name of the key.
+@@ -97,6 +113,20 @@ patternProperties:
+       - required:
+           - gpios
+ 
++    allOf:
++      - if:
++          properties:
++            interrupts:
++              minItems: 2
++          required:
++            - interrupts
++        then:
++          properties:
++            interrupt-names:
++              minItems: 2
++          required:
++            - interrupt-names
++
+     dependencies:
+       wakeup-event-action: [ wakeup-source ]
+       linux,input-value: [ gpios ]
+@@ -137,6 +167,15 @@ examples:
+             linux,code = <108>;
+             interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
+         };
++
++        key-wakeup {
++            label = "GPIO Key WAKEUP";
++            linux,code = <143>;
++            interrupts-extended = <&intc 2 IRQ_TYPE_EDGE_FALLING>,
++                                  <&intc_wakeup 0 IRQ_TYPE_LEVEL_HIGH>;
++            interrupt-names = "irq", "wakeup";
++            wakeup-source;
++        };
+     };
+ 
+ ...
+-- 
+2.42.0
