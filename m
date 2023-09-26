@@ -2,281 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D82B37AEEC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958C87AEE93
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjIZOTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
+        id S232504AbjIZOSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbjIZOTR (ORCPT
+        with ESMTP id S231902AbjIZOSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:19:17 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 07:19:06 PDT
-Received: from mgamail.intel.com (unknown [198.175.65.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04E210E;
-        Tue, 26 Sep 2023 07:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695737947; x=1727273947;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=tZezWUyWI/E+sECmaBnngNun38NOGr4Q7H/3fQV86jU=;
-  b=j08Ib+05w23lMOFcP9t9Uj1v+4pcNFNhD0vG3cyyGkOVWtCLoYGcOQFD
-   I42adpN1zRkjxWBXS+qqvajolMqGnV5FRX1WEBrG7fMJN50aQ6eqtTA+/
-   aaj39BJgIA0t5Ee9uHN2hbZ0A6L1idhPQdw3pfxaefdSm02O1AKo82I2V
-   cn1KipPUAswGbPebdIN3Re276NHCuacT+uGa1ShonRC7IQlO5/5dX+MaH
-   G3f5Zb2sMh0wxZFDREPTD9f5qGZJUc9zCBGZ1bdfqAKeLmJeu/bcZx3Zr
-   lzs7gxeEAEY+kToTGFnxZJ1+bXcDhT3DLgJHmoTJwgOa1Fzl9hQWUEcB9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="216959"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="216959"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:18:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="814493035"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="814493035"
-Received: from hhalmen-mobl.ger.corp.intel.com ([10.251.219.207])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:18:02 -0700
-Date:   Tue, 26 Sep 2023 17:17:59 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH 01/11] platform/x86/intel/vsec: Add intel_vsec_register
-In-Reply-To: <20230922213032.1770590-2-david.e.box@linux.intel.com>
-Message-ID: <1ed7ddc8-18a-cfbc-a4cd-baaa5751493e@linux.intel.com>
-References: <20230922213032.1770590-1-david.e.box@linux.intel.com> <20230922213032.1770590-2-david.e.box@linux.intel.com>
+        Tue, 26 Sep 2023 10:18:45 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EB9101;
+        Tue, 26 Sep 2023 07:18:38 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QEISjs056926;
+        Tue, 26 Sep 2023 09:18:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695737908;
+        bh=1dy5yM8yoUL1bkfMYrYwW1LQmhZqRTk186kAw6Iq51g=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=yddBs9gCsvLNc4iPYjoMKZf76ecUzfkhccWSv74C4JgrG4Ge4aHPU5GNCrpNTcov/
+         z100hbvqQ/ZD0fSJGtBJQPz7Qt7DeqMBbXMjEVlCWiAmPQfkTrVtPip1sAlv2GpUad
+         eajBfDB7oi7FJP0zRRqAOAgFPTrnab4wMojP9bPA=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QEISHR029600
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 09:18:28 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 09:18:28 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 09:18:27 -0500
+Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QEIRq7122731;
+        Tue, 26 Sep 2023 09:18:27 -0500
+Message-ID: <9f3f39fc-e456-11f4-e567-393cfc3629b5@ti.com>
+Date:   Tue, 26 Sep 2023 09:18:26 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/4] arm64: dts: ti: k3-am654-base-board: add ICSSG2
+ Ethernet support
+Content-Language: en-US
+To:     MD Danish Anwar <danishanwar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>
+References: <20230926045337.1248276-1-danishanwar@ti.com>
+ <20230926045337.1248276-3-danishanwar@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230926045337.1248276-3-danishanwar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023, David E. Box wrote:
-
-> From: Gayatri Kammela <gayatri.kammela@linux.intel.com>
+On 9/25/23 11:53 PM, MD Danish Anwar wrote:
+> ICSSG2 provides dual Gigabit Ethernet support.
 > 
-> Add and export intel_vsec_register() to allow the registration of Intel
-> extended capabilities from other drivers. Add check to look for memory
-> conflicts before registering a new capability.
+> For support SR2.0 ICSSG Ethernet firmware:
+> - provide different firmware blobs and use TX_PRU.
+> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
+> - TX timestamp notification comes via INTC interrupt.
 > 
-> Signed-off-by: Gayatri Kammela <gayatri.kammela@linux.intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 > ---
->  drivers/platform/x86/intel/pmt/class.c |  2 +-
->  drivers/platform/x86/intel/vsec.c      | 58 ++++++++++----------------
->  drivers/platform/x86/intel/vsec.h      | 42 ++++++++++++++++++-
->  3 files changed, 63 insertions(+), 39 deletions(-)
+
+Seems reasonable to me,
+
+Reviewed-by: Andrew Davis <afd@ti.com>
+
+>   arch/arm64/boot/dts/ti/Makefile               |   2 +
+>   ...se-board.dts => k3-am654-common-board.dts} |   0
+>   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso   | 145 ++++++++++++++++++
+>   3 files changed, 147 insertions(+)
+>   rename arch/arm64/boot/dts/ti/{k3-am654-base-board.dts => k3-am654-common-board.dts} (100%)
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
 > 
-> diff --git a/drivers/platform/x86/intel/pmt/class.c b/drivers/platform/x86/intel/pmt/class.c
-> index f32a233470de..2ad91d2fd954 100644
-> --- a/drivers/platform/x86/intel/pmt/class.c
-> +++ b/drivers/platform/x86/intel/pmt/class.c
-> @@ -31,7 +31,7 @@ bool intel_pmt_is_early_client_hw(struct device *dev)
->  	 * differences from the server platforms (which use the Out Of Band
->  	 * Management Services Module OOBMSM).
->  	 */
-> -	return !!(ivdev->info->quirks & VSEC_QUIRK_EARLY_HW);
-> +	return !!(ivdev->quirks & VSEC_QUIRK_EARLY_HW);
->  }
->  EXPORT_SYMBOL_NS_GPL(intel_pmt_is_early_client_hw, INTEL_PMT);
->  
-> diff --git a/drivers/platform/x86/intel/vsec.c b/drivers/platform/x86/intel/vsec.c
-> index c1f9e4471b28..c5d0202068cf 100644
-> --- a/drivers/platform/x86/intel/vsec.c
-> +++ b/drivers/platform/x86/intel/vsec.c
-> @@ -24,13 +24,6 @@
->  
->  #include "vsec.h"
->  
-> -/* Intel DVSEC offsets */
-> -#define INTEL_DVSEC_ENTRIES		0xA
-> -#define INTEL_DVSEC_SIZE		0xB
-> -#define INTEL_DVSEC_TABLE		0xC
-> -#define INTEL_DVSEC_TABLE_BAR(x)	((x) & GENMASK(2, 0))
-> -#define INTEL_DVSEC_TABLE_OFFSET(x)	((x) & GENMASK(31, 3))
-> -#define TABLE_OFFSET_SHIFT		3
->  #define PMT_XA_START			0
->  #define PMT_XA_MAX			INT_MAX
->  #define PMT_XA_LIMIT			XA_LIMIT(PMT_XA_START, PMT_XA_MAX)
-> @@ -39,34 +32,6 @@ static DEFINE_IDA(intel_vsec_ida);
->  static DEFINE_IDA(intel_vsec_sdsi_ida);
->  static DEFINE_XARRAY_ALLOC(auxdev_array);
->  
-> -/**
-> - * struct intel_vsec_header - Common fields of Intel VSEC and DVSEC registers.
-> - * @rev:         Revision ID of the VSEC/DVSEC register space
-> - * @length:      Length of the VSEC/DVSEC register space
-> - * @id:          ID of the feature
-> - * @num_entries: Number of instances of the feature
-> - * @entry_size:  Size of the discovery table for each feature
-> - * @tbir:        BAR containing the discovery tables
-> - * @offset:      BAR offset of start of the first discovery table
-> - */
-> -struct intel_vsec_header {
-> -	u8	rev;
-> -	u16	length;
-> -	u16	id;
-> -	u8	num_entries;
-> -	u8	entry_size;
-> -	u8	tbir;
-> -	u32	offset;
-> -};
-> -
-> -enum intel_vsec_id {
-> -	VSEC_ID_TELEMETRY	= 2,
-> -	VSEC_ID_WATCHER		= 3,
-> -	VSEC_ID_CRASHLOG	= 4,
-> -	VSEC_ID_SDSI		= 65,
-> -	VSEC_ID_TPMI		= 66,
-> -};
-> -
->  static const char *intel_vsec_name(enum intel_vsec_id id)
->  {
->  	switch (id) {
-> @@ -223,19 +188,28 @@ static int intel_vsec_add_dev(struct pci_dev *pdev, struct intel_vsec_header *he
->  			     header->offset + i * (header->entry_size * sizeof(u32));
->  		tmp->end = tmp->start + (header->entry_size * sizeof(u32)) - 1;
->  		tmp->flags = IORESOURCE_MEM;
-> +
-> +		/* Check resource is not in use */
-> +		if (!request_mem_region(tmp->start, resource_size(tmp), "")) {
-> +			kfree(res);
-> +			kfree(intel_vsec_dev);
-> +			return -EBUSY;
-> +		}
-> +
-> +		release_mem_region(tmp->start, resource_size(tmp));
->  	}
->  
->  	intel_vsec_dev->pcidev = pdev;
->  	intel_vsec_dev->resource = res;
->  	intel_vsec_dev->num_resources = header->num_entries;
-> -	intel_vsec_dev->info = info;
-> +	intel_vsec_dev->quirks = info->quirks;
->  
->  	if (header->id == VSEC_ID_SDSI)
->  		intel_vsec_dev->ida = &intel_vsec_sdsi_ida;
->  	else
->  		intel_vsec_dev->ida = &intel_vsec_ida;
->  
-> -	return intel_vsec_add_aux(pdev, NULL, intel_vsec_dev,
-> +	return intel_vsec_add_aux(pdev, info->parent, intel_vsec_dev,
->  				  intel_vsec_name(header->id));
->  }
->  
-> @@ -353,6 +327,16 @@ static bool intel_vsec_walk_vsec(struct pci_dev *pdev,
->  	return have_devices;
->  }
->  
-> +void intel_vsec_register(struct pci_dev *pdev,
-> +			 struct intel_vsec_platform_info *info)
-> +{
-> +	if (!pdev || !info)
-> +		return;
-> +
-> +	intel_vsec_walk_header(pdev, info);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(intel_vsec_register, INTEL_VSEC);
-> +
->  static int intel_vsec_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
->  	struct intel_vsec_platform_info *info;
-> diff --git a/drivers/platform/x86/intel/vsec.h b/drivers/platform/x86/intel/vsec.h
-> index 0fd042c171ba..ab0f161f86c5 100644
-> --- a/drivers/platform/x86/intel/vsec.h
-> +++ b/drivers/platform/x86/intel/vsec.h
-> @@ -11,9 +11,45 @@
->  #define VSEC_CAP_SDSI		BIT(3)
->  #define VSEC_CAP_TPMI		BIT(4)
->  
-> +/* Intel DVSEC offsets */
-> +#define INTEL_DVSEC_ENTRIES		0xA
-> +#define INTEL_DVSEC_SIZE		0xB
-> +#define INTEL_DVSEC_TABLE		0xC
-> +#define INTEL_DVSEC_TABLE_BAR(x)	((x) & GENMASK(2, 0))
-> +#define INTEL_DVSEC_TABLE_OFFSET(x)	((x) & GENMASK(31, 3))
-> +#define TABLE_OFFSET_SHIFT		3
-> +
->  struct pci_dev;
->  struct resource;
->  
-> +enum intel_vsec_id {
-> +	VSEC_ID_TELEMETRY	= 2,
-> +	VSEC_ID_WATCHER		= 3,
-> +	VSEC_ID_CRASHLOG	= 4,
-> +	VSEC_ID_SDSI		= 65,
-> +	VSEC_ID_TPMI		= 66,
-> +};
-> +
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index e7b8e2e7f083..8f5c9515777e 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -42,12 +42,14 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
+>   
+>   # Boards with AM65x SoC
+> +k3-am654-base-board-dtbs := k3-am654-common-board.dtb k3-am654-icssg2.dtbo
+>   k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
+>   dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-m2.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am654-common-board.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
+>   
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-common-board.dts
+> similarity index 100%
+> rename from arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> rename to arch/arm64/boot/dts/ti/k3-am654-common-board.dts
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> new file mode 100644
+> index 000000000000..7b7d32282668
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> @@ -0,0 +1,145 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +/**
-> + * struct intel_vsec_header - Common fields of Intel VSEC and DVSEC registers.
-> + * @rev:	Revision ID of the VSEC/DVSEC register space
-> + * @length:	Length of the VSEC/DVSEC register space
-> + * @id:		ID of the feature
-> + * @num_entries:Number of instances of the feature
-> + * @entry_size:	Size of the discovery table for each feature
-> + * @tbir:	BAR containing the discovery tables
-> + * @offset:	BAR offset of start of the first discovery table
+> + * DT overlay for IDK application board on AM654 EVM
+> + *
+> + * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
 > + */
-> +struct intel_vsec_header {
-> +	u8	rev;
-> +	u16	length;
-> +	u16	id;
-> +	u8	num_entries;
-> +	u8	entry_size;
-> +	u8	tbir;
-> +	u32	offset;
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/net/ti-dp83867.h>
+> +#include "k3-pinctrl.h"
+> +
+> +&{/} {
+> +	aliases {
+> +		ethernet1 = &icssg2_emac0;
+> +		ethernet2 = &icssg2_emac1;
+> +	};
+> +
+> +	/* Ethernet node on PRU-ICSSG2 */
+> +	icssg2_eth: icssg2-eth {
+> +		compatible = "ti,am654-icssg-prueth";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&icssg2_rgmii_pins_default>;
+> +		sram = <&msmc_ram>;
+> +		ti,prus = <&pru2_0>, <&rtu2_0>, <&tx_pru2_0>,
+> +			<&pru2_1>, <&rtu2_1>, <&tx_pru2_1>;
+> +		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
+> +
+> +		ti,pruss-gp-mux-sel = <2>,      /* MII mode */
+> +				      <2>,
+> +				      <2>,
+> +				      <2>,	/* MII mode */
+> +				      <2>,
+> +				      <2>;
+> +
+> +		ti,mii-g-rt = <&icssg2_mii_g_rt>;
+> +		ti,mii-rt = <&icssg2_mii_rt>;
+> +		ti,iep = <&icssg2_iep0>, <&icssg2_iep1>;
+> +
+> +		interrupt-parent = <&icssg2_intc>;
+> +		interrupts = <24 0 2>, <25 1 3>;
+> +		interrupt-names = "tx_ts0", "tx_ts1";
+> +
+> +		dmas = <&main_udmap 0xc300>, /* egress slice 0 */
+> +		       <&main_udmap 0xc301>, /* egress slice 0 */
+> +		       <&main_udmap 0xc302>, /* egress slice 0 */
+> +		       <&main_udmap 0xc303>, /* egress slice 0 */
+> +		       <&main_udmap 0xc304>, /* egress slice 1 */
+> +		       <&main_udmap 0xc305>, /* egress slice 1 */
+> +		       <&main_udmap 0xc306>, /* egress slice 1 */
+> +		       <&main_udmap 0xc307>, /* egress slice 1 */
+> +		       <&main_udmap 0x4300>, /* ingress slice 0 */
+> +		       <&main_udmap 0x4301>; /* ingress slice 1 */
+> +
+> +		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
+> +			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
+> +			    "rx0", "rx1";
+> +		ethernet-ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			icssg2_emac0: port@0 {
+> +				reg = <0>;
+> +				phy-handle = <&icssg2_phy0>;
+> +				phy-mode = "rgmii-id";
+> +				ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
+> +				/* Filled in by bootloader */
+> +				local-mac-address = [00 00 00 00 00 00];
+> +			};
+> +			icssg2_emac1: port@1 {
+> +				reg = <1>;
+> +				phy-handle = <&icssg2_phy1>;
+> +				phy-mode = "rgmii-id";
+> +				ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
+> +				/* Filled in by bootloader */
+> +				local-mac-address = [00 00 00 00 00 00];
+> +			};
+> +		};
+> +	};
 > +};
 > +
->  enum intel_vsec_quirks {
->  	/* Watcher feature not supported */
->  	VSEC_QUIRK_NO_WATCHER	= BIT(0),
-> @@ -33,6 +69,7 @@ enum intel_vsec_quirks {
->  
->  /* Platform specific data */
->  struct intel_vsec_platform_info {
-> +	struct device *parent;
->  	struct intel_vsec_header **headers;
->  	unsigned long caps;
->  	unsigned long quirks;
-> @@ -43,10 +80,10 @@ struct intel_vsec_device {
->  	struct pci_dev *pcidev;
->  	struct resource *resource;
->  	struct ida *ida;
-> -	struct intel_vsec_platform_info *info;
->  	int num_resources;
->  	void *priv_data;
->  	size_t priv_data_size;
-> +	unsigned long quirks;
->  };
->  
->  int intel_vsec_add_aux(struct pci_dev *pdev, struct device *parent,
-> @@ -62,4 +99,7 @@ static inline struct intel_vsec_device *auxdev_to_ivdev(struct auxiliary_device
->  {
->  	return container_of(auxdev, struct intel_vsec_device, auxdev);
->  }
+> +&main_pmx0 {
 > +
-> +void intel_vsec_register(struct pci_dev *pdev,
-> +			 struct intel_vsec_platform_info *info);
->  #endif
-> 
-
-Please split this patch properly. I see at least 3 components (some of 
-which were not even mentioned in the changelog):
-
-- Moving enum, struct & defines (no functional changes intended patch)
-- Moving quirks to new place
-- The rest
-
--- 
- i.
-
+> +	icssg2_mdio_pins_default: icssg2-mdio-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM65X_IOPAD(0x0094, PIN_INPUT, 2) /* (AC19) PRG2_PRU0_GPO7.PRG2_MDIO0_MDIO */
+> +			AM65X_IOPAD(0x00c8, PIN_OUTPUT, 2) /* (AE15) PRG2_PRU1_GPO7.PRG2_MDIO0_MDC */
+> +		>;
+> +	};
+> +
+> +	icssg2_rgmii_pins_default: icssg2-rgmii-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM65X_IOPAD(0x00ac, PIN_INPUT, 2) /* (AH15) PRG2_PRU1_GPO0.PRG2_RGMII2_RD0 */
+> +			AM65X_IOPAD(0x00b0, PIN_INPUT, 2) /* (AC16) PRG2_PRU1_GPO1.PRG2_RGMII2_RD1 */
+> +			AM65X_IOPAD(0x00b4, PIN_INPUT, 2) /* (AD17) PRG2_PRU1_GPO2.PRG2_RGMII2_RD2 */
+> +			AM65X_IOPAD(0x00b8, PIN_INPUT, 2) /* (AH14) PRG2_PRU1_GPO3.PRG2_RGMII2_RD3 */
+> +			AM65X_IOPAD(0x00cc, PIN_OUTPUT, 2) /* (AD15) PRG2_PRU1_GPO8.PRG2_RGMII2_TD0 */
+> +			AM65X_IOPAD(0x00d0, PIN_OUTPUT, 2) /* (AF14) PRG2_PRU1_GPO9.PRG2_RGMII2_TD1 */
+> +			AM65X_IOPAD(0x00d4, PIN_OUTPUT, 2) /* (AC15) PRG2_PRU1_GPO10.PRG2_RGMII2_TD2 */
+> +			AM65X_IOPAD(0x00d8, PIN_OUTPUT, 2) /* (AD14) PRG2_PRU1_GPO11.PRG2_RGMII2_TD3 */
+> +			AM65X_IOPAD(0x00dc, PIN_INPUT, 2) /* (AE14) PRG2_PRU1_GPO16.PRG2_RGMII2_TXC */
+> +			AM65X_IOPAD(0x00c4, PIN_OUTPUT, 2) /* (AC17) PRG2_PRU1_GPO6.PRG2_RGMII2_TX_CTL */
+> +			AM65X_IOPAD(0x00c0, PIN_INPUT, 2) /* (AG15) PRG2_PRU1_GPO5.PRG2_RGMII2_RXC */
+> +			AM65X_IOPAD(0x00bc, PIN_INPUT, 2) /* (AG14) PRG2_PRU1_GPO4.PRG2_RGMII2_RX_CTL */
+> +
+> +			AM65X_IOPAD(0x0078, PIN_INPUT, 2) /* (AF18) PRG2_PRU0_GPO0.PRG2_RGMII1_RD0 */
+> +			AM65X_IOPAD(0x007c, PIN_INPUT, 2) /* (AE18) PRG2_PRU0_GPO1.PRG2_RGMII1_RD1 */
+> +			AM65X_IOPAD(0x0080, PIN_INPUT, 2) /* (AH17) PRG2_PRU0_GPO2.PRG2_RGMII1_RD2 */
+> +			AM65X_IOPAD(0x0084, PIN_INPUT, 2) /* (AG18) PRG2_PRU0_GPO3.PRG2_RGMII1_RD3 */
+> +			AM65X_IOPAD(0x0098, PIN_OUTPUT, 2) /* (AH16) PRG2_PRU0_GPO8.PRG2_RGMII1_TD0 */
+> +			AM65X_IOPAD(0x009c, PIN_OUTPUT, 2) /* (AG16) PRG2_PRU0_GPO9.PRG2_RGMII1_TD1 */
+> +			AM65X_IOPAD(0x00a0, PIN_OUTPUT, 2) /* (AF16) PRG2_PRU0_GPO10.PRG2_RGMII1_TD2 */
+> +			AM65X_IOPAD(0x00a4, PIN_OUTPUT, 2) /* (AE16) PRG2_PRU0_GPO11.PRG2_RGMII1_TD3 */
+> +			AM65X_IOPAD(0x00a8, PIN_INPUT, 2) /* (AD16) PRG2_PRU0_GPO16.PRG2_RGMII1_TXC */
+> +			AM65X_IOPAD(0x0090, PIN_OUTPUT, 2) /* (AE17) PRG2_PRU0_GPO6.PRG2_RGMII1_TX_CTL */
+> +			AM65X_IOPAD(0x008c, PIN_INPUT, 2) /* (AF17) PRG2_PRU0_GPO5.PRG2_RGMII1_RXC */
+> +			AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
+> +		>;
+> +	};
+> +};
+> +
+> +&icssg2_mdio {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&icssg2_mdio_pins_default>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	icssg2_phy0: ethernet-phy@0 {
+> +		reg = <0>;
+> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> +	};
+> +
+> +	icssg2_phy1: ethernet-phy@3 {
+> +		reg = <3>;
+> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> +	};
+> +};
