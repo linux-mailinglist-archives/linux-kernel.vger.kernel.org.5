@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF327AEC43
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9AE7AEC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbjIZMRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S234561AbjIZMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjIZMRK (ORCPT
+        with ESMTP id S234560AbjIZMTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:17:10 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B947EB;
-        Tue, 26 Sep 2023 05:17:04 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QAIpAg025962;
-        Tue, 26 Sep 2023 05:16:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=dWXOIzKr3YvQCTmxETjYvRovohbbY4Yz4fKJ63rQShU=;
- b=QnHtq83nQHQZprgW55t1ZotopZuXmwfcrVKbEKnY9WVMMMAn7o/pkQehG5aNPUaCQb01
- 5Pemb+ZQB9MkTC+IS3RkwvMotswwokhUmpag8uuSp34s0iV9DftS2S81IznzOIvNrDRI
- +UOU+njRFOenP9v/3SntO6jNwW7w5dnB74r7puHEujuNpqCvIULUwIi6kOwpy0H4MBGK
- QNxb/DJm7kMzLPLFigE4hdXQhFvMZEi9gIAapzetWjdUAQI53xmCRcGPGZuHkh7Gd8Te
- WRJGKtQ0b4TGfFbTCNgw1jP2wrjEY2RRTtLVAxXJN2uzBL43g4P6xYlQs2AjjJlmNiRy Ow== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3t9yhm0ugq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 05:16:38 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 26 Sep
- 2023 05:16:36 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 26 Sep 2023 05:16:36 -0700
-Received: from [10.193.38.177] (unknown [10.193.38.177])
-        by maili.marvell.com (Postfix) with ESMTP id A980C3F7053;
-        Tue, 26 Sep 2023 05:16:33 -0700 (PDT)
-Message-ID: <f8d79f01-38d6-9385-f213-b34779b8bb54@marvell.com>
-Date:   Tue, 26 Sep 2023 14:16:32 +0200
+        Tue, 26 Sep 2023 08:19:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BEFEB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695730700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cFOa8v6HmzDuwfUtqIaAE2BKKG96nSYmL5UwcSOkLOQ=;
+        b=VFkrNJ6mcKmO+5G6+YvMznqiUyMWirbxoR20w/QdDBlbrIR9AVIegdr3KcrY8BaTXan5qt
+        vO39wlIMK/BFKMLB4Uv/qf2HdzP7iX+4PfZrRjEKKe0MyT2ACKW34k+Pq9WPWfmP1K7Wc9
+        ykAmGwv5DGz0DfZNG3Dmmb8M9VbCtMc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-463-sYah3oPLMR63Rnk3t4ymVg-1; Tue, 26 Sep 2023 08:18:18 -0400
+X-MC-Unique: sYah3oPLMR63Rnk3t4ymVg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DBA521C06356;
+        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
+Received: from [10.22.16.230] (unknown [10.22.16.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5442F492C37;
+        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
+Message-ID: <ed2993f2-4bdc-19c5-5a0f-1e96da44fb24@redhat.com>
+Date:   Tue, 26 Sep 2023 08:18:17 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXT] Re: [PATCH net-next v5 3/7] net: macsec: indicate next pn
- update when offloading
-To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Dmitry Bezrukov <dbezrukov@marvell.com>
-CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <richardcochran@gmail.com>,
-        <sebastian.tobuschat@oss.nxp.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230920092237.121033-1-radu-nicolae.pirea@oss.nxp.com>
- <20230920092237.121033-4-radu-nicolae.pirea@oss.nxp.com>
- <ZQxdLZJa0EpnxpCl@hog> <040a3ede-22f7-bed4-0dbf-10b68a9c7fe1@oss.nxp.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh
+ that may cause error
 Content-Language: en-US
-From:   Igor Russkikh <irusskikh@marvell.com>
-In-Reply-To: <040a3ede-22f7-bed4-0dbf-10b68a9c7fe1@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Juntong Deng <juntong.deng@outlook.com>, lizefan.x@bytedance.com,
+        tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: 10_H8fETF35UtVTdIfCOJoVNFs9nbO9a
-X-Proofpoint-ORIG-GUID: 10_H8fETF35UtVTdIfCOJoVNFs9nbO9a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_08,2023-09-25_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+On 9/25/23 15:38, Juntong Deng wrote:
+> According to the awk manual, the -e option does not need to be specified
+> in front of 'program' (unless you need to mix program-file).
+>
+> The redundant -e option can cause error when users use awk tools other
+> than gawk (for example, mawk does not support the -e option).
+>
+> Error Example:
+> awk: not an option: -e
+> Cgroup v2 mount point not found!
+>
+> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+> ---
+>   tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> index 4afb132e4e4f..6820653e8432 100755
+> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> @@ -20,7 +20,7 @@ skip_test() {
+>   WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
+>   
+>   # Find cgroup v2 mount point
+> -CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
+> +CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
+>   [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
+>   
+>   CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
 
-> On 21.09.2023 18:11, Sabrina Dubroca wrote:
->> 2023-09-20, 12:22:33 +0300, Radu Pirea (NXP OSS) wrote:
->>> Indicate next PN update using update_pn flag in macsec_context.
->>> Offloaded MACsec implementations does not know whether or not the
->>> MACSEC_SA_ATTR_PN attribute was passed for an SA update and assume
->>> that next PN should always updated, but this is not always true.
->>
->> This should probably go through net so that we can fix some drivers
->> that are currently doing the wrong thing. octeontx2 should be
->> fixable. atlantic looks like it would reset the PN to whatever was
->> read during the last dump, and it's unclear if that can be fixed
->> (AFAIU set_egress_sa_record writes the whole config at once).  mscc
+Yes, the -e option is redundant. Thanks for catching that.
 
-Thats correct, atlantic hardware requires full table to be in data buffer registers.
-I really doubt its possible to skip PN writing.
+Acked-by: Waiman Long <longman@redhat.com>
 
->> doesn't seem to modify the PN (even if requested -- should it should
->> reject the update), and mlx5 doesn't allow PN update (by storing the
->> initial value of next_pn on SA creation).
-> 
-> I updated octeontx2, mssc and mlx5. Atlantic is unclear.
-> 
-> Mark, Igor, in the atlantic MACsec driver, can the SAs be updated
-> without a PN update?
-
-Reviewed the code and the docs I have - my view is it can not.
-All the packed record in macsec_api.c:set_egress_sa_record is expected by hardware in full.
-
-Regards,
-  Igor
