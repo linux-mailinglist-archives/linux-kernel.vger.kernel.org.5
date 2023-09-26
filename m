@@ -2,148 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7747AEFE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336A57AEFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjIZPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        id S235147AbjIZPq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbjIZPom (ORCPT
+        with ESMTP id S235114AbjIZPqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:44:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2124910A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:44:34 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81c39acfd9so13753749276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:44:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695743073; x=1696347873; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dUqxLY2nTBwa9TznKkTTvHje90znBvp6KBryn5bkyvU=;
-        b=zrnFlS6O3Q/Uf1lgaA7OEby+ESk7FU/X4I2aqgg6RW384xfQNSiF/q0b4VFU9axZfu
-         WYcyY8OO3ee2HZ9VDCq1JUHrl3iUqXZvUOBVm6McNzCIK4/jjtrQJRLFgY/BkL80ejZw
-         YFVCqzf+72WbpSQDg6pnjSyxbkM3aiyD3TxLZWQZzf7h75jk5Cc8SVCxZpLtmP4nWlxE
-         ssFzE8OuD9lIzFHqwvX9YAmtd4UnJsgfkuMy3ns+S7egO19Tl4jCdINCWfVzgbEz++KM
-         50szg3qBkspaXBrGUbgttOTToHfYps2x4su4lDAaxOxBIsAy7nitpaJ/xWGO4ua6IGCP
-         z56g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695743073; x=1696347873;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dUqxLY2nTBwa9TznKkTTvHje90znBvp6KBryn5bkyvU=;
-        b=wylOW3rn8jCjbFz3kRorRMVm444Boi46YVdnHG3BixPb/Yu8P90vay8yiSzLQogwEj
-         4ttiNARcdjpar7VIMaaNLelCMWsCCAA/scWNIkySa7w5h2LKE5qcEPm9AcuAyyS5zHL0
-         Cdq+yuthjVnWF1jZg86ZdBT4h1NX+EPos1OfpSj0Rd2lDpNKkIddsncAoE1kixCVwmpB
-         /fDfPsFtr3YtDGixSmxZfY7T/xsrCryqgG+dhbaoCn3Q/aLIt3p+yZcaUb2kToO+yEuv
-         A4BjsvsGrQ9HW7osiJFH2Lt6EE6dGrJQODoDeILnmx0EFqHqj+KoD+iJI9jfrvlyF+qV
-         uWFA==
-X-Gm-Message-State: AOJu0Yxl4FYWi2f/WD5783V+1ePLVjFgi6eGJXduN0ezz1gXMZ+cZ3cS
-        A895Aj8/yXFmBcJ1WE3C6iRhSpBV2No=
-X-Google-Smtp-Source: AGHT+IGme/vBiUuM/J3y+xMji41rNGS2G4ms8AQla0qKpMBJJt6otcitWzAieqjeVbUWwrD7XMmD/9I+6No=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8c02:0:b0:d81:43c7:61ed with SMTP id
- k2-20020a258c02000000b00d8143c761edmr104033ybl.5.1695743073295; Tue, 26 Sep
- 2023 08:44:33 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 08:44:31 -0700
-In-Reply-To: <90dd2e2e-71ae-d8c4-5d3b-9628e7710337@gmail.com>
-Mime-Version: 1.0
-References: <20230407085646.24809-1-likexu@tencent.com> <ZDA4nsyAku9B2/58@google.com>
- <6ee140c9-ccd5-9569-db17-a542a7e28d5c@gmail.com> <ZRIYbu4wSVW9a+8i@google.com>
- <90dd2e2e-71ae-d8c4-5d3b-9628e7710337@gmail.com>
-Message-ID: <ZRL8X74x2jnD2Mue@google.com>
-Subject: Re: [PATCH V2] KVM: x86/pmu: Disable vPMU if EVENTSEL_GUESTONLY bit
- doesn't exist
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Manali Shukla <manali.shukla@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 11:46:54 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D56127;
+        Tue, 26 Sep 2023 08:46:46 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 3D67E833AA;
+        Tue, 26 Sep 2023 17:46:33 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH RFC v2 0/6] ARM: pxa: GPIO descriptor conversions
+Date:   Tue, 26 Sep 2023 17:46:21 +0200
+Message-Id: <20230926-pxa-gpio-v2-0-984464d165dd@skole.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAM38EmUC/0XM3QrCIBQH8FcZ5zpDnaLrKgh6gG5jF2ue5qGYQ
+ 0MWY++eeNPl/4PfBgkjYYJTs0HETInCXII8NDD6YZ6QkSsZJJctt9ywZR3YtFBg7YhSO22UFQr
+ KfYn4pLVSd7hdL9CX0lP6hPitfBZ1qlIn1V/KgnEmLdcPa5y1nTqnV3jj0Ufo933/AWgyee6kA
+ AAA
+To:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1636;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=kqhcIgA+c1p20ruAULqaoqV6whyH4z56OXFjmXMMryE=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlEvzWBQEqqKBPaHb7u5f9p6t5jZu+JSmFjLYIP
+ ESkLEzJC66JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRL81gAKCRCaEZ6wQi2W
+ 4frvEACSdmt58LurhpjyINqYLP8c6F4nNjDdEdaKG+h2Iha5JQ0BIbtr3evh7ZH/m0EI4uBKvok
+ AsEb5gcypshbuCiTBY3bF5sOupIgiNlFtoAEyXNAbXXgjYap1GV2CXc0RUJQF5J5AJB1V6MafFB
+ ZOBnwXBpvCGqTCiVFYE0d9Wp3RDR7tYbvQ2shDvXFxyg+Mw3ky2ho7jCFH10PZNh9TgJkyHA5Rz
+ QZ9Q5euqdKl5XEeRT7ro1aDO65kIvrNiMTrDo0QwA3UtGdI18sPHWFSmemw5lafrUE2OMJZVE0H
+ 0b5nu4qzI574hm7u7n/YqbBqdUO5h8d9EBr5inb+jcFl0hJ5hnF8S3fisUEKwdtC3q9DFghI3ZJ
+ Ctrij4pjKquiz/O3W12WWe2NcN1KRKOHMVTfaHt1H3qCkXMPL5ZUQDfNNOSY+NBEtujfHOUqKh1
+ YmyqXeAMjRpUyc+kjwbnNLN44+Z4SKBhnH2X4spBpvWyJOjPITU+PH3KAJV7+vlxwBdZDrMZlT3
+ duwowZQHKf7IMx+jZQ+CdrK5msKFSKnYad/ebSyYwSmyLchW8euXUwMm/jEADNZrWXdvhZ7yvXk
+ YeZXKMR8Rctwi/uo9iP0brtT9cG7bVV6Y2pIq6AVq7Vq8mMHUlu8kBmKle75+cWZKQTvaoN68ni
+ 1UdyUM3845LLdgA==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023, Like Xu wrote:
-> On 26/9/2023 7:31 am, Sean Christopherson wrote:
-> > On Thu, Sep 14, 2023, Like Xu wrote:
-> > > On 7/4/2023 11:37 pm, Sean Christopherson wrote:
-> > > > On Fri, Apr 07, 2023, Like Xu wrote:
-> > > /*
-> > >   * The guest vPMU counter emulation depends on the EVENTSEL_GUESTONLY bit.
-> > >   * If this bit is present on the host, the host needs to support at least
-> > > the PERFCTR_CORE.
-> > >   */
-> > 
-> > ...
-> > 
-> > > > 	/*
-> > > > 	 * KVM requires guest-only event support in order to isolate guest PMCs
-> > > > 	 * from host PMCs.  SVM doesn't provide a way to atomically load MSRs
-> > > > 	 * on VMRUN, and manually adjusting counts before/after VMRUN is not
-> > > > 	 * accurate enough to properly virtualize a PMU.
-> > > > 	 */
-> > > > 
-> > > > But now I'm really confused, because if I'm reading the code correctly, perf
-> > > > invokes amd_core_hw_config() for legacy PMUs, i.e. even if PERFCTR_CORE isn't
-> > > > supported.  And the APM documents the host/guest bits only for "Core Performance
-> > > > Event-Select Registers".
-> > > > 
-> > > > So either (a) GUESTONLY isn't supported on legacy CPUs and perf is relying on AMD
-> > > > CPUs ignoring reserved bits or (b) GUESTONLY _is_ supported on legacy PMUs and
-> > > > pmu_has_guestonly_mode() is checking the wrong MSR when running on older CPUs.
-> > > > 
-> > > > And if (a) is true, then how on earth does KVM support vPMU when running on a
-> > > > legacy PMU?  Is vPMU on AMD just wildly broken?  Am I missing something?
-> > > > 
-> > > 
-> > > (a) It's true and AMD guest vPMU have only been implemented accurately with
-> > > the help of this GUESTONLY bit.
-> > > 
-> > > There are two other scenarios worth discussing here: one is support L2 vPMU
-> > > on the PERFCTR_CORE+ host and this proposal is disabling it; and the other
-> > > case is to support AMD legacy vPMU on the PERFCTR_CORE+ host.
-> > 
-> > Oooh, so the really problematic case is when PERFCTR_CORE+ is supported but
-> > GUESTONLY is not, in which case KVM+perf *think* they can use GUESTONLY (and
-> > HOSTONLY).
-> > 
-> > That's a straight up KVM (as L0) bug, no?  I don't see anything in the APM that
-> > suggests those bits are optional, i.e. KVM is blatantly violating AMD's architecture
-> > by ignoring those bits.
-> 
-> For L2 guest, it often doesn't see all the cpu features corresponding to the
-> cpu model because KVM and VMM filter some of the capabilities. We can't say
-> that the absence of these features violates spec, can we ?
+Hello,
 
-Yes, KVM hides features via architectural means.  This is enumerating a feature,
-PERFCTR_CORE, and not providing all its functionalality.  The two things are
-distinctly different.
+Small series to convert some of the board files in the mach-pxa directory
+to use the new GPIO descriptor interface.
 
-> I treat it as a KVM flaw or a lack of emulation capability.
+Most notably, the am200epd, am300epd and Spitz matrix keypad among
+others are not converted in this series.
 
-A.k.a. a bug.
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v2:
+- Address maintainer comments:
+  - Change mentions of function to function()
+  - Drop cast in OHCI driver dev_warn() call
+  - Use %pe in OHCI and reset drivers
+  - Use GPIO _optional() API in OHCI driver
+  - Drop unnecessary not-null check in OHCI driver
+  - Use pr_err() instead of printk() in reset driver
+- Rebase on v6.6-rc3
+- Link to v1: https://lore.kernel.org/r/20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr
 
-> > I would rather fix KVM (as L0).  It doesn't seem _that_ hard to support, e.g.
-> > modify reprogram_counter() to disable the counter if it's supposed to be silent
-> > for the current mode, and reprogram all counters if EFER.SVME is toggled, and on
-> > all nested transitions.
-> 
-> I thought about that too, setting up EFER.SVME and VMRUN is still a little
-> bit far away, and more micro-testing is needed to correct the behavior
-> of the emulation here, considering KVM also has to support emulated ins.
-> 
-> It's safe to say that there are no real user scenarios using vPMU in a nested
-> guest, so I'm more inclined to disable it provisionally (for the sake of more
-> stable tree users), enabling this feature is honestly at the end of my to-do list.
+---
+Duje Mihanović (6):
+      ARM: pxa: Convert Spitz OHCI to GPIO descriptors
+      ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+      ARM: pxa: Convert Spitz CF power control to GPIO descriptors
+      ARM: pxa: Convert reset driver to GPIO descriptors
+      ARM: pxa: Convert Spitz hsync to GPIO descriptors
+      ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
 
-I don't see a way to do that without violating AMD's architecture while still
-exposing the PMU to L1.
+ arch/arm/mach-pxa/gumstix.c    | 24 ++++++++-------
+ arch/arm/mach-pxa/reset.c      | 39 ++++++++---------------
+ arch/arm/mach-pxa/reset.h      |  3 +-
+ arch/arm/mach-pxa/spitz.c      | 70 +++++++++++++++++++++++++++++++++---------
+ drivers/usb/host/ohci-pxa27x.c |  7 +++++
+ 5 files changed, 90 insertions(+), 53 deletions(-)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230807-pxa-gpio-3ce25d574814
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
