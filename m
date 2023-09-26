@@ -2,135 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263B17AF016
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD057AF01B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbjIZP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S235160AbjIZP5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjIZP4w (ORCPT
+        with ESMTP id S235149AbjIZP5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:56:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8691FEB;
-        Tue, 26 Sep 2023 08:56:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBE57C433C7;
-        Tue, 26 Sep 2023 15:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695743806;
-        bh=sz3LleGIgkDcRxsY10cRbgEtugt9GVhiu7ELFn1C6PM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQ0bxYsFFW6f3k8Mm9YI6BmpG2prf+7jIv4S+F1z1386cIVcJob8goJ79mN/ygtGn
-         LwBrPO/JVUlO2j/UqOLwnuLiiuNReUALoxduWfNpBG+Vutf0qrLwcNG8vPlPi089J5
-         IO1Pi7q35HxGeadWPmr72WV1Ws73n6gXn2qQWFHUVYiGDyDUlXRp/CiPJQG9JD8O5/
-         zoYNs+M/fzB/ue4ZgOpi5QCQU2NOWZXT3GqxctlK2SWJCTzPh8cxzrPoziiWg7AtX1
-         01nGw9jArczGNVvuYj9s3xXZjLKyxdmORBTQayk4tcv57YsVKpqLXfOQpBdBZcDVQO
-         wq2vZyE2CDYwA==
-Received: (nullmailer pid 34714 invoked by uid 1000);
-        Tue, 26 Sep 2023 15:56:43 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>
-Cc:     Ray Jui <ray.jui@broadcom.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: PCI: brcm,iproc-pcie: Fix 'msi' child node schema
-Date:   Tue, 26 Sep 2023 10:56:09 -0500
-Message-Id: <20230926155613.33904-3-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230926155351.31117-1-robh@kernel.org>
-References: <20230926155351.31117-1-robh@kernel.org>
+        Tue, 26 Sep 2023 11:57:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937C211F;
+        Tue, 26 Sep 2023 08:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695743819; x=1727279819;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=o04UZaiPAW8CtWqG5r0zg6d8eGqesbuNB7DpA4lF29E=;
+  b=Hs+AbrTPn3csWecsx74grsQy/P2cLrljQRU2ghwnk5oE7Et2X3gSDZae
+   paWFQecPuDKqnFi8oWCN3r4T3RPrDopcWNCRbaERiAODZfc2isU1aoE+q
+   DTKcp/Yj8kfJYs4eIsK+cv9dm5p2AjAumVBnxdeqwiGzHyeCX4jaA09bl
+   z/LTicMveIezkpgCDgyA/t9ybx50Xxc+J56aiggKP6Gm+HhVta+L+456M
+   5lvBFPTyjUycK4z3vL5KX76h47lQlAJ6jYgn7hFjPnU9Hu5ZfKbqPSz8V
+   hPBjyEQXRzVxa9giiwwZv7hDu6EfYUVh0sQbw+jQtWNyFudxCYfp1g/jQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="371932462"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="371932462"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:56:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="864451283"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="864451283"
+Received: from hhalmen-mobl.ger.corp.intel.com ([10.251.219.207])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 08:56:57 -0700
+Date:   Tue, 26 Sep 2023 18:56:54 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Subject: Re: [PATCH 05/11] platform/x86:intel/pmc: Move get_low_power_modes
+ function
+In-Reply-To: <20230922213032.1770590-6-david.e.box@linux.intel.com>
+Message-ID: <a790e9e7-2748-5d2f-a035-20ef42ca87a2@linux.intel.com>
+References: <20230922213032.1770590-1-david.e.box@linux.intel.com> <20230922213032.1770590-6-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'msi' child node schema is missing constraints on additional properties.
-It turns out it is incomplete and properties for it are documented in the
-parent node by mistake. Move the reference to msi-controller.yaml and
-the custom properties to the 'msi' node. Adding 'unevaluatedProperties'
-ensures all the properties in the 'msi' node are documented.
+On Fri, 22 Sep 2023, David E. Box wrote:
 
-With the schema corrected, a minimal interrupt controller node is needed
-to properly decode the interrupt properties since the example has
-multiple interrupt parents.
+> From: Xi Pardee <xi.pardee@intel.com>
+> 
+> Some platforms will have a need to retrieve the low power modes as part of
+> their driver initialization. As such, make the function global and call it
+> from the platform specific init code.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/pci/brcm,iproc-pcie.yaml         | 24 ++++++++++++-------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+What is the real justification for this change, I don't think it's clearly 
+stated above?
 
-diff --git a/Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml
-index 6730d68fedc7..0e07ab61a48d 100644
---- a/Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml
-@@ -12,7 +12,6 @@ maintainers:
- 
- allOf:
-   - $ref: /schemas/pci/pci-bus.yaml#
--  - $ref: /schemas/interrupt-controller/msi-controller.yaml#
- 
- properties:
-   compatible:
-@@ -63,20 +62,24 @@ properties:
- 
-   msi:
-     type: object
-+    $ref: /schemas/interrupt-controller/msi-controller.yaml#
-+    unevaluatedProperties: false
-+
-     properties:
-       compatible:
-         items:
-           - const: brcm,iproc-msi
- 
--  msi-parent: true
-+      interrupts:
-+        maxItems: 4
- 
--  msi-controller: true
-+      brcm,pcie-msi-inten:
-+        type: boolean
-+        description:
-+          Needs to be present for some older iProc platforms that require the
-+          interrupt enable registers to be set explicitly to enable MSI
- 
--  brcm,pcie-msi-inten:
--    type: boolean
--    description: >
--      Needs to be present for some older iProc platforms that require the
--      interrupt enable registers to be set explicitly to enable MSI
-+  msi-parent: true
- 
- dependencies:
-   brcm,pcie-ob-axi-offset: ["brcm,pcie-ob"]
-@@ -104,6 +107,11 @@ examples:
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
- 
-+    gic: interrupt-controller {
-+        interrupt-controller;
-+        #interrupt-cells = <3>;
-+    };
-+
-     pcie@18012000 {
-         compatible = "brcm,iproc-pcie";
-         reg = <0x18012000 0x1000>;
 -- 
-2.40.1
+ i.
 
+> Signed-off-by: Xi Pardee <xi.pardee@intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel/pmc/adl.c  |  2 ++
+>  drivers/platform/x86/intel/pmc/cnp.c  |  2 ++
+>  drivers/platform/x86/intel/pmc/core.c |  7 +++----
+>  drivers/platform/x86/intel/pmc/core.h |  1 +
+>  drivers/platform/x86/intel/pmc/icl.c  | 10 +++++++++-
+>  drivers/platform/x86/intel/pmc/mtl.c  |  4 +++-
+>  drivers/platform/x86/intel/pmc/spt.c  | 10 +++++++++-
+>  drivers/platform/x86/intel/pmc/tgl.c  |  1 +
+>  8 files changed, 30 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/pmc/adl.c b/drivers/platform/x86/intel/pmc/adl.c
+> index 5006008e01be..64c492391ede 100644
+> --- a/drivers/platform/x86/intel/pmc/adl.c
+> +++ b/drivers/platform/x86/intel/pmc/adl.c
+> @@ -319,6 +319,8 @@ int adl_core_init(struct pmc_dev *pmcdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	pmc_core_get_low_power_modes(pmcdev);
+> +
+>  	/* Due to a hardware limitation, the GBE LTR blocks PC10
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+> diff --git a/drivers/platform/x86/intel/pmc/cnp.c b/drivers/platform/x86/intel/pmc/cnp.c
+> index 420aaa1d7c76..59298f184d0e 100644
+> --- a/drivers/platform/x86/intel/pmc/cnp.c
+> +++ b/drivers/platform/x86/intel/pmc/cnp.c
+> @@ -214,6 +214,8 @@ int cnp_core_init(struct pmc_dev *pmcdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	pmc_core_get_low_power_modes(pmcdev);
+> +
+>  	/* Due to a hardware limitation, the GBE LTR blocks PC10
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+> diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
+> index 5a36b3f77bc5..e58c8cc286a3 100644
+> --- a/drivers/platform/x86/intel/pmc/core.c
+> +++ b/drivers/platform/x86/intel/pmc/core.c
+> @@ -966,9 +966,8 @@ static bool pmc_core_pri_verify(u32 lpm_pri, u8 *mode_order)
+>  	return true;
+>  }
+>  
+> -static void pmc_core_get_low_power_modes(struct platform_device *pdev)
+> +void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+>  {
+> -	struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
+>  	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+>  	u8 pri_order[LPM_MAX_NUM_MODES] = LPM_DEFAULT_PRI;
+>  	u8 mode_order[LPM_MAX_NUM_MODES];
+> @@ -1000,7 +999,8 @@ static void pmc_core_get_low_power_modes(struct platform_device *pdev)
+>  		for (mode = 0; mode < LPM_MAX_NUM_MODES; mode++)
+>  			pri_order[mode_order[mode]] = mode;
+>  	else
+> -		dev_warn(&pdev->dev, "Assuming a default substate order for this platform\n");
+> +		dev_warn(&pmcdev->pdev->dev,
+> +			 "Assuming a default substate order for this platform\n");
+>  
+>  	/*
+>  	 * Loop through all modes from lowest to highest priority,
+> @@ -1250,7 +1250,6 @@ static int pmc_core_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit(primary_pmc);
+> -	pmc_core_get_low_power_modes(pdev);
+>  	pmc_core_do_dmi_quirks(primary_pmc);
+>  
+>  	pmc_core_dbgfs_register(pmcdev);
+> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+> index 0729f593c6a7..ccf24e0f5e50 100644
+> --- a/drivers/platform/x86/intel/pmc/core.h
+> +++ b/drivers/platform/x86/intel/pmc/core.h
+> @@ -490,6 +490,7 @@ extern int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value);
+>  
+>  int pmc_core_resume_common(struct pmc_dev *pmcdev);
+>  int get_primary_reg_base(struct pmc *pmc);
+> +extern void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev);
+>  
+>  extern void pmc_core_ssram_init(struct pmc_dev *pmcdev);
+>  
+> diff --git a/drivers/platform/x86/intel/pmc/icl.c b/drivers/platform/x86/intel/pmc/icl.c
+> index d08e3174230d..71b0fd6cb7d8 100644
+> --- a/drivers/platform/x86/intel/pmc/icl.c
+> +++ b/drivers/platform/x86/intel/pmc/icl.c
+> @@ -53,7 +53,15 @@ const struct pmc_reg_map icl_reg_map = {
+>  int icl_core_init(struct pmc_dev *pmcdev)
+>  {
+>  	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+> +	int ret;
+>  
+>  	pmc->map = &icl_reg_map;
+> -	return get_primary_reg_base(pmc);
+> +
+> +	ret = get_primary_reg_base(pmc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	pmc_core_get_low_power_modes(pmcdev);
+> +
+> +	return ret;
+>  }
+> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+> index 2204bc666980..c3b5f4fe01d1 100644
+> --- a/drivers/platform/x86/intel/pmc/mtl.c
+> +++ b/drivers/platform/x86/intel/pmc/mtl.c
+> @@ -985,7 +985,7 @@ static int mtl_resume(struct pmc_dev *pmcdev)
+>  int mtl_core_init(struct pmc_dev *pmcdev)
+>  {
+>  	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_SOC];
+> -	int ret = 0;
+> +	int ret;
+>  
+>  	mtl_d3_fixup();
+>  
+> @@ -1002,6 +1002,8 @@ int mtl_core_init(struct pmc_dev *pmcdev)
+>  			return ret;
+>  	}
+>  
+> +	pmc_core_get_low_power_modes(pmcdev);
+> +
+>  	/* Due to a hardware limitation, the GBE LTR blocks PC10
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+>  	 */
+> diff --git a/drivers/platform/x86/intel/pmc/spt.c b/drivers/platform/x86/intel/pmc/spt.c
+> index 4b6f5cbda16c..ab993a69e33e 100644
+> --- a/drivers/platform/x86/intel/pmc/spt.c
+> +++ b/drivers/platform/x86/intel/pmc/spt.c
+> @@ -137,7 +137,15 @@ const struct pmc_reg_map spt_reg_map = {
+>  int spt_core_init(struct pmc_dev *pmcdev)
+>  {
+>  	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
+> +	int ret;
+>  
+>  	pmc->map = &spt_reg_map;
+> -	return get_primary_reg_base(pmc);
+> +
+> +	ret = get_primary_reg_base(pmc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	pmc_core_get_low_power_modes(pmcdev);
+> +
+> +	return ret;
+>  }
+> diff --git a/drivers/platform/x86/intel/pmc/tgl.c b/drivers/platform/x86/intel/pmc/tgl.c
+> index 2449940102db..d5f1d2223c5a 100644
+> --- a/drivers/platform/x86/intel/pmc/tgl.c
+> +++ b/drivers/platform/x86/intel/pmc/tgl.c
+> @@ -263,6 +263,7 @@ int tgl_core_init(struct pmc_dev *pmcdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	pmc_core_get_low_power_modes(pmcdev);
+>  	pmc_core_get_tgl_lpm_reqs(pmcdev->pdev);
+>  	/* Due to a hardware limitation, the GBE LTR blocks PC10
+>  	 * when a cable is attached. Tell the PMC to ignore it.
+> 
