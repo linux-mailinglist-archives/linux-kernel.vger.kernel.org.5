@@ -2,145 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C4C7AF37F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A687AF385
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbjIZS7w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 14:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S235708AbjIZTAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 15:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbjIZS7u (ORCPT
+        with ESMTP id S235689AbjIZTAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:59:50 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9CE19F;
-        Tue, 26 Sep 2023 11:59:43 -0700 (PDT)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-57de3096e25so74902eaf.1;
-        Tue, 26 Sep 2023 11:59:43 -0700 (PDT)
+        Tue, 26 Sep 2023 15:00:03 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D10719E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:59:56 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so10967307a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695754794; x=1696359594; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fVEGG5cPSm9VHVnnB3IjMGencP439qzAgXCSoy2L0Mw=;
+        b=dysdhWVVNJzTgIDxKpqcsfm30jvpLsWQiEHEep60ZOkTD7e9lnsFiceAW/2tpTfSj5
+         QiKUeYlpcHlnmsp8Rl9s+KxfoaLwRSz+9jXiQLPfTQhKwi80ul2++6lK1s5qiFD+k8St
+         Z9ipSD/ZK49wZlDpL9HeYXqR+V57sRLxn77goCHs6+bJFMBh56SqqwJb29GxVqT29Qc7
+         dLldapaGuLZCZQA1gwlRnXdawW/MwaCZkqE4DSZ8n3OaqtYwFSEaYB3HDUX1fymo/Eol
+         S14Nm62SnKuqEjpL2OT4XkmLgrlsOnnIfgjui2v1JYNv/dxKHEsSGp1f6p3oPq76008u
+         XD4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695754783; x=1696359583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CmWKOKQNOrostcE1rGyRT5Onp9uerQjKsYo9gD15hsI=;
-        b=vjFATSqSkkJOYtThMKaVAveoqAIe54E/00/rGi3NM07By7PFXTDLJZ0EbCM0uZk6CC
-         wYxQNGT37NXvo+P/gSboLLSZ55KB0pgUIaOR6vhqcHzeuY/kdXW3lihh7rNoMuPAi7gr
-         Yrz6oTNuA4COKx+otDd7OvklXDUXjhz4fGOosfb+dfhknGDanujhMIy6cyne/lJCRDYk
-         4n1vf9Z93Jn8pAY+0IdnrJkc12zExrkTpN7G2UECKyv1+XJSVF5qhWACQWSi0WoXc3Bt
-         HWb9STf+/Jz2eOZYPOkCKwEYT5c2t+OmQ7ov71lY+8ixcuYMv0v2JYv3bpr4XI8yuR6A
-         r6jA==
-X-Gm-Message-State: AOJu0YwSEGmTNBOpsbKy664goIb7FLlfcuSxy18prfhNYO2cy8SZMaau
-        VEiR6v/Di6+YF/0LdLCVYC+tf+7RZrYo7xMGEoA=
-X-Google-Smtp-Source: AGHT+IH82fsk/562NGICov+e19KkLRSnGzrgy+pt38rjz/fKu0w06yw2p/yPJDSQAkftW9gukCo37/8K0j1AFzpinmw=
-X-Received: by 2002:a4a:de15:0:b0:57b:7804:9d72 with SMTP id
- y21-20020a4ade15000000b0057b78049d72mr9818067oot.1.1695754782938; Tue, 26 Sep
- 2023 11:59:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695754794; x=1696359594;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fVEGG5cPSm9VHVnnB3IjMGencP439qzAgXCSoy2L0Mw=;
+        b=w7D32pWT7tY7pn2GHw+Aqb4uct4eCCgC1Ld4g1SI5NLzv8wCSOvTX0LHz0Lfu5FahV
+         ToVulZtSqDBNO/W1YkVBcKYKkw27ipCZ4buT6pRXM8BkGtmRGeNRUFgihunJm6ZsHbb2
+         e8CFvtoCXpy9CqvlH7LmrCLl79Lzco6yhLy3InSPVKK4dp3g1pVJ5ZjWx2Tkwxsf9Q5A
+         bQrAabd0IOCVxGaNi16EZsyvNZfKtjlTvkhhjuZ15xo4TQdACKfPRIc2KHMpmDX8YHdZ
+         sfCoxXp9blut71cH1yk/p7DKZFmcQf8zWq2/aeMM1cBr+/5LLa78I4Q/lX0elTiDNIyi
+         f4IQ==
+X-Gm-Message-State: AOJu0YxPThf2hlEZuZBHr1Kz9UqQnk3tLjITKk9fT6s7+ZABkrGIdei5
+        eWSbZu9lBBRTwnLCjusBsXlOHg==
+X-Google-Smtp-Source: AGHT+IHsu61Z9x4vrJKedh9oOSEm3NJB8PkqYqCsBbhGw+9yEsafoynTupdU5NEDPPhy09XdrcXISw==
+X-Received: by 2002:a05:6402:5148:b0:533:39da:6ffb with SMTP id n8-20020a056402514800b0053339da6ffbmr9467391edd.14.1695754794563;
+        Tue, 26 Sep 2023 11:59:54 -0700 (PDT)
+Received: from [192.168.33.189] ([178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id f15-20020a50ee8f000000b0052a19a75372sm7088795edr.90.2023.09.26.11.59.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 11:59:54 -0700 (PDT)
+Message-ID: <14262938-4150-429f-a730-df1b2fadd9ff@linaro.org>
+Date:   Tue, 26 Sep 2023 20:59:52 +0200
 MIME-Version: 1.0
-References: <20230925081139.1305766-1-lukasz.luba@arm.com> <20230925081139.1305766-9-lukasz.luba@arm.com>
-In-Reply-To: <20230925081139.1305766-9-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 26 Sep 2023 20:59:32 +0200
-Message-ID: <CAJZ5v0hM3DvEZSyDubd29bkEPDv6JUm8FaKM8+suaWOpKESp+w@mail.gmail.com>
-Subject: Re: [PATCH v4 08/18] PM: EM: Add update_power() callback for runtime modifications
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/13] arm64: dts: qcom: msm8916-longcheer-l8150: Add
+ sound and modem
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Nikita Travkin <nikita@trvn.ru>
+References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
+ <20230926-msm8916-modem-v1-9-398eec74bac9@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230926-msm8916-modem-v1-9-398eec74bac9@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> The Energy Model (EM) is going to support runtime modifications. This
-> new callback would be used in the upcoming EM changes. The drivers
-> or frameworks which want to modify the EM have to implement the
-> update_power() callback.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  include/linux/energy_model.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index d236e08e80dc..546dee90f716 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -168,6 +168,26 @@ struct em_data_callback {
->          */
->         int (*get_cost)(struct device *dev, unsigned long freq,
->                         unsigned long *cost);
-> +
-> +       /**
-> +        * update_power() - Provide new power at the given performance state of
-> +        *              a device
+On 26.09.2023 18:51, Stephan Gerhold wrote:
+> From: Nikita Travkin <nikita@trvn.ru>
+> 
+> Enable sound and modem for the Longcheer L8150 (e.g. Wileyfox Swift).
+e.g. -> i.e., or is that thing sold under many labels?
 
-The meaning of the above is unclear to me.
+[...]
 
-> +        * @dev         : Device for which we do this operation (can be a CPU)
+>  	reserved-memory {
+> +		/delete-node/ mpss@86800000;
+>  		/delete-node/ wcnss;
+delete by label, please
 
-It is unclear what "we" means in this context.  Maybe say "Target
-device (can be a CPU)"?
-
-> +        * @freq        : Frequency at the performance state in kHz
-
-What performance state does this refer to?  And the frequency of what?
-
-> +        * @power       : New power value at the performance state
-> +        *              (modified)
-
-Similarly unclear as the above.
-
-> +        * @priv        : Pointer to private data useful for tracking context
-> +        *              during runtime modifications of EM.
-
-Who's going to set this pointer and use this data?
-
-> +        *
-> +        * The update_power() is used by runtime modifiable EM. It aims to
-
-I would drop "The" from the above.
-
-> +        * provide updated power value for a given frequency, which is stored
-> +        * in the performance state.
-
-A given frequency of what and the performance state of what does this refer to?
-
-> + The power value provided by this callback
-> +        * should fit in the [0, EM_MAX_POWER] range.
-> +        *
-> +        * Return 0 on success, or appropriate error value in case of failure.
-> +        */
-> +       int (*update_power)(struct device *dev, unsigned long freq,
-> +                           unsigned long *power, void *priv);
->  };
->  #define EM_SET_ACTIVE_POWER_CB(em_cb, cb) ((em_cb).active_power = cb)
->  #define EM_ADV_DATA_CB(_active_power_cb, _cost_cb)     \
-> @@ -175,6 +195,7 @@ struct em_data_callback {
->           .get_cost = _cost_cb }
->  #define EM_DATA_CB(_active_power_cb)                   \
->                 EM_ADV_DATA_CB(_active_power_cb, NULL)
-> +#define EM_UPDATE_CB(_update_power_cb) { .update_power = &_update_power_cb }
->
->  struct em_perf_domain *em_cpu_get(int cpu);
->  struct em_perf_domain *em_pd_get(struct device *dev);
-> @@ -331,6 +352,7 @@ struct em_data_callback {};
->  #define EM_ADV_DATA_CB(_active_power_cb, _cost_cb) { }
->  #define EM_DATA_CB(_active_power_cb) { }
->  #define EM_SET_ACTIVE_POWER_CB(em_cb, cb) do { } while (0)
-> +#define EM_UPDATE_CB(_update_cb) { }
->
->  static inline
->  int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
-> --
+Konrad
