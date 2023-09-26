@@ -2,200 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCFF7AEC87
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C2A7AECBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234600AbjIZMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
+        id S234541AbjIZM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbjIZMXY (ORCPT
+        with ESMTP id S231171AbjIZM0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:23:24 -0400
-X-Greylist: delayed 39751 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 05:23:17 PDT
-Received: from csmtpq4-prd-nl1-vmo.edge.unified.services (csmtpq4-prd-nl1-vmo.edge.unified.services [84.116.50.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C00FC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:23:17 -0700 (PDT)
-Received: from csmtp5-prd-nl1-vmo.nl1.unified.services ([100.107.82.68] helo=csmtp5-prd-nl1-vmo.edge.unified.services)
-        by csmtpq4-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <sboyce@blueyonder.co.uk>)
-        id 1ql75u-0041pE-NG
-        for linux-kernel@vger.kernel.org; Tue, 26 Sep 2023 14:23:14 +0200
-Received: from [192.168.10.244] ([82.32.17.210])
-        by csmtp5-prd-nl1-vmo.edge.unified.services with ESMTPA
-        id l75tqis0oay9cl75tqdIfd; Tue, 26 Sep 2023 14:23:14 +0200
-X-SourceIP: 82.32.17.210
-X-Authenticated-Sender: sboyce@blueyonder.co.uk
-X-Spam: 0
-X-Authority: v=2.4 cv=TfpQ9zch c=1 sm=1 tr=0 ts=6512cd32 cx=a_exe
- a=xwbGgp66NgX51+oEeDXSrg==:117 a=xwbGgp66NgX51+oEeDXSrg==:17
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=x7bEGLp0ZPQA:10
- a=6i85INYm-GQaCzMb2JYA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blueyonder.co.uk;
-        s=meg.feb2017; t=1695730994;
-        bh=HlCkXSUg4xrXtsFxZl5LXGh9CgXu9ptawwkoAJxL2nw=;
-        h=Date:Reply-To:Subject:To:References:From:In-Reply-To;
-        b=cZtFyFua0Cb9yMVma7rc5LxswcqRmsiourTRgRZOR6F8QiRjpoi0kHcNSdBoHMxET
-         K4VCytOTjko9YoJZg8lr5T49QPSBbrm5XGeD29sdocQDi/AUpyXitIXHNvL7/d8jzq
-         ZzU8fI8ELwg5ONyy6xYPaDRdOBdZmPkCQRcvoi3GYaw1U+FKR9uIjHBbij6CMYZ5f+
-         ES05+8l7B+MpHY2qOyG0FbuwpNjr+h7R6SPxR3WQVGAFvyPA3DSRI3nmDXVj5hNQXu
-         zt3UbLsd0DkbFnDJkSSq6Gf16Pzzm8D7bGwbYUtHbd/uB4oVCl+WoNawxdV5M6e+bJ
-         z3a10t9qHzKmg==
-Message-ID: <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
-Date:   Tue, 26 Sep 2023 13:23:13 +0100
+        Tue, 26 Sep 2023 08:26:12 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2059.outbound.protection.outlook.com [40.107.223.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD08EB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:26:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nXuuHvR71U136BtmRNbMZI07+t8jzsF7F6uqQUbWBwzQOlCkbpQEDgTX6rIdIp5oo0eNCXy3gIPJ4UpORomJcPLypB2O/YXmGd/aEbpQKml1GzljGaGrPQorLYFA4YX+9EsuU341a2bkdR6FfDSYvymA05jXHmgabAL7Sr+qyBbb3M3DlKUGz3gGNkWPIX2QtvMAwhHkQzxK3mv4AWAJEw6tXZa2nD9x2zksWbDPUniMXynOJXqhK4k79O1+LvKc3A2rFYWKCQwt6n04afVXD+UwJAM3WUazWuo06Xdt/4YJVjBBrRznOI5IArWPeUdaAJgf66U0XEM82vHXBZ104Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d++A4egwGTvB34vCxpqM6Z5+oT8CfWZOpGVUirwaxiI=;
+ b=GMpoELMysMXad5RB+narD0AviiyZzGEzURQD+mnjUoZQXbEszQ4lm0QHRivxBm4KE43L/IQXOxScPN5ELwZOX04VlstYymoMt7V0/e8s0hmJUgevbepR80lGGvswZzQZiKgDu+a5dk52ZYgo9tQWmPM3tnNXsXf/zej7QfPItwYclw58GWXkwX2amq8jOIfIU5tLyZUGuo02PmMD0hs6xBOIWu5XXdMiXHKWQtIeaYZ+/AoDW+wqZUKlPX1bwaG9bo+AuKebZk6oJpbuNoj33lklykYDCWVsxi8vAspUmFsuEe1bYifGRXklGfSU38G0ZoKMovyUPsJ7v0i5IUrRFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d++A4egwGTvB34vCxpqM6Z5+oT8CfWZOpGVUirwaxiI=;
+ b=eQrp7vOA/vYJhDrbjIbQMZJxgFWkgLcgaF3tyUVFQyjB4c+57+yV1mlYwMAofUEl7PMnBgCxhgmq/DZprpGJGD/ae+nuLKCDpwxHcyJPODowAkDFjKZIKbGWRR7Rlg7XdQR8kUXV1BVLgHXbZCpAqm6UhmPurMTLwIicl62CrEPeZMhQkdGtuphxAK/lRwBvZnIWJ2PPzUcG423mfrDtlrMo9LyHQxXc7613Hz+adOu/Tu+sJFN1m87eRIcUFRmbstFACDy8Cvcf/xAypqrkMXAu6gXsPeFEGPrn9JTP5f8WramXw5LFXYerY4CrTIx9VhQ1GOtvpWhl5MU/9wJ7gw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BN9PR12MB5099.namprd12.prod.outlook.com (2603:10b6:408:118::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Tue, 26 Sep
+ 2023 12:26:00 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%5]) with mapi id 15.20.6838.016; Tue, 26 Sep 2023
+ 12:26:00 +0000
+Date:   Tue, 26 Sep 2023 09:25:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
+        catalin.marinas@arm.com, will@kernel.org, aniketa@nvidia.com,
+        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+        jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20230926122558.GN13733@nvidia.com>
+References: <20230907181459.18145-1-ankita@nvidia.com>
+ <20230907181459.18145-3-ankita@nvidia.com>
+ <ZP8q71+YXoU6O9uh@lpieralisi>
+ <ZP9MQdRYmlawNsbC@nvidia.com>
+ <ZQHUifAfJ+lZikAn@lpieralisi>
+ <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRKW6uDR/+eXYMzl@lpieralisi>
+X-ClientProxiedBy: BL1PR13CA0254.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::19) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: sboyce@blueyonder.co.uk
-Subject: Re: Ryzen 9 7950x sound module does not not build
-Content-Language: en-GB
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML Mailing List <linux-kernel@vger.kernel.org>
-References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
- <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
-From:   Sid Boyce <sboyce@blueyonder.co.uk>
-Organization: blueyonder.co.uk
-In-Reply-To: <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFOfh/wxrYP0ExxmjUq7u6O7OF4oBBME06Y8kVisE9ibzIkIJcjeHrb4vvU9wFlNTQxXP+WvsXavUSyPi0XxdBovXCWK6kdsFQ5+ts1DWvv9IdqdzOcp
- AaVm6eDxJFP4BtmMQOi3qMqAvSg+NrGcCaIqAOzKCijFPz3AOFixMHeDqiUYLBwlRLRw8zMZPGmRBFEWV8v5PAmsX1idvFAzwL9bqPTiL2SaMthTgfLc1Sak
- tu8jpJ62Np6p7eq8ZvSOeg==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BN9PR12MB5099:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ced7b40-67d8-4908-2bdc-08dbbe8bbdfb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PIc72Cw8lFkHCyMgkzC18Rigmx70bf3SYMeYsBmAnvDlSQzETrhsLSCA0vFVrsKHWUdbupXZGJO6ZK8jRg5ENQKtIYfEKu5K4S0Su3M5IdsYFwpALhRSJlBcUE83hOm3XwnDF/KVE9NmrvjeaSCY5B316eDchNbpcHEN6lHRjRGqno9uA5UcdiplyRELbnQ4js5BFRnlICpdAcdgXviZq5H5RsGQzhHWfFNu/ckb5Dytllh7WOWkO6PAeq4Z/zqlq6FDVM4OZel/IJHuS4TH+A4SCHXTk7/bXQRAucnU4RZsKLyCXEuKNYbkG5VnGduetmYWcuqx2x05EIoOvTFdepXitvBYeDTnwfFHFGgRh/Wguivhc4doz6r28LGzy9ihfP7Gnav3QxY7lRh8TsA667JboanlNgmT/VEXy+wvdxzlYV1W5BYW4O59WrPjnSb2a/SyK+edHz8DBoFD1KL4OKs7i3Hdft+QhQZJ47v7g7ijD/A8uvdCr2SyTqdkWPjL29Jkr/GmXA8ftjrOkEgyZE0JrWAV4A/MwHr8BxSK5TcTBM0QUMJyuXZORupdjT7y
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(39860400002)(136003)(396003)(230922051799003)(451199024)(1800799009)(186009)(86362001)(2616005)(1076003)(26005)(41300700001)(6506007)(6486002)(6512007)(36756003)(38100700002)(33656002)(316002)(8936002)(6916009)(8676002)(4326008)(66556008)(66476007)(5660300002)(66946007)(4744005)(2906002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iuUjYZ57BW4oUykHMzWZaVNwWM7+Q81WXrCsXkC6lh0WbAnR229GGp/bCDtc?=
+ =?us-ascii?Q?IepAYsIyhruhPvwZVDsECbrbJIgMYT2KHIZzz2Nv2/hzGuRXIUNEfi8+VHm1?=
+ =?us-ascii?Q?2tAtpG19FoRRFdjDk4pEz2PnHgjQ8ocdYRuhtwoq7RysR5LQ6oWtkO7kb4ur?=
+ =?us-ascii?Q?YI694H7nnqQN9Ku4+HYm3t/7ZuHuTlGDKy5w4kgfiVk87+ufPJpi38bFmW1R?=
+ =?us-ascii?Q?BdogKKQ/lKreAJw9dvrNuW1TAtaa6j5l4OtVcVHgpZz5ONjP3hXiZUkeYLtx?=
+ =?us-ascii?Q?OrMYz6PK3lPhwqHZYJyB4oCcoHKbSonV0bgYykauV+PBtALG0raVarwvWfZN?=
+ =?us-ascii?Q?PNHNWLgQSeWe7kNMgcrN7hbKXe6A/X4SOlKWuvOqB6nP6v6I3RujB7TGsGe3?=
+ =?us-ascii?Q?evHzmq6T+ooj7PhEgGwNHbzNWsgkCAlgdZsOaAZae1rn1OomLd/JHee+psAb?=
+ =?us-ascii?Q?NHotnF0MjfgNXWnlTBUNYtLX+bO1QDcuD6q4eAj/bSzTHMta6OQ8ygiGdArb?=
+ =?us-ascii?Q?04G0A2UVa0Fr6+j4aGoLU0/Dd3o/AD5RQ5TG2D7UJ8AbGU2hGT2IpZRjPufV?=
+ =?us-ascii?Q?koeCoRHEXaH8yU2pE9mEDFIEmLRL5ioXJ7YGdf4ZESKGZEnfQbdDrO+XF68k?=
+ =?us-ascii?Q?D5jISXY/c8QBRRxy5p05mu27RbWmyv2NDfpvbbk9P6s13+u26zSlRUagS+bf?=
+ =?us-ascii?Q?b11JYrYVTX9rb4ExvXw/KJGtWav8fcuid1JqxPs4oVxWzXIBM2nfigp4BNXt?=
+ =?us-ascii?Q?t1glKUA+AdXYYp1BWqVHbdv/8V0sIh4ScA9pYXFE+EKN4gmsD0cRihTpu4BM?=
+ =?us-ascii?Q?xOS+/XufV6G4PNTmiF3ZKOQmGYe7khb2lu9kKuHss9jg/3ABpjAmI9qTQ/Kn?=
+ =?us-ascii?Q?1jJIUpCbvft9ARdmNDD5r09AXzH/V3KDOna6J7JxMpTatIvtFIjeUNbgzaRl?=
+ =?us-ascii?Q?nbd9DAgCstn7ySm6LXeR/lUWGYfSuJEYOzkJHFRbWJONfZzoDlFCiwOTx1zg?=
+ =?us-ascii?Q?G9+mn1mFBi3v4Ib2HhLmNwxVMBBygzSbvGHIkx87845KUtfTt9WM6m0YD77i?=
+ =?us-ascii?Q?xh6F3alE+GEDEcX+zwEN4n5bqRFXMXuZMvSRRuHfygGEYyZOS3hd4JyMVTlu?=
+ =?us-ascii?Q?DyRDoTOERQz4WCSpRdji9BST4dRcSkL3OLR5tJRsCjrVkOEPAorJJaGapYi/?=
+ =?us-ascii?Q?Z14qNkBMd2KVtsNyy9i9+9R7lYCBNugJKSTOf2QW2QMJulQBdNzPWOz0ZuTT?=
+ =?us-ascii?Q?ysOlYKykPSyjOc0pOxMnXS/7coLtSSXc/wLc5Rttj7BrFp//UoLyxFA+ctTZ?=
+ =?us-ascii?Q?+htiXJ/bMqYJeSdu32NykxOG6SriVvX0NdqmjxKQit3gvHTjkRIogt1kRhcv?=
+ =?us-ascii?Q?VCEL8cbtZcEeo1co1SMvNSE/kOr8XEh6u1mrbFcmQp21eRg5Vlt9DNZ05mUN?=
+ =?us-ascii?Q?2GADle6QrvkMuZmjwTySDLCjcAmP2HuudPDuL/0uo9LmINyww1Tk7VxPiPIm?=
+ =?us-ascii?Q?ALhosSHn1oZqTy3AeDwodlXvB4t2haK+RRRQxJqA8+1MVBi1z3NIN/WKViPZ?=
+ =?us-ascii?Q?+ZWvdeMbTlF1RRe9o05Hi0UJTSc0Fu15BNAw3ns2?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ced7b40-67d8-4908-2bdc-08dbbe8bbdfb
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 12:26:00.3568
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xmKE7IJpPeXovpPJ2IXoyO3tT6bxts2vavccPXVFyzFEPbECiSBbYlZBLHsDyAUE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5099
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 02:48, Randy Dunlap wrote:
-> Hi,
->
-> On 9/25/23 18:20, Sid Boyce wrote:
->> Machine:
->>   Type: Desktop System: ASUS product: N/A v: N/A serial: N/A
->>   Mobo: ASUSTeK model: PRIME B650M-A WIFI II v: Rev 1.xx
->>     serial: 221214156800233 UEFI: American Megatrends v: 1634 date: 07/21/2023
->> CPU:
->>   Info: 16-core model: AMD Ryzen 9 7950X bits: 64 type: MT MCP cache:
->>     L2: 16 MiB
->> slipstream:/usr/src/linux-6.6.0-rc3 # grep CONFIG_SND_SOC_AMD_RPL_ACP6x=m .config
->> CONFIG_SND_SOC_AMD_RPL_ACP6x=m
->>
->>
->> This module never gets built, so only USB audio works.
->> # dmesg -T|grep snd
->> [Sun Sep 24 23:48:08 2023] snd_hda_intel 0000:01:00.1: Disabling MSI
->> [Sun Sep 24 23:48:08 2023] snd_hda_intel 0000:01:00.1: Handle vga_switcheroo audio client
->> [Sun Sep 24 23:48:08 2023] snd_hda_intel 0000:0b:00.6: enabling device (0000 -> 0002)
->> [Sun Sep 24 23:48:08 2023] snd_hda_intel 0000:01:00.1: bound 0000:01:00.0 (ops nv50_audio_component_bind_ops [nouveau])
->> [Sun Sep 24 23:48:08 2023] usbcore: registered new interface driver snd-usb-audio
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0: autoconfig for ALC897: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:    mono: mono_out=0x0
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:    dig-out=0x11/0x0
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:    inputs:
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:      Front Mic=0x19
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:      Rear Mic=0x18
->> [Sun Sep 24 23:48:08 2023] snd_hda_codec_realtek hdaudioC2D0:      Line=0x1a
->>
->>
->> # fuser -v /dev/snd/*
->>                      USER        PID ACCESS COMMAND
->> /dev/snd/controlC0:  lancelot   3738 F.... wireplumber
->> /dev/snd/controlC1:  lancelot   3738 F.... wireplumber
->> /dev/snd/controlC2:  lancelot   3738 F.... wireplumber
->> /dev/snd/pcmC0D0p:   lancelot   3737 F...m pipewire
->> /dev/snd/seq:        lancelot   3737 F.... pipewire
->>
->> Regards
->>
->> Sid.
-> It builds for me:
->
->    CC [M]  sound/soc/amd/rpl/rpl-pci-acp6x.o
->    LD [M]  sound/soc/amd/rpl/snd-rpl-pci-acp6x.o
->    CC [M]  sound/soc/amd/rpl/snd-rpl-pci-acp6x.mod.o
->    LD [M]  sound/soc/amd/rpl/snd-rpl-pci-acp6x.ko
->
-> and the object file subdirectory contains:
->
-> -rw-r--r-- 1 rdunlap rdunlap    34 Sep 25 18:37 snd-rpl-pci-acp6x.mod
-> -rw-r--r-- 1 rdunlap rdunlap  9360 Sep 25 18:37 rpl-pci-acp6x.o
-> -rw-r--r-- 1 rdunlap rdunlap  9616 Sep 25 18:37 snd-rpl-pci-acp6x.o
-> -rw-r--r-- 1 rdunlap rdunlap    38 Sep 25 18:37 modules.order
-> -rw-r--r-- 1 rdunlap rdunlap   777 Sep 25 18:38 snd-rpl-pci-acp6x.mod.c
-> -rw-r--r-- 1 rdunlap rdunlap  3104 Sep 25 18:38 snd-rpl-pci-acp6x.mod.o
-> -rw-r--r-- 1 rdunlap rdunlap 11816 Sep 25 18:38 snd-rpl-pci-acp6x.ko
->
->
-> You might need to post your failing .config file.
->
-Thanks Randy,
+On Tue, Sep 26, 2023 at 10:31:38AM +0200, Lorenzo Pieralisi wrote:
+> On Wed, Sep 13, 2023 at 03:54:54PM -0300, Jason Gunthorpe wrote:
+> > On Wed, Sep 13, 2023 at 05:26:01PM +0200, Lorenzo Pieralisi wrote:
+> 
+> [...]
+> 
+> > > I can write up the commit log and post it if I manage to summarize
+> > > it any better - more important the review on the code (that was already
+> > > provided), I will try to write something up asap.
+> > 
+> > Thank you!
+> > 
+> > Jason
+> 
+> FWIW, I have come up with the commit log below - please review and
+> scrutinize/change it as deemed fit - it is not necessarily clearer
+> than this one and it definitely requires MarcZ/Catalin/Will attention
+> before it can be considered:
 
-I've since rebooted and did a modprobe. No idea why it isn't 
-automatically loaded.
+I have no issue with this language.
 
-#modinfo snd-rpl-pci-acp6x
-filename: 
-       /usr/lib/modules/6.6.0-rc3-vanilla/kernel/sound/soc/amd/rpl/snd-rpl-pci-acp6x.ko.gz
-license:        GPL v2
-description:    AMD ACP RPL PCI driver
-srcversion:     0F909BC61165681426ECEEB
-alias:          pci:v00001022d000015E2sv*sd*bc04sc80i00*
-depends:
-retpoline:      Y
-intree:         Y
-name:           snd_rpl_pci_acp6x
-vermagic:       6.6.0-rc3-vanilla SMP preempt mod_unload modversions
-
-# modprobe snd-rpl-pci-acp6x
-
-#lsmod|grep snd
-snd_rpl_pci_acp6x      16384  0
-snd_seq_dummy          12288  0
-snd_hrtimer            12288  1
-snd_seq               131072  7 snd_seq_dummy
-snd_hda_codec_realtek   192512  1
-snd_hda_codec_hdmi     94208  1
-snd_hda_codec_generic   110592  1 snd_hda_codec_realtek
-snd_hda_intel          65536  2
-snd_usb_audio         458752  2
-snd_intel_dspcfg       40960  1 snd_hda_intel
-snd_intel_sdw_acpi     16384  1 snd_intel_dspcfg
-snd_hda_codec         233472  4 
-snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_realtek 
-
-snd_usbmidi_lib        49152  1 snd_usb_audio
-snd_hda_core          147456  5 
-snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec,snd_hda_codec_realtek 
-
-snd_ump                36864  1 snd_usb_audio
-snd_rawmidi            57344  2 snd_usbmidi_lib,snd_ump
-snd_seq_device         16384  3 snd_seq,snd_ump,snd_rawmidi
-mc                     94208  1 snd_usb_audio
-snd_hwdep              20480  2 snd_usb_audio,snd_hda_codec
-snd_pcm               225280  6 
-snd_hda_codec_hdmi,snd_hda_intel,snd_usb_audio,snd_hda_codec,snd_hda_core
-snd_timer              53248  3 snd_seq,snd_hrtimer,snd_pcm
-ledtrig_audio          12288  2 snd_hda_codec_generic,asus_wmi
-snd                  163840  23 
-snd_hda_codec_generic,snd_seq,snd_seq_device,snd_hda_codec_hdmi,snd_hwdep,snd_hda_intel,snd_usb_audio,snd_usbmidi_lib,snd_hda_codec,snd_hda_codec_realtek,snd_timer,snd_ump,snd_pcm,snd_rawmidi 
-
-soundcore              16384  1 snd
-usbcore               446464  6 
-xhci_hcd,snd_usb_audio,usbhid,snd_usbmidi_lib,btusb,xhci_pci
-
-Regards
-
-Sid.
-
--- 
-Sid Boyce ... Hamradio License G3VBV, Keen licensed Private Pilot
-Retired IBM/Amdahl Mainframes and Sun/Fujitsu Servers Tech Support Specialist
-Microsoft Windows Free Zone - Linux used for all Computing Tasks
-
+Thanks,
+Jason
