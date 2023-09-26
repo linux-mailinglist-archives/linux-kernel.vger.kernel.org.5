@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887937AE7F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674FA7AE7FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbjIZIXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 04:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42968 "EHLO
+        id S233905AbjIZI0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 04:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZIXe (ORCPT
+        with ESMTP id S232778AbjIZI0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 04:23:34 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB72EB4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:23:27 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9adca291f99so998453266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:23:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695716606; x=1696321406; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j9tTw5sUAPOrchYqA3E5owwjKmHdzzHpZh+gEC9Bxy8=;
-        b=sIrkm5fnHq62gxdiLho0PUJxuyqiaaJhNCpRLVeRdyS3virxw6FMkSakOFNGstwHnS
-         IJPKspbKgEjUgDLxLHFXVYyiFL/JD7ZE2yYvv7Ibl8wXqFn5uhZBsESOhUXc4ABULXRk
-         1PFIQIPxPFZjjiWMloZICYiMEyArrl5WDO1WMb3G5tNUe3Eogh0p4bDqNqvIaarsa8Sb
-         tKf/UajuXwcYyjlO4N7Tm85kjCfeOJ/WDXs1+LWOD7a+p0IngBsXa0b0JX7jbS0qoHjA
-         OQw9rcWdDar/GyM9lN9X4vssT3B20Psu6yLOKtbZ9eS8g980fenMlTfo40+Ckbb3hC14
-         msrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695716606; x=1696321406;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j9tTw5sUAPOrchYqA3E5owwjKmHdzzHpZh+gEC9Bxy8=;
-        b=LP46Zytsly0gBmZXPMPX4YikqqmQKWpts8x8VyIp2W18bgdHPKtbvpn25U74uM4iIn
-         WVg9Fn9Zb2PhkLreqhQYMaca7hkv1m1etLMCNDJeqPvB+oyEHzLzzWIM2I9ODN7YPn8D
-         ZqJSBgZ2NwwZTF5u3nmOqIXjY7yC2EqmYhANanWM4z54mWVB+vfTXDGOWTu9GEYD66Kx
-         6sgytXmSMCBimIiWOE5ACd76ONLYS2ttvPdG++mw3bk8x7t+Aoc0jPhu/WdXSHsQt25h
-         kT41HVq0wkLfnaSj7MPg83JO5ujuQ/NotmQDGokq09uHbV1GyDETIq9YMI5DOx81Ly/3
-         5DfA==
-X-Gm-Message-State: AOJu0Yzik9DoTw5YWu74gyNoy6lZcJjnDyl20TAIJGx/P+/DUnHy1dSU
-        Ozj0/R/KcIfzbyY1FqXiNc0Zqx046WJbwaLvdA/t7g==
-X-Google-Smtp-Source: AGHT+IGkkx1U2rNgqDwWhUXXyiFqJYMFNsgfzF84t+MVL60Zor+PPsTYDtb+H0XGSTY7RJyc59zxkbbMgkgbUR0S9To=
-X-Received: by 2002:a17:906:9d1:b0:9ad:ad5a:939b with SMTP id
- r17-20020a17090609d100b009adad5a939bmr7710821eje.7.1695716606170; Tue, 26 Sep
- 2023 01:23:26 -0700 (PDT)
+        Tue, 26 Sep 2023 04:26:44 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 01:26:34 PDT
+Received: from mgamail.intel.com (unknown [198.175.65.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BF4B4;
+        Tue, 26 Sep 2023 01:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695716794; x=1727252794;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RzaK2ndr7+vnVbIQ7VkWAWjQc7Kpbl44AZ82PRlStIo=;
+  b=DxLnIcn8spYTzqVglKo5nLp3j79SeqlIvzVQCLtWb6ueGdH9lhL08r24
+   wb6FTGFlVEbY58SEjaPEmFcQqLmnNd010djymCDIFkUEK7Yw1xPBEgDdL
+   UsL/DQiiVeX+FnVrQvmzZgpdUq8l/4rbVB9Ut3XvUruJT5gkKlT/KrZVw
+   JILb15q/h+SkUpFKiK+6VTnSvdIB4HVaPchPg0HSOncf0BYIwphkfY2gc
+   P2A3yFVp2U1SinoH0GyL7DJHKp9+GHttPyHL6a4cTm5rmc3hazV4tg47/
+   /FoF+jwGxgavXGwQrnR7Z6giiJjWCZCfqjD03JLTDfadxiravedSsY3aF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="160422"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="160422"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 01:25:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="995744380"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="995744380"
+Received: from jiaqingh-mobl.ccr.corp.intel.com (HELO [10.93.22.70]) ([10.93.22.70])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 01:25:28 -0700
+Message-ID: <56cc2e4e-81dd-f2d2-f690-6d82217b9e7d@intel.com>
+Date:   Tue, 26 Sep 2023 16:25:26 +0800
 MIME-Version: 1.0
-References: <20230902100728.3850149-1-liushixin2@huawei.com> <ZRKIdTE+4cm0KDCI@infradead.org>
-In-Reply-To: <ZRKIdTE+4cm0KDCI@infradead.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 26 Sep 2023 01:22:47 -0700
-Message-ID: <CAJD7tkYY7je3x-MRhayyrC0xCFvKZO8CuiEnQHanF5_ErZ2n6Q@mail.gmail.com>
-Subject: Re: [PATCH] mm, memcg: expose swapcache stat for memcg v1
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Liu Shixin <liushixin2@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] iommu/vt-d: Introduce a rb_tree for looking up device
+Content-Language: en-US
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, will@kernel.org,
+        robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, jacob.jun.pan@linux.intel.com,
+        yi.l.liu@intel.com, yi.y.sun@intel.com
+References: <20230821071659.123981-1-jiaqing.huang@intel.com>
+ <ZRFA3uj1-QjlXpGx@8bytes.org>
+From:   "Huang, Jiaqing" <jiaqing.huang@intel.com>
+In-Reply-To: <ZRFA3uj1-QjlXpGx@8bytes.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,27 +69,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 12:30=E2=80=AFAM Christoph Hellwig <hch@infradead.o=
-rg> wrote:
->
-> On Sat, Sep 02, 2023 at 06:07:28PM +0800, Liu Shixin wrote:
-> > Since commit b6038942480e ("mm: memcg: add swapcache stat for memcg v2"=
-)
-> > adds swapcache stat for the cgroup v2, it seems there is no reason to
-> > hide it in memcg v1. Conversely, with swapcached it is more accurate to
-> > evaluate the available memory for memcg.
->
-> Why are we adding new features to the long deprecated cgroup v1?
->
+On 9/25/2023 4:12 PM, Joerg Roedel wrote:
 
-Technically this is not a new feature, we are just exposing a stat
-that the kernel is already tracking (for both cgroup v1 and v2).
+> On Mon, Aug 21, 2023 at 12:16:59AM -0700, Huang Jiaqing wrote:
+>> The existing IO page fault handler locates the PCI device by calling
+>> pci_get_domain_bus_and_slot(), which searches the list of all PCI
+>> devices until the desired PCI device is found. This is inefficient
+>> because the algorithm efficiency of searching a list is O(n). In the
+>> critical path of handling an IO page fault, this can cause a significant
+>> performance bottleneck.
+> Can you elaborate a little more on the 'significant performance
+> bottleneck' part? Where do you see this as a problem?
+>
+> Regards,
+>
+> 	Joerg
+While lots of dsa devices were enabled, parallel dsa_test with large 
+transfer size
+would be executed ineffciently and cause cpu stuck in 
+pci_get_domain_bus_and_slot
+by lock competition. The introduced patch could significantly improve 
+the speed and
+prevent the CPU from getting sutck. It maybe confusing for "significant 
+performance
+bottleneck" since it didn't benefit all the cases, would rephase it in 
+the new patch. Thanks!
 
-The reason I suggested to expose this for cgroup v1 is because a
-recent series [1] started using this stat in the kernel to make some
-reclaim decisions, for both cgroup v1 and v2. Exposing the stat in v1
-will make sure no one assumes the stat is only useful for v2 and break
-the tracking for v1 (which might cause some reclaim regressions then).
-
-[1]https://lore.kernel.org/lkml/20230915083417.3190512-1-liushixin2@huawei.=
-com/
+BRs,
+Jiaqing
