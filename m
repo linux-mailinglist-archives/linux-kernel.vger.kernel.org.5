@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F497AF780
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3DA7AF712
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjI0AmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 20:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        id S230103AbjI0ANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 20:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbjI0AkG (ORCPT
+        with ESMTP id S232170AbjI0ALC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 20:40:06 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3139EF1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:27:59 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d857847be8cso10631441276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:27:59 -0700 (PDT)
+        Tue, 26 Sep 2023 20:11:02 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2FC1780C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:36:29 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59bebd5bdadso121238347b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1695763678; x=1696368478; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xwboT3wS2a1yBHjDCQ06HZTwGyv2f0/zi3F8PPJditg=;
-        b=Wdre1CXgUDxix66xbAJwHumLtH5lJzKK2jXd5RbWQ675ewAWebuohkoN7zjPXM33Ml
-         Ulfn4SUZcBrr0pbjeCbMKYuEED/316rqwSUW/ETFPlntJf6xixDanBNV6LR8xKdVgMps
-         T5E/HU1vcD0m4o70Lk/EvISFAaPuQT3W7h1zosuJBspdjIdWWbfeoKqgPXgFcud+aKSr
-         DVuVZsDDvF18D/roYVkg04TxNpqc7XnDl/8WbLQhpUYnonMWXZmNJDmB20QASw//coY4
-         WCtE6+K/TCotAAgsF585JnF1hXv9TXantyFcuusBd9D7nzvCxNhe9xfD0DzPLIYlYU10
-         Iztw==
+        d=google.com; s=20230601; t=1695764188; x=1696368988; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1MNbo8WjlIbk+vD57Y9Z/H6BU+dtLvsY8sTpvqB5nJI=;
+        b=kMYf+tnaiZoXizGxBLzqasJaXfRXZJRr/qOJ8z29dPX5DP402L0MpwarVgneBDkMVS
+         5fTN1g3h8fGZPZdrrqsFKm2QL7Me95StZriXXa8h1wtHBtn1oDSM+zxvoG4nTtPfx5pK
+         2aCW6GpR/RXspwA9s0bZxZb8cvULwkVT6LiqLf/QV2dW3XhQyqF0Y7C+V9uMd/gpfe3k
+         U5MCp1O2+gRSgVo4ldyBOc+bINV3iDZYQ+woDAKan5Apnr7oE9BB32AETVIV3Vph1OGV
+         qir5x84/ziXtAbSWnV8BEm6sNxknIEl4+SUED/UKYcZ5B4raN9zI61xheJqp0203EJFx
+         hRng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695763678; x=1696368478;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xwboT3wS2a1yBHjDCQ06HZTwGyv2f0/zi3F8PPJditg=;
-        b=IgoTWDmaCWNwcMHGpPQPAC0/4edTfinqYmRM2KKD8GepKORoka/zMgxYcZK97KQ/ZQ
-         LmPvbTdwnu7biCmcQpwoILtkH6Fh0BqMODZlP64xFbovhQxPhlcdf5KrgEz+qqoGyxvM
-         Ce/4dAa5deXQ0ZYamlDlPo5JyoipSl+wa60D56jMddZWD7B2IDP0hxEdK+ahpl64ssVk
-         1Fdoavo55uwzJt58RVLvqH83bCYKH1lQR0yZf9CW5Za0UbL0BVbVV7bbRFPwS3IrI9pv
-         X/XaeHA+DkkX3vuFQd+JsqOXRwrmOaWVTxRdhbGDD03A5jBdIDvqWT1jgV2KXaZyOW9d
-         q+VA==
-X-Gm-Message-State: AOJu0Ywez0UadnOZGuPZIbanaGY0/K7NUApUx4VMtRk9WpYfvgK6gOJ9
-        ae4cKNG+cylQj6OmWTjCsvhC1wfEDKhQuRf+kUHx
-X-Google-Smtp-Source: AGHT+IGEOPatV9DMHgk6ahe+ZNCEftvet7jzAHqC188+LRWLJCUQ62hLSOHIPtTbwO1LBBLGz1+WP4Ij6RfoH/mqsaw=
-X-Received: by 2002:a25:7611:0:b0:d81:7f38:6d64 with SMTP id
- r17-20020a257611000000b00d817f386d64mr133266ybc.4.1695763678663; Tue, 26 Sep
- 2023 14:27:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695764188; x=1696368988;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1MNbo8WjlIbk+vD57Y9Z/H6BU+dtLvsY8sTpvqB5nJI=;
+        b=Qg+UzP1UnjH1n96z4MsxD+NkOc+Riaiq11BPyDJU9KbKNTcD/Xzecg8pGWZtT/gY2m
+         moY0ntfOOQY/h0hQahwdh11XflEYtY/3fSiIAajzVsrBciCouL/jOYDMzgmOOTf8awZw
+         67oyZ7cD4eenU16LvcWEePxTRJ/1X4MV+gJ26A4nuFlvx0mSJSsgOx75jbdOAExlWGjc
+         R9AEbninBd1Y6wEeesPh9j9OBdWb70EdbLVAhIAwkb0wAlBmK4po45593YRAwMRpad5/
+         1QlFlnKjBzAn58pBKKuBwoJj5kF/ZAMwLRbMA+cqC0tJu+01B2ZJUJcDTgzcKOSNuqsr
+         h1cw==
+X-Gm-Message-State: AOJu0YwkTpxVhSQmfuA8kx3NgMmKzVKERXyi86oN5dv6J0mHOstLtwXO
+        SgGNLN4GvrPzsdXmbFpN2p++CQ==
+X-Google-Smtp-Source: AGHT+IELIOjIzVR9C4NP9eVufHE/iePU436e3hIzTZyc8ipuHsADk8UsXov3hJAz4eamwIw3djhY8Q==
+X-Received: by 2002:a81:a08c:0:b0:59b:e72a:e40b with SMTP id x134-20020a81a08c000000b0059be72ae40bmr278076ywg.6.1695764188458;
+        Tue, 26 Sep 2023 14:36:28 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e11-20020a81690b000000b0059b20231f1dsm3258266ywc.121.2023.09.26.14.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 14:36:27 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:36:25 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 07/12] mempolicy: mpol_shared_policy_init() without
+ pseudo-vma
+In-Reply-To: <ZRIOzcI78x8BmGdo@casper.infradead.org>
+Message-ID: <4fe84029-ad5-63cb-f2a7-3c83ea427bf1@google.com>
+References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com> <ea413d84-8b43-91c2-feef-92998bc7c1e2@google.com> <ZRIOzcI78x8BmGdo@casper.infradead.org>
 MIME-Version: 1.0
-References: <20230922152749.244197-1-chris.riches@nutanix.com>
-In-Reply-To: <20230922152749.244197-1-chris.riches@nutanix.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 26 Sep 2023 17:27:47 -0400
-Message-ID: <CAHC9VhQYFjRnmC3LTKkhXuKhvjGQG+dTXqL6ExXbNC9M2DZ3ZQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] audit: Send netlink ACK before setting connection in auditd_set
-To:     Chris Riches <chris.riches@nutanix.com>
-Cc:     audit@vger.kernel.org, Eric Paris <eparis@redhat.com>,
-        jonathan.davies@nutanix.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 11:28=E2=80=AFAM Chris Riches <chris.riches@nutanix=
-.com> wrote:
->
-> When auditd_set sets the auditd_conn pointer, audit messages can
-> immediately be put on the socket by other kernel threads. If the backlog
-> is large or the rate is high, this can immediately fill the socket
-> buffer. If the audit daemon requested an ACK for this operation, a full
-> socket buffer causes the ACK to get dropped, also setting ENOBUFS on the
-> socket.
->
-> To avoid this race and ensure ACKs get through, fast-track the ACK in
-> this specific case to ensure it is sent before auditd_conn is set.
->
-> Signed-off-by: Chris Riches <chris.riches@nutanix.com>
->
-> ---
->
-> This mail is more of an RFC than a patch, though the included patch is a
-> useful illustation and might even be suitable for inclusion ...
+On Mon, 25 Sep 2023, Matthew Wilcox wrote:
+> On Mon, Sep 25, 2023 at 01:29:28AM -0700, Hugh Dickins wrote:
+> > +		/* alloc node covering entire file; adds ref to new */
+> 
+> This comment is confusing.  sp_alloc initialises the refcount of 'n' to 1.
+> Which is the same memory referred to by the name 'new' in __mpol_dup(),
+> but in this function, the name "new" refers to the mempolicy called
+> "old" in __mpol_dup().
 
-Hi Chris,
+No promises, but I'll see if I can make it look better in v2.
 
-Thanks for the patch and the background information, that's always
-helpful.  Unfortunately I have limited network access at the moment,
-but I'll put this on my list to look at next week.
+> 
+> > +		n = sp_alloc(0, MAX_LFS_FILESIZE >> PAGE_SHIFT, new);
+> > +		if (n)
+> > +			sp_insert(sp, n);
+> >  put_new:
+> >  		mpol_put(new);			/* drop initial ref */
+> >  free_scratch:
+> 
+> This is all a bit inefficient, really.  We call mpol_new() to get a
+> new mpol, then we set it up, then we dup it, then we free it.  It'd
+> be nice if we could donate it instead of copying it.  Maybe you'll
+> do something like that later.
 
---=20
-paul-moore.com
+"later" is probably the operative word.  I do have an unincluded 2017
+patch where I had that same realization, and wrote "I suspect that this
+series of commits may be adding to an absurdity of over-mpol_dup()ing:
+but that's for some other future cleanup, right now I'm just happy not
+to be corrupting or leaking mpols."
+
+Hugh
