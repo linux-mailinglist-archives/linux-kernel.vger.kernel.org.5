@@ -2,117 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B29C7AEEBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8EF7AEEFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbjIZOCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        id S234916AbjIZOFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbjIZOCV (ORCPT
+        with ESMTP id S229958AbjIZOFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:02:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3349EE9;
-        Tue, 26 Sep 2023 07:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695736935; x=1727272935;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=dqAsD4YwmO63PA4EBl0Q7yGf2RDjmodakBpSYqm7jyo=;
-  b=HB5LexjJKj7wpv3Dl5+0lq53T6DpdsDtxmTjzxij46EoxXiVqwSESSXa
-   UcYYB5EkWTVY00Kp6ZRcU65Vnl9CsDXYm7VPCyQYePcJxg/9YP/OjhlsC
-   u+2Hzqw0E12ro0srjGfywnQaFPX14+fqto1vyDsGcOgNfeH/jPU5W5VZt
-   /5J9JKkOCnvxMFvXhpRIhPwRjAMF+d8ALzL1K2+RNcR25f7vQYCFobO1Z
-   HqbIqE7HMSDdoZs5c/2HToI2pRMtxzZkzbWZMrHozMTCdlgZhG1nHwGvo
-   kXurHI2MiXnPWey0zLfCVJlK3We0HsL7Waqw4PloKVTtpKfkPLqybH839
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="445700650"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="445700650"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:02:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="157280"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:01:40 -0700
-Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id DB55F580DAC;
-        Tue, 26 Sep 2023 07:02:08 -0700 (PDT)
-Message-ID: <f4b23e81-9a49-a3ba-d666-4b8f90e9720c@linux.intel.com>
-Date:   Tue, 26 Sep 2023 10:02:07 -0400
+        Tue, 26 Sep 2023 10:05:11 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2064.outbound.protection.outlook.com [40.107.22.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5584EFC;
+        Tue, 26 Sep 2023 07:05:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gybZIo80J9MaMSYwN/96E3/3QHmbrkrA6ln72Vv8xzVE+KzbBnCbAY/6pJYaC50JbZoEf8/2vkAH85PUtxz/eUo54us8i6xKr/ps8vV+exNZrsBbi3YsMaYadLZSaS4qw6d5ujKT6DKzUCGTMyGk1yMrrs7C6H+pKPgLH089UsAViVHZ026Sj2yFBptw8Zwo/jNVCYYW964CNcy+u8RHcSyfJwRe0byldZelhK+Oz/ac/aV5GLpY1E7RSjUahyFTEr7JevZ52mqS3DmiYaQu3UCFkfT5fPQYclznCvgFQoyZdsWzmHdU2JPzGVnNujChDMnHdRBViyTKy4gCE1qBkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hlyh8vwETYESwYwgXe38QDcsWIhrSffS1ZxPq3/Q7BY=;
+ b=Z1CJExPQBe004QORJL2ty6nJDwVB6YtcQFi+UvqZsLbrii/AIo+yHNzlp+ZbzKLjW9DwxBgCt+YVxef5c6jLqY8OTvNPDw9IH9sRLEfwtHLl5RQYB8mdEYr1w8YZMVOYJWZlZcQtxmzT9yjYtqa4ca//8L+MWtncz3Asygyr+fg5vUfuXBK3eLFGPFHRRm7LvYGPDb5JHfBp7pC8wGlyS0Vp20CCSMd9hPQWZRnbJ46rSBKtrN93KOfTGcGX+iRluSSqOMWmeCVyqyIe7GMU6elNhrDkd8tljxDnWLFw/Wme819lgDKUPRhS1KRf/s4qLS+1yCAUr27A6t/678qIUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hlyh8vwETYESwYwgXe38QDcsWIhrSffS1ZxPq3/Q7BY=;
+ b=D3Wkcn7x9B+iv1wyokI9vdfbsLtGo6M1XWgEkHyTMi27dv6mwGJndzeDXwP/U+eHRH8O5KhEaDBPWJWuKi9XnH8BCQfJwiyxybk2AIYcruCOqaV1xBeymNdSKLPgdI9tiAiKHa9kKekxcTrCZwGzsAwjaRoilLOao1gDMAGCVLY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DBAPR04MB7429.eurprd04.prod.outlook.com (2603:10a6:10:1a2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 14:05:01 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
+ 14:05:01 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     hch@infradead.org
+Cc:     Frank.Li@nxp.com, bhelgaas@google.com,
+        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Date:   Tue, 26 Sep 2023 10:04:45 -0400
+Message-Id: <20230926140445.3855365-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR11CA0082.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1] perf vendor events intel: Fix broadwellde
- tma_info_system_dram_bw_use metric
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>
-References: <20230926031034.1201145-1-irogers@google.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20230926031034.1201145-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DBAPR04MB7429:EE_
+X-MS-Office365-Filtering-Correlation-Id: 185fcf7b-2531-423c-4cc6-08dbbe999361
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4DtxdnozAKMJG9RT7j6M8wNxO+/Nq132uQbJLiU6wttEZohBzDeEud6HPpO3mJ0HRpo+K+6h6JcqbPTMGzcd+21KX02uuEZZ11jOt6zkGmxqPAvgoH4lO+OXwOLJ8lioHWaOQk+kpr53HZWocvOAhWN949/Hczo1kfVtaX7MRqyN92gRyAIM4aYhb00jp0lPPaWaiuTNoOoBM61+xYGzX/kXi4PZMqx9E5LEMy8O+0C19nHBFYPVsGubjFQzy/74Tmp8UtlTvq2Xht8XPObC1rqUvf6+R5CmW/FYOvyOOu8wAPeFwbNpYxxr4S7CeCfevwMY9JLDvlhIKo/wbCZeMqREoicdQfW2YaEVQnqiLsRZAf46QLQz35yLnO5S4iHAi+QNgQe6HhtbyRgZ1/gM4Cmx2+dfyBY+pOuPpG1hrVnOU1P9zZO5qpG8Drceyi3u7xy5RHuMG34kwUBuufJEN6sMojkY4GmkTiwdUHFRTdflHjuxUyOckLcLdiIXZrZkpYvvo5R6KaFwmw4S8Mn5YzCdxinzR6zn9RIkakCVZT3ig58LKHdjL5r8t2RGtMo9XzpQ8sBzTGaB/BoCPgyfWuQFinPjGcl+Vfw+AXlCca99uYDNRPlAxkDLBXaN37Ct
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(366004)(346002)(230922051799003)(1800799009)(186009)(451199024)(6512007)(52116002)(6486002)(6666004)(6506007)(86362001)(38100700002)(38350700002)(36756003)(1076003)(2616005)(26005)(2906002)(316002)(7416002)(41300700001)(66476007)(66946007)(6916009)(478600001)(4326008)(8936002)(8676002)(5660300002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9q1HVKydWBYasikPO/F7Mu2kAaIqpQethbNdTHEFpVzc+HEFKBsGS7/dfAi9?=
+ =?us-ascii?Q?mroh+kml5sAJHRpr37JwuwcinzoXGWDLBi22NyC3cdeSwu+LFYTIKSTADMvX?=
+ =?us-ascii?Q?vqs6G57656a5pKIDJKi43yvUMiqifZi7OoGluVw4q2Z64B5YfwIdDu2JV3jl?=
+ =?us-ascii?Q?6LpGEmlLI6bM4FaXs36Qmk9ERX9yC9CafRO/CM04ir36ot4fKfSRqBwrnnuW?=
+ =?us-ascii?Q?aOJYdJpGmlQXE0RPni13/uL5UcXInT34z+WIEQy92xfcx1MNwg4hHm7UDz/E?=
+ =?us-ascii?Q?GppY0hgFVdOBrpsu/r98K6l6E4UdCM+JGj1LvCmZTOfKVctHYbAfFqlZPntZ?=
+ =?us-ascii?Q?M8gPj3Bp8UrC+KwIHJ1/XTtpuTYG4mhKzQ6RT1nRmAGMZM0rsLl2esAPPW3m?=
+ =?us-ascii?Q?mYs12EM9I8k12oteu6jl94C47B6Ary25EgDimJd00KSASK9EpFW4zB76Jaii?=
+ =?us-ascii?Q?c5Zg++iTOx0TuqYt9WZ4t9g3av1wvAGWYKXDbIiDmCRkP6jgdl6u4CGFsa3v?=
+ =?us-ascii?Q?j1Pgf/xOhNJOXdRULY8QLNbJbTL+neKAoNynCICvVQknQHXCqhRmSPS2bbJa?=
+ =?us-ascii?Q?3Izfd+rBnPpUC/gK1xndjRwGvc0L26vBPEpEBmr4KfkmcynFeW1Hd1TSWw7+?=
+ =?us-ascii?Q?f3TFYZ6ZfEy47f5xlexfBke+eWWK77bVZ0XwTIe01jVfT/Pb8FzDoSKC4xny?=
+ =?us-ascii?Q?rduMidNt2M5qcM4W5S6QLAjbOMTTmeYmwHK1LANCDaUHcwcHYR38lvWsVEwN?=
+ =?us-ascii?Q?xXz4Hz6I5+qLbTnE/UsLX/3fV4J1aKQwIPBrTMnYly4rTqgFARrTqrRWxw3b?=
+ =?us-ascii?Q?L/WE8JXP1SwWHBY43j50Sb6pLdP+n6zD958XhCJnuJ25IcImc0146mXrvPVL?=
+ =?us-ascii?Q?/5+wD7i0cQ7MLXcYKn2Zd8sL0jHbA06x9Dfc1GMWRiIDDiD9NIA/atNAhGs6?=
+ =?us-ascii?Q?N6qitDalXkCcODMcrlo5z5g9FbSyXC28AKgUMPweYS48D9u4q4w5RpkWwPHv?=
+ =?us-ascii?Q?PVrfyHp0SmKYLYLZBQeCnqmHaWJqbysWFdtgaamkJUClpdZTjwgOVYNy1l/S?=
+ =?us-ascii?Q?cyKjP9S5SuuXY40OsNfRLkoD+66vVOrf6XeDnG1noy5BtU8EzgTtavLVISgd?=
+ =?us-ascii?Q?Gdas1ceV6rOed0tLPwYvcqE1k0TWntZDi2t5driCAmoOXSmvRjJsqoOZz8j7?=
+ =?us-ascii?Q?HMZy12IedBU9YuzN0Wnrygbysmu7mHeO0Ua8zYbEsYBtcZ9sfIMbhi18xTuw?=
+ =?us-ascii?Q?bBQYw0l6Lmf5aMBdVesHL6cUpcY/x3HxuzYcS0A7HRFQHdIlhs8e90rFLDaX?=
+ =?us-ascii?Q?BYr5Us9ZeVM7mxQY+NokDWA1RMH5BxtbCHVy2I58X9QC5PotE6VmX0DiDVmJ?=
+ =?us-ascii?Q?U/5a5rn6uGnHTDPo6e7qQmVRaYNNcBrZb48jiQk4Fk9CTmf+WrjuCSABdOGK?=
+ =?us-ascii?Q?c77CGS6jXd1PY5Iq/DP0Uut5HzY2H3CRsJ4A9W4+/IWLDa99H0UXJA+imXv7?=
+ =?us-ascii?Q?1m29rUD7XRRQSohNp1XpLLlmcYdn+kMwQUSkOjzD65LAJsBu3kROyr9KafW9?=
+ =?us-ascii?Q?arclnmTCKCwabdXPUZ9svghvmDLzwSmx6afBUGL/?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 185fcf7b-2531-423c-4cc6-08dbbe999361
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 14:05:01.8234
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tw+fJur7bQM8tzNYmHzbUkrIgfjIeOeEd7D0F6NXTNAhSxjGiRuY6cTNGCFaoSnP5qhH+PPkO0Ho938sZVFLkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7429
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guanhua Gao <guanhua.gao@nxp.com>
 
+Set DMA mask and coherent DMA mask to enable 64-bit addressing.
 
-On 2023-09-25 11:10 p.m., Ian Rogers wrote:
-> Broadwell-de has a consumer core and server uncore. 
+Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-Besides this one, compared with the bdx-metrics.json, there is one
-uncore metrics missed in the bdwde-metrics.json, uncore_frequency.
+Notes:
+    change from v2 to v3
+    - remove check return value of dma_set_mask_and_coherent. 64bit mask always
+    return success.
+    - remove redundate comments
+    change from v1 to v2
+    - Remove 32bit DMA mask set.
 
-> The uncore_arb PMU
-> isn't present and the broadwellx style cbox PMU should be used
-> instead. Fix the tma_info_system_dram_bw_use metric to use the server
-> metric rather than client.>
-> The associated converter script fix is in:
-> https://github.com/intel/perfmon/pull/111
-> 
-> Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell variant events/metrics")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+ drivers/pci/controller/dwc/pci-layerscape-ep.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+index de4c1758a6c3..2c2c9aaa8700 100644
+--- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
++++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+@@ -249,6 +249,8 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+ 
+ 	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+ 
++	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
++
+ 	platform_set_drvdata(pdev, pcie);
+ 
+ 	ret = dw_pcie_ep_init(&pci->ep);
+-- 
+2.34.1
 
-Thanks,
-Kan
-> ---
->  tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> index 8fc62b8f667d..d0ef46c9bb61 100644
-> --- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-> @@ -652,7 +652,7 @@
->      },
->      {
->          "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
-> -        "MetricExpr": "64 * (arb@event\\=0x81\\,umask\\=0x1@ + arb@event\\=0x84\\,umask\\=0x1@) / 1e6 / duration_time / 1e3",
-> +        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR) / 1e9 / duration_time",
->          "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
->          "MetricName": "tma_info_system_dram_bw_use",
->          "PublicDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_bandwidth, tma_sq_full"
