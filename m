@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0A87AF678
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ADE7AF642
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbjIZWwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 18:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
+        id S230346AbjIZWWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 18:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbjIZWuA (ORCPT
+        with ESMTP id S230102AbjIZWT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 18:50:00 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76A2900F;
-        Tue, 26 Sep 2023 14:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WccGIMN5Qv0lQD3hgxuM1vcIL4JfsNLSXHYfA6JcKbA=; b=OsDkrrtpZVXrV5cPooFVpQ+DsW
-        efu7lcfWUFBZQaHC0VFHyjjlC9IDm/yz/ZSlLHkS56BIBF1rqS35BSa4iOCFAMWKpcXpAAhZiLrpb
-        /5MwxV8qJttJgFtRzaN+w6Z85LOr7HVhGxkZL88Sv5A/SkYZv7JMKEyrCWFeL2Yf9rWDNOyHisFva
-        qNGTFJp2isj0JVlKyHCS19X3cR12y4OMvncSwP7i60r/thlVuHEHxR25fZSDXn83II/AWC7INUFn6
-        8+uAPErM2QG6BrRdCCZ6OQ8tCEmDrSMgrY6TSaupVewWlaEaPlhNXIhz6JXLVcFKp8/OKJhckJeHZ
-        DAUjL3zQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlFYR-00Bljq-2w;
-        Tue, 26 Sep 2023 21:25:16 +0000
-Date:   Tue, 26 Sep 2023 22:25:15 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926212515.GN800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230926093834.GB13806@lst.de>
+        Tue, 26 Sep 2023 18:19:59 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C09A25D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:28:55 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso8718552b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695763734; x=1696368534; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tM+w7SwTcJ/9TuivXGr7nl0JVKRgfVjBaqMkj1+Pw2s=;
+        b=BFut5ZpGawswGr6AbMRMd8xkZcGjwSkUzW9siE+rk70jOS5UQB9e2S40V9rU13nCax
+         wSxLelaun3edKvlV6a9poRCYisyk3h79yfUgxa6TEUP3NM7/6u4qe5oU7i6HGCbg0zot
+         vZbgHAZwGTR5qOt9nwkiqPhok2iMtN5/SBZmc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695763734; x=1696368534;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tM+w7SwTcJ/9TuivXGr7nl0JVKRgfVjBaqMkj1+Pw2s=;
+        b=uVN6owucK+b1aifgUp8HsbeNchhpHkEEIem/exR5m9UbgDcidWwLUczUHNJEI39Qgt
+         nLuvzIUxw8xo17R8bJ7xMsuA4FG2ajB1r0XM1TP8CzTU8sQRdAhPBsKv8xZMmvQRT7dC
+         CJEZCGXhh0HuLgYP0zBZsT2lfiG8yCY3TYBmaU8Fg6DNc9Izb7pcFeFH0Ox3bsOePMwv
+         FCozrBQ/yU73lMlEuN5Q57ne7UpRRQXzu8TKGmSGJGvLJTyI90sMrkKb+MmEeVjTg0xx
+         euZ6ZnnfC2VbypjJ/0rc9gqPw3AJDTNrY3bTPyxxPbAdTP5gLnTs31mdjz9mqUyd/3Xi
+         WqbA==
+X-Gm-Message-State: AOJu0YzQp7iZiWBShEg94bxMdCN6S0Iu1ZBVo1u312G+bH71BjmRtUUG
+        0srAkt/XB5wiPcIr40Tke2TUXQ==
+X-Google-Smtp-Source: AGHT+IFg/VWvQtSOis29D/COSilSeZuwA9ac2iVmLkvtEV2cLcnBvdR30qN03c8KVE9VJv8AcgAUxQ==
+X-Received: by 2002:a05:6a20:428e:b0:13a:43e8:3fb5 with SMTP id o14-20020a056a20428e00b0013a43e83fb5mr69140pzj.51.1695763734547;
+        Tue, 26 Sep 2023 14:28:54 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:f39:c3f2:a3b:4fcd])
+        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b0068fece2c190sm10337251pfd.70.2023.09.26.14.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 14:28:53 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-usb@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
+        Edward Hill <ecgh@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        andre.przywara@arm.com, anton@polit.no, bjorn@mork.no,
+        edumazet@google.com, gaul@gaul.org, horms@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com
+Subject: [PATCH 0/3] r8152: Avoid writing garbage to the adapter's registers
+Date:   Tue, 26 Sep 2023 14:27:25 -0700
+Message-ID: <20230926212824.1512665-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926093834.GB13806@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:38:34AM +0200, Christoph Hellwig wrote:
+This 3-patch series is the result of a cooperative debug effort
+between Realtek and the ChromeOS team. On ChromeOS, we've noticed that
+Realtek Ethernet adapters can sometimes get so wedged that even a
+reboot of the host can't get them to enumerate again, assuming that
+the adapter was on a powered hub and din't lose power when the host
+rebooted. This is sometimes seen in the ChromeOS automated testing
+lab. The only way to recover adapters in this state is to manually
+power cycle them.
 
-> How?
-> 
-> Old sequence before his patch:
-> 
-> 	deactivate_locked_super()
-> 	  -> kill_anon_super()
-> 	    -> generic_shutdown_super()
-> 	    -> kill_super_notify()
-> 	    -> free_anon_bdev()
-> 	  -> kill_super_notify()
-> 
-> New sequence with this patch:
-> 
-> 	deactivate_locked_super()
-> 	  -> generic_shutdown_super()
-> 	    -> kill_super_notify()
-> 	    -> free_anon_bdev()
-> 
+I managed to reproduce one instance of this wedging (unknown if this
+is truly related to what the test lab sees) by doing this:
+1. Start a flood ping from a host to the device.
+2. Drop the device into kdb.
+3. Wait 90 seconds.
+4. Resume from kdb (the "g" command).
+5. Wait another 45 seconds.
 
-Before your patch: foo_kill_super() calls kill_anon_super(),
-which calls kill_super_notify(), which removes the sucker from
-the list, then frees ->s_fs_info.  After your patch:
-removal from the lists happens via the call of kill_super_notify()
-*after* both of your methods had been called, while freeing
-->s_fs_info happens from the method call.  IOW, you've restored
-the situation prior to "super: ensure valid info".  The whole
-point of that commit had been to make sure that we have nothing
-in the lists with ->s_fs_info pointing to a freed object.
+Upon analysis, Realtek realized this was happening:
 
-It's not about free_anon_bdev(); that part is fine - it's the
-"we can drop the weird second call site of kill_super_notify()"
-thing that is broken.
+1. The Linux driver was getting a "Tx timeout" after resuming from kdb
+   and then trying to reset itself.
+2. As part of the reset, the Linux driver was attempting to do a
+   read-modify-write of the adapter's registers.
+3. The read would fail (due to a timeout) and the driver pretended
+   that the register contained all 0xFFs. See commit f53a7ad18959
+   ("r8152: Set memory to all 0xFFs on failed reg reads")
+4. The driver would take this value of all 0xFFs, modify it, and
+   attempt to write it back to the adapter.
+5. By this time the USB channel seemed to recover and thus we'd
+   successfully write a value that was mostly 0xFFs to the adpater.
+6. The adapter didn't like this and would wedge itself.
 
-Al, still slogging through the rcu pathwalk races in the methods...
-The latest catch: nfs_set_verifier() can get called on a dentry
-that had just been seen to have positive parent, but is not
-pinned down.
-	grab ->d_lock; OK, we know that dentry won't get freed under us
-	fetch ->d_parent->d_inode
-	pass that to nfs_verify_change_attribute()
-... which assumes that inode it's been given is not NULL.  Normally it
-would've been - ->d_lock stabilizes ->d_parent, and negative dentries
-obviously have no children.  Except that we might've been just hit
-by dentry_kill() due to eviction on memory pressure, got ->d_lock
-right after that and proceeded to play with ->d_parent, just as
-that parent is going through dentry_kill() from the same eviction on
-memory pressure...  If it gets to dentry_unlink_inode() before we get to
-fetching ->d_parent->d_inode, nfs_verify_change_attribute(NULL, whatever)
-is going to oops...
+Another Engineer also managed to reproduce wedging of the Realtek
+Ethernet adpater during a reboot test on an AMD Chromebook. In that
+case he was sometimes seeing -EPIPE returned from the control
+transfers.
+
+This patch series fixes both issues.
+
+
+Douglas Anderson (3):
+  r8152: Increase USB control msg timeout to 5000ms as per spec
+  r8152: Retry register reads/writes
+  r8152: Block future register access if register access fails
+
+ drivers/net/usb/r8152.c | 124 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 115 insertions(+), 9 deletions(-)
+
+-- 
+2.42.0.515.g380fc7ccd1-goog
+
