@@ -2,1212 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721357AE888
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BC07AE88D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbjIZJBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        id S234049AbjIZJCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbjIZJA7 (ORCPT
+        with ESMTP id S233998AbjIZJCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:00:59 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DA9116;
-        Tue, 26 Sep 2023 02:00:48 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q6C7lt029630;
-        Tue, 26 Sep 2023 09:00:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=yd/Z3lajgotbAWG6uB8aMEG+Yxo1Z4HDuQen94LS0Rg=;
- b=GNbr+A2FfuvAWvKDYGn2DEbKNmHAENi/DsGb6rfCVcN6zZq6RWnO+4LoYP0SksYO/0iJ
- aVErZlTssVM8uan6CQd6u2DMFotHMQkH3A1eNXxmUv5l+aqR+e0XoYtK45ZLfefIfij7
- omXvSmeTGKPpdnhEm6DsDwCxhThy4ys5NY0z+UeqKbHQStNbdDKY5WT4Z6pdMkP7kQWW
- EPzsWSRTv9rHwBqkHlgQS/+mX1wRdhUQFbC8weNmD5RaZVRgerMbd0l0XgjQW4SfoPWT
- frSGIGUZ7jrVFeHMgU9F7425i3JAmEwXNw9YqVNWHpofRiLUf5CR4QGtlzxg9Heph5dx DA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbmwwrvpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 09:00:38 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38Q90bZ5008115
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 09:00:37 GMT
-Received: from hu-priyjain-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 26 Sep 2023 02:00:28 -0700
-From:   Priyansh Jain <quic_priyjain@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_manafm@quicinc.com>, <quic_priyjain@quicinc.com>,
-        <kernel@quicinc.com>
-Subject: [PATCH v3 2/2] arm64: dts: qcom: Enable tsens and thermal for sa8775p SoC
-Date:   Tue, 26 Sep 2023 14:29:48 +0530
-Message-ID: <20230926085948.23046-3-quic_priyjain@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230926085948.23046-1-quic_priyjain@quicinc.com>
-References: <20230926085948.23046-1-quic_priyjain@quicinc.com>
+        Tue, 26 Sep 2023 05:02:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048E3DD;
+        Tue, 26 Sep 2023 02:02:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5237AC433C8;
+        Tue, 26 Sep 2023 09:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695718929;
+        bh=FG/XZvk3hacyQ2ppSKA5dgtBb471TsLXsnHEv8M7XF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bS58imdOvbQ5qdOIgFzc0p+S8qWiJsvYm5RWmonqnsrELN5km7fXzBubfLZOKu/oW
+         Jy67+/UFRibENz+EUggyMW2jNYYwtyZ+y1dWQxRMsQ42sO+3pkigRG4m851+UpFeMG
+         g963EkYEdXypdjx7hHOK5+tOKnRk8wcH7ANdPG7QX/PQB0d5/c1qW3Be5C74F+FzW/
+         a7EFzZJ8AJC+iAGuR433CgODxegei6QVxLqBcIlO2A++2gXCIATyI0OPazq63Q+sbZ
+         p3XRbn6zAOlH25A/RNFhLKXVarkNZVstFHHQZupdRJ/B8lF/E6/P3O5jJeCWLFu9c/
+         sOL/+ClYJYHgw==
+Date:   Tue, 26 Sep 2023 10:02:04 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
+        "jingyliang@chromium.org" <jingyliang@chromium.org>,
+        wuxy23@lenovo.com, luolm1@lenovo.com,
+        hung poyu <poyu_hung@himax.corp-partner.google.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
+ device
+Message-ID: <20230926-action-sludge-ec8e51fdd6d4@spud>
+References: <20230919-70b2f1e368a8face73468dfa@fedora>
+ <CAGD2q_anfBP78jck6AbMNtgAggjOgaB3P6dkmq9tONHP45adFA@mail.gmail.com>
+ <20230919-cc4646dbfb953bd34e05658c@fedora>
+ <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
+ <20230922-unclothed-bottom-5531329f9724@spud>
+ <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
+ <20230922-removable-footwork-f1d4d96d38dd@spud>
+ <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
+ <20230925-cod-vacancy-08dc8d88f90e@wendy>
+ <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eN4NrDFAHwHNgRsOIbqBuapBgqzNd6FL
-X-Proofpoint-ORIG-GUID: eN4NrDFAHwHNgRsOIbqBuapBgqzNd6FL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=524 spamscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309260079
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+WGjGNb92VtLdF6U"
+Content-Disposition: inline
+In-Reply-To: <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tsens and thermal devicetree node for sa8775p SoC.
 
-Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 1096 +++++++++++++++++++++++++
- 1 file changed, 1096 insertions(+)
+--+WGjGNb92VtLdF6U
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 9f4f58e831a4..134d9812459f 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -1902,6 +1902,50 @@
- 			interrupt-controller;
- 		};
- 
-+		tsens2: thermal-sensor@c251000 {
-+			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
-+			reg = <0x0 0x0c251000 0x0 0x1ff>,
-+			      <0x0 0x0c224000 0x0 0x8>;
-+			interrupts = <GIC_SPI 572 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 609 IRQ_TYPE_LEVEL_HIGH>;
-+			#qcom,sensors = <13>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
-+		tsens3: thermal-sensor@c252000 {
-+			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
-+			reg = <0x0 0x0c252000 0x0 0x1ff>,
-+			      <0x0 0x0c225000 0x0 0x8>;
-+			interrupts = <GIC_SPI 573 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 610 IRQ_TYPE_LEVEL_HIGH>;
-+			#qcom,sensors = <13>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
-+		tsens0: thermal-sensor@c263000 {
-+			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
-+			reg = <0x0 0x0c263000 0x0 0x1ff>,
-+			      <0x0 0x0c222000 0x0 0x8>;
-+			interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>;
-+			#qcom,sensors = <12>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
-+		tsens1: thermal-sensor@c265000 {
-+			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
-+			reg = <0x0 0x0c265000 0x0 0x1ff>,
-+			      <0x0 0x0c223000 0x0 0x8>;
-+			interrupts = <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 509 IRQ_TYPE_LEVEL_HIGH>;
-+			#qcom,sensors = <12>;
-+			interrupt-names = "uplow", "critical";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
- 		aoss_qmp: power-management@c300000 {
- 			compatible = "qcom,sa8775p-aoss-qmp", "qcom,aoss-qmp";
- 			reg = <0x0 0x0c300000 0x0 0x400>;
-@@ -2393,6 +2437,1058 @@
- 		};
- 	};
- 
-+	thermal-zones {
-+		aoss-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 0>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-0-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 1>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-1-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 2>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-2-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 3>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-3-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 4>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 5>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 6>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-2-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 7>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		audio-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 8>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		camss-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 9>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		pcie-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 10>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpuss-0-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens0 11>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		aoss-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 0>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-0-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 1>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-1-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 2>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-2-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 3>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-0-3-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 4>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-3-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 5>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-4-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 6>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		gpuss-5-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 7>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		video-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 8>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		camss-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 9>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		pcie-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 10>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpuss-0-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens1 11>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		aoss-2-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 0>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-0-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 1>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-1-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 2>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-2-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 3>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-3-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 4>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-0-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 5>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-1-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 6>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-2-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 7>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-0-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 8>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-1-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 9>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-2-0-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 10>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		ddrss-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 11>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpuss-1-0-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens2 12>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		aoss-3-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 0>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-0-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 1>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-1-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 2>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-2-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 3>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpu-1-3-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 4>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-0-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 5>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-1-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 6>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-0-2-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 7>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-0-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 8>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-1-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 9>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		nsp-1-2-1-thermal {
-+			polling-delay-passive = <10>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 10>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		ddrss-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 11>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+
-+		cpuss-1-1-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&tsens3 12>;
-+
-+			trips {
-+				trip-point0 {
-+					temperature = <105000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+
-+				trip-point1 {
-+					temperature = <115000>;
-+					hysteresis = <5000>;
-+					type = "passive";
-+				};
-+			};
-+		};
-+	};
-+
- 	arch_timer: timer {
- 		compatible = "arm,armv8-timer";
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
--- 
-2.17.1
+On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrote:
+> On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor.dooley@microc=
+hip.com> wrote:
+> >
+> > On Mon, Sep 25, 2023 at 09:44:21AM +0800, yang tylor wrote:
+> > > On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@kernel.o=
+rg> wrote:
+> > > >
+> > > > On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
+> > > > > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor@kerne=
+l.org> wrote:
+> > > > > >
+> > > > > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrote:
+> > > > > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <conor@k=
+ernel.org> wrote:
+> > > > > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor wrote:
+> > > > > >
+> > > > > > > > > The behavior of "himax,boot_time_fw_upgrade" seems not st=
+able and
+> > > > > > > > > should be removed. "himax,fw_in_flash", I use the kernel =
+config for
+> > > > > > > > > user to select.
+> > > > > > > >
+> > > > > > > > That seems like a bad idea, we want to be able to build one=
+ kernel that
+> > > > > > > > works for all hardware at the same time.
+> > > > > > > >
+> > > > > > > I see, so I should take that back?
+> > > > > > > I'll explain more about it.
+> > > > > >
+> > > > > > Are there particular ICs where the firmware would always be in =
+flash and
+> > > > > > others where it would never be? Or is this a choice made by the=
+ board or
+> > > > > > system designer?
+> > > > > >
+> > > > > Most cases it's about the system designer's decision. But some IC=
+s may be forced
+> > > > > to use flash because of its architecture(multiple IC inside, need=
+ to
+> > > > > load firmware to
+> > > > > multiple IC's sram by master IC). But if there is no limitation on
+> > > > > this part, most system
+> > > > > designers will prefer flashless.
+> > > >
+> > > > Forgive me if I am not understanding correctly, there are some ICs =
+that
+> > > > will need to load the firmware from flash and there are some where =
+it
+> > > > will be a decision made by the designer of the board. Is the flash =
+part
+> > > > of the IC or is it an external flash chip?
+> > > >
+> > >
+> > > Both are possible, it depends on the IC type. For TDDI, the IC is long
+> > > and thin, placed on panel PCB, flash will be located at the external
+> > > flash chip. For the OLED TP, IC is usually placed at FPC and its flash
+> > > is embedded, thus the IC size is large compared to TDDI. But from the
+> > > driver's perspective either external flash or embedded flash, the IC
+> > > itself will load firmware from flash automatically when reset pin is
+> > > released. Only if firmware is loading from the host storage system,
+> > > the driver needs to operate the IC in detail.
+> >
+> >
+> > Since there are ICs that can use the external flash or have it loaded
+> > from the host, it sounds like you do need a property to differentiate
+> > between those cases.
+> Yep.
+>=20
+> > Is it sufficient to just set the firmware-name property for these cases?
+> > If the property exists, then you know you need to load firmware & what
+> > its name is. If it doesn't, then the firmware either isn't needed or
+> > will be automatically loaded from the external flash.
 
+> We have a default prefix firmware name(like himax_xxxx.bin) in the driver=
+ code.
+
+How do you intend generating the name of the firmware file? I assume the
+same firmware doesn't work on every IC, so you'll need to pick a
+different one depending on the compatible?
+
+> So we'll look for it when no-flash-flag is specified. In our experience,
+> forcing a prefix firmware name helps the user to aware what firmware
+> they are dealing with.
+
+--+WGjGNb92VtLdF6U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRKeCwAKCRB4tDGHoIJi
+0lruAP4hZ8nocuGWnEzSIUZrj/kgtBMgEPNP7n43DBHOkQFe2QD9Ho3Jptfn0Ua2
+sOQKUiY1nPOeuklGoFnRpPDFDYbEgw4=
+=k7oS
+-----END PGP SIGNATURE-----
+
+--+WGjGNb92VtLdF6U--
