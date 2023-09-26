@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A5E7AE52B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AE97AE52D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbjIZFlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 01:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
+        id S233686AbjIZFm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 01:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjIZFln (ORCPT
+        with ESMTP id S233641AbjIZFmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 01:41:43 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D3AE9;
-        Mon, 25 Sep 2023 22:41:36 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so5712865a12.1;
-        Mon, 25 Sep 2023 22:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695706895; x=1696311695; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qq1fspIFsjirF2QJeFwHsMtLnKCKkT6CIKp3dlIQQRw=;
-        b=CM/VrL0O6+mtJkvHh/0XUpGkEmeexkPFMmLNBb5QPJSU5NnmZaLft+Ai/TDaAGuJaY
-         B1dc1UWDqidgExBzrFtghUbpBWrew6QeiPnWJQSQfVxUuZACwL/RQUbuxYmbl3VqcGNw
-         8WsYbaokZY4PPEK9kGQD4OVGRKSnLinWd0VSpUebGkfYFvP8g0anv+8Bg+DuG43DwoCI
-         evYnAVmQtme2je32qqA7V6e9Lhh7tk3YVdcHGLyLKLpOTjVcrd0msTy7o5pvN/aOujaD
-         kzw/DqZeoOP+YgwgIInquKxh4wmZGflIY2nwbk7mIywACHlxENMhppExRmymAt8byd2/
-         sVWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695706895; x=1696311695;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qq1fspIFsjirF2QJeFwHsMtLnKCKkT6CIKp3dlIQQRw=;
-        b=h/SiYc7QDyDReQO/PTZwlvr16HSDqjyArCPJHi+nTKgsXm0Nx58sPfU9sZ9sGe+TKu
-         3IvlhVZTA2r6H6jPMwJdP4a9yRrnBj7zZlj4e+imyonrW5RmiogcPdz4r9YMV9WJLgo/
-         LpBA+Gbn+fCLA6G8wkevn3jritg3MLJtFHFDQZVr6K1PxZiBLI5n+a2aLvYSHJsE0OlC
-         EC9dd/ehqjMMJECkR76CwCOhFIsEUlp7hqdqg17NYfeYDhkjgq7EvSwdvgvpP/lQCukD
-         +2Q0IdyG9imK0hSmSwspZ2k2Uie87/UZ6/YkokPCGJa1BkwnDDgBJioSe/ePTSK2WToa
-         3sEg==
-X-Gm-Message-State: AOJu0Yy5EKkry1Q1Yo2lQmtE2DuHrguISZUB6+mtFoJ/6UOdz9imtJYe
-        C5ziFb7oPleItw681ZiK5U6t9MAwNy6OcnGF8h8=
-X-Google-Smtp-Source: AGHT+IHL8T+K3PDezOhxFtuYl5923Ksx/n2bdRR6YGosxAfr9eRYzXWiXuBJfq+qCm4zZrnMLynd+1j4SxpLrxUbc8E=
-X-Received: by 2002:aa7:c502:0:b0:530:9d56:c2a5 with SMTP id
- o2-20020aa7c502000000b005309d56c2a5mr6017562edq.6.1695706894697; Mon, 25 Sep
- 2023 22:41:34 -0700 (PDT)
+        Tue, 26 Sep 2023 01:42:25 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6994F2;
+        Mon, 25 Sep 2023 22:42:18 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38Q5g4BW113394;
+        Tue, 26 Sep 2023 00:42:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695706925;
+        bh=FaCNcoOxk7RfK05IOQkkeblKCAra5walu+sg3plROtg=;
+        h=From:To:CC:Subject:Date;
+        b=Kxpf4qUl1lF6Bw5TjwUVKUc6cX34jvzW/lbgdXmi4UdajLR3G2WkXeYDpmWez/gSN
+         iO2FLEIImJDJA0l+JD7ZXK+pNpjfffIcsrMyy8Jgd8VV379QQtWylR+lGnRjm1Sa/W
+         Ek73aaCM22aeZLGstxCQR3avG6kmx4sYUdtW58r8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38Q5g43j012577
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 00:42:04 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 00:42:04 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 00:42:04 -0500
+Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38Q5g0AA033333;
+        Tue, 26 Sep 2023 00:42:01 -0500
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+To:     <lpieralisi@kernel.org>, <robh@kernel.org>, <kw@linux.com>,
+        <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH] PCI: keystone: Fix race condition when initializing PHYs
+Date:   Tue, 26 Sep 2023 11:12:00 +0530
+Message-ID: <20230926054200.963803-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230924010214.3700150-1-william@wkennington.com>
-In-Reply-To: <20230924010214.3700150-1-william@wkennington.com>
-From:   Tali Perry <tali.perry1@gmail.com>
-Date:   Tue, 26 Sep 2023 08:41:23 +0300
-Message-ID: <CAHb3i=uOMuUAz=zY_GFvBi-9JFaaPhN4F0Ve5i1f4WhyjgH8Bw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: npcm7xx: Fix callback completion ordering
-To:     "William A. Kennington III" <william@wkennington.com>
-Cc:     tmaimon77@gmail.com, avifishman70@gmail.com, wsa@kernel.org,
-        joel@jms.id.au, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 4:02=E2=80=AFAM William A. Kennington III
-<william@wkennington.com> wrote:
->
-> Sometimes, our completions race with new master transfers and override
-> the bus->operation and bus->master_or_slave variables. This causes
-> transactions to timeout and kernel crashes less frequently.
->
-> To remedy this, we re-order all completions to the very end of the
-> function.
->
-> Fixes: 56a1485b102e ("i2c: npcm7xx: Add Nuvoton NPCM I2C controller drive=
-r")
-> Signed-off-by: William A. Kennington III <william@wkennington.com>
-> ---
->  drivers/i2c/busses/i2c-npcm7xx.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-np=
-cm7xx.c
-> index 495a8b5f6a2b..ae4bae63ad4f 100644
-> --- a/drivers/i2c/busses/i2c-npcm7xx.c
-> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
-> @@ -694,6 +694,7 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
->  {
->         struct i2c_msg *msgs;
->         int msgs_num;
-> +       bool do_complete =3D false;
->
->         msgs =3D bus->msgs;
->         msgs_num =3D bus->msgs_num;
-> @@ -722,23 +723,17 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
->                                  msgs[1].flags & I2C_M_RD)
->                                 msgs[1].len =3D info;
->                 }
-> -               if (completion_done(&bus->cmd_complete) =3D=3D false)
-> -                       complete(&bus->cmd_complete);
-> -       break;
-> -
-> +               do_complete =3D true;
-> +               break;
->         case I2C_NACK_IND:
->                 /* MASTER transmit got a NACK before tx all bytes */
->                 bus->cmd_err =3D -ENXIO;
-> -               if (bus->master_or_slave =3D=3D I2C_MASTER)
-> -                       complete(&bus->cmd_complete);
-> -
-> +               do_complete =3D true;
->                 break;
->         case I2C_BUS_ERR_IND:
->                 /* Bus error */
->                 bus->cmd_err =3D -EAGAIN;
-> -               if (bus->master_or_slave =3D=3D I2C_MASTER)
-> -                       complete(&bus->cmd_complete);
-> -
-> +               do_complete =3D true;
->                 break;
->         case I2C_WAKE_UP_IND:
->                 /* I2C wake up */
-> @@ -752,6 +747,8 @@ static void npcm_i2c_callback(struct npcm_i2c *bus,
->         if (bus->slave)
->                 bus->master_or_slave =3D I2C_SLAVE;
->  #endif
-> +       if (do_complete)
-> +               complete(&bus->cmd_complete);
->  }
->
->  static u8 npcm_i2c_fifo_usage(struct npcm_i2c *bus)
-> --
-> 2.42.0.515.g380fc7ccd1-goog
->
+The PCI driver invokes the PHY APIs using the ks_pcie_enable_phy()
+function. The PHY in this case is the Serdes. It is possible that the
+PCI instance is configured for 2 lane operation across two different
+Serdes instances, using 1 lane of each Serdes. In such a configuration,
+if the reference clock for one Serdes is provided by the other Serdes,
+it results in a race condition. After the Serdes providing the reference
+clock is initialized by the PCI driver by invoking its PHY APIs, it is
+not guaranteed that this Serdes remains powered on long enough for the
+PHY APIs based initialization of the dependent Serdes. In such cases,
+the PLL of the dependent Serdes fails to lock due to the absence of the
+reference clock from the former Serdes which has been powered off by the
+PM Core.
 
-Thanks William for the fix!
+Fix this by obtaining reference to the PHYs before invoking the PHY
+initialization APIs and releasing reference after the initialization is
+complete.
 
-Reviewed-by: Tali Perry <tali.perry1@gmail.com>
+Fixes: 49229238ab47 ("PCI: keystone: Cleanup PHY handling")
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+---
+ drivers/pci/controller/dwc/pci-keystone.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+index 49aea6ce3e87..526b68100a4a 100644
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -1218,12 +1218,20 @@ static int __init ks_pcie_probe(struct platform_device *pdev)
+ 		goto err_link;
+ 	}
+ 
++	/* Obtain reference(s) to the phy(s) */
++	for (i = 0; i < num_lanes; i++)
++		phy_pm_runtime_get_sync(ks_pcie->phy[i]);
++
+ 	ret = ks_pcie_enable_phy(ks_pcie);
+ 	if (ret) {
+ 		dev_err(dev, "failed to enable phy\n");
+ 		goto err_link;
+ 	}
+ 
++	/* Release reference(s) to the phy(s) */
++	for (i = 0; i < num_lanes; i++)
++		phy_pm_runtime_put_sync(ks_pcie->phy[i]);
++
+ 	platform_set_drvdata(pdev, ks_pcie);
+ 	pm_runtime_enable(dev);
+ 	ret = pm_runtime_get_sync(dev);
+-- 
+2.34.1
+
