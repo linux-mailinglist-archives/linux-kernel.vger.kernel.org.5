@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CFF7AEDC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00787AEDC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbjIZNK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        id S234798AbjIZNKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234788AbjIZNKz (ORCPT
+        with ESMTP id S234788AbjIZNKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:10:55 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E392101
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=doU5FOW6/0C2zJjxh4rCzODfENgIVC/XcEM6F8VmRwymp3n7f4Z9mtQ/213HZ0cQbGtnMtjWF//fpA8xyDNaoRWK0j55y++jgReeaH4pNhtExj7W//AzqTBaqYpB6hVPwbfGJRedcqUYB2QtZG7jrTmX6jf9nldEFvUpD+wTHi0aOkW8lh19VziPhUm1eqY0tQy4fbYZn/9S3/GP1kC4oh1T11B8oXruDqqWreOD9WQEMc9dyTb97je9g5uezlwwCnJuI9cle+DpK0hENQxSQR/6E4Xr8jyRCC8nOtqAXYJHd/+hV6mgaTIORalzPHwsPSD+V4+Jfjn4l7CBADyAqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1QlnEnsKacvobnsDeAgw6At/DmH73nHuGp5gxtZAQpE=;
- b=BjItKItajpB0drC8oU3jBs511m7CEaa4Kuodkeh29v2AhYEXyBFh6sUovrHAoSZii9Qjoh4+0/Seh8JjwTKJPLVphN4Moh752BrhxN7U7Pcb+tmL+cedwhsPrrQFFMDWSMBGTyJN5WOymr3idA/Ga+nfXW+IRLeSOmJB3e77yfOMUyDMiw4kS81iJdlmxWAY1N+ZIdeX94A61CNgnSyG/fle2xMvHj2c8hWGhdWY2OOklVI4DlfF3S7bX3Llbet/iXe4eIuJtCrPnlZNTcx1J/XN57Faloc1X4g5wB+l1HFmHx9614bj+Ozv+40kj7f1pBLqeUZAwV44tR/AyQh0Dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1QlnEnsKacvobnsDeAgw6At/DmH73nHuGp5gxtZAQpE=;
- b=qW2WWpkiUkntfDdHjruZtRi5/xIKQwOZmRyhvbLfHFdUdBikRoG0m9AdrCDsVGzPlufwQc52DdHKQGzOf/gUGK4fuQG5jgkvo/Wh+W7cMmCUTWFBQ5OtQ6JmAlWRF3HJqToVrX+C6iA8Ppbms21Q4SxBVsc8FhnPCuUoa87n3ho=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB8308.namprd12.prod.outlook.com (2603:10b6:610:131::8)
- by CY5PR12MB6108.namprd12.prod.outlook.com (2603:10b6:930:27::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 13:10:46 +0000
-Received: from CH3PR12MB8308.namprd12.prod.outlook.com
- ([fe80::a652:eb45:86f0:f68f]) by CH3PR12MB8308.namprd12.prod.outlook.com
- ([fe80::a652:eb45:86f0:f68f%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 13:10:46 +0000
-Message-ID: <74b29e02-5a18-fe86-4e51-e021ec7e4c53@amd.com>
-Date:   Tue, 26 Sep 2023 18:40:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4] cdx: add MSI support for CDX bus
-Content-Language: en-US
-To:     tglx@linutronix.de, maz@kernel.org
-Cc:     gregkh@linuxfoundation.org, jgg@ziepe.ca,
-        linux-kernel@vger.kernel.org, git@amd.com, harpreet.anand@amd.com,
-        pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
-        michal.simek@amd.com, abhijit.gangurde@amd.com,
-        srivatsa@csail.mit.edu
-References: <20230911135259.14046-1-nipun.gupta@amd.com>
-From:   "Gupta, Nipun" <nipun.gupta@amd.com>
-In-Reply-To: <20230911135259.14046-1-nipun.gupta@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0119.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:96::9) To CH3PR12MB8308.namprd12.prod.outlook.com
- (2603:10b6:610:131::8)
+        Tue, 26 Sep 2023 09:10:50 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1D3101
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:43 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4053c6f0e50so80745535e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695733842; x=1696338642; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gUb8ILoSgQFCLFSqMOXdU7OSCDKaDGHaYb2wQZ5A7J8=;
+        b=XynLUSsP+m2kqkkoUMuXe2Gxvl37narI78SLbxBtHplKza8Q5BXwE5TnbWOSK1iVnP
+         G8V5H6TBaNKdyRRCGVE2sivsBv7Pnjh0zyIlXoZBtR2S4Xepe5/b04p4l524cjZhu9zy
+         KLJ6T1ugbCZyRU2nsCQdcBXf9r4nKEsEOA3QdJm/2b0lvp5LpM/ZNsooyzv0vJlQjhz/
+         FgxweQ733/Bn4bROQY5qaeGTju+zvOwdPJpYWhAMcopZL+HltwMHeDFONOjh58PlkCeW
+         KbHpYA6mH4StKYXJk9nHX83DISi3skSYgN3XaHQBkxxGvRLzUAWRsl/yhfEFfUo0No14
+         dUhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695733842; x=1696338642;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gUb8ILoSgQFCLFSqMOXdU7OSCDKaDGHaYb2wQZ5A7J8=;
+        b=C1TIhIpii0YKt+ErV01kQnFmFGtE39rkpPntTl6mB+sik5fB2ulFRzp2K/+pnFHEFp
+         vACMp3DzcnIJxIsPythEWs0WiiyE5WAe1cp0gs76h3jwVYf3rzRkzy4B+78tEIb90NSy
+         XDoBcYCj41HsKIlv00ojBAhNjp5oZ0ptJzLdnSg45Ab3Utj7bYH7IZj9be4zHOpjMakW
+         bUJ5gyBlYly4+BBky8mCfsnidoMiP0rX5rq39R2dbF6g7WIy3sdNo+kywQLbma0dD3Cq
+         8wBh6Xa9UVdCA+W1U34LTTPlyc56fv6OObcBRlrllVEgOUE5Dko3oxHWEMF5rP6L3ugk
+         l6Wg==
+X-Gm-Message-State: AOJu0YwF5y407oKI8XlADVmC0N7Xa3TP6PD6gQLZywgyGSH3/R0oFr/d
+        1AHy5+hJp18LKa//XwGazabdhw==
+X-Google-Smtp-Source: AGHT+IGeSiQ3WveeVgUpyC7fww+V4WeYYuKrHSsckzOgpEr82JSyPAjlpUwHyvObx/ZUX2OzY5V6rg==
+X-Received: by 2002:a05:600c:2489:b0:405:3dbc:8821 with SMTP id 9-20020a05600c248900b004053dbc8821mr8955020wms.22.1695733842083;
+        Tue, 26 Sep 2023 06:10:42 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id j13-20020adfd20d000000b003232c2109cbsm4788764wrh.7.2023.09.26.06.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 06:10:41 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:10:39 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] backlight: mp3309c: Add support for MPS MP3309C
+Message-ID: <20230926131039.GC4356@aspen.lan>
+References: <20230925122609.78849-1-f.suligoi@asem.it>
+ <20230925122609.78849-2-f.suligoi@asem.it>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8308:EE_|CY5PR12MB6108:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5955eaa-756d-469c-5a17-08dbbe91fe96
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 06IviWmX96j+iS42rgkUCxR8f65X3C1Qrz/kd4Hxjn4NNpQ7WkETlLKmUKO9M3gtPPD3V6+Z6s0V4RH7EcUuX3ijQLTB/eyjNcH1UTtJj+MrcI7WMOQBSCn07NeBum5TOHalkLf/pBD8hOtK52S9YAz+Qk91U6yaNzna/BcrFi+cs8zVhG2ncGpicZkjfe5/eW0nRGGyvZZWzBkTRZaC9ROsafWzRRKBuqM8dDkZqw5sxaQvOTAyPUNCkL8xPwClBUulY51zEgpBTY1kgPyjR2y+gNiEKnqOmDArEyvYdI4z3KhRJSEHkkj4XD5KvcGj+PPKgdN7Wx8AGE6ofz1nfRWE5cECTWJ5tULevAx4nVJ4Ecy+1QQpXyzu19b1dzcLrBt5rRWSTBUjZ06jgXjdfy0ZgN2H5yfVLFO8cOSMohZVvc8e2BsE9Dq/rZ6wH3Kc2cVal8Zc1bJLPEp+W3MzQFk5H/scYjqGDvC2BbvdhYZoILK3/pDFuDDyk+cxSrJuCSchIHBG7BgwUfFumUQNU2AUE8p2GS/ss+MpG67rbzjEt0uJH1viI8Zf4tK0J1gZoT4myTiPhRLu3Z1trkDInbyfLij9pKZ8kezxahrd9YRu8DH/7wxEapKxES79X3rV+2kQnLO9oC/BzVKFm4xJjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8308.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(1800799009)(451199024)(186009)(26005)(86362001)(31696002)(2616005)(36756003)(2906002)(66556008)(66946007)(316002)(41300700001)(38100700002)(66476007)(478600001)(53546011)(6512007)(6506007)(6666004)(4326008)(8936002)(8676002)(6486002)(5660300002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MEpzNmxhL01qWGZzQk9XQ1paeWgyZDU3dWI1VjN0bFBWRHJPYUloY2FHeHN6?=
- =?utf-8?B?Y0Nsb3FMWVJpRDMvcHUxeUZ1NllrcEZ5V1BwMkd5MXVpMHhxVzRzbzErVDRP?=
- =?utf-8?B?MVZWSXVUN24xVUViR2dWVU5TS2VIeWN2NFRiMlFWbXdWU0tqU0RxWnNlSkJH?=
- =?utf-8?B?RFYxWmR0eHNlUWtLTkFkd2lqblV2QXc5a2o0ZTJOdTJDWnBuTkhMY3hFM0FU?=
- =?utf-8?B?LzhMRkM2K1FYaDhIVWNYSUFxL2UrQmJ1OVl2d2taNHFMdUdIdDU1NEdacVFz?=
- =?utf-8?B?eU5VQklJV1hqcFJ1czBaYTMyZmxKeFBqTHl3NGt1OTlUT0lsSnF2dVdTU2dP?=
- =?utf-8?B?b1ZvZncvbndZdVFmSzhBL2R4SENka296QWw0WXZSTGs0WXAwQVlCUDZPZmtq?=
- =?utf-8?B?YjRIVUhXNU5jTEV1ZVdEeTBpWEFVaTdxTThyaGk1NWJoMk5jU1dWZnNXWXRQ?=
- =?utf-8?B?dmNBK1NHVmJJM1NNak1ZdjlrcURqRGp3N3I4QjM3cFRrVkpyeVJBOVc1Nmpq?=
- =?utf-8?B?VXBZZFVLYXVjY1pxK0pjSDV0VVdVZjAzRW1mL3NoQWpta3Vzbk43cU95V09x?=
- =?utf-8?B?Ni9VYjZzZUc4dHRBWjViZm8vbW5QU1lGRVUrdjdKSjhDZTZiWUtZRjN1aGcr?=
- =?utf-8?B?cXdXck5mcjJlbUdrMnY0a2lVN3dGUGREWEZuRG9FZE05SDU2MldHV0JVV0dE?=
- =?utf-8?B?ejRzZmQ0OUNGcUhxVXI4NFBHUGY2d3l5ZlBzcENvdFRUTmdBTk96RFFYc0V5?=
- =?utf-8?B?dHZyUmVFUEJmUzU4WEZYWEhna280VTFmZFhJbmQxRGVLYThNYSsyMzFmaUg2?=
- =?utf-8?B?NzhZbGhDUDI0WDVmdUo4MEF4WVk3cy95eU5LUzRKSlc0NmtJejg2SkR3YkRi?=
- =?utf-8?B?L3hrYWxmV2p0ZFUwN0Y2NDlqVFk5Ulp6QkM1cS81OU5RWlM4VW1hV2FGczNy?=
- =?utf-8?B?bytkaDNVSjRKVWQ2b0FqSktHa3g3clI1aWlFVFRrTDZwbGIxL09DOGxLb242?=
- =?utf-8?B?SVFPaitmZkUvSCtxdE93bThob21IWUo4cDBoRjc1RVpnK3ZIanpaYUI4a2dn?=
- =?utf-8?B?MG9WOXJzOGpMeU5jTlZTSkxLOVlLUWdCYldBY2s2ZDNlVnVqMzJYVW8vL1F4?=
- =?utf-8?B?YzVvMDVQeE9XQ090OUpqTnFRdk1sR1RNTGc1a2VoczlYQjM5bHp5eUFKNk41?=
- =?utf-8?B?V1FNQml3bEVzMG1XU2NoSExqUExlQW5kU0tMTis0anNzUXQzSXAwcG5Ca0tk?=
- =?utf-8?B?bWxXY01iQU84N3dNa2FvaXZEUUw1cWNKTk10SDBnaTI0OVNPUENpS3k2RFRm?=
- =?utf-8?B?dnpOQWpCNm92a3pTY1RVZTh4SUpQRlkxaTdJbEFRNGoxdDJ4VkRmSm1EZnVu?=
- =?utf-8?B?VDMrZy91TlpOeUNLY2lOZm05L2NZRjQ2aU8vM1duUFdCUk1nOHUyZ2t3dmFF?=
- =?utf-8?B?aVFGWGlkU1pNT0ZYVTd1QS9ZcXZVMG0rR09uMGtjb3NHV1o3bTY1ZDFWT1Br?=
- =?utf-8?B?QkVrY1YwYlYza04vSS9wUUVvZjF6WEVHTkNnTW92eU5wZS9GVGd5QmNPK2NO?=
- =?utf-8?B?aUcwQm45bEZSNUpJZ3VERjFlTHJHOHVDeVpvODl1bU5ua0tnUUM2Rm4vcGdK?=
- =?utf-8?B?T2R2dHlqemtWaVlyaUpSbUpMQThVUUVFU2xrZjMwS2U3QXJPL2pUMzcwb1Ni?=
- =?utf-8?B?Q2JVclNQS0pOTHF0K0JsSlR1WTlGcThLWkJXS09YR2VqaDVKdjVQOTJoZVNG?=
- =?utf-8?B?R3B2dnlOL2pRVkcxL080RUlrVFFwSEd5b0tHSXhyekExelkwWEZ6T0NIaTFl?=
- =?utf-8?B?dzR2cjQ2bHoyT0xya2RSeDB5Z2ZzdldEWWhmem1PbU9kaWxqQmVSWXRBamRW?=
- =?utf-8?B?SmxHN2dZNHNSelNLOEd3eW5wR0NNK0pVODJDNmg2RWZrSEx1ZXVmUzBsb2xF?=
- =?utf-8?B?dW8yOHJPTVQzbk5ic2h6Y1phc21wNW5uNWVMdmIrWS95UFRiclZlSDByLzBs?=
- =?utf-8?B?QVYzVkNGNi9uS1J1QWJEeHY1VWl6QTZQZ3ZiVVladFVPT0NkY1BnTGF6QjRy?=
- =?utf-8?B?MnA0ZHJQaGQ1bVJRMXFjc0ViaHEwZmY5UGFhU0g3d1NseWxnZ2kyN0YzNFdP?=
- =?utf-8?Q?oyTKUtaH32dtOIsx51cSLm9IC?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5955eaa-756d-469c-5a17-08dbbe91fe96
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8308.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 13:10:45.9625
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ta6oc0Ga5tzE5ikyeBXErcxW+zRxnMKBVg+S0A3F3b69dbRwLxjhTf7SI4oygW16
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6108
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925122609.78849-2-f.suligoi@asem.it>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas/Marc,
+On Mon, Sep 25, 2023 at 02:26:09PM +0200, Flavio Suligoi wrote:
+> diff --git a/drivers/video/backlight/mp3309c.c b/drivers/video/backlight/mp3309c.c
+> new file mode 100644
+> index 000000000000..923ac7f7b291
+> --- /dev/null
+> +++ b/drivers/video/backlight/mp3309c.c
+> @@ -0,0 +1,398 @@
+> ...
+> +static int mp3309c_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mp3309c_chip *chip = bl_get_data(bl);
+> +	int brightness = backlight_get_brightness(bl);
+> +	struct pwm_state pwmstate;
+> +	unsigned int analog_val, bits_val;
+> +	int i, ret;
+> +
+> +	if (chip->pdata->dimming_mode == DIMMING_PWM) {
+> +		/*
+> +		 * PWM dimming mode
+> +		 */
+> +		pwm_get_state(chip->pwmd, &pwmstate);
+> +		pwm_set_relative_duty_cycle(&pwmstate, brightness,
+> +					    chip->pdata->max_brightness);
+> +		pwmstate.enabled = true;
+> +		ret = pwm_apply_state(chip->pwmd, &pwmstate);
+> +		if (ret)
+> +			return ret;
+> +
+> +		switch (chip->pdata->status) {
+> +		case FIRST_POWER_ON:
+> +		case BACKLIGHT_OFF:
+> +			/*
+> +			 * After 20ms of low pwm signal level, the chip turns
+> +			   off automatically. In this case, before enabling the
+> +			   chip again, we must wait about 10ms for pwm signal to
+> +			   stabilize.
+> +			 */
+> +			if (brightness > 0) {
+> +				msleep(10);
+> +				mp3309c_enable_device(chip);
+> +				chip->pdata->status = BACKLIGHT_ON;
+> +			} else {
+> +				chip->pdata->status = BACKLIGHT_OFF;
+> +			}
+> +			break;
+> +		case BACKLIGHT_ON:
+> +			if (brightness == 0)
+> +				chip->pdata->status = BACKLIGHT_OFF;
+> +			break;
+> +		}
+> +	} else {
+> +		/*
+> +		 * Analog dimming (by I2C command) dimming mode
+> +		 *
+> +		 * The first time, before setting brightness, we must enable the
+> +		 * device
+> +		 */
+> +		if (chip->pdata->status == FIRST_POWER_ON)
+> +			mp3309c_enable_device(chip);
+> +
+> +		/*
+> +		 * Dimming mode I2C command
+> +		 *
+> +		 * The 5 bits of the dimming analog value D4..D0 is allocated
+> +		 * in the I2C register #0, in the following way:
+> +		 *
+> +		 *     +--+--+--+--+--+--+--+--+
+> +		 *     |EN|D0|D1|D2|D3|D4|XX|XX|
+> +		 *     +--+--+--+--+--+--+--+--+
+> +		 */
+> +		analog_val = DIV_ROUND_UP(ANALOG_MAX_VAL * brightness,
+> +					  chip->pdata->max_brightness);
 
-On 9/11/2023 7:22 PM, Nipun Gupta wrote:
-> Add CDX-MSI domain per CDX controller with gic-its domain as
-> a parent, to support MSI for CDX devices. CDX devices allocate
-> MSIs from the CDX domain. Also, introduce APIs to alloc and free
-> IRQs for CDX domain.
-> 
-> In CDX subsystem firmware is a controller for all devices and
-> their configuration. CDX bus controller sends all the write_msi_msg
-> commands to firmware running on RPU and the firmware interfaces with
-> actual devices to pass this information to devices
-> 
-> Since, CDX controller is the only way to communicate with the Firmware
-> for MSI write info, CDX domain per controller required in contrast to
-> having a CDX domain per device.
-> 
-> Co-developed-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
-> Signed-off-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
-> Co-developed-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-> Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
-> Tested-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
-> ---
-> 
-> Changes v3->v4:
-> - Rebased on Linux 6.6-rc1
+Sorry to only notice after sharing a Reviewed-by:[1] but...
 
-Can you please help in reviewing and making progress on this patch?
+Scaling brightness here isn't right. When running in I2C dimming mode then
+max_brightness *must* be 31 or lower, meaning the value in brightness can
+be applied directly to the hardware without scaling.
 
-Thanks,
-Nipun
+Quoting the DT binding docs about how max-brightness should be
+interpretted:
+
+  Normally the maximum brightness is determined by the hardware and this
+  property is not required. This property is used to put a software
+  limit on the brightness apart from what the driver says, as it could
+  happen that a LED can be made so bright that it gets damaged or causes
+  damage due to restrictions in a specific system, such as mounting
+  conditions.
+
+
+Daniel.
+
+
+[1] I remember checking if this code could overflow the field but I was
+    so distracted by that I ended up missing the obvious!
