@@ -2,187 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624FC7AF0A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2559B7AF0A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235196AbjIZQYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        id S235240AbjIZQZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235279AbjIZQYo (ORCPT
+        with ESMTP id S231668AbjIZQZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:24:44 -0400
-Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FA7B3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:24:37 -0700 (PDT)
-Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-94a348facbbso773083066b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695745475; x=1696350275; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:references
-         :mime-version:message-id:in-reply-to:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vFkpn2H397KrVSqmEDJx57x47TGFCVVPTN7FsnVWNzE=;
-        b=1hFoAxEOGZbiAoDfKUO45fdAWUEnVPrTBLwCnAr5TndUi/CpxBn4N2Vq1G7Cor+nrS
-         TlakioOk9Tsthn2A54LcuTsp8JDA2B4qaImYYhJ8y8tJv2k705Z349CfRgjJkCFso9b/
-         ihC9g1f0pzKXY/pbEy5j6vbvMVfaG4BDrS0R1cZPB5r5fSeaGnaoPEbVxr/SYTQmZcex
-         M+u2H29QOgUKN2lbH5joPfQMlQazTm9aYcB9SF0Dgn8t8EL5jQSumXFzt2ExdyR04+g4
-         zvUYFoT2XN5GNc8iPiQQv0BDq1LmY60xhNJyYnGij0FXmQZ7+wtrVOdnYJ+5KsoK/Ehx
-         /cmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695745475; x=1696350275;
-        h=content-transfer-encoding:cc:to:from:subject:references
-         :mime-version:message-id:in-reply-to:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vFkpn2H397KrVSqmEDJx57x47TGFCVVPTN7FsnVWNzE=;
-        b=VDBvvDCmM9zI46kCxyc5AH8wa77yLnHWSkdl0FfgZtIAb8vqWMOtWPIj3+/ouGu6OL
-         LM2fNGsSbce7mz1B6XRKujnCxiJRYIzugsEhi/1U4FPh1FBqupXHAa6+3pGuOrSs4rDf
-         Q0BiQkXyGlnV5dnf47HE625N1VCLH0UvlVxWj9MowUBiu/H2zYbt/9+GkOVOZKFU3VN0
-         A7o3js2IdRWhoDgl1awj5VlxjqJklxlpdwgcOFstc5jUyYuULCKQbxBcc90cNV3PBNC1
-         o0cMAza04LwBb6jpe5uH/5A9BfZP/722B5o8vP3dBoonordJTAaesDW/LHVVLLuv72kx
-         MJMA==
-X-Gm-Message-State: AOJu0YynNpv/wMS011aWsoV0nF4WXleOgeAKTMQySjeJvnxiuusw7y1C
-        yhQxpUdkm4PbMmFy8hyDfWqBcg1qjNM=
-X-Google-Smtp-Source: AGHT+IHBoakqhkhiVEAsv+mZQ0hK5/qDN1CmFMFNKuR5J4mjx2CZrD8PGaR7oJWeHShb9Petn58MPj8g4wE=
-X-Received: from sport.zrh.corp.google.com ([2a00:79e0:9d:4:dc99:dac4:b719:7cd8])
- (user=gnoack job=sendgmr) by 2002:a17:907:7110:b0:9a1:b087:3bcb with SMTP id
- zr16-20020a170907711000b009a1b0873bcbmr34230ejb.7.1695745475433; Tue, 26 Sep
- 2023 09:24:35 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 18:24:32 +0200
-In-Reply-To: <20230921061641.273654-1-mic@digikod.net>
-Message-Id: <ZRMFwNzBJyyr85hV@google.com>
-Mime-Version: 1.0
-References: <20230921061641.273654-1-mic@digikod.net>
-Subject: Re: [RFC PATCH v1 0/7] Landlock audit support
-From:   "=?iso-8859-1?Q?G=FCnther?= Noack" <gnoack@google.com>
-To:     "=?iso-8859-1?Q?Micka=EBl_Sala=FCn?=" <mic@digikod.net>
-Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-        Paul Moore <paul@paul-moore.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Ben Scarlato <akhna@google.com>, Jeff Xu <jeffxu@google.com>,
-        Jorge Lucangeli Obes <jorgelo@google.com>,
-        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 12:25:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E16B3;
+        Tue, 26 Sep 2023 09:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695745527; x=1727281527;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xpnX8lTTYF2at425OtGQ4G91Yj2Q43UiudbbHMtTeCU=;
+  b=T5O3wg05/cio6VADwdjn8FjrVpXObNWNhRiKDgQx2FZFEX1h+E4JLns+
+   Ekq529q6lP7N5oM82PoO2qlwME1sw/rnZDKVb6toBaVnXcngighFybWmT
+   xJZgAt1lPPtQ8HFopNyvMikl6vKFUIVxX9Du1zm8jjfoiyZHn4voSNmpD
+   jzvs4kf6xCisFtwOcMA3NlmHJo3x2N+sW5ij/2YqNyW+xeCvfz8gMz7NJ
+   YXNFmQKAxUuo/oUjeJZ9GiQ2K2JuHbi/o6vEoFhxn5Fc4k/1EL4CzdyvQ
+   kj7BIUnf8/8xQV737f1VU6vWdFqrFaNGZmsL8r+JlTmnm3TsdNBBdH5RV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="366670505"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="366670505"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:25:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="698528646"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="698528646"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:25:07 -0700
+Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 5DE06580D9B;
+        Tue, 26 Sep 2023 09:25:05 -0700 (PDT)
+Message-ID: <7ffd2c76-3499-a921-58b9-eb71432e59ff@linux.intel.com>
+Date:   Tue, 26 Sep 2023 12:25:04 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 16/25] perf stat: Update keyword core to default_core
+ to adjust to the changes for events with no unit
+Content-Language: en-US
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+ <20230925061824.3818631-17-weilin.wang@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230925061824.3818631-17-weilin.wang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Micka=C3=ABl!
-
-On Thu, Sep 21, 2023 at 08:16:34AM +0200, Micka=C3=ABl Sala=C3=BCn wrote:
-> This patch series adds basic audit support to Landlock for most actions.
-> Logging denied requests is useful for different use cases:
-> * app developers: to ease and speed up sandboxing support
-> * power users: to understand denials
-> * sysadmins: to look for users' issues
-> * tailored distro maintainers: to get usage metrics from their fleet
-> * security experts: to detect attack attempts
->=20
-> To make logs useful, they need to contain the most relevant Landlock
-> domain that denied an action, and the reason. This translates to the
-> latest nested domain and the related missing access rights.
-
-Is "domain" always the latest nested domain, or is that the domain which ca=
-used
-the check to fail because it denied the requested access right?  (If it is =
-just
-the counter of how many domains are stacked, this could maybe also be queri=
-ed
-through proc instead?)
 
 
-> Two "Landlock permissions" are used to describe mandatory restrictions
-> enforced on all domains:
-> * fs_layout: change the view of filesystem with mount operations.
-> * ptrace: tamper with a process.
+On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
+>
 
-I find the term "access" already a bit overloaded, and the term "permission=
-"
-also already appears in other contexts.  Maybe we can avoid the additional
-terminology by grouping these two together in the log format, and calling t=
-hem
-the "cause" or "reason" for the deny decision?  In a sense, the access righ=
-ts
-and the other permissions can already be told apart by their names, so they
-might also both appear under the same key without causing additional confus=
-ion?
+Description?
 
+Shouldn't the default_core be used when the keyword core is first
+introduced?
 
-> Here is an example of logs, result of the sandboxer activity:
-> tid=3D267 comm=3D"sandboxer" op=3Dcreate-ruleset ruleset=3D1 handled_acce=
-ss_fs=3Dexecute,write_file,read_file,read_dir,remove_dir,remove_file,make_c=
-har,make_dir,make_reg,make_sock,make_fifo,make_block,make_sym,refer,truncat=
-e
-> tid=3D267 comm=3D"sandboxer" op=3Drestrict-self domain=3D2 ruleset=3D1 pa=
-rent=3D0
-> op=3Drelease-ruleset ruleset=3D1
-> tid=3D267 comm=3D"bash" domain=3D2 op=3Dopen errno=3D13 missing-fs-access=
-es=3Dwrite_file,read_file missing-permission=3D path=3D"/dev/tty" dev=3D"de=
-vtmpfs" ino=3D9
-> tid=3D268 comm=3D"ls" domain=3D2 op=3Dopen errno=3D13 missing-fs-accesses=
-=3Dread_dir missing-permission=3D path=3D"/" dev=3D"vda2" ino=3D256
-> tid=3D269 comm=3D"touch" domain=3D2 op=3Dmknod errno=3D13 missing-fs-acce=
-sses=3Dmake_reg missing-permission=3D path=3D"/" dev=3D"vda2" ino=3D256
-> tid=3D270 comm=3D"umount" domain=3D2 op=3Dumount errno=3D1 missing-fs-acc=
-esses=3D missing-permission=3Dfs_layout name=3D"/" dev=3D"tmpfs" ino=3D1
-> tid=3D271 comm=3D"strace" domain=3D2 op=3Dptrace errno=3D1 missing-fs-acc=
-esses=3D missing-permission=3Dptrace opid=3D1 ocomm=3D"systemd"
+Thanks,
+Kan
 
-In more complicated cases like "refer" and "open", it is possible that more=
- than
-one access right is missing, and presumably they'll both be listed in
-missing-fs-accesses=3D.  In this case, it is not clear to me whether the do=
-main=3D
-number is referring to the first or the second of these missing rights.
-(Assuming that the domain=3D is about the domain which caused the denial.)
-
-
-> As highlighted in comments, support for audit is not complete yet with
-> this series: some actions are not logged (e.g. file reparenting), and
-> rule additions are not logged neither.
-
-When ftruncate(2) gets denied, it is also not possible to tell which of the
-nested domains is responsible, without additional changes to what we carry
-around in the file's security blob.  (Right now, we calculate the overall
-truncation right in advance at open(2) time, and just store that bit with t=
-he
-newly opened file.)
-
-
-> I'm also not sure if we need to have seccomp-like features such as
-> SECCOMP_FILTER_FLAG_LOG, SECCOMP_RET_LOG, and
-> /proc/sys/kernel/seccomp/actions_logged
->=20
-> I'd like to get some early feedback on this proposal.
-
-If you want to have the full feature set as proposed above for other operat=
-ions
-as well, like file reparenting and truncation, it'll complicate the Landloc=
-k
-logic and increase the amount of data that needs to be kept around just for
-logging.  I'm not convinced that this is worth it.  After all, the simpler =
-the
-Landlock implementation is, the easier it'll be to reason about its logic a=
-nd
-its security guarantees.
-
-A possible simplification would be to omit the domain number which is
-responsible for a "deny" decision.  I feel that for debugging, knowing the =
-fact
-that Landlock denied an operation might already be a big step forward, and =
-the
-exact domain responsible for it might not be that important?
-
-=E2=80=94G=C3=BCnther
-
---=20
-Sent using Mutt =F0=9F=90=95 Woof Woof
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> ---
+>  tools/perf/pmu-events/jevents.py | 2 +-
+>  tools/perf/util/metricgroup.c    | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+> index 5614bc203..d8c2fd258 100755
+> --- a/tools/perf/pmu-events/jevents.py
+> +++ b/tools/perf/pmu-events/jevents.py
+> @@ -303,7 +303,7 @@ class JsonEvent:
+>            'cpu_core': 'cpu_core',
+>            'cpu_atom': 'cpu_atom',
+>            'ali_drw': 'ali_drw',
+> -          'Core': 'core',
+> +          'Core': 'default_core',
+>        }
+>        return table[unit] if unit in table else f'uncore_{unit.lower()}'
+>  
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 2e7a8e315..7884cb036 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -2085,7 +2085,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+>  		pr_debug("found event %s\n", id);
+>  		if (!strncmp(id, special_pattern, strlen(special_pattern))) {
+>  			struct metricgroup__event_info *event;
+> -			event = event_info__new(id, "core", "0", true);
+> +			event = event_info__new(id, "default_core", "0", true);
+>  			if (!event) {
+>  				ret = -ENOMEM;
+>  				goto err_out;
