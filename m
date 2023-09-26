@@ -2,122 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA0E7AEE2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4390D7AEFBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234895AbjIZNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S235097AbjIZPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234828AbjIZNw2 (ORCPT
+        with ESMTP id S233309AbjIZPay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:52:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA80AF
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:52:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24545C433C7;
-        Tue, 26 Sep 2023 13:52:15 +0000 (UTC)
-Date:   Tue, 26 Sep 2023 14:52:13 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
-        maz@kernel.org, oliver.upton@linux.dev, will@kernel.org,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZRLiDf204zCpO6Mv@arm.com>
-References: <20230907181459.18145-1-ankita@nvidia.com>
- <20230907181459.18145-3-ankita@nvidia.com>
- <ZP8q71+YXoU6O9uh@lpieralisi>
- <ZP9MQdRYmlawNsbC@nvidia.com>
- <ZQHUifAfJ+lZikAn@lpieralisi>
- <ZQIFfqgR5zcidRR3@nvidia.com>
- <ZRKW6uDR/+eXYMzl@lpieralisi>
+        Tue, 26 Sep 2023 11:30:54 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B01010A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1695742244;
+        bh=OnohBIbzxshPyEmMWAh4gOX+hda/cp3tuqHCS6jOsUI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BA1Aa3rOB6wid579Ks59TXZr7TnH8DbyKrk50K4zQAtEx1peEQ/AHSyTlyPz8bh1S
+         Vy51Ppme5FxAxdI7z4vUnrwVGQmjmdyqq1cUG5PAosyoB4SKNJbVR6WRIxZHUZrDL5
+         XKEpaVaBLVhqq+YGdfG7xreNvbGfSXm3IcbSdMyiGsKz3zanRcgC2hcbycSMBs3WuQ
+         oq7kM+/fwXMIFGQisrnyFjYIAIqR/5v6amZnxN5VnH6uF6wI6mevBne8jvwIXqBztW
+         96+plrvTcleIs2Y0fsdOtNb/YJd6o5zwag2DSwV05qoCZVSq6mXQc4iYmqzHSoh+GF
+         WIOCQm+p4TLHQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rw3bm0Nrkz1R9H;
+        Tue, 26 Sep 2023 11:30:44 -0400 (EDT)
+Message-ID: <677cd7ab-4347-ed09-bf56-4c2a9833ae50@efficios.com>
+Date:   Tue, 26 Sep 2023 06:29:40 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZRKW6uDR/+eXYMzl@lpieralisi>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] sched/fair: Record the short sleeping time of a task
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        linux-kernel@vger.kernel.org, Chen Yu <yu.chen.surf@gmail.com>
+References: <cover.1695704179.git.yu.c.chen@intel.com>
+ <b17a3db703494bdae8492843f7303c13b0dbd0fc.1695704179.git.yu.c.chen@intel.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <b17a3db703494bdae8492843f7303c13b0dbd0fc.1695704179.git.yu.c.chen@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:31:38AM +0200, Lorenzo Pieralisi wrote:
-> Currently, KVM for ARM64 maps at stage 2 memory that is
-> considered device (ie using pfn_is_map_memory() to discern
-> between device memory and memory itself) with DEVICE_nGnRE
-> memory attributes; this setting overrides (as per the ARM
-> architecture [1]) any device MMIO mapping present at stage
-> 1, resulting in a set-up whereby a guest operating system
-> can't determine device MMIO mapping memory attributes on its
-> own but it is always overriden by the KVM stage 2 default.
+On 9/26/23 06:11, Chen Yu wrote:
+> During task wakeup, the wakee firstly checks if its previous
+> running CPU is idle. If yes, choose that CPU as its first
+> choice. However, in most cases, the wakee's previous CPU
+> could be chosen by someone else, which breaks the cache
+> locality.
 > 
-> This set-up does not allow guest operating systems to map
-> device memory on a page by page basis with combined attributes
-> other than DEVICE_nGnRE,
+> Proposes a mechanism to reserve the task's previous
+> CPU for a short while. In this reservation period, other
+> tasks are not allowed to pick that CPU until a timeout.
+> The reservation period is defined as the average short
+> sleep time of the task. To be more specific, it is the
+> time delta between this task being dequeued and enqueued.
+> Only the sleep time shorter than sysctl_sched_migration_cost
+> will be recorded. If the sleep time is longer than
+> sysctl_sched_migration_cost, give the reservation period
+> a penalty by shrinking it to half. In this way, the 'burst'
+> sleeping time of the task is honored, meanwhile, if that
+> task becomes a long-sleeper, the reservation time of that
+> task is shrunk to reduce the impact on task wakeup.
+> 
+> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>   include/linux/sched.h |  3 +++
+>   kernel/sched/fair.c   | 21 +++++++++++++++++++++
+>   2 files changed, 24 insertions(+)
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index dc37ae787e33..4a0ac0276384 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -561,6 +561,9 @@ struct sched_entity {
+>   	u64				vruntime;
+>   	s64				vlag;
+>   	u64				slice;
+> +	u64				prev_dequeue_time;
+> +	/* the reservation period of this task during wakeup */
+> +	u64				sis_rsv_avg;
+>   
+>   	u64				nr_migrations;
+>   
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d0877878bcdb..297b9470829c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6456,6 +6456,24 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>   	struct sched_entity *se = &p->se;
+>   	int idle_h_nr_running = task_has_idle_policy(p);
+>   	int task_new = !(flags & ENQUEUE_WAKEUP);
+> +	u64 last_dequeue = p->se.prev_dequeue_time;
+> +	u64 now = sched_clock_cpu(task_cpu(p));
+> +
+> +	/*
+> +	 * If the task is a short-sleepting task, there is no need
+> +	 * to migrate it to other CPUs. Estimate the average short sleeping
+> +	 * time of the wakee. This sleep time is used as a hint to reserve
+> +	 * the dequeued task's previous CPU for a short while. During this
+> +	 * reservation period, select_idle_cpu() prevents other wakees from
+> +	 * choosing this CPU. This could bring a better cache locality.
 
-Well, it also has the option of DEVICE_nGnRnE ;).
+"This could bring a better cache locality." could be rephrased as
+"This improves cache locality for short-sleeping tasks."
 
-> which turns out to be an issue in that
-> guest operating systems (eg Linux) may request to map
-> devices MMIO regions with memory attributes that guarantee
-> better performance (eg gathering attribute - that for some
-> devices can generate larger PCIe memory writes TLPs)
-> and specific operations (eg unaligned transactions) such as
-> the NormalNC memory type.
-> 
-> The default device stage 2 mapping was chosen in KVM
-> for ARM64 since it was considered safer (ie it would
-> not allow guests to trigger uncontained failures
-> ultimately crashing the machine) but this turned out
-> to be imprecise.
-> 
-> Failures containability is a property of the platform
-> and is independent from the memory type used for MMIO
-> device memory mappings (ie DEVICE_nGnRE memory type is
-> even more problematic than NormalNC in terms of containability
-> since eg aborts triggered on loads cannot be made synchronous,
-> which make them harder to contain); this means that,
-> regardless of the combined stage1+stage2 mappings a
-> platform is safe if and only if device transactions cannot trigger
-> uncontained failures; reworded, the default KVM device
-> stage 2 memory attributes play no role in making device
-> assignment safer for a given platform and therefore can
-> be relaxed.
-> 
-> For all these reasons, relax the KVM stage 2 device
-> memory attributes from DEVICE_nGnRE to NormalNC.
-> 
-> This puts guests in control (thanks to stage1+stage2
-> combined memory attributes rules [1]) of device MMIO
-> regions memory mappings, according to the rules
-> described in [1] and summarized here ([(S1) = Stage1][(S2) = Stage2]):
-> 
-> �S1���������� |�� S2��������� |� Result
-> �NORMAL-WB����|� NORMAL-NC����|� NORMAL-NC
-> �NORMAL-WT����|� NORMAL-NC����|� NORMAL-NC
-> �NORMAL-NC����|� NORMAL-NC����|� NORMAL-NC
-> �DEVICE<attr>�|� NORMAL-NC����|� DEVICE<attr>
+Please add my:
 
-Not sure what's wrong with my font setup as I can't see the above table
-but I know it from the Arm ARM.
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Anyway, the text looks fine to me. Thanks for putting it together
-Lorenzo.
-
-One thing not mentioned here is that pci-vfio still maps such memory as
-Device-nGnRnE in user space and relaxing this potentially creates an
-alias. But such alias is only relevant of both the VMM and the VM try to
-access the same device which I doubt is a realistic scenario.
+> +	 */
+> +	if ((flags & ENQUEUE_WAKEUP) && last_dequeue && cpu_online(task_cpu(p)) &&
+> +	    now > last_dequeue) {
+> +		if (now - last_dequeue < sysctl_sched_migration_cost)
+> +			update_avg(&p->se.sis_rsv_avg, now - last_dequeue);
+> +		else
+> +			p->se.sis_rsv_avg >>= 1;
+> +	}
+>   
+>   	/*
+>   	 * The code below (indirectly) updates schedutil which looks at
+> @@ -6550,6 +6568,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>   	int task_sleep = flags & DEQUEUE_SLEEP;
+>   	int idle_h_nr_running = task_has_idle_policy(p);
+>   	bool was_sched_idle = sched_idle_rq(rq);
+> +	u64 now;
+>   
+>   	util_est_dequeue(&rq->cfs, p);
+>   
+> @@ -6611,6 +6630,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>   dequeue_throttle:
+>   	util_est_update(&rq->cfs, p, task_sleep);
+>   	hrtick_update(rq);
+> +	now = sched_clock_cpu(cpu_of(rq));
+> +	p->se.prev_dequeue_time = task_sleep ? now : 0;
+>   }
+>   
+>   #ifdef CONFIG_SMP
 
 -- 
-Catalin
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
