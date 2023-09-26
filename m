@@ -2,209 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249FA7AEF0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C297AEEBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbjIZOoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
+        id S234938AbjIZOno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234659AbjIZOoR (ORCPT
+        with ESMTP id S234659AbjIZOnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:44:17 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 07:44:10 PDT
-Received: from mgamail.intel.com (unknown [192.198.163.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54870E6;
-        Tue, 26 Sep 2023 07:44:10 -0700 (PDT)
+        Tue, 26 Sep 2023 10:43:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AFB120;
+        Tue, 26 Sep 2023 07:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695739450; x=1727275450;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=coFPVS3IwCW4LMVf38mdpTFnzhd1Ni1jp/jusMYzufQ=;
-  b=f3oxVBZriVqZcWUmUT9ahCnqfou6FmXp8yYl13W5Dj9QFZMwCYC8iGr6
-   bwys1NOLgHrTrozdsifThYCkZhsyjfL1ONSozC/OW6vFfrihEa4DFN9Nd
-   fHJPSl9bDBRdVMzAbuvun6MTsnqtjmRiztQkdBHR/0qjWQfkxSSBRTEDF
-   FKd3AmvFinphPxyZABivQdXefxDK25Ujq508YQqlOF5+b8dMt4RSdOPoC
-   N+c8tk0zZlD7ONjnAcdlksstwxC2xsDykmsdy8fZKJJOx5EfFvUumQ3/d
-   F1m1b36hih9rs0gF2WkacqiY+MCSaIL3XWEw7EE1fQ9MWWbd2CEVGDkko
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="3163823"
+  t=1695739415; x=1727275415;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=82NjXVwCGvS22dDt012PMYpl13On0TbRseI+bZw2z1s=;
+  b=mcSUCE0T80N1dFJ4rk6BUNsfjf0/c76+Krdg/pr4La5+e1wbrS2r4VuK
+   yx8BSa7MDEiX+GwDXSi0QbN6coazyiVwbpmVPAQPn58gLQIMVGHBHW5oJ
+   S/PwWPvvHJBNqEMtHA0hJ/QwrF/FNJFQFw9pkdWmUqdTUR0/mi8CgYa3d
+   XVJUDqI4U0xsUmOGcB9032BW7JL3IwUbE5/HGIrPqOecPdY2qVl9qrRj0
+   zUfFGWgT9xfHFPSW0hEAPBpv6iOkgpkrgrGF+dmBeNIOtSh6MqWFRWAVP
+   yVPlkTezK5AfkX5csyuKJxhQkmpoLIwRsDICHgVy5eOZPCPfrMtw1QEf+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="445710868"
 X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="3163823"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:43:08 -0700
+   d="scan'208";a="445710868"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:43:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="748835766"
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="814504469"
 X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="748835766"
-Received: from hhalmen-mobl.ger.corp.intel.com ([10.251.219.207])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:43:06 -0700
-Date:   Tue, 26 Sep 2023 17:43:03 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH 03/11] platform/x86/intel/pmt: Add header to struct
- intel_pmt_entry
-In-Reply-To: <20230922213032.1770590-4-david.e.box@linux.intel.com>
-Message-ID: <fb605dba-f3d3-dff2-95d5-a2b4e92ab0c5@linux.intel.com>
-References: <20230922213032.1770590-1-david.e.box@linux.intel.com> <20230922213032.1770590-4-david.e.box@linux.intel.com>
+   d="scan'208";a="814504469"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 07:43:28 -0700
+Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 2EEAF580BBE;
+        Tue, 26 Sep 2023 07:43:26 -0700 (PDT)
+Message-ID: <bc11c58c-5d2c-ce41-9834-70b6468ac92b@linux.intel.com>
+Date:   Tue, 26 Sep 2023 10:43:24 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-681903352-1695739387=:1894"
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH 00/25] Perf stat metric grouping with hardware
+ information
+Content-Language: en-US
+To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230925061824.3818631-1-weilin.wang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-681903352-1695739387=:1894
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
 
-On Fri, 22 Sep 2023, David E. Box wrote:
-
-> The PMT header is passed to several functions. Instead, store the header in
-> struct intel_pmt_entry which is also passed to these functions and shorten
-> the argument list. This simplifies the calls in preparation for later
-> changes.
+On 2023-09-25 2:17 a.m., weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
 > 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/platform/x86/intel/pmt/class.c     |  8 +++-----
->  drivers/platform/x86/intel/pmt/class.h     | 16 ++++++++--------
->  drivers/platform/x86/intel/pmt/crashlog.c  |  2 +-
->  drivers/platform/x86/intel/pmt/telemetry.c |  2 +-
->  4 files changed, 13 insertions(+), 15 deletions(-)
+> Perf stat metric grouping generates event groups that are provided to kernel for
+> data collection using the hardware counters. Sometimes, the grouping might fail
+> and kernel has to retry the groups because generated groups do not fit in the
+> hardware counters correctly. In some other cases, the groupings are collected
+> correctly, however, they left some hardware counters unused.
 > 
-> diff --git a/drivers/platform/x86/intel/pmt/class.c b/drivers/platform/x86/intel/pmt/class.c
-> index 32608baaa56c..142a24e3727d 100644
-> --- a/drivers/platform/x86/intel/pmt/class.c
-> +++ b/drivers/platform/x86/intel/pmt/class.c
-> @@ -159,12 +159,12 @@ static struct class intel_pmt_class = {
->  };
->  
->  static int intel_pmt_populate_entry(struct intel_pmt_entry *entry,
-> -				    struct intel_pmt_header *header,
->  				    struct intel_vsec_device *ivdev,
->  				    struct resource *disc_res)
->  {
->  	struct pci_dev *pci_dev = ivdev->pcidev;
->  	struct device *dev = &ivdev->auxdev.dev;
-> +	struct intel_pmt_header *header = &entry->header;
->  	u8 bir;
->  
->  	/*
-> @@ -313,7 +313,6 @@ int intel_pmt_dev_create(struct intel_pmt_entry *entry, struct intel_pmt_namespa
->  			 struct intel_vsec_device *intel_vsec_dev, int idx)
->  {
->  	struct device *dev = &intel_vsec_dev->auxdev.dev;
-> -	struct intel_pmt_header header;
->  	struct resource	*disc_res;
->  	int ret;
->  
-> @@ -323,16 +322,15 @@ int intel_pmt_dev_create(struct intel_pmt_entry *entry, struct intel_pmt_namespa
->  	if (IS_ERR(entry->disc_table))
->  		return PTR_ERR(entry->disc_table);
->  
-> -	ret = ns->pmt_header_decode(entry, &header, dev);
-> +	ret = ns->pmt_header_decode(entry, dev);
->  	if (ret)
->  		return ret;
->  
-> -	ret = intel_pmt_populate_entry(entry, &header, intel_vsec_dev, disc_res);
-> +	ret = intel_pmt_populate_entry(entry, intel_vsec_dev, disc_res);
->  	if (ret)
->  		return ret;
->  
->  	return intel_pmt_dev_register(entry, ns, dev);
-> -
->  }
->  EXPORT_SYMBOL_NS_GPL(intel_pmt_dev_create, INTEL_PMT);
->  
-> diff --git a/drivers/platform/x86/intel/pmt/class.h b/drivers/platform/x86/intel/pmt/class.h
-> index db11d58867ce..e477a19f6700 100644
-> --- a/drivers/platform/x86/intel/pmt/class.h
-> +++ b/drivers/platform/x86/intel/pmt/class.h
-> @@ -18,7 +18,15 @@
->  #define GET_BIR(v)		((v) & GENMASK(2, 0))
->  #define GET_ADDRESS(v)		((v) & GENMASK(31, 3))
->  
-> +struct intel_pmt_header {
-> +	u32	base_offset;
-> +	u32	size;
-> +	u32	guid;
-> +	u8	access_type;
-> +};
-> +
->  struct intel_pmt_entry {
-> +	struct intel_pmt_header	header;
->  	struct bin_attribute	pmt_bin_attr;
->  	struct kobject		*kobj;
->  	void __iomem		*disc_table;
-> @@ -29,19 +37,11 @@ struct intel_pmt_entry {
->  	int			devid;
->  };
->  
-> -struct intel_pmt_header {
-> -	u32	base_offset;
-> -	u32	size;
-> -	u32	guid;
-> -	u8	access_type;
-> -};
-> -
->  struct intel_pmt_namespace {
->  	const char *name;
->  	struct xarray *xa;
->  	const struct attribute_group *attr_grp;
->  	int (*pmt_header_decode)(struct intel_pmt_entry *entry,
-> -				 struct intel_pmt_header *header,
->  				 struct device *dev);
->  };
->  
-> diff --git a/drivers/platform/x86/intel/pmt/crashlog.c b/drivers/platform/x86/intel/pmt/crashlog.c
-> index bbb3d61d09f4..4014c02cafdb 100644
-> --- a/drivers/platform/x86/intel/pmt/crashlog.c
-> +++ b/drivers/platform/x86/intel/pmt/crashlog.c
-> @@ -223,10 +223,10 @@ static const struct attribute_group pmt_crashlog_group = {
->  };
->  
->  static int pmt_crashlog_header_decode(struct intel_pmt_entry *entry,
-> -				      struct intel_pmt_header *header,
->  				      struct device *dev)
->  {
->  	void __iomem *disc_table = entry->disc_table;
-> +	struct intel_pmt_header *header = &entry->header;
->  	struct crashlog_entry *crashlog;
->  
->  	if (!pmt_crashlog_supported(entry))
-> diff --git a/drivers/platform/x86/intel/pmt/telemetry.c b/drivers/platform/x86/intel/pmt/telemetry.c
-> index 39cbc87cc28a..f86080e8bebd 100644
-> --- a/drivers/platform/x86/intel/pmt/telemetry.c
-> +++ b/drivers/platform/x86/intel/pmt/telemetry.c
-> @@ -58,10 +58,10 @@ static bool pmt_telem_region_overlaps(struct intel_pmt_entry *entry,
->  }
->  
->  static int pmt_telem_header_decode(struct intel_pmt_entry *entry,
-> -				   struct intel_pmt_header *header,
->  				   struct device *dev)
->  {
->  	void __iomem *disc_table = entry->disc_table;
-> +	struct intel_pmt_header *header = &entry->header;
->  
->  	if (pmt_telem_region_overlaps(entry, dev))
->  		return 1;
+> To improve these inefficiencies, we would like to propose a hardware aware
+> grouping method that does metric/event grouping based on event counter
+> restriction rules and the availability of hardware counters in the system. This
+> method is generic as long as all the restriction rules could be provided from
+> the pmu-event JSON files.
+
+This method assumes that it's the only user (expect NMI watchdog) and
+all the HW resource are available. Right?
+
 > 
+> This patch set includes code that does hardware aware grouping and updated
+> pmu-event JSON files for four platforms (SapphireRapids, Icelakex, Cascadelakex,
+> and Tigerlake) for your testing and experimenting. We've successfully tested
+> these patches on three platforms (SapphireRapids, Icelakex, and Cascadelakex)
+> with topdown metrics from TopdownL1 to TopdownL6.
+> 
+> There are some optimization opportunities that we might implement in the future:
+> 1) Better NMI hanlding: when NMI watchdog is enabled, we reduce the default_core
+> total counter size by one. This could be improved to better utilize the counter.
+> 2) Fill important events into unused counter for better counter utlization:
+> there might be some unused counters scattered in the groups. We could consider
+> to add important events in this slots if necessary. This could help increase the
+> multiplexing percentage and help improve accuracy if the event is critical.
+> 
+> Remaining questions for dicussion:
+> 3) Where to start grouping from? The current implementation start grouping by
+> combining all the events into a single list. This step deduplicates events. But
+> it does not maintain the relationship of events according to the metrics, i.e.
+> events required by one metric may not be collected at the same time. Another
+> type of starting point would be grouping each individual metric and then try to
+> merge the groups.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Maybe you can add a new flag to tag the metric which should/better be
+scheduled together, e.g., IPC.
 
--- 
- i.
-
---8323329-681903352-1695739387=:1894--
+Thanks,
+Kan
+> 4) Any comments, suggestions, new ideas?
+> 5) If you are interested to test the patch out and the pmu-event JSON files of
+> your testing platform is not provided here, please let me know so that I could
+> provide you the files.
+> 
+> 
+> Weilin Wang (25):
+>   perf stat: Add hardware-grouping cmd option to perf stat
+>   perf stat: Add basic functions for the hardware-grouping stat cmd
+>     option
+>   perf pmu-events: Add functions in jevent.py
+>   perf pmu-events: Add counter info into JSON files for SapphireRapids
+>   perf pmu-events: Add event counter data for Cascadelakex
+>   perf pmu-events: Add event counter data for Icelakex
+>   perf stat: Add helper functions for hardware-grouping method
+>   perf stat: Add functions to get counter info
+>   perf stat: Add helper functions for hardware-grouping method
+>   perf stat: Add helper functions to hardware-grouping method
+>   perf stat: Add utility functions to hardware-grouping method
+>   perf stat: Add more functions for hardware-grouping method
+>   perf stat: Add functions to hardware-grouping method
+>   perf stat: Add build string function and topdown events handling in
+>     hardware-grouping
+>   perf stat: Add function to combine metrics for hardware-grouping
+>   perf stat: Update keyword core to default_core to adjust to the
+>     changes for events with no unit
+>   perf stat: Handle taken alone in hardware-grouping
+>   perf stat: Handle NMI in hardware-grouping
+>   perf stat: Handle grouping method fall back in hardware-grouping
+>   perf stat: Code refactoring in hardware-grouping
+>   perf stat: Add tool events support in hardware-grouping
+>   perf stat: Add TSC support in hardware-grouping
+>   perf stat: Fix a return error issue in hardware-grouping
+>   perf stat: Add check to ensure correctness in platform that does not
+>     support hardware-grouping
+>   perf pmu-events: Add event counter data for Tigerlake
+> 
+>  tools/lib/bitmap.c                            |   20 +
+>  tools/perf/builtin-stat.c                     |    7 +
+>  .../arch/x86/cascadelakex/cache.json          | 1237 ++++++++++++
+>  .../arch/x86/cascadelakex/counter.json        |   17 +
+>  .../arch/x86/cascadelakex/floating-point.json |   16 +
+>  .../arch/x86/cascadelakex/frontend.json       |   68 +
+>  .../arch/x86/cascadelakex/memory.json         |  751 ++++++++
+>  .../arch/x86/cascadelakex/other.json          |  168 ++
+>  .../arch/x86/cascadelakex/pipeline.json       |  102 +
+>  .../arch/x86/cascadelakex/uncore-cache.json   | 1138 +++++++++++
+>  .../x86/cascadelakex/uncore-interconnect.json | 1272 +++++++++++++
+>  .../arch/x86/cascadelakex/uncore-io.json      |  394 ++++
+>  .../arch/x86/cascadelakex/uncore-memory.json  |  509 +++++
+>  .../arch/x86/cascadelakex/uncore-power.json   |   25 +
+>  .../arch/x86/cascadelakex/virtual-memory.json |   28 +
+>  .../pmu-events/arch/x86/icelakex/cache.json   |   98 +
+>  .../pmu-events/arch/x86/icelakex/counter.json |   17 +
+>  .../arch/x86/icelakex/floating-point.json     |   13 +
+>  .../arch/x86/icelakex/frontend.json           |   55 +
+>  .../pmu-events/arch/x86/icelakex/memory.json  |   53 +
+>  .../pmu-events/arch/x86/icelakex/other.json   |   52 +
+>  .../arch/x86/icelakex/pipeline.json           |   92 +
+>  .../arch/x86/icelakex/uncore-cache.json       |  965 ++++++++++
+>  .../x86/icelakex/uncore-interconnect.json     | 1667 +++++++++++++++++
+>  .../arch/x86/icelakex/uncore-io.json          |  966 ++++++++++
+>  .../arch/x86/icelakex/uncore-memory.json      |  186 ++
+>  .../arch/x86/icelakex/uncore-power.json       |   26 +
+>  .../arch/x86/icelakex/virtual-memory.json     |   22 +
+>  .../arch/x86/sapphirerapids/cache.json        |  104 +
+>  .../arch/x86/sapphirerapids/counter.json      |   17 +
+>  .../x86/sapphirerapids/floating-point.json    |   25 +
+>  .../arch/x86/sapphirerapids/frontend.json     |   98 +-
+>  .../arch/x86/sapphirerapids/memory.json       |   44 +
+>  .../arch/x86/sapphirerapids/other.json        |   40 +
+>  .../arch/x86/sapphirerapids/pipeline.json     |  118 ++
+>  .../arch/x86/sapphirerapids/uncore-cache.json |  534 +++++-
+>  .../arch/x86/sapphirerapids/uncore-cxl.json   |   56 +
+>  .../sapphirerapids/uncore-interconnect.json   |  476 +++++
+>  .../arch/x86/sapphirerapids/uncore-io.json    |  373 ++++
+>  .../x86/sapphirerapids/uncore-memory.json     |  391 ++++
+>  .../arch/x86/sapphirerapids/uncore-power.json |   24 +
+>  .../x86/sapphirerapids/virtual-memory.json    |   20 +
+>  .../pmu-events/arch/x86/tigerlake/cache.json  |   65 +
+>  .../arch/x86/tigerlake/counter.json           |    7 +
+>  .../arch/x86/tigerlake/floating-point.json    |   13 +
+>  .../arch/x86/tigerlake/frontend.json          |   56 +
+>  .../pmu-events/arch/x86/tigerlake/memory.json |   31 +
+>  .../pmu-events/arch/x86/tigerlake/other.json  |    4 +
+>  .../arch/x86/tigerlake/pipeline.json          |   96 +
+>  .../x86/tigerlake/uncore-interconnect.json    |   11 +
+>  .../arch/x86/tigerlake/uncore-memory.json     |    6 +
+>  .../arch/x86/tigerlake/uncore-other.json      |    1 +
+>  .../arch/x86/tigerlake/virtual-memory.json    |   20 +
+>  tools/perf/pmu-events/jevents.py              |  179 +-
+>  tools/perf/pmu-events/pmu-events.h            |   26 +-
+>  tools/perf/util/metricgroup.c                 |  927 +++++++++
+>  tools/perf/util/metricgroup.h                 |   82 +
+>  tools/perf/util/pmu.c                         |    5 +
+>  tools/perf/util/pmu.h                         |    1 +
+>  tools/perf/util/stat.h                        |    1 +
+>  60 files changed, 13790 insertions(+), 25 deletions(-)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/cascadelakex/counter.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/counter.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/sapphirerapids/counter.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/tigerlake/counter.json
+> 
+> --
+> 2.39.3
+> 
