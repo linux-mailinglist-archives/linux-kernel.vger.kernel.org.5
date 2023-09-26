@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B5F7AE557
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 07:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142D87AE56F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbjIZF5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 01:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        id S233700AbjIZGBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231466AbjIZF5n (ORCPT
+        with ESMTP id S229513AbjIZGBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 01:57:43 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F389D
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 22:57:36 -0700 (PDT)
-X-UUID: 3c5ed56bf6c94e699b45d29275fdf15f-20230926
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:62cae887-a010-406f-b0cb-62e849e7dd42,IP:5,U
-        RL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:15
-X-CID-INFO: VERSION:1.1.31,REQID:62cae887-a010-406f-b0cb-62e849e7dd42,IP:5,URL
-        :0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:15
-X-CID-META: VersionHash:0ad78a4,CLOUDID:ed0b47bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:230926135702CTO4OX2J,BulkQuantity:0,Recheck:0,SF:24|17|19|44|38|102,
-        TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
-        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 3c5ed56bf6c94e699b45d29275fdf15f-20230926
-X-User: liucong2@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <liucong2@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1803900476; Tue, 26 Sep 2023 13:57:02 +0800
-From:   Cong Liu <liucong2@kylinos.cn>
-To:     Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Cong Liu <liucong2@kylinos.cn>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] drm/amd/pm: Fix warn: missing error code in smu_v13_0_0_check_ecc_table_support()
-Date:   Tue, 26 Sep 2023 13:56:59 +0800
-Message-Id: <20230926055700.119576-1-liucong2@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Tue, 26 Sep 2023 02:01:32 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2871D6;
+        Mon, 25 Sep 2023 23:01:25 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 7298832009A9;
+        Tue, 26 Sep 2023 02:01:24 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 26 Sep 2023 02:01:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695708084; x=1695794484; bh=w/
+        4ipUt4YaYJVMn90dIRLMV9blP8uDxHBm7ZB3nucyE=; b=S02BKYOI6Rh5Iumm/y
+        Iubc3e3DDnrQMuYwumMWaqDk/+s0aZVKTRWF/5pRHhLF3zjsWN/nH1Tck9WcOQ+B
+        XQN7n+Ni6oeu8pW5Itv4Hw3PKhsGjuAlLlvqe/SqdRqK1kbv1wnUHd3Qr3hsHKQW
+        gH/hN9kW9NKIKhoLlFpBODiiS/mu0NA8rYhuuC/4FwXktdjdOdDgEE/pFyZH7l6s
+        Ec9N4yzST+CS13M6pfhwdOun751FShA2sobg/q2JFx9pITQjlfdOAnzceRIUS7m6
+        SoJCjDtVwss+b1i6xRyOhE4ofbtObhBFLIbg+hsWnzCXUSMhVBEPolG53QH7d2lR
+        0Gzg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695708084; x=1695794484; bh=w/4ipUt4YaYJV
+        Mn90dIRLMV9blP8uDxHBm7ZB3nucyE=; b=kZ2VJNxITGz5/swa9vulf6xSIyV+6
+        Xc/eVnsJjNXSR2pwgMYABr0E7P+HpQN+pVb80NX4lFSKvD4Or6y9Lz0ts36lDt1Y
+        ZE5D60TVKkgyCmkLkmzB5WBQ4BdEl+ZEievW+zJi2/2Srnd2GM+aMijO7vB4Wx2Y
+        KVExowlqj2wnIZHjFbzLRj2hBTs0xrnJPhSieZVWpjVU3EDG2ezPSGKons4BvpgB
+        98rBprrLuYb3PUo7IhLAFd7uaNwpQXst28sySTMg6hv9oVdjz8b0tPnqjZ8HnWGk
+        mHQrkv9LgwPFgiEYtkXMhHhz/pyeYYxjGVR9obj+Drwt1lxgBH9Erkn8Q==
+X-ME-Sender: <xms:s3MSZfRA4S6VZNEKTVtbfIthvJOuhe66GTAcahugSYVAAb7kOS47uQ>
+    <xme:s3MSZQz8KRc5scIw-3RZHLgiVkGs2Xn4Ee9YUBelHR9a7K1L7OcW5cNXMVCDwztYW
+    81N-lIQ-gTtwJ-BxCQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:s3MSZU1xw0_yZN340Dg_WoIYhEKBL1_XF3S2n7RZAkx2MGFFYQXkNg>
+    <xmx:s3MSZfDX4QsOSyKtre_kCi5kz3VUkYwUj7cTAuEzzf8nLk7W6hXOqw>
+    <xmx:s3MSZYhVrmSJGmIduNkqhcGbOvr02avWQvkfgv6JEVXE9fxqhrRg2Q>
+    <xmx:tHMSZbPU3L2STJGA2xUZrEWAFbsIvUebNFGh1PiyxqJit-CFsZI3ug>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5E4D0B60089; Tue, 26 Sep 2023 02:01:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-Id: <e160b4df-92ce-4b9c-96ba-200f259c8216@app.fastmail.com>
+In-Reply-To: <aad452c57bce2ab7983e723d78bd2cc7b6f533c1.1695679700.git.falcon@tinylab.org>
+References: <cover.1695679700.git.falcon@tinylab.org>
+ <aad452c57bce2ab7983e723d78bd2cc7b6f533c1.1695679700.git.falcon@tinylab.org>
+Date:   Tue, 26 Sep 2023 08:01:00 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Zhangjin Wu" <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     "Palmer Dabbelt" <palmer@rivosinc.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>, paulburton@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Willy Tarreau" <w@1wt.eu>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        "Tim Bird" <tim.bird@sony.com>
+Subject: Re: [PATCH v1 7/7] DCE/DSE: riscv: trim syscall tables
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a smatch warning:
+On Tue, Sep 26, 2023, at 00:43, Zhangjin Wu wrote:
+> When the maximum nr of the used syscalls is smaller than __NR_syscalls
+> (original syscalls total). It is able to update __NR_syscalls to
+> (maximum nr + 1) and further trim the '>= (maximum nr + 1)' part of the
+> syscall tables:
+>
+> For example:
+>
+>     sys_call_table [143] = {
+> 	[0 ... 143 - 1] = sys_ni_syscall,
+>         [64] = sys_write,
+>         [93] = sys_exit,
+>         [142] = sys_reboot,
+>     }
+>
+> The >= 143 part of the syscall tables can be trimmed.
+>
+> At the same time, the syscall >= 143 from user space must be ignored
+> from do_trap_ecall_u() of traps.c.
+>
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> ---
+>  arch/riscv/include/asm/unistd.h               |  2 ++
+>  arch/riscv/kernel/Makefile                    |  2 ++
+>  arch/riscv/kernel/syscalls/Makefile           | 22 +++++++++++++++++++
+>  .../kernel/syscalls/compat_syscall_table.c    |  4 ++--
+>  arch/riscv/kernel/syscalls/syscall_table.c    |  4 ++--
+>  5 files changed, 30 insertions(+), 4 deletions(-)
 
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/smu_v13_0_0_ppt.c:2868
-smu_v13_0_0_check_ecc_table_support() warn: missing error code? 'ret'
+This bit feels like you are overoptimizing for a corner case:
+there is not much to be gained in terms of memory savings, but
+you add complexity in an area that I feel should be made common
+between architectures.
 
-This warning is caused by the fact that this function returns the value of
-the variable ret. However, the value of ret is not explicitly set in the
-function. This patch fixes the warning by explicitly setting the value of
-ret to 0 if the device is supported
+I hope to get back to working on consolidating both the
+syscall.tbl input files and the build infrastructure for them
+across architectures, and you make that harder here, so I'd
+prefer you to drop this part, at least until the code is
+shared across all architectures.
 
-Signed-off-by: Cong Liu <liucong2@kylinos.cn>
----
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-index 9ac2be5627d9..cf832cef2b0a 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
-@@ -2863,11 +2863,11 @@ static int smu_v13_0_0_check_ecc_table_support(struct smu_context *smu)
- 	if (ret)
- 		return -EOPNOTSUPP;
- 
--	if ((adev->ip_versions[MP1_HWIP][0] == IP_VERSION(13, 0, 10)) &&
--		(smu_version >= SUPPORT_ECCTABLE_SMU_13_0_10_VERSION))
--		return ret;
--	else
-+	if ((adev->ip_versions[MP1_HWIP][0] != IP_VERSION(13, 0, 10)) &&
-+		(smu_version < SUPPORT_ECCTABLE_SMU_13_0_10_VERSION))
- 		return -EOPNOTSUPP;
-+
-+	return 0;
- }
- 
- static ssize_t smu_v13_0_0_get_ecc_info(struct smu_context *smu,
--- 
-2.34.1
-
+    Arnd
