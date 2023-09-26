@@ -2,191 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0A87AEFD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7747AEFE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235101AbjIZPlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S229732AbjIZPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbjIZPlh (ORCPT
+        with ESMTP id S233792AbjIZPom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:41:37 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B762F120
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:41:29 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-495c9eb8911so3304737e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:41:29 -0700 (PDT)
+        Tue, 26 Sep 2023 11:44:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2124910A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:44:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81c39acfd9so13753749276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:44:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695742889; x=1696347689; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=61qUDQIUo4t4iOJB48yhTUPDpR6d+0iCSSZ6+kuW/VA=;
-        b=NJ+AlP6A4Utyu8vfpKspu5qn2Hx9pdiYnxnUvBYF0AwqrQwfaIIK6vXTyGwSXW7jTS
-         ZSLCQwZde7Cw7eyiLNOTtpXT7zYYoZFWR141LXuv+QlfQPe88rT+lMnxkmtxCa7wF2y4
-         +t5MlEWEyC0bKVCcW4NUdTEwZeFO2OWDh0ZFWF69SlkXsPeGjHoBcIacnm7KD9BQKtea
-         uRCwVCD1VO3689nEgl2wmvAT9ov3DdLQOs5FESNPNIozrp8TVXwMdEv9meqlKiLghE/8
-         NL5xvaDqcZVRgBYLKwXa6wy8kQCpeBnMEGuiL7GR7VlrDKBwPhap4mk+B2nvoeMaTxse
-         FuXQ==
+        d=google.com; s=20230601; t=1695743073; x=1696347873; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dUqxLY2nTBwa9TznKkTTvHje90znBvp6KBryn5bkyvU=;
+        b=zrnFlS6O3Q/Uf1lgaA7OEby+ESk7FU/X4I2aqgg6RW384xfQNSiF/q0b4VFU9axZfu
+         WYcyY8OO3ee2HZ9VDCq1JUHrl3iUqXZvUOBVm6McNzCIK4/jjtrQJRLFgY/BkL80ejZw
+         YFVCqzf+72WbpSQDg6pnjSyxbkM3aiyD3TxLZWQZzf7h75jk5Cc8SVCxZpLtmP4nWlxE
+         ssFzE8OuD9lIzFHqwvX9YAmtd4UnJsgfkuMy3ns+S7egO19Tl4jCdINCWfVzgbEz++KM
+         50szg3qBkspaXBrGUbgttOTToHfYps2x4su4lDAaxOxBIsAy7nitpaJ/xWGO4ua6IGCP
+         z56g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695742889; x=1696347689;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=61qUDQIUo4t4iOJB48yhTUPDpR6d+0iCSSZ6+kuW/VA=;
-        b=InG2F+JJxcbj5FH3PQSLoMm8EpGMtLZ91j4nhJL+tlCIXkV0eYwAn09FkXaSxvWGex
-         ewvGoDv2KSC//zf66clocSYMzQwlkbtRMFCeiGOdc5C6OHOle/VjxjQliZIWL+oF0IfX
-         diIFVn6c5QPZ0dGDWOFRZHUv0CG88GEuagSoS/MQbfess07ShznRk3teOCGk9TkLwPP+
-         RFtLbCtYkx0mIpw0nlR63MUDPJfao1mrUv7ul2+98zzR2lFgMeN9KvpW5mt6/ivnqN+W
-         8b3+v6vWWmHirBE3kDsQsdBnK683CsCW0MMvu1Ubcv0WkZPDkhDKiII28wFENrgA9i1P
-         Z1Cg==
-X-Gm-Message-State: AOJu0Ywm0tq1VaF4us98h1DXWdZS/wpSYICyHoc5JlXrc/I2MxT/40bD
-        6CvHvFcUEEA1bDDBBTCKCVBBgIGOIK68yURNJnkFuQ==
-X-Google-Smtp-Source: AGHT+IGmkQfuwS2veSa8WLqQh88ElLffrGlpP684uNa6VaOgNEbMluewbtNJtDCK7Dh1ugezKsCbe6w2QB3BNkyOXDo=
-X-Received: by 2002:a1f:4a41:0:b0:490:1114:f3ee with SMTP id
- x62-20020a1f4a41000000b004901114f3eemr6724907vka.8.1695742888603; Tue, 26 Sep
- 2023 08:41:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
- <ZRGyRQuBcWvgtdNR@Boquns-Mac-mini.home> <9d6d6c94-5da6-a56d-4e85-fbf8da26a0b0@proton.me>
- <ZRHWqbvYlXBXEOh-@boqun-archlinux> <c5134a1a-a60d-73bb-9faa-aa1dfc3bc30d@proton.me>
- <ZRIB0hXNvmJtmyak@boqun-archlinux> <edc0b599-c5d1-4e9c-a51b-eb8ceaef7acc@ryhl.io>
- <ZRIDc_x9Qh5EJNC8@boqun-archlinux> <61ccfb87-54fd-3f1b-105c-253d0350cd56@proton.me>
- <20230926162659.6555bcdc@gary-lowrisc-laptop> <ZRL3mlWXqseER8xK@Boquns-Mac-mini.home>
-In-Reply-To: <ZRL3mlWXqseER8xK@Boquns-Mac-mini.home>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Tue, 26 Sep 2023 17:41:17 +0200
-Message-ID: <CAH5fLggUPQtNjLg6BnYHcLmefuHdJpg0_eGVgX+dARUTRHexsA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of `WithRef`
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Gary Guo <gary@garyguo.net>, Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <alice@ryhl.io>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
+        d=1e100.net; s=20230601; t=1695743073; x=1696347873;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dUqxLY2nTBwa9TznKkTTvHje90znBvp6KBryn5bkyvU=;
+        b=wylOW3rn8jCjbFz3kRorRMVm444Boi46YVdnHG3BixPb/Yu8P90vay8yiSzLQogwEj
+         4ttiNARcdjpar7VIMaaNLelCMWsCCAA/scWNIkySa7w5h2LKE5qcEPm9AcuAyyS5zHL0
+         Cdq+yuthjVnWF1jZg86ZdBT4h1NX+EPos1OfpSj0Rd2lDpNKkIddsncAoE1kixCVwmpB
+         /fDfPsFtr3YtDGixSmxZfY7T/xsrCryqgG+dhbaoCn3Q/aLIt3p+yZcaUb2kToO+yEuv
+         A4BjsvsGrQ9HW7osiJFH2Lt6EE6dGrJQODoDeILnmx0EFqHqj+KoD+iJI9jfrvlyF+qV
+         uWFA==
+X-Gm-Message-State: AOJu0Yxl4FYWi2f/WD5783V+1ePLVjFgi6eGJXduN0ezz1gXMZ+cZ3cS
+        A895Aj8/yXFmBcJ1WE3C6iRhSpBV2No=
+X-Google-Smtp-Source: AGHT+IGme/vBiUuM/J3y+xMji41rNGS2G4ms8AQla0qKpMBJJt6otcitWzAieqjeVbUWwrD7XMmD/9I+6No=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8c02:0:b0:d81:43c7:61ed with SMTP id
+ k2-20020a258c02000000b00d8143c761edmr104033ybl.5.1695743073295; Tue, 26 Sep
+ 2023 08:44:33 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 08:44:31 -0700
+In-Reply-To: <90dd2e2e-71ae-d8c4-5d3b-9628e7710337@gmail.com>
+Mime-Version: 1.0
+References: <20230407085646.24809-1-likexu@tencent.com> <ZDA4nsyAku9B2/58@google.com>
+ <6ee140c9-ccd5-9569-db17-a542a7e28d5c@gmail.com> <ZRIYbu4wSVW9a+8i@google.com>
+ <90dd2e2e-71ae-d8c4-5d3b-9628e7710337@gmail.com>
+Message-ID: <ZRL8X74x2jnD2Mue@google.com>
+Subject: Re: [PATCH V2] KVM: x86/pmu: Disable vPMU if EVENTSEL_GUESTONLY bit
+ doesn't exist
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Manali Shukla <manali.shukla@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 5:24=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Tue, Sep 26, 2023 at 04:26:59PM +0800, Gary Guo wrote:
-> > On Mon, 25 Sep 2023 22:26:56 +0000
-> > Benno Lossin <benno.lossin@proton.me> wrote:
-> >
-> [...]
-> > >
-> > > The pointer was originally derived by a call to `into_raw`:
-> > > ```
-> > >      pub fn into_raw(self) -> *const T {
-> > >          let ptr =3D self.ptr.as_ptr();
-> > >          core::mem::forget(self);
-> > >          // SAFETY: The pointer is valid.
-> > >          unsafe { core::ptr::addr_of!((*ptr).data) }
-> > >      }
-> > > ```
-> > > So in this function the origin (also the origin of the provenance)
-> > > of the pointer is `ptr` which is of type `NonNull<WithRef<T>>`.
-> > > Raw pointers do not lose this provenance information when you cast
-> > > it and when using `addr_of`/`addr_of_mut`. So provenance is something
-> > > that is not really represented in the type system for raw pointers.
-> > >
-> > > When doing a round trip through a reference though, the provenance is
-> > > newly assigned and thus would only be valid for a `T`:
-> > > ```
-> > > let raw =3D arc.into_raw();
-> > > let reference =3D unsafe { &*raw };
-> > > let raw: *const T =3D reference;
-> > > let arc =3D unsafe { Arc::from_raw(raw) };
-> > > ```
-> > > Miri would complain about the above code.
-> > >
-> >
-> > One thing we can do is to opt from strict provenance, so:
-> >
->
-> A few questions about strict provenance:
->
-> > ```
-> > let raw =3D arc.into_raw();
-> > let _ =3D raw as usize; // expose the provenance of raw
->
-> Should this be a expose_addr()?
+On Tue, Sep 26, 2023, Like Xu wrote:
+> On 26/9/2023 7:31 am, Sean Christopherson wrote:
+> > On Thu, Sep 14, 2023, Like Xu wrote:
+> > > On 7/4/2023 11:37 pm, Sean Christopherson wrote:
+> > > > On Fri, Apr 07, 2023, Like Xu wrote:
+> > > /*
+> > >   * The guest vPMU counter emulation depends on the EVENTSEL_GUESTONLY bit.
+> > >   * If this bit is present on the host, the host needs to support at least
+> > > the PERFCTR_CORE.
+> > >   */
+> > 
+> > ...
+> > 
+> > > > 	/*
+> > > > 	 * KVM requires guest-only event support in order to isolate guest PMCs
+> > > > 	 * from host PMCs.  SVM doesn't provide a way to atomically load MSRs
+> > > > 	 * on VMRUN, and manually adjusting counts before/after VMRUN is not
+> > > > 	 * accurate enough to properly virtualize a PMU.
+> > > > 	 */
+> > > > 
+> > > > But now I'm really confused, because if I'm reading the code correctly, perf
+> > > > invokes amd_core_hw_config() for legacy PMUs, i.e. even if PERFCTR_CORE isn't
+> > > > supported.  And the APM documents the host/guest bits only for "Core Performance
+> > > > Event-Select Registers".
+> > > > 
+> > > > So either (a) GUESTONLY isn't supported on legacy CPUs and perf is relying on AMD
+> > > > CPUs ignoring reserved bits or (b) GUESTONLY _is_ supported on legacy PMUs and
+> > > > pmu_has_guestonly_mode() is checking the wrong MSR when running on older CPUs.
+> > > > 
+> > > > And if (a) is true, then how on earth does KVM support vPMU when running on a
+> > > > legacy PMU?  Is vPMU on AMD just wildly broken?  Am I missing something?
+> > > > 
+> > > 
+> > > (a) It's true and AMD guest vPMU have only been implemented accurately with
+> > > the help of this GUESTONLY bit.
+> > > 
+> > > There are two other scenarios worth discussing here: one is support L2 vPMU
+> > > on the PERFCTR_CORE+ host and this proposal is disabling it; and the other
+> > > case is to support AMD legacy vPMU on the PERFCTR_CORE+ host.
+> > 
+> > Oooh, so the really problematic case is when PERFCTR_CORE+ is supported but
+> > GUESTONLY is not, in which case KVM+perf *think* they can use GUESTONLY (and
+> > HOSTONLY).
+> > 
+> > That's a straight up KVM (as L0) bug, no?  I don't see anything in the APM that
+> > suggests those bits are optional, i.e. KVM is blatantly violating AMD's architecture
+> > by ignoring those bits.
+> 
+> For L2 guest, it often doesn't see all the cpu features corresponding to the
+> cpu model because KVM and VMM filter some of the capabilities. We can't say
+> that the absence of these features violates spec, can we ?
 
-Pointer to integer cast is equivalent to expose_addr.
+Yes, KVM hides features via architectural means.  This is enumerating a feature,
+PERFCTR_CORE, and not providing all its functionalality.  The two things are
+distinctly different.
 
-> > let reference =3D unsafe { &*raw };
-> > let raw =3D reference as *const T as usize as *const T;
->
-> and this is a from_exposed_addr{_mut}(), right?
+> I treat it as a KVM flaw or a lack of emulation capability.
 
-Integer to pointer cast is equivalent to from_exposed_addr.
+A.k.a. a bug.
 
-> > let arc =3D unsafe { Arc::from_raw(raw) };
-> > ```
-> >
->
-> One step back, If we were to use strict provenance API (i.e.
-> expose_addr()/from_exposed_addr()), we could use it to "fix" the
-> original problem? By:
->
-> *       expose_addr() in as_with_ref()
-> *       from_exposed_addr() in `impl From<&WithRef<T>> for Arc`
->
-> right?
->
-> More steps back, is the original issue only a real issue under strict
-> provenance rules? Don't make me wrong, I like the ideas behind strict
-> provenance, I just want to check, if we don't enable strict provenance
-> (as a matter of fact, we don't do it today),
+> > I would rather fix KVM (as L0).  It doesn't seem _that_ hard to support, e.g.
+> > modify reprogram_counter() to disable the counter if it's supposed to be silent
+> > for the current mode, and reprogram all counters if EFER.SVME is toggled, and on
+> > all nested transitions.
+> 
+> I thought about that too, setting up EFER.SVME and VMRUN is still a little
+> bit far away, and more micro-testing is needed to correct the behavior
+> of the emulation here, considering KVM also has to support emulated ins.
+> 
+> It's safe to say that there are no real user scenarios using vPMU in a nested
+> guest, so I'm more inclined to disable it provisionally (for the sake of more
+> stable tree users), enabling this feature is honestly at the end of my to-do list.
 
-Outside of miri, strict provenance is not really something you enable.
-It's a set of rules that are stricter than the real rules, that are
-designed such that when you follow them, your code will be correct
-under any conceivable memory model we might end up with. They will
-never be the rules that the compiler actually uses.
-
-I think by "opt out from strict provenance", Gary just meant "use
-int2ptr and ptr2int casts to reset the provenance".
-
-> will the original issue found by Alice be a UB?
-
-Yes, it's UB under any ruleset that exists out there. There's no flag
-to turn it off.
-
-> Or is there a way to disable Miri's check on
-> strict provenance? IIUC, the cause of the original issue is that "you
-> cannot reborrow a pointer derived from a `&` to get a `&mut`, even when
-> there is no other alias to the same object". Maybe I'm still missing
-> something, but without strict provenance, is this a problem? Or is there
-> a provenance model of Rust without strict provenance?
-
-It's a problem under all of the memory models. The rule being violated
-is exactly the same rule as the one behind this paragraph:
-
-> Transmuting an & to &mut is Undefined Behavior. While certain usages may =
-appear safe, note that the Rust optimizer is free to assume that a shared r=
-eference won't change through its lifetime and thus such transmutation will=
- run afoul of those assumptions. So:
->
-> Transmuting an & to &mut is always Undefined Behavior.
-> No you can't do it.
-> No you're not special.
-From: https://doc.rust-lang.org/nomicon/transmutes.html
-
-Alice
+I don't see a way to do that without violating AMD's architecture while still
+exposing the PMU to L1.
