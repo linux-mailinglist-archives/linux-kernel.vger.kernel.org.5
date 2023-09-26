@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4034D7AF092
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2647AF09B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235250AbjIZQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S235258AbjIZQWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235213AbjIZQVH (ORCPT
+        with ESMTP id S235249AbjIZQWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:21:07 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB648E;
-        Tue, 26 Sep 2023 09:21:01 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QEqOVq001484;
-        Tue, 26 Sep 2023 16:20:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=LehS//YoR2gic3xDd8E3tZ4tviPkBJ1Uha5rLlpj9tY=;
- b=MN+WZK6SeUNZjXf3VnZUK0cggxNo+aK4FxJZXQU99U+xH0lO6XR2YPYHxex8RhvJq3nb
- UCV70gaaKrLkMimHZ10X5rkLMQoy46/c1uQtmZEbopd53gA5oKwXoQFdyLGv/eMElSY8
- BikcjkgMvkBpYaicxFl2MBBfjtY957voIsxljNrb0FCurjfxn2+oZqLpuUTxKWKxBxvr
- i1T5myuzhrM/b07TE6xpcH4+LiC3vEe4gGrBXqP6Hc0APmMqnl3ICncKNcI9WLMbeDVs
- jrbiBgD/4N2Fb2kveQWnemW+bg60WL37Npqh9x4GsCYLgySIWGV2/nroEhYf8bOHDDbu Jg== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbexgjkbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:20:53 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38QGKoXG010076;
-        Tue, 26 Sep 2023 16:20:50 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3t9s3kk6nh-1;
-        Tue, 26 Sep 2023 16:20:50 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38QGDbPq002942;
-        Tue, 26 Sep 2023 16:20:50 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 38QGKowh010070;
-        Tue, 26 Sep 2023 16:20:50 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id 6DC36601917; Tue, 26 Sep 2023 21:50:49 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mani@kernel.org, alim.akhtar@samsung.com, bvanassche@acm.org,
-        avri.altman@wdc.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: [PATCH V2 3/3] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280 IDP board
-Date:   Tue, 26 Sep 2023 21:50:42 +0530
-Message-Id: <20230926162042.14180-4-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230926162042.14180-1-quic_nitirawa@quicinc.com>
-References: <20230926162042.14180-1-quic_nitirawa@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rCNSMKswIH4bKmtGgqW-jKlgPNC0A0Pa
-X-Proofpoint-GUID: rCNSMKswIH4bKmtGgqW-jKlgPNC0A0Pa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxlogscore=736
- adultscore=0 clxscore=1015 bulkscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309260142
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        Tue, 26 Sep 2023 12:22:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243C410A;
+        Tue, 26 Sep 2023 09:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695745314; x=1727281314;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kOLi+tNVVtaYkWTVX/7AESQkIiZFjfH3RaEZEz2Zfb4=;
+  b=OOscPrhyBOcxo1g4MgXCUQfLK6J+EnTXsod5SzOny241DoZbeos92G4r
+   B6qAesdf5vdfJCyic0ZHv5ptWby/OGRKh7q/KTBDMAdpHpRpG1Kh/NfJH
+   bydlqO7jA0HSKFvMiDRR7F526zCULuKLNyFRTL+xw0gOnOSekn7Sfd5xs
+   pFtA5XEX335E6/+ZNpYJnBIavbm7TEdxPUXLc+k2Y3A588oBZFeaF6OyM
+   zYMdiRq4XJbJP49EzB8+f2jDoQ5+vOrA7YIhpaoohxA4MU8t1eOFc+n6o
+   phyVFe46jPNt/XXdOttwN73dXxXxp4Jf4BXWH1PdiGwMzLj2cqKlXOv3D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="445739335"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="445739335"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:21:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="814540198"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="814540198"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Sep 2023 09:21:47 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlAoi-000358-2u;
+        Tue, 26 Sep 2023 16:21:44 +0000
+Date:   Wed, 27 Sep 2023 00:21:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
+        Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: i2c: gc2145: Galaxy Core GC2145 sensor support
+Message-ID: <202309270018.GBMyNvxU-lkp@intel.com>
+References: <20230926092825.819229-3-alain.volmat@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926092825.819229-3-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,43 +70,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add UFS host controller and PHY nodes for sc7280 IDP board.
+Hi Alain,
 
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index 2ff549f4dc7a..a0059527d9e4 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -499,6 +499,25 @@
- 	status = "okay";
- };
+[auto build test WARNING on media-tree/master]
+[also build test WARNING on robh/for-next linus/master v6.6-rc3 next-20230926]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-+&ufs_mem_hc {
-+	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
-+	vcc-supply = <&vreg_l7b_2p9>;
-+	vcc-max-microamp = <800000>;
-+	vccq-supply = <&vreg_l9b_1p2>;
-+	vccq-max-microamp = <900000>;
-+	vccq2-supply = <&vreg_l9b_1p2>;
-+	vccq2-max-microamp = <900000>;
-+
-+	status = "okay";
-+};
-+
-+&ufs_mem_phy {
-+	vdda-phy-supply = <&vreg_l10c_0p8>;
-+	vdda-pll-supply = <&vreg_l6b_1p2>;
-+
-+	status = "okay";
-+};
-+
- &usb_1 {
- 	status = "okay";
- };
---
-2.17.1
+url:    https://github.com/intel-lab-lkp/linux/commits/Alain-Volmat/dt-bindings-media-i2c-add-galaxycore-gc2145-dt-bindings/20230926-173518
+base:   git://linuxtv.org/media_tree.git master
+patch link:    https://lore.kernel.org/r/20230926092825.819229-3-alain.volmat%40foss.st.com
+patch subject: [PATCH 2/2] media: i2c: gc2145: Galaxy Core GC2145 sensor support
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230927/202309270018.GBMyNvxU-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230927/202309270018.GBMyNvxU-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309270018.GBMyNvxU-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/media/i2c/gc2145.c:1140:12: warning: 'gc2145_resume' defined but not used [-Wunused-function]
+    1140 | static int gc2145_resume(struct device *dev)
+         |            ^~~~~~~~~~~~~
+>> drivers/media/i2c/gc2145.c:1129:12: warning: 'gc2145_suspend' defined but not used [-Wunused-function]
+    1129 | static int gc2145_suspend(struct device *dev)
+         |            ^~~~~~~~~~~~~~
+
+
+vim +/gc2145_resume +1140 drivers/media/i2c/gc2145.c
+
+  1128	
+> 1129	static int gc2145_suspend(struct device *dev)
+  1130	{
+  1131		struct v4l2_subdev *sd = dev_get_drvdata(dev);
+  1132		struct gc2145 *gc2145 = to_gc2145(sd);
+  1133	
+  1134		if (gc2145->streaming)
+  1135			gc2145_stop_streaming(gc2145);
+  1136	
+  1137		return 0;
+  1138	}
+  1139	
+> 1140	static int gc2145_resume(struct device *dev)
+  1141	{
+  1142		struct v4l2_subdev *sd = dev_get_drvdata(dev);
+  1143		struct gc2145 *gc2145 = to_gc2145(sd);
+  1144		struct v4l2_subdev_state *state;
+  1145		int ret;
+  1146	
+  1147		if (gc2145->streaming) {
+  1148			state = v4l2_subdev_lock_and_get_active_state(sd);
+  1149			ret = gc2145_start_streaming(gc2145, state);
+  1150			v4l2_subdev_unlock_state(state);
+  1151			if (ret)
+  1152				goto error;
+  1153		}
+  1154	
+  1155		return 0;
+  1156	
+  1157	error:
+  1158		gc2145_stop_streaming(gc2145);
+  1159		gc2145->streaming = false;
+  1160	
+  1161		return ret;
+  1162	}
+  1163	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
