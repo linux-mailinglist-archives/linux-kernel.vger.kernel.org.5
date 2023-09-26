@@ -2,57 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6734E7AEBB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C2E7AEBBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbjIZLqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
+        id S233303AbjIZLrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjIZLqr (ORCPT
+        with ESMTP id S232437AbjIZLrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:46:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92A3ACE;
-        Tue, 26 Sep 2023 04:46:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 498E21FB;
-        Tue, 26 Sep 2023 04:47:18 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1B5B3F6C4;
-        Tue, 26 Sep 2023 04:46:37 -0700 (PDT)
-Message-ID: <8efff98d-e9a4-5dca-54c8-1fd715ac1972@arm.com>
-Date:   Tue, 26 Sep 2023 12:46:36 +0100
+        Tue, 26 Sep 2023 07:47:20 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FF7120
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 04:47:11 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5033918c09eso13712167e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 04:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1695728830; x=1696333630; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LCp3DXpfVKfH2Y0o0M8mCid7ujeQPXx6UqfFbszv1i8=;
+        b=GFkmqM9lLJYapN4xBN0c7JH0ecC/aSpNEUDIAgH0wVZE/sOz9fL5dSc8mVtIEcOmUd
+         KF/3fQt921CGdVlWaw8FyZhfGdQzBNYlNjG/uvesG4Ewzg9I1AMKGE5u/XBrdjw8dlOw
+         NU9mK/8GxX5GZfK6E+K3Lk/odhHG9ZhG64kZCC3D4q7tqtaPxmJrxlRtwdEem6N0Nxfd
+         AWtevtsOlJlmU43ZXEy6KwYK86a9iYIGSF3/+/bd+9oTr8RLDOjoyJvxnJL1Zx1ufehH
+         xwcnQx5JGm0qOUBidz6Lg/yKqdwDMkolGZy0sd/DUfIVuhS14R+FVyL+bt+WFjIN7Q5C
+         IvAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695728830; x=1696333630;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LCp3DXpfVKfH2Y0o0M8mCid7ujeQPXx6UqfFbszv1i8=;
+        b=BTUASWnt9sHPJRrLZC2fR4182XvI7qiOI3nz9baPsC9lmt5MPTADcLpyL7SQoiujbV
+         DVnUTbj6yeh0eXchuuWYwAA3ibobK6YAlYCQvxbuaV5YTyH5J5hr3dcse9Tuezuru4uL
+         tgxwRKKK3Ffdbvy31fhMpI98Whh0YtUZcSE2p9phk6HzXAdZb20y9g4CKAB8LKCfXe1z
+         9EEn4KJhEfXYkGPAOUTF57pntkAe9sevcHXs8S7f0BsQ6rC3QbyjXQKb1hRFVFUdWshn
+         LH5DtxnuuHvaSqNPJo0uVS1uOap0iShTNxhFKvbYX/oo0py2FgZqIG9oraoP9N+3OvHr
+         UgAg==
+X-Gm-Message-State: AOJu0YwatiotMA7UL+ZFHI3IVT7+tYVVHAhEr38xC98fXGkUnxth1ujo
+        9wgVK91kH2ZzWOG9ZhAUeS0xrQ==
+X-Google-Smtp-Source: AGHT+IF+jbH7FWr6+cFqAnCyk/CUAIFVAZ8LgGPN4rOxnI4j0tUbuQS0WA4s9y3m/r3g5552xfmfnQ==
+X-Received: by 2002:a05:6512:110e:b0:4fd:d64f:c0a6 with SMTP id l14-20020a056512110e00b004fdd64fc0a6mr9175819lfg.48.1695728829802;
+        Tue, 26 Sep 2023 04:47:09 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id lo18-20020a170906fa1200b0099bd1a78ef5sm7641095ejb.74.2023.09.26.04.47.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 04:47:09 -0700 (PDT)
+Message-ID: <dfe64c7c-2f90-65a2-05fc-e96ec5113a60@tuxon.dev>
+Date:   Tue, 26 Sep 2023 14:47:06 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v9 13/13] coresight-tpdm: Add nodes for dsb msr support
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1694670204-11515-1-git-send-email-quic_taozha@quicinc.com>
- <1694670204-11515-14-git-send-email-quic_taozha@quicinc.com>
+Subject: Re: [PATCH 09/37] clk: renesas: rzg2l: fix computation formula
 Content-Language: en-US
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1694670204-11515-14-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-10-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVNzgHqURohOgpFEaGn+6+rQTqsDomoS1u_-jn=GgmHXw@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdVNzgHqURohOgpFEaGn+6+rQTqsDomoS1u_-jn=GgmHXw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,267 +90,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2023 06:43, Tao Zhang wrote:
-> Add the nodes for DSB subunit MSR(mux select register) support.
-> The TPDM MSR (mux select register) interface is an optional
-> interface and associated bank of registers per TPDM subunit.
-> The intent of mux select registers is to control muxing structures
-> driving the TPDM’s’ various subunit interfaces.
+Hi, Geert,
+
+On 14.09.2023 15:55, Geert Uytterhoeven wrote:
+> Hi Claudiu,
 > 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   |  8 +++
->   drivers/hwtracing/coresight/coresight-tpdm.c       | 81 ++++++++++++++++++++++
->   drivers/hwtracing/coresight/coresight-tpdm.h       | 12 ++++
->   3 files changed, 101 insertions(+)
+> On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> According to hardware manual of RZ/G2L (r01uh0914ej0130-rzg2l-rzg2lc.pdf)
+>> the computation formula for PLL rate is as follows:
+>>
+>> Fout = ((m + k/65536) * Fin) / (p * 2^s)
+>>
+>> and k has values in range [-32768, 32767]. Dividing k by 65536 with
+>> integer variables leads all the time to zero. Thus we may have slight
+>> differences b/w what has been set vs. what is displayed. Thus,
+>> get rid of this and decompose the formula before dividing k by 65536.
+>>
+>> Fixes: ef3c613ccd68a ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> index 1f20a3f..f07218e 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> @@ -162,3 +162,11 @@ Description:
->   		Accepts only one of the 2 values -  0 or 1.
->   		0 : Set the DSB pattern type to value.
->   		1 : Set the DSB pattern type to toggle.
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_msr/msr[0:31]
-> +Date:		March 2023
-> +KernelVersion	6.7
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:
-> +		(RW) Set/Get the MSR(mux select register) for the DSB subunit
-> +		TPDM.
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-> index 7acc220..ea29e05 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-> @@ -61,6 +61,11 @@ static ssize_t tpdm_simple_dataset_show(struct device *dev,
->   			return -EINVAL;
->   		return sysfs_emit(buf, "0x%x\n",
->   			drvdata->dsb->patt_mask[tpdm_attr->idx]);
-> +	case DSB_MSR:
-> +		if (tpdm_attr->idx >= drvdata->dsb_msr_num)
-> +			return -EINVAL;
-> +		return sysfs_emit(buf, "0x%x\n",
-> +				drvdata->dsb->msr[tpdm_attr->idx]);
->   	}
->   	return -EINVAL;
->   }
-> @@ -107,6 +112,12 @@ static ssize_t tpdm_simple_dataset_store(struct device *dev,
->   		else
->   			ret = -EINVAL;
->   		break;
-> +	case DSB_MSR:
-> +		if (tpdm_attr->idx < drvdata->dsb_msr_num)
-> +			drvdata->dsb->msr[tpdm_attr->idx] = val;
-> +		else
-> +			ret = -EINVAL;
-> +		break;
->   	default:
->   		ret = -EINVAL;
->   	}
-> @@ -132,6 +143,18 @@ static umode_t tpdm_dsb_is_visible(struct kobject *kobj,
->   	return 0;
->   }
->   
-> +static umode_t tpdm_dsb_msr_is_visible(struct kobject *kobj,
-> +				       struct attribute *attr, int n)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	if (drvdata->dsb_msr_num != 0)
-> +		return attr->mode;
+> Thanks for your patch!
+> 
+>> --- a/drivers/clk/renesas/rzg2l-cpg.c
+>> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+>> @@ -696,18 +696,22 @@ static unsigned long rzg2l_cpg_pll_clk_recalc_rate(struct clk_hw *hw,
+>>         struct pll_clk *pll_clk = to_pll(hw);
+>>         struct rzg2l_cpg_priv *priv = pll_clk->priv;
+>>         unsigned int val1, val2;
+>> -       unsigned int mult = 1;
+>> -       unsigned int div = 1;
+>> +       unsigned int div;
+>> +       u64 rate;
+>> +       s16 kdiv;
+>>
+>>         if (pll_clk->type != CLK_TYPE_SAM_PLL)
+>>                 return parent_rate;
+>>
+>>         val1 = readl(priv->base + GET_REG_SAMPLL_CLK1(pll_clk->conf));
+>>         val2 = readl(priv->base + GET_REG_SAMPLL_CLK2(pll_clk->conf));
+>> -       mult = MDIV(val1) + KDIV(val1) / 65536;
+>> +       kdiv = KDIV(val1);
+>>         div = PDIV(val1) << SDIV(val2);
+>>
+>> -       return DIV_ROUND_CLOSEST_ULL((u64)parent_rate * mult, div);
+>> +       rate = (u64)MDIV(val1) * parent_rate;
+>> +       rate += ((long long)parent_rate * kdiv) / 65536;
+> 
+> As the division is a binary shift, you can use the mul_u64_u32_shr() helper,
+> and incorporate the sdiv shift at the same time:
+> 
+>     rate += mul_u64_u32_shr(parent_rate, KDIV(val1), 16 + SDIV(val2));
+> 
+> You can save a multiplication by premultiplying mdiv by 65536:
+> 
+>     rate = mul_u64_u32_shr(parent_rate, (MDIV(val1) << 16)) + KDIV(val1),
+>                            16 + SDIV(val2));
 
-I did mention in the last review, that we should limit the number of
-files visible based on the number of msrs ?
-	struct tpdm_dataset_attribute *tpdm_attr =
-		container_of(attr, struct tpdm_dataset_attribute, attr);
+Looking again at this: KDIV (aka DIV_K) could have negative values thus
+mul_u64_u32_shr() cannot be used here.
 
-	if (tpdm_attr->idx < drvdata->dsb_msr_num)
-		return attr->mode;
-
-That way, only the available msrs are listed in the directory ?
-
-Suzuki
-
-
-> +
-> +	return 0;
-> +}
-> +
->   static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
->   {
->   	if (tpdm_has_dsb_dataset(drvdata)) {
-> @@ -193,6 +216,15 @@ static void set_dsb_tier(struct tpdm_drvdata *drvdata)
->   	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
->   }
->   
-> +static void set_dsb_msr(struct tpdm_drvdata *drvdata)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < drvdata->dsb_msr_num; i++)
-> +		writel_relaxed(drvdata->dsb->msr[i],
-> +			   drvdata->base + TPDM_DSB_MSR(i));
-> +}
-> +
->   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
->   {
->   	u32 val, i;
-> @@ -216,6 +248,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
->   
->   	set_dsb_tier(drvdata);
->   
-> +	set_dsb_msr(drvdata);
-> +
->   	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
->   	/* Set the mode of DSB dataset */
->   	set_dsb_mode(drvdata, &val);
-> @@ -739,6 +773,42 @@ static struct attribute *tpdm_dsb_patt_attrs[] = {
->   	NULL,
->   };
->   
-> +static struct attribute *tpdm_dsb_msr_attrs[] = {
-> +	DSB_MSR_ATTR(0),
-> +	DSB_MSR_ATTR(1),
-> +	DSB_MSR_ATTR(2),
-> +	DSB_MSR_ATTR(3),
-> +	DSB_MSR_ATTR(4),
-> +	DSB_MSR_ATTR(5),
-> +	DSB_MSR_ATTR(6),
-> +	DSB_MSR_ATTR(7),
-> +	DSB_MSR_ATTR(8),
-> +	DSB_MSR_ATTR(9),
-> +	DSB_MSR_ATTR(10),
-> +	DSB_MSR_ATTR(11),
-> +	DSB_MSR_ATTR(12),
-> +	DSB_MSR_ATTR(13),
-> +	DSB_MSR_ATTR(14),
-> +	DSB_MSR_ATTR(15),
-> +	DSB_MSR_ATTR(16),
-> +	DSB_MSR_ATTR(17),
-> +	DSB_MSR_ATTR(18),
-> +	DSB_MSR_ATTR(19),
-> +	DSB_MSR_ATTR(20),
-> +	DSB_MSR_ATTR(21),
-> +	DSB_MSR_ATTR(22),
-> +	DSB_MSR_ATTR(23),
-> +	DSB_MSR_ATTR(24),
-> +	DSB_MSR_ATTR(25),
-> +	DSB_MSR_ATTR(26),
-> +	DSB_MSR_ATTR(27),
-> +	DSB_MSR_ATTR(28),
-> +	DSB_MSR_ATTR(29),
-> +	DSB_MSR_ATTR(30),
-> +	DSB_MSR_ATTR(31),
-> +	NULL,
-> +};
-> +
->   static struct attribute *tpdm_dsb_attrs[] = {
->   	&dev_attr_dsb_mode.attr,
->   	&dev_attr_dsb_trig_ts.attr,
-> @@ -769,12 +839,19 @@ static struct attribute_group tpdm_dsb_patt_grp = {
->   	.name = "dsb_patt",
->   };
->   
-> +static struct attribute_group tpdm_dsb_msr_grp = {
-> +	.attrs = tpdm_dsb_msr_attrs,
-> +	.is_visible = tpdm_dsb_msr_is_visible,
-> +	.name = "dsb_msr",
-> +};
-> +
->   static const struct attribute_group *tpdm_attr_grps[] = {
->   	&tpdm_attr_grp,
->   	&tpdm_dsb_attrs_grp,
->   	&tpdm_dsb_edge_grp,
->   	&tpdm_dsb_trig_patt_grp,
->   	&tpdm_dsb_patt_grp,
-> +	&tpdm_dsb_msr_grp,
->   	NULL,
->   };
->   
-> @@ -809,6 +886,10 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
->   	if (ret)
->   		return ret;
->   
-> +	if (drvdata && tpdm_has_dsb_dataset(drvdata))
-> +		of_property_read_u32(drvdata->dev->of_node,
-> +			   "qcom,dsb_msr_num", &drvdata->dsb_msr_num);
-> +
->   	/* Set up coresight component description */
->   	desc.name = coresight_alloc_device_name(&tpdm_devs, dev);
->   	if (!desc.name)
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
-> index 891979d..4115b2a1 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
-> @@ -18,6 +18,7 @@
->   #define TPDM_DSB_XPMR(n)	(0x7E8 + (n * 4))
->   #define TPDM_DSB_EDCR(n)	(0x808 + (n * 4))
->   #define TPDM_DSB_EDCMR(n)	(0x848 + (n * 4))
-> +#define TPDM_DSB_MSR(n)		(0x980 + (n * 4))
->   
->   /* Enable bit for DSB subunit */
->   #define TPDM_DSB_CR_ENA		BIT(0)
-> @@ -90,6 +91,8 @@
->   #define TPDM_DSB_MAX_EDCMR	8
->   /* MAX number of DSB pattern */
->   #define TPDM_DSB_MAX_PATT	8
-> +/* MAX number of DSB MSR */
-> +#define TPDM_DSB_MAX_MSR 32
->   
->   #define tpdm_simple_dataset_ro(name, mem, idx)			\
->   	(&((struct tpdm_dataset_attribute[]) {			\
-> @@ -134,6 +137,10 @@
->   		tpdm_simple_dataset_rw(tpmr##nr,		\
->   		DSB_PATT_MASK, nr)
->   
-> +#define DSB_MSR_ATTR(nr)					\
-> +		tpdm_simple_dataset_rw(msr##nr,			\
-> +		DSB_MSR, nr)
-> +
->   /**
->    * struct dsb_dataset - specifics associated to dsb dataset
->    * @mode:             DSB programming mode
-> @@ -144,6 +151,7 @@
->    * @patt_mask:        Save value for pattern mask
->    * @trig_patt:        Save value for trigger pattern
->    * @trig_patt_mask:   Save value for trigger pattern mask
-> + * @msr               Save value for MSR
->    * @patt_ts:          Enable/Disable pattern timestamp
->    * @patt_type:        Set pattern type
->    * @trig_ts:          Enable/Disable trigger timestamp.
-> @@ -158,6 +166,7 @@ struct dsb_dataset {
->   	u32			patt_mask[TPDM_DSB_MAX_PATT];
->   	u32			trig_patt[TPDM_DSB_MAX_PATT];
->   	u32			trig_patt_mask[TPDM_DSB_MAX_PATT];
-> +	u32			msr[TPDM_DSB_MAX_MSR];
->   	bool			patt_ts;
->   	bool			patt_type;
->   	bool			trig_ts;
-> @@ -173,6 +182,7 @@ struct dsb_dataset {
->    * @enable:     enable status of the component.
->    * @datasets:   The datasets types present of the TPDM.
->    * @dsb         Specifics associated to TPDM DSB.
-> + * @dsb_msr_num Number of MSR supported by DSB TPDM
->    */
->   
->   struct tpdm_drvdata {
-> @@ -183,6 +193,7 @@ struct tpdm_drvdata {
->   	bool			enable;
->   	unsigned long		datasets;
->   	struct dsb_dataset	*dsb;
-> +	u32			dsb_msr_num;
->   };
->   
->   /* Enumerate members of various datasets */
-> @@ -193,6 +204,7 @@ enum dataset_mem {
->   	DSB_TRIG_PATT_MASK,
->   	DSB_PATT,
->   	DSB_PATT_MASK,
-> +	DSB_MSR,
->   };
->   
->   /**
-
+> 
+>> +
+>> +       return DIV_ROUND_CLOSEST_ULL(rate, div);
+> 
+> return DIV_ROUND_CLOSEST_ULL(rate, PDIV(val1));
+> 
+>>  }
+>>
+>>  static const struct clk_ops rzg2l_cpg_pll_ops = {
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
