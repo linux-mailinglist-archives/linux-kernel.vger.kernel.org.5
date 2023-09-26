@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF7D7AE4B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638087AE4B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbjIZEr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 00:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S233467AbjIZEsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 00:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjIZEr0 (ORCPT
+        with ESMTP id S229472AbjIZEss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 00:47:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2045FB8;
-        Mon, 25 Sep 2023 21:47:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2282C433C8;
-        Tue, 26 Sep 2023 04:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695703639;
-        bh=AMClMXoW/SwY9XBZNSxgkg0YbclLYYx39/FwqmsD/P4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rkUPrDB0Sc8Aa13mYevbDJwYR3shwPRBPjo91IL8D7otbra6/ar4Agns76mXyoPXl
-         eeLGRc3tuiE7WXxMCDYBWAQpvPaTcUqMM658ZkEJ/Mn3e0EzkKCRsBGeBPc1/c+lE0
-         m3yODV1yBiXYk1aszHeoF3KWwDedd6Iw704oDQ8E=
-Date:   Tue, 26 Sep 2023 06:47:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        jesse.brandeburg@intel.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        richardcochran@gmail.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] i40e: fix the wrong PTP frequency calculation
-Message-ID: <2023092641-rind-seventh-c99b@gregkh>
-References: <20230627022658.1876747-1-yajun.deng@linux.dev>
- <10269e86-ed8a-0b09-a39a-a5239a1ba744@intel.com>
- <72bfc00f-7c60-f027-61cb-03084021c218@linux.dev>
- <9e1b824f-04d3-4acb-66d3-a5f90afbad0e@intel.com>
- <ef08645e-9891-0d12-2c87-39ce0be52aee@linux.dev>
+        Tue, 26 Sep 2023 00:48:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F00D9;
+        Mon, 25 Sep 2023 21:48:41 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q3SmSc023777;
+        Tue, 26 Sep 2023 04:48:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=7+U+bg6mNPTBakerXQD6k6E+X6B7lLRqpcPeZotduPY=;
+ b=PHJrv0YTQXcjQzYp0A5YvWBJj3lLVd09jizxW2eefAOU5q2YWUIB+D7Ib4tHkK/S+22v
+ W4zprvsyPu4s4thwj5GrjF4lZgn00xOJ/3fdZcVZtmR9vROJ7/XpaAb2sJpBiSyvK+p+
+ FSmmCXpN/Mmcxhz5Xp52P5/VmwYD3+d3b1vdQVJ/98337OSRjFwyQkFFrIq9FifVfOUN
+ exIxzQEGog3iMkUov4B4gpA4jJ/gdRJkwy7hoGg9ZWDaRtj3CJqYUm7fk5oWJ4GtzApW
+ V88Rk0VEzQUF3Tcj6+q6hOe/z1Cf+fs7lW/n9smffOZ9k5/SWnFeJEhCL//Vd1u7iBck yg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbh25gq8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 04:48:32 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38Q4mVHV002847
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 04:48:31 GMT
+Received: from hu-rkakarla-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 25 Sep 2023 21:48:27 -0700
+From:   Raghavendra Kakarla <quic_rkakarla@quicinc.com>
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Raghavendra Kakarla <quic_rkakarla@quicinc.com>
+CC:     <quic_mkshah@quicinc.com>, <quic_lsrao@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: [PATCH v2] arm64: dts: qcom: sa8775p: Add RPMh sleep stats
+Date:   Tue, 26 Sep 2023 10:18:14 +0530
+Message-ID: <20230926044814.535-1-quic_rkakarla@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef08645e-9891-0d12-2c87-39ce0be52aee@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: u43Ai1iMSYV4_0KP6pobufFaN1nOoQgh
+X-Proofpoint-ORIG-GUID: u43Ai1iMSYV4_0KP6pobufFaN1nOoQgh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_02,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ spamscore=0 adultscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 clxscore=1015 suspectscore=0 mlxscore=0 mlxlogscore=586
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309260041
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 09:54:29AM +0800, Yajun Deng wrote:
-> 
-> On 2023/9/26 07:59, Tony Nguyen wrote:
-> > On 9/25/2023 12:55 AM, Yajun Deng wrote:
-> > > 
-> > > On 2023/6/28 04:20, Jacob Keller wrote:
-> > > > 
-> > > > On 6/26/2023 7:26 PM, Yajun Deng wrote:
-> > > > > The new adjustment should be based on the base frequency, not the
-> > > > > I40E_PTP_40GB_INCVAL in i40e_ptp_adjfine().
-> > > > > 
-> > > > > This issue was introduced in commit 3626a690b717 ("i40e: use
-> > > > > mul_u64_u64_div_u64 for PTP frequency calculation"), and was fixed in
-> > > > > commit 1060707e3809 ("ptp: introduce helpers to adjust by scaled
-> > > > > parts per million"). However the latter is a new feature and
-> > > > > hasn't been
-> > > > > backported to the stable releases.
-> > > > > 
-> > > > > This issue affects both v6.0 and v6.1 versions, and the v6.1
-> > > > > version is
-> > > > > an LTS version.
-> > > > > 
-> > 
-> > ...
-> > 
-> > > > 
-> > > > Thanks for finding and fixing this mistake. I think its the
-> > > > simplest fix
-> > > > to get into the stable kernel that are broken, since taking the
-> > > > adjust_by_scaled_ppm version would require additional patches.
-> > > > 
-> > > > Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> > > > 
-> > > Kindly ping...
-> > 
-> > As this patch looks to be for stable, you need to follow the process for
-> > that. I believe your situation would fall into option 3:
-> > https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html#option-3
-> > 
-> > 
-> Yes, it needs an upstream commit ID. But this patch didn't need to apply to
-> the upstream.
-> 
-> As the commit of the patch, the issue was fixed in
-> commit 1060707e3809 ("ptp: introduce helpers to adjust by scaled
-> parts per million"). However the commit is a new feature and hasn't been
-> backported to the stable releases.
-> 
-> Therefore, the patch does not have an upstream commit ID, and only needs to
-> be applied to stable.
+Add device node for sleep stats driver which provides various
+low power mode stats.
 
-That wasn't very obvious to most of us, perhaps resend it and explicitly
-ask for acks/reviews so it can be only applied to the 6.1.y tree?
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Raghavendra Kakarla <quic_rkakarla@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-thanks,
+diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+index 9f4f58e831a4..cee7491de675 100644
+--- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
++++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+@@ -1912,6 +1912,11 @@
+ 			#clock-cells = <0>;
+ 		};
+ 
++		sram@c3f0000 {
++			compatible = "qcom,rpmh-stats";
++			reg = <0 0x0c3f0000 0 0x400>;
++		};
++
+ 		spmi_bus: spmi@c440000 {
+ 			compatible = "qcom,spmi-pmic-arb";
+ 			reg = <0x0 0x0c440000 0x0 0x1100>,
+-- 
+2.17.1
 
-greg k-h
