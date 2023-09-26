@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BCB7AF315
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB487AF31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbjIZSkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S235500AbjIZSla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjIZSkm (ORCPT
+        with ESMTP id S235484AbjIZSl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:40:42 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86BE126
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:40:35 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9338e4695so157726251fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695753634; x=1696358434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cbj7xG6ItjgyzB3JMPXb9POyuicvcin6fqpj2Mlq0nA=;
-        b=y5tE8tWGHMO0SkfEyQ0x8dftVo4zKwW+4KDdH2vv4EBAR0IzyZ8ejQ1/RKzCewigYb
-         bEBsdbhKGmZb8oWLGSZfI0iA7UJvkxJit/IwR9Z/c1ytZRMcz+0RCHOjvZBWJdn8Q3Hk
-         3tt5LeYgnBnwYQSq8A/5tj4PQf1IrEDmXQ8su82vnvTYkPlXF7MDmC+M9K4PV32ZNP/L
-         6mghR9bqtrYpu+/2uaOnJ35oRM+MroejL8seFk+dci00DQaXExmn//usLkNg/KlSi6uf
-         s1Xpdu+QH/JnaLLCa0rUB0SKxOS+nwK2cEid/cUZakk6xV/QJsKbp6JZvDt4ow9lSvis
-         fKbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695753634; x=1696358434;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cbj7xG6ItjgyzB3JMPXb9POyuicvcin6fqpj2Mlq0nA=;
-        b=d+wLS2l2owzFZB2ZjRUPtuwtotw1V2k5QQtSj99Fd4Gl3nSlG4CUQx4c+plEqLYfMD
-         xMh6lmdERLtPIRigtHx25afxc6t8DVOfFSfSaDi/RtP8aKtd4m0jmqYtubEayoJfNAS8
-         8JZ04AkSgipofYF2n8/ahLxRMDmmYyBEvliEzy0LSsBF7228/A+ulQC5ruZVDjUkdWAd
-         XHdPjr570Z1b/yMoysdcRyF7sQNn1214dJW6UKmr7zb4PG4PVa4KSo2ZojWNwsuXAA1Z
-         uWf1EPWDiX/zLU9qPJABE5FRGOuZsDkZMXl6dl3I9us8lK7KYIYLS6XGFJS3t4hG5vdf
-         NTzw==
-X-Gm-Message-State: AOJu0YzhL6DPNoEIkST8tV3WWakznqMUpF7VtQxsiXiKpzIf5e4tqp8O
-        HUoMIx+SeLop3SA6I0F/+XmS6w==
-X-Google-Smtp-Source: AGHT+IG0KLoWhYGIScPU0gY7MREMIOVjC/ozkDwJXiLjuGVLdz5Jw6Tn3wLyJn4evDa/npr+KgmZJQ==
-X-Received: by 2002:a2e:9788:0:b0:2bc:b9c7:7ba3 with SMTP id y8-20020a2e9788000000b002bcb9c77ba3mr9035168lji.12.1695753634185;
-        Tue, 26 Sep 2023 11:40:34 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id v16-20020a2e9f50000000b002c12c2094e4sm2740700ljk.74.2023.09.26.11.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 11:40:33 -0700 (PDT)
-Message-ID: <42a1d0ab-4e8d-461d-bb2c-977a793e52b2@linaro.org>
-Date:   Tue, 26 Sep 2023 20:40:30 +0200
+        Tue, 26 Sep 2023 14:41:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64DB11F;
+        Tue, 26 Sep 2023 11:41:21 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QIcToP029667;
+        Tue, 26 Sep 2023 18:41:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=sKtbeylSWVLyUui5BBAROIGKpDpCi31kNkcoiTxLpkQ=;
+ b=UWzYF4aKvk1pUCcb3enJmISVnJqRXvsp4P+7d7NlY+K/dMJNKNmYc1BJyszmMdYEfnon
+ anZCDQAXXd+ySzOwew3a7XP645CY43VM0N2h0ML1Ri93k/NpcVeuplGkYohN8b20s99q
+ rUOTAB5xYaww90xkGA9thfXnUmP4/czuGK1os+/ok1NExr8+5S8LTTScC8a1nopomAZ3
+ Cw71cJnkue8OUeacY9DJQyR51uZk1JzqYuBGEEo0jpOli6EeaMNysftcv0vEzJbxcj9F
+ spQs6yQL2tM21ZQlI4+cxUqiZN5OkqPx8pwuGtBucwLrTYSJBG9jE6TWN7QfTxuOLu+6 yA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbmwwtcmp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 18:41:08 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38QIf755013574
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 18:41:07 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 26 Sep 2023 11:41:07 -0700
+Date:   Tue, 26 Sep 2023 11:41:05 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: Re: [PATCH V4] crypto: qcom-rng - Add hw_random interface support
+Message-ID: <20230926184105.GD437346@hu-bjorande-lv.qualcomm.com>
+References: <20230926102005.3277045-1-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] drm/msm/adreno: Add support for SM7150 SoC machine
-Content-Language: en-US
-To:     Danila Tikhonov <danila@jiaxyga.com>, robdclark@gmail.com,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
-        daniel@ffwll.ch, johan+linaro@kernel.org, andersson@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230926174243.161422-1-danila@jiaxyga.com>
- <20230926174243.161422-2-danila@jiaxyga.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230926174243.161422-2-danila@jiaxyga.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926102005.3277045-1-quic_omprsing@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lxWp1M1oY6HIRf5IaiW51npEmjeIBPGU
+X-Proofpoint-ORIG-GUID: lxWp1M1oY6HIRf5IaiW51npEmjeIBPGU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=758 spamscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309260162
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.09.2023 19:42, Danila Tikhonov wrote:
-> SM7150 has 5 power levels which correspond to 5 speed-bin values: 0,
-> 128, 146, 167, 172. Speed-bin value is calulated as FMAX/4.8MHz round up
-> to zero decimal places.
+On Tue, Sep 26, 2023 at 03:50:05PM +0530, Om Prakash Singh wrote:
+> Add hw_random interface support in qcom-rng driver as new IP block
+> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
+> to generate true random number.
 > 
-> Also a618 on SM7150 uses a615 zapfw. Add a squashed version (.mbn).
+> Keeping current rng_alg interface as well for random number generation
+> using Kernel Crypto API.
 > 
-> Add this as machine = "qcom,sm7150", because speed-bin values are
-> different from atoll (sc7180/sm7125).
-> 
-> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
-> ---
-What's the downstream dt name for 7150?
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
 
-Do you have some more complete tree published somewhere?
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Konrad
+Regards,
+Bjorn
