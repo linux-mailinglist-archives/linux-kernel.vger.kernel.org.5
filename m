@@ -2,340 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060387AE9D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636857AE9E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbjIZKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
+        id S234343AbjIZKER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbjIZKCf (ORCPT
+        with ESMTP id S234369AbjIZKEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:02:35 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1A8FB;
-        Tue, 26 Sep 2023 03:02:27 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RvwGF3y7vz6D95K;
-        Tue, 26 Sep 2023 18:00:05 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 26 Sep
- 2023 11:02:24 +0100
-Date:   Tue, 26 Sep 2023 11:02:23 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alistair Francis <alistair23@gmail.com>
-CC:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <lukas@wunner.de>, <alex.williamson@redhat.com>,
-        <christian.koenig@amd.com>, <kch@nvidia.com>,
-        <gregkh@linuxfoundation.org>, <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <chaitanyak@nvidia.com>,
-        <rdunlap@infradead.org>,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v8 1/3] PCI/DOE: Rename DOE protocol to feature
-Message-ID: <20230926110223.000005f3@Huawei.com>
-In-Reply-To: <20230921055531.2028834-1-alistair.francis@wdc.com>
-References: <20230921055531.2028834-1-alistair.francis@wdc.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 26 Sep 2023 06:04:12 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B127196;
+        Tue, 26 Sep 2023 03:04:02 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 944CA1C0007;
+        Tue, 26 Sep 2023 10:03:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1695722640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jRVKs6180ifIX9yx3k8bI6+Vilp7tEKq0AX18VzwduA=;
+        b=FFAWjOYe+pVWpCDMEGbgw/Z2TxQy4MycS2ZMziVKj1uoipI2meXU5CnOxGOijwJyWds4NH
+        vdUXPD9QnpkLgjOYZfLTI1p9vA3mgO8xXDnxf1L5cvCi9WOepCjXM5z9z7rrwQvOUripYz
+        9MAROhuEcW3o/sjOyrPp0SEO5aZWNEYimaf+CmS00QAt76G0DCgeF0a2nE4gAdaUZlmPvs
+        Rf53gcjLsYEc/V3pLwS68Yz6WeUiCmbXew5xGyLg5Zhju7jlKXnvOSb7EjaZfE27nt1xnm
+        sqkE2HiwwprgEz1b2hwxXyIhiCOqNpRRyjShpkEOaE4sgHeyAUHp8ORBUy3Iog==
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     linux-media@vger.kernel.org
+Cc:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH] staging: media: tegra-video: fix infinite recursion regression
+Date:   Tue, 26 Sep 2023 12:03:53 +0200
+Message-Id: <20230926100353.328001-1-luca.ceresoli@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 15:55:29 +1000
-Alistair Francis <alistair23@gmail.com> wrote:
+Since commit 9bf19fbf0c8b ("media: v4l: async: Rework internal lists"), aka
+v6.6-rc1~97^2~198, probing the tegra-video VI driver causes infinite
+recursion due tegra_vi_graph_parse_one() calling itself until:
 
-> DOE r1.1 replaced all occurrences of "protocol" with the term "feature"
-> or "Data Object Type".
-> 
-> PCIe r6.1 (which was published July 24) incorporated that change.
-> 
-> This patch renames the existing terms protocol with feature.
-> 
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+[    1.571168] Insufficient stack space to handle exception!
+...
+[    1.591416] Internal error: kernel stack overflow: 0 [#1] PREEMPT SMP ARM
+...
+[    3.861013]  of_phandle_iterator_init from __of_parse_phandle_with_args+0x40/0xf0
+[    3.868497]  __of_parse_phandle_with_args from of_fwnode_graph_get_remote_endpoint+0x68/0xa8
+[    3.876938]  of_fwnode_graph_get_remote_endpoint from fwnode_graph_get_remote_port_parent+0x30/0x7c
+[    3.885984]  fwnode_graph_get_remote_port_parent from tegra_vi_graph_parse_one+0x7c/0x224
+[    3.894158]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+[    3.901459]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+[    3.908760]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+[    3.916061]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+...
+[    4.857892]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+[    4.865193]  tegra_vi_graph_parse_one from tegra_vi_graph_parse_one+0x144/0x224
+[    4.872494]  tegra_vi_graph_parse_one from tegra_vi_init+0x574/0x6d4
+[    4.878842]  tegra_vi_init from host1x_device_init+0x84/0x15c
+[    4.884594]  host1x_device_init from host1x_video_probe+0xa0/0x114
+[    4.890770]  host1x_video_probe from really_probe+0xe0/0x400
 
-Probably worth mentioning that you also clear up some confusion of type
-vs protocol/feature where features is covering the vid + type pair.
+The reason is the mentioned commit changed tegra_vi_graph_find_entity() to
+search for an entity in the done notifier list:
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> @@ -1464,7 +1464,7 @@ tegra_vi_graph_find_entity(struct tegra_vi_channel *chan,
+>  	struct tegra_vi_graph_entity *entity;
+>  	struct v4l2_async_connection *asd;
+>
+> -	list_for_each_entry(asd, &chan->notifier.asc_list, asc_entry) {
+> +	list_for_each_entry(asd, &chan->notifier.done_list, asc_entry) {
+>  		entity = to_tegra_vi_graph_entity(asd);
+>  		if (entity->asd.match.fwnode == fwnode)
+>  			return entity;
 
-> ---
-> v8:
->  - Rename prot to feat as well
-> v7:
->  - Initial patch
-> 
->  drivers/pci/doe.c | 88 +++++++++++++++++++++++------------------------
->  1 file changed, 44 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-> index e3aab5edaf70..78ce79e031cd 100644
-> --- a/drivers/pci/doe.c
-> +++ b/drivers/pci/doe.c
-> @@ -43,7 +43,7 @@
->   *
->   * @pdev: PCI device this mailbox belongs to
->   * @cap_offset: Capability offset
-> - * @prots: Array of protocols supported (encoded as long values)
-> + * @feats: Array of features supported (encoded as long values)
->   * @wq: Wait queue for work item
->   * @work_queue: Queue of pci_doe_work items
->   * @flags: Bit array of PCI_DOE_FLAG_* flags
-> @@ -51,14 +51,14 @@
->  struct pci_doe_mb {
->  	struct pci_dev *pdev;
->  	u16 cap_offset;
-> -	struct xarray prots;
-> +	struct xarray feats;
->  
->  	wait_queue_head_t wq;
->  	struct workqueue_struct *work_queue;
->  	unsigned long flags;
->  };
->  
-> -struct pci_doe_protocol {
-> +struct pci_doe_feature {
->  	u16 vid;
->  	u8 type;
->  };
-> @@ -66,7 +66,7 @@ struct pci_doe_protocol {
->  /**
->   * struct pci_doe_task - represents a single query/response
->   *
-> - * @prot: DOE Protocol
-> + * @feat: DOE Feature
->   * @request_pl: The request payload
->   * @request_pl_sz: Size of the request payload (bytes)
->   * @response_pl: The response payload
-> @@ -78,7 +78,7 @@ struct pci_doe_protocol {
->   * @doe_mb: Used internally by the mailbox
->   */
->  struct pci_doe_task {
-> -	struct pci_doe_protocol prot;
-> +	struct pci_doe_feature feat;
->  	const __le32 *request_pl;
->  	size_t request_pl_sz;
->  	__le32 *response_pl;
-> @@ -171,8 +171,8 @@ static int pci_doe_send_req(struct pci_doe_mb *doe_mb,
->  		length = 0;
->  
->  	/* Write DOE Header */
-> -	val = FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_VID, task->prot.vid) |
-> -		FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, task->prot.type);
-> +	val = FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_VID, task->feat.vid) |
-> +		FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, task->feat.type);
->  	pci_write_config_dword(pdev, offset + PCI_DOE_WRITE, val);
->  	pci_write_config_dword(pdev, offset + PCI_DOE_WRITE,
->  			       FIELD_PREP(PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH,
-> @@ -217,12 +217,12 @@ static int pci_doe_recv_resp(struct pci_doe_mb *doe_mb, struct pci_doe_task *tas
->  	int i = 0;
->  	u32 val;
->  
-> -	/* Read the first dword to get the protocol */
-> +	/* Read the first dword to get the feature */
->  	pci_read_config_dword(pdev, offset + PCI_DOE_READ, &val);
-> -	if ((FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val) != task->prot.vid) ||
-> -	    (FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val) != task->prot.type)) {
-> -		dev_err_ratelimited(&pdev->dev, "[%x] expected [VID, Protocol] = [%04x, %02x], got [%04x, %02x]\n",
-> -				    doe_mb->cap_offset, task->prot.vid, task->prot.type,
-> +	if ((FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val) != task->feat.vid) ||
-> +	    (FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val) != task->feat.type)) {
-> +		dev_err_ratelimited(&pdev->dev, "[%x] expected [VID, Feature] = [%04x, %02x], got [%04x, %02x]\n",
-> +				    doe_mb->cap_offset, task->feat.vid, task->feat.type,
->  				    FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_VID, val),
->  				    FIELD_GET(PCI_DOE_DATA_OBJECT_HEADER_1_TYPE, val));
->  		return -EIO;
-> @@ -384,7 +384,7 @@ static void pci_doe_task_complete(struct pci_doe_task *task)
->  }
->  
->  static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
-> -			     u8 *protocol)
-> +			     u8 *feature)
->  {
->  	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
->  				    *index);
-> @@ -404,7 +404,7 @@ static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
->  
->  	response_pl = le32_to_cpu(response_pl_le);
->  	*vid = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID, response_pl);
-> -	*protocol = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL,
-> +	*feature = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL,
->  			      response_pl);
->  	*index = FIELD_GET(PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX,
->  			   response_pl);
-> @@ -412,12 +412,12 @@ static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
->  	return 0;
->  }
->  
-> -static void *pci_doe_xa_prot_entry(u16 vid, u8 prot)
-> +static void *pci_doe_xa_feat_entry(u16 vid, u8 type)
->  {
-> -	return xa_mk_value((vid << 8) | prot);
-> +	return xa_mk_value((vid << 8) | type);
->  }
->  
-> -static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
-> +static int pci_doe_cache_features(struct pci_doe_mb *doe_mb)
->  {
->  	u8 index = 0;
->  	u8 xa_idx = 0;
-> @@ -425,18 +425,18 @@ static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
->  	do {
->  		int rc;
->  		u16 vid;
-> -		u8 prot;
-> +		u8 type;
->  
-> -		rc = pci_doe_discovery(doe_mb, &index, &vid, &prot);
-> +		rc = pci_doe_discovery(doe_mb, &index, &vid, &type);
->  		if (rc)
->  			return rc;
->  
->  		pci_dbg(doe_mb->pdev,
-> -			"[%x] Found protocol %d vid: %x prot: %x\n",
-> -			doe_mb->cap_offset, xa_idx, vid, prot);
-> +			"[%x] Found feature %d vid: %x type: %x\n",
-> +			doe_mb->cap_offset, xa_idx, vid, type);
->  
-> -		rc = xa_insert(&doe_mb->prots, xa_idx++,
-> -			       pci_doe_xa_prot_entry(vid, prot), GFP_KERNEL);
-> +		rc = xa_insert(&doe_mb->feats, xa_idx++,
-> +			       pci_doe_xa_feat_entry(vid, type), GFP_KERNEL);
->  		if (rc)
->  			return rc;
->  	} while (index);
-> @@ -460,7 +460,7 @@ static void pci_doe_cancel_tasks(struct pci_doe_mb *doe_mb)
->   * @pdev: PCI device to create the DOE mailbox for
->   * @cap_offset: Offset of the DOE mailbox
->   *
-> - * Create a single mailbox object to manage the mailbox protocol at the
-> + * Create a single mailbox object to manage the mailbox feature at the
->   * cap_offset specified.
->   *
->   * RETURNS: created mailbox object on success
-> @@ -479,7 +479,7 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
->  	doe_mb->pdev = pdev;
->  	doe_mb->cap_offset = cap_offset;
->  	init_waitqueue_head(&doe_mb->wq);
-> -	xa_init(&doe_mb->prots);
-> +	xa_init(&doe_mb->feats);
->  
->  	doe_mb->work_queue = alloc_ordered_workqueue("%s %s DOE [%x]", 0,
->  						dev_bus_name(&pdev->dev),
-> @@ -502,11 +502,11 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
->  
->  	/*
->  	 * The state machine and the mailbox should be in sync now;
-> -	 * Use the mailbox to query protocols.
-> +	 * Use the mailbox to query features.
->  	 */
-> -	rc = pci_doe_cache_protocols(doe_mb);
-> +	rc = pci_doe_cache_features(doe_mb);
->  	if (rc) {
-> -		pci_err(pdev, "[%x] failed to cache protocols : %d\n",
-> +		pci_err(pdev, "[%x] failed to cache features : %d\n",
->  			doe_mb->cap_offset, rc);
->  		goto err_cancel;
->  	}
-> @@ -515,7 +515,7 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
->  
->  err_cancel:
->  	pci_doe_cancel_tasks(doe_mb);
-> -	xa_destroy(&doe_mb->prots);
-> +	xa_destroy(&doe_mb->feats);
->  err_destroy_wq:
->  	destroy_workqueue(doe_mb->work_queue);
->  err_free:
-> @@ -533,31 +533,31 @@ static struct pci_doe_mb *pci_doe_create_mb(struct pci_dev *pdev,
->  static void pci_doe_destroy_mb(struct pci_doe_mb *doe_mb)
->  {
->  	pci_doe_cancel_tasks(doe_mb);
-> -	xa_destroy(&doe_mb->prots);
-> +	xa_destroy(&doe_mb->feats);
->  	destroy_workqueue(doe_mb->work_queue);
->  	kfree(doe_mb);
->  }
->  
->  /**
-> - * pci_doe_supports_prot() - Return if the DOE instance supports the given
-> - *			     protocol
-> + * pci_doe_supports_feat() - Return if the DOE instance supports the given
-> + *			     feature
->   * @doe_mb: DOE mailbox capability to query
-> - * @vid: Protocol Vendor ID
-> - * @type: Protocol type
-> + * @vid: Feature Vendor ID
-> + * @type: Feature type
->   *
-> - * RETURNS: True if the DOE mailbox supports the protocol specified
-> + * RETURNS: True if the DOE mailbox supports the feature specified
->   */
-> -static bool pci_doe_supports_prot(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
-> +static bool pci_doe_supports_feat(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
->  {
->  	unsigned long index;
->  	void *entry;
->  
-> -	/* The discovery protocol must always be supported */
-> +	/* The discovery feature must always be supported */
->  	if (vid == PCI_VENDOR_ID_PCI_SIG && type == PCI_DOE_PROTOCOL_DISCOVERY)
->  		return true;
->  
-> -	xa_for_each(&doe_mb->prots, index, entry)
-> -		if (entry == pci_doe_xa_prot_entry(vid, type))
-> +	xa_for_each(&doe_mb->feats, index, entry)
-> +		if (entry == pci_doe_xa_feat_entry(vid, type))
->  			return true;
->  
->  	return false;
-> @@ -585,7 +585,7 @@ static bool pci_doe_supports_prot(struct pci_doe_mb *doe_mb, u16 vid, u8 type)
->  static int pci_doe_submit_task(struct pci_doe_mb *doe_mb,
->  			       struct pci_doe_task *task)
->  {
-> -	if (!pci_doe_supports_prot(doe_mb, task->prot.vid, task->prot.type))
-> +	if (!pci_doe_supports_feat(doe_mb, task->feat.vid, task->feat.type))
->  		return -EINVAL;
->  
->  	if (test_bit(PCI_DOE_FLAG_DEAD, &doe_mb->flags))
-> @@ -631,8 +631,8 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
->  {
->  	DECLARE_COMPLETION_ONSTACK(c);
->  	struct pci_doe_task task = {
-> -		.prot.vid = vendor,
-> -		.prot.type = type,
-> +		.feat.vid = vendor,
-> +		.feat.type = type,
->  		.request_pl = request,
->  		.request_pl_sz = request_sz,
->  		.response_pl = response,
-> @@ -659,7 +659,7 @@ EXPORT_SYMBOL_GPL(pci_doe);
->   * @vendor: Vendor ID
->   * @type: Data Object Type
->   *
-> - * Find first DOE mailbox of a PCI device which supports the given protocol.
-> + * Find first DOE mailbox of a PCI device which supports the given feature.
->   *
->   * RETURNS: Pointer to the DOE mailbox or NULL if none was found.
->   */
-> @@ -670,7 +670,7 @@ struct pci_doe_mb *pci_find_doe_mailbox(struct pci_dev *pdev, u16 vendor,
->  	unsigned long index;
->  
->  	xa_for_each(&pdev->doe_mbs, index, doe_mb)
-> -		if (pci_doe_supports_prot(doe_mb, vendor, type))
-> +		if (pci_doe_supports_feat(doe_mb, vendor, type))
->  			return doe_mb;
->  
->  	return NULL;
+This is not always correct, being tegra_vi_graph_find_entity() called in
+three locations, in this order:
+
+ 1. tegra_vi_graph_parse_one()    -- called while probing
+ 2. tegra_vi_graph_notify_bound() -- the .bound notifier op
+ 3. tegra_vi_graph_build()        -- called in the .complete notifier op
+
+Locations 1 and 2 are called before moving the entity from waiting_list to
+done_list, thus they won't find what they are looking for in
+done_list. Location 3 happens afterwards and thus it is not broken, however
+it means tegra_vi_graph_find_entity() should not search in the same list
+every time.
+
+The error appears at step 1: tegra_vi_graph_parse_one() iterates
+recursively until it finds the entity already notified, which now never
+happens.
+
+Fix by passing the specific notifier list pointer to
+tegra_vi_graph_find_entity() instead of the channel, so each caller can
+search in whatever list is correct.
+
+Also improve the tegra_vi_graph_find_entity() comment.
+
+Fixes: 9bf19fbf0c8b ("media: v4l: async: Rework internal lists")
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Sowjanya Komatineni <skomatineni@nvidia.com>
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+ drivers/staging/media/tegra-video/vi.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
+index e98b3010520e..d9a6d5b2aa84 100644
+--- a/drivers/staging/media/tegra-video/vi.c
++++ b/drivers/staging/media/tegra-video/vi.c
+@@ -1455,17 +1455,18 @@ static int __maybe_unused vi_runtime_suspend(struct device *dev)
+ }
+ 
+ /*
+- * Graph Management
++ * Find the entity matching a given fwnode in an v4l2_async_notifier list
+  */
+ static struct tegra_vi_graph_entity *
+-tegra_vi_graph_find_entity(struct tegra_vi_channel *chan,
++tegra_vi_graph_find_entity(struct list_head *list,
+ 			   const struct fwnode_handle *fwnode)
+ {
+ 	struct tegra_vi_graph_entity *entity;
+ 	struct v4l2_async_connection *asd;
+ 
+-	list_for_each_entry(asd, &chan->notifier.done_list, asc_entry) {
++	list_for_each_entry(asd, list, asc_entry) {
+ 		entity = to_tegra_vi_graph_entity(asd);
++
+ 		if (entity->asd.match.fwnode == fwnode)
+ 			return entity;
+ 	}
+@@ -1532,7 +1533,7 @@ static int tegra_vi_graph_build(struct tegra_vi_channel *chan,
+ 		}
+ 
+ 		/* find the remote entity from notifier list */
+-		ent = tegra_vi_graph_find_entity(chan, link.remote_node);
++		ent = tegra_vi_graph_find_entity(&chan->notifier.done_list, link.remote_node);
+ 		if (!ent) {
+ 			dev_err(vi->dev, "no entity found for %pOF\n",
+ 				to_of_node(link.remote_node));
+@@ -1664,7 +1665,7 @@ static int tegra_vi_graph_notify_bound(struct v4l2_async_notifier *notifier,
+ 	 * Locate the entity corresponding to the bound subdev and store the
+ 	 * subdev pointer.
+ 	 */
+-	entity = tegra_vi_graph_find_entity(chan, subdev->fwnode);
++	entity = tegra_vi_graph_find_entity(&chan->notifier.waiting_list, subdev->fwnode);
+ 	if (!entity) {
+ 		dev_err(vi->dev, "no entity for subdev %s\n", subdev->name);
+ 		return -EINVAL;
+@@ -1713,7 +1714,7 @@ static int tegra_vi_graph_parse_one(struct tegra_vi_channel *chan,
+ 
+ 		/* skip entities that are already processed */
+ 		if (device_match_fwnode(vi->dev, remote) ||
+-		    tegra_vi_graph_find_entity(chan, remote)) {
++		    tegra_vi_graph_find_entity(&chan->notifier.waiting_list, remote)) {
+ 			fwnode_handle_put(remote);
+ 			continue;
+ 		}
+-- 
+2.34.1
 
