@@ -2,95 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F77AF68E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FF97AF690
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjIZXI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 19:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
+        id S230079AbjIZXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 19:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjIZXGz (ORCPT
+        with ESMTP id S229555AbjIZXHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 19:06:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905FE19A2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 15:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695766146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rVPe3+KdW1jPsi0jBlXBNKMV25TaYQzseuW/GsNuJu0=;
-        b=DgEn0WGdy08M58LjfNcfTjmtV88esitK1DX6QNcTwt224TiGaGQon3pHRlz2hGvPNz+Fet
-        qaeoZpWOPPkwC1A8yC1VTRube5RJNJMRMHkxmu1coxcSImBg/rlN0RRexZW/XJs0cv0Sok
-        /tZPHMvVfxtDu9yIqOr2U+iNRiJK/MA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-482-WZ032l7-OM-44FQa4KHWDA-1; Tue, 26 Sep 2023 17:53:37 -0400
-X-MC-Unique: WZ032l7-OM-44FQa4KHWDA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96EC53C11A10;
-        Tue, 26 Sep 2023 21:53:36 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.16])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4D3C82156A27;
-        Tue, 26 Sep 2023 21:53:31 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 26 Sep 2023 23:52:40 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 23:52:34 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Li kunyu <kunyu@nfschina.com>
-Cc:     peterz@infradead.org, mcgrof@kernel.org,
-        mathieu.desnoyers@efficios.com, elver@google.com,
-        viro@zeniv.linux.org.uk, dvyukov@google.com,
-        vincent.whitchurch@axis.com, michael.christie@oracle.com,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] kernel/signal: =?utf-8?Q?Remov?=
- =?utf-8?B?ZSB1bm5lY2Vzc2FyeSDigJhOVUxM4oCZ?= values from ucounts
-Message-ID: <20230926215233.GA26968@redhat.com>
-References: <20230926022410.4280-1-kunyu@nfschina.com>
+        Tue, 26 Sep 2023 19:07:52 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1719F1F07;
+        Tue, 26 Sep 2023 15:09:30 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8203520B74C0;
+        Tue, 26 Sep 2023 14:52:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8203520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695765150;
+        bh=lBG32VN1WPmUQfi9u2u2mI5suzZ9jPlIJsDL8oCoWFk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RUOHflWoCL1yJo7QG8SpRsR0JvJ63uqX6NBElJV56MVeITu5dsEGJsz3hwa2VuaUa
+         InGza+C1Ui7v+F6YyVYOVwSOwcC5HN47dcLP61XUtdTvTrZBi8YIFNNoGJ1XXkBNgX
+         615SLGTwD3n9Y+JYCaIz0XsLp7lT6Lhb/0bwl0R4=
+Message-ID: <05119cbc-155d-47c5-ab21-e6a08eba5dc4@linux.microsoft.com>
+Date:   Tue, 26 Sep 2023 14:52:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926022410.4280-1-kunyu@nfschina.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>, Wei Liu <wei.liu@kernel.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023092342-staunch-chafe-1598@gregkh>
+ <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
+ <2023092630-masculine-clinic-19b6@gregkh>
+ <ZRJyGrm4ufNZvN04@liuwe-devbox-debian-v2>
+ <2023092614-tummy-dwelling-7063@gregkh>
+ <ZRKBo5Nbw+exPkAj@liuwe-devbox-debian-v2>
+ <2023092646-version-series-a7b5@gregkh>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <2023092646-version-series-a7b5@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/26, Li kunyu wrote:
->
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -415,7 +415,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
->  		 int override_rlimit, const unsigned int sigqueue_flags)
->  {
->  	struct sigqueue *q = NULL;
-> -	struct ucounts *ucounts = NULL;
-> +	struct ucounts *ucounts;
->  	long sigpending;
+On 9/26/2023 1:03 AM, Greg KH wrote:
+> On Tue, Sep 26, 2023 at 07:00:51AM +0000, Wei Liu wrote:
+>> On Tue, Sep 26, 2023 at 08:31:03AM +0200, Greg KH wrote:
+>>> On Tue, Sep 26, 2023 at 05:54:34AM +0000, Wei Liu wrote:
+>>>> On Tue, Sep 26, 2023 at 06:52:46AM +0200, Greg KH wrote:
+>>>>> On Mon, Sep 25, 2023 at 05:07:24PM -0700, Nuno Das Neves wrote:
+>>>>>> On 9/23/2023 12:58 AM, Greg KH wrote:
+>>>>>>> Also, drivers should never call pr_*() calls, always use the proper
+>>>>>>> dev_*() calls instead.
+>>>>>>>
+>>>>>>
+>>>>>> We only use struct device in one place in this driver, I think that is the
+>>>>>> only place it makes sense to use dev_*() over pr_*() calls.
+>>>>>
+>>>>> Then the driver needs to be fixed to use struct device properly so that
+>>>>> you do have access to it when you want to print messages.  That's a
+>>>>> valid reason to pass around your device structure when needed.
+>>>>
 
-this looks obviously correct, so
+What is the tangible benefit of using dev_*() over pr_*()? As I said,
+our use of struct device is very limited compared to all the places we
+may need to log errors.
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
+pr_*() is used by many, many drivers; it seems to be the norm. We can
+certainly add a pr_fmt to improve the logging.
+
+>>>> Greg, ACRN and Nitro drivers do not pass around the device structure.
+>>>> Instead, they rely on a global struct device. We can follow the same.
+>>>
+>>> A single global struct device is wrong, please don't do that.
+>>>
+>>> Don't copy bad design patterns from other drivers, be better :)
+>>>
+
+What makes it a bad pattern? It seems to be well-established, and is
+also used by KVM which this driver is loosely modeled after:
+https://elixir.bootlin.com/linux/v6.5.5/source/virt/kvm/kvm_main.c#L5128
+
+>>
+>> If we're working with real devices like network cards or graphics cards
+>> I would agree -- it is easy to imagine that we have several cards of the
+>> same model in the system -- but in real world there won't be two
+>> hypervisor instances running on the same hardware.
+>>
+>> We can stash the struct device inside some private data fields, but that
+>> doesn't change the fact that we're still having one instance of the
+>> structure. Is this what you want? Or do you have something else in mind?
+> 
+> You have a real device, it's how userspace interacts with your
+> subsystem.  Please use that, it is dynamically created and handled and
+> is the correct representation here.
+> 
+
+Are you referring to the struct device we get from calling
+misc_register? If not, please be more specific.
+
+How would you suggest we get a reference to that device via e.g. open()
+or ioctl() without keeping a global reference to it?
 
 
-but you know, this change is so trivial, perhaps you should
-resend this minor cleanup to kernel-janitors@vger.kernel.org
-
-but let me add Andrew, perhaps he will take this patch...
-
-Oleg.
-
+Thanks,
+Nuno
