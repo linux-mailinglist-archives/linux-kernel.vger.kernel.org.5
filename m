@@ -2,120 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6867AE6D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAEC7AE6E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjIZHa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
+        id S233324AbjIZHcm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 03:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjIZHax (ORCPT
+        with ESMTP id S229776AbjIZHcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:30:53 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2D1DC;
-        Tue, 26 Sep 2023 00:30:47 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q7P735016783;
-        Tue, 26 Sep 2023 07:30:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=XKB0S+xLh1RPdUjVKo5o+nYaUW7n/k+7Q2ToNYxcMuw=;
- b=N0gl+gIVaoc//JYhyIxuHBa71Hqt8QNWBpIjW/DUwiNH6sEzSoMPjvr/3fv3iT+iQEJM
- FjnEtrFBZgOE6f3ITmu9CxpfKv6UMWqnD7IL4YK+ZtT6/7PfWkEYC8wGwIhlN5F1jOE4
- If1BMpeW9EUywN83ErrATsM9WVZbI7OyiR/nIXLy7525DTcnXeqiiHf67ZQHqfYwdQwy
- 74/j6gOi5SP79BP77FE1mLjEjhYKOhNJXjs/hHGIfv9/vvIIYZB+R45KCI3LT5DkzVmO
- SwDwhoQcBInNfk5epVgFyLaoiljpoAgKcjB/+OHE221i97pNNQ9WwEoDDbspAocDWHRm rA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tbt0b9h3b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 07:30:44 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38Q7QSjm022421;
-        Tue, 26 Sep 2023 07:30:43 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tbt0b9h29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 07:30:43 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q7IPCs030706;
-        Tue, 26 Sep 2023 07:30:41 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tacjjsb7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 07:30:41 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38Q7Ucr913238892
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 07:30:38 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE89D200C2;
-        Tue, 26 Sep 2023 07:30:38 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A9D8200C4;
-        Tue, 26 Sep 2023 07:30:38 +0000 (GMT)
-Received: from [9.152.224.54] (unknown [9.152.224.54])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Sep 2023 07:30:38 +0000 (GMT)
-Message-ID: <3a9fde58-2de5-8ade-b1a2-caeb0ca59086@linux.ibm.com>
-Date:   Tue, 26 Sep 2023 09:30:38 +0200
+        Tue, 26 Sep 2023 03:32:39 -0400
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92996E5;
+        Tue, 26 Sep 2023 00:32:31 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d8181087dc9so9026402276.3;
+        Tue, 26 Sep 2023 00:32:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695713548; x=1696318348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=laJcIFxy0JToS9GpnmSBInlVg5g0YUWZWpaVsSmKGfk=;
+        b=QW3hJPcHZzIoV5qzWuCehKLudwvsJWtO8D6Qtd6YDhaECsf2bukXwri+2CzPwnYSD/
+         2cnhzzCpM+WkOzmuBLyFXNGqYSSpER2LY/68n/8hebkIAJxEMFOPjdZv1IE2KFCDi6Xt
+         Lu78utj82b0xEqGx3MYhTiZTQ21HswYnuqPsUtkZwhD35Ru2skAyl2Z0E5HTf2v9eniD
+         JiFEleAKryWhqDoo0NPRi5QP34EGOINxfSATxKKDJNQ8YecTQ6W7IAXVrsSebJzj6Zol
+         Hd4xVHmyk7b/D2oMh265Z52p9lQGUCh83xiNx9bpKepTR5f/L2+XDyV4SJlC24jDlIAI
+         K9ug==
+X-Gm-Message-State: AOJu0Yyu3p6AxYePWi7zNJmk+B6EyLzmT11HgtAsEwtQ6IfUaTd6tOlU
+        k3JpTdmD+A7bQ7uQl0HYMbzWlVxbDaZztQ==
+X-Google-Smtp-Source: AGHT+IGHymYyG3gwoXj5ghVlpSqNfPqX7k1/xWKkTmPniqQg9xFGFq3deyvvh5GBHH4W/CadbjlkOg==
+X-Received: by 2002:a5b:3c1:0:b0:d81:69f9:61ea with SMTP id t1-20020a5b03c1000000b00d8169f961eamr7686319ybp.46.1695713547818;
+        Tue, 26 Sep 2023 00:32:27 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id 186-20020a2506c3000000b00d7e96c6eaf5sm1516088ybg.46.2023.09.26.00.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 00:32:27 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59f82ad1e09so38188547b3.0;
+        Tue, 26 Sep 2023 00:32:26 -0700 (PDT)
+X-Received: by 2002:a81:4ed1:0:b0:59c:a68:d36b with SMTP id
+ c200-20020a814ed1000000b0059c0a68d36bmr9368709ywb.20.1695713546672; Tue, 26
+ Sep 2023 00:32:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
- extension and loopback-ism
-Content-Language: en-US
-To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Ra5twl3tzEINSAYwQZYwjTK7zsMAQmkW
-X-Proofpoint-ORIG-GUID: sJ07Y0qUDCUJY85-9gi-U7MPG_t_Tb3N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_05,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- phishscore=0 mlxlogscore=863 suspectscore=0 adultscore=0 malwarescore=0
- mlxscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309260062
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
+ <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de>
+In-Reply-To: <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Sep 2023 09:32:14 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
+Message-ID: <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/simpledrm: Add support for multiple "power-domains"
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     j@jannau.net, Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CC genpd
 
+On Mon, Sep 18, 2023 at 10:24 AM Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Am 12.09.23 um 22:22 schrieb Janne Grunau via B4 Relay:
+> > From: Janne Grunau <j@jannau.net>
+> >
+> > Multiple power domains need to be handled explicitly in each driver. The
+> > driver core can not handle it automatically since it is not aware of
+> > power sequencing requirements the hardware might have. This is not a
+> > problem for simpledrm since everything is expected to be powered on by
+> > the bootloader. simpledrm has just ensure it remains powered on during
+> > its lifetime.
+> > This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
+> > systems. The HDMI output initialized by the bootloader requires keeping
+> > the display controller and a DP phy power domain on.
+> >
+> > Signed-off-by: Janne Grunau <j@jannau.net>
 
-On 24.09.23 17:16, Wen Gu wrote:
-> This patch set includes 4 parts:
-> 
->  - Patch #1-#3: decouple ISM device hard code from SMC-D stack.
->  - Patch #4-#8: implement virtual ISM extension defined in SMCv2.1.
->  - Patch #9-#13: implement loopback-ism device.
->  - Patch #14-#18: memory copy optimization for the case using loopback.
+Thanks for your patch, which is now commit 61df9ca231075e70
+("drm/simpledrm: Add support for multiple "power-domains"") in
+drm-misc/for-linux-next.
 
+> As a simpledrm patch:
+>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
+> Do you want to wait for another review from  someone with
+> power-management expertise?
 
-Your cover letter is very well helpful, thanks a lot for that.
-I really like the way you grouped the patches.
-Just a thought:
-If it takes too long to get this large patchset reviewed, you could
-split it up into smaller sets and get them upstream one after the other. 
+Yeah, why not? Let's CC them, so they become aware...
 
-I think it is especially valuable to more crisply define the interface between
-SMC-D and the smc-d devices, given that virtio-ism may soon be a third kind of
-smcd device.
+> Do we need a similar patch for ofdrm?
+>
+> Best regards
+> Thomas
+>
+> > ---
+> > Changes in v2:
+> > - removed broken drm_err() log statement only ment for debugging
+> > - removed commented cast
+> > - use correct format spcifier for 'int' in log statement
+> > - add 'continue;' after failure to get device for power_domain
+> > - use drm_warn() in non fatal error cases
+> > - removed duplicate PTR_ERR conversion
+> > - Link to v1: https://lore.kernel.org/r/20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net
+> > ---
+> >   drivers/gpu/drm/tiny/simpledrm.c | 105 +++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 105 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+> > index ff86ba1ae1b8..9c597461d1e2 100644
+> > --- a/drivers/gpu/drm/tiny/simpledrm.c
+> > +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> > @@ -6,6 +6,7 @@
+> >   #include <linux/of_address.h>
+> >   #include <linux/platform_data/simplefb.h>
+> >   #include <linux/platform_device.h>
+> > +#include <linux/pm_domain.h>
+> >   #include <linux/regulator/consumer.h>
+> >
+> >   #include <drm/drm_aperture.h>
+> > @@ -227,6 +228,12 @@ struct simpledrm_device {
+> >       unsigned int regulator_count;
+> >       struct regulator **regulators;
+> >   #endif
+> > +     /* power-domains */
+> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > +     int pwr_dom_count;
+> > +     struct device **pwr_dom_devs;
+> > +     struct device_link **pwr_dom_links;
+> > +#endif
+> >
+> >       /* simplefb settings */
+> >       struct drm_display_mode mode;
+> > @@ -468,6 +475,101 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
+> >   }
+> >   #endif
+> >
+> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > +/*
+> > + * Generic power domain handling code.
+> > + *
+> > + * Here we handle the power-domains properties of our "simple-framebuffer"
+> > + * dt node. This is only necessary if there is more than one power-domain.
+> > + * A single power-domains is handled automatically by the driver core. Multiple
+> > + * power-domains have to be handled by drivers since the driver core can't know
+> > + * the correct power sequencing. Power sequencing is not an issue for simpledrm
+> > + * since the bootloader has put the power domains already in the correct state.
+> > + * simpledrm has only to ensure they remain active for its lifetime.
+> > + *
+> > + * When the driver unloads, we detach from the power-domains.
+> > + *
+> > + * We only complain about errors here, no action is taken as the most likely
+> > + * error can only happen due to a mismatch between the bootloader which set
+> > + * up the "simple-framebuffer" dt node, and the PM domain providers in the
+> > + * device tree. Chances are that there are no adverse effects, and if there are,
+> > + * a clean teardown of the fb probe will not help us much either. So just
+> > + * complain and carry on, and hope that the user actually gets a working fb at
+> > + * the end of things.
+> > + */
+> > +static void simpledrm_device_detach_genpd(void *res)
+> > +{
+> > +     int i;
+> > +     struct simpledrm_device *sdev = res;
+> > +
+> > +     if (sdev->pwr_dom_count <= 1)
+> > +             return;
+> > +
+> > +     for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
+> > +             if (!sdev->pwr_dom_links[i])
+> > +                     device_link_del(sdev->pwr_dom_links[i]);
+> > +             if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
+> > +                     dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
+> > +     }
+> > +}
+> > +
+> > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+> > +{
+> > +     struct device *dev = sdev->dev.dev;
+> > +     int i;
+> > +
+> > +     sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
+> > +                                                      "#power-domain-cells");
+> > +     /*
+> > +      * Single power-domain devices are handled by driver core nothing to do
+> > +      * here. The same for device nodes without "power-domains" property.
+> > +      */
+> > +     if (sdev->pwr_dom_count <= 1)
+> > +             return 0;
+> > +
+> > +     sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
+> > +                                            sizeof(*sdev->pwr_dom_devs),
+> > +                                            GFP_KERNEL);
+> > +     if (!sdev->pwr_dom_devs)
+> > +             return -ENOMEM;
+> > +
+> > +     sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
+> > +                                             sizeof(*sdev->pwr_dom_links),
+> > +                                             GFP_KERNEL);
+> > +     if (!sdev->pwr_dom_links)
+> > +             return -ENOMEM;
+> > +
+> > +     for (i = 0; i < sdev->pwr_dom_count; i++) {
+> > +             sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
+> > +             if (IS_ERR(sdev->pwr_dom_devs[i])) {
+> > +                     int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
+> > +                     if (ret == -EPROBE_DEFER) {
+> > +                             simpledrm_device_detach_genpd(sdev);
+> > +                             return ret;
+> > +                     }
+> > +                     drm_warn(&sdev->dev,
+> > +                              "pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
+> > +                     continue;
+> > +             }
+> > +
+> > +             sdev->pwr_dom_links[i] = device_link_add(dev,
+> > +                                                      sdev->pwr_dom_devs[i],
+> > +                                                      DL_FLAG_STATELESS |
+> > +                                                      DL_FLAG_PM_RUNTIME |
+> > +                                                      DL_FLAG_RPM_ACTIVE);
+> > +             if (!sdev->pwr_dom_links[i])
+> > +                     drm_warn(&sdev->dev, "failed to link power-domain %d\n", i);
+> > +     }
+> > +
+> > +     return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
+> > +}
+> > +#else
+> > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+> > +{
+> > +     return 0;
+> > +}
+> > +#endif
+> > +
+> >   /*
+> >    * Modesetting
+> >    */
+> > @@ -651,6 +753,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+> >       if (ret)
+> >               return ERR_PTR(ret);
+> >       ret = simpledrm_device_init_regulators(sdev);
+> > +     if (ret)
+> > +             return ERR_PTR(ret);
+> > +     ret = simpledrm_device_attach_genpd(sdev);
+> >       if (ret)
+> >               return ERR_PTR(ret);
+> >
+> >
+> > ---
+> > base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
+> > change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
