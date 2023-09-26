@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C6B7AE65E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AEB7AE662
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbjIZHBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
+        id S231610AbjIZHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjIZHBA (ORCPT
+        with ESMTP id S230097AbjIZHEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:01:00 -0400
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECBEF3;
-        Tue, 26 Sep 2023 00:00:54 -0700 (PDT)
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-690bf8fdd1aso6222627b3a.2;
-        Tue, 26 Sep 2023 00:00:54 -0700 (PDT)
+        Tue, 26 Sep 2023 03:04:15 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51903FF
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:04:08 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so969670966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1695711846; x=1696316646; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=09Dbusezuzmtem8SHw0UyQKQ5oAulzPz0jwJbZlkunI=;
+        b=YFUvFE/mH3/+vBDA0Ft/PlefIUy7eWIGkUHkrxa5TdonuHq5xJG5raPHiPKLmVtm7O
+         GWDvvTYgqte28Sz16dteKtvoqKU4DiUzTLIN1RGu5FD2iXYMkm2c6b1g0b8d/bLTdt7A
+         XhdYyS8+E8XrJw4P+1ELSx23JsWemQPb7zym10/oVl/54UUhDZzxaF0YcU3Rf0pJyRA7
+         hfsRGvGAkw5zq4LZrdYPYuInOeCoBlwIoMn1H1kOiMZ9AmnTluHzzEGM4MiTx6UAEip3
+         7qNsSgqplpJFo3uPwSs6+NLI8JAcEGOFIqgqeTgx2oS5S19/A3bUt56K3VJ57i1VRIw9
+         Y4yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695711653; x=1696316453;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uR0xWP82gOq4UfhGc/Rjgf6bHjjZPrvgKTMMsFTyoXc=;
-        b=D9Hdwq0uH0ax7wyAhsl8J8Y73/cgRTVDaFqmKWc628AEIGqysmkXd8X38/a21vpoy5
-         ZYKFbNLEQtZ9VVztdK3/LQ7JbS5DVQZRE4Hf6WiY1m22Hd4kaJuI5qe0SOZIgFJb1hdi
-         50OKmAfAuREWvluvrZs05YrMrFmFqDstoFWkqax3CH4pafYB2x2Q17hztnezx/S0cvoH
-         V/9SBCmBos/VIB9eqI6L1NL4+VKINlT4myoB5mAklm25CUO1gEyL3nXINJavafcKs/lT
-         iqb6H15Qj+D8tjyjvkaL/mRhR56OAgROiqUcM5OD2MjTJXLuo2a/EOo8tw7uoy3zVKWF
-         zYPQ==
-X-Gm-Message-State: AOJu0YwSHylYQUARUOYWTZL/nVjTX2ZoWBhqMDEKd4/2zKrw308mfElB
-        4uyzA8k4jyTiwnXZcXRaBBU=
-X-Google-Smtp-Source: AGHT+IG7reiq4YR2nW+K3Ubyh0wSSTKINIDXIAk+Q1Yd5ato0Gf272jWIsPO/R5L/eqwd1TqnYIetw==
-X-Received: by 2002:a05:6a20:8e08:b0:15a:836:7239 with SMTP id y8-20020a056a208e0800b0015a08367239mr8319847pzj.11.1695711653490;
-        Tue, 26 Sep 2023 00:00:53 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id jk13-20020a170903330d00b001b9da8b4eb7sm4710872plb.35.2023.09.26.00.00.52
+        d=1e100.net; s=20230601; t=1695711847; x=1696316647;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=09Dbusezuzmtem8SHw0UyQKQ5oAulzPz0jwJbZlkunI=;
+        b=Xvua08d+aW8VqFPLX354otjozBAImoRm/tunrwA1CUxDjCOWyaEXA2eUFpYAL8WnLU
+         X6NRqGPAoA2lChUlgMIKD5E3hdpksDQuFfVgMoO9v6pK2k1QzA/8aIaFd78lZlC4oZhJ
+         b5tTTKxq03FDwYhwyh30tFxIQweNHUiaKqNLbUaffpSih8kdH/H+zhTRrn4h7PLxyN5h
+         3sHw7iY2qM93kJKOK8ciDwzzojI+ouECR7Nr97A9tFrP2VDdaci2I45KF2wmauUzBBYV
+         sIEdZujPw8IH5VJ1ujhH5k7EuOMhNovR9XQd/Gn8FS9iWHsVIBluFsYOm6oHZPMGBvql
+         dLAg==
+X-Gm-Message-State: AOJu0YxgOvBzagggtVVPFGX+B0Lp/MEtJKM+Km1T6658iNCH8rgOkStc
+        9UePrcs4WZDM4Mxbar3qcOo2kA==
+X-Google-Smtp-Source: AGHT+IFkDpIma3t+/zuXOt8GN+pMsASgXkfBA+WDQYHttvUk1ozw24xulRvXJIA0TTUhcKtepHK5vQ==
+X-Received: by 2002:a17:907:1dd7:b0:9a1:f5b1:c864 with SMTP id og23-20020a1709071dd700b009a1f5b1c864mr7364977ejc.10.1695711846644;
+        Tue, 26 Sep 2023 00:04:06 -0700 (PDT)
+Received: from heron.intern.cm-ag (p200300dc6f49a600529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f49:a600:529a:4cff:fe3d:d983])
+        by smtp.gmail.com with ESMTPSA id q9-20020a170906540900b009930042510csm7387982ejo.222.2023.09.26.00.04.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 00:00:53 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 07:00:51 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <ZRKBo5Nbw+exPkAj@liuwe-devbox-debian-v2>
-References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
- <2023092342-staunch-chafe-1598@gregkh>
- <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
- <2023092630-masculine-clinic-19b6@gregkh>
- <ZRJyGrm4ufNZvN04@liuwe-devbox-debian-v2>
- <2023092614-tummy-dwelling-7063@gregkh>
+        Tue, 26 Sep 2023 00:04:06 -0700 (PDT)
+From:   Max Kellermann <max.kellermann@ionos.com>
+To:     alx@kernel.org, linux-man@vger.kernel.org, brauner@kernel.org,
+        axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        libc-alpha@sourceware.org,
+        Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH] man2/splice.2: document SPLICE_F_NOWAIT
+Date:   Tue, 26 Sep 2023 09:04:02 +0200
+Message-Id: <20230926070402.2452760-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023092614-tummy-dwelling-7063@gregkh>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 08:31:03AM +0200, Greg KH wrote:
-> On Tue, Sep 26, 2023 at 05:54:34AM +0000, Wei Liu wrote:
-> > On Tue, Sep 26, 2023 at 06:52:46AM +0200, Greg KH wrote:
-> > > On Mon, Sep 25, 2023 at 05:07:24PM -0700, Nuno Das Neves wrote:
-> > > > On 9/23/2023 12:58 AM, Greg KH wrote:
-> > > > > Also, drivers should never call pr_*() calls, always use the proper
-> > > > > dev_*() calls instead.
-> > > > > 
-> > > > 
-> > > > We only use struct device in one place in this driver, I think that is the
-> > > > only place it makes sense to use dev_*() over pr_*() calls.
-> > > 
-> > > Then the driver needs to be fixed to use struct device properly so that
-> > > you do have access to it when you want to print messages.  That's a
-> > > valid reason to pass around your device structure when needed.
-> > 
-> > Greg, ACRN and Nitro drivers do not pass around the device structure.
-> > Instead, they rely on a global struct device. We can follow the same.
-> 
-> A single global struct device is wrong, please don't do that.
-> 
-> Don't copy bad design patterns from other drivers, be better :)
-> 
+Patch for SPLICE_F_NOWAIT submitted to LKML:
+ https://lore.kernel.org/lkml/20230926063609.2451260-1-max.kellermann@ionos.com/
 
-If we're working with real devices like network cards or graphics cards
-I would agree -- it is easy to imagine that we have several cards of the
-same model in the system -- but in real world there won't be two
-hypervisor instances running on the same hardware.
+In the HISTORY section, I declared Linux 6.7 as the first version to
+have this feature, but this is only speculation, because
+SPLICE_F_NOWAIT is still under discussion and has not yet been merged.
 
-We can stash the struct device inside some private data fields, but that
-doesn't change the fact that we're still having one instance of the
-structure. Is this what you want? Or do you have something else in mind?
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ man2/splice.2 | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-Thanks,
-Wei.
+diff --git a/man2/splice.2 b/man2/splice.2
+index e9a18e668..1e686b858 100644
+--- a/man2/splice.2
++++ b/man2/splice.2
+@@ -89,13 +89,27 @@ call);
+ in the future, a correct implementation may be restored.
+ .TP
+ .B SPLICE_F_NONBLOCK
+-Do not block on I/O.
++Do not block on I/O on pipes.
+ This makes the splice pipe operations nonblocking, but
+ .BR splice ()
+ may nevertheless block because the file descriptors that
+ are spliced to/from may block (unless they have the
+ .B O_NONBLOCK
+-flag set).
++flag set or
++.B SPLICE_F_NOWAIT
++is specified).
++.TP
++.B SPLICE_F_NOWAIT
++If no data is immediately available on
++.I fd_in
++and it is not a pipe, do not wait (e.g. for backing storage or locks),
++but return immediately with
++.B EAGAIN.
++This is analogous to the
++.B RWF_NOWAIT
++flag of
++.BR preadv2()
++.
+ .TP
+ .B SPLICE_F_MORE
+ More data will be coming in a subsequent splice.
+@@ -138,6 +152,8 @@ is set to indicate the error.
+ .TP
+ .B EAGAIN
+ .B SPLICE_F_NONBLOCK
++or
++.B SPLICE_F_NOWAIT
+ was specified in
+ .I flags
+ or one of the file descriptors had been marked as nonblocking
+@@ -192,6 +208,9 @@ was required to be a pipe.
+ Since Linux 2.6.31,
+ .\" commit 7c77f0b3f9208c339a4b40737bb2cb0f0319bb8d
+ both arguments may refer to pipes.
++.PP
++.B SPLICE_F_NOWAIT
++was added in Linux 6.7.
+ .SH NOTES
+ The three system calls
+ .BR splice (),
+-- 
+2.39.2
 
-> thanks,
-> 
-> greg k-h
-> 
