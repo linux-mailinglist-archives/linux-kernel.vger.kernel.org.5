@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8707AE9B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5189E7AE9AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjIZJ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S230431AbjIZJ4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234161AbjIZJ4K (ORCPT
+        with ESMTP id S233553AbjIZJ4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:56:10 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704EFCCD
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:55:58 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a64619d8fbso1056305366b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695722156; x=1696326956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oCGAB9bjd2rRkobql917EBDyBbo8Xf1tmOkuieid9Qw=;
-        b=HFmsZ4RrW76dmgghgjnLmy/if7RGsBsH4gCiOAm04mIl6nM43bU4nQtLpo9Mipeio4
-         JUhdNIn4w3HgA3gLB+81owUI+uiPg/4oyDitaKB+k6BzOwxh8C6RoMsHT6RFdWJ/t5fa
-         kZkn3eT+bQKDuIZbyX+KdFGTZlx/r1PFcgLzEr1Wa9Gxr4hkCtQiDoaruQAnT9TdaoLw
-         Lk8iZytyVRi3Hc982kBcXwdfyLV5KKQ7qefdk6LDk/U0aXwxhIAfzfZc7PFdV29YdBRj
-         k6fRmlWHQ+eJ/xaWFtECSUf0Xd7QCXN5TOpRM4YTq/E0wPiTnPiEcvndPYLYKtNKLhqs
-         A6tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695722156; x=1696326956;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oCGAB9bjd2rRkobql917EBDyBbo8Xf1tmOkuieid9Qw=;
-        b=azGj/7a/iNF2/JQe6GT1ZXBlFrfMnHBSoz5OqZuXs3QoyiZrx5ECpePB23sGU8vMqe
-         paHs1bT7fktepJTOKYnLUrX5Ki89dblkQ9LERWQ/Q+4LymybzGPXPSwoxfbscB6O3LxQ
-         PENpnU76Rvfk9wRfFuv5jOcltiOf+bFGanhVM3nDB03VDEHtjSVernLwMkMAXtzQdfz+
-         gNG1ano/gGGNMWk6isQEqFP0qd8m6Z9/tNeICb89dkDtRYHNNSdijmyr/G01hs4URUDa
-         ROIOf+jvhSAX0qFrg5F0E0nKA65iPrlCTtphYN4+X8AInkpxqMJXe63TR5U8GQiGOhkc
-         de1g==
-X-Gm-Message-State: AOJu0Yx7djBmT3tT30hKP+//ESv6mqt9T2V7UT/T9Xyp/4KUgK9dLQt0
-        VrthOQE6Jh0HXuRJIfLHM4su9g==
-X-Google-Smtp-Source: AGHT+IEiQ8iJO3tEsrKT6DurQH2FvKo0uS+xJFcGLGiCr6SvtCfNXfJUyT6nkOwQSaE5M72oHauuhA==
-X-Received: by 2002:a17:906:3188:b0:9ae:5fdc:aee8 with SMTP id 8-20020a170906318800b009ae5fdcaee8mr8441103ejy.53.1695722156458;
-        Tue, 26 Sep 2023 02:55:56 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.177])
-        by smtp.gmail.com with ESMTPSA id j26-20020a170906831a00b00997d7aa59fasm7698269ejx.14.2023.09.26.02.55.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 05:56:09 -0400
+Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E5B1BB;
         Tue, 26 Sep 2023 02:55:55 -0700 (PDT)
-Message-ID: <1f1b5174-cfd4-4393-3a86-9adfc8c2cce1@tuxon.dev>
+Received: from relayfre-01.paragon-software.com (unknown [172.30.72.12])
+        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 6DAF221BC;
+        Tue, 26 Sep 2023 09:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1695721803;
+        bh=Nf2tlL8ndkT5fumOF9aSaoVeSNGQzhIY6kDh91oVRUE=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=ncv0G8arOqm3X0jid+4L2MVE689rRbad7e+k+2BtujmZbDit/pHvyARgZuZx771R8
+         G/gat1h2aicoRanLAt5Kgn0z0Vtgcy1QHRdoGKO9Wev7FT3X2wi0O54CLxk46+waT6
+         tAL85kb0QqmYZYfglW65WrgRuZDzW3+v3hnWcVbg=
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id BC64A1D45;
+        Tue, 26 Sep 2023 09:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1695722153;
+        bh=Nf2tlL8ndkT5fumOF9aSaoVeSNGQzhIY6kDh91oVRUE=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=iiibi4ADh06yd/BR2C+7DGZUaIaGB5nAQx2rdMPVvbAHFhoW2q0ApmU24dyT7+e/V
+         SHf1Z9nkn0L5Y96wEVu+wEa/PxzC5SI8UzgatQ9S+FCm4geVL0Tip2yPrqTutDdc6E
+         0h4Ox3DQLEdMQEdWIIyfRU7i0lv4LVt9yMs00yDY=
+Received: from [172.16.192.129] (192.168.211.137) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Tue, 26 Sep 2023 12:55:53 +0300
+Message-ID: <1f95ab55-ce05-4c11-8c14-8df260514208@paragon-software.com>
 Date:   Tue, 26 Sep 2023 12:55:53 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 25/37] pinctrl: renesas: rzg2l: adapt function number for
- RZ/G3S
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-26-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdVkttQpA-s0MrKbTVxJ6K+xXmhV3sNNLTAPSbDa0f8XYA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 3/8] fs/ntfs3: Fix alternative boot searching
 Content-Language: en-US
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdVkttQpA-s0MrKbTVxJ6K+xXmhV3sNNLTAPSbDa0f8XYA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <7c217d7d-6ee4-4603-b5f1-ebe7b68cf430@paragon-software.com>
+In-Reply-To: <7c217d7d-6ee4-4603-b5f1-ebe7b68cf430@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [192.168.211.137]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
 
-On 21.09.2023 15:51, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> Thanks for your patch!
-> 
-> On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> On RZ/G3S PFC register allow setting 8 functions for individual ports
->> (function1 to function8). For function1 register need to be configured
->> with 0, for function8 register need to be configured with 7.
->> We cannot use zero based addressing when requesting functions from
->> different code places as documentation (RZG3S_pinfunction_List_r1.0.xlsx)
->> states explicitly that function0 has different meaning.
-> 
-> According to that table, function0 is GPIO.
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+  fs/ntfs3/super.c | 10 +++++++---
+  1 file changed, 7 insertions(+), 3 deletions(-)
 
-Yes, I'll mention it like this in the next version.
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 71c80c578feb..d2951b23f52a 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -846,7 +846,7 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
+      struct ntfs_sb_info *sbi = sb->s_fs_info;
+      int err;
+      u32 mb, gb, boot_sector_size, sct_per_clst, record_size;
+-    u64 sectors, clusters, mlcn, mlcn2;
++    u64 sectors, clusters, mlcn, mlcn2, dev_size0;
+      struct NTFS_BOOT *boot;
+      struct buffer_head *bh;
+      struct MFT_REC *rec;
+@@ -855,6 +855,9 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
+      u32 boot_off = 0;
+      const char *hint = "Primary boot";
 
-> 
->> For this add a new member to struct rzg2l_hwcfg that will keep the
->> offset that need to be substracted before applying a value to PFC register.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> But one question below...
-> 
->> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->> @@ -136,9 +136,11 @@ struct rzg2l_register_offsets {
->>  /**
->>   * struct rzg2l_hwcfg - hardware configuration data structure
->>   * @regs: hardware specific register offsets
->> + * @func_base: base number for port function (see register PFC)
->>   */
->>  struct rzg2l_hwcfg {
->>         const struct rzg2l_register_offsets regs;
->> +       u8 func_base;
->>  };
->>
->>  struct rzg2l_dedicated_configs {
->> @@ -221,6 +223,7 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->>                                  unsigned int group_selector)
->>  {
->>         struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
->> +       const struct rzg2l_hwcfg *hwcfg = pctrl->data->hwcfg;
->>         const struct pinctrl_pin_desc *pin_desc;
->>         unsigned int i, *psel_val, *pin_data;
->>         struct function_desc *func;
->> @@ -247,9 +250,9 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->>                 off = RZG2L_PIN_CFG_TO_PORT_OFFSET(*pin_data);
->>
->>                 dev_dbg(pctrl->dev, "port:%u pin: %u off:%x PSEL:%u\n", port,
->> -                       pin, off, psel_val[i]);
->> +                       pin, off, psel_val[i] - hwcfg->func_base);
->>
->> -               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i]);
->> +               rzg2l_pinctrl_set_pfc_mode(pctrl, pin, off, psel_val[i] - hwcfg->func_base);
->>         }
->>
->>         return 0;
-> 
-> Perhaps the adjustment should be done in rzg2l_dt_subnode_to_map()
-> instead, when obtaining MUX_FUNC() from DT? That would allow you to do
-> some basic validation on it too, which is currently completely missing
-> (reject out-of-range values overflowing into adjacent PFC fields,
-> reject zero on RZ/G3S).
++    /* Save original dev_size. Used with alternative boot. */
++    dev_size0 = dev_size;
++
+      sbi->volume.blocks = dev_size >> PAGE_SHIFT;
 
-I'll have a look on this. I see .set_mux() can also be called from sysfs
-though pinmux-select exported file thus, I don't know at the moment if
-validating it on rzg2l_dt_subnode_to_map() will be enough.
+      bh = ntfs_bread(sb, 0);
+@@ -1087,9 +1090,9 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
+      }
 
-Would it be OK to have this outside of this series or you would prefer it now?
+  out:
+-    if (err == -EINVAL && !bh->b_blocknr && dev_size > PAGE_SHIFT) {
++    if (err == -EINVAL && !bh->b_blocknr && dev_size0 > PAGE_SHIFT) {
+          u32 block_size = min_t(u32, sector_size, PAGE_SIZE);
+-        u64 lbo = dev_size - sizeof(*boot);
++        u64 lbo = dev_size0 - sizeof(*boot);
 
-Thank you,
-Claudiu Beznea
+          /*
+            * Try alternative boot (last sector)
+@@ -1103,6 +1106,7 @@ static int ntfs_init_from_boot(struct super_block 
+*sb, u32 sector_size,
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+          boot_off = lbo & (block_size - 1);
+          hint = "Alternative boot";
++        dev_size = dev_size0; /* restore original size. */
+          goto check_boot;
+      }
+      brelse(bh);
+-- 
+2.34.1
+
