@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72D87AEC5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0F87AEC64
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbjIZMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
+        id S234572AbjIZMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233899AbjIZMTZ (ORCPT
+        with ESMTP id S230231AbjIZMU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:19:25 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A9FEB;
-        Tue, 26 Sep 2023 05:19:17 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QCJAjD007193;
-        Tue, 26 Sep 2023 07:19:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695730750;
-        bh=7q2mcWowuXIseloHSNPJOl7feeh1tGeHqj6t3EOTIFk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Nnpp7AAhl2cWGyMx6O1xSmwlHXrEsMSGapez22vj47dc1rNb49L+vHBtc7u28mOHZ
-         WysxejDbCuVBVyzSHCJ48XbyX/VPTvjZ9fRTS7aIoM29FkiZdx+1FphZPP12eS+lK0
-         PXSKvNaVlhvBGMg3C7TMCsiuMgRLvkKdL7h7S2tI=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QCJAWL090004
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Sep 2023 07:19:10 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Sep 2023 07:19:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Sep 2023 07:19:10 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QCJ9cm120901;
-        Tue, 26 Sep 2023 07:19:09 -0500
-Date:   Tue, 26 Sep 2023 17:49:08 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH V2] spi: spi-cadence-quadspi: Fix missing unwind goto
- warnings
-Message-ID: <20230926121908.mcyyj42buqr4ov3m@dhruva>
-References: <20230919074658.41666-1-d-gole@ti.com>
- <ZRK+oDrT4vaZ0R/G@finisterre.sirena.org.uk>
- <20230926114046.5ukretunoud3yv45@dhruva>
- <ZRLHVReL9Bq4PNvS@finisterre.sirena.org.uk>
+        Tue, 26 Sep 2023 08:20:29 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CDDEB;
+        Tue, 26 Sep 2023 05:20:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:Cc:To:From; bh=w0YyJiw+O+zjquHaZvxAIGS0bC7/dphOHY+erwD9474=; b=xBKqfA
+        iBmX8ri+p/zTD5MvUJhspvsg3Hs9muE33AZemCF/OgeGJLZvi9ML1U4RvsEBY9RM7xyLOucvrWDhQ
+        oj5yAlaUjASxZIg7BDgoxa4oPDwJ68AH9FUbz066WsiY6H7m98WmQw5e01gC5DXty9ytNgJiJFURk
+        2BLX72JHWno=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1ql736-0000GS-Kl; Tue, 26 Sep 2023 12:20:20 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1ql736-0001mF-Cv; Tue, 26 Sep 2023 12:20:20 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>
+Subject: [PATCH v6 00/11] KVM: xen: update shared_info and vcpu_info handling
+Date:   Tue, 26 Sep 2023 12:20:02 +0000
+Message-Id: <20230926122013.867391-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZRLHVReL9Bq4PNvS@finisterre.sirena.org.uk>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 26, 2023 at 13:58:13 +0200, Mark Brown wrote:
-> On Tue, Sep 26, 2023 at 05:10:46PM +0530, Dhruva Gole wrote:
-> 
-> > Pardon, which branch is this being applied on?
-> 
-> It'll have been applied as a fix so against 6.6.
+From: Paul Durrant <pdurrant@amazon.com>
 
-Umm I don't think the commit being fixed is there in 6.6?
-I am not really sure how I should base/format the patch? Please can you
-tell me what's expected in such a case ideally?
+The following text from the original cover letter still serves as an
+introduction to the series:
+
+"Currently we treat the shared_info page as guest memory and the VMM
+informs KVM of its location using a GFN. However it is not guest memory as
+such; it's an overlay page. So we pointlessly invalidate and re-cache a
+mapping to the *same page* of memory every time the guest requests that
+shared_info be mapped into its address space. Let's avoid doing that by
+modifying the pfncache code to allow activation using a fixed userspace HVA
+as well as a GPA."
+
+As with the previous version of the series, both the shared_info and
+vcpu_info caches can now be activated using an HVA but the commit comment
+on "map shared_info using HVA rather than GFN" has been extended to
+explain why mapping shared_info using HVA is a particularly good idea.
+
+This version of the series also includes an extra patch to "allow
+vcpu_info content to be 'safely' copied. Currently there is a race window
+when the VMM performs the copy; this patch allows the VMM to avoid that
+race.
+
+Paul Durrant (11):
+  KVM: pfncache: add a map helper function
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: add a helper to get the gpa
+  KVM: pfncache: base offset check on khva rather than gpa
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: allow vcpu_info to be mapped by fixed HVA
+  KVM: selftests / xen: map shared_info using HVA rather than GFN
+  KVM: selftests / xen: re-map vcpu_info using HVA rather than GPA
+  KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  KVM: xen: allow vcpu_info content to be 'safely' copied
+
+ Documentation/virt/kvm/api.rst                |  53 +++++--
+ arch/x86/kvm/x86.c                            |   5 +-
+ arch/x86/kvm/xen.c                            |  92 +++++++++----
+ include/linux/kvm_host.h                      |  43 ++++++
+ include/linux/kvm_types.h                     |   3 +-
+ include/uapi/linux/kvm.h                      |   9 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++++++--
+ virt/kvm/pfncache.c                           | 129 +++++++++++++-----
+ 8 files changed, 302 insertions(+), 91 deletions(-)
 
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+2.39.2
+
