@@ -2,152 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2647AF1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C74D7AF1AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbjIZRXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S229587AbjIZRWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjIZRX2 (ORCPT
+        with ESMTP id S229570AbjIZRWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:23:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E55180;
-        Tue, 26 Sep 2023 10:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695749002; x=1727285002;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qjVC/s4j7SxQRGeSzIg7naJ8oHI9PB59wRQgY2RtkPE=;
-  b=Gq6PY16UWxKVSSvV5/9Oh9wXMb/Tk7I/EsLqoPWGppz/RUQMt8/FLnmX
-   DKnNKJOPpPy06ucDcbGexVuQjHJfmpjrKQiQOP/J6NZ2C5djUkDgTyqVP
-   ET7qEeu66QeQBHDFH0w8RC8FqbaU7CIjZVUKlQRYhTyD4O+W1yK/Tzv4N
-   w9AHvvfpqg3tvnWdTrdJM4zrAZf2KTAP99k0tJ3FsDQC/JmeZ7rO6d2S9
-   saM2NUmqza2BvdbGzT7ZgLkCK2IKYI7staLqWcu08v1iMUEbiPm8E/llj
-   b1B+umLtG3xZ0XLFXO9E3Aa/nQv0000BQNrzh6BkE5SKz66grtCmAziRO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381520625"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="381520625"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 10:21:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="235632"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 26 Sep 2023 10:21:23 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qlBkp-0003Ap-2V;
-        Tue, 26 Sep 2023 17:21:48 +0000
-Date:   Wed, 27 Sep 2023 01:21:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rafael@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
-Subject: Re: [PATCH v4 11/18] PM: EM: Add runtime update interface to modify
- EM power
-Message-ID: <202309270106.c56Z2Tci-lkp@intel.com>
-References: <20230925081139.1305766-12-lukasz.luba@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925081139.1305766-12-lukasz.luba@arm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 13:22:44 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F05116
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690ba63891dso6923595b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695748956; x=1696353756; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eK09SY9XnKtYYEeKZnb21txziNbHU1j+5dHVgQL9+WE=;
+        b=EzNqOJcWhoQu55QHV5ATgucEkI8yC9eG01YtNr77TYEo3WAlc8EknHgCJOeE/fmQJZ
+         s0JpAZAirENnb5UvSDEZ7IHhnpZC7+SVGseond3/6k3k1Q1+NMJa9fe9EGiGb45dhTom
+         ImsDC+dGNOWkqCgfowCRSyjO7BHyZnlndo3iYJb7UQ5Fb8CCD8hQdjvMateNIR3ADBMo
+         +fK2rICM+amkrpYP/oYYaq6eNJGRWCEfcUWSuE+0OHETBKqGPoCAUcN4P5DxWoHG82C/
+         YIpVCoDdivWQMH2BanUDwzekStOSSVXT2P7GeSYclhCrtspEXyMzmFY3eg+H1ybzg7cJ
+         2yDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695748956; x=1696353756;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eK09SY9XnKtYYEeKZnb21txziNbHU1j+5dHVgQL9+WE=;
+        b=X5SoG1Ikjov95OC7FbMf1yXl8vJ560ZkAogUzpppNXtIzpr3+ArXXPd1LDVaOdlD8w
+         sFpg4JZzvsrimyRXVZhn+zAQfEQ2p5n87BE7FMozAR1AfhkjVsR/lTFQXwMUk/bkir4s
+         FVvlh7b2eyZJg/JmhZ4AWccWCoB8USRgYUShzUZvDluxkYmcmDofKNQaT6xMTpZyu++X
+         MG5qAGORjfPlaIjsBnVBw298aHgQaOFyxDK7m/fuJHR/p9z146QyHWirhnvy0lzv/2bH
+         +LzHOgCjpsVxJzPzRIgqaMSpvG5/U+pdlr7HcmLT0xH2mDUeX5Ua8LTqQgLqlmOEXLJC
+         x5PQ==
+X-Gm-Message-State: AOJu0YwERcuctTBP8h63GrRrBLoHwZ957r7wWWq4wrd6P+zE5DdcF8sn
+        IOPaxIn8KvhC5uvg2nNclvU=
+X-Google-Smtp-Source: AGHT+IEyc2uv0p8+Qf+SIjOHIOliLqbPagqqIfNSHAsdtOegXTnGbScLJOuA2pDRhbgeHoPJH3rflA==
+X-Received: by 2002:a05:6a20:139a:b0:154:e7e6:85bd with SMTP id hn26-20020a056a20139a00b00154e7e685bdmr7271605pzc.20.1695748956241;
+        Tue, 26 Sep 2023 10:22:36 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id i15-20020aa7908f000000b006661562429fsm10510857pfa.97.2023.09.26.10.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 10:22:35 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     hch@lst.de, sagi@grimberg.me, kch@nvidia.com
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] nvmet-rdma: use spin_lock_bh() on rsp_wr_wait_lock
+Date:   Tue, 26 Sep 2023 17:22:08 +0000
+Message-Id: <20230926172208.55478-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+It seems to me that read_cqe.done could be executed under softirq
+context, as done callbacks always do, and it acquires rsp_wr_wait_lock
+along the following call chain.
 
-kernel test robot noticed the following build warnings:
+   nvmet_rdma_read_data_done()
+   --> nvmet_rdma_release_rsp()
+   --> spin_lock(&queue->rsp_wr_wait_lock)
 
-[auto build test WARNING on rafael-pm/linux-next]
-[also build test WARNING on rafael-pm/thermal linus/master v6.6-rc3 next-20230926]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+So it seems more reasonable to use spin_lock_bh() on it, otherwise
+there could be following potential deadlocks.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lukasz-Luba/PM-EM-Add-missing-newline-for-the-message-log/20230925-181243
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20230925081139.1305766-12-lukasz.luba%40arm.com
-patch subject: [PATCH v4 11/18] PM: EM: Add runtime update interface to modify EM power
-config: i386-randconfig-063-20230926 (https://download.01.org/0day-ci/archive/20230927/202309270106.c56Z2Tci-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230927/202309270106.c56Z2Tci-lkp@intel.com/reproduce)
+nvmet_rdma_queue_response()
+--> nvmet_rdma_release_rsp()
+--> spin_lock(&queue->rsp_wr_wait_lock)
+<interrupt>
+   --> nvmet_rdma_read_data_done()
+   --> nvmet_rdma_release_rsp()
+   --> spin_lock(&queue->rsp_wr_wait_lock)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309270106.c56Z2Tci-lkp@intel.com/
+nvmet_rdma_cm_handler()
+--> nvmet_rdma_handle_command()
+--> spin_lock(&queue->rsp_wr_wait_lock)
+<interrupt>
+   --> nvmet_rdma_read_data_done()
+   --> nvmet_rdma_release_rsp()
+   --> spin_lock(&queue->rsp_wr_wait_lock)
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/power/energy_model.c:125:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct em_perf_table *tmp @@     got struct em_perf_table [noderef] __rcu *runtime_table @@
-   kernel/power/energy_model.c:125:13: sparse:     expected struct em_perf_table *tmp
-   kernel/power/energy_model.c:125:13: sparse:     got struct em_perf_table [noderef] __rcu *runtime_table
->> kernel/power/energy_model.c:613:27: sparse: sparse: incompatible types in comparison expression (different address spaces):
->> kernel/power/energy_model.c:613:27: sparse:    struct em_perf_table [noderef] __rcu *
->> kernel/power/energy_model.c:613:27: sparse:    struct em_perf_table *
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+---
+ drivers/nvme/target/rdma.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-vim +613 kernel/power/energy_model.c
-
-   569	
-   570	/**
-   571	 * em_dev_unregister_perf_domain() - Unregister Energy Model (EM) for a device
-   572	 * @dev		: Device for which the EM is registered
-   573	 *
-   574	 * Unregister the EM for the specified @dev (but not a CPU device).
-   575	 */
-   576	void em_dev_unregister_perf_domain(struct device *dev)
-   577	{
-   578		struct em_perf_table __rcu *runtime_table;
-   579		struct em_perf_domain *pd;
-   580	
-   581		if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
-   582			return;
-   583	
-   584		if (_is_cpu_device(dev))
-   585			return;
-   586	
-   587		pd = dev->em_pd;
-   588		/*
-   589		 * The mutex separates all register/unregister requests and protects
-   590		 * from potential clean-up/setup issues in the debugfs directories.
-   591		 * The debugfs directory name is the same as device's name.
-   592		 * The lock also protects the updater of the runtime modifiable
-   593		 * EM and this remover.
-   594		 */
-   595		mutex_lock(&em_pd_mutex);
-   596	
-   597		em_debug_remove_pd(dev);
-   598	
-   599		runtime_table = pd->runtime_table;
-   600	
-   601		/*
-   602		 * Safely destroy runtime modifiable EM. By using the call
-   603		 * synchronize_rcu() we make sure we don't progress till last user
-   604		 * finished the RCU section and our update got applied.
-   605		 */
-   606		rcu_assign_pointer(pd->runtime_table, NULL);
-   607		synchronize_rcu();
-   608	
-   609		/*
-   610		 * After the sync no updates will be in-flight, so free the
-   611		 * memory allocated for runtime table (if there was such).
-   612		 */
- > 613		if (runtime_table != pd->default_table) {
-
+diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
+index 4597bca43a6d..a01ed29fbd8a 100644
+--- a/drivers/nvme/target/rdma.c
++++ b/drivers/nvme/target/rdma.c
+@@ -520,7 +520,7 @@ static int nvmet_rdma_post_recv(struct nvmet_rdma_device *ndev,
+ 
+ static void nvmet_rdma_process_wr_wait_list(struct nvmet_rdma_queue *queue)
+ {
+-	spin_lock(&queue->rsp_wr_wait_lock);
++	spin_lock_bh(&queue->rsp_wr_wait_lock);
+ 	while (!list_empty(&queue->rsp_wr_wait_list)) {
+ 		struct nvmet_rdma_rsp *rsp;
+ 		bool ret;
+@@ -529,16 +529,16 @@ static void nvmet_rdma_process_wr_wait_list(struct nvmet_rdma_queue *queue)
+ 				struct nvmet_rdma_rsp, wait_list);
+ 		list_del(&rsp->wait_list);
+ 
+-		spin_unlock(&queue->rsp_wr_wait_lock);
++		spin_unlock_bh(&queue->rsp_wr_wait_lock);
+ 		ret = nvmet_rdma_execute_command(rsp);
+-		spin_lock(&queue->rsp_wr_wait_lock);
++		spin_lock_bh(&queue->rsp_wr_wait_lock);
+ 
+ 		if (!ret) {
+ 			list_add(&rsp->wait_list, &queue->rsp_wr_wait_list);
+ 			break;
+ 		}
+ 	}
+-	spin_unlock(&queue->rsp_wr_wait_lock);
++	spin_unlock_bh(&queue->rsp_wr_wait_lock);
+ }
+ 
+ static u16 nvmet_rdma_check_pi_status(struct ib_mr *sig_mr)
+@@ -994,9 +994,9 @@ static void nvmet_rdma_handle_command(struct nvmet_rdma_queue *queue,
+ 		goto out_err;
+ 
+ 	if (unlikely(!nvmet_rdma_execute_command(cmd))) {
+-		spin_lock(&queue->rsp_wr_wait_lock);
++		spin_lock_bh(&queue->rsp_wr_wait_lock);
+ 		list_add_tail(&cmd->wait_list, &queue->rsp_wr_wait_list);
+-		spin_unlock(&queue->rsp_wr_wait_lock);
++		spin_unlock_bh(&queue->rsp_wr_wait_lock);
+ 	}
+ 
+ 	return;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
