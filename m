@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193B27AF582
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B067AF592
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235918AbjIZUro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
+        id S235931AbjIZUyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjIZUrm (ORCPT
+        with ESMTP id S232157AbjIZUyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:47:42 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21C512A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:34 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6c4fa7d0da0so4757175a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:47:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695761254; x=1696366054;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GJ5a3zk1rHi4N82X3qGwLU8uWGH8yvH6bBrokHLs9o0=;
-        b=TjOIjde2FRcTBxbbhqepOO9X61zhmoCbjZJ2Mqy6glfV5vS3nyzi6mdEbjBJ6GADJB
-         f41tEWn7GfCEC09IveVd5ovCsrI3ZJwcPgeO5KzocLfu47sT6+o5GHrha1UHV1Whu/tU
-         KOogkH3ETmyRMmRtVp12TbeyNllbp14KkMP8zVOY8lEhydtmGfe1nrUYsIrWQCCB30Rm
-         RSmD6xQjOckh7CvVVtFtV6EGK3PeZsYxf8AHQPSKIVmryJPZqqVNJejanMTan6HVc1jl
-         r3H9rItdFQQncCvyiNOcWUiivVisZP9LqfvGSrFOkN+PD9Myph9yiJSm3P4f6T1iK0yC
-         lt1w==
-X-Gm-Message-State: AOJu0Yx/MymrCMWFsWCTPMGT4lLi7Bm7YwZclJ1t//ahdh0BaXCN3XVZ
-        w8v41QKFs3kwSP+KUFLa2BNBP5sjYe8MNSK/XTRo9dexp7A7
-X-Google-Smtp-Source: AGHT+IGZgqz85XcIEHVAoIFbsTTXwuT11bJzo5JFaYBR0VmJ3pBMeSTFPQi6zR14HqQowAAxRfYxIOOzL/RG+FAvKErLj9lYn44X
+        Tue, 26 Sep 2023 16:54:00 -0400
+X-Greylist: delayed 260 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 13:53:53 PDT
+Received: from pb-smtp20.pobox.com (pb-smtp20.pobox.com [173.228.157.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06062120;
+        Tue, 26 Sep 2023 13:53:53 -0700 (PDT)
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id DEFC6180E3;
+        Tue, 26 Sep 2023 16:49:32 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=vnqORXqaBxujrZIwo1zw9KvIE221dEcvbIpGK6
+        4Mu0s=; b=vaFd9L+aUbp5kYsflkkBuBk0cPY9S/Fs34MF26wTXU/E6ubR8UR7CB
+        cja+kCZim2PSDYi06Aaj6lmFuXOAEtN+APYQjGyynNWXFS48os/xaRZeGXtsNqZY
+        BOQGQjDxLTYu6dqEKpQTDrgF4SCIbhFBDNQ6pNxjVfGMPUz4kEhvM=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id D556B180E2;
+        Tue, 26 Sep 2023 16:49:32 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=vnqORXqaBxujrZIwo1zw9KvIE221dEcvbIpGK64Mu0s=; b=c2g49f/Co2qpG8GQZCZBFdVMaFoFpRzOvTK55BZZtx7t/WROFvbYnzEe/C83x9gt8lr07HbLcISFV83C3MDHOnUE+5TibodhLL4de/jNvbsAQG5TuSX+qCmP1aDziPPCsU4oKob9NklAlUR9sIBKsHrQXkL3g5XyUi4jj6aa77Q=
+Received: from yoda.fluxnic.net (unknown [184.162.17.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id DE15C180E1;
+        Tue, 26 Sep 2023 16:49:28 -0400 (EDT)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu (xanadu [10.0.0.101])
+        by yoda.fluxnic.net (Postfix) with ESMTPSA id 90996956C15;
+        Tue, 26 Sep 2023 16:49:26 -0400 (EDT)
+Date:   Tue, 26 Sep 2023 22:49:26 +0200 (CEST)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        paulburton@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Willy Tarreau <w@1wt.eu>,
+        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
+        Tim Bird <tim.bird@sony.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v1 0/7] DCE/DSE: Add Dead Syscalls Elimination support,
+ part1
+In-Reply-To: <a08e1cee-05e0-447a-b25b-6c2ebb116e8d@app.fastmail.com>
+Message-ID: <6n7o7p99-9pr2-9orq-6nq1-093n7n7n43o9@syhkavp.arg>
+References: <cover.1695679700.git.falcon@tinylab.org> <fbb6f526-0db9-4bbe-9635-8cb55b4335ee@app.fastmail.com> <a08e1cee-05e0-447a-b25b-6c2ebb116e8d@app.fastmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1a0e:b0:3a8:74ff:6c01 with SMTP id
- bk14-20020a0568081a0e00b003a874ff6c01mr55641oib.5.1695761254082; Tue, 26 Sep
- 2023 13:47:34 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 13:47:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c6cf80606492f14@google.com>
-Subject: [syzbot] [bpf?] WARNING in bpf_mprog_pos_before
-From:   syzbot <syzbot+b97d20ed568ce0951a06@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com,
-        yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: 2FB1520E-5CAE-11EE-B67F-F515D2CDFF5E-78420484!pb-smtp20.pobox.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 26 Sep 2023, Arnd Bergmann wrote:
 
-syzbot found the following issue on:
+> On Tue, Sep 26, 2023, at 09:14, Arnd Bergmann wrote:
+> > On Tue, Sep 26, 2023, at 00:33, Zhangjin Wu wrote:
+> >
+> > It would be nice to include some size numbers here for at least
+> > one practical use case. If you have a defconfig for a shipping
+> > product with a small kernel, what is the 'size -B' output you
+> > see comparing with and without DCE and, and with DCE+DSE?
+> 
+> To follow up on this myself, for a very rough baseline,
+> I tried a riscv tinyconfig build with and without 
+> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION (this is currently
+> not supported on arm, so I did not try it there), and
+> then another build with simply *all* system calls stubbed
+> out by hacking asm/syscall-wrapper.h:
+> 
+> $ size build/tmp/vmlinux-*
+>    text	   data	    bss	     dec    hex	filename
+>   754772  220016  71841	 1046629  ff865	vmlinux-tinyconfig
+>   717500  223368  71841	 1012709  f73e5	vmlinux-tiny+nosyscalls
+>   567310  176200  71473	  814983  c6f87	vmlinux-tiny+gc-sections
+>   493278  170752  71433	  735463  b38e7	vmlinux-tiny+gc-sections+nosyscalls
+> 10120058 3572756 493701	14186515 d87813	vmlinux-defconfig
+>  9953934 3529004 491525	13974463 d53bbf	vmlinux-defconfig+gc
+>  9709856 3500600 489221	13699677 d10a5d	vmlinux-defconfig+gc+nosyscalls
+> 
+> This would put us at an upper bound of 10% size savings (80kb) for
+> tinyconfig, which is clearly significant. For defconfig, it's
+> still 2.0% or 275kb size reduction when all syscalls are dropped.
 
-HEAD commit:    81335f90e8a8 bpf: unconditionally reset backtrack_state ma..
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=111d5132680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f4894cf58531f
-dashboard link: https://syzkaller.appspot.com/bug?extid=b97d20ed568ce0951a06
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1570bfc1680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126c6856680000
+I did something similar a while ago. Results included here:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/15d122573dad/disk-81335f90.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/74edf542067b/vmlinux-81335f90.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/22fa248ded38/bzImage-81335f90.xz
+https://lwn.net/Articles/746780/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b97d20ed568ce0951a06@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5108 at include/linux/bpf_mprog.h:198 bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
-WARNING: CPU: 0 PID: 5108 at include/linux/bpf_mprog.h:198 bpf_mprog_pos_before+0x18c/0x280 kernel/bpf/mprog.c:200
-Modules linked in:
-CPU: 0 PID: 5108 Comm: syz-executor123 Not tainted 6.6.0-rc1-syzkaller-00198-g81335f90e8a8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:bpf_mprog_total include/linux/bpf_mprog.h:198 [inline]
-RIP: 0010:bpf_mprog_pos_before+0x18c/0x280 kernel/bpf/mprog.c:200
-Code: 89 e8 48 c1 e8 03 42 80 3c 38 00 0f 85 d8 00 00 00 4d 3b 65 00 0f 85 26 ff ff ff e8 3e 50 e3 ff 83 eb 01 eb 38 e8 34 50 e3 ff <0f> 0b e9 3a ff ff ff e8 28 50 e3 ff 4c 89 f2 48 b8 00 00 00 00 00
-RSP: 0018:ffffc90003aafad0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801e873b80 RSI: ffffffff81a47e4c RDI: 0000000000000005
-RBP: 0000000000000040 R08: 0000000000000005 R09: 000000000000003f
-R10: 0000000000000040 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801fdb0418 R14: ffffc90003aafb98 R15: dffffc0000000000
-FS:  0000555556eea380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8e2323b0d0 CR3: 00000000750ca000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_mprog_attach+0x720/0xfe0 kernel/bpf/mprog.c:258
- tcx_prog_attach+0x2bd/0xbd0 kernel/bpf/tcx.c:39
- bpf_prog_attach kernel/bpf/syscall.c:3848 [inline]
- __sys_bpf+0x413e/0x4e90 kernel/bpf/syscall.c:5344
- __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5437
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8e231c3cb9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc80795988 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8e231c3cb9
-RDX: 0000000000000020 RSI: 0000000020000080 RDI: 0000000000000008
-RBP: 0000000000000000 R08: 0000000000000006 R09: 0000000000000006
-R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+In my case, stubbing out all syscalls produced a 7.8% reduction which 
+was somewhat disappointing compared to other techniques. Of course it 
+all depends on what is your actual goal.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Nicolas
