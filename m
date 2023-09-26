@@ -2,335 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E247AF633
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8676D7AF69E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbjIZWNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 18:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S231526AbjIZXOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 19:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjIZWLt (ORCPT
+        with ESMTP id S231221AbjIZXL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 18:11:49 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680F223131
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 15:07:30 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690bfd4f3ebso7624633b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 15:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695766050; x=1696370850; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Uno45C0ymY1LBAzD+TJID07sUEUZYVOqDpmb0aXI3A=;
-        b=AdcCJsgdFas+PEGVZFE/h+q1ug4LRIs1J86dUfQMEZGa0jHrtiGTk8qgBXx1uQKIT4
-         9bI7MS8qWNh7iNT6ItBIVaHqRiWjWt/oLrXH3XKWh39p2tX94Xqn8b9qYD5yIvF1hAo6
-         nYvZgBzxh+XQ9b0RpKJApkAjhbkAfCjmc4YtOKWhqBI47r7VhWsp+3p27FaA2uex5kcb
-         LKyPJpzzejSsmaThDSoWo7GsHCTIjsp+viOAjGQkGDdVJCtdtNy+PkF1wfaH4Rb8pOBX
-         3INHxW8Xi8/GbwC5UwXms9ZRVTChjo4XeLDE0gQBrkGROSeTIBdiz+TCSGWZsrmBicVI
-         EPHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695766050; x=1696370850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Uno45C0ymY1LBAzD+TJID07sUEUZYVOqDpmb0aXI3A=;
-        b=SAhCeAt+4DsyfsZV72yIm5TlJMpGQzKh0/3JObm/jFVPtAMGodrPc2mUuk5ELKDUVM
-         ItNluzrRmdCdzFtKFCh5EO6dx6M0G2eJH02ZCpqMbo0rvHPCGq59g9ixOLJ4NRw7Q5Zm
-         QsCSM61fsbnhSZV0l3jw/UxiFM+btpmLETT0xUJhGjtbiBnxdA5+Isy2stRK33dIvO3S
-         EQfRm4fUXO1uJJHrrnE7GOO+vQVddisZTuLq5LQ8p3Me2X35HcrQ1eqR5EdDrj0+nYSR
-         4+aE8VXm+uXT5Susze2J6+LubXx/WNAhdnziBp0SXjfVGaHk8wnExqrjBt/RwpPccgkZ
-         1hig==
-X-Gm-Message-State: AOJu0YyPXGUL4eAUCq1ynUde5g+OxVzYRACjGby14KD984jtI+oeuReO
-        1WOi8PhStyKGXp0koNir3irgXnok523Cji6afT0=
-X-Google-Smtp-Source: AGHT+IGGBd6woJGxJUdB/ZbkieCMLjS85nIqrDjs/mIOplaxnQo4+AEZRJAGcvpFK3hgZleF+rxv5XtwTtquGUzhQEE=
-X-Received: by 2002:a05:6a20:6a20:b0:154:d3ac:2076 with SMTP id
- p32-20020a056a206a2000b00154d3ac2076mr173124pzk.40.1695766049745; Tue, 26 Sep
- 2023 15:07:29 -0700 (PDT)
+        Tue, 26 Sep 2023 19:11:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45198688
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 15:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=W9+0mXQngBmMf1pqe7YjNpjWOiwbacF2w74/QFywDXI=; b=gy710OajdKs4saq4mJiIDZf7rl
+        qow3H270dpmNhxdmoheU4OLNygl2NqYiy52pqawhcoMfN99wfYhOmgcIGHKHsXWHZj/s8llr77K+v
+        f54wSqrTE4frThfYnvosAHIxGR45gUM/gZPjDXXBXytPtLjSnBBidtap0qkuPpLJkO7mVcOWioWta
+        ES2ZURP8/YiRkhud6RbvUkK16R1n81kFW7mrsqqhVIAmHYDYobbJKB8n3J29f2hyXLvhfAnSSQs+v
+        a6Uuj9BmJ/GqLHjLk2wxoobjf3oUnmMa9ece7FEkbH/Dv2kAS99IyhIN6PYiTiP6zft5TbsgdGk5y
+        Gk/9om/A==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qlGJO-00H65b-1i;
+        Tue, 26 Sep 2023 22:13:46 +0000
+Message-ID: <40672e60-3913-4794-b84a-742b7c16d361@infradead.org>
+Date:   Tue, 26 Sep 2023 15:13:45 -0700
 MIME-Version: 1.0
-References: <20230922193639.10158-1-vishal.moola@gmail.com> <20230922193639.10158-3-vishal.moola@gmail.com>
-In-Reply-To: <20230922193639.10158-3-vishal.moola@gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 26 Sep 2023 15:07:18 -0700
-Message-ID: <CAHbLzkqt8LFFDH2a7+xaQmncwiK=Ynv6vHs9d=TDNjp9_wJ4rw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] mm/khugepaged: Remove compound_pagelist
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Ryzen 9 7950x sound module does not not build
+Content-Language: en-US
+To:     sboyce@blueyonder.co.uk, Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ALSA <alsa-devel@alsa-project.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
+ <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
+ <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
+ <ZRLWIkyngsasQbQ7@debian.me>
+ <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 9:33=E2=80=AFPM Vishal Moola (Oracle)
-<vishal.moola@gmail.com> wrote:
->
-> Currently, khugepaged builds a compound_pagelist while scanning, which
-> is used to properly account for compound pages. We can now account
-> for a compound page as a singular folio instead, so remove this list.
->
-> Large folios are guaranteed to have consecutive ptes and addresses, so
-> once the first pte of a large folio is found skip over the rest.
 
-The address space may just map a partial folio, for example, in the
-extreme case the HUGE_PMD size range may have HUGE_PMD_NR folios with
-mapping one subpage from each folio per PTE. So assuming the PTE
-mapped folio is mapped consecutively may be wrong.
 
-Please refer to collapse_compound_extreme() in
-tools/testing/selftests/mm/khugepaged.c.
+On 9/26/23 12:17, Sid Boyce wrote:
+> On 26/09/2023 14:01, Bagas Sanjaya wrote:
+>> [also Cc'ing alsa ML and related maintainers]
+>>
+>> On Tue, Sep 26, 2023 at 01:23:13PM +0100, Sid Boyce wrote:
+>>> I've since rebooted and did a modprobe. No idea why it isn't automatically
+>>> loaded.
+>>>
+>>> #modinfo snd-rpl-pci-acp6x
+>>> filename:       /usr/lib/modules/6.6.0-rc3-vanilla/kernel/sound/soc/amd/rpl/snd-rpl-pci-acp6x.ko.gz
+>>> license:        GPL v2
+>>> description:    AMD ACP RPL PCI driver
+>>> srcversion:     0F909BC61165681426ECEEB
+>>> alias:          pci:v00001022d000015E2sv*sd*bc04sc80i00*
+>>> depends:
+>>> retpoline:      Y
+>>> intree:         Y
+>>> name:           snd_rpl_pci_acp6x
+>>> vermagic:       6.6.0-rc3-vanilla SMP preempt mod_unload modversions
+>>>
+>>> # modprobe snd-rpl-pci-acp6x
+>>>
+>>> #lsmod|grep snd
+>>> snd_rpl_pci_acp6x      16384  0
+>>> snd_seq_dummy          12288  0
+>>> snd_hrtimer            12288  1
+>>> snd_seq               131072  7 snd_seq_dummy
+>>> snd_hda_codec_realtek   192512  1
+>>> snd_hda_codec_hdmi     94208  1
+>>> snd_hda_codec_generic   110592  1 snd_hda_codec_realtek
+>>> snd_hda_intel          65536  2
+>>> snd_usb_audio         458752  2
+>>> snd_intel_dspcfg       40960  1 snd_hda_intel
+>>> snd_intel_sdw_acpi     16384  1 snd_intel_dspcfg
+>>> snd_hda_codec         233472  4
+>>> snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec_realtek
+>>>
+>>> snd_usbmidi_lib        49152  1 snd_usb_audio
+>>> snd_hda_core          147456  5 snd_hda_codec_generic,snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec,snd_hda_codec_realtek
+>>>
+>>> snd_ump                36864  1 snd_usb_audio
+>>> snd_rawmidi            57344  2 snd_usbmidi_lib,snd_ump
+>>> snd_seq_device         16384  3 snd_seq,snd_ump,snd_rawmidi
+>>> mc                     94208  1 snd_usb_audio
+>>> snd_hwdep              20480  2 snd_usb_audio,snd_hda_codec
+>>> snd_pcm               225280  6
+>>> snd_hda_codec_hdmi,snd_hda_intel,snd_usb_audio,snd_hda_codec,snd_hda_core
+>>> snd_timer              53248  3 snd_seq,snd_hrtimer,snd_pcm
+>>> ledtrig_audio          12288  2 snd_hda_codec_generic,asus_wmi
+>>> snd                  163840  23 snd_hda_codec_generic,snd_seq,snd_seq_device,snd_hda_codec_hdmi,snd_hwdep,snd_hda_intel,snd_usb_audio,snd_usbmidi_lib,snd_hda_codec,snd_hda_codec_realtek,snd_timer,snd_ump,snd_pcm,snd_rawmidi
+>>>
+>>> soundcore              16384  1 snd
+>>> usbcore               446464  6
+>>> xhci_hcd,snd_usb_audio,usbhid,snd_usbmidi_lib,btusb,xhci_pci
+>>>
+>> Any errors on dmesg when loading snd-rpl-pci-acp6x module?
+>>
+> The full .config.
 
->
-> This helps convert khugepaged to use folios. It removes 3 compound_head
-> calls in __collapse_huge_page_copy_succeeded(), and removes 980 bytes of
-> kernel text.
->
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  mm/khugepaged.c | 76 ++++++++++++-------------------------------------
->  1 file changed, 18 insertions(+), 58 deletions(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index f46a7a7c489f..b6c7d55a8231 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -498,10 +498,9 @@ static void release_pte_page(struct page *page)
->         release_pte_folio(page_folio(page));
->  }
->
-> -static void release_pte_pages(pte_t *pte, pte_t *_pte,
-> -               struct list_head *compound_pagelist)
-> +static void release_pte_folios(pte_t *pte, pte_t *_pte)
->  {
-> -       struct folio *folio, *tmp;
-> +       struct folio *folio;
->
->         while (--_pte >=3D pte) {
->                 pte_t pteval =3D ptep_get(_pte);
-> @@ -514,12 +513,7 @@ static void release_pte_pages(pte_t *pte, pte_t *_pt=
-e,
->                         continue;
->                 folio =3D pfn_folio(pfn);
->                 if (folio_test_large(folio))
-> -                       continue;
-> -               release_pte_folio(folio);
-> -       }
-> -
-> -       list_for_each_entry_safe(folio, tmp, compound_pagelist, lru) {
-> -               list_del(&folio->lru);
-> +                       _pte -=3D folio_nr_pages(folio) - 1;
->                 release_pte_folio(folio);
->         }
->  }
-> @@ -538,8 +532,7 @@ static bool is_refcount_suitable(struct page *page)
->  static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
->                                         unsigned long address,
->                                         pte_t *pte,
-> -                                       struct collapse_control *cc,
-> -                                       struct list_head *compound_pageli=
-st)
-> +                                       struct collapse_control *cc)
->  {
->         struct folio *folio =3D NULL;
->         pte_t *_pte;
-> @@ -588,19 +581,6 @@ static int __collapse_huge_page_isolate(struct vm_ar=
-ea_struct *vma,
->                         }
->                 }
->
-> -               if (folio_test_large(folio)) {
-> -                       struct folio *f;
-> -
-> -                       /*
-> -                        * Check if we have dealt with the compound page
-> -                        * already
-> -                        */
-> -                       list_for_each_entry(f, compound_pagelist, lru) {
-> -                               if (folio =3D=3D f)
-> -                                       goto next;
-> -                       }
-> -               }
-> -
->                 /*
->                  * We can do it before isolate_lru_page because the
->                  * page can't be freed from under us. NOTE: PG_lock
-> @@ -644,9 +624,6 @@ static int __collapse_huge_page_isolate(struct vm_are=
-a_struct *vma,
->                 VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
->                 VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
->
-> -               if (folio_test_large(folio))
-> -                       list_add_tail(&folio->lru, compound_pagelist);
-> -next:
->                 /*
->                  * If collapse was initiated by khugepaged, check that th=
-ere is
->                  * enough young pte to justify collapsing the page
-> @@ -660,6 +637,10 @@ static int __collapse_huge_page_isolate(struct vm_ar=
-ea_struct *vma,
->                 if (pte_write(pteval))
->                         writable =3D true;
->
-> +               if (folio_test_large(folio)) {
-> +                       _pte +=3D folio_nr_pages(folio) - 1;
-> +                       address +=3D folio_size(folio) - PAGE_SIZE;
-> +               }
->         }
->
->         if (unlikely(!writable)) {
-> @@ -673,7 +654,7 @@ static int __collapse_huge_page_isolate(struct vm_are=
-a_struct *vma,
->                 return result;
->         }
->  out:
-> -       release_pte_pages(pte, _pte, compound_pagelist);
-> +       release_pte_folios(pte, _pte);
->         trace_mm_collapse_huge_page_isolate(&folio->page, none_or_zero,
->                                             referenced, writable, result)=
-;
->         return result;
-> @@ -682,11 +663,9 @@ static int __collapse_huge_page_isolate(struct vm_ar=
-ea_struct *vma,
->  static void __collapse_huge_page_copy_succeeded(pte_t *pte,
->                                                 struct vm_area_struct *vm=
-a,
->                                                 unsigned long address,
-> -                                               spinlock_t *ptl,
-> -                                               struct list_head *compoun=
-d_pagelist)
-> +                                               spinlock_t *ptl)
->  {
->         struct page *src_page;
-> -       struct page *tmp;
->         pte_t *_pte;
->         pte_t pteval;
->
-> @@ -706,8 +685,7 @@ static void __collapse_huge_page_copy_succeeded(pte_t=
- *pte,
->                         }
->                 } else {
->                         src_page =3D pte_page(pteval);
-> -                       if (!PageCompound(src_page))
-> -                               release_pte_page(src_page);
-> +                       release_pte_page(src_page);
->                         /*
->                          * ptl mostly unnecessary, but preempt has to
->                          * be disabled to update the per-cpu stats
-> @@ -720,23 +698,12 @@ static void __collapse_huge_page_copy_succeeded(pte=
-_t *pte,
->                         free_page_and_swap_cache(src_page);
->                 }
->         }
-> -
-> -       list_for_each_entry_safe(src_page, tmp, compound_pagelist, lru) {
-> -               list_del(&src_page->lru);
-> -               mod_node_page_state(page_pgdat(src_page),
-> -                                   NR_ISOLATED_ANON + page_is_file_lru(s=
-rc_page),
-> -                                   -compound_nr(src_page));
-> -               unlock_page(src_page);
-> -               free_swap_cache(src_page);
-> -               putback_lru_page(src_page);
-> -       }
->  }
->
->  static void __collapse_huge_page_copy_failed(pte_t *pte,
->                                              pmd_t *pmd,
->                                              pmd_t orig_pmd,
-> -                                            struct vm_area_struct *vma,
-> -                                            struct list_head *compound_p=
-agelist)
-> +                                            struct vm_area_struct *vma)
->  {
->         spinlock_t *pmd_ptl;
->
-> @@ -753,7 +720,7 @@ static void __collapse_huge_page_copy_failed(pte_t *p=
-te,
->          * Release both raw and compound pages isolated
->          * in __collapse_huge_page_isolate.
->          */
-> -       release_pte_pages(pte, pte + HPAGE_PMD_NR, compound_pagelist);
-> +       release_pte_folios(pte, pte + HPAGE_PMD_NR);
->  }
->
->  /*
-> @@ -769,7 +736,6 @@ static void __collapse_huge_page_copy_failed(pte_t *p=
-te,
->   * @vma: the original raw pages' virtual memory area
->   * @address: starting address to copy
->   * @ptl: lock on raw pages' PTEs
-> - * @compound_pagelist: list that stores compound pages
->   */
->  static int __collapse_huge_page_copy(pte_t *pte,
->                                      struct page *page,
-> @@ -777,8 +743,7 @@ static int __collapse_huge_page_copy(pte_t *pte,
->                                      pmd_t orig_pmd,
->                                      struct vm_area_struct *vma,
->                                      unsigned long address,
-> -                                    spinlock_t *ptl,
-> -                                    struct list_head *compound_pagelist)
-> +                                    spinlock_t *ptl)
->  {
->         struct page *src_page;
->         pte_t *_pte;
-> @@ -804,11 +769,9 @@ static int __collapse_huge_page_copy(pte_t *pte,
->         }
->
->         if (likely(result =3D=3D SCAN_SUCCEED))
-> -               __collapse_huge_page_copy_succeeded(pte, vma, address, pt=
-l,
-> -                                                   compound_pagelist);
-> +               __collapse_huge_page_copy_succeeded(pte, vma, address, pt=
-l);
->         else
-> -               __collapse_huge_page_copy_failed(pte, pmd, orig_pmd, vma,
-> -                                                compound_pagelist);
-> +               __collapse_huge_page_copy_failed(pte, pmd, orig_pmd, vma)=
-;
->
->         return result;
->  }
-> @@ -1081,7 +1044,6 @@ static int collapse_huge_page(struct mm_struct *mm,=
- unsigned long address,
->                               int referenced, int unmapped,
->                               struct collapse_control *cc)
->  {
-> -       LIST_HEAD(compound_pagelist);
->         pmd_t *pmd, _pmd;
->         pte_t *pte;
->         pgtable_t pgtable;
-> @@ -1168,8 +1130,7 @@ static int collapse_huge_page(struct mm_struct *mm,=
- unsigned long address,
->
->         pte =3D pte_offset_map_lock(mm, &_pmd, address, &pte_ptl);
->         if (pte) {
-> -               result =3D __collapse_huge_page_isolate(vma, address, pte=
-, cc,
-> -                                                     &compound_pagelist)=
-;
-> +               result =3D __collapse_huge_page_isolate(vma, address, pte=
-, cc);
->                 spin_unlock(pte_ptl);
->         } else {
->                 result =3D SCAN_PMD_NULL;
-> @@ -1198,8 +1159,7 @@ static int collapse_huge_page(struct mm_struct *mm,=
- unsigned long address,
->         anon_vma_unlock_write(vma->anon_vma);
->
->         result =3D __collapse_huge_page_copy(pte, hpage, pmd, _pmd,
-> -                                          vma, address, pte_ptl,
-> -                                          &compound_pagelist);
-> +                                          vma, address, pte_ptl);
->         pte_unmap(pte);
->         if (unlikely(result !=3D SCAN_SUCCEED))
->                 goto out_up_write;
-> --
-> 2.40.1
->
+Your .config file also builds with no problems, so I guess that the issue
+is not about building but about auto-loading and finding the device.
+
+I think that what we are missing (first) is the output of 'lspci -vv',
+at least for the PCI sound device in question.
+The snd-rpl-pci-acp6x driver only supports
+vendor=0x1022, device=0x15e2, and PCI revision=0x62.
+
+
+-- 
+~Randy
