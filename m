@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFFF7AF7A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49217AF70B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbjI0BWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 21:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        id S231332AbjI0AHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 20:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbjI0BUn (ORCPT
+        with ESMTP id S231449AbjI0AFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 21:20:43 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4FF15EB5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:07:17 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-57b5ef5b947so5478152eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 16:07:17 -0700 (PDT)
+        Tue, 26 Sep 2023 20:05:05 -0400
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472E99011;
+        Tue, 26 Sep 2023 16:22:23 -0700 (PDT)
+Received: from [192.168.68.112] (ppp118-210-175-231.adl-adc-lon-bras34.tpg.internode.on.net [118.210.175.231])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 6B2562017B;
+        Wed, 27 Sep 2023 07:22:14 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wkennington-com.20230601.gappssmtp.com; s=20230601; t=1695769636; x=1696374436; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QbGNzQXq6nzIoCstD7NrK5H4Ms2M/wqIpWZdQeS0vns=;
-        b=nN6H/sAdPaSwv+v51iJjYvN+E06oZ8t47WbqG9MCp1tbtVOy4IejPz/M++I7OU3L9M
-         cm5P+yK1Q14VpfmS29BMLIxmefMOG3Mu2yMUE9y6ghRrviXSOhrziaoeF7FcHRFcRT4+
-         ysItgS6UHm6cKdoAPEE7iSTSHUg832OcXdh8JZodDI1Sy+bJYUdljC8CgT0yvbw7HO0B
-         6vzjJolymt3j8B4HTTkYFJiBpcPIFzkiriyCdaq6NpWbgtlUJIUUoY3W5qzvabcGwrSk
-         apwk7TraAhxTo1jEQeI3PZktHa+SzCYudavdJLlcyMFUXAW/vEZW+6YGBtZpI0c8ugPt
-         Uq7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695769636; x=1696374436;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QbGNzQXq6nzIoCstD7NrK5H4Ms2M/wqIpWZdQeS0vns=;
-        b=i3ukfwwkZ4oUto3SrReq/RezQR+nng5PFQc4bdfbxkL3iC/S9wVlwuL6CqEPpAW2DI
-         huOpMwknXVgwvY26jnC9sdD79oROcuVNmZuTguFsZnVsfLgjy5m9+bSSbZxcGk0fw2n9
-         o4HfT8E9NhvCq6A6KOrHXEmG+K9rk6ZpDOD6xb8ZqT/5vIbtcRjagmPR4qRwdkIv3Ocd
-         hX7/qCLm96fxwsfyea2X5mLzMY17ie30GD8gcMsYBJ5wZfAwEDssPWr97LiViLa5og1f
-         WKG89r1H/smO3Y1Cc5MAi5vRswvMMkysXfDxlepWMs6PgXV6eqwYi03B9C2WwBwysIcm
-         fZoQ==
-X-Gm-Message-State: AOJu0Yx6vL/IPlA/PIBNuyGT19hyJM5ZHnbLXyMqdNJZCbckAOFQmnO+
-        GISCEJKRsD0khAGXGkaMm8WHEwYXdmU1JgA72Iw=
-X-Google-Smtp-Source: AGHT+IEDl0OVELxCvoVMiAycsjRZGePvNya7jDXx/GJj1rVeP8DaJWh0R4B7YNM7QyYeoENoqOiwxA==
-X-Received: by 2002:a05:6358:930d:b0:143:723:8f89 with SMTP id x13-20020a056358930d00b0014307238f89mr606360rwa.4.1695769636472;
-        Tue, 26 Sep 2023 16:07:16 -0700 (PDT)
-Received: from wak-linux.svl.corp.google.com ([2620:15c:2a3:200:214c:d626:7850:b693])
-        by smtp.gmail.com with ESMTPSA id d17-20020aa78e51000000b00688c733fe92sm10471463pfr.215.2023.09.26.16.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 16:07:16 -0700 (PDT)
-From:   "William A. Kennington III" <william@wkennington.com>
-To:     peda@axentia.se
-Cc:     linux-kernel@vger.kernel.org,
-        "William A. Kennington III" <william@wkennington.com>
-Subject: [PATCH] mux: Make it possible to select MULTIPLEXER if EXPERT
-Date:   Tue, 26 Sep 2023 16:07:12 -0700
-Message-ID: <20230926230712.516709-1-william@wkennington.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+        d=codeconstruct.com.au; s=2022a; t=1695770536;
+        bh=3xy3oYvGG7Rgvu7rXIPqMIaHFUEefO32BL/5JeivFsM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Nc1pzZmuL8BIfPa9WmVMAMK3q2oPyV6epmFy5ihSOS5smQ+L7+AvhVpWriHV8/ZLh
+         uwSAqCUSfyLQ0xjfIj+vnu82oGAWij+2M3B2+zL1W/seZW/cqQHT6ST4I1+8hPC4XX
+         Mdh6X04rt5eSwtTilUak5akhIQdszckz7bT2nTcbGco+CTlM1GBDShPol1EvR0ujCT
+         tQY6fR69A9K80khCkl/Sl/e02bi+59zFMnyMllUCSmiNtqNSPEiNicMBTjSPerc4Xa
+         erf4KHlO8DG2rj61hMoz2nnTmU3GdAci354zUOMDSndkpfgRveeh5GE7MUA2FWxBsd
+         I3MhVR3d7j5tg==
+Message-ID: <7a7d5a7f19fc793f157508fec7fbc09ca8c4cc4b.camel@codeconstruct.com.au>
+Subject: Re: [PATCH] MAINTAINERS: aspeed: Update Andrew's email address
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     joel@jms.id.au, andrew@aj.id.au, linux-aspeed@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Date:   Wed, 27 Sep 2023 08:52:09 +0930
+In-Reply-To: <CAPDyKFrFxYxSTa=z2VnCk4m_d-wEgd17wBokzyNCCRLtSUnFKw@mail.gmail.com>
+References: <20230925030647.40283-1-andrew@codeconstruct.com.au>
+         <CAPDyKFrFxYxSTa=z2VnCk4m_d-wEgd17wBokzyNCCRLtSUnFKw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, there is no way to enable multiplexer support unless another
-config option selects it. When using `allnoconfig` with CONFIG_EXPERT,
-this is deselected with no way to enable it.
+On Tue, 2023-09-26 at 17:03 +0200, Ulf Hansson wrote:
+> On Mon, 25 Sept 2023 at 05:07, Andrew Jeffery
+> <andrew@codeconstruct.com.au> wrote:
+> >=20
+> > I've changed employers, have company email that deals with patch-based
+> > workflows without too much of a headache, and am trying to steer some
+> > content out of my personal mail.
+> >=20
+> > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+>=20
+> I guess it doesn't really matter what tree this gets funneled through,
+> so I decided to pick this up via my mmc tree.
+>=20
+> So, applied for next, thanks!
 
-Signed-off-by: William A. Kennington III <william@wkennington.com>
----
- drivers/mux/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ah, thanks for being so prompt! However, Joel has sent a PR to Arnd
+with the patch:
 
-diff --git a/drivers/mux/Kconfig b/drivers/mux/Kconfig
-index 80f015cf6e54..5d585d778312 100644
---- a/drivers/mux/Kconfig
-+++ b/drivers/mux/Kconfig
-@@ -4,7 +4,7 @@
- #
- 
- config MULTIPLEXER
--	tristate
-+	tristate "Multiplexer"
- 
- menu "Multiplexer drivers"
- 	depends on MULTIPLEXER
--- 
-2.42.0.582.g8ccd20d70d-goog
+https://lore.kernel.org/all/CACPK8Xc+D=3DYBc2Dhk-6-gOuvKN0xGgZYNop6oJVa=3DV=
+NgaEYOHw@mail.gmail.com/
+
+I thought I'd left a note under the fold asking Joel to do that so
+people knew how it would get into the tree, but that clearly isn't the
+case. Sorry about that, I must have rolled the patch off again after I
+put the note into the original.
+
+Andrew
+
+>=20
+> Kind regards
+> Uffe
+>=20
+>=20
+> > ---
+> >  MAINTAINERS | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index b19995690904..1965cee433b0 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1963,7 +1963,7 @@ F:        drivers/irqchip/irq-aspeed-i2c-ic.c
+> >=20
+> >  ARM/ASPEED MACHINE SUPPORT
+> >  M:     Joel Stanley <joel@jms.id.au>
+> > -R:     Andrew Jeffery <andrew@aj.id.au>
+> > +R:     Andrew Jeffery <andrew@codeconstruct.com.au>
+> >  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscri=
+bers)
+> >  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+> >  S:     Supported
+> > @@ -3058,7 +3058,7 @@ F:        Documentation/devicetree/bindings/peci/=
+peci-aspeed.yaml
+> >  F:     drivers/peci/controller/peci-aspeed.c
+> >=20
+> >  ASPEED PINCTRL DRIVERS
+> > -M:     Andrew Jeffery <andrew@aj.id.au>
+> > +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
+> >  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+> >  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
+> >  L:     linux-gpio@vger.kernel.org
+> > @@ -3075,7 +3075,7 @@ F:        drivers/irqchip/irq-aspeed-scu-ic.c
+> >  F:     include/dt-bindings/interrupt-controller/aspeed-scu-ic.h
+> >=20
+> >  ASPEED SD/MMC DRIVER
+> > -M:     Andrew Jeffery <andrew@aj.id.au>
+> > +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
+> >  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
+> >  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
+> >  L:     linux-mmc@vger.kernel.org
+> > --
+> > 2.39.2
+> >=20
 
