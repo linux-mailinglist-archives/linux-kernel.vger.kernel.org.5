@@ -2,212 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAC77AE2BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8497AE2C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbjIZAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
+        id S230493AbjIZAH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIZAEV (ORCPT
+        with ESMTP id S229495AbjIZAH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:04:21 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25393120;
-        Mon, 25 Sep 2023 17:04:13 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id C24E82A7;
-        Mon, 25 Sep 2023 17:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1695686652;
-        bh=XCm8ajSpNf9l45b3q9u9m3cq2MdqBWAUlbvBZoBXx7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUuchodBKWKfttbShooOtlfX91ngeii0suOR+k4PoXnxOIcrefe2KEks8L3z33nED
-         tIYxKZna1veHLHSuimbpBPzwAbhJpYZSvor8cQZaDD3xhQKRwIK82fZqMqkMJcNLf+
-         ZSsDq9URZrYRtclQyajjdtPV75VODKn5rUr+PQZg=
-Date:   Mon, 25 Sep 2023 17:04:10 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andrew Jeffery <andrew@aj.id.au>, g@hatter.bewilderbeest.net
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joel Stanley <joel@jms.id.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "Milton D. Miller II" <mdmii@outlook.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Eddie James <eajames@linux.ibm.com>,
-        Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: aspeed-wdt: Add
- aspeed,reset-mask property
-Message-ID: <6b0d4901-d543-4a06-a1e4-7f1558f5361f@hatter.bewilderbeest.net>
-References: <20230922104231.1434-4-zev@bewilderbeest.net>
- <20230922104231.1434-5-zev@bewilderbeest.net>
- <6df088a6-75ab-42f2-ba39-3f155714ed2d@app.fastmail.com>
+        Mon, 25 Sep 2023 20:07:26 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3D8710E;
+        Mon, 25 Sep 2023 17:07:19 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AA1D320B74C0;
+        Mon, 25 Sep 2023 17:07:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AA1D320B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695686839;
+        bh=QZodBqGHLOewJOW6wRe5geNAIIU82UjzOMXe88tfjPE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kmTYP0lWHcekOyaKUSaNB5IUOvjE7JowCi4cvfizTGz5XrByutoXC7Nn8iodtOL5S
+         yd0NXd+7/jOmpmxv4AqC5GfNM9SbURuMj6c6nmdV1ClKyUL8JX7CCgIEW3ISjk295x
+         lAKUsxfmyJul+OZjhzVhc6tGwAGW9CQByXb1DnKY=
+Message-ID: <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
+Date:   Mon, 25 Sep 2023 17:07:24 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <6df088a6-75ab-42f2-ba39-3f155714ed2d@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
+ VMMs running on Hyper-V
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023092342-staunch-chafe-1598@gregkh>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <2023092342-staunch-chafe-1598@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 24, 2023 at 07:42:45PM PDT, Andrew Jeffery wrote:
->
->
->On Fri, 22 Sep 2023, at 20:12, Zev Weiss wrote:
->> This property configures the Aspeed watchdog timer's reset mask, which
->> controls which peripherals are reset when the watchdog timer expires.
->> Some platforms require that certain devices be left untouched across a
->> reboot; aspeed,reset-mask can now be used to express such constraints.
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  .../bindings/watchdog/aspeed-wdt.txt          | 18 +++-
->>  include/dt-bindings/watchdog/aspeed-wdt.h     | 92 +++++++++++++++++++
->>  2 files changed, 109 insertions(+), 1 deletion(-)
->>  create mode 100644 include/dt-bindings/watchdog/aspeed-wdt.h
->>
->> diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
->> b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
->> index a8197632d6d2..3208adb3e52e 100644
->> --- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
->> +++ b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
->> @@ -47,7 +47,15 @@ Optional properties for AST2500-compatible watchdogs:
->>  			   is configured as push-pull, then set the pulse
->>  			   polarity to active-high. The default is active-low.
->>
->> -Example:
->> +Optional properties for AST2500- and AST2600-compatible watchdogs:
->> + - aspeed,reset-mask: A bitmask indicating which peripherals will be reset if
->> +		      the watchdog timer expires.  On AST2500 this should be a
->> +		      single word defined using the AST2500_WDT_RESET_* macros;
->> +		      on AST2600 this should be a two-word array with the first
->> +		      word defined using the AST2600_WDT_RESET1_* macros and the
->> +		      second word defined using the AST2600_WDT_RESET2_* macros.
+Resend in plain text instead of HTML - oops!
+
+On 9/23/2023 12:58 AM, Greg KH wrote:
+> On Fri, Sep 22, 2023 at 11:38:35AM -0700, Nuno Das Neves wrote:
+>> +static int mshv_vtl_get_vsm_regs(void)
+>> +{
+>> +	struct hv_register_assoc registers[2];
+>> +	union hv_input_vtl input_vtl;
+>> +	int ret, count = 2;
 >> +
->> +Examples:
->>
->>  	wdt1: watchdog@1e785000 {
->>  		compatible = "aspeed,ast2400-wdt";
->> @@ -55,3 +63,11 @@ Example:
->>  		aspeed,reset-type = "system";
->>  		aspeed,external-signal;
->>  	};
+>> +	input_vtl.as_uint8 = 0;
+>> +	registers[0].name = HV_REGISTER_VSM_CODE_PAGE_OFFSETS;
+>> +	registers[1].name = HV_REGISTER_VSM_CAPABILITIES;
 >> +
->> +	#include <dt-bindings/watchdog/aspeed-wdt.h>
->> +	wdt2: watchdog@1e785040 {
->> +		compatible = "aspeed,ast2600-wdt";
->> +		reg = <0x1e785040 0x40>;
->> +		aspeed,reset-mask = <AST2600_WDT_RESET1_DEFAULT
->> +				     (AST2600_WDT_RESET2_DEFAULT & ~AST2600_WDT_RESET2_LPC)>;
->> +	};
->
->Rob has acked your current approach already, but I do wonder about an 
->alternative that aligns more with the clock/reset/interrupt properties. 
->Essentially, define a new generic watchdog property that is specified 
->on the controllers to be reset by the watchdog (or even on just the 
->watchdog node itself, emulating what you've proposed here):
->
->watchdog-resets = <phandle index>;
->
->The phandle links to the watchdog of interest, and the index specifies 
->the controller associated with the configuration. It might even be 
->useful to do:
->
->watchdog-resets = <phandle index enable>;
->
->"enable" could provide explicit control over whether somethings should 
->be reset or not (as a way to prevent reset if the controller targeted 
->by the provided index would otherwise be reset in accordance with the 
->default reset value in the watchdog controller).
->
->The macros from the dt-bindings header can then use macros to name the 
->indexes rather than define a mask tied to the register layout. The 
->index may still in some way represent the mask position. This has the 
->benefit of hiding the issue of one vs two configuration registers 
->between the AST2500 and AST2600 while also allowing other controllers 
->to exploit the binding (Nuvoton BMCs? Though maybe it's generalising 
->too early?).
->
+>> +	ret = hv_call_get_vp_registers(HV_VP_INDEX_SELF, HV_PARTITION_ID_SELF,
+>> +				       count, input_vtl, registers);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	mshv_vsm_page_offsets.as_uint64 = registers[0].value.reg64;
+>> +	mshv_vsm_capabilities.as_uint64 = registers[1].value.reg64;
+>> +
+>> +	pr_debug("%s: VSM code page offsets: %#016llx\n", __func__,
+>> +		 mshv_vsm_page_offsets.as_uint64);
+>> +	pr_info("%s: VSM capabilities: %#016llx\n", __func__,
+>> +		mshv_vsm_capabilities.as_uint64);
+> 
+> When drivers are working properly, they are quiet.  This is very noisy
+> and probably is leaking memory addresses to userspace?
+> 
 
-Sorry, I'm having a bit of a hard time picturing exactly what you're 
-suggesting here...to start with:
+I will remove these, thanks.
 
->property that is specified on the controllers to be reset by the
->watchdog
+> Also, there is NEVER a need for __func__ in a pr_debug() line, it has
+> that for you automatically.
+> 
 
-and
+Thank you, I didn't know this.
 
->or even on just the watchdog node itself
+> Also, drivers should never call pr_*() calls, always use the proper
+> dev_*() calls instead.
+> 
 
-seem on the face of it like two fairly different approaches to me.  The 
-former sounds more like existing clock/reset/etc. stuff, where the 
-peripheral has a property describing its relationship to the "central" 
-subsystem, and various peripheral drivers are all individually 
-responsible for observing that property and calling in to the central 
-subsystem to configure things for that peripheral appropriately; if I'm 
-understanding you correctly, it might look something like:
+We only use struct device in one place in this driver, I think that is 
+the only place it makes sense to use dev_*() over pr_*() calls.
+> 
+> 
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int mshv_vtl_configure_vsm_partition(void)
+>> +{
+>> +	union hv_register_vsm_partition_config config;
+>> +	struct hv_register_assoc reg_assoc;
+>> +	union hv_input_vtl input_vtl;
+>> +
+>> +	config.as_u64 = 0;
+>> +	config.default_vtl_protection_mask = HV_MAP_GPA_PERMISSIONS_MASK;
+>> +	config.enable_vtl_protection = 1;
+>> +	config.zero_memory_on_reset = 1;
+>> +	config.intercept_vp_startup = 1;
+>> +	config.intercept_cpuid_unimplemented = 1;
+>> +
+>> +	if (mshv_vsm_capabilities.intercept_page_available) {
+>> +		pr_debug("%s: using intercept page", __func__);
+> 
+> Again, __func__ is not needed, you are providing it twice here for no
+> real reason except to waste storage space :)
+> 
 
-   &spi1 {
-     watchdog-resets = <&wdt1 WDT_INDEX_SPI1 0>;
-   };
+Thanks, I will review all the uses of pr_debug().
 
-Or maybe something more like how pinctrl works, via phandles to subnodes 
-of the central device?
+>> +		config.intercept_page = 1;
+>> +	}
+>> +
+>> +	reg_assoc.name = HV_REGISTER_VSM_PARTITION_CONFIG;
+>> +	reg_assoc.value.reg64 = config.as_u64;
+>> +	input_vtl.as_uint8 = 0;
+>> +
+>> +	return hv_call_set_vp_registers(HV_VP_INDEX_SELF, HV_PARTITION_ID_SELF,
+>> +				       1, input_vtl, &reg_assoc);
+> 
+> 
+> None of this needs to be unwound if initialization fails later on?
+> 
 
-   &wdt1 {
-     wdt1_spi1_reset: spi1_reset {
-       reg = <0x1c>;
-       bit = <24>;
-     };
-   };
-
-   &spi1 {
-     watchdog-resets = <&wdt1_spi1_reset 0>;
-   };
-
-Either way, it seems like it'd be complicated by any insufficient 
-granularity in the watchdog w.r.t. having independent control over the 
-individual devices represented by separate DT nodes (such as how the 
-AST2500 watchdog has a single SPI controller reset bit instead of one 
-per SPI interface, or its "misc SOC controller" bit governing all sorts 
-of odds and ends).
-
-In the latter case (property on the wdt node), would it essentially just 
-be kind of an indirection layer mapping hardware-independent device 
-indices to specific registers/bits?  It's not obvious to me what purpose 
-a phandle to the peripheral device node would serve (would the wdt 
-driver have a good way of identifying what specific peripheral it's 
-pointing to to know what bit to twiddle?), but maybe I'm 
-misunderstanding what you're suggesting...
-
-
-I guess my other uncertainty is the balance between generalization and 
-applicability -- how many other watchdog devices have sufficient 
-comparable configurability to make use of it?  I haven't pored over all 
-of them, but from a random sampling of 20 so of the other existing wdt 
-drivers I don't see any obvious candidates -- the closest I saw were 
-cpwd.c, which apparently can distinguish between a CPU reset and a 
-CPU/backplane/board reset, and realtek_otto_wdt.c, which can do a CPU or 
-a SOC reset (though I don't have any of the hardware docs to know what 
-capabilities other devices might provide that the drivers don't use).  
-Do the Nuvoton BMCs have watchdogs with peripheral-granularity reset 
-configuration?
-
+I think unwinding this is not needed, not 100% sure.
+Saurabh, can you comment?
 
 Thanks,
-Zev
+Nuno
+
+> thanks,
+> 
+> greg k-h
 
