@@ -2,128 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775C27AE7FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354CD7AE7FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbjIZI1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 04:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
+        id S233960AbjIZI1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 04:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbjIZI13 (ORCPT
+        with ESMTP id S233947AbjIZI1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 04:27:29 -0400
-Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01on2104.outbound.protection.outlook.com [40.107.121.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53BBFC;
-        Tue, 26 Sep 2023 01:27:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W6P+B8q4ey/47TLLqjNpxjF+8lliyLpMafGtIkwCVBbxYE1fYaNov7LiO+3iV3fI9UKK/pin5grBvfkxJ3q8SvyODPVxqJa2fbQHvU4TahCLQj7LBbbfeq0XFrWWQQIWl3QR6JX8HKTx8HDaGaSIeG1bhl+JW1xZquxIUollyferZHd68Cl/R9UH6jEHTrd56CbVKEd7lBlAdr3DghQl1FVlhElnQUVs8qX8jRme+nf+pTsvZTMqb4TAugBrNHMd+qARcpCeegSG5UyNgaiOsY3sURwE3PGSzTu89/ryr8zNZ9y33+x1ennSn+0EOxUmVw/dFGZFNik8woR4NSx9MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5AcxoBKS9YjbEwv2THSG18VHhGponiMjbqvC8lSyuqo=;
- b=oV8BD0GvmWPWbgk95No0uzNex7t4ZbePtRnZ4KyXWChSm306LVUWb3Lwp+G3vVGchJaG89UdlVlOihr2YpyZ5e4r1th/nZK6w3IVxjmoI2LO0fmZ+VQBIpxK0XY/syWIlnPO42MSO50NoGAvzPiLxZ+bbCpzVH+fTUjmahyxGcWjyHTpxdDEJHbJOkklrq5hHuwCIRUUFfc44BXwUn9cK/LTUUBiEYXYeu+f7R3PiVP49PNGYBHJFXKHDI0kl7FoorGh9DH1B34kqdaU1T9oan+2URB4TD4oe0oQ/jVXuyWWVU7WwKiQKy9I506pGrjp7sVETOmG39hjzDOPh8g5EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5AcxoBKS9YjbEwv2THSG18VHhGponiMjbqvC8lSyuqo=;
- b=gZYBEqab+cSXpmbGlZc47FQHTsWrWYib8ELPDuYQtQoR7axVy5zERNcrNCBO/LwUBHGB4D2fxq4fzRwurVyHMD5ckWSdPQ3sTssc89qRFMDhZbdvQr1Iuq2BwFZGbSURj7dMWEldbCHVl11+SEWx8XFAwqNKWVwNWmLVVUm5498=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
- by LO2P265MB2589.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:13c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Tue, 26 Sep
- 2023 08:27:18 +0000
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7965:8756:9ad5:df1d]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::7965:8756:9ad5:df1d%6]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 08:27:18 +0000
-Date:   Tue, 26 Sep 2023 16:26:59 +0800
-From:   Gary Guo <gary@garyguo.net>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Alice Ryhl <alice@ryhl.io>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH v2 2/2] rust: arc: remove `ArcBorrow` in favour of
- `WithRef`
-Message-ID: <20230926162659.6555bcdc@gary-lowrisc-laptop>
-In-Reply-To: <61ccfb87-54fd-3f1b-105c-253d0350cd56@proton.me>
-References: <CAH5fLggxsewmtzXjehbawDCTHO0C7kteU_CLnh80eMNj=QyP9Q@mail.gmail.com>
-        <14513589-cc31-8985-8ff6-a97d2882f593@proton.me>
-        <ZRGyRQuBcWvgtdNR@Boquns-Mac-mini.home>
-        <9d6d6c94-5da6-a56d-4e85-fbf8da26a0b0@proton.me>
-        <ZRHWqbvYlXBXEOh-@boqun-archlinux>
-        <c5134a1a-a60d-73bb-9faa-aa1dfc3bc30d@proton.me>
-        <ZRIB0hXNvmJtmyak@boqun-archlinux>
-        <edc0b599-c5d1-4e9c-a51b-eb8ceaef7acc@ryhl.io>
-        <ZRIDc_x9Qh5EJNC8@boqun-archlinux>
-        <61ccfb87-54fd-3f1b-105c-253d0350cd56@proton.me>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0018.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::7) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:253::10)
+        Tue, 26 Sep 2023 04:27:45 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C134121
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:27:38 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c4e9d1a0aaso6984285a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:27:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695716857; x=1696321657;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=55XKxYhpepqWXUdY7SuK9vUe13bL5ShqPzIX2cS2KNs=;
+        b=qGqBQwrsAHoHyhTfvwk/Im/K+t7ceDLXHFCPyofWJmdbOmOcWDNa5D4TW5vzPlav0H
+         I9DVxhsJ2X6BXnHwrbKEZsGJP0+8fgeX4l5VpUss4oy8NRYJvJouIb8e9FqN9nbuOi4H
+         0CR4gS6EnvqiyC2gm+6albswrqWEkUF3KIG7Ywuong7mazXru/CXXpwUJ23vLDeQ3olC
+         WcYoVLgnTel7Cx8+YHqMaAZbETnRgGkALVngon4feratbV12HHoQ3bXWXq+74BRxkHJo
+         hZ0i2EynF7YC01a2Txb4pj08lLy/HhHunjO1y2IN2mKVW6Ch0gCO9mIY7a7dTHYDouGI
+         KXtQ==
+X-Gm-Message-State: AOJu0YxM93w6slSYwKP4IUSNaTXtC3j6cL4021U77QGLoDIvj8aLL0Nv
+        wvSjIfDIwmNf2RTa3LKLjr0H6YXHSkfbC2LtLfhCnCENOkDm
+X-Google-Smtp-Source: AGHT+IHn/Dc/iL1JhzuZy+gkTzxi+2Gj1EIRYbTwKpYUVoI17DDiTdctf9ir0JVL7V+W6jSBeYgPBPEFyMn6IybRoiAg8pBmepr1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO2P265MB2589:EE_
-X-MS-Office365-Filtering-Correlation-Id: 46a46c79-e123-4930-d20f-08dbbe6a657a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /P9xHlr9DbMEeRcMXQI9oSyEyK32FBr2F6tVMfJEtEJSM/+tVaiulyva4zq7t8Deqhax8E/V5trCpmucrH9v2bBLLBGm/p1gIOQwB/G5p5aMsE4Dcjh0IVGwrocTgclLRXGjldVJ+e8nYuGgwlWaAkTkt9GBA1UiUpJnrWXGEDltux4mN0QejhLNJAe7i4JwijFVKbblUzaej5XNLNOD3jKnQjV0KYNY5LimiPN9R70eHD/WFwckV0LnKL6M/BgHgyV47+EXqr39FVvJV+dI/QOYoHAd6frhIJRQ/hMXoqQkvDDNz7l2wbLlqxJLi8DBTmM5b5i7FefBNOX5/+P968tjBoRTxl4fIiW8/M7UjvAXrTDhGCNDT7tb7k53ttcVys2u4BChvJyHN2BsRO4U4xdo2b5nSWuRUsBHNRdjISI6hknflkIsJWJS9qs746tbLucA0PFvlBsAN7XMcaDHY5RkPmqCwmhuELwpXmf5aywdBAdJfFw8VLzxoicPmsXwUjxB1BZdZXHfDYVkaj+Poy26OhIm/kL9uwb2QO50C6tvsds/5vuEj1XwwVtW0Rd/om8s7zUftB6lQlhOrf/6u1Q19fg6ptRTMyYc2Vlk8aE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(346002)(396003)(136003)(39830400003)(230922051799003)(1800799009)(451199024)(186009)(41300700001)(6916009)(66946007)(66476007)(66556008)(54906003)(316002)(478600001)(38100700002)(6666004)(7416002)(2906002)(33716001)(86362001)(8936002)(4326008)(8676002)(5660300002)(26005)(83380400001)(1076003)(6486002)(53546011)(6506007)(9686003)(6512007)(81973001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Zztt07cjG5xoME4gX35X6n8aUckzEeny5vodkWXEJkULultUmKbm2pRcEmv0?=
- =?us-ascii?Q?SGpwvQG9RV5UE5FSHzF0RDZl/iYnonVy5vrq/llzKHnymyo42mtphOQU8D8V?=
- =?us-ascii?Q?NrvcNz7cImh3i05hs5xtzvpt6qanhqt8GvBMYFpehStckkfvwik9blEK0lVC?=
- =?us-ascii?Q?HPYLJwV7oHBELCB4YZ3ynN5ZY0wLUaxHo+igrRhuAzo2vCFO/rKYl73j6ZXK?=
- =?us-ascii?Q?5jhOiTCWnSaoImDzC1q+ikyzd3Q8gyT3KnFuGHFXTqEMt6cE1AzUfDi/lTR/?=
- =?us-ascii?Q?EueCYx+JL51nqK+VN+LOoieWgAf220VbLEo6dH0xxpLK6B9/kj3J6UA7+jI3?=
- =?us-ascii?Q?H/Gzuyy0Lt0iLFJEfXWnv0fYjemuNgLFcvR34lFnJDUxpQtwM5uX+DzIr6fZ?=
- =?us-ascii?Q?sqFTv1kPOjGChoXRGcdEcy3ib+niUVFtSBezmtFEMi0YkeYk1nAQu/HftynL?=
- =?us-ascii?Q?/08Kc1CtP5fdUhJYi4MXys834xhx7lyHPD1Gbn3BtDvr+lwEOiAFKOJdPbbQ?=
- =?us-ascii?Q?AWH2b6ehIP0qz2m5Bi7bCHpmAttYDEnGVd3IRpt2JprvDufLI5qmClhOrPoc?=
- =?us-ascii?Q?Titb0Ea1gnkh9rruKvyYdOmXsqd6di1qYxwrWHJhXtAWbv8KfUPZUbQIvCzk?=
- =?us-ascii?Q?y+y1jILnSrau6GY37flkpPhyjDW8L732ofALT+yfFeP/1PGAf9dOFIXNkGwZ?=
- =?us-ascii?Q?5NRuSHdcUfU9pHvJVHB5+2SLe+w9a2C6RRqtB5X4Z7KaPydkwD+7oh6EE52/?=
- =?us-ascii?Q?B0dPj8SAz5hP+ub3Ru8Z72FifkXI8OEsnscS3sQGO0dIOl/s6yHPSzvR/98z?=
- =?us-ascii?Q?zMD0/1q+8esirkd1QtpzUQDmveI5inul3g5h0jhessgLLeEE9YrwMAKA7r4z?=
- =?us-ascii?Q?xLRjHFbdvtcC94ZhGe8aEVANGBvmVEf0xE/6y3FL5w+j5LAOm7Zzu0w+2xAT?=
- =?us-ascii?Q?HzdAApxS/UY3t8pSTm/EHX1i6D35FhFXFHzSQ+xyHIcnHRfmbLMOhqF+HRFV?=
- =?us-ascii?Q?cRmm2qartBucXwyYkpXzUVQaoOo8odEs92J/u3QGqGwdcpDJ5yoyUlAXAqcK?=
- =?us-ascii?Q?wdhSBaPi+D5Xhsto8W+EDAygiccJf81HvTnthPi7MJn+4c9GUgEusMkxzT4l?=
- =?us-ascii?Q?1b2GqcZpnX/NP6MawubSjbjGNQdFyOts9pTtlR+1VKg9OjDOTHMZxwJ7jcZF?=
- =?us-ascii?Q?I0HOT/cLBRlCmsEkiVIZivnec7HVEykyANFRLLyRgJ0+nyShFXMJrp8uhGgZ?=
- =?us-ascii?Q?XvlOKC7P3/aM2vEFYCnndR9cdOZUaj9Nlcn7JePTn2YChIO8TM5OxDNVLIOv?=
- =?us-ascii?Q?JeQ/Cvkewj5xUae3zjA+7QWrVtO3Nw5K2P0LnVbZieUnFIss3Vc3GyBFWwdd?=
- =?us-ascii?Q?5OeQsRUbB0QHqTC4lIZvOgTWbJYBQKA9/e2SpY/NBhGsSwWiBbF+OUSEGwXV?=
- =?us-ascii?Q?RsGsiIw0BMqqP7BlIf2pP/A3xGj6ji3benNvPtx6AJ2E2c1EahoV7qYCMhor?=
- =?us-ascii?Q?hz7lhWQ2L6SE46ZE7/nZpKs5QCdY05x0N5T4wKcdfP+whAEBT6NFD80INGbl?=
- =?us-ascii?Q?ZnGuC5s6B/HRyi8cagC9Zi+UP0FC6OK/f3EwDgYf?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46a46c79-e123-4930-d20f-08dbbe6a657a
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 08:27:18.3089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ghqLyDtl2lWAvVAYGZhoMbxHV0dWfEMCjXW+xNalCQhN9END2kYg05HTlmVavsTSgtmZ4FswDVRbDm/EBqvRgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P265MB2589
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6870:a88f:b0:1d6:92f5:c1d2 with SMTP id
+ eb15-20020a056870a88f00b001d692f5c1d2mr4416177oab.11.1695716857558; Tue, 26
+ Sep 2023 01:27:37 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 01:27:37 -0700
+In-Reply-To: <0000000000006777d506051db4fd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef3b8a06063ed805@google.com>
+Subject: Re: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in ntfs_write_bh
+From:   syzbot <syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,119 +58,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 22:26:56 +0000
-Benno Lossin <benno.lossin@proton.me> wrote:
+syzbot has found a reproducer for the following issue on:
 
-> On 26.09.23 00:02, Boqun Feng wrote:
-> > On Mon, Sep 25, 2023 at 11:58:46PM +0200, Alice Ryhl wrote:  
-> >> On 9/25/23 23:55, Boqun Feng wrote:  
-> >>> On Mon, Sep 25, 2023 at 09:03:52PM +0000, Benno Lossin wrote:  
-> >>>> On 25.09.23 20:51, Boqun Feng wrote:  
-> >>>>> On Mon, Sep 25, 2023 at 05:00:45PM +0000, Benno Lossin wrote:  
-> >>>>>> On 25.09.23 18:16, Boqun Feng wrote:  
-> >>>>>>> On Mon, Sep 25, 2023 at 03:07:44PM +0000, Benno Lossin wrote:  
-> >>>>>>>> ```rust
-> >>>>>>>> struct MutatingDrop {
-> >>>>>>>>          value: i32,
-> >>>>>>>> }
-> >>>>>>>>
-> >>>>>>>> impl Drop for MutatingDrop {
-> >>>>>>>>          fn drop(&mut self) {
-> >>>>>>>>              self.value = 0;
-> >>>>>>>>          }
-> >>>>>>>> }
-> >>>>>>>>
-> >>>>>>>> let arc = Arc::new(MutatingDrop { value: 42 });
-> >>>>>>>> let wr = arc.as_with_ref(); // this creates a shared `&` reference to the MutatingDrop
-> >>>>>>>> let arc2: Arc<MutatingDrop> = wr.into(); // increments the reference count to 2  
-> >>>>>>>
-> >>>>>>> More precisely, here we did a
-> >>>>>>>
-> >>>>>>> 	&WithRef<_> -> NonNull<WithRef<_>>
-> >>>>>>>
-> >>>>>>> conversion, and later on, we may use the `NonNull<WithRef<_>>` in
-> >>>>>>> `drop` to get a `Box<WithRef<_>>`.  
-> >>>>>>
-> >>>>>> Indeed.
-> >>>>>>  
-> >>>>>
-> >>>>> Can we workaround this issue by (ab)using the `UnsafeCell` inside
-> >>>>> `WithRef<T>`?
-> >>>>>
-> >>>>> impl<T: ?Sized> From<&WithRef<T>> for Arc<T> {
-> >>>>>        fn from(b: &WithRef<T>) -> Self {
-> >>>>>            // SAFETY: The existence of the references proves that
-> >>>>> 	// `b.refcount.get()` is a valid pointer to `WithRef<T>`.
-> >>>>> 	let ptr = unsafe { NonNull::new_unchecked(b.refcount.get().cast::<WithRef<T>>()) };
-> >>>>>
-> >>>>> 	// SAFETY: see the SAFETY above `let ptr = ..` line.
-> >>>>>            ManuallyDrop::new(unsafe { Arc::from_inner(ptr) })
-> >>>>>                .deref()
-> >>>>>                .clone()
-> >>>>>        }
-> >>>>> }
-> >>>>>
-> >>>>> This way, the raw pointer in the new Arc no longer derives from the
-> >>>>> reference of `WithRef<T>`.  
-> >>>>
-> >>>> No, the code above only obtains a pointer that has provenance valid
-> >>>> for a `bindings::refcount_t` (or type with the same layout, such as
-> >>>> `Opaque<bindings::refcount_t>`). But not the whole `WithRef<T>`, so accessing
-> >>>> it by reading/writing will still be UB.
-> >>>>  
-> >>>
-> >>> Hmm... but we do the similar thing in `Arc::from_raw()`, right?
-> >>>
-> >>>       	pub unsafe fn from_raw(ptr: *const T) -> Self {
-> >>> 	    ..
-> >>> 	}
-> >>>
-> >>> , what we have is a pointer to T, and we construct a pointer to
-> >>> `ArcInner<T>/WithRef<T>`, in that function. Because the `sub` on pointer
-> >>> gets away from provenance? If so, we can also do a sub(0) in the above
-> >>> code.  
-> >>
-> >> Not sure what you mean. Operations on raw pointers leave provenance
-> >> unchanged.  
-> > 
-> > Let's look at the function from_raw(), the input is a pointer to T,
-> > right? So you only have the provenance to T, but in that function, the
-> > pointer is casted to a pointer to WithRef<T>/ArcInner<T>, that means you
-> > have the provenance to the whole WithRef<T>/ArcInner<T>, right? My
-> > question is: why isn't that a UB?  
-> 
-> The pointer was originally derived by a call to `into_raw`:
-> ```
->      pub fn into_raw(self) -> *const T {
->          let ptr = self.ptr.as_ptr();
->          core::mem::forget(self);
->          // SAFETY: The pointer is valid.
->          unsafe { core::ptr::addr_of!((*ptr).data) }
->      }
-> ```
-> So in this function the origin (also the origin of the provenance)
-> of the pointer is `ptr` which is of type `NonNull<WithRef<T>>`.
-> Raw pointers do not lose this provenance information when you cast
-> it and when using `addr_of`/`addr_of_mut`. So provenance is something
-> that is not really represented in the type system for raw pointers.
-> 
-> When doing a round trip through a reference though, the provenance is
-> newly assigned and thus would only be valid for a `T`:
-> ```
-> let raw = arc.into_raw();
-> let reference = unsafe { &*raw };
-> let raw: *const T = reference;
-> let arc = unsafe { Arc::from_raw(raw) };
-> ```
-> Miri would complain about the above code.
-> 
+HEAD commit:    6465e260f487 Linux 6.6-rc3
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13d78ffe680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb54ecdfa197f132
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc79f8d1898960d41073
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14aa4e32680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171787b6680000
 
-One thing we can do is to opt from strict provenance, so:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b1a49bae59d/disk-6465e260.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f3226aa54969/vmlinux-6465e260.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/225ee050173e/bzImage-6465e260.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/c217b59cb3bd/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/11dc567a19b3/mount_2.gz
 
-```
-let raw = arc.into_raw();
-let _ = raw as usize; // expose the provenance of raw
-let reference = unsafe { &*raw };
-let raw = reference as *const T as usize as *const T;
-let arc = unsafe { Arc::from_raw(raw) };
-```
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com
+
+ntfs3: loop0: ino=0, attr_set_size
+ntfs3: loop0: Mark volume as dirty due to NTFS errors
+==================================================================
+BUG: KASAN: slab-use-after-free in ntfs_write_bh+0x6b9/0x6e0 fs/ntfs3/fsntfs.c:1401
+Read of size 8 at addr ffff888016aaa000 by task syz-executor201/5400
+
+CPU: 1 PID: 5400 Comm: syz-executor201 Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ ntfs_write_bh+0x6b9/0x6e0 fs/ntfs3/fsntfs.c:1401
+ mi_write+0xc0/0x1e0 fs/ntfs3/record.c:346
+ ni_write_inode+0x1025/0x2810 fs/ntfs3/frecord.c:3360
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
+ writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
+ sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
+ ntfs_set_state+0x3f0/0x6e0 fs/ntfs3/fsntfs.c:995
+ attr_set_size+0x139c/0x2ca0 fs/ntfs3/attrib.c:866
+ ntfs_extend_mft+0x29f/0x430 fs/ntfs3/fsntfs.c:527
+ ntfs_look_free_mft+0x777/0xdd0 fs/ntfs3/fsntfs.c:590
+ ni_create_attr_list+0x937/0x1520 fs/ntfs3/frecord.c:876
+ ni_ins_attr_ext+0x23f/0xaf0 fs/ntfs3/frecord.c:974
+ ni_insert_attr+0x310/0x870 fs/ntfs3/frecord.c:1141
+ ni_insert_resident+0xd2/0x3a0 fs/ntfs3/frecord.c:1525
+ ntfs_set_ea+0xf46/0x13d0 fs/ntfs3/xattr.c:437
+ ntfs_save_wsl_perm+0x134/0x3d0 fs/ntfs3/xattr.c:946
+ ntfs3_setattr+0x92e/0xb20 fs/ntfs3/file.c:708
+ notify_change+0x742/0x11c0 fs/attr.c:499
+ chown_common+0x596/0x660 fs/open.c:783
+ do_fchownat+0x140/0x1f0 fs/open.c:814
+ __do_sys_lchown fs/open.c:839 [inline]
+ __se_sys_lchown fs/open.c:837 [inline]
+ __x64_sys_lchown+0x7e/0xc0 fs/open.c:837
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0958017a59
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0957fd4218 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
+RAX: ffffffffffffffda RBX: 00007f09580be6a8 RCX: 00007f0958017a59
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000080
+RBP: 00007f09580be6a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f09580be6ac
+R13: 00007f095808b4ac R14: 0032656c69662f2e R15: 00007f095806c0c0
+ </TASK>
+
+Allocated by task 5038:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1023 [inline]
+ __kmalloc+0x60/0x100 mm/slab_common.c:1036
+ kmalloc include/linux/slab.h:603 [inline]
+ tomoyo_realpath_from_path+0xb9/0x710 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x2a3/0x3b0 security/tomoyo/file.c:771
+ tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
+ tomoyo_file_open+0xa8/0xd0 security/tomoyo/tomoyo.c:327
+ security_file_open+0x6a/0xe0 security/security.c:2836
+ do_dentry_open+0x538/0x1730 fs/open.c:916
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x19af/0x29c0 fs/namei.c:3796
+ do_filp_open+0x1de/0x430 fs/namei.c:3823
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1448
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5038:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ tomoyo_realpath_from_path+0x1a6/0x710 security/tomoyo/realpath.c:286
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x2a3/0x3b0 security/tomoyo/file.c:771
+ tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
+ tomoyo_file_open+0xa8/0xd0 security/tomoyo/tomoyo.c:327
+ security_file_open+0x6a/0xe0 security/security.c:2836
+ do_dentry_open+0x538/0x1730 fs/open.c:916
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x19af/0x29c0 fs/namei.c:3796
+ do_filp_open+0x1de/0x430 fs/namei.c:3823
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1448
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888016aaa000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 0 bytes inside of
+ freed 4096-byte region [ffff888016aaa000, ffff888016aab000)
+
+The buggy address belongs to the physical page:
+page:ffffea00005aaa00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x16aa8
+head:ffffea00005aaa00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42140 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 3094771911, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0xee0/0x2f20 mm/page_alloc.c:3170
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
+ alloc_page_interleave+0x1e/0x250 mm/mempolicy.c:2131
+ alloc_pages+0x22a/0x270 mm/mempolicy.c:2293
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x131/0x340 mm/slub.c:3517
+ kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ kobject_uevent_env+0x24c/0x1800 lib/kobject_uevent.c:524
+ kset_register+0x1b6/0x2a0 lib/kobject.c:873
+ class_register+0x1cb/0x330 drivers/base/class.c:205
+ ib_core_init+0xb9/0x300 drivers/infiniband/core/device.c:2780
+ do_one_initcall+0x117/0x630 init/main.c:1232
+ do_initcall_level init/main.c:1294 [inline]
+ do_initcalls init/main.c:1310 [inline]
+ do_basic_setup init/main.c:1329 [inline]
+ kernel_init_freeable+0x5c2/0x900 init/main.c:1547
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888016aa9f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888016aa9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888016aaa000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888016aaa080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888016aaa100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
