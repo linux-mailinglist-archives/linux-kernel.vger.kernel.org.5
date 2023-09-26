@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F99A7AE8A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8939E7AE8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234065AbjIZJGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S234017AbjIZJIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbjIZJGl (ORCPT
+        with ESMTP id S231473AbjIZJI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:06:41 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B39E5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:06:33 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-405361bb9cdso82334275e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695719192; x=1696323992; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AYPORNOx4NuRhf6WfJUJoSr5UgLUFNvcuKhQTL+JrnY=;
-        b=bjix63Oiqxi1eSIKv9kBiX/Y0i0bcLq6Z5XapGVl3wP569BlLSVeq9yeTZmfjxGLGs
-         g/NbbROM3rcc190ZeDit6F6ywrVhKSRXqjTfh0tUC5q/syS9+WbaiFIuABLko3wKT8cW
-         h+bwnFDc5j0pbBgN1N6DSysuyCn5ncUxFEHkjxW0fel9lsxg1o1SSD6Rv0eMn/P6IjGv
-         IgGVU1K/NAys2z9Y65lCYwsY3AXb3UTP2/w61tMmB/aY/BYGZaR0l/1qE9HgNO+va8a8
-         8oq4ysr1nqvt/SAVIeHfp8uE8qUTy2Vhz9NREE8CoWOn+PB0V2Q0h1cpWq/5r1y/Whtg
-         b4pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695719192; x=1696323992;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AYPORNOx4NuRhf6WfJUJoSr5UgLUFNvcuKhQTL+JrnY=;
-        b=ErRxr91xhoDVD0x+pTmi0LYz4kMCRsI4uC1O5jnJnrUp0acyHa9V2c5mlx02SNdsTY
-         uKVsxHw/3Dugvg1dZu9n7W3rqlXPPPvpjisxw5bn1OONstVhFo+ZvkEWw5cI9QChtm9j
-         PEyigy7qOrtxSghXjV6deWVPvWZJ+wZ1ugoqg3chboRFbKQm06s/vkUE9/hA9xcrBJv/
-         sIkYNNRSodOUJC9EK8Uj9Zb7sdl0r7nMpEs3jB+iiAUFAOKHpOPZbXBUjMQUtFwQVtcL
-         sk7Hea7ZFsbirFdB4AdsTjJ0LMPvgjvq9mFVz7/Ninig474yfXjrf1a3CqyNq6fgU9jH
-         OZSQ==
-X-Gm-Message-State: AOJu0Yxr8VHmwIcxoTNG63KeqP9Yyw+g/oIHMc/4cO5JT6AHr+s84uo0
-        itHjInzoIEPXFFZzjI3JiazKBw==
-X-Google-Smtp-Source: AGHT+IHECvSMOxEXPR/Wch2K8u8yhXgBh2SGThdb3d5Y/uoLHNyMF9X2ZGAX1MvecWbgmJnLQpviVw==
-X-Received: by 2002:a05:600c:2050:b0:401:906b:7e9d with SMTP id p16-20020a05600c205000b00401906b7e9dmr8005516wmg.18.1695719191864;
-        Tue, 26 Sep 2023 02:06:31 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:686:c497:30b1:d2b9])
-        by smtp.gmail.com with ESMTPSA id 14-20020a05600c230e00b00402f7b50517sm14686841wmo.40.2023.09.26.02.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 02:06:31 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-mips@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [RFT PATCH] mtd: rawnand: ingenic: move the GPIO quirk to gpiolib-of.c
-Date:   Tue, 26 Sep 2023 11:06:23 +0200
-Message-Id: <20230926090623.35595-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Tue, 26 Sep 2023 05:08:28 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D109DEB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:08:21 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38Q5wHRl013773
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:21 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tacvjvues-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:21 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 38Q98JsU026009
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:08:19 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 26 Sep 2023 05:08:19 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 26 Sep 2023 05:08:18 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 26 Sep 2023 05:08:18 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38Q988xN025467;
+        Tue, 26 Sep 2023 05:08:10 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH] MAINTAINERS: fix Analog Devices website link
+Date:   Tue, 26 Sep 2023 12:08:04 +0300
+Message-ID: <20230926090804.4540-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: RrrEOX0oCMS3OIW_x0rDTLEALCcCLo6k
+X-Proofpoint-GUID: RrrEOX0oCMS3OIW_x0rDTLEALCcCLo6k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_07,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ phishscore=0 suspectscore=0 adultscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2309180000 definitions=main-2309260080
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The http://ez.analog.com/community/linux-device-drivers link is broken.
 
-We have a special place for OF polarity quirks in gpiolib-of.c. Let's
-move this over there so that it doesn't pollute the driver.
+Update website link to the new available one:
+https://ez.analog.com/linux-software-drivers
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 ---
-This is an alternative to the previous patch that instead of replacing
-one active-low setter with another, just moves the quirk over to
-gpiolib-of.c
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- drivers/gpio/gpiolib-of.c                       |  9 +++++++++
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 12 ------------
- 2 files changed, 9 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-index 5515f32cf19b..58c0bbe9d569 100644
---- a/drivers/gpio/gpiolib-of.c
-+++ b/drivers/gpio/gpiolib-of.c
-@@ -192,6 +192,15 @@ static void of_gpio_try_fixup_polarity(const struct device_node *np,
- 		 */
- 		{ "himax,hx8357",	"gpios-reset",	false },
- 		{ "himax,hx8369",	"gpios-reset",	false },
-+		/*
-+		 * The rb-gpios semantics was undocumented and qi,lb60 (along with
-+		 * the ingenic driver) got it wrong. The active state encodes the
-+		 * NAND ready state, which is high level. Since there's no signal
-+		 * inverter on this board, it should be active-high. Let's fix that
-+		 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
-+		 * helper, and be consistent with what other drivers do.
-+		 */
-+		{ "qi,lb60",		"rb-gpios",	true },
- #endif
- 	};
- 	unsigned int i;
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index 6748226b8bd1..c816dc137245 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -380,18 +380,6 @@ static int ingenic_nand_init_chip(struct platform_device *pdev,
- 		return ret;
- 	}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b19995690904..94066240e475 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1119,7 +1119,7 @@ ANALOG DEVICES INC AD4130 DRIVER
+ M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
+ L:	linux-iio@vger.kernel.org
+ S:	Supported
+-W:	http://ez.analog.com/community/linux-device-drivers
++W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/ABI/testing/sysfs-bus-iio-adc-ad4130
+ F:	Documentation/devicetree/bindings/iio/adc/adi,ad4130.yaml
+ F:	drivers/iio/adc/ad4130.c
+@@ -1152,7 +1152,7 @@ ANALOG DEVICES INC AD74115 DRIVER
+ M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
+ L:	linux-iio@vger.kernel.org
+ S:	Supported
+-W:	http://ez.analog.com/community/linux-device-drivers
++W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml
+ F:	drivers/iio/addac/ad74115.c
  
--	/*
--	 * The rb-gpios semantics was undocumented and qi,lb60 (along with
--	 * the ingenic driver) got it wrong. The active state encodes the
--	 * NAND ready state, which is high level. Since there's no signal
--	 * inverter on this board, it should be active-high. Let's fix that
--	 * here for older DTs so we can re-use the generic nand_gpio_waitrdy()
--	 * helper, and be consistent with what other drivers do.
--	 */
--	if (of_machine_is_compatible("qi,lb60") &&
--	    gpiod_is_active_low(nand->busy_gpio))
--		gpiod_toggle_active_low(nand->busy_gpio);
--
- 	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
- 
- 	if (IS_ERR(nand->wp_gpio)) {
+@@ -12818,7 +12818,7 @@ MAX31827 TEMPERATURE SWITCH DRIVER
+ M:	Daniel Matyas <daniel.matyas@analog.com>
+ L:	linux-hwmon@vger.kernel.org
+ S:	Supported
+-W:	http://ez.analog.com/community/linux-device-drivers
++W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+ F:	Documentation/hwmon/max31827.rst
+ F:	drivers/hwmon/max31827.c
 -- 
-2.39.2
+2.42.0
 
