@@ -2,125 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E9D7AF562
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF957AF563
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbjIZUjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S235901AbjIZUjt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 16:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235740AbjIZUjg (ORCPT
+        with ESMTP id S235883AbjIZUjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:39:36 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A111DE4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:39:29 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-760dff4b701so92351239f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695760769; x=1696365569; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4itLyJE7Z8JfcB/+4kI9MY4phkDcuyoRTUlwxY85lCs=;
-        b=O3/vlNOOI4kd2O/aG+G/S83J0WrYa0ppfpDsCrxlj8nAhMHTaUsKl10uVmA336CFwW
-         vPnvQOyvyH6F6Nw2qCOoXy6ZdIL351uX0WQsIdq1QxuJcQzPxP1FzMaxc4LEqLiVD/Cp
-         OY/XqdblLQ18uSAfdUU+EJlAruNwS0bUV1ZNY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695760769; x=1696365569;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4itLyJE7Z8JfcB/+4kI9MY4phkDcuyoRTUlwxY85lCs=;
-        b=IhD9q9SdkFVLj7fU4pvJT81mXkZ7aiFBcjifDOaAJXkuvjhyzuhiOAM/WmKhjU4HXK
-         D++acYTQZSCfk+UkF88RUPjBbRiJbWGMU6i+YDLIAMGd4hp+qaktMoQO+HPmYyIxRufk
-         kqixznGh3qxSk/fWzHC7/EPLMeJZjOPXVZNl5VxIhd1ovm1mw1w+Xt9pN/LXpz/Pbu/R
-         fSGy7wKwHv0eCXS2o9j5/sdD26cV/z7Eb47fevchvFQMaXPj2zwd4TYUd9dOd4URBj4A
-         6K6easGYX629092rJTylY1cyVIPTwQjzDhkqbyrRzzak3mgLSHuI0NvfFEZzWag0/g8G
-         rr7g==
-X-Gm-Message-State: AOJu0Yz3O2ceflucNigUe6qK4Pk6Re3TxtNeQj2OAyna/GgFSrhUNFPA
-        Q5H4LzWEPSwG4mlp5coQqqww/g==
-X-Google-Smtp-Source: AGHT+IEqzEqSw0ZWhyREwjYY6mijjnwRBFBsNEXNhhBHdykUk4Sz+a6d3vEhXqu6krETVTustZ6gGg==
-X-Received: by 2002:a6b:5d1d:0:b0:790:958e:a667 with SMTP id r29-20020a6b5d1d000000b00790958ea667mr10265245iob.2.1695760768958;
-        Tue, 26 Sep 2023 13:39:28 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id g17-20020a0566380bd100b00437a3c128dfsm3671118jad.108.2023.09.26.13.39.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 13:39:28 -0700 (PDT)
-Message-ID: <63dd7222-99dc-8e11-3a51-b132e4115ac5@linuxfoundation.org>
-Date:   Tue, 26 Sep 2023 14:39:27 -0600
+        Tue, 26 Sep 2023 16:39:48 -0400
+Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5935120
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:39:40 -0700 (PDT)
+Received: from omf19.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay05.hostedemail.com (Postfix) with ESMTP id 9143C40255;
+        Tue, 26 Sep 2023 20:39:39 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id D3A7D2002C;
+        Tue, 26 Sep 2023 20:39:35 +0000 (UTC)
+Message-ID: <402f586ec556f557921c552dcea2831c4d65dc7a.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: warn about multi-line comments without
+ an empty /* line
+From:   Joe Perches <joe@perches.com>
+To:     Petr =?UTF-8?Q?Tesa=C5=99=C3=ADk?= <petr@tesarici.cz>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Date:   Tue, 26 Sep 2023 13:39:34 -0700
+In-Reply-To: <20230926221521.08f4a64d@meshulam.tesarici.cz>
+References: <20230926192400.19366-1-petr@tesarici.cz>
+         <1adcfeaa4bd01d59a349daa697cc007e81bc81b1.camel@perches.com>
+         <20230926221521.08f4a64d@meshulam.tesarici.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests/rseq: fix kselftest Clang build warnings
-Content-Language: en-US
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
-References: <20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com>
- <CAFhGd8on9_DJUZqT5uKgPzOtJNn99sY3TprcPzD5pm3GmYx8oQ@mail.gmail.com>
- <eabe9db0-c934-af2d-e5a9-9d644593851c@efficios.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <eabe9db0-c934-af2d-e5a9-9d644593851c@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Rspamd-Queue-Id: D3A7D2002C
+X-Stat-Signature: gk53iqr1inpupnxb31sr353ptr7a6tga
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
         autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+w3lR6jXNhSr1RMLbUx4/VZPl1kLjVaOM=
+X-HE-Tag: 1695760775-621787
+X-HE-Meta: U2FsdGVkX19FYfNQghojYESizAiDToro/2+IH9ZnfXpFGVk1qk45nPn8L06QE40wDyU2aliag3c/9cV0jQMAUCrZevxUcht6WkPgRjqdLNbK63OjlaEru3uQdUCvuYm5496mopaJMHW8mkI5mql5YT5l8FZ2QogQSXGTXTjl7bOPpoQdGtoxHAMWAgvvFbFLEWj57wgXD0KOyIe+83zrFcv0f7KcFR6uix/TZVFIUrTb3BHmJZyDVMDUPCCLUNIEGpmF33cetyZcQ0RYKPCxukxrHGMHP5bAXhqb/ViX/V5bTRiwzEceOHYlHGsezsBcThfgeh4MFvL3HheTkTvgkQx8KrN7F2U0K8lyF7aIQK8L+P/IdHpzELX5uG7PSzrNm2ayRmZVoIooRhRKd4XSGuxFCyhJCwFuy2ue/VMepcJUoBOS1qsxhdbdINUXJ75Dy6XvifDyLYfh9DYyZjviAf1oog6Qjl+XNomDKD5kANkcat1U2Isw0A==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 13:02, Mathieu Desnoyers wrote:
-> On 9/26/23 08:20, Justin Stitt wrote:
->> Ping.
->>
->> Looking to get this patch and [1] slated for 6.7 which fixes some
->> kselftest builds on older kernels.
->>
->> On Wed, Sep 13, 2023 at 6:03 AM Justin Stitt <justinstitt@google.com> wrote:
->>>
->>> When building with Clang, I am getting many warnings from the selftests/rseq tree.
->>>
->>> Here's one such example from rseq tree:
->>> |  param_test.c:1234:10: error: address argument to atomic operation must be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
->>> |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
->>> |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
->>> |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_load'
->>> |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC_SEQ_CST)
->>> |        |                             ^                 ~~~~~~
->>>
->>> Use compiler builtins `__atomic_load_n()` and `__atomic_store_n()` with
->>> accompanying __ATOMIC_ACQUIRE and __ATOMIC_RELEASE, respectively. This
->>> will fix the warnings because the compiler builtins do not expect their
->>> arguments to have _Atomic type. This should also make TSAN happier.
->>>
->>> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
->>> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
->>> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Tue, 2023-09-26 at 22:16 +0200, Petr Tesařík wrote:
+> On Tue, 26 Sep 2023 12:56:33 -0700
+> Joe Perches <joe@perches.com> wrote:
 > 
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > On Tue, 2023-09-26 at 21:24 +0200, Petr Tesarik wrote:
+> > > According to Documentation/process/coding-style.rst, the preferred style
+> > > for multi-line comments outside net/ and drivers/net/ is:
+> > > 
+> > > .. code-block:: c
+> > > 
+> > >         /*
+> > >          * This is the preferred style for multi-line
+> > >          * comments in the Linux kernel source code.
+> > >          * Please use it consistently.
+> > >          *
+> > >          * Description:  A column of asterisks on the left side,
+> > >          * with beginning and ending almost-blank lines.
+> > >          */
+> > > 
+> > > Signed-off-by: Petr Tesarik <petr@tesarici.cz>  
+> > []
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl  
+> > []
+> > > @@ -4006,6 +4006,14 @@ sub process {
+> > >  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+> > >  		}
+> > >  
+> > > +# Non-networking without an initial /*
+> > > +		if ($realfile !~ m@^(drivers/net/|net/)@ &&
+> > > +		    $prevrawline =~ /^\+[ \t]*\/\*.*[^ \t]$/ &&
+> > > +		    $rawline =~ /^\+[ \t]*\*/) {
+> > > +			WARN("BLOCK_COMMENT_STYLE",
+> > > +			     "multi-line block comments should start with an empty /* line\n" . $hereprev);
+> > > +		}
+> > > +
+> > >  # Block comments use * on subsequent lines
+> > >  		if ($prevline =~ /$;[ \t]*$/ &&			#ends in comment
+> > >  		    $prevrawline =~ /^\+.*?\/\*/ &&		#starting /*  
+> > 
+> > Still nack.  Too many existing instances.
+> > 
+> > $ git grep '/\*.*' -- '*.[ch]' | \
+> >   grep -v '/\*.*\*/' | \
+> >   grep -v -P "/\*\s*$" | \
+> >   grep -v '/\*\*' | \
+> >   grep -v "SPDX-License" | \
+> >   grep -v -P '^drivers/net|^net/' | \
+> >   wc -l
+> > 51834
 > 
-> Peter, should this go through tip ?
+> Um. Not everything that is currently found in the source tree would be
+> accepted as new code by today's standards...
 > 
-> Shuah, should to go through selftests ?
+> As it stands, the script checks the special case for net/ and
+> drivers/net/ but does not help prevent unnecessary respins, like this
+> one:
 > 
+> https://lore.kernel.org/linux-iommu/ZRMgObTMkfq8Bjbe@arm.com/
+> 
+> OTOH if we don't want to warn about multi-line comments, maybe we don't
+> want to call it the preferred style, and the corresponding paragraph
+> should be removed from coding-style.rst. Do you suggest I try that
+> instead?
 
-I can take this through selftests and apply it - hoping there
-are no conflicts with what's in Peter's tree.
+If you really want to bring it up as a coding style issue
+go ahead, but consider that the link above is a 'nitpick'
+and not an actual issue.
 
-thanks,
--- Shuah
+If you _really_ want, but I am not at all sure it's useful,
+I suggest you change the message to a CHK so that it is only
+emitted with --strict and not a WARN and only emit anything
+when the thing being scanned is a patch and _not_ a file.
+
+Something like:
+
+# Non-networking without an initial /*
+		if (!$file &&
+		    $realfile !~ m@^(?:drivers/net/|net/)@ &&
+		    $prevrawline =~ /^\+[ \t]*\/\*.*[^ \t]$/ &&
+		    $rawline =~ /^\+[ \t]*\*/) {
+			CHK("BLOCK_COMMENT_STYLE",
+			    "multi-line block comments should start with an empty /* line\n" . $hereprev);
+
+But you still want to examine some of the false positives
+this would create like:
+
+/* ------------------------
+ * block message
+ * ------------------------ */
+
+and
+
+struct foo {
+	int a;  /* some desriptor */
+	int b;	/* some descriptor
+		   on multiple lines */
+};
 
