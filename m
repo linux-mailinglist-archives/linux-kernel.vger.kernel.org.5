@@ -2,146 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ED87AF773
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0503D7AF794
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbjI0Ah6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 20:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S232630AbjI0A4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 20:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbjI0Af4 (ORCPT
+        with ESMTP id S234492AbjI0AyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 20:35:56 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D12819AE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:59:19 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf3f59905so1189816066b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695761958; x=1696366758; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nbm0fl6t7js3aniuoVoiV7uhTyT8SoKhMhmvTfEHKF0=;
-        b=W5eRTqGUHYRciSsKpzlaqpaBB6xXZUH34WS7vYCduqPlqRkZsQuLy+aake7oJ50f7R
-         oOS+jscmDiEDu6lq8RZt7kEk/HRjvhtOFLhhXAJ0AhucjtggdzJTXNT01bra2VrgfqDt
-         YLVTt7IMsC4FONdT1/XlA/V87sOUhrAshhNhRCn5JAplNQuzO3fPrDj75p5s4lodjbyb
-         AhkPO1I7XixIOSWDROP4YB+zbEwjQvmnTG4pqSqgFgjFxqrW9S1toA5KWsLQD8uyRKlK
-         AeKJOQKO2uvB+xoUpH+IOtQMGCAmK1/B6vcv7Y2pmT1S+WVbqyLdKzIBqvbWDrUdlyk+
-         nzNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695761958; x=1696366758;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nbm0fl6t7js3aniuoVoiV7uhTyT8SoKhMhmvTfEHKF0=;
-        b=w+vlZmTD9HthLyt1O4ipWKwkB/h57cpFK845tpMJlJOupS54QRSLI6T39wcZ9ylwOu
-         ZEk7bKHtE/EoTQJhiEMYZ+gdUr0FHzETds2+uuEcd7YNp8J5H+KX/fad4QMStC2RzZrZ
-         m0eq1vgbmy+Pj7QU/Q+idiz3aLMMpL2Pkh7WwAZjYmOgu+ih6i+YeYlW/SjigfcITBMM
-         +in70NA1OGHT1KLIZqVKkEOCySyRLrBSkRvAyiP5TF+nxuWgwpcYbsAO2onqV7dNV/30
-         H/M9RI/nPxL6p4+8k5yn96RCbJthX6YU+EBWq1zWKqCn9PD4+aA7LDWTficDpe3OZOgv
-         0WpQ==
-X-Gm-Message-State: AOJu0Yw03iiA/W+KdifyqflFoeFEaSDXdKet9alix6oVzoAWoyane8Zp
-        29vGXbD1qsUAuEuAnaOVNLFsVw==
-X-Google-Smtp-Source: AGHT+IENJ0xPYi4uzaeTJwwedZ+8tWUxG3QlM6olVDYu5bRBD5Pc+AxjzgEP0mdOv30vPgdF5uo+og==
-X-Received: by 2002:a17:906:8457:b0:9b2:89ec:7fca with SMTP id e23-20020a170906845700b009b289ec7fcamr5558979ejy.34.1695761957945;
-        Tue, 26 Sep 2023 13:59:17 -0700 (PDT)
-Received: from [192.168.1.145] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id gu20-20020a170906f29400b009ad8796a6aesm8202912ejb.56.2023.09.26.13.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 13:59:17 -0700 (PDT)
-Message-ID: <e8ee6529-b194-4588-96c0-1459f214d005@linaro.org>
-Date:   Tue, 26 Sep 2023 22:59:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 08/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add
- support for QMC HDLC
+        Tue, 26 Sep 2023 20:54:14 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on20606.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e83::606])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E4426BD;
+        Tue, 26 Sep 2023 14:04:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HPp5m2uDy+5MEzmSIsXL9ZCVIydvoUIJfGOp++OW1FWYX00kIVFlnEEcQoNT0XRFeIAXF0XsWURDNHrK0lz+peOkTVGv9SPft9EFe0rbF2csqE/xsjrGZiWCxDPYmjYzbDKc8Ok+90Uhp8fyPqQZMYb2MlO36oYSTwrYCYuMZFCz0zSVISqG+WdKo9H3WReDGqkl2h9oQGnKZh/ESivCZA3aaWEMonHv7jHnZsJdxD5OYNkitZVP2Cpu6JcpM0zySYOcoL1ZVR001rn87eTbqh3U9u/stUf9hlqeTciWapT1eWpUaB+aub/m4Ic++Oed4Rv3ykTAanXqoVyAviSJBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SfNnIo10gO2cmvXLqQkMPlUlYPN6fzRKzz2RFShqYqo=;
+ b=ITcA3wJRY3yaUHaTZLdM0It1SUWJDwYqgM+R6FXvzFSZpeDJV9jJ43yNvuAhLYVuUnGhirOKLnNbaZ9MN4dKqVVfU186VoAAqbTPioZE5kPOOvNjYPb2+qR9U/8OFWXVsMaGLVnYcM2uIOxfxAoQ5iJ1ccxDHSXRADet92tsOsQryDTtTLDibUnC8FLPQZL57UGc9ci0p1uqgokX8tH3Gdj1ee1ZaBBRoTjPc3VTmpGYr0kk8hj00icSU8GIUQfmzZejixLuJY/hPg1/X4EcGRF7th5phkwgyzEPQ4oo2OCy3A/01rGa7Cd8ln9Sno18MoEdeEX2tzA0lYK2fmhXGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SfNnIo10gO2cmvXLqQkMPlUlYPN6fzRKzz2RFShqYqo=;
+ b=fcybKPA1SoyHb4Q602/tczWLSArpYM6orak4+5ly9psFh8JttwZ0b8QYptVJlTq8W4BIigcdxOCFHsoqfEueRB+jJhVNsdjZKThyYB1R69JIo+GR/V+sRXlNYUR2Ld8CjRflmK2o43y/lO85YrSVeJLEI6br1oDhROwCPLlAEaI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by DM4PR12MB5358.namprd12.prod.outlook.com (2603:10b6:5:39c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 21:03:52 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6838.016; Tue, 26 Sep 2023
+ 21:03:52 +0000
+Message-ID: <c17b0269-a085-ee50-af3c-fb486b303577@amd.com>
+Date:   Tue, 26 Sep 2023 16:03:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v5 0/8] selftests/resctrl: Rework benchmark command
+ handling
 Content-Language: en-US
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20230922075913.422435-1-herve.codina@bootlin.com>
- <20230922075913.422435-9-herve.codina@bootlin.com>
- <5efae150-3d92-81b8-5c25-68846d27132e@linaro.org>
- <20230925101703.1bf083f1@bootlin.com>
- <5b804a1a-6bfd-429d-ad84-696b7ecef72d@linaro.org>
- <20230925122758.43963736@bootlin.com>
- <e02ebde7-f208-40a4-bb10-aa5962ee9864@linaro.org>
- <20230925154929.2b6a9cab@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230925154929.2b6a9cab@bootlin.com>
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?Q?Maciej_Wiecz=c3=b3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+Cc:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20230904095339.11321-1-ilpo.jarvinen@linux.intel.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <20230904095339.11321-1-ilpo.jarvinen@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR13CA0103.namprd13.prod.outlook.com
+ (2603:10b6:806:24::18) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM4PR12MB5358:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0c43e27-21d4-4f28-63ff-08dbbed41684
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ufi6KA+bsGcIpIxKQ2LRz4iKWTb+M9XtJlNNBWbm0uiLA0ApaqEYLPtuE5YSyZfuYBgBTwZPig8YgKwjbQigyveaBSn3r7ZoPuulmr9jDSuP4E5c06DgAEnZN4XoaBo0G+6ReJiuMzNSmW1+EMXFPZG+ah8mjMoosEdj3OtnDvQF4UBYM8ZaJ2EndSV4py9YFTD78ra7XJZBL4B5wgBQs29TRouD/qdQbkdd/0oCXjrKNzg9aMO9MZLU+8ppvYdM7xdOGMHUslYao8QOC8rxxuiPwhF+myoO9S3rjOssvGc/d/NYcKhA0gH1slmbwNIg4jKwnsehUPLhxav9jIwh12dZ0Ek5InIfjXfFK2ZZaLUsxx+wExR3TN8PuQyUYXXk4ZFKYg8tBs7tze9/AAS+oq6HJqT+aYPX9Qrp+k5blMkH41YFxo1SIFDx545jhK8XBFpzi9ta+IV41mA+471PYg+JQAwFRj7kZME8tlPtAuWin6hxOipPU7cd1wh3i/zhVu1CkL7f9KtnTDZvrWNFgNJB3l5qbYsWeBAUa9X09CqRxQU7249qvU5OluNzTp6hPMO9WPVTmMv46xL5LZb7qKNsXMPdRk0RI+EOFP2brGyU+swZIJrddMnOSAx0ju46DBO4gYb8Ta6TJMTcqJatZw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(396003)(376002)(136003)(230922051799003)(186009)(1800799009)(451199024)(3450700001)(2906002)(86362001)(31696002)(26005)(53546011)(6512007)(2616005)(6486002)(6506007)(478600001)(36756003)(38100700002)(83380400001)(8936002)(8676002)(4326008)(31686004)(41300700001)(66476007)(5660300002)(54906003)(66556008)(66946007)(110136005)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVdPait4U0h5dkN6cDhEQ1hucEQxeDhxSTA0TFBWbFN1UzBpWU1FSGUzMnhF?=
+ =?utf-8?B?UXlZUE5aSW50aWpwSTZ4d2pIN3pjdmQrRkVFNWFJaWljQWtnT1M5T3JtK0Vs?=
+ =?utf-8?B?TFJET3ZDOUx6S1RqcWEzOGpQYnR4NmpsdDlzY29tWjBPSmZjTGlydHZYY3NO?=
+ =?utf-8?B?Zkx0SUhoQTNpSE15NXBjMFNZVHNnUCtDMUY2THhyTkwxWktMbHN3NmtUWW1I?=
+ =?utf-8?B?NGt1elQ5OUpFVjFVWWZOOG1uV2M0Q2QzVk9KWERkRWNISnpLM0poK2luRTlU?=
+ =?utf-8?B?cnkwSm1QZE1FTktEVU5VWXdZazNacTNTRU9HSFNPeUlzTS9lWEtGeXlrZnBQ?=
+ =?utf-8?B?UlgwS3RraE1XR3ZvZFZEWHBlQ3VHRHJUYXF0UlhKVGQ3SjR0WC8rKzNiNE5Q?=
+ =?utf-8?B?VUNNcmhwc0gvaXdBLzE2b0k4eU9RUm92VHdyM1ZCT0NoMytrUWJncUNHYURu?=
+ =?utf-8?B?em0wVjBleEpSVWc1dXExNmFBckYvcnRDTnBpbXRJOGNlZUg2ZG0rRmZKMVhD?=
+ =?utf-8?B?VGZIbTh3Wm1pVjVnSUN5Z2IxU21ZSzZlc1NmVFdMRndhb2tUNkJ6Ykk1em51?=
+ =?utf-8?B?aDZSbkF5YkN2V2JNbjh0RXRUTC9HYVRLYVNEL1FmTjdXZ1NrQ0thZUFCZndu?=
+ =?utf-8?B?eVZxMmhUcUltalJQL0d2MC9DWkZ5SW1nUGlvQU9UTE1jVWw3QXNSaHllSEZM?=
+ =?utf-8?B?bXJSUVpVbjJrSEx1ZXV6T1JOU0MyMGl6WTJ4b2pBKzhBeWNkb0FWY3VvSTdy?=
+ =?utf-8?B?bjZPeUNaQjl2MHdpb1lWUUh3anNOV1Q0UlUyOWpHVG5vUC9OSmVLYU5LWUJ6?=
+ =?utf-8?B?ZVovVnZZZTBudStqVzZUYUt4VU92d0tQQlpyMWdRbWpEc29meWVIY1l3SzFJ?=
+ =?utf-8?B?SU43K3hoTWtHNFhING90V3o0dlhqWHBKanRjWFRpTFNYanhrbEN1enpuLytB?=
+ =?utf-8?B?OWVzOFJxaDUyZjR4amd0YkgyR2hFb1Y5QWlLUzgwWjlnOWhRV1lZSGlJcEpV?=
+ =?utf-8?B?WW9XQ29HLzA3Ly9sNVhHSnp5S2VjamdlN0ZqL1htdHJKbTdWS0FzUHBMQkdI?=
+ =?utf-8?B?Z2R5K3VzbGJiZXN5K0lSQ3FPS1lLbWp2UE1qWldaTmN6VmdudFZPYVlZUVM1?=
+ =?utf-8?B?OXVMdjVUQTV4V1plbnJpNURKZGd4dFFSMWZxZVo0dGV5citvWmFuMW9tYVFG?=
+ =?utf-8?B?OTcweHVOdlBUSVk4ZkM3WHg0WUV1TWRBcXppTENOV09pYmZkdXp0dytzWnhS?=
+ =?utf-8?B?ZEcrUncvUkhVSnZiSW1zR3VweEdIb1V6ZUsvZTJDTWRta1NkVVJDTVdSeEI0?=
+ =?utf-8?B?TTF0dGphUllLRE4rZW1oQlF6T3NFSUFPTUQxMGZkd3ZjcmoxY2pUSkxuVVFP?=
+ =?utf-8?B?MDlMNFh1SlJEMFNseFFQLzYrclJzUkJrUXpnSGRoSDRjN3lVZHlPREQxU0FI?=
+ =?utf-8?B?VGpVS2xHYTZDYUJPY1UrbnFWUlMrb2dYaWF1dWwvV0VsV3FSc251TENmbTg2?=
+ =?utf-8?B?M3ZyeVA1aDVNTXlhRzg2UDEwb29Bd2RrcTdheWpnV3FFZWRzYmVKbnRiUFB6?=
+ =?utf-8?B?b21qVmpQYXpXeCtQdWZENE1nbWM4N2R1RmxNTVp2NDRMQWRlR2lSei8zNThG?=
+ =?utf-8?B?YXFEc0dqTGl4cTF6WmVKUkVEbUFLOVBPTTkxQkVzUVFGcmdOZ3FtVGE1Zkdx?=
+ =?utf-8?B?azJaMWk1WHNxcXVGZndZc1RwNWVWa2N4Sk9DbHU0V2RjVjdvRVRpWGQ0ZnFi?=
+ =?utf-8?B?TlVUS28wdG1pL1ZjUHlrMUV0cmVnUVBGeUpTQ0t1Q0NCODhZbVJuVk9Jc1Nk?=
+ =?utf-8?B?WDlmR0FkTmpMS01RVGkyMFEvQnFoSUkzUXU3cXRveDUrWm5sVHljaVI4NFJy?=
+ =?utf-8?B?ZWtmdGR5MjRLUFZkNllRWlNHVXE0MThuNm85eUtNYVlieVNRd3MzemsrcjBq?=
+ =?utf-8?B?QmhwZExlZWdXcjlydm1DekNsZ21nSlBXWEFCQW9uQUV4RG1HaXg5T0dYb0NX?=
+ =?utf-8?B?cWplMTVTelJmL0NzczRjSjY0TUNadnlYQnpKOUx6NVlZUEdUcUFjbHhpQnIw?=
+ =?utf-8?B?bUYyeDkyQUQybmxZamZWRzlRck5HSVRLelllWTc0OVlVc1FPRWhXM2d6amFU?=
+ =?utf-8?Q?jV7dXduprvI0yGmWKPR+O8d9C?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0c43e27-21d4-4f28-63ff-08dbbed41684
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 21:03:52.4453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JEhvIELtV077M8EmMtj27NotZHlIfj43eWffASZ/Yr+T5OxjQabCxkPcblSxxqmV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5358
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,75 +132,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 15:50, Herve Codina wrote:
->>>>> With these details, do you still think I need to change the child (channel)
->>>>> compatible ?    
->>>>
->>>> From OS point of view, you have a driver binding to this child-level
->>>> compatible. How do you enforce Linux driver binding based on parent
->>>> compatible? I looked at your next patch and I did not see it.  
->>>
->>> We do not need to have the child driver binding based on parent.  
->>
->> Exactly, that's what I said.
->>
->>> We have to ensure that the child handles a QMC channel and the parent provides
->>> a QMC channel.
->>>
->>> A QMC controller (parent) has to implement the QMC API (include/soc/fsl/qe/qmc.h)
->>> and a QMC channel driver (child) has to use the QMC API.  
->>
->> How does this solve my concerns? Sorry, I do not understand. Your driver
->> is a platform driver and binds to the generic compatible. How do you
->> solve regular compatibility issues (need for quirks) if parent
->> compatible is not used?
->>
->> How does being QMC compliant affects driver binding and
->> compatibility/quirks?
->>
->> We are back to my original question and I don't think you answered to
->> any of the concerns.
+Tested the series on AMD system. Looks good.
+
+Tested-by: Babu Moger <babu.moger@amd.com>
+
+There are few tests which are skipped on AMD. Will plan to look into it.
+Thanks
+Babu
+
+On 9/4/23 04:53, Ilpo Järvinen wrote:
+> The benchmark command handling (-b) in resctrl selftests is overly
+> complicated code. This series turns the benchmark command immutable to
+> preserve it for all selftests and improves benchmark command related
+> error handling.
 > 
-> Well, to be sure that I understand correctly, do you mean that I should
-> provide a compatible for the child (HDLC) with something like this:
-> --- 8< ---
->   compatible:
->     items:
->       - enum:
->           - fsl,mpc885-qmc-hdlc
->           - fsl,mpc866-qmc-hdlc
->       - const: fsl,cpm1-qmc-hdlc
->       - const: fsl,qmc-hdlc
-> --- 8< ---
-
-Yes, more or less, depending on actual compatibility and SoC-family.
-Maybe "fsl,cpm1-qmc-hdlc" item in the middle is not needed.
-
+> This series also ends up removing the strcpy() calls which were pointed
+> out earlier.
 > 
-> If so, I didn't do that because a QMC channel consumer (driver matching
-> fsl,qmc-hdlc) doesn't contains any SoC specific part.
+> v5:
+> - Fix another off-by-one error
+> - Reorder local var declarations in main() to follow rev. xmas tree
+> 
+> v4:
+> - Correct off-by-one error in -b processing
+> - Reordered code in main() to make freeing span_str simpler (in new patch)
+> - Use consistent style for const char * const *
+> 
+> v3:
+> - Removed DEFAULT_SPAN_STR for real and the duplicated copy of defines
+>   that made to v2 likely due to my incorrect conflict resolutions
+> 
+> v2:
+> - Added argument length check into patch 1/7
+> - Updated also -b line in help message.
+> - Document -b argument related "algorithm"
+> - Use asprintf() to convert defined constant int to string
+> - Improved changelog texts
+> - Added \n to ksft_exit_fail_msg() call messages.
+> - Print DEFAULT_SPAN with %u instead of %zu to avoid need to cast it
+> 
+> Ilpo Järvinen (8):
+>   selftests/resctrl: Ensure the benchmark commands fits to its array
+>   selftests/resctrl: Correct benchmark command help
+>   selftests/resctrl: Remove bw_report and bm_type from main()
+>   selftests/resctrl: Simplify span lifetime
+>   selftests/resctrl: Reorder resctrl FS prep code and benchmark_cmd init
+>   selftests/resctrl: Make benchmark command const and build it with
+>     pointers
+>   selftests/resctrl: Remove ben_count variable
+>   selftests/resctrl: Cleanup benchmark argument parsing
+> 
+>  tools/testing/selftests/resctrl/cache.c       |   5 +-
+>  tools/testing/selftests/resctrl/cat_test.c    |  13 +--
+>  tools/testing/selftests/resctrl/cmt_test.c    |  34 ++++--
+>  tools/testing/selftests/resctrl/mba_test.c    |   4 +-
+>  tools/testing/selftests/resctrl/mbm_test.c    |   7 +-
+>  tools/testing/selftests/resctrl/resctrl.h     |  16 +--
+>  .../testing/selftests/resctrl/resctrl_tests.c | 100 ++++++++----------
+>  tools/testing/selftests/resctrl/resctrl_val.c |  10 +-
+>  8 files changed, 104 insertions(+), 85 deletions(-)
+> 
 
-Just like hundreds of other drivers. :)
-
-There is a paragraph about specific compatibles here:
-https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html
-
-
-> It uses the channel as a communication channel to send/receive HDLC frames
-> to/from this communication channel.
-> All the specific SoC part is handled by the QMC controller (parent) itself and
-> not by any consumer (child).
-
-OK, so you guarantee in 100% for this hardware and all future (including
-designs unknown currently), that they will be 100% compatible with
-existing QMC channel consumer (child, matching fsl,qmc-hdlc) driver,
-thus there will be no need for any quirk. Specifically, there will be no
-chances that it would be reasonable to re-use the same driver for child
-(currently fsl,qmc-hdlc) in different parent.
-
-P.S. If you received this email twice, apologies, I have here troubles
-with internet.
-
-Best regards,
-Krzysztof
-
+-- 
+Thanks
+Babu Moger
