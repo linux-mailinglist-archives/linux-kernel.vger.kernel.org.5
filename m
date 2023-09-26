@@ -2,219 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A119A7AE43C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D057AE43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbjIZDf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 23:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
+        id S231433AbjIZDhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 23:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbjIZDfY (ORCPT
+        with ESMTP id S229472AbjIZDhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 23:35:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7684E5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 20:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695699273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RLZ2Sm0jXt4JgiR3KwyVKPulSJY09nranm6CqIMSjuQ=;
-        b=QMFIavHGIlU3dx2UPOtjmOwwS4qxb4ytlEuR9hC9EyzCJDNUaG4lWEGtckZlQhIkjtvE55
-        TIc69d+LDiyFxMhw9Wys1o1kmyKdUekVYGNuj4UUEgO859rzi0g50RnU+3OJ0PwPWVCuAx
-        7vwwDw4U5z1iSHMrSX7wJxU5gwa7DD4=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-204-5WQaugYOOGS5fSkp81tKZA-1; Mon, 25 Sep 2023 23:34:31 -0400
-X-MC-Unique: 5WQaugYOOGS5fSkp81tKZA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c15572d8c5so63926471fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 20:34:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695699269; x=1696304069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RLZ2Sm0jXt4JgiR3KwyVKPulSJY09nranm6CqIMSjuQ=;
-        b=vNSNiV00KufC/Luu5nhWAMlov/kxAVcmAJWkPTgOcrAKKdsWSmYepyF6uo6M3uQiaa
-         JAc+9vKNpP0NwbKoh9vqtirHmJGWa7+ik2h5OOjrxVhsho0UV5oS0ZqrmW0K76cgCQic
-         /yYEWZysIw6G0wWqYxEyU+d01bmjWacAqy2OrpmU+lmjfcuGBdWVawUiEXtdoNGbmSCB
-         4+KR8jMzYRKWwSs55KiWqznMHi1i5CUG1HK5qK3Oz9abF2zUwmKdZruNc6fMTNxm71im
-         moQaLw9oww0IMv228+PEyNzVaN8j5lfKL719BlntfkCNxXCpreo9GfsdW0PTPrX+Su97
-         pJBg==
-X-Gm-Message-State: AOJu0YzkmHyj6S0CVshbzcT6a/4jaRQpolihzhkgWlIHfaJSGv942mDm
-        wJU0bZ5S90nh5miW2610C76/7FX3gNcutpn6Eo9RmrTQtBUM1g7MBrheqg3eqx6mVR8x62tt09t
-        S8f1jWQGt32s4Qll1IFOdajjlNUZIaKEkz1+Um5tZ
-X-Received: by 2002:a19:2d56:0:b0:500:9ab8:b790 with SMTP id t22-20020a192d56000000b005009ab8b790mr5797364lft.60.1695699269582;
-        Mon, 25 Sep 2023 20:34:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHqiM7aXmdkd2xeWF1oHQRrgm7Uv/ibMILXTfqsfhbYcfRo+PtW2EkI9b5YBS6E53q1EhEpn7fGVgQida+c7dg=
-X-Received: by 2002:a19:2d56:0:b0:500:9ab8:b790 with SMTP id
- t22-20020a192d56000000b005009ab8b790mr5797349lft.60.1695699269194; Mon, 25
- Sep 2023 20:34:29 -0700 (PDT)
+        Mon, 25 Sep 2023 23:37:46 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E805C9;
+        Mon, 25 Sep 2023 20:37:35 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RvlhN3yXnzNnqX;
+        Tue, 26 Sep 2023 11:33:40 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 26 Sep 2023 11:37:29 +0800
+Subject: Re: [RFC PATCH 09/25] perf stat: Add helper functions for
+ hardware-grouping method
+To:     <weilin.wang@intel.com>, Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Perry Taylor <perry.taylor@intel.com>,
+        Samantha Alt <samantha.alt@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20230925061824.3818631-1-weilin.wang@intel.com>
+ <20230925061824.3818631-10-weilin.wang@intel.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <c57ca700-887b-c445-55c3-a3e34745f210@huawei.com>
+Date:   Tue, 26 Sep 2023 11:37:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20230912130132.561193-1-dtatulea@nvidia.com> <20230912130132.561193-9-dtatulea@nvidia.com>
-In-Reply-To: <20230912130132.561193-9-dtatulea@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 26 Sep 2023 11:34:18 +0800
-Message-ID: <CACGkMEu9axhdajJ2qsjHqrYBX2L7HUqXEXAk3f3X9hv93+iq=w@mail.gmail.com>
-Subject: Re: [PATCH 08/16] vdpa/mlx5: Rename mr destroy functions
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230925061824.3818631-10-weilin.wang@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 9:02=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> Make mlx5_destroy_mr symmetric to mlx5_create_mr.
->
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+Hello,
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
-
+On 2023/9/25 14:18, weilin.wang@intel.com wrote:
+> From: Weilin Wang <weilin.wang@intel.com>
+> 
+> Add functions to free pmu_info_list and event_info_list before exit
+> grouping
+> 
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 > ---
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  4 ++--
->  drivers/vdpa/mlx5/core/mr.c        |  6 +++---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 12 ++++++------
->  3 files changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/=
-mlx5_vdpa.h
-> index 554899a80241..e1e6e7aba50e 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -118,8 +118,8 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mv=
-dev, struct vhost_iotlb *io
->                              bool *change_map, unsigned int asid);
->  int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb =
-*iotlb,
->                         unsigned int asid);
-> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev);
-> -void mlx5_vdpa_destroy_mr_asid(struct mlx5_vdpa_dev *mvdev, unsigned int=
- asid);
-> +void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev);
-> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev, unsigned int asid=
-);
->  int mlx5_vdpa_update_cvq_iotlb(struct mlx5_vdpa_dev *mvdev,
->                                 struct vhost_iotlb *iotlb,
->                                 unsigned int asid);
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index fde00497f4ad..00dcce190a1f 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -507,7 +507,7 @@ static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_de=
-v *mvdev, unsigned int asid
->         mr->initialized =3D false;
->  }
->
-> -void mlx5_vdpa_destroy_mr_asid(struct mlx5_vdpa_dev *mvdev, unsigned int=
- asid)
-> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev, unsigned int asid=
-)
->  {
->         struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
->
-> @@ -518,9 +518,9 @@ void mlx5_vdpa_destroy_mr_asid(struct mlx5_vdpa_dev *=
-mvdev, unsigned int asid)
->         mutex_unlock(&mr->mkey_mtx);
->  }
->
-> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> +void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
->  {
-> -       mlx5_vdpa_destroy_mr_asid(mvdev, mvdev->group2asid[MLX5_VDPA_DATA=
-VQ_GROUP]);
-> +       mlx5_vdpa_destroy_mr(mvdev, mvdev->group2asid[MLX5_VDPA_DATAVQ_GR=
-OUP]);
->         prune_iotlb(mvdev);
->  }
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
-x5_vnet.c
-> index 061d8f7a661a..4d759ab96319 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -2644,7 +2644,7 @@ static int mlx5_vdpa_change_map(struct mlx5_vdpa_de=
-v *mvdev,
->                 goto err_mr;
->
->         teardown_driver(ndev);
-> -       mlx5_vdpa_destroy_mr_asid(mvdev, asid);
-> +       mlx5_vdpa_destroy_mr(mvdev, asid);
->         err =3D mlx5_vdpa_create_mr(mvdev, iotlb, asid);
->         if (err)
->                 goto err_mr;
-> @@ -2660,7 +2660,7 @@ static int mlx5_vdpa_change_map(struct mlx5_vdpa_de=
-v *mvdev,
->         return 0;
->
->  err_setup:
-> -       mlx5_vdpa_destroy_mr_asid(mvdev, asid);
-> +       mlx5_vdpa_destroy_mr(mvdev, asid);
->  err_mr:
->         return err;
->  }
-> @@ -2797,7 +2797,7 @@ static void mlx5_vdpa_set_status(struct vdpa_device=
- *vdev, u8 status)
->  err_driver:
->         unregister_link_notifier(ndev);
->  err_setup:
-> -       mlx5_vdpa_destroy_mr(&ndev->mvdev);
-> +       mlx5_vdpa_destroy_mr_resources(&ndev->mvdev);
->         ndev->mvdev.status |=3D VIRTIO_CONFIG_S_FAILED;
->  err_clear:
->         up_write(&ndev->reslock);
-> @@ -2824,7 +2824,7 @@ static int mlx5_vdpa_reset(struct vdpa_device *vdev=
-)
->         unregister_link_notifier(ndev);
->         teardown_driver(ndev);
->         clear_vqs_ready(ndev);
-> -       mlx5_vdpa_destroy_mr(&ndev->mvdev);
-> +       mlx5_vdpa_destroy_mr_resources(&ndev->mvdev);
->         ndev->mvdev.status =3D 0;
->         ndev->mvdev.suspended =3D false;
->         ndev->cur_num_vqs =3D 0;
-> @@ -2944,7 +2944,7 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev=
-)
->         ndev =3D to_mlx5_vdpa_ndev(mvdev);
->
->         free_resources(ndev);
-> -       mlx5_vdpa_destroy_mr(mvdev);
-> +       mlx5_vdpa_destroy_mr_resources(mvdev);
->         if (!is_zero_ether_addr(ndev->config.mac)) {
->                 pfmdev =3D pci_get_drvdata(pci_physfn(mvdev->mdev->pdev))=
-;
->                 mlx5_mpfs_del_mac(pfmdev, ndev->config.mac);
-> @@ -3474,7 +3474,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *=
-v_mdev, const char *name,
->  err_res2:
->         free_resources(ndev);
->  err_mr:
-> -       mlx5_vdpa_destroy_mr(mvdev);
-> +       mlx5_vdpa_destroy_mr_resources(mvdev);
->  err_res:
->         mlx5_vdpa_free_resources(&ndev->mvdev);
->  err_mpfs:
-> --
-> 2.41.0
->
+>   tools/perf/util/metricgroup.c | 32 ++++++++++++++++++++++++++++----
+>   1 file changed, 28 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index feb5dab26..0ca885a42 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -1507,6 +1507,27 @@ static int parse_counter(const char *counter,
+>   	return 0;
+>   }
+>   
+> +static void metricgroup__free_event_info(struct list_head
+> +					*event_info_list)
+> +{
+> +	struct metricgroup__event_info *e, *tmp;
+> +
+> +	list_for_each_entry_safe(e, tmp, event_info_list, nd) {
+> +		list_del_init(&e->nd);
+> +		free(e);
+> +	}
+> +}
+> +
+> +static void metricgroup__free_pmu_info(struct list_head *pmu_info_list)
+> +{
+> +	struct metricgroup__pmu_counters *p, *tmp;
+> +
+> +	list_for_each_entry_safe(p, tmp, pmu_info_list, nd) {
+> +		list_del_init(&p->nd);
+> +		free(p);
+> +	}
+> +}
+> +
+>   static struct metricgroup__event_info *event_info__new(const char *name,
+>   						      const char *pmu_name,
+>   						      const char *counter,
+> @@ -1524,7 +1545,8 @@ static struct metricgroup__event_info *event_info__new(const char *name,
+>   	}
+>   	e->name = name;
+>   	e->free_counter = free_counter;
+> -	e->pmu_name = strdup(pmu_name);
+> +	//e->pmu_name = strdup(pmu_name);
+Can the commented-out code be deleted?
 
+> +	e->pmu_name = pmu_name;
+>   	if (free_counter) {
+>   		ret = set_counter_bitmap(0, e->counters);
+>   		if (ret)
+> @@ -1687,13 +1709,15 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+>   
+>   		ret = get_metricgroup_events(id, etable, &event_info_list);
+>   		if (ret)
+> -			return ret;
+> +			goto err_out;
+>   	}
+>   	ret = get_pmu_counter_layouts(&pmu_info_list, ltable);
+>   	if (ret)
+> -		return ret;
+> -
+> +		goto err_out;
+There seems to be no need for "goto err_out" here.
+
+>   
+> +err_out:
+> +	metricgroup__free_event_info(&event_info_list);
+> +	metricgroup__free_pmu_info(&pmu_info_list);
+>   	return ret;
+>   #undef RETURN_IF_NON_ZERO
+>   }
+> 
+
+
+Thanks,
+Yang
