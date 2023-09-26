@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B27B7AEDD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BF27AEDD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234831AbjIZNNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S234789AbjIZNQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjIZNNx (ORCPT
+        with ESMTP id S229604AbjIZNQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:13:53 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641D4101;
-        Tue, 26 Sep 2023 06:13:46 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QDDfrW074505;
-        Tue, 26 Sep 2023 08:13:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695734021;
-        bh=kTTthXlSUBAhupfVmcCdkV/3LZHpU0fBU0nJVar5vHc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=b4NlryyNrFGGcmJTlo4lUBT+ZpeBJGXWFOGpZXGe3u80onfG0ZGhPgEE7LiPgLaAF
-         u7v60OCS6k+I6WuMwvw/Fg95fwlSRM6VHd+i0xYFG1iOI1mDqAN1YOY5ZlxRm051AC
-         83B/d2c3ppwG/8JGIfvUCEZSapzIazhVC2uY0VmY=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QDDfn1015820
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Sep 2023 08:13:41 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Sep 2023 08:13:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Sep 2023 08:13:41 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QDDeKe094423;
-        Tue, 26 Sep 2023 08:13:40 -0500
-Date:   Tue, 26 Sep 2023 18:43:39 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH V2] spi: spi-cadence-quadspi: Fix missing unwind goto
- warnings
-Message-ID: <20230926131339.nigj6gp35r74yban@dhruva>
-References: <20230919074658.41666-1-d-gole@ti.com>
- <ZRK+oDrT4vaZ0R/G@finisterre.sirena.org.uk>
- <20230926114046.5ukretunoud3yv45@dhruva>
- <ZRLHVReL9Bq4PNvS@finisterre.sirena.org.uk>
- <20230926121908.mcyyj42buqr4ov3m@dhruva>
- <ZRLTG4pogXW5FTgJ@finisterre.sirena.org.uk>
+        Tue, 26 Sep 2023 09:16:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12754101;
+        Tue, 26 Sep 2023 06:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695734174; x=1727270174;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xiIrvxsZxlZBMo4/9txgJFin042F3pKoeJWAP1ehUhM=;
+  b=kvga3p2VDWGKFXt2TR5I9yiabc2ujPcVTf9XB1eYhCdJL4S4OYpDmhiK
+   CoWc3ksOXPKeBMYzFw3Sqp1AQfSC/hI0OSCIgKmj3Fbklaj4hjT2f1tnS
+   1ZhgaY1sn2opF5vVkd7PqcUJ3LP4/5bftAOnKijyAGtb/pALISo6EyFze
+   JMp0d0bOCYIRAwiC3My4Inl0f6TXftEoEwloHWfvrsEMmLmJeyziCwn3/
+   AGkJ17Xr8XX7Y0mryCJP0Oodq4vfF2OCeJYoI4qZCswU15tu4oaQz4kME
+   QLEv9fmw2a0EAeo5vTVwaZRnciPswV5HgV1xGhayqk+7tScyg9HXHMYn5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="371893408"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="371893408"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 06:16:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="748813187"
+X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
+   d="scan'208";a="748813187"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 06:16:11 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ql7v6-00000000boq-480l;
+        Tue, 26 Sep 2023 16:16:08 +0300
+Date:   Tue, 26 Sep 2023 16:16:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] platform/x86: intel_speed_select_if: Remove
+ hardcoded map size
+Message-ID: <ZRLZmDmIkOo0YVz6@smile.fi.intel.com>
+References: <20230925194555.966743-1-srinivas.pandruvada@linux.intel.com>
+ <20230925194555.966743-4-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRLTG4pogXW5FTgJ@finisterre.sirena.org.uk>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230925194555.966743-4-srinivas.pandruvada@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 26, 2023 at 14:48:27 +0200, Mark Brown wrote:
-> On Tue, Sep 26, 2023 at 05:49:08PM +0530, Dhruva Gole wrote:
-> 
-> > Umm I don't think the commit being fixed is there in 6.6?
-> > I am not really sure how I should base/format the patch? Please can you
-> > tell me what's expected in such a case ideally?
-> 
-> Including a full 12 character commit hash would help with matching,
+On Mon, Sep 25, 2023 at 12:45:55PM -0700, Srinivas Pandruvada wrote:
+> The driver is using 256 as the size while calling devm_ioremap(). The
+> maximum offset is already part of struct isst_mmio_range. Use the
+> maximum offset (end field of the struct) plus 4 as the map size to remove
+> hardcoded value of 256.
 
-I have given the full 12 chars, else checkpatch would've caught me :)
+...
 
-> there were only 10 there.  Not mix'n'matching Link:/Close: with links in
-> the body of the commit message would help as well.
+> +	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
+> +
+> +	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr,
+> +					     punit_dev->mmio_range[1].end + sizeof(u32));
 
-OK, I have fixed the links and sent the patch V3
+Can we rather fix the mmio_range driver data to have end be actually not the
+offset of the last dword? (Better maybe to keep length there.)
 
-Again, I have based on your for-next, as I don't see the fixes: commit in
-the 6.6 tree.
+With help of
 
+	struct resource r;
+	...
+	r = DEFINE_RES_MEM(base_addr, mmio_range.beg + mmio_range.len);
 
+you can switch to devm_ioremap_resource() API.
 
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+With Best Regards,
+Andy Shevchenko
+
+
