@@ -2,120 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D377AEDC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9117AEDB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbjIZNLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
+        id S234681AbjIZNKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbjIZNLi (ORCPT
+        with ESMTP id S229604AbjIZNKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:11:38 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7889C127;
-        Tue, 26 Sep 2023 06:11:29 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QDBNcp105109;
-        Tue, 26 Sep 2023 08:11:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695733883;
-        bh=ebZF1O13WAp+405gFWGsAvB8HlRo5Q6+vLZ6sLpiBy8=;
-        h=From:To:CC:Subject:Date;
-        b=XgmKW3nUUT3Ksyh2yvr0R17cxyCHthrF5yMZMdYrfxqsYcjB9plVHPwxkLDDGiuyK
-         QNteaAG5UqGtYL+ob3CiacZPvdWw2C7x8aMAINXRH087gxFF+hmQXT+NF1gkn8Xm4F
-         1ysLacnldGAWH85WfQwid800CsR8RKA4Mo+e3UEU=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QDBNfe014547
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Sep 2023 08:11:23 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
- Sep 2023 08:11:21 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 26 Sep 2023 08:11:21 -0500
-Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QDBJQk092098;
-        Tue, 26 Sep 2023 08:11:19 -0500
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dhruva Gole <d-gole@ti.com>, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH V3] spi: spi-cadence-quadspi: Fix missing unwind goto warnings
-Date:   Tue, 26 Sep 2023 18:39:27 +0530
-Message-ID: <20230926130926.314751-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 26 Sep 2023 09:10:12 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207DDC9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LO8xyhn0t3ZXRotn9VvjhSPV/RHFoiwf0zvcQV4VzlTjXvBk3JzSj7D+C/8XQ4OnUZIk7X6dxFE9lWZ3YnL59HQfCBPEWLN6HaEJrzfVnJRyZeR3w9OX9z9gCqKuPU1IPo1S45p0x24qgvOW0i0804ugfVSumMvL9arTHe3l5B/jqWBS81zDdBut5TNqwqpbG2Fc2zT4zAt2pQlhMGCImb1gMYE8iqkykITEJQlfRyM19u73aQLB6FBZ7ajtfJZzr4Lk+uC7dcCzWbWR0kJUkRmxqYKVd7MDgazpMHRSnvBwYVrvoykFcxl4zEDSF7HYicClhUvZIww3pWrDffdURA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N+T+joBoxSaNFvetND2OtUyAd/8avk8c+U2ZAcKrvVo=;
+ b=WI/HXCbYXyTUFOBbLSB3CEl04GvaopOSSLAdhISoC3Wut3dwgJ8659m089YQ6AaETn4sS2vmk50Kld68fAzYJrO0J8IiOTw+TMHlEKYWD1ifaTVXfSX8rNXNEwQyaaCSEHYklXhkCSsXyY5Xw1L+B2eSoJbHJ4kPo87vVAVgX/Cb/P093qJjoTj9cF1MER6zxMzJLO/u6oPAlylJ5Y6Rkn+bT28Qcccd+4P/XLR7UsE7iUZ+3L4qHqKyjyCjlDAQ5IeAg75yL8gykLfZxgKQiC33JQ2i1ihIDXghlpM+a3TGZdLSTXPCev9UP4nHwmbey+b4SKmegE9HQ0H9mHz+NQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N+T+joBoxSaNFvetND2OtUyAd/8avk8c+U2ZAcKrvVo=;
+ b=zoWQv630d5jJzGV18LmXslslNpXxqaB0x1kSSh/PhfRWWzJ+UuPAJ0wphLwbMaseO5sV3+Geub22V5BR34pTEtPSrzcEexYdMGGSrTAUK10oSsQq8zSVudWIRsjzHI45aZV8Z7IPVcQgN3msexCuZ8fyrfs3rkqyCZa2+oFz4Jo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by SA1PR12MB8885.namprd12.prod.outlook.com (2603:10b6:806:376::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 13:10:03 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6813.018; Tue, 26 Sep 2023
+ 13:10:02 +0000
+Message-ID: <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
+Date:   Tue, 26 Sep 2023 09:09:56 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] drm/amd/display: Fix null pointer dereference in
+ error message
+Content-Language: en-US
+To:     Cong Liu <liucong2@kylinos.cn>, Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Tom Chung <chiahsuan.chung@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230926055618.119195-1-liucong2@kylinos.cn>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230926055618.119195-1-liucong2@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0295.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6d::20) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|SA1PR12MB8885:EE_
+X-MS-Office365-Filtering-Correlation-Id: 791d96f5-b814-4b4a-5a80-08dbbe91e4ba
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zl336kVRatt1PLCVWU366XweLSdkt3KDKtTHeOC4NxHZKNWzEwGQaHQyIFGskBq8VZgJvdiRB7c+qduPlMLDY6Ec9ivIirQlUxZ0nk7IsQoQPqcCZQ/KDtTt9yQAdUxWgFU+yBpaVqlqpUZStEp5OZi1waE8PpvD6vZCr82FblrjhYKDK/FNVrCMMBHsLziFif4LQUtoNutpC74vVRfE6Hq+1/1f7l4fjNsKYa3IVcMp5Bt5MNI5QHb7R03OW+8C4GZUmLMsc68sLRytNx8GbtqjNdT7vbb4MgaEUXzvx4Oj006akvqVhufb4VmV+uhzsz289ciA935JgTSGmRSdWwi1tXpQcPiTWwHYePyjyVo1A7kSYXmrcKzoCfkjUfuY94DW5G31Yf1MrJvpk8cU/rJZXGcvfRNsYR8xSDv0C7YZpm/Q1sCtY0UcPk4NZoMoTZwVaby6gEpprD9pUe8945bPOHmzUbNhyuZyzneoyDWT4Nya0Jrf65C00MgD+kG3iLvPKt+JBI22fUZQ4tuUx7o71ZKTc7bT6eJ4h5yqrf3zinJBTJx6f8kZf2J8pI0g7WPRP5PZCXTv6wjynxl72Am6zC0iwUq9zAYIdW8AC4TyRYlmk9g0OzFUOZ9MSeo2u1O5Gi0eV6/AoKgG94C+T7cvtFsbxe1kQaq8cuo+TN0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230922051799003)(186009)(451199024)(1800799009)(86362001)(31696002)(36756003)(31686004)(6506007)(6486002)(5660300002)(6666004)(26005)(53546011)(6512007)(110136005)(66476007)(66556008)(66946007)(2616005)(41300700001)(316002)(478600001)(44832011)(6636002)(8676002)(8936002)(4326008)(2906002)(921005)(38100700002)(83380400001)(15650500001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M21rdmFXa0FvajgyY0E2M3VaUlE2OVBZS25tdE9ROUpzbjZMTG95YUJEZU9a?=
+ =?utf-8?B?WUxEMGNvSXV1RkRZZWdhUTVtaGk5ei82SzhUODFCVjdWUlBvWjUyVVBYRm45?=
+ =?utf-8?B?dzhVYkZGMmlWUVdzRnZybU1qWXlzRld0Z3RWQmY5aXNtWDgwbG51N2VwVDBz?=
+ =?utf-8?B?ZWRhZzNPRStVVTYzT04razdXRURUVElzNzRxc1ZRZFB2U0pwb0FFYWZkd1BD?=
+ =?utf-8?B?ZVJ6ZWVZZ3hXYTU2QWJUcDE1dVN2djNoMFQ4ZmMwMWI3T2Z4QjYrbDBwY3pk?=
+ =?utf-8?B?QXRsbGpvTUxYRmFhYko2eS94TWIxUThJR1c2RmRYWHhPZGFnUlpKRDVYeTUw?=
+ =?utf-8?B?N3crME93ODdsN1QvZXFFN2Fady9mK0diUWZlbUNZdm9iTGJuQlJPMEhNNkE2?=
+ =?utf-8?B?Y3BzRWJNNXJRbitlaE93dmRwVGkvcFRpUGxIeGhGUGxhNEpCQUVtZG40NUYy?=
+ =?utf-8?B?SmE2VHkwWHF3U2VjazIyWnFjRzZhVm0yaGcvaEpoSUJKak1KN3JsYjJYZHZp?=
+ =?utf-8?B?SFkwVk1Wd2sxejgwelB3TXBiNHFRM3VrWEVqMlBKZ3M5TlJZWlFWUEFLdTFh?=
+ =?utf-8?B?OURtMHluMU1VbVpQQjNyVmtXOVI0ajhITHlXN3hJdzdjSDYwVDlHNTc5dXZ1?=
+ =?utf-8?B?Z2FyODJqeGd6T0tEQ3FybUhweEpFbVhKSDduMlVsd2tYd0JqbGtCc3UvLzBJ?=
+ =?utf-8?B?cVNPeVd5bXc1THJ3bWVxcms5bUV4UHgxemRydkpsdG5KUkhEVHBQMHlmYW9L?=
+ =?utf-8?B?aEd2MmZhZzFNMlMxTGNXVUxBUGZreGxMSWtKWUhjOU9WZlRYUjgrMUJWSSt5?=
+ =?utf-8?B?c1lWc09iWFFha3czdFdnZmpyejlvZFIrcTc1U3JoaGJ6ZmppOTh3RzA0amky?=
+ =?utf-8?B?OFg4QlpWWVREVnNENmFmaTB2TnEwY3NReUdaekI5MC9sTitFMDdUN0p4aTEz?=
+ =?utf-8?B?SXZMS3F1dzV6V1lMS3dld1JTK2NpVFFwSlhhRUhlc3p1WEU3dlRuazcvNnd5?=
+ =?utf-8?B?d3JKeXdJdWsveldvemdtVFJYbkFvNGNxQmlFZjQ5SjZrU1dlU3FSTzdVRFhP?=
+ =?utf-8?B?bTI3R29MSUVvbFYySXpjc0ZSZ2dDMnBVd3Fka1k3WHB6d251UEpVMUx2aXBR?=
+ =?utf-8?B?TDIza0gxc3IrV00rTGpxSGtCb3ROeDJKWEtlUjloVEVuK05LVjJhWmFGNTVk?=
+ =?utf-8?B?elplR1I0eGJhaFZtNW05T0IvL256U3pCeXJPM0c1czdxTWl2cnNrejd4azRi?=
+ =?utf-8?B?MHh1SlM1S05OV3JwaTBFRmIwNklKcXlpZ2N0Q2tuK0VVV1ZVREVVVXRlVDhH?=
+ =?utf-8?B?ekZBOHZNR3FMS1JVcyt6UU0zU08yVUtnRTJORkV0Z3JCaGVKWWx1aURYd2pZ?=
+ =?utf-8?B?dm1ienJrdlJpNEl1aGRhQ21YZmxYbTJNdDhkeEtKSzhIOGFzaEN1cTZHVUN0?=
+ =?utf-8?B?eWFlNkIwbFRnVVlkam85aGRXYmhDVDZBZEdIaVBKTUswanUvRERKb3A1bkJr?=
+ =?utf-8?B?c0FoZHpPczV0VlBndFVycWlIZ0pEblFTM3BJUnlVYTlPYjhaTFZ4SG1CMDU2?=
+ =?utf-8?B?RDhkZEdZYndsOTdCdlBsZDNkQit2NUVRSGdEN0xHNVlha3pkNUlsVjlvaTF2?=
+ =?utf-8?B?NGIvUW9VbnpaU3QzbVB4Q2xndlVXVks4SWc4WXNPUHhGR1ZvajVMODdoVi9l?=
+ =?utf-8?B?clNaWHZPOUZQSDk0cXZ0WVJBaUNtVnc2elBCN1BhSUNZOUhGODMwV2hYYThj?=
+ =?utf-8?B?S2RRallUeXZSeTZKVUtuLytua2pwTVNHdG1kanBSd3dJTGdwMnh0QVRGRWgy?=
+ =?utf-8?B?OWlkVFFINjI0a1pIYTgvKzc2dVJ6SHR5VWV4RUpJai8raDNieFlOUEsxb21H?=
+ =?utf-8?B?R3NyNjczOFUrU3NROGhiVVlJeG9BcjJDWG9lc3V0ckFCaWhOcHBYNzFJTTZL?=
+ =?utf-8?B?alhENXpMRk9vQXhGY3ZJcVJoZnFLSW9IQlRZVHpTZ3dyb1U4NmVLbGxYelBv?=
+ =?utf-8?B?aWlyc0Q1eTB6WEZlaTF0dTBnSEtySjJiVHc5aTJCUmtCNkZhMkJyTGxNV0tS?=
+ =?utf-8?B?M0NqUHVzeE8xWGx6LzdNZjBheHg1Y1laNDE4VWRPTGsyQlptK0MrdnpOYUdi?=
+ =?utf-8?Q?qZDo3XEHDYCZfzTFjFX6ulkJM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 791d96f5-b814-4b4a-5a80-08dbbe91e4ba
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 13:10:02.1954
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z00YFkpRm0HhM2ZzND2zIePkznVU0zOIk3PC54dDYR1C7P1GcWqJK0GOIYRf9f8tYH+uvIJMWgw1C4q0FFOdSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8885
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following smatch warnings were recently introduced:
 
-drivers/spi/spi-cadence-quadspi.c:1882 cqspi_probe() warn: missing
-unwind goto?
 
-Fix these warnings by releasing dma channel and adding a goto fail probe.
+On 2023-09-26 01:56, Cong Liu wrote:
+> This patch fixes a null pointer dereference in the error message that is
+> printed when the Display Core (DC) fails to initialize. The original
+> message includes the DC version number, which is undefined if the DC is
+> not initialized.
+> 
+> Fixes: 9788d087caff ("drm/amd/display: improve the message printed when loading DC")
+> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 8e98dda1e084..bf52a909f558 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -1703,8 +1703,7 @@ static int amdgpu_dm_init(struct amdgpu_device *adev)
+>  		DRM_INFO("Display Core v%s initialized on %s\n", DC_VER,
+>  			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
+>  	} else {
+> -		DRM_INFO("Display Core v%s failed to initialize on %s\n", DC_VER,
+> -			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
+> +		DRM_INFO("Display Core failed to initialize with v%s!\n", DC_VER);
 
-Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm support")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/all/5e21c351-cd08-443e-8509-aecf242a4da9@kadam.mountain/
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
+There is value in printing the version number. Let's not remove it.
 
-*NOTE:* Please base on top of origin: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
-branch: for-next
+Instead you can probably fix it by doing a NULL check on adev->dm.dc->ctx.
 
-Link to v2:
-https://lore.kernel.org/r/20230919074658.41666-1-d-gole@ti.com
+Harry
 
-Link to V1:
-https://lore.kernel.org/all/20230915123103.2493640-1-d-gole@ti.com/
-
-Changelog in v3:
-* Rebased and removed mixing of links from commit message
-
-Changelog in v2:
-* added dma_release_channel
-* added a fixes tag.
- drivers/spi/spi-cadence-quadspi.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 4828da4587c5..3d7bf62da11c 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1878,8 +1878,11 @@ static int cqspi_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_pm_runtime_enable(dev);
--	if (ret)
--		return ret;
-+	if (ret) {
-+		if (cqspi->rx_chan)
-+			dma_release_channel(cqspi->rx_chan);
-+		goto probe_setup_failed;
-+	}
- 
- 	pm_runtime_set_autosuspend_delay(dev, CQSPI_AUTOSUSPEND_TIMEOUT);
- 	pm_runtime_use_autosuspend(dev);
-
-base-commit: b643e6268c8f466ebb08a594b8ec8a1e2fd275a2
--- 
-2.34.1
+>  		goto error;
+>  	}
+>  
 
