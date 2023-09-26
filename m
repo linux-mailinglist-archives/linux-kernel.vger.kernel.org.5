@@ -2,352 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 722EE7AE325
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EFD7AE327
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjIZA4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        id S232948AbjIZA5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbjIZA4M (ORCPT
+        with ESMTP id S232323AbjIZA5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:56:12 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0643B3;
-        Mon, 25 Sep 2023 17:56:02 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RvhBL6tmYz4f3jsm;
-        Tue, 26 Sep 2023 08:55:54 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgDnfd0aLBJlpZ2bBQ--.24070S3;
-        Tue, 26 Sep 2023 08:55:55 +0800 (CST)
-Subject: Re: [PATCH -next v2 00/28] md: synchronize io with array
- reconfiguration
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     agk@redhat.com, snitzer@kernel.org, dm-devel@redhat.com,
-        xni@redhat.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230828020021.2489641-1-yukuai1@huaweicloud.com>
- <CAPhsuW4-L+u6--do0W8shPF63kcw28N6-k5iPcuQwUJtiCbWRw@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <89fffc6b-f156-bcda-0a82-f1a73d885b01@huaweicloud.com>
-Date:   Tue, 26 Sep 2023 08:55:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 25 Sep 2023 20:57:14 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F0E109;
+        Mon, 25 Sep 2023 17:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695689826; x=1727225826;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kWOrB4zO64UWmGfTlry+4aeq1uRND9+gyWJsQM/JdDc=;
+  b=ma20tYGf917DdlQGw95oWGu4pOJrhilMxINnmy+tOTGJrZRSfsG7Oo+7
+   6u59S6C0lenoMz5X5PqAPcorvmT2F2T6CB0yXGn/9T9sGpbEb521WndDV
+   ncs/GxdsUAnRcUXIKfF4GkfT04V3aP9Vm/My2LHukkaiy2LOh4a1m4gJR
+   lrYKae4AMiw0QTbZzOzIaZXYM+DWNm7dIh/Kf8rD1UFRqEDNiI+Kdc0/i
+   y5AP0gjdtU1yuUZuhMtzM2WW9rr+ybn72SA4NcjuNLXXEQtK2uOT7Q7XQ
+   Zhq2IVhfjDdizEoJxSD+hdYw3JQ0h3FvMG1hseeRsgSR6tCaENI8Gy5KH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="366510614"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="366510614"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 17:57:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="838807135"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="838807135"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 17:56:59 -0700
+Date:   Mon, 25 Sep 2023 17:56:58 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v5 1/8] x86/resctrl: Prepare for new domain scope
+Message-ID: <ZRIsWmIiL8O57c9w@agluck-desk3>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-2-tony.luck@intel.com>
+ <25dae76d-9e8e-9381-066f-7eaeadb85dc7@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW4-L+u6--do0W8shPF63kcw28N6-k5iPcuQwUJtiCbWRw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDnfd0aLBJlpZ2bBQ--.24070S3
-X-Coremail-Antispam: 1UD129KBjvAXoW3Zr45tw43KFyxJFy5Zw1kXwb_yoW8Jw4Uuo
-        WUJw1fCr4rGrn8JF1fJr4DJryUWr1DJFZ7tr12kr4DCFs7GrWUtFyUGr18Jr4jqF45CF9I
-        yr13Kr95G348GFs7n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20EY4v20xva
-        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-        x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWx
-        JVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25dae76d-9e8e-9381-066f-7eaeadb85dc7@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-在 2023/09/25 23:45, Song Liu 写道:
-> Hi Kuai,
+On Mon, Sep 25, 2023 at 04:22:29PM -0700, Reinette Chatre wrote:
+> Hi Tony,
 > 
-> Thanks for the patchset!
+> On 8/29/2023 4:44 PM, Tony Luck wrote:
+> > Legacy resctrl features operated on subsets of CPUs in the system with
 > 
-> I have got the following panic with mdadm test 23rdev-lifetime.
-> Could you please look into it?
-> 
-> I pushed the test code to this branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/song/md.git/log/?h=md-test-28
+> What is a "legacy" resctrl feature? I am not aware of anything in resctrl
+> that distinguishes a feature as legacy. Could "resctrl resource" be more
+> appropriate to match the resctrl implementation? 
 
-Thanks for the test, I know where the problem is now, mddev is
-dereferenced before the null checking.
-
-I'll fix this in the next version.
-
-Thanks,
-Kuai
+Ok. Will change.
 
 > 
-> Thanks,
-> Song
-> 
-> 
-> [  173.143010] ==================================================================
-> [  173.144256] BUG: KASAN: null-ptr-deref in __mutex_lock+0xc0/0x920
-> [  173.145232] Read of size 8 at addr 00000000000000a8 by task test/1215
-> [  173.146138]
-> [  173.146375] CPU: 26 PID: 1215 Comm: test Not tainted 6.6.0-rc2+ #8
-> [  173.147254] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-> [  173.148840] Call Trace:
-> [  173.149202]  <TASK>
-> [  173.149531]  dump_stack_lvl+0xb5/0x100
-> [  173.150093]  ? __pfx_dump_stack_lvl+0x10/0x10
-> [  173.150724]  ? _printk+0xac/0xf0
-> [  173.151251]  ? lock_acquired+0xff/0x680
-> [  173.151852]  print_report+0xe6/0x510
-> [  173.152372]  ? __might_resched+0x1a1/0x3d0
-> [  173.152997]  ? __mutex_lock+0xc0/0x920
-> [  173.153566]  kasan_report+0x119/0x150
-> [  173.154114]  ? lock_acquire+0x18a/0x390
-> [  173.154667]  ? __mutex_lock+0xc0/0x920
-> [  173.155225]  ? mddev_suspend+0xbc/0x260
-> [  173.155799]  __mutex_lock+0xc0/0x920
-> [  173.156332]  ? lock_acquire+0x18a/0x390
-> [  173.156928]  ? kernfs_find_and_get_ns+0x4c/0xb0
-> [  173.157578]  ? __pfx___mutex_lock+0x10/0x10
-> [  173.158177]  ? down_read+0x6b2/0x800
-> [  173.158696]  ? lock_is_held_type+0xdb/0x150
-> [  173.159300]  mddev_suspend+0xbc/0x260
-> [  173.159832]  ? __pfx_lock_release+0x10/0x10
-> [  173.160427]  ? lock_is_held_type+0xdb/0x150
-> [  173.161074]  ? __pfx_mddev_suspend+0x10/0x10
-> [  173.161698]  rdev_attr_store+0x5ba/0x600
-> [  173.162282]  ? __pfx_sysfs_kf_write+0x10/0x10
-> [  173.162915]  kernfs_fop_write_iter+0x1d1/0x280
-> [  173.163595]  vfs_write+0x45d/0x5d0
-> [  173.164113]  ? __pfx_vfs_write+0x10/0x10
-> [  173.164709]  ? __pfx_lock_release+0x10/0x10
-> [  173.165352]  ksys_write+0xed/0x1a0
-> [  173.165912]  ? __pfx_ksys_write+0x10/0x10
-> [  173.166501]  ? __audit_syscall_entry+0x1cf/0x200
-> [  173.167191]  ? syscall_enter_from_user_mode+0x181/0x220
-> [  173.168034]  do_syscall_64+0x43/0x90
-> [  173.168588]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [  173.169355] RIP: 0033:0x7f4e65ced648
-> [  173.169830] md: could not open device unknown-block(7,0).
-> [  173.169914] Code: 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00
-> 00 00 f3 0f 1e fa 48 8d 05 55 6f 2d 00 8b 00 85 c0 75 17 b8 01 00 00
-> 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 49 89
-> d4 55
-> [  173.173324] RSP: 002b:00007ffe9a2ac128 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000001
-> [  173.174398] RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 00007f4e65ced648
-> [  173.175405] RDX: 0000000000000007 RSI: 0000561ae26e29d0 RDI: 0000000000000001
-> [  173.176416] RBP: 0000561ae26e29d0 R08: 000000000000000a R09: 00007f4e65d80620
-> [  173.177417] R10: 000000000000000a R11: 0000000000000246 R12: 00007f4e65fc06e0
-> [  173.178418] R13: 0000000000000007 R14: 00007f4e65fbb880 R15: 0000000000000007
-> [  173.179441]  </TASK>
-> [  173.179775] ==================================================================
-> [  173.180838] Disabling lock debugging due to kernel taint
-> [  173.181662] BUG: kernel NULL pointer dereference, address: 00000000000000a8
-> [  173.182654] #PF: supervisor read access in kernel mode
-> [  173.183408] #PF: error_code(0x0000) - not-present page
-> [  173.184152] PGD 0 P4D 0
-> [  173.184531] Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-> [  173.185224] CPU: 26 PID: 1215 Comm: test Tainted: G    B
->    6.6.0-rc2+ #8
-> [  173.186320] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-> [  173.187912] RIP: 0010:__mutex_lock+0xc0/0x920
-> [  173.188557] Code: 00 e8 24 f3 77 fe 2e 2e 2e 31 c0 48 c7 c7 80 c7
-> c5 89 e8 03 01 bf fe 83 3d ec e0 27 07 00 75 15 49 8d 7c 24 68 e8 30
-> 02 bf fe <4d> 39 64 24 68 0f 85 00 08 00 00 bf 01 00 00 00 e8 5b e7 76
-> fe 4d
-> [  173.191203] RSP: 0018:ffff8881b18c7a20 EFLAGS: 00010286
-> [  173.191958] RAX: ffff8881b0ae4001 RBX: 0000000000000000 RCX: ffffffff810e0df1
-> [  173.192968] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffff8900ea40
-> [  173.193976] RBP: ffff8881b18c7b50 R08: ffffffff8900ea47 R09: 1ffffffff1201d48
-> [  173.194986] R10: dffffc0000000000 R11: fffffbfff1201d49 R12: 0000000000000040
-> [  173.196263] R13: ffffffff823e61cc R14: 0000000000000000 R15: 0000000000000000
-> [  173.197274] FS:  00007f4e66b6e740(0000) GS:ffff888dfd200000(0000)
-> knlGS:0000000000000000
-> [  173.198466] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  173.199316] CR2: 00000000000000a8 CR3: 00000001b191e005 CR4: 0000000000370ee0
-> [  173.200327] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  173.201382] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  173.202430] Call Trace:
-> [  173.202810]  <TASK>
-> [  173.203173]  ? __die_body+0x63/0xb0
-> [  173.203678]  ? page_fault_oops+0x2f3/0x440
-> [  173.204338]  ? __pfx_page_fault_oops+0x10/0x10
-> [  173.204981]  ? vprintk_emit+0x455/0x520
-> [  173.205593]  ? __pfx_vprintk_emit+0x10/0x10
-> [  173.206276]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-> [  173.207068]  ? do_user_addr_fault+0x796/0x840
-> [  173.207694]  ? _printk+0xac/0xf0
-> [  173.208188]  ? __pfx_do_user_addr_fault+0x10/0x10
-> [  173.208879]  ? rcu_is_watching+0x30/0x60
-> [  173.209475]  ? exc_page_fault+0x7d/0x290
-> [  173.210043]  ? asm_exc_page_fault+0x22/0x30
-> [  173.210639]  ? mddev_suspend+0xbc/0x260
-> [  173.211294]  ? add_taint+0x41/0x90
-> [  173.211798]  ? __mutex_lock+0xc0/0x920
-> [  173.212352]  ? lock_acquire+0x18a/0x390
-> [  173.212914]  ? kernfs_find_and_get_ns+0x4c/0xb0
-> [  173.213623]  ? __pfx___mutex_lock+0x10/0x10
-> [  173.214243]  ? down_read+0x6b2/0x800
-> [  173.214773]  ? lock_is_held_type+0xdb/0x150
-> [  173.215374]  mddev_suspend+0xbc/0x260
-> [  173.215941]  ? __pfx_lock_release+0x10/0x10
-> [  173.216541]  ? lock_is_held_type+0xdb/0x150
-> [  173.217148]  ? __pfx_mddev_suspend+0x10/0x10
-> [  173.217776]  rdev_attr_store+0x5ba/0x600
-> [  173.218343]  ? __pfx_sysfs_kf_write+0x10/0x10
-> [  173.218977]  kernfs_fop_write_iter+0x1d1/0x280
-> [  173.219618]  vfs_write+0x45d/0x5d0
-> [  173.220126]  ? __pfx_vfs_write+0x10/0x10
-> [  173.220689]  ? __pfx_lock_release+0x10/0x10
-> [  173.221342]  ksys_write+0xed/0x1a0
-> [  173.221850]  ? __pfx_ksys_write+0x10/0x10
-> [  173.222421]  ? __audit_syscall_entry+0x1cf/0x200
-> [  173.223090]  ? syscall_enter_from_user_mode+0x181/0x220
-> [  173.223845]  do_syscall_64+0x43/0x90
-> [  173.224362]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [  173.225083] RIP: 0033:0x7f4e65ced648
-> [  173.225599] Code: 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00
-> 00 00 f3 0f 1e fa 48 8d 05 55 6f 2d 00 8b 00 85 c0 75 17 b8 01 00 00
-> 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 49 89
-> d4 55
-> [  173.228199] RSP: 002b:00007ffe9a2ac128 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000001
-> [  173.229267] RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 00007f4e65ced648
-> [  173.230273] RDX: 0000000000000007 RSI: 0000561ae26e29d0 RDI: 0000000000000001
-> [  173.231274] RBP: 0000561ae26e29d0 R08: 000000000000000a R09: 00007f4e65d80620
-> [  173.232323] R10: 000000000000000a R11: 0000000000000246 R12: 00007f4e65fc06e0
-> [  173.233323] R13: 0000000000000007 R14: 00007f4e65fbb880 R15: 0000000000000007
-> [  173.234333]  </TASK>
-> [  173.234657] Modules linked in:
-> [  173.235118] CR2: 00000000000000a8
-> [  173.235601] ---[ end trace 0000000000000000 ]---
-> [  173.236270] RIP: 0010:__mutex_lock+0xc0/0x920
-> [  173.236906] Code: 00 e8 24 f3 77 fe 2e 2e 2e 31 c0 48 c7 c7 80 c7
-> c5 89 e8 03 01 bf fe 83 3d ec e0 27 07 00 75 15 49 8d 7c 24 68 e8 30
-> 02 bf fe <4d> 39 64 24 68 0f 85 00 08 00 00 bf 01 00 00 00 e8 5b e7 76
-> fe 4d
-> [  173.239538] RSP: 0018:ffff8881b18c7a20 EFLAGS: 00010286
-> [  173.240286] RAX: ffff8881b0ae4001 RBX: 0000000000000000 RCX: ffffffff810e0df1
-> [  173.241293] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffff8900ea40
-> [  173.242342] RBP: ffff8881b18c7b50 R08: ffffffff8900ea47 R09: 1ffffffff1201d48
-> [  173.243343] R10: dffffc0000000000 R11: fffffbfff1201d49 R12: 0000000000000040
-> [  173.244346] R13: ffffffff823e61cc R14: 0000000000000000 R15: 0000000000000000
-> [  173.245384] FS:  00007f4e66b6e740(0000) GS:ffff888dfd200000(0000)
-> knlGS:0000000000000000
-> [  173.246548] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  173.247362] CR2: 00000000000000a8 CR3: 00000001b191e005 CR4: 0000000000370ee0
-> [  173.248371] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  173.249390] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  173.250395] Kernel panic - not syncing: Fatal exception
-> [  173.251612] Kernel Offset: disabled
-> [  173.252133] ---[ end Kernel panic - not syncing: Fatal exception ]---
-> 
-> 
-> On Sun, Aug 27, 2023 at 7:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Changes in v2:
->>   - rebase with latest md-next
->>   - remove some follow up cleanup patches, these patches will be sent
->>   later after this patchset.
->>
->> After previous four patchset of preparatory work, this patchset impelement
->> a new version of mddev_suspend(), the new apis:
->>   - reconfig_mutex is not required;
->>   - the weird logical that suspend array hold 'reconfig_mutex' for
->>     mddev_check_recovery() to update superblock is not needed;
->>   - the special handling, 'pers->prepare_suspend', for raid456 is not
->>     needed;
->>   - It's safe to be called at any time once mddev is allocated, and it's
->>     designed to be used from slow path where array configuration is changed;
->>
->> And use the new api to replace:
->>
->> mddev_lock
->> mddev_suspend or not
->> // array reconfiguration
->> mddev_resume or not
->> mddev_unlock
->>
->> With:
->>
->> mddev_suspend
->> mddev_lock
->> // array reconfiguration
->> mddev_unlock
->> mddev_resume
->>
->> However, the above change is not possible for raid5 and raid-cluster in
->> some corner cases, and mddev_suspend/resume() is replaced with quiesce()
->> callback, which will suspend the array as well.
->>
->> This patchset is tested in my VM with mdadm testsuite with loop device
->> except for 10ddf tests(they always fail before this patchset).
->>
->> A lot of cleanups will be started after this patchset.
->>
->> Yu Kuai (28):
->>    md: use READ_ONCE/WRITE_ONCE for 'suspend_lo' and 'suspend_hi'
->>    md: use 'mddev->suspended' for is_md_suspended()
->>    md: add new helpers to suspend/resume array
->>    md: add new helpers to suspend/resume and lock/unlock array
->>    md: use new apis to suspend array for suspend_lo/hi_store()
->>    md: use new apis to suspend array for level_store()
->>    md: use new apis to suspend array for serialize_policy_store()
->>    md/dm-raid: use new apis to suspend array
->>    md/md-bitmap: use new apis to suspend array for location_store()
->>    md/raid5-cache: use READ_ONCE/WRITE_ONCE for 'conf->log'
->>    md/raid5-cache: use new apis to suspend array for
->>      r5c_disable_writeback_async()
->>    md/raid5-cache: use new apis to suspend array for
->>      r5c_journal_mode_store()
->>    md/raid5: use new apis to suspend array for raid5_store_stripe_size()
->>    md/raid5: use new apis to suspend array for raid5_store_skip_copy()
->>    md/raid5: use new apis to suspend array for
->>      raid5_store_group_thread_cnt()
->>    md/raid5: use new apis to suspend array for
->>      raid5_change_consistency_policy()
->>    md/raid5: replace suspend with quiesce() callback
->>    md: quiesce before md_kick_rdev_from_array() for md-cluster
->>    md: use new apis to suspend array for ioctls involed array
->>      reconfiguration
->>    md: use new apis to suspend array for adding/removing rdev from
->>      state_store()
->>    md: use new apis to suspend array for bind_rdev_to_array()
->>    md: use new apis to suspend array related to serial pool in
->>      state_store()
->>    md: use new apis to suspend array in backlog_store()
->>    md: suspend array in md_start_sync() if array need reconfiguration
->>    md: cleanup mddev_create/destroy_serial_pool()
->>    md/md-linear: cleanup linear_add()
->>    md: remove old apis to suspend the array
->>    md: rename __mddev_suspend/resume() back to mddev_suspend/resume()
->>
->>   drivers/md/dm-raid.c       |   8 +-
->>   drivers/md/md-autodetect.c |   4 +-
->>   drivers/md/md-bitmap.c     |  18 ++-
->>   drivers/md/md-linear.c     |   2 -
->>   drivers/md/md.c            | 250 ++++++++++++++++++++++---------------
->>   drivers/md/md.h            |  52 ++++++--
->>   drivers/md/raid5-cache.c   |  61 +++++----
->>   drivers/md/raid5.c         |  56 ++++-----
->>   8 files changed, 253 insertions(+), 198 deletions(-)
->>
->> --
->> 2.39.2
->>
-> .
-> 
+> Please use "operate on" instead of "operated on".
 
+Ditto.
+
+> 
+> > the defining attribute of each subset being an instance of a particular
+> > level of cache. E.g. all CPUs sharing an L3 cache would be part of the
+> > same domain.
+> > 
+> > In preparation for features that are scoped at the NUMA node level
+> > change the code from explicit references to "cache_level" to a more
+> > generic scope. At this point the only options for this scope are groups
+> > of CPUs that share an L2 cache or L3 cache.
+> > 
+> > No functional change.
+> > 
+> > Signed-off-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> >  include/linux/resctrl.h                   |  9 ++++++--
+> >  arch/x86/kernel/cpu/resctrl/core.c        | 27 ++++++++++++++++++-----
+> >  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 15 ++++++++++++-
+> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 15 ++++++++++++-
+> >  4 files changed, 56 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> > index 8334eeacfec5..2db1244ae642 100644
+> > --- a/include/linux/resctrl.h
+> > +++ b/include/linux/resctrl.h
+> > @@ -144,13 +144,18 @@ struct resctrl_membw {
+> >  struct rdt_parse_data;
+> >  struct resctrl_schema;
+> >  
+> > +enum resctrl_scope {
+> > +	RESCTRL_L3_CACHE,
+> > +	RESCTRL_L2_CACHE,
+> > +};
+> 
+> I'm curious why L3 appears before L2? This is not a big deal but
+> I think the additional indirection that this introduces is
+> not necessary. As you had in an earlier version this could be
+> RESCTRL_L2_CACHE = 2 and then the value can just be used directly
+> (after ensuring it is used in a valid context).
+
+I appear to have misundertood your earlier comments. I thought you
+didn't like my use of RESCTRL_L2_CACHE = 2, and RESCTRL_L3_CACHE = 3
+so that the could be passed directly to get_cpu_cacheinfo_id().
+
+But I see now the issue was "after ensuring it is used in a valid
+context". Are you looking for something like this:
+
+enum resctrl_scope {
+	RESCTRL_UNINITIALIZED_SCOPE = 0,
+	RESCTRL_L2_CACHE = 2,
+	RESCTRL_L3_CACHE = 3,
+	RESCTRL_L3_NODE = 4,
+};
+
+static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
+{
+	switch (scope) {
+	case RESCTRL_L2_CACHE:
+	case RESCTRL_L3_CACHE:
+		return get_cpu_cacheinfo_id(cpu, scope);
+	case RESCTRL_NODE:
+		return cpu_to_node(cpu);
+	default:
+	case RESCTRL_UNINITIALIZED_SCOPE:
+		WARN_ON_ONCE(1);
+		return -1;
+	}
+
+	return -1;
+}
+
+> 
+> > +
+> >  /**
+> >   * struct rdt_resource - attributes of a resctrl resource
+> >   * @rid:		The index of the resource
+> >   * @alloc_capable:	Is allocation available on this machine
+> >   * @mon_capable:	Is monitor feature available on this machine
+> >   * @num_rmid:		Number of RMIDs available
+> > - * @cache_level:	Which cache level defines scope of this resource
+> > + * @scope:		Scope of this resource
+> >   * @cache:		Cache allocation related data
+> >   * @membw:		If the component has bandwidth controls, their properties.
+> >   * @domains:		All domains for this resource
+> > @@ -168,7 +173,7 @@ struct rdt_resource {
+> >  	bool			alloc_capable;
+> >  	bool			mon_capable;
+> >  	int			num_rmid;
+> > -	int			cache_level;
+> > +	enum resctrl_scope	scope;
+> >  	struct resctrl_cache	cache;
+> >  	struct resctrl_membw	membw;
+> >  	struct list_head	domains;
+> > diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+> > index 030d3b409768..0d3bae523ecb 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/core.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/core.c
+> > @@ -65,7 +65,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+> >  		.r_resctrl = {
+> >  			.rid			= RDT_RESOURCE_L3,
+> >  			.name			= "L3",
+> > -			.cache_level		= 3,
+> > +			.scope			= RESCTRL_L3_CACHE,
+> >  			.domains		= domain_init(RDT_RESOURCE_L3),
+> >  			.parse_ctrlval		= parse_cbm,
+> >  			.format_str		= "%d=%0*x",
+> > @@ -79,7 +79,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+> >  		.r_resctrl = {
+> >  			.rid			= RDT_RESOURCE_L2,
+> >  			.name			= "L2",
+> > -			.cache_level		= 2,
+> > +			.scope			= RESCTRL_L2_CACHE,
+> >  			.domains		= domain_init(RDT_RESOURCE_L2),
+> >  			.parse_ctrlval		= parse_cbm,
+> >  			.format_str		= "%d=%0*x",
+> > @@ -93,7 +93,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+> >  		.r_resctrl = {
+> >  			.rid			= RDT_RESOURCE_MBA,
+> >  			.name			= "MB",
+> > -			.cache_level		= 3,
+> > +			.scope			= RESCTRL_L3_CACHE,
+> >  			.domains		= domain_init(RDT_RESOURCE_MBA),
+> >  			.parse_ctrlval		= parse_bw,
+> >  			.format_str		= "%d=%*u",
+> > @@ -105,7 +105,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
+> >  		.r_resctrl = {
+> >  			.rid			= RDT_RESOURCE_SMBA,
+> >  			.name			= "SMBA",
+> > -			.cache_level		= 3,
+> > +			.scope			= RESCTRL_L3_CACHE,
+> >  			.domains		= domain_init(RDT_RESOURCE_SMBA),
+> >  			.parse_ctrlval		= parse_bw,
+> >  			.format_str		= "%d=%*u",
+> > @@ -487,6 +487,21 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+> >  	return 0;
+> >  }
+> >  
+> > +static int get_domain_id_from_scope(int cpu, enum resctrl_scope scope)
+> > +{
+> > +	switch (scope) {
+> > +	case RESCTRL_L3_CACHE:
+> > +		return get_cpu_cacheinfo_id(cpu, 3);
+> > +	case RESCTRL_L2_CACHE:
+> > +		return get_cpu_cacheinfo_id(cpu, 2);
+> > +	default:
+> > +		WARN_ON_ONCE(1);
+> > +		break;
+> > +	}
+> > +
+> > +	return -1;
+> > +}
+> 
+> Looking ahead at the next patch some members of rdt_resources_all[]
+> are left with a default "0" initialization of mon_scope that is a
+> valid scope of RESCTRL_L3_CACHE in this implementation that would
+> not be caught with defensive code like above. For the above to catch
+> a case like this I think that there should be some default
+> initialization - but if you do move to something like you
+> had in v3 then this may not be necessary. If the L2 scope is 2,
+> L3 scope is 3, node scope is 4, then no initialization will be zero
+> and the above default can more accurately catch failure cases.
+
+See above (with a defensive enum constant that has the value 0).
+
+> 
+> > +
+> >  /*
+> >   * domain_add_cpu - Add a cpu to a resource's domain list.
+> >   *
+> > @@ -502,7 +517,7 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
+> >   */
+> >  static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> >  {
+> > -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
+> > +	int id = get_domain_id_from_scope(cpu, r->scope);
+> >  	struct list_head *add_pos = NULL;
+> >  	struct rdt_hw_domain *hw_dom;
+> >  	struct rdt_domain *d;
+> > @@ -552,7 +567,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+> >  
+> >  static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+> >  {
+> > -	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
+> > +	int id = get_domain_id_from_scope(cpu, r->scope);
+> >  	struct rdt_hw_domain *hw_dom;
+> >  	struct rdt_domain *d;
+> >  
+> > diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > index 458cb7419502..e79324676f57 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> > @@ -279,6 +279,7 @@ static void pseudo_lock_region_clear(struct pseudo_lock_region *plr)
+> >  static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+> >  {
+> >  	struct cpu_cacheinfo *ci;
+> > +	int cache_level;
+> >  	int ret;
+> >  	int i;
+> >  
+> > @@ -296,8 +297,20 @@ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
+> >  
+> >  	plr->size = rdtgroup_cbm_to_size(plr->s->res, plr->d, plr->cbm);
+> >  
+> > +	switch (plr->s->res->scope) {
+> > +	case RESCTRL_L3_CACHE:
+> > +		cache_level = 3;
+> > +		break;
+> > +	case RESCTRL_L2_CACHE:
+> > +		cache_level = 2;
+> > +		break;
+> > +	default:
+> > +		WARN_ON_ONCE(1);
+> > +		return -ENODEV;
+> > +	}
+> 
+> I think this can be simplified without the indirection - a simplified
+> WARN can just test for valid values of plr->s->res->scope directly
+> (exit on failure) and then it can be used directly in the code below
+> when the enum value corresponds to a cache level.
+
+Is this what you want here?
+
+	if (plr->s->res->scope != RESCTRL_L2_CACHE &&
+	    plr->s->res->scope != RESCTRL_L3_CACHE) {
+	    	WARN_ON_ONCE(1);
+		return -ENODEV;
+	}
+
+> 
+> > +
+> >  	for (i = 0; i < ci->num_leaves; i++) {
+> > -		if (ci->info_list[i].level == plr->s->res->cache_level) {
+> > +		if (ci->info_list[i].level == cache_level) {
+
+then drop this change to keep using plr->s->res->cache_level (and
+delete the now unused local variable cache_level).
+
+> >  			plr->line_size = ci->info_list[i].coherency_line_size;
+> >  			return 0;
+> >  		}
+> > diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > index 725344048f85..f510414bf6ce 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > @@ -1343,12 +1343,25 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
+> >  {
+> >  	struct cpu_cacheinfo *ci;
+> >  	unsigned int size = 0;
+> > +	int cache_level;
+> >  	int num_b, i;
+> >  
+> > +	switch (r->scope) {
+> > +	case RESCTRL_L3_CACHE:
+> > +		cache_level = 3;
+> > +		break;
+> > +	case RESCTRL_L2_CACHE:
+> > +		cache_level = 2;
+> > +		break;
+> > +	default:
+> > +		WARN_ON_ONCE(1);
+> > +		return size;
+> > +	}
+> > +
+> 
+> Same here.
+
+If above it what you want, will do it here too.
+
+> 
+> >  	num_b = bitmap_weight(&cbm, r->cache.cbm_len);
+> >  	ci = get_cpu_cacheinfo(cpumask_any(&d->cpu_mask));
+> >  	for (i = 0; i < ci->num_leaves; i++) {
+> > -		if (ci->info_list[i].level == r->cache_level) {
+> > +		if (ci->info_list[i].level == cache_level) {
+> >  			size = ci->info_list[i].size / r->cache.cbm_len * num_b;
+> >  			break;
+> >  		}
+> 
+> 
+> Reinette
+
+-Tony
