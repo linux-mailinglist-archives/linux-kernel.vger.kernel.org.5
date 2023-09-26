@@ -2,230 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3727AF0A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624FC7AF0A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbjIZQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S235196AbjIZQYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjIZQZW (ORCPT
+        with ESMTP id S235279AbjIZQYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:25:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D79C8E;
-        Tue, 26 Sep 2023 09:25:16 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QDwh5m020866;
-        Tue, 26 Sep 2023 16:25:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Kn0NWfrf2PoJA+utp/K+B/7mDfqS5Mn1G1dsC5wgm6E=;
- b=j2xXP4VwzjZTvmyk4bS2D9EQ5n3uXudKaH7UeS0GwyN0LrQgWfVfGTFjXyN4CPk+TPm2
- uf/Rh6uRAimblBjYEOiJv4SUlOVRE/4o39+35ZgNKoi9dhqFBI6H6B1jNBLQEVK0/L9l
- PLzqSVTWyvhs0Xy1XLCknlJHK/HivC0wE3O46n3t+d6ZwfGiM63JiUvLWMiHEnJ/61+4
- s9ejxvoCZXOkwRkTSQYgI1bKyZhbS5vN9Yc4YOthMS2SU5Ybl+0OJhMdg9CCuPE01jlb
- TqSGX72UyoYCtRro2Al8D21yNye3DOECUWCvE+uQS9BRsM/GLpt6EyK3KLCLQ9i/1JeF Iw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbmwwt26q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:25:02 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38QGOSsC010322
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:24:28 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 26 Sep
- 2023 09:24:22 -0700
-Message-ID: <593fa9be-9f55-3649-e825-1dee31ac5c21@quicinc.com>
-Date:   Tue, 26 Sep 2023 21:54:19 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH V1 2/2] arm64: dts: qcom: sc7280: Add UFS host controller
- and phy nodes
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <alim.akhtar@samsung.com>,
-        <bvanassche@acm.org>, <robh+dt@kernel.org>, <avri.altman@wdc.com>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230821094937.13059-1-quic_nitirawa@quicinc.com>
- <20230821094937.13059-3-quic_nitirawa@quicinc.com>
- <20230822070841.GA24753@thinkpad>
-Content-Language: en-US
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <20230822070841.GA24753@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5TkmNezfs8z-kSjLn0mFlFVUitDhXyq9
-X-Proofpoint-ORIG-GUID: 5TkmNezfs8z-kSjLn0mFlFVUitDhXyq9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- bulkscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309260144
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 12:24:44 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FA7B3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:24:37 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id a640c23a62f3a-94a348facbbso773083066b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695745475; x=1696350275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:references
+         :mime-version:message-id:in-reply-to:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vFkpn2H397KrVSqmEDJx57x47TGFCVVPTN7FsnVWNzE=;
+        b=1hFoAxEOGZbiAoDfKUO45fdAWUEnVPrTBLwCnAr5TndUi/CpxBn4N2Vq1G7Cor+nrS
+         TlakioOk9Tsthn2A54LcuTsp8JDA2B4qaImYYhJ8y8tJv2k705Z349CfRgjJkCFso9b/
+         ihC9g1f0pzKXY/pbEy5j6vbvMVfaG4BDrS0R1cZPB5r5fSeaGnaoPEbVxr/SYTQmZcex
+         M+u2H29QOgUKN2lbH5joPfQMlQazTm9aYcB9SF0Dgn8t8EL5jQSumXFzt2ExdyR04+g4
+         zvUYFoT2XN5GNc8iPiQQv0BDq1LmY60xhNJyYnGij0FXmQZ7+wtrVOdnYJ+5KsoK/Ehx
+         /cmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695745475; x=1696350275;
+        h=content-transfer-encoding:cc:to:from:subject:references
+         :mime-version:message-id:in-reply-to:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vFkpn2H397KrVSqmEDJx57x47TGFCVVPTN7FsnVWNzE=;
+        b=VDBvvDCmM9zI46kCxyc5AH8wa77yLnHWSkdl0FfgZtIAb8vqWMOtWPIj3+/ouGu6OL
+         LM2fNGsSbce7mz1B6XRKujnCxiJRYIzugsEhi/1U4FPh1FBqupXHAa6+3pGuOrSs4rDf
+         Q0BiQkXyGlnV5dnf47HE625N1VCLH0UvlVxWj9MowUBiu/H2zYbt/9+GkOVOZKFU3VN0
+         A7o3js2IdRWhoDgl1awj5VlxjqJklxlpdwgcOFstc5jUyYuULCKQbxBcc90cNV3PBNC1
+         o0cMAza04LwBb6jpe5uH/5A9BfZP/722B5o8vP3dBoonordJTAaesDW/LHVVLLuv72kx
+         MJMA==
+X-Gm-Message-State: AOJu0YynNpv/wMS011aWsoV0nF4WXleOgeAKTMQySjeJvnxiuusw7y1C
+        yhQxpUdkm4PbMmFy8hyDfWqBcg1qjNM=
+X-Google-Smtp-Source: AGHT+IHBoakqhkhiVEAsv+mZQ0hK5/qDN1CmFMFNKuR5J4mjx2CZrD8PGaR7oJWeHShb9Petn58MPj8g4wE=
+X-Received: from sport.zrh.corp.google.com ([2a00:79e0:9d:4:dc99:dac4:b719:7cd8])
+ (user=gnoack job=sendgmr) by 2002:a17:907:7110:b0:9a1:b087:3bcb with SMTP id
+ zr16-20020a170907711000b009a1b0873bcbmr34230ejb.7.1695745475433; Tue, 26 Sep
+ 2023 09:24:35 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 18:24:32 +0200
+In-Reply-To: <20230921061641.273654-1-mic@digikod.net>
+Message-Id: <ZRMFwNzBJyyr85hV@google.com>
+Mime-Version: 1.0
+References: <20230921061641.273654-1-mic@digikod.net>
+Subject: Re: [RFC PATCH v1 0/7] Landlock audit support
+From:   "=?iso-8859-1?Q?G=FCnther?= Noack" <gnoack@google.com>
+To:     "=?iso-8859-1?Q?Micka=EBl_Sala=FCn?=" <mic@digikod.net>
+Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Ben Scarlato <akhna@google.com>, Jeff Xu <jeffxu@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Micka=C3=ABl!
+
+On Thu, Sep 21, 2023 at 08:16:34AM +0200, Micka=C3=ABl Sala=C3=BCn wrote:
+> This patch series adds basic audit support to Landlock for most actions.
+> Logging denied requests is useful for different use cases:
+> * app developers: to ease and speed up sandboxing support
+> * power users: to understand denials
+> * sysadmins: to look for users' issues
+> * tailored distro maintainers: to get usage metrics from their fleet
+> * security experts: to detect attack attempts
+>=20
+> To make logs useful, they need to contain the most relevant Landlock
+> domain that denied an action, and the reason. This translates to the
+> latest nested domain and the related missing access rights.
+
+Is "domain" always the latest nested domain, or is that the domain which ca=
+used
+the check to fail because it denied the requested access right?  (If it is =
+just
+the counter of how many domains are stacked, this could maybe also be queri=
+ed
+through proc instead?)
 
 
-On 8/22/2023 12:38 PM, Manivannan Sadhasivam wrote:
-> On Mon, Aug 21, 2023 at 03:19:37PM +0530, Nitin Rawat wrote:
->> Add UFS host controller and PHY nodes for sc7280.
->>
-> 
-> You should split this patch into 2. One for SoC and another for board.
-Updated in Latest Patchset.
+> Two "Landlock permissions" are used to describe mandatory restrictions
+> enforced on all domains:
+> * fs_layout: change the view of filesystem with mount operations.
+> * ptrace: tamper with a process.
 
-> 
->> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 19 +++++++
->>   arch/arm64/boot/dts/qcom/sc7280.dtsi     | 64 ++++++++++++++++++++++++
->>   2 files changed, 83 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> index 2ff549f4dc7a..c60cdd511222 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
->> @@ -451,6 +451,25 @@
->>   	status = "okay";
->>   };
->>
->> +&ufs_mem_hc {
->> +	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
->> +	vcc-supply = <&vreg_l7b_2p9>;
->> +	vcc-max-microamp = <800000>;
->> +	vccq-supply = <&vreg_l9b_1p2>;
->> +	vccq-max-microamp = <900000>;
->> +	vccq2-supply = <&vreg_l9b_1p2>;
->> +	vccq2-max-microamp = <900000>;
->> +
->> +	status = "okay";
->> +};
->> +
->> +&ufs_mem_phy {
->> +	vdda-phy-supply = <&vreg_l10c_0p8>;
->> +	vdda-pll-supply = <&vreg_l6b_1p2>;
->> +
->> +	status = "okay";
->> +};
->> +
->>   &sdhc_1 {
->>   	status = "okay";
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 925428a5f6ae..d4a15d56b384 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -908,6 +908,70 @@
->>   			};
->>   		};
->>
->> +		ufs_mem_phy: phy@1d87000 {
-> 
-> Please sort the nodes in ascending order.
-Updated in Latest Patchset.
+I find the term "access" already a bit overloaded, and the term "permission=
+"
+also already appears in other contexts.  Maybe we can avoid the additional
+terminology by grouping these two together in the log format, and calling t=
+hem
+the "cause" or "reason" for the deny decision?  In a sense, the access righ=
+ts
+and the other permissions can already be told apart by their names, so they
+might also both appear under the same key without causing additional confus=
+ion?
 
-> 
->> +			compatible = "qcom,sc7280-qmp-ufs-phy";
->> +			reg = <0x0 0x01d87000 0x0 0xe00>;
->> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
->> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
->> +				 <&gcc GCC_UFS_1_CLKREF_EN>;
->> +			clock-names = "ref", "ref_aux", "qref";
->> +
->> +			resets = <&ufs_mem_hc 0>;
->> +			reset-names = "ufsphy";
->> +
->> +			#clock-cells = <1>;
->> +			#phy-cells = <0>;
->> +
->> +			status = "disabled";
->> +
->> +		};
->> +
->> +		ufs_mem_hc: ufs@1d84000 {
->> +			compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
->> +				     "jedec,ufs-2.0";
->> +			reg = <0x0 0x01d84000 0x0 0x3000>;
->> +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
->> +			phys = <&ufs_mem_phy>;
->> +			phy-names = "ufsphy";
->> +			lanes-per-direction = <2>;
->> +			#reset-cells = <1>;
->> +			resets = <&gcc GCC_UFS_PHY_BCR>;
->> +			reset-names = "rst";
->> +
->> +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
->> +			required-opps = <&rpmhpd_opp_nom>;
->> +
->> +			iommus = <&apps_smmu 0x80 0x0>;
->> +			dma-coherent;
->> +
->> +			clock-names = "core_clk",
->> +				      "bus_aggr_clk",
->> +				      "iface_clk",
->> +				      "core_clk_unipro",
->> +				      "ref_clk",
->> +				      "tx_lane0_sync_clk",
->> +				      "rx_lane0_sync_clk",
->> +				      "rx_lane1_sync_clk";
-> 
-> "clocks" property should come first.
-  DT binding shows clock-names first followed by clocks.
-  Let me know if see still see concern, would update .
 
-> 
-> - Mani
-> 
->> +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
->> +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
->> +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
->> +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
->> +				 <&rpmhcc RPMH_CXO_CLK>,
->> +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
->> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
->> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
->> +			freq-table-hz =
->> +				<75000000 300000000>,
->> +				<0 0>,
->> +				<0 0>,
->> +				<75000000 300000000>,
->> +				<0 0>,
->> +				<0 0>,
->> +				<0 0>,
->> +				<0 0>;
->> +			status = "disabled";
->> +		};
->> +
->>   		sdhc_1: mmc@7c4000 {
->>   			compatible = "qcom,sc7280-sdhci", "qcom,sdhci-msm-v5";
->>   			pinctrl-names = "default", "sleep";
->> --
->> 2.17.1
->>
-> 
+> Here is an example of logs, result of the sandboxer activity:
+> tid=3D267 comm=3D"sandboxer" op=3Dcreate-ruleset ruleset=3D1 handled_acce=
+ss_fs=3Dexecute,write_file,read_file,read_dir,remove_dir,remove_file,make_c=
+har,make_dir,make_reg,make_sock,make_fifo,make_block,make_sym,refer,truncat=
+e
+> tid=3D267 comm=3D"sandboxer" op=3Drestrict-self domain=3D2 ruleset=3D1 pa=
+rent=3D0
+> op=3Drelease-ruleset ruleset=3D1
+> tid=3D267 comm=3D"bash" domain=3D2 op=3Dopen errno=3D13 missing-fs-access=
+es=3Dwrite_file,read_file missing-permission=3D path=3D"/dev/tty" dev=3D"de=
+vtmpfs" ino=3D9
+> tid=3D268 comm=3D"ls" domain=3D2 op=3Dopen errno=3D13 missing-fs-accesses=
+=3Dread_dir missing-permission=3D path=3D"/" dev=3D"vda2" ino=3D256
+> tid=3D269 comm=3D"touch" domain=3D2 op=3Dmknod errno=3D13 missing-fs-acce=
+sses=3Dmake_reg missing-permission=3D path=3D"/" dev=3D"vda2" ino=3D256
+> tid=3D270 comm=3D"umount" domain=3D2 op=3Dumount errno=3D1 missing-fs-acc=
+esses=3D missing-permission=3Dfs_layout name=3D"/" dev=3D"tmpfs" ino=3D1
+> tid=3D271 comm=3D"strace" domain=3D2 op=3Dptrace errno=3D1 missing-fs-acc=
+esses=3D missing-permission=3Dptrace opid=3D1 ocomm=3D"systemd"
 
-Thanks,
-Nitin
+In more complicated cases like "refer" and "open", it is possible that more=
+ than
+one access right is missing, and presumably they'll both be listed in
+missing-fs-accesses=3D.  In this case, it is not clear to me whether the do=
+main=3D
+number is referring to the first or the second of these missing rights.
+(Assuming that the domain=3D is about the domain which caused the denial.)
+
+
+> As highlighted in comments, support for audit is not complete yet with
+> this series: some actions are not logged (e.g. file reparenting), and
+> rule additions are not logged neither.
+
+When ftruncate(2) gets denied, it is also not possible to tell which of the
+nested domains is responsible, without additional changes to what we carry
+around in the file's security blob.  (Right now, we calculate the overall
+truncation right in advance at open(2) time, and just store that bit with t=
+he
+newly opened file.)
+
+
+> I'm also not sure if we need to have seccomp-like features such as
+> SECCOMP_FILTER_FLAG_LOG, SECCOMP_RET_LOG, and
+> /proc/sys/kernel/seccomp/actions_logged
+>=20
+> I'd like to get some early feedback on this proposal.
+
+If you want to have the full feature set as proposed above for other operat=
+ions
+as well, like file reparenting and truncation, it'll complicate the Landloc=
+k
+logic and increase the amount of data that needs to be kept around just for
+logging.  I'm not convinced that this is worth it.  After all, the simpler =
+the
+Landlock implementation is, the easier it'll be to reason about its logic a=
+nd
+its security guarantees.
+
+A possible simplification would be to omit the domain number which is
+responsible for a "deny" decision.  I feel that for debugging, knowing the =
+fact
+that Landlock denied an operation might already be a big step forward, and =
+the
+exact domain responsible for it might not be that important?
+
+=E2=80=94G=C3=BCnther
+
+--=20
+Sent using Mutt =F0=9F=90=95 Woof Woof
