@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 548D07AEEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729057AEF0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbjIZOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
+        id S234739AbjIZOis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjIZOhM (ORCPT
+        with ESMTP id S234417AbjIZOip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:37:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AC9101;
-        Tue, 26 Sep 2023 07:37:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02376C433C8;
-        Tue, 26 Sep 2023 14:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695739026;
-        bh=2NvGlKjGPmS59w7M/PVsQ0zOobsxsCNxbWVuC18Xz+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V0A5OdboYGi/BMVyBFZlepKCiGKAKAHP0O8iO/FE+rDWXdPJoD7t3JkIMi3pQeC9W
-         mgUPJswwYx47wSPqtYNYj6Q/K/Dbg6i72lxgC0WOyyQYGApXCeztrhIv3XTI7wQ2yg
-         4LNNKreUN5GNfkMlJJGbIS1vd/i5p294BsIReAtMmEn5IvMqBIR2e/MYgCs3ncBXZk
-         NmdgMgHynsRs9x7NI5FEq3iaYllJGm7udNH7Ft81u/6nj8aA6QMG1tUWEhPVXb3w09
-         lbcD+Y2hNdkxpUdiEmkoXttiwkC1CosYk/f0DKRcER8M6iBqVqqU2i5085rBM8VZuA
-         /6QKrj0bLlmRg==
-Date:   Tue, 26 Sep 2023 16:36:59 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-Message-ID: <20230926-parolen-gebohrt-bcb01adc1aae@brauner>
-References: <20230913152238.905247-3-mszeredi@redhat.com>
- <20230914-salzig-manifest-f6c3adb1b7b4@brauner>
- <CAJfpegs-sDk0++FjSZ_RuW5m-z3BTBQdu4T9QPtWwmSZ1_4Yvw@mail.gmail.com>
- <20230914-lockmittel-verknallen-d1a18d76ba44@brauner>
- <CAJfpegt-VPZP3ou-TMQFs1Xupj_iWA5ttC2UUFKh3E43EyCOQQ@mail.gmail.com>
- <20230918-grafik-zutreffen-995b321017ae@brauner>
- <CAOssrKfS79=+F0h=XPzJX2E6taxAPmEJEYPi4VBNQjgRR5ujqw@mail.gmail.com>
- <871qeloxj0.fsf@oldenburg.str.redhat.com>
- <CAJfpegupTzdG4=UwguL02c08ZaoX+UK7+=9XQ9D1G4wLMxuqFA@mail.gmail.com>
- <87wmwdnhj1.fsf@oldenburg.str.redhat.com>
+        Tue, 26 Sep 2023 10:38:45 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E01CFE6;
+        Tue, 26 Sep 2023 07:38:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79E101FB;
+        Tue, 26 Sep 2023 07:39:16 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36D223F5A1;
+        Tue, 26 Sep 2023 07:38:37 -0700 (PDT)
+Message-ID: <06d476e5-ba85-1504-d69b-a8c1cf617d54@arm.com>
+Date:   Tue, 26 Sep 2023 15:38:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wmwdnhj1.fsf@oldenburg.str.redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Content-Language: en-GB
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tomasz Figa <tfiga@chromium.org>, Fang Hui <hui.fang@nxp.com>,
+        m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        anle.pan@nxp.com, xuegang.liu@nxp.com
+References: <20230914145812.12851-1-hui.fang@nxp.com>
+ <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com>
+ <353919fd-932e-5d81-6ac5-7b51117366cd@arm.com> <20230926065143.GB5606@lst.de>
+ <4d0f3de5-1d34-d998-cb55-7ce7bfaf3f49@arm.com>
+ <20230926094616.GA14877@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230926094616.GA14877@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> With an opaque, pointer-carrying struct, copying out the data is not
-> possible in a generic fashion.  Only the parts that the application
-> knows about can be copied out.  So I think it's desirable to have a
-> fairly exact allocation.
+On 26/09/2023 10:46 am, Christoph Hellwig wrote:
+> On Tue, Sep 26, 2023 at 09:21:15AM +0100, Robin Murphy wrote:
+>> On 2023-09-26 07:51, Christoph Hellwig wrote:
+>>> On Wed, Sep 20, 2023 at 05:54:26PM +0100, Robin Murphy wrote:
+>>>> As I mentioned before, I think it might make the most sense to make the
+>>>> whole thing into a "proper" dma_alloc_sgtable() function, which can then be
+>>>> used with dma_sync_sgtable_*() as dma_alloc_pages() is used with
+>>>> dma_sync_single_*() (and then dma_alloc_noncontiguous() clearly falls as
+>>>> the special in-between case).
+>>>
+>>> Why not just use dma_alloc_noncontiguous if the caller wants an sgtable
+>>> anyway?
+>>
+>> Because we don't need the restriction of the allocation being
+>> DMA-contiguous (and thus having to fall back to physically-contiguous in
+>> the absence of an IOMMU). That's what vb2_dma_contig already does, whereas
+>> IIUC vb2_dma_sg is for devices which can handle genuine scatter-gather DMA
+>> (and so are less likely to have an IOMMU, and more likely to need the best
+>> shot at piecing together large allocations).
+> 
+> Let's just extent dma_alloc_noncontiguous with a max_dma_segments
+> parameter instead of adding yet another API.
 
-This could easily be added if we added size parameters like I originally
-suggested for the variable sized mnt_root and mnt_point records into
-struct statmount.
+Sure, that could work equally well, and might even help make its 
+existing usage a bit clearer.
 
-If the user specified that they want to retrieve the mnt_root and
-mnt_mountpoint in @mask and the size for the relevant field is zero then
-we fill in the required size for the relevant field. If they aren't zero
-we just try to copy in the data in the relevant pointer field.
-
-I prefer this interface as it allows for both strategies:
-
-* users that don't care about exact allocation size can just pass a
-  guesstimated buffer usually PATH_MAX/2 or sm
-* users that care about exact allocation size can query the kernel
+Cheers,
+Robin.
