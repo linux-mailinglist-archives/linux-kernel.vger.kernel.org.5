@@ -2,93 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBAD7AE62D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF8F7AE62F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjIZGn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S230402AbjIZGo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjIZGn4 (ORCPT
+        with ESMTP id S229685AbjIZGok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:43:56 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0CEE6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:43:49 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3233799e7b8so86533f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:43:49 -0700 (PDT)
+        Tue, 26 Sep 2023 02:44:40 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF7FE6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:44:33 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59bf1dde73fso102643727b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695710627; x=1696315427; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1695710673; x=1696315473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dU0wg62lr2xNjaScPCD+4bLIPZbMjKJ/swUkKHzUNCg=;
-        b=sGrWUYCBiJQXmND1bAGvoN10uLNOTnG11fEoheFBpk27R0lxWcpSQNdTlIlXVuA14U
-         j/L3o/m8qZpvMybFzIi9laK32dHgcJkrKALWQ2EsXorFZi9fh6Ky57J18JTY3saEk2Pu
-         Btn/+vtGoGc3mz8/wdghRydCI5VJ1F35fZjz7czh0ktRxrOYkiQj+vzX9xRriUtLChLU
-         CwFU7z4zoiIH7Qp4a1UKKCXo1GKTVYzKX72lfLkuUTre2YFro9MjcxggtOzajsoaxElH
-         6Nr5/vcno6qXT/WXHJZRtzWcKozd+Yk/9wnwsfRjVfHC+CeWv8gRs4UjID3sUIEMP+0t
-         tofg==
+        bh=61aVUGOGTN3aSD7gJdb94H+TJu9K7lHrgxrABi+aRKY=;
+        b=jSMHuDHHhLMYzR8SM9T18DzBuzzc6pVCCsGzjMPHXAc2pSyVD11hPmwBKSDqhcc6f7
+         ChEqoDpo29wgWlXBCa5hlGxaraqdzfL5pxNV5K2q96x/qUAiJMZgZZSibU+ZplD8UF2i
+         cW1bTuBHW9DmBmkxINtZupECyTarCQW/Kijwep28ftyoZHNhYMrmlYWCRJpgNuaUFuq+
+         vF1Btnumqr6woN8SpqfWnRu2M55s/XHP4ea1k17RdbL4eDMy0yc6vFVmxpyAqG5CAOdh
+         tT27EKxQNr3n3gJcfq7J6eO/u0jlLoJVrKeEEWcKLDLxXcWH29nZrEN44L9DLNq6aMI9
+         RqfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695710627; x=1696315427;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695710673; x=1696315473;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dU0wg62lr2xNjaScPCD+4bLIPZbMjKJ/swUkKHzUNCg=;
-        b=Rzooo3t3qvNxIuRdHtBsVje7jnqnontr6AY6oLd7OGwxzJ/WeNI0BwT0VP7JPkuSc5
-         zouyT2HpWmU7awYtDIcvHDFUMvAJWv+k+V1OrYZNE/8XpOFwD7mrWN8ZvUF00BofsQb9
-         0hfwdJPo3VhC0JXrD80LJYj7T5nfMQuYq1ZxJqLe5HiliWTJY+HoY9NgdySvhXo6KYv1
-         TmX06tYar7wXTB1Nl0zoRQC+UCQFg6s2KAFagwEmjdlhqr4BQwy8PNltkhbyPLjPxu51
-         NavLa0RfZyZrzCPzwb4+6n5swv0o5f/V7lH8nB0TJcWH4FyrRILJPW1K5zcQtLVpD/B9
-         GJCw==
-X-Gm-Message-State: AOJu0YwU9WjrWGNy5G3NMDtkZ7gPUbncg1YCCyR6H6DDCVoWqgyUerWg
-        ATvhabW87evNGUAafnsn5BTUlomSLgX0z0NSIiHh5DB0
-X-Google-Smtp-Source: AGHT+IGDVncgjlr1M8g8f5L3NQijHmN4vBIf89YmGQkfQudDtKc3xid0isSrBgZT9hJ0XdBtdMlXPA==
-X-Received: by 2002:adf:fc89:0:b0:317:7238:336a with SMTP id g9-20020adffc89000000b003177238336amr6910141wrr.5.1695710627495;
-        Mon, 25 Sep 2023 23:43:47 -0700 (PDT)
-Received: from [127.0.0.1] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id j3-20020a5d5643000000b0032167e49619sm13758109wrw.5.2023.09.25.23.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Sep 2023 23:43:46 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Christoph Hellwig <hch@lst.de>,
-        linux-block@vger.kernel.org
-In-Reply-To: <20230926005232.23666-1-rdunlap@infradead.org>
-References: <20230926005232.23666-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] block: fix kernel-doc for disk_force_media_change()
-Message-Id: <169571062634.577707.15764939880513654865.b4-ty@kernel.dk>
-Date:   Tue, 26 Sep 2023 00:43:46 -0600
+        bh=61aVUGOGTN3aSD7gJdb94H+TJu9K7lHrgxrABi+aRKY=;
+        b=qWOsX0qwQ4YKTPUR8/GK20DYK8z1MePyITcmAjbpRyP5fYVNXVP8Zy5yvi9bXNDvK1
+         odDejoWfQdhaG6L0EDKIfsxgHZp13p5A5FQFmYkun7NZeVgAVnNrRKb1t0bTZnhaE+NS
+         QyaezqSHWPqvUu3ZXMBQtjkXEjc2UdlNkGXh82jlt/1ugbpgRj5tweyo2FHo9Hp2OP0A
+         dzC2O5F7W8NEmeVFEpbRrU9RTMOazy3NuZGkBqCzjlI4YBmhYu75I4vB18sTifxLITS8
+         tZ97f9moRBqubrMC19eSH0ODP67RYZuCT0ca2cbTZU/qNW7x5onL1wboZXT83l0p3eni
+         kH1A==
+X-Gm-Message-State: AOJu0Yz/n6vwdVS5lNnlaAv9Vubt2O3/8zEnIqrT5aEAfz+jvbBfBYsT
+        xYAw8ksnCmWTxVI936XGbDuIPjzaull/nqzEyhT7yw==
+X-Google-Smtp-Source: AGHT+IHmEW12xGgm7jK8pxl2ZTKmJ9657HyjP9fQXfOhlnIMMIxY2wvD4MjZlOGq41oZ/TS2D5hsrSwHlLjnaSnKPsE=
+X-Received: by 2002:a25:b283:0:b0:d78:1502:9330 with SMTP id
+ k3-20020a25b283000000b00d7815029330mr7481834ybj.7.1695710673001; Mon, 25 Sep
+ 2023 23:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230925-ixp4xx-eth-mtu-v2-1-393caab75cb0@linaro.org> <b109470b-99d1-441d-0648-7b8e4a8c86fd@intel.com>
+In-Reply-To: <b109470b-99d1-441d-0648-7b8e4a8c86fd@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Sep 2023 08:44:20 +0200
+Message-ID: <CACRpkdbcMCXg8H8SsuhPSvvtdqD1reNxpCiFv5eD=gPYKUyr9A@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net: ixp4xx_eth: Support changing the MTU
+To:     Jacob Keller <jacob.e.keller@intel.com>
+Cc:     Krzysztof Halasa <khalasa@piap.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 26, 2023 at 12:29=E2=80=AFAM Jacob Keller <jacob.e.keller@intel=
+.com> wrote:
 
-On Mon, 25 Sep 2023 17:52:32 -0700, Randy Dunlap wrote:
-> Drop one function parameter's kernel-doc comment since the parameter
-> was removed. This prevents a kernel-doc warning:
-> 
-> block/disk-events.c:300: warning: Excess function parameter 'events' description in 'disk_force_media_change'
-> 
-> 
+> > +/* MRU is said to be 14320 in a code dump, the SW manual says that
+> > + * MRU/MTU is 16320 and includes VLAN and ethernet headers.
+> > + * See "IXP400 Software Programmer's Guide" section 10.3.2, page 161.
+> > + *
+> > + * FIXME: we have chosen the safe default (14320) but if you can test
+> > + * jumboframes, experiment with 16320 and see what happens!
+> > + */
+>
+> Ok, so you're choosing a conservative upper limit that is known to work
+> while leaving the higher 16320 value for later if/when someone cares?
 
-Applied, thanks!
+Mostly if someone can test it. But maybe I can have authoritative
+information from Intel that the statement in the Software Programmers
+Guide is correct? ;)
 
-[1/1] block: fix kernel-doc for disk_force_media_change()
-      commit: a578a25339aca38e23bb5af6e3fc6c2c51f0215c
+> > +static int ixp4xx_do_change_mtu(struct net_device *dev, int new_mtu)
+> > +{
+> > +     struct port *port =3D netdev_priv(dev);
+> > +     struct npe *npe =3D port->npe;
+> > +     struct msg msg;
+> > +     /* adjust for ethernet headers */
+> > +     int framesize =3D new_mtu + VLAN_ETH_HLEN;
+> > +     /* max rx/tx 64 byte chunks */
+> > +     int chunks =3D DIV_ROUND_UP(framesize, 64);
+> > +
+>
+> netdev coding style wants all of the declarations in "reverse christmas
+> tree" ordering. Assign to the local variables after the block if
+> necessary. Something like:
+>
+>         struct port *port =3D netdev_priv(dev);
+>         struct npe *npe =3D port->npe;
+>         int framesize, chunks;
+>         struct msg msg;
+>
+>         /* adjust for ethernet headers */
+>         framesize =3D new_mtu + VLAN_ETH_HLEN;
+>         /* max rx/tx 64 byte chunks */
+>         chunks =3D DIV_ROUND_UP(framesize, 64);
 
-Best regards,
--- 
-Jens Axboe
+Right, I fix!
 
+> > +     memset(&msg, 0, sizeof(msg));
+>
+> You could also use "struct msg msg =3D {}" instead of memset here.
 
+OK
 
+> > +     msg.cmd =3D NPE_SETMAXFRAMELENGTHS;
+> > +     msg.eth_id =3D port->id;
+> > +
+> > +     /* Firmware wants to know buffer size in 64 byte chunks */
+> > +     msg.byte2 =3D chunks << 8;
+> > +     msg.byte3 =3D chunks << 8;
+>
+> I am not sure I follow the "<< 8" here.
+
+I actually only have this vendor code, but clearly <<8 is not
+"multiply by 256" in this case, rather that the number of 64 byte
+chunks is in the second byte.
+
+The software manual just describes a "OS abstraction layer"
+used by both VXworks and Linux, and since that wasn't acceptable
+in the Linux driver, someone has ripped out the code to
+talk directly to the NPE firmware, and that is what we are seeing.
+If you have the source code to the abstraction layer
+"ixEthAcc" or the source code to the NPE microcode, I think the
+answer is in there... (I have neither, maybe you can check internally,
+hehe. Dan Williams used to work with this hardware!)
+
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+
+Thanks!
+
+> > base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> > change-id: 20230923-ixp4xx-eth-mtu-c041d7efe932
+>
+> Curious what this change-id thing represents I've never seen it before..
+> I know base-commit is used by git. Would be interested in an explanation
+> if you happen to know! :D
+
+It's metadata generated by b4 which is the tool we use for kernel mailing
+list handling:
+https://people.kernel.org/monsieuricon/sending-a-kernel-patch-with-b4-part-=
+1
+
+I think this change ID cross-references mails I send with my
+git branch, so it's easy to collect review tags etc.
+
+Yours,
+Linus Walleij
