@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DD97AF0E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8767AF0E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbjIZQj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S235340AbjIZQkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235275AbjIZQj6 (ORCPT
+        with ESMTP id S235322AbjIZQkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:39:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2885FE5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:07 -0700 (PDT)
+        Tue, 26 Sep 2023 12:40:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310CC10A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695746346;
+        s=mimecast20190719; t=1695746359;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tTQuhz6i8pETFCJEBQwLAAEUzmgG6c+WGKgQCxT5cqM=;
-        b=eFiPdBpE9q+RyXI7EdgB+0PjB0IQL/2eh3+8mbUAqiAiI9hV1MP/SWyfOUaHmIfx7CUsyv
-        I1CxACeIoM7aOn0TDaFpH5LxZInu2D4t356vN66WNv3Lm89jbquz4ShNC6IDagKiI4+T0w
-        6tpWm8pd7ooFTYWGkngl1yGtMSuadt0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=837Kme305+Qcb4evSQsWQExwLiy1HV1fTxRz6UFoLMg=;
+        b=DoFVRQsL/NRtztb58guy782YuN1GOcItPbLPZ6apYxg6O+yzx/WpKNdm5LbYWFqTBqLYPS
+        IqadRfJpEALBvSrqgP5jOgh6vt2E09iAKyHpp63FTDxrxrxW5Y5Aojvfyx7FXkaoIJTx5v
+        vP1VzYzL8UAQeTCSBPjwwf7u2n/Qokc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-CGVq1eA4PxKppnKn6bz_FA-1; Tue, 26 Sep 2023 12:39:04 -0400
-X-MC-Unique: CGVq1eA4PxKppnKn6bz_FA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3200597bfc5so7023195f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:03 -0700 (PDT)
+ us-mta-16-ECfGvOjaNdSkK23clOqkuA-1; Tue, 26 Sep 2023 12:39:17 -0400
+X-MC-Unique: ECfGvOjaNdSkK23clOqkuA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-405917470e8so46201255e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:39:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695746342; x=1696351142;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tTQuhz6i8pETFCJEBQwLAAEUzmgG6c+WGKgQCxT5cqM=;
-        b=VAzkEOHEDAdpvfKzjLQEfVJFuguZ+mgyuzSYquNByMvwuOnYQFQlAELKS77GTQUxHJ
-         2Y6wBpsXvIZ0yfiPhjk4NAl8xunMfsiDTldhDW0hgvVqkR+luoo5eaC++kN2fWt/ZcGA
-         ezeI2VZUtAnn00ziABwPvuYu5UBNDfAiM47L/0/arVXyHy/4sHKhtm89tcfcieTj9x+C
-         KKYSR41VBdX8Xe4WARQDloOHLzRZl7MPxq/scwhnBeiBQfUNDoMiFmF0Yjwv81mZm085
-         F3g97QwriStIsFtpFDts5aTj/BAAnB06756nbwHA1A8+C3Jpkz/jNu0RPLWQ+031aRxf
-         Tzhg==
-X-Gm-Message-State: AOJu0YzgF9ysBFq7z3CnxCEHJ6DGDIM6nHxi3Tjxyt1iYq4f8BXxhayl
-        MhYtKbdLyK15IKROr1PEDnzunzXjR0b2w9loTdTRdXNDaar9Az1paEF/QdR7nlpg6zXEhMBePdN
-        R8oETvKerOKmxYersDHJiE8oX
-X-Received: by 2002:a5d:4571:0:b0:320:28e:b638 with SMTP id a17-20020a5d4571000000b00320028eb638mr9555565wrc.36.1695746342455;
-        Tue, 26 Sep 2023 09:39:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGy0LhaIhMp+x6DrglQYfNQsGu8JLiXNZjRQ5NtgOwYtPJlfphvtDjLSoegu8pEbBK1x4jBBA==
-X-Received: by 2002:a5d:4571:0:b0:320:28e:b638 with SMTP id a17-20020a5d4571000000b00320028eb638mr9555542wrc.36.1695746342137;
-        Tue, 26 Sep 2023 09:39:02 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id u21-20020adfa195000000b00323293bd023sm6072760wru.6.2023.09.26.09.39.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 09:39:01 -0700 (PDT)
-Message-ID: <27053c89-e11c-e16d-ef88-89b3cd99c487@redhat.com>
-Date:   Tue, 26 Sep 2023 18:39:00 +0200
+        d=1e100.net; s=20230601; t=1695746356; x=1696351156;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=837Kme305+Qcb4evSQsWQExwLiy1HV1fTxRz6UFoLMg=;
+        b=feXyGRUXJ81BKKG1MUiBC/VPQO3tzL1fvVCVn3UPKKIh6/MIz98rfMw/rzmaInUsW7
+         Keq/hXc9aXy6j4nmZUqlNh9L8mcBYR5S8ZNtqR97PY9G8jO1aqK6Ipof3Rkm4FauH2Cz
+         7W8OZJ3+JeAwJX+PEzFOSzy+UOw9Or8pBLu2j6hPVJ9PWsfA+dLjxyKVk9L2hhQyKFJM
+         Fqcxi8IKzcNQbXgeLvWd/VZKO87BrNRtKPzInkOFxSDLLaK2nIAxumeCdy2jeVt6WJ2U
+         DxdW0JlL61tjLU1j2PF7p0tOKNc8dQ4R6a7rn19uC0r8GJtzJ/keOGP1y0IadiH0+kPq
+         tupQ==
+X-Gm-Message-State: AOJu0Ywn4RNJWgSlNBTe3qBc/lYP+7gEWRSL3sqR4a15AdPbzbZJG6rr
+        cKz8mi/w5uL0GpMDtBr0NK2XnG1LmKHlnzG2LvmwI0GwF+1A67lvQT9m48s3a48Ged5BDOr1Y2S
+        ZtdeBiEvFxWRjnWQHNieKjFI=
+X-Received: by 2002:a05:600c:3658:b0:405:359e:ee43 with SMTP id y24-20020a05600c365800b00405359eee43mr8949387wmq.1.1695746356070;
+        Tue, 26 Sep 2023 09:39:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFDq2Y03ww54+pIYPefZxQl9NkeQGLGMHlVqfNsz/9UH8/RNnXfpZ1pegaFQwZZdpw6zGn82Q==
+X-Received: by 2002:a05:600c:3658:b0:405:359e:ee43 with SMTP id y24-20020a05600c365800b00405359eee43mr8949366wmq.1.1695746355754;
+        Tue, 26 Sep 2023 09:39:15 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-30-58.cust.vodafonedsl.it. [2.34.30.58])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfde8a000000b0031fba0a746bsm15171803wrl.9.2023.09.26.09.39.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 09:39:15 -0700 (PDT)
+From:   Marco Pagani <marpagan@redhat.com>
+To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+Cc:     Marco Pagani <marpagan@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org
+Subject: [PATCH 0/4] fpga: add platform drivers to the FPGA KUnit test suites
+Date:   Tue, 26 Sep 2023 18:39:07 +0200
+Message-ID: <20230926163911.66114-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/4] KVM: x86: add more information to the kvm_entry
- tracepoint
-Content-Language: en-US
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-References: <20230924124410.897646-1-mlevitsk@redhat.com>
- <20230924124410.897646-3-mlevitsk@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230924124410.897646-3-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/23 14:44, Maxim Levitsky wrote:
-> +		__field(	u32,		inj_info	)
-> +		__field(	u32,		inj_info_err	)
-> +		__field(	bool,		guest_mode	)
-> +		__field(	bool,		req_imm_exit	)
-> +		),
+Add and register minimal platform drivers associated with parent
+platform devices used for testing to prevent a null-ptr-deref when
+try_module_get() is called.
 
-As anticipated in patch 1 I'm not so sure about adding req_imm_exit here 
-but also (especially) in kvm_exit.  I do believe it should be traced, 
-I'm not sure it's needed in kvm_entry+kvm_exit as opposed to just a 
-separate tracepoint.
+Marco Pagani (4):
+  fpga: add helpers for the FPGA KUnit test suites.
+  fpga: add a platform driver to the FPGA Manager test suite
+  fpga: add a platform driver to the FPGA Bridge test suite
+  fpga: add a platform driver to the FPGA Region test suite
 
-Paolo
+ drivers/fpga/tests/fpga-bridge-test.c  | 18 +++++++++++++++-
+ drivers/fpga/tests/fpga-mgr-test.c     | 18 +++++++++++++++-
+ drivers/fpga/tests/fpga-region-test.c  | 26 ++++++++++++++++++-----
+ drivers/fpga/tests/fpga-test-helpers.h | 29 ++++++++++++++++++++++++++
+ 4 files changed, 84 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/fpga/tests/fpga-test-helpers.h
+
+
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+-- 
+2.41.0
 
