@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081127AE592
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CEF7AE598
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbjIZGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
+        id S233733AbjIZGNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbjIZGLA (ORCPT
+        with ESMTP id S233717AbjIZGNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:11:00 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6920AE55;
-        Mon, 25 Sep 2023 23:10:41 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id E07D432009F0;
-        Tue, 26 Sep 2023 02:10:39 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 26 Sep 2023 02:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695708639; x=1695795039; bh=oC
-        YIjuW89ugmbyi2Z2bcvS41djt8ybKt3d7f3d7YUtg=; b=ouBK1gk5nfLdyJrDUI
-        wdVsO41CB6GBBarwCeJyFPMDWdoV68AgcEYOMCB167pKfQw5T3b/0yNArFnUaAi1
-        9XPWYRWWdK4GRlTP/vVy9dznUHP+KWfCtdNwRh/UFPzXOqYUEvqQsKEHzjS1Unb7
-        Ur3ehzaONMVwXFqRa0X9d/eu9Va05CnXhf/h9ahqd1V78WjLlMBhS6Osps22QLIm
-        +Wmtf2gBFte97YLyyg0ReXeZM4DCCt5qO0Qlcmt6zGWPsuEsTShJvODFNKVW33TF
-        K8Ps/ik5XfZTK/U1fqviD0qH4xfWosZoUs31UWkITtpDyT1iVofsRxdiM+km24P4
-        lPvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695708639; x=1695795039; bh=oCYIjuW89ugmb
-        yi2Z2bcvS41djt8ybKt3d7f3d7YUtg=; b=MpaLGSaJtda/meO2nTAhN9DT3q6Uy
-        AkxW0eyOBXlGqw066njGrSEW1Eu6QPBQz8gVp2yN3kQsJjB/qqocqMAHNhF+DO+P
-        ioO/+KCDWcsM5mkd/uqf1vFuL2IDgMw19wFtr8H68rFD6A74oxtqAXIpR62xxkoF
-        BgBTndlxVKGpdn6g9KLQgVeGlGNkftsz5Pk3InWj8odoUtqCtdw0VeMsueuSAXZV
-        Z+meKr+nn/7VkQxXTJonIeIIzqJabeEDCf7e0GLcFI+L6PGKdy8dlZ6FLsEkK9MM
-        +NiHuk3zGFd/yY9M35Sz22fY/yy8rKeaLPQ63oLBpX116mbX7eL+JSdHQ==
-X-ME-Sender: <xms:33USZfZAcbkSN8QCtuvncxGpsKPXgIYsjJsSIReBOXVReTblJGowbA>
-    <xme:33USZebIUzSjZvt6N_6FeN8K5sBdt89_cS4EiFQnocuUiIrhaexA4ul1v1dKboMIM
-    QI2eT5r2fgrHVa8EDY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:33USZR-Gky2tN1vqb_XJk8lV_2y5pK0Upu7mfQAdSOYmDAjYzjzP4Q>
-    <xmx:33USZVphx70509OBzc38Mvd8x6PaY5aM90xynxsfDgpUfldWeO4RQA>
-    <xmx:33USZaoTl_b7HbfCBmNplViPJl8yTHsm0-PxiDHMby1GiB4ivUGb3A>
-    <xmx:33USZZ2MP7jWG3cYDDrsd9VqvYUClaPgWkZ-5VFGFAdk9ABmjohJpg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 24B8AB60089; Tue, 26 Sep 2023 02:10:39 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
+        Tue, 26 Sep 2023 02:13:50 -0400
+Received: from muru.com (unknown [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5B82E9;
+        Mon, 25 Sep 2023 23:13:40 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 155DA80E2;
+        Tue, 26 Sep 2023 06:13:22 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Udit Kumar <u-kumar1@ti.com>,
+        Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH] serial: 8250_omap: Fix errors with no_console_suspend
+Date:   Tue, 26 Sep 2023 09:13:17 +0300
+Message-ID: <20230926061319.15140-1-tony@atomide.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Message-Id: <3a8f0d0a-25ad-49c3-9cd2-66db44a4a1e6@app.fastmail.com>
-In-Reply-To: <ce00dad5acdd4aff099b289843e30c83f7e31764.1695679700.git.falcon@tinylab.org>
-References: <cover.1695679700.git.falcon@tinylab.org>
- <ce00dad5acdd4aff099b289843e30c83f7e31764.1695679700.git.falcon@tinylab.org>
-Date:   Tue, 26 Sep 2023 08:10:17 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Zhangjin Wu" <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     "Palmer Dabbelt" <palmer@rivosinc.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>, paulburton@kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Willy Tarreau" <w@1wt.eu>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        "Tim Bird" <tim.bird@sony.com>
-Subject: Re: [PATCH v1 6/7] DCE/DSE: riscv: add HAVE_TRIM_UNUSED_SYSCALLS support
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_NONE,T_SPF_HELO_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023, at 00:42, Zhangjin Wu wrote:
-> For HAVE_TRIM_UNUSED_SYSCALLS, the syscall tables are hacked with the
-> inputing unused_syscalls.
->
-> Firstly, the intermediate preprocessed .i files are generated from the
-> original C version of syscall tables respectively, and named with a
-> 'used' suffix: syscall_table_used.i, compat_syscall_table_used.i.
->
-> Secondly, all of the unused syscalls are commented.
->
-> At last, two new objective files sufixed with 'used' are generated from
-> the hacked .i files and they are linked into the eventual kernel image.
->
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+We now get errors on system suspend if no_console_suspend is set as
+reported by Thomas. The errors started with commit 20a41a62618d ("serial:
+8250_omap: Use force_suspend and resume for system suspend").
 
-As mentioned in my comment on the mips patch, hacking the preprocessed
-file here is too much strain on the old infrastructure, the
-asm-generic/unistd.h file is already too hard to understand for
-anyone and in need of an overhaul, so let's work together on fixing
-it up first.
+Let's fix the issue by checking for console_suspend_enabled in the system
+suspend and resume path.
 
-      Arnd
+Note that with this fix the checks for console_suspend_enabled in
+omap8250_runtime_suspend() become useless. We now keep runtime PM usage
+count for an attached kernel console starting with commit bedb404e91bb
+("serial: 8250_port: Don't use power management for kernel console").
+
+Fixes: 20a41a62618d ("serial: 8250_omap: Use force_suspend and resume for system suspend")
+Cc: Udit Kumar <u-kumar1@ti.com>
+Reported-by: Thomas Richard <thomas.richard@bootlin.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/tty/serial/8250/8250_omap.c | 25 ++++++++++---------------
+ 1 file changed, 10 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1617,7 +1617,7 @@ static int omap8250_suspend(struct device *dev)
+ {
+ 	struct omap8250_priv *priv = dev_get_drvdata(dev);
+ 	struct uart_8250_port *up = serial8250_get_port(priv->line);
+-	int err;
++	int err = 0;
+ 
+ 	serial8250_suspend_port(priv->line);
+ 
+@@ -1627,7 +1627,8 @@ static int omap8250_suspend(struct device *dev)
+ 	if (!device_may_wakeup(dev))
+ 		priv->wer = 0;
+ 	serial_out(up, UART_OMAP_WER, priv->wer);
+-	err = pm_runtime_force_suspend(dev);
++	if (uart_console(&up->port) && console_suspend_enabled)
++		err = pm_runtime_force_suspend(dev);
+ 	flush_work(&priv->qos_work);
+ 
+ 	return err;
+@@ -1636,11 +1637,15 @@ static int omap8250_suspend(struct device *dev)
+ static int omap8250_resume(struct device *dev)
+ {
+ 	struct omap8250_priv *priv = dev_get_drvdata(dev);
++	struct uart_8250_port *up = serial8250_get_port(priv->line);
+ 	int err;
+ 
+-	err = pm_runtime_force_resume(dev);
+-	if (err)
+-		return err;
++	if (uart_console(&up->port) && console_suspend_enabled) {
++		err = pm_runtime_force_resume(dev);
++		if (err)
++			return err;
++	}
++
+ 	serial8250_resume_port(priv->line);
+ 	/* Paired with pm_runtime_resume_and_get() in omap8250_suspend() */
+ 	pm_runtime_mark_last_busy(dev);
+@@ -1717,16 +1722,6 @@ static int omap8250_runtime_suspend(struct device *dev)
+ 
+ 	if (priv->line >= 0)
+ 		up = serial8250_get_port(priv->line);
+-	/*
+-	 * When using 'no_console_suspend', the console UART must not be
+-	 * suspended. Since driver suspend is managed by runtime suspend,
+-	 * preventing runtime suspend (by returning error) will keep device
+-	 * active during suspend.
+-	 */
+-	if (priv->is_suspending && !console_suspend_enabled) {
+-		if (up && uart_console(&up->port))
+-			return -EBUSY;
+-	}
+ 
+ 	if (priv->habit & UART_ERRATA_CLOCK_DISABLE) {
+ 		int ret;
+-- 
+2.42.0
