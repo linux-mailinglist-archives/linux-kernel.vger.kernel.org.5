@@ -2,215 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 019747AE45F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546FA7AE463
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 06:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjIZEGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 00:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S232909AbjIZEGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 00:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjIZEGK (ORCPT
+        with ESMTP id S229555AbjIZEGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 00:06:10 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7ACBF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 21:06:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V36jKDHAtl0u3NtVXDDzr9L38Zw56gNQjRAbXaZQyGwBEMuixYbX92iB3DgC5c8z9EkJ+n/GeVhcpwkU+ACT2eMN0xbOg6oVKb2x/Q5Eb1LpdMGHT7FyFNOyzwFUXP3YaHghNsUgPSec0IsNfR7JKktIAybO9sA1z+yqYppzDzLOtPHqtL2go13TsCwWTq5PQW4bIHgfbv+blmMcEKcuANMXp9zya+5USQ+iF9Hr9yBBUswda0Z0nxKLrKfd6dOrE25GNtkmpQy9oLfTNUh/svyonwuozttQpSdPg7CJIH4ueVoaP7r4v7yuvbgdYgfs/ZaChw0VkWxgybwLYVgB7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vDHx3oIT50QBFPLD8JBgm7y1V4LVPreLa0eRUXgfjjg=;
- b=CvTAdT5GY310VAzJJYfzWL3CN2J3zlkRBi82xUp9pmUSjRLckv0PTV0BKBCLkIjRk7nNn/Rxx5/gBXVm/KQ19e7nwxmSHZPiPru7tvF5LX7PILw2udyjbyDoAATy+Qc36xSsaDSYFjwJ7k4hUHa7heMcz8P1EYvLZARu1dsSeHbSgAcKPjAQIXXceT0+ANzw+iQqDMggFMHQyByhuNliQ2py1KgcUTCYr3gg2gxby2PEutdBKOLJzZZPaZLHHLUGjLBoU1nhj+4ULJfyrGP15FVnYrjsKSkFxv/+ZUHD71APY2xg6CtT+pwTVB4eMe9mJn9gdnO+1uYzdZWufej+0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vDHx3oIT50QBFPLD8JBgm7y1V4LVPreLa0eRUXgfjjg=;
- b=j1rqv3N/AR7JG3y36udLBCzrcYF25Sgo2G+Bhbcge+QIgduCa5L6GvOxstuC7miSitdDROqadYj1lC8s3DQgyo1pyh7uEdOYM7GAXkrog0ecZwidBN6ryAvhPV+CoRbtN8gpf7xOvG9+oYh2lU95rD5TfI1SRVL72p8QRvYsZm0=
-Received: from DS7PR05CA0083.namprd05.prod.outlook.com (2603:10b6:8:57::29) by
- CH2PR12MB4199.namprd12.prod.outlook.com (2603:10b6:610:a7::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.28; Tue, 26 Sep 2023 04:05:55 +0000
-Received: from DS2PEPF00003439.namprd02.prod.outlook.com
- (2603:10b6:8:57:cafe::77) by DS7PR05CA0083.outlook.office365.com
- (2603:10b6:8:57::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.19 via Frontend
- Transport; Tue, 26 Sep 2023 04:05:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003439.mail.protection.outlook.com (10.167.18.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Tue, 26 Sep 2023 04:05:55 +0000
-Received: from aiemdee.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 25 Sep
- 2023 23:05:39 -0500
-From:   Alexey Kardashevskiy <aik@amd.com>
-To:     <x86@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Alexey Kardashevskiy" <aik@amd.com>
-Subject: [PATCH kernel v2] x86/compressed/64: reduce #VC nesting for intercepted CPUID for SEV-SNP guest
-Date:   Tue, 26 Sep 2023 14:05:26 +1000
-Message-ID: <20230926040526.957240-1-aik@amd.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 26 Sep 2023 00:06:36 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E7BEC;
+        Mon, 25 Sep 2023 21:06:29 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c02e232c48so132899051fa.1;
+        Mon, 25 Sep 2023 21:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695701188; x=1696305988; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mGB+hW8EcgpXNNSjmf7fJ24sLwC+iJpETWg7Drt2OpU=;
+        b=gaiPAfWopoJwjM8g7QJCmAJDfcmXLUWQPBia82fwVD4pdhcbNQi6cu1Im3QwH7/bx/
+         xE1rByXkQC7JOQGHlwhmIwHKRVU46ixKA6+/sm+GPYVO6OGDjNKiex1+PNlrTHOf8fkN
+         GJdlL347T6R40J1j3oFyuQhx1gUd0xz7JSdpeMYhvTHfXk1JfqNwov6yPiO+YMxsTP+W
+         /BXu014NxAzEfhImPCnNUhFOZ8gFd/GRqsI9zyQbhhLx7cL/DOZ+Voh3Hr1kGd77uggo
+         QDZPqmuORus5ew7+9YGgfQvsJirI4IvZhwAH7mDQ9+39LXKDS9XljyVpN/kLrCiiu2cM
+         cgwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695701188; x=1696305988;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mGB+hW8EcgpXNNSjmf7fJ24sLwC+iJpETWg7Drt2OpU=;
+        b=QZdn6SQGxTtp8MB5doW/oYGNqZveAC2gIb5eQzu8n95wA2T30KQsk8qtWI6kQj8taU
+         7Pm+5hIwyMb2tBSJYhBeMRgizLCqppfIoDdgH/h7gZ3BF1jM3T0GoY9yPV3yOpLEgzFG
+         6LjYJM5rffXEdPtovSo42VKrBA7MfdGINjnpshKQkFfbQsz0sWrLRHRGJeI2Tj6BQTrO
+         HkMSKDaNULiPx0SOBNQFSzggOaFzKqPh/KsWBaETunELnFNUnDl2haCvJ4rt2mBiKYo3
+         X7a3f2ZubbgCd4vv/o8QeKxqbNIrt+GJrXKQjye1EP4/dXI/hT0woxOv4AvtnbimIHk6
+         UGfg==
+X-Gm-Message-State: AOJu0YxylVYgzAFxJMwka0DNGEIaI+Fep/FNEVSZ/3iGmy5Wqsj5g7MJ
+        CrEoNXUjWXCnyx6LF0B73d8=
+X-Google-Smtp-Source: AGHT+IFnZUohBRjAdg6nVKhBrCjO2Fo24nnQvaYhhpnODnccZ+1NZtjpOOBB8jCfNGJgy9YzuEpoYA==
+X-Received: by 2002:a05:651c:118:b0:2bc:d94f:ad04 with SMTP id a24-20020a05651c011800b002bcd94fad04mr6668385ljb.13.1695701187599;
+        Mon, 25 Sep 2023 21:06:27 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id h1-20020a1709063c0100b0099bc038eb2bsm7137424ejg.58.2023.09.25.21.06.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 21:06:26 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] spi: dt-bindings: Make "additionalProperties: true" explicit
+Date:   Tue, 26 Sep 2023 06:06:25 +0200
+Message-ID: <2783820.mvXUDI8C0e@jernej-laptop>
+In-Reply-To: <20230925212614.1974243-1-robh@kernel.org>
+References: <20230925212614.1974243-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003439:EE_|CH2PR12MB4199:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9141b7c5-52ad-4bf9-cbe0-08dbbe45e201
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kGjV/4zUpWKklTPPiHqIDHU603h9mHsmLXNxagax5LMFVIqjSLju9itG3lbK8YgPlxjxmVwRn3N9HfUdIrF0IzlzwOzRPj+OED2baC+7An1dfu02olIid1aSppAga5W6BVL/0KKePV/gN4onTj2JY+FtAgtffDRuCu57DVLhASzWSlGnPOo7hBPIdxQX0qdBEpwnS4AIycCcHNN3Kr9a5zneCg5+1AoR0WyoUQHio1C19Qp07NzH9Eoqmyz2VDZuN6cZpmi4Rq6JMhi+KcxdO4efODRRo4VQhd7kGqpI3NQh2w6Ub6wMiGsGG651u5JT/gA5grw8V4UsbhRdXKxegHOQ/V8xRdEta11y87CnSeqSvJrwh/VOAX55OKfSz7+jtOYatv8t5RoW1LT9FInfhSUH/w8Cqp/C68YIZSx9y8jdj7ZQ820cb/qRFenJoMKjWanXqpsS7GBCluuR/bj5xoluVlHWu6CAqSpquaEgAotO51nRN6CdGQyIsecbJ3R1B7ZhaZNlPeXfoQVABOdoNM289fry8ArUrpFtUsA3wLoOh1Ou3ZGbjnsN/mx2YYrHSWZ2bWk4Jif2cIi/zSYGxB6ZcCQMHHtTURDHyqw/uF6KHpoD1OQ+y4u/c4crrnDUkQU9GzEaqY/yLVlQ9MsdDwBCtZigBHR+nKSowtT7/+va3KmKApR4tYN2x7oreXQoe3mQLCgDT4h7NAdxvB/XVSuOL5n1UNp5+9po05KdLfM82cB15Akz+HR31apUx/02WRNTiBTzVGUBXY2L7SuTsg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(376002)(346002)(396003)(230922051799003)(186009)(82310400011)(1800799009)(451199024)(36840700001)(40470700004)(46966006)(40480700001)(40460700003)(2906002)(47076005)(83380400001)(36860700001)(356005)(82740400003)(81166007)(70206006)(70586007)(54906003)(966005)(6666004)(5660300002)(26005)(16526019)(336012)(1076003)(316002)(426003)(6916009)(41300700001)(7696005)(478600001)(8936002)(8676002)(4326008)(2616005)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 04:05:55.6065
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9141b7c5-52ad-4bf9-cbe0-08dbbe45e201
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003439.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4199
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For certain intercepts an SNP guest uses the GHCB protocol to talk to
-the hypervisor from the #VC handler. The protocol requires a shared page so
-there is one per vCPU. In case NMI arrives in a middle of #VC or the NMI
-handler triggers a #VC, there is another "backup" GHCB page which stores
-the content of the first one while SVM_VMGEXIT_NMI_COMPLETE is sent.
-The vc_raw_handle_exception() handler manages main and backup GHCB pages
-via __sev_get_ghcb/__sev_put_ghcb.
+Dne ponedeljek, 25. september 2023 ob 23:26:00 CEST je Rob Herring napisal(a):
+> Make it explicit that child nodes have additional properties and the
+> child node schema is not complete. The complete schemas are applied
+> separately based the compatible strings.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml        | 2 ++
+>  .../devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml        | 2 ++
 
-This works fine for #VC and occasional NMIs. This does not work so fine if
-the #VC handler causes intercept + another #VC, if NMI arrives during
-the second #VC, there are no more pages for SVM_VMGEXIT_NMI_COMPLETE.
-The problem place is the #VC CPUID handler. Running perf in the SNP guest
-crashes with:
+For Allwinner:
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Kernel panic - not syncing: Unable to handle #VC exception! GHCB and Backup GHCB are already in use
+Best regards,
+Jernej
 
-vc_raw_handle_exception #1: exit_code 72 (CPUID) eax d ecx 1
-We lock the main GHCB and while it is locked we get to
-snp_cpuid_postprocess() which executes "rdmsr" of MSR_IA32_XSS==0xda0 which
-triggers:
+>  Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml | 1 +
+>  Documentation/devicetree/bindings/spi/rockchip-sfc.yaml         | 2 ++
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml      | 2 ++
+>  5 files changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> index a6f34bdd1d3c..e1ab3f523ad6 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> @@ -46,6 +46,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> index 28b8ace63044..3b47b68b92cb 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> @@ -68,6 +68,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> index 9ae1611175f2..48e97e240265 100644
+> --- a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> @@ -50,6 +50,7 @@ properties:
+>  patternProperties:
+>    "@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+>  
+>      properties:
+>        spi-rx-bus-width:
+> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> index 339fb39529f3..ac1503de0478 100644
+> --- a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> @@ -47,6 +47,8 @@ properties:
+>  patternProperties:
+>    "^flash@[0-3]$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> index a47cb144b09f..6348a387a21c 100644
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -160,6 +160,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> 
 
-vc_raw_handle_exception #2: exit_code 7c (MSR) ecx da0
-Here we lock the backup ghcb.
-
-And then PMC NMI comes which cannot complete as there is no GHCB page left
-to use:
-
-CPU: 5 PID: 566 Comm: touch Not tainted 6.5.0-rc2-aik-ad9c-g7413e71d3dcf-dirty #27
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown unknown
-Call Trace:
- <NMI>
- dump_stack_lvl+0x44/0x60
- panic+0x222/0x310
- ____sev_get_ghcb+0x21e/0x220
- __sev_es_nmi_complete+0x28/0xf0
- exc_nmi+0x1ac/0x1c0
- end_repeat_nmi+0x16/0x67
-...
- </NMI>
- <TASK>
- vc_raw_handle_exception+0x9e/0x2c0
- kernel_exc_vmm_communication+0x4d/0xa0
- asm_exc_vmm_communication+0x31/0x60
-RIP: 0010:snp_cpuid+0x2ad/0x420
-
-Add a helper similar to rdmsr_safe() for making a direct hypercall in the SEV-ES
-environment. Use the new helper instead of the raw "rdmsr" to avoid the extra
-#VC event.
-
-Fixes: ee0bfa08a345 ("x86/compressed/64: Add support for SEV-SNP CPUID table in #VC handlers")
-Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
----
-
-This is made on top of (which has the "efi/unaccepted: Make sure unaccepted table is mapped"
-fix for booting SNP):
-b996cbe1203c (tip/master) 15 hours ago Ingo Molnar Merge branch into tip/master: 'x86/tdx'
-
-plus:
-https://lore.kernel.org/lkml/a5856fa1ebe3879de91a8f6298b6bbd901c61881.1690578565.git.thomas.lendacky@amd.com/
 
 
-rdmsr_safe_GHCB() is in arch/x86/include/asm/svm.h as this is where
-the ghcb struct is defined.
-
-
----
-Changes:
-v2:
-* de-uglify by defining rdmsr_safe_GHCB()
----
- arch/x86/include/asm/svm.h   | 14 ++++++++++++++
- arch/x86/kernel/sev-shared.c |  5 +++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index fb8366af59da..866ef7d6b7a9 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -673,4 +673,18 @@ DEFINE_GHCB_ACCESSORS(sw_exit_info_2)
- DEFINE_GHCB_ACCESSORS(sw_scratch)
- DEFINE_GHCB_ACCESSORS(xcr0)
- 
-+/* Paravirt SEV-ES rdmsr which avoids extra #VC event */
-+#define rdmsr_safe_GHCB(msr, low, high, ghcb, ctxt) ({				\
-+	int __ret;								\
-+										\
-+	ghcb_set_rcx((ghcb), (msr));						\
-+	__ret = sev_es_ghcb_hv_call((ghcb), (ctxt), SVM_EXIT_MSR, 0, 0);	\
-+	if (__ret == ES_OK) {							\
-+		low  = (ghcb)->save.rax;					\
-+		high = (ghcb)->save.rdx;					\
-+		/* Invalidate qwords for likely another following GHCB call */	\
-+		vc_ghcb_invalidate(ghcb);					\
-+	}									\
-+	__ret; })
-+
- #endif
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index e73c90c9cc5b..b3fb9d0a07c6 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -479,8 +479,9 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 			if (leaf->eax & BIT(3)) {
- 				unsigned long lo, hi;
- 
--				asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
--						     : "c" (MSR_IA32_XSS));
-+				if (rdmsr_safe_GHCB(MSR_IA32_XSS, lo, hi, ghcb, ctxt) != ES_OK)
-+					return -EINVAL;
-+
- 				xss = (hi << 32) | lo;
- 			}
- 
--- 
-2.41.0
 
