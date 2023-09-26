@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AF07AE8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4741E7AE8AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbjIZJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S234089AbjIZJL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjIZJKy (ORCPT
+        with ESMTP id S229684AbjIZJLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:10:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CB0DE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:10:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41D0C433C9;
-        Tue, 26 Sep 2023 09:10:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695719447;
-        bh=Pij0F/OHhe29LporfyG/dolasbY35LkZvuQqT1vlikc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q3R+LZ5BMFPUOh5zwmMvuhb1oJWKPSblJwKGZJQvmzRb/7bY2f+wwwOcbWp9jh1UQ
-         HJX9kFv5tZ6qbTJRR4msueu090+YIRzWPnd5jAWVAjeOpl9eokhNn7eixymDZZMMXB
-         LYsOhczTB8obQrjwg8aS/jnZiTJV3e4WwEhqpSU4=
-Date:   Tue, 26 Sep 2023 11:10:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Piro Yang <piroyangg@gmail.com>
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: vme_user: using __func__ to replace
- function's name in printk
-Message-ID: <2023092654-staring-smother-9860@gregkh>
-References: <9548bc1c-23c9-427f-446e-61f051f14f9c@gmail.com>
- <20230917203019.79180-1-piroyangg@gmail.com>
+        Tue, 26 Sep 2023 05:11:25 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0874DE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:11:18 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59f4db9e11eso69176687b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695719478; x=1696324278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g0PDhPpQtKfenHFIZYPJauktelsKWg7AKOZgGNnjJU8=;
+        b=lqBwYyuCXCIW2MjnLSK+xKCcG8xSX94XQLF48nYubLu2jgpn51zzGFlw8YrRevGrNs
+         FO0vc6TjzPfdR5JZnAvqjzZadO98ccEQFrOsn3ONsKFUCGrBx/Q+p5hDRnZbnhCYAdX2
+         3lyJ/LsFInMJ3EcMPYzYD99PT0Rt9rwDoLySqfhEPJiNvvybr+kwMCb39++lC7PacUFt
+         M26lkazNfWeEZCVdRNjMkIqY+w3x4HoJrog3Qt3ClRRvcyyPy8VVlLUpWf6Cr2qpKQja
+         lNmVzupBXEhxWbWO7sc4f8AXinuKzjBXoc4eZbsakXI9aiXbOyMURuJmiWC2lvYmFV4E
+         rdoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695719478; x=1696324278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g0PDhPpQtKfenHFIZYPJauktelsKWg7AKOZgGNnjJU8=;
+        b=B9akhe/uWhwblUT3AutGNraJueNM4BnIgGV6tfOla6Ct7mSLgEyIWKwtS7mnC39CK/
+         i0ApQ+DxmZGbFuX6vWoS/RpiqVFy/Q3A+3U3nq7Ai6XxNF26bjHQ74ljQfu9/Hy6CGFx
+         yHiHSB4wnuYNhcE0a2CQyxTGbztwkKg2nKsmFJ7dHp6UHyykdq5MyTL+6/z7831p5DPd
+         bX88MI5ZXSEZjdf283UqOknImSwBXILrg713VpdWyJg/ikPJbfxNTMXXaMivW03Tf7wf
+         x9DC4tyd+VEPvIlhjdSxh+PtrESs49VaSNuM8qqVLRiFf7zFnKqyKZbgX67AeeS+FjXJ
+         ljZA==
+X-Gm-Message-State: AOJu0YwL84jZcgWAz2B9hBgSsZM+LkjqKojvDUzbRdRR5RJBgCZ8vLF+
+        HDwH4v0FNdXPTnhTdUSwbykfydNnrGsjUyopqqQvaQ==
+X-Google-Smtp-Source: AGHT+IEgKX3n5Olx0xH4y1czhKrXxa2Jqjj7SjkTTJVSRD2X5jBRYpc70wR8SkoYZ0fDx9gEksPsrC9fstLgwM+xMHA=
+X-Received: by 2002:a0d:db4e:0:b0:59b:f18b:efa0 with SMTP id
+ d75-20020a0ddb4e000000b0059bf18befa0mr7877471ywe.36.1695719478064; Tue, 26
+ Sep 2023 02:11:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230917203019.79180-1-piroyangg@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230926090623.35595-1-brgl@bgdev.pl>
+In-Reply-To: <20230926090623.35595-1-brgl@bgdev.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Sep 2023 11:11:06 +0200
+Message-ID: <CACRpkdaVaqooxjgLqxzrVrMp088-FjdwFH7XnuWL2J=BqX_5HA@mail.gmail.com>
+Subject: Re: [RFT PATCH] mtd: rawnand: ingenic: move the GPIO quirk to gpiolib-of.c
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-mips@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 04:30:19AM +0800, Piro Yang wrote:
-> Fix issue relating to prink message:
-> 	*using __func__ to replace function's name
-> 
-> Issue found by checkpatch
-> 
-> Signed-off-by: Piro Yang <piroyangg@gmail.com>
-> ---
-> Changes in v2:
->   - Firstly, fix only one type of Waring by checkpatch.
-> 	using '"%s...", __func__' substitute for function's name of printked information
+On Tue, Sep 26, 2023 at 11:06=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 
-This is v3, right?
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> We have a special place for OF polarity quirks in gpiolib-of.c. Let's
+> move this over there so that it doesn't pollute the driver.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> 
-> diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> index 5960562dcd96..de404c6765f3 100644
-> --- a/drivers/staging/vme_user/vme.c
-> +++ b/drivers/staging/vme_user/vme.c
-> @@ -418,7 +418,7 @@ int vme_slave_get(struct vme_resource *resource, int *enabled,
->  	image = list_entry(resource->entry, struct vme_slave_resource, list);
->  
->  	if (!bridge->slave_get) {
-> -		printk(KERN_ERR "vme_slave_get not supported\n");
-> +		printk(KERN_ERR "%s not supported\n", __func__);
+This is nice.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Please move to real dev_err() calls instead of trying to fix up old and
-broken printk() calls.  That's the correct solution here for this
-codebase and if you look on the list, I think there are patches that do
-this already, right?
-
-thanks,
-
-greg k-h
+Yours,
+Linus Walleij
