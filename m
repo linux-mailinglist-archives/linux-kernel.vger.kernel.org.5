@@ -2,213 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D3C7AF45A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5597AF43B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 21:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjIZTpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 15:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
+        id S230318AbjIZTkE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 15:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjIZTpS (ORCPT
+        with ESMTP id S229829AbjIZTkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 15:45:18 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E3192;
-        Tue, 26 Sep 2023 12:45:10 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id BD1E2120002;
-        Tue, 26 Sep 2023 22:45:08 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BD1E2120002
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1695757508;
-        bh=8AuffhX+jKHctjHjPx7p+8GVegWHoivqohrQEfoGK/0=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=BV6PyM7r85zpn7irrJsvdDDV4tgyyI1kAB44aKLDKw/+X7Ko/W9wew56mJj2Ju8MV
-         fO1ef5kvoDmeRAANu0P8t19x75/7ThqMp3vgwi5WU58v7abvHBaQsTHYFigyja2CuF
-         I9L2CWcBJDGBrMi8YFrBRDRJDwt8jm2Ik++d9XTLYg1w4VOCT8yLT66T/OzoTjDtfW
-         e9F5FeHGhflL+oUX3RkRThtq1cHGhcfLJOax4+BLgX77RtPbI3oh9W67D4kMnPgNg+
-         mVBYxvW0iLVZtfYs3HyFldRlWddz4LtXM8jgzJN0k4VSdnfG5edghRhgGBxwfoa0ox
-         fhqH+ruqMiJEw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 26 Sep 2023 22:45:08 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 26 Sep 2023 22:45:08 +0300
-Message-ID: <d27b863d-8576-2c9b-c6a6-c8e55d7dad68@salutedevices.com>
-Date:   Tue, 26 Sep 2023 22:38:06 +0300
+        Tue, 26 Sep 2023 15:40:02 -0400
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A439D
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 12:39:55 -0700 (PDT)
+Received: from omf12.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay01.hostedemail.com (Postfix) with ESMTP id 34E7A1CA71C;
+        Tue, 26 Sep 2023 19:39:52 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 1AD9617;
+        Tue, 26 Sep 2023 19:39:49 +0000 (UTC)
+Message-ID: <1a47655c27cd4c5b56005a833f7292a1c7eda224.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: warn about multi-line comments without an
+ empty /* line
+From:   Joe Perches <joe@perches.com>
+To:     Petr Tesarik <petr@tesarici.cz>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>
+Date:   Tue, 26 Sep 2023 12:39:49 -0700
+In-Reply-To: <20230926192006.18351-1-petr@tesarici.cz>
+References: <20230926192006.18351-1-petr@tesarici.cz>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v1 08/12] vsock: enable setting SO_ZEROCOPY
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
- <20230922052428.4005676-9-avkrasnov@salutedevices.com>
- <ynuctxau4ta4pk763ut7gfdaqzcuyve7uf2a2iltyspravs5uf@xrtqtbhuuvwq>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <ynuctxau4ta4pk763ut7gfdaqzcuyve7uf2a2iltyspravs5uf@xrtqtbhuuvwq>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180147 [Sep 26 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 534 534 808c2ea49f7195c68d40844e073217da4fa0d1e3, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/26 14:54:00 #21988070
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 1AD9617
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Rspamd-Server: rspamout06
+X-Stat-Signature: zt66wiwc6dj7tc7qms3868ck67heizt3
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX180yN9BNQIDL3gqiJCQMxLfdA4ikmK8qkU=
+X-HE-Tag: 1695757189-507493
+X-HE-Meta: U2FsdGVkX1/CgA2gqhTVQCHFTjs25b1wzJcGLV9Y9+CYqMGKx8u0rEOHXDnePy5ei4BQj/dsKFvQnaFcYPBSULpzQOlhysUtIoJVl+PemhiOMjNWnWBp0QzapTLtIV2/cC5VRj/G8ksCTLTOFOWGHuCs//wyUx9Ia2pwkhkruODKtx+yJt3QCxQAaRZAU0x47MC3Npx6n5wc21kE5oy7DfRceyzRKoQGWCwppt+osLj2Jv2IJbP6TorbeKPmkNEA5v4b7keDxquwGPEZ+3/0lx94sbadLy2z4qosY46kKq4HGSVDW4XitCrecQxyw9xH
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 26.09.2023 15:56, Stefano Garzarella wrote:
-> On Fri, Sep 22, 2023 at 08:24:24AM +0300, Arseniy Krasnov wrote:
->> For AF_VSOCK, zerocopy tx mode depends on transport, so this option must
->> be set in AF_VSOCK implementation where transport is accessible (if
->> transport is not set during setting SO_ZEROCOPY: for example socket is
->> not connected, then SO_ZEROCOPY will be enabled, but once transport will
->> be assigned, support of this type of transmission will be checked).
->>
->> To handle SO_ZEROCOPY, AF_VSOCK implementation uses SOCK_CUSTOM_SOCKOPT
->> bit, thus handling SOL_SOCKET option operations, but all of them except
->> SO_ZEROCOPY will be forwarded to the generic handler by calling
->> 'sock_setsockopt()'.
->>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->> ---
->> Changelog:
->> v5(big patchset) -> v1:
->>  * Compact 'if' conditions.
->>  * Rename 'zc_val' to 'zerocopy'.
->>  * Use 'zerocopy' value directly in 'sock_valbool_flag()', without
->>    ?: operator.
->>  * Set 'SOCK_CUSTOM_SOCKOPT' bit for connectible sockets only, as
->>    suggested by Bobby Eshleman <bobbyeshleman@gmail.com>.
->>
->> net/vmw_vsock/af_vsock.c | 46 ++++++++++++++++++++++++++++++++++++++--
->> 1 file changed, 44 insertions(+), 2 deletions(-)
->>
->> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> index 482300eb88e0..c05a42e02a17 100644
->> --- a/net/vmw_vsock/af_vsock.c
->> +++ b/net/vmw_vsock/af_vsock.c
->> @@ -1406,8 +1406,16 @@ static int vsock_connect(struct socket *sock, struct sockaddr *addr,
->>             goto out;
->>         }
->>
->> -        if (vsock_msgzerocopy_allow(transport))
->> +        if (vsock_msgzerocopy_allow(transport)) {
->>             set_bit(SOCK_SUPPORT_ZC, &sk->sk_socket->flags);
->> +        } else if (sock_flag(sk, SOCK_ZEROCOPY)) {
->> +            /* If this option was set before 'connect()',
->> +             * when transport was unknown, check that this
->> +             * feature is supported here.
->> +             */
->> +            err = -EOPNOTSUPP;
->> +            goto out;
->> +        }
->>
->>         err = vsock_auto_bind(vsk);
->>         if (err)
->> @@ -1643,7 +1651,7 @@ static int vsock_connectible_setsockopt(struct socket *sock,
->>     const struct vsock_transport *transport;
->>     u64 val;
->>
->> -    if (level != AF_VSOCK)
->> +    if (level != AF_VSOCK && level != SOL_SOCKET)
->>         return -ENOPROTOOPT;
->>
->> #define COPY_IN(_v)                                       \
->> @@ -1666,6 +1674,34 @@ static int vsock_connectible_setsockopt(struct socket *sock,
->>
->>     transport = vsk->transport;
->>
->> +    if (level == SOL_SOCKET) {
->> +        int zerocopy;
->> +
->> +        if (optname != SO_ZEROCOPY) {
->> +            release_sock(sk);
->> +            return sock_setsockopt(sock, level, optname, optval, optlen);
->> +        }
->> +
->> +        /* Use 'int' type here, because variable to
->> +         * set this option usually has this type.
->> +         */
->> +        COPY_IN(zerocopy);
->> +
->> +        if (zerocopy < 0 || zerocopy > 1) {
->> +            err = -EINVAL;
->> +            goto exit;
->> +        }
->> +
->> +        if (transport && !vsock_msgzerocopy_allow(transport)) {
->> +            err = -EOPNOTSUPP;
->> +            goto exit;
->> +        }
->> +
->> +        sock_valbool_flag(sk, SOCK_ZEROCOPY,
->> +                  zerocopy);
+On Tue, 2023-09-26 at 21:20 +0200, Petr Tesarik wrote:
+> According to Documentation/process/coding-style.rst, the preferred style
+> for multi-line comments outside net/ and drivers/net/ is:
 > 
-> it's not necessary to wrap this call.
-
-Sorry, what do you mean ?
-
-Thanks, Arseniy
-
+> .. code-block:: c
 > 
->> +        goto exit;
->> +    }
->> +
->>     switch (optname) {
->>     case SO_VM_SOCKETS_BUFFER_SIZE:
->>         COPY_IN(val);
->> @@ -2322,6 +2358,12 @@ static int vsock_create(struct net *net, struct socket *sock,
->>         }
->>     }
->>
->> +    /* SOCK_DGRAM doesn't have 'setsockopt' callback set in its
->> +     * proto_ops, so there is no handler for custom logic.
->> +     */
->> +    if (sock_type_connectible(sock->type))
->> +        set_bit(SOCK_CUSTOM_SOCKOPT, &sk->sk_socket->flags);
->> +
->>     vsock_insert_unbound(vsk);
->>
->>     return 0;
->> -- 
->> 2.25.1
->>
+>         /*
+>          * This is the preferred style for multi-line
+>          * comments in the Linux kernel source code.
+>          * Please use it consistently.
+>          *
+>          * Description:  A column of asterisks on the left side,
+>          * with beginning and ending almost-blank lines.
+>          */
 > 
+> Signed-off-by: Petr Tesarik <petr@tesarici.cz>
+> ---
+>  scripts/checkpatch.pl | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7d16f863edf1..0fc3427a9ec9 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -4006,6 +4006,14 @@ sub process {
+>  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+>  		}
+>  
+> +# Non-networking without an initial /*
+> +		if ($realfile !~ m@^(drivers/net/|net/)@ &&
+> +		    $prevrawline =~ /^\+[ \t]*\/\*.*[^ \t]$/ &&
+> +		    $rawline =~ /^\+[ \t]*\*/) {
+> +			WARN("MULTILINE_BLOCK_COMMENT_STYLE",
+> +			     "multi-line block comments should start with an empty /* line\n" . $hereprev);
+> +		}
+> +
+
+Nack.
+
+There are _way_ too many uses without an initial /* blank line
+that are perfectly acceptable style.
+
+$ git grep '/\*.*' -- '*.[ch]' | \
+  grep -v '/\*.*\*/' | \
+  grep -v -P "/\*\s*$" | \
+  grep -v '/\*\*' | \
+  grep -v "SPDX-License" | \
+  grep -v -P '^drivers/net|^net/' | \
+  wc -l
+51834
+
