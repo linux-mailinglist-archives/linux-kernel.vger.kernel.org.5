@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2FC7AF6C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC5F7AF6D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjIZXkE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 19:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        id S229478AbjIZXnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 19:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjIZXiD (ORCPT
+        with ESMTP id S232607AbjIZXlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 19:38:03 -0400
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A3130F4;
-        Tue, 26 Sep 2023 15:51:01 -0700 (PDT)
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-79f909071c3so338416739f.0;
-        Tue, 26 Sep 2023 15:51:01 -0700 (PDT)
+        Tue, 26 Sep 2023 19:41:01 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0928F1730;
+        Tue, 26 Sep 2023 15:54:06 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so1298070866b.1;
+        Tue, 26 Sep 2023 15:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695768844; x=1696373644; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dQJAscD2wySe2863Xyr7yQaPfi/ox1Xy3HuPTVjHqlk=;
+        b=Z2oUMMQE67f/LxI/iDM+IZ8WFlMHZ9/IsdkdnrQPbXEP9XOYqz7J8nrYJ5jLpqbUfs
+         0+FKex7tjH2IApkmYIsoQ3lLxR/AVq1RIYnyKefV1qc7gi0mgHJRNrDTlxVXSui4MIbP
+         G7PXRMQCLem5KhwHN/E3XX+41Cl8tB9v9SfZm0CGeHxNpo79ICgviMDCyhIXUDKLZ59y
+         rW8z/yuDCb/V2VZIWmJtZQ0tQeesoyupmIIJJBQZlzCk2a4ARYaBNtcfBzRneUxrJVQr
+         03MG8QhWFR+Ajdc3hTEg8pY3VMP69Wfg7C3LocxLqvT7WD/eo0Ps1ibLCXZYti094ecf
+         WUng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695768661; x=1696373461;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QMSNODbnTzc8NG4Obsca/eh0AcJKSmcVBO5ZoBkDCVs=;
-        b=vxkNqdG4zjfFAwoujHV/uzzu3fx2PHx4fFYcl9Ui1KYmw4mQZn1QcW8dKRrgOUiTm/
-         a4Dvn3nYnuCzDpB8CgPsd5WW5HsOGl844QEC6vxGvWU6llYoYo7jHBtgsVkGZze7oi/0
-         ly1nxR34n6T+/8M1rKQKUKnLWnfVTgtac5VU8qIdDDZzv+uR+dq49l2PS0H7QAEYXHEA
-         v4DzlJdW4IVu0TRCfw2YuQQoNm7yt6/jEpObEQ4wLN+Bmx6Hcp9SJS2zMDXYqTDA5kR7
-         g3LK4603p/gjDIGa91SoNf56r6Yg3K/EWnJ+vZsJWRC7qp2dEy9TvdaoxE0oboSuKlUC
-         irJA==
-X-Gm-Message-State: AOJu0Yzog/4epxMhQbDjVTPEvlty+uIAWCnMNARz/GVZzJxGOTBK4Adf
-        bsX9ibf9h78o4qBdX4DCtV16D4VQ1YBXjhXEL54=
-X-Google-Smtp-Source: AGHT+IH5z0cIf1tgL48BTkyxH1ivIX/Ej7zh4R5TKal+7CzVPIXDxjjZXsS1sscz0C5v64AQejxeYMG+tOZyWwwzuII=
-X-Received: by 2002:a6b:d002:0:b0:792:9ace:f7ba with SMTP id
- x2-20020a6bd002000000b007929acef7bamr172374ioa.11.1695768660792; Tue, 26 Sep
- 2023 15:51:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695768844; x=1696373644;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dQJAscD2wySe2863Xyr7yQaPfi/ox1Xy3HuPTVjHqlk=;
+        b=qZLYWJktxRfqatimo1LCCveGqMHmItVpXpKbZN67Wr5bMiNEo6NP75G00pmcvkItpc
+         LfGNw0Ai3kbHg2eBlq6aOcmmsl4ot+bU6pM26c5OmABbTULONrn2ptd3jfatNzDiEf3X
+         voYyuFaUf3J4/ZCEFJfL4Iscdm/AlwZELi5eqQhFc3tERFvvyHXs5NOZ+CtLNpeacbCv
+         VjmUJAP/wuXCNyrAalNjbHVJ8fZJz9aBZcfzSDwunT2l4OLrjhRpEIaIEAeoy3r87fo/
+         c3SswndbqivvDWm8AWLEq+2FX9d8GYOGLUZkrd0qQDdpK6bEecICxlEJVfeF0d8OfKcK
+         zEhw==
+X-Gm-Message-State: AOJu0Yy79NDIlUN4YTUSE064g1A/fdJhPwF3uOFjuh9vQ/xmnD1BOnG2
+        uyO3yA+EK8QqENGHl19AU4U=
+X-Google-Smtp-Source: AGHT+IHzPqsLAeIFR4XUFAfgX5/zMyG8+qwdjdcB/+MI6r96c0IBGBg4kB4736oEP2j7G/oCo5u4UQ==
+X-Received: by 2002:a17:907:7703:b0:9ae:701a:6efa with SMTP id kw3-20020a170907770300b009ae701a6efamr79673ejc.69.1695768844013;
+        Tue, 26 Sep 2023 15:54:04 -0700 (PDT)
+Received: from skbuf ([188.25.161.12])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170906bc4e00b009937dbabbd5sm8347424ejv.220.2023.09.26.15.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 15:54:03 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 01:54:01 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading
+ for KSZ9477
+Message-ID: <20230926225401.bganxwmtrgkiz2di@skbuf>
+References: <20230922133108.2090612-1-lukma@denx.de>
 MIME-Version: 1.0
-References: <20230920122349.418673-1-wyes.karny@amd.com> <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 26 Sep 2023 15:50:49 -0700
-Message-ID: <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com>
-Subject: Re: [PATCH] perf pmu: Fix perf stat output with correct scale and unit
-To:     Ian Rogers <irogers@google.com>
-Cc:     Wyes Karny <wyes.karny@amd.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        adrian.hunter@intel.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
-        ravi.bangoria@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922133108.2090612-1-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 9:02 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Sep 20, 2023 at 5:24 AM Wyes Karny <wyes.karny@amd.com> wrote:
-> >
-> > The perf_pmu__parse_* functions for the sysfs files of pmu event’s
-> > scale, unit, per-pkg and snapshot were updated in commit 7b723dbb96e8
-> > ("perf pmu: Be lazy about loading event info files from sysfs").
-> > However, the paths for these sysfs files were incorrect. This resulted
-> > in perf stat reporting values with wrong scaling and missing units. This
-> > is fixed by correcting the paths for these sysfs files.
-> >
-> > Before this fix:
-> >
-> >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >    351,217,188,864      power/energy-pkg/
-> >
-> >           2.004127961 seconds time elapsed
-> >
-> > After this fix:
-> >
-> >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >              80.58 Joules power/energy-pkg/
-> >
-> >              2.004009749 seconds time elapsed
-> >
-> > Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files from sysfs")
-> > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
->
-> Reviewed-by: Ian Rogers <irogers@google.com>
+On Fri, Sep 22, 2023 at 03:31:03PM +0200, Lukasz Majewski wrote:
+> This patch series provides support for HSR HW offloading in KSZ9477
+> switch IC.
+> 
+> To test this feature:
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+> ip link set dev lan1 up
+> ip link set dev lan2 up
+> ip a add 192.168.0.1/24 dev hsr0
+> ip link set dev hsr0 up
+> 
+> To remove HSR network device:
+> ip link del hsr0
+> 
+> To test if one can adjust MAC address:
+> ip link set lan2 address 00:01:02:AA:BB:CC
+> 
+> It is also possible to create another HSR interface, but it will
+> only support HSR is software - e.g.
+> ip link add name hsr1 type hsr slave1 lan3 slave2 lan4 supervision 45 version 1
+> 
+> Test HW:
+> Two KSZ9477-EVB boards with HSR ports set to "Port1" and "Port2".
+> 
+> Performance SW used:
+> nuttcp -S --nofork
+> nuttcp -vv -T 60 -r 192.168.0.2
+> nuttcp -vv -T 60 -t 192.168.0.2
+> 
+> Code: v6.6.0-rc2+ Linux net-next repository
+> SHA1: 5a1b322cb0b7d0d33a2d13462294dc0f46911172
+> 
+> Tested HSR v0 and v1
+> Results:
+> With KSZ9477 offloading support added: RX: 100 Mbps TX: 98 Mbps
+> With no offloading 		       RX: 63 Mbps  TX: 63 Mbps
 
-Applied to perf-tools-next, thanks!
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+Thanks!
