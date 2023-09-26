@@ -2,176 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 911AE7AED83
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6707A7AED82
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbjIZNAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S234746AbjIZM75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbjIZNAX (ORCPT
+        with ESMTP id S234776AbjIZM7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:00:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1461ACCC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695733173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UqxXzmMvP8NFAv3ZN9+oJyNJ16533RmhYaiAN1MoQNI=;
-        b=BGjl4YQYduUvQd6v/XeJ2Tnlq/MfJZmulDXB4o/tih/L0tkflO67b8howbuTI6cndsx4oZ
-        b4JKolwj4LMyq0FW2f2wdmQNEaepWVy9K5t4SJwiES4bT/uH63+n7JxvdHUFkLfvdw1qmw
-        /ngUeLWnGSnERpsmxphvvPst6veQxLY=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-vmBtm1IkMb-HuT7pRveWkw-1; Tue, 26 Sep 2023 08:59:31 -0400
-X-MC-Unique: vmBtm1IkMb-HuT7pRveWkw-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3ae377d74b1so12246413b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:59:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695733171; x=1696337971;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UqxXzmMvP8NFAv3ZN9+oJyNJ16533RmhYaiAN1MoQNI=;
-        b=vsLSNWs3NqeeBjgze9q++2kRUWOhxjeGc04EI/zPsRbHBPYy2OhOx6k5fyAEEmc6/k
-         eCciDH7BGOFRTwLxv31Dcw4FE/q0gKtBz257QV/wLQhIpxHPc+KmCa9AyRxVk3C5kZyQ
-         hUojxxre0zMkvCQEH7JWWBfDM3avnXpXAaM84Y6rThssrDX/QHOxE5dabV5WadNYUfkj
-         4N2Y5ein+rT4thb7yxNTu+SIufaxUS0aNBTFbm1Te8tMzx5HZ0FvebC93QS8l1k9x3qG
-         6sSVqDxlaCmnSd85M5saoBp8GTFNtMqkHkzhN+qemeRttUmz94XUONL8kOsI6t8FxLZo
-         Z2uw==
-X-Gm-Message-State: AOJu0YyNtXimTpfYABaWeBS1tfwkwAKrG08kt2FELPS9/6WnodrOeIun
-        XpHsT0DSfRgS8I5h/nTfm1VYQWAsjaHzybRU5AqCWk9c0J+CVsgnXL2aOE4hX564/r6a0dM4fNJ
-        xiYeNZVCKRACqRmoqomcZohVL
-X-Received: by 2002:aca:d17:0:b0:3ae:5c14:8686 with SMTP id 23-20020aca0d17000000b003ae5c148686mr579422oin.2.1695733170917;
-        Tue, 26 Sep 2023 05:59:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkwflebs1+GFyASqCe4hFg5FMJnbHZG3/VB40LZYpDYGNgdspzcMuDcuwxht0BuZ+jXyYfEQ==
-X-Received: by 2002:aca:d17:0:b0:3ae:5c14:8686 with SMTP id 23-20020aca0d17000000b003ae5c148686mr579404oin.2.1695733170597;
-        Tue, 26 Sep 2023 05:59:30 -0700 (PDT)
-Received: from ?IPV6:240d:1a:c0d:9f00:f0fd:a9ac:beeb:ad24? ([240d:1a:c0d:9f00:f0fd:a9ac:beeb:ad24])
-        by smtp.gmail.com with ESMTPSA id i13-20020aa78d8d000000b00689f8dc26c2sm9875306pfr.133.2023.09.26.05.59.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 05:59:30 -0700 (PDT)
-Message-ID: <f6c4aa78-1ecc-d654-ba3a-23e0ae935e49@redhat.com>
-Date:   Tue, 26 Sep 2023 21:59:26 +0900
+        Tue, 26 Sep 2023 08:59:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E21116;
+        Tue, 26 Sep 2023 05:59:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E522BC433CA;
+        Tue, 26 Sep 2023 12:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695733178;
+        bh=TLCs3n5dqhYri+xLFFn0lVxrMbmnBABrauc91osBr80=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tDgZ1AXh5tSnQkMwmmaCnqn5Rvz2rENT+ec1NjUFuAaNbmgX+GyHvU4VA6P3/7e2e
+         mzgX3vFxRtOk+V9Zi2Bztld21I76DY2BwipbDIAGB1Y8VdRmW8hdDzoS+k/x3F8Hct
+         niNCytjBZUrooSbnoJ0hwfQ1JjdlTKNXI0QV97f+USnImIKJgPwao+LRHMEDmcRoKv
+         HzknT1JKeDkymq3M1ELizbz7/sRezbNc2Hfj75o4k9eAIlKye3dUdxRlqS5iq7kJFt
+         0cAqNbCd8sJNM46cGca8koFuN4xUdJo++gH0eqDXn8SKopMi0KBWSBBNBzWvh+qcns
+         99ms6z6ZKeeGA==
+Date:   Tue, 26 Sep 2023 13:59:32 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] spi: dt-bindings: Make "additionalProperties: true"
+ explicit
+Message-ID: <20230926-swung-duplex-b01be7f91e58@spud>
+References: <20230925212614.1974243-1-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] tipc: Fix uninit-value access in
- tipc_nl_node_reset_link_stats()
-To:     Jon Maloy <jmaloy@redhat.com>
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com,
-        ying.xue@windriver.com
-References: <20230924060325.3779150-1-syoshida@redhat.com>
- <a9f6e851-5f41-a114-a7f8-493c639c664d@redhat.com>
-Content-Language: en-US
-From:   Shigeru Yoshida <syoshida@redhat.com>
-In-Reply-To: <a9f6e851-5f41-a114-a7f8-493c639c664d@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gCWkt9qgvYzcx0LY"
+Content-Disposition: inline
+In-Reply-To: <20230925212614.1974243-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 20:19, Jon Maloy wrote:
-> 
-> 
-> On 2023-09-24 02:03, Shigeru Yoshida wrote:
->> syzbot reported the following uninit-value access issue:
->>
->> =====================================================
->> BUG: KMSAN: uninit-value in strlen lib/string.c:418 [inline]
->> BUG: KMSAN: uninit-value in strstr+0xb8/0x2f0 lib/string.c:756
->>   strlen lib/string.c:418 [inline]
->>   strstr+0xb8/0x2f0 lib/string.c:756
->>   tipc_nl_node_reset_link_stats+0x3ea/0xb50 net/tipc/node.c:2595
->>   genl_family_rcv_msg_doit net/netlink/genetlink.c:971 [inline]
->>   genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
->>   genl_rcv_msg+0x11ec/0x1290 net/netlink/genetlink.c:1066
->>   netlink_rcv_skb+0x371/0x650 net/netlink/af_netlink.c:2545
->>   genl_rcv+0x40/0x60 net/netlink/genetlink.c:1075
->>   netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
->>   netlink_unicast+0xf47/0x1250 net/netlink/af_netlink.c:1368
->>   netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
->>   sock_sendmsg_nosec net/socket.c:730 [inline]
->>   sock_sendmsg net/socket.c:753 [inline]
->>   ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
->>   ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
->>   __sys_sendmsg net/socket.c:2624 [inline]
->>   __do_sys_sendmsg net/socket.c:2633 [inline]
->>   __se_sys_sendmsg net/socket.c:2631 [inline]
->>   __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> Uninit was created at:
->>   slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
->>   slab_alloc_node mm/slub.c:3478 [inline]
->>   kmem_cache_alloc_node+0x577/0xa80 mm/slub.c:3523
->>   kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:559
->>   __alloc_skb+0x318/0x740 net/core/skbuff.c:650
->>   alloc_skb include/linux/skbuff.h:1286 [inline]
->>   netlink_alloc_large_skb net/netlink/af_netlink.c:1214 [inline]
->>   netlink_sendmsg+0xb34/0x13d0 net/netlink/af_netlink.c:1885
->>   sock_sendmsg_nosec net/socket.c:730 [inline]
->>   sock_sendmsg net/socket.c:753 [inline]
->>   ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
->>   ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
->>   __sys_sendmsg net/socket.c:2624 [inline]
->>   __do_sys_sendmsg net/socket.c:2633 [inline]
->>   __se_sys_sendmsg net/socket.c:2631 [inline]
->>   __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> Link names must be null-terminated strings. If a link name which is not
->> null-terminated is passed through netlink, strstr() and similar functions
->> can cause buffer overrun. This causes the above issue.
->>
->> This patch fixes this issue by returning -EINVAL if a non-null-terminated
->> link name is passed.
->>
->> Fixes: ae36342b50a9 ("tipc: add link stat reset to new netlink api")
->> Reported-and-tested-by: syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com
->> Closes: https://syzkaller.appspot.com/bug?extid=5138ca807af9d2b42574
->> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
->> ---
->>   net/tipc/node.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/net/tipc/node.c b/net/tipc/node.c
->> index 3105abe97bb9..f167bdafc034 100644
->> --- a/net/tipc/node.c
->> +++ b/net/tipc/node.c
->> @@ -2586,6 +2586,10 @@ int tipc_nl_node_reset_link_stats(struct sk_buff *skb, struct genl_info *info)
->>         link_name = nla_data(attrs[TIPC_NLA_LINK_NAME]);
->>   +    if (link_name[strnlen(link_name,
->> +                  nla_len(attrs[TIPC_NLA_LINK_NAME]))] != '\0')
->> +        return -EINVAL;
->> +
->>       err = -EINVAL;
->>       if (!strcmp(link_name, tipc_bclink_name)) {
->>           err = tipc_bclink_reset_stats(net, tipc_bc_sndlink(net));
-> Acked-by: Jon Maloy <jmaloy@redhat.com>
 
-Thanks! syzbot reported very similar issue regarding bearer name too.
-I've sent a patch for that issue.
+--gCWkt9qgvYzcx0LY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Sep 25, 2023 at 04:26:00PM -0500, Rob Herring wrote:
+> Make it explicit that child nodes have additional properties and the
+> child node schema is not complete. The complete schemas are applied
+> separately based the compatible strings.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Shigeru 
+Conor.
 
+> ---
+>  .../devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml        | 2 ++
+>  .../devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml        | 2 ++
+>  Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml | 1 +
+>  Documentation/devicetree/bindings/spi/rockchip-sfc.yaml         | 2 ++
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml      | 2 ++
+>  5 files changed, 9 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-sp=
+i.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> index a6f34bdd1d3c..e1ab3f523ad6 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun4i-a10-spi.yaml
+> @@ -46,6 +46,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-sp=
+i.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> index 28b8ace63044..3b47b68b92cb 100644
+> --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
+> @@ -68,6 +68,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          items:
+> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.y=
+aml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> index 9ae1611175f2..48e97e240265 100644
+> --- a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> @@ -50,6 +50,7 @@ properties:
+>  patternProperties:
+>    "@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+> =20
+>      properties:
+>        spi-rx-bus-width:
+> diff --git a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml b/Do=
+cumentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> index 339fb39529f3..ac1503de0478 100644
+> --- a/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> +++ b/Documentation/devicetree/bindings/spi/rockchip-sfc.yaml
+> @@ -47,6 +47,8 @@ properties:
+>  patternProperties:
+>    "^flash@[0-3]$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b=
+/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> index a47cb144b09f..6348a387a21c 100644
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -160,6 +160,8 @@ properties:
+>  patternProperties:
+>    "^.*@[0-9a-f]+$":
+>      type: object
+> +    additionalProperties: true
+> +
+>      properties:
+>        reg:
+>          minimum: 0
+> --=20
+> 2.40.1
+>=20
+
+--gCWkt9qgvYzcx0LY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLVtAAKCRB4tDGHoIJi
+0hR8AP9Ava8cYYj5GVL2Hut1w6uRkN/b4Faq6JdqruwkatygOAEAiy5idBiTw+di
+gDi3f58ACPRbv1uC/Zp+MwgXWqAZWgc=
+=hqIu
+-----END PGP SIGNATURE-----
+
+--gCWkt9qgvYzcx0LY--
