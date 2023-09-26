@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D760A7AE2E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73037AE2EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjIZA0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
+        id S231639AbjIZA1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 20:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIZA0A (ORCPT
+        with ESMTP id S229460AbjIZA12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:26:00 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0877109;
-        Mon, 25 Sep 2023 17:25:53 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57bb6b1f764so2275534eaf.2;
-        Mon, 25 Sep 2023 17:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695687953; x=1696292753; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EndygcAAjSZYYYSGW2g5PCBC6k5ixtfB9rULOZ8VgLY=;
-        b=iEvXSDRGXf3nzPmcwqRutHG9byKOSM/1D9oygz+Xspdd90Nj+Uip0cDSUZ5t+w/Edd
-         dMBjGT1QoC0mxv/rxGrnupmfnPtog7r3NHJsUk1hQ8BBrMY88CmlIXISBMI1gn4VqmVj
-         gdsjzZSzm0KPCqd+qvgMGvQr9ixMC7XsJfsuPZ8aCiXeFNbjVw4SKqNH6ZkuS4mlGxK8
-         N6NaDs53fdO8wItRpK33tNaKYmzDAXVznYtZ2JX1Rrjr6eT22rsIlQQMtvjH00G6DiDe
-         97K3hnVHE1DCoGWfKQmDikktvWbz1tD+Nsw8AxW3dC4pXF0eCO3NQ80osyKe6X73N/9p
-         84Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695687953; x=1696292753;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=EndygcAAjSZYYYSGW2g5PCBC6k5ixtfB9rULOZ8VgLY=;
-        b=Lqvr7c5Wlb+RZnL+oSByeVkmJN7pZO8ciyqEyo16ImrypOglnWMrlHMatCbGuKoxdf
-         7dxZ+FV1YrLPuWmtb57ZevWnWbElqYm5Jyhk+Z+S6HZ2HZrWF1nSMG1p1FiLPBvYDAv6
-         PQrJ7nkDhLXU9tx3CFfoXD3qxxggsRxWM3zUSvMacKYBuIWt7VXUKobIASINJmuc+fOs
-         u6Ms0Rr8bUiHQhuy0YfWfvT087LzZbcJU/9gU9OaVML9Ns0sQuApoUn/0R/aW4IExIwQ
-         etpZg4+ffD+DAcxkWfVR6exPOiHdgRC6GsUvxuKDUdIDrAQ462e8R/Jt4IQ4w7nRXz4b
-         Lw8g==
-X-Gm-Message-State: AOJu0YylQ7Hscv8wOLIEiELeYYnkTUweBPtVrp/eIEGOKZsA4YSOEah/
-        gB6bwDoRcLU2sLdEne9HTm894uuebFmgyA==
-X-Google-Smtp-Source: AGHT+IFUYS4ZMeYL56nT74mymxtirDqVejiQuiN557RGluOT00M4N6c1CrcZFlgn1AFRaKhTJPIqdg==
-X-Received: by 2002:a05:6358:7206:b0:13e:b54f:5c18 with SMTP id h6-20020a056358720600b0013eb54f5c18mr10380687rwa.17.1695687952857;
-        Mon, 25 Sep 2023 17:25:52 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id r9-20020a63a009000000b0057e13ed796esm5633870pge.60.2023.09.25.17.25.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 17:25:52 -0700 (PDT)
-Message-ID: <585dcc9e-7e72-473a-98ec-4f06018d542f@gmail.com>
-Date:   Tue, 26 Sep 2023 07:25:48 +0700
+        Mon, 25 Sep 2023 20:27:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4468C109;
+        Mon, 25 Sep 2023 17:27:22 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q0MBkU001131;
+        Tue, 26 Sep 2023 00:27:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=9HyKE05hsD4scaPHRxwA8ZmAgqW0L3LESL3Jf+4nGUA=;
+ b=mr0Ih29OO9Lwaj3nz+KU7OWvsG6MgsgpdDPw2AMIhbyz+Qtp3AroWowlI18jAp4leCi7
+ azrafe6xrTMg81ioxVStwm5X4pJS/zGeLhZ0NgsvnaTtkxzf0Oz2aMxuChYmGZlJBZEU
+ 5dmTqBepK5FX11Si2e+rYqNgRaIdg9UP+usqtBLhqh6a4S171FZF4t71r4avaeRhrhsF
+ d0DnUeFopsZ47OOGVXrj5PKnE/WNAzmPIYhAfad/U45L4W4jgSn55bDivFo93bYkiFUw
+ H0/I7R2QgitQk9JvQAifz3Nf+vyWGRLGBDEQpPy/gU4SbiAfLziBiKUIm0iZW1GUe2CH LQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb3hftn9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 00:27:19 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38Q0RJLg028342
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 00:27:19 GMT
+Received: from [10.48.244.213] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 25 Sep
+ 2023 17:27:18 -0700
+Message-ID: <ed6a9fe3-9197-4ffd-9fd4-c1a959b7fdc9@quicinc.com>
+Date:   Mon, 25 Sep 2023 17:27:18 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wireless 1/2] ath: dfs_pattern_detector: Fix a memory
+ initialization issue
 Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Arnas <arnasz616@gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: [Regression] S3 Sleep Mode failures since Linux 6.x on Dell
- Inspiron 15 5593
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     <kernel-janitors@vger.kernel.org>, <kvalo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+        <quic_kvalo@quicinc.com>
+References: <ad8c55b97ee4b330cb053ce2c448123c309cc91c.1695538105.git.christophe.jaillet@wanadoo.fr>
+ <c82d9d47-9c4b-4af9-a1e8-7c975b53fe30@quicinc.com>
+ <b3be8653-ea3f-bc3a-c38e-e3ec290695ea@wanadoo.fr>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <b3be8653-ea3f-bc3a-c38e-e3ec290695ea@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3e_5SmQphfSeRoerxyRnW8mHobQUOtZy
+X-Proofpoint-ORIG-GUID: 3e_5SmQphfSeRoerxyRnW8mHobQUOtZy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_19,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ adultscore=0 suspectscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=728 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260001
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/25/2023 1:54 PM, Christophe JAILLET wrote:
+> Le 25/09/2023 à 20:46, Jeff Johnson a écrit :
+>> On 9/23/2023 11:57 PM, Christophe JAILLET wrote:
+>>> -    cd->detectors = kmalloc_array(dpd->num_radar_types,
+>>> +    cd->detectors = kcalloc(dpd->num_radar_types,
+>>>                         sizeof(*cd->detectors), GFP_ATOMIC);
+>>
+>> nit: align descendant on (
+> 
+> Agreed, but as the code is removed in patch 2/2, I thought that having a 
+> smaller diff was a better option.
+> 
+> Let me know if I should resend the serie.
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+nevermind, don't bother
 
-> I'm having some weird issues with sleep mode on any 6.x Linux kernel version - it's a toss-up when I close the lid as to whether it will sleep properly or not - when it fails, the screen will lock, but it will not actually enter S3 sleep - it just blanks the screen, but the laptop stays on (and fan does too).
-> 
-> Opening the lid after a failed sleep attempt turns on the screen instantaneously, and it doesn't even need to reconnect to WiFi - this doesn't happen when actually resuming from sleep, it takes a couple seconds for the screen to come on, and it then needs to reconnect the network.
-> 
-> Following the failed attempt to enter sleep mode (closing the lid), the following entries appear in the system log -
-> 
-> arkiron kernel: ACPI Error: Thread 3233415168 cannot release Mutex [ECMX] acquired by thread 3268191936 (20221020/exmutex-378)
-> arkiron kernel: ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 due to previous error (AE_AML_NOT_OWNER) (20221020/psparse-529)
-> arkiron kernel: Non-boot CPUs are not disabled
-> 
-> Now, the "Non-boot CPUs are not disabled" line stands out the most to me here, because successful sleep attempts won't have this line in the log.
-> 
-> After the failed attempt above to sleep, I now close the lid again, and it seemingly goes to sleep successfully. After checking the log following this, I find two new error lines in the log -
-> 
-> arkiron kernel: ACPI Error: Thread 3233415168 cannot release Mutex [ECMX] acquired by thread 3268191936 (20221020/exmutex-378)
-> arkiron kernel: ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 due to previous error (AE_AML_NOT_OWNER) (20221020/psparse-529)
-> 
-> Note that this time the CPU line is missing, as expected for a successful sleep attempt.
-> 
-> This happens on both latest stable Linux kernel 6.5 as well as the latest Linux LTS 6.1 kernel. The last kernel that this didn't happen on was Linux LTS 5.15 (any version), which is what I was running up until the Linux LTS 6.1 upgrade. At that point I tried switching back to mainline (6.5) to see if it would fix sleep issues, but it didn't help. Downgrading to Linux LTS 5.15 did fix the sleep issues and the laptop seems to sleep reliably now. Running LTS 5.15.131-1 without issue as I am making this report.
-> 
-> I'm on a Dell Inspiron 15 5593 using BIOS ver 1.27.0 (latest as of now), running Arch Linux x86_64
-
-See Bugzilla for the full thread.
-
-Anyway, I'm adding it to regzbot:
-
-#regzbot introduced: v5.15..v6.1 https://bugzilla.kernel.org/show_bug.cgi?id=217950
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217950
-
--- 
-An old man doll... just what I always wanted! - Clara
