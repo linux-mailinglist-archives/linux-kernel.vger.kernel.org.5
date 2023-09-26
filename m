@@ -2,53 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3647AE979
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC0D7AE986
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbjIZJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        id S234296AbjIZJqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJll (ORCPT
+        with ESMTP id S234114AbjIZJqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:41:41 -0400
+        Tue, 26 Sep 2023 05:46:32 -0400
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF4B3;
-        Tue, 26 Sep 2023 02:41:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CF0B3;
+        Tue, 26 Sep 2023 02:46:22 -0700 (PDT)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id DEB6468AA6; Tue, 26 Sep 2023 11:41:30 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:41:30 +0200
+        id 45ECF68D05; Tue, 26 Sep 2023 11:46:17 +0200 (CEST)
+Date:   Tue, 26 Sep 2023 11:46:16 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926094130.GC13806@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Tomasz Figa <tfiga@chromium.org>,
+        Fang Hui <hui.fang@nxp.com>, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, anle.pan@nxp.com, xuegang.liu@nxp.com
+Subject: Re: [PATCH] MA-21654 Use dma_alloc_pages in
+ vb2_dma_sg_alloc_compacted
+Message-ID: <20230926094616.GA14877@lst.de>
+References: <20230914145812.12851-1-hui.fang@nxp.com> <CAAFQd5CcN+TiVd8vhMxQRbmrJuBGYwL5d6C0fKzOy4ujjM_JMQ@mail.gmail.com> <353919fd-932e-5d81-6ac5-7b51117366cd@arm.com> <20230926065143.GB5606@lst.de> <4d0f3de5-1d34-d998-cb55-7ce7bfaf3f49@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230914053843.GI800259@ZenIV>
+In-Reply-To: <4d0f3de5-1d34-d998-cb55-7ce7bfaf3f49@arm.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -58,24 +41,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 06:38:43AM +0100, Al Viro wrote:
-> It's worse - look at the rationale for 2c18a63b760a "super: wait until
-> we passed kill super".  Basically, "don't remove from the lists
-> until after block device closing".  IOW, we have
+On Tue, Sep 26, 2023 at 09:21:15AM +0100, Robin Murphy wrote:
+> On 2023-09-26 07:51, Christoph Hellwig wrote:
+>> On Wed, Sep 20, 2023 at 05:54:26PM +0100, Robin Murphy wrote:
+>>> As I mentioned before, I think it might make the most sense to make the
+>>> whole thing into a "proper" dma_alloc_sgtable() function, which can then be
+>>> used with dma_sync_sgtable_*() as dma_alloc_pages() is used with
+>>> dma_sync_single_*() (and then dma_alloc_noncontiguous() clearly falls as
+>>> the special in-between case).
+>>
+>> Why not just use dma_alloc_noncontiguous if the caller wants an sgtable
+>> anyway?
+>
+> Because we don't need the restriction of the allocation being 
+> DMA-contiguous (and thus having to fall back to physically-contiguous in 
+> the absence of an IOMMU). That's what vb2_dma_contig already does, whereas 
+> IIUC vb2_dma_sg is for devices which can handle genuine scatter-gather DMA 
+> (and so are less likely to have an IOMMU, and more likely to need the best 
+> shot at piecing together large allocations).
 
-As of this stage we don't even touch anything related to block devices..
+Let's just extent dma_alloc_noncontiguous with a max_dma_segments
+parameter instead of adding yet another API.
 
-> That was *NOT* what a recent rework had done.  Block device closing had never
-> been inside ->put_super() - at no point since that (closing, that is) had been
-> introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
-> 
-> The race is real, but the cause is not some kind of move of blkdev_put().
-> Your 2ea6f68932f7 "fs: use the super_block as holder when mounting file
-> systems" is where it actually came from.
-> 
-> Christoph, could you explain what the hell do we need that for?  It does
-> create the race in question and AFAICS 2c18a63b760a (and followups trying
-> to plug holes in it) had been nothing but headache.
-
-Because it allows us to actually get from the bdev to the holder directly,
-someting we've badly neeed for a while.
