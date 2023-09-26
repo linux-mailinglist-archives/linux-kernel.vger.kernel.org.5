@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7157AF0D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60BB7AF0DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbjIZQgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        id S235298AbjIZQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235282AbjIZQgs (ORCPT
+        with ESMTP id S235282AbjIZQhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:36:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2554124;
-        Tue, 26 Sep 2023 09:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695746199; x=1727282199;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=W9JR7UKiiB5qX/Bnbhhy9qpsfgN7ArWX+EkyPOjLqrU=;
-  b=PVug25ZFyqoRbxS2OTEc6WKP+MQj1KgVq9JkX0l1QhazQcIEq2eeZyPO
-   WCCELkgbPkU8MLqFZMM+mzxWwSYs5XKsrMVxd9ffwStO1Q0rDddIVAf90
-   VQdGkDlzSjVyCLz5tM0hKJtG3j93pyKIeay13uJGirEQVJO2jFR0X7Bao
-   d5rfXxbTb5wdmale1bSqtFlFwwKIwqevv+STXrhB83N2K9hobRGdqu+50
-   Fihu2AsTvq8wi5MgPTbU9uhm87dyT/FER5E++WlKN4ds2/bB2JQXnx71m
-   jIZUM0VWNcDjBSzhhmc99+hqq0Ksxrp+Ov4Il41ZpC6fLOrejvSU/LtX5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="380480448"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="380480448"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:36:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="1079766210"
-X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
-   d="scan'208";a="1079766210"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 09:36:38 -0700
-Received: from [10.209.130.196] (kliang2-mobl1.ccr.corp.intel.com [10.209.130.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 120E3580BBE;
-        Tue, 26 Sep 2023 09:36:35 -0700 (PDT)
-Message-ID: <bb2db7bf-a1cb-c109-80f5-7e7be23c8b95@linux.intel.com>
-Date:   Tue, 26 Sep 2023 12:36:35 -0400
+        Tue, 26 Sep 2023 12:37:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F162BF
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695746216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kwn+Y2/3Lb7G0UxCRBVpYop5K/bVWNWfnHKf0b40Tss=;
+        b=cs+dJnM0r8Ch+Pe+IPuPE2U7UBEQ8IBiaisbbdflmN0kOMOs1aM/ILPR66gNeRbEKEBAgl
+        aSQ5zRP3+XRchhv8VtJaM54OAhfW4hHUodxR563JZpdo/McG/HhpseqWDk07JS9IH75jcM
+        CRepUv7auYEJWtX7fceCGUtO9ldOCqE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-ju-q8FOnPbCGj7gy66bhDw-1; Tue, 26 Sep 2023 12:36:52 -0400
+X-MC-Unique: ju-q8FOnPbCGj7gy66bhDw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40514ce8387so78729595e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:36:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695746212; x=1696351012;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kwn+Y2/3Lb7G0UxCRBVpYop5K/bVWNWfnHKf0b40Tss=;
+        b=FPyB5i201raA7pxd/3Bc1lZG2Ra6HctrvSL25nwjd2z4lePxQ4+08IuMFaWl/LRgqZ
+         vUynqIy/G7q60yfE5lJe5NRDje4X89kMXp7v411LcSrkrMY7hVm8/aEwnMUS/XkSMNLm
+         /Vy37yvHDw9U29NcPX4Fifo9S/ChONuRh4cCj9ot6+DPtatUD45L6aFMLJ7FXWy3PIZQ
+         XJFkltdYeW/nJitbEj9hssupm/jcoRZwfv35QIXgcZKo0jTcMgDxaqTk1GSHXGmTKSkb
+         fEEBkCPPH5YAle33cCFv0kh1mQzl0XKumKXvA+b4UjUbWGavMEvXK2c9ADiQfIAsYTNf
+         AFUA==
+X-Gm-Message-State: AOJu0Ywisln5Z4y9Fq7UdXh7MvRlsAhH5Xe6o9SM5O3te8uzAgxsKIdb
+        u98zQa7EMQJf/gpaX/FfuvGufHik826M+fQblTAhsTxY4lDLUfiL+derc2VWfIsb3cl29pdoP+I
+        7DT1vneroqzl7vkzOk4eA4OIK
+X-Received: by 2002:a05:600c:310d:b0:405:959e:dc79 with SMTP id g13-20020a05600c310d00b00405959edc79mr4523735wmo.37.1695746211872;
+        Tue, 26 Sep 2023 09:36:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPe3hnMTPEM/AxRFgRHfDLU7UP3Ocp6QTz9J/GjLvhtxRI/bAlHI/7d0inLqttqPjjFRHJew==
+X-Received: by 2002:a05:600c:310d:b0:405:959e:dc79 with SMTP id g13-20020a05600c310d00b00405959edc79mr4523711wmo.37.1695746211487;
+        Tue, 26 Sep 2023 09:36:51 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id v19-20020a05600c429300b004047ac770d1sm13421784wmc.8.2023.09.26.09.36.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 09:36:50 -0700 (PDT)
+Message-ID: <ef6a0ebf-cb5f-0bb0-f453-0e9e0fdc87d5@redhat.com>
+Date:   Tue, 26 Sep 2023 18:36:49 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 23/25] perf stat: Fix a return error issue in
- hardware-grouping
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/4] KVM: x86: tracepoint updates
 Content-Language: en-US
-To:     weilin.wang@intel.com, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Samantha Alt <samantha.alt@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20230925061824.3818631-1-weilin.wang@intel.com>
- <20230925061824.3818631-24-weilin.wang@intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20230925061824.3818631-24-weilin.wang@intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+References: <20230924124410.897646-1-mlevitsk@redhat.com>
+ <ZRIf1OPjKV66Y17/@google.com>
+ <abd13162f106c5ce86c211fc9d32d901ab34500b.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <abd13162f106c5ce86c211fc9d32d901ab34500b.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-09-25 2:18 a.m., weilin.wang@intel.com wrote:
-> From: Weilin Wang <weilin.wang@intel.com>
+On 9/26/23 10:28, Maxim Levitsky wrote:
+>> trace_kvm_exit is good example, where despite all of the information that is captured
+>> by KVM, it's borderline worthless for CPUID and MSR exits because their interesting
+>> information is held in registers and not captured in the VMCS or VMCB.
+>>
+>> There are some on BTF type info issues that I've encountered, but I suspect that's
+>> as much a PEBKAC problem as anything.
+>>
+> While eBPF has its use cases, none of the extra tracepoints were added solely because of
+> the monitoring tool and I do understand that tracepoints are a limited resource.
 > 
-> Update the hw_aware_parse_ids() goto to improve error handling.
-> 
+> Each added tracepoint/info was added only when it was also found to be useful for regular
+> kvm tracing.
 
-Seems like a bug fix. Please merge it with the patch which introduces
-the issue.
+I am not sure about _all_ of them, but I agree with both of you.
 
-Thanks,
-Kan
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 07a82fa21..6a4404226 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -2196,11 +2196,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
->  	*out_evlist = NULL;
->  	ret = hw_aware_build_grouping(ids, &grouping);
->  	if (ret)
-> -		goto err_out;
-> +		goto out;
->  	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier,
->  						      tool_events, &grouping);
->  	if (ret)
-> -		goto err_out;
-> +		goto out;
->  
->  	parsed_evlist = evlist__new();
->  	if (!parsed_evlist) {
-> @@ -2225,10 +2225,11 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
->  	*out_evlist = parsed_evlist;
->  	parsed_evlist = NULL;
->  err_out:
-> -	metricgroup__free_group_list(&grouping);
-> -	metricgroup__free_grouping_strs(&grouping_str);
->  	parse_events_error__exit(&parse_error);
->  	evlist__delete(parsed_evlist);
-> +out:
-> +	metricgroup__free_group_list(&grouping);
-> +	metricgroup__free_grouping_strs(&grouping_str);
->  	return ret;
->  }
->  
+On one hand, it would be pretty cool to have eBPF access to registers. 
+On the other hand, the specific info you're adding is generic and I 
+think there are only a couple exceptions where I am not sure it belongs 
+in the generic KVM tracepoints.
+
+Paolo
+
