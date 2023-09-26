@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06AA7AF066
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3537AF067
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbjIZQOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
+        id S235187AbjIZQOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbjIZQOl (ORCPT
+        with ESMTP id S235232AbjIZQOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:14:41 -0400
+        Tue, 26 Sep 2023 12:14:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6192D121;
-        Tue, 26 Sep 2023 09:14:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 07141C433C8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409AD121;
+        Tue, 26 Sep 2023 09:14:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DD8D5C433C9;
         Tue, 26 Sep 2023 16:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1695744875;
-        bh=5xKmk0CcCoVRMJJtil99H2uIupYcJanN33b2o/YlHnI=;
+        bh=6QT8sPoqNA4aS6lqhGTTohgYUQtUd2cZJTSS5Bx2fIw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=saaIYBGVjthPNY0XUpFzC6wK5L1PONVq9UYqP1zfFmj4AVM+FxZpxfo6ZIxYvXbVJ
-         5rgF32jOWK/rfWV2WJ+nmUkrQBFoBZCQkdwTBRxWv//sHCmZyJM8gPtV2aOjJKfgtj
-         00joKcW7tBxEEvatIbUjLd6NQ0ld/7TsAC/xhwCsT/e5e56eThqjviYntW07QvXzm0
-         fngox1VfiYz0vouQRirJlf+EeQjewXEJKfMnKzdFm3+53PAKGk+0233fSChem8BtMD
-         fwhDjDYGkBwDJDg3kdYnB1zq1SFQh7SAnWVkN35/z0VLJvnT4pWhTBdXM3NmpToO96
-         ex//hR0bR+daQ==
+        b=UGyjXLw2VHa0Jzb4SPfqr641fIHS48PVCpXZxzKFUPuGkoqG5HCxy3U+Otn6iFR09
+         WifgtOyWzpmk9TCaJ3Hu9ZZvaiHA52FAwSeBGPh2eJ6NmxgTWu2jRsIE+AgxSxAUsI
+         8qAjGjqgJb3SBG6Zzq6g3/rTg4aJv7WyPbuMAoni9a8H3eme9crdRmDVOPQO27K7Yz
+         RkQWrwRazvO3ydMRyHjC4h0vv2Vk9eVA9LX0R9V9BOt8QfEEDpnqKXdqzObqTHZOwu
+         9O1LS8PWa0eLenewN95VvnwEf6ESr4c9Bmj4jDtDrONhYq7e5c2iLtIlGhIyejo9r9
+         0mHcX26j+MMfw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E3BCCE29AFF;
-        Tue, 26 Sep 2023 16:14:34 +0000 (UTC)
-Subject: Re: [GIT PULL] Kselftest fixes update for Linux 6.6-rc4
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C5621C64459;
+        Tue, 26 Sep 2023 16:14:35 +0000 (UTC)
+Subject: Re: [GIT PULL] vfs fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <f7b2da1d-6e47-0599-03d1-c1786ff69998@linuxfoundation.org>
-References: <f7b2da1d-6e47-0599-03d1-c1786ff69998@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
-X-PR-Tracked-Message-Id: <f7b2da1d-6e47-0599-03d1-c1786ff69998@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-6.6-rc4
-X-PR-Tracked-Commit-Id: 8ed99af4a266a3492d773b5d85c3f8e9f81254b6
+In-Reply-To: <20230926-vervielfachen-umgegangen-07e8d8f5a3a7@brauner>
+References: <20230926-vervielfachen-umgegangen-07e8d8f5a3a7@brauner>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230926-vervielfachen-umgegangen-07e8d8f5a3a7@brauner>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-rc4.vfs.fixes
+X-PR-Tracked-Commit-Id: 03dbab3bba5f009d053635c729d1244f2c8bad38
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 50768a425b46ad7d98f6d88c22d41aa026c463cf
-Message-Id: <169574487492.15087.17689670232595153581.pr-tracker-bot@kernel.org>
-Date:   Tue, 26 Sep 2023 16:14:34 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
+X-PR-Merge-Commit-Id: 84422aee15b9c6fd75ea01a7eedaad1aa0ec9081
+Message-Id: <169574487580.15087.291441534812615094.pr-tracker-bot@kernel.org>
+Date:   Tue, 26 Sep 2023 16:14:35 +0000
+To:     Christian Brauner <brauner@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        shuah <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 26 Sep 2023 09:24:47 -0600:
+The pull request you sent on Tue, 26 Sep 2023 12:39:55 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-6.6-rc4
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/v6.6-rc4.vfs.fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/50768a425b46ad7d98f6d88c22d41aa026c463cf
+https://git.kernel.org/torvalds/c/84422aee15b9c6fd75ea01a7eedaad1aa0ec9081
 
 Thank you!
 
