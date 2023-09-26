@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B827AE3F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5727AE3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 05:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbjIZDK5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Sep 2023 23:10:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S229852AbjIZDKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 23:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjIZDKy (ORCPT
+        with ESMTP id S229521AbjIZDKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 23:10:54 -0400
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7953B4;
-        Mon, 25 Sep 2023 20:10:46 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-59f4db9e11eso64074117b3.0;
-        Mon, 25 Sep 2023 20:10:46 -0700 (PDT)
+        Mon, 25 Sep 2023 23:10:45 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD141A3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 20:10:38 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bdb9fe821so147715227b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 20:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695697838; x=1696302638; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qgojMLtTPS7ALj3bYas//tFq8eo4J8/6f82zm1IrmKo=;
+        b=YaRZ+521cZY+Hg12Te953aAn4ryWTswlg2S/qICNnNHLAY6SYlo/VmiLGdv8dt5xcS
+         PNq5PSFl49UNUsFEUUtB8trZYZBNCyD9LtFuLD3SpaUpODyfpLnUs51rUy3BJYpNgt0I
+         BXYry7TNZDsll8VeQlKrF3Ch/cjhPM4HgAKJf+Ez0f8nUKeOkpRSBAFaOPwUnUjGRFvP
+         nNShgxa59uNFO2mLQCMM63TxWnIY3Aho5GEQcRvyzWAd4+ePAD1Tg9QLlPLH3IU/uZUP
+         q/cywqhwRevUhaSMvVZOHI0OOQ1bv12HMbCN6KQxZDroBaLAUpht2sH8VziGiWz2PaHr
+         sVIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695697845; x=1696302645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1695697838; x=1696302638;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4rMSxjrVDIEUhAUfTpZ8/rC5Bw846FjHkIGiRkImifs=;
-        b=HGoG8ma1d+ajUu+ZC1aBKKOZt9FgnTBKT4OoMMDBcdkZLMlT+bG5FyulpAFKrgkP92
-         dF5xOh4ksMqfTcbfaNFZy5gWER+gEI9THw/M97Hxc5oWQ/4jZ0GiQSh2Y1bXrgHkejWg
-         DrgKvXn0YohW9iA+hUt0zLSL/d9izOKmX5++4f5qwV52FdD9KetVPOUq70hU7ete7oy+
-         UDhlMHtyrHyUPSRB5cFsi71iBSWbjcD5API9aiDBFps8vmzEdRAEq+VAqsx3Ajeis5Tq
-         gL+Xq/ItxJAIocR+RviNNoy28HYqaIOhgBnOGhpDOdw3hn0fVyvb6KmJC2iNJfkOV9op
-         88Yw==
-X-Gm-Message-State: AOJu0YwvkD4qUr9sTMPU8t16FVAGgmGu1lUsarHCkOvR7f7+UI+q4eAW
-        MmKIq6z+Xtq6Iq6d+xchCi0Oe4YKYqNKzA==
-X-Google-Smtp-Source: AGHT+IGVvt3vBP4+tla/JQR+DzN9B/CohKdu+f7rp2TW9qvQmB44SlU689X0R/JmZEt9Mr5Of8X8yw==
-X-Received: by 2002:a0d:cc49:0:b0:589:a4c6:a4ed with SMTP id o70-20020a0dcc49000000b00589a4c6a4edmr7784340ywd.3.1695697845074;
-        Mon, 25 Sep 2023 20:10:45 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id v81-20020a814854000000b00576c727498dsm2755725ywa.92.2023.09.25.20.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Sep 2023 20:10:44 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d81d09d883dso8960102276.0;
-        Mon, 25 Sep 2023 20:10:44 -0700 (PDT)
-X-Received: by 2002:a25:2e43:0:b0:d84:b0f8:90b with SMTP id
- b3-20020a252e43000000b00d84b0f8090bmr7770498ybn.55.1695697843859; Mon, 25 Sep
- 2023 20:10:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230925-strncpy-drivers-input-misc-axp20x-pek-c-v2-1-ff7abe8498d6@google.com>
- <202309251100.A187272A49@keescook>
-In-Reply-To: <202309251100.A187272A49@keescook>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 26 Sep 2023 11:10:31 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64W3oa6g-Ln2wVqXU4eVa-tY=zhvooAXckzDve8_fR-gQ@mail.gmail.com>
-Message-ID: <CAGb2v64W3oa6g-Ln2wVqXU4eVa-tY=zhvooAXckzDve8_fR-gQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: axp20x-pek - avoid needless newline removal
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
+        bh=qgojMLtTPS7ALj3bYas//tFq8eo4J8/6f82zm1IrmKo=;
+        b=LlvpsaBwknWfoLn8QCVlS/s5VdXChRDscV5fsq9GfMt/OFr4yV7JPuyPnyoKeRS053
+         RDeaw+Fh0JuE8iyUs1mNLLeD1vfvbSSh6gxBgudKhf9yy+onGTSTUjluV4UoP2voxZUs
+         hewjBAB0WWYYnWBcsEipKi+KAOoKoaBUjrZ8tU+fUecv//tMD5Ow5E7+0UfZ4FKDstej
+         PDy8fZVSOjiMxiBLNHRX0MQkLWBbRHqirbFvnFGIBIMQd7CDFmGf9J8HDDTFP+8cSHCt
+         v9yR1ZOtIP9XdaAtjLFk3jcEQRKLs3GUzRg7T/pXJGcp8L4treoK7GDz8UEydbMGYTzj
+         w02g==
+X-Gm-Message-State: AOJu0YwUGQ72QlMWlaI4AfGZMUwcTwGx/ebggC07zWEqE0OWHCfztQau
+        mE5xjALH/v7K9D5k14f584NZw2zG3+nf
+X-Google-Smtp-Source: AGHT+IHxZckfVhFdCEU9eZntTCWfkRDlN6iE5MYOyucP3Lj0GJr7OMGaCQ9kes65z2V5oznPcfvM37kKJJGG
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:12aa:898c:dbdf:d8b6])
+ (user=irogers job=sendgmr) by 2002:a81:b148:0:b0:59b:f3a2:cd79 with SMTP id
+ p69-20020a81b148000000b0059bf3a2cd79mr110510ywh.8.1695697837883; Mon, 25 Sep
+ 2023 20:10:37 -0700 (PDT)
+Date:   Mon, 25 Sep 2023 20:10:34 -0700
+Message-Id: <20230926031034.1201145-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
+Subject: [PATCH v1] perf vendor events intel: Fix broadwellde
+ tma_info_system_dram_bw_use metric
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 2:00 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Sep 25, 2023 at 04:31:05AM +0000, Justin Stitt wrote:
-> > This code is doing more work than it needs to.
-> >
-> > Before handing off `val_str` to `kstrtouint()` we are eagerly removing
-> > any trailing newline which requires copying `buf`, validating it's
-> > length and checking/replacing any potential newlines.
-> >
-> > kstrtouint() handles this implicitly:
-> > kstrtouint ->
-> >   kstrotoull -> (documentation)
-> > |   /**
-> > |    * kstrtoull - convert a string to an unsigned long long
-> > |    * @s: The start of the string. The string must be null-terminated, and may also
-> > |    *  include a single newline before its terminating null. The first character
-> > |    ...
-> >
-> > Let's remove the redundant functionality and let kstrtouint handle it.
-> >
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Suggested-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
->
-> This looks much cleaner. Thanks!
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Broadwell-de has a consumer core and server uncore. The uncore_arb PMU
+isn't present and the broadwellx style cbox PMU should be used
+instead. Fix the tma_info_system_dram_bw_use metric to use the server
+metric rather than client.
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+The associated converter script fix is in:
+https://github.com/intel/perfmon/pull/111
+
+Fixes: 7d124303d620 ("perf vendor events intel: Update broadwell variant events/metrics")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
+index 8fc62b8f667d..d0ef46c9bb61 100644
+--- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
+@@ -652,7 +652,7 @@
+     },
+     {
+         "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
+-        "MetricExpr": "64 * (arb@event\\=0x81\\,umask\\=0x1@ + arb@event\\=0x84\\,umask\\=0x1@) / 1e6 / duration_time / 1e3",
++        "MetricExpr": "64 * (UNC_M_CAS_COUNT.RD + UNC_M_CAS_COUNT.WR) / 1e9 / duration_time",
+         "MetricGroup": "HPC;Mem;MemoryBW;SoC;tma_issueBW",
+         "MetricName": "tma_info_system_dram_bw_use",
+         "PublicDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]. Related metrics: tma_fb_full, tma_mem_bandwidth, tma_sq_full"
+-- 
+2.42.0.515.g380fc7ccd1-goog
+
