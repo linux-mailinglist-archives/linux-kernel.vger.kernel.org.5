@@ -2,151 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787097AED99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD78C7AEDA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234755AbjIZNED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S234793AbjIZNFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjIZNEC (ORCPT
+        with ESMTP id S234792AbjIZNFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:04:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB55CC9;
-        Tue, 26 Sep 2023 06:03:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3616EC433C8;
-        Tue, 26 Sep 2023 13:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695733435;
-        bh=wfl6PSkicMbQ19c5+7nPo++8qzhAyuUvd4GKwLBD9XU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fxggefr0ckrs614BmCsTYWKfD6fRHT3XyJsneL9S428wOL+x8Ryg2688/A+pP/fph
-         l3A+u1eNBFLOYKus+axL/QYYfkvHyEql29DwkZabkyMSCuwRQoFB/CN+XzxFPc1xsH
-         ocJa27AGeX4qm3Kyn9/4AI6bPuL+ggm7eqopexPmPjPOqiNBog9x6P9NdQIFDFA3Sv
-         HR6FKgUq7KSd5s33NWHxkIbfFYmYJbpmBnM+0gnZstUjc8+m9VHVKAdXz9lz1OlmEQ
-         kf/Xng3D8F7TRdExhkjJm4R3v7TXmRPT4m2L3gtQoSMXO1SxDIukLV1wAzfnl/IiFM
-         8P9YOTTTMAHZQ==
-Date:   Tue, 26 Sep 2023 14:03:49 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Riesch <michael.riesch@wolfvision.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: dt-bindings: Add missing unevaluatedProperties on
- child node schemas
-Message-ID: <20230926-untying-booting-7744376e955b@spud>
-References: <20230925212803.1976803-1-robh@kernel.org>
+        Tue, 26 Sep 2023 09:05:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E59EFB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695733479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pw3uLk1RX7EItsMeljDJQUwIv63n45/6NY/27SYTAmo=;
+        b=FOdNHx0O7Mzvr+gNApSPjRGbXufqoyCY6rUhahLgkbA50Qcg8XnOstCw4iz8udCis89Wvb
+        jVZ7p9LL8wAWDG5JVgvRDc11Vn2t1JQiwKWPVSOW25VJjhTbemtGVGCSahTuMpsKkdc/I0
+        rXPEKg1j+M6ZUWGYWXTcXAqcDgDMc1g=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-dW_bTQ9JMkOuSec9sJvrcQ-1; Tue, 26 Sep 2023 09:04:37 -0400
+X-MC-Unique: dW_bTQ9JMkOuSec9sJvrcQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99388334de6so753048266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:04:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695733476; x=1696338276;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pw3uLk1RX7EItsMeljDJQUwIv63n45/6NY/27SYTAmo=;
+        b=wxA3PyBJ6VxUzbtSioptbh4GccoT7CzCpPvMac7NO1Wvhbd4DAh1HWhyf2SQGkjN9N
+         p5WqPkVQD6l971z4mRkmY7Zq1qYT17QKE6L31KaVrElzuNUiT9UBsAtnTW1VBujKCOPt
+         DZuvF5B6A9KZ2bmrR503BTDk0ZExnxppciZsHVMmMdDovksGjdcvKKPgR1sePObMhh6J
+         sCcmU/WjvnCm2xAbXlaspA5HI8V7PumtozbO323GiMj8MLAZ7LS0LBWdyy1cemy4U6tD
+         EC49gKUIQbegCgxgka3GTfHS/LwJQilWoGSh8yKZV7wwg2JbYk0UrtAEAGfEedFod3WT
+         eCGQ==
+X-Gm-Message-State: AOJu0YxkRVNEaSTLaMCvq1kzLoRoy6A5WsPUWBk8/mSawU6bT56wt65K
+        pz7Uwjn07QUYA08YZ4ik6ntiPFdGyu4PLfhQY3L6+5dPCfZRzqYiqOA2pxOinob6Nkq5sbDWtlb
+        MirnALw9OE6WJilETieLTal2x
+X-Received: by 2002:a17:906:3299:b0:9ae:6196:a4d0 with SMTP id 25-20020a170906329900b009ae6196a4d0mr8605615ejw.17.1695733476619;
+        Tue, 26 Sep 2023 06:04:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEPT+qJWI4CE1FK30C7JELaHKq82GsQA7VABRt7UrHezh/PpcrPOPNsUXvYOw92dsnA/haacQ==
+X-Received: by 2002:a17:906:3299:b0:9ae:6196:a4d0 with SMTP id 25-20020a170906329900b009ae6196a4d0mr8605597ejw.17.1695733476299;
+        Tue, 26 Sep 2023 06:04:36 -0700 (PDT)
+Received: from sgarzare-redhat ([46.6.146.182])
+        by smtp.gmail.com with ESMTPSA id r11-20020a170906704b00b00999bb1e01dfsm7746690ejj.52.2023.09.26.06.04.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 06:04:35 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 15:04:31 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v1 12/12] test/vsock: io_uring rx/tx tests
+Message-ID: <kfuzqzhrgdk5f5arbq4n3vd6vro6533aeysqhdgqevcqxrdm6e@57ylpkc2t4q4>
+References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
+ <20230922052428.4005676-13-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9nLnT1SikReH0C+P"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20230925212803.1976803-1-robh@kernel.org>
+In-Reply-To: <20230922052428.4005676-13-avkrasnov@salutedevices.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 22, 2023 at 08:24:28AM +0300, Arseniy Krasnov wrote:
+>This adds set of tests which use io_uring for rx/tx. This test suite is
+>implemented as separated util like 'vsock_test' and has the same set of
+>input arguments as 'vsock_test'. These tests only cover cases of data
+>transmission (no connect/bind/accept etc).
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v5(big patchset) -> v1:
+>  * Use LDLIBS instead of LDFLAGS.
+>
+> tools/testing/vsock/Makefile           |   7 +-
+> tools/testing/vsock/vsock_uring_test.c | 321 +++++++++++++++++++++++++
+> 2 files changed, 327 insertions(+), 1 deletion(-)
+> create mode 100644 tools/testing/vsock/vsock_uring_test.c
+>
+>diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
+>index 1a26f60a596c..c84380bfc18d 100644
+>--- a/tools/testing/vsock/Makefile
+>+++ b/tools/testing/vsock/Makefile
+>@@ -1,12 +1,17 @@
+> # SPDX-License-Identifier: GPL-2.0-only
+>+ifeq ($(MAKECMDGOALS),vsock_uring_test)
+>+LDLIBS = -luring
+>+endif
+>+
 
---9nLnT1SikReH0C+P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This will fails if for example we call make with more targets,
+e.g. `make vsock_test vsock_uring_test`.
 
-On Mon, Sep 25, 2023 at 04:27:58PM -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+I'd suggest to use something like this:
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+--- a/tools/testing/vsock/Makefile
++++ b/tools/testing/vsock/Makefile
+@@ -1,13 +1,11 @@
+  # SPDX-License-Identifier: GPL-2.0-only
+-ifeq ($(MAKECMDGOALS),vsock_uring_test)
+-LDLIBS = -luring
+-endif
+-
+  all: test vsock_perf
+  test: vsock_test vsock_diag_test
+  vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
+  vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+  vsock_perf: vsock_perf.o
++
++vsock_uring_test: LDLIBS = -luring
+  vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
 
-Thanks,
-Conor.
+  CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
 
-> ---
->  Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml    | 1 +
->  .../devicetree/bindings/media/i2c/toshiba,tc358746.yaml         | 2 ++
->  Documentation/devicetree/bindings/media/samsung,fimc.yaml       | 1 +
->  3 files changed, 4 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml=
- b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
-> index ffccf5f3c9e3..642f9b15d359 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
-> @@ -54,6 +54,7 @@ properties:
-> =20
->    port:
->      $ref: /schemas/graph.yaml#/$defs/port-base
-> +    unevaluatedProperties: false
-> =20
->      properties:
->        endpoint:
-> diff --git a/Documentation/devicetree/bindings/media/i2c/toshiba,tc358746=
-=2Eyaml b/Documentation/devicetree/bindings/media/i2c/toshiba,tc358746.yaml
-> index c5cab549ee8e..1c476b635b69 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/toshiba,tc358746.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/toshiba,tc358746.yaml
-> @@ -69,6 +69,7 @@ properties:
->      properties:
->        port@0:
->          $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
->          description: Input port
-> =20
->          properties:
-> @@ -89,6 +90,7 @@ properties:
-> =20
->        port@1:
->          $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
->          description: Output port
-> =20
->          properties:
-> diff --git a/Documentation/devicetree/bindings/media/samsung,fimc.yaml b/=
-Documentation/devicetree/bindings/media/samsung,fimc.yaml
-> index 79ff6d83a9fd..b3486c38a05b 100644
-> --- a/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-> +++ b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-> @@ -57,6 +57,7 @@ properties:
->      patternProperties:
->        "^port@[01]$":
->          $ref: /schemas/graph.yaml#/$defs/port-base
-> +        unevaluatedProperties: false
->          description:
->            Camera A and camera B inputs.
-> =20
-> --=20
-> 2.40.1
->=20
+> all: test vsock_perf
+> test: vsock_test vsock_diag_test
+> vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
+> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+> vsock_perf: vsock_perf.o
+>+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
 
---9nLnT1SikReH0C+P
-Content-Type: application/pgp-signature; name="signature.asc"
+Shoud we add this new test to the "test" target as well?
 
------BEGIN PGP SIGNATURE-----
+Stefano
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLWtQAKCRB4tDGHoIJi
-0pKXAP4vPFXRlytem7/2OyutY69usbQYIokQoAx4XzrGl7bAlgEA9dHgJjs1i5fJ
-6g53rKEgA61fFIafEo7ysNfDZs3qjQU=
-=VkdZ
------END PGP SIGNATURE-----
-
---9nLnT1SikReH0C+P--
