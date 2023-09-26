@@ -2,203 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755D87AF52F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45347AF531
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbjIZU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
+        id S235518AbjIZU3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235858AbjIZU3l (ORCPT
+        with ESMTP id S235537AbjIZU3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:29:41 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9B0139
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:29:33 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50317080342so16314440e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:29:33 -0700 (PDT)
+        Tue, 26 Sep 2023 16:29:46 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E04126
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:29:38 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c6147ea811so56796945ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695760172; x=1696364972; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D9258uwtq3coU3t+1tIs8KA/35RKyIjzzfJr/GQseqo=;
-        b=Kn8gmPlKFG6vGNGQ9LkPb3nGPjBpUIIilO4yIgzx6Y+3fHJVmuIA2oSx1Px9b96rbg
-         /wnz2bWnD/oouO6Uff0qll5zECEzp1tPwe4iUkoK53wIuKQTUXu/M8+Md93wxPZYsa22
-         hY2WPyEkSurRP7uwkELSS9R084bcC59LxbNUUycfy4m2irX2kt1NDvgpyNY/l7EStzAw
-         Y2hblboNwb7qdnd/DGH0GkedWCkBEdtskZ5xyJr9mfsrTpFU5aZodXb7LpGzi0X3vqQV
-         Iw+dlgF8FtdjUrCfBUJMsli8dP2fiCFFGP7fDlGDHscn5YcRvHVLrxVOq/stCj4lUZtb
-         qS3g==
+        d=google.com; s=20230601; t=1695760178; x=1696364978; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m/X8tLTjtjB3zMNV0glwuPqbMP/KUOmrfpl18E6ncEQ=;
+        b=F9KVq8iGQKR4tIqAutdWYEHZuqPPxOlwuiIGCJwnznybeEEXquVi2/qBneTmX0PQk9
+         TfLdYuLY8y85Cp8uLJpdSkDYN41waPuDXo/swEquqhBCa2tH2LEsRtxkk8q0r0Ovg+yw
+         5npTnlb9OTNfmGLdZI+g6HVbCbmeDO4NxzaRcrTcFfTOgVraDENnNfawCY3qzTWW4OzX
+         Q/kP51ZVDuqm22suS25XpKGDtOh4N8+/tXXphRrufj3PLnpYbdPO2XhcdLzNIMqHCI0Q
+         OFcYskufvSA+JtPMmVHgedOB/FeRHNdZvj97zQED2NX2kgzcjpFfH4ii0561GKjUlxre
+         y3+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695760172; x=1696364972;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D9258uwtq3coU3t+1tIs8KA/35RKyIjzzfJr/GQseqo=;
-        b=HCmEZMJhUYuMpvQNOqpAEa1plWFMoU1mgd8UPBpClw2UMztIQFSaJmpAXjfvmNjK76
-         K4e2k8KGBaSGilEVE8KT+tF7TU3Ie+1Ijev/Mb+Yg/piyE5Pd00iFgH+9FiGlYYDxHK+
-         yiytxsxSH2IzY00633jThj4wwaZ65GKSfxhO7nGuMxr2udxe7caJG7P5idin9pd2dnqJ
-         JRZFvGYffhmNYVcK7nCEEwXSFMRYFhLN9ketRh94npa1lTOkaW+Uy5Y2e43xfMO9bCMT
-         1IEbauhtkSSCjaTK4+sVCtGgUqVflqRvjkyJCR1OhOvsNTo7KWKyj7Rt9XgaieY4m5pi
-         82yQ==
-X-Gm-Message-State: AOJu0YxGh2avc2dx6JGcfoBTLllaS8lofqSLHVkoTtOmkqd4qU683NZo
-        Wi9ODcfX9tA3/qiGGefTViARsg==
-X-Google-Smtp-Source: AGHT+IEWdGfqoXQpw8oGs3pi0yTnQO9XFZdcS+pTOJ6+FUG8YdbjGBrfkQ1XI3zALmIXa+vUyBuVFQ==
-X-Received: by 2002:a05:6512:546:b0:503:2dce:4544 with SMTP id h6-20020a056512054600b005032dce4544mr8317262lfl.59.1695760171703;
-        Tue, 26 Sep 2023 13:29:31 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id i4-20020a50fc04000000b005254b41f507sm7195167edr.32.2023.09.26.13.29.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 13:29:31 -0700 (PDT)
-Message-ID: <4d8292ca-c5fe-4270-8d93-66b721903528@linaro.org>
-Date:   Tue, 26 Sep 2023 22:29:29 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/13] arm64: dts: qcom: msm8916-samsung-a2015: Add sound
- and modem
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
- <20230926-msm8916-modem-v1-4-398eec74bac9@gerhold.net>
- <2c9eda54-a90e-483a-abc2-865d82854b80@linaro.org>
- <ZRMwdRo9hAm4BO5E@gerhold.net>
- <278ac134-992e-460a-b37a-60a746eab107@linaro.org>
- <ZRM6dJXNvx93jFrM@gerhold.net>
- <9b9a9c0d-8a09-48a4-b996-554d7e1b9340@linaro.org>
- <ZRM-u3gIoOsHVp7c@gerhold.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <ZRM-u3gIoOsHVp7c@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1695760178; x=1696364978;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m/X8tLTjtjB3zMNV0glwuPqbMP/KUOmrfpl18E6ncEQ=;
+        b=gNISF7gE9OnYOiBVDtZk5ax3cxCmJn/TcaFCmnFU9oxL+QFcwWPt6A5TuDC9GEL4x3
+         35dspzpPbVKmVx/C2qPZ6ZZCNCfxlDfSiHW6zTShp+rQN+zD007iTQYDllAj4d/1nRZZ
+         iviAWBVo2K/vf0RmTxSF/joGIhdcCYN5X6NdKwPz/Q0Q3zdvh6LvnbvOcWiiOqk1ut0s
+         XDLrc+tDEXo1h4UYLYA2yBfYaQyqNHHRBnBQh5NAcVBq6VJWkEU5JY2pPjbGM2fc1PRH
+         fpTmbon/hK9q2ejmmOwQCnjsPb7RVkNOcH5DlTGYMI2W55WtTzgXeDMGhJ9ilz/Ju7FZ
+         OBAw==
+X-Gm-Message-State: AOJu0YxQc36I7Gr0/o+XzGmIW4a/5N2ML9XOXWH9uXXa/QemVx4AJRUh
+        OhCZTBFGkEo0Piiflt9TbhrVwbFBfNU=
+X-Google-Smtp-Source: AGHT+IG+Dh9HlOdZvvXu4dZ2EHXuxcykdQiDN2/YSBv3amFlBAjDEi47ZoYDVzGtagSoDCHXj4GFOc/xSho=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e74f:b0:1bd:dcdf:6179 with SMTP id
+ p15-20020a170902e74f00b001bddcdf6179mr104882plf.2.1695760177767; Tue, 26 Sep
+ 2023 13:29:37 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 13:29:36 -0700
+In-Reply-To: <21C2A5D8-66D9-4EF0-A416-4B1049C91E83@infradead.org>
+Mime-Version: 1.0
+References: <1b52b557beb6606007f7ec5672eab0adf1606a34.camel@infradead.org>
+ <CABgObfZgYXaXqP=6s53=+mYWvOnbgYJiCRct-0ob444sK9SvGw@mail.gmail.com>
+ <faec494b6df5ebee5644017c9415e747bd34952b.camel@infradead.org>
+ <3dc66987-49c7-abda-eb70-1898181ef3fe@redhat.com> <d3e0c3e9-4994-4808-a8df-3d23487ff9c4@amazon.de>
+ <CABgObfZb4CvzpnSJxz9saw8PJeo1Y2=0uB9y4_K+Cu9P9FpF6g@mail.gmail.com> <21C2A5D8-66D9-4EF0-A416-4B1049C91E83@infradead.org>
+Message-ID: <ZRM_MHBpePiAQ__1@google.com>
+Subject: Re: [RFC] KVM: x86: Allow userspace exit on HLT and MWAIT, else yield
+ on MWAIT
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Graf <graf@amazon.de>, kvm@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@amazon.es>,
+        Fred Griffoul <fgriffo@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.09.2023 22:27, Stephan Gerhold wrote:
-> On Tue, Sep 26, 2023 at 10:18:22PM +0200, Konrad Dybcio wrote:
->> On 26.09.2023 22:09, Stephan Gerhold wrote:
->>> On Tue, Sep 26, 2023 at 09:56:12PM +0200, Konrad Dybcio wrote:
->>>> [...]
->>>>
->>>>>>> +
->>>>>>>  &blsp_i2c2 {
->>>>>>>  	status = "okay";
->>>>>>>  
->>>>>>> @@ -243,6 +258,13 @@ &gpu {
->>>>>>>  	status = "okay";
->>>>>>>  };
->>>>>>>  
->>>>>>> +&lpass {
->>>>>>> +	dai-link@3 {
->>>>>>> +		reg = <MI2S_QUATERNARY>;
->>>>>>> +		qcom,playback-sd-lines = <1>;
->>>>>>> +	};
->>>>>>> +};
->>>>>> Is that not status = reserved?
->>>>>>
->>>>>
->>>>> Correct. This is here to simplify switching to the modem-bypass audio
->>>>> routing if someone does not need (or want) the modem. The direct audio
->>>>> path with the LPASS drivers tends to be more reliable and configurable
->>>>> (especially wrt bit formats, sampling rates, latency, channels etc).
->>>>> I know that at some point this helped someone who tried to use an old
->>>>> phone as some kind of portable musical instrument / synthesizer.
->>>>>
->>>>> It's not too obvious that these definitions would be needed when making
->>>>> those changes (because devices using the standard SD lines (i.e <0>) do
->>>>> not need it). If you forget about this you get non-functional audio with
->>>>> no error or any hint what could be wrong.
->>>>>
->>>>> To simplify switching between the different audio routing options, the
->>>>> lk2nd bootloader actually has an option to do this transformation in the
->>>>> DTB automagically during boot. It's sort of like a DTB overlay that
->>>>> disables the QDSP6 audio path and enables this node instead. The DAI
->>>>> links are also adjusted where necessary.
->>>>>
->>>>> Do you think a comment would help here?
->>>> I'd say a comment would be necessary here :D
->>>>
->>>
->>> No problem, I will try to add something simple.
->>>
->>>> While I understand this use-case, I believe this is better suited
->>>> for an actual DTBO or something entirely kept inside lk2nd.
->>>> Otherwise this looks very confusing to an outside reader.
->>>>
->>>
->>> Translating from the QDSP6 audio setup to the LPASS one is mostly simple
->>> but not entirely trivial (especially the patching needed for the DAI
->>> links). Main blocker for DTBOs is that you can only add or change, but
->>> AFAIK there is no mechanism to _delete_ or fully recreate nodes.
->> Correct.
->>
->>>
->>> I guess I could maybe derive this from the QDSP6 definitions using
->>> custom magic code, but the code complexity for that is much higher than
->>> adding these nodes here for completeness.
->> I hate to be the bearer of bad news, but this is probably more
->> of a "do we reasonably want this upstream" type question, as
->> you'll probably get some grumpy emails about upstream not caring
->> about what's outside the mainline tree..
->>
-> 
-> IMHO this is hardly a "downstream" type of situation. The whole point of
-> the magic in lk2nd is to make the life for the mainline code base easier
-> and simpler, while still allowing the "bypass modem audio" feature with
-> an unmodified kernel.
-> 
-> Before implementing it like this I used to have this directly in the
-> kernel tree, by duplicating each device into a normal XYZ.dts and
-> "XYZ-no-modem.dts". If you apply this to the total of ~45 different
-> MSM8916/MSM8939 DTBs I would like to get upstream this options gets
-> extremely ugly. :'D
-Maybe a kernel module parameter could be somehow useful here?
+On Tue, Sep 26, 2023, David Woodhouse wrote:
+>=20
+>=20
+> On 26 September 2023 19:20:24 CEST, Paolo Bonzini <pbonzini@redhat.com> w=
+rote:
+> >On Sat, Sep 23, 2023 at 6:44=E2=80=AFPM Alexander Graf <graf@amazon.de> =
+wrote:
+> >> On 23.09.23 11:24, Paolo Bonzini wrote:
+> >> > Why do you need it?  You can just use KVM_RUN to go to sleep, and if=
+ you
+> >> > get another job you kick out the vCPU with pthread_kill.  (I also di=
+dn't
+> >> > get the VSM reference).
+> >>
+> >> With the original VSM patches, we used to make a vCPU aware of the fac=
+t
+> >> that it can morph into one of many VTLs. That approach turned out to b=
+e
+> >> insanely intrusive and fragile and so we're currently reimplementing
+> >> everything as VTLs as vCPUs. That allows us to move the majority of VS=
+M
+> >> functionality to user space. Everything we've seen so far looks as if
+> >> there is no real performance loss with that approach.
+> >
+> >Yes, that was also what I remember, sharing the FPU somehow while
+> >having separate vCPU file descriptors.
+> >
+> >> One small problem with that is that now user space is responsible for
+> >> switching between VTLs: It determines which VTL is currently running a=
+nd
+> >> leaves all others (read: all other vCPUs) as stopped. That means if yo=
+u
+> >> are running happily in KVM_RUN in VTL0 and VTL1 gets an interrupt, use=
+r
+> >> space needs to stop VTL0 and unpause VTL1 until it triggers VTL_RETURN
+> >> at which point VTL1 stops execution and VTL0 runs again.
+> >
+> >That's with IPIs in VTL1, right? I understand now. My idea was, since
+> >we need a link from VTL1 to VTL0 for the FPU, to use the same link to
+> >trigger a vmexit to userspace if source VTL > destination VTL. I am
+> >not sure how you would handle the case where the destination vCPU is
+> >not running; probably by detecting the IPI when VTL0 restarts on the
+> >destination vCPU?
+> >
+> >In any case, making vCPUs poll()-able is sensible.
+>=20
+> Thinking about this a bit more, even for HLT it probably isn't just as si=
+mple
+> as checking for mp_state changes. If there's a REQ_EVENT outstanding for
+> something like a timer delivery, that won't get handled and the IRQ actua=
+lly
+> delivered to the local APIC until the vCPU is actually *run*, will it?
 
-Konrad
+I haven't been following this conversation, just reacting to seeing "HLT" a=
+nd
+"mp_state", which is a bit of a mess:
+
+https://lore.kernel.org/all/ZMgIQ5m1jMSAogT4@google.com
