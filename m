@@ -2,282 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D75B7AE375
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 03:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26357AE37B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 03:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjIZBuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 21:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        id S230519AbjIZBxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 21:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjIZBt7 (ORCPT
+        with ESMTP id S231865AbjIZBw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 21:49:59 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8C110A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 18:49:52 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PNDqOG030148;
-        Tue, 26 Sep 2023 01:49:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=ThJzabKryzoB/It/+Ihg2dbDxBNjjNBZ8VVzy2Fbevw=;
- b=D0Tds35RX87MWQvkCwaOPQqhefPXmLfoMvvbsVhmCD1LoWsw7FBJ5nYy53x4gOhi9dx9
- 8sN+Cy6KKTTVmsM7NuLbObEQ7VKcZK6SD1qRL0C2+cVEO2XHTox+ZblDeGpuIqeBMGNg
- MycN+jRQLg6KxV75RDOnTPMyoAuZwZ3WJh3o3jTNyM4o6ZzcdVrYkhIt3kuTduB7IlCC
- zex7YVEcXjb6ixyeXPL3WkCq5o4x1gNGFKuUGgOC0Am3Wu6hJl5++rqgRJ9WNNrdmZnY
- HdxE1SlbFHExuRbp1ATXqNaNsLbaWd0SP4u9xXOpl1opkbnZew2c3FUy8smWfmGB0Lbi xQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9pt3n9s1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 01:49:37 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q15w2r034959;
-        Tue, 26 Sep 2023 01:49:36 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2045.outbound.protection.outlook.com [104.47.74.45])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf5kkv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 01:49:36 +0000
+        Mon, 25 Sep 2023 21:52:58 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2045.outbound.protection.outlook.com [40.107.94.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A725911F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 18:52:50 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dxm9BY7JRQKZw67KQGQziy1SbPKbe+ioJxS8lh7sxS2xXya6yPWqlUoVhiarYjbmMPOrE5u8qJVt0KcT30vPtXWzC1QyMs/4UHEZMst6ENLv9aDwJokSAy+16bqV0c/rfAZL/YPlGFlxUB3ldcYEBpEsx9A5IlR3BNhwQKtpLt2Q0f/Ywkrtk6lUeWlagzvDv2Zx8O/HMXtxR5Hf6LwmvBZrE3n+th2FY6LNV4g5cCaf/MEB0Ycv0BeNRcQJ0Y8+WmUjOTdZz2HvZ0N5kFoOnFPoKJbpO4trX2SC7710Le8bfEYhNhmWKZFOPy3KbLl4NYncwvRK4fbAMD37CnJWVg==
+ b=PGQ42IZlbW4lf0YIIQNAs5wiUNH5xzPfUglj8eSjVCAEBYlmXEOETr1RBx5euHFq8wODULEZHaVNQ2aA7QApLjz6shEGYp3ZPApx5yUQ78AZW8nkBisXfe4kO+QbHjEew4vsJxOpK7TpdLEtbweVNZRZ3IuHFibITrakvs6qKXivmgie9GRCgdiCbV6tXgtRoLxu/e451n+nbkBNyuH5FcZwUse55BqkeAhAVYxMEssivZZ+fqm3EqAGxnq0ZhhujNAh5hzi7Qohe5P/Uu+Mp9Jp93peX8eQH+Ns10NCTvWVbJO52uDv28H+NM0ITXauoGsYlWSGWFAuMsAi8JAacw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ThJzabKryzoB/It/+Ihg2dbDxBNjjNBZ8VVzy2Fbevw=;
- b=XT4IiX4p0vnxS4gA8HEQ3oendiCqjLk5sRl8aLYkb6FsHV4PmFGiwg4m4nrL7X/s0MNAE6JNiBc+YVg25MTfsdkr1sL+JlGmqdxAmHtht6s2sysoSWsVR4ugi+oQRQ0vhoHv/yP7cZ+IU7CHFH7YQsVgAsE15H8X4FeKHA85LxmHxpyozzhjjcqQgb63m//6hZiSI2xBZvFxEMrJPxbR0ZLbUpaJokxD+Qx0Gu/JFawu0mDb2ou/Jr65hhlDCl3FNDm+PnE3tofs5d6pOlKb83QPgE6ofbg0oAqX6PN5LGOz0UwR4NWCT4hQGwMRIodV7x9R3vYimWVgjoNFSW+tVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=UEklgWbRkAlJXhPMMRSMd2IA+pl/yg8r/seigLOTL2w=;
+ b=OmdsApAy2RVPhFAqK930AOt0iTxRRuIiqZGUQN7xnnSO0MXD8pBRurJ4elH7+JuOkDvyA45q13eni5UesVL/UNqFwVWc7k+AOU72vyiI04I8R2HOi32HDh2T0SyKujfSQ/oddvZ9V/ZkeVHWQAwl13OA1aXmeuUQZJM4D+PGqveHMnLqAl8Is1CBLOgZoCeYVbup3HV0u75HE7uVZZgkwOkQATBhbOL6cUNuYn2ck686KvSfZufYojIXoewkPdEKP7e/Br8vrT56KGB1tGxhCWCcSNvMnRwIR0DJ6L4oKYRJAondPI4INo5DGpaXWaTgfDBF7E9Zubdc7igV+Tghzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ThJzabKryzoB/It/+Ihg2dbDxBNjjNBZ8VVzy2Fbevw=;
- b=z9wgvwFrgIXRYkjXKw0XTUH+7YOBoRYK8Hpe+TZyRa+NtLh2SR8LIlXEtmDiAe0iZ0vboVOAn1TS8q1gBWmZiU6KJOYr3t1C5Y5ItGKr5AH5B8lbV+0Tg8kNSe+2u1+/SPDXunp3wE/OnSoWuNaCYxnFGFOxSelviWUy5IiergE=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by SA1PR10MB6294.namprd10.prod.outlook.com (2603:10b6:806:251::8) with
+ bh=UEklgWbRkAlJXhPMMRSMd2IA+pl/yg8r/seigLOTL2w=;
+ b=Buv2Q+QD1Sace/lveAVTcFr5mmNtWGM37zbZtEIUwLb7uffQW0K2WcAzd5mP+QFHxj4a6VHp94ezbJ42slQFU9vnj8r4dov8ZHt+7GCBGz1W9tCDGui1O9xWW9OT4KFOI47u3cOesOoLEvQMMweCTaMBnT511iOm6+CZj8DaEIKud93cU1QQeUdD/ZryBiDSPpZlDebIyZJHFTKm91xgiVY60Vp/6jdofYVFHa8SAQ/zKBjRTBz8Kr4GBeuI4mHGNG1TqKfdPaRkcm6rk2OeF/Yt6WbJc0P6qH98CJZr3R9pYv9zwIcvG/cgEh2G+8RTh9lfoPH3pxDhEwiF+z9Y7Q==
+Received: from CH0PR04CA0058.namprd04.prod.outlook.com (2603:10b6:610:77::33)
+ by IA1PR12MB7590.namprd12.prod.outlook.com (2603:10b6:208:42a::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Tue, 26 Sep
- 2023 01:49:33 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 01:49:33 +0000
-Date:   Mon, 25 Sep 2023 21:49:30 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Erhard Furtner <erhard_f@mailbox.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [Bisected] PowerMac G4 getting "BUG: Unable to handle kernel
- data access on write at 0x00001ff0" at boot with CONFIG_VMAP_STACK=y on
- kernels 6.5.x (regression over 6.4.x)
-Message-ID: <20230926014930.yi5v35llxyc5fvwi@revolver>
-References: <20230926010159.0f25161c@yea>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926010159.0f25161c@yea>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0287.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:109::9) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Tue, 26 Sep
+ 2023 01:52:47 +0000
+Received: from DS2PEPF00003440.namprd02.prod.outlook.com
+ (2603:10b6:610:77:cafe::fa) by CH0PR04CA0058.outlook.office365.com
+ (2603:10b6:610:77::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.35 via Frontend
+ Transport; Tue, 26 Sep 2023 01:52:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.14 via Frontend Transport; Tue, 26 Sep 2023 01:52:46 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Sep
+ 2023 18:52:39 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 25 Sep
+ 2023 18:52:38 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 25 Sep 2023 18:52:37 -0700
+Date:   Mon, 25 Sep 2023 18:52:36 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <jean-philippe@linaro.org>, <mshavit@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: Re: [PATCH v4 2/2] iommu/arm-smmu-v3: Refactor
+ arm_smmu_write_strtab_ent()
+Message-ID: <ZRI5ZNQMi3GYtS3I@Asurada-Nvidia>
+References: <cover.1695242337.git.nicolinc@nvidia.com>
+ <6e1fdea8ab43ea28e7e3c79eb6605dea71548c53.1695242337.git.nicolinc@nvidia.com>
+ <20230925183523.GJ13733@nvidia.com>
+ <ZRHnfq6mzDz5zTLC@Asurada-Nvidia>
+ <20230926001220.GL13733@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926001220.GL13733@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|SA1PR10MB6294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 24070e90-6389-4230-7ce5-08dbbe32d4da
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|IA1PR12MB7590:EE_
+X-MS-Office365-Filtering-Correlation-Id: b4c25bc1-9260-47b9-d912-08dbbe33484e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OfcXNgGZg44VLFAg4g95cQhnrJmqpy2lVcKOvkowscg8jCyakIqZXVQ89Q1iz46YDxb3ocY1r600O/B/MUGz978hRSV45whInuiJ9+gdBXKInqVMchX961xYbBYI6Amfx+o/+YQlgMfcJZuGPrakKYIo2W++5vR8OY6pNDsLBMvAkmtq9WrIL6iJRR2+PekTmvZnegw8ziNS8V3ZDkWjEMc+5rIVlsgd4u0mXDxYNRplj/iu98PlJyWdnAsVyqQrYyn37sonWzB+qocoHJXA7bs1BscaxvikDCwStduQF6FsI2F1HUgyDj1RPHABDy6vACWZewzp9w9sGCNywPQ01huqqitAb/QUJM/KYO40WfpHgN7xWc/YkHctblggfWnHqytD3Js0Fw4pjhoV+d7ZdNBQ+mEBYctEcnkz9QBaEajDFuRFa88UJzxBXKLUpsZejt50BcljUH6fh6F/IYDEbudwFas9PbHNaoHXaXoS50bgSJHULEoxWHmsXhXeraGZfZRFmRQadiwczjXvo7Pi9uOtHXOrdUWhFhi6j3JjJuXE2P3Ys2XywuzI/nITazYaDc0xXTy3EqdSoPkD+0fUOQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(39860400002)(136003)(396003)(376002)(230922051799003)(186009)(451199024)(1800799009)(4326008)(478600001)(8676002)(8936002)(66556008)(83380400001)(6512007)(966005)(9686003)(6916009)(41300700001)(316002)(66946007)(66476007)(45080400002)(38100700002)(26005)(5660300002)(1076003)(6486002)(6506007)(2906002)(33716001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t+qSN4I7Yy2bFISWHEQp3LEzbvoxPRbFyNEnK0aZNPsiF5UO/KFuvimM+PjX?=
- =?us-ascii?Q?AlShR9HeUAdXNiJDSSzCmwuQT690KQArYxjGdou16s47yjUhXuu2vfgLpc3Q?=
- =?us-ascii?Q?pULeKjPYIPgySwOYRYb9yA5W16Rsu01DVthxROr2TnMqWJuPIOUz4rAHGU1l?=
- =?us-ascii?Q?UZbtKHiK23H5idTxHdZIWdEfTbwD29MhWcXGZ4VIAM0ZmiF1wahQthjxhM54?=
- =?us-ascii?Q?sraewd4+RBRoi8aj3lMStLVaHAFG0MahdBt6MsB7PNZbF44IQz8i6zFIcI64?=
- =?us-ascii?Q?YgO0ZgnCPupN7PHkLYBzDHCGvGhdnQKvyJ/BlNWD3mvr0GlX9Q0R5yr0vCau?=
- =?us-ascii?Q?quO9QPOzls31KcNyEQw83ED0X2WgPxLSyrlyYuvdjGclMt7bVUcJl5Sa8Ae3?=
- =?us-ascii?Q?m0wdT3BOr8mWl3dn41fXAVSOqEM9SbP4b8kBeGq2vmiLTnSqImvFxf4jzZ0a?=
- =?us-ascii?Q?V6LmRQi/DrgGsF8nM4do+zK+kmUg+Hi+Q6un0t2/PERvUpV8dgrODvVlCs0B?=
- =?us-ascii?Q?aJDQ1d1IPmDNLP8+D49TKCEfU1vRMJm2VXsdUXLSdLgdxUhd0JUUH+IGYuIB?=
- =?us-ascii?Q?KSg2f9t/tMuXt5Hidefd++fc+eRvmZeRP+Iw04VUF5keeBWEH+DndB5ie7E/?=
- =?us-ascii?Q?QnpLw2a3kpwDag1PCXIWcDJkEAds4JoOq2/8O77BflUNBOu9RBrnfUdFH+0V?=
- =?us-ascii?Q?Az5pKoOk71QaJZMKWo72wCNI24YLU0wwPe7vyt+UUsa0a7QCqt5Z7FNC01ow?=
- =?us-ascii?Q?uWGHdZGNONnjYY398VLnCotgdXGFFyjPiNXW+Y0MfKrJu4T02GGxEnczL7ui?=
- =?us-ascii?Q?yZ9jXR5C3B+4JDPcdOqEv8DNS5BAujpwvx1oB3nBq4DnxxoLHNk6nOz2k5W9?=
- =?us-ascii?Q?JWnMybo/523kTG+/AMENB+vDvLFPU1EhjqjHqZIjw8snXRa29zx2OIKoWf4B?=
- =?us-ascii?Q?af0NQUm7MTIH1gLKzKh+loLbMO0YRatRzazV9er6Fwaq94CG+RQDEcSTM9Vl?=
- =?us-ascii?Q?wPmiKWJ6eTpy/85EKGcu+LMZt5OJA++MebvOrP77AeJ5rkRpaz4LC5+Mn1pv?=
- =?us-ascii?Q?oUumDOiPJy1HTTKSvF+WFb956Qy4b0sJz8gtf7Yb9zU/gPtJM9KrNCzobhfq?=
- =?us-ascii?Q?UT/Fa64jp6Ooo55oOQBOp0znAVGG+bi1akI6t740SmQ2xvJ5a0Y3+Z0rzVrv?=
- =?us-ascii?Q?Y4yK8brsmJK6N/fguNC6mZftQBcjKFMiklmtv0FI1nDVwmblBFXy04ygR2oG?=
- =?us-ascii?Q?GnP97qCku+VX0zFkL8apfvNH7+7TQFhQ296B5cKEp8BPT1d22Qi3C+aEnXJF?=
- =?us-ascii?Q?1FBwD2Ui/FFOsLu2pAp1VmflYnXziy6ARSniTwaR6iVRtyDrmvVU6pvyv5IF?=
- =?us-ascii?Q?YciMMPVLnk4q485iCExVkuT37JDEfPzcvAsQFlOkDTtUK4AuKjtMQfV1744B?=
- =?us-ascii?Q?TRiL9EDkeOKsh6DgDfBGaxy5Z3mPCNAZDz6m6JAJCx6EOeBaW4PdmcirI76C?=
- =?us-ascii?Q?LlRYRF0w/y21AF0dQ4RZ1XpTqttECqlhERY1Y4Bwo4PAAoPJc3kxVwC8Pg3v?=
- =?us-ascii?Q?xNVp9ZPjIt3gt+8gIVmjKwvDocEKDjpxe7pAV5Ak?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 8zZLi0caBR3U12p8m5y3zaPJyyk9zN2shx8PsbQnOSSmYFR5zdnyBKCCyOHNNORW50UHSFmn/sB5LoTIXtL/ZV7Fb6y7DvnXUro/X8da1kpnqLVetj/7fJ+UmXT5Mk0ud3v5n3DDLygxJGu5hleASJZSgtHrEzlo8zk3DaO+CrLXBXy8vJFKG5yhi1lb0z7UKGv5uYrSXo1aJmM6Ser0CXgbHXIlB0hJu7ZV3A5p22eGqxemWGyZ6fb0bTAC7gIp7WHGuRhDeZ0sMd1Kl4JLr7WLlvFHUhDjYxuTkN9dYs6q91AAtkmmW1Z2Vwc1MfkQk2fC+YQTVha9Mh5Fbujg7DHjHaluxc6hNhEh4XpC31qx9sIveIttvhCGW6OosHaLM0Hl2AaqjbU5Am4ysYXYoTuJ/kXpBkczEifgtliuMtGkdqpyazJp00HMwCET6p1q4sFHETxkcmdzIQoXKiaKoy0s56pC3h25nz1AYlI+1MMOX2OMynOjozYTDr+2RcQptcYsmUesf18weAWQhS0N9g7Fa5NLSgLe8b/oHLOoxiFlGtOV3iPqkrTOR0SF24JIHOIlrXACIkAIl7GEDUk4Kv2V6XCT/u2SlrGKE47fsdzunWZq77QyJpWXLVNKhHpWthCcAxXt9HHYwa43PL+B5BdwVejp4k3SJp4XtASs+s2F7A2vrOjHTfne2aoB0XjG1L95J1ZT/BfKQ6baVsop4qerkhQcZbibGgOuS9HOAZCdUiVOBxMpyqRbBCvKblgv8pfembT6g32vo6vy0V0U9JChXW2CYEEJTLu78JsljZ/BErYxhNhuZHfLLTh4AeYstz1PV7oSJTxfyr6wVJhgJg==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24070e90-6389-4230-7ce5-08dbbe32d4da
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 01:49:33.3399
+X-Microsoft-Antispam-Message-Info: q6HQCa2aTGtVbHo99addK/kgqZbu5tI36PqrYLjnTZFTD9aBKDBKjiMBx1JUggP6jyoKKwSfdTLq2rxB7MoH+HVo8dIks9MLF21wirrlzGfezPScGZkAJd+lxCAv3IBkm9x/qSyMDvV2qXY3N5QbhZfO6899opPdHWM9yHuRTDEgZmW1eVaFryKZP0g0euU2zgdBAeL54dlHu0iaPevoJD3DYUCSYQHjR1nt2EOqeiD2d0WKG+cUEIPbnfm9jON6nZAh3mkKE3cz62abJ7kh26htrWqsGgOKf1RxmFWWf9NdYDABpPEN6luhqU0/xzVpYU2Jh6a4KrACcf50kMhPr/eWiLHWTZhdrW/ozq29qcWBIyqJe7MDgUKHF+GRGyFw5SqEtI02dwQ8qsM4dL09+fA+buPCQH8sPwNlwjzhIg7COkJh1P+t84DGi6AtwHrDj5ccNTLMwemzZ1Vwlurh830n9I0kq3Mq2Js29E1tsPTC1a1x1VbQaePK8qzWclShxTQVgbjdRWkid58us15aDXgtgU6XbpQSfTn5mjbrHWLYlIKsS7F6TGR/y1EOpmjo0dUXaRaMlPg0Yih/X4kgDW+JSlogzJif6K+kXwyTIEF9yJWNO9frwj8+qvAIRKfb4oJt1YAPOFJbKS2v0DlFyOvBqocqM6X0ru8RpQbJF+TaqCAGDWT2rYQUtJVI4LF/2KdP+2XkXk/bBF0swSBXtSgzvlyUYzY7ocaltBuuwK8NTguXmk+mHpPlTMTdoBVO
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(230922051799003)(82310400011)(186009)(451199024)(1800799009)(46966006)(40470700004)(36840700001)(36860700001)(55016003)(40480700001)(40460700003)(26005)(7636003)(356005)(82740400003)(86362001)(5660300002)(9686003)(2906002)(336012)(6862004)(54906003)(6636002)(47076005)(8676002)(83380400001)(70586007)(4326008)(33716001)(478600001)(8936002)(41300700001)(316002)(70206006)(426003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 01:52:46.7387
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yBJW5llFI4nB2IvncFfx9cPjOLBk2wYeJc9rNHhAkd3iWueiz1yuoh7DsOX6ei565iIPzGKaquWTYK9vYgfdbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6294
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_01,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=906 suspectscore=0 phishscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309260014
-X-Proofpoint-ORIG-GUID: isaRzw2blWx1G6zcEiRfVZiDZ8QavLpX
-X-Proofpoint-GUID: isaRzw2blWx1G6zcEiRfVZiDZ8QavLpX
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4c25bc1-9260-47b9-d912-08dbbe33484e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003440.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7590
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Erhard Furtner <erhard_f@mailbox.org> [230925 19:02]:
-> Greetings!
+On Mon, Sep 25, 2023 at 09:12:20PM -0300, Jason Gunthorpe wrote:
+> On Mon, Sep 25, 2023 at 01:03:10PM -0700, Nicolin Chen wrote:
+> > On Mon, Sep 25, 2023 at 03:35:23PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Sep 20, 2023 at 01:52:04PM -0700, Nicolin Chen wrote:
+> > > >  
+> > > > +static void arm_smmu_ste_stage2_translate(struct arm_smmu_master *master,
+> > > > +					  u64 *ste)
+> > > > +{
+> > > > +	struct arm_smmu_domain *smmu_domain = master->domain;
+> > > > +	struct arm_smmu_device *smmu = master->smmu;
+> > > > +	struct arm_smmu_s2_cfg *s2_cfg;
+> > > > +
+> > > > +	switch (smmu_domain->stage) {
+> > > > +	case ARM_SMMU_DOMAIN_NESTED:
+> > > > +	case ARM_SMMU_DOMAIN_S2:
+> > > > +		s2_cfg = &smmu_domain->s2_cfg;
+> > > > +		break;
+> > > > +	default:
+> > > > +		WARN_ON(1);
+> > > > +		return;
+> > > > +	}
+> > > > +
+> > > > +	ste[0] |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_S2_TRANS);
+> > > > +
+> > > > +	if (smmu->features & ARM_SMMU_FEAT_STALLS && !master->stall_enabled)
+> > > > +		ste[1] |= STRTAB_STE_1_S1STALLD;
+> > > > +
+> > > > +	if (master->ats_enabled)
+> > > > +		ste[1] |= FIELD_PREP(STRTAB_STE_1_EATS, STRTAB_STE_1_EATS_TRANS);
+> > > 
+> > > These master bits probably belong in their own function 'setup ste for master'
+> > > 
+> > > The s1 and s2 cases are duplicating these things.
+> > 
+> > OK. I thought that writing these helpers in form of STE.Config
+> > field configurations could be more straightforward despite some
+> > duplications.
 > 
-> Had a chat on #gentoo-powerpc with another user whose G4 Mini fails booting kernel 6.5.0 when CONFIG_VMAP_STACK=y is enabled. I was able to replicate the issue on my PowerMac G4. Also I was able to bisect the issue.
+> Ah, well, if you take that approach then maybe (and the names too) but
+> I'm not sure that is the best way..
 > 
-> Kernels 6.4.x boot ok with CONFIG_VMAP_STACK=y but on 6.5.5 I get:
-> 
-> [...]
-> Kernel attempted to write user page (1ff0) - exploit attempt? (uid: 0)
-> BUG: Unable to handle kernel data access on write at 0x00001ff0
-> Faulting instruction address: 0xc0008750
-> Oops: Kernel access of bad area, sig: 11 [#1]
-> BE PAGE_SIZE=4K MMU=Hash PowerMac
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper Not tainted 6.5.5-PMacG4 #5
-> Hardware name: PowerMac3,6 7455 0x80010303 PowerMac
-> NIP:  c0008750 LR: c0041848 CTR: c0070988
-> REGS: c0d3dcd0 TRAP: 0300   Not tainted (6.5.5-PMacG4)
-> MSR:  00001032 <ME,IR,DR,RI>  CR: 22d3ddc0 XER: 20000000
-> DAR: 00001ff0 DSISR: 42000000
-> GPR00: c0041848 c0d3dd90 c0d06360 c0d3ddd0 c0d06360 c0d3dea8 c0d3adc0 00000000
-> GPR08: 00000000 c0d40000 00000000 c0d3ddc0 00000000 00000000 00000000 00000004
-> GPR16: 00000002 00000000 00000002 00402dc2 00402dc2 00002000 f1004000 00000000
-> GPR24: c0d45220 c0d06644 c0843c34 00000002 c0d06360 c0d0ce00 c0d06360 00000000
-> NIP [c0008750] do_softirq_own_stack+0x18/0x3c
-> LR [c0041848] irq_exit+0x98/0xc4
-> Call Trace:
-> [c0d3dd90] [c0d69564] 0xc0d69564 (unreliable)
-> [c0d3ddb0] [c0041848] irq_exit+0x98/0xc4
-> [c0d3ddc0] [c0004a98] Decrementer_virt+0x108/0x10c
-> --- interrupt: 900 at __schedule+0x43c/0x4e0
-> NIP:  c0843940 LR: c084398c CTR: c0070988
-> REGS: c0d3ddd0 TRAP: 0900   Not tainted  (6.5.5-PMacG4)
-> MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22024484  XER: 00000000
-> 
-> GPR00: c0843574 c0d3de90 c0d06360 c0d06360 c0d06360 c0d3dea8 00000001 00000000
-> GPR08: 00000000 00009032 c099ce2c 0007ffbf 22024484 00000000 00000000 00000004
-> GPR16: 00000002 00000000 00000002 00402dc2 00402dc2 00002000 f1004000 00000000
-> GPR24: c0d45220 c0d06644 c0843c34 00000002 c0d06360 c0d0ce00 c0d06360 c0d063ac
-> NIP [c0843940] __schedule+0x43c/0x4e0
-> LR [c084390c] __schedule+0x408/0x4e0
-> --- interrupt: 900
-> [c0d3de90] [c0843574] __schedule+0x70/0x4e0 (unreliable)
-> [c0d3ded0] [c0843c34] __cond_resched+0x34/0x54
-> [c0d3dee0] [c0141068] __vmalloc_node_range+0x27c/0x64c
-> [c0d3de60] [c0141794] __vmalloc_node+0x44/0x54
-> [c8d3df80] [c0c06510] init_IRQ+0x34/0xd4
-> [c8d3dfa0] [c0c03440] start_kernel+0x424/0x558
-> [c8d3dff0] [00003540] 0x3540
-> Code: 39490999 7d4901a4 39290aaa 7d2a01a4 4c00012c 4bffff20 9421ffe0 7c08002a6 3d20c0d4 93e1001c 90010024 83e95278 <943f1ff0> 7fe1fb78 48840c6d 80210000
-> ---[ end trace 0000000000000000 ]---
-> 
-> Kernel panic - not syncing: Attempted to kill the idle task!
-> Rebooting in 48 seconds..
+> The approach I had in mind was to go down a path depending on the
+> configuration of the master. eg if you have a type of domain or a cd
+> or whatever. That would imply a config, but not necessarily be
+> organized by config..
 
-This looks very close to the crash a few weeks ago which bisected to the
-same commit [1].
+This sounds pretty much like what arm_smmu_write_strtab_ent() is
+already doing, but you just want some tidy reorganizations?
 
-Can you try applying this fix [2] which is on its way upstream?
+So, by separating domain=NULL case to clear_ste(), we could do:
 
-[1] https://lore.kernel.org/linux-mm/3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org/
-[2] https://lore.kernel.org/lkml/20230915174444.2835306-1-Liam.Howlett@oracle.com/
+if (cdtab)
+	setup_ste_by_cdtab(cdtab, domain); // still needs domain :-/
+else if (master->domain->stage == S2)
+	setup_ste_by_domain(domain); // literally "by s2_cfg"
+else
+	setup_ste_bypass();
 
-> 
-> 
-> The bisect revealed this commit:
->  # git bisect good
-> cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b is the first bad commit
-> commit cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b
-> Author: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Date:   Fri Aug 18 20:43:55 2023 -0400
-> 
->     maple_tree: disable mas_wr_append() when other readers are possible
->     
->     The current implementation of append may cause duplicate data and/or
->     incorrect ranges to be returned to a reader during an update.  Although
->     this has not been reported or seen, disable the append write operation
->     while the tree is in rcu mode out of an abundance of caution.
->     
->     During the analysis of the mas_next_slot() the following was
->     artificially created by separating the writer and reader code:
->     
->     Writer:                                 reader:
->     mas_wr_append
->         set end pivot
->         updates end metata
->         Detects write to last slot
->         last slot write is to start of slot
->         store current contents in slot
->         overwrite old end pivot
->                                             mas_next_slot():
->                                                     read end metadata
->                                                     read old end pivot
->                                                     return with incorrect range
->         store new value
->     
->     Alternatively:
->     
->     Writer:                                 reader:
->     mas_wr_append
->         set end pivot
->         updates end metata
->         Detects write to last slot
->         last lost write to end of slot
->         store value
->                                             mas_next_slot():
->                                                     read end metadata
->                                                     read old end pivot
->                                                     read new end pivot
->                                                     return with incorrect range
->         set old end pivot
->     
->     There may be other accesses that are not safe since we are now updating
->     both metadata and pointers, so disabling append if there could be rcu
->     readers is the safest action.
->     
->     Link: https://lkml.kernel.org/r/20230819004356.1454718-2-Liam.Howlett@oracle.com
->     Fixes: 54a611b60590 ("Maple Tree: add new data structure")
->     Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
->     Cc: <stable@vger.kernel.org>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> 
->  lib/maple_tree.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> 
-> And indeed when I revert commit cfeb6ae8bcb96ccf674724f223661bbcef7b0d0b kernel 6.5.5 succeeds booting with CONFIG_VMAP_STACK=y enabled. dmesg of the successful boot with the reverted commit attached, also kernel .config and the bisect.log.
-> 
-> Regards,
-> Erhard F.
+setup_ste_by_master(); // include this in by_cdtab/by_domain?
 
+> > > > +	for (i = 1; i < 4; i++) {
+> > > > +		if (dst[i] == cpu_to_le64(ste[i]))
+> > > > +			continue;
+> > > > +		dst[i] = cpu_to_le64(ste[i]);
+> > > > +		ste_sync_all = true;
+> > > > +	}
+> > > 
+> > > This isn't going to work if the transition is from a fully valid STE
+> > > to an invalid one, it will corrupt the still in-use bytes.
+> > 
+> > The driver currently doesn't have a case of unsetting STE_0_V?
+> 
+> Sorry, I didn't mean invalid, I ment different but valid.
 
+Then you meant a translation from valid to another valid will
+be corrupted? Though that's how the driver currently switches
+between valid STE configurations by staging the STE to bypass
+or abort mode via detach_dev()?
 
+>  > > Though current code does this:
+> > > 
+> > > 		dst[0] = cpu_to_le64(val);
+> > > 		dst[1] = cpu_to_le64(FIELD_PREP(STRTAB_STE_1_SHCFG,
+> > > 						STRTAB_STE_1_SHCFG_INCOMING));
+> > > 		dst[2] = 0; /* Nuke the VMID */
+> > > 
+> > > Which I don't really understand either? Why is it OK to wipe the VMID
+> > > out of order with the STE.Config change?
+> > > 
+> > > Be sure to read the part of the SMMU spec talking about how to update
+> > > these things, 3.21.3.1 Configuration structure update procedure and
+> > > nearby.
+> > > 
+> > > Regardless there are clearly two orders in the existing code
+> > > 
+> > > Write 0,1,2,flush (translation -> bypass/fault)
+> > > 
+> > > Write 3,2,1,flush,0,flush (bypass/fault -> translation)
+> > > 
+> > > You still have to preserve both behaviors.
+> > > 
+> > > (interestingly neither seem to follow the guidance of the ARM manual,
+> > > so huh)
+> > 
+> > Again, it is probably because the driver never reverts the V
+> > bit back to 0? While chapter 3.21.3.1 is about V=0 <=> V=1.
+> 
+> No, the driver is using the config in a similar way to V. From what I
+> can tell it is making a bunch of assumptions that allow this to be OK,
+> but you have to follow the ordering it already has..
 
+The "ordering" in the driver or spec?
+
+I found Robin previous remarks around this topic"
+"Strictly I think we are safe to do that - fill in all the S1* fields
+ while Config[0] is still 0 and they're ignored, sync, then set
+ Config[0]. Adding a CD table under a translation domain should be
+ achievable as well, since S1CDMax, S1ContextPtr and S1Fmt can all be
+ updated together atomically (although it's still the kind of switcheroo
+ where I'd be scared of a massive boulder suddenly rolling out of the
+ ceiling...)"
+
+I think this answers most of the questions above?
+
+> > > The bigger question is does this have to be more generic to handle
+> > > S1DSS which is it's original design goal?
+> > 
+> > It feels an overkill. Maybe "Refactor arm_smmu_write_strtab_ent()"
+> > is just a too big topic for my goal...
+> 
+> Maybe, it depends if it is necessary
+>  
+> > Overall, this version doesn't really dramatically change any STE
+> > configuration flow compared to what the current driver does, but
+> > only adds the S1DSS bypass setting. I'd prefer keeping this in a
+> > smaller scope..
+> 
+> Well, no, this stuff does seem to change the allowed state transitions
+> that this routine will encounter, or at the very least it sets the
+> stage for new state transitions that it cannot handle (eg under
+> iommufd control w/PASID we have problems)
+> 
+> However.. if you imagine staying within the existing kernel driver
+> behavior maybe just setting S1DSS does work out. It feels very
+> fragile, it depends on alot of other stuff also being just so.
+> 
+> So, at least for this series you might get buy without, but do check
+> all the different combinations of attachment's that are possible and
+> see that the STE doesn't become incorrect.
+> 
+> If it is OK then this patch can be its own series, it needs doing
+> anyhow.
+
+Fine.. I can try that then. It looks that we have quite a thing
+to do before I can respin the vSMMU series. 
+
+Thanks!
+Nic
