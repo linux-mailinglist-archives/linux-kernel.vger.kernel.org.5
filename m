@@ -2,164 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA57AED0D
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5EA7AED0B
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbjIZMlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39118 "EHLO
+        id S234683AbjIZMli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234563AbjIZMl2 (ORCPT
+        with ESMTP id S234687AbjIZMlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:41:28 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B310A;
-        Tue, 26 Sep 2023 05:41:22 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34deefc2016so25189445ab.2;
-        Tue, 26 Sep 2023 05:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695732081; x=1696336881; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AFH4UUFDGK0s+fchU0DAK9Uwv9kWi/10rg3EOpapn18=;
-        b=Duhmbpj07pHnjaLNqS8RhaAKrDEMcBCXf4Frn9yRMyIeFqeluFXJx2R0gUjgZio4LB
-         LcTs7RPZVt7TLnol8lTCZaw3jwGjnovP0LjpeMRL4pDfxEE4BajBI47TMjmiAGj9JMD9
-         3VoFpfigpMos7JP+F8A48yInTZdH52UXjzxaKXrQcO8BMtw767MM3ACWn6zoVMb/KYAT
-         ZtKJlPai0vwoCO3R50RuCHQTbmF7gQ0KuEn9Bp62ndAdcilMxfIZyHifOFYsKldoaak0
-         xHmhLLvKB/D8rchbQ6fV7B4VWNSzoQvvCmPRSkOxcZ82mQbRZ5cey1MjTu7Vg8lKVMcD
-         NVww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695732081; x=1696336881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AFH4UUFDGK0s+fchU0DAK9Uwv9kWi/10rg3EOpapn18=;
-        b=Znqoz/6G0rQsjO3I1Ly2r8QSZ5hXOyt/CLBz9oHJNKAhrteBDjDP2sYt9j4cbc98th
-         eI5enxgY+Z//H0yDoDjj2y2J4h/pEVzVuMPaX7HX4TW8chFWz58Wh28G2ABSr5VoB50i
-         jAZ+R9INzFJjJ3nYxJTPilulicXvIWHbSFkDXv9Jr9FG4jdVxrGEX69AyOVIoOoZ1BtS
-         kZnCoxenciwLh6IsuIRqOtje4pETq/l/e87mmAb2ybwzJcOoGzth5ip8LfszosKFbWtD
-         zI/T5RhwrZDHWs6jiHVMXjE0gHOhh1BH2iG6zPG4s6MnwZVLx3CFrBzBmcnCf758XXoc
-         uC6A==
-X-Gm-Message-State: AOJu0Yy0m2Lhk3y1ILI5NJ6GYUN+OMkJxrvwXl9Q5YH2cAXj9/9WMb+R
-        qK5/E7K51MxYfhugnxk7aik=
-X-Google-Smtp-Source: AGHT+IFoaKbI98CJWnRbXXEp2j4ZyVdE7Fx11AUN6r6lsypvLcFyBL7AL6HXW4Ap7C41/wAB+zbItQ==
-X-Received: by 2002:a05:6e02:1a8e:b0:34f:77bc:8d49 with SMTP id k14-20020a056e021a8e00b0034f77bc8d49mr11982732ilv.23.1695732081170;
-        Tue, 26 Sep 2023 05:41:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id do25-20020a0566384c9900b0042b1a9f8480sm3207749jab.35.2023.09.26.05.41.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 05:41:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 26 Sep 2023 05:41:18 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] watchdog: ixp4xx: Make sure restart always works
-Message-ID: <eb1e31b2-272b-4ebd-a0cc-b627faa9c65b@roeck-us.net>
-References: <20230926-ixp4xx-wdt-restart-v2-1-15cf4639b423@linaro.org>
+        Tue, 26 Sep 2023 08:41:35 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE9BD19F;
+        Tue, 26 Sep 2023 05:41:27 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+        id D890820B74C0; Tue, 26 Sep 2023 05:41:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D890820B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695732086;
+        bh=bSYSPlQMrXXrmi4kI3zyUqJNcJHpggDF9TmyAeOoxL4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nAvPkYl1/cP7FGrTud/JeIWoRkrUWRU9mHZc5KaLpAcQLe8RBTDASvzTtDZG53CPr
+         9j2qq25sW2gE8tGP8z8Q3vf4AYfH26v70CAUMhsG61MuE5jAh0UDl+jbm8pKKvTNLI
+         H33MoKjfTYaruoPfeiwfAtHzDL9N2ONQM4pwRuxI=
+Date:   Tue, 26 Sep 2023 05:41:26 -0700
+From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
+ devices
+Message-ID: <20230926124126.GA12048@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1691132996-11706-1-git-send-email-ssengar@linux.microsoft.com>
+ <2023081215-canine-fragile-0a69@gregkh>
+ <PUZP153MB06350DAEA2384B996519E07EBE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <2023082246-lumping-rebate-4142@gregkh>
+ <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230926-ixp4xx-wdt-restart-v2-1-15cf4639b423@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230906122307.GA5737@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:13:44AM +0200, Linus Walleij wrote:
-> The IXP4xx watchdog in early "A0" silicon is unreliable and
-> cannot be registered, however for some systems such as the
-> USRobotics USR8200 the watchdog is the only restart option,
-> so implement a "dummy" watchdog that can only support restart
-> in this case.
+On Wed, Sep 06, 2023 at 05:23:07AM -0700, Saurabh Singh Sengar wrote:
+> On Tue, Aug 22, 2023 at 01:48:03PM +0200, Greg KH wrote:
+> > On Mon, Aug 21, 2023 at 07:36:18AM +0000, Saurabh Singh Sengar wrote:
+> > > 
+> > > 
+> > > > -----Original Message-----
+> > > > From: Greg KH <gregkh@linuxfoundation.org>
+> > > > Sent: Saturday, August 12, 2023 4:45 PM
+> > > > To: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > > > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> > > > <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> > > > <decui@microsoft.com>; Michael Kelley (LINUX) <mikelley@microsoft.com>;
+> > > > corbet@lwn.net; linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org;
+> > > > linux-doc@vger.kernel.org
+> > > > Subject: [EXTERNAL] Re: [PATCH v4 0/3] UIO driver for low speed Hyper-V
+> > > > devices
+> > > > 
+> > > > On Fri, Aug 04, 2023 at 12:09:53AM -0700, Saurabh Sengar wrote:
+> > > > > Hyper-V is adding multiple low speed "speciality" synthetic devices.
+> > > > > Instead of writing a new kernel-level VMBus driver for each device,
+> > > > > make the devices accessible to user space through a UIO-based
+> > > > > hv_vmbus_client driver. Each device can then be supported by a user
+> > > > > space driver. This approach optimizes the development process and
+> > > > > provides flexibility to user space applications to control the key
+> > > > > interactions with the VMBus ring buffer.
+> > > > 
+> > > > Why is it faster to write userspace drivers here?  Where are those new drivers,
+> > > > and why can't they be proper kernel drivers?  Are all hyper-v drivers going to
+> > > > move to userspace now?
+> > > 
+> > > Hi Greg,
+> > > 
+> > > You are correct; it isn't faster. However, the developers working on these userspace
+> > > drivers can concentrate entirely on the business logic of these devices. The more
+> > > intricate aspects of the kernel, such as interrupt management and host communication,
+> > > can be encapsulated within the uio driver.
+> > 
+> > Yes, kernel drivers are hard, we all know that.
+> > 
+> > But if you do it right, it doesn't have to be, saying "it's too hard for
+> > our programmers to write good code for our platform" isn't exactly a
+> > good endorcement of either your programmers, or your platform :)
+> > 
+> > > The quantity of Hyper-V devices is substantial, and their numbers are consistently
+> > > increasing. Presently, all of these drivers are in a development/planning phase and
+> > > rely significantly on the acceptance of this UIO driver as a prerequisite.
+> > 
+> > Don't make my acceptance of something that you haven't submitted before
+> > a business decision that I need to make, that's disenginous.
+> > 
+> > > Not all hyper-v drivers will move to userspace, but many a new slow Hyperv-V
+> > > devices will use this framework and will avoid introducing a new kernel driver. We
+> > > will also plan to remove some of the existing drivers like kvp/vss.
+> > 
+> > Define "slow" please.
 > 
-> Fixes: 1aea522809e6 ("watchdog: ixp4xx: Implement restart")
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> In the Hyper-V environment, most devices, with the exception of network and storage,
+> typically do not require extensive data read/write exchanges with the host. Such
+> devices are considered to be 'slow' devices.
+> 
+> > 
+> > > > > The new synthetic devices are low speed devices that don't support
+> > > > > VMBus monitor bits, and so they must use vmbus_setevent() to notify
+> > > > > the host of ring buffer updates. The new driver provides this
+> > > > > functionality along with a configurable ring buffer size.
+> > > > >
+> > > > > Moreover, this series of patches incorporates an update to the fcopy
+> > > > > application, enabling it to seamlessly utilize the new interface. The
+> > > > > older fcopy driver and application will be phased out gradually.
+> > > > > Development of other similar userspace drivers is still underway.
+> > > > >
+> > > > > Moreover, this patch series adds a new implementation of the fcopy
+> > > > > application that uses the new UIO driver. The older fcopy driver and
+> > > > > application will be phased out gradually. Development of other similar
+> > > > > userspace drivers is still underway.
+> > > > 
+> > > > You are adding a new user api with the "ring buffer" size api, which is odd for
+> > > > normal UIO drivers as that's not something that UIO was designed for.
+> > > > 
+> > > > Why not just make you own generic type uiofs type kernel api if you really
+> > > > want to do all of this type of thing in userspace instead of in the kernel?
+> > > 
+> > > Could you please elaborate more on this suggestion. I couldn't understand it
+> > > completely.
+> > 
+> > Why is uio the requirement here?  Why not make your own framework to
+> > write hv drivers in userspace that fits in better with the overall goal?
+> > Call it "hvfs" or something like that, much like we have usbfs for
+> > writing usb drivers in userspace.
+> > 
+> > Bolting on HV drivers to UIO seems very odd as that is not what this
+> > framework is supposed to be providing at all.  UIO was to enable "pass
+> > through" memory-mapped drivers that only wanted an interrupt and access
+> > to raw memory locations in the hardware.
+> > 
+> > Now you are adding ring buffer managment and all other sorts of things
+> > just for your platform.  So make it a real subsystem tuned exactly for
+> > what you need and NOT try to force it into the UIO interface (which
+> > should know nothing about ring buffers...)
+> 
+> Thank you for elaborating the details. I will drop the plan to introduce a
+> new UIO driver for this effort. However, I would like to know your thoughts
+> on enhancing existing 'uio_hv_generic' driver to achieve the same.  We
+> already have 'uio_hv_generic' driver in linux kernel, which is used for
+> developing userspace drivers for 'fast Hyper-V devices'.
+> 
+> Since these newly introduced synthetic devices operate at a lower speed,
+> they do not have the capability to support monitor bits. Instead, we must
+> utilize the 'vmbus_setevent()' method to enable interrupts from the host.
+> Earlier we made an attempt to support slow devices by uio_hv_generic :
+> https://lore.kernel.org/lkml/1665685754-13971-1-git-send-email-ssengar@linux.microsoft.com/.
+> At that time, the absence of userspace code (fcopy) hindered progress
+> in this direction.
+> 
+> Acknowledging your valid concerns about introducing a new UIO driver for
+> Hyper-V, I propose exploring the potential to enhance the existing
+> 'uio_hv_generic' driver to accommodate slower devices effectively. My
+> commitment to this endeavour includes ensuring the seamless operation of
+> the existing 'fcopy' functionality with the modified 'uio_hv_generic'
+> driver. Additionally, I will undertake the task of removing the current
+> 'fcopy' kernel driver and userspace daemon as part of this effort.
+> 
+> Please let me know your thoughts. I look forward to your feedback and
+> the opportunity to discuss this proposal further. 
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Greg,
 
-> ---
-> Changes in v2:
-> - Switch debugprint about only supporting restart from dev_err()
->   to dev_info().
-> - Link to v1: https://lore.kernel.org/r/20230925-ixp4xx-wdt-restart-v1-1-fe2b9b131dbf@linaro.org
-> ---
->  drivers/watchdog/ixp4xx_wdt.c | 28 +++++++++++++++++++++++++---
->  1 file changed, 25 insertions(+), 3 deletions(-)
+May I know if enhancing uio_hv_generic.c to support 'slow devices' is
+an accptable approach ? I'm willing to undertake this task and propose
+the necessary modifications.
+
+- Saurabh
+
 > 
-> diff --git a/drivers/watchdog/ixp4xx_wdt.c b/drivers/watchdog/ixp4xx_wdt.c
-> index 607ce4b8df57..ec0c08652ec2 100644
-> --- a/drivers/watchdog/ixp4xx_wdt.c
-> +++ b/drivers/watchdog/ixp4xx_wdt.c
-> @@ -105,6 +105,25 @@ static const struct watchdog_ops ixp4xx_wdt_ops = {
->  	.owner = THIS_MODULE,
->  };
->  
-> +/*
-> + * The A0 version of the IXP422 had a bug in the watchdog making
-> + * is useless, but we still need to use it to restart the system
-> + * as it is the only way, so in this special case we register a
-> + * "dummy" watchdog that doesn't really work, but will support
-> + * the restart operation.
-> + */
-> +static int ixp4xx_wdt_dummy(struct watchdog_device *wdd)
-> +{
-> +	return 0;
-> +}
-> +
-> +static const struct watchdog_ops ixp4xx_wdt_restart_only_ops = {
-> +	.start = ixp4xx_wdt_dummy,
-> +	.stop = ixp4xx_wdt_dummy,
-> +	.restart = ixp4xx_wdt_restart,
-> +	.owner = THIS_MODULE,
-> +};
-> +
->  static const struct watchdog_info ixp4xx_wdt_info = {
->  	.options = WDIOF_KEEPALIVEPING
->  		| WDIOF_MAGICCLOSE
-> @@ -114,14 +133,17 @@ static const struct watchdog_info ixp4xx_wdt_info = {
->  
->  static int ixp4xx_wdt_probe(struct platform_device *pdev)
->  {
-> +	static const struct watchdog_ops *iwdt_ops;
->  	struct device *dev = &pdev->dev;
->  	struct ixp4xx_wdt *iwdt;
->  	struct clk *clk;
->  	int ret;
->  
->  	if (!(read_cpuid_id() & 0xf) && !cpu_is_ixp46x()) {
-> -		dev_err(dev, "Rev. A0 IXP42x CPU detected - watchdog disabled\n");
-> -		return -ENODEV;
-> +		dev_info(dev, "Rev. A0 IXP42x CPU detected - only restart supported\n");
-> +		iwdt_ops = &ixp4xx_wdt_restart_only_ops;
-> +	} else {
-> +		iwdt_ops = &ixp4xx_wdt_ops;
->  	}
->  
->  	iwdt = devm_kzalloc(dev, sizeof(*iwdt), GFP_KERNEL);
-> @@ -141,7 +163,7 @@ static int ixp4xx_wdt_probe(struct platform_device *pdev)
->  		iwdt->rate = IXP4XX_TIMER_FREQ;
->  
->  	iwdt->wdd.info = &ixp4xx_wdt_info;
-> -	iwdt->wdd.ops = &ixp4xx_wdt_ops;
-> +	iwdt->wdd.ops = iwdt_ops;
->  	iwdt->wdd.min_timeout = 1;
->  	iwdt->wdd.max_timeout = U32_MAX / iwdt->rate;
->  	iwdt->wdd.parent = dev;
-> 
-> ---
-> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> change-id: 20230924-ixp4xx-wdt-restart-d6bf28493173
-> 
-> Best regards,
-> -- 
-> Linus Walleij <linus.walleij@linaro.org>
-> 
+> - Saurabh
