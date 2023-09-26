@@ -2,50 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED01F7AE74F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129FE7AE75A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbjIZIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 04:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
+        id S233775AbjIZIFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 04:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbjIZIEL (ORCPT
+        with ESMTP id S233807AbjIZIFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 04:04:11 -0400
+        Tue, 26 Sep 2023 04:05:31 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F202710E;
-        Tue, 26 Sep 2023 01:04:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B023EC433C8;
-        Tue, 26 Sep 2023 08:04:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B933D116;
+        Tue, 26 Sep 2023 01:05:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB07C433C7;
+        Tue, 26 Sep 2023 08:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695715444;
-        bh=Gk8UPv85NpIAuRUm/g1FxXwc/A9EC198ra1ZI3l3y+I=;
+        s=k20201202; t=1695715524;
+        bh=+Amk36a0CBOiKu5+FtjGQvFX395/lzfG991XVrUkCKk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p2CxJOqPE3nULReRB6ueRzPUzLpG0HduGqLQMB0peveb97gyS0glSpsfF/OfzpYSK
-         FtKFoAboDI/Wl31DYCEJNH6MJwo2lSENM8wLT/hEf+bzbwDajk7F3Z+/7afgxKP8+t
-         8HLSDlYyxmyfYmjUleCNSg0SjLRSaSqubaqV49fJbCMBU6tTD8GTdpTLQuY+18SkcS
-         FiaXCSorr5u2AEdAs1yXGjOyqL98yQX0TOORNHULtuuEU8by8vwSNCZY9y1qW5kfYo
-         DDRKhdJuUgvkNI7oHJFs2R9ba4ixOaxRbcHRAVaJAygr3p8ohvuh/wgFRbxq57jtZA
-         hW71Nb5MESBuA==
-Date:   Tue, 26 Sep 2023 09:03:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Huqiang Qin <huqiang.qin@amlogic.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        neil.armstrong@linaro.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] arm64: dts: Add watchdog node for Amlogic C3 SoCs
-Message-ID: <20230926-output-musket-a43dd5abd0b5@spud>
-References: <20230926055512.2355390-1-huqiang.qin@amlogic.com>
- <20230926055512.2355390-3-huqiang.qin@amlogic.com>
+        b=RLx2TLWKtN7VAMAOy6Z+yt+5L2H3WvCxgk6fo3xEAFTVDZv0mPqQm9oryMdet+1qZ
+         obrB5TY2nE/qbUSfaI1uId3y2yRK2qnxEYYQpqf8IMXRqLpaWcyp6r1h8W5YGqDDxg
+         /Ipk9rb4CjRrT7bowSHMduOUAEuaFMTD7nXxu83iUI+O1xmmOj2PJsMoiGARKNDMsM
+         m8lXDTJPRNGVXjXTr34wm+BzlG4p+UzrUM7cd5TVxTprWIBaR+mK3IXevwTFE0yWC2
+         SIHL7mRKLFjL2iR5rLVY4OdrYFjdV9kMecllhx3OCPX+UXN+tAGab3AHw/soEZdxZb
+         tvxNd43ZGN+BA==
+Date:   Tue, 26 Sep 2023 11:04:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v3 02/13] mm: introduce execmem_text_alloc() and
+ execmem_free()
+Message-ID: <20230926080422.GP3303@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-3-rppt@kernel.org>
+ <CAPhsuW5-=H1V=VXUYxyGnUdJuNUpRt44QmpwjkDUD=9i0itjuw@mail.gmail.com>
+ <20230923153808.GI3303@kernel.org>
+ <CAPhsuW6TxG87ZBwQ_027iiE+_UmXweZEPh8wKHkHo7wA+qXZUg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/h6xUWSBVS6sbE34"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230926055512.2355390-3-huqiang.qin@amlogic.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW6TxG87ZBwQ_027iiE+_UmXweZEPh8wKHkHo7wA+qXZUg@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,58 +82,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 23, 2023 at 03:36:01PM -0700, Song Liu wrote:
+> On Sat, Sep 23, 2023 at 8:39 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Thu, Sep 21, 2023 at 03:34:18PM -0700, Song Liu wrote:
+> > > On Mon, Sep 18, 2023 at 12:30 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > >
+> > > [...]
+> > >
+> > > > diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+> > > > index 42215f9404af..db5561d0c233 100644
+> > > > --- a/arch/s390/kernel/module.c
+> > > > +++ b/arch/s390/kernel/module.c
+> > > > @@ -21,6 +21,7 @@
+> > > >  #include <linux/moduleloader.h>
+> > > >  #include <linux/bug.h>
+> > > >  #include <linux/memory.h>
+> > > > +#include <linux/execmem.h>
+> > > >  #include <asm/alternative.h>
+> > > >  #include <asm/nospec-branch.h>
+> > > >  #include <asm/facility.h>
+> > > > @@ -76,7 +77,7 @@ void *module_alloc(unsigned long size)
+> > > >  #ifdef CONFIG_FUNCTION_TRACER
+> > > >  void module_arch_cleanup(struct module *mod)
+> > > >  {
+> > > > -       module_memfree(mod->arch.trampolines_start);
+> > > > +       execmem_free(mod->arch.trampolines_start);
+> > > >  }
+> > > >  #endif
+> > > >
+> > > > @@ -510,7 +511,7 @@ static int module_alloc_ftrace_hotpatch_trampolines(struct module *me,
+> > > >
+> > > >         size = FTRACE_HOTPATCH_TRAMPOLINES_SIZE(s->sh_size);
+> > > >         numpages = DIV_ROUND_UP(size, PAGE_SIZE);
+> > > > -       start = module_alloc(numpages * PAGE_SIZE);
+> > > > +       start = execmem_text_alloc(EXECMEM_FTRACE, numpages * PAGE_SIZE);
+> > >
+> > > This should be EXECMEM_MODULE_TEXT?
+> >
+> > This is an ftrace trampoline, so I think it should be FTRACE type of
+> > allocation.
+> 
+> Yeah, I was aware of the ftrace trampoline. My point was, ftrace trampoline
+> doesn't seem to have any special requirements. Therefore, it is probably not
+> necessary to have a separate type just for it.
 
---/h6xUWSBVS6sbE34
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since ftrace trampolines are currently used only on s390 and x86 which
+enforce the same range for all executable allocations there are no special
+requirements indeed. But I think that explicitly marking these allocations
+as FTRACE makes it clearer what are they used for and I don't see downsides
+to having a type for FTRACE.
+ 
+> AFAICT, kprobe, ftrace, and BPF (JIT and trampoline) can share the same
+> execmem_type. We may need some work for some archs, but nothing is
+> fundamentally different among these.
 
-On Tue, Sep 26, 2023 at 01:55:12PM +0800, Huqiang Qin wrote:
-> Add watchdog device.
->=20
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
-> ---
->=20
-> V1 -> V2: Increase compatibles of C3 watchdog.
->=20
->  arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi b/arch/arm64/boo=
-t/dts/amlogic/amlogic-c3.dtsi
-> index 998f5050795c..2ad1f8eef199 100644
-> --- a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
-> @@ -81,6 +81,12 @@ apb4: bus@fe000000 {
->  			#size-cells =3D <2>;
->  			ranges =3D <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
-> =20
-> +			watchdog@2100 {
-> +				compatible =3D "amlogic,c3-wdt", "amlogic,t7-wdt";
+Using the same type for all generated code implies that all types of the
+generated code must live in the same range and I don't think we want to
+impose this limitation on architectures.
 
-Does this pass dtbs_check?
-The binding patch doesn't seem to permit this combo..
+For example, RISC-V deliberately added a range for BPF code to allow
+relative addressing, see commit 7f3631e88ee6 ("riscv, bpf: Provide RISC-V
+specific JIT image alloc/free").
+ 
+> Thanks,
+> Song
 
-> +				reg =3D <0x0 0x2100 0x0 0x10>;
-> +				clocks =3D <&xtal>;
-> +			};
-> +
->  			periphs_pinctrl: pinctrl@4000 {
->  				compatible =3D "amlogic,c3-periphs-pinctrl";
->  				#address-cells =3D <2>;
-> --=20
-> 2.42.0
->=20
-
---/h6xUWSBVS6sbE34
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRKQbwAKCRB4tDGHoIJi
-0inUAPwLNBh3Grd1kaNeXqiBtQPj8KCHNGRCyoENBGkom8ZsewEApURp1rXmTzcy
-YTPySsifKx2BM9nMc5YyQIuMhDpgGg0=
-=mVVI
------END PGP SIGNATURE-----
-
---/h6xUWSBVS6sbE34--
+-- 
+Sincerely yours,
+Mike.
