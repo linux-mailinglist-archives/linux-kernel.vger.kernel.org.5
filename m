@@ -2,206 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BE87AF53F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB087AF548
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 22:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjIZUc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 16:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        id S235858AbjIZUer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 16:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjIZUc4 (ORCPT
+        with ESMTP id S235880AbjIZUeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 16:32:56 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BA3120
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:32:49 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533c5d10dc7so7962636a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 13:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695760368; x=1696365168; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7e8pTP8dawYEYAgdlTPvMxdmnzzd4ZSMO7Pw/iww7Wc=;
-        b=XCIno+0YlEjqeDh78y3/5Jz2LaKWpa+AycCLD9+QuMsB4IE9DzP7rf+loWZqpcVaLI
-         sTA34DGHQQfWqAfB1vW9egkmgfNK664GIZ4qpPivcI8oENqX1Rpv8c9975GWqLsNhF2N
-         /PajuoXnD1q+6ISnmMNki7PWhBZupANpNpYy/dZXyaIVB6meJeqyo4d9W6YcZoQAHPiM
-         JHk1VM3m4zqVsCS5aEq5ZFSal3ZOLGetwi2FX2C8uDFrfWfP+INuPw06ZtznTg2rxdyq
-         zlMa3PVxqcW9DJ15wMzdKT26c88XXGPUDzlqlR76y0lGET8lZoCMQQ16hicw2hMobILg
-         IGjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695760368; x=1696365168;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7e8pTP8dawYEYAgdlTPvMxdmnzzd4ZSMO7Pw/iww7Wc=;
-        b=a3aZdke/yBD/jR2iERC407QHRGqNfymv5BZoVPBputJV6e1uXRZ2vDzVgP9Ep+D0H0
-         rXRm1q6dhSYBjU00L1tu3tlOdFnKrv6ktzDGhFwxTrMABVY7D0B0YXAwD3XZQ8O+yXgF
-         objBOUUl4Jr+tMyblOXSiyeDywIT4cfYjKBaned4+hMazl6yDWo7ENX0v5j3F+RZEGZG
-         0jR2MhfTOM60Ua/xIuM+ws2acXYhylCIm61E2nxXxaJf5CE1VOSVhUB7mZ3LrgwWq63v
-         QHrL2fX5JNzn5i2oMhu0QEMxapMxt3yKud2iwfV0ivrJO+VThMkWXGIJRPD6ml9Xn4eV
-         Kw/A==
-X-Gm-Message-State: AOJu0Yx1QAQ5Jx4fzIHHo+So1i4MNlfi2Eqbh/GJWT5TeEPznnFEKYvr
-        k5b3Wlwhp9bggmjJ+0xMQrDhow==
-X-Google-Smtp-Source: AGHT+IENSkHbeIdYnqFpbjj8u1Q1auAKdAPXMrVdNxRtw50ov/r/C4TlFMWx9b2UsFtP3yL9kSbD8Q==
-X-Received: by 2002:a17:907:75f4:b0:9ae:40d1:999b with SMTP id jz20-20020a17090775f400b009ae40d1999bmr9385158ejc.16.1695760368021;
-        Tue, 26 Sep 2023 13:32:48 -0700 (PDT)
-Received: from [192.168.1.141] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id dp4-20020a170906c14400b009b2823a6626sm3329888ejc.26.2023.09.26.13.32.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 13:32:47 -0700 (PDT)
-Message-ID: <0d2588fd-c100-4406-948a-9d67827fd90a@linaro.org>
-Date:   Tue, 26 Sep 2023 22:32:44 +0200
+        Tue, 26 Sep 2023 16:34:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D0F13A;
+        Tue, 26 Sep 2023 13:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695760476; x=1727296476;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PJ0vHy+VWElc+eQ+Z+ltBYNwE2I0BJC0iW+pGuyscyY=;
+  b=KGckI7BEjaM8qMYEunh/3b/FXZCdxtUTX1FXwDVU0hDEY3Me6h6xqgOg
+   mCNYYLsM+q3y4PAsHO7GVAuYfv2qtf/nbACL3U5Pmx42DUFj2woLpa8a4
+   cNVD/Jar8/eKIHAzGK4sEcyqvijg8KwdzkoiAmd8H8zidNHi0XkTNyy2Z
+   nlQrW9/9GFl7+4flNbe1BNAo/hrm7Y+jwevasMoLyoHrPhuHousBsqg9g
+   SwZ/FZQ6353U1s050eK171FJiHbRT+lPUeRfSzRl0m6xnv3WPnDbHC+Yz
+   f16B3jSBMRpqsF9AIU9mFg79iRdI29m490/LQ0ca8f63KxQwr7zZFOKCS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="412580983"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="412580983"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 13:34:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="814611539"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="814611539"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Sep 2023 13:34:33 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlElK-0003LJ-35;
+        Tue, 26 Sep 2023 20:34:30 +0000
+Date:   Wed, 27 Sep 2023 04:33:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Florian Eckert <fe@dev.tdt.de>, Eckert.Florian@googlemail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, pavel@ucw.cz,
+        lee@kernel.org, kabel@kernel.org, u.kleine-koenig@pengutronix.de
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH 2/2] trigger: ledtrig-tty: add new line mode to triggers
+Message-ID: <202309270440.IJB24Xap-lkp@intel.com>
+References: <20230926093607.59536-3-fe@dev.tdt.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/15] mailbox: mediatek: Add loop pkt flag and irq
- handling for loop command
-Content-Language: en-US
-To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        =?UTF-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
-        <Johnson.Wang@mediatek.com>,
-        =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
-        <Jason-ch.Chen@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?B?RWx2aXMgV2FuZyAo546L5YabKQ==?= <Elvis.Wang@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-References: <20230918192204.32263-1-jason-jh.lin@mediatek.com>
- <20230918192204.32263-8-jason-jh.lin@mediatek.com>
- <5d528036-e506-7b95-69bb-7748b26d2aa8@linaro.org>
- <00f0bae9940be7b397c587c651e23c6c1e19a174.camel@mediatek.com>
- <c08630a2-3e3d-4975-a863-a9e58c6d78f5@linaro.org>
- <0ff1b980f649f20801d0254a189adcae6a449518.camel@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0ff1b980f649f20801d0254a189adcae6a449518.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926093607.59536-3-fe@dev.tdt.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 05:20, Jason-JH Lin (林睿祥) wrote:
-mdq_pkt_finialize_loop() at [PATCH 8/15].
->>>
->>> mtk-cmdq-helper.c and mtk-cmdq-mailbox.c are not in the
->>> same maintainer's tree, so I separate this to another patch from
->> [PATCH
->>> 8/15].
->>
->> Why? Anyway it has to go through same tree. You have dependencies.
->> Such
->> artificial split makes it only difficult to review and understand.
->> Re-organize your patchset to be correctly split per each logical
->> feature/change. Split per subsystems is not the same.
->>
-> 
-> Yes, these related files are in the different maintainer's tree.
-> Refer to https://www.kernel.org/doc/linux/MAINTAINERS
-> 
-> MAILBOX API
-> M: Jassi Brar
-> F: drivers/mailbox/
-> - drivers/mailbox/mtk-cmdq-mailbox.c
-> - drivers/mailbox/mtk-cmdq-sec-
-> mailbox.c
-> 
-> ARM/Mediatek SoC support
-> M: Matthias Brugger
-> F: drivers/soc/mediatek/
-> K: mediatek
-> - drivers/soc/mediatek/mtk-cmdq-helper.c
-> -
-> include/linux/soc/mediatek/mtk-cmdq.h
-> 
-> I think we should add a new MAINTAINER label for mediatek CMDQ mailbox
-> and put these files together, such as "MAILBOX ARM MHUv2" and "QUALCOM
-> IPCC MAILBOX DRIVER".
+Hi Florian,
 
-Why? It's not related to the topic of splitting patchset into patches.
-There is no problem of patchsets touching multiple subsystems. We
-already solved this problem many years ago...
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next tty/tty-linus staging/staging-testing staging/staging-next staging/staging-linus linus/master v6.6-rc3 next-20230926]
+[cannot apply to pavel-leds/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Eckert/tty-add-new-helper-function-tty_get_mget/20230926-180154
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20230926093607.59536-3-fe%40dev.tdt.de
+patch subject: [PATCH 2/2] trigger: ledtrig-tty: add new line mode to triggers
+config: x86_64-randconfig-161-20230927 (https://download.01.org/0day-ci/archive/20230927/202309270440.IJB24Xap-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230927/202309270440.IJB24Xap-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/leds/trigger/ledtrig-tty.c: In function 'ledtrig_tty_work':
+>> drivers/leds/trigger/ledtrig-tty.c:362:3: error: a label can only be part of a statement and a declaration is not a statement
+      unsigned long interval = LEDTRIG_TTY_INTERVAL;
+      ^~~~~~~~
 
 
-> But I don't know how to make a request for that.
+vim +362 drivers/leds/trigger/ledtrig-tty.c
 
-Anyway, you would not be a maintainer taking patches, just a reviewer
-called "M:" here...
+   270	
+   271	static void ledtrig_tty_work(struct work_struct *work)
+   272	{
+   273		struct ledtrig_tty_data *trigger_data =
+   274			container_of(work, struct ledtrig_tty_data, dwork.work);
+   275		struct led_classdev *led_cdev = trigger_data->led_cdev;
+   276		struct serial_icounter_struct icount;
+   277		enum tty_led_state state;
+   278		int ret;
+   279	
+   280		state = TTY_LED_DISABLE;
+   281		mutex_lock(&trigger_data->mutex);
+   282	
+   283		if (!trigger_data->ttyname) {
+   284			/* exit without rescheduling */
+   285			mutex_unlock(&trigger_data->mutex);
+   286			return;
+   287		}
+   288	
+   289		/* try to get the tty corresponding to $ttyname */
+   290		if (!trigger_data->tty) {
+   291			dev_t devno;
+   292			struct tty_struct *tty;
+   293			int ret;
+   294	
+   295			ret = tty_dev_name_to_number(trigger_data->ttyname, &devno);
+   296			if (ret < 0)
+   297				/*
+   298				 * A device with this name might appear later, so keep
+   299				 * retrying.
+   300				 */
+   301				goto out;
+   302	
+   303			tty = tty_kopen_shared(devno);
+   304			if (IS_ERR(tty) || !tty)
+   305				/* What to do? retry or abort */
+   306				goto out;
+   307	
+   308			trigger_data->tty = tty;
+   309		}
+   310	
+   311		if (test_bit(LEDTRIG_TTY_MODE_CTS, &trigger_data->mode)) {
+   312			ret = ledtrig_tty_flag(trigger_data, TIOCM_CTS);
+   313			if (ret)
+   314				state = TTY_LED_ENABLE;
+   315		}
+   316	
+   317		if (test_bit(LEDTRIG_TTY_MODE_DSR, &trigger_data->mode)) {
+   318			ret = ledtrig_tty_flag(trigger_data, TIOCM_DSR);
+   319			if (ret)
+   320				state = TTY_LED_ENABLE;
+   321		}
+   322	
+   323		if (test_bit(LEDTRIG_TTY_MODE_CAR, &trigger_data->mode)) {
+   324			ret = ledtrig_tty_flag(trigger_data, TIOCM_CAR);
+   325			if (ret)
+   326				state = TTY_LED_ENABLE;
+   327		}
+   328	
+   329		if (test_bit(LEDTRIG_TTY_MODE_RNG, &trigger_data->mode)) {
+   330			ret = ledtrig_tty_flag(trigger_data, TIOCM_RNG);
+   331			if (ret)
+   332				state = TTY_LED_ENABLE;
+   333		}
+   334	
+   335		/* The rx/tx handling must come after the evaluation of TIOCM_*,
+   336		 * since the display for rx/tx has priority
+   337		 */
+   338		if (test_bit(LEDTRIG_TTY_MODE_TX, &trigger_data->mode) ||
+   339		    test_bit(LEDTRIG_TTY_MODE_RX, &trigger_data->mode)) {
+   340			ret = tty_get_icount(trigger_data->tty, &icount);
+   341			if (ret) {
+   342				dev_info(trigger_data->tty->dev, "Failed to get icount, stopped polling\n");
+   343				mutex_unlock(&trigger_data->mutex);
+   344				return;
+   345			}
+   346	
+   347			if (test_bit(LEDTRIG_TTY_MODE_TX, &trigger_data->mode) &&
+   348			    (icount.tx != trigger_data->tx)) {
+   349				trigger_data->tx = icount.tx;
+   350				state = TTY_LED_BLINK;
+   351			}
+   352	
+   353			if (test_bit(LEDTRIG_TTY_MODE_RX, &trigger_data->mode) &&
+   354			    (icount.rx != trigger_data->rx)) {
+   355				trigger_data->rx = icount.rx;
+   356				state = TTY_LED_BLINK;
+   357			}
+   358		}
+   359	
+   360		switch (state) {
+   361		case TTY_LED_BLINK:
+ > 362			unsigned long interval = LEDTRIG_TTY_INTERVAL;
+   363			led_blink_set_oneshot(trigger_data->led_cdev, &interval,
+   364					      &interval, 0);
+   365			break;
+   366		case TTY_LED_ENABLE:
+   367			led_set_brightness(led_cdev, led_cdev->blink_brightness);
+   368			break;
+   369		case TTY_LED_DISABLE:
+   370			fallthrough;
+   371		default:
+   372			led_set_brightness(led_cdev, 0);
+   373			break;
+   374		}
+   375	
+   376	out:
+   377		mutex_unlock(&trigger_data->mutex);
+   378		schedule_delayed_work(&trigger_data->dwork,
+   379				      msecs_to_jiffies(LEDTRIG_TTY_INTERVAL * 2));
+   380	}
+   381	
 
-> 
-> Anyway, I'll squash this logical feature to the same patch, no matter
-> these files are not in the same tree.
-> 
-Best regards,
-Krzysztof
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
