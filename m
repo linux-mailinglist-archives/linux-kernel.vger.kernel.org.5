@@ -2,211 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1007AE8CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01277AE8C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbjIZJS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S234119AbjIZJSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbjIZJS5 (ORCPT
+        with ESMTP id S234030AbjIZJSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:18:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BF2EB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695719930; x=1727255930;
-  h=date:from:to:cc:subject:message-id;
-  bh=kSS9lV5ytWBiazRMZ2segZj+fcKjD+aqFQ0qTX7zrFQ=;
-  b=WTEdB3kcaTg6LRjdGA6BmXyUWAoPMsckHKAnVuUyNzb/LOkaqXZ3peSo
-   qYyD67GJDryRO35NQqAgp0lm+OOpBw3HeIfUxDRnQ7hEShzMavTSImbrX
-   hlj2rrJzKTQJ38o7DvgVInZMG6STGCi/2lFCaO2ZyW49vjZRq92pNiHgQ
-   4aCvalGj/NLZpkz399H76LsoES6GYoNtt6xGYDNwkwpDR4AAOSkkrKsDu
-   S/aBbW5j5K12DJBEBKD659+yQiI2aNSpp7a4Rhqn/kmfe5mSWBAM514y0
-   k4sEfifEY5eDTeHYvImcA6RZ1vS4Bu0MpYgnQBiP24zKy0K9fSH89Dr8k
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="384305171"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="384305171"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 02:18:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="752100908"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="752100908"
-Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 26 Sep 2023 02:18:48 -0700
-Received: from kbuild by 32c80313467c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ql4DO-0002et-17;
-        Tue, 26 Sep 2023 09:18:46 +0000
-Date:   Tue, 26 Sep 2023 17:18:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 8212499474cc7fcb40b0741a14536ae33b6289d0
-Message-ID: <202309261759.R4Sm1DTT-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 05:18:39 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF1EE6;
+        Tue, 26 Sep 2023 02:18:32 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c61bde0b4bso30526405ad.3;
+        Tue, 26 Sep 2023 02:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695719911; x=1696324711; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f0hzL6Zy5n9QFfiT16VCPG8PZSz7n29TeCBk1lR8NhQ=;
+        b=VbV/1ZBCDQHoE6gyQPPr1DQwm5sCSxS3HiPMTS0SwuQgLtou2nI1VaPLD1AepyQ9lw
+         6Z9HGJodvk6z4Icpe8S3nyBdJdSACjUGGr/VF4kYfy11FOMpWlCoQNn6O5ffjoSvzarp
+         cuCqUFqG5WsdNi7CHKYde1dA2JT5FZZ0zLg1gLFNP9yUobmoneRBkGDWgDp3ChDrWN0o
+         bCyUOD2WuKyx/+dGictCt4cnCKjboxruW8RZBw9KnyU2kjucrbw/AzqdhptSjOSNkNiL
+         WW5VDFO8PolxfLspW1AtEkoogqWSY7PdUSUVMlRUgiSxD73GYnYla5b6rUHniT8oEYfn
+         8tgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695719911; x=1696324711;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f0hzL6Zy5n9QFfiT16VCPG8PZSz7n29TeCBk1lR8NhQ=;
+        b=bSeP5B/OZv/HnJtKpio+l/hC6e6bUqxpJ4RXpXQUnq8Ch2RHPBaTteXwQGONvAva/q
+         7VEu1dmTFhSBe2t/hl5XUug46+FqS5QzupYdFBOcKH7Mc5COLgzrRP+bpf5drc/WApUL
+         t97zYeBVW6Dj9/7gxYRwkruX9zTkRw/d+UxeStuOezL33DKHqc6hZfvoxsdO0x39gckn
+         d9PLSVeuW6VUEo5gRtlfTb014Xh7VHgewRVi2uvCXVGR5/jSh1qSrtXw63IWt70jGTRw
+         4lqjmcs3W/9FKIwyfU+ewJCcZnvMGIVDkdl009xcbr46NgJuZQ6UtQeDDrTitTxGbz2I
+         OlKA==
+X-Gm-Message-State: AOJu0Yzcgxx+nTFfWME5hLasPZbznYuDdVC9athyK0Xa4/uxYF1TKsBz
+        oqm1kk0cm2cg4Iku4cuNp0E=
+X-Google-Smtp-Source: AGHT+IGUMWA3khfXJLe1ZUSZnRXX+YsdEtkxhUqu5kNXfMHR0XZRokyrrZoQ6rd6SRCRgKpFhfGahA==
+X-Received: by 2002:a17:903:2784:b0:1c6:19db:7b69 with SMTP id jw4-20020a170903278400b001c619db7b69mr4803321plb.66.1695719911541;
+        Tue, 26 Sep 2023 02:18:31 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001c62d63b817sm1244142pld.179.2023.09.26.02.18.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 02:18:30 -0700 (PDT)
+Message-ID: <2b86e5d5-0861-9074-ab40-df111f54c7f0@gmail.com>
+Date:   Tue, 26 Sep 2023 17:18:24 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] KVM: irqbypass: Convert producers/consumers single
+ linked list to XArray
+Content-Language: en-US
+From:   Like Xu <like.xu.linux@gmail.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>
+References: <20230802051700.52321-1-likexu@tencent.com>
+ <20230802051700.52321-3-likexu@tencent.com>
+ <20230802123017.5695fe0a.alex.williamson@redhat.com>
+ <281006fa-2db6-123e-3fb8-f99acaab2fcb@gmail.com>
+In-Reply-To: <281006fa-2db6-123e-3fb8-f99acaab2fcb@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 8212499474cc7fcb40b0741a14536ae33b6289d0  Merge branch into tip/master: 'x86/tdx'
+On 25/9/2023 11:24 pm, Like Xu wrote:
+>>> @@ -97,24 +98,23 @@ int irq_bypass_register_producer(struct 
+>>> irq_bypass_producer *producer)
+>>>       mutex_lock(&lock);
+>>> -    list_for_each_entry(tmp, &producers, node) {
+>>> -        if (tmp->token == producer->token || tmp == producer) {
+>>> -            ret = -EBUSY;
+>>> +    tmp = xa_load(&producers, token);
+>>> +    if (tmp || tmp == producer) {
+>>> +        ret = -EBUSY;
+>>> +        goto out_err;
+>>> +    }
+>>> +
+>>> +    ret = xa_err(xa_store(&producers, token, producer, GFP_KERNEL));
+>>> +    if (ret)
+>>> +        goto out_err;
+>>> +
+>>> +    consumer = xa_load(&consumers, token);
+>>> +    if (consumer) {
+>>> +        ret = __connect(producer, consumer);
+>>> +        if (ret)
+>>>               goto out_err;
+>>
+>> This doesn't match previous behavior, the producer is registered to the
+>> xarray regardless of the result of the connect operation and the caller
+>> cannot distinguish between failures.  The module reference is released
+>> regardless of xarray item.  Nak.
+> 
+> Hi Alex,
+> 
+> Thanks for your comments and indeed, the additional error throwing logic
+> breaks the caller's expectations as you said.
+> 
+> What if we use LIST as a fallback option for XARRAY? Specifically, when
+> xa_err(xa_store()) is true, then fallback to use LIST to check for
+> producers/consumers, and in most cases it still takes the XARRAY path:
+> 
+>      static DEFINE_XARRAY(xproducers);
+>      ...
+>      if (xa_err(xa_store(&xproducers, (unsigned long)producer->token,
+>                  producer, GFP_KERNEL)))
+>          list_add(&producer->node, &producers);
+>      ...
+> 
+> There will also be a LIST option on the lookup path.
+> 
+> The rough code already works, could we move in this direction (combining
+> XARRAY with LIST to hidden the memory allocation error from xa_store) ?
 
-elapsed time: 1372m
+For better discussion and further improvement, here's the draft code combining
+xarray and list, using both xarray and list to store producers and consumers,
+but with xarray preferred for queries:
 
-configs tested: 134
-configs skipped: 2
+diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
+index e0aabbbf27ec..7cc30d699ece 100644
+--- a/virt/lib/irqbypass.c
++++ b/virt/lib/irqbypass.c
+@@ -18,12 +18,15 @@
+  #include <linux/list.h>
+  #include <linux/module.h>
+  #include <linux/mutex.h>
++#include <linux/xarray.h>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  MODULE_LICENSE("GPL v2");
+  MODULE_DESCRIPTION("IRQ bypass manager utility module");
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230925   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230925   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230925   gcc  
-i386         buildonly-randconfig-002-20230925   gcc  
-i386         buildonly-randconfig-003-20230925   gcc  
-i386         buildonly-randconfig-004-20230925   gcc  
-i386         buildonly-randconfig-005-20230925   gcc  
-i386         buildonly-randconfig-006-20230925   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230925   gcc  
-i386                  randconfig-002-20230925   gcc  
-i386                  randconfig-003-20230925   gcc  
-i386                  randconfig-004-20230925   gcc  
-i386                  randconfig-005-20230925   gcc  
-i386                  randconfig-006-20230925   gcc  
-i386                  randconfig-011-20230925   gcc  
-i386                  randconfig-012-20230925   gcc  
-i386                  randconfig-013-20230925   gcc  
-i386                  randconfig-014-20230925   gcc  
-i386                  randconfig-015-20230925   gcc  
-i386                  randconfig-016-20230925   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230925   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230925   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230925   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230926   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230925   gcc  
-x86_64       buildonly-randconfig-002-20230925   gcc  
-x86_64       buildonly-randconfig-003-20230925   gcc  
-x86_64       buildonly-randconfig-004-20230925   gcc  
-x86_64       buildonly-randconfig-005-20230925   gcc  
-x86_64       buildonly-randconfig-006-20230925   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230925   gcc  
-x86_64                randconfig-002-20230925   gcc  
-x86_64                randconfig-003-20230925   gcc  
-x86_64                randconfig-004-20230925   gcc  
-x86_64                randconfig-005-20230925   gcc  
-x86_64                randconfig-006-20230925   gcc  
-x86_64                randconfig-011-20230925   gcc  
-x86_64                randconfig-012-20230925   gcc  
-x86_64                randconfig-013-20230925   gcc  
-x86_64                randconfig-014-20230925   gcc  
-x86_64                randconfig-015-20230925   gcc  
-x86_64                randconfig-016-20230925   gcc  
-x86_64                randconfig-071-20230925   gcc  
-x86_64                randconfig-072-20230925   gcc  
-x86_64                randconfig-073-20230925   gcc  
-x86_64                randconfig-074-20230925   gcc  
-x86_64                randconfig-075-20230925   gcc  
-x86_64                randconfig-076-20230925   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+  static LIST_HEAD(producers);
+  static LIST_HEAD(consumers);
++static DEFINE_XARRAY(xproducers);
++static DEFINE_XARRAY(xconsumers);
+  static DEFINE_MUTEX(lock);
 
+  /* @lock must be held when calling connect */
+@@ -74,6 +77,117 @@ static void __disconnect(struct irq_bypass_producer *prod,
+  		prod->start(prod);
+  }
+
++#define CHECK_TOKEN	BIT_ULL(0)
++#define CHECK_POINTER	BIT_ULL(1)
++
++static inline bool
++producer_already_exist(struct irq_bypass_producer *producer, u64 flags)
++{
++	struct irq_bypass_producer *tmp;
++
++	if (((flags & CHECK_POINTER) && xa_load(&xproducers,
++						(unsigned long)producer)) ||
++	    ((flags & CHECK_TOKEN) && xa_load(&xproducers,
++					      (unsigned long)producer->token)))
++		return true;
++
++	list_for_each_entry(tmp, &producers, node) {
++		if (((flags & CHECK_POINTER) && tmp == producer) ||
++		    ((flags & CHECK_TOKEN) && tmp->token == producer->token))
++			return true;
++	}
++
++	return false;
++}
++
++static inline bool
++consumer_already_exist(struct irq_bypass_consumer *consumer, u64 flags)
++{
++	struct irq_bypass_consumer *tmp;
++
++	if (((flags & CHECK_POINTER) && xa_load(&xconsumers,
++						(unsigned long)consumer)) ||
++	    ((flags & CHECK_TOKEN) && xa_load(&xconsumers,
++					      (unsigned long)consumer->token)))
++		return true;
++
++	list_for_each_entry(tmp, &consumers, node) {
++		if (((flags & CHECK_POINTER) && tmp == consumer) ||
++		    ((flags & CHECK_TOKEN) && tmp->token == consumer->token))
++			return true;
++	}
++
++	return false;
++}
++
++static inline struct irq_bypass_producer *get_producer_by_token(void *token)
++{
++	struct irq_bypass_producer *tmp;
++
++	tmp = xa_load(&xproducers, (unsigned long)token);
++	if (tmp)
++		return tmp;
++
++	list_for_each_entry(tmp, &producers, node) {
++		if (tmp->token == token)
++			return tmp;
++	}
++
++	return NULL;
++}
++
++static inline struct irq_bypass_consumer *get_consumer_by_token(void *token)
++{
++	struct irq_bypass_consumer *tmp;
++
++	tmp = xa_load(&xconsumers, (unsigned long)token);
++	if (tmp)
++		return tmp;
++
++	list_for_each_entry(tmp, &consumers, node) {
++		if (tmp->token == token)
++			return tmp;
++	}
++
++	return NULL;
++}
++
++static inline void add_irq_bypass_producer(struct irq_bypass_producer *producer)
++{
++	xa_store(&xproducers, (unsigned long)producer->token,
++		 producer, GFP_KERNEL);
++	xa_store(&xproducers, (unsigned long)producer,
++		 producer, GFP_KERNEL);
++
++	list_add(&producer->node, &producers);
++}
++
++static inline void del_irq_bypass_producer(struct irq_bypass_producer *producer)
++{
++	xa_erase(&xproducers, (unsigned long)producer->token);
++	xa_erase(&xproducers, (unsigned long)producer);
++
++	list_del(&producer->node);
++}
++
++static inline void add_irq_bypass_consumer(struct irq_bypass_consumer *consumer)
++{
++	xa_store(&xconsumers, (unsigned long)consumer->token,
++		 consumer, GFP_KERNEL);
++	xa_store(&xconsumers, (unsigned long)consumer,
++		 consumer, GFP_KERNEL);
++
++	list_add(&consumer->node, &consumers);
++}
++
++static inline void del_irq_bypass_consumer(struct irq_bypass_consumer *consumer)
++{
++	xa_erase(&xconsumers, (unsigned long)consumer->token);
++	xa_erase(&xconsumers, (unsigned long)consumer);
++
++	list_del(&consumer->node);
++}
++
+  /**
+   * irq_bypass_register_producer - register IRQ bypass producer
+   * @producer: pointer to producer structure
+@@ -83,7 +197,6 @@ static void __disconnect(struct irq_bypass_producer *prod,
+   */
+  int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+  {
+-	struct irq_bypass_producer *tmp;
+  	struct irq_bypass_consumer *consumer;
+  	int ret;
+
+@@ -97,23 +210,19 @@ int irq_bypass_register_producer(struct irq_bypass_producer 
+*producer)
+
+  	mutex_lock(&lock);
+
+-	list_for_each_entry(tmp, &producers, node) {
+-		if (tmp->token == producer->token || tmp == producer) {
+-			ret = -EBUSY;
++	if (producer_already_exist(producer, CHECK_TOKEN | CHECK_POINTER)) {
++		ret = -EBUSY;
++		goto out_err;
++	}
++
++	consumer = get_consumer_by_token(producer->token);
++	if (consumer) {
++		ret = __connect(producer, consumer);
++		if (ret)
+  			goto out_err;
+-		}
+  	}
+
+-	list_for_each_entry(consumer, &consumers, node) {
+-		if (consumer->token == producer->token) {
+-			ret = __connect(producer, consumer);
+-			if (ret)
+-				goto out_err;
+-			break;
+-		}
+-	}
+-
+-	list_add(&producer->node, &producers);
++	add_irq_bypass_producer(producer);
+
+  	mutex_unlock(&lock);
+
+@@ -134,7 +243,6 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_producer);
+   */
+  void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+  {
+-	struct irq_bypass_producer *tmp;
+  	struct irq_bypass_consumer *consumer;
+
+  	if (!producer->token)
+@@ -147,20 +255,13 @@ void irq_bypass_unregister_producer(struct 
+irq_bypass_producer *producer)
+
+  	mutex_lock(&lock);
+
+-	list_for_each_entry(tmp, &producers, node) {
+-		if (tmp != producer)
+-			continue;
++	if (producer_already_exist(producer, CHECK_POINTER)) {
++		consumer = get_consumer_by_token(producer->token);
++		if (consumer)
++			__disconnect(producer, consumer);
+
+-		list_for_each_entry(consumer, &consumers, node) {
+-			if (consumer->token == producer->token) {
+-				__disconnect(producer, consumer);
+-				break;
+-			}
+-		}
+-
+-		list_del(&producer->node);
++		del_irq_bypass_producer(producer);
+  		module_put(THIS_MODULE);
+-		break;
+  	}
+
+  	mutex_unlock(&lock);
+@@ -178,7 +279,6 @@ EXPORT_SYMBOL_GPL(irq_bypass_unregister_producer);
+   */
+  int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+  {
+-	struct irq_bypass_consumer *tmp;
+  	struct irq_bypass_producer *producer;
+  	int ret;
+
+@@ -193,23 +293,19 @@ int irq_bypass_register_consumer(struct 
+irq_bypass_consumer *consumer)
+
+  	mutex_lock(&lock);
+
+-	list_for_each_entry(tmp, &consumers, node) {
+-		if (tmp->token == consumer->token || tmp == consumer) {
+-			ret = -EBUSY;
++	if (consumer_already_exist(consumer, CHECK_TOKEN | CHECK_POINTER)) {
++		ret = -EBUSY;
++		goto out_err;
++	}
++
++	producer = get_producer_by_token(consumer->token);
++	if (producer) {
++		ret = __connect(producer, consumer);
++		if (ret)
+  			goto out_err;
+-		}
+  	}
+
+-	list_for_each_entry(producer, &producers, node) {
+-		if (producer->token == consumer->token) {
+-			ret = __connect(producer, consumer);
+-			if (ret)
+-				goto out_err;
+-			break;
+-		}
+-	}
+-
+-	list_add(&consumer->node, &consumers);
++	add_irq_bypass_consumer(consumer);
+
+  	mutex_unlock(&lock);
+
+@@ -230,7 +326,6 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_consumer);
+   */
+  void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+  {
+-	struct irq_bypass_consumer *tmp;
+  	struct irq_bypass_producer *producer;
+
+  	if (!consumer->token)
+@@ -243,20 +338,13 @@ void irq_bypass_unregister_consumer(struct 
+irq_bypass_consumer *consumer)
+
+  	mutex_lock(&lock);
+
+-	list_for_each_entry(tmp, &consumers, node) {
+-		if (tmp != consumer)
+-			continue;
++	if (consumer_already_exist(consumer, CHECK_POINTER)) {
++		producer = get_producer_by_token(consumer->token);
++		if (producer)
++			__disconnect(producer, consumer);
+
+-		list_for_each_entry(producer, &producers, node) {
+-			if (producer->token == consumer->token) {
+-				__disconnect(producer, consumer);
+-				break;
+-			}
+-		}
+-
+-		list_del(&consumer->node);
++		del_irq_bypass_consumer(consumer);
+  		module_put(THIS_MODULE);
+-		break;
+  	}
+
+  	mutex_unlock(&lock);
+@@ -264,3 +352,10 @@ void irq_bypass_unregister_consumer(struct 
+irq_bypass_consumer *consumer)
+  	module_put(THIS_MODULE);
+  }
+  EXPORT_SYMBOL_GPL(irq_bypass_unregister_consumer);
++
++static void __exit irqbypass_exit(void)
++{
++	xa_destroy(&xproducers);
++	xa_destroy(&xconsumers);
++}
++module_exit(irqbypass_exit);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
