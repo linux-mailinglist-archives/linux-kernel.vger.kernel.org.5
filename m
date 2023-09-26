@@ -2,101 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F17517AEC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8915E7AEC3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbjIZMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
+        id S234490AbjIZMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjIZMPW (ORCPT
+        with ESMTP id S230231AbjIZMOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:15:22 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7FCEB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:14:53 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-578af21ff50so5136094a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:14:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695730493; x=1696335293; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iVLSnPZRPh3IUGltAtRx2kbSqd+69xY7hEP2Xyp16EU=;
-        b=LBFmnCyEd/x7Gk7PTeqxr/J7ygAU/r/JeyY5rPz7+WAWGgrJiv+A+eBoNEFTKI9rWH
-         JlLMmae3nVk2Xjo/VlULeyhk0i3isHoYZqoCgk5na9nZn7Cu1e0I0CqO+jFJ2OF9r2LG
-         vFqI5CO8hh4N2nWoNtTgTUOr/WzIGUU5vxJ4hZALSdKCzunc69o6J7B/caVXGC2ANxOA
-         J6kzrYv25YyuUjVgpxEhcwsWvuPMpQuimW2To5amJqhNdXsKIStp47DGkmZiZRCppAXR
-         BeYf91I8OJoh//HQE3uH5XZXXJNhSDXNhL4yPN4IRGRzZgqgDPmohe9ltkM/f6tRFH2s
-         uN6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695730493; x=1696335293;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVLSnPZRPh3IUGltAtRx2kbSqd+69xY7hEP2Xyp16EU=;
-        b=R2wa/oxljbBMnwu1umrHmBjqW4QNNjYoCRBSzVku3N0cepEvmFaZJKJmu9ASKe1tIn
-         44dNvSvfvCZ3e2jl4Kho6d2cMI9kuxfwh5SW/ierFhGOnnw8nPjAWBHd52Co9h9pYRd/
-         CChZsLY1q2GfOCpeXpRbh/gp2O2APnYLYqSk+rOog7sgcX7nyaFxSRSk2W2XFC41aILQ
-         K48Id5UWpGiJTzysvnQvkOXdezI1hYvWwmMQOoN2riswPfExHh9vQsUGpqIO4hqtf/Lj
-         XG0I293GlqEoh8gr//kvD22oiKXEb6oRTBpbVK5e/87NmZi0EDTSQbekiaPuSUYW04Ou
-         oGTQ==
-X-Gm-Message-State: AOJu0Yyn9DbLRmI2Ja1zr5rjb0y/A50fnlIwXYMpwMqr7bhtEwOEwSMj
-        CgfKLwF2CHwpngTurqxSufe577ZlmvQM7sc3Kr8=
-X-Google-Smtp-Source: AGHT+IEa93Ct9s9tsQY7buH3wVw5Mh85PiJ/K776BQHAxbMbhQACaWHOUvcg6nPCndJM1yhg6s5xjQ==
-X-Received: by 2002:a05:6a20:1398:b0:15e:240:3c35 with SMTP id hn24-20020a056a20139800b0015e02403c35mr6660012pzc.31.1695730493191;
-        Tue, 26 Sep 2023 05:14:53 -0700 (PDT)
-Received: from ?IPV6:2409:8a28:e65:17d0:d15f:5a75:dc09:b72? ([2409:8a28:e65:17d0:d15f:5a75:dc09:b72])
-        by smtp.gmail.com with ESMTPSA id x52-20020a056a000bf400b0068fb8080939sm9883990pfu.65.2023.09.26.05.14.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 05:14:52 -0700 (PDT)
-Message-ID: <826082e4-8b67-429b-951b-ae3f69455791@bytedance.com>
-Date:   Tue, 26 Sep 2023 20:14:43 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] sched/psi: bail out early from irq time accounting
-To:     Haifeng Xu <haifeng.xu@shopee.com>, hannes@cmpxchg.org
-Cc:     surenb@google.com, peterz@infradead.org,
+        Tue, 26 Sep 2023 08:14:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6E9EB
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:14:48 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0EC3021836;
+        Tue, 26 Sep 2023 12:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695730487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYXIgN38Y0GdmKnbBuf8KHd79V4STyBCtzwu6CZCTRQ=;
+        b=O55PRIhDR0m70UWp1gwXJ1nJyAsfGUKHbm1aRDnh/FeG1QySA1QamiTEkB2EGG8o6ckpd6
+        EAGC0NmR1W9Glv67X3e0mzvwRE5jZoONKyAflnyJxs6X0ZFo4JwemNSKXfrX2wPMkVo/IO
+        dlKxCGZQJQ+Fa8fuV1wOJSv+fvwK0YA=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A82302C142;
+        Tue, 26 Sep 2023 12:14:46 +0000 (UTC)
+Date:   Tue, 26 Sep 2023 14:14:46 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-References: <20230925123106.GB347250@cmpxchg.org>
- <20230926115722.467833-1-haifeng.xu@shopee.com>
-Content-Language: en-US
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20230926115722.467833-1-haifeng.xu@shopee.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH printk v2 06/11] printk: nbcon: Wire up nbcon console
+ atomic flushing
+Message-ID: <ZRLLNh4g_BiwxIsA@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-7-john.ogness@linutronix.de>
+ <ZQ3R4Lz1LHQYsylw@alley>
+ <87a5tabchs.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5tabchs.fsf@jogness.linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/26 19:57, Haifeng Xu wrote:
-> We could bail out early when psi was disabled.
+On Mon 2023-09-25 15:43:03, John Ogness wrote:
+> On 2023-09-22, Petr Mladek <pmladek@suse.com> wrote:
+> >> console_flush_on_panic() - Called from several call sites to
+> >> 	trigger ringbuffer dumping in an urgent situation.
+> >> 
+> >> console_flush_on_panic() - Typically the panic() function will
+> >
+> > This is a second description of console_flush_of_panic() which
+> > looks like a mistake.
 > 
-> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> ---
->  kernel/sched/psi.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Oops. The first one should not be there.
 > 
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index 81fca77397f6..e74e14762d49 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -1005,6 +1005,9 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
->  	struct psi_group_cpu *groupc;
->  	u64 now;
->  
-> +	if (static_branch_likely(&psi_disabled))
-> +		return;
-> +
->  	if (!task->pid)
->  		return;
->  
+> >> 	take care of atomic flushing the nbcon consoles on
+> >> 	panic. However, there are several users of
+> >> 	console_flush_on_panic() outside of panic().
+> >
+> > The generic panic() seems to use console_flush_on_panic() correctly
+> > at the very end.
+> >
+> > Hmm, I see that console_flush_on_panic() is called also in
+> 
+> [...]
+> 
+> > Anyway, we should make clear that console_flush_on_panic() might break
+> > the system and should be called as the last attempt to flush consoles.
+> > The above arch-specific users are worth review.
+> 
+> In an upcoming series you will see that console_flush_on_panic() only
+> takes the console lock if there are legacy consoles. Ideally, eventually
+> there will only be nbcon consoles, so your concern would disappear.
 
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+The legacy consoles have two risk levels:
 
-Thanks.
+  1. post->lock is ignored after bust_spinlocks()
+  2. even console_lock is ignored in console_flush_on_panic()
+
+The nbcon consoles have only one risk level:
+
+  1. unsafe takeover is allowed
+
+First, I thought that we wanted to allow the unsafe takeover in
+console_flush_on_panic(). In that case, this function would
+be dangerous even for nbcon consoles.
+
+Now, I remember that we wanted to allow it only before entering
+the infinite loop (blinking diodes). In this case,
+console_flush_on_panic() would be really safe for nbcon consoles.
+
+
+> And if those users continue to use legacy consoles, then the risks will
+> be the same as now.
+> 
+> >>   * Return:	The previous priority that needs to be fed into
+> >>   *		the corresponding nbcon_atomic_exit()
+> >>   * Context:	Any context. Disables migration.
+> >> + *
+> >> + * When within an atomic printing section, no atomic printing occurs. This
+> >> + * is to allow all emergency messages to be dumped into the ringbuffer before
+> >> + * flushing the ringbuffer.
+> >
+> > The comment sounds like it is an advantage. But I think that it would be
+> > a disadvantage.
+> 
+> Please explain. At LPC2022 we agreed it was an advantage and it is
+> implemented on purpose using the atomic printing sections.
+
+I am sorry but I do not remember the details. Do you remember
+the motivation, please?
+
+In each case, we can't just say that this works by design
+because someone somewhere agreed on it. We must explain
+why this is better and I do not see it at the moment.
+
+I am terribly sorry if I agreed with this and I disagree now.
+I have never been good in life discussion because there is
+no enough time to think about all consequences.
+
+Anyway, the proposed behavior (agreed on LPC2022) seems
+to contradict the original plan from LPC 2019, see
+https://lore.kernel.org/all/87k1acz5rx.fsf@linutronix.de/
+Namely:
+
+  --- cut ---
+  3. Rather than defining emergency _messages_, we define an emergency
+  _state_ where the kernel wants to flush the messages immediately before
+  dying. Unlike oops_in_progress, this state will not be visible to
+  anything outside of the printk infrastructure.
+
+  4. When in emergency state, the kernel will use a new console callback
+  write_atomic() to flush the messages in whatever context the CPU is in
+  at that moment. Only consoles that implement the NMI-safe write_atomic()
+  will be able to flush in this state.
+  --- cut ---
+
+We wanted to flush it ASAP.
+
+I wonder if we discussed some limitations where the messages
+could not be flushed immediately. Maybe, we discussed a scenario
+when there are many pending messages which would delay
+flushing the emergency ones. But we need to flush them anyway.
+
+Now, I do not see any real advantage to first store all messages
+and flush them later in the same context.
+
+OK, flushign them immediately might cause delay when flushing the
+first emergency one. But storing all might cause overwrinting
+the first emergency messages.
+
+I hope that my proposed change would actually make things easier
+and will not affect that much the upcoming patchsets.
+
+Best Regards,
+Petr
