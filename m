@@ -2,167 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7B47AF790
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 02:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968C27AF7A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbjI0AzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 20:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S234254AbjI0BWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 21:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjI0AxH (ORCPT
+        with ESMTP id S234890AbjI0BUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 20:53:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B7F93F4;
-        Tue, 26 Sep 2023 15:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695766485; x=1727302485;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=caz7/tC7rOobkBGGqDTpY/LDudW6QnKOwHJ6w5igPnY=;
-  b=Fv+o/1ocNQoPq9CCciQcK7uddYs8eR7QO2l9sZV8q9l+IoVUFXOeTZkX
-   hLECj80QU/CoJtBhKipv6IfQAJRQy3Jp1mKFBeQbmRIOVNvoBZ5MPI4Jk
-   PTjc5sHcMHhj9t4G3ZrWehk28DgtjMYj2sSzow51rqBX2LR0QocOFQZrK
-   vzB8bEpfDHzCJ89MEUrxFHED/eGvf74fpoi+JkDdUpZJziya+K8CUdLUh
-   aLJRxUv8Ul21e0gVopD4o7/AhJOyPD6DCI/65vSDfoaBeeInPxrSf+HNp
-   eOzLOe4v/+tvKkuH4PXxu9JqfCv0AGGShXBwstebmRyxjcdK4/SOrXpRh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="385530720"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="385530720"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 15:01:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="778298823"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="778298823"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 15:01:06 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 15:01:05 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 15:01:05 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 15:01:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WV62Xu2kkz3Rww13R9byIK42teBVltobAygS2GEHA8mCn9XhW0XQFZFhEWlr/8qX1ap6vW7i4sAp9GmXQNBZ0V4ijnif4Put+gucCv9aEZ43hwfIPcrTeZZ1iiJAZaE1X8g5SH2rbQF/gbDzJqVi0Ns+l4bXKylP+EwFRFQ8fsEYWXX5QPmD2DxpvcdVEO0WgWlGcrDGCFrKqafFGoE08M4g0Ss9DX1gz3mLJ7DoqY3QfonnxSXw0zUkViVTqc98Bzha1FXASo65PkfRJ+rCgFDkECRc+zJf6v1rMgE0mou/zf2u69VxPxJPw7ctyR7d911XyR/Xqi9L/bec6YCL2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M4G7+LQRPzqu4vqk8t16CjMbJJin8N4ios/K6vPLFyQ=;
- b=H/PwRbbyOJF+HWm0PRk8esygBaESdCw3uzVQhrhk+//DgI84kIe3aRsJgUq0J0CF5//5CAGtURti90c41e57X1El6KK+ePiK98a8Jkd2b69SvkS856AYpVLYn+fTZXLBUcWk83XesFVYeE27EE0V532vwss0hE2EjpgrudbR9TQKLmbM7hkorhWE5Ldh7nABed0gUovqu3Lx4ePGkol2mE+U3xm0q/2xYayI978kTln0P99h1bksspuSrXSN5qADIumgqHXdhFn5g23Ve61K1ixIlweFgc/wzyCUAq11dV6b3EBdXZEX/6XMVAQYZgwSzjGjozdGERYkwBA+6BFXBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CH0PR11MB5538.namprd11.prod.outlook.com (2603:10b6:610:d5::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Tue, 26 Sep
- 2023 22:01:02 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Tue, 26 Sep 2023
- 22:01:01 +0000
-Message-ID: <5b2fd31e-3cef-3c35-7d17-411cea27502a@intel.com>
-Date:   Tue, 26 Sep 2023 15:00:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v5 3/8] x86/resctrl: Split the rdt_domain structure
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, <x86@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <patches@lists.linux.dev>
-References: <20230722190740.326190-1-tony.luck@intel.com>
- <20230829234426.64421-1-tony.luck@intel.com>
- <20230829234426.64421-4-tony.luck@intel.com>
- <5f1256d3-737e-a447-abbe-f541767b2c8f@intel.com>
- <ZRMnCFWzcxa6Qa4E@agluck-desk3>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <ZRMnCFWzcxa6Qa4E@agluck-desk3>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P222CA0021.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::26) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Tue, 26 Sep 2023 21:20:02 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B1726BF;
+        Tue, 26 Sep 2023 15:45:01 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so9794456f8f.1;
+        Tue, 26 Sep 2023 15:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695768299; x=1696373099; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yFQJ8D+sSFOYvK98iDZQWiRqQc78CyhpZfXgoVc4/N8=;
+        b=joVpUxe20IggQRCD0Xo4k0cEdF4sn4efbdtKWyTg60/gX5MbjcumR5DBFSz11OsLQr
+         nrhG4rb6LVKZd2luN3FNYa/cE7qjOPDCk1BQgqToSObPPTJl1gA9RzebmndBz235QrQx
+         AAMnUFTfFtta7fauVP/Txw1/T49gHTeesRImfSPMGggXu3qqWpugU1GyPVSv6x22q1Av
+         R7MCbkyIrBm0JIw7osuru35A1/ibC+3ogJxI0Q4b3ogiYJdrpi1LAPZOi9Gj/tT3ePqe
+         4SZLppnlbrzkgV4F8jj1LZyZQeowSXCrFZITP6GkoySeC9qFVEpxcH1Pi0oND7SXZez4
+         3IqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695768299; x=1696373099;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yFQJ8D+sSFOYvK98iDZQWiRqQc78CyhpZfXgoVc4/N8=;
+        b=Dg8RSqws5Qm8MEpi1UenLGWu0OLvPZ6SOJValFg9mnwBwjtj+8YFNCCqjelaM9zEeZ
+         qPPyoT4zNm7OSflnXns2HzsCALPaX7VP1WWFXJTqxJcs6gl86JpcDuG2zoVRPokOhLNN
+         a/6hsY6ogpknWOd3e0pU8OydpzxeDQXMte5ynb7Et/1wpm8ETXhSEAc/bFQ7Z8/Em5iT
+         tK1AZf6aWARjGnw/o18vY3AenYpsXIWa7OZEUOcr1vF5iqLynFEk7KtUVJUXEb714O1w
+         ZFKddyOLFm+oi+kqxnDdzDJGNPcwvijESfRbGeAiNTYYxgkA1WqYZsBp7HxyS3lRQNL9
+         NG+g==
+X-Gm-Message-State: AOJu0YwLsARqZ3Vktv6pVxd+CJctQmjmVBXnjHhVOhTJnIWeu2oU8ESc
+        Vk9ocS8LDGNpoEhsK/FozP8=
+X-Google-Smtp-Source: AGHT+IHBiO5RzUxun2eesmCq4TU4wyXDvDMgwXx6usXKaVMDNKDG8lWAAEa+cz7bASW4wgcxABFDyg==
+X-Received: by 2002:a5d:6a8a:0:b0:31f:a136:96c6 with SMTP id s10-20020a5d6a8a000000b0031fa13696c6mr55213wru.42.1695768299218;
+        Tue, 26 Sep 2023 15:44:59 -0700 (PDT)
+Received: from skbuf ([188.25.161.12])
+        by smtp.gmail.com with ESMTPSA id k20-20020a170906681400b009adca8ada31sm8458045ejr.12.2023.09.26.15.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 15:44:58 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 01:44:56 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>,
+        George McCollister <george.mccollister@gmail.com>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v6 net-next 1/5] net: dsa: propagate extack to
+ ds->ops->port_hsr_join()
+Message-ID: <20230926224456.h6eupvuyyl2qahpo@skbuf>
+References: <20230922133108.2090612-1-lukma@denx.de>
+ <20230922133108.2090612-2-lukma@denx.de>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH0PR11MB5538:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67ec9a39-530f-483d-97b1-08dbbedc06a9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LYjdCB4QeBM+8i4KZK6KSQFrOnA6kLPxRAi3QbGsCbNN574O0Bi+BLGss141G4GnX3YYGCaH29UMF9MIMbYv38l50qzQaXWl9uC8RQrVRP3+FJK76Ljvo+0FAUyhAsc6k2WCM/8DtgexQvq0R+9rlEEl7kj5tOb0gmhEE4q3cClN4HMLE48JsS/FsjZ9zjLw1Uf4hoBC7VuoheMiD5pPIbc5jIgpLRTpwsjtsn5SGmpOLfcSC9bW0oUWt0lG/1m6XYTwnL6nljMtdA+nP6J08JKocqqypzsOKALEzIsMIbK6WUZhxrwAhvenlVPPYNVLEnnbitwW2APuCSvYM+RiopQVmdY+qnV7+jmioOTBWJ/j1bWYeguAFQhvxISzBe7HS/JgNU2Q7LSYjxe4i8FZZAM8S+N5L6aMRoV2lHyL/xzx5Am7TvBwy6ajryzFIwsSgM2sFez2becIVfjSeAVHAHWcOqO+hn+NF7N1ZRLSBL+4luSBuZvd135CdVd9JMX5uO4ir5jvr5ymYDqi40KGi1VRdpeqLuih2KbIGEUKgrl2xlYuZ+8O/krvA+ZgZQFPkfqVkgXfLsm4vrL3VLdxluOI0PS89LuJ4PZAlekd9MBePKkOS/+IIcltWPtyThO+1O53GCWKvdSZsHDhJ4ZZAA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(376002)(136003)(230922051799003)(186009)(451199024)(1800799009)(7416002)(31686004)(2906002)(5660300002)(6862004)(8936002)(44832011)(8676002)(4326008)(66946007)(66556008)(66476007)(478600001)(6666004)(6506007)(86362001)(6486002)(53546011)(2616005)(6512007)(31696002)(316002)(6636002)(26005)(38100700002)(41300700001)(36756003)(83380400001)(37006003)(54906003)(82960400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UjZKWVlnMzY1dmdxRHUxOXNpYUxra2lzS0pnaTEvYUZ0d2ZpUHNHa1l4QzEy?=
- =?utf-8?B?TktlRUFMK2Vjb1BHM2JhUDlzKzJlNm5UMGdXd1hPTmRSTmNGT2tJZXk5Rldh?=
- =?utf-8?B?ODhEQUtNazFobFhQcDRvakJQRVZqRHBVL1I3Mzc4cUJwb0JOZkRKS3BSdzcx?=
- =?utf-8?B?U1VEd1FlNnQ1b3lQelBjOHd6V01kOFdCUWFER1JadE5pb1Y1VmdDbTdrR09q?=
- =?utf-8?B?MjIwd3J5YkJRdFNPL0FlOVIyZk1yVWZPUGRQMmhHREVONEZJNmFYcU41MXhB?=
- =?utf-8?B?UTk2aWE4TWhEakhIN1dUM3hSWDJQcHpuUVRBVzJaNExEd0xhUkZkTGo0NE1y?=
- =?utf-8?B?L25UR2wrUlNUVmxRWVFpUDRPdHhmYUtwN2FtSnpibUJLYURUTXZaSjBPLzE5?=
- =?utf-8?B?eDFsVHkyaDVQWlNvNDhGUnRibXd5YnQ5YXlYUzQ4YVdBL1JHdWdiZCtKV055?=
- =?utf-8?B?UGRUSkVYaUF3OWFvZml4TlZ0L1c1SWFXbEdjZW4yTk4wVnFCeHREK0ZPN0Uz?=
- =?utf-8?B?NzZKUWg3clh4ZGNYd0ZKUm1lcUNSMVFicVVpdm1SQjYyOUkzK3NLYmc4VWd2?=
- =?utf-8?B?Z0JTZ2ZLWVpqQ05NNGw2czR2b2wwbnhlL3JDNmJ5RjJHWnAzaWUwMUx6VXJs?=
- =?utf-8?B?NFhRUnA3eGtJaFZrUFc0MlNMYXlqNFFmeHVtS3k1WG1yeXRHU3FsWFlBNm5z?=
- =?utf-8?B?SURTSXA4bnJIU3F0SzF4em42aDE1cU5QL0RXdXJ5bnh4cXVGQnZCLzhKWFo2?=
- =?utf-8?B?Wkh2TFl3eFJTVTRqOXdIZW84b0RWZHlkUHhqcVo0cTRRT2N1MzQ4Wnc2Q3Zm?=
- =?utf-8?B?Rm9uaTc5K1Z6Y003dU1XMjFld0lQQ1pDYWI1UEpXTDgvbmYzWWhkM3lYNDl4?=
- =?utf-8?B?N01VRDcrUERmcnJIRFZuLzc1S01IcHJaMTJLMm1iRGE0NnVEd1Z3TkJLRkZE?=
- =?utf-8?B?eUZ0OGlWN3VhUmVUcndjQ09OQ3FLVitqU2pkTXN0ZHE5N0VlR2lKem9NeW5v?=
- =?utf-8?B?eFFzTU5ObUw2MVo1aDg2OWpSQjRrTmovbllGK2Zrb2JkOVpGT2JmSVdJM1Ja?=
- =?utf-8?B?WFVPbHVoTzRsK3c4OXVlQ3lJSUFLL3pEc2tGSitHTE1xa0RIYWVQNTZBM2ZH?=
- =?utf-8?B?a2pySndJaElyMFk3MDM2YncrTDhRUXJOaHpvUVB5RW1XT3lXYjJOcWZYVHhx?=
- =?utf-8?B?ZE9yUlBLM0Y0QWZFWEhXTTZwWDZ0eHBjR3JWbm9iY1JQTEtGQjMxK2lMUmlo?=
- =?utf-8?B?aUI2R0dsei95KzJGQkJ4bmk0ME15QW4yRTV6bmFmTUQ3L0JoMVNZdlE1cXV3?=
- =?utf-8?B?dVd4a1BNWkVGalUrNml2ajdWNk05YUZJZGpJU01mTGZvZWF1R2VQZVFhUUww?=
- =?utf-8?B?OHBwZEdsaFBqV2M0L0dhMnRVZ3JjL1JmU0R1Q2R5VnFiLzZJVjdpSmRzdjlC?=
- =?utf-8?B?cDREVjVqaXdWRW11RGMxVng0dDh2UlZOZ2RJdmNWQzRDaHlJV2JnQTU1eC9J?=
- =?utf-8?B?Nlo2T2ZtR2VVQVVSWXc3dmFqVVJSYkpiOUdCMG5HYUVuRFJxZWVSdXQya3h0?=
- =?utf-8?B?ZUJrRDNtQ3VuWXJYL1AzTnB4cHZIR2xOaHhKcC84dk1xc29nMjNydXl5eVhS?=
- =?utf-8?B?dVBoZDBQTFlJbzQrcktla1M1SWlGTGNSSmNsVjhvUFZMTlBHaWpDY09sMy93?=
- =?utf-8?B?Z1h1cWJCSWppWUZHeHVNcnhLYnc2bktiZ0Z4OXA4dkFFUC85cnJIRHI2amZX?=
- =?utf-8?B?ZlBTMGw4NU5VeXdzRjFYY3o0QmpGenR2WmtlbGRnd2lpN2NsempTaWVRTGxX?=
- =?utf-8?B?RzRYSExqM1BncU15K3hSTGpsZEhpNVV0cFZIdndUcEpoNUk4eHJzYTN5WnNH?=
- =?utf-8?B?UFFWRm1BdVJwMjk1dlBpbWVPQW9qYy9VMytaRlJMN3VSMWNBNUlhZjJ2dDFV?=
- =?utf-8?B?WGhNb1JzdFFQVDZtUkpsbmFUdGxZYWRXZmpFYXp6RlR4bHliUU0vTENWUzY4?=
- =?utf-8?B?d2pJU2Q5VWZ5OFE5SlpmSUZYaDlGM0RXcjdrNjdFdXRpZTdBck53Q2t4anBh?=
- =?utf-8?B?aUxwRWpCbXE4M2hQV0J5TTRUUkdURHpoa2hQbjVIWElveW1ocXk2aER3djIw?=
- =?utf-8?B?L0FBK2ZSakkrRVVLMHVLVXRsTEtKMmJwMXdISy9EVVNQR0lRSkphQWo4QkdO?=
- =?utf-8?B?NGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67ec9a39-530f-483d-97b1-08dbbedc06a9
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 22:01:01.1332
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L/VQaGwDFAfaD0jZtbJaHloMYmvUkHsDAT0La064o3WZVErRc97HXenNaiodP/GOt4FVOEoRiBf4ckbbpmT+f3tXhYCtoPuQzeL9kYYGSy4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5538
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922133108.2090612-2-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -170,58 +82,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On Fri, Sep 22, 2023 at 03:31:04PM +0200, Lukasz Majewski wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> Drivers can provide meaningful error messages which state a reason why
+> they can't perform an offload, and dsa_slave_changeupper() already has
+> the infrastructure to propagate these over netlink rather than printing
+> to the kernel log. So pass the extack argument and modify the xrs700x
+> driver's port_hsr_join() prototype.
+> 
+> Also take the opportunity and use the extack for the 2 -EOPNOTSUPP cases
+> from xrs700x_hsr_join().
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+> Changes for v5:
+> - New patch
+> Changes for v6:
+> - None
+> ---
+>  drivers/net/dsa/xrs700x/xrs700x.c | 18 ++++++++++++------
+>  include/net/dsa.h                 |  3 ++-
+>  net/dsa/port.c                    |  5 +++--
+>  net/dsa/port.h                    |  3 ++-
+>  net/dsa/slave.c                   |  2 +-
+>  5 files changed, 20 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
+> index 753fef757f11..5b02e9e426fd 100644
+> --- a/drivers/net/dsa/xrs700x/xrs700x.c
+> +++ b/drivers/net/dsa/xrs700x/xrs700x.c
+> @@ -548,7 +548,8 @@ static void xrs700x_bridge_leave(struct dsa_switch *ds, int port,
+>  }
+>  
+>  static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+> -			    struct net_device *hsr)
+> +			    struct net_device *hsr,
+> +			    struct netlink_ext_ack *extack)
+>  {
+>  	unsigned int val = XRS_HSR_CFG_HSR_PRP;
+>  	struct dsa_port *partner = NULL, *dp;
+> @@ -562,16 +563,21 @@ static int xrs700x_hsr_join(struct dsa_switch *ds, int port,
+>  	if (ret)
+>  		return ret;
+>  
+> -	/* Only ports 1 and 2 can be HSR/PRP redundant ports. */
+> -	if (port != 1 && port != 2)
+> +	if (port != 1 && port != 2) {
+> +		NL_SET_ERR_MSG_MOD(extack,
+> +				   "Only ports 1 and 2 can offload HSR/PRP");
+>  		return -EOPNOTSUPP;
+> +	}
+>  
+> -	if (ver == HSR_V1)
+> +	if (ver == HSR_V1) {
+>  		val |= XRS_HSR_CFG_HSR;
+> -	else if (ver == PRP_V1)
+> +	} else if (ver == PRP_V1) {
+>  		val |= XRS_HSR_CFG_PRP;
+> -	else
+> +	} else {
+> +		NL_SET_ERR_MSG_MOD(extack,
+> +				   "Only HSR v1 and PRP v1 can be offloaded");
+>  		return -EOPNOTSUPP;
+> +	}
+>  
+>  	dsa_hsr_foreach_port(dp, ds, hsr) {
+>  		if (dp->index != port) {
+> diff --git a/include/net/dsa.h b/include/net/dsa.h
+> index 0b9c6aa27047..426724808e76 100644
+> --- a/include/net/dsa.h
+> +++ b/include/net/dsa.h
+> @@ -1198,7 +1198,8 @@ struct dsa_switch_ops {
+>  	 * HSR integration
+>  	 */
+>  	int	(*port_hsr_join)(struct dsa_switch *ds, int port,
+> -				 struct net_device *hsr);
+> +				 struct net_device *hsr,
+> +				 struct netlink_ext_ack *extack);
+>  	int	(*port_hsr_leave)(struct dsa_switch *ds, int port,
+>  				  struct net_device *hsr);
+>  
+> diff --git a/net/dsa/port.c b/net/dsa/port.c
+> index 37ab238e8304..5f01bd4f9dec 100644
+> --- a/net/dsa/port.c
+> +++ b/net/dsa/port.c
+> @@ -2024,7 +2024,8 @@ void dsa_shared_port_link_unregister_of(struct dsa_port *dp)
+>  		dsa_shared_port_setup_phy_of(dp, false);
+>  }
+>  
+> -int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr)
+> +int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
+> +		      struct netlink_ext_ack *extack)
+>  {
+>  	struct dsa_switch *ds = dp->ds;
+>  	int err;
+> @@ -2034,7 +2035,7 @@ int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr)
+>  
+>  	dp->hsr_dev = hsr;
+>  
+> -	err = ds->ops->port_hsr_join(ds, dp->index, hsr);
+> +	err = ds->ops->port_hsr_join(ds, dp->index, hsr, extack);
+>  	if (err)
+>  		dp->hsr_dev = NULL;
+>  
+> diff --git a/net/dsa/port.h b/net/dsa/port.h
+> index dc812512fd0e..334879964e2c 100644
+> --- a/net/dsa/port.h
+> +++ b/net/dsa/port.h
+> @@ -103,7 +103,8 @@ int dsa_port_phylink_create(struct dsa_port *dp);
+>  void dsa_port_phylink_destroy(struct dsa_port *dp);
+>  int dsa_shared_port_link_register_of(struct dsa_port *dp);
+>  void dsa_shared_port_link_unregister_of(struct dsa_port *dp);
+> -int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr);
+> +int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr,
+> +		      struct netlink_ext_ack *extack);
+>  void dsa_port_hsr_leave(struct dsa_port *dp, struct net_device *hsr);
+>  int dsa_port_tag_8021q_vlan_add(struct dsa_port *dp, u16 vid, bool broadcast);
+>  void dsa_port_tag_8021q_vlan_del(struct dsa_port *dp, u16 vid, bool broadcast);
+> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+> index 48db91b33390..2b3d89b77121 100644
+> --- a/net/dsa/slave.c
+> +++ b/net/dsa/slave.c
+> @@ -2862,7 +2862,7 @@ static int dsa_slave_changeupper(struct net_device *dev,
+>  		}
+>  	} else if (is_hsr_master(info->upper_dev)) {
+>  		if (info->linking) {
+> -			err = dsa_port_hsr_join(dp, info->upper_dev);
+> +			err = dsa_port_hsr_join(dp, info->upper_dev, extack);
+>  			if (err == -EOPNOTSUPP) {
+>  				NL_SET_ERR_MSG_WEAK_MOD(extack,
+>  							"Offloading not supported");
+> -- 
+> 2.20.1
+> 
 
-On 9/26/2023 11:46 AM, Tony Luck wrote:
-> On Mon, Sep 25, 2023 at 04:25:15PM -0700, Reinette Chatre wrote:
->>> +struct rdt_domain {
->>> +	// First three fields must match struct rdt_mondomain below.
->>
->> Please avoid comments within declarations. Even so, could you please
->> elaborate what the above means? Why do the first three fields have to
->> match? I understand there is common code, for example, __rdt_find_domain()
->> that operated on the same members of the two structs but does that
->> require the members be in the same position in the struct?
->> I understand that a comment may be required if position in the struct
->> is important but I cannot see that it is.
-> 
-> [Just replying to this one point in your message to get guidance. I'll
-> address all the rest in other replies]
-> 
-> I'm wrong about the first *three* fields ... but the first *two* fields
-> (the "list" and the "id") do need to be at the same offsets in different
-> structures if a common routine is going to be used to access those
-> fields.
-> 
-> If the "id" were at offset 0x10 in the control version of the domain
-> structure, and at offset 0x20 in the monitor version of the domain
-> structure, there would be no hope for a common routine to access the
-> "id" field when searching a list that could be either control or
-> monitor domains.
-> 
-> I'm looking at making this far more explicit with a new patch between
-> 0001 and 0002 that pulls the two fields into a common substructure that
-> will be included in each of the control and monitor versions of the
-> structure.
-> 
-> Patch included below.
-> 
-> But this seems like it is a lot of churn to avoid having separate
-> functions to search control and monitor lists. Each a clone of
-> the existing ~24 line rdt_find_domain() with just the type changed
-> for the return value and the list travsersal.
-
-Yes. Sorry, I did not realize this implication during the earlier
-discussions.
-
-> 
-> What do you think?
-> 
-
-It sounds to me as though you are advocating for open coding 
-rdt_find_ctrl_domain() and rdt_find_mon_domain()? That sounds good
-to me.
-
-Sorry for the noise.
-
-Reinette
+It would have been good to Cc George here, for the driver-side patch.
+But anyway, it looks ok.
