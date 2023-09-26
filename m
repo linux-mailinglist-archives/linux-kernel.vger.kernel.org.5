@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8EF7AEEFC
+	by mail.lfdr.de (Postfix) with ESMTP id 827627AEEFD
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbjIZOFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 10:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S233780AbjIZOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 10:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjIZOFL (ORCPT
+        with ESMTP id S229958AbjIZOFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 10:05:11 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2064.outbound.protection.outlook.com [40.107.22.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5584EFC;
-        Tue, 26 Sep 2023 07:05:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gybZIo80J9MaMSYwN/96E3/3QHmbrkrA6ln72Vv8xzVE+KzbBnCbAY/6pJYaC50JbZoEf8/2vkAH85PUtxz/eUo54us8i6xKr/ps8vV+exNZrsBbi3YsMaYadLZSaS4qw6d5ujKT6DKzUCGTMyGk1yMrrs7C6H+pKPgLH089UsAViVHZ026Sj2yFBptw8Zwo/jNVCYYW964CNcy+u8RHcSyfJwRe0byldZelhK+Oz/ac/aV5GLpY1E7RSjUahyFTEr7JevZ52mqS3DmiYaQu3UCFkfT5fPQYclznCvgFQoyZdsWzmHdU2JPzGVnNujChDMnHdRBViyTKy4gCE1qBkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hlyh8vwETYESwYwgXe38QDcsWIhrSffS1ZxPq3/Q7BY=;
- b=Z1CJExPQBe004QORJL2ty6nJDwVB6YtcQFi+UvqZsLbrii/AIo+yHNzlp+ZbzKLjW9DwxBgCt+YVxef5c6jLqY8OTvNPDw9IH9sRLEfwtHLl5RQYB8mdEYr1w8YZMVOYJWZlZcQtxmzT9yjYtqa4ca//8L+MWtncz3Asygyr+fg5vUfuXBK3eLFGPFHRRm7LvYGPDb5JHfBp7pC8wGlyS0Vp20CCSMd9hPQWZRnbJ46rSBKtrN93KOfTGcGX+iRluSSqOMWmeCVyqyIe7GMU6elNhrDkd8tljxDnWLFw/Wme819lgDKUPRhS1KRf/s4qLS+1yCAUr27A6t/678qIUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hlyh8vwETYESwYwgXe38QDcsWIhrSffS1ZxPq3/Q7BY=;
- b=D3Wkcn7x9B+iv1wyokI9vdfbsLtGo6M1XWgEkHyTMi27dv6mwGJndzeDXwP/U+eHRH8O5KhEaDBPWJWuKi9XnH8BCQfJwiyxybk2AIYcruCOqaV1xBeymNdSKLPgdI9tiAiKHa9kKekxcTrCZwGzsAwjaRoilLOao1gDMAGCVLY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DBAPR04MB7429.eurprd04.prod.outlook.com (2603:10a6:10:1a2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 14:05:01 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 14:05:01 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     hch@infradead.org
-Cc:     Frank.Li@nxp.com, bhelgaas@google.com,
-        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
-        robh@kernel.org, roy.zang@nxp.com
-Subject: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
-Date:   Tue, 26 Sep 2023 10:04:45 -0400
-Message-Id: <20230926140445.3855365-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0082.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Tue, 26 Sep 2023 10:05:52 -0400
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF54811D;
+        Tue, 26 Sep 2023 07:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1695737140;
+        bh=MJNUG6riqeXQx3T/lMM/Fo45o2kqZs4yb89ZYBEfbas=;
+        h=From:To:Cc:Subject:Date;
+        b=GovrFxyy0wuq6Ew9gX4aCYvFNViEqhk00T4PyyOxJiDZD/h1k8TabzlqTrmaIt2Hy
+         slbeS+zwjQM9EAmS4jeb2c0CTk35yeXoeograhRo29hjOqfaZ1gfFbCrnm80GeAMRS
+         PMPZIFiotHfue4b9otXtwvbj7GL3jlYh2fFoA08Y=
+Received: from localhost.localdomain ([240e:430:2a38:9767:edcf:1da7:3272:2365])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id 14F3DC20; Tue, 26 Sep 2023 22:05:15 +0800
+X-QQ-mid: xmsmtpt1695737115tmvj1up9w
+Message-ID: <tencent_6E80209FC9C7F45EE61E3FB3E7952A226A07@qq.com>
+X-QQ-XMAILINFO: MB5+LsFw85No0CqKXLwXs4YHFu0QR49iH5WMyF5VPiUbpXz5k2LyrVJN/3kk/J
+         7LnMlyv5RlTucucJBJyE99cfZ/sjhyIdi/ysY3FM9bRmPhYyRS1c94ySS8fc1Yc5n3ErtZb2Fopi
+         lck2B5X2YsQeW1Wvoqt+iNMkXS78h+R2PbNcY4kTxnA4BJDza8t3uNXwrSoDWv4qtBQl+mLRCD/6
+         Q4gaZjaWHKkBVcfSXyH8HdtNcctH3bJoNTrkMAfiy7w90GjJnP60VeX+EK/5uEPUOr9/6XJKcX2F
+         S8xvH59065+koZOuTPJ4QFWo+1M4bc0Lo5r8HLKurVC2U2kmHK+VH7mE9MmICAqW+qidVjmjJUaR
+         Geg+sM4ccIQRcWzcwvR0fSFlQFOU1IvPBeT9+RfwtZ4rFc3JptbmKIlhvq9VG1yh2XakTbMuv9b9
+         vRxYrN5o3BpRzWQa16crSNI5JmT4OB/D1bkAYeQXSLoiEm3lqD04q9aavbOzfLnPD7UwfYh6ZBE0
+         Vfl61dUJSX3bheAE/0hUMiVMWQZOwwuqj6ALx3e5twfIgbgmxKa0epOG3ZxMI1azrPHgDgI2b1uO
+         YSS1uwEsjvRGHkuO48U2el7g15FnBSyS5VmR3mj6bdqBvdoj/LiTK74h/7Q1EHDMLdeJeYVI7mNL
+         CMv8cUD9i74aG/J9GK2WJKP1N1HGGt7vBzer0BhjF5SnC9FgfyGtdQsNGGoDt3awD4qJFlAYpL8R
+         3IhLV80b6xUSOVvnj7GXAvVS47rQdNHwgUgJUFfd/6HlieyWWwkVIlFu2GVk+ucE2q0qdQ/hlUrH
+         YSkPYnAWShjQ/CxgqE3LW4+vrAXwSOupwACLP4V+WdGHXeA/J3nc7LCeMnK79ptIZxR8+BzDt5/O
+         PxRjNIJ5j+NjJJKpltErCMK7sZWD0VUKfDF/gpm8YTawKJpJJPfDi17oT/LmrbZ6s3elUQPyVGTv
+         Jvu128cq5oZQvTzMKgpf5yiiT9iwsZGyXulIJ7YgV03Ocdo18iAIPKPwD2hFgAMWNkWHDq5zRZ+F
+         WEfbDpkehaqgBHcfEG
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From:   wenyang.linux@foxmail.com
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Wen Yang <wenyang.linux@foxmail.com>,
+        Christoph Hellwig <hch@lst.de>, Dylan Yudaken <dylany@fb.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] eventfd: move 'eventfd-count' printing out of spinlock
+Date:   Tue, 26 Sep 2023 22:05:00 +0800
+X-OQ-MSGID: <20230926140500.4944-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DBAPR04MB7429:EE_
-X-MS-Office365-Filtering-Correlation-Id: 185fcf7b-2531-423c-4cc6-08dbbe999361
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4DtxdnozAKMJG9RT7j6M8wNxO+/Nq132uQbJLiU6wttEZohBzDeEud6HPpO3mJ0HRpo+K+6h6JcqbPTMGzcd+21KX02uuEZZ11jOt6zkGmxqPAvgoH4lO+OXwOLJ8lioHWaOQk+kpr53HZWocvOAhWN949/Hczo1kfVtaX7MRqyN92gRyAIM4aYhb00jp0lPPaWaiuTNoOoBM61+xYGzX/kXi4PZMqx9E5LEMy8O+0C19nHBFYPVsGubjFQzy/74Tmp8UtlTvq2Xht8XPObC1rqUvf6+R5CmW/FYOvyOOu8wAPeFwbNpYxxr4S7CeCfevwMY9JLDvlhIKo/wbCZeMqREoicdQfW2YaEVQnqiLsRZAf46QLQz35yLnO5S4iHAi+QNgQe6HhtbyRgZ1/gM4Cmx2+dfyBY+pOuPpG1hrVnOU1P9zZO5qpG8Drceyi3u7xy5RHuMG34kwUBuufJEN6sMojkY4GmkTiwdUHFRTdflHjuxUyOckLcLdiIXZrZkpYvvo5R6KaFwmw4S8Mn5YzCdxinzR6zn9RIkakCVZT3ig58LKHdjL5r8t2RGtMo9XzpQ8sBzTGaB/BoCPgyfWuQFinPjGcl+Vfw+AXlCca99uYDNRPlAxkDLBXaN37Ct
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(366004)(346002)(230922051799003)(1800799009)(186009)(451199024)(6512007)(52116002)(6486002)(6666004)(6506007)(86362001)(38100700002)(38350700002)(36756003)(1076003)(2616005)(26005)(2906002)(316002)(7416002)(41300700001)(66476007)(66946007)(6916009)(478600001)(4326008)(8936002)(8676002)(5660300002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9q1HVKydWBYasikPO/F7Mu2kAaIqpQethbNdTHEFpVzc+HEFKBsGS7/dfAi9?=
- =?us-ascii?Q?mroh+kml5sAJHRpr37JwuwcinzoXGWDLBi22NyC3cdeSwu+LFYTIKSTADMvX?=
- =?us-ascii?Q?vqs6G57656a5pKIDJKi43yvUMiqifZi7OoGluVw4q2Z64B5YfwIdDu2JV3jl?=
- =?us-ascii?Q?6LpGEmlLI6bM4FaXs36Qmk9ERX9yC9CafRO/CM04ir36ot4fKfSRqBwrnnuW?=
- =?us-ascii?Q?aOJYdJpGmlQXE0RPni13/uL5UcXInT34z+WIEQy92xfcx1MNwg4hHm7UDz/E?=
- =?us-ascii?Q?GppY0hgFVdOBrpsu/r98K6l6E4UdCM+JGj1LvCmZTOfKVctHYbAfFqlZPntZ?=
- =?us-ascii?Q?M8gPj3Bp8UrC+KwIHJ1/XTtpuTYG4mhKzQ6RT1nRmAGMZM0rsLl2esAPPW3m?=
- =?us-ascii?Q?mYs12EM9I8k12oteu6jl94C47B6Ary25EgDimJd00KSASK9EpFW4zB76Jaii?=
- =?us-ascii?Q?c5Zg++iTOx0TuqYt9WZ4t9g3av1wvAGWYKXDbIiDmCRkP6jgdl6u4CGFsa3v?=
- =?us-ascii?Q?j1Pgf/xOhNJOXdRULY8QLNbJbTL+neKAoNynCICvVQknQHXCqhRmSPS2bbJa?=
- =?us-ascii?Q?3Izfd+rBnPpUC/gK1xndjRwGvc0L26vBPEpEBmr4KfkmcynFeW1Hd1TSWw7+?=
- =?us-ascii?Q?f3TFYZ6ZfEy47f5xlexfBke+eWWK77bVZ0XwTIe01jVfT/Pb8FzDoSKC4xny?=
- =?us-ascii?Q?rduMidNt2M5qcM4W5S6QLAjbOMTTmeYmwHK1LANCDaUHcwcHYR38lvWsVEwN?=
- =?us-ascii?Q?xXz4Hz6I5+qLbTnE/UsLX/3fV4J1aKQwIPBrTMnYly4rTqgFARrTqrRWxw3b?=
- =?us-ascii?Q?L/WE8JXP1SwWHBY43j50Sb6pLdP+n6zD958XhCJnuJ25IcImc0146mXrvPVL?=
- =?us-ascii?Q?/5+wD7i0cQ7MLXcYKn2Zd8sL0jHbA06x9Dfc1GMWRiIDDiD9NIA/atNAhGs6?=
- =?us-ascii?Q?N6qitDalXkCcODMcrlo5z5g9FbSyXC28AKgUMPweYS48D9u4q4w5RpkWwPHv?=
- =?us-ascii?Q?PVrfyHp0SmKYLYLZBQeCnqmHaWJqbysWFdtgaamkJUClpdZTjwgOVYNy1l/S?=
- =?us-ascii?Q?cyKjP9S5SuuXY40OsNfRLkoD+66vVOrf6XeDnG1noy5BtU8EzgTtavLVISgd?=
- =?us-ascii?Q?Gdas1ceV6rOed0tLPwYvcqE1k0TWntZDi2t5driCAmoOXSmvRjJsqoOZz8j7?=
- =?us-ascii?Q?HMZy12IedBU9YuzN0Wnrygbysmu7mHeO0Ua8zYbEsYBtcZ9sfIMbhi18xTuw?=
- =?us-ascii?Q?bBQYw0l6Lmf5aMBdVesHL6cUpcY/x3HxuzYcS0A7HRFQHdIlhs8e90rFLDaX?=
- =?us-ascii?Q?BYr5Us9ZeVM7mxQY+NokDWA1RMH5BxtbCHVy2I58X9QC5PotE6VmX0DiDVmJ?=
- =?us-ascii?Q?U/5a5rn6uGnHTDPo6e7qQmVRaYNNcBrZb48jiQk4Fk9CTmf+WrjuCSABdOGK?=
- =?us-ascii?Q?c77CGS6jXd1PY5Iq/DP0Uut5HzY2H3CRsJ4A9W4+/IWLDa99H0UXJA+imXv7?=
- =?us-ascii?Q?1m29rUD7XRRQSohNp1XpLLlmcYdn+kMwQUSkOjzD65LAJsBu3kROyr9KafW9?=
- =?us-ascii?Q?arclnmTCKCwabdXPUZ9svghvmDLzwSmx6afBUGL/?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 185fcf7b-2531-423c-4cc6-08dbbe999361
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 14:05:01.8234
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tw+fJur7bQM8tzNYmHzbUkrIgfjIeOeEd7D0F6NXTNAhSxjGiRuY6cTNGCFaoSnP5qhH+PPkO0Ho938sZVFLkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7429
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,39 +70,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guanhua Gao <guanhua.gao@nxp.com>
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-Set DMA mask and coherent DMA mask to enable 64-bit addressing.
+It is better to print debug messages outside of the wqh.lock
+spinlock where possible.
 
-Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dylan Yudaken <dylany@fb.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 ---
+ fs/eventfd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Notes:
-    change from v2 to v3
-    - remove check return value of dma_set_mask_and_coherent. 64bit mask always
-    return success.
-    - remove redundate comments
-    change from v1 to v2
-    - Remove 32bit DMA mask set.
-
- drivers/pci/controller/dwc/pci-layerscape-ep.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-index de4c1758a6c3..2c2c9aaa8700 100644
---- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-@@ -249,6 +249,8 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index 33a918f9566c..6c5fe0f40aa5 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -295,11 +295,13 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
+ static void eventfd_show_fdinfo(struct seq_file *m, struct file *f)
+ {
+ 	struct eventfd_ctx *ctx = f->private_data;
++	unsigned long long count;
  
- 	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
- 
-+	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+ 	spin_lock_irq(&ctx->wqh.lock);
+-	seq_printf(m, "eventfd-count: %16llx\n",
+-		   (unsigned long long)ctx->count);
++	count = ctx->count;
+ 	spin_unlock_irq(&ctx->wqh.lock);
 +
- 	platform_set_drvdata(pdev, pcie);
- 
- 	ret = dw_pcie_ep_init(&pci->ep);
++	seq_printf(m, "eventfd-count: %16llx\n", count);
+ 	seq_printf(m, "eventfd-id: %d\n", ctx->id);
+ 	seq_printf(m, "eventfd-semaphore: %d\n",
+ 		   !!(ctx->flags & EFD_SEMAPHORE));
 -- 
-2.34.1
+2.25.1
 
