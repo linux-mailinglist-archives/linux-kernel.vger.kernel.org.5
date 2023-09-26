@@ -2,153 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BDC7AF212
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E517AF210
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbjIZR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        id S235029AbjIZR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235005AbjIZR7E (ORCPT
+        with ESMTP id S234911AbjIZR6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:59:04 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB19120
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:58:57 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9936b3d0286so1181010966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695751135; x=1696355935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OFnOg1pHsHZEv3DUGjzvzkoO5rnnk2Rnu4AXIw+yFKI=;
-        b=wX60CbIeQh+tZtmzVGhcb/WG62PNRktNYJFV+wAUHcrprB7RSSqoo+JmL7zaPW/kuz
-         Yh2Q7NVdaBmsLTgvzB/7KBF5S9lgfZQSgbUwZRdCaPqiguXiVslauwi/9vdCpM6PiqLP
-         w4Gef7ashNTZ9WMzH6ZxgbOLuOzOep6CQWlX5hFFuZFRG6sWUTTaTTw7kF3ufhrDFqXH
-         qa7LjBckV3yfinUygvcNRw4e8aknPG2/Q6NA1M7OLlokavrdgoZMZo/sWLv973QklgdS
-         bnBgI1pbNhk2tQ58r1sV53Xg9DVzV5ducMU9w+TMATUAdl1U5bHhSoj+NzzEeyYK2d4g
-         3i8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751135; x=1696355935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OFnOg1pHsHZEv3DUGjzvzkoO5rnnk2Rnu4AXIw+yFKI=;
-        b=FdYN86Y8RJ+RZX9n+0pt7qRpVuAzJV0wPRnx4p9wd2wKV4WQjah4sqP6/IoojwD2Qw
-         LPPBlwfMP5OrHtstiv6tWREPDbrD80fOGorFovEalA6zHqQNZsOuuSCTU0c7mwRDczER
-         wfnuBRHnt1d9kzGf2F+OG5mp0UyNIW+yEwKVFlTX1aNMEw8P0NX+LF3VFksgIvBeO1nv
-         2ik/T5Ed4bw8YzRaGq5ElzgH0+NxV6bothEr2uSDLbe/9WYQkyeCCEMthuozqUh0YBOF
-         66HxJ6TBaz5OuqUPDTHuSz8b879OxFwqvRD5trpjvEekxpmYQZeiERFIDrRWheXiIq1b
-         uITw==
-X-Gm-Message-State: AOJu0YyPxR0t7NgoMXY4KEiHi0292gajxPMz4NeORyWDy8Mcb9INEjoJ
-        yU8FRWcY3bS4v746QjEgeMHOqrekAZeudorMp+x3cQ==
-X-Google-Smtp-Source: AGHT+IH1UvbPZN+AYVuNOlZ5+jvqeSn4QL2gxS1iQykyVPMWg3fp23GOvge4u4/OO7F77GHkmagIn5MVyEy5F7QLAnU=
-X-Received: by 2002:a17:906:319a:b0:9ae:659f:4d2b with SMTP id
- 26-20020a170906319a00b009ae659f4d2bmr9062850ejy.56.1695751134910; Tue, 26 Sep
- 2023 10:58:54 -0700 (PDT)
+        Tue, 26 Sep 2023 13:58:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7247D10A;
+        Tue, 26 Sep 2023 10:58:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695751122; x=1727287122;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=26y7z/vbZIKVw5+YYxWkM5USLbriHvP1vPxT1gn10c8=;
+  b=Ck9dlXijCI1I3/1zSnHYRoEI0w6bWajsZxXvnCz9pmGjA4vsmiLBJyg/
+   0Eh4NxmxaQO9+idyXRW2WSWIFIB9FaRIiG8B6tQ5R2i6tg6xJ97pJVBRe
+   lTmnXfCmLsF6FXwKEb3ecUf4IosVJs+3+ho7VFRNahiEBQw3Xthp+KiIj
+   w8wicPrF/WIdbBq/T68cmUHD01+0cPgxBpKP8NoqhxczeZhTGn7sePeBj
+   hCpr0aALfm3t1sFkM9bSfHPV0M7kAHSGdDxURtsGviUwFe62YazODY0vC
+   7HcUX0GyixvodZLBNv4OUQU2mCQhhpd5kKS94ndoVpBb8KwrSj42E6ZxD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="371966207"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="371966207"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 10:58:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="892288055"
+X-IronPort-AV: E=Sophos;i="6.03,178,1694761200"; 
+   d="scan'208";a="892288055"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Sep 2023 10:57:35 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] platform/x86: intel_speed_select_if: Use devm_ioremap_resource
+Date:   Tue, 26 Sep 2023 10:58:40 -0700
+Message-Id: <20230926175840.989732-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20230919190206.388896-1-axelrasmussen@google.com>
- <20230919190206.388896-9-axelrasmussen@google.com> <s4p5qch6llhedcr736vityb6ttvajk5xip7ebdijgw6zt4jbkk@nt2qh2ixmi3e>
-In-Reply-To: <s4p5qch6llhedcr736vityb6ttvajk5xip7ebdijgw6zt4jbkk@nt2qh2ixmi3e>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 26 Sep 2023 10:58:18 -0700
-Message-ID: <CAJHvVcjTBmQewEUKPCa-ZFEEv_Lczx5Pp9=vgnnTPSrqc4RhVA@mail.gmail.com>
-Subject: Re: [PATCH 08/10] ioctl_userfaultfd.2: clarify the state of the
- uffdio_api structure on error
-To:     Alejandro Colomar <alx@kernel.org>
-Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 4:56=E2=80=AFPM Alejandro Colomar <alx@kernel.org> =
-wrote:
->
-> Hi Axel,
->
-> On Tue, Sep 19, 2023 at 12:02:04PM -0700, Axel Rasmussen wrote:
-> > The old FIXME noted that the zeroing was done to differentiate the two
-> > EINVAL cases. It's possible something like this was true historically,
-> > but in current Linux we zero it in *both* EINVAL cases, so this is at
-> > least no longer true.
-> >
-> > After reading the code, I can't determine any clear reason why we zero
-> > it in some cases but not in others. So, some simple advice we can give
-> > userspace is: if an error occurs, treat the contents of the structure a=
-s
-> > unspecified. Just re-initialize it before retrying UFFDIO_API again.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
->
-> I can't apply this patch due to conflicts (due to not having applied two
-> of the previous ones).  Please resend all remaining patches in following
-> revisions of the patch set.
->
-> The applied ones are here:
->
-> <https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=3Dcon=
-trib>
->
-> It's kind of like Linux's 'next' branch.
+Replace devm_ioremap() with devm_ioremap_resource() by defining a
+resource.
 
-Thanks for the review Alex! I'll fix up the issues noted and send the
-remaining few patches this week. :)
+No functional impact is expected.
 
->
-> Cheers,
-> Alex
->
-> > ---
-> >  man2/ioctl_userfaultfd.2 | 16 ++++++++--------
-> >  1 file changed, 8 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> > index 1aa9654be..29dca1f6b 100644
-> > --- a/man2/ioctl_userfaultfd.2
-> > +++ b/man2/ioctl_userfaultfd.2
-> > @@ -272,6 +272,14 @@ operation returns 0 on success.
-> >  On error, \-1 is returned and
-> >  .I errno
-> >  is set to indicate the error.
-> > +If an error occurs,
-> > +the kernel may zero the provided
-> > +.I uffdio_api
-> > +structure.
-> > +The caller should treat its contents as unspecified,
-> > +and reinitialize it before re-attempting another
-> > +.B UFFDIO_API
-> > +call.
-> >  Possible errors include:
-> >  .TP
-> >  .B EFAULT
-> > @@ -305,14 +313,6 @@ twice,
-> >  the first time with no features set,
-> >  is explicitly allowed
-> >  as per the two-step feature detection handshake.
-> > -.\" FIXME In the above error case, the returned 'uffdio_api' structure=
- is
-> > -.\" zeroed out. Why is this done? This should be explained in the manu=
-al page.
-> > -.\"
-> > -.\" Mike Rapoport:
-> > -.\"     In my understanding the uffdio_api
-> > -.\"     structure is zeroed to allow the caller
-> > -.\"     to distinguish the reasons for -EINVAL.
-> > -.\"
-> >  .SS UFFDIO_REGISTER
-> >  (Since Linux 4.3.)
-> >  Register a memory address range with the userfaultfd object.
-> > --
-> > 2.42.0.459.ge4e396fd5e-goog
-> >
+Suggested-by: Andriy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+This patch requires merge of series "Minor SST optimizations",
+particularly
+platform/x86: intel_speed_select_if: Remove hardcoded map size
+Can be differed to 6.8 cycle.
+If I repost the series after reviews, I will include as part of the
+series.
+
+ .../platform/x86/intel/speed_select_if/isst_if_mmio.c    | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
+index 13e068c77d50..3f4343147dad 100644
+--- a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
++++ b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
+@@ -94,6 +94,7 @@ static int isst_if_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	struct isst_if_device *punit_dev;
+ 	struct isst_if_cmd_cb cb;
+ 	u32 mmio_base, pcu_base;
++	struct resource r;
+ 	u64 base_addr;
+ 	int ret;
+ 
+@@ -118,10 +119,10 @@ static int isst_if_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
+ 
+-	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr,
+-					     punit_dev->mmio_range[1].size);
+-	if (!punit_dev->punit_mmio)
+-		return -ENOMEM;
++	r = DEFINE_RES_MEM(base_addr, punit_dev->mmio_range[1].size);
++	punit_dev->punit_mmio = devm_ioremap_resource(&pdev->dev, &r);
++	if (IS_ERR(punit_dev->punit_mmio))
++		return PTR_ERR(punit_dev->punit_mmio);
+ 
+ 	mutex_init(&punit_dev->mutex);
+ 	pci_set_drvdata(pdev, punit_dev);
+-- 
+2.41.0
+
