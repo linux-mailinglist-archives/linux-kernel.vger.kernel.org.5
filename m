@@ -2,148 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD157AE923
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F0B7AE926
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjIZJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        id S234310AbjIZJ1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234211AbjIZJ1K (ORCPT
+        with ESMTP id S234317AbjIZJ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:27:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4981A5;
-        Tue, 26 Sep 2023 02:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695720423; x=1727256423;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=W+uOy9Ige3oZ7x7YvATxosVpM3ybZgqwu1X08uq0/aA=;
-  b=NDA/NdD3Vq3FbsCuEyazLzy++mJXCJlaSYy21x9nuWXSLBxzl8h5sDPM
-   HPsvliRH3FVdLUglPlLnQQpt3ZT41pQbN7yEusC/CkdQndgr5cPlVVdUo
-   TQC1bIsocJf+LkY0Xdaknjfsf0Em1BNPFCdG2/Z9Dz+bmjCpRnUq9iBnS
-   ypidLi5MxqrbzwerniN2dgtaU/lK6JgfzgwKpVva3C8gRgCPKsW1oHeoA
-   2JS+R9x/A6bQzWFN6RUzrEYbD7zZQlapFhnUUkeFCA/MCtXI3S8ODX/wS
-   bybFOYWBHMSMEIJgxP3EdSE1+CZt80iaSID1o3zGs9xLYPgrzTVVOcoe7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360905440"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="360905440"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 02:27:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="1079642580"
-X-IronPort-AV: E=Sophos;i="6.03,177,1694761200"; 
-   d="scan'208";a="1079642580"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Sep 2023 02:27:02 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: [RFC 8/8] iommu/vt-d: Add set_dev_pasid callback for nested domain
-Date:   Tue, 26 Sep 2023 02:26:51 -0700
-Message-Id: <20230926092651.17041-9-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230926092651.17041-1-yi.l.liu@intel.com>
-References: <20230926092651.17041-1-yi.l.liu@intel.com>
+        Tue, 26 Sep 2023 05:27:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E23CEC
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:27:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5212DC433CD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 09:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695720435;
+        bh=f1VR1cPsKiZEfMZ4xmQmf1dSo/TmQTqpOYPK0gtgMWk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qJM6u/ydoUUlSTcDZCJ5RvpbD+zwPn4JUk0BqY+u7WHOUdCVCq/DzMu6/ToueXAT8
+         mPEQwo62KGty+r+QPeslko/YBLrzLRHV+Cz/IWMdAAVIVh8GaXgy83jrjietvM7pD6
+         iQYXlcn7vGnmRJYJdBRCkSVXyP2L7/BF0Y5xzGWPtNLrBi40xy0qMGw0anbjOxvXL3
+         8vhSMwDFJh+TLFMX92xo70V7GT7oM1BVoPZBprQW4Ad/y0mVQAwnPqRQbpZrF4q7uA
+         cZCa7lmVDlJp8VwE7ddF9fFkUEegCA/SMAcJawoGpGMuaRHf41ZKVv2Bq95EMAY10/
+         zyi1gxBb+9yvw==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5345a3dfe3bso1442861a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 02:27:15 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxhDkGRDUPXduys6iL6I1OINO2HJSwgx9pfMA5VugtsaFdnB4UD
+        aOtwznFR/IuybW6MJMncT9S5bsOggLyhwZh2CaE=
+X-Google-Smtp-Source: AGHT+IGH5mmzJnX8yukfh9EAV11DcIjqWDnDfW/6ZG+lDlbrYo8U8qt0Bt96vUVymM1cAyk8EfcXfEnc1a1+/P0tqgQ=
+X-Received: by 2002:aa7:d584:0:b0:522:3849:48d8 with SMTP id
+ r4-20020aa7d584000000b00522384948d8mr7371489edq.9.1695720433743; Tue, 26 Sep
+ 2023 02:27:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1695715852-15902-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1695715852-15902-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 26 Sep 2023 17:26:59 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7B7ZZvUHS40WgBkXhxhdMDhOr=MGTi_75OSAT_zU_=cg@mail.gmail.com>
+Message-ID: <CAAhV-H7B7ZZvUHS40WgBkXhxhdMDhOr=MGTi_75OSAT_zU_=cg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Add support for 32/64_PCREL relocation type
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+Queued for loongarch-fixes, thanks.
 
-This allows the upper layers to set a nested type domain to a PASID of a
-device if the PASID feature is supported by the IOMMU hardware.
+Huacai
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/nested.c | 47 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
-
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index 4853fee216d9..dc99ea1abf68 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -63,6 +63,52 @@ static int intel_nested_attach_dev(struct iommu_domain *domain,
- 	return 0;
- }
- 
-+static int intel_nested_set_dev_pasid(struct iommu_domain *domain,
-+				      struct device *dev, ioasid_t pasid)
-+{
-+	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct intel_iommu *iommu = info->iommu;
-+	struct dev_pasid_info *dev_pasid;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	if (!pasid_supported(iommu))
-+		return -EOPNOTSUPP;
-+
-+	if (iommu->agaw < dmar_domain->s2_domain->agaw)
-+		return -EINVAL;
-+
-+	ret = prepare_domain_attach_device(&dmar_domain->s2_domain->domain, dev);
-+	if (ret)
-+		return ret;
-+
-+	dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
-+	if (!dev_pasid)
-+		return -ENOMEM;
-+
-+	ret = domain_attach_iommu(dmar_domain, iommu);
-+	if (ret)
-+		goto err_free;
-+
-+	ret = intel_pasid_setup_nested(iommu, dev, pasid, dmar_domain);
-+	if (ret)
-+		goto err_detach_iommu;
-+
-+	dev_pasid->dev = dev;
-+	dev_pasid->pasid = pasid;
-+	spin_lock_irqsave(&dmar_domain->lock, flags);
-+	list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
-+	spin_unlock_irqrestore(&dmar_domain->lock, flags);
-+
-+	return 0;
-+err_detach_iommu:
-+	domain_detach_iommu(dmar_domain, iommu);
-+err_free:
-+	kfree(dev_pasid);
-+	return ret;
-+}
-+
- static void intel_nested_domain_free(struct iommu_domain *domain)
- {
- 	kfree(to_dmar_domain(domain));
-@@ -127,6 +173,7 @@ static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
- 
- static const struct iommu_domain_ops intel_nested_domain_ops = {
- 	.attach_dev		= intel_nested_attach_dev,
-+	.set_dev_pasid		= intel_nested_set_dev_pasid,
- 	.free			= intel_nested_domain_free,
- 	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
- };
--- 
-2.34.1
-
+On Tue, Sep 26, 2023 at 4:11=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> Tiezhu Yang (3):
+>   LoongArch: Define relocation types added in ABI v2.10
+>   LoongArch: Add support for 32_PCREL relocation type
+>   LoongArch: Add support for 64_PCREL relocation type
+>
+>  arch/loongarch/include/asm/elf.h |  9 +++++++++
+>  arch/loongarch/kernel/module.c   | 22 +++++++++++++++++++++-
+>  2 files changed, 30 insertions(+), 1 deletion(-)
+>
+> --
+> 2.1.0
+>
