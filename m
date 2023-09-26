@@ -2,209 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB067AF6EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2447AF6F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 01:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbjIZXr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 19:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        id S233468AbjIZXuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 19:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbjIZXp5 (ORCPT
+        with ESMTP id S231875AbjIZXsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 19:45:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2D68A6C;
-        Tue, 26 Sep 2023 16:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695769594; x=1727305594;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=01UrMEtRzsUVvjY2Pt0092FlLpql0LcZvAs+1DOoK50=;
-  b=nF/j5w2xVRDJv0uXwt9htfQHR5VAfupq10iaCfZoZXxrfeTStQoGAnL3
-   CykrNRe4MEoQw3ElewWY5mTjweZooR9SK0FWqTNCelUP27VQm1Umo9Ce0
-   E7bDCu0PqxEv0/LvxioYcG28bdKpX4R8ik0i4kPMoBtFSrt9qrKgIeW0k
-   Z7N/mpI06sfOPILEqFlG5PRYPt9CUVYAPSEMd62Nf7yUPSd7UcYV0W7TC
-   i7RuE8ZkJ9bWatggRsgwCUwZAp/CVjn2U31LpTsV7t4awfKVsdTJTreZH
-   1RN18gpyuupQI+YN5Bx7hjJP9YmhoTxwq0rMVK8Jvo+ozZc9fVSvAmGDB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="385539702"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="385539702"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 16:06:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784123494"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784123494"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 16:06:28 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 16:06:27 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 16:06:27 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 16:06:27 -0700
+        Tue, 26 Sep 2023 19:48:39 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD98A268C;
+        Tue, 26 Sep 2023 16:10:01 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QLTNHl025098;
+        Tue, 26 Sep 2023 23:09:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=ARR1f+uwMAS5xPF6bkJfTjbl45MBhgqNmwLL2RZGtqs=;
+ b=VhwAWkLPBQt8ZQbgXzxXxf+k9ZHkrmpAehnco4swS426+qjB4itZAqJ6X+MjnRhoVrEB
+ 9y7iozVkx+xqcOj9QoNjJSS4GCbacztiE1CiwHEiOjf+Oii2l1wInz+tPQoaseYsvSkN
+ Kk27/LJbxlw5u2kRVM9ojCCcc8IfZugfkny+I0BlMnHDgkn6q8FLg4kCpJ/9XYVyAUVp
+ FpQWD9v7iHsaCTKApxuhoa2WhLg90TyTy5B0uaDZkznM58W0Z3RpV/BSB+7FrbttTZTC
+ XBJKoU7t7cRYZaB/tLaXmuuSiUdyaidyaC5O/jJY0u8cQIixhBrK+WSu1txA9W2Q+PBK kw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9r2dg6cs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Sep 2023 23:09:25 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38QM939L030602;
+        Tue, 26 Sep 2023 23:09:24 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf6rvdy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Sep 2023 23:09:24 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YAG1RKd26lGDD42oL8gggpXKXAvJ4Epj9imhKuaV0n7runQ0fqt0FdrY5XtKm93K6UltZ1YTYpNWmGHUtRzAp3bF5xB833SehWeBVt+AA+hDgTgjAoDp6Nj5XRx/n0H4hWq7hGHAxGL5hwJy77V7Ret/mk/Oln2bw46N5jXmVB5mKde6n3YU2UHoyTXOTHypIG9SAj3PObG5KLvheztGJlGIW9xzIxHG9uFEOJpYyWjUcbYG7T2Q/CgLFbHW8Nxv3CdmfJ2O3fE2tr3ByTidlKmX8qlPNVUnKFftQopbIEUxeZ98aN0fOqJ/beMMKRgfK0VsaZOYalhF2pkNqrxAqA==
+ b=k+yINcc3AJHPtLR7oZwc/a7HIH7rX4FAH3I21+zc1bKxthNw1pKwUOXixJMhCAE34lGkLXN7z1rhVe8lI7aYkpwUVGbna9/hMssthWUHWpGguKZ1VgV4GBJ5YTN7kXK2aveG6N5NuzjGoZvKPw1padmZEVMSTwm/YNCof9Fy4nbRjHRe+YZs8nGY2JSaCdFeLqToKije5uaA33jpnyQNC78ARDMPMe7k+/OAb0/g0RpJ5X2ncfQ1o2+/eiGNopQLXkyK/Nwe241JG8H4Us1PE47RM8pFHAyYsPZFU0vCtcmbwc1RFM512q9aVSOCkaphjMFQlH88b4+qmOXRw4i2eg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sXJ3vXH+1EYD0DO7rGrgo+b5HGQtpk/ec35t3qjN48w=;
- b=B1KlyE9HnexdN0QRrgVZ5a85sGIKbqJK8H1dxwlzm98TUo6LPeOA6sdXXNlL25YicRkqkmAbrV5SpCHUm1hUgjlsyK/kuuiitNgrKOIytSmEkhvjdx3lIR3aNa+doShGE257bMYXNsCGAegsoJywOf0+H0W4vIYHxQLFYrYmMth/7K7mGp1AZ9szIkeNA0y6YBzmnt98In5+6HSxouLMoKZLHNzAGb8Hb8TCPfxDY6GnCREObSHr1Yij8XVlQ//avyrhDFU45LpdmZxED0j5R0iy35Py9gh+qLc6aXgtWFRAhfHq37DSdiaAqeEa56JoRfN27LTj2GW/bl9E2X59Ww==
+ bh=ARR1f+uwMAS5xPF6bkJfTjbl45MBhgqNmwLL2RZGtqs=;
+ b=MTrZPT6sXqEDgRTpYhQhKW2vWrB8EvKO8VhuAM/JhKCiq5Ghe+qsz685PJy+PXNj+BlEevuMXgQHdKj0Nyi22pduk8dU1kdaPeMsmajTQwTTbElfcrlAI1LcXSK32DhAt9YbYhXKFrogx/Ep6dbRugvGe0GLUv0CA5/IvUuFYhpitjF3OfKO53/CXIxaqjwtdCc3rqXtgk8U+s74gL7WbpelI/ExsQbod6/WwrtdOjK0WTIzBD/IA5Bh++mG7rrUDzW99jRHPcbvHkuAckdND7OuCjL+PUVbDZXBceR++LpPC/kfXW1noqsv3XWaoUo3ZwgBWauBaMAJ3wvaG87+Gw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SN7PR11MB7639.namprd11.prod.outlook.com (2603:10b6:806:32a::14) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ARR1f+uwMAS5xPF6bkJfTjbl45MBhgqNmwLL2RZGtqs=;
+ b=WPE8SRg68bMxBvWpwE0RI7hMHeHVjpm5PZfpJ++PnHBeCG9Y3l88PG4S/H8pdSm2gekpxGMnnhlhN9ewk0q3oAbU+KAD06vqzIR/78cM7RrZgSPV6eoX9Htpd0Li7Q7UfYfnOGLqG1YoGE2qJOvmlkh4h97yqLpZ+RymWJxp2CY=
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by DS7PR10MB5069.namprd10.prod.outlook.com (2603:10b6:5:3a8::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Tue, 26 Sep
- 2023 23:06:25 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Tue, 26 Sep 2023
- 23:06:22 +0000
-Message-ID: <595d6062-fece-83c0-5d5d-2f9405f6b842@intel.com>
-Date:   Tue, 26 Sep 2023 16:06:18 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v5 3/8] x86/resctrl: Split the rdt_domain structure
-Content-Language: en-US
-To:     "Luck, Tony" <tony.luck@intel.com>
-CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-References: <20230722190740.326190-1-tony.luck@intel.com>
- <20230829234426.64421-1-tony.luck@intel.com>
- <20230829234426.64421-4-tony.luck@intel.com>
- <5f1256d3-737e-a447-abbe-f541767b2c8f@intel.com>
- <ZRMnCFWzcxa6Qa4E@agluck-desk3>
- <5b2fd31e-3cef-3c35-7d17-411cea27502a@intel.com>
- <SJ1PR11MB6083D9AA22033235210BD847FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <SJ1PR11MB6083D9AA22033235210BD847FCC3A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW3PR05CA0004.namprd05.prod.outlook.com
- (2603:10b6:303:2b::9) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
+ 2023 23:09:22 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::7e3d:f3b3:7964:87c3]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::7e3d:f3b3:7964:87c3%7]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
+ 23:09:22 +0000
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     kvm@vger.kernel.org, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, joe.jin@oracle.com
+Subject: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
+Date:   Tue, 26 Sep 2023 16:06:49 -0700
+Message-Id: <20230926230649.67852-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0056.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::33) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SN7PR11MB7639:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2b7765f3-f0fa-416e-a0ce-08dbbee53322
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2663:EE_|DS7PR10MB5069:EE_
+X-MS-Office365-Filtering-Correlation-Id: b243f7c6-67be-448d-963c-08dbbee59ebb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gaVRqBSX5hTZg/yMizr6PF/eoZU/3TziEi4Z0E7jLxdtl6bMila3SV67+QwCTWgeE4zr4cipHNhk8dv8qqEFh0OO8pJxnMERYkOLVMFBhtDTfyPmiS5aV0l+HHCCV+iYJrqIr2vP63No+6lR6XdlEWCpvWeMN/XhH2lJYoiPinpK2Xo/qY728k6Sd9aj0n3cbXDTkWUQW+xcFrc9u0OlEa792yxqnJOsPywHXSJiXtSd1rC/6sAmWMFVsVSrPEcjfBbAwPxwoXyUvOWckQJ2TKBnQYh3zuE+gi0vFMMju/SwLxZ/vHaSVis8cZzfGyREIYvyQbxwXokCGwYrwPvaQh5EnmFnXDbtHGUy+X92BHjgtUFkNdeUFXo4UZN5Y3+dReI62DfsEG18fE8Kgbuu7XcPhAOhhcieeRl7WSK/R/VXX+1B8tMSzKjyoRrp7cAXA1vilby/0Pa7VFr/ISHBXbN+guWNva6ybNfRzIaAyyhR1iMLaE28zzTJM2nHfK2nt/lwZqDAayFt7yHZ26dE+/HEfD7eSd37lDTnEftCD07A9YwEO4eln0Yr7sT0twHVhP8VhxR2MdUnWrNx2qoPw4XbOSxt4cp4SJvEMeFKkOYYEXwMIlMCE8QmzGQ713KGtoGoZUWVpok2IvISG3VZPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(366004)(136003)(230922051799003)(1800799009)(451199024)(186009)(6486002)(26005)(31686004)(8936002)(41300700001)(44832011)(5660300002)(8676002)(6862004)(4326008)(53546011)(6512007)(6506007)(6666004)(2616005)(478600001)(6636002)(316002)(37006003)(54906003)(66556008)(66946007)(66476007)(2906002)(86362001)(7416002)(82960400001)(38100700002)(31696002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: oPzvg2N6Ssw9OpOby321aLW/onGjKSxLPsSxMuzEotS7jeWAA90BbB6d1xTOxAwoBSLo27kwk9+zlj/suUpe+MA5MWmmJwkJQ4vUJmtYzGKRgR4vbe5AUjdxNcWiMigdYGY6Os7bKVgmCSWqAAVeJd1FVFfXypfPR+BAQYkRsPBH7E1odbLVghmv1tN+Rc5+JZCHsJn+WFi9usiyKrGB1L7XEZL/6zfUghF51WQ8dGY7AMpgtdG4/YxPLYZA2o4pulL8AOhYM6+VgQL17FZ6GSFckWfWWmGxnweNN30jYaeO26zJrd9tb62W4sgPTdJ+ccvOjUx2aZOLnzPy6aGWJke+3WERkDWjaBc6Fuh8jZ+v4cBN3bQTXMFDI7vdyTqrLfxflhvsOv1xWMzGIDNvOGW/hAKMBMjwhY2ZttfXce2XN1ndpM8F90jojIOFOqyag5BoTubaei+J+ZBAIa97HK5zu1H48B/3yW5GKfcrWyS/eMAatFCBJfgKcYsdCYoJ4+2pgRJgGG0cTKRcB5xzVzyYH1fbf7kOD4JaP8cWDgc14jzfMlw0TLwre2/mLH9q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(346002)(136003)(366004)(230922051799003)(1800799009)(451199024)(186009)(36756003)(38100700002)(86362001)(4326008)(2616005)(15650500001)(2906002)(6486002)(66556008)(5660300002)(6506007)(41300700001)(66946007)(66476007)(44832011)(6666004)(316002)(6512007)(8676002)(478600001)(66899024)(107886003)(83380400001)(26005)(8936002)(1076003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SldycEVFdUVSaG5laFo4MDN1TGJPTWlIaDBjb3R4VHJVQlRYSUVMdGUrRzl1?=
- =?utf-8?B?dXpDS2FqVHZ3NmdQU0txb3dmUTdrR2wwWlB2MmkwazhtaFkxdE5XWkZKMTlr?=
- =?utf-8?B?RTNDR1cwaW12bXZYUXgyZHV1NVlZV0RxZzN5VCtRZFh0Z1ZaSm9CRFJSd0U5?=
- =?utf-8?B?d2dKby90UTdJSXU3SjI5VjcyVzgzNjZ0QlJ3MVBCZ1pITE5nNjdDMkcrUGNK?=
- =?utf-8?B?WkZBMi9YWTFZbndiVWp3ZC9mWUVRdElWSERaZ1pnTEI2M0ROcnVzRmpldGw2?=
- =?utf-8?B?TEg4VEZEckoycEdkb28vNWZ1UmNFd0VJM1ZSb1I2S0FtTTB3TmZRWjVkM3JU?=
- =?utf-8?B?K2xaSWVGS3lGbjBRK1VJdDRmWFhEeGRQQnpvT2hLMEhZZm94bW80K0dhTjh1?=
- =?utf-8?B?Q1pzd1VrTHR3d1BMYUJxeVZ2MmZBYzdWNzNCNytsaWtnN0UzdFdOZWNGQ0FU?=
- =?utf-8?B?RjkyVEdCMEF1VEdiT3gvalBMMGZTakY1WmxpT28rMG1ySStyMnFJanQ4Qy9W?=
- =?utf-8?B?STUwOVVqY3lYbWFJdWIySHRhV0NWMHdyV3N5ZVFDdlJ1dStOUHJBcVc5ZGc2?=
- =?utf-8?B?MFd6eVdHcnpObzFYYko3WnlOdFVZWkxwaEk0VzdWdUQ2VXVudXdSWG5kKzZG?=
- =?utf-8?B?akQ4T1QyamF1aU5Sd1A2Z0JjcE5yWnhhUDI5NVpZbjM0dkIwZy8rdlJTdUYv?=
- =?utf-8?B?SnlEQ3BLeVJOcDg2Zy9lR0dwYWp2M1ZDeUY4YlZZTXE1Q09DQTQzRVdhWGI2?=
- =?utf-8?B?L04vbFVxUXIrV3FXN3FId09neGZvNXpVemN2T1o4TmxhcHorbWFOZkFYd1hD?=
- =?utf-8?B?akUxeUpQblUxcTJJOEcyOTZ6eHY2TDF1NThSZklTdDZJZitPVHordzZ5dWZs?=
- =?utf-8?B?VElYdVRpblN1akNkdkxpcEVsUi9OL0VVK2pPa3ZkYnI3T1lmMmRFZ1pvS3Uw?=
- =?utf-8?B?ekdoc1JGWG14ZkVXLzNKR2tIM3M1T0QxbksybFBQVzA2Rnk0Wk5wTERNbEtQ?=
- =?utf-8?B?TkpOQncvYkVPNjNuOVk0ckRwcGxSR28ybEhhN0xodEpsZjVSVU5DbHNCUGF2?=
- =?utf-8?B?dUJuMldLS0hzOWdaNzdlYXhDRmpyWWxqVjVzMnFlcWtjVysvVHFySXQxT0l0?=
- =?utf-8?B?NkdrRnV6QUZVS0R2bXBTV3R5cDNxNkE3anJjT016am1VRXpSWEMvQWNMUGZE?=
- =?utf-8?B?bnl5U0FGRmNPcHJpWURCbjVyMWpsQ3NHM1BCSzNGaEFmMXVQajlGQ0lQbzZT?=
- =?utf-8?B?QjdxeEl4TWNHZ1ljTzNyNFlWY0NqcmRGMXJFZEFvUkRQRTQ3dFZRY1BCeEpa?=
- =?utf-8?B?VlFwMmVKYlFuRiszejhPVGFOK0dxc2NVb1Vmb0pCN21wa3JTbzAvZGdGNXZj?=
- =?utf-8?B?U01vZURBUEZGcW1HR0k2dXh6bVNhZmdhWkpEcThMZGpQYXVkYmp5RWJBckx4?=
- =?utf-8?B?b3BwYno0aUJBY2lCUU84ajc2ZklmbTljQVdzdHlWZDVCMzYwZDZQN2lkL2NW?=
- =?utf-8?B?S29wNXFQdVlxL3MvZExDVDlNeEYwVUtyRmhmc2gzS21WTEJjUDF0TFZYZjZq?=
- =?utf-8?B?S1NueVNWS2xEaHZaMTU5SEc3SEpwZEJ5d3FMTzUzcjhWUEpFSU45ZFhzZGZ0?=
- =?utf-8?B?LzY1UXlsQjVtOUpCbnF4NXJWOFYzemIrSFY4NnZiMktadlpDbWt3SW1OdlR5?=
- =?utf-8?B?UXVHNTdXcnZkSHc5Ym5KbUw5MUxXTEVhT2lRUjhHVlZ6TzhtSDRsMGRIRUNF?=
- =?utf-8?B?MEVNdUw0MERpVW1rQkp2T2tNdFhDMFkyV2JieDJhSWVxSU5qZ3hoWjlVSFF5?=
- =?utf-8?B?RFhUUnJuNFFqRFVMWG50dUJNakdocnU1Q1FqNmlVZDZFakFlYjdVT0NkQzdy?=
- =?utf-8?B?a3Vsenp6SlkxQW9OWEluZXlSMlNQcVo3Y1dPTzVXVlVtSEp5RTRxZlRWSnR3?=
- =?utf-8?B?Kzg0R1pkWUVoVEFpdFljbWQ0ZzRMU2Fzd1NvMVA4cmdXRmFxS0pEbmtTQjRV?=
- =?utf-8?B?R1JPenRhZTdmRVVmOFRMTEp6WVBjRitpbXVPVEt5U3k0VkJoZSt4QmxGSmxm?=
- =?utf-8?B?V1F4TXd3NXZ1Uk40a3FjL2x5K1Eva3NIMHl3MC9Rd0NSZUhscXdtc04wbi9l?=
- =?utf-8?B?THBsYVZnN0xURmdNaGYvTytmcmlUYnhJVC9oZU1PMzFmeVdMNmlHcktFVVhj?=
- =?utf-8?B?YXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b7765f3-f0fa-416e-a0ce-08dbbee53322
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mJ2Q/z0wXAKK+uNcJZMWsJaXhlpA8bWMThd6APfoBE/HcJAjo+co+9kQoG7Q?=
+ =?us-ascii?Q?2RNKrLCzfJ5VFgSS5v3oNPb2XnNbIpadRv7YnCjsHHtBxJgh//joGfUherbv?=
+ =?us-ascii?Q?Knd3UTfUrgjcMxCteLcP8yEiBlyGyWPW7/ASUr5WyNm1/XT39cLfLSUpNIbl?=
+ =?us-ascii?Q?TQn5pD0aQdEtJDopYHZEEyR2NNZoQvAeITXBz3qVT/JQIqj/oRSV3l9z3wuM?=
+ =?us-ascii?Q?Y4TxjooH/G19VWjYJ5JLSvPDuYNrGQntf3BBXXevK0eNQcA40fLfEIh223IJ?=
+ =?us-ascii?Q?pzi5L47zNQsp9KeIvcYUrHgYB51DndQ5gnzCRT7F4AOa08jItaAJaBx6dU3T?=
+ =?us-ascii?Q?rcTlPbLOI0aAuGEUjAdtRSMmHSgr6xpUD8rupfoyHHgUjeSQgsrsA6WkkbKj?=
+ =?us-ascii?Q?PLrJYd3+xt3EL48j0t2LYh7rg6O+zBSHTvGfWenz+B55nkG7diXLPsQOwep/?=
+ =?us-ascii?Q?B7C4cRB1k4/i0zJwv6/cGjQ37eumxfO+lUEqks0RfTl1T0Rjthm8olsw/nxO?=
+ =?us-ascii?Q?Gx+tVwMDklxnLL+fkdxAq6M6S2wI+WaKCM5nnSI3ospIHdVsEyqoo9kyDOBY?=
+ =?us-ascii?Q?YQvcuN5Y5s+c7l/qsiA1YMV67sIy6JZPxhzO/8xh5APdKOt8QIgTU1i64ujz?=
+ =?us-ascii?Q?ujrqPq9oj6pOYIOLedzzGSp8nU+JldFJ5pOpx/6F1K1C0t3kuMZtqApvvgPd?=
+ =?us-ascii?Q?HIH9ZJs+fdbC6CKa4Hc4LE63OzviVQtPJBqV8ZO6kUqSgLUzcrHAPKHZqGD9?=
+ =?us-ascii?Q?/5p9DtXdj7UMcAehN9e0gz/FGxfbzK/1RJL+/KPdIIajAKsDz3S2C+CQC785?=
+ =?us-ascii?Q?IjkrZRVXQkIURGZdS3mnVxgXgulpJJIZqDRopiE/f1HEB33upQj81/ZfleMd?=
+ =?us-ascii?Q?kfIKpfnb6XDUwi1mjAhC/oXAhj4x/qaA/EhIBra/cDzuNyQBZX4CRlhYj2vK?=
+ =?us-ascii?Q?SplAf8EVdTDt2Lwo0txFZEfxwyUIX28yU+GD+a3zVffscndtuVErKneBHg0y?=
+ =?us-ascii?Q?QMkQXf9HO3/MOkXX0qtXFv682nMXphPj3hwCTgYygKJeJhkXIt8LG5d2Nj8B?=
+ =?us-ascii?Q?VMgiT+EtbHDmBFNFLO85nEpxlI6ekgF3zIZutCZOV8gECEwzc6fhmP/N+efj?=
+ =?us-ascii?Q?GdaBKeC4c8qfV+Rt49cU1hZg4V7wlR5PR/QE22bNxBRsIMI0MXlAzvPGbsuu?=
+ =?us-ascii?Q?AXIimA5z/aq8r36iOewFOy2/tLnfCnl0tIgGnrpiHfsYZ4+nHrjt7tjLY2YL?=
+ =?us-ascii?Q?LM4SvKrrTK5bNTZFIBlm3Kpo07l6dpqgJ0zarazKVySL8X5frXfJNj3wq5b7?=
+ =?us-ascii?Q?VWClhlfAaW4eS2Db6EWhPcV+AXfNMJL5y4GhF8xOIAvgbsBZanPmHGr2wrW4?=
+ =?us-ascii?Q?KOyyXebgmL+RTOfcFkv/wdNyPfAJM9qy4V5WOO6Yy1S1oBIImbY3IQn0q0V1?=
+ =?us-ascii?Q?e/bVZMatBmF0932OjUmMH8bETtb76GR7KtvmqnK4ludjVR6O9nG/uetQy1kU?=
+ =?us-ascii?Q?vMYlz5xQypGAeOewVl3xSRrkcj9BBVz3NH0lW0NxkOLh4FMQYc6eLMFyb1AH?=
+ =?us-ascii?Q?0WlZXM1S/wK8ftdYv7AI+rC7O1gcMgFb5XgVYoou?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?jQ7RaJacfl+xBoLIWr2ZxB3rjlRd2GO/KLrOCqYW2CqKRBuUBT6drICTcm3C?=
+ =?us-ascii?Q?zbUeBX1GfsSNoDiXMzX8Bjl/FS80eMfgomt1xSGbYbAlkyQc1B/74P3xN9/P?=
+ =?us-ascii?Q?R8sWQIucHSyJcKRZzfVGGXCtNl/BRZgCAQeISh257x8cYj+WPdlMQkvNaHqJ?=
+ =?us-ascii?Q?B/d9dHtNF5w8k2iTEEP0bZ34WbeQJ6S3OgvLvleiAAYldRXE6aN8br2cJ4kc?=
+ =?us-ascii?Q?6xJO/3KS6j3K0G1iEQwN4A+C0yJCijnMxfnxr7TGno414GtXTMfz7lS/xyaH?=
+ =?us-ascii?Q?Cc1/rHWVNm7gGAigTqtbweftingxGa5o4NjjHwyxeu8k/SEGMAI8HtObF2AX?=
+ =?us-ascii?Q?hKYF4U5qfjU5KQiH/s7YiUAYAwUcFZVc9og7KCrivlsQcsT3ptFNtZwX1Gpv?=
+ =?us-ascii?Q?r/5736A8OVsywhj9rIKlfpLHY1LUxzXF1nzHafWppmfs8rjtWljDMjxUgK9k?=
+ =?us-ascii?Q?2k+tVleO+Xo0oU6nMhPVdqLaR9Di36f2gZtxjIpbwMKw4qJzE6ehfKcLUSPW?=
+ =?us-ascii?Q?Y6TOuox2Th+tR26HrgHwH9E0zGkt+cAteazEDh9UMWZdH1q2UxSSHj0jqOlX?=
+ =?us-ascii?Q?8uw4TPRsuYE0NfChxE1SAN+g3oKFweUUyuBqr6hKhNsw/8nBBvtljOYt2tOC?=
+ =?us-ascii?Q?UDK8vF4GE/fFKFiVwCN9AxFP2Jd+W8U+6vEQdkMD8Wnt5kiE4ijIyv4zB8xW?=
+ =?us-ascii?Q?I5BQlmf/VLlpJpiI5/1foLvgqy9gGMp+Sj29lUkf+cb4ipf/XBthHFEvUolN?=
+ =?us-ascii?Q?4pIpxYUVFGVZs7KupV/RwrBZqzr439gJ6Smp3Am/zMxAvbuJI8wa+3g+BMqc?=
+ =?us-ascii?Q?0Ysir7WI8++a+O7jbKtY3YyJEblCFAzSsOb9WE0HUYo33ot8NFUUCcZxsYjn?=
+ =?us-ascii?Q?2Btn20k4KqwKzd5Lr9NpsaMJvkDDGw2XGkCJB5p3OvOIgK56WKChhULQ2Um+?=
+ =?us-ascii?Q?xhWC8E+7I2MxRWBooNa9lw=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b243f7c6-67be-448d-963c-08dbbee59ebb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 23:06:22.4856
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 23:09:22.4158
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kRaQxWa9b3bFFJ2DVBV/ZUjsqPaVuT/op7Cwkf5XhmCO8nnkQp+4M5XFWuQnhKTM2/J8Q3TZF7ke6pCDri2MbgilJJj++0gV9RRvp2Rnf7M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7639
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: mBJbQC1p79WQH4gZ0pkqrF69CvJ8NXo2pd5jYP+L38Vuzu+G0jaEbAnm/xYQbKRF059HkAsWX/C1db1skHUhbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5069
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_15,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309260199
+X-Proofpoint-GUID: nxju4DI2XURNTbFX_5mW5n8ym02S18yE
+X-Proofpoint-ORIG-GUID: nxju4DI2XURNTbFX_5mW5n8ym02S18yE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+This is to minimize the kvmclock drift during CPU hotplug (or when the
+master clock and pvclock_vcpu_time_info are updated). The drift is
+because kvmclock and raw monotonic (tsc) use different
+equation/mult/shift to calculate that how many nanoseconds (given the tsc
+as input) has passed.
 
-On 9/26/2023 3:14 PM, Luck, Tony wrote:
->>> But this seems like it is a lot of churn to avoid having separate
->>> functions to search control and monitor lists. Each a clone of
->>> the existing ~24 line rdt_find_domain() with just the type changed
->>> for the return value and the list travsersal.
->>
->> Yes. Sorry, I did not realize this implication during the earlier
->> discussions.
->>
->>>
->>> What do you think?
->>>
->>
->> It sounds to me as though you are advocating for open coding
->> rdt_find_ctrl_domain() and rdt_find_mon_domain()? That sounds good
->> to me.
-> 
-> Reinette,
-> 
-> While there is some churn, it maybe isn't all that bad.  I also ran the open
-> coding case and having a pair of 24-line functions one after the other with
-> just two trivial lines changed between them is unlikely to get past the x86
-> maintainers without running this same conversation again.
-> 
+The calculation of the kvmclock is based on the pvclock_vcpu_time_info
+provided by the host side.
 
-I expect you are right and your proposal makes the code cleaner.
-Could the list_entry() call within rdt_find_domain() instead
-extract a pointer to a struct rdt_domain_hdr? To me that would make
-it most generic and avoid using wrong type for a pointer. I do think that
-may have been what you intended by moving id in there though ...
+struct pvclock_vcpu_time_info {
+	u32   version;
+	u32   pad0;
+	u64   tsc_timestamp;     --> by host raw monotonic
+	u64   system_time;       --> by host raw monotonic
+	u32   tsc_to_system_mul; --> by host KVM
+	s8    tsc_shift;         --> by host KVM
+	u8    flags;
+	u8    pad[2];
+} __attribute__((__packed__));
 
-Reinette
+To calculate the current guest kvmclock:
+
+1. Obtain the tsc = rdtsc() of guest.
+
+2. If shift < 0:
+    tmp = tsc >> tsc_shift
+   if shift > 0:
+    tmp = tsc << tsc_shift
+
+3. The kvmclock value will be: (tmp * tsc_to_system_mul) >> 32
+
+Therefore, the current kvmclock will be either:
+
+(rdtsc() >> tsc_shift) * tsc_to_system_mul >> 32
+
+... or ...
+
+(rdtsc() << tsc_shift) * tsc_to_system_mul >> 32
+
+The 'tsc_to_system_mul' and 'tsc_shift' are calculated by the host KVM.
+
+When the master clock is actively used, the 'tsc_timestamp' and
+'system_time' are derived from the host raw monotonic time, which is
+calculated based on the 'mult' and 'shift' of clocksource_tsc:
+
+elapsed_time = (tsc * mult) >> shift
+
+Since kvmclock and raw monotonic (clocksource_tsc) use different
+equation/mult/shift to convert the tsc to nanosecond, there may be clock
+drift issue during CPU hotplug (when the master clock is updated).
+
+1. The guest boots and all vcpus have the same 'pvclock_vcpu_time_info'
+(suppose the master clock is used).
+
+2. Since the master clock is never updated, the periodic kvmclock_sync_work
+does not update the values in 'pvclock_vcpu_time_info'.
+
+3. Suppose a very long period has passed (e.g., 30-day).
+
+4. The user adds another vcpu. Both master clock and
+'pvclock_vcpu_time_info' are updated, based on the raw monotonic.
+
+(Ideally, we expect the update is based on 'tsc_to_system_mul' and
+'tsc_shift' from kvmclock).
+
+
+Because kvmclock and raw monotonic (clocksource_tsc) use different
+equation/mult/shift to convert the tsc to nanosecond, there will be drift
+between:
+
+(1) kvmclock based on current rdtsc and old 'pvclock_vcpu_time_info'
+(2) kvmclock based on current rdtsc and new 'pvclock_vcpu_time_info'
+
+According to the test, there is a drift of 4502145ns between (1) and (2)
+after about 40 hours. The longer the time, the large the drift.
+
+This is to add a module param to allow the user to configure for how often
+to refresh the master clock, in order to reduce the kvmclock drift based on
+user requirement (e.g., every 5-min to every day). The more often that the
+master clock is refreshed, the smaller the kvmclock drift during the vcpu
+hotplug.
+
+Cc: Joe Jin <joe.jin@oracle.com>
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+Other options are to update the masterclock in:
+- kvmclock_sync_work, or
+- pvclock_gtod_notify()
+
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/x86.c              | 34 +++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 17715cb8731d..57409dce5d73 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1331,6 +1331,7 @@ struct kvm_arch {
+ 	u64 master_cycle_now;
+ 	struct delayed_work kvmclock_update_work;
+ 	struct delayed_work kvmclock_sync_work;
++	struct delayed_work masterclock_sync_work;
+ 
+ 	struct kvm_xen_hvm_config xen_hvm_config;
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9f18b06bbda6..0b71dc3785eb 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -157,6 +157,9 @@ module_param(min_timer_period_us, uint, S_IRUGO | S_IWUSR);
+ static bool __read_mostly kvmclock_periodic_sync = true;
+ module_param(kvmclock_periodic_sync, bool, S_IRUGO);
+ 
++unsigned int __read_mostly masterclock_sync_period;
++module_param(masterclock_sync_period, uint, 0444);
++
+ /* tsc tolerance in parts per million - default to 1/2 of the NTP threshold */
+ static u32 __read_mostly tsc_tolerance_ppm = 250;
+ module_param(tsc_tolerance_ppm, uint, S_IRUGO | S_IWUSR);
+@@ -3298,6 +3301,31 @@ static void kvmclock_sync_fn(struct work_struct *work)
+ 					KVMCLOCK_SYNC_PERIOD);
+ }
+ 
++static void masterclock_sync_fn(struct work_struct *work)
++{
++	unsigned long i;
++	struct delayed_work *dwork = to_delayed_work(work);
++	struct kvm_arch *ka = container_of(dwork, struct kvm_arch,
++					   masterclock_sync_work);
++	struct kvm *kvm = container_of(ka, struct kvm, arch);
++	struct kvm_vcpu *vcpu;
++
++	if (!masterclock_sync_period)
++		return;
++
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		/*
++		 * It is not required to kick the vcpu because it is not
++		 * expected to update the master clock immediately.
++		 */
++		kvm_make_request(KVM_REQ_MASTERCLOCK_UPDATE, vcpu);
++	}
++
++	schedule_delayed_work(&ka->masterclock_sync_work,
++			      masterclock_sync_period * HZ);
++}
++
++
+ /* These helpers are safe iff @msr is known to be an MCx bank MSR. */
+ static bool is_mci_control_msr(u32 msr)
+ {
+@@ -11970,6 +11998,10 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+ 	if (kvmclock_periodic_sync && vcpu->vcpu_idx == 0)
+ 		schedule_delayed_work(&kvm->arch.kvmclock_sync_work,
+ 						KVMCLOCK_SYNC_PERIOD);
++
++	if (masterclock_sync_period && vcpu->vcpu_idx == 0)
++		schedule_delayed_work(&kvm->arch.masterclock_sync_work,
++				      masterclock_sync_period * HZ);
+ }
+ 
+ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+@@ -12344,6 +12376,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 
+ 	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
+ 	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
++	INIT_DELAYED_WORK(&kvm->arch.masterclock_sync_work, masterclock_sync_fn);
+ 
+ 	kvm_apicv_init(kvm);
+ 	kvm_hv_init_vm(kvm);
+@@ -12383,6 +12416,7 @@ static void kvm_unload_vcpu_mmus(struct kvm *kvm)
+ 
+ void kvm_arch_sync_events(struct kvm *kvm)
+ {
++	cancel_delayed_work_sync(&kvm->arch.masterclock_sync_work);
+ 	cancel_delayed_work_sync(&kvm->arch.kvmclock_sync_work);
+ 	cancel_delayed_work_sync(&kvm->arch.kvmclock_update_work);
+ 	kvm_free_pit(kvm);
+-- 
+2.34.1
+
