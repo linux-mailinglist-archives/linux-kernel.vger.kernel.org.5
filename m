@@ -2,256 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603257AE32A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 02:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9947AE334
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 03:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjIZA6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 20:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
+        id S232334AbjIZBFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 21:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbjIZA6I (ORCPT
+        with ESMTP id S231225AbjIZBFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 20:58:08 -0400
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A2BD6;
-        Mon, 25 Sep 2023 17:57:58 -0700 (PDT)
-Received: from [192.168.68.112] (ppp118-210-175-231.adl-adc-lon-bras34.tpg.internode.on.net [118.210.175.231])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id DDB5B20075;
-        Tue, 26 Sep 2023 08:57:46 +0800 (AWST)
+        Mon, 25 Sep 2023 21:05:17 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D1310A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 18:05:10 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so52516575ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 18:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1695689871;
-        bh=il9pZHitpvQPocfosyxq64m7qx5tIUZKMM6PXb+s62k=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=MQzeTH5alD6g2hNmisWGJknBk91CflzzODcRg5LoMfyPQAMZYJu4LuTjAcjDtAOLR
-         shyC8m27Jg9jxVYShrkXV0nhIP9cx3Re+BR4kTiYh47rjO6QTuwd0WlK0qbnqP9HCH
-         RGhQSEtWrIGM5BTcmNRPvJINxUL5jF1p7Hr+b7FqVMaAyitbEBYDx19/htNdYJzb1n
-         obNcw4r/mJ72J//8KfkkycqdOLS4sjTFYVLYiKCKDnusyaBuZP3DLvGq12QlvW/6Mh
-         JC1Ay0NyAeSyCpkGmljO+HgTr1kW07AB6CenNX/wTExtaIXg7gGEIaIydNXg5zO0K+
-         QmwvbfUNLkhoQ==
-Message-ID: <20e3bef8282b1dd412020ecb24d90cbd89f39756.camel@codeconstruct.com.au>
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: aspeed-wdt: Add
- aspeed,reset-mask property
-From:   Andrew Jeffery <andrew@codeconstruct.com.au>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Zev Weiss <zev@bewilderbeest.net>
-Cc:     devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        Andrew Jeffery <andrew@aj.id.au>, openbmc@lists.ozlabs.org,
-        Eddie James <eajames@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        g@hatter.bewilderbeest.net, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        "Milton D. Miller II" <mdmii@outlook.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 26 Sep 2023 10:27:45 +0930
-In-Reply-To: <e6b82ec9-c19b-4210-9251-2beee30c6d90@roeck-us.net>
-References: <20230922104231.1434-4-zev@bewilderbeest.net>
-         <20230922104231.1434-5-zev@bewilderbeest.net>
-         <6df088a6-75ab-42f2-ba39-3f155714ed2d@app.fastmail.com>
-         <6b0d4901-d543-4a06-a1e4-7f1558f5361f@hatter.bewilderbeest.net>
-         <e6b82ec9-c19b-4210-9251-2beee30c6d90@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=gmail.com; s=20230601; t=1695690310; x=1696295110; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPeeeABDN1yVUniYlgXbdBgCFDUvJ3dL9dEBeDXd3uM=;
+        b=ltW9lCAkOf48CSw8sm7igCbvDlMP0TflUyuMxrKCv4IF0S8M85luaYijBAzxzwfn2o
+         eeK8cR/oDPgEf9fgQfrIlYXh/WkZVNfPlY57HiR8Czj7dXtC2vFWJkDHKqS71MxPk4lQ
+         P4yOchzTDySd9QXSBinMeLjN0bz4VAHFH/Q/nnV6a82AgZdsA0yeSoQFhp99IwiBDPz8
+         2zFNbLF7FXxUzo7V0FJqZ7w0lAS43geDx28fNnELEEuXwzViHlY8vVwZO3vPbF3D5Ynx
+         7IDfqCHKdfMqWuHP6+Y8xV5r01oKZyxF5aOnmwErfqyCndzHpGy2R4rTi8fYdIT5S+RG
+         ywMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695690310; x=1696295110;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zPeeeABDN1yVUniYlgXbdBgCFDUvJ3dL9dEBeDXd3uM=;
+        b=n9SD8fbrFlu1pvMKZvmpwB7MwjW0qjBlqGL4IC5lJrlT1CL3xMMrKhvhCbyHCYYTC6
+         /D1gqDgxOyNPALvTew93QiPKqJUHjf/L5PBmiRzxjoewMGmkfoJXBW69YlHyfVL1Pj4h
+         CmokAhzQAmc8RHucKnkjhaySkDNqZCxGnshTCAtCXwGiD+dCRrNPe9/emNOMwxrOS0C3
+         EWQjGWUAXnv0fTH/ujBgbXQlATO/A6FjexVeqU2a8BBN86zVNcY3iKjsS2HcCHAQzt3v
+         ncxpB11rdNaI8MClXU1+yiRbi1RWp0B/BVywNLnA8xisd2vdowWsLyRPDYCM9jD/t6t5
+         m23g==
+X-Gm-Message-State: AOJu0Yx81c9h1LtWQZgtNMlvkJAIg2kk+hp+y6keCou+812i4VXYvcc8
+        1e6lpLMiC88gbsYVjh3zo6T5b+tvVDG1iQ==
+X-Google-Smtp-Source: AGHT+IFtbaPRx9ZcLm71gUQXCmeBIEVrED1UkHVP6fQl58iNQS6mQpta6E3uC+Adeusc+MJBq0jTew==
+X-Received: by 2002:a17:90b:1243:b0:26d:14cd:fb1a with SMTP id gx3-20020a17090b124300b0026d14cdfb1amr6249159pjb.23.1695690310427;
+        Mon, 25 Sep 2023 18:05:10 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id s1-20020a17090a074100b00256799877ffsm9426781pje.47.2023.09.25.18.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Sep 2023 18:05:10 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 4883A8DBA76D; Tue, 26 Sep 2023 08:05:07 +0700 (WIB)
+Date:   Tue, 26 Sep 2023 08:05:07 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     huangli05 <huangli05@inspur.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     <osmtendev@gmail.com>, <speakup@linux-speakup.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] staging: speakup: Remove repeated word in comments
+Message-ID: <ZRIuQ65mCABdhKLk@debian.me>
+References: <20230925054559.3857-1-huangli05@inspur.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Px7V2FwQOhhdPJkC"
+Content-Disposition: inline
+In-Reply-To: <20230925054559.3857-1-huangli05@inspur.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-25 at 17:35 -0700, Guenter Roeck wrote:
-> On Mon, Sep 25, 2023 at 05:04:10PM -0700, Zev Weiss wrote:
-> > On Sun, Sep 24, 2023 at 07:42:45PM PDT, Andrew Jeffery wrote:
-> > >=20
-> > >=20
-> > > On Fri, 22 Sep 2023, at 20:12, Zev Weiss wrote:
-> > > > This property configures the Aspeed watchdog timer's reset mask, wh=
-ich
-> > > > controls which peripherals are reset when the watchdog timer expire=
-s.
-> > > > Some platforms require that certain devices be left untouched acros=
-s a
-> > > > reboot; aspeed,reset-mask can now be used to express such constrain=
-ts.
-> > > >=20
-> > > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> > > > ---
-> > > >  .../bindings/watchdog/aspeed-wdt.txt          | 18 +++-
-> > > >  include/dt-bindings/watchdog/aspeed-wdt.h     | 92 +++++++++++++++=
-++++
-> > > >  2 files changed, 109 insertions(+), 1 deletion(-)
-> > > >  create mode 100644 include/dt-bindings/watchdog/aspeed-wdt.h
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.=
-txt
-> > > > b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > > > index a8197632d6d2..3208adb3e52e 100644
-> > > > --- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > > > +++ b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > > > @@ -47,7 +47,15 @@ Optional properties for AST2500-compatible watch=
-dogs:
-> > > >  			   is configured as push-pull, then set the pulse
-> > > >  			   polarity to active-high. The default is active-low.
-> > > >=20
-> > > > -Example:
-> > > > +Optional properties for AST2500- and AST2600-compatible watchdogs:
-> > > > + - aspeed,reset-mask: A bitmask indicating which peripherals will =
-be reset if
-> > > > +		      the watchdog timer expires.  On AST2500 this should be a
-> > > > +		      single word defined using the AST2500_WDT_RESET_* macros;
-> > > > +		      on AST2600 this should be a two-word array with the first
-> > > > +		      word defined using the AST2600_WDT_RESET1_* macros and the
-> > > > +		      second word defined using the AST2600_WDT_RESET2_* macros.
-> > > > +
-> > > > +Examples:
-> > > >=20
-> > > >  	wdt1: watchdog@1e785000 {
-> > > >  		compatible =3D "aspeed,ast2400-wdt";
-> > > > @@ -55,3 +63,11 @@ Example:
-> > > >  		aspeed,reset-type =3D "system";
-> > > >  		aspeed,external-signal;
-> > > >  	};
-> > > > +
-> > > > +	#include <dt-bindings/watchdog/aspeed-wdt.h>
-> > > > +	wdt2: watchdog@1e785040 {
-> > > > +		compatible =3D "aspeed,ast2600-wdt";
-> > > > +		reg =3D <0x1e785040 0x40>;
-> > > > +		aspeed,reset-mask =3D <AST2600_WDT_RESET1_DEFAULT
-> > > > +				     (AST2600_WDT_RESET2_DEFAULT & ~AST2600_WDT_RESET2_LPC)>;
-> > > > +	};
-> > >=20
-> > > Rob has acked your current approach already, but I do wonder about an
-> > > alternative that aligns more with the clock/reset/interrupt propertie=
-s.
-> > > Essentially, define a new generic watchdog property that is specified=
- on
-> > > the controllers to be reset by the watchdog (or even on just the
-> > > watchdog node itself, emulating what you've proposed here):
-> > >=20
-> > > watchdog-resets =3D <phandle index>;
-> > >=20
-> > > The phandle links to the watchdog of interest, and the index specifie=
-s
-> > > the controller associated with the configuration. It might even be
-> > > useful to do:
-> > >=20
-> > > watchdog-resets =3D <phandle index enable>;
-> > >=20
-> > > "enable" could provide explicit control over whether somethings shoul=
-d
-> > > be reset or not (as a way to prevent reset if the controller targeted=
- by
-> > > the provided index would otherwise be reset in accordance with the
-> > > default reset value in the watchdog controller).
-> > >=20
-> > > The macros from the dt-bindings header can then use macros to name th=
-e
-> > > indexes rather than define a mask tied to the register layout. The in=
-dex
-> > > may still in some way represent the mask position. This has the benef=
-it
-> > > of hiding the issue of one vs two configuration registers between the
-> > > AST2500 and AST2600 while also allowing other controllers to exploit =
-the
-> > > binding (Nuvoton BMCs? Though maybe it's generalising too early?).
-> > >=20
-> >=20
-> > Sorry, I'm having a bit of a hard time picturing exactly what you're
-> > suggesting here...to start with:
-> >=20
-> > > property that is specified on the controllers to be reset by the
-> > > watchdog
-> >=20
-> > and
-> >=20
-> > > or even on just the watchdog node itself
-> >=20
-> > seem on the face of it like two fairly different approaches to me.  The
-> > former sounds more like existing clock/reset/etc. stuff, where the
-> > peripheral has a property describing its relationship to the "central"
-> > subsystem, and various peripheral drivers are all individually responsi=
-ble
-> > for observing that property and calling in to the central subsystem to
-> > configure things for that peripheral appropriately; if I'm understandin=
-g you
-> > correctly, it might look something like:
-> >=20
-> >   &spi1 {
-> >     watchdog-resets =3D <&wdt1 WDT_INDEX_SPI1 0>;
-> >   };
-> >=20
-> > Or maybe something more like how pinctrl works, via phandles to subnode=
-s of
-> > the central device?
-> >=20
-> >   &wdt1 {
-> >     wdt1_spi1_reset: spi1_reset {
-> >       reg =3D <0x1c>;
-> >       bit =3D <24>;
-> >     };
-> >   };
-> >=20
-> >   &spi1 {
-> >     watchdog-resets =3D <&wdt1_spi1_reset 0>;
-> >   };
-> >=20
-> > Either way, it seems like it'd be complicated by any insufficient
-> > granularity in the watchdog w.r.t. having independent control over the
-> > individual devices represented by separate DT nodes (such as how the AS=
-T2500
-> > watchdog has a single SPI controller reset bit instead of one per SPI
-> > interface, or its "misc SOC controller" bit governing all sorts of odds=
- and
-> > ends).
-> >=20
-> > In the latter case (property on the wdt node), would it essentially jus=
-t be
-> > kind of an indirection layer mapping hardware-independent device indice=
-s to
-> > specific registers/bits?  It's not obvious to me what purpose a phandle=
- to
-> > the peripheral device node would serve (would the wdt driver have a goo=
-d way
-> > of identifying what specific peripheral it's pointing to to know what b=
-it to
-> > twiddle?), but maybe I'm misunderstanding what you're suggesting...
-> >=20
-> >=20
-> > I guess my other uncertainty is the balance between generalization and
-> > applicability -- how many other watchdog devices have sufficient compar=
-able
-> > configurability to make use of it?  I haven't pored over all of them, b=
-ut
-> > from a random sampling of 20 so of the other existing wdt drivers I don=
-'t
-> > see any obvious candidates -- the closest I saw were cpwd.c, which
-> > apparently can distinguish between a CPU reset and a CPU/backplane/boar=
-d
-> > reset, and realtek_otto_wdt.c, which can do a CPU or a SOC reset (thoug=
-h I
-> > don't have any of the hardware docs to know what capabilities other dev=
-ices
-> > might provide that the drivers don't use).  Do the Nuvoton BMCs have
-> > watchdogs with peripheral-granularity reset configuration?
-> >=20
->=20
-> Quite frankly, I don't like where this is going. It is getting way
-> too complicated. And when something is becoming way too complicated,
-> I tend to put it on my backburner list. The length of that list quickly
-> approaches maxint.
->=20
 
-No worries. I figured I should at least give the idea some air-time,
-even if we did end up discounting it. I feel my description and Zev's
-queries make it sound more complex than it might be in practice but I
-also haven't written the patch, so never mind!
+--Px7V2FwQOhhdPJkC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Andrew
+On Mon, Sep 25, 2023 at 01:45:59PM +0800, huangli05 wrote:
+> Remove the repeated word "the" in comments.
+>=20
+> Signed-off-by: huangli05 <huangli05@inspur.com>
+> ---
+>  drivers/accessibility/speakup/speakup_soft.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/accessibility/speakup/speakup_soft.c b/drivers/acces=
+sibility/speakup/speakup_soft.c
+> index 6d446824677b..6549bfb96e7f 100644
+> --- a/drivers/accessibility/speakup/speakup_soft.c
+> +++ b/drivers/accessibility/speakup/speakup_soft.c
+> @@ -446,7 +446,7 @@ static int softsynth_adjust(struct spk_synth *synth, =
+struct st_var_header *var)
+>  	if (var->var_id !=3D PUNC_LEVEL)
+>  		return 0;
+> =20
+> -	/* We want to set the the speech synthesis punctuation level
+> +	/* We want to set the speech synthesis punctuation level
+>  	 * accordingly, so it properly tunes speaking A_PUNC characters */
+>  	var_data =3D var->data;
+>  	if (!var_data)
+
+You have not addressed Greg's patch email bot warnings from your v1 patch
+yet [1], so I repeat it:
+
+> - You did not specify a description of why the patch is needed, or
+>   possibly, any description at all, in the email body.  Please read the
+>   section entitled "The canonical patch format" in the kernel file,
+>   Documentation/process/submitting-patches.rst for what is needed in
+>   order to properly describe the change.
+>=20
+> - You did not write a descriptive Subject: for the patch, allowing Greg,
+>   and everyone else, to know what this patch is all about.  Please read
+>   the section entitled "The canonical patch format" in the kernel file,
+>   Documentation/process/submitting-patches.rst for what a proper
+>   Subject: line should look like.
+>=20
+> - It looks like you did not use your "real" name for the patch on either
+>   the Signed-off-by: line, or the From: line (both of which have to
+>   match).  Please read the kernel file,
+>   Documentation/process/submitting-patches.rst for how to do this
+>   correctly.
+
+Thanks.
+
+[1]: https://lore.kernel.org/all/20230921021349.3350-1-huangli05@inspur.com/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--Px7V2FwQOhhdPJkC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRIuQwAKCRD2uYlJVVFO
+owaFAP45m2M6m+UQ3hKIhl7/GWiKz83TMTo3H91TH6zpSrSwzAEA2WojItEt9nrq
+eCe/RUV8SwH4R69wDP7a53zkq9a2JAY=
+=9WSw
+-----END PGP SIGNATURE-----
+
+--Px7V2FwQOhhdPJkC--
