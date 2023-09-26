@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DD57AF100
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EC87AF0FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235365AbjIZQmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+        id S235353AbjIZQm2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 12:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235364AbjIZQmg (ORCPT
+        with ESMTP id S235188AbjIZQm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:42:36 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CD712A;
-        Tue, 26 Sep 2023 09:42:29 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QGfhLV026269;
-        Tue, 26 Sep 2023 16:42:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=ltcBCLRpeo5Qm/iG36QikwBKiii+yn5bF1s2VHUvFMM=;
- b=GDx9YKE6/y0+joAQJGAFIuBqJbDBj5rFj6MOsuvtHbVrRlSs+NffCJxdYtEgKs5urx/W
- uCnjLcSWXhPNEYGRS8YymcaggsDs0wU3g5TX60JqCN61aOhg5CdcCz1MzEq96eEkFkdw
- s1LdI5pt/ybe/Tw9Sva6dCJ2gzbuWTl+MfYopvgPGwthaaHOg9C+eyCVYtilQVBaS64s
- CBDtTl0CQx4M/lUei68uxtTKzBWTNlwbZVNyxdjjvGQFIcpJp5tTteBdZvr4dgisBfVT
- 4LPumhFr6aXsJ73qF8P+xvyh3feTKYbn/qphQmcriqkjhP0E7FebbRFZjRgomE1ZMPJk Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tc31y00c3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:42:06 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38QGfjFZ026375;
-        Tue, 26 Sep 2023 16:42:05 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tc31y00bg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:42:05 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38QFVYV8008456;
-        Tue, 26 Sep 2023 16:42:04 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3taabsn85h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Sep 2023 16:42:04 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38QGg1kE15270400
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Sep 2023 16:42:01 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A1EB20043;
-        Tue, 26 Sep 2023 16:42:01 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B52220040;
-        Tue, 26 Sep 2023 16:42:01 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Sep 2023 16:42:00 +0000 (GMT)
-Date:   Tue, 26 Sep 2023 18:41:58 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-Message-ID: <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
-In-Reply-To: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
-References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 26 Sep 2023 12:42:26 -0400
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DADBF;
+        Tue, 26 Sep 2023 09:42:20 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-57b68555467so672930eaf.0;
+        Tue, 26 Sep 2023 09:42:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695746539; x=1696351339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5kCKtZzVEPLURLD/XA5Ia6gWfPjg1Q/OgPrW15KMXS4=;
+        b=Rcog3NUpfC0RwTygrn3cFhVymK2RJd/rB1fRltMKPL69GquDJieXMaQn1AfWax2zzR
+         0ni0UR3GnBfplr6KSlhK1Q+Rfkb2qYbh79r/c/KsGischj2NALIKuCZPbezFJFSlL5rk
+         bf4Cw9kF/G0z46v9uYAUZJprVfrTC8cc3elKOXzZhgykaFhfFxcFnKg6RLjurx+TDq2G
+         m1QIoH1Fu4ZBokv+bfCTBhARzEcOkHKHs/EGhqUD/K5+OuxivdvDADsbTNlNkhjXQs6w
+         JyZdcfnfdLq+3iOxoKwuJvUgQwy8thGA+fUFO8Yf5MoPoLOeiXfEx8AwxAajsllp0l2j
+         4ptw==
+X-Gm-Message-State: AOJu0YyMVujEyOH2BlNAZFFyL6GQU7GcOf6W3M/kqhz1cuLe9BF2VW/k
+        1nB1x7irEF/+nz0MOBR7qwRH99To/7/JiUTWJk8=
+X-Google-Smtp-Source: AGHT+IGvBonHN0fdxI56wOYu4Nz8TpfjHmGtue8FGFtL5uQvBetZe5mdoCWbrgqOkOXQncIV4rZljZEZLJzJ2PNlejU=
+X-Received: by 2002:a4a:e8c4:0:b0:57b:73f6:6f80 with SMTP id
+ h4-20020a4ae8c4000000b0057b73f66f80mr9270220ooe.0.1695746539202; Tue, 26 Sep
+ 2023 09:42:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: o5Qnfs9z3yvYmj8Y5r21YF414SvYoNHs
-X-Proofpoint-GUID: SE2bF5nwtmg_Bi5BJcw-sW5SVI_T11kO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-26_13,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- clxscore=1011 bulkscore=0 impostorscore=0 mlxlogscore=233
- lowpriorityscore=0 spamscore=0 phishscore=0 mlxscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309260145
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230922054552.3570-1-raag.jadav@intel.com> <7537e654bfda45ecac953392267e271e37d28ea4.camel@crapouillou.net>
+In-Reply-To: <7537e654bfda45ecac953392267e271e37d28ea4.camel@crapouillou.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 26 Sep 2023 18:42:07 +0200
+Message-ID: <CAJZ5v0i=+BVZ4D4kEx7jPKiCuB4tuUMYX3tEJ5c-GVca++pJDg@mail.gmail.com>
+Subject: Re: [PATCH v4] PM: Fix symbol export for _SIMPLE_ variants of _PM_OPS()
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Raag Jadav <raag.jadav@intel.com>
+Cc:     len.brown@intel.com, pavel@ucw.cz, Jonathan.Cameron@huawei.com,
+        andriy.shevchenko@linux.intel.com, rf@opensource.cirrus.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[..]
-> --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
-> @@ -61,8 +61,9 @@ static void virtio_crypto_akcipher_finalize_req(
->  	vc_akcipher_req->src_buf = NULL;
->  	vc_akcipher_req->dst_buf = NULL;
->  	virtcrypto_clear_request(&vc_akcipher_req->base);
-> -
-> +	local_bh_disable();
->  	crypto_finalize_akcipher_request(vc_akcipher_req->base.dataq->engine, req, err);
-> +	local_bh_enable();
+On Mon, Sep 25, 2023 at 11:01 AM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Hi,
+>
+> Le vendredi 22 septembre 2023 à 11:15 +0530, Raag Jadav a écrit :
+> > Currently EXPORT_*_SIMPLE_DEV_PM_OPS() use EXPORT_*_DEV_PM_OPS() set
+> > of macros to export dev_pm_ops symbol, which export the symbol in
+> > case
+> > CONFIG_PM=y but don't take CONFIG_PM_SLEEP into consideration.
+> >
+> > Since _SIMPLE_ variants of _PM_OPS() do not include runtime PM
+> > handles
+> > and are only used in case CONFIG_PM_SLEEP=y, we should not be
+> > exporting
+> > dev_pm_ops symbol for them in case CONFIG_PM_SLEEP=n.
+> >
+> > This can be fixed by having two distinct set of export macros for
+> > both
+> > _RUNTIME_ and _SIMPLE_ variants of _PM_OPS(), such that the export of
+> > dev_pm_ops symbol used in each variant depends on CONFIG_PM and
+> > CONFIG_PM_SLEEP respectively.
+> >
+> > Introduce _DEV_SLEEP_PM_OPS() set of export macros for _SIMPLE_
+> > variants
+> > of _PM_OPS(), which export dev_pm_ops symbol only in case
+> > CONFIG_PM_SLEEP=y
+> > and discard it otherwise.
+> >
+> > Fixes: 34e1ed189fab ("PM: Improve EXPORT_*_DEV_PM_OPS macros")
+> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+>
+> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
-Thanks Gonglei!
-
-I did this a quick spin, and it does not seem to be sufficient on s390x.
-Which does not come as a surprise to me, because 
-
-#define lockdep_assert_in_softirq()                                     \
-do {                                                                    \
-        WARN_ON_ONCE(__lockdep_enabled                  &&              \
-                     (!in_softirq() || in_irq() || in_nmi()));          \
-} while (0)
-
-will still warn because  in_irq() still evaluates to true (your patch
-addresses the !in_softirq() part).
-
-I don't have any results on x86 yet. My current understanding is that the
-virtio-pci transport code disables interrupts locally somewhere in the
-call chain (actually in vp_vring_interrupt() via spin_lock_irqsave())
-and then x86 would be fine. But I will get that verified.
-
-On the other hand virtio_airq_handler() calls vring_interrupt() with
-interrupts enabled. (While vring_interrupt() is called in a (read)
-critical section in virtio_airq_handler() we use read_lock() and
-not read_lock_irqsave() to grab the lock. Whether that is correct in
-it self (i.e. disregarding the crypto problem) or not I'm not sure right
-now. Will think some more about it tomorrow.) If the way to go forward
-is disabling interrupts in virtio-ccw before vring_interrupt() is
-called, I would be glad to spin a patch for that.
-
-Copying Conny, as she may have an opinion on this (if I'm not wrong she
-authored that code).
-
-Regards,
-Halil
+Applied as 6.7 material, thanks!
