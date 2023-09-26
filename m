@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9117AEDB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA947AEDC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 15:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234681AbjIZNKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 09:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S234788AbjIZNLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 09:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjIZNKM (ORCPT
+        with ESMTP id S234796AbjIZNLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 09:10:12 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207DDC9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LO8xyhn0t3ZXRotn9VvjhSPV/RHFoiwf0zvcQV4VzlTjXvBk3JzSj7D+C/8XQ4OnUZIk7X6dxFE9lWZ3YnL59HQfCBPEWLN6HaEJrzfVnJRyZeR3w9OX9z9gCqKuPU1IPo1S45p0x24qgvOW0i0804ugfVSumMvL9arTHe3l5B/jqWBS81zDdBut5TNqwqpbG2Fc2zT4zAt2pQlhMGCImb1gMYE8iqkykITEJQlfRyM19u73aQLB6FBZ7ajtfJZzr4Lk+uC7dcCzWbWR0kJUkRmxqYKVd7MDgazpMHRSnvBwYVrvoykFcxl4zEDSF7HYicClhUvZIww3pWrDffdURA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N+T+joBoxSaNFvetND2OtUyAd/8avk8c+U2ZAcKrvVo=;
- b=WI/HXCbYXyTUFOBbLSB3CEl04GvaopOSSLAdhISoC3Wut3dwgJ8659m089YQ6AaETn4sS2vmk50Kld68fAzYJrO0J8IiOTw+TMHlEKYWD1ifaTVXfSX8rNXNEwQyaaCSEHYklXhkCSsXyY5Xw1L+B2eSoJbHJ4kPo87vVAVgX/Cb/P093qJjoTj9cF1MER6zxMzJLO/u6oPAlylJ5Y6Rkn+bT28Qcccd+4P/XLR7UsE7iUZ+3L4qHqKyjyCjlDAQ5IeAg75yL8gykLfZxgKQiC33JQ2i1ihIDXghlpM+a3TGZdLSTXPCev9UP4nHwmbey+b4SKmegE9HQ0H9mHz+NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N+T+joBoxSaNFvetND2OtUyAd/8avk8c+U2ZAcKrvVo=;
- b=zoWQv630d5jJzGV18LmXslslNpXxqaB0x1kSSh/PhfRWWzJ+UuPAJ0wphLwbMaseO5sV3+Geub22V5BR34pTEtPSrzcEexYdMGGSrTAUK10oSsQq8zSVudWIRsjzHI45aZV8Z7IPVcQgN3msexCuZ8fyrfs3rkqyCZa2+oFz4Jo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by SA1PR12MB8885.namprd12.prod.outlook.com (2603:10b6:806:376::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 13:10:03 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6813.018; Tue, 26 Sep 2023
- 13:10:02 +0000
-Message-ID: <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
-Date:   Tue, 26 Sep 2023 09:09:56 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/amd/display: Fix null pointer dereference in
- error message
-Content-Language: en-US
-To:     Cong Liu <liucong2@kylinos.cn>, Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Tom Chung <chiahsuan.chung@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230926055618.119195-1-liucong2@kylinos.cn>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230926055618.119195-1-liucong2@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR0101CA0295.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:6d::20) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        Tue, 26 Sep 2023 09:11:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB07AFC
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695733830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=53RN2iEKcF7cesjBINs3uKbZmoYEjMUrrV2QK4YxQVs=;
+        b=NGRj70LkD0MMjgiHDYGjLXrP3Ob3DD4gxhD48/ghqOtA+Ddhkvx+LdVeMirh9jM1LCZQnA
+        fiTcYaoYz1UhuRDLTRZERMKkXWGG4lTIgTjEtGlMAhHbuLU5XTOtROGyeR7P7zEmNEdhuM
+        yNVoObEm3E9cmBkq1/p0X5zPqPuSjfg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-69TMxRJvOUCwdkl6V_hzZQ-1; Tue, 26 Sep 2023 09:10:28 -0400
+X-MC-Unique: 69TMxRJvOUCwdkl6V_hzZQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a647551b7dso481747966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 06:10:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695733827; x=1696338627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=53RN2iEKcF7cesjBINs3uKbZmoYEjMUrrV2QK4YxQVs=;
+        b=D13q96UC36Z7B3cahLXbbZYXzvmtsDQ45gNxBTH4xPjRqD+LN+GTko1ZCFg7cMd+co
+         upsLILfehIb5c0f/1YL/u/J+PUcZwuvuBEd7O93W90I6O4nLM4HrAJjhsUwWv0tjcDo8
+         ZGt0htOj625/bWT4u3QvUvMJe7t0rVYrRNdPnfHA5ltJuRXC/Nj6ArZ2IwJXzQBVPy9n
+         ddJNcY6gFmHaSMQl8/4uSlCI1e9wY7UFGLJmB4zUL0o8vx61R8MKhz4I8T5g8ujIluo8
+         D+GhFW5Ktv9vy6j5H06gkvHBOLxiaGlCR8WvJhj3VV8uA5dQ8Tn6XaS/FOIeFPyMW0nR
+         O3zQ==
+X-Gm-Message-State: AOJu0YxCclz52eyTvSydm5HQBh4ticfqnmmOKTaiPuAqdrFBgQoK7f3A
+        5Mbh7eM8DyiajtXigOQ8RaPBxluRuTF3y5LziyJKYFPzbXiLH2S+u/jVDGTHqHclUerA+k7/ZGG
+        0nUFkI9mgBfzUxd11q/QfA2ZX
+X-Received: by 2002:a17:907:3e0b:b0:9ae:5a56:be32 with SMTP id hp11-20020a1709073e0b00b009ae5a56be32mr4084911ejc.38.1695733827497;
+        Tue, 26 Sep 2023 06:10:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEhr8aocGYblGQIkanfvgdcYkJGgnxjzR7Ndhh5heLB5k61gMBi2Cpl5HUKWX7e6D9TEIPTRA==
+X-Received: by 2002:a17:907:3e0b:b0:9ae:5a56:be32 with SMTP id hp11-20020a1709073e0b00b009ae5a56be32mr4084743ejc.38.1695733825833;
+        Tue, 26 Sep 2023 06:10:25 -0700 (PDT)
+Received: from sgarzare-redhat ([46.6.146.182])
+        by smtp.gmail.com with ESMTPSA id h10-20020a17090634ca00b00997e00e78e6sm7780777ejb.112.2023.09.26.06.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 06:10:25 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 15:10:21 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v1 00/12] vsock/virtio: continue MSG_ZEROCOPY
+ support
+Message-ID: <zurqqucjbdnyxub6u7ya5gzt2nxgrgp4ggvz76smljqzfi6qzb@lr6ojra35bab>
+References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|SA1PR12MB8885:EE_
-X-MS-Office365-Filtering-Correlation-Id: 791d96f5-b814-4b4a-5a80-08dbbe91e4ba
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zl336kVRatt1PLCVWU366XweLSdkt3KDKtTHeOC4NxHZKNWzEwGQaHQyIFGskBq8VZgJvdiRB7c+qduPlMLDY6Ec9ivIirQlUxZ0nk7IsQoQPqcCZQ/KDtTt9yQAdUxWgFU+yBpaVqlqpUZStEp5OZi1waE8PpvD6vZCr82FblrjhYKDK/FNVrCMMBHsLziFif4LQUtoNutpC74vVRfE6Hq+1/1f7l4fjNsKYa3IVcMp5Bt5MNI5QHb7R03OW+8C4GZUmLMsc68sLRytNx8GbtqjNdT7vbb4MgaEUXzvx4Oj006akvqVhufb4VmV+uhzsz289ciA935JgTSGmRSdWwi1tXpQcPiTWwHYePyjyVo1A7kSYXmrcKzoCfkjUfuY94DW5G31Yf1MrJvpk8cU/rJZXGcvfRNsYR8xSDv0C7YZpm/Q1sCtY0UcPk4NZoMoTZwVaby6gEpprD9pUe8945bPOHmzUbNhyuZyzneoyDWT4Nya0Jrf65C00MgD+kG3iLvPKt+JBI22fUZQ4tuUx7o71ZKTc7bT6eJ4h5yqrf3zinJBTJx6f8kZf2J8pI0g7WPRP5PZCXTv6wjynxl72Am6zC0iwUq9zAYIdW8AC4TyRYlmk9g0OzFUOZ9MSeo2u1O5Gi0eV6/AoKgG94C+T7cvtFsbxe1kQaq8cuo+TN0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230922051799003)(186009)(451199024)(1800799009)(86362001)(31696002)(36756003)(31686004)(6506007)(6486002)(5660300002)(6666004)(26005)(53546011)(6512007)(110136005)(66476007)(66556008)(66946007)(2616005)(41300700001)(316002)(478600001)(44832011)(6636002)(8676002)(8936002)(4326008)(2906002)(921005)(38100700002)(83380400001)(15650500001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M21rdmFXa0FvajgyY0E2M3VaUlE2OVBZS25tdE9ROUpzbjZMTG95YUJEZU9a?=
- =?utf-8?B?WUxEMGNvSXV1RkRZZWdhUTVtaGk5ei82SzhUODFCVjdWUlBvWjUyVVBYRm45?=
- =?utf-8?B?dzhVYkZGMmlWUVdzRnZybU1qWXlzRld0Z3RWQmY5aXNtWDgwbG51N2VwVDBz?=
- =?utf-8?B?ZWRhZzNPRStVVTYzT04razdXRURUVElzNzRxc1ZRZFB2U0pwb0FFYWZkd1BD?=
- =?utf-8?B?ZVJ6ZWVZZ3hXYTU2QWJUcDE1dVN2djNoMFQ4ZmMwMWI3T2Z4QjYrbDBwY3pk?=
- =?utf-8?B?QXRsbGpvTUxYRmFhYko2eS94TWIxUThJR1c2RmRYWHhPZGFnUlpKRDVYeTUw?=
- =?utf-8?B?N3crME93ODdsN1QvZXFFN2Fady9mK0diUWZlbUNZdm9iTGJuQlJPMEhNNkE2?=
- =?utf-8?B?Y3BzRWJNNXJRbitlaE93dmRwVGkvcFRpUGxIeGhGUGxhNEpCQUVtZG40NUYy?=
- =?utf-8?B?SmE2VHkwWHF3U2VjazIyWnFjRzZhVm0yaGcvaEpoSUJKak1KN3JsYjJYZHZp?=
- =?utf-8?B?SFkwVk1Wd2sxejgwelB3TXBiNHFRM3VrWEVqMlBKZ3M5TlJZWlFWUEFLdTFh?=
- =?utf-8?B?OURtMHluMU1VbVpQQjNyVmtXOVI0ajhITHlXN3hJdzdjSDYwVDlHNTc5dXZ1?=
- =?utf-8?B?Z2FyODJqeGd6T0tEQ3FybUhweEpFbVhKSDduMlVsd2tYd0JqbGtCc3UvLzBJ?=
- =?utf-8?B?cVNPeVd5bXc1THJ3bWVxcms5bUV4UHgxemRydkpsdG5KUkhEVHBQMHlmYW9L?=
- =?utf-8?B?aEd2MmZhZzFNMlMxTGNXVUxBUGZreGxMSWtKWUhjOU9WZlRYUjgrMUJWSSt5?=
- =?utf-8?B?c1lWc09iWFFha3czdFdnZmpyejlvZFIrcTc1U3JoaGJ6ZmppOTh3RzA0amky?=
- =?utf-8?B?OFg4QlpWWVREVnNENmFmaTB2TnEwY3NReUdaekI5MC9sTitFMDdUN0p4aTEz?=
- =?utf-8?B?SXZMS3F1dzV6V1lMS3dld1JTK2NpVFFwSlhhRUhlc3p1WEU3dlRuazcvNnd5?=
- =?utf-8?B?d3JKeXdJdWsveldvemdtVFJYbkFvNGNxQmlFZjQ5SjZrU1dlU3FSTzdVRFhP?=
- =?utf-8?B?bTI3R29MSUVvbFYySXpjc0ZSZ2dDMnBVd3Fka1k3WHB6d251UEpVMUx2aXBR?=
- =?utf-8?B?TDIza0gxc3IrV00rTGpxSGtCb3ROeDJKWEtlUjloVEVuK05LVjJhWmFGNTVk?=
- =?utf-8?B?elplR1I0eGJhaFZtNW05T0IvL256U3pCeXJPM0c1czdxTWl2cnNrejd4azRi?=
- =?utf-8?B?MHh1SlM1S05OV3JwaTBFRmIwNklKcXlpZ2N0Q2tuK0VVV1ZVREVVVXRlVDhH?=
- =?utf-8?B?ekZBOHZNR3FMS1JVcyt6UU0zU08yVUtnRTJORkV0Z3JCaGVKWWx1aURYd2pZ?=
- =?utf-8?B?dm1ienJrdlJpNEl1aGRhQ21YZmxYbTJNdDhkeEtKSzhIOGFzaEN1cTZHVUN0?=
- =?utf-8?B?eWFlNkIwbFRnVVlkam85aGRXYmhDVDZBZEdIaVBKTUswanUvRERKb3A1bkJr?=
- =?utf-8?B?c0FoZHpPczV0VlBndFVycWlIZ0pEblFTM3BJUnlVYTlPYjhaTFZ4SG1CMDU2?=
- =?utf-8?B?RDhkZEdZYndsOTdCdlBsZDNkQit2NUVRSGdEN0xHNVlha3pkNUlsVjlvaTF2?=
- =?utf-8?B?NGIvUW9VbnpaU3QzbVB4Q2xndlVXVks4SWc4WXNPUHhGR1ZvajVMODdoVi9l?=
- =?utf-8?B?clNaWHZPOUZQSDk0cXZ0WVJBaUNtVnc2elBCN1BhSUNZOUhGODMwV2hYYThj?=
- =?utf-8?B?S2RRallUeXZSeTZKVUtuLytua2pwTVNHdG1kanBSd3dJTGdwMnh0QVRGRWgy?=
- =?utf-8?B?OWlkVFFINjI0a1pIYTgvKzc2dVJ6SHR5VWV4RUpJai8raDNieFlOUEsxb21H?=
- =?utf-8?B?R3NyNjczOFUrU3NROGhiVVlJeG9BcjJDWG9lc3V0ckFCaWhOcHBYNzFJTTZL?=
- =?utf-8?B?alhENXpMRk9vQXhGY3ZJcVJoZnFLSW9IQlRZVHpTZ3dyb1U4NmVLbGxYelBv?=
- =?utf-8?B?aWlyc0Q1eTB6WEZlaTF0dTBnSEtySjJiVHc5aTJCUmtCNkZhMkJyTGxNV0tS?=
- =?utf-8?B?M0NqUHVzeE8xWGx6LzdNZjBheHg1Y1laNDE4VWRPTGsyQlptK0MrdnpOYUdi?=
- =?utf-8?Q?qZDo3XEHDYCZfzTFjFX6ulkJM?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 791d96f5-b814-4b4a-5a80-08dbbe91e4ba
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 13:10:02.1954
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z00YFkpRm0HhM2ZzND2zIePkznVU0zOIk3PC54dDYR1C7P1GcWqJK0GOIYRf9f8tYH+uvIJMWgw1C4q0FFOdSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8885
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arseniy,
 
+On Fri, Sep 22, 2023 at 08:24:16AM +0300, Arseniy Krasnov wrote:
+>Hello,
+>
+>this patchset contains second and third parts of another big patchset
+>for MSG_ZEROCOPY flag support:
+>https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+>
+>During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+>suggested to split it for three parts to simplify review and merging:
+>
+>1) virtio and vhost updates (for fragged skbs) (merged to net-next, see
+>   link below)
+>2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+>   tx completions) and update for Documentation/. <-- this patchset
+>3) Updates for tests and utils. <-- this patchset
+>
+>Part 1) was merged:
+>https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=71b263e79370348349553ecdf46f4a69eb436dc7
+>
+>Head for this patchset is:
+>https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=71b263e79370348349553ecdf46f4a69eb436dc7
 
-On 2023-09-26 01:56, Cong Liu wrote:
-> This patch fixes a null pointer dereference in the error message that is
-> printed when the Display Core (DC) fails to initialize. The original
-> message includes the DC version number, which is undefined if the DC is
-> not initialized.
-> 
-> Fixes: 9788d087caff ("drm/amd/display: improve the message printed when loading DC")
-> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 8e98dda1e084..bf52a909f558 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -1703,8 +1703,7 @@ static int amdgpu_dm_init(struct amdgpu_device *adev)
->  		DRM_INFO("Display Core v%s initialized on %s\n", DC_VER,
->  			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
->  	} else {
-> -		DRM_INFO("Display Core v%s failed to initialize on %s\n", DC_VER,
-> -			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
-> +		DRM_INFO("Display Core failed to initialize with v%s!\n", DC_VER);
+Thanks for the series.
+I did a quick review highlighting some things that need to be changed.
 
-There is value in printing the version number. Let's not remove it.
+Overall, the series seems to be in good shape. The tests went well.
 
-Instead you can probably fix it by doing a NULL check on adev->dm.dc->ctx.
+In the next few days I'll see if I can get a better look at the larger 
+patches like the tests, or I'll check in the next version.
 
-Harry
-
->  		goto error;
->  	}
->  
+Thanks,
+Stefano
 
