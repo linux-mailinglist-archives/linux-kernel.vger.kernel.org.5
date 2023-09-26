@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4AC7AE8D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F197AE8DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbjIZJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
+        id S234131AbjIZJWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjIZJVY (ORCPT
+        with ESMTP id S234015AbjIZJWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:21:24 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF170F3;
-        Tue, 26 Sep 2023 02:21:17 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 579876607313;
-        Tue, 26 Sep 2023 10:21:15 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695720076;
-        bh=FKvRcZczMijqG8YmeVx25lsAadHS5xULTP5v1ZDi/Yc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IxceUlmBtOiC/bvzFXAWd7X6itv/URlN7AFBiOcK3qw/JI6FdPQ7x2maqYXNOIF6G
-         yUaxFobcey3F38OEXcTHnoNSvnF9OZKUpzWlJwpBuzs90t8iFoc0XfWEY+vmpUv2UK
-         UR23LHeESMsF+1o6ednzjwZICOFm4La8tDnuh7xal4g/raZtu8xS4RK2YxtCaGMLfm
-         OTo1C2+tdT3+RQ54FdySt5HVa3t10HFru7Jal1XFqM/hJWDLHR7alucwLg43SaNi9A
-         Hr+DIw0bTQdt0XNdP67RoYlbIFke85DgrFfVtecKdj2ztqkwyX0v2pZ3sQJAVFINiZ
-         ikOrEbFs7/NwA==
-Message-ID: <05086c59-f6df-7a72-59be-762fdcd0a31f@collabora.com>
-Date:   Tue, 26 Sep 2023 11:21:12 +0200
+        Tue, 26 Sep 2023 05:22:17 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C86E6;
+        Tue, 26 Sep 2023 02:22:10 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so3863704e87.1;
+        Tue, 26 Sep 2023 02:22:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695720129; x=1696324929; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEubR82kKhu3tOa9yAY875CpIFzn8tiEB3Lg50u4kRo=;
+        b=eeN1aOY0+Mwz5Mx6wDa8s2yN9ICKYCLWEKUd6e8eO2JI/Wih9h4MsWwab3H1s8Pt7E
+         gGFYExHJR/dERCh3t/wTbVhDTsVWYollnf5v8k1nKbKBLH4J1PZpcr87ysnV4GUOwIK1
+         bDu+hmk5NzZf72AenjwH/t1W4tY0DWXmZOacHgJi1EcMKmnNrkVGRRKrTC8PID/Dbdoh
+         z45OauqwBfZwDOFW7FHYiKIqE6npiakU2hYXttFpAxrvXmR9ISbrwsDTYkfuA1gJ3hte
+         G2+KLbmBjdMyxYW1yqYMS/VPUPEHcu9Dv68zj89k5HWebqGsDIuWFoJ08zJyP79enS69
+         Etwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695720129; x=1696324929;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pEubR82kKhu3tOa9yAY875CpIFzn8tiEB3Lg50u4kRo=;
+        b=HYw14TyQ7ZxST/UvnRdepuhGyAQeBnoCL6cSww5yCADaopBYeeUpyNv+RXq3ksYhjg
+         OHntToi/IMIllVqoZVil9MAQfFtIVbfNjq4bcRRqsqklgIRrRYXeZpPMaNJB53G9ePMZ
+         wc3x0OQqDgL/VfIsIgjDeEm8si5mWqfzaD3YbDOBystCrj5LsYM0O00addw1ykBYd8xl
+         ucA+Wwtrl+6Rx/UWq8DUbmiQbIXd5ie4XtlYN+4/qgnxN1PbrUSLTPxHZjl9Lsa6BTKh
+         OLhJbKLSN2PLjRYIz+qkxiBlGygpMRISkwhkIjWA7i5exuO6RsRhGImMKHEmaiVc3JnX
+         l4OQ==
+X-Gm-Message-State: AOJu0YzYmcUgfxkLrrEaJjTgtEJMfyGPJsQRQVUoGWgrzzMfShFXIse4
+        Pc7ReyFY1WVxTse2OYLEBi4=
+X-Google-Smtp-Source: AGHT+IF+KtP3QcLKBXveBnhJaxi5zjPIyU/ScF+ivp5PYEBpi8ScyCKmc3UCDNoNWo9VHPKwrhwFng==
+X-Received: by 2002:a05:6512:308f:b0:503:985:92c4 with SMTP id z15-20020a056512308f00b00503098592c4mr8747988lfd.52.1695720128822;
+        Tue, 26 Sep 2023 02:22:08 -0700 (PDT)
+Received: from [192.168.8.182] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id t1-20020a1c7701000000b003fe23b10fdfsm17442193wmi.36.2023.09.26.02.22.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 02:22:08 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <5b448307-19f3-4d69-b7f4-3ebedcff030a@xen.org>
+Date:   Tue, 26 Sep 2023 10:22:07 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] dt-bindings: mfd: Add missing unevaluatedProperties on
- child node schemas
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v5 06/10] KVM: xen: allow shared_info to be mapped by
+ fixed HVA
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Lee Jones <lee@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Flora Fu <flora.fu@mediatek.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Chris Zhong <zyw@rock-chips.com>,
-        Zhang Qing <zhangqing@rock-chips.com>,
-        - Keerthy <j-keerthy@ti.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-References: <20230925212729.1976117-1-robh@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230925212729.1976117-1-robh@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+References: <20230922150009.3319-1-paul@xen.org>
+ <20230922150009.3319-7-paul@xen.org>
+ <0bd42244f232ecc24cbbd2750196758bf7944293.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <0bd42244f232ecc24cbbd2750196758bf7944293.camel@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 25/09/23 23:27, Rob Herring ha scritto:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
+On 23/09/2023 08:07, David Woodhouse wrote:
+> On Fri, 2023-09-22 at 15:00 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> The shared_info page is not guest memory as such. It is a dedicated page
+>> allocated by the VMM and overlaid onto guest memory in a GFN chosen by the
+>> guest. The guest may even request that shared_info be moved from one GFN
+>> to another, but the HVA is never going to change. Thus it makes much more
+>> sense to map the shared_info page in kernel once using this fixed HVA.
 > 
-> Add unevaluatedProperties as needed, and then add any missing properties
-> flagged by the addition.
+> The words "makes much more sense" are doing a *lot* of work there. :)
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> When heckling the cover letter in
+> https://lore.kernel.org/kvm/d13e459e221f28fb1865eedea023e583a2277ab1.camel@infradead.org/
+> I suggested that the explanation probably wants to make it into a
+> commit message rather than just the cover letter which tends not to be
+> preserved in the commit history. It's *this* commit which needs it, I
+> think.
 
-For MediaTek:
+Ok, I'll try to come up with some concise wording.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-> ---
->   Documentation/devicetree/bindings/mfd/maxim,max5970.yaml   | 5 +++++
->   Documentation/devicetree/bindings/mfd/mediatek,mt6357.yaml | 2 ++
->   Documentation/devicetree/bindings/mfd/rockchip,rk805.yaml  | 1 +
->   Documentation/devicetree/bindings/mfd/rockchip,rk808.yaml  | 1 +
->   Documentation/devicetree/bindings/mfd/rockchip,rk809.yaml  | 3 ++-
->   Documentation/devicetree/bindings/mfd/rockchip,rk818.yaml  | 1 +
->   Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml   | 1 +
->   Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml   | 1 +
->   Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml   | 1 +
->   9 files changed, 15 insertions(+), 1 deletion(-)
-> 
+   Paul
 
