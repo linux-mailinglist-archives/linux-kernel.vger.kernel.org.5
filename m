@@ -2,62 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E717E7AE39E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D9C7AE3A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 04:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbjIZCSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Sep 2023 22:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        id S233385AbjIZCU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Sep 2023 22:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjIZCSm (ORCPT
+        with ESMTP id S229501AbjIZCUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Sep 2023 22:18:42 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B22FBF;
-        Mon, 25 Sep 2023 19:18:35 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50444e756deso8674331e87.0;
-        Mon, 25 Sep 2023 19:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695694714; x=1696299514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4KuS89SBhEXeXzlKRw6X2z13KjFZujBz1QSgTzHEcIY=;
-        b=hgK2p8M8Y4cjQvO5YfXK9DUmODnkdaD/V2bBke5VxQUmodjUSMf0jSBEtYL5RpcL5e
-         nARIzgn4+Ul9dxwgO3HGLmBC3/XqYO8ptkYAonzm+kmK+p/N7JBK9x2g3VwmMV+euNTO
-         RxOW0InrBOJ8eAOlSBYbB2JvI+zDQ1UToUSIn4tpvexJdMeG/2GG94+mO6jHTE8Eixxc
-         EHqKlwZMMhb8nPDGB3RrpiR1NtMfOKSb7WkR7ZxMllR+5gi+FoNRaAg/PZPa+OEszMY7
-         Lnrl2d4X+0Rzl3Hvf274c6al4498+NrQH4PzGOpiE4/q7STU3BbW4HsOgb9fecqlbdAi
-         WmaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695694714; x=1696299514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4KuS89SBhEXeXzlKRw6X2z13KjFZujBz1QSgTzHEcIY=;
-        b=XzZ8vBWBmBfBkXcK2IqQBcCcr9GQ1WH5ucE35OSGbfOfZLksPzHqWaH0PBR36MU333
-         bJtjXK3AGpg8qsTi2Z5TGA3ZLIMsQAsQEsErbb/IFZ034r5AgdpETJ/NinIgUXoEP2td
-         M5FRlmZPuM9PNzmm+b/B+mT++nC8au9Xa/F639oyv6YZHScpVRuaY5RdTtTszJKIOeuK
-         4yBQ7uaZdZd3r2Mksn3zdAR4BeeRxtFpQdXtFJqm6O0IKpvN4rl93KRqsJTyQveiifWw
-         FffB9LDUQT4ZT89t/xWEbGKcumw69ubl6DYnz2Ja4RhZ2p4ui1tQc/ci3TnwcmCetLzS
-         8d0w==
-X-Gm-Message-State: AOJu0YxU1zk1r+0T7NObEKLAvLE+yMKZrPjQTimpcHLCTWrONPktqKDP
-        hBkNfPrJ7Z8E5MXoqrhXByzSrMXIGyJgxk6sFjVAtVPW1sAzubFp
-X-Google-Smtp-Source: AGHT+IHSp+t9UpOYNLMa0pwCyGliV1Qx/xcE6Nr4KYbQeHWU7QGxkI24IwCRcolAfk+g83n0z4FuSexkPVP8EfMnGeA=
-X-Received: by 2002:a2e:9dd4:0:b0:2c0:298d:32df with SMTP id
- x20-20020a2e9dd4000000b002c0298d32dfmr7311986ljj.9.1695694713282; Mon, 25 Sep
- 2023 19:18:33 -0700 (PDT)
+        Mon, 25 Sep 2023 22:20:24 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B577BF;
+        Mon, 25 Sep 2023 19:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695694811;
+        bh=TcPGSxwt9MInQj/celUnubsm5b1vkF3Gs12n9nTNg+c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=e9xdnIuv+S5IexeCO7HdwPtekTa9fEYqE+2bQnMadh1ivXxvgDwpv6gXZ6ENQg+OG
+         ncOiQyjwezbh3KJUO1sY8CrLaQsprvYpudhZHQ/lvinoN/ywcvay6Xn9Ex+0ikrJ7U
+         WFOYqcuy2RAHeVb6wHa5ybX5ti0YZSqOPrCqG46d3C+aMVyDqOMgHNrjl8ETiz2Dc6
+         BBJ0s/NCk5Q/H8OOPfGo3KYn0syGAWzIDz1f8EVAZhHu3UDXiEmpr0jQfhrSTBPn9h
+         C0rkYSY4uNqoZBHsY7ZaMciVQeYGJy75hsGzlxp9NKRq4gwChcmIsg/Fvd4mAg0mZg
+         ZY/2fIn8NMVWw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rvk3b0wJwz4xPR;
+        Tue, 26 Sep 2023 12:20:11 +1000 (AEST)
+Date:   Tue, 26 Sep 2023 12:20:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the wireless-next tree with the
+ wireless tree
+Message-ID: <20230926122009.67735060@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Yikebaer Aizezi <yikebaer61@gmail.com>
-Date:   Tue, 26 Sep 2023 10:18:21 +0800
-Message-ID: <CALcu4rb4XP1G=BM9c-Za-p26qN=itbhfU6esn5SfHjuZn8pz-A@mail.gmail.com>
-Subject: WARNING in btrfs_space_info_update_bytes_may_use
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: multipart/signed; boundary="Sig_/KDVFAo=cdHDYBMd1yQd=GhK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,85 +54,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/KDVFAo=cdHDYBMd1yQd=GhK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When using Healer to fuzz the Latest Linux-6.6-rc3,  the following crash
-was triggered.
+Hi all,
 
-HEAD commit: 6465e260f48790807eef06b583b38ca9789b6072 ( Linux 6.6-rc3=EF=BC=
-=89
-git tree: upstream
+Today's linux-next merge of the wireless-next tree got a conflict in:
 
-console output:
-https://drive.google.com/file/d/1JlSPfRbqIlpTkYG9_W2ClYiTOORXlnj4/view?usp=
-=3Ddrive_link
-kernel config:https://drive.google.com/file/d/1CFQ24OVix2RivZgCj1ie4QPJUoL8=
-rtbD/view?usp=3Ddrive_link
-C reproducer:https://drive.google.com/file/d/1cqwuczXJYPG6KSJjzB_Er6QrS7iJn=
-pVc/view?usp=3Ddrive_link
-Syzlang reproducer:
-https://drive.google.com/file/d/1-Mp-cztmSoKVGXm_kfNlA_FUgV3zT4f5/view?usp=
-=3Ddrive_link
+  net/mac80211/key.c
 
+between commits:
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+  31db78a4923e ("wifi: mac80211: fix potential key use-after-free")
+  d097ae01ebd4 ("wifi: mac80211: fix potential key leak")
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8100 at fs/btrfs/space-info.h:198
-btrfs_space_info_update_bytes_may_use+0x448/0x590
-fs/btrfs/space-info.h:198
-Modules linked in:
-CPU: 1 PID: 8100 Comm: syz-executor.3 Not tainted 6.6.0-rc3-g6465e260f487 #=
-2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:btrfs_space_info_update_bytes_may_use+0x448/0x590
-fs/btrfs/space-info.h:198
-Code: fd e9 69 fc ff ff e8 a7 8e f7 fd 49 89 ed 4c 89 e6 49 f7 dd 4c
-89 ef e8 76 8a f7 fd 4d 39 e5 0f 86 7c fd ff ff e8 88 8e f7 fd <0f> 0b
-45 31 e4 e9 75 fd ff ff e8 79 8e f7 fd 48 8d 7b 18 be ff ff
-RSP: 0018:ffffc90002f6fad8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802642a800 RCX: 0000000000000000
-RDX: ffff8880152c0000 RSI: ffffffff838a4bc8 RDI: 0000000000000006
-RBP: ffffffffffa80000 R08: 0000000000000006 R09: 0000000000580000
-R10: 000000000057c000 R11: 0000000000000001 R12: 000000000057c000
-R13: 0000000000580000 R14: ffff88802642a860 R15: 0000000000000004
-FS:  000055555745a480(0000) GS:ffff888135c00000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2c321000 CR3: 000000001840f000 CR4: 0000000000750ee0
-PKRU: 55555554
-Call Trace:
- <TASK>
- btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:230 [inline]
- block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
- btrfs_block_rsv_release+0x4ab/0x5e0 fs/btrfs/block-rsv.c:293
- btrfs_release_global_block_rsv+0x22/0x2e0 fs/btrfs/block-rsv.c:443
- btrfs_free_block_groups+0xb9d/0x13d0 fs/btrfs/block-group.c:4380
- close_ctree+0x548/0xda0 fs/btrfs/disk-io.c:4413
- generic_shutdown_super+0x15d/0x3c0 fs/super.c:693
- kill_anon_super+0x36/0x60 fs/super.c:1292
- btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2144
- deactivate_locked_super+0x94/0x170 fs/super.c:481
- deactivate_super+0xad/0xd0 fs/super.c:514
- cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1254
- task_work_run+0x164/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:296
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fdc5389070b
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 90 f3 0f 1e fa 31 f6
-e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d
-00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 b0 ff ff ff f7 d8
-RSP: 002b:00007ffdcf04dcd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fdc5389070b
-RDX: 00007fdc53828280 RSI: 000000000000000a RDI: 00007ffdcf04dd90
-RBP: 00007ffdcf04dd90 R08: 0000000000000000 R09: 00007ffdcf04db60
-R10: 000055555745ba0b R11: 0000000000000246 R12: 00007fdc538ef312
-R13: 00007ffdcf04ee70 R14: 000055555745b970 R15: 00007ffdcf04ee60
- </TASK>
+from the wireless tree and commit:
+
+  2a8b665e6bcc ("wifi: mac80211: remove key_mtx")
+
+from the wireless-next tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/mac80211/key.c
+index 0665ff5e456e,ac410f6632b5..000000000000
+--- a/net/mac80211/key.c
++++ b/net/mac80211/key.c
+@@@ -881,21 -875,20 +880,22 @@@ int ieee80211_key_link(struct ieee80211
+ =20
+  		if (link_id >=3D 0) {
+  			link_sta =3D rcu_dereference_protected(sta->link[link_id],
+- 							     lockdep_is_held(&sta->local->sta_mtx));
++ 							     lockdep_is_held(&sta->local->hw.wiphy->mtx));
+ -			if (!link_sta)
+ -				return -ENOLINK;
+ +			if (!link_sta) {
+ +				ret =3D -ENOLINK;
+ +				goto out;
+ +			}
+  		}
+ =20
+- 		old_key =3D key_mtx_dereference(sdata->local, link_sta->gtk[idx]);
++ 		old_key =3D wiphy_dereference(sdata->local->hw.wiphy,
++ 					    link_sta->gtk[idx]);
+  	} else {
+  		if (idx < NUM_DEFAULT_KEYS)
+- 			old_key =3D key_mtx_dereference(sdata->local,
+- 						      sdata->keys[idx]);
++ 			old_key =3D wiphy_dereference(sdata->local->hw.wiphy,
++ 						    sdata->keys[idx]);
+  		if (!old_key)
+- 			old_key =3D key_mtx_dereference(sdata->local,
+- 						      link->gtk[idx]);
++ 			old_key =3D wiphy_dereference(sdata->local->hw.wiphy,
++ 						    link->gtk[idx]);
+  	}
+ =20
+  	/* Non-pairwise keys must also not switch the cipher on rekey */
+@@@ -910,10 -901,10 +910,8 @@@
+  	 * Silently accept key re-installation without really installing the
+  	 * new version of the key to avoid nonce reuse or replay issues.
+  	 */
+--	if (ieee80211_key_identical(sdata, old_key, key)) {
+- 		ret =3D -EALREADY;
+- 		goto unlock;
+ -		ieee80211_key_free_unused(key);
+ -		return 0;
+--	}
+++	if (ieee80211_key_identical(sdata, old_key, key))
+++		return -EALREADY;
+ =20
+  	key->local =3D sdata->local;
+  	key->sdata =3D sdata;
+@@@ -936,13 -927,6 +934,10 @@@
+  		ieee80211_key_free(key, delay_tailroom);
+  	}
+ =20
+ +	key =3D NULL;
+ +
+ + out:
+ +	ieee80211_key_free_unused(key);
+-  unlock:
+- 	mutex_unlock(&sdata->local->key_mtx);
+-=20
+  	return ret;
+  }
+ =20
+
+--Sig_/KDVFAo=cdHDYBMd1yQd=GhK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUSP9kACgkQAVBC80lX
+0GxOwwf/bGjeKYnuKz2e6EzFgvC6zVZFPet+UiRM7RA8Y7l73Bu+N5l+34eCMcJh
+fj9LCqslTg/5o/BIoe9boDMsZadr4UCNVUpa5i5kF4Cz5zM2m4Pyy+z0eq7sKHp8
+gGdfXbsm+S2E2leqTK7JPU1H/GlWVhejhrw4xtJFzjMIZJuA0CnYNNZF/Z4Bai/w
+JQnF57Dlgh/XNlXmCvo8zPJyBQZmPXy1QObGOCFVcAkeKz/I619241jyHbU7zap2
++M06DOAf6JRUeJMog5w3mL+/WAHOJSNddFAvYQtzYQqq68LUEXCqG17jsQT7c8LC
+L3+JSUtMP5zoyQKIG3IBwyeSzJ5HFQ==
+=gRb+
+-----END PGP SIGNATURE-----
+
+--Sig_/KDVFAo=cdHDYBMd1yQd=GhK--
