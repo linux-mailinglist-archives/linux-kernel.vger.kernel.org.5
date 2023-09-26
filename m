@@ -2,266 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1497AF2F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC257AF2D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 20:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbjIZS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 14:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S235488AbjIZS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 14:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235481AbjIZS22 (ORCPT
+        with ESMTP id S231300AbjIZS1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 14:28:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A407CCC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695752854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BuNC2fA/P0lbBI/RsO509Rqj2fam/lzzu0PxsMRFye4=;
-        b=AjBPLwIhZrQGNGqSBOobNx0FVGxsiI9uZO/G8G25Aj/tEl1QuPJKe9AgUQrZVbrgVZ+fNC
-        Siktz1cOpE18JtjlcrAYjWa5N38eQjzYQr5H7gjv2AgAzMvaSYmcLtnCx4voPcB4IStUux
-        5w95DClIwPvqtPvFP42C7mxrltzsh+M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-616-9zMOJriVMwOk-VgmfNev4g-1; Tue, 26 Sep 2023 14:27:30 -0400
-X-MC-Unique: 9zMOJriVMwOk-VgmfNev4g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 578751C068CE;
-        Tue, 26 Sep 2023 18:27:30 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A7EBB40C6EA8;
-        Tue, 26 Sep 2023 18:27:28 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     poros@redhat.com, mschmidt@redhat.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 9/9] i40e: Simplify memory allocation functions
-Date:   Tue, 26 Sep 2023 20:27:10 +0200
-Message-ID: <20230926182710.2517901-10-ivecera@redhat.com>
-In-Reply-To: <20230926182710.2517901-1-ivecera@redhat.com>
-References: <20230926182710.2517901-1-ivecera@redhat.com>
+        Tue, 26 Sep 2023 14:27:43 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2C9136
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:27:36 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50309daf971so15358779e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:27:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695752854; x=1696357654; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w+WhEvVzq354lp8en3vleqjPVBkIdxbFh2tnxte7FFY=;
+        b=PovOo45hn4PitTGs8n59N5e0qFRgsYoDAgiFe7PMdXJ7ITVN1aF6IajISsIyOhm2K9
+         NhuWIRNvTX7Hq4FmqRsOuTv8gEDW6JHBs3kpxxf6AuAbVJQDeymgJLxoUzK7tNBlyjQK
+         5HA22CCVGnlRfC5KYaulfNY8Y17nkh7KKQ64vfNhZncd0By6I0tdFf/xWd+Y37U3F2+/
+         z5v5iZYCe4DViNjSG/KBa8QBNXDF7F7JWrsSg5mCyIHyzSVq2Kyag2AEnRNls9Ajc/UF
+         kefycjUt4Z+opy2WsoQcgBgsLCOJ0Xnlo3+23SHFpYeRf+lfiP4TGIjXa+jVbWPkHBmw
+         g1gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695752854; x=1696357654;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w+WhEvVzq354lp8en3vleqjPVBkIdxbFh2tnxte7FFY=;
+        b=bYrH9JYB2bhpfLF4oek7HYadTszRWd1PnnweSc9Naxggt6rEXg4epMiSgVNYjspysr
+         oVYOlQMvv7CAj+I4SrpwURBuKZJXelUf/I4s9QBjjRbXenqLRqTGLN0qyjJQ5BuoyaX9
+         4W4lcDmsyXQY0ed7/c6yfNpd732PDR1UAYd9SSqHERi1gLTE5FyzEoJYr3l3vm97eULg
+         gu9/6mJbpULYNRSoiJFQDUxax90e/rMSVUswxh2jEMvClChBmUP9N56Ka0/LSboaHShX
+         55BBJ197GZe82Csrzwdc8Cc1kThzW/gFlR4tO2qEGpiVjJj+Spybc4i3TV8/NfQ1/jJF
+         rMhg==
+X-Gm-Message-State: AOJu0YxQlP59CHUT2hPABF2n6XB+GtPf+uZzk9gZnuwTE7rhy6cMIWNX
+        cHHpQ9iASVrHReud/7XrPn6Ycg==
+X-Google-Smtp-Source: AGHT+IGEOwe5h8wRsbW86uovHuF6C3KdXUg4eQbG+lGNwE4BDIcXlWp3pHYrGv6+2lPWBKDyxbsq9A==
+X-Received: by 2002:a05:6512:3b98:b0:500:be57:ce53 with SMTP id g24-20020a0565123b9800b00500be57ce53mr11045472lfv.42.1695752854381;
+        Tue, 26 Sep 2023 11:27:34 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id eo2-20020a056512480200b004fe7011072fsm2292076lfb.58.2023.09.26.11.27.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 11:27:34 -0700 (PDT)
+Message-ID: <1736686f-d7b5-4433-aa45-2369a1e9b53e@linaro.org>
+Date:   Tue, 26 Sep 2023 20:27:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/7] arm64: dts: qcom: sc7280: Add ZAP shader support
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org>
+ <20230926-topic-a643-v1-4-7af6937ac0a3@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230926-topic-a643-v1-4-7af6937ac0a3@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enum i40e_memory_type enum is unused in i40e_allocate_dma_mem() thus
-can be safely removed. Useless macros in i40e_alloc.h can be removed
-as well.
+On 26.09.2023 20:24, Konrad Dybcio wrote:
+> Non-Chrome SC7280-family platforms ship a ZAP shader with the Adreno GPU.
+> Describe that and make sure it doesn't interfere with Chrome devices.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi |  2 ++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 10 ++++++++++
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+> index 5d462ae14ba1..88fc67c3646e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-chrome-common.dtsi
+> @@ -17,6 +17,8 @@
+>   * required by the setup for Chrome boards.
+>   */
+>  
+> +/delete-node/ &gpu_zap_mem;
+> +/delete-node/ &gpu_zap_shader;
+>  /delete-node/ &hyp_mem;
+>  /delete-node/ &xbl_mem;
+>  /delete-node/ &reserved_xbl_uefi_log;
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 66f1eb83cca7..c38ddf267ef5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -152,6 +152,11 @@ ipa_fw_mem: memory@8b700000 {
+>  			no-map;
+>  		};
+>  
+> +		gpu_zap_mem: zap@8b71a000 {
+> +			reg = <0 0x8b71a000 0 0x2000>;
+> +			no-map;
+> +		};
+> +
+>  		rmtfs_mem: memory@9c900000 {
+>  			compatible = "qcom,rmtfs-mem";
+>  			reg = <0x0 0x9c900000 0x0 0x280000>;
+> @@ -2608,6 +2613,11 @@ gpu: gpu@3d00000 {
+>  			nvmem-cells = <&gpu_speed_bin>;
+>  			nvmem-cell-names = "speed_bin";
+>  
+> +			gpu_zap_shader: zap-shader {
+> +				memory-region = <&gpu_zap_mem>;
+> +				firmware-name = "qcom/a660_zap.mdt";
+Gah. This line shouldn't have been there.
 
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_adminq.c |  4 ----
- drivers/net/ethernet/intel/i40e/i40e_alloc.h  | 21 -------------------
- drivers/net/ethernet/intel/i40e/i40e_hmc.c    | 12 ++++-------
- drivers/net/ethernet/intel/i40e/i40e_main.c   | 20 +++++++++---------
- 4 files changed, 14 insertions(+), 43 deletions(-)
+Considering it's not the only oops, I'll resend.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq.c b/drivers/net/ethernet/intel/i40e/i40e_adminq.c
-index 0803402d8e87..c3f165552638 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq.c
-@@ -52,7 +52,6 @@ static int i40e_alloc_adminq_asq_ring(struct i40e_hw *hw)
- 	int ret_code;
- 
- 	ret_code = i40e_allocate_dma_mem(hw, &hw->aq.asq.desc_buf,
--					 i40e_mem_atq_ring,
- 					 (hw->aq.num_asq_entries *
- 					 sizeof(struct i40e_aq_desc)),
- 					 I40E_ADMINQ_DESC_ALIGNMENT);
-@@ -79,7 +78,6 @@ static int i40e_alloc_adminq_arq_ring(struct i40e_hw *hw)
- 	int ret_code;
- 
- 	ret_code = i40e_allocate_dma_mem(hw, &hw->aq.arq.desc_buf,
--					 i40e_mem_arq_ring,
- 					 (hw->aq.num_arq_entries *
- 					 sizeof(struct i40e_aq_desc)),
- 					 I40E_ADMINQ_DESC_ALIGNMENT);
-@@ -137,7 +135,6 @@ static int i40e_alloc_arq_bufs(struct i40e_hw *hw)
- 	for (i = 0; i < hw->aq.num_arq_entries; i++) {
- 		bi = &hw->aq.arq.r.arq_bi[i];
- 		ret_code = i40e_allocate_dma_mem(hw, bi,
--						 i40e_mem_arq_buf,
- 						 hw->aq.arq_buf_size,
- 						 I40E_ADMINQ_DESC_ALIGNMENT);
- 		if (ret_code)
-@@ -199,7 +196,6 @@ static int i40e_alloc_asq_bufs(struct i40e_hw *hw)
- 	for (i = 0; i < hw->aq.num_asq_entries; i++) {
- 		bi = &hw->aq.asq.r.asq_bi[i];
- 		ret_code = i40e_allocate_dma_mem(hw, bi,
--						 i40e_mem_asq_buf,
- 						 hw->aq.asq_buf_size,
- 						 I40E_ADMINQ_DESC_ALIGNMENT);
- 		if (ret_code)
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_alloc.h b/drivers/net/ethernet/intel/i40e/i40e_alloc.h
-index e0186495ef02..e0dde326255d 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_alloc.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_alloc.h
-@@ -8,19 +8,6 @@
- 
- struct i40e_hw;
- 
--/* Memory allocation types */
--enum i40e_memory_type {
--	i40e_mem_arq_buf = 0,		/* ARQ indirect command buffer */
--	i40e_mem_asq_buf = 1,
--	i40e_mem_atq_buf = 2,		/* ATQ indirect command buffer */
--	i40e_mem_arq_ring = 3,		/* ARQ descriptor ring */
--	i40e_mem_atq_ring = 4,		/* ATQ descriptor ring */
--	i40e_mem_pd = 5,		/* Page Descriptor */
--	i40e_mem_bp = 6,		/* Backing Page - 4KB */
--	i40e_mem_bp_jumbo = 7,		/* Backing Page - > 4KB */
--	i40e_mem_reserved
--};
--
- /* memory allocation tracking */
- struct i40e_dma_mem {
- 	void *va;
-@@ -33,17 +20,9 @@ struct i40e_virt_mem {
- 	u32 size;
- };
- 
--#define i40e_allocate_dma_mem(h, m, unused, s, a) \
--			i40e_allocate_dma_mem_d(h, m, s, a)
--#define i40e_free_dma_mem(h, m) i40e_free_dma_mem_d(h, m)
--
--#define i40e_allocate_virt_mem(h, m, s) i40e_allocate_virt_mem_d(h, m, s)
--#define i40e_free_virt_mem(h, m) i40e_free_virt_mem_d(h, m)
--
- /* prototype for functions used for dynamic memory allocation */
- int i40e_allocate_dma_mem(struct i40e_hw *hw,
- 			  struct i40e_dma_mem *mem,
--			  enum i40e_memory_type type,
- 			  u64 size, u32 alignment);
- int i40e_free_dma_mem(struct i40e_hw *hw,
- 		      struct i40e_dma_mem *mem);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_hmc.c b/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-index 57b716a8ae43..a9ccc0029e99 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-@@ -20,7 +20,6 @@ int i40e_add_sd_table_entry(struct i40e_hw *hw,
- 			    enum i40e_sd_entry_type type,
- 			    u64 direct_mode_sz)
- {
--	enum i40e_memory_type mem_type __attribute__((unused));
- 	struct i40e_hmc_sd_entry *sd_entry;
- 	bool dma_mem_alloc_done = false;
- 	struct i40e_dma_mem mem;
-@@ -41,16 +40,13 @@ int i40e_add_sd_table_entry(struct i40e_hw *hw,
- 
- 	sd_entry = &hmc_info->sd_table.sd_entry[sd_index];
- 	if (!sd_entry->valid) {
--		if (I40E_SD_TYPE_PAGED == type) {
--			mem_type = i40e_mem_pd;
-+		if (I40E_SD_TYPE_PAGED == type)
- 			alloc_len = I40E_HMC_PAGED_BP_SIZE;
--		} else {
--			mem_type = i40e_mem_bp_jumbo;
-+		else
- 			alloc_len = direct_mode_sz;
--		}
- 
- 		/* allocate a 4K pd page or 2M backing page */
--		ret_code = i40e_allocate_dma_mem(hw, &mem, mem_type, alloc_len,
-+		ret_code = i40e_allocate_dma_mem(hw, &mem, alloc_len,
- 						 I40E_HMC_PD_BP_BUF_ALIGNMENT);
- 		if (ret_code)
- 			goto exit;
-@@ -138,7 +134,7 @@ int i40e_add_pd_table_entry(struct i40e_hw *hw,
- 			page = rsrc_pg;
- 		} else {
- 			/* allocate a 4K backing page */
--			ret_code = i40e_allocate_dma_mem(hw, page, i40e_mem_bp,
-+			ret_code = i40e_allocate_dma_mem(hw, page,
- 						I40E_HMC_PAGED_BP_SIZE,
- 						I40E_HMC_PD_BP_BUF_ALIGNMENT);
- 			if (ret_code)
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 488ea5e8ded9..69606db341eb 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -134,14 +134,14 @@ struct device *i40e_hw_to_dev(struct i40e_hw *hw)
- }
- 
- /**
-- * i40e_allocate_dma_mem_d - OS specific memory alloc for shared code
-+ * i40e_allocate_dma_mem - OS specific memory alloc for shared code
-  * @hw:   pointer to the HW structure
-  * @mem:  ptr to mem struct to fill out
-  * @size: size of memory requested
-  * @alignment: what to align the allocation to
-  **/
--int i40e_allocate_dma_mem_d(struct i40e_hw *hw, struct i40e_dma_mem *mem,
--			    u64 size, u32 alignment)
-+int i40e_allocate_dma_mem(struct i40e_hw *hw, struct i40e_dma_mem *mem,
-+			  u64 size, u32 alignment)
- {
- 	struct i40e_pf *pf = i40e_hw_to_pf(hw);
- 
-@@ -155,11 +155,11 @@ int i40e_allocate_dma_mem_d(struct i40e_hw *hw, struct i40e_dma_mem *mem,
- }
- 
- /**
-- * i40e_free_dma_mem_d - OS specific memory free for shared code
-+ * i40e_free_dma_mem - OS specific memory free for shared code
-  * @hw:   pointer to the HW structure
-  * @mem:  ptr to mem struct to free
-  **/
--int i40e_free_dma_mem_d(struct i40e_hw *hw, struct i40e_dma_mem *mem)
-+int i40e_free_dma_mem(struct i40e_hw *hw, struct i40e_dma_mem *mem)
- {
- 	struct i40e_pf *pf = i40e_hw_to_pf(hw);
- 
-@@ -172,13 +172,13 @@ int i40e_free_dma_mem_d(struct i40e_hw *hw, struct i40e_dma_mem *mem)
- }
- 
- /**
-- * i40e_allocate_virt_mem_d - OS specific memory alloc for shared code
-+ * i40e_allocate_virt_mem - OS specific memory alloc for shared code
-  * @hw:   pointer to the HW structure
-  * @mem:  ptr to mem struct to fill out
-  * @size: size of memory requested
-  **/
--int i40e_allocate_virt_mem_d(struct i40e_hw *hw, struct i40e_virt_mem *mem,
--			     u32 size)
-+int i40e_allocate_virt_mem(struct i40e_hw *hw, struct i40e_virt_mem *mem,
-+			   u32 size)
- {
- 	mem->size = size;
- 	mem->va = kzalloc(size, GFP_KERNEL);
-@@ -190,11 +190,11 @@ int i40e_allocate_virt_mem_d(struct i40e_hw *hw, struct i40e_virt_mem *mem,
- }
- 
- /**
-- * i40e_free_virt_mem_d - OS specific memory free for shared code
-+ * i40e_free_virt_mem - OS specific memory free for shared code
-  * @hw:   pointer to the HW structure
-  * @mem:  ptr to mem struct to free
-  **/
--int i40e_free_virt_mem_d(struct i40e_hw *hw, struct i40e_virt_mem *mem)
-+int i40e_free_virt_mem(struct i40e_hw *hw, struct i40e_virt_mem *mem)
- {
- 	/* it's ok to kfree a NULL pointer */
- 	kfree(mem->va);
--- 
-2.41.0
-
+Konrad
