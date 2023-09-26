@@ -2,204 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACD57AF1BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDCA7AF1C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbjIZR3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        id S234459AbjIZR3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbjIZR32 (ORCPT
+        with ESMTP id S234104AbjIZR3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:29:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58639124
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:29:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7CF0C433C7;
-        Tue, 26 Sep 2023 17:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695749359;
-        bh=qrBeQ51Dvxv01D+MaeOf5SpdgRWicIvEOSKVURSSzjA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jLKAuoY9Tq+nBCfB3Rsekoz5TWyvDE4Cz2iyx889195Ydz/Bm/vK+0uAblBSwOgyT
-         4HO5gJ2LGgExjKXjYF0WDHcIHP6HAV8q6MsvQH2Fa1ungePnpAHr10Ac/tnY6eflVJ
-         wjq7Vx2X7c2MBRDvXAl3jvH6oNjT60/1eozlWbuwyWY/AoV1eIJTb8yOWAOzl/ioDN
-         MrsGgHSHIjl/waRnu0LdfdrngFegEjL6CM/V1e5yav3vZ07wwDPy3N3UER3Udxb7Cp
-         AzFdLBUnvAPAvadGS6HFaFsJ2/0UvPysGZzaf6YxRMh6z8Lbfna7ZlsIvtG+t06sZa
-         NCCbbM6N4VJlQ==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5041335fb9cso14979399e87.0;
-        Tue, 26 Sep 2023 10:29:19 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwkSIYyPqCqIonIGl6/fKZIjNMmviVPvhJPb3yU7v53OgUfVk0z
-        E5SvC6A7lNNsEZhuoN3w542LYqNiTxVNKlS34g==
-X-Google-Smtp-Source: AGHT+IF4jsYIOlWRMaDBVtY1ZGg0bMgAPx9E8v3RDGUGPZuPx/gUDtti2upRNZGqjvQTlkNrF5gZRcr/muks4aGOsIc=
-X-Received: by 2002:a05:6512:2520:b0:500:8022:3dc7 with SMTP id
- be32-20020a056512252000b0050080223dc7mr9331056lfb.10.1695749358093; Tue, 26
- Sep 2023 10:29:18 -0700 (PDT)
+        Tue, 26 Sep 2023 13:29:42 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B373B10A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:29:34 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c3c8adb27so1180581166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:29:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695749373; x=1696354173; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Vhbig0nhhNfTJO4IcAt/zm7dBAJ/m7itblDhT37dyg=;
+        b=AkTGNxkBgOJcUTUI9M3ouei2ZJf/eoILQ0NS869PckfcFxY9Q+Qk2w4LGbzHpPrfxz
+         tDG+V0GJnIVSjANp+f9izGb6FHztrb43wtvUEiK7q4BfMba03S7wTsLPFLK5s9XhARZV
+         DCLdoF4B8llnDHU2tLHVHqxIguEN9cp0fk0FawJcsq9KiE+CoUUdQTBa83JlmPO6qbmo
+         cKNfFXfq2oN+RPWF9vEXKxvrCvpdCbmqcgU7Vgf9CRKaO9FvWNd6yFTIdlS0TxIdNKYd
+         fYuHonNDcfKJOh9HkrMSie45l28PWwXQ2lD5LS9klp6zPwON0CBRKQmweySn4SouoI8x
+         kdJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695749373; x=1696354173;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Vhbig0nhhNfTJO4IcAt/zm7dBAJ/m7itblDhT37dyg=;
+        b=n/rC++hHkLr40WdePTUo5WhbX3zqtCng74XIkFwpCR0tV06w4DXCUY0oqgUJiMtwV2
+         TJrf6IuO/yWldx0ARfRLMDUgJR1G2iWueQUDmIzdPX95HNNF1Tbnb/KIbB3cNKcxDA2V
+         pL4WQjg3q+5INjmD1ivB+6q5FKAxmwB+FUd3QWecrc9uRPnWTiwY6K0ddSJm3S3iINLC
+         7cHzhcP/R8L0U6Y+FeBvSHWYaYcrgDMEjX/PBMG8DqEUGWMs77QUAhd9Xs/f9dXAwkjH
+         djSmw3xqZ8GxngNHx9YRd1qEM9rJtF2dtjwx2muSyQd/uKyk99r3+0KQjmeL9721oWPG
+         gJpQ==
+X-Gm-Message-State: AOJu0YzTqD5P6MetbVNQH1nTKH/xIvA6UulEm1MDqoAfyfDY6ph/2A3S
+        ClyTF+igHTXehzN69Ww3JiWdcg==
+X-Google-Smtp-Source: AGHT+IGB9ym/8CHHY0o/7Ji55tJkJHvDjFFfY8xPcDoyEVQ+TdI7OuCiUQy0lMCAqdS20jKH/MqsFg==
+X-Received: by 2002:a17:907:2cd3:b0:9a1:be5b:f4aa with SMTP id hg19-20020a1709072cd300b009a1be5bf4aamr8939397ejc.0.1695749373105;
+        Tue, 26 Sep 2023 10:29:33 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id n19-20020a170906165300b009a1c05bd672sm7949359ejd.127.2023.09.26.10.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 10:29:32 -0700 (PDT)
+Message-ID: <b54d43b5-89fe-4801-9eff-57bd795cfed5@linaro.org>
+Date:   Tue, 26 Sep 2023 19:29:30 +0200
 MIME-Version: 1.0
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
- <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
- <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
- <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
- <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
- <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
- <20230925092122.0b615f25@xps-13> <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
- <20230925164736.5efbf4c0@xps-13> <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
- <20230925172447.43dcef88@xps-13> <CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
- <CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
- <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com> <20230926094815.5802e184@xps-13>
-In-Reply-To: <20230926094815.5802e184@xps-13>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 26 Sep 2023 12:29:03 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL_8bhHkHOFL8a8=g1dYL4OY8hGuNDyc0Jz22rEuJzXtQ@mail.gmail.com>
-Message-ID: <CAL_JsqL_8bhHkHOFL8a8=g1dYL4OY8hGuNDyc0Jz22rEuJzXtQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V1 2/2] arm64: dts: qcom: sc7280: Add UFS host controller
+ and phy nodes
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     agross@kernel.org, andersson@kernel.org, alim.akhtar@samsung.com,
+        bvanassche@acm.org, robh+dt@kernel.org, avri.altman@wdc.com,
+        cros-qcom-dts-watchers@chromium.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230821094937.13059-1-quic_nitirawa@quicinc.com>
+ <20230821094937.13059-3-quic_nitirawa@quicinc.com>
+ <20230822070841.GA24753@thinkpad>
+ <593fa9be-9f55-3649-e825-1dee31ac5c21@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <593fa9be-9f55-3649-e825-1dee31ac5c21@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 2:48=E2=80=AFAM Miquel Raynal <miquel.raynal@bootli=
-n.com> wrote:
->
-> Hello,
->
-> > > > > > These are firmware bindings, as indicated, but I
-> > > > > > took them out of the /firmware node since that is for a differe=
-nt
-> > > > > > purpose. Rob suggested that partitions was a good place. We hav=
-e fwupd
-> > > > > > using DT to hold the firmware-update information, so I expect i=
-t will
-> > > > > > move to use these bindings too.
-> > > > >
-> > > > > I would definitely use fixed partitions as that's what you need t=
-hen:
-> > > > > registering where everything starts and ends. If you have "in-ban=
-d"
-> > > > > meta data you might require a compatible, but I don't think you
-> > > > > do, in this case you should probably carry the content through a =
-label
-> > > > > (which will become the partition name) and we can discuss additio=
-nal
-> > > > > properties if needed.
-> > > >
-> > > > I believe I am going to need a compatible string at the 'partitions=
-'
-> > > > level to indicate that this is the binman scheme. But we can leave
-> > > > that until later.
-> > >
-> > > Perhaps:
-> > >
-> > > compatible =3D "binman", "fixed-partitions";
-> > >
-> > > Though I don't understand why binman couldn't just understand what
-> > > "fixed-partitions" means rather than "binman".
-> >
-> > Well so long as we don't add any binman things in here, you are right.
-> >
-> > But the eventual goal is parity with current Binman functionality,
-> > which writes the entire (augmented) description to the DT, allowing
-> > tools to rebuild / repack / replace pieces later, maintaining the same
-> > alignment constraints, etc. I am assuming that properties like 'align
-> > =3D <16>' would not fit with fixed-partitions.
->
-> I am personally not bothered by this kind of properties. But if we plan
-> on adding too much properties, I will advise to indeed use another name
-> than fixed-partitions (or add the "binman" secondary compatible)
-> otherwise it's gonna be hard to support in the code while still
-> restraining as much as we can the other partition schema.
+On 26.09.2023 18:24, Nitin Rawat wrote:
+> 
+> 
+> On 8/22/2023 12:38 PM, Manivannan Sadhasivam wrote:
+>> On Mon, Aug 21, 2023 at 03:19:37PM +0530, Nitin Rawat wrote:
+>>> Add UFS host controller and PHY nodes for sc7280.
+>>>
+>>
+>> You should split this patch into 2. One for SoC and another for board.
+> Updated in Latest Patchset.
+> 
+>>
+>>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 19 +++++++
+>>>   arch/arm64/boot/dts/qcom/sc7280.dtsi     | 64 ++++++++++++++++++++++++
+>>>   2 files changed, 83 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>>> index 2ff549f4dc7a..c60cdd511222 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>>> @@ -451,6 +451,25 @@
+>>>       status = "okay";
+>>>   };
+>>>
+>>> +&ufs_mem_hc {
+>>> +    reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
+>>> +    vcc-supply = <&vreg_l7b_2p9>;
+>>> +    vcc-max-microamp = <800000>;
+>>> +    vccq-supply = <&vreg_l9b_1p2>;
+>>> +    vccq-max-microamp = <900000>;
+>>> +    vccq2-supply = <&vreg_l9b_1p2>;
+>>> +    vccq2-max-microamp = <900000>;
+>>> +
+>>> +    status = "okay";
+>>> +};
+>>> +
+>>> +&ufs_mem_phy {
+>>> +    vdda-phy-supply = <&vreg_l10c_0p8>;
+>>> +    vdda-pll-supply = <&vreg_l6b_1p2>;
+>>> +
+>>> +    status = "okay";
+>>> +};
+>>> +
+>>>   &sdhc_1 {
+>>>       status = "okay";
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 925428a5f6ae..d4a15d56b384 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -908,6 +908,70 @@
+>>>               };
+>>>           };
+>>>
+>>> +        ufs_mem_phy: phy@1d87000 {
+>>
+>> Please sort the nodes in ascending order.
+> Updated in Latest Patchset.
+> 
+>>
+>>> +            compatible = "qcom,sc7280-qmp-ufs-phy";
+>>> +            reg = <0x0 0x01d87000 0x0 0xe00>;
+>>> +            clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>> +                 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
+>>> +                 <&gcc GCC_UFS_1_CLKREF_EN>;
+>>> +            clock-names = "ref", "ref_aux", "qref";
+>>> +
+>>> +            resets = <&ufs_mem_hc 0>;
+>>> +            reset-names = "ufsphy";
+>>> +
+>>> +            #clock-cells = <1>;
+>>> +            #phy-cells = <0>;
+>>> +
+>>> +            status = "disabled";
+>>> +
+>>> +        };
+>>> +
+>>> +        ufs_mem_hc: ufs@1d84000 {
+>>> +            compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
+>>> +                     "jedec,ufs-2.0";
+>>> +            reg = <0x0 0x01d84000 0x0 0x3000>;
+>>> +            interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
+>>> +            phys = <&ufs_mem_phy>;
+>>> +            phy-names = "ufsphy";
+>>> +            lanes-per-direction = <2>;
+>>> +            #reset-cells = <1>;
+>>> +            resets = <&gcc GCC_UFS_PHY_BCR>;
+>>> +            reset-names = "rst";
+>>> +
+>>> +            power-domains = <&gcc GCC_UFS_PHY_GDSC>;
+>>> +            required-opps = <&rpmhpd_opp_nom>;
+>>> +
+>>> +            iommus = <&apps_smmu 0x80 0x0>;
+>>> +            dma-coherent;
+>>> +
+>>> +            clock-names = "core_clk",
+>>> +                      "bus_aggr_clk",
+>>> +                      "iface_clk",
+>>> +                      "core_clk_unipro",
+>>> +                      "ref_clk",
+>>> +                      "tx_lane0_sync_clk",
+>>> +                      "rx_lane0_sync_clk",
+>>> +                      "rx_lane1_sync_clk";
+>>
+>> "clocks" property should come first.
+>  DT binding shows clock-names first followed by clocks.
+>  Let me know if see still see concern, would update .
+The dt bindings example is rarely useful.. perhaps we should
+change that..
 
-Agreed. It's a trade off. I think we need enough to understand the
-problem (not just presented with a solution), agree on the general
-solution/direction, and then discuss specific additions.
+The general consensus there is to have
 
-> > But if we don't preserve
-> > these properties then Binman cannot do repacking reliably. Perhaps for
-> > now I could put the augmented DT in its own section somewhere, but I
-> > am just not sure if that will work in a real system. E.g. with VBE the
-> > goal is to use the DT to figure out how to access the firmware, update
-> > it, etc.
+property
+property-names
 
-VBE?
-
-> > Is it not possible to have my own node with whatever things Binman
-> > needs in it (subject to review of course)? i.e. could we discuss how
-> > to encode it, but argue less about whether things are needed? I
-> > kind-of feel I know what is needed, since I wrote the tool.
-
-What we don't need is the same information in 2 places for the DTB
-used at runtime. If the binman node is removed, do whatever you want.
-If you want to keep it at runtime, then it's got to extend what we
-already have.
-
-I don't think anyone is disagreeing about whether specific information
-is needed or not.
-
-> > > > So you are suggesting 'label' for the contents. Rob suggested
-> > > > 'compatible' [1], so what should I do?
-> > >
-> > > "label" is for consumption by humans, not tools/software. Compatible
-> > > values are documented, label values are not. Though the partition
-> > > stuff started out using label long ago and it's evolved to preferring
-> > > compatible.
-> >
-> > OK so we are agreed that we are going with 'compatible'.
->
-> Still strongly disagree here.
-
-Miquel is right. I was confused here. "label" is still pretty much
-used for what the image is. Though we do have "u-boot,env" for both it
-seems.
-
-My position on "label" stands. To the extent we have images for common
-components, I think we should standardize the names. Certainly if
-tools rely on the names, then they should be documented.
-
-
-> My understanding is that a compatible carries how the content is
-> organized, and how this maybe specific (like you have in-band meta data
-> data that needs to be parsed in a specific way or in your case
-> additional specific properties in the DT which give more context about
-> how the data is stored). But the real content of the partition, ie. if
-> it contains a firmware, the kernel or some user data does not belong to
-> the compatible.
->
-> I.e:
-> - The first byte of my partition gives the compression algorithm:
->   -> compatible =3D "compressed-partition-foo";
->      or
->   -> compatible =3D "fixed-partitions" + compression-algorithm =3D "foo";
-> - The partition contains a picture of my dog:
->   -> label =3D "my dog is beautiful"
->   but certainly not
->   -> compatible =3D "my-dog";
-
-IMO, compatible in this case should convey "JPEG image" or similar.
-
-> I don't see why, for the binman schema, we could not constrain the
-> labels?
-
-Yes, but those should follow what we already have. "u-boot" for
-example rather than "data,u-boot" which I think Simon had in some
-version of this.
-
-Rob
+Konrad
