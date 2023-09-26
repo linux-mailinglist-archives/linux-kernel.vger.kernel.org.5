@@ -2,186 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96D17AF185
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F129B7AF194
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjIZRDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
+        id S230154AbjIZRMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjIZRDY (ORCPT
+        with ESMTP id S229715AbjIZRMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:03:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048A3E5;
-        Tue, 26 Sep 2023 10:03:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B072C433C8;
-        Tue, 26 Sep 2023 17:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695747796;
-        bh=9mED4eKpjj9Ur/PRuc7rWRlqyOXRaHWAX1hUU0+idIU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QsvWBg2Qg19IjleOTBaFPabO854Zm8nRsbavEKImofml1Am9jaKk+r4Wo7KtJVuQH
-         II2CzL6fTXLhu7E0iSpDMgwFIF/gFy+ixfvjihZK6115TmJWA2769Op3c9BYAHl7iS
-         u9C8Rpu1G8TkJOVsuuKtuWmBsWnNG9qMqJMIkbKTZLL/n1oMCxZF4eI1XpNNsMnZYG
-         We375T4Fa/hH6R2ZPzlDNC+d67g8TegHruArCnAEFySuWz+gdx4HGnc9WFvfwg5+73
-         zO9+pYp2W+K3m8JlfFXDPb9scUYaQ6eaOmgKzQz0wHTyVY48eSJjWa5AWnl6GqQ5tk
-         wvd8LSElf4j8A==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1dce01b6f2eso3811266fac.1;
-        Tue, 26 Sep 2023 10:03:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywo7uiiMZwngvKueu2n5VW1nlh4Bp72efj5teEXF09DEaRm19z+
-        251wuaMcHSCSt8OhPA8k/cywnWFGTCRncK3VeEE=
-X-Google-Smtp-Source: AGHT+IG+sT59maIGuNwoFZzYMqgI+S6gDycz3usM1ScV1MgM9a8oIP9swU2ktS554Ry8Hxb/WwjaOqBVOxK/uZEYOIk=
-X-Received: by 2002:a05:6870:ac91:b0:1dd:7f3a:ad11 with SMTP id
- ns17-20020a056870ac9100b001dd7f3aad11mr1645598oab.17.1695747795976; Tue, 26
- Sep 2023 10:03:15 -0700 (PDT)
+        Tue, 26 Sep 2023 13:12:33 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3890D10A;
+        Tue, 26 Sep 2023 10:12:25 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38QHCE7r126724;
+        Tue, 26 Sep 2023 12:12:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695748334;
+        bh=4MkNpGyLiBJ9crT8nZ12KRW3ncuDsPFpvIGinhR/a90=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=zNaZuNGlZDG9DVU0v4M9BQt5xBQ1QK9IxkIMZb83CU6iGf/gPJqW4Bz3/lNFE0+Nb
+         T16+PU1g1U2un6lye2Pz9HZC7dKsHnABF8g3DPdi0jXzBQZwTdWG4q7/ETAvv4+ybB
+         IBzESfsmrMbjci31cGZBiLxjgEdCstLDaKfovdpg=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38QHCEKL128726
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Sep 2023 12:12:14 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 26
+ Sep 2023 12:12:13 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 26 Sep 2023 12:12:13 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38QHCDSX035221;
+        Tue, 26 Sep 2023 12:12:13 -0500
+Date:   Tue, 26 Sep 2023 12:12:13 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Keerthy <j-keerthy@ti.com>
+CC:     <robh+dt@kernel.org>, <vigneshr@ti.com>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/7] arm64: dts: ti: k3-j784s4-main: Add the main
+ domain watchdog instances
+Message-ID: <20230926171213.nihjj2nsnnvnxhel@gradation>
+References: <20230926132805.6518-1-j-keerthy@ti.com>
+ <20230926132805.6518-5-j-keerthy@ti.com>
 MIME-Version: 1.0
-References: <20230918234412.363087-2-mmaurer@google.com>
-In-Reply-To: <20230918234412.363087-2-mmaurer@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 27 Sep 2023 02:02:39 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQNwHPR7nPjLff2Gos2tTgDz6m_NYwBOB8U0tq+odZufQ@mail.gmail.com>
-Message-ID: <CAK7LNAQNwHPR7nPjLff2Gos2tTgDz6m_NYwBOB8U0tq+odZufQ@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230926132805.6518-5-j-keerthy@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 8:44=E2=80=AFAM Matthew Maurer <mmaurer@google.com>=
- wrote:
->
-> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-> resulting in build failures in hermetic environments where `cc` does not
-> exist. This includes both hostprogs and proc-macros.
->
-> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-> `gcc` explicitly.
-
-
-This sentence is unclear to me because it does not explain
-why we need both despite the spec mentions
-'linker-flavor' is inferred from the value of 'linker'.
-
-
-
-The answer exists in this thread.
-"
-As mentioned earlier, we could pass $HOSTLD, but if the linker isn't
-named something accurate (e.g. if the linker is not named lld, but is
-lld), we need to know how to pass a flavor:
-"
-
-Maybe it is worthing menting that HOSTCC may not be properly named.
-
-
-
-
-
-
-
->
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+On 18:58-20230926, Keerthy wrote:
+> There are totally 19 instances of watchdog module. One each for the
+> 8 A72 cores, one each for the 4 C7x cores, 1 for the GPU, 1 each
+> for the 6 R5F cores in the main domain. Keeping only the A72 instances
+> enabled and disabling the rest by default.
+> 
+> Signed-off-by: Keerthy <j-keerthy@ti.com>
 > ---
->
-> Updated the patch to reflect Nick's comment that KBUILD_HOSTLDFLAGS
-> should be respected as well.
->
-> I did not switch it to use HOSTLD for two reasons:
-> * That variable is not globally defined - it is only available in two
->   subdirectories of tools/
-> * C host scripts are linked by HOSTCC as well, even when linking a
->   collection of object files. It *prints* HOSTLD, but invokes HOSTCC.
->   See scripts/Makefile.host cmd_host-cmulti for an example.
->
->  rust/Makefile         | 4 ++++
->  scripts/Makefile.host | 4 ++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/rust/Makefile b/rust/Makefile
-> index 87958e864be0..b60b7eb8c5a0 100644
-> --- a/rust/Makefile
-> +++ b/rust/Makefile
-> @@ -380,9 +380,13 @@ $(obj)/exports_bindings_generated.h: $(obj)/bindings=
-.o FORCE
->  $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FORCE
->         $(call if_changed,exports)
->
-> +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
-
-
-
-This is equivalent to a macro in scripts/Kbuild.include
-
-  escsq =3D $(subst $(squote),'\$(squote)',$1)
-
-
-
-
-
-I would write it directly in cmd_rustc_procmacro.
-
-
-
-
-
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 182 +++++++++++++++++++++
+>  1 file changed, 182 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index 26dc3776f911..8c3efe066803 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -1576,4 +1576,186 @@
+>  			      <695>;
+>  		bootph-pre-ram;
+>  	};
 > +
->  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
->        cmd_rustc_procmacro =3D \
->         $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-> +               -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
-> +               -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
->                 --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --exter=
-n proc_macro \
->                 --crate-type proc-macro \
->                 --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-> index 8f7f842b54f9..dc0410cae5ca 100644
-> --- a/scripts/Makefile.host
-> +++ b/scripts/Makefile.host
-> @@ -87,10 +87,14 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
->                   $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
->                   $(HOSTCXXFLAGS_$(target-stem).o)
->
-> +KBUILD_HOSTLDFLAGS_SQ =3D '$(subst ','\'',$(KBUILD_HOSTLDFLAGS))'
+> +	watchdog0: watchdog@2200000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2200000 0x00 0x100>;
+> +		clocks = <&k3_clks 348 1>;
+> +		power-domains = <&k3_pds 348 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 348 0>;
+> +		assigned-clock-parents = <&k3_clks 348 4>;
+> +	};
 > +
->  # `--out-dir` is required to avoid temporaries being created by `rustc` =
-in the
->  # current working directory, which may be not accessible in the out-of-t=
-ree
->  # modules case.
->  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) \
-> +                -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
-> +                -Clink-args=3D$(KBUILD_HOSTLDFLAGS_SQ) \
->                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
->                   $(HOSTRUSTFLAGS_$(target-stem))
->
-> --
-> 2.42.0.459.ge4e396fd5e-goog
->
+> +	watchdog1: watchdog@2210000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2210000 0x00 0x100>;
+> +		clocks = <&k3_clks 349 1>;
+> +		power-domains = <&k3_pds 349 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 349 0>;
+> +		assigned-clock-parents = <&k3_clks 349 4>;
+> +	};
+> +
+> +	watchdog2: watchdog@2220000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2220000 0x00 0x100>;
+> +		clocks = <&k3_clks 350 1>;
+> +		power-domains = <&k3_pds 350 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 350 0>;
+> +		assigned-clock-parents = <&k3_clks 350 4>;
+> +	};
+> +
+> +	watchdog3: watchdog@2230000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2230000 0x00 0x100>;
+> +		clocks = <&k3_clks 351 1>;
+> +		power-domains = <&k3_pds 351 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 351 0>;
+> +		assigned-clock-parents = <&k3_clks 351 4>;
+> +	};
+> +
+> +	watchdog4: watchdog@2240000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2240000 0x00 0x100>;
+> +		clocks = <&k3_clks 352 1>;
+> +		power-domains = <&k3_pds 352 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 352 0>;
+> +		assigned-clock-parents = <&k3_clks 352 4>;
+> +	};
+> +
+> +	watchdog5: watchdog@2250000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2250000 0x00 0x100>;
+> +		clocks = <&k3_clks 353 1>;
+> +		power-domains = <&k3_pds 353 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 353 0>;
+> +		assigned-clock-parents = <&k3_clks 353 4>;
+> +	};
+> +
+> +	watchdog6: watchdog@2260000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2260000 0x00 0x100>;
+> +		clocks = <&k3_clks 354 1>;
+> +		power-domains = <&k3_pds 354 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 354 0>;
+> +		assigned-clock-parents = <&k3_clks 354 4>;
+> +	};
+> +
+> +	watchdog7: watchdog@2270000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2270000 0x00 0x100>;
+> +		clocks = <&k3_clks 355 1>;
+> +		power-domains = <&k3_pds 355 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 355 0>;
+> +		assigned-clock-parents = <&k3_clks 355 4>;
+> +	};
+> +
+> +	watchdog16: watchdog@2300000 {
+> +		status = "disabled";
 
+wow.. lots of watchdogs.. but you seem to have missed the document why
+disabled comment here AND missed the comment about using status
+as the last property.
+https://lore.kernel.org/all/5187c590-ee9a-4c46-b326-655f4c371aaf@linaro.org/
 
---=20
-Best Regards
-Masahiro Yamada
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2300000 0x00 0x100>;
+> +		clocks = <&k3_clks 356 1>;
+> +		power-domains = <&k3_pds 356 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 356 0>;
+> +		assigned-clock-parents = <&k3_clks 356 4>;
+> +	};
+> +
+> +	watchdog17: watchdog@2310000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2310000 0x00 0x100>;
+> +		clocks = <&k3_clks 357 1>;
+> +		power-domains = <&k3_pds 357 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 357 0>;
+> +		assigned-clock-parents = <&k3_clks 357 4>;
+> +	};
+> +
+> +	watchdog18: watchdog@2320000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2320000 0x00 0x100>;
+> +		clocks = <&k3_clks 358 1>;
+> +		power-domains = <&k3_pds 358 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 358 0>;
+> +		assigned-clock-parents = <&k3_clks 358 4>;
+> +	};
+> +
+> +	watchdog19: watchdog@2330000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2330000 0x00 0x100>;
+> +		clocks = <&k3_clks 359 1>;
+> +		power-domains = <&k3_pds 359 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 359 0>;
+> +		assigned-clock-parents = <&k3_clks 359 4>;
+> +	};
+> +
+> +	watchdog15: watchdog@22f0000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x22f0000 0x00 0x100>;
+> +		clocks = <&k3_clks 360 1>;
+> +		power-domains = <&k3_pds 360 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 360 0>;
+> +		assigned-clock-parents = <&k3_clks 360 4>;
+> +	};
+> +
+> +	watchdog28: watchdog@23c0000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23c0000 0x00 0x100>;
+> +		clocks = <&k3_clks 361 1>;
+> +		power-domains = <&k3_pds 361 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 361 0>;
+> +		assigned-clock-parents = <&k3_clks 361 4>;
+> +	};
+> +
+> +	watchdog29: watchdog@23d0000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23d0000 0x00 0x100>;
+> +		clocks = <&k3_clks 362 1>;
+> +		power-domains = <&k3_pds 362 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 362 0>;
+> +		assigned-clock-parents = <&k3_clks 362 4>;
+> +	};
+> +
+> +	watchdog30: watchdog@23e0000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23e0000 0x00 0x100>;
+> +		clocks = <&k3_clks 363 1>;
+> +		power-domains = <&k3_pds 363 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 363 0>;
+> +		assigned-clock-parents = <&k3_clks 363 4>;
+> +	};
+> +
+> +	watchdog31: watchdog@23f0000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23f0000 0x00 0x100>;
+> +		clocks = <&k3_clks 364 1>;
+> +		power-domains = <&k3_pds 364 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 364 0>;
+> +		assigned-clock-parents = <&k3_clks 364 4>;
+> +	};
+> +
+> +	watchdog32: watchdog@2540000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2540000 0x00 0x100>;
+> +		clocks = <&k3_clks 365 1>;
+> +		power-domains = <&k3_pds 365 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 365 0>;
+> +		assigned-clock-parents = <&k3_clks 366 4>;
+> +	};
+> +
+> +	watchdog33: watchdog@2550000 {
+> +		status = "disabled";
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2550000 0x00 0x100>;
+> +		clocks = <&k3_clks 366 1>;
+> +		power-domains = <&k3_pds 366 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 366 0>;
+> +		assigned-clock-parents = <&k3_clks 366 4>;
+> +	};
+>  };
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
