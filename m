@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4E27AF14F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DC87AF14C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235388AbjIZQw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        id S235313AbjIZQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbjIZQwH (ORCPT
+        with ESMTP id S235404AbjIZQwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:52:07 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF18E12A;
+        Tue, 26 Sep 2023 12:52:04 -0400
+Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54C8E5;
         Tue, 26 Sep 2023 09:51:54 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; t=1695747099; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=FbzLcPaUSXtu2eM+7okVlwAn1nUxWOu+b7iqtKWYzRd2QUaTn3EjaRN9IlSgup3aQr
-    iAuTXBBXs4fzkOghrwEKzBlayJ95bxObPJUp5yw97xFMzWYvP00KIDn2qKxUJwiPtuE4
-    MY1QC9opGqsaQAYgFPEpTbcpzirCwKjqOVfzSj2vVSHW6iPP/NZLHsx68iG39VpvOX7d
-    J/0VWSIsiC6q2gMORCIJ3FmhmgBFukadRChpvSiqLXz9KTwfdD58uT4bCn+nsYizsOg4
-    wvmPhrpw+EEz2NlbBW8aN/ckomQ9jmwEdM3RZjb06dofGpR7ekNTc9nQnmxmPzac4o7n
-    rmaw==
+    b=P0mG4RsOB1mUeMk6buZfR7j+zEBSh2QZSU8KL8jEzlJUpz6FHuqoxgvKULbu6//2Mz
+    q6ooKjH1gYHD091PNz6RhCebc0rDGBbsNvl07es8/ZppHqU7nBy4c5baZG0VYRLOKefm
+    TGz3gho8dBGXjGD0p4n5H4CZBsh96/OyeQrjk0z1vvvkHusnRpq+Hn0eRd1UQQVGTWOE
+    sx3m6L4ujE31mI2S76/BDePprfZeiWJNLgXE3tUPshV80FUT54mdd6PoqM4sXyQm4tz4
+    Y8oSfGQElaO+/7JOxWg5q9jCms0Jye81V0wOtzycLwQTqcEpX5XJwnEjp3n7yQGBumil
+    iqfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747099;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=JtAzqCADYdUtAE2X5Cl5VjSMCmhUr+SxQulvUa9cK1o=;
-    b=n2RDWVFQ4vFATxaCR1Z8Y0oLbGwHCguFbSuMTu62QAdbovLFaZpphkp59h44ltRIPx
-    58otBbRaVXZsAfyt8Qo1CdNRmNt3fH10LLvpgRFN9cPoxzYgOgj+ocH1baZAdZBDOjt8
-    jZlqXrBQbJnEpiUX05NyloGNex5hM7HO9tcti68q5acFwe2K5/3+upDulTZ1zwGQR5Lr
-    flYXl9oNhg27zNUCrS5TRXllGeZs0qL1hMeJ63PLbDugfDNzteB560eubKopCLjg552d
-    apqIzfUZGt6C/sNpOlijRkwMgjx0aBv1NlevzcrwuLq4OVSLbQN1QG66mnz0xcJDrsXF
-    gp2g==
+    bh=8tnDeT68kt0orIqb8+GvI+sOJG1HEXV97Nn8vSnRFt8=;
+    b=hjqmfiIV0A9a1E6mYYYS85ZuIqxmVUnk0S0v54rDF64A81C+SnU/Wa8WhEhrKsu1vP
+    LSvb0pM8xmOMRq8uNjhszxLOxjUdfYinLdTPCZ4r1dCQ28bi5ZvtAum8CBp5iRCRqBmW
+    P+wsLJY2QGhEk01G3i8YM5OfY/q3Db4SKfvWOR1pqW/bVLi/thrrztXyemmIDGJf+wtM
+    fxf/RiutBCOCsdjCmv9eTP5BZxxCiJf3ONELXxS/4AJ3UiQG4dg/rBjR3XYf2UgvQXtM
+    kUb28B+vSzNKIlUwXshJzFzXcJA1UYJjbHtRUJXlxFFiG0nRlr1Z5bJLgFngbVYIdKSL
+    t3Zg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
+X-RZG-CLASS-ID: mo03
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747099;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=JtAzqCADYdUtAE2X5Cl5VjSMCmhUr+SxQulvUa9cK1o=;
-    b=C33kZA77J+Gr2LZsPpxSfx3T64m34q/5tKcM0CsIz6cAlUCzx9Kz/fnCgd0v2aDvaw
-    HgyMvO2ysg7qjS8eE6eCn30W6yZD+gn7QQw09hjUL+7H3ivt+0iBHfkc0Vpm4ZwdbtDM
-    OqSFqqRmsRdsK/bjZk6vH7ceprOk3C4KSCPZBdZ1X7FMmAN0cQyYZRFrzoFwpuwnT+G4
-    PKh9b728IM+Y52BgVL13+GTewaH7MlexIwXS0WyLerSIyvHs/+LW7ukgmD6BavWftJyg
-    rHKwYHkrLH62JAICw8dgATf4MhdILXV14C/6hSSqS81PELP0sshavomnW/sHu/H3V51L
-    fIFQ==
+    bh=8tnDeT68kt0orIqb8+GvI+sOJG1HEXV97Nn8vSnRFt8=;
+    b=FEyeVANyo6S5MbBQ3TBV0bMVHM+ljxxe2CTDnlH/bpC7YaCCOArQJ9Ie0XYQePi90y
+    vV8u8gWPVvhHgoPwQc2TCU6tWNDz6O/wbZrWA2w9Iqm11z9l+ARg+HSKzHkLPhSGcWwe
+    IybT9bi8XzyxFVRbOb82McbOfd2EdQh2fkhxHzPuAU7uO2gj2rjbRvXIj0EACjpPZtu+
+    3iIhXt6hPP03KBIubHb7NnyjcYExtzU1mXIsibtUXddRJ+eyIwwP15zahux3qZTNz2eN
+    KaN0tQQKMq/ArZSuebeB7G+eNtG/nm1goYx8m9S6yW2RBMsuVilqO2hXBX9YXztncLV/
+    GZiA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695747099;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=JtAzqCADYdUtAE2X5Cl5VjSMCmhUr+SxQulvUa9cK1o=;
-    b=7GbuwZRrLkBNbxhnnCz6LAVNWMFNXXT1K+XFuDr+JIEjOtM4z5xhfAcg5Z/mkQaI94
-    d6oCi9JbAB+5BHT1gTCA==
+    bh=8tnDeT68kt0orIqb8+GvI+sOJG1HEXV97Nn8vSnRFt8=;
+    b=dpRUWi6vl/0zUzRRstYpjRnqLjGsHCat8k0E1rUItOt+HaMgEGutya+ZWVC+U/8phz
+    N6r8YKBABFhAB28j/aBQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOH+nz0="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
-    with ESMTPSA id R04c57z8QGpdg5d
+    with ESMTPSA id R04c57z8QGpdg5e
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
     Tue, 26 Sep 2023 18:51:39 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 26 Sep 2023 18:51:20 +0200
-Subject: [PATCH 06/13] arm64: dts: qcom: msm8916-wingtech-wt88047: Add
- sound and modem
+Date:   Tue, 26 Sep 2023 18:51:21 +0200
+Subject: [PATCH 07/13] arm64: dts: qcom: msm8916-alcatel-idol347: Add sound
+ and modem
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-msm8916-modem-v1-6-398eec74bac9@gerhold.net>
+Message-Id: <20230926-msm8916-modem-v1-7-398eec74bac9@gerhold.net>
 References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
 In-Reply-To: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -80,7 +80,8 @@ Cc:     Andy Gross <agross@kernel.org>,
         linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
+        Stephan Gerhold <stephan@gerhold.net>,
+        Vincent Knecht <vincent.knecht@mailoo.org>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -91,31 +92,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable sound and modem for the Xiaomi Redmi 2. The setup
-is similar to most MSM8916 devices, i.e.:
+From: Vincent Knecht <vincent.knecht@mailoo.org>
+
+Enable sound and modem for the Alcatel Idol 3 (4.7"). The setup is
+similar to most MSM8916 devices, i.e.:
 
  - QDSP6 audio
- - Earpiece/headphones/microphones via digital/analog codec in
-   MSM8916/PM8916
- - Audio jack detection via analog codec in PM8916
+ - Microphones via digital/analog codec in MSM8916/PM8916
  - WWAN Internet via BAM-DMUX
 
 except:
 
- - Speaker amplifier is connected to HPH_R (headphones) output of the
-   analog codec. There is a separate analog switch that allows disabling
-   playback via the headphone jack.
+ - Stereo NXP TFA9890 codecs for speakers on Quaternary MI2S
+   - These are also used as earpieces at the top/bottom.
+ - Asahi Kasei AK4375 headphone codec on Secondary MI2S
+ -> Primary MI2S is not used for playback
 
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+[Stephan: minor cleanup, add consistent commit message]
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- .../boot/dts/qcom/msm8916-wingtech-wt88047.dts     | 76 ++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+There are some trivial conflicts unless
+https://lore.kernel.org/linux-arm-msm/20230921-msm8916-rmem-fixups-v1-3-34d2b6e721cf@gerhold.net/
+is applied first. But given that there are important fixups for the
+dynamic reserved memory changes in that series it should preferably
+get applied before this one anyway.
+---
+ .../boot/dts/qcom/msm8916-alcatel-idol347.dts      | 164 +++++++++++++++++++++
+ 1 file changed, 164 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-index 419f35c1fc92..600c225a2568 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
-@@ -6,6 +6,8 @@
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+index fade93c55299..ef5fc9289754 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+@@ -3,6 +3,8 @@
  /dts-v1/;
  
  #include "msm8916-pm8916.dtsi"
@@ -124,41 +134,94 @@ index 419f35c1fc92..600c225a2568 100644
  #include <dt-bindings/gpio/gpio.h>
  #include <dt-bindings/input/input.h>
  #include <dt-bindings/leds/common.h>
-@@ -25,6 +27,28 @@ chosen {
+@@ -22,6 +24,19 @@ chosen {
  		stdout-path = "serial0";
  	};
  
-+	speaker_amp: audio-amplifier {
-+		compatible = "simple-audio-amplifier";
-+		enable-gpios = <&tlmm 117 GPIO_ACTIVE_HIGH>;
-+		sound-name-prefix = "Speaker Amp";
-+		pinctrl-0 = <&speaker_amp_default>;
++	reserved-memory {
++		/delete-node/ reserved@86680000;
++		/delete-node/ rmtfs@86700000;
++
++		rmtfs: rmtfs@86680000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0x0 0x86680000 0x0 0x160000>;
++			no-map;
++
++			qcom,client-id = <1>;
++		};
++	};
++
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
+@@ -50,6 +65,17 @@ led-0 {
+ 		};
+ 	};
+ 
++	reg_headphones_avdd: regulator-headphones-avdd {
++		compatible = "regulator-fixed";
++		regulator-name = "headphones_avdd";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		gpio = <&tlmm 121 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		pinctrl-0 = <&headphones_avdd_default>;
 +		pinctrl-names = "default";
 +	};
 +
-+	/*
-+	 * This seems to be actually an analog switch that either routes audio
-+	 * to the headphone jack or nowhere. Given that we need to enable a GPIO
-+	 * to get sound on headphones, modelling it as simple-audio-amplifier
-+	 * works just fine.
-+	 */
-+	headphones_switch: audio-switch {
-+		compatible = "simple-audio-amplifier";
-+		enable-gpios = <&tlmm 8 GPIO_ACTIVE_HIGH>;
-+		sound-name-prefix = "Headphones Switch";
-+		pinctrl-0 = <&headphones_switch_default>;
+ 	usb_id: usb-id {
+ 		compatible = "linux,extcon-usb-gpio";
+ 		id-gpios = <&tlmm 69 GPIO_ACTIVE_HIGH>;
+@@ -58,6 +84,43 @@ usb_id: usb-id {
+ 	};
+ };
+ 
++&blsp_i2c3 {
++	status = "okay";
++
++	headphones: audio-codec@10 {
++		compatible = "asahi-kasei,ak4375";
++		reg = <0x10>;
++		avdd-supply = <&reg_headphones_avdd>;
++		tvdd-supply = <&pm8916_l6>;
++		pdn-gpios = <&tlmm 114 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&headphones_pdn_default>;
 +		pinctrl-names = "default";
++		#sound-dai-cells = <0>;
 +	};
 +
- 	flash-led-controller {
- 		compatible = "ocs,ocp8110";
- 		enable-gpios = <&tlmm 31 GPIO_ACTIVE_HIGH>;
-@@ -146,6 +170,18 @@ &blsp_uart2 {
++	speaker_codec_top: audio-codec@34 {
++		compatible = "nxp,tfa9897";
++		reg = <0x34>;
++		vddd-supply = <&pm8916_l6>;
++		rcv-gpios = <&tlmm 50 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&speaker_top_default>;
++		pinctrl-names = "default";
++		sound-name-prefix = "Speaker Top";
++		#sound-dai-cells = <0>;
++	};
++
++	speaker_codec_bottom: audio-codec@36 {
++		compatible = "nxp,tfa9897";
++		reg = <0x36>;
++		vddd-supply = <&pm8916_l6>;
++		rcv-gpios = <&tlmm 111 GPIO_ACTIVE_HIGH>;
++		pinctrl-0 = <&speaker_bottom_default>;
++		pinctrl-names = "default";
++		sound-name-prefix = "Speaker Bottom";
++		#sound-dai-cells = <0>;
++	};
++};
++
+ &blsp_i2c4 {
+ 	status = "okay";
+ 
+@@ -153,6 +216,18 @@ &blsp_uart2 {
  	status = "okay";
  };
  
 +&mpss_mem {
-+	reg = <0x0 0x86800000 0x0 0x5100000>;
++	reg = <0x0 0x86800000 0x0 0x5000000>;
 +};
 +
 +&pm8916_codec {
@@ -172,67 +235,130 @@ index 419f35c1fc92..600c225a2568 100644
  &pm8916_resin {
  	status = "okay";
  	linux,code = <KEY_VOLUMEDOWN>;
-@@ -180,6 +216,32 @@ &sdhc_2 {
- 	non-removable;
+@@ -169,6 +244,17 @@ &pm8916_vib {
+ 	status = "okay";
+ };
+ 
++&q6afedai {
++	dai@18 {
++		reg = <SECONDARY_MI2S_RX>;
++		qcom,sd-lines = <0>;
++	};
++	dai@22 {
++		reg = <QUATERNARY_MI2S_RX>;
++		qcom,sd-lines = <0>;
++	};
++};
++
+ &sdhc_1 {
+ 	status = "okay";
+ };
+@@ -183,6 +269,47 @@ &sdhc_2 {
+ 	cd-gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
  };
  
 +&sound {
 +	status = "okay";
 +
-+	/*
-+	 * Provide widgets/pin-switches to allow enabling speaker and headphones
-+	 * separately. Both are routed via the HPH_L/HPH_R pins of the codec.
-+	 */
-+	model = "wt88047";
++	/* Add pin switches for speakers to allow disabling them individually */
++	model = "alcatel-idol3";
 +	widgets =
-+		"Speaker", "Speaker",
-+		"Headphone", "Headphones";
-+	pin-switches = "Speaker", "Headphones";
++		"Speaker", "Speaker Top",
++		"Speaker", "Speaker Bottom";
++	pin-switches = "Speaker Top", "Speaker Bottom";
 +	audio-routing =
-+		"Speaker", "Speaker Amp OUTL",
-+		"Speaker", "Speaker Amp OUTR",
-+		"Speaker Amp INL", "HPH_R",
-+		"Speaker Amp INR", "HPH_R",
-+		"Headphones", "Headphones Switch OUTL",
-+		"Headphones", "Headphones Switch OUTR",
-+		"Headphones Switch INL", "HPH_L",
-+		"Headphones Switch INR", "HPH_R",
++		"Speaker Top", "Speaker Top OUT",
++		"Speaker Bottom", "Speaker Bottom OUT",
 +		"AMIC1", "MIC BIAS External1",
-+		"AMIC2", "MIC BIAS Internal2";
-+	aux-devs = <&speaker_amp>, <&headphones_switch>;
++		"AMIC2", "MIC BIAS Internal2",
++		"AMIC3", "MIC BIAS External1";
++
++	pinctrl-0 = <&cdc_pdm_default &pri_mi2s_default &pri_mi2s_ws_default &sec_mi2s_default>;
++	pinctrl-1 = <&cdc_pdm_sleep &pri_mi2s_sleep &pri_mi2s_ws_sleep &sec_mi2s_sleep>;
++	pinctrl-names = "default", "sleep";
++};
++
++&sound_dai_primary {
++	status = "disabled";
++};
++
++&sound_dai_quaternary {
++	status = "okay";
++
++	codec {
++		sound-dai = <&speaker_codec_top>, <&speaker_codec_bottom>;
++	};
++};
++
++&sound_dai_secondary {
++	status = "okay";
++
++	codec {
++		sound-dai = <&headphones>;
++	};
 +};
 +
  &usb {
  	status = "okay";
  	extcon = <&usb_id>, <&usb_id>;
-@@ -226,6 +288,13 @@ gpio_keys_default: gpio-keys-default-state {
- 		bias-pull-up;
- 	};
+@@ -212,6 +339,15 @@ &wcnss_mem {
+ 	status = "okay";
+ };
  
-+	headphones_switch_default: headphones-switch-default-state {
-+		pins = "gpio8";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
++/* Only some of the pins are used */
++&pri_mi2s_default {
++	pins = "gpio113", "gpio115";
++};
 +
- 	imu_default: imu-default-state {
- 		pins = "gpio115";
- 		function = "gpio";
-@@ -234,6 +303,13 @@ imu_default: imu-default-state {
++&pri_mi2s_sleep {
++	pins = "gpio113", "gpio115";
++};
++
+ &tlmm {
+ 	accel_int_default: accel-int-default-state {
+ 		pins = "gpio31";
+@@ -245,6 +381,20 @@ gyro_int_default: gyro-int-default-state {
  		bias-disable;
  	};
  
-+	speaker_amp_default: speaker-amp-default-state {
-+		pins = "gpio117";
++	headphones_avdd_default: headphones-avdd-default-state {
++		pins = "gpio121";
 +		function = "gpio";
 +		drive-strength = <2>;
 +		bias-disable;
 +	};
 +
- 	touchscreen_default: touchscreen-default-state {
- 		touchscreen-pins {
- 			pins = "gpio13";
++	headphones_pdn_default: headphones-pdn-default-state {
++		pins = "gpio114";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	/*
+ 	 * The OEM wired an additional GPIO to be asserted so that
+ 	 * the si-en,sn3190 LED IC works. Since this GPIO is not
+@@ -291,6 +441,20 @@ sdc2_cd_default: sdc2-cd-default-state {
+ 		bias-disable;
+ 	};
+ 
++	speaker_bottom_default: speaker-bottom-default-state {
++		pins = "gpio111";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	speaker_top_default: speaker-top-default-state {
++		pins = "gpio50";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	ts_int_reset_default: ts-int-reset-default-state {
+ 		pins = "gpio13", "gpio100";
+ 		function = "gpio";
 
 -- 
 2.42.0
