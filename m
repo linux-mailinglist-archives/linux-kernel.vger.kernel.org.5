@@ -2,125 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036467AEF3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7F97AEF48
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbjIZPFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        id S235202AbjIZPFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235120AbjIZPEw (ORCPT
+        with ESMTP id S234991AbjIZPFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:04:52 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD2E10E7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:29 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d865c441a54so7408315276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695740668; x=1696345468; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XkQznAxnykGoHMZeYaAftpnWpVTscvRnJk62iXg78HM=;
-        b=mWapybL+1/A3XLRBjQDmHzpK5v3VTC8lDZtmtWEj+ofqk5Wazm/8o2mxEl4Utd4G8V
-         +expOdb5lsNySpUW2Yct++3EpdAvHjHoOnJeKIxW5j0Jms1ciMYBX1HWF/LFT8SLt+do
-         SDrCrSSJs5sTGuMlLyhvVS9Pc6XoSA1d50mSSlsZQYKGZ6nBLO50UUZ+odkapIbXKwO/
-         5vRCaQIHW+AFleevxdX8mHqQb5JPRO3CpvGgFJ4Wnn1Tj54dYuHEbhC3181SSEQPvS/B
-         Ug92D2pQQa69E/Bb+l5ieiHDkUNZSQrepXwNY4vmnGyuv9uJydhI1ql/yItkiz4hiO1g
-         0+9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695740668; x=1696345468;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XkQznAxnykGoHMZeYaAftpnWpVTscvRnJk62iXg78HM=;
-        b=le+8dHBdFZ9HsRxTzWgNrUBarqPOWAWaL66vMxCDdcoidKTwpcByKJTMMCZ1kOyELm
-         sCKlFMgpkfZifLIKhcXwH1uNQUqkwTnhbe9hwz4+L2GTwr9R+B6Ywt7uX+3tSpfMsmPr
-         f5IAJX0bsZvW3xe29dJI5XeF/SFRx/Y3QxOa2eefKLn9yWm0nJU/1malN1RWXQ9FzHVb
-         Fm5mdhHWjFp8Ec5Q3rEnWkrU69pKOUQtrbXj5cj5J1/yr2gGBtOKRTFwvfIS1gBt8116
-         eJxx3JgKuurAOtfwX8f7s9wsN61KZXMxG/7haIWcT9LHhT7n5EjR9JBOgOzN2ynTLfJg
-         q/YA==
-X-Gm-Message-State: AOJu0YxjflxGIBoz7CmpWEWKRVjWhjJDpROvK0Gs/ESia/ap/gRmvG8t
-        mJWrzhslzWfl1MW5Mbq01xFU9zRTkaX2gDxY3SCYz5NIwEdxySjT
-X-Google-Smtp-Source: AGHT+IGROsfk06tbY4aJKZhfnAsRPVgtpSRAqvTPi3Sls9eZA1D2bKhA+BHNmXVH+vsas51sqXcQAJy04/XqDr1WP1M=
-X-Received: by 2002:a25:b11c:0:b0:d81:a0c5:f275 with SMTP id
- g28-20020a25b11c000000b00d81a0c5f275mr9271834ybj.15.1695740668497; Tue, 26
- Sep 2023 08:04:28 -0700 (PDT)
+        Tue, 26 Sep 2023 11:05:00 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62F3FCCA;
+        Tue, 26 Sep 2023 08:04:32 -0700 (PDT)
+Received: from 8bytes.org (pd9fe9df8.dip0.t-ipconnect.de [217.254.157.248])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id CA82A1A21CC;
+        Tue, 26 Sep 2023 17:04:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1695740670;
+        bh=o8oWUCyKGLr6aRpJEcyERxcIW3a0GD0rf9gmZgpvK2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=6TpFhndRPNvIgt7yzA2/aJMoYkdnS16cebzf4UtP23CQlpQ+Gak1eYrm6l6OjKYEx
+         6ov9MN4xTFyWr54bLnOpm430Hupplf8W0SxvaQlB6FgmJn2Bupf3Brid8BS/nZqAQO
+         hvu4Svos9D+f462V9LsyrLj63TJ5HQrEH7+hL9EoBYr83zCI6QFPn3sNZtjggMsFkX
+         51VP71UAzDGONwXr20Y36QdQJVa+iP+T27lz3G41fM7pXzHksLzD0rpLSvyCctLemD
+         t/LuaiNXAWO/0BIuVB8b3mYUK3IzpvwsvgMpvM9qZ4RAN8ZffK3kqVvFnLVTK8C6cL
+         klQPepXng8EOg==
+Date:   Tue, 26 Sep 2023 17:04:28 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
+ IOTLB flushing
+Message-ID: <ZRLy_AaJiXxZ2AfK@8bytes.org>
+References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
 MIME-Version: 1.0
-References: <20230925030647.40283-1-andrew@codeconstruct.com.au>
-In-Reply-To: <20230925030647.40283-1-andrew@codeconstruct.com.au>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 26 Sep 2023 17:03:52 +0200
-Message-ID: <CAPDyKFrFxYxSTa=z2VnCk4m_d-wEgd17wBokzyNCCRLtSUnFKw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: aspeed: Update Andrew's email address
-To:     Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc:     joel@jms.id.au, andrew@aj.id.au, linux-aspeed@lists.ozlabs.org,
-        linux-gpio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sept 2023 at 05:07, Andrew Jeffery
-<andrew@codeconstruct.com.au> wrote:
->
-> I've changed employers, have company email that deals with patch-based
-> workflows without too much of a headache, and am trying to steer some
-> content out of my personal mail.
->
-> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Hi Niklas,
 
-I guess it doesn't really matter what tree this gets funneled through,
-so I decided to pick this up via my mmc tree.
+On Fri, Aug 25, 2023 at 12:11:15PM +0200, Niklas Schnelle wrote:
+> Niklas Schnelle (6):
+>       iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM return
+>       s390/pci: prepare is_passed_through() for dma-iommu
+>       s390/pci: Use dma-iommu layer
+>       iommu/s390: Disable deferred flush for ISM devices
+>       iommu/dma: Allow a single FQ in addition to per-CPU FQs
+>       iommu/dma: Use a large flush queue and timeout for shadow_on_flush
 
-So, applied for next, thanks!
+Turned out this series has non-trivial conflicts with Jasons
+default-domain work so I had to remove it from the IOMMU tree for now.
+Can you please rebase it to the latest iommu/core branch and re-send? I
+will take it into the tree again then.
 
-Kind regards
-Uffe
+Thanks,
 
-
-> ---
->  MAINTAINERS | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b19995690904..1965cee433b0 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1963,7 +1963,7 @@ F:        drivers/irqchip/irq-aspeed-i2c-ic.c
->
->  ARM/ASPEED MACHINE SUPPORT
->  M:     Joel Stanley <joel@jms.id.au>
-> -R:     Andrew Jeffery <andrew@aj.id.au>
-> +R:     Andrew Jeffery <andrew@codeconstruct.com.au>
->  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
->  S:     Supported
-> @@ -3058,7 +3058,7 @@ F:        Documentation/devicetree/bindings/peci/peci-aspeed.yaml
->  F:     drivers/peci/controller/peci-aspeed.c
->
->  ASPEED PINCTRL DRIVERS
-> -M:     Andrew Jeffery <andrew@aj.id.au>
-> +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
->  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
->  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
->  L:     linux-gpio@vger.kernel.org
-> @@ -3075,7 +3075,7 @@ F:        drivers/irqchip/irq-aspeed-scu-ic.c
->  F:     include/dt-bindings/interrupt-controller/aspeed-scu-ic.h
->
->  ASPEED SD/MMC DRIVER
-> -M:     Andrew Jeffery <andrew@aj.id.au>
-> +M:     Andrew Jeffery <andrew@codeconstruct.com.au>
->  L:     linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
->  L:     openbmc@lists.ozlabs.org (moderated for non-subscribers)
->  L:     linux-mmc@vger.kernel.org
-> --
-> 2.39.2
->
+	Joerg
