@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9AE7AEC56
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2407AEC52
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 14:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjIZMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 08:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        id S234555AbjIZMS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 08:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbjIZMTI (ORCPT
+        with ESMTP id S229827AbjIZMS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 08:19:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BEFEB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 05:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695730700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cFOa8v6HmzDuwfUtqIaAE2BKKG96nSYmL5UwcSOkLOQ=;
-        b=VFkrNJ6mcKmO+5G6+YvMznqiUyMWirbxoR20w/QdDBlbrIR9AVIegdr3KcrY8BaTXan5qt
-        vO39wlIMK/BFKMLB4Uv/qf2HdzP7iX+4PfZrRjEKKe0MyT2ACKW34k+Pq9WPWfmP1K7Wc9
-        ykAmGwv5DGz0DfZNG3Dmmb8M9VbCtMc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-463-sYah3oPLMR63Rnk3t4ymVg-1; Tue, 26 Sep 2023 08:18:18 -0400
-X-MC-Unique: sYah3oPLMR63Rnk3t4ymVg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DBA521C06356;
-        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
-Received: from [10.22.16.230] (unknown [10.22.16.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5442F492C37;
-        Tue, 26 Sep 2023 12:18:17 +0000 (UTC)
-Message-ID: <ed2993f2-4bdc-19c5-5a0f-1e96da44fb24@redhat.com>
-Date:   Tue, 26 Sep 2023 08:18:17 -0400
+        Tue, 26 Sep 2023 08:18:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A40D101;
+        Tue, 26 Sep 2023 05:18:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D501C433CA;
+        Tue, 26 Sep 2023 12:18:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695730730;
+        bh=IC1gqNbWDlMOhu5zCk2ye21ZT+0MLo6x9JXH8ENjgLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DPl6/Thkz67mxty4CmevJwef/L3Ky2Sj6LBqfd8/fLVUROP55j7R//zbPfIronkch
+         nf8nH+1Jco1NY8f1K/2vU344RfLbyU8iipkO2nl061xjzal+UCWtz6T257xM+HtcWq
+         cgBHC2J7eQjVCNUZOxUsj+U41VP1X7bXCVQff7+7E2ZEOB9xWCVxyDyMjZ00PlFHL6
+         GzxojVSSnAiAXizE+msM5Qm30M5aaYc9qZ0Cerb3Y+RxgIkyxyaXSd+aV5kOksZL7y
+         J7tfKC5g1bAez5UlRrelhzVbEWRvUvQXs2COEssVz57EIVEglN9wFEvOigsIE3Rn+j
+         1xKsyRXiZbMaQ==
+Date:   Tue, 26 Sep 2023 14:18:39 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v8 0/5] fs: multigrain timestamps for XFS's change_cookie
+Message-ID: <20230926-boiler-coachen-bafb70e9df18@brauner>
+References: <20230922-ctime-v8-0-45f0c236ede1@kernel.org>
+ <20230924-mitfeiern-vorladung-13092c2af585@brauner>
+ <169559548777.19404.13247796879745924682@noble.neil.brown.name>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] selftests/cgroup: Fix awk usage in test_cpuset_prs.sh
- that may cause error
-Content-Language: en-US
-To:     Juntong Deng <juntong.deng@outlook.com>, lizefan.x@bytedance.com,
-        tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <VI1P193MB07522BFC89B6B6DC5A89153999FCA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <169559548777.19404.13247796879745924682@noble.neil.brown.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/23 15:38, Juntong Deng wrote:
-> According to the awk manual, the -e option does not need to be specified
-> in front of 'program' (unless you need to mix program-file).
->
-> The redundant -e option can cause error when users use awk tools other
-> than gawk (for example, mawk does not support the -e option).
->
-> Error Example:
-> awk: not an option: -e
-> Cgroup v2 mount point not found!
->
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
->   tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 4afb132e4e4f..6820653e8432 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -20,7 +20,7 @@ skip_test() {
->   WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
->   
->   # Find cgroup v2 mount point
-> -CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
-> +CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
->   [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
->   
->   CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
+> > If there's no clear users and workloads depending on this other than for
+> > the sake of NFS then we shouldn't expose this to userspace. We've tried
 
-Yes, the -e option is redundant. Thanks for catching that.
+> 
+> Some NFS servers run in userspace, and they would a "clear user" of this
+> functionality.
 
-Acked-by: Waiman Long <longman@redhat.com>
+See my comment above. We did thist mostly for the sake of NFS as there
+was in itself nothing wrong with timestamps that needed urgent fixing.
 
+The end result has been that we caused a regression for four other major
+filesystems when they were switched to fine-grained timestamps.
+
+So NFS servers in userspace isn't a sufficient argument to just try
+again with a slightly tweaked solution but without a wholesale fix of
+the actual ordering problem. The bar to merge this will naturally be
+higher the second time around.
+
+That's orthogonal to improving the general timestamp infrastructure in
+struct inode ofc.
