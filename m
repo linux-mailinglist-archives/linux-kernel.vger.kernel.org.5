@@ -2,175 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A294D7AEAFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314977AEB02
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 13:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbjIZLC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 07:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        id S234499AbjIZLCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 07:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbjIZLCZ (ORCPT
+        with ESMTP id S234502AbjIZLCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 07:02:25 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217AC95;
-        Tue, 26 Sep 2023 04:02:19 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690d25b1dbdso7457169b3a.2;
-        Tue, 26 Sep 2023 04:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695726138; x=1696330938; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pChK/efsCXIVzZQXlKNf+tDjwC1BKQ6UkiPs/KNBmZo=;
-        b=LYAiJCjFBsRwVgSMP7Jx1IQIplonKKkq1UEgb4WAYLXa+65Xrd3M0HhFLRARYjS34N
-         bki/72Qh6xUSMb366Z7/5aLQ2BlxnuIqXrjDxiDYzkVvuf9Q/0STnoxY9yP7BM6O2UQx
-         q5iQzrERZ671VJgG0M5qzc4TE2hneK8ArntWG1+HKBZ4SWVOd2rhNK07whpt9ai8QWBz
-         mDxNQCqIu8/VbE1uEg4lvnpBoF6vVwer//SslxbYD5lyUwSeDWpmkaobUQ8PNgcIpbN5
-         It+lMyNp67JYxyPUHx38hY80pvl8pmAjBDT9JtScZ5yHDcxcJJe1QGtrKvTSnz0wD6PJ
-         0Agw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695726138; x=1696330938;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pChK/efsCXIVzZQXlKNf+tDjwC1BKQ6UkiPs/KNBmZo=;
-        b=nAti7z1riWxdJIs4BjdwGqR1gql9GuiaR0I45iW7XF/1crcHJLPfqZVT6Yyv4WhhBn
-         k61Px6eEMzAvXODSX6BxNfRa2I89HU5OOGNaYLcmjZJVxpMlkVf7FGlZjZG04m9WBlz3
-         7sKpTb4MG0AqF8MtXJGIBbceA1aJ90HT6frJ0lyJvID3TGwiek9+jeuf2JdEo14gAEhk
-         +uckMCSzYNH++F5eG/ruvwG2RrWu3jMsO+PIPDUXGGPSS8kMr7tb/kPhyJ4mAxBZHJu4
-         fKFDzB76e3T5ZeVPdcqHeAtjWtvpdqqq2OEkAEDlADn95CR+zLK8lwdiC4CqSynAx1Uk
-         eJQQ==
-X-Gm-Message-State: AOJu0YwkEnCZuTgvccHJVreWTqGkKnEHRRbw9kY2QnEVDOgoouugk7kW
-        bhGlrko8kmmLWvjL8F9P0lWlfyM4ZJE7yA==
-X-Google-Smtp-Source: AGHT+IEmyeAdYeDz02GzILEqzqIYHAze7cUC0WkDabeqY7UwXRzvTKRA9vvQMJamUr5WhxDG37Uz6g==
-X-Received: by 2002:a05:6a00:80e:b0:68c:638b:e2c6 with SMTP id m14-20020a056a00080e00b0068c638be2c6mr11623933pfk.9.1695726138467;
-        Tue, 26 Sep 2023 04:02:18 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id c5-20020aa781c5000000b0068883728c16sm9999804pfn.144.2023.09.26.04.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 04:02:18 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     chenxiang66@hisilicon.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] scsi: libsas: Fix potential deadlock on &sas_dev->lock
-Date:   Tue, 26 Sep 2023 11:02:02 +0000
-Message-Id: <20230926110202.11589-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 07:02:51 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0169AE9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 04:02:42 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230926110240euoutp0266a37efd33a97d817fcb5ae30c73f30a~IbfVbMupo1018810188euoutp02V
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 11:02:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230926110240euoutp0266a37efd33a97d817fcb5ae30c73f30a~IbfVbMupo1018810188euoutp02V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1695726160;
+        bh=O7tx0lXDWQj5gRzSHsDM5GgUD1m2unsJnLQNdOCKuHg=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=YfYNLSoY6+2NlKv+L4B0QeE4joAIAzC94VRNUv0yOMlbX8YGLPYGulp0P9O8lAZ1L
+         zWVB5xfiIVrV0RqmMpEAaxWw4lSBKqjCavI825/baXbLXAjsw7xO0/WNwQWDfqn7cw
+         eQSTHaqsX+Y+SuU9GV6jw3SZGo+TqOAtIRX13Gds=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230926110239eucas1p1fcb67b3e953b67a6358c63cd99ca0691~IbfVBIQBT2966429664eucas1p1o;
+        Tue, 26 Sep 2023 11:02:39 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-bf-6512ba4f1251
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id DF.CB.42423.F4AB2156; Tue, 26
+        Sep 2023 12:02:39 +0100 (BST)
+Mime-Version: 1.0
+Subject: Re: [PATCH v2 4/7] thermal: exynos: simplify regulator
+ (de)initialization
+Reply-To: m.majewski2@samsung.com
+Sender: Mateusz Majewski <m.majewski2@samsung.com>
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <bf9a07ff-5628-05ab-2362-a917d3d38313@linaro.org>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230926110239eucms1p2b539245c5b10591def4cd15f14896ad6@eucms1p2>
+Date:   Tue, 26 Sep 2023 13:02:39 +0200
+X-CMS-MailID: 20230926110239eucms1p2b539245c5b10591def4cd15f14896ad6
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20230911133616eucas1p10c5eeb0f0240dde975ccc5935cb5c311
+X-EPHeader: Mail
+X-ConfirmMail: N,general
+CMS-TYPE: 201P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djPc7r+u4RSDX4t1rN4MG8bm8Xh+RUW
+        Ux8+YbP4vuU6k8W8z7IWe19vZbf4dqWDyWLT42usFpd3zWGz+Nx7hNFixvl9TBZrj9xlt5j7
+        ZSqzxZOHfWwOfB47Z91l91i85yWTx6ZVnWwed67tYfPYvKTeo2/LKkaPz5vkAtijuGxSUnMy
+        y1KL9O0SuDLOfVnPXvCQvWL9iffsDYzz2boYOTkkBEwkLvevYe5i5OIQEljBKNFx/DmQw8HB
+        KyAo8XeHMEiNsECIxKRlc5lBbCEBRYnO7W/YIOJGEode7AKz2QQMJB68WcYOMkdE4AKTxOW7
+        DWBDmQXeMEm8PfKNEWIbr8SM9qcsELa0xPblW8HinAJ2EhfuHIOqEZW4ufotO4z9/th8qLiI
+        ROu9s8wQtqDEg5+7oeIyEicXLIOyiyVerr0EVVMhcXzJdKg55hKb5q5hhXjMV+Ly4xyQMIuA
+        qsTjycdYIUpcJFZ+Pg5mMwvIS2x/OwccDswCmhLrd+lDlDhKbNjwH2qigMSaE3OgNklIbG15
+        AtXKJzFp23RmmG93zHvCBGGrShzfM4kZ5vMnLbeZJjAqzUKE9Cwki2chLF7AyLyKUTy1tDg3
+        PbXYMC+1XK84Mbe4NC9dLzk/dxMjMG2d/nf80w7Gua8+6h1iZOJgPMQowcGsJML76xlfqhBv
+        SmJlVWpRfnxRaU5q8SFGaQ4WJXFebduTyUIC6YklqdmpqQWpRTBZJg5OqQam5MM9nNwH9R/Y
+        1e5anyZgpXIs/2xSsKzAhKs5/Ku5aoS++HLvOixZ+mbb60yxfyf9PZwETwX57z/rr7bwSBVn
+        1z3Rnwu/6ZdOctNUEDiyYaYip2yCcbNZKDfnkj2djaKTuhRnFteeebwx2Ov6korsBRufeyyb
+        0um/u/7VxCeH9yt9C3pebeOQ82zvMrG7+7OPyrs+zcpcmvo90bhv3WH7tIaMsIXb7u7Z/TT4
+        94JoB/uTX28dfqu1wM15w6OCmRdsw/luqAWdSW4uWh9xc2v1lIlhB0JYGI6e2JGcFquweFpA
+        xmszqTjhoNKi0PWBcoaRWe+vtHb4ndGak3pggmXR4+D6W/MPXf74pKOoUv+fEktxRqKhFnNR
+        cSIAlAJRCcoDAAA=
+X-CMS-RootMailID: 20230911133616eucas1p10c5eeb0f0240dde975ccc5935cb5c311
+References: <bf9a07ff-5628-05ab-2362-a917d3d38313@linaro.org>
+        <20230911133435.14061-1-m.majewski2@samsung.com>
+        <20230911133435.14061-5-m.majewski2@samsung.com>
+        <CGME20230911133616eucas1p10c5eeb0f0240dde975ccc5935cb5c311@eucms1p2>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hard interrupt cq_interrupt_v1_hw() could introduce double locks on
-&sas_dev->lock.
+Hi,
 
-<Deadlock #1>
-hisi_sas_abort_task_set()
---> hisi_sas_release_task()
---> spin_lock(&sas_dev->lock)
-<interrupt>
-   --> cq_interrupt_v1_hw()
-   --> hisi_sas_slot_task_free()
-   --> spin_lock(&sas_dev->lock)
+> This is not equivalent. If regulator is provided and enable fails, the
+> old code is nicely returning error. Now, it will print misleading
+> message - failed to get regulator - and continue.
+>
+> While this simplifies the code, it ignores important running condition -
+> having regulator enabled.
 
-<Deadlock #2>
-hisi_sas_abort_task()
---> hisi_sas_softreset_ata_disk()
---> hisi_sas_release_task()
---> hisi_sas_do_release_task()
---> hisi_sas_slot_task_free()
---> spin_lock(&sas_dev->lock)
-<interrupt>
-   --> cq_interrupt_v1_hw()
-   --> hisi_sas_slot_task_free()
-   --> spin_lock(&sas_dev->lock)
+Would doing this be correct?
 
-<Deadlock #3>
-hisi_sas_queue_command()
---> hisi_sas_task_deliver()
---> spin_lock(&sas_dev->lock)
-<interrupt>
-   --> cq_interrupt_v1_hw()
-   --> hisi_sas_slot_task_free()
-   --> spin_lock(&sas_dev->lock)
+ret = devm_regulator_get_enable_optional(&pdev->dev, "vtmu");
+switch (ret) {
+case 0:
+case -ENODEV:
+	break;
+case -EPROBE_DEFER:
+	return -EPROBE_DEFER;
+default:
+	dev_err(&pdev->dev, "Failed to get enabled regulator: %d\n",
+		ret);
+	return ret;
+}
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+I understand that we would get -ENODEV in case of the regulator being
+unavailable, which we would ignore (this is the "equivalent" of
+devm_regulator_get_optional failing in the original code). And in case
+of enable failing, we would get some other error, which we would handle.
 
-To prevent the potential deadlock, the patch use spin_lock_irqsave()
-on &sas_dev->lock.
+Thanks for being patient with me by the way, hopefully I will learn quickly :)
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/scsi/hisi_sas/hisi_sas_main.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index 9472b9743aef..c2d3cc0e9e8d 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -207,6 +207,7 @@ static int hisi_sas_slot_index_alloc(struct hisi_hba *hisi_hba,
- void hisi_sas_slot_task_free(struct hisi_hba *hisi_hba, struct sas_task *task,
- 			     struct hisi_sas_slot *slot, bool need_lock)
- {
-+	unsigned long flags;
- 	int device_id = slot->device_id;
- 	struct hisi_sas_device *sas_dev = &hisi_hba->devices[device_id];
- 
-@@ -240,9 +241,9 @@ void hisi_sas_slot_task_free(struct hisi_hba *hisi_hba, struct sas_task *task,
- 	}
- 
- 	if (need_lock) {
--		spin_lock(&sas_dev->lock);
-+		spin_lock_irqsave(&sas_dev->lock, flags);
- 		list_del_init(&slot->entry);
--		spin_unlock(&sas_dev->lock);
-+		spin_unlock_irqrestore(&sas_dev->lock, flags);
- 	} else {
- 		list_del_init(&slot->entry);
- 	}
-@@ -403,6 +404,7 @@ void hisi_sas_task_deliver(struct hisi_hba *hisi_hba,
- 	struct hisi_sas_cmd_hdr *cmd_hdr_base;
- 	int dlvry_queue_slot, dlvry_queue;
- 	struct sas_task *task = slot->task;
-+	unsigned long flags;
- 	int wr_q_index;
- 
- 	spin_lock(&dq->lock);
-@@ -410,9 +412,9 @@ void hisi_sas_task_deliver(struct hisi_hba *hisi_hba,
- 	dq->wr_point = (dq->wr_point + 1) % HISI_SAS_QUEUE_SLOTS;
- 	list_add_tail(&slot->delivery, &dq->list);
- 	spin_unlock(&dq->lock);
--	spin_lock(&sas_dev->lock);
-+	spin_lock_irqsave(&sas_dev->lock, flags);
- 	list_add_tail(&slot->entry, &sas_dev->list);
--	spin_unlock(&sas_dev->lock);
-+	spin_unlock_irqrestore(&sas_dev->lock, flags);
- 
- 	dlvry_queue = dq->id;
- 	dlvry_queue_slot = wr_q_index;
-@@ -1103,12 +1105,13 @@ static void hisi_sas_release_task(struct hisi_hba *hisi_hba,
- {
- 	struct hisi_sas_slot *slot, *slot2;
- 	struct hisi_sas_device *sas_dev = device->lldd_dev;
-+	unsigned long flags;
- 
--	spin_lock(&sas_dev->lock);
-+	spin_lock_irqsave(&sas_dev->lock, flags);
- 	list_for_each_entry_safe(slot, slot2, &sas_dev->list, entry)
- 		hisi_sas_do_release_task(hisi_hba, slot->task, slot, false);
- 
--	spin_unlock(&sas_dev->lock);
-+	spin_unlock_irqrestore(&sas_dev->lock, flags);
- }
- 
- void hisi_sas_release_tasks(struct hisi_hba *hisi_hba)
--- 
-2.17.1
-
+Best regards,
+Mateusz
