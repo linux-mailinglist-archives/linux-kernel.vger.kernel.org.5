@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03497AE5DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0C87AE5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbjIZG2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        id S233710AbjIZGaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjIZG2g (ORCPT
+        with ESMTP id S229776AbjIZGah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:28:36 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2081.outbound.protection.outlook.com [40.107.241.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E22792
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:28:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YyfFSae9cQsPEcQy1jD+VIwedH9Ps7Qx9SiWIl34FLaxEqq7Oh5sLZtxEOzTFYEDy/E+oB4WnvY0t+0gyHh0OdMwzHMetgWTVTeOU3XtbPlDn6lHXs3bEeHw24I9wF5Pd5QNvbdXI5NLG8J505TrhcwQydk4IRnBT76IG393hXIQtqSKDao5GUEvpnlXY5MuvFJfaT8k3b8PmnRz7vDiRiF0E0q6wAAvOZ2ggw5ZHAMsQtTpQFHQ/9nVL+fKFwmCyIpFG+LPGj5Gp9HMpNnlamCczSk3LJZguzb5e2vvczaLvaKeCfKW8N/hJpAOPII/whm9hhq/gZvb/OZQ65kl2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KwS+WLRhVEWDotGTB0W0NJVMD6IE9HewF8JIo+EeZKQ=;
- b=Ay+UylYB8V6tfAEkZYVx7MAMyY6bwb5UQE1DSLKZoJwgHGh4P90vbVAHcuuJh3WDc/44CWJcH1xZ3X5ol/t9rylocVcHeiS9zRYRFbX06Qu72HOUHPW5xKZj55FmzFh0fWvKNELkA9WU07pEfSJBRGpf1C/XXUoJVVYxSBtnoJG8ivWpzwSBPAGgaADgEE0+MI3MfAI5MX75N5BYm0zNcdjYVKGr2qisCYxB44nA9/I3xQ+LnFyGDqxiMegpE21bEZVkb6ZSZWH3Xbhwt56EZH5pUGknHVB42LAfyx5ca+fjayntngl47W/oBg5Ltkw8w3bmlGEL2Pmf/BM/bKtiuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KwS+WLRhVEWDotGTB0W0NJVMD6IE9HewF8JIo+EeZKQ=;
- b=OqC+VgcZgBUxvHKqLocMm6bbRQy7KdAuwsdFSWuP2HzG7KdbVbvG6zU3g/CuvBfO1oAv64cnjlFILDOEWaU3kgLAnwiw0xt6SAIMHS1AJvEEERQyXmPYbFeivmXLq0rgGghxDm+8YhmkvVLspGvgr+ycFD39LWaL+czZxnnAauA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27) by AS8PR04MB8310.eurprd04.prod.outlook.com
- (2603:10a6:20b:3b2::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Tue, 26 Sep
- 2023 06:28:25 +0000
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::ad16:42a5:193f:6396]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::ad16:42a5:193f:6396%7]) with mapi id 15.20.6813.027; Tue, 26 Sep 2023
- 06:28:24 +0000
-Date:   Tue, 26 Sep 2023 09:28:20 +0300
-From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Document that the NXP i.MX 8MQ DCSS driver
- goes thru drm-misc
-Message-ID: <20230926062820.ir4j4plavd4vnjfb@fsr-ub1664-121.ea.freescale.net>
-References: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
-X-ClientProxiedBy: AM8P191CA0021.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::26) To VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27)
+        Tue, 26 Sep 2023 02:30:37 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2ACAF;
+        Mon, 25 Sep 2023 23:30:30 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38Q5rexA019211;
+        Tue, 26 Sep 2023 06:30:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=nGouHzxWe5kzoMakXT7t21X91AZk6rZC1OKWW3eLQSQ=;
+ b=mV8fk+WbImyzXFJ22ps+pMZIhUMAqSoMkJtYJ+Na2+gHOMTDqh3s/3TVmhWglTW07imn
+ YVDTqfQ9fgNGRzcKBsBq2biuNMARJaWLf/lZibv+L8LOA25J6WhDMu4K+KvGadTqD4SU
+ 2jL463JBYUpxoBioph+DjCTzADARbxJhjmN5OJckAXwscfK2Z8NyP/tKytE0oGWrmO7f
+ 2BtdiKX/5zfV1cNllT8p3/HSoC3w16v3EkBtPU+RfBZJAz7RJobNuQVvSNIiMvs4ccUx
+ zm5JR4CO29eeNT+uivOmZ+peve1AONm9JN/M/jZ35N0qC3u7OK7IchWm9en7uRuM/LXZ xA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tb72sjdpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 06:30:28 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38Q6URqo011047
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Sep 2023 06:30:27 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 25 Sep 2023 23:30:24 -0700
+From:   Krishna Kurapati <quic_kriskura@quicinc.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Krishna Kurapati" <quic_kriskura@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v3] usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call
+Date:   Tue, 26 Sep 2023 12:00:15 +0530
+Message-ID: <20230926063015.21189-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3902:EE_|AS8PR04MB8310:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0e4ccaa-1f53-47f4-0eea-08dbbe59c93d
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w4Q6+DrRs8x8WfEIaoUu8kzqFxAdRz1DlygyFU9VO60wLewhUAyAKV1Po49GfA7ufwllOtz+i3vjCF1LOuN7R6bxK66KVcvpU9YWJN184WmWPxu0klEHwiRjUAoVFaT5fTORsenLwA/ekAwlEo8vX12kHr6H/zYcQKf0i95BNWMSr2VxubrNUTnxPVBukJVJ+deoBNBNFUD/m2ICHy97joaIv82yB3S4VRjkXD9lNr/x8ojqgoqg2FtLKJJuVg6AlmAOu8pYy/1ZkE/XF+gAXjVq6wiYZH334X13kNhxoPDL901SqpjBdTJKObu7RK6kcyTnn8Ec/AHTM1mC07eq2LiEoHZMBq2hIY6XIub+TcwPXAQqAidhDtstc9XGB96o32LTiKNAK6sfEKDHeASBVfRkZcwON47mS3b9DVqt6Dq2VfiI3Fde3qNnfBvaq9Ydp0NzZ2acigy9CX5YbM6CmuMdNjdGdHMLqHwFVBYp5hGY9jt5IuTtg0Tvrrq48K/Q+/EM0F4pR3VHAB1F0M8o76EBM0ofnlxH+LDc4FZY/LQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(346002)(366004)(230922051799003)(451199024)(1800799009)(186009)(5660300002)(4744005)(2906002)(316002)(6916009)(44832011)(41300700001)(8936002)(8676002)(4326008)(66476007)(66556008)(66946007)(1076003)(9686003)(6486002)(966005)(6512007)(6666004)(6506007)(86362001)(26005)(38100700002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4Oi0L3cCYMC9bcJJsAh6lTIvcqrFtiTQ4uiTOLhgxmjHAmO6RNZcb1nv22Y9?=
- =?us-ascii?Q?W4jKZwK82RT2pZ+Jsr6JqkYfwSI7ST23Tm0D5Shd10puEMX60v+wIzYQXOot?=
- =?us-ascii?Q?Lgx+stdcmGv1orvv3pRyiHjOrxKRsmaelqKNtqPtJPhFmIrkPypN8ww0GDQ3?=
- =?us-ascii?Q?KMRfxTVqfYRPLTgv8wje0/h0EbDPmsRnS2a6o1YLZPrQnQbvxHQqrFlvBSaY?=
- =?us-ascii?Q?tC8ZCqUxm1CLBRd0KD1rL8UEXv7aDxkpWFrWQYUmLmZVh/NYdvBmAUX7p/iR?=
- =?us-ascii?Q?8gReqbyGAukP+3NP+ZqJ/INVnYQFwYdRThiqxsoKPYYJ0lUQi+/KTRoB4Ef2?=
- =?us-ascii?Q?lH9Uz8f6y73vvdtU/tTrvjhsCT2C4JDLta86j8Lr4EuUVyI4+llIPyGwzB3H?=
- =?us-ascii?Q?kqD8IAtv1ve794Cy2+ZN+oLzCfX305EKqb8Tenlt0hiFmSqFLxDK4PGmdvyj?=
- =?us-ascii?Q?ncM+Aocpu+PAHVLvl2QJkc8Ctr312ejtC0eRFFFy5Nr/WDkKfcxi5lBJEPBk?=
- =?us-ascii?Q?DvWutYJKJkVKBAQZC90NucWvPX/JkyoNJXrxB09wp8hw3Yl4Iemma2V1TGW0?=
- =?us-ascii?Q?qstgG7CPHk7U0o0dIZHHRX3JgLB6Z5dn0g4NQrSvNMdBPmLbWVxNm4pE2ZiP?=
- =?us-ascii?Q?zsFolwkCGhbWLhXmRFEPu1By/+1TzouDQWLa+rpA9N0RpI3VWkb4lcR9CBiR?=
- =?us-ascii?Q?ndY2VKh70fYA19ZUaqnhK/DIptwmTENU2nEnOXkVKxyyUr2O73o1H14Zk1Dt?=
- =?us-ascii?Q?LW+amHK7sTiQy1w+ctFYDHEnIQUR6g5KPT9jxWa/Vd4oWE7Y0q0hwM5UcKay?=
- =?us-ascii?Q?LfHQegrZOgo1jJSPrqA34wmlrzMaxb3jk9cvwHSUczGb7J0nIaybiIdzYAgi?=
- =?us-ascii?Q?O4jYS+7vUCWap4gkESKHY4WrmArb7Ivlz6QaF3RGCUvR1hFn2UVW48dGGpQD?=
- =?us-ascii?Q?M7QoITbsYFJhNIcwJTVehjOrQEDSP+O97p0in3M/ClCMk2kjjsjHjrpG88lj?=
- =?us-ascii?Q?FAAA+PiC2KQ9/q5HQHkO8SNFywghQNjcPdlqnbqFNL+PCiBqCi1X0XqSar4Z?=
- =?us-ascii?Q?vnZnUVQLqH36b+BjWmgfB8k4TVufy4dPIi/JwT2FuC6dKUuV7dBBomeJe0p5?=
- =?us-ascii?Q?vjHNlhYRddDevr4Qw8TFdEWKsvPYEyOCIbk0Ug6qQAFRJm0Ged/2/6Q6vOUr?=
- =?us-ascii?Q?8nMZiL6m7mWbA5BI9SK2aZ888K07k/jySNvFlDh4ylL3FrKtj22OimJ/eQWo?=
- =?us-ascii?Q?R4ZO1T6zYjf5sXxUGl2SU189b/hhq7Ve0UHhg6IpgNKYO05CGvvNfi42XEOq?=
- =?us-ascii?Q?zrm3N3PzMGAn8UrnAzgAKGMWmoDU7Gj2D9KBCgAhyT/rJy2fEvixhRwelf1E?=
- =?us-ascii?Q?PhQ9lisSoAlCH6xVMoMEPaAd+29dhO1og2bobGH0vm4ZNdT43N5rTnCwJmRj?=
- =?us-ascii?Q?Lx5Cm7N1GFM2WIkFoqEdr9KZIr/5/cNxDei+tddhFV/uuRRobI7WFR6TcSdN?=
- =?us-ascii?Q?/x8nD86zWczudWlb+YpEOl+hk8DWrFLlmeRfOp/VGi1U1v/LcOxW+9LAg2kF?=
- =?us-ascii?Q?/LDZ6EPi0SavCbLLpyHEUoJEkXrBbzvhIaadFw4PMHepjIjfeG38N6sCe4d+?=
- =?us-ascii?Q?ew=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0e4ccaa-1f53-47f4-0eea-08dbbe59c93d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2023 06:28:24.4453
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t9PFwQ3BiVIO/2Z/UIyKNKFKPHxVM9NsOOR6MoonUM3agqDCBdmNhH2NFeZ5HmzT1QmVbCejewcpsic0MMVW+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8310
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ESzlIhQeff_KPRETL5hlJwzyPRfa7QbG
+X-Proofpoint-ORIG-GUID: ESzlIhQeff_KPRETL5hlJwzyPRfa7QbG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-26_04,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 mlxlogscore=978 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309260057
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,37 +76,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 03:49:29PM -0700, Douglas Anderson wrote:
-> As per the discussion on the lists [1], changes to this driver
-> generally flow through drm-misc. Add a tag in MAINTAINERS to document
-> this
-> 
-> [1] https://lore.kernel.org/r/20230925054710.r3guqn5jzdl4giwd@fsr-ub1664-121.ea.freescale.net
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+When NCM is used with hosts like Windows PC, it is observed that there are
+multiple NTB's contained in one usb request giveback. Since the driver
+unwraps the obtained request data assuming only one NTB is present, we
+loose the subsequent NTB's present resulting in data loss.
 
-Acked-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+Fix this by checking the parsed block length with the obtained data
+length in usb request and continue parsing after the last byte of current
+NTB.
 
-Thanks,
-Laurentiu
+Cc: stable@vger.kernel.org
+Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+Changes in v3: Removed explicit typecast for ntb_ptr
 
-> ---
-> 
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d72d3af551fb..d20a375ecd7d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15225,6 +15225,7 @@ M:	Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
->  R:	Lucas Stach <l.stach@pengutronix.de>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
-> +T:	git git://anongit.freedesktop.org/drm/drm-misc
->  F:	Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
->  F:	drivers/gpu/drm/imx/dcss/
->  
-> -- 
-> 2.42.0.515.g380fc7ccd1-goog
-> 
+ drivers/usb/gadget/function/f_ncm.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index 424bb3b666db..9512cec662c8 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1171,7 +1171,8 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 			  struct sk_buff_head *list)
+ {
+ 	struct f_ncm	*ncm = func_to_ncm(&port->func);
+-	__le16		*tmp = (void *) skb->data;
++	unsigned char	*ntb_ptr = skb->data;
++	__le16		*tmp;
+ 	unsigned	index, index2;
+ 	int		ndp_index;
+ 	unsigned	dg_len, dg_len2;
+@@ -1184,6 +1185,10 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 	const struct ndp_parser_opts *opts = ncm->parser_opts;
+ 	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
+ 	int		dgram_counter;
++	int		to_process = skb->len;
++
++parse_ntb:
++	tmp = (void *)ntb_ptr;
+ 
+ 	/* dwSignature */
+ 	if (get_unaligned_le32(tmp) != opts->nth_sign) {
+@@ -1230,7 +1235,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 		 * walk through NDP
+ 		 * dwSignature
+ 		 */
+-		tmp = (void *)(skb->data + ndp_index);
++		tmp = (void *)(ntb_ptr + ndp_index);
+ 		if (get_unaligned_le32(tmp) != ncm->ndp_sign) {
+ 			INFO(port->func.config->cdev, "Wrong NDP SIGN\n");
+ 			goto err;
+@@ -1287,11 +1292,11 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 			if (ncm->is_crc) {
+ 				uint32_t crc, crc2;
+ 
+-				crc = get_unaligned_le32(skb->data +
++				crc = get_unaligned_le32(ntb_ptr +
+ 							 index + dg_len -
+ 							 crc_len);
+ 				crc2 = ~crc32_le(~0,
+-						 skb->data + index,
++						 ntb_ptr + index,
+ 						 dg_len - crc_len);
+ 				if (crc != crc2) {
+ 					INFO(port->func.config->cdev,
+@@ -1318,7 +1323,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 							 dg_len - crc_len);
+ 			if (skb2 == NULL)
+ 				goto err;
+-			skb_put_data(skb2, skb->data + index,
++			skb_put_data(skb2, ntb_ptr + index,
+ 				     dg_len - crc_len);
+ 
+ 			skb_queue_tail(list, skb2);
+@@ -1331,10 +1336,17 @@ static int ncm_unwrap_ntb(struct gether *port,
+ 		} while (ndp_len > 2 * (opts->dgram_item_len * 2));
+ 	} while (ndp_index);
+ 
+-	dev_consume_skb_any(skb);
+-
+ 	VDBG(port->func.config->cdev,
+ 	     "Parsed NTB with %d frames\n", dgram_counter);
++
++	to_process -= block_len;
++	if (to_process != 0) {
++		ntb_ptr = (unsigned char *)(ntb_ptr + block_len);
++		goto parse_ntb;
++	}
++
++	dev_consume_skb_any(skb);
++
+ 	return 0;
+ err:
+ 	skb_queue_purge(list);
+-- 
+2.42.0
+
