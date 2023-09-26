@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077E47AF652
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A3F7AF651
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 00:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjIZWcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 18:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S229590AbjIZWb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 18:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjIZWaA (ORCPT
+        with ESMTP id S231817AbjIZW3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 18:30:00 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE645FFB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:16:23 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405621baba7so69064845e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:16:23 -0700 (PDT)
+        Tue, 26 Sep 2023 18:29:53 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3167A9B
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:19:23 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81adf0d57fso11301385276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 14:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695762982; x=1696367782; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6KWZPT1cVuVAxwKDV1pCBXg/18ZoYQrcOIuq4Q9pEZ8=;
-        b=Za+ZYEJ2KrP1Q69UqsS+32GjP/LE/LfefHFmzNosRQW9MWImQ+t8jTjsEVfIQDx9RZ
-         ffFRNEohk0wRiBqhtCa/4q9NoW8rqQrbYAF/JVCi9iV40bBp/w8zF+EcHGO6SrA13vs7
-         z/GRHcWv+RDDtHCYebJ8/ak2525YRov/IFfJ0l8i9hqxso2SYXuljW6WytFDWQK6qo73
-         gpvUAWGI1f/isG3bPntWSCE76NIM8uG2cHWs2DYluvaaCuQnZeI09mkBQy/H+4fKUYSw
-         AP38jQ5m84Ha+HJNUujYRRCi3r/Uck5vrvBTJF/7lWzTzniQyhfRQ6OdlffWgtrzVyfc
-         GncA==
+        d=google.com; s=20230601; t=1695763162; x=1696367962; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ftGtzNCK4oOVyfSI32wzRjgE/k4q/Apr++atuhh5XZo=;
+        b=oqbmQ2iW3+prSHhngWmo6ifuNGiTjPh/RvqFT87rTRCjnvHCI89GqhlERxopw3qsrJ
+         B0f1tqXZYLDxasu3YPLMfCiNQfvl3XzFoWgjKbQQHzgcxXUm0ivFR0MmYF4zglvJkzjn
+         kSGtpJrw8bgUAKXiqdnnuVTU3OSW6A75Wia29cjg8+Lx4f4C4hjIOwmrIHDPv2odusET
+         WsxOzJjU9iR9pPcCdpnlO748mIpZlu8DfgXQWocqsVDBshhfqPOuKAvJXNdjiXPhY+fj
+         24cELyZjZkGJD3K2nBZqC4jKYAl5jekqwi+249MtiW+DrHKIkDXMjF4syFzQ6JnjgqS8
+         WZaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695762982; x=1696367782;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6KWZPT1cVuVAxwKDV1pCBXg/18ZoYQrcOIuq4Q9pEZ8=;
-        b=UCTuKI995ZS/4h5oeldzKg9jPSDy+XrQpel7nyGzAJba+tz04tH21MO1QX0+uFjvG+
-         wB9L8scdXPqsZC5/nVuClVSqKv1EaNmWkUtRkeo+e6Kn9hfW570eAFQhkJ9TEtVoNu7q
-         GvwZJOBOKDxAcEgK3rypDuQfadoKJLhT+EUYFXCagu1L+5SCuzbOl3IiC1PAS2YyR3Gc
-         j7WX+LI2X7evQZcR7+dOOtrnExcTu3QGRIhRFVwTZttoC1zt+y/26c1sH50JPuAL3UBc
-         QPybs0/t1fNdpUP6ptfCa41awXyMNzGH/u8udnuJ4CQjIXLxG8ANQEp1zq6AZx5d6Lzi
-         8ITw==
-X-Gm-Message-State: AOJu0YxjFE2Apz59pEhyy+CQqcjlMQA3gcCQ9/paiPrd71xxgllJb4Ey
-        wVuUKWHr1J6JU0nZye7QCAxE7A==
-X-Google-Smtp-Source: AGHT+IHhT+JIEvulFq13sJ8dtu11qYoMwlAEUeIVyQAx9mWJQ2iwa0eRkCvZjWPXS0mYic7qN0JwVQ==
-X-Received: by 2002:adf:e3ca:0:b0:31f:98b4:4b4d with SMTP id k10-20020adfe3ca000000b0031f98b44b4dmr9718944wrm.42.1695762981581;
-        Tue, 26 Sep 2023 14:16:21 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id c2-20020adfe702000000b003217c096c1esm15555497wrm.73.2023.09.26.14.16.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 14:16:20 -0700 (PDT)
-Message-ID: <eaf3cef4-628f-8f6c-b77d-c8b2ee62f50b@linaro.org>
-Date:   Tue, 26 Sep 2023 23:16:19 +0200
+        d=1e100.net; s=20230601; t=1695763162; x=1696367962;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ftGtzNCK4oOVyfSI32wzRjgE/k4q/Apr++atuhh5XZo=;
+        b=oZINtEqPltLm7/srLrhxegXVgU5gljzzNxjQq+00UCh/7a/ZK4nEENOORd9s+MiXT3
+         I/dxYqeR1yjPMcwqK2T6JjUYF3UTokmt/9Bb/rvCyO7258gZjOL7N9g3SnGa3hKW1wjp
+         9kSuFyzSEnYezcysZNl6UQH3W5CQXfD/dc6ij6qvHDhhDaijJfAHD4JPoVTIikQ6Xnd9
+         UiYaZVcZocP+p10jsVEBmUFhrImVfM0kwajK91f9ZAYNvTfDeVnhHaOXPO2WT71wiQsl
+         pcWsfj4kt38Q2IeJv4ivcU83yAPdRms+TbEsu9f4SS7NN9WK2IBs9D3S1R8lv8IQDCBY
+         9eGQ==
+X-Gm-Message-State: AOJu0YzYxrISOh3C54H2rVTehGp0GlWRulfQJazeif0b0ysniVEPbeOB
+        eBIjgTDFXxu7s2suPXMFiI2o7w==
+X-Google-Smtp-Source: AGHT+IHJdY1wmNInDIr3Oy//S0QP1jcTvv9Z3r8Gyxv3cnk9f+nHFsEK/rkIdCxcehiAZPiChY9+BQ==
+X-Received: by 2002:a25:ae17:0:b0:d85:22:8215 with SMTP id a23-20020a25ae17000000b00d8500228215mr117012ybj.34.1695763162392;
+        Tue, 26 Sep 2023 14:19:22 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b23-20020a253417000000b00d13b72fae3esm2959326yba.2.2023.09.26.14.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 14:19:21 -0700 (PDT)
+Date:   Tue, 26 Sep 2023 14:19:19 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 06/12] mempolicy trivia: use pgoff_t in shared mempolicy
+ tree
+In-Reply-To: <ZRIKTFaPOmD8RFDQ@casper.infradead.org>
+Message-ID: <7191425-f87-99c7-58b9-d54169e3fe0@google.com>
+References: <2d872cef-7787-a7ca-10e-9d45a64c80b4@google.com> <d09b9c35-2856-f749-6a13-64dfe6415ef1@google.com> <ZRIKTFaPOmD8RFDQ@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 02/13] ACPI: thermal: Collapse trip devices update
- functions
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <1957441.PYKUYFuaPT@kreacher> <3534976.iIbC2pHGDl@kreacher>
- <38ea14aa-ecc2-c40e-34ea-05b348158cfb@linaro.org>
- <CAJZ5v0iww__Kd2e8bSarXL5ugjL1zuCaXgOfzLp-VGdmHBBabQ@mail.gmail.com>
- <CAJZ5v0gA1488TeNTHNFb0yCjfqFBe8cEWZNteBmk6m_Eo4QTsQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0gA1488TeNTHNFb0yCjfqFBe8cEWZNteBmk6m_Eo4QTsQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,51 +86,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 20:04, Rafael J. Wysocki wrote:
-> On Tue, Sep 26, 2023 at 7:56 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>
->> On Tue, Sep 26, 2023 at 7:18 PM Daniel Lezcano
->> <daniel.lezcano@linaro.org> wrote:
->>>
->>> On 21/09/2023 19:49, Rafael J. Wysocki wrote:
->>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>>
->>>> In order to reduce code duplication, merge update_passive_devices() and
->>>> update_active_devices() into one function called update_trip_devices()
->>>> that will be used for updating both the passive and active trip points.
->>>>
->>>> No intentional functional impact.
->>>>
->>>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>> ---
->>>>    drivers/acpi/thermal.c |   53 ++++++++++++++++++-------------------------------
-
-[ ... ]
-
->>>> +     if (index != ACPI_THERMAL_TRIP_PASSIVE) {
->>>> +             method[1] = 'A';
->>>> +             method[2] = 'L';
->>>> +             method[3] = '0' + index;
->>>> +     }
->>>
->>> Could be index > 9 ?
->>
->> I can add a check, but it will never be called with index > 9 anyway.
+On Mon, 25 Sep 2023, Matthew Wilcox wrote:
+> On Mon, Sep 25, 2023 at 01:28:14AM -0700, Hugh Dickins wrote:
+> > Prefer the more explicit "pgoff_t" to "unsigned long" when dealing with
+> > a shared mempolicy tree.  Delete confusing comment about pseudo mm vmas.
 > 
-> To be more precise, update_trip_devices() is called in two places,
-> acpi_thermal_init_trip() and acpi_thermal_update_trip_devices().
+> Yes, with three quibbles
 > 
-> Both of these are called either with ACPI_THERMAL_TRIP_PASSIVE passed
-> as index, or from a loop over indices between 0 and
-> ACPI_THERMAL_MAX_ACTIVE-1 inclusive.
+> >  struct sp_node {
+> >  	struct rb_node nd;
+> > -	unsigned long start, end;
+> > +	pgoff_t start, end;
+> >  	struct mempolicy *policy;
+> >  };
+> > -
+> >  struct shared_policy {
+> 
+> Did you intend to delete the blank line between these two structs?
+> That's not our normal style.
 
-Ok, thanks for clarifying
+I think I did intend it actually, to join both of those structs to the
+"Tree of shared policies" comment above them.  But now that I'm looking
+again, I think what I'd most like to do (and going against all of your
+suggestions e.g. move sp_node to mempolicy.c: good observation, but isn't
+keeping them together more helpful to the reader?) is swap those structs
+around - struct shared_policy first for the root of the tree, then
+struct sp_node showing the nodes of the tree (and still without blank
+line).  Wouldn't that be the most helpful way to present them?
 
+I'll knuckle down and do exactly as you have suggested, if you say so:
+but above is my own preference.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> > +++ b/mm/mempolicy.c
+> > @@ -2444,7 +2444,7 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+> >   * reading or for writing
+> >   */
+> >  static struct sp_node *
+> > -sp_lookup(struct shared_policy *sp, unsigned long start, unsigned long end)
+> > +sp_lookup(struct shared_policy *sp, pgoff_t start, pgoff_t end)
+> 
+> While you're reformatting anyway, mind joining these two lines?
+> 
+> > @@ -2499,7 +2499,7 @@ static void sp_insert(struct shared_policy *sp, struct sp_node *new)
+> >  
+> >  /* Find shared policy intersecting idx */
+> >  struct mempolicy *
+> > -mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
+> > +mpol_shared_policy_lookup(struct shared_policy *sp, pgoff_t idx)
+> 
+> Ditto
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Sure, will do (I recall Linus much prefers them as you suggest).
+But we have different indentation habits: I think it's spaced exactitude
+which irritates you the most, would the style below be okay?
+Or maybe you'd prefer to go over-80 with these two.
 
+struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
+						pgoff_t idx)
+
+Hugh
