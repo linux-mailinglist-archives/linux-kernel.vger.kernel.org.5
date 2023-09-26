@@ -2,217 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F777AF14D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02747AF155
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 18:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbjIZQwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 12:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S235538AbjIZQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 12:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235406AbjIZQwE (ORCPT
+        with ESMTP id S235477AbjIZQwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:52:04 -0400
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de [85.215.255.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87035136;
-        Tue, 26 Sep 2023 09:51:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695747101; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=oX0OUl60dqkGoVI54R7HrEoRF04f6UnPz6Y8x5nxA4PGCc8BafGVmfqPGNo/YV1Yel
-    eySgDh9M3pIQ8v14bnXSeXSUm/0/Ym/xSMSCe6fCrgFHmAIvYvbDguHQRQbOoDX85kRG
-    Dz2V2PSp8ordMPy17avmBAJHajOEsKWfbZX32/N6wLj8KYYe/PU3iHuP5KdTMsXq9BDp
-    4sW9aU807i8IcfSMfuy9Vf3dy9sgJvqbAy72RoNh9Fcuhai+/h68QPnOa+VpauafXKs0
-    oqUPYFwBvGW4vxlwCpDeC3DZB2IQNXFDYkaQI+BALtP1EtFyMzOiNCEK2coHCrRMNOwM
-    x8Jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747101;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
-    b=GF6ucFMhmQXy2sl3bo0J6xsMwDFf1CHSCn+obpe4CyTPf9NNqOMocH5cBLlj0FAuiO
-    y4ocj5CrZADOaB/l+VSCUCzh18zPxyHiyV3+nStxynC267yk9mmWDZ33pl22EN1HC1jA
-    g8rXHveREBVdy1qG9ajvB5eMDHgVrHfrMfPIgccfCO+kwCAr1Fqb7WiGJ4781SOGjYQJ
-    yiQtjH0rGt5yc+lC1nEHvXO4F7Cko9FDoxGwWsgcgkErv8qCLy3FVD99kszUHNHeqb/T
-    mEMRu9qDjjKcQXH9hpEEqmUfrbEb7wINzW4mOcHtwL0zsz02pePMcIemSsi7uOrMDXTf
-    OKpw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1695747101;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
-    b=deevSVjmGYXJYdSJ5qhdXybM8kGnZhulYYmEd7SZnWdLHrSutbOoEGwDDge5OVzsB3
-    hVht+7bAJJECkRlzJWtQ+zsqXH/vu4CQ1tNkUMaiSLszOHjaA/3Yu3KXxYm1b9xGnaE3
-    VSsSDt0jw6heR8hkhF4bnBAFctuMEUiQz7CmXK+Yn3ApBX+RXjTe6Sxyr4KtWu4APquj
-    3Pta4/NforJvntynXzHCbtDVFDEDmEPro5qFA+8DEnJKZXLCErez8zIXQlTkzF9kaVoH
-    B/r+fy97B7LD123yrs78uMiykJS78YEPXh5UaApj7q4++k2vEAm7/xpbQM5ZLPmJX6ov
-    9JGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1695747101;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=A/XrVYjcUCNSKSvfCQZickf7SKDX4aDHb6KOg+W+CCo=;
-    b=3iq7OZgpqQgWUjkQ6WtVAavIeXJZhZyeuPqsqoeqgNeOlFtEtLejP6NvJnqixJskxw
-    WATb2Bp8ui6wlurOdKDQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOH+nz0="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.8.2 SBL|AUTH)
-    with ESMTPSA id R04c57z8QGpfg5k
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 26 Sep 2023 18:51:41 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 26 Sep 2023 18:51:27 +0200
-Subject: [PATCH 13/13] arm64: dts: qcom: msm8939-samsung-a7: Add sound and
- modem
+        Tue, 26 Sep 2023 12:52:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA07DCC8;
+        Tue, 26 Sep 2023 09:52:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5237EC433CC;
+        Tue, 26 Sep 2023 16:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695747149;
+        bh=jZbXXpwO2YkG3T9wZrnoHzJGOBu0lJuRvun8uFcnm80=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oYeTi4U8bH1QgNPCJZfgga1Ep2Fw8dnKEc4zzysoAF/WId14gbXUq04eYGPcRBO7S
+         FlQcf8Nf+p2nibebaTC8w/6Ed/QArZ/uzFAOrTxEjrRz/gHfCl+e9ojgGlP1d2Sdbr
+         vVxN/bGTx3OQMuSrPbHgoeYC1Y+xyqt+AuiBbJSeJ4baDWlq7Ot29AeVSNds+guWkk
+         l4+0XuqmFSlbmwCZeGBodUp4jF+ER0UjTkIKBElMi7zjjQ7AoBLJTZoZIoZAGB216J
+         h/dA0bM8QDfTV2CGJIPt7hQusZhS7opBogPLS8fOvfum5eoCddyy00890+uYuCUi0L
+         1vO3vWgNjJ4jg==
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1dd54aca17cso1754644fac.3;
+        Tue, 26 Sep 2023 09:52:29 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxGXmLAX8ESTdru+aGegIHe3BBLBAzwuoLnYDot0CVEk/+Omptg
+        TB88zmJhTByumHCnOsLesnKmiefAcGUSEfWXXm8=
+X-Google-Smtp-Source: AGHT+IGbDG6S94fbs66+E4Tj3DnXfB6VaDwQ0LhZUy+fsFfEeskapXLg2Vlht97zugGWE0UNsteaNj4DynwIk415vo8=
+X-Received: by 2002:a05:6870:2d5:b0:1d5:b0b9:f6f1 with SMTP id
+ r21-20020a05687002d500b001d5b0b9f6f1mr12460899oaf.8.1695747148628; Tue, 26
+ Sep 2023 09:52:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-msm8916-modem-v1-13-398eec74bac9@gerhold.net>
-References: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
-In-Reply-To: <20230926-msm8916-modem-v1-0-398eec74bac9@gerhold.net>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915172900.3784163-1-mmaurer@google.com> <9966E047-44E7-4665-9628-169F3EBE2F06@kloenk.dev>
+ <SLZSYLg5E9OQKI546K87wxTYYLNlT1xM-LhC4W1JFhIate6PFsKq27RcBNhSjUkErYDlzsZB4F2Vc2KOP9tDThg58_tXycWn3K29mQXlFtU=@protonmail.com>
+ <0561303E-2089-43FC-AA31-836C7BB844B7@kloenk.dev> <CAGSQo02p0LWZgV8oVidwvN6X__rv3-rj+ZVg9SaZ5Kx+zYahYQ@mail.gmail.com>
+ <CAKwvOdnUdFjN+aCDrHKP6RzZCFB033ycN_KkB1WKucGd6VzUSg@mail.gmail.com>
+ <CAGSQo00E1Wtg=f9SAcB2na69r4ASJ1L40ASPCyZV9FX+81uJCw@mail.gmail.com>
+ <CAKwvOdnbbStoEeykYnx0jbnR=TAmmcdnOXbbA4Fx0BneFW8Fsg@mail.gmail.com> <CAGSQo01jMFVeqa=99Ne7tDXeOShcHWHBPgyiwZ+tm6x9qRJOfg@mail.gmail.com>
+In-Reply-To: <CAGSQo01jMFVeqa=99Ne7tDXeOShcHWHBPgyiwZ+tm6x9qRJOfg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 27 Sep 2023 01:51:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATH59wQxaMRur9S5=HCi4bo9pREWK5LQjnNwZ5uOt7g=A@mail.gmail.com>
+Message-ID: <CAK7LNATH59wQxaMRur9S5=HCi4bo9pREWK5LQjnNwZ5uOt7g=A@mail.gmail.com>
+Subject: Re: [PATCH] rust: Respect HOSTCC when linking for host
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Finn Behrens <me@kloenk.dev>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+On Tue, Sep 19, 2023 at 3:55=E2=80=AFAM Matthew Maurer <mmaurer@google.com>=
+ wrote:
+>
+> On Mon, Sep 18, 2023 at 11:43=E2=80=AFAM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Mon, Sep 18, 2023 at 9:38=E2=80=AFAM Matthew Maurer <mmaurer@google.=
+com> wrote:
+> > >
+> > > On Mon, Sep 18, 2023 at 8:25=E2=80=AFAM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > What happens if you invoke the linker directly?
+> > > Rust unfortunately currently doesn't support invoking the linker
+> > > directly: https://github.com/rust-lang/rust/issues/73632
+> >
+> > Wait; does Rust have its own linker? It doesn't use the system linker?
+> >  Perhaps that's necessary for the rust module format? If so, TIL.
+> It does use the system linker (this is what -C linker is controlling),
+> but the command line passed to the linker may change, extra object
+> files may be added to the command line, etc.
+> >
+> > > > Generally, the kernel either invokes the compiler or the linker
+> > > > directly. (For assembler, it is typically preprocessed, as are link=
+er
+> > > > scripts!)  So invoking the linker directly is a common pattern in
+> > > > kbuild.  It also makes me slightly sad if the rust compiler ends up
+> > > > invoking a c compiler, even if it's simply to drive the linker.
+> > > As mentioned earlier, we could pass $HOSTLD, but if the linker isn't
+> > > named something accurate (e.g. if the linker is not named lld, but is
+> > > lld), we need to know how to pass a flavor:
+> > > https://doc.rust-lang.org/rustc/codegen-options/index.html#linker-fla=
+vor
+> > > Would it be appropriate to just assume the linker is named correctly?
+> >
+> > If it were not, what does failure look like?
+> That depends. I think it will usually look like "unrecognized flag:
+> blah blah", but that's not guaranteed.
+> >
+> > command not found: asdfadfasdf
+> This isn't about command-not-found, it's about "I set
+> HOSTLD=3Dfoo/bar/weirdname, and it is an lld-like linker. rustc invoked
+> it assuming it is an ld-like linker."
+> >
+> > Seems fine to me. If the user mis-specifies HOSTLD=3D, then they will
+> > get a similar error, which should be prescriptive enough for them to
+> > figure out how exactly they're "holding it wrong."
+> >
+> > > > For example, Android carries a downstream patch to set `-fuse-ld=3D=
+lld`
+> > > > for $KBUILD_HOSTCFLAGS, because its build environment doesn't conta=
+in
+> > > > GNU binutils ("guilty, officer").
+> > > Oddly, the Android kernel environment (Kleaf) is the one that I neede=
+d
+> > > this patch to build in, but it seemed to be working without a manual
+> > > KBUILD_HOSTCFLAGS forwarding.
+> >
+> > Surprising that worked.
+> >
+> > > Overall, it sounds like you'd prefer if I set this to use
+> > > `KBUILD_HOSTLD` and `KBUILD_HOSTLDFLAGS`, and leave the linker flavor
+> > > to autodetect?
+> >
+> > Yes for the first two.
+> >
+> > Dunno, what precisely is a linker flavor?  Is that like a flavor of ice=
+ cream?
+> > Oh, right looking at your link:
+> > https://doc.rust-lang.org/rustc/codegen-options/index.html#linker-flavo=
+r
+> > Seems like if `LLVM=3D1` is set, or `LD=3Dld.lld`, or CONFIG_LD_IS_LLD,=
+ then
+> > the flavor should be set to ld.lld, else ld.  Then the
+> > KBUILD_HOSTLDFLAGS need to be passed, probably.
+> >
+> > But how are there "linker flavors" like ld or ld.lld if you just said
+> > "Rust unfortunately currently doesn't support invoking the linker
+> > directly: https://github.com/rust-lang/rust/issues/73632".  I'm having
+> > trouble reconciling the two.
+> Yes, what I meant by that is that *rustc* wants to invoke the linker,
+> rather than having the surrounding build system invoke the linker. The
+> exact command line passed to the linker in the final link, including
+> potential synthetic objects, is considered an internal detail.
+> >
+> > Can we do something more like the below?
+> >
+> > ifdef CONFIG_LD_IS_LLD
+> > hostrust_flags +=3D -C linker-flavor=3Dld.lld
+> > else
+> > hostrust_flags +=3D -C linker-flavor=3Dld
+> > endif
+> > hostrust_flags +=3D -C linker=3D$(HOSTLD) <todo: figure out how to pass
+> > KBUILD_HOSTLDFLAGS>
+> Yes, I can make host linking use `$(HOSTLD)` and pass the flavor based
+> on CONFIG_LD_IS_LLD. I'll send a variant that does that this
+> afternoon.
 
-Enable sound and modem for the Samsung A7. The setup is similar to most
-MSM8916 devices, i.e.:
 
- - QDSP6 audio
- - Earpiece/headphones/microphones via digital/analog codec in
-   MSM8916/PM8916
- - WWAN Internet via BAM-DMUX
+CONFIG_LD_IS_LLD=3Dy states that the linker for the
+kernel space is LLD.
 
-except for the same differences as the MSM8916-based Samsung A2015
-devices:
+Host programs should not be affected.
 
- - NXP TFA9895 codec for speaker on Quaternary MI2S
- - Samsung-specific audio jack detection (not supported yet)
 
-Signed-off-by: "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-[Stephan: Add consistent commit message]
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts | 54 +++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-index fccd8fec8b8f..4951b3e265d2 100644
---- a/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8939-samsung-a7.dts
-@@ -3,10 +3,12 @@
- /dts-v1/;
- 
- #include "msm8939-pm8916.dtsi"
-+#include "msm8916-modem-qdsp6.dtsi"
- 
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/sound/apq8016-lpass.h>
- 
- / {
- 	model = "Samsung Galaxy A7 (2015)";
-@@ -287,6 +289,18 @@ muic: extcon@25 {
- 	};
- };
- 
-+&blsp_i2c2 {
-+	status = "okay";
-+
-+	speaker_codec: audio-codec@34 {
-+		compatible = "nxp,tfa9895";
-+		reg = <0x34>;
-+		vddd-supply = <&pm8916_l5>;
-+		sound-name-prefix = "Speaker";
-+		#sound-dai-cells = <0>;
-+	};
-+};
-+
- &blsp_i2c5 {
- 	status = "okay";
- 
-@@ -309,6 +323,17 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+&lpass {
-+	dai-link@3 {
-+		reg = <MI2S_QUATERNARY>;
-+		qcom,playback-sd-lines = <1>;
-+	};
-+};
-+
-+&mpss_mem {
-+	reg = <0x0 0x86800000 0x0 0x5800000>;
-+};
-+
- &pm8916_resin {
- 	linux,code = <KEY_VOLUMEDOWN>;
- 	status = "okay";
-@@ -321,6 +346,13 @@ pm8916_l17: l17 {
- 	};
- };
- 
-+&q6afedai {
-+	dai@22 {
-+		reg = <QUATERNARY_MI2S_RX>;
-+		qcom,sd-lines = <1>;
-+	};
-+};
-+
- &sdhc_1 {
- 	status = "okay";
- };
-@@ -335,6 +367,28 @@ &sdhc_2 {
- 	status = "okay";
- };
- 
-+&sound {
-+	model = "samsung-a2015";
-+	audio-routing =
-+		"AMIC1", "MIC BIAS External1",
-+		"AMIC2", "MIC BIAS Internal2",
-+		"AMIC3", "MIC BIAS External1";
-+
-+	pinctrl-0 = <&cdc_pdm_default &sec_mi2s_default>;
-+	pinctrl-1 = <&cdc_pdm_sleep &sec_mi2s_sleep>;
-+	pinctrl-names = "default", "sleep";
-+
-+	status = "okay";
-+};
-+
-+&sound_dai_quaternary {
-+	status = "okay";
-+
-+	codec {
-+		sound-dai = <&speaker_codec>;
-+	};
-+};
-+
- &usb {
- 	extcon = <&muic>, <&muic>;
- 	status = "okay";
-
--- 
-2.42.0
-
+--=20
+Best Regards
+Masahiro Yamada
