@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3487AEA8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6007AEA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 12:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjIZKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 06:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53904 "EHLO
+        id S234404AbjIZKjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 06:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbjIZKiZ (ORCPT
+        with ESMTP id S231182AbjIZKjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 06:38:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B3A4E5;
-        Tue, 26 Sep 2023 03:38:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 429D7DA7;
-        Tue, 26 Sep 2023 03:38:55 -0700 (PDT)
-Received: from [10.1.36.17] (e133047.arm.com [10.1.36.17])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E3E663F6C4;
-        Tue, 26 Sep 2023 03:38:15 -0700 (PDT)
-Message-ID: <efe41cee-42dd-290f-9ec2-ac002e2ec34e@arm.com>
-Date:   Tue, 26 Sep 2023 11:38:14 +0100
+        Tue, 26 Sep 2023 06:39:14 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8958695;
+        Tue, 26 Sep 2023 03:39:07 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rvx4g2MZtzrSrl;
+        Tue, 26 Sep 2023 18:36:51 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 26 Sep 2023 18:39:05 +0800
+Message-ID: <fd68ff0c-8dcb-d60a-60eb-c4d7d34c4805@hisilicon.com>
+Date:   Tue, 26 Sep 2023 18:39:04 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] tracing: document buffer_size_kb more precisely
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next] RDMA/hns: Support SRQ record doorbell
 Content-Language: en-US
-To:     Zheng Yejian <zhengyejian1@huawei.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <cee6d5cd-e15b-3bb1-f867-de467d96d6b5@arm.com>
- <a1ae1bc0-0677-8284-9f18-1171e1dcb175@huawei.com>
-From:   Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <a1ae1bc0-0677-8284-9f18-1171e1dcb175@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20230920033005.1557-1-huangjunxian6@hisilicon.com>
+ <20230926093046.GG1642130@unreal>
+From:   Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20230926093046.GG1642130@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.120.168]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 12:44, Zheng Yejian wrote:
-> On 2023/9/25 18:02, Christian Loehle wrote:
->> buffer_size_kb no longer shows the requested amount, but the one that
->> is actually used internally for the ring buffer.
+
+
+On 2023/9/26 17:30, Leon Romanovsky wrote:
+> On Wed, Sep 20, 2023 at 11:30:05AM +0800, Junxian Huang wrote:
+>> From: Yangyang Li <liyangyang20@huawei.com>
 >>
->> commit 6d98a0f2ac3c ("tracing: Set actual size after ring buffer resize")
->> changed the sysfs behavior such that value read will always show the
->> actual size, while previously it showed the size that was requested
->> through the sysfs interface, even if it was rounded up to fulfill
->> the request.
->> So the documentation can state that more precisely now.
+>> Compared with normal doorbell, using record doorbell can shorten the
+>> process of ringing the doorbell and reduce the latency.
 >>
->> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+>> Add a flag HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB to allow FW to
+>> enable/disable SRQ record doorbell.
+>>
+>> If the flag above is set, allocate the dma buffer for SRQ record
+>> doorbell and write the buffer address into SRQC during SRQ creation.
+>>
+>> For userspace SRQ, add a flag HNS_ROCE_RSP_SRQ_CAP_RECORD_DB to notify
+>> userspace whether the SRQ record doorbell is enabled.
+>>
+>> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 >> ---
->>   Documentation/trace/ftrace.rst | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
->> index 23572f6697c0..2e066b3b6edc 100644
->> --- a/Documentation/trace/ftrace.rst
->> +++ b/Documentation/trace/ftrace.rst
->> @@ -191,7 +191,7 @@ of ftrace. Here is a list of some of the key files:
->>       A few extra pages may be allocated to accommodate buffer management
->>       meta-data. If the last page allocated has room for more bytes
->>       than requested, the rest of the page will be used,
->> -    making the actual allocation bigger than requested or shown.
->> +    making the actual allocation bigger than requested.
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 30 ++++++--
+>>  drivers/infiniband/hw/hns/hns_roce_srq.c    | 85 ++++++++++++++++++++-
+>>  include/uapi/rdma/hns-abi.h                 | 13 +++-
+>>  4 files changed, 120 insertions(+), 11 deletions(-)
 > 
-> Hi, the actual allocation should still be bigger than shown due to the
-> loss of accuracy when doing unit conversion from bytes to kilobytes (see
-> tracing_entries_read()).
+> Junxian, do you plan to resubmit it this patch to fix kbuild error?
 > 
-Right, the sysfs obviously only allows for KB aligned setting, but you're right.
-If set on the cmdline non-KB multiples are possible and accuracy is lost.
-Nevermind then.
+> Thanks
 
-> -- 
-> 
-> Thanks,
-> Zheng Yejian
-> 
->>       ( Note, the size may not be a multiple of the page size
->>       due to buffer management meta-data. )
->>   
-> 
-
+Yes. I'll resubmit soon.
