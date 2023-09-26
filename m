@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4787AE946
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BA87AE95A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 11:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbjIZJbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 05:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
+        id S234227AbjIZJgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 05:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233835AbjIZJbk (ORCPT
+        with ESMTP id S234114AbjIZJgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 05:31:40 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D50BE;
-        Tue, 26 Sep 2023 02:31:34 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1A2D668AA6; Tue, 26 Sep 2023 11:31:30 +0200 (CEST)
-Date:   Tue, 26 Sep 2023 11:31:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230926093129.GA13806@lst.de>
-References: <20230913111013.77623-1-hch@lst.de> <20230913111013.77623-4-hch@lst.de> <20230913232712.GC800259@ZenIV> <20230914023705.GH800259@ZenIV> <20230914053843.GI800259@ZenIV> <20230914-zielt-einzog-00389009b293@brauner>
+        Tue, 26 Sep 2023 05:36:53 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30397EB;
+        Tue, 26 Sep 2023 02:36:46 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rvvft5t7BzNmlB;
+        Tue, 26 Sep 2023 17:32:54 +0800 (CST)
+Received: from huawei.com (10.50.163.32) by kwepemm000005.china.huawei.com
+ (7.193.23.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 26 Sep
+ 2023 17:36:43 +0800
+From:   liulongfang <liulongfang@huawei.com>
+To:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>
+CC:     <bcreeley@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH v16 0/2] add debugfs to migration driver
+Date:   Tue, 26 Sep 2023 17:33:54 +0800
+Message-ID: <20230926093356.56014-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914-zielt-einzog-00389009b293@brauner>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 09:56:57AM +0200, Christian Brauner wrote:
-> > BTW, this part of commit message in 2c18a63b760a is rather confused:
-> >     Recent rework moved block device closing out of sb->put_super() and into
-> >     sb->kill_sb() to avoid deadlocks as s_umount is held in put_super() and
-> >     blkdev_put() can end up taking s_umount again.
-> > 
-> > That was *NOT* what a recent rework had done.  Block device closing had never
-> > been inside ->put_super() - at no point since that (closing, that is) had been
-> > introduced back in 0.97 ;-)  ->put_super() predates it (0.95c+).
-> 
-> I think the commit message probably just isn't clear enough. The main
-> block device of a superblock isn't closed in sb->put_super(). That's
-> always been closed in kill_block_super() after generic_shutdown_super().
+Add a debugfs function to the migration driver in VFIO to provide
+a step-by-step debugfs information for the migration driver.
 
-Yes.
+Changes v15 -> v16
+	Update the calling order of functions to maintain symmetry
 
-> But afaict filesystem like ext4 and xfs may have additional block
-> devices open exclusively and closed them in sb->put_super():
-> 
-> xfs_fs_put_super()
-> -> xfs_close_devices()
->    -> xfs_blkdev_put()
->       -> blkdev_put()
-> 
-> ext4_put_super()
-> -> ext4_blkdev_remove()
->    -> blkdev_put()
+Changes v14 -> v15
+	Update the output status value of live migration.
 
-Yes.
+Changes v13 -> v14
+	Split the patchset and keep the vfio debugfs frame.
+
+Changes v12 -> v13
+	Solve the problem of open and close competition to debugfs.
+
+Changes v11 -> v12
+	Update loading conditions of vfio debugfs.
+
+Changes v10 -> v11
+	Delete the device restore function in debugfs.
+
+Changes v9 -> v10
+	Update the debugfs file of the live migration driver.
+
+Changes v8 -> v9
+	Update the debugfs directory structure of vfio.
+
+Changes v7 -> v8
+	Add support for platform devices.
+
+Changes v6 -> v7
+	Fix some code style issues.
+
+Changes v5 -> v6
+	Control the creation of debugfs through the CONFIG_DEBUG_FS.
+
+Changes v4 -> v5
+	Remove the newly added vfio_migration_ops and use seq_printf
+	to optimize the implementation of debugfs.
+
+Changes v3 -> v4
+	Change the migration_debug_operate interface to debug_root file.
+
+Changes v2 -> v3
+	Extend the debugfs function from hisilicon device to vfio.
+
+Changes v1 -> v2
+	Change the registration method of root_debugfs to register
+	with module initialization.
+
+Longfang Liu (2):
+  vfio/migration: Add debugfs to live migration driver
+  Documentation: add debugfs description for vfio
+
+ Documentation/ABI/testing/debugfs-vfio | 25 ++++++++
+ MAINTAINERS                            |  1 +
+ drivers/vfio/Makefile                  |  1 +
+ drivers/vfio/vfio.h                    | 14 +++++
+ drivers/vfio/vfio_debugfs.c            | 87 ++++++++++++++++++++++++++
+ drivers/vfio/vfio_main.c               | 14 ++++-
+ include/linux/vfio.h                   |  7 +++
+ 7 files changed, 147 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/ABI/testing/debugfs-vfio
+ create mode 100644 drivers/vfio/vfio_debugfs.c
+
+-- 
+2.24.0
+
