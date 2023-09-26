@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E0C7AEF4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CB37AEF43
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbjIZPEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S235004AbjIZPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjIZPEB (ORCPT
+        with ESMTP id S232070AbjIZPEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Sep 2023 11:04:01 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5201511D
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:03:53 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4053e6e8ca7so22223625e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:03:53 -0700 (PDT)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B7C10E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:03:54 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3200b181b67so1192065f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 08:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695740632; x=1696345432; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIpK3OqmG3E1OUm0KgMySKOtKP9RNzbuGFCeuFimfhg=;
-        b=ijk1GXx8p6gF4Ogo26Ngd17caf/oV8jwwcKV2Mq3J311kzMUj6+kvsAwEG3A472d28
-         /vGnjHkOgWf1VZh94SVMCCNVXfQH6YG5b3Ecx1Eax38bqZLctul9kHdxFLTed8fELbyc
-         MsujkzpvixzG069MSjZdrfiLOddDvRDnHXSQg+ye8sBN+yz7QV9pqaGdrI/DQDgXtv86
-         C248DPdNgNGN0YpBfgfBWIDE1/z7bTOYd63d3AgqUb1S4LAPGP9kq5ivLcwGW1ulzXqT
-         H7Ho43COYwHBq45Wmp16TFKn9jCogh+6V3FYc7QIa/RpNWarYqpnCeMidrBpZ88Izbni
-         J/Gw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XQDAxN5g1vMcAJWLoIEgGtbs3vH3NsC3JS3eiLLd1tc=;
+        b=RSu2dlzSLD/MQbHRXs/I7tNPqUsZIF4qAWabMji12OIWw1ls8Th9dnbWmSBGZrj5Bm
+         /IB+CXnhMk6tBmfylXPjM5MDd77T1fnYghsehbVWjN/iioPqMcIcup7OYXr/l4WXpAM0
+         I7A9P3ZR1Fe1bsv33FnFXHXIcBCfIIo6s4sr2CIm+mg3pOeaKSoVf51gPsRNk7GFlDC3
+         IN47s+g5kNiZMvK0qJkAzTFHty/i2HfBtsZlJbezzHqV5tFHjN7dqvAEue5ti5dggiuW
+         MKzVB20JM+aE54eP4bHOeuWwKvHfmQPQ15+OilLLABdvS6ioqC7G5d/5pxYUaOx928No
+         ha0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1695740632; x=1696345432;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RIpK3OqmG3E1OUm0KgMySKOtKP9RNzbuGFCeuFimfhg=;
-        b=RsEb7jczClhpHo8XWTY/Bs5h0qOTFpepw66pyOdIFOIY5rRvu7zrx3PvRFqsEmP991
-         +GrfMYk8VshYCdUmGU1bJYevixcTe4s2mTKPR0McN915HhW3NZlCChOmpuEjiGiujZb+
-         vLX2bcQOatm+/2EA3GMZmgblJ+UyS+S3WfetkeP9fnrkCdyVRXBvJ6GHmTZLxPxEvZOu
-         w/u7g2ClDZfg1XkLEZqBtvBqSV314K0QAm8XxaFtPQe1FXq6dDKVjnbXEq1fjl1k/b+/
-         dQNe4kbbaj1MKMmaEAK+HyU0GetFFWL9fGhUWvY2YPH12sWAGkofGwOhm1EUwZkmuzKW
-         PL9w==
-X-Gm-Message-State: AOJu0YwqvuWudl6r2QvncvjkTr5trGKe1lXjJJneTuMDt2TybXd0F9p4
-        juzXvoJXFyuh4GeXBgFzs06YdQ==
-X-Google-Smtp-Source: AGHT+IFNTxn3ZjlQ5+Jtwf6UwRV/FhwgHLgxdXUERSMM8USfscRNhwx3BHgmb3Lm8sPO6lia6aTOAA==
-X-Received: by 2002:a05:600c:1d82:b0:401:c07f:72bd with SMTP id p2-20020a05600c1d8200b00401c07f72bdmr8988881wms.4.1695740631744;
-        Tue, 26 Sep 2023 08:03:51 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XQDAxN5g1vMcAJWLoIEgGtbs3vH3NsC3JS3eiLLd1tc=;
+        b=W+1+9vGbHgCO7Na/mf/sdA90dvDkE4Y/uciqMvcy6ig1Ss7dz4mmJ/As6KdNDIawe9
+         XaamRdlpluFqezBCOATZyENw2tm33eLqMrq3krahrbuuQhKbI617KmOVvBcTjZdvV5r9
+         5GclXlE/VaIlKfJCWUf1PB6CzoVfdgevlqM509j59FK5VYlEnr93+bhiahDqBStCcDZu
+         jZ/oN2zFkt+VtoNToroxmWhgj4IDgki4dtVZjqUHYMT38lffktyjREexobFRp+C1yG2p
+         dCaK0LwzSSFwNk+CxiJeLld8Ma/qszv2/GBzZDUPnIeUqUSckWtBbAVE3gBUosXJhNHZ
+         QZlQ==
+X-Gm-Message-State: AOJu0Yy1IFYOq/hZpJcMK9VNCAlO6HcnbGThhj7g0EcD05lbACSWub2e
+        T/XCenNMObDZlkL4vpk4yEf+ew==
+X-Google-Smtp-Source: AGHT+IH9PRCXtJEPxMLZQ5j5Z5+cpNGCxbKpqseY8qd18eONWrD2LaNnzT+g47bz5kOVc9HeGDcZ5g==
+X-Received: by 2002:adf:a456:0:b0:323:2df9:618f with SMTP id e22-20020adfa456000000b003232df9618fmr3634053wra.0.1695740632703;
+        Tue, 26 Sep 2023 08:03:52 -0700 (PDT)
 Received: from carbon-x1.. ([2a01:e0a:999:a3a0:2b3d:6c70:9dbf:5ede])
-        by smtp.gmail.com with ESMTPSA id x11-20020a5d650b000000b00318147fd2d3sm14926060wru.41.2023.09.26.08.03.50
+        by smtp.gmail.com with ESMTPSA id x11-20020a5d650b000000b00318147fd2d3sm14926060wru.41.2023.09.26.08.03.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 08:03:51 -0700 (PDT)
+        Tue, 26 Sep 2023 08:03:52 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -61,15 +62,17 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         Ron Minnich <rminnich@gmail.com>,
         Daniel Maslowski <cyrevolt@googlemail.com>
-Subject: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
-Date:   Tue, 26 Sep 2023 17:03:09 +0200
-Message-Id: <20230926150316.1129648-1-cleger@rivosinc.com>
+Subject: [PATCH 1/7] riscv: remove unused functions in traps_misaligned.c
+Date:   Tue, 26 Sep 2023 17:03:10 +0200
+Message-Id: <20230926150316.1129648-2-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230926150316.1129648-1-cleger@rivosinc.com>
+References: <20230926150316.1129648-1-cleger@rivosinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,57 +80,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 61cadb9 ("Provide new description of misaligned load/store
-behavior compatible with privileged architecture.") in the RISC-V ISA
-manual, it is stated that misaligned load/store might not be supported.
-However, the RISC-V kernel uABI describes that misaligned accesses are
-supported. In order to support that, this series adds support for S-mode
-handling of misaligned accesses as well support for prctl(PR_UNALIGN).
+Replace macros by the only two function calls that are done from this
+file, store_u8() and load_u8().
 
-Handling misaligned access in kernel allows for a finer grain control
-of the misaligned accesses behavior, and thanks to the prctl call, can
-allow disabling misaligned access emulation to generate SIGBUS. User
-space can then optimize its software by removing such access based on
-SIGBUS generation.
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+---
+ arch/riscv/kernel/traps_misaligned.c | 46 +++++-----------------------
+ 1 file changed, 7 insertions(+), 39 deletions(-)
 
-Currently, this series is useful for people that uses a SBI that does
-not handled misaligned traps. In a near future, this series will make
-use a SBI extension [1] allowing to request delegation of the
-misaligned load/store traps to the S-mode software. This extension has
-been submitted for review to the riscv tech-prs group. An OpenSBI
-implementation for this spec is available at [2].
-
-This series can be tested using the spike simulator [3] and an openSBI
-version [4] which allows to always delegate misaligned load/store to
-S-mode.
-
-[1] https://lists.riscv.org/g/tech-prs/message/540
-[2] https://github.com/rivosinc/opensbi/tree/dev/cleger/fw_feature_upstream
-[3] https://github.com/riscv-software-src/riscv-isa-sim
-[4] https://github.com/rivosinc/opensbi/tree/dev/cleger/no_misaligned
-
-Clément Léger (7):
-  riscv: remove unused functions in traps_misaligned.c
-  riscv: add support for misaligned handling in S-mode
-  riscv: report perf event for misaligned fault
-  riscv: add floating point insn support to misaligned access emulation
-  riscv: add support for sysctl unaligned_enabled control
-  riscv: report misaligned accesses emulation to hwprobe
-  riscv: add support for PR_SET_UNALIGN and PR_GET_UNALIGN
-
- arch/riscv/Kconfig                    |   1 +
- arch/riscv/include/asm/cpufeature.h   |   6 +
- arch/riscv/include/asm/entry-common.h |   3 +
- arch/riscv/include/asm/processor.h    |   9 +
- arch/riscv/kernel/Makefile            |   2 +-
- arch/riscv/kernel/cpufeature.c        |   6 +-
- arch/riscv/kernel/fpu.S               | 117 ++++++++
- arch/riscv/kernel/process.c           |  18 ++
- arch/riscv/kernel/setup.c             |   1 +
- arch/riscv/kernel/traps.c             |   9 -
- arch/riscv/kernel/traps_misaligned.c  | 374 ++++++++++++++++++++++----
- 11 files changed, 488 insertions(+), 58 deletions(-)
-
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index 378f5b151443..e7bfb33089c1 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -151,51 +151,19 @@
+ #define PRECISION_S 0
+ #define PRECISION_D 1
+ 
+-#define DECLARE_UNPRIVILEGED_LOAD_FUNCTION(type, insn)			\
+-static inline type load_##type(const type *addr)			\
+-{									\
+-	type val;							\
+-	asm (#insn " %0, %1"						\
+-	: "=&r" (val) : "m" (*addr));					\
+-	return val;							\
+-}
++static inline u8 load_u8(const u8 *addr)
++{
++	u8 val;
+ 
+-#define DECLARE_UNPRIVILEGED_STORE_FUNCTION(type, insn)			\
+-static inline void store_##type(type *addr, type val)			\
+-{									\
+-	asm volatile (#insn " %0, %1\n"					\
+-	: : "r" (val), "m" (*addr));					\
+-}
++	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*addr));
+ 
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(u8, lbu)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(u16, lhu)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(s8, lb)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(s16, lh)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(s32, lw)
+-DECLARE_UNPRIVILEGED_STORE_FUNCTION(u8, sb)
+-DECLARE_UNPRIVILEGED_STORE_FUNCTION(u16, sh)
+-DECLARE_UNPRIVILEGED_STORE_FUNCTION(u32, sw)
+-#if defined(CONFIG_64BIT)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(u32, lwu)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(u64, ld)
+-DECLARE_UNPRIVILEGED_STORE_FUNCTION(u64, sd)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(ulong, ld)
+-#else
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(u32, lw)
+-DECLARE_UNPRIVILEGED_LOAD_FUNCTION(ulong, lw)
+-
+-static inline u64 load_u64(const u64 *addr)
+-{
+-	return load_u32((u32 *)addr)
+-		+ ((u64)load_u32((u32 *)addr + 1) << 32);
++	return val;
+ }
+ 
+-static inline void store_u64(u64 *addr, u64 val)
++static inline void store_u8(u8 *addr, u8 val)
+ {
+-	store_u32((u32 *)addr, val);
+-	store_u32((u32 *)addr + 1, val >> 32);
++	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
+ }
+-#endif
+ 
+ static inline ulong get_insn(ulong mepc)
+ {
 -- 
 2.40.1
 
