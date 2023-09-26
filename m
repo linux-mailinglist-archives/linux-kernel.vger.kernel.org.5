@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638AB7AEF74
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CFE7AEF6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 17:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbjIZPAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 11:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55060 "EHLO
+        id S235027AbjIZPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 11:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbjIZPAC (ORCPT
+        with ESMTP id S235005AbjIZPAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 11:00:02 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812BB13A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 07:59:55 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405497850dbso70908355e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 07:59:55 -0700 (PDT)
+        Tue, 26 Sep 2023 11:00:03 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F2810E
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 07:59:56 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-405417465aaso80297125e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 07:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695740394; x=1696345194; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695740395; x=1696345195; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=95OtrKREF8DsDqawHPxVwUVS1xHqZyiLo+RbQA771N0=;
-        b=w4ZxVzxqVCw4qjgnYaUWgjZiZ016hC+aZ3J5ft8os76UZ3+SpjZEUYYUqJx8S/PUm1
-         hJzpz3PkJcRFX+7IvPfutngdq56J/H+jMnPhaoPysmc4Cb/1teL4yi0biPWA3yom6LD2
-         IgsPVS9ps/GpLPkMU7AQMOj/xyKC79ID7av5cJCzt5K7X1qMqpUIHxX7EqpBAUi1Sm7L
-         I2kM6WB2rlsfA/z7Cim9HzJon3X4w67OMGmaRPfHeinzXvThbOXmLDVZETuokriRt0nd
-         FBLj3mIXozbwELB/6XvMziXDc+rh3mMIadt/4pmE7o6gYoarfc7aWNHDE6ivrzbEoLgy
-         37Mg==
+        bh=HNGK0v08+zzpQuwoBoXMljpypDBn+BJlECyJC5l0N4Y=;
+        b=y8aV3sl/654U3FoYohmH++rkk2HdgHwQxSCApQc7CvTvnkS7DXX0+VG009UypeeXBH
+         o98O++bbLGXSezK6Ttg/lCCchVVejqj1azQZZoPYvSyhTPBsSSS7IFhnR9xUr9F9vf5g
+         klVnOgQVovYOeECWZmMiJMhrmZDR6qu8+/HDcWCKWZ6pX0fo4hSHlVFI8Xh15nMh9sYg
+         M8FWJlNs2cw5DsdnQoEIEnVSvpjrHmR/H7OzAUY2cJ7Sq23O4mxPrvxKa8A4fkIw69nT
+         v/348kPXJ8HF4ePd7C1Jk+oHRGpDo0LKFEhqbsOHA4Aekr0X4bu3DHLtyso3u2T7vVdS
+         ULQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695740394; x=1696345194;
+        d=1e100.net; s=20230601; t=1695740395; x=1696345195;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=95OtrKREF8DsDqawHPxVwUVS1xHqZyiLo+RbQA771N0=;
-        b=ljEjTLHeXpYnJLiSbWNZmZcF42/YjCJstz2d+zAlXX71g3x9fy65Be9tQvr6s4x9tX
-         Q03QNKjWnFLoxQMizZgsICI7N9c6iLxDmAjw0wO8e2aJnBQw1xdAW+NggeXIX4BJxLlo
-         Wl0ys3PhYhETcTF4OFMtYR9LcKHhjPBAstHXLaYPEPokbFu8QTiPgP/f5rCgzCUwESBG
-         l4hJBXBLAHbXX9TSS6NT9x3WWcyMHc910rOKqH7XY0T4JMepc9iEciCbVz4uwZQRwrNh
-         7DKrm8mTGYKjMai717ZWFURfZ2cWcwrrQyVttpuG3BUf5p+43zLhiXI3CG9uCFu9JOX6
-         twLw==
-X-Gm-Message-State: AOJu0YwY2i/P/Oj0KO7pjw27Il9GUyhfubKFkYwANf4V/2FWWpPkNPAD
-        xtRVUFuePyRR2F0AJEvZOzWwUA==
-X-Google-Smtp-Source: AGHT+IHI0VIKUHq7lfQylc1Bgqtnm9G/0hKS8DqAmHAu9aN6x76YmqNYZiupYJpDJhSqidCGXyqjpA==
-X-Received: by 2002:adf:ff8c:0:b0:317:ef76:b773 with SMTP id j12-20020adfff8c000000b00317ef76b773mr8594149wrr.45.1695740393987;
-        Tue, 26 Sep 2023 07:59:53 -0700 (PDT)
+        bh=HNGK0v08+zzpQuwoBoXMljpypDBn+BJlECyJC5l0N4Y=;
+        b=rpCYQla6k5e/gMdvIozPNTzQP7nfH3blqFbXstliUzEJVizAJ7711qBPPnaOFe8xWm
+         Mn1Y0Me5AzLYvfRNmfkXhNELnQJmcPUK4qEUa1yORT/giNV4CNu5a85QEcTKp1Q0PpdJ
+         kOJLn+L8rbDzr8nIHg8agdhpbTdEhghl0SvdLs7pVuUaqI7hwL1tmfZGoG+bNJ/Mm69b
+         Al5yyYHzLi/tvXlvGwm2hMErE7g5okUl2/elWN0C35Bwpe6xcTs1e6mxZq+CZCeBJXjt
+         7mW6vn/fm41w5t2hejF57NxmAdia0gTlIXmlLDURp/VMksYNUFCgJ2Odf6JoAJLUZgX2
+         Cn3A==
+X-Gm-Message-State: AOJu0YwtLoGqqkW6Rw1028C8t9G+2D1VSHFECcASTuhenP2HnPeVXOO7
+        whDEnitVNFdOqv0CsZXTdz+Y6w==
+X-Google-Smtp-Source: AGHT+IEOH4p3qhvyQQt5ZYpZ/mQ1vxTnsYtUtTM2fHWFYi8sXoPXL21yjgXMCK7N2nHUIBl2/l7VVw==
+X-Received: by 2002:a05:600c:216:b0:401:b2c7:34a8 with SMTP id 22-20020a05600c021600b00401b2c734a8mr8423804wmi.7.1695740394843;
+        Tue, 26 Sep 2023 07:59:54 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:686:c497:30b1:d2b9])
-        by smtp.gmail.com with ESMTPSA id s2-20020a5d5102000000b0031f82743e25sm14871634wrt.67.2023.09.26.07.59.53
+        by smtp.gmail.com with ESMTPSA id s2-20020a5d5102000000b0031f82743e25sm14871634wrt.67.2023.09.26.07.59.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 07:59:53 -0700 (PDT)
+        Tue, 26 Sep 2023 07:59:54 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -60,9 +60,9 @@ To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
 Cc:     linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [RFT PATCH 3/4] platform/x86: int3472: clk_and_regulator: use GPIO lookup tables
-Date:   Tue, 26 Sep 2023 16:59:42 +0200
-Message-Id: <20230926145943.42814-4-brgl@bgdev.pl>
+Subject: [RFT PATCH 4/4] gpio: acpi: remove acpi_get_and_request_gpiod()
+Date:   Tue, 26 Sep 2023 16:59:43 +0200
+Message-Id: <20230926145943.42814-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230926145943.42814-1-brgl@bgdev.pl>
 References: <20230926145943.42814-1-brgl@bgdev.pl>
@@ -79,66 +79,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Instead of acpi_get_and_request_gpiod() + gpiod_toggle_active_low(), use
-temporary lookup tables with appropriate lookup flags.
+With no more users, we can remove acpi_get_and_request_gpiod().
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- .../x86/intel/int3472/clk_and_regulator.c     | 22 ++++++++-----------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ drivers/gpio/gpiolib-acpi.c   | 28 ----------------------------
+ include/linux/gpio/consumer.h |  8 --------
+ 2 files changed, 36 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/int3472/clk_and_regulator.c b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-index ef4b3141efcd..ec4c4848a2c4 100644
---- a/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-+++ b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-@@ -174,20 +174,16 @@ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
- 	if (int3472->clock.cl)
- 		return -EBUSY;
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 17a86bdd9609..89ff93f3b579 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -158,34 +158,6 @@ static struct gpio_desc *acpi_get_gpiod(char *path, unsigned int pin)
+ 	return gpiochip_get_desc(chip, pin);
+ }
  
--	int3472->clock.ena_gpio = acpi_get_and_request_gpiod(path, agpio->pin_table[0],
--							     "int3472,clk-enable");
-+	int3472->clock.ena_gpio = skl_int3472_gpiod_get_from_temp_lookup(
-+					int3472->dev, path, agpio->pin_table[0],
-+					"int3472,clk-enable", polarity,
-+					GPIOD_OUT_LOW);
- 	if (IS_ERR(int3472->clock.ena_gpio)) {
- 		ret = PTR_ERR(int3472->clock.ena_gpio);
- 		int3472->clock.ena_gpio = NULL;
- 		return dev_err_probe(int3472->dev, ret, "getting clk-enable GPIO\n");
- 	}
- 
--	if (polarity == GPIO_ACTIVE_LOW)
--		gpiod_toggle_active_low(int3472->clock.ena_gpio);
+-/**
+- * acpi_get_and_request_gpiod - Translate ACPI GPIO pin to GPIO descriptor and
+- *                              hold a refcount to the GPIO device.
+- * @path:      ACPI GPIO controller full path name, (e.g. "\\_SB.GPO1")
+- * @pin:       ACPI GPIO pin number (0-based, controller-relative)
+- * @label:     Label to pass to gpiod_request()
+- *
+- * This function is a simple pass-through to acpi_get_gpiod(), except that
+- * as it is intended for use outside of the GPIO layer (in a similar fashion to
+- * gpiod_get_index() for example) it also holds a reference to the GPIO device.
+- */
+-struct gpio_desc *acpi_get_and_request_gpiod(char *path, unsigned int pin, char *label)
+-{
+-	struct gpio_desc *gpio;
+-	int ret;
 -
--	/* Ensure the pin is in output mode and non-active state */
--	gpiod_direction_output(int3472->clock.ena_gpio, 0);
+-	gpio = acpi_get_gpiod(path, pin);
+-	if (IS_ERR(gpio))
+-		return gpio;
 -
- 	init.name = kasprintf(GFP_KERNEL, "%s-clk",
- 			      acpi_dev_name(int3472->adev));
- 	if (!init.name) {
-@@ -314,17 +310,17 @@ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
- 						int3472->regulator.supply_name,
- 						&int3472_gpio_regulator_ops);
- 
--	int3472->regulator.gpio = acpi_get_and_request_gpiod(path, agpio->pin_table[0],
--							     "int3472,regulator");
-+	/* Ensure the pin is in output mode and non-active state */
-+	int3472->regulator.gpio = skl_int3472_gpiod_get_from_temp_lookup(
-+					int3472->dev, path, agpio->pin_table[0],
-+					"int3472,regulator", GPIO_ACTIVE_HIGH,
-+					GPIOD_OUT_LOW);
- 	if (IS_ERR(int3472->regulator.gpio)) {
- 		ret = PTR_ERR(int3472->regulator.gpio);
- 		int3472->regulator.gpio = NULL;
- 		return dev_err_probe(int3472->dev, ret, "getting regulator GPIO\n");
- 	}
- 
--	/* Ensure the pin is in output mode and non-active state */
--	gpiod_direction_output(int3472->regulator.gpio, 0);
+-	ret = gpiod_request(gpio, label);
+-	if (ret)
+-		return ERR_PTR(ret);
 -
- 	cfg.dev = &int3472->adev->dev;
- 	cfg.init_data = &init_data;
- 	cfg.ena_gpiod = int3472->regulator.gpio;
+-	return gpio;
+-}
+-EXPORT_SYMBOL_GPL(acpi_get_and_request_gpiod);
+-
+ static irqreturn_t acpi_gpio_irq_handler(int irq, void *data)
+ {
+ 	struct acpi_gpio_event *event = data;
+diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+index 6cc345440a5b..db2dfbae8edb 100644
+--- a/include/linux/gpio/consumer.h
++++ b/include/linux/gpio/consumer.h
+@@ -606,8 +606,6 @@ void acpi_dev_remove_driver_gpios(struct acpi_device *adev);
+ int devm_acpi_dev_add_driver_gpios(struct device *dev,
+ 				   const struct acpi_gpio_mapping *gpios);
+ 
+-struct gpio_desc *acpi_get_and_request_gpiod(char *path, unsigned int pin, char *label);
+-
+ #else  /* CONFIG_GPIOLIB && CONFIG_ACPI */
+ 
+ #include <linux/err.h>
+@@ -625,12 +623,6 @@ static inline int devm_acpi_dev_add_driver_gpios(struct device *dev,
+ 	return -ENXIO;
+ }
+ 
+-static inline struct gpio_desc *acpi_get_and_request_gpiod(char *path, unsigned int pin,
+-							   char *label)
+-{
+-	return ERR_PTR(-ENOSYS);
+-}
+-
+ #endif /* CONFIG_GPIOLIB && CONFIG_ACPI */
+ 
+ 
 -- 
 2.39.2
 
