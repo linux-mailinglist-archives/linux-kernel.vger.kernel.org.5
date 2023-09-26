@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E627AE667
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5A67AE673
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 09:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbjIZHFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 03:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S230520AbjIZHLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 03:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbjIZHE7 (ORCPT
+        with ESMTP id S229585AbjIZHLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 03:04:59 -0400
-Received: from out28-49.mail.aliyun.com (out28-49.mail.aliyun.com [115.124.28.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34296FB;
-        Tue, 26 Sep 2023 00:04:48 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1404606|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0212173-0.00065658-0.978126;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.UogDhTS_1695711876;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UogDhTS_1695711876)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Sep 2023 15:04:45 +0800
-From:   wangweidong.a@awinic.com
-To:     broonie@kernel.org
-Cc:     13916275206@139.com, alsa-devel@alsa-project.org, arnd@arndb.de,
-        ckeepax@opensource.cirrus.com, colin.i.king@gmail.com,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        harshit.m.mogalapalli@oracle.com, herve.codina@bootlin.com,
-        krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
-        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        liweilei@awinic.com, perex@perex.cz, povik+lin@cutebit.org,
-        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
-        shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
-        u.kleine-koenig@pengutronix.de, wangweidong.a@awinic.com,
-        yang.lee@linux.alibaba.com, yijiangtao@awinic.com
-Subject: Re: [PATCH V4 4/7] ASoC: codecs: Add code for bin parsing compatible with aw87390
-Date:   Tue, 26 Sep 2023 15:04:30 +0800
-Message-ID: <20230926070436.486530-1-wangweidong.a@awinic.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <ZRGT2oLQaJBVVYFH@finisterre.sirena.org.uk>
-References: <ZRGT2oLQaJBVVYFH@finisterre.sirena.org.uk>
+        Tue, 26 Sep 2023 03:11:31 -0400
+Received: from out-201.mta0.migadu.com (out-201.mta0.migadu.com [91.218.175.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759CEDE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 00:11:24 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695712282;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=syqQR+9bPrQHdilL6zKTkrPq1VgSbRvVhw85Q7F9WZ4=;
+        b=B7R2Klencrq0fTtMQPjIqR9iGvs7PJvaVFQliMgF9PNe5Ko1WkYEf6kFLTERkfM5/cf8eh
+        Wu7gwqHpeVik7TI2jErLTf5Uj4xokGz0Gtf2RTq+RaTN/778O4FWJji7emfynVtBDp+U3D
+        lGakHMqUulc7Nj2VfjrRSWWhAZd2It4=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        jacob.e.keller@intel.com, gregkh@linuxfoundation.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH RESEND] i40e: fix the wrong PTP frequency calculation
+Date:   Tue, 26 Sep 2023 15:10:59 +0800
+Message-Id: <20230926071059.1239033-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you very much for your review, but there's something I'd like to discuss with you
+The new adjustment should be based on the base frequency, not the
+I40E_PTP_40GB_INCVAL in i40e_ptp_adjfine().
 
-On Mon, Sep 25, 2023 at 16:06:18 +0200, broonie@kernel.org wrote:
-> On Tue, Sep 19, 2023 at 06:57:21PM +0800, wangweidong.a@awinic.com wrote:
->> From: Weidong Wang <wangweidong.a@awinic.com>
->> 
->> Add aw87390 compatible code to the aw88395_lib.c file
->> so that it can parse aw87390's bin file
->> Modify the function return value
+This issue was introduced in commit 3626a690b717 ("i40e: use
+mul_u64_u64_div_u64 for PTP frequency calculation"), frequency is left
+just as base I40E_PTP_40GB_INCVAL before the commit. After the commit,
+frequency is the I40E_PTP_40GB_INCVAL times the ptp_adj_mult value.
+But then the diff is applied on the wrong value, and no multiplication
+is done afterwards.
 
-> This breaks an x86 allmodconfig build:
+It was accidentally fixed in commit 1060707e3809 ("ptp: introduce helpers
+to adjust by scaled parts per million"). It uses adjust_by_scaled_ppm
+correctly performs the calculation and uses the base adjustment, so
+there's no error here. But it is a new feature and doesn't need to
+backported to the stable releases.
 
-> /build/stage/linux/sound/soc/codecs/aw88395/aw88395.c: In function ‘aw88395_prof
-> ile_info’:
-> /build/stage/linux/sound/soc/codecs/aw88395/aw88395.c:199:21: error: too few arg
-> uments to function ‘aw88395_dev_get_prof_name’
->  199 |         prof_name = aw88395_dev_get_prof_name(aw88395->aw_pa, count);
->      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from /build/stage/linux/sound/soc/codecs/aw88395/aw88395.c:17:
-> /build/stage/linux/sound/soc/codecs/aw88395/aw88395_device.h:184:5: note: declar
-> ed here
->  184 | int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, char 
-> **prof_name);
->      |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+This issue affects both v6.0 and v6.1, and the v6.1 version is an LTS
+release. Therefore, the patch only needs to be applied to v6.1 stable.
 
-I did not get this error when compiling base on "2cf0f715623872823a72e451243bbf555d10d032"
-and the changes to this function are already in [patch V4 3/7]
-Can you tell me how to modify it?
+Fixes: 3626a690b717 ("i40e: use mul_u64_u64_div_u64 for PTP frequency calculation")
+Cc: <stable@vger.kernel.org> # 6.1
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_ptp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Weidong Wang
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ptp.c b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
+index ffea0c9c82f1..97a9efe7b713 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ptp.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ptp.c
+@@ -361,9 +361,9 @@ static int i40e_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 				   1000000ULL << 16);
+ 
+ 	if (neg_adj)
+-		adj = I40E_PTP_40GB_INCVAL - diff;
++		adj = freq - diff;
+ 	else
+-		adj = I40E_PTP_40GB_INCVAL + diff;
++		adj = freq + diff;
+ 
+ 	wr32(hw, I40E_PRTTSYN_INC_L, adj & 0xFFFFFFFF);
+ 	wr32(hw, I40E_PRTTSYN_INC_H, adj >> 32);
+-- 
+2.25.1
 
