@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07967AE585
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081127AE592
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 08:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbjIZGJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 02:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
+        id S233874AbjIZGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 02:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233739AbjIZGJj (ORCPT
+        with ESMTP id S233856AbjIZGLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 02:09:39 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E88F3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:09:33 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c12ae20a5cso128932321fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Sep 2023 23:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1695708571; x=1696313371; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bsSkGdr3lR16TyaxQNyV8wP3RWSIxpxumK3mahZfc/s=;
-        b=YN2dmb6IE+DxPOTkI333RIN8ATkayptRV/QvcUkUEoddmeZG3+9819pPc4g632L4Ck
-         /3XsRfdpdoV8xtx2vNfQQyrH25Vu8LEXzHCNFvL7BBJJyWZfzeGkcnND8jtNpTc+cDw8
-         Q184xDXaThaQvXnZoirp5WXi9PWk5KcoA9wZpBta1p4GkGLay3P058GPI7JglgG9pg4R
-         45IV47LXNRXXdXxDYc1RKjW7Pb5S/OjDvSvNoZln+ek+f/P2w2FXNjhVVgOj5mCjJq+1
-         XnM78E+PQxZ+VGjeWQXXh92nRfvqY+tWrzRbLQ2mdCtvIem+Jt5w7NkA4EJS1Q8wBjDS
-         yeuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695708571; x=1696313371;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bsSkGdr3lR16TyaxQNyV8wP3RWSIxpxumK3mahZfc/s=;
-        b=qfj8Srl5XfAyMMnwmBYAvoP265gy4bIIboDpctFZfodHlf2uVAEE7jSoOw1BIVWNFh
-         8FulTG7rlXVpN6jBTa+q+imWaVk2FuYOVb9uv24PWv09T1tNS5NS+8O29JlsjBHFI3XS
-         Ewsec6mUQzSXwh5k1F8zv50Q6QQPR6o30iT+b9r5MXVdW1Zhf6z2GKFfJcQOsWCiLsYV
-         dOZOrEwmD+gLZFHI0tAtVV6vzUsZ1njmfUBxOAKiQ4a0wh1c0bXu12uMbiePm1OOvwBp
-         RdfNgORANPUtQY7HUKfI+mP94xptJqIPkWHPZuSTaO2dVUbOMBXvcUww8u7AY4PmEWid
-         ZTdQ==
-X-Gm-Message-State: AOJu0Yx/cosYsYKqwOPn2SHYog7QMU+hPLfMYFT3KIGspgjmayPX35Bb
-        x3VDetDt1IRSafJPoQcvVKH2w8MfYLD2zExDs4i3/w==
-X-Google-Smtp-Source: AGHT+IGB22iFd0gGVWxd884bYZkv8M30TEfy4t+P+lAtOO7/8Q7P+BMwJUNw0veRp18N5y3rVUuq8IESK1TUjvPweMs=
-X-Received: by 2002:a2e:9b4b:0:b0:2bd:d34:f892 with SMTP id
- o11-20020a2e9b4b000000b002bd0d34f892mr7816213ljj.3.1695708571258; Mon, 25 Sep
- 2023 23:09:31 -0700 (PDT)
+        Tue, 26 Sep 2023 02:11:00 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6920AE55;
+        Mon, 25 Sep 2023 23:10:41 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id E07D432009F0;
+        Tue, 26 Sep 2023 02:10:39 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 26 Sep 2023 02:10:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695708639; x=1695795039; bh=oC
+        YIjuW89ugmbyi2Z2bcvS41djt8ybKt3d7f3d7YUtg=; b=ouBK1gk5nfLdyJrDUI
+        wdVsO41CB6GBBarwCeJyFPMDWdoV68AgcEYOMCB167pKfQw5T3b/0yNArFnUaAi1
+        9XPWYRWWdK4GRlTP/vVy9dznUHP+KWfCtdNwRh/UFPzXOqYUEvqQsKEHzjS1Unb7
+        Ur3ehzaONMVwXFqRa0X9d/eu9Va05CnXhf/h9ahqd1V78WjLlMBhS6Osps22QLIm
+        +Wmtf2gBFte97YLyyg0ReXeZM4DCCt5qO0Qlcmt6zGWPsuEsTShJvODFNKVW33TF
+        K8Ps/ik5XfZTK/U1fqviD0qH4xfWosZoUs31UWkITtpDyT1iVofsRxdiM+km24P4
+        lPvg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695708639; x=1695795039; bh=oCYIjuW89ugmb
+        yi2Z2bcvS41djt8ybKt3d7f3d7YUtg=; b=MpaLGSaJtda/meO2nTAhN9DT3q6Uy
+        AkxW0eyOBXlGqw066njGrSEW1Eu6QPBQz8gVp2yN3kQsJjB/qqocqMAHNhF+DO+P
+        ioO/+KCDWcsM5mkd/uqf1vFuL2IDgMw19wFtr8H68rFD6A74oxtqAXIpR62xxkoF
+        BgBTndlxVKGpdn6g9KLQgVeGlGNkftsz5Pk3InWj8odoUtqCtdw0VeMsueuSAXZV
+        Z+meKr+nn/7VkQxXTJonIeIIzqJabeEDCf7e0GLcFI+L6PGKdy8dlZ6FLsEkK9MM
+        +NiHuk3zGFd/yY9M35Sz22fY/yy8rKeaLPQ63oLBpX116mbX7eL+JSdHQ==
+X-ME-Sender: <xms:33USZfZAcbkSN8QCtuvncxGpsKPXgIYsjJsSIReBOXVReTblJGowbA>
+    <xme:33USZebIUzSjZvt6N_6FeN8K5sBdt89_cS4EiFQnocuUiIrhaexA4ul1v1dKboMIM
+    QI2eT5r2fgrHVa8EDY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelhedguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:33USZR-Gky2tN1vqb_XJk8lV_2y5pK0Upu7mfQAdSOYmDAjYzjzP4Q>
+    <xmx:33USZVphx70509OBzc38Mvd8x6PaY5aM90xynxsfDgpUfldWeO4RQA>
+    <xmx:33USZaoTl_b7HbfCBmNplViPJl8yTHsm0-PxiDHMby1GiB4ivUGb3A>
+    <xmx:33USZZ2MP7jWG3cYDDrsd9VqvYUClaPgWkZ-5VFGFAdk9ABmjohJpg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 24B8AB60089; Tue, 26 Sep 2023 02:10:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
 MIME-Version: 1.0
-References: <20230922062558.1739642-1-max.kellermann@ionos.com> <fd88660f-0d23-16fb-2408-ac18ad01778e@redhat.com>
-In-Reply-To: <fd88660f-0d23-16fb-2408-ac18ad01778e@redhat.com>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Tue, 26 Sep 2023 08:09:20 +0200
-Message-ID: <CAKPOu+-wLkKSrbbDiWktAnFAO8OooryX-p7LVvvRW=Ho44nfGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fs/ceph/debugfs: make all files world-readable
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <3a8f0d0a-25ad-49c3-9cd2-66db44a4a1e6@app.fastmail.com>
+In-Reply-To: <ce00dad5acdd4aff099b289843e30c83f7e31764.1695679700.git.falcon@tinylab.org>
+References: <cover.1695679700.git.falcon@tinylab.org>
+ <ce00dad5acdd4aff099b289843e30c83f7e31764.1695679700.git.falcon@tinylab.org>
+Date:   Tue, 26 Sep 2023 08:10:17 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Zhangjin Wu" <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     "Palmer Dabbelt" <palmer@rivosinc.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>, paulburton@kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Willy Tarreau" <w@1wt.eu>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        "Tim Bird" <tim.bird@sony.com>
+Subject: Re: [PATCH v1 6/7] DCE/DSE: riscv: add HAVE_TRIM_UNUSED_SYSCALLS support
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 7:18=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
-> I am not sure whether will this make sense. Because the 'debug' under
-> '/sys/kernel/' is also only accessible by privileged process.
+On Tue, Sep 26, 2023, at 00:42, Zhangjin Wu wrote:
+> For HAVE_TRIM_UNUSED_SYSCALLS, the syscall tables are hacked with the
+> inputing unused_syscalls.
+>
+> Firstly, the intermediate preprocessed .i files are generated from the
+> original C version of syscall tables respectively, and named with a
+> 'used' suffix: syscall_table_used.i, compat_syscall_table_used.i.
+>
+> Secondly, all of the unused syscalls are commented.
+>
+> At last, two new objective files sufixed with 'used' are generated from
+> the hacked .i files and they are linked into the eventual kernel image.
+>
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 
-Not exactly correct. It is by default accessible to processes who have
-CAP_DAC_OVERRIDE and additionally it is accessible to (unprivileged)
-processes running as uid=3D0 (those two traits usually overlap).
-But we don't want to run kernel-exporter as uid=3D0 and neither do we
-want to give it CAP_DAC_OVERRIDE; both would be too much, it would
-affect much more than just (read) access to debugfs.
-Instead, we mount debugfs with "gid=3DX,mode=3D0710". That way, we can
-give (unprivileged) processes which are member of a certain group
-access to debugfs, and we put our kernel-exporter process in that
-group.
+As mentioned in my comment on the mips patch, hacking the preprocessed
+file here is too much strain on the old infrastructure, the
+asm-generic/unistd.h file is already too hard to understand for
+anyone and in need of an overhaul, so let's work together on fixing
+it up first.
 
-We can use these mount options to change debugfs defaults, but if a
-debugfs implementor (such as cephfs) decides to override these global
-debugfs settings by passing stricter file permissions, we can't easily
-override that. And that is what my patch is about: restore the ability
-to override debugfs permissions with a mount option, as debugfs was
-designed.
-
-Max
+      Arnd
