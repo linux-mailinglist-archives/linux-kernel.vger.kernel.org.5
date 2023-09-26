@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C89B7AF202
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF5A7AF203
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 19:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235367AbjIZRwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 13:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S235382AbjIZRw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 13:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235290AbjIZRwT (ORCPT
+        with ESMTP id S235329AbjIZRwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:52:19 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C954C9F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:52:12 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-65af18cac71so41452836d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:52:12 -0700 (PDT)
+        Tue, 26 Sep 2023 13:52:22 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC283121
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:52:15 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-77386822cfbso611993785a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 10:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695750732; x=1696355532; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GzysN/2kj2tE0eXiur6JD4HKhHpBrgVlYqJUAMXzLD8=;
-        b=Vc1bQnFwUSu4ALkuMr5TjdllDciCUoJemZY4QT/IbloHcUMfCvkHo1pdR+hfB9ZBUE
-         2nqZNInS/NPl06pEvbjVpim4XxsKjT8suLV7IVFk+Ips0/azMsw3CeVSRnS+qPXzWw8V
-         ZMzMgb5TvOBBPHxkuj8qvhczaXfx1vdfWiQVs=
+        d=broadcom.com; s=google; t=1695750735; x=1696355535; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qE71EEj24Hyg3yI0A/q+T0faD48xdDUVlkX1JTJRnUQ=;
+        b=UBz8VT2geeYmw04l97qJStK+j1ICI4ZDth0DAF8W9za9t8+DpLG6GZ2Odzw15qzLWT
+         JsmeV7tDEj0yeq8HLrbyAJEPwpiP7Zq/s9cbNTUGg0AoNMCKK01HmcWfn9bEXqswVCv5
+         V3054PYUGg8JZw5PWZom8yOGTlbgF2NQ42HZk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695750732; x=1696355532;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GzysN/2kj2tE0eXiur6JD4HKhHpBrgVlYqJUAMXzLD8=;
-        b=Dg8upC8yaT2cis9LxbrmdQo9KzyTTBfuND3mLk3F0kKnIz36IMs3i5tsykO6weDLbP
-         pGe/GMPiFCzeRHm/MP+zVicabrYqpgG080a7+FGGyi9P5s8hJxiXGqQmXkgajHlet62S
-         Lzij5utG1oau9lVF5FCOBc5lx6ph7AcOAutX0A3AB0++KzWw4JLKZfqe4fQ32UoDfS+H
-         acsdqNaqB42lPcITMyrjUcomau0Y87caotU+qwtqHKsKEcZb5r4TWigu6SUwgTdy6NyU
-         KwcKnOpRP/34t2OrTf5t7sTT01w3J4IYEnRWMtGj62JzoqI01F+PrLIGDsAMlNteMHyM
-         /z3g==
-X-Gm-Message-State: AOJu0YxwaHgaPN4FfEd7JgVJBO/wtWPEiQkkfbG1E3hLE8SDxurJ2cdM
-        PKBATSUWkG+rJYB/WC4FZR7dvg==
-X-Google-Smtp-Source: AGHT+IETGxylUj7aO/htlTzgUg6l9dx7YG1Y5aHcYuLequ8HQ7fe3gcyuL2Tbm34Su9jjr6cLs68Pg==
-X-Received: by 2002:a0c:cd05:0:b0:65a:e42b:a7e7 with SMTP id b5-20020a0ccd05000000b0065ae42ba7e7mr8565598qvm.64.1695750731791;
-        Tue, 26 Sep 2023 10:52:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695750735; x=1696355535;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qE71EEj24Hyg3yI0A/q+T0faD48xdDUVlkX1JTJRnUQ=;
+        b=q1OgcYC6B43wsZJyOX6Os2GXLjUyjuj9E/MLtzNEmv+L10wcP4+0G0Hh9cB47XCjUL
+         lCngtdD7hfxmYgk7LNj6n2alqs2n8lo+Q8rlzGf0PBZ4sR9JylPkrKxoSfvZAzoXopXR
+         U/5sNi0AI8KQCuGUUVptGj0+2X1iIK0HYSKx6Scfq4hmTR1S+QXiakqPb+gcwS5+juHE
+         wKNseERhvy3GWJSZ9XeVVUngaVYIkuETj4z8wF3RodsjgOykDXGAvc3so8P0HfST2KZ9
+         RwaK/kz+gF9CZp3xoELbjSs3hv2jwWXGughbUoctxUVdO0UaVw6MVS3k3XLxibRFke8i
+         Oc1g==
+X-Gm-Message-State: AOJu0YxM9hEcbG246vVU15X4FjCa4+zXSjcOQMkFT8j2IgnfGhTSe+iJ
+        bpJpLkvodsjcQ19Z5a9CYnA/hg==
+X-Google-Smtp-Source: AGHT+IG9TX1Yxd5CYdHKHdjYInYMwVzA8buNL3I46lB2BF5ncwg1kQrP9S7IwW2ixjxJ1RNaB+IK/Q==
+X-Received: by 2002:ad4:5ce3:0:b0:651:631d:b379 with SMTP id iv3-20020ad45ce3000000b00651631db379mr14908887qvb.10.1695750734999;
+        Tue, 26 Sep 2023 10:52:14 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id p9-20020a0cf549000000b0065b11053445sm1992076qvm.54.2023.09.26.10.52.10
+        by smtp.gmail.com with ESMTPSA id p9-20020a0cf549000000b0065b11053445sm1992076qvm.54.2023.09.26.10.52.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 10:52:11 -0700 (PDT)
+        Tue, 26 Sep 2023 10:52:14 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     Christoph Hellwig <hch@lst.de>,
         bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
         james.quinlan@broadcom.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+Cc:     Russell King <linux@armlinux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Eric DeVolder <eric.devolder@oracle.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
         "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: RFC: ARM && restricted DMA apparently not working
-Date:   Tue, 26 Sep 2023 13:52:05 -0400
-Message-Id: <20230926175208.9298-1-james.quinlan@broadcom.com>
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
+Date:   Tue, 26 Sep 2023 13:52:06 -0400
+Message-Id: <20230926175208.9298-2-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230926175208.9298-1-james.quinlan@broadcom.com>
+References: <20230926175208.9298-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000038636060646bccc"
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        boundary="00000000000033bbac060646bc5b"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS autolearn=no
-        autolearn_force=no version=3.4.6
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_TVD_MIME_NO_HEADERS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000038636060646bccc
+--00000000000033bbac060646bc5b
 
-We've just started using the resticted memory feature (DMA_RESTRICTED_POOL)
-which isolates a region for DMA memory for a particular device,
-SWIOTLB-style.  This feature works with ARCH=arm64 but does not work on
-ARCH=arm unless I apply the commit to select DMA_DIRECT_REMAP.  This seems
-to hold from 5.15 to the present.
+Without this commit, the use of dma_alloc_coherent() while
+using CONFIG_DMA_RESTRICTED_POOL=y breaks devices from working.
+For example, the common Wifi 7260 chip (iwlwifi) works fine
+on arm64 with restricted memory but not on arm, unless this
+commit is applied.
 
-I've noticed that arm64 selects DMA_DIRECT_REMAP and arm does not and I'm
-guessing that there may be a reason for this?
-
-Regards,
-Jim Quinlan
-Broadcom STB/CM
-
-Jim Quinlan (1):
-  ARM: Select DMA_DIRECT_REMAP to fix restricted memory
-
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+---
  arch/arm/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 9557808e8937..b6f1cea923cf 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -34,6 +34,7 @@ config ARM
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT if CPU_V7
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_HUGETLBFS if ARM_LPAE
++	select DMA_DIRECT_REMAP
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
+ 	select ARCH_USE_MEMTEST
 -- 
 2.17.1
 
 
---000000000000038636060646bccc
+--00000000000033bbac060646bc5b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -179,13 +183,13 @@ AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
 75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
 AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
 AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAK3el4bGcqX7RJV/0977/ogj31ydY4
-fLvXCygzuzhDMDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA5
-MjYxNzUyMTJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDJz5FpJa10PQDrrQzkIxzsQe9s1UGq
+DB0H1zxgc6OWxzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA5
+MjYxNzUyMTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
 hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEAS3rFwff3noK9gDwBWSBIV4VTk5RjLResJMYy3kq5s2XEPjsJ
-ZdzKpmhqN5nJmXxmWBmO5b7IQOPwGbPncIuC0+0A7ZOKvfHb1SBjHPRxSxj43443E0138a/GARt+
-ovgRwmPU8Hkd/oX1gkxnK8T6aiye9VQ8CQcFjGZwL304oJRlFDZVXZi6b7ebK/cf3kyxGXP/0wrR
-o2lMCpXtPg5v1SAr8pw13p+fqHv3jjanfIxX747b1peH5x0wFyQYmXzYu53PDV+CfYZYlGa9zD2I
-gm8fFwChEx5uVHce9vegJ6L34BR2G5Y1NfwgOzGDIMJXdl3kNdyAzIprNGtBK4fWRw==
---000000000000038636060646bccc--
+AgEwDQYJKoZIhvcNAQEBBQAEggEAOw9SZT2MCGGifXOg6JQ9rpYqWO7s4M98Zn5/7z0T4yh8mssY
+wtDGkJl/OOMywmfM/F85cZUYnC3hXiHC7o3iW7e7yVSPyeE5/mhzyBnBJUI/s13BF8BXxkPWvHjt
+fD6xM7mD07VYCs+V/3c2ZWyWPplDxGwzJqhNjlRer6II0WWOTzSwCeohILuKZLn6mevrhsqi8niJ
+WuG2AC13QY5CAqaGa17SKEVyA4rM99QN1hnch0kyIHXSzigr/OcUyiUUcbHW5pyVMaooqL/XMtp8
+D2kUIcGCy3w4j6weL2NqVO+BD1Casi6+6H6EUjdrXGLprjwqylHNVWmkhAegUCECJw==
+--00000000000033bbac060646bc5b--
