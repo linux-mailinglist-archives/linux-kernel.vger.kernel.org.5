@@ -2,248 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 354CD7AE7FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EEE7AE7FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Sep 2023 10:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjIZI1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 04:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S233894AbjIZI33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 04:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233947AbjIZI1p (ORCPT
+        with ESMTP id S229725AbjIZI31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 04:27:45 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C134121
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:27:38 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c4e9d1a0aaso6984285a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:27:38 -0700 (PDT)
+        Tue, 26 Sep 2023 04:29:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445C1B4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695716920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BDGMuzc+Ph0H26Zmokb7by0M5wtPKpu7VqpmaaH1U6E=;
+        b=dRvO65Hm6NKk94mtdPiI1Kh+ay2Ka4Ck8+kTQVY/NRSh45dHRJ5DhGAjsfMF7TfexnPMlA
+        b1j2H7ttYF+z/hkjnp5dYR0bKEw83cYOT8H3CjUACDqc7WsrhjbuE3ft3cJ77hri+v49go
+        3K33nju/zDbylHxjG7wKymaj4qf1zv4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-kH42RRsBNdWN6GRUj7Y6RA-1; Tue, 26 Sep 2023 04:28:38 -0400
+X-MC-Unique: kH42RRsBNdWN6GRUj7Y6RA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-532eb7faea1so6476195a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 01:28:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695716857; x=1696321657;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=55XKxYhpepqWXUdY7SuK9vUe13bL5ShqPzIX2cS2KNs=;
-        b=qGqBQwrsAHoHyhTfvwk/Im/K+t7ceDLXHFCPyofWJmdbOmOcWDNa5D4TW5vzPlav0H
-         I9DVxhsJ2X6BXnHwrbKEZsGJP0+8fgeX4l5VpUss4oy8NRYJvJouIb8e9FqN9nbuOi4H
-         0CR4gS6EnvqiyC2gm+6albswrqWEkUF3KIG7Ywuong7mazXru/CXXpwUJ23vLDeQ3olC
-         WcYoVLgnTel7Cx8+YHqMaAZbETnRgGkALVngon4feratbV12HHoQ3bXWXq+74BRxkHJo
-         hZ0i2EynF7YC01a2Txb4pj08lLy/HhHunjO1y2IN2mKVW6Ch0gCO9mIY7a7dTHYDouGI
-         KXtQ==
-X-Gm-Message-State: AOJu0YxM93w6slSYwKP4IUSNaTXtC3j6cL4021U77QGLoDIvj8aLL0Nv
-        wvSjIfDIwmNf2RTa3LKLjr0H6YXHSkfbC2LtLfhCnCENOkDm
-X-Google-Smtp-Source: AGHT+IHn/Dc/iL1JhzuZy+gkTzxi+2Gj1EIRYbTwKpYUVoI17DDiTdctf9ir0JVL7V+W6jSBeYgPBPEFyMn6IybRoiAg8pBmepr1
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:a88f:b0:1d6:92f5:c1d2 with SMTP id
- eb15-20020a056870a88f00b001d692f5c1d2mr4416177oab.11.1695716857558; Tue, 26
- Sep 2023 01:27:37 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 01:27:37 -0700
-In-Reply-To: <0000000000006777d506051db4fd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ef3b8a06063ed805@google.com>
-Subject: Re: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in ntfs_write_bh
-From:   syzbot <syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
+        d=1e100.net; s=20230601; t=1695716917; x=1696321717;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BDGMuzc+Ph0H26Zmokb7by0M5wtPKpu7VqpmaaH1U6E=;
+        b=d1G28Y7iaheA3OvEXUDVdWCoe5jd4p5VQuUH9fpmolO3SgdqiUsyzrA2xtLBmURm3E
+         AHMRJiiZNpIwXRv72tcyew5Z2E28InKnD059/Xho0fDKTt5Hmy9WDD2tHfzUQKcoA8Gk
+         +rBUjOsbnfV/JXkRXMjYUfgBF18/0IDON/AN9YGblxOtN84rOe3LBtwkrQ6+MCWiKe06
+         ay1NrGJwQtPWWCoDwBTdXoDkXVWofzitk17NOSEoWD8Zq/VUrAZG+gT8XoICInHAom5/
+         yQl6G01PellTMQP7j9VDLjBIaL7TRAGndzk9Ip3/5KpT9hLUXXmQmHjeHMfHZ3Vmq8Mt
+         QSyA==
+X-Gm-Message-State: AOJu0YxOH/u+QIVkgMt/HsfY3hcjHzldvg6+zwfb1+TVX+nDoPStn+12
+        IDJ/rA4MhR5+fGTTWwaP+L1P5iaokmt7rnG8dqeN3plk5JiQcnYzy2EJY2+h+CrF5ebwpPyFuXG
+        EEh3/69IrqATFBzCEEINAjClj
+X-Received: by 2002:aa7:df0a:0:b0:530:df47:f172 with SMTP id c10-20020aa7df0a000000b00530df47f172mr7552037edy.15.1695716917860;
+        Tue, 26 Sep 2023 01:28:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGTLIYbLX149Gs3q2BIYdKDFI+frkReM0C/HZ5AV891vDyAWTc1p0/UObw+C4sShPj7YUXCAQ==
+X-Received: by 2002:aa7:df0a:0:b0:530:df47:f172 with SMTP id c10-20020aa7df0a000000b00530df47f172mr7552030edy.15.1695716917532;
+        Tue, 26 Sep 2023 01:28:37 -0700 (PDT)
+Received: from starship ([89.237.96.178])
+        by smtp.gmail.com with ESMTPSA id l21-20020a056402125500b0053315f0d510sm6549327edw.76.2023.09.26.01.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 01:28:37 -0700 (PDT)
+Message-ID: <abd13162f106c5ce86c211fc9d32d901ab34500b.camel@redhat.com>
+Subject: Re: [PATCH v2 0/4] KVM: x86: tracepoint updates
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Date:   Tue, 26 Sep 2023 11:28:35 +0300
+In-Reply-To: <ZRIf1OPjKV66Y17/@google.com>
+References: <20230924124410.897646-1-mlevitsk@redhat.com>
+         <ZRIf1OPjKV66Y17/@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+У пн, 2023-09-25 у 17:03 -0700, Sean Christopherson пише:
+> On Sun, Sep 24, 2023, Maxim Levitsky wrote:
+> > This patch series is intended to add some selected information
+> > to the kvm tracepoints to make it easier to gather insights about
+> > running nested guests.
+> > 
+> > This patch series was developed together with a new x86 performance analysis tool
+> > that I developed recently (https://gitlab.com/maximlevitsky/kvmon)
+> > which aims to be a better kvm_stat, and allows you at glance
+> > to see what is happening in a VM, including nesting.
+> 
+> Rather than add more and more tracepoints, I think we should be more thoughtful
+> about (a) where we place KVM's tracepoints and (b) giving userspace the necessary
+> hooks to write BPF programs to extract whatever data is needed at any give time.
+> 
+> There's simply no way we can iterate fast enough in KVM tracepoints to adapt to
+> userspace's debug/monitoring needs.  E.g. if it turns out someone wants detailed
+> info on hypercalls that use memory or registers beyond ABCD, the new tracepoints
+> won't help them.
+> 
+> If all KVM tracepoints grab "struct kvm_vcpu" and force VMCS "registers" to be
+> cached (or decached depending on one's viewpoint), then I think that'll serve 99%
+> of usecases.  E.g. the vCPU gives a BPF program kvm_vcpu, vcpu_{vmx,svm}, kvm, etc.
+> 
+> trace_kvm_exit is good example, where despite all of the information that is captured
+> by KVM, it's borderline worthless for CPUID and MSR exits because their interesting
+> information is held in registers and not captured in the VMCS or VMCB.
+> 
+> There are some on BTF type info issues that I've encountered, but I suspect that's
+> as much a PEBKAC problem as anything.
+> 
 
-HEAD commit:    6465e260f487 Linux 6.6-rc3
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13d78ffe680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb54ecdfa197f132
-dashboard link: https://syzkaller.appspot.com/bug?extid=bc79f8d1898960d41073
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14aa4e32680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171787b6680000
+While eBPF has its use cases, none of the extra tracepoints were added solely because of
+the monitoring tool and I do understand that tracepoints are a limited resource.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3b1a49bae59d/disk-6465e260.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f3226aa54969/vmlinux-6465e260.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/225ee050173e/bzImage-6465e260.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/c217b59cb3bd/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/11dc567a19b3/mount_2.gz
+Each added tracepoint/info was added only when it was also found to be useful for regular
+kvm tracing.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com
+Best regards,
+	Maxim Levitsky
 
-ntfs3: loop0: ino=0, attr_set_size
-ntfs3: loop0: Mark volume as dirty due to NTFS errors
-==================================================================
-BUG: KASAN: slab-use-after-free in ntfs_write_bh+0x6b9/0x6e0 fs/ntfs3/fsntfs.c:1401
-Read of size 8 at addr ffff888016aaa000 by task syz-executor201/5400
-
-CPU: 1 PID: 5400 Comm: syz-executor201 Not tainted 6.6.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- ntfs_write_bh+0x6b9/0x6e0 fs/ntfs3/fsntfs.c:1401
- mi_write+0xc0/0x1e0 fs/ntfs3/record.c:346
- ni_write_inode+0x1025/0x2810 fs/ntfs3/frecord.c:3360
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
- writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
- sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
- ntfs_set_state+0x3f0/0x6e0 fs/ntfs3/fsntfs.c:995
- attr_set_size+0x139c/0x2ca0 fs/ntfs3/attrib.c:866
- ntfs_extend_mft+0x29f/0x430 fs/ntfs3/fsntfs.c:527
- ntfs_look_free_mft+0x777/0xdd0 fs/ntfs3/fsntfs.c:590
- ni_create_attr_list+0x937/0x1520 fs/ntfs3/frecord.c:876
- ni_ins_attr_ext+0x23f/0xaf0 fs/ntfs3/frecord.c:974
- ni_insert_attr+0x310/0x870 fs/ntfs3/frecord.c:1141
- ni_insert_resident+0xd2/0x3a0 fs/ntfs3/frecord.c:1525
- ntfs_set_ea+0xf46/0x13d0 fs/ntfs3/xattr.c:437
- ntfs_save_wsl_perm+0x134/0x3d0 fs/ntfs3/xattr.c:946
- ntfs3_setattr+0x92e/0xb20 fs/ntfs3/file.c:708
- notify_change+0x742/0x11c0 fs/attr.c:499
- chown_common+0x596/0x660 fs/open.c:783
- do_fchownat+0x140/0x1f0 fs/open.c:814
- __do_sys_lchown fs/open.c:839 [inline]
- __se_sys_lchown fs/open.c:837 [inline]
- __x64_sys_lchown+0x7e/0xc0 fs/open.c:837
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0958017a59
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0957fd4218 EFLAGS: 00000246 ORIG_RAX: 000000000000005e
-RAX: ffffffffffffffda RBX: 00007f09580be6a8 RCX: 00007f0958017a59
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000080
-RBP: 00007f09580be6a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f09580be6ac
-R13: 00007f095808b4ac R14: 0032656c69662f2e R15: 00007f095806c0c0
- </TASK>
-
-Allocated by task 5038:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1023 [inline]
- __kmalloc+0x60/0x100 mm/slab_common.c:1036
- kmalloc include/linux/slab.h:603 [inline]
- tomoyo_realpath_from_path+0xb9/0x710 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x2a3/0x3b0 security/tomoyo/file.c:771
- tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
- tomoyo_file_open+0xa8/0xd0 security/tomoyo/tomoyo.c:327
- security_file_open+0x6a/0xe0 security/security.c:2836
- do_dentry_open+0x538/0x1730 fs/open.c:916
- do_open fs/namei.c:3639 [inline]
- path_openat+0x19af/0x29c0 fs/namei.c:3796
- do_filp_open+0x1de/0x430 fs/namei.c:3823
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1448
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5038:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- tomoyo_realpath_from_path+0x1a6/0x710 security/tomoyo/realpath.c:286
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x2a3/0x3b0 security/tomoyo/file.c:771
- tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
- tomoyo_file_open+0xa8/0xd0 security/tomoyo/tomoyo.c:327
- security_file_open+0x6a/0xe0 security/security.c:2836
- do_dentry_open+0x538/0x1730 fs/open.c:916
- do_open fs/namei.c:3639 [inline]
- path_openat+0x19af/0x29c0 fs/namei.c:3796
- do_filp_open+0x1de/0x430 fs/namei.c:3823
- do_sys_openat2+0x176/0x1e0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1448
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff888016aaa000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 0 bytes inside of
- freed 4096-byte region [ffff888016aaa000, ffff888016aab000)
-
-The buggy address belongs to the physical page:
-page:ffffea00005aaa00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x16aa8
-head:ffffea00005aaa00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c42140 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 3094771911, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0xee0/0x2f20 mm/page_alloc.c:3170
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
- alloc_page_interleave+0x1e/0x250 mm/mempolicy.c:2131
- alloc_pages+0x22a/0x270 mm/mempolicy.c:2293
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x251/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x131/0x340 mm/slub.c:3517
- kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- kobject_uevent_env+0x24c/0x1800 lib/kobject_uevent.c:524
- kset_register+0x1b6/0x2a0 lib/kobject.c:873
- class_register+0x1cb/0x330 drivers/base/class.c:205
- ib_core_init+0xb9/0x300 drivers/infiniband/core/device.c:2780
- do_one_initcall+0x117/0x630 init/main.c:1232
- do_initcall_level init/main.c:1294 [inline]
- do_initcalls init/main.c:1310 [inline]
- do_basic_setup init/main.c:1329 [inline]
- kernel_init_freeable+0x5c2/0x900 init/main.c:1547
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888016aa9f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888016aa9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888016aaa000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888016aaa080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888016aaa100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
