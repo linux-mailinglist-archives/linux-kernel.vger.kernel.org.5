@@ -2,189 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 137107B0358
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F497B035E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjI0Lxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
+        id S231477AbjI0Ly5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjI0Lxt (ORCPT
+        with ESMTP id S229901AbjI0Lyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:53:49 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88A0BE
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:53:45 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RwZhG1xXBzrT2y;
-        Wed, 27 Sep 2023 19:51:26 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 27 Sep 2023 19:53:41 +0800
-CC:     <yangyicong@hisilicon.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
-        <linux-kernel@vger.kernel.org>, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] arch_topology: Support SMT control on arm64
-To:     Sudeep Holla <sudeep.holla@arm.com>
-References: <20230919123319.23785-1-yangyicong@huawei.com>
- <20230921150333.c2zqigs3xxwcg4ln@bogus>
- <0ea971ba-549f-62ed-a181-41b5572cd190@huawei.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <ea76baf8-2215-d666-6270-a9bb20bba499@huawei.com>
-Date:   Wed, 27 Sep 2023 19:53:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 27 Sep 2023 07:54:52 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2043.outbound.protection.outlook.com [40.107.220.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AB6FC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:54:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PnslfQ2K4sXeGfFlee8kWrWr2ENbUxeFGRyeRXtn7Jrf36MB5iMQJKzN63SBGMXkeUGQ7YFG+sF+1ufDHS8P0o8dsnQneXzRpfJZv7/f9TSclmdu+qNfv/N5h3dXjZn4wxilntBHW/yp9ukGR9jJRW7P1KdgYxuoUySKwU2rahj0GAYofq5hB6IINvX0CH3NnmYOS1ORbnhZ5N/p5NtjREUlC7/GeZwX15svtkl9aXuwW94kJxHpXzSALyKXx2ddF91QzaHFfbhvSdIJUonisR16qLLdMWo/KnhhXUpVdT2HOYQhZwkPNBjUqd9dh16uokV7pHUA1FdGYmqvnPcs9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cFwy3neVL04A+NqKH+xDGfrz8aU92UtO0hWTF1k9O5k=;
+ b=DsBvRXPsz95wlxs/5l8ZNTsbMrA1TAirgbSMWCdxGtuiNPNWNB8WMLNN9jFu5z9tvg2Nigg9JnfYMJmkRg5d6NMgBjj3K2z3oHv4SwrD86JEN+FeumdgbJvHtJaZ7Qfw0Ncz1XGWEP+dJz4vFxd82y3xI/eFaCFgr4jTLHLN9xjUG/63YW6RX8ZCN+Cn2/VmfNFDJLTgWDXE4te/1H9E5c4fg9Y7vac6dwlFHyjKF7r57Sjj6JWsFsmuiFC83vXTjDGephkBbqQp8TzdsUqSEKUlFRNS4u/mBiPwJDYvGy/q6pcZ4D1tTSP39zOmPTg5J+P408dyLfVh1gdXSQZGsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cFwy3neVL04A+NqKH+xDGfrz8aU92UtO0hWTF1k9O5k=;
+ b=CU64YNV+ZLTGaEIElysaNze23jghFcxJr6bq+WEcEvvjDzxhdsDBAYh7k8GgEl2hs/FIviarZpBBX3LvixH4fwnHGE/OqB91nhF0ijtXS/86z9Or6c2mHZZASUPUQfzgfEpK7YAbLOr6lzIYYQx4THcUkNPvO8xNOHV0akIRVvg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM6PR12MB4944.namprd12.prod.outlook.com (2603:10b6:5:1ba::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
+ 2023 11:54:47 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d%4]) with mapi id 15.20.6838.016; Wed, 27 Sep 2023
+ 11:54:46 +0000
+Message-ID: <390db8af-1510-580b-133c-dacf5adc56d1@amd.com>
+Date:   Wed, 27 Sep 2023 13:54:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
+ control
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        faith.ekstrand@collabora.com, luben.tuikov@amd.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Donald Robson <Donald.Robson@imgtec.com>,
+        Frank Binns <Frank.Binns@imgtec.com>,
+        Sarah Walker <sarah.walker@imgtec.com>
+References: <20230924224555.15595-1-dakr@redhat.com>
+ <20230925145513.49abcc52@collabora.com>
+ <c6ec9ab4-d63b-0a72-4abf-682b94739877@amd.com>
+ <20230926091129.2d7d7472@collabora.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230926091129.2d7d7472@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1PR04CA0088.eurprd04.prod.outlook.com
+ (2603:10a6:803:64::23) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-In-Reply-To: <0ea971ba-549f-62ed-a181-41b5572cd190@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|DM6PR12MB4944:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63bd6418-4ca2-4af0-e6e9-08dbbf508bc6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G4fxqC/kNrWLo1ueW+ywOAFU2bLD8meYIWlBz4gXeq8PK0uk9eW5xUr/UT7WgZg/k1Vq1W4wwoS8z68+hVloxYUMWsqNGtxxukiNK9NjLs0QTz/hKpmyjjkAR8dbFXdFojNXEHFhGF/QXd4uQKcDc6NqYLLH5I61c184k0OJAKHd1XcpSiOOJLrsPNpm/CtFJ6b04JoCSqEvKQe1yzJYz/JjcTGpyUZ3ISqAGZLLAqtg+e0aWjfH/WZIbs29QFLPTEP2oY5+cxeRLwIESEGiBYT+3XeavSn0z2k4UI1nygIsuOSlJf/Vt8nDBV1iC4vRe15i1fdhcmZP2bhDrvdoLbxcJ9P/NuMKgJSWT8aQJeoW9zBxWP3tCityRdo+xX7NBu3hI2HaLl87TmpQi6gQ43JJClZI5e6q06LDXeHgMwESS3QAeL83N40ghR+URrz3JCjlZrpTddz7rCZWqxfdHqr7xN2/+nZP1Wir+WCs4Y7YvYUe7pIudZW4J1plktR+vy1fRu/Ie9T8R5HxXVXyDtaBhLULzdbALGdTpYRLzF1EuZdspZP4twp7AyTCylokdxUMz0xavOJohfD+pvMyRtuz6CLZTyRZk+581trXBeiuJosjA4anfc9AbKshJiBG3OG1rMaetXrDxhSpUYLDYQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(186009)(1800799009)(451199024)(6666004)(7416002)(83380400001)(6506007)(38100700002)(66476007)(6512007)(54906003)(66946007)(26005)(5660300002)(66574015)(66556008)(41300700001)(8936002)(8676002)(316002)(478600001)(4326008)(6486002)(2906002)(2616005)(6916009)(86362001)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0Fra2ZZR2I0a1FneFJldlBDYkNvRlRsUGxSTWxQOG12QUFtblhYeXd0aHB0?=
+ =?utf-8?B?ekV0WWQ2UlB6MmdsZUxyOHBaeUFmZ0pDMlBhejB6MndDNFV5MjQ5Y24wQ1Q0?=
+ =?utf-8?B?UXlnRkx0MEQ3NlBXbDlSNkxnM0NVdm9LWHpWenNvNjJtMkNQZCtpdHVRR3N2?=
+ =?utf-8?B?RzNuYnlhUHRIZjBLOS9Vd0tIYzYrVnBBQ2pjZUFpTEwyVzQ0SHRKS3hpMFN3?=
+ =?utf-8?B?MTJQeUZER1BIbWF1ZmFyU09ld0h6Si9uYUYzUTdjQzFkUjdLRVhVVmE4Sk9H?=
+ =?utf-8?B?V1pRVm16eFh0K3N3aG5aR1NIbUtST2hZeEFDNFFJRmpORStsb3AvdEhOWWxz?=
+ =?utf-8?B?TStZUEhLWWZ4a2tXeVFHaFJqU2t3eU1wVElGaTZFKy8vdmRjRys5THBNYmc3?=
+ =?utf-8?B?YVRLeFp3NzA1Z0ZXanUzV3Ayc2pJdlllN0d3T3NCWmFMbzRzdml4UnhIR2FR?=
+ =?utf-8?B?NVJBOTM3WkJJMm4vZm1NSXd2RzEvUW9HS0lSN3g2ZjJiSmlmM1ZqK05UN0J6?=
+ =?utf-8?B?Y3BMZlZOcGZpZ1hUMGdPeHZjamdsbVF3WG1MWTIxckhMck5iRU9FL2RFU1Qr?=
+ =?utf-8?B?RG1MU0FoaHJTVWJDdTZHd1FDVzlhZlBYUTQ5ZjU0U3EwVEpzNVhmeUZVeHZ4?=
+ =?utf-8?B?SlgyZG4yNCtvaUtSaElIRkZZaWlSZ3dvY0kyd1UzclVtR2FpMmVROTFpc3Bu?=
+ =?utf-8?B?VjM1Mjl5azB4YXY4Mkx0Q0VCcEkzOFdjWWMvWW43b1Frbnc4elpvOWVCRmRq?=
+ =?utf-8?B?MHJiY2NOaUJoZSs1UzV5RzhNN1NPNlBEcFRRT01Ldkx0UGNSeDgrTGx2eDRz?=
+ =?utf-8?B?a3kydUNWL1VkVDB0MGRuaGNGRXNuQWJkWGtTdWt2T3dUdHZJeFB3TVkvU3Bn?=
+ =?utf-8?B?eHhzUUlvdDNSTHZEMEViRmFqUlRMYmV2YXVwZGd6bUtrTVd2cWRzQVRQYzJP?=
+ =?utf-8?B?ZlpqSVJwT2dPMFNvNjA4TExxM3gyanl4eGN5VGZodFRkOW5vZkVWemxwYk9L?=
+ =?utf-8?B?NGNEN2NZZUZzS2VQczZLZi8rQSt6VGtmamlkS0N4aXVJMEg4YU1wNm82U1Ew?=
+ =?utf-8?B?cEF5WFJ2cEJzS1BOS2xGeVY4OVJBeDRGRkZ6c0RPYU1qTThzVVFEU2Ftd0Vr?=
+ =?utf-8?B?eFZqSXdGeGhINmo5VGF0UEtrblp3Z3NqTkhtUGhBRlFlQWx1NzhERFNIRnhD?=
+ =?utf-8?B?a2F2RDhxSi9aaGtNU1FQN2JzMHl0SUgxNjE4eUtpZUIrK3l6M1dwU3hpZ1V1?=
+ =?utf-8?B?S0RpeVcrUTNhZE5iWlNyNWRhNDQvZ1U5cGlkOXNiWVJZb215Q1puWTlRYkRn?=
+ =?utf-8?B?ZTZ2UTNWL3RQMmQ2YjdwWUlvbzVyZWNtVzBoRzgvWlc2N01TTVZYTFpqMC9s?=
+ =?utf-8?B?Tkd5WERNTEY0cldqcTJwS0NHMEl4bmR4Z0xGN0UzMy93eUJCbGFaU3pLUmNa?=
+ =?utf-8?B?THdxR3ZrT3huY0cvUWxFRDJSSk92eHoyUzlUbUtzUHh0K2N0TnJzVVBmd0RH?=
+ =?utf-8?B?UFNGZ29vRG1UbVJSM3d6UjMrRjBXM0R1aThSaldYMTJPSmRBMkJLclNad1RY?=
+ =?utf-8?B?cDBoMGJzbU9wRnhOR3RWc1M1RjRWYUdGWlVoK2VXTkxJTWJEMldlOEwrQkow?=
+ =?utf-8?B?ckVocEtqS0YxSzM3RHNaanZ1d0l4M2dMcG9WOGpUV3NKaGJBd3BIYkNjRTdY?=
+ =?utf-8?B?WnJqWHhZNmJnZ29JU01GcDRjR0dPbDNLRGFZRmxuOWR1M21OTkhQaUNWYmZH?=
+ =?utf-8?B?c3g2eGlsSE5NU29Wbmd2Q0RDc1RBeGlmUUdpdjVpMld1Skh4cXFBZFpFTHRY?=
+ =?utf-8?B?TVo2NEwvdk51elZkUlZ0SDY3QWx0MUp1TFI1YjVUYVAwdVVzUXVtUVZTbTdh?=
+ =?utf-8?B?Y1lINkpIclJYUlB2bTZoZzdmYW12RU8rTzFYTlJyUGExY21lczJKMzdCU05m?=
+ =?utf-8?B?M2UvS1RQRmFOVFlMSHdWQjYzMk4xRDBoZnhqUERoSCsrYzl6VDNlNk9GbURz?=
+ =?utf-8?B?eTdwYXVLY0lWZmJHUkFFdTJUb2g4bkNrR3JFaElOdkQ3dG5UUzVTT0JNV1pS?=
+ =?utf-8?B?cDN0TTg5UzdPdUlITVQ5ejB6bnBYdUhzN3FFTTc1bG1KN0F3VWRiQlhsM1gw?=
+ =?utf-8?Q?yqhM=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63bd6418-4ca2-4af0-e6e9-08dbbf508bc6
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 11:54:46.7917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oL9TGaj7vV4LxlUmlaZOepIf/90FclMNSB9X1J6wXrsBb3UZh11jLXvEHM3kEQUa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4944
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudeep,
+Am 26.09.23 um 09:11 schrieb Boris Brezillon:
+> On Mon, 25 Sep 2023 19:55:21 +0200
+> Christian König <christian.koenig@amd.com> wrote:
+>
+>> Am 25.09.23 um 14:55 schrieb Boris Brezillon:
+>>> +The imagination team, who's probably interested too.
+>>>
+>>> On Mon, 25 Sep 2023 00:43:06 +0200
+>>> Danilo Krummrich <dakr@redhat.com> wrote:
+>>>   
+>>>> Currently, job flow control is implemented simply by limiting the amount
+>>>> of jobs in flight. Therefore, a scheduler is initialized with a
+>>>> submission limit that corresponds to a certain amount of jobs.
+>>>>
+>>>> This implies that for each job drivers need to account for the maximum
+>>>> job size possible in order to not overflow the ring buffer.
+>>>>
+>>>> However, there are drivers, such as Nouveau, where the job size has a
+>>>> rather large range. For such drivers it can easily happen that job
+>>>> submissions not even filling the ring by 1% can block subsequent
+>>>> submissions, which, in the worst case, can lead to the ring run dry.
+>>>>
+>>>> In order to overcome this issue, allow for tracking the actual job size
+>>>> instead of the amount job jobs. Therefore, add a field to track a job's
+>>>> submission units, which represents the amount of units a job contributes
+>>>> to the scheduler's submission limit.
+>>> As mentioned earlier, this might allow some simplifications in the
+>>> PowerVR driver where we do flow-control using a dma_fence returned
+>>> through ->prepare_job(). The only thing that'd be missing is a way to
+>>> dynamically query the size of a job (a new hook?), instead of having the
+>>> size fixed at creation time, because PVR jobs embed native fence waits,
+>>> and the number of native fences will decrease if some of these fences
+>>> are signalled before ->run_job() is called, thus reducing the job size.
+>> Exactly that is a little bit questionable since it allows for the device
+>> to postpone jobs infinitely.
+>>
+>> It would be good if the scheduler is able to validate if it's ever able
+>> to run the job when it is pushed into the entity.
+> Yes, we do that already. We check that the immutable part of the job
+> (everything that's not a native fence wait) fits in the ringbuf.
 
-Any further comments? Did my replies answer your concerns?
-Willing for more suggestions if there's any to make progress on this.
+Yeah, but thinking more about it there might be really bad side effects. 
+We shouldn't use a callback nor job credits because it might badly 
+influence fairness between entities.
 
-Thanks.
+In other words when one entity submits always large jobs and another one 
+always small ones then the scheduler would prefer the one which submits 
+the smaller ones because they are easier to fit into the ring buffer.
 
-On 2023/9/22 17:46, Yicong Yang wrote:
-> On 2023/9/21 23:03, Sudeep Holla wrote:
->> On Tue, Sep 19, 2023 at 08:33:19PM +0800, Yicong Yang wrote:
->>> From: Yicong Yang <yangyicong@hisilicon.com>
->>>
->>> The core CPU control framework supports runtime SMT control which
->>> is not yet supported on arm64. Besides the general vulnerabilities
->>> concerns we want this runtime control on our arm64 server for:
->>>
->>> - better single CPU performance in some cases
->>> - saving overall power consumption
->>>
->>> This patch implements it in the following aspects:
->>>
->>> - implement the callbacks of the core
->>> - update the SMT status after the topology enumerated on arm64
->>> - select HOTPLUG_SMT for arm64
->>>
->>> For disabling SMT we'll offline all the secondary threads and
->>> only leave the primary thread. Since we don't have restriction
->>> for primary thread selection, the first thread is chosen as the
->>> primary thread in this implementation.
->>>
->>> Tests has been done on our ACPI based arm64 server and on
->>> ACPI/OF based QEMU VMs.
->>>
->>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
->>> ---
->>>  arch/arm64/Kconfig            |  1 +
->>>  drivers/base/arch_topology.c  | 63 +++++++++++++++++++++++++++++++++++
->>>  include/linux/arch_topology.h | 11 ++++++
->>>  3 files changed, 75 insertions(+)
->>>
->>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>> index b10515c0200b..531a71c7f499 100644
->>> --- a/arch/arm64/Kconfig
->>> +++ b/arch/arm64/Kconfig
->>> @@ -233,6 +233,7 @@ config ARM64
->>>  	select HAVE_KRETPROBES
->>>  	select HAVE_GENERIC_VDSO
->>>  	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
->>> +	select HOTPLUG_SMT if SMP
->>>  	select IRQ_DOMAIN
->>>  	select IRQ_FORCED_THREADING
->>>  	select KASAN_VMALLOC if KASAN
->>> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
->>> index b741b5ba82bd..75a693834fff 100644
->>> --- a/drivers/base/arch_topology.c
->>> +++ b/drivers/base/arch_topology.c
->>> @@ -729,6 +729,63 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
->>>  	return &cpu_topology[cpu].cluster_sibling;
->>>  }
->>>  
->>> +#ifdef CONFIG_HOTPLUG_SMT
->>> +static int topology_smt_num_threads = 1;
->>> +
->>> +void __init topology_smt_set_num_threads(void)
->>> +{
->>> +	int cpu, sibling, threads;
->>> +
->>> +	/*
->>> +	 * Walk all the CPUs to find the largest thread number, in case we're
->>> +	 * on a heterogeneous platform with only part of the CPU cores support
->>> +	 * SMT.
->>> +	 *
->>> +	 * Get the thread number by checking the CPUs with same core id
->>> +	 * rather than checking the topology_sibling_cpumask(), since the
->>> +	 * sibling mask will not cover all the CPUs if there's CPU offline.
->>> +	 */
->>> +	for_each_possible_cpu(cpu) {
->>> +		threads = 1;
->>> +
->>> +		/* Invalid thread id, this CPU is not in a SMT core */
->>> +		if (cpu_topology[cpu].thread_id == -1)
->>> +			continue;
->>> +
->>> +		for_each_possible_cpu(sibling) {
->>
->> I would really like to avoid parsing all the cpus here(O(cpu^2))
->>
-> 
-> What if we use a temp cpumask to record each visited CPU and make it O(cpu)?
-> I didn't use it because I don't want to see a memory allocation failure for
-> the cpumask. In current implementation there's no way to fail.
-> 
->> Another random thought(just looking at DT parsing) is we can count threads
->> while parsing itself if we need the info early before the topology cpumasks
->> are setup. Need to look at ACPI parsing and how to make that generic but
->> thought of checking the idea here first.
->>
-> 
-> The ACPI parsing is in each arch's codes (currently for arm64 and loongarch).
-> The code will be isolated to DT, arm64 ACPI parsing, loogarch ACPI parsing
-> and future ACPI based archs, it'll be redundant and hard to maintian, I think.
-> So I perfer to unify the processing since the logic is common, just check
-> the finally built cpu_topology array regardless whether we're on an ACPI/OF
-> based system.
-> 
->> [...]
->>
->>> @@ -841,6 +898,12 @@ void __init init_cpu_topology(void)
->>>  		reset_cpu_topology();
->>>  	}
->>>  
->>> +	/*
->>> +	 * By this stage we get to know whether we support SMT or not, update
->>> +	 * the information for the core.
->>> +	 */
->>> +	topology_smt_set_num_threads();
->>> +
->>
->> Does this have to be done this early ? I was wondering if we can defer until
->> all the cpumasks are set and you can rely on the thread_sibling mask ?
->> You can just get the weight of that mask on all cpus and choose the max value.
->>
-> 
-> We do this at this stage because we've already gotten the necessary informations.
-> As commented in topology_smt_set_num_threads(), I didn't use sibling masks
-> because the sibling masks will not contain all the informations, it'll only be updated
-> when CPUs going online in secondary_start_kernel()->store_cpu_topology(). Think of
-> the case if we boot with maxcpus=1, the SMT status won't be collected completely if
-> we're using the sibling mask. For example, the sibling mask of the boot CPU will
-> be correct, but not for its sibling cores.
-> 
-> Thanks.
-> .
-> 
+What we can do is the follow:
+1. The scheduler has some initial credits it can use to push jobs.
+2. Each scheduler fence (and *not* the job) has a credits field of how 
+much it will use.
+3. After letting a a job run the credits of it's fence are subtracted 
+from the available credits of the scheduler.
+4. The scheduler can keep running jobs as long as it has a positive 
+credit count.
+5. When the credit count becomes negative it goes to sleep until a 
+scheduler fence signals and the count becomes positive again.
+
+This way jobs are handled equally, you can still push jobs up to at 
+least halve your ring buffer size and you should be able to handle your 
+PowerVR case by calculating the credits you actually used in your 
+run_job() callback.
+
+As far as I can see that approach should work, shouldn't it?
+
+Regards,
+Christian.
