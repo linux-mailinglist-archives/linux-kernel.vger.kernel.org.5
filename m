@@ -2,69 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1187B0D0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FA17B0D10
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjI0T77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 15:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
+        id S229786AbjI0UAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjI0T76 (ORCPT
+        with ESMTP id S229772AbjI0UAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:59:58 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1CD10A;
-        Wed, 27 Sep 2023 12:59:55 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso7423552a12.3;
-        Wed, 27 Sep 2023 12:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695844794; x=1696449594; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qNaOKalGGr5fB0E4Vib9FjG5t+ODPWRm5MNzoAemRaY=;
-        b=UMbhI9DrZbrgARjBurk1bRKgWicgZZbHaePsXMbXiAJ9TS6NVP7XoiNAE7wzV64/7P
-         EONGqaw8D9LAX0CrORoD8DrMNL94ECaoLH/j+mMdsgHp9OgOUasRflGPfliB8e8qqoHg
-         DfI7ClTjp/bug/KXderFaTT0cy18qCgVwgLDM/bT7pYb3x654jUfwVo4mewYSdqQT99G
-         FHEfylKpiustp0LdAoI5fvaaSjXFAH0/5PzTj3RvscasSCeDY15xpV1JIVFXv21vpJfh
-         lv9u3CZb/iQ8w7m6S82NZjXAutOhvX/lM530WfVJ5JJ35XRqOKgLGKNQ7ndMBdSeX8m6
-         V54w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695844794; x=1696449594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qNaOKalGGr5fB0E4Vib9FjG5t+ODPWRm5MNzoAemRaY=;
-        b=kc/ZxMwHhG7tmyIF+fZHpuGo8GEop13QFUq4HS5SsRyfceLg085TfekHQpqGvRaQGw
-         nc0jboEaNOVZD6OUoJEB4JbPva1ASirkrRPyr7m99NRkFZ1LGyUXC+3emeUtm/MMfhVB
-         iB982bO7o0LGhrL8RvkWrDDje+bDEXs3rn5XQ5Mo6QdVutt4LgaR+GvYJgVUNGziV/P/
-         eFJrTsekNPE9dLXDQiusF61YhHQDjt48QZkNBMKW4tAMHgGI8PgahFDs30cKugWz1sBm
-         KSI1hCbVkzZQ+wWFh0CYm70Km091xl0cks1kpDaOB1sGO9kpxVkHiVczRSP1WGmB8m+8
-         Eh8Q==
-X-Gm-Message-State: AOJu0YyihVEQ4AzO81pI5mc2aXCNwN2oCxfRkBmP4eVjVyA8OONKnEJq
-        8NXQQmb77AT+qIifYerdXvo7+hRCYZ8YTL9GWo4=
-X-Google-Smtp-Source: AGHT+IH0XaPAMcB28CUPyifQ7iyQeX3PGjHkuh5W8e6PLcR8Rf8i4EjZQa5pyTnNXuw0gpI7NOTblZIOxmDmIkAYW3Q=
-X-Received: by 2002:aa7:c402:0:b0:51e:53eb:88a3 with SMTP id
- j2-20020aa7c402000000b0051e53eb88a3mr2948315edq.25.1695844793993; Wed, 27 Sep
- 2023 12:59:53 -0700 (PDT)
+        Wed, 27 Sep 2023 16:00:06 -0400
+Received: from csmtpq4-prd-nl1-vmo.edge.unified.services (csmtpq4-prd-nl1-vmo.edge.unified.services [84.116.50.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4EB114
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:00:02 -0700 (PDT)
+Received: from csmtp6-prd-nl1-vmo.nl1.unified.services ([100.107.82.136] helo=csmtp6-prd-nl1-vmo.edge.unified.services)
+        by csmtpq4-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <sboyce@blueyonder.co.uk>)
+        id 1qlahU-00DF7g-O8
+        for linux-kernel@vger.kernel.org; Wed, 27 Sep 2023 22:00:00 +0200
+Received: from [192.168.10.244] ([82.32.17.210])
+        by csmtp6-prd-nl1-vmo.edge.unified.services with ESMTPA
+        id lahSq9h4VQDxRlahSqm0nO; Wed, 27 Sep 2023 22:00:00 +0200
+X-SourceIP: 82.32.17.210
+X-Authenticated-Sender: sboyce@blueyonder.co.uk
+X-Spam: 0
+X-Authority: v=2.4 cv=MPKm2uVl c=1 sm=1 tr=0 ts=651489c0 cx=a_exe
+ a=xwbGgp66NgX51+oEeDXSrg==:117 a=xwbGgp66NgX51+oEeDXSrg==:17
+ a=zNV7Rl7Rt7sA:10 a=x7bEGLp0ZPQA:10 a=r77TgQKjGQsHNAKrUKIA:9
+ a=ffHGVwpTuFhV69zLMicA:9 a=QEXdDO2ut3YA:10 a=4bWOFoEm5CvuKPFtzRgA:9
+ a=4dTmyslQBDsQnUzX:21 a=m-Z_27IZkzAA:10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blueyonder.co.uk;
+        s=meg.feb2017; t=1695844800;
+        bh=z9xoXxjtRmHWinFXoBO6HzQsBFqpyNqSSPllXOHP5sE=;
+        h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To;
+        b=VdxZdDJT9w2liei6OXz2Bz/yLizSzKaKk87/XdODayYmFwJuxD0R4GxuKcq0DATld
+         GCqyQVzxXX+jdmBq0v0JfbmFXRQHJr48KoFb//0FcicQ/W4ipitfxDcnREAFQp8HHf
+         seBqMiy2D59pgJ8MBcZ2aFNs0l0PKzjoDetZp5y1pWIEl4/fAGP52YcGygz1gffaEG
+         +YS85ulJRPLEb4uUaC1yvOnXEULZ0ZMnfM1jTGCl1XFfj5JOTqiw7KuqT6NY8iHHjr
+         KvZt5/4xCAGbYNlMv2kxv87mbtGIzzLGX0e59Lom3e2yLQmffHqnym/trVhT7ubthu
+         U78tXWVk5uvbw==
+Content-Type: multipart/mixed; boundary="------------75qayHeIIle0sZg34Wo4IHBP"
+Message-ID: <1c3fe45d-31bb-4c65-88ac-b1ca8ad1dd03@blueyonder.co.uk>
+Date:   Wed, 27 Sep 2023 20:59:57 +0100
 MIME-Version: 1.0
-References: <20230918080314.11959-1-jagathjog1996@gmail.com>
- <20230918080314.11959-3-jagathjog1996@gmail.com> <20230924153055.0b3486f9@jic23-huawei>
-In-Reply-To: <20230924153055.0b3486f9@jic23-huawei>
-From:   Jagath Jog J <jagathjog1996@gmail.com>
-Date:   Thu, 28 Sep 2023 01:29:42 +0530
-Message-ID: <CAM+2EuJBxj7P-ymu84u308g8LCemSEsYi_TSHYtaK9PyrhqrfA@mail.gmail.com>
-Subject: Re: [RFC 2/2] iio: imu: Add driver for BMI323 IMU
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     andriy.shevchenko@linux.intel.com, lars@metafoo.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla Thunderbird
+Reply-To: sboyce@blueyonder.co.uk
+Subject: Re: Ryzen 9 7950x sound module does not not build
+Content-Language: en-GB
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ALSA <alsa-devel@alsa-project.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
+ <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
+ <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
+ <ZRLWIkyngsasQbQ7@debian.me>
+ <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
+ <40672e60-3913-4794-b84a-742b7c16d361@infradead.org>
+ <4b2c3b4e-9b21-4f80-95e1-58aa7f58131e@blueyonder.co.uk>
+ <5cafee23-b1fe-4ee5-8f62-6080707403da@perex.cz>
+From:   Sid Boyce <sboyce@blueyonder.co.uk>
+Organization: blueyonder.co.uk
+In-Reply-To: <5cafee23-b1fe-4ee5-8f62-6080707403da@perex.cz>
+X-CMAE-Envelope: MS4xfNRMUQSSPcMR+PfYTFGUwVa/FX+IG8jhbfWh12GfXhN6e7w9OBHmgxW2Hpq6FG1+VKNJN69wg/Nu6BBnqIBqq5GUiiD361LzlCgkiz8BqSed4IzaR4Y6
+ LXKvmH7tgUKbex7bb3LSXVdE67a3TX3fNm7rQFf/OBbSUMd/x5WZJwwWS8v4q0zHiKoUrfC7EVJ6n0eIR/Eekn+R61nKq0ksvYrm3JFhOqQz+U2fmal17+3w
+ 0a9B/DTJDXSqQu93nqRdQxuConwwbE1fl/BDnmU/Ypc2yGpRwr7YnbRR66IR0q0ZL/Kerlu4W8yVz4qepzqdGzgoaXaenLrCQNiCSHJUFwqlnwwVJsw2Gp9j
+ qjYpWL9eBWcTWRErS6l2MXsfeKgJH1HVZye2FYfMQMp2WPKYPBXJ29+bJavOx3g5mcYpnYyr
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,404 +82,515 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+This is a multi-part message in MIME format.
+--------------75qayHeIIle0sZg34Wo4IHBP
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thank you for the review.
+ From notes.rst
+DMA-Position Problem
+=====================
+``position_fix=6`` is to correct the position with the fixed FIFO
+size, mainly targeted for the recent AMD controllers.
+0 is the default value for all other
+controllers, the automatic check and fallback to LPIB as described in
+the above.  If you get a problem of repeated sounds, this option might
+help.
+#cat /proc/asound/cards
+0 [NVidia         ]: HDA-Intel - HDA NVidia
+                      HDA NVidia at 0xfc080000 irq 79
+1 [Generic        ]: HDA-Intel - HD-Audio Generic
+                      HD-Audio Generic at 0xfc500000 irq 80
+2 [Device         ]: USB-Audio - USB PnP Sound Device
+                      C-Media Electronics Inc. USB PnP Sound Device at 
+usb-0000:09:00.0-3, full speed
 
-On Sun, Sep 24, 2023 at 8:01=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
+#dmesg -T|grep hda
+[Wed Sep 27 17:52:33 2023] snd_hda_intel 0000:01:00.1: Disabling MSI
+[Wed Sep 27 17:52:33 2023] snd_hda_intel 0000:01:00.1: Handle 
+vga_switcheroo audio client
+[Wed Sep 27 17:52:33 2023] snd_hda_intel 0000:0b:00.6: enabling device 
+(0000 -> 0002)
+[Wed Sep 27 17:52:33 2023] snd_hda_intel 0000:01:00.1: bound 
+0000:01:00.0 (ops nv50_audio_component_bind_ops [nouveau])
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0: autoconfig 
+for ALC897: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0: 
+    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0: 
+    hp_outs=1 (0x1b/0x0/0x0/0x0/0x0)
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0:    mono: 
+mono_out=0x0
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0: 
+    dig-out=0x11/0x0
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0:    inputs:
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0:      Front 
+Mic=0x19
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0:      Rear 
+Mic=0x18
+[Wed Sep 27 17:52:33 2023] snd_hda_codec_realtek hdaudioC1D0: 
+      Line=0x1a
+[Wed Sep 27 17:52:35 2023] Modules linked in: ecdh_generic(E+) r8169(E) 
+rfkill(E) edac_mce_amd(E) mbcache(E) jbd2(E) snd_hda_codec_realtek(E) 
+kvm_amd(E) snd_hda_codec_hdmi(E) realtek(E) mdio_devres(E) 
+snd_hda_codec_generic(E) ledtrig_audio(E) libphy(E) snd_hda_intel(E)
+kvm(E) pcspkr(E) i2c_piix4(E) snd_intel_dspcfg(E) snd_intel_sdw_acpi(E) 
+joydev(E) irqbypass(E) snd_hda_codec(E) k10temp(E) snd_hda_core(E) 
+snd_hwdep(E) snd_pcm(E) snd_timer(E) snd(E) soundcore(E) gpio_amdpt(E) 
+wmi_bmof(E) gpio_generic(E) tiny_power_button(E) configfs(E)
+fuse(E) efi_pstore(E) dmi_sysfs(E) ip_tables(E) x_tables(E) 
+hid_generic(E) usbhid(E) nouveau(E) drm_ttm_helper(E) ttm(E) drm_exec(E) 
+gpu_sched(E) i2c_algo_bit(E) mxm_wmi(E) drm_display_helper(E) 
+drm_kms_helper(E) crct10dif_pclmul(E) crc32_pclmul(E) ghash_clmulni_intel(
+E) xhci_pci(E) xhci_pci_renesas(E) sha512_ssse3(E) drm(E) xhci_hcd(E) 
+usbcore(E) aesni_intel(E) ccp(E) cec(E) crypto_simd(E) cryptd(E) 
+sp5100_tco(E) rc_core(E) video(E) wmi(E) button(E) btrfs(E) 
+blake2b_generic(E) libcrc32c(E)
+[Wed Sep 27 17:52:35 2023] Modules linked in: ecdh_generic(E+) r8169(E) 
+rfkill(E) edac_mce_amd(E) mbcache(E) jbd2(E) snd_hda_codec_realtek(E) 
+kvm_amd(E) snd_hda_codec_hdmi(E) realtek(E) mdio_devres(E) 
+snd_hda_codec_generic(E) ledtrig_audio(E) libphy(E) snd_hda_intel(E)
+kvm(E) pcspkr(E) i2c_piix4(E) snd_intel_dspcfg(E) snd_intel_sdw_acpi(E) 
+joydev(E) irqbypass(E) snd_hda_codec(E) k10temp(E) snd_hda_core(E) 
+snd_hwdep(E) snd_pcm(E) snd_timer(E) snd(E) soundcore(E) gpio_amdpt(E) 
+wmi_bmof(E) gpio_generic(E) tiny_power_button(E) configfs(E)
+fuse(E) efi_pstore(E) dmi_sysfs(E) ip_tables(E) x_tables(E) 
+hid_generic(E) usbhid(E) nouveau(E) drm_ttm_helper(E) ttm(E) drm_exec(E) 
+gpu_sched(E) i2c_algo_bit(E) mxm_wmi(E) drm_display_helper(E) 
+drm_kms_helper(E) crct10dif_pclmul(E) crc32_pclmul(E) ghash_clmulni_intel(
+E) xhci_pci(E) xhci_pci_renesas(E) sha512_ssse3(E) drm(E) xhci_hcd(E) 
+usbcore(E) aesni_intel(E) ccp(E) cec(E) crypto_simd(E) cryptd(E) 
+sp5100_tco(E) rc_core(E) video(E) wmi(E) button(E) btrfs(E) 
+blake2b_generic(E) libcrc32c(E)
+[Wed Sep 27 17:52:58 2023] Modules linked in: cmac(E) algif_hash(E) 
+algif_skcipher(E) vboxnetadp(OE) vboxnetflt(OE) af_alg(E) bnep(E) 
+vboxdrv(OE) rtw89_8852be(E) rtw89_8852b(E) rtw89_pci(E) rtw89_core(E) 
+mac80211(E) binfmt_misc(E) btusb(E) btrtl(E) nls_iso8859_1(E) btin
+tel(E) nls_cp437(E) libarc4(E) btbcm(E) btmtk(E) cfg80211(E) 
+bluetooth(E) asus_nb_wmi(E) vfat(E) fat(E) asus_wmi(E) battery(E) 
+intel_rapl_msr(E) intel_rapl_common(E) sparse_keymap(E) 
+platform_profile(E) ext4(E) ecdh_generic(E) r8169(E) rfkill(E) 
+edac_mce_amd(E) mbcache(
+E) jbd2(E) snd_hda_codec_realtek(E) kvm_amd(E) snd_hda_codec_hdmi(E) 
+realtek(E) mdio_devres(E) snd_hda_codec_generic(E) ledtrig_audio(E) 
+libphy(E) snd_hda_intel(E) kvm(E) pcspkr(E) i2c_piix4(E) 
+snd_intel_dspcfg(E) snd_intel_sdw_acpi(E) joydev(E) irqbypass(E) snd_hda_cod
+ec(E) k10temp(E) snd_hda_core(E) snd_hwdep(E) snd_pcm(E) snd_timer(E) 
+snd(E) soundcore(E) gpio_amdpt(E) wmi_bmof(E) gpio_generic(E) 
+tiny_power_button(E) configfs(E) fuse(E) efi_pstore(E) dmi_sysfs(E) 
+ip_tables(E) x_tables(E)
+
+Attached /proc/asound/card*/codec#*
+
+
+On 27/09/2023 17:26, Jaroslav Kysela wrote:
+> On 27. 09. 23 13:27, Sid Boyce wrote:
+>> On 26/09/2023 23:13, Randy Dunlap wrote:
+>>> lspci -vv
 >
-> On Mon, 18 Sep 2023 13:33:14 +0530
-> Jagath Jog J <jagathjog1996@gmail.com> wrote:
+>> 0b:00.6 Audiodevice: Advanced Micro Devices, Inc. [AMD] Family 17h/19h
+>> HD AudioController
+>>          DeviceName: Realtek ALC897 Audio
+>>          Subsystem: ASUSTeK Computer Inc. Device 87fb
 >
-> > The Bosch BMI323 is a 6-axis low-power IMU that provide measurements fo=
-r
-> > acceleration, angular rate, and temperature. This sensor includes
-> > motion-triggered interrupt features, such as a step counter, tap detect=
-ion,
-> > and activity/inactivity interrupt capabilities.
-> >
-> > The driver supports various functionalities, including data ready, FIFO
-> > data handling, and events such as tap detection, step counting, and
-> > activity interrupts
-> >
-> > Datasheet: https://www.bosch-sensortec.com/media/boschsensortec/downloa=
-ds/datasheets/bst-bmi323-ds000.pdf
-> > Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
+> It looks like a standard HDA hardware. The acp module may not be 
+> relevant. You should see some inputs/outputs for this card in pipewire 
+> - the snd-hda-intel module is loaded.
 >
-> Given Andy has done a thorough review (as he always does!)
-> and there is quite a bit in my review queue, I'll just scan
-> through quickly and call out a few things.  Will take a closer
-> look at next version.
+> But this hardware may require a new quirk, when the generic code does 
+> not work for you. I suggest to look to the HDA driver documentation in 
+> Documentation/sound/hd-audio tree.
 >
-> One thing that is useful for a complex driver like this is to include
-> (typically in the cover letter) a full listing of what shows up in sysfs.
-> That gives an easy way to check the ABI looks right without having to fig=
-ure
-> out what all the generated file names are from the code.
-
-Sure, I will add all ABI's in the cover letter.
-
-Please note that I omitted certain portions of your reviews
-while responding, and I agree with the review comments that
-I didn't address. I intend to make the necessary corrections
-in the next series.
-
->
-> Thanks,
->
-> Jonathan
+>                     Jaroslav
 >
 
-> > +struct bmi323_data {
-> > +     struct device *dev;
-> > +     struct regmap *regmap;
-> > +     struct iio_mount_matrix orientation;
-> > +     enum bmi323_irq_pin irq_pin;
-> > +     struct iio_trigger *trig;
-> > +     bool drdy_trigger_enabled;
-> > +     enum bmi323_state state;
-> > +     s64 fifo_tstamp, old_fifo_tstamp;
-> > +     u32 odrns[2];
-> > +     u32 odrhz[2];
-> > +     unsigned int feature_events;
-> > +
-> > +     /*
-> > +      * Lock to protect the members of device's private data from conc=
-urrent
-> > +      * access and also to serialize the access of extended registers.
-> > +      * See bmi323_write_ext_reg(..) for more info.
-> > +      */
-> > +     struct mutex mutex;
-> > +     int watermark;
-> > +     __le16 fifo_buff[BMI323_FIFO_FULL_IN_WORDS] __aligned(IIO_DMA_MIN=
-ALIGN);
-> > +     struct {
-> > +             __le16 channels[6];
-> > +             s64 ts __aligned(8);
->
-> Hopefully Andy's aligned_s64 set will land soon and we can tidy this up.
-> I'm a bit unsure of this, but can you overlap some of these buffers or ar=
-e
-> they used concurrently? (if they are then we have problems with DMA safet=
-y.)
->
-> Perhaps an anonymous union is appropriate?
+-- 
+Sid Boyce ... Hamradio License G3VBV, Keen licensed Private Pilot
+Retired IBM/Amdahl Mainframes and Sun/Fujitsu Servers Tech Support Specialist
+Microsoft Windows Free Zone - Linux used for all Computing Tasks
 
-Yes both buffers are used at the same time. In fifo_flush
-fifo_buff is used to store all fifo data, and buffer is
-used to push a single data frame to iio buffers, overlapping
-will corrupt the data, so I used separate buffers for both.
+--------------75qayHeIIle0sZg34Wo4IHBP
+Content-Type: text/plain; charset=UTF-8; name="codecs.txt"
+Content-Disposition: attachment; filename="codecs.txt"
+Content-Transfer-Encoding: base64
 
-> > +static int bmi323_data_rdy_trigger_set_state(struct iio_trigger *trig,
-> > +                                          bool state)
-> > +{
-> > +     struct bmi323_data *data =3D iio_trigger_get_drvdata(trig);
-> > +     enum bmi323_irq_pin irq_pin;
-> > +     int ret;
-> > +
-> > +     mutex_lock(&data->mutex);
-> guard(mutex)(&data->mutex);
+Q29kZWM6IE52aWRpYSBHUFUgOTQgSERNSS9EUApBZGRyZXNzOiAwCkFGRyBGdW5jdGlvbiBJ
+ZDogMHgxICh1bnNvbCAwKQpWZW5kb3IgSWQ6IDB4MTBkZTAwOTQKU3Vic3lzdGVtIElkOiAw
+eDEwZGUxZjgyClJldmlzaW9uIElkOiAweDEwMDEwMApObyBNb2RlbSBGdW5jdGlvbiBHcm91
+cCBmb3VuZApEZWZhdWx0IFBDTToKICAgIHJhdGVzIFsweDBdOgogICAgYml0cyBbMHgwXToK
+ICAgIGZvcm1hdHMgWzB4MF06CkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFt
+cC1PdXQgY2FwczogTi9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVz
+OiAgRDAgRDEgRDIgRDMgQ0xLU1RPUCBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
+bD1EMApHUElPOiBpbz0wLCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MCwgd2FrZT0wCk5vZGUg
+MHgwNCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDA3MzgxOiA4LUNoYW5uZWxzIERpZ2l0YWwg
+Q1AKICBQaW5jYXAgMHgwOTAwMDA5NDogT1VUIERldGVjdCBIQlIgSERNSSBEUAogIFBpbiBE
+ZWZhdWx0IDB4MTg1NjAwZjA6IFtKYWNrXSBEaWdpdGFsIE91dCBhdCBJbnQgSERNSQogICAg
+Q29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAw
+eGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMCwgZW5hYmxlZD0wCiAgRGV2aWNlczogNAogICAgIERldiAwMDogUEQgPSAwLCBFTERW
+ID0gMCwgSUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4MDgqIDB4MDkgMHgwYSAweDBiIF0KICAg
+ICBEZXYgMDE6IFBEID0gMCwgRUxEViA9IDAsIElBID0gMCwgQ29ubmVjdGlvbnMgWyAweDA4
+KiAweDA5IDB4MGEgMHgwYiBdCiAgICAgRGV2IDAyOiBQRCA9IDAsIEVMRFYgPSAwLCBJQSA9
+IDAsIENvbm5lY3Rpb25zIFsgMHgwOCogMHgwOSAweDBhIDB4MGIgXQogICAgKkRldiAwMzog
+UEQgPSAwLCBFTERWID0gMCwgSUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4MDgqIDB4MDkgMHgw
+YSAweDBiIF0KICBDb25uZWN0aW9uOiA0CiAgICAgMHgwOCogMHgwOSAweDBhIDB4MGIKTm9k
+ZSAweDA1IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDczODE6IDgtQ2hhbm5lbHMgRGlnaXRh
+bCBDUAogIFBpbmNhcCAweDA5MDAwMDk0OiBPVVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAgUGlu
+IERlZmF1bHQgMHgxODU2MDBmMDogW0phY2tdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1JCiAg
+ICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9
+IDB4ZiwgU2VxdWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGljaXRlZDog
+dGFnPTAwLCBlbmFibGVkPTAKICBEZXZpY2VzOiA0CiAgICAgRGV2IDAwOiBQRCA9IDAsIEVM
+RFYgPSAwLCBJQSA9IDAsIENvbm5lY3Rpb25zIFsgMHgwOCogMHgwOSAweDBhIDB4MGIgXQog
+ICAgIERldiAwMTogUEQgPSAwLCBFTERWID0gMCwgSUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4
+MDgqIDB4MDkgMHgwYSAweDBiIF0KICAgICBEZXYgMDI6IFBEID0gMCwgRUxEViA9IDAsIElB
+ID0gMCwgQ29ubmVjdGlvbnMgWyAweDA4KiAweDA5IDB4MGEgMHgwYiBdCiAgICAqRGV2IDAz
+OiBQRCA9IDAsIEVMRFYgPSAwLCBJQSA9IDAsIENvbm5lY3Rpb25zIFsgMHgwOCogMHgwOSAw
+eDBhIDB4MGIgXQogIENvbm5lY3Rpb246IDQKICAgICAweDA4KiAweDA5IDB4MGEgMHgwYgpO
+b2RlIDB4MDYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwNzM4MTogOC1DaGFubmVscyBEaWdp
+dGFsIENQCiAgUGluY2FwIDB4MDkwMDAwOTQ6IE9VVCBEZXRlY3QgSEJSIEhETUkgRFAKICBQ
+aW4gRGVmYXVsdCAweDU4NTYwMGYwOiBbTi9BXSBEaWdpdGFsIE91dCBhdCBJbnQgSERNSQog
+ICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24g
+PSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xpY2l0ZWQ6
+IHRhZz0wMCwgZW5hYmxlZD0wCiAgRGV2aWNlczogNAogICAgKkRldiAwMDogUEQgPSAwLCBF
+TERWID0gMCwgSUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4MDgqIDB4MDkgMHgwYSAweDBiIF0K
+ICAgICBEZXYgMDE6IFBEID0gMCwgRUxEViA9IDAsIElBID0gMCwgQ29ubmVjdGlvbnMgWyAw
+eDA4KiAweDA5IDB4MGEgMHgwYiBdCiAgICAgRGV2IDAyOiBQRCA9IDAsIEVMRFYgPSAwLCBJ
+QSA9IDAsIENvbm5lY3Rpb25zIFsgMHgwOCogMHgwOSAweDBhIDB4MGIgXQogICAgIERldiAw
+MzogUEQgPSAwLCBFTERWID0gMCwgSUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4MDgqIDB4MDkg
+MHgwYSAweDBiIF0KICBDb25uZWN0aW9uOiA0CiAgICAgMHgwOCogMHgwOSAweDBhIDB4MGIK
+Tm9kZSAweDA3IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDczODE6IDgtQ2hhbm5lbHMgRGln
+aXRhbCBDUAogIFBpbmNhcCAweDA5MDAwMDk0OiBPVVQgRGV0ZWN0IEhCUiBIRE1JIERQCiAg
+UGluIERlZmF1bHQgMHg1ODU2MDBmMDogW04vQV0gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkK
+ICAgIENvbm4gPSBEaWdpdGFsLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9u
+ID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDAwOgogIFVuc29saWNpdGVk
+OiB0YWc9MDAsIGVuYWJsZWQ9MAogIERldmljZXM6IDQKICAgICpEZXYgMDA6IFBEID0gMCwg
+RUxEViA9IDAsIElBID0gMCwgQ29ubmVjdGlvbnMgWyAweDA4KiAweDA5IDB4MGEgMHgwYiBd
+CiAgICAgRGV2IDAxOiBQRCA9IDAsIEVMRFYgPSAwLCBJQSA9IDAsIENvbm5lY3Rpb25zIFsg
+MHgwOCogMHgwOSAweDBhIDB4MGIgXQogICAgIERldiAwMjogUEQgPSAwLCBFTERWID0gMCwg
+SUEgPSAwLCBDb25uZWN0aW9ucyBbIDB4MDgqIDB4MDkgMHgwYSAweDBiIF0KICAgICBEZXYg
+MDM6IFBEID0gMCwgRUxEViA9IDAsIElBID0gMCwgQ29ubmVjdGlvbnMgWyAweDA4KiAweDA5
+IDB4MGEgMHgwYiBdCiAgQ29ubmVjdGlvbjogNAogICAgIDB4MDgqIDB4MDkgMHgwYSAweDBi
+Ck5vZGUgMHgwOCBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDYyYjE6IDgtQ2hhbm5lbHMgRGln
+aXRhbCBTdHJpcGUKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFs
+OgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCiAgUENN
+OgogICAgcmF0ZXMgWzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAgMTc2
+NDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4NV06
+IFBDTSBBQzMKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKTm9kZSAweDA5IFtB
+dWRpbyBPdXRwdXRdIHdjYXBzIDB4NjJiMTogOC1DaGFubmVscyBEaWdpdGFsIFN0cmlwZQog
+IENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERpZ2l0YWw6CiAgRGlnaXRhbCBj
+YXRlZ29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBb
+MHg3ZjBdOiAzMjAwMCA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxNzY0MDAgMTkyMDAwCiAg
+ICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHg1XTogUENNIEFDMwogIFVu
+c29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MApOb2RlIDB4MGEgW0F1ZGlvIE91dHB1dF0g
+d2NhcHMgMHg2MmIxOiA4LUNoYW5uZWxzIERpZ2l0YWwgU3RyaXBlCiAgQ29udmVydGVyOiBz
+dHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAK
+ICBJRUMgQ29kaW5nIFR5cGU6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDdmMF06IDMyMDAw
+IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06
+IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMCwgZW5hYmxlZD0wCk5vZGUgMHgwYiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDYyYjE6
+IDgtQ2hhbm5lbHMgRGlnaXRhbCBTdHJpcGUKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFu
+bmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2Rpbmcg
+VHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4N2YwXTogMzIwMDAgNDQxMDAgNDgwMDAg
+ODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAg
+IGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVk
+PTAKQ29kZWM6IFJlYWx0ZWsgQUxDODk3CkFkZHJlc3M6IDAKQUZHIEZ1bmN0aW9uIElkOiAw
+eDEgKHVuc29sIDEpClZlbmRvciBJZDogMHgxMGVjMDg5NwpTdWJzeXN0ZW0gSWQ6IDB4MTA0
+Mzg3ZmIKUmV2aXNpb24gSWQ6IDB4MTAwNDAyCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZv
+dW5kCkRlZmF1bHQgUENNOgogICAgcmF0ZXMgWzB4NWYwXTogMzIwMDAgNDQxMDAgNDgwMDAg
+ODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0
+cyBbMHgxXTogUENNCkRlZmF1bHQgQW1wLUluIGNhcHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQg
+Y2FwczogTi9BClN0YXRlIG9mIEFGRyBub2RlIDB4MDE6CiAgUG93ZXIgc3RhdGVzOiAgRDAg
+RDEgRDIgRDMgQ0xLU1RPUCBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApH
+UElPOiBpbz01LCBvPTAsIGk9MCwgdW5zb2xpY2l0ZWQ9MSwgd2FrZT0wCiAgSU9bMF06IGVu
+YWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9MCwgZGF0YT0wLCB1bnNvbD0wCiAgSU9b
+MV06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9MCwgZGF0YT0wLCB1bnNvbD0w
+CiAgSU9bMl06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9MCwgZGF0YT0wLCB1
+bnNvbD0wCiAgSU9bM106IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9MCwgZGF0
+YT0wLCB1bnNvbD0wCiAgSU9bNF06IGVuYWJsZT0wLCBkaXI9MCwgd2FrZT0wLCBzdGlja3k9
+MCwgZGF0YT0wLCB1bnNvbD0wCk5vZGUgMHgwMiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQx
+ZDogU3RlcmVvIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJGcm9udCBQbGF5YmFjayBWb2x1
+bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQs
+IGlkeD0wLCBvZnM9MAogIERldmljZTogbmFtZT0iQUxDODk3IEFuYWxvZyIsIHR5cGU9IkF1
+ZGlvIiwgZGV2aWNlPTAKICBBbXAtT3V0IGNhcHM6IG9mcz0weDU3LCBuc3RlcHM9MHg1Nywg
+c3RlcHNpemU9MHgwMiwgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAgWzB4NTcgMHg1N10KICBD
+b252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBQQ006CiAgICByYXRlcyBbMHg1NjBd
+OiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAg
+ICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNT
+CiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MDMgW0F1ZGlvIE91dHB1
+dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iU3Vycm91
+bmQgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6
+IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtT3V0IGNhcHM6IG9mcz0weDU3
+LCBuc3RlcHM9MHg1Nywgc3RlcHNpemU9MHgwMiwgbXV0ZT0wCiAgQW1wLU91dCB2YWxzOiAg
+WzB4NTcgMHg1N10KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBQQ006CiAg
+ICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4
+ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBE
+MCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4
+MDQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBBbXAtT3V0CiAgQ29udHJv
+bDogbmFtZT0iQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAg
+ICBDb250cm9sQW1wOiBjaHM9MSwgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQ29udHJvbDog
+bmFtZT0iTEZFIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250
+cm9sQW1wOiBjaHM9MiwgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBv
+ZnM9MHg1NywgbnN0ZXBzPTB4NTcsIHN0ZXBzaXplPTB4MDIsIG11dGU9MAogIEFtcC1PdXQg
+dmFsczogIFsweDU3IDB4NTddCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAg
+UENNOgogICAgcmF0ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBi
+aXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3Rh
+dGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
+Tm9kZSAweDA1IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDFkOiBTdGVyZW8gQW1wLU91dAog
+IENvbnRyb2w6IG5hbWU9IkhlYWRwaG9uZSBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBk
+ZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAog
+IEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVwc2l6ZT0weDAyLCBt
+dXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHg1NyAweDU3XQogIENvbnZlcnRlcjogc3RyZWFt
+PTAsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDU2MF06IDQ0MTAwIDQ4MDAwIDk2
+MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06
+IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGlu
+Zz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgwNiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDYxMTog
+U3RlcmVvIERpZ2l0YWwKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdp
+dGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2RpbmcgVHlwZTogMHgwCiAg
+UENNOgogICAgcmF0ZXMgWzB4NWYwXTogMzIwMDAgNDQxMDAgNDgwMDAgODgyMDAgOTYwMDAg
+MTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENN
+CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQw
+LCBhY3R1YWw9RDAKTm9kZSAweDA3IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0
+ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MTcsIG5zdGVwcz0weDNmLCBzdGVw
+c2l6ZT0weDAyLCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsweDk3IDB4OTddCiAgQ29udmVy
+dGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIFBDTToKICAgIHJh
+dGVzIFsweDU2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTog
+MTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQx
+IEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlv
+bjogMQogICAgIDB4MTIKTm9kZSAweDA4IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6
+IFN0ZXJlbyBBbXAtSW4KICBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFZvbHVtZSIsIGluZGV4
+PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2Zz
+PTAKICBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0w
+CiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBEZXZpY2U6
+IG5hbWU9IkFMQzg5NyBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQW1wLUlu
+IGNhcHM6IG9mcz0weDE3LCBuc3RlcHM9MHgzZiwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCiAg
+QW1wLUluIHZhbHM6ICBbMHgzNiAweDM2XQogIENvbnZlcnRlcjogc3RyZWFtPTEsIGNoYW5u
+ZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQQ006CiAgICByYXRlcyBbMHg1NjBdOiA0NDEwMCA0
+ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRz
+IFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6
+IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDIzCk5vZGUg
+MHgwOSBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4MTAwNTFiOiBTdGVyZW8gQW1wLUluCiAgQ29u
+dHJvbDogbmFtZT0iQ2FwdHVyZSBWb2x1bWUiLCBpbmRleD0xLCBkZXZpY2U9MAogICAgQ29u
+dHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgQ29udHJvbDogbmFtZT0i
+Q2FwdHVyZSBTd2l0Y2giLCBpbmRleD0xLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hz
+PTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0wCiAgRGV2aWNlOiBuYW1lPSJBTEM4OTcgQWx0IEFu
+YWxvZyIsIHR5cGU9IkF1ZGlvIiwgZGV2aWNlPTIKICBBbXAtSW4gY2Fwczogb2ZzPTB4MTcs
+IG5zdGVwcz0weDNmLCBzdGVwc2l6ZT0weDAyLCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsw
+eGI2IDB4YjZdCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVj
+dDogMAogIFBDTToKICAgIHJhdGVzIFsweDU2MF06IDQ0MTAwIDQ4MDAwIDk2MDAwIDE5MjAw
+MAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBv
+d2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0
+dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MjIKTm9kZSAweDBhIFtBdWRpbyBJbnB1
+dF0gd2NhcHMgMHgxMDA3MTE6IFN0ZXJlbyBEaWdpdGFsCiAgQ29udmVydGVyOiBzdHJlYW09
+MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIERpZ2l0YWw6CiAgRGlnaXRhbCBjYXRl
+Z29yeTogMHgwCiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg1
+NjBdOiA0NDEwMCA0ODAwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0
+CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBF
+UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAg
+ICAweDFmCk5vZGUgMHgwYiBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVyZW8g
+QW1wLUluCiAgQ29udHJvbDogbmFtZT0iRnJvbnQgTWljIFBsYXliYWNrIFZvbHVtZSIsIGlu
+ZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MSwg
+b2ZzPTAKICBDb250cm9sOiBuYW1lPSJGcm9udCBNaWMgUGxheWJhY2sgU3dpdGNoIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0xLCBv
+ZnM9MAogIENvbnRyb2w6IG5hbWU9IlJlYXIgTWljIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4
+PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2Zz
+PTAKICBDb250cm9sOiBuYW1lPSJSZWFyIE1pYyBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0w
+LCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0w
+CiAgQ29udHJvbDogbmFtZT0iTGluZSBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZp
+Y2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTIsIG9mcz0wCiAgQ29u
+dHJvbDogbmFtZT0iTGluZSBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAog
+ICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTIsIG9mcz0wCiAgQW1wLUluIGNh
+cHM6IG9mcz0weDE3LCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAgQW1w
+LUluIHZhbHM6ICBbMHgxOCAweDE4XSBbMHgxNiAweDE2XSBbMHgwZSAweDBlXSBbMHg4MCAw
+eDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBbMHg4MCAweDgwXSBb
+MHg4MCAweDgwXSBbMHg4MCAweDgwXQogIENvbm5lY3Rpb246IDEwCiAgICAgMHgxOCAweDE5
+IDB4MWEgMHgxYiAweDFjIDB4MWQgMHgxNCAweDE1IDB4MTYgMHgxNwpOb2RlIDB4MGMgW0F1
+ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBz
+OiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1J
+biB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAyCiAgICAg
+MHgwMiAweDBiCk5vZGUgMHgwZCBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVy
+ZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNp
+emU9MHgwMCwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHg4MCAweDgwXSBbMHg4MCAweDgw
+XQogIENvbm5lY3Rpb246IDIKICAgICAweDAzIDB4MGIKTm9kZSAweDBlIFtBdWRpbyBNaXhl
+cl0gd2NhcHMgMHgyMDAxMGI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4
+MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtSW4gdmFsczog
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMgogICAgIDB4MDQgMHgw
+YgpOb2RlIDB4MGYgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1J
+bgogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAs
+IG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4MDAgMHgwMF0gWzB4ODAgMHg4MF0KICBDb25u
+ZWN0aW9uOiAyCiAgICAgMHgwNSAweDBiCk5vZGUgMHgxMCBbQXVkaW8gT3V0cHV0XSB3Y2Fw
+cyAweDYxMTogU3RlcmVvIERpZ2l0YWwKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJh
+Y2sgQ29uIE1hc2siLCBpbmRleD0wLCBkZXZpY2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1
+OCBQbGF5YmFjayBQcm8gTWFzayIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29udHJvbDogbmFt
+ZT0iSUVDOTU4IFBsYXliYWNrIERlZmF1bHQiLCBpbmRleD0wLCBkZXZpY2U9MAogIENvbnRy
+b2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAog
+IENvbnRyb2w6IG5hbWU9IklFQzk1OCBEZWZhdWx0IFBDTSBQbGF5YmFjayBTd2l0Y2giLCBp
+bmRleD0wLCBkZXZpY2U9MAogIERldmljZTogbmFtZT0iQUxDODk3IERpZ2l0YWwiLCB0eXBl
+PSJTUERJRiIsIGRldmljZT0xCiAgQ29udmVydGVyOiBzdHJlYW09NSwgY2hhbm5lbD0wCiAg
+RGlnaXRhbDogRW5hYmxlZAogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIElFQyBDb2Rpbmcg
+VHlwZTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4NWYwXTogMzIwMDAgNDQxMDAgNDgwMDAg
+ODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0
+cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2Vy
+OiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDExIFtQaW4gQ29tcGxleF0gd2NhcHMg
+MHg0MDA3ODE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4MDAwMDAwMTA6IE9VVAogIFBp
+biBEZWZhdWx0IDB4OTA0NjAxNTA6IFtGaXhlZF0gU1BESUYgT3V0IGF0IEludCBOL0EKICAg
+IENvbm4gPSBEaWdpdGFsLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0g
+MHg1LCBTZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6
+IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0
+YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
+CiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTAKTm9kZSAweDEyIFtQaW4gQ29tcGxleF0gd2Nh
+cHMgMHg0MDA0MDE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZh
+dWx0IDB4NDAzN2MwMDA6IFtOL0FdIENEIGF0IEV4dCBOL0EKICAgIENvbm4gPSBBbmFsb2cs
+IENvbG9yID0gVU5LTk9XTgogICAgRGVmQXNzb2NpYXRpb24gPSAweDAsIFNlcXVlbmNlID0g
+MHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBT
+UwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDEzIFtWZW5kb3IgRGVm
+aW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxNCBbUGluIENvbXBs
+ZXhdIHdjYXBzIDB4NDAwNThkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkZy
+b250IFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1w
+OiBjaHM9MywgZGlyPU91dCwgaWR4PTAsIG9mcz0wCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgw
+MCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczog
+IFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMTAwM2U6IElOIE9VVCBIUCBFQVBEIERldGVj
+dCBUcmlnZ2VyCiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDAxMDE0MDEwOiBb
+SmFja10gTGluZSBPdXQgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3Jl
+ZW4KICAgIERlZkFzc29jaWF0aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxz
+OiAweDQwOiBPVVQKICBVbnNvbGljaXRlZDogdGFnPTA1LCBlbmFibGVkPTEKICBQb3dlciBz
+dGF0ZXM6ICBEMCBEMSBEMiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1E
+MAogIENvbm5lY3Rpb246IDEKICAgICAweDBjCk5vZGUgMHgxNSBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDAwNThkOiBTdGVyZW8gQW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAs
+IG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBb
+MHg4MCAweDgwXQogIFBpbmNhcCAweDAwMDAwMDM2OiBJTiBPVVQgRGV0ZWN0IFRyaWdnZXIK
+ICBQaW4gRGVmYXVsdCAweDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAg
+ICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4Ziwg
+U2VxdWVuY2UgPSAweDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDIw
+OiBJTgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBvd2VyIHN0YXRlczog
+IEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29u
+bmVjdGlvbjogMQogICAgIDB4MGQKTm9kZSAweDE2IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
+MDA1OGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBz
+PTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4
+ODBdCiAgUGluY2FwIDB4MDAwMDAwMzY6IElOIE9VVCBEZXRlY3QgVHJpZ2dlcgogIFBpbiBE
+ZWZhdWx0IDB4NDExMTExZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXIKICAgIENvbm4g
+PSAxLzgsIENvbG9yID0gQmxhY2sKICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5j
+ZSA9IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MjA6IElOCiAg
+VW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEg
+RDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9u
+OiAxCiAgICAgMHgwZQpOb2RlIDB4MTcgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZDog
+U3RlcmVvIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwg
+c3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQ
+aW5jYXAgMHgwMDAwMDAzNjogSU4gT1VUIERldGVjdCBUcmlnZ2VyCiAgUGluIERlZmF1bHQg
+MHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwg
+Q29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgw
+CiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KICBVbnNvbGlj
+aXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBF
+UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAg
+ICAweDBmCk5vZGUgMHgxOCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNThmOiBTdGVyZW8g
+QW1wLUluIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJDZW50ZXIgUGxheWJhY2sgU3dpdGNo
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0xLCBkaXI9T3V0LCBp
+ZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJMRkUgUGxheWJhY2sgU3dpdGNoIiwgaW5k
+ZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0yLCBkaXI9T3V0LCBpZHg9MCwg
+b2ZzPTAKICBDb250cm9sOiBuYW1lPSJSZWFyIE1pYyBCb29zdCBWb2x1bWUiLCBpbmRleD0w
+LCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTAsIG9mcz0w
+CiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMywgc3RlcHNpemU9MHgyNywg
+bXV0ZT0wCiAgQW1wLUluIHZhbHM6ICBbMHgwMiAweDAyXQogIEFtcC1PdXQgY2Fwczogb2Zz
+PTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZh
+bHM6ICBbMHgwMCAweDAwXQogIFBpbmNhcCAweDAwMDAzNzM2OiBJTiBPVVQgRGV0ZWN0IFRy
+aWdnZXIKICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MCAxMDAKICBQaW4gRGVmYXVsdCAw
+eDAxYTE5MDMwOiBbSmFja10gTWljIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xv
+ciA9IFBpbmsKICAgIERlZkFzc29jaWF0aW9uID0gMHgzLCBTZXF1ZW5jZSA9IDB4MAogIFBp
+bi1jdGxzOiAweDI0OiBJTiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMywgZW5hYmxl
+ZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBvd2VyOiBzZXR0aW5n
+PUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA1CiAgICAgMHgwYyogMHgwZCAweDBlIDB4
+MGYgMHgyNgpOb2RlIDB4MTkgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZjogU3RlcmVv
+IEFtcC1JbiBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iRnJvbnQgTWljIEJvb3N0IFZvbHVt
+ZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBp
+ZHg9MCwgb2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVw
+c2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAyIDB4MDJdCiAgQW1wLU91
+dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQog
+IEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgUGluY2FwIDB4MDAwMDM3M2U6IElOIE9V
+VCBIUCBEZXRlY3QgVHJpZ2dlcgogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwIDEwMAog
+IFBpbiBEZWZhdWx0IDB4MDJhMTkwNDA6IFtKYWNrXSBNaWMgYXQgRXh0IEZyb250CiAgICBD
+b25uID0gMS84LCBDb2xvciA9IFBpbmsKICAgIERlZkFzc29jaWF0aW9uID0gMHg0LCBTZXF1
+ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDI0OiBJTiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6
+IHRhZz0wMiwgZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA1CiAgICAgMHgw
+YyogMHgwZCAweDBlIDB4MGYgMHgyNgpOb2RlIDB4MWEgW1BpbiBDb21wbGV4XSB3Y2FwcyAw
+eDQwMDU4ZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iU3Vycm91
+bmQgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6
+IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJMaW5lIEJv
+b3N0IFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9Mywg
+ZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0w
+eDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKICBBbXAtSW4gdmFsczogIFsweDAzIDB4MDNd
+CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAs
+IG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMDM3
+MzY6IElOIE9VVCBEZXRlY3QgVHJpZ2dlcgogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgw
+IDEwMAogIFBpbiBEZWZhdWx0IDB4MDE4MTMwM2Y6IFtKYWNrXSBMaW5lIEluIGF0IEV4dCBS
+ZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsdWUKICAgIERlZkFzc29jaWF0aW9uID0g
+MHgzLCBTZXF1ZW5jZSA9IDB4ZgogIFBpbi1jdGxzOiAweDIwOiBJTiBWUkVGX0hJWgogIFVu
+c29saWNpdGVkOiB0YWc9MDQsIGVuYWJsZWQ9MQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQy
+IEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjog
+NQogICAgIDB4MGMqIDB4MGQgMHgwZSAweDBmIDB4MjYKTm9kZSAweDFiIFtQaW4gQ29tcGxl
+eF0gd2NhcHMgMHg0MDA1OGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dAogIENvbnRyb2w6IG5h
+bWU9IkhlYWRwaG9uZSBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZpY2U9MAogICAg
+Q29udHJvbEFtcDogY2hzPTMsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIEFtcC1JbiBjYXBz
+OiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDMsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1J
+biB2YWxzOiAgWzB4MDAgMHgwMF0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9
+MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgw
+MF0KICBQaW5jYXAgMHgwMDAxMzczZTogSU4gT1VUIEhQIEVBUEQgRGV0ZWN0IFRyaWdnZXIK
+ICAgIFZyZWYgY2FwczogSElaIDUwIEdSRCA4MCAxMDAKICBFQVBEIDB4MjogRUFQRAogIFBp
+biBEZWZhdWx0IDB4MDIyMTQwMjA6IFtKYWNrXSBIUCBPdXQgYXQgRXh0IEZyb250CiAgICBD
+b25uID0gMS84LCBDb2xvciA9IEdyZWVuCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2Vx
+dWVuY2UgPSAweDAKICBQaW4tY3RsczogMHhjMDogT1VUIEhQIFZSRUZfSElaCiAgVW5zb2xp
+Y2l0ZWQ6IHRhZz0wMSwgZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMg
+RVBTUwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA1CiAg
+ICAgMHgwYyAweDBkIDB4MGUgMHgwZiogMHgyNgpOb2RlIDB4MWMgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDQ4MTogU3RlcmVvCiAgUGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERl
+ZmF1bHQgMHg0MTExMTFmMDogW04vQV0gU3BlYWtlciBhdCBFeHQgUmVhcgogICAgQ29ubiA9
+IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNl
+ID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KICBV
+bnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBE
+MiBEMyBFUFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMCwgU2V0dGluZy1yZXNl
+dApOb2RlIDB4MWQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQwMDogTW9ubwogIFBpbmNh
+cCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZhdWx0IDB4NDA0NGM2MDE6IFtOL0FdIFNQRElG
+IE91dCBhdCBFeHQgTi9BCiAgICBDb25uID0gUkNBLCBDb2xvciA9IFVOS05PV04KICAgIERl
+ZkFzc29jaWF0aW9uID0gMHgwLCBTZXF1ZW5jZSA9IDB4MQogIFBpbi1jdGxzOiAweDIwOiBJ
+TgogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dlcjogc2V0dGluZz1E
+MCwgYWN0dWFsPUQwCk5vZGUgMHgxZSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNzgxOiBT
+dGVyZW8gRGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDEwOiBPVVQKICBQaW4gRGVmYXVsdCAw
+eDQxMTExMWYwOiBbTi9BXSBTcGVha2VyIGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBD
+b2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2VxdWVuY2UgPSAweDAK
+ICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNvbGlj
+aXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMyBF
+UFNTCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAg
+ICAweDA2Ck5vZGUgMHgxZiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNjgxOiBTdGVyZW8g
+RGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDIwOiBJTgogIFBpbiBEZWZhdWx0IDB4NDExMTEx
+ZjA6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0g
+QmxhY2sKICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogICAgTWlz
+YyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MjA6IElOCiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMgRVBTUwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDIwIFtWZW5kb3IgRGVmaW5lZCBX
+aWRnZXRdIHdjYXBzIDB4ZjAwMDQwOiBNb25vCiAgUHJvY2Vzc2luZyBjYXBzOiBiZW5pZ249
+MCwgbmNvZWZmPTE0MgpOb2RlIDB4MjEgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMg
+MHhmMDAwMDA6IE1vbm8KTm9kZSAweDIyIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGI6
+IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBz
+dGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsweDgwIDB4ODBdIFsweDAw
+IDB4MDBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBd
+IFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgw
+IDB4ODBdIFsweDgwIDB4ODBdCiAgQ29ubmVjdGlvbjogMTIKICAgICAweDE4IDB4MTkgMHgx
+YSAweDFiIDB4MWMgMHgxZCAweDE0IDB4MTUgMHgxNiAweDE3IDB4MGIgMHgxMgpOb2RlIDB4
+MjMgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwYjogU3RlcmVvIEFtcC1JbgogIEFtcC1J
+biBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQog
+IEFtcC1JbiB2YWxzOiAgWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4MDAgMHgwMF0gWzB4
+ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4
+MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0gWzB4ODAgMHg4MF0KICBDb25uZWN0aW9uOiAx
+MQogICAgIDB4MTggMHgxOSAweDFhIDB4MWIgMHgxYyAweDFkIDB4MTQgMHgxNSAweDE2IDB4
+MTcgMHgwYgpOb2RlIDB4MjQgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAw
+MDA6IE1vbm8KTm9kZSAweDI1IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDFkOiBTdGVyZW8g
+QW1wLU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4NTcsIG5zdGVwcz0weDU3LCBzdGVwc2l6
+ZT0weDAyLCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHg1NyAweDU3XQogIENvbnZlcnRl
+cjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDU2MF06IDQ0MTAw
+IDQ4MDAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1h
+dHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzIEVQU1MKICBQb3dl
+cjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCk5vZGUgMHgyNiBbQXVkaW8gTWl4ZXJdIHdjYXBz
+IDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3Rl
+cHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAw
+eDAwXSBbMHg4MCAweDgwXQogIENvbm5lY3Rpb246IDIKICAgICAweDI1IDB4MGIK
 
-Andy also suggested the same.
-Sure I will use helpers from cleanup.h.
-
-> > +static IIO_DEVICE_ATTR_RW(in_accel_gyro_averaging, 0);
-> > +static IIO_CONST_ATTR(in_accel_gyro_averaging_available, "2 4 8 16 32 =
-64");
-> > +
-> > +static struct attribute *bmi323_attributes[] =3D {
-> > +     &iio_dev_attr_in_accel_gyro_averaging.dev_attr.attr,
-> > +     &iio_const_attr_in_accel_gyro_averaging_available.dev_attr.attr,
->
-> So averaging often maps directly to oversampling.  Kind of different name=
-s
-> for the same thing.  Perhaps that standard ABI can be used?
-> It tends to make sampling frequency reporting need to take it into accoun=
-t
-> though as that drops as divided by oversampling ratio.
-
-Yes, oversampling can be used, but changing the average
-value doesn't alter the sampling frequency. The sampling
-frequency is same even with the increase in averaging value.
-
-> > +#define BMI323_SCAN_MASK_ACCEL_3AXIS         \
-> > +     (BIT(BMI323_ACCEL_X) | BIT(BMI323_ACCEL_Y) | BIT(BMI323_ACCEL_Z))
-> > +
-> > +#define BMI323_SCAN_MASK_GYRO_3AXIS          \
-> > +     (BIT(BMI323_GYRO_X) | BIT(BMI323_GYRO_Y) | BIT(BMI323_GYRO_Z))
-> > +
-> > +static const unsigned long bmi323_avail_scan_masks[] =3D {
-> > +     /* 3-axis accel + 3-axis gyro */
-> > +     BMI323_SCAN_MASK_ACCEL_3AXIS | BMI323_SCAN_MASK_GYRO_3AXIS,
->
-> Can you poke this an see if you get what you expect which is the minimum
-> sufficient set of channels.  Matti pointed out earlier that the search
-> logic isn't well documented in iio_scan_mask_match() but it
-> looks to match against first case where the requested values are a subset=
-.
-> So this would need to be in the opposite order or you will always
-> get everything turned on.
-
-Sure, I will check and update you further on this.
-
->
-> Chances are we have this wrong in other drivers as well :(
-> Won't break things, but may mean that we over read in some configurations=
-.
->
-> > +     /* 3-axis accel */
-> > +     BMI323_SCAN_MASK_ACCEL_3AXIS,
-> > +     /* 3-axis gyro */
-> > +     BMI323_SCAN_MASK_GYRO_3AXIS,
-> > +     0
-> > +};
-> > +
-
-> > +     irq_type =3D irqd_get_trigger_type(desc);
-> > +
-> > +     switch (irq_type) {
-> > +     case IRQF_TRIGGER_RISING:
-> > +             latch =3D false;
-> > +             active_high =3D true;
-> > +             break;
-> > +     case IRQF_TRIGGER_HIGH:
-> > +             latch =3D true;
-> > +             active_high =3D true;
-> > +             break;
-> > +     case IRQF_TRIGGER_FALLING:
-> > +             latch =3D false;
-> > +             active_high =3D false;
-> > +             break;
-> > +     case IRQF_TRIGGER_LOW:
-> > +             latch =3D true;
-> > +             active_high =3D false;
-> > +             break;
-> > +     default:
-> > +             dev_err(data->dev, "Invalid interrupt type 0x%x specified=
-\n",
-> > +                     irq_type);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     open_drain =3D fwnode_property_read_bool(fwnode, "drive-open-drai=
-n");
-> > +
-> > +     ret =3D bmi323_int_pin_config(data, irq_pin, active_high, open_dr=
-ain,
-> > +                                 latch);
-> > +     if (ret)
-> > +             return dev_err_probe(data->dev, ret,
-> > +                                  "Failed to configure irq line\n");
-> > +
-> > +     data->trig =3D devm_iio_trigger_alloc(data->dev, "%s-trig-%d",
-> > +                                         indio_dev->name, irq_pin);
-> > +     if (!data->trig)
-> > +             return -ENOMEM;
-> > +
-> > +     data->trig->ops =3D &bmi323_trigger_ops;
-> > +     iio_trigger_set_drvdata(data->trig, data);
-> > +
-> > +     ret =3D devm_request_threaded_irq(data->dev, irq, NULL,
-> > +                                     bmi323_irq_thread_handler,
-> > +                                     irq_type | IRQF_ONESHOT,
->
-> I think if you leave the irq_type bit out, it will be set up to match wha=
-t was
-> specified in firmware anyway. Could be wrong on that though so check.
-
-Yes, irq_type is not required __setup_irq() is handling that.
-Thanks for pointing it out.
-
-> > +
-> > +static int bmi323_feature_engine_enable(struct bmi323_data *data, bool=
- en)
-> > +{
-> > +     unsigned int feature_status;
-> > +     int ret, i;
-> > +
-> > +     if (en) {
-> > +             ret =3D regmap_write(data->regmap, BMI323_FEAT_IO2_REG,
-> > +                                0x012c);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             ret =3D regmap_write(data->regmap, BMI323_FEAT_IO_STATUS_=
-REG,
-> > +                                BMI323_FEAT_IO_STATUS_MSK);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             ret =3D regmap_write(data->regmap, BMI323_FEAT_CTRL_REG,
-> > +                                BMI323_FEAT_ENG_EN_MSK);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             i =3D 5;
->
-> Why 5?
-
-No specific reason, during testing the feature engine was
-taking around 4 milliseconds, so I thought of checking
-every 2 milliseconds and max of 5 trials.
-
->
-> > +             do {
-> > +                     ret =3D regmap_read(data->regmap, BMI323_FEAT_IO1=
-_REG,
-> > +                                       &feature_status);
-> > +                     if (ret)
-> > +                             return ret;
-> > +
-> > +                     i--;
-> > +                     mdelay(2);
-> > +             } while (feature_status !=3D 0x01 && i);
-
-> > +
-> > +     indio_dev->name =3D "bmi323-imu";
-> > +     indio_dev->info =3D &bmi323_info;
-> > +     indio_dev->channels =3D bmi323_channels;
-> > +     indio_dev->num_channels =3D ARRAY_SIZE(bmi323_channels);
-> > +     indio_dev->available_scan_masks =3D bmi323_avail_scan_masks;
-> > +     indio_dev->modes =3D INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-> > +     dev_set_drvdata(data->dev, indio_dev);
-> > +
-> > +     ret =3D bmi323_trigger_probe(data, indio_dev);
->
-> What if interrupt isn't wired?  Do we need it for basic read of channels?
-> Would expect the interfaces provided to be more limited, but not that we
-> would provide none at all.
-
-Yes, the basic read of channels will be available even
-if none of the interrupts are wired and trigger buffer
-through sysfs or hrt timer is also available.
-
->
-> > +     if (ret)
-> > +             return -EINVAL;
-> > +
-> > +     ret =3D devm_iio_triggered_buffer_setup_ext(data->dev, indio_dev,
-> > +                                               &iio_pollfunc_store_tim=
-e,
-> > +                                               bmi323_trigger_handler,
-> > +                                               IIO_BUFFER_DIRECTION_IN=
-,
-> > +                                               &bmi323_buffer_ops,
-> > +                                               bmi323_fifo_attributes)=
-;
-> > +     if (ret)
-> > +             return dev_err_probe(data->dev, ret,
-> > +                                  "Failed to setup trigger buffer\n");
-
-> > + * From BMI323 datasheet section 4: Notes on the Serial Interface Supp=
-ort.
-> > + * Each I2C register read operation requires to read two dummy bytes b=
-efore
-> > + * the actual payload.
-> > + */
-> > +static int bmi323_regmap_i2c_read(void *context, const void *reg_buf,
-> > +                               size_t reg_size, void *val_buf,
-> > +                               size_t val_size)
-> > +{
-> > +     struct device *dev =3D context;
-> > +     struct i2c_client *i2c =3D to_i2c_client(dev);
-> > +     struct i2c_msg msgs[2];
-> > +     u8 *buff =3D NULL;
-> > +     int ret;
-> > +
-> > +     buff =3D kmalloc(val_size + BMI323_I2C_DUMMY, GFP_KERNEL);
-> > +     if (!buff)
-> > +             return -ENOMEM;
-> > +
-> > +     msgs[0].addr =3D i2c->addr;
-> > +     msgs[0].flags =3D i2c->flags;
-> > +     msgs[0].len =3D reg_size;
-> > +     msgs[0].buf =3D (u8 *)reg_buf;
-> > +
-> > +     msgs[1].addr =3D i2c->addr;
-> > +     msgs[1].len =3D val_size + BMI323_I2C_DUMMY;
-> > +     msgs[1].buf =3D (u8 *)buff;
-> > +     msgs[1].flags =3D i2c->flags | I2C_M_RD;
-> > +
-> > +     ret =3D i2c_transfer(i2c->adapter, msgs, ARRAY_SIZE(msgs));
-> > +     if (ret < 0) {
-> > +             kfree(buff);
-> > +             return -EIO;
-> > +     }
-> > +
-> > +     memcpy(val_buf, buff + BMI323_I2C_DUMMY, val_size);
->
-> Annoyingly can't do same trick as I suggest for SPI as we need
-> the address send vs when data turns up to be correct.
->
-> Whilst this code is 'generic' do you know the max size of the
-> buffer that might be read?  If it's small I'd just use an array
-> on the stack.  If large, then the cleanup.h stuff will help
-> with code, but it's still annoying to have to do an allocation
-> in here.  You can probably put something in context alongside
-> dev.
-
-A buffer size of 2028 bytes is required when configuring
-the FIFO watermark for maximum capacity. Since the
-necessary buffer size is substantial, I am allocating
-it dynamically.
-
-I will try to use an additional buffer from the device's
-private structure and pass it through the context.
-This approach will help reduce the memory allocation
-and deallocation on every device access.
-
-> > + * From BMI323 datasheet section 4: Notes on the Serial Interface Supp=
-ort.
-> > + * Each SPI register read operation requires to read one dummy byte be=
-fore
-> > + * the actual payload.
-> > + */
-> > +static int bmi323_regmap_spi_read(void *context, const void *reg_buf,
-> > +                               size_t reg_size, void *val_buf,
-> > +                               size_t val_size)
-> > +{
-> > +     struct spi_device *spi =3D context;
-> > +     u8 reg, *buff =3D NULL;
-> > +     int ret;
-> > +
-> > +     buff =3D kmalloc(val_size + BMI323_SPI_DUMMY, GFP_KERNEL);
->
-> Hmm.  Regmap has pad_bits (which can be multiple bytes) but this case
-> is unusual in that they only apply to reads.
->
-> I wonder if we can make this cheaper though rather than having
-> to handle either some context or having dynamic allocations in here.
->
-> How about making the write bigger?  Does that have any effect?
-> Looks like don't care state in Figure 31.  If that's the case,
-> send some zeros on that as it's known fixed size (2 bytes including
-> the padding) and then you can directly use the read buffer without
-> yet another memcpy.
-
-For spi with pad_bits=3D8 and without any custom read and
-write functions, regmap_read() works but regmap_write()
-does not. Write is also adding 8 bits of padding and
-the device is treating it as data.
-(7.2.3 SPI Protocol Figure 30)
-
->
->
-> > +     if (!buff)
-> > +             return -ENOMEM;
-> > +
-> > +     reg =3D *(u8 *)reg_buf | 0x80;
-> > +     ret =3D spi_write_then_read(spi, &reg, sizeof(reg), buff,
-> > +                               val_size + BMI323_SPI_DUMMY);
-> > +     if (ret) {
-> > +             kfree(buff);
-> > +             return ret;
-> > +     }
-> > +
-> > +     memcpy(val_buf, buff + BMI323_SPI_DUMMY, val_size);
-> > +     kfree(buff);
-> > +
-> > +     return ret;
-
-Regards
-Jagath
+--------------75qayHeIIle0sZg34Wo4IHBP--
