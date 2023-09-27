@@ -2,199 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E119E7B0384
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3287B0375
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbjI0MKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
+        id S231549AbjI0MD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjI0MK2 (ORCPT
+        with ESMTP id S231509AbjI0MDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:10:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD45CBE;
-        Wed, 27 Sep 2023 05:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695816627; x=1727352627;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qpBb1Dvmlu54LR+5l2f0lLgg+l2XFidwR6LH6371XtU=;
-  b=IJJsyIY+Ej30BCLnOzlb0CS/zL68eYAYkA/SJKkokQlWaEzfBkHZYvju
-   dox7SYwg6jg9mJbUg7Gl9KjqRkm3jRct0d31vdI+11X8M5bSMmxrviDMs
-   qm0tVFjVWop9FN+QYbJUEgwpMbDv4XxqhGk7fyeT98EzF9LjffKgaW+jJ
-   KomjhBx1tLSpupGwNMm34b0e65lK+iaWDNJfeCbqzZApc9an/LgtEzKbr
-   2S+TkbtiJRWJeR3EgFIrunWTGLW+A1YXHWgzbZ9K5gbrN2Nr78CT8sTFM
-   MZPI4yuetKFFFAxfAzdj0B2MmPv3AEX55IsaHyjSZe6Dk9YEXkq6AgxWm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="372150467"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="372150467"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:10:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="892580517"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="892580517"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:09:16 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qlTFT-00000000sRB-0Bl3;
-        Wed, 27 Sep 2023 15:02:35 +0300
-Date:   Wed, 27 Sep 2023 15:02:34 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 2/5] lib/bitmap: Introduce bitmap_scatter() and
- bitmap_gather() helpers
-Message-ID: <ZRQZ2m0Rb/4AkeQ3@smile.fi.intel.com>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-3-andriy.shevchenko@linux.intel.com>
- <ZRN2adZZaGeqWNlY@yury-ThinkPad>
+        Wed, 27 Sep 2023 08:03:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993ACBE
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695816190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OIJdWPFNkLfDudtONt3WjWlis6fmp6gJVF1FOUUG9fU=;
+        b=dJ/V5CGeFo375LDmCLRFuQBwzQlU96E1RGWtDKZIEGxn+6Pili4+/ZBknZkUVYnajA8bWi
+        ulKq4jeuGzNmz59yQO27UkMSt9/knazeJuM4sy0Svj4fUWqGxP3rVxd5Fr+oO3HZXANuQK
+        44VpopSZGQ5u7428AxThkH1Nn0GbYZ0=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-168-07gToLrZP8-QlgcisbXZ_w-1; Wed, 27 Sep 2023 08:03:09 -0400
+X-MC-Unique: 07gToLrZP8-QlgcisbXZ_w-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7742bab9c0cso1278454385a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:03:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695816189; x=1696420989;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OIJdWPFNkLfDudtONt3WjWlis6fmp6gJVF1FOUUG9fU=;
+        b=MhjgaQuweI0zkLqLRFYNDbvgKnbNuVEpgTBglHZIX3BJCitniXzsforACNOp7bUNbb
+         sX2+LMoVU+X8gwRI8rBqa+qhrkpd7Zgw1sStbQg3NIqB+GhODg06tF72CS3hO6tc8tW+
+         YmIuMr7YwqB0cP9k8R6SQ2XzyQ+MipI+ANaMpb9yaT9qxVE6HEIoLmUq72RFZ8TAW1ik
+         EenJ29iVWEH6qfhj9YR6xXJyq0OY5RZAS2v3k2LPDM2XhTgW8lTNqjgWNX5nIJ+mIcEC
+         b2IOFQq6ph2jSFuEDYNQdEMAjVUUBLElfEGtiQuX63QBF2fpjonowB7eT4xD7F/oiCP7
+         ohfw==
+X-Gm-Message-State: AOJu0Yx6+wWC4k+3+0XiG43Ce3q66IiA94qHTLe6Dh403yxUTRAP23OX
+        4XKX3LaQWFZayGRwnWx3uAKnj8xHMIyTcYEG8fqX5q1YBvVX3sdEzvQaEf/8a5hQ0kxC5E7JbrR
+        pWdzyrgp/2YER9pWtyiqBHiSb
+X-Received: by 2002:a05:620a:3885:b0:774:108a:b537 with SMTP id qp5-20020a05620a388500b00774108ab537mr1323438qkn.42.1695816188939;
+        Wed, 27 Sep 2023 05:03:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG/e4xgrXENJoifhRKXLsQ1PlmJmOxOGeD34II+VIHXNNhkFbt7ctmSpSSOxYIwcBi5qLWAQQ==
+X-Received: by 2002:a05:620a:3885:b0:774:108a:b537 with SMTP id qp5-20020a05620a388500b00774108ab537mr1323395qkn.42.1695816188475;
+        Wed, 27 Sep 2023 05:03:08 -0700 (PDT)
+Received: from [10.16.200.42] (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id w15-20020ae9e50f000000b0077423f849c3sm3607412qkf.24.2023.09.27.05.03.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 05:03:07 -0700 (PDT)
+Message-ID: <2010c7a4-8754-2563-cd55-35bdd854d04e@redhat.com>
+Date:   Wed, 27 Sep 2023 08:03:06 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRN2adZZaGeqWNlY@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] net: appletalk: remove cops support
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spdx@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        jschlst@samba.org
+References: <20230927090029.44704-2-gregkh@linuxfoundation.org>
+ <ZRP1R65q43PZj7pc@infradead.org>
+From:   Prarit Bhargava <prarit@redhat.com>
+In-Reply-To: <ZRP1R65q43PZj7pc@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 05:25:13PM -0700, Yury Norov wrote:
-> On Tue, Sep 26, 2023 at 08:20:04AM +0300, Andy Shevchenko wrote:
-> > These helpers are the optimized versions of the bitmap_remap()
-> > where one of the bitmaps (source or destination) is of sequential bits.
+On 9/27/23 05:26, Christoph Hellwig wrote:
+> On Wed, Sep 27, 2023 at 11:00:30AM +0200, Greg Kroah-Hartman wrote:
+>> The COPS Appletalk support is very old, never said to actually work
+>> properly, and the firmware code for the devices are under a very suspect
+>> license.  Remove it all to clear up the license issue, if it is still
+>> needed and actually used by anyone, we can add it back later once the
+>> license is cleared up.
 > 
-> If so, can you add a test that makes sure that new API is consistent
-> with the old bitmap_remap? And also provide numbers how well are they
-> optimized, comparing to bitmap_remap.
-
-It's impossible. bitmap_remap() is universal, these APIs only for the specific
-domain.
-
-> > See more in the kernel documentation of the helpers.
+> Looks good:
 > 
-> I grepped the whole kernel, not only Documentation directory, and found
-> nothing...
-
-It's added in this patch in the format of kernel doc.
-
-...
-
-> > + * Returns: the weight of the @mask.
+> Acked-by: Christoph Hellwig <hch@lst.de>
 > 
-> Returning a weight of the mask is somewhat non-trivial... To me it
-> would be logical to return a weight of destination, for example...
 
-> But I see that in the following patch you're using the returned value.
-> Maybe add a few words to advocate that?
+Ditto.
 
+Acked-by: Prarit Bhargava <prarit@redhat.com>
 
-I'll look into it again, maybe dst would work as well, I don't remember why
-I have chosen mask. Maybe because it's invariant here, dunno.
-
-...
-
-> > +	int n = 0;
-> 
-> Is n signed for purpose? I think it should be consistent with
-> return value.
-
-OK. No purpose there. Perhaps it's a leftover from the first experiments
-on the implementation of these APIs.
-
-...
-
-> > + * Example:
-> > + * If @src bitmap = 0x0302, with @mask = 0x1313, @dst will be 0x001a.
-> 
-> Not sure about others, but to me hex representation is quite useless,
-> moreover it's followed by binary one.
-
-Somebody is better at hex, somebody at binary one, I would leave both.
-
-> > + * Or in binary form
-> > + * @src			@mask			@dst
-> > + * 0000001100000010	0001001100010011	0000000000011010
-> > + *
-> > + * (Bits 0, 1, 4, 8, 9, 12 are copied to the bits 0, 1, 2, 3, 4, 5)
-> > + *
-> > + * Returns: the weight of the @mask.
-> > + */
-> 
-> It looks like those are designed complement to each other. Is that
-> true? If so, can you make your example showing that
->         scatter -> gather -> scatter
-> would restore the original bitmap?
-
-It looks like you stopped reading documentation somewhere on the middle.
-The two APIs are documented with the same example which makes it clear
-that they are data-loss transformations.
-
-Do you need something like this to be added (in both documentations):
-
-  The bitmap_scatter(), when executed over the @dst bitmap, will
-  restore the @src one if the @mask is kept the same, see the example
-  in the function description.
-
-?
-
-> If I'm wrong, can you please underline that they are not complement,
-> and why?
-
-No, you are not.
-
-...
-
-> I feel like they should reside in header, because they are quite a small
-> functions indeed, and they would benefit from compile-time optimizations
-> without bloating the kernel.
-> 
-> Moreover, you are using them in patch #3 on 64-bit bitmaps, which
-> would benefit from small_const_nbits() optimization.
-
-I can move them into header.
-
-...
-
-> > +	DECLARE_BITMAP(bmap, 1024);
-
-> Can you make it 1000? That way we'll test non-aligned case.
-
-Sure. But it's not related to the patch. It will test bitmap_weight() and not
-the new APIs, so, whatever is bigger 64 will suffice the purpose and won't
-anyhow affect the newly added APIs.
-
-...
-
-> Would be interesting to compare bitmap scatter/gather performance
-> against bitmap_remap.
-
-Do you have a code in mind? I can incorporate it.
-
-Again, you should understand that it's only applicable to the certain cases,
-otherwise it makes no sense (it's like comparing performance of ffs() on
-a single word against find_first_bit() on the arbitrary amount of words).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+P.
 
