@@ -2,93 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14B97AFEF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEED7AFEFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjI0Iu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S230044AbjI0Ivm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjI0Iuy (ORCPT
+        with ESMTP id S230469AbjI0Ivb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:50:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C27E4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:50:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E248FC433C7;
-        Wed, 27 Sep 2023 08:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695804652;
-        bh=9vFab4sPRBAj5706m3HoSNU3XGY+zOPkRZTBDOQYU+o=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=V7/ueg+ufSKsCz8S79hASiKUTQk/PoP0RKHm+fyd47r/fKQKSfYi1uL+VyqZe2od/
-         VTJs3zzkGNtRSdQTk2JCMdDqnevrdKnh2ucFbUWvk76xl40cs+nExh+c9W6AkiTsXe
-         mCHpQwaEKamoyDD3uBMrqU1HRiadaoklgyGEzaz6XD1pGYsq/jbLm1q/7PKTEqS3bd
-         vof9i4KJ9SbvEWDVW0ETKdzbeua/6cMsMWCkoQ04lVlVqqhDceVWAy85YXShTEGXa+
-         o0GxxcC+1KlXUOe4KBLxCKFcnejqUomhBAGRgCkkOuESiv+r6UqsTK6av7di4ZFOx7
-         tYS/Dx1+4JGVQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Cc:     Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <b5b19cb458c40c9d02f3d5a7bd1ba7d97ba17279.1695077303.git.mirq-linux@rere.qmqm.pl>
-References: <b5b19cb458c40c9d02f3d5a7bd1ba7d97ba17279.1695077303.git.mirq-linux@rere.qmqm.pl>
-Subject: Re: [PATCH v2 1/2] regulator/core: regulator_register: set
- device->class earlier
-Message-Id: <169580465113.2674076.14526284679681937734.b4-ty@kernel.org>
-Date:   Wed, 27 Sep 2023 10:50:51 +0200
+        Wed, 27 Sep 2023 04:51:31 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DE4E4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:51:26 -0700 (PDT)
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+        by cmsmtp with ESMTP
+        id lLDpqQpT5yYOwlQGTqVJGq; Wed, 27 Sep 2023 08:51:25 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTPS
+        id lQGQqco2ndD5RlQGSqHGl3; Wed, 27 Sep 2023 08:51:24 +0000
+X-Authority-Analysis: v=2.4 cv=Z8X/oVdA c=1 sm=1 tr=0 ts=6513ed0c
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=CKMxHAookNUaJbGn3r6bzg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
+ a=gEfo2CItAAAA:8 a=KKAkSRfTAAAA:8 a=yavEzJRY2FWF_nJvOSQA:9 a=QEXdDO2ut3YA:10
+ a=rsP06fVo5MYu2ilr0aT5:22 a=sptkURWiP4Gy88Gu7hUp:22 a=cvBusfyB2V15izCimMoJ:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=M9VEvHlh/5eXS2fMMAkgKAXat1fK2p6GGIa7Kd/YbXc=; b=m4T2V4oeTdcLV47JDy/L13rjtb
+        Jd/JJwEom5sT729peMDrBxgYeCKdIDmjDqZobfXlhKfOKRUq0dj6gz7lxqIIs4+0FMosW4QI6qU+M
+        RUXvWFHn3572K2Tb5/PdrQeyLHwa2us06LVAmJcEqZUI4Zbr7LEYHIjCPBd5hk5bjspWs07Rl59TM
+        vNd+1cyF6oyvBYNyg7VpI0CuXPbAKX5tKC8BNwpKmeHf8uUnLrIzzKcgowOmO4d4qy1xahd5F3F1h
+        R2frv3Xbm69MG81ny4uxEv3A1JkEKmRfWRw3o7GsGZYSa/07bHMi4AQXmmUoVT0q/qktHT3Sfctxs
+        HTNyTIIw==;
+Received: from [103.163.95.214] (port=59794 helo=[192.168.1.101])
+        by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <saravanan@linumiz.com>)
+        id 1qlQGO-001Mr8-2z;
+        Wed, 27 Sep 2023 14:21:20 +0530
+Message-ID: <358f7d3c-42d1-6405-0013-997deb974ce3@linumiz.com>
+Date:   Wed, 27 Sep 2023 14:21:18 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/3] regulator: dt-bindings: Add mps,mpq2286
+ power-management IC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        lgirdwood@gmail.com, conor+dt@kernel.org, linux@roeck-us.net,
+        linux-hwmon@vger.kernel.org, broonie@kernel.org,
+        sravanhome@gmail.com, robh+dt@kernel.org, jdelvare@suse.com
+References: <20230927033953.1503440-1-saravanan@linumiz.com>
+ <20230927033953.1503440-3-saravanan@linumiz.com>
+ <a1a50fb2-ddc6-4f85-9369-19b4c6c3bcd6@linaro.org>
+Content-Language: en-US
+From:   Saravanan Sekar <saravanan@linumiz.com>
+In-Reply-To: <a1a50fb2-ddc6-4f85-9369-19b4c6c3bcd6@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 103.163.95.214
+X-Source-L: No
+X-Exim-ID: 1qlQGO-001Mr8-2z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.101]) [103.163.95.214]:59794
+X-Source-Auth: saravanan@linumiz.com
+X-Email-Count: 10
+X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfEUofwaRwDVg/+iSoXK+xFXFL9nM8+yivHMq5ScoFg/5Z+4a9GRfbbaGWnp7yXnBD5muPfu19NgM58TQBo/KkOJbq1N18XMHxSCoaS1RTsIW+G93Xr7Q
+ Sv38UPPcS2vYLf7QXI9pRgMxJ+ylXmo3qWqCNKlJ8239P4eKm1347IqMkgbJAePHfSEVz6AGPbQsOMUyz7jgypGcKYIILloQrxs=
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 00:50:26 +0200, Michał Mirosław wrote:
-> When fixing a memory leak in commit d3c731564e09 ("regulator: plug
-> of_node leak in regulator_register()'s error path") it moved the
-> device_initialize() call earlier, but did not move the `dev->class`
-> initialization.  The bug was spotted and fixed by reverting part of
-> the commit (in commit 5f4b204b6b81 "regulator: core: fix kobject
-> release warning and memory leak in regulator_register()") but
-> introducing a different bug: now early error paths use `kfree(dev)`
-> instead of `put_device()` for an already initialized `struct device`.
+On 27/09/23 13:36, Krzysztof Kozlowski wrote:
+> On 27/09/2023 05:39, Saravanan Sekar wrote:
+>> Document mpq2286 power-management IC
+>>
+>> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+>> ---
+>>   .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
+>>   1 file changed, 59 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>> new file mode 100644
+>> index 000000000000..594b929fe4b8
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>> @@ -0,0 +1,59 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/regulator/mps,mpq2286.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Monolithic Power System MPQ2286 PMIC
+>> +
+>> +maintainers:
+>> +  - Saravanan Sekar <saravanan@linumiz.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - mps,mpq2286
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  regulators:
+>> +    type: object
+>> +
+>> +    properties:
+>> +      buck0:
 > 
-> [...]
+> If you have just one buck, it should be "buck".
+> 
 
-Applied to
+As replied in v1 review comments, other chipset has multiple regulator 
+so buck0 used to keep the driver common
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/2] regulator/core: regulator_register: set device->class earlier
-      commit: 8adb4e647a83cb5928c05dae95b010224aea0705
-[2/2] regulator/core: Revert "fix kobject release warning and memory leak in regulator_register()"
-      commit: 6e800968f6a715c0661716d2ec5e1f56ed9f9c08
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Best regards,
+> Krzysztof
+> 
 
 Thanks,
-Mark
-
+Saravanan
