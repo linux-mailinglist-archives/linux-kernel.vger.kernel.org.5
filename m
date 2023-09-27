@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEC47B0826
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5157B0822
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbjI0PZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
+        id S232438AbjI0PZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbjI0PZx (ORCPT
+        with ESMTP id S232422AbjI0PZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:25:53 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8139E180;
-        Wed, 27 Sep 2023 08:25:51 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RDsYES008775;
-        Wed, 27 Sep 2023 15:25:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=d4FJvpr7tEX7m/dsJ1AhmcAfSu9jDJjlVoFgBrAxQf4=;
- b=XtsUdV1/BOdcjvlFqPXgnavoRKuzlTD9H7QJDQyRwPsDKpbyrDpQaYjcMCFD4sFCOVml
- umS0oMoWv/kOeN45fccKUvBOUfzAst5m9jb+qSWGb3lgS+BJdwEwQHLv5ThBr7Npzw/z
- CKxxWYAT4XzdJ2RPAhlNkhbZJ7FZA11AOIxwoMvJ75Er/zxZ/z9hHppfk+iALHUqF9ym
- 7qx0Obz/64t56kJh6yRI8nD3T72dwioTi2GMr8eQ9ubiIDcexHGH2d5osobg2m++4YFT
- LrOMV8MzSsVrmCFdDPRziIFxEdlA3qsaDdAzBKBdv+AxZfT+NWT3x0Ur3sh/FOxf1HpU hw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tc9b89m6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 15:25:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38RFPSWI023346
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 15:25:28 GMT
-Received: from [10.110.47.87] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
- 2023 08:25:27 -0700
-Message-ID: <31bff2df-40a1-21f7-e155-38028b2688e8@quicinc.com>
-Date:   Wed, 27 Sep 2023 08:25:26 -0700
+        Wed, 27 Sep 2023 11:25:43 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61128198
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:25:41 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so18282279e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695828339; x=1696433139; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FOgg0rCTECztA3ZNecwIX4pkEzp5RUc43wOtDUEPPfs=;
+        b=HjyrhDanWp91e+EsG3yDHi47xSSE6q0DgBgdHbtITaVfDoDzExQbeTeROha/Y3xk2P
+         uQskrXHK9WtB3pilaIWp8orpjruH6RSKBRzqfSDWsjpBW07qYj3qQTMCSiSDarrLoRGt
+         Hy2axnKfPOi3EYL3GFl4CtvuzSkFFbkRzXp8HtdWtYsY3bSS+2uj2Lwl1QylrTfwbeDd
+         6oNhGza74FwVitR+FLqgERf3sXUB6DYupCkETM25v0hQScKk+PqNLcUd3k0z89zBg1Dc
+         lQgqsqAPWNyywQGoIZXnMZzZtcJkdCm6Yr/722ObYXp7ftwY7KiV+016jIWw8kVog36+
+         GYJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695828339; x=1696433139;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FOgg0rCTECztA3ZNecwIX4pkEzp5RUc43wOtDUEPPfs=;
+        b=hGiRJ2vcOeEW9AiO06bh4v3EwHjyyL42gGhZE+ltkUU8m4evEcTQneysb/Bv8Fig7H
+         Rxbig0EizlwM8+/SmXd/cKKfsfhvdfnUml2kes25ibQT/Uge56kYuLyMuE9W4lE4yyB/
+         5iQJB+LpsdX6LZFt5LjTP51DPo4YUChkV/VBiOoICRSQ1djMJ2vCm6q8pitR5L8Gu1eA
+         MhTziQES8mh5zkqk5noHL1hEI/VfLGN8qFEH5V1HGubtiHi+WyQzqq/kDoK3z2k5KSKx
+         JO5gBuqLrwBzeZEsKiknxhMjBBQupMY6j4dFt5fNUzq9A5DFTo5063341A4gsCOJJVkJ
+         5cvw==
+X-Gm-Message-State: AOJu0Yx7ax5H2qxJPRBhmQwTAO/PRpLdwJTzWGhtdGtVhWB1CvRfrKwo
+        f0Lm8qKgS+Jg+dvTXcLIOZI=
+X-Google-Smtp-Source: AGHT+IE81EFp1/1I6Lw/7zU5N54oHaFwo53gq3+sGuZIgunJ+3ylGMrsLQp9tAEOoiKmSp4UkLXrJQ==
+X-Received: by 2002:a05:6512:752:b0:4fa:ad2d:6c58 with SMTP id c18-20020a056512075200b004faad2d6c58mr1778813lfs.61.1695828339262;
+        Wed, 27 Sep 2023 08:25:39 -0700 (PDT)
+Received: from pc636 (host-90-233-214-51.mobileonline.telia.com. [90.233.214.51])
+        by smtp.gmail.com with ESMTPSA id o6-20020ac24c46000000b004ff91a94156sm519014lfk.121.2023.09.27.08.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 08:25:38 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 27 Sep 2023 17:25:36 +0200
+To:     "bhe@redhat.com" <bhe@redhat.com>,
+        Jaeseon Sim <jason.sim@samsung.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Jaeseon Sim <jason.sim@samsung.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaewon Kim <jaewon31.kim@samsung.com>
+Subject: Re: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
+ adjust_va_to_fit_type
+Message-ID: <ZRRJcG3iUhVMJLOo@pc636>
+References: <ZQ1ha+wIaTJ9+aU8@MiWiFi-R3L-srv>
+ <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
+ <ZQ1ftk5yDBv+p6A4@MiWiFi-R3L-srv>
+ <20230925105154epcms1p782c335c2355f39a9b583489c56e972f6@epcms1p7>
+ <20230926052158epcms1p7fd7f3e3f523e5209977d3f5c62e85afa@epcms1p7>
+ <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p4>
+ <20230926120549epcms1p4d41733c1c3698bd00eaa7e5ea0de041d@epcms1p4>
+ <ZRLQCTh9zNIp9OH7@pc636>
+ <ZRQW5Wb2cT1FnrvH@pc638.lan>
+ <ZRQvEFUepsUH/BUi@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/7] drm/msm/dp: tie dp_display_irq_handler() with dp
- driver
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
- <1694813901-26952-2-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprRFYMF-6yxcL75rftfii0kt7hmg_+TeOMJw+BRyDYdeg@mail.gmail.com>
- <1c82a0a6-d85f-9800-bdc4-2a4892b4239b@quicinc.com>
- <CAA8EJpoW8COZD7+yg9oZ=k=x36+XQKaJgvhab=XZPwTVuixh2A@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJpoW8COZD7+yg9oZ=k=x36+XQKaJgvhab=XZPwTVuixh2A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tBt7hbvv072v9-rBpRZ3DM-36U5Vvha_
-X-Proofpoint-ORIG-GUID: tBt7hbvv072v9-rBpRZ3DM-36U5Vvha_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_09,2023-09-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- clxscore=1015 phishscore=0 priorityscore=1501 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270131
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRQvEFUepsUH/BUi@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,132 +89,274 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 27, 2023 at 09:33:04PM +0800, bhe@redhat.com wrote:
+> On 09/27/23 at 01:49pm, Uladzislau Rezki wrote:
+> > > > Yes, but GFP_NOWAIT-alloc-error can easily occur for low-memory device.
+> > > >
+> > > Agree. You are really in a low memory condition. We end up here only if
+> > > pre-loading also has not succeeded, i.e. GFP_KERNEL also fails.
+> > > 
+> > > But i agree with you, we should "improve the warning" because we drain
+> > > and repeat.
+> > > 
+> > > > How about changing fix as below?:
+> > > > 
+> > > > <snip>
+> > > > --- a/mm/vmalloc.c
+> > > > +++ b/mm/vmalloc.c
+> > > > @@ -1468,6 +1468,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+> > > >                  */
+> > > >                 va->va_start = nva_start_addr + size;
+> > > >         } else {
+> > > > +               WARN_ON_ONCE(1);
+> > > >                 return -1;
+> > > >         }
+> > > >  
+> > > > @@ -1522,7 +1523,7 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> > > >  
+> > > >         /* Update the free vmap_area. */
+> > > >         ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
+> > > > -       if (WARN_ON_ONCE(ret))
+> > > > +       if (ret)
+> > > >                 return vend;
+> > > >  
+> > > >  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
+> > > > @@ -4143,7 +4144,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+> > > >                 ret = adjust_va_to_fit_type(&free_vmap_area_root,
+> > > >                                             &free_vmap_area_list,
+> > > >                                             va, start, size);
+> > > > -               if (WARN_ON_ONCE(unlikely(ret)))
+> > > > +               if (unlikely(ret))
+> > > >                         /* It is a BUG(), but trigger recovery instead. */
+> > > >                         goto recovery;
+> > > >  
+> > > > <snip>
+> > > > It will WARN_ONCE_ONCE() only if classify_va_fit_type() is "(type == NOTHING_FIT)".
+> > > > 
+> > > This is good but i think it should be improved further. We need to
+> > > understand from the warning when no memory and when there is no a
+> > > vmap space, so:
+> > > 
+> > > - if NOTHING_FIT, we should WARN() for sure;
+> > > - Second place in the pcpu_get_vm_area(), we do not use NE_FIT. Only in
+> > >   the begging after boot, but potentially we can trigger -ENOMEM and we
+> > >   should warn in this case. Otherwise you just hide it;
+> > > - And last one if after repeating we still do not manage to allocate.
+> > > 
+> > 
+> > We should understand a reason of failing. I think error handling should
+> > be improved. Something like:
+> 
+> This looks good to me, while the parameter 'error' looks a little ugly.
+> How about this?
+> 
+Agree. Embedding an error to "addr" is much more better way of handling
+it, so we do not need an extra storage for errors. This is good :)
 
-On 9/23/2023 11:45 AM, Dmitry Baryshkov wrote:
-> On Sat, 23 Sept 2023 at 02:03, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->>
->> On 9/15/2023 5:29 PM, Dmitry Baryshkov wrote:
->>> On Sat, 16 Sept 2023 at 00:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->>>> Currently the dp_display_irq_handler() is executed at msm_dp_modeset_init()
->>>> which ties irq registration to the DPU device's life cycle, while depending on
->>>> resources that are released as the DP device is torn down. Move register DP
->>>> driver irq handler at dp_display_probe() to have dp_display_irq_handler()
->>>> is tied with DP device.
->>>>
->>>> Changes in v3:
->>>> -- move calling dp_display_irq_handler() to probe
->>> Was there a changelog for the previous reivions? What is the
->>> difference between v1 and v2?
->>>
->>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>>> ---
->>>>    drivers/gpu/drm/msm/dp/dp_display.c | 35 +++++++++++++----------------------
->>>>    drivers/gpu/drm/msm/dp/dp_display.h |  1 -
->>>>    2 files changed, 13 insertions(+), 23 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> index 76f1395..c217430 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>>> @@ -1193,30 +1193,23 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
->>>>           return ret;
->>>>    }
->>>>
->>>> -int dp_display_request_irq(struct msm_dp *dp_display)
->>>> +static int dp_display_request_irq(struct dp_display_private *dp)
->>>>    {
->>>>           int rc = 0;
->>>> -       struct dp_display_private *dp;
->>>> -
->>>> -       if (!dp_display) {
->>>> -               DRM_ERROR("invalid input\n");
->>>> -               return -EINVAL;
->>>> -       }
->>>> -
->>>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
->>>> +       struct device *dev = &dp->pdev->dev;
->>>>
->>>> -       dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
->>>>           if (!dp->irq) {
->>> What is the point in this check?
->>>
->>>> -               DRM_ERROR("failed to get irq\n");
->>>> -               return -EINVAL;
->>>> +               dp->irq = platform_get_irq(dp->pdev, 0);
->>>> +               if (!dp->irq) {
->>>> +                       DRM_ERROR("failed to get irq\n");
->>>> +                       return -EINVAL;
->>>> +               }
->>>>           }
->>>>
->>>> -       rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
->>>> -                       dp_display_irq_handler,
->>>> +       rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
->>>>                           IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
->>>>           if (rc < 0) {
->>>> -               DRM_ERROR("failed to request IRQ%u: %d\n",
->>>> -                               dp->irq, rc);
->>>> +               DRM_ERROR("failed to request IRQ%u: %d\n", dp->irq, rc);
->>>>                   return rc;
->>>>           }
->>>>
->>>> @@ -1287,6 +1280,10 @@ static int dp_display_probe(struct platform_device *pdev)
->>>>
->>>>           platform_set_drvdata(pdev, &dp->dp_display);
->>>>
->>>> +       rc = dp_display_request_irq(dp);
->>>> +       if (rc)
->>>> +               return rc;
->>> This way the IRQ ends up being enabled in _probe. Are we ready to
->>> handle it here? Is the DP device fully setup at this moment?
->> The irq is enabled here.
->>
->> but DP driver hpd hardware block has not yet be enabled. this means no
->> irq will be delivered.
-> There are other IRQ kinds, not only just HPD ones.
+Jaeseon Sim - do you agree on it? If so please re-spin the patch if you
+do not want please let us know.
 
-pm_runtime_resume_and_get() will enable host controller (including hpd and aux block).
-so that as long as pm_runtime_resume_and_get() called, then all DP related interrupts will be handled accordingly.
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index ef8599d394fd..32805c82373b 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1454,7 +1454,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+>  			 */
+>  			lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
+>  			if (!lva)
+> -				return -1;
+> +				return -ENOMEM;
+>  		}
+>  
+>  		/*
+> @@ -1468,7 +1468,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+>  		 */
+>  		va->va_start = nva_start_addr + size;
+>  	} else {
+> -		return -1;
+> +		return -EINVAL;
+>  	}
+>  
+>  	if (type != FL_FIT_TYPE) {
+> @@ -1509,7 +1509,7 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+>  
+>  	va = find_vmap_lowest_match(root, size, align, vstart, adjust_search_size);
+>  	if (unlikely(!va))
+> -		return vend;
+> +		return -ENOENT;
+>  
+>  	if (va->va_start > vstart)
+>  		nva_start_addr = ALIGN(va->va_start, align);
+> @@ -1518,12 +1518,12 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+>  
+>  	/* Check the "vend" restriction. */
+>  	if (nva_start_addr + size > vend)
+> -		return vend;
+> +		return -ERANGE;
+>  
+>  	/* Update the free vmap_area. */
+>  	ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
+> -	if (WARN_ON_ONCE(ret))
+> -		return vend;
+> +	if (ret)
+> +		return ret;
+>  
+>  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
+>  	find_vmap_lowest_match_check(root, head, size, align);
+> @@ -1616,13 +1616,13 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  		size, align, vstart, vend);
+>  	spin_unlock(&free_vmap_area_lock);
+>  
+> -	trace_alloc_vmap_area(addr, size, align, vstart, vend, addr == vend);
+> +	trace_alloc_vmap_area(addr, size, align, vstart, vend, IS_ERR(addr));
+>  
+>  	/*
+> -	 * If an allocation fails, the "vend" address is
+> +	 * If an allocation fails, the error value is
+>  	 * returned. Therefore trigger the overflow path.
+>  	 */
+> -	if (unlikely(addr == vend))
+> +	if (unlikely(IS_ERR(addr)))
+>  		goto overflow;
+>  
+>  	va->va_start = addr;
+> @@ -1662,8 +1662,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  	}
+>  
+>  	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
+> -		pr_warn("vmap allocation for size %lu failed: use vmalloc=<size> to increase size\n",
+> -			size);
+> +		pr_warn("vmap allocation for size %lu failed: "
+> +			"use vmalloc=<size> to increase size, errno: (%d)\n",
+> +			size, addr);
+>  
+>  	kmem_cache_free(vmap_area_cachep, va);
+>  	return ERR_PTR(-EBUSY);
+> @@ -4143,8 +4144,8 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+>  		ret = adjust_va_to_fit_type(&free_vmap_area_root,
+>  					    &free_vmap_area_list,
+>  					    va, start, size);
+> -		if (WARN_ON_ONCE(unlikely(ret)))
+> -			/* It is a BUG(), but trigger recovery instead. */
+> +		if ((unlikely(ret)))
+> +			WARN_ONCE(1, "%s error: errno (%d)\n", __func__, ret);
+>  			goto recovery;
+>  
+>  		/* Allocated area. */
+> 
+> > 
+> > <snip>
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index ef8599d394fd..03a36921a3fc 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -1454,7 +1454,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+> >  			 */
+> >  			lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
+> >  			if (!lva)
+> > -				return -1;
+> > +				return -ENOMEM;
+> >  		}
+> >  
+> >  		/*
+> > @@ -1468,7 +1468,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+> >  		 */
+> >  		va->va_start = nva_start_addr + size;
+> >  	} else {
+> > -		return -1;
+> > +		return -EINVAL;
+> >  	}
+> >  
+> >  	if (type != FL_FIT_TYPE) {
+> > @@ -1488,7 +1488,8 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
+> >  static __always_inline unsigned long
+> >  __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> >  	unsigned long size, unsigned long align,
+> > -	unsigned long vstart, unsigned long vend)
+> > +	unsigned long vstart, unsigned long vend,
+> > +	int *error)
+> >  {
+> >  	bool adjust_search_size = true;
+> >  	unsigned long nva_start_addr;
+> > @@ -1508,8 +1509,10 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> >  		adjust_search_size = false;
+> >  
+> >  	va = find_vmap_lowest_match(root, size, align, vstart, adjust_search_size);
+> > -	if (unlikely(!va))
+> > +	if (unlikely(!va)) {
+> > +		*error = -ENOENT;
+> >  		return vend;
+> > +	}
+> >  
+> >  	if (va->va_start > vstart)
+> >  		nva_start_addr = ALIGN(va->va_start, align);
+> > @@ -1517,13 +1520,17 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
+> >  		nva_start_addr = ALIGN(vstart, align);
+> >  
+> >  	/* Check the "vend" restriction. */
+> > -	if (nva_start_addr + size > vend)
+> > +	if (nva_start_addr + size > vend) {
+> > +		*error = -ERANGE;
+> >  		return vend;
+> > +	}
+> >  
+> >  	/* Update the free vmap_area. */
+> >  	ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
+> > -	if (WARN_ON_ONCE(ret))
+> > +	if (ret) {
+> > +		*error = ret;
+> >  		return vend;
+> > +	}
+> >  
+> >  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
+> >  	find_vmap_lowest_match_check(root, head, size, align);
+> > @@ -1589,7 +1596,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+> >  	unsigned long freed;
+> >  	unsigned long addr;
+> >  	int purged = 0;
+> > -	int ret;
+> > +	int ret, error;
+> >  
+> >  	if (unlikely(!size || offset_in_page(size) || !is_power_of_2(align)))
+> >  		return ERR_PTR(-EINVAL);
+> > @@ -1613,7 +1620,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+> >  retry:
+> >  	preload_this_cpu_lock(&free_vmap_area_lock, gfp_mask, node);
+> >  	addr = __alloc_vmap_area(&free_vmap_area_root, &free_vmap_area_list,
+> > -		size, align, vstart, vend);
+> > +		size, align, vstart, vend, &error);
+> >  	spin_unlock(&free_vmap_area_lock);
+> >  
+> >  	trace_alloc_vmap_area(addr, size, align, vstart, vend, addr == vend);
+> > @@ -1662,8 +1669,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+> >  	}
+> >  
+> >  	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
+> > -		pr_warn("vmap allocation for size %lu failed: use vmalloc=<size> to increase size\n",
+> > -			size);
+> > +		pr_warn("vmap allocation for size %lu failed: "
+> > +			"use vmalloc=<size> to increase size, errno: (%d)\n",
+> > +			size, error);
+> >  
+> >  	kmem_cache_free(vmap_area_cachep, va);
+> >  	return ERR_PTR(-EBUSY);
+> > @@ -4143,9 +4151,10 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+> >  		ret = adjust_va_to_fit_type(&free_vmap_area_root,
+> >  					    &free_vmap_area_list,
+> >  					    va, start, size);
+> > -		if (WARN_ON_ONCE(unlikely(ret)))
+> > -			/* It is a BUG(), but trigger recovery instead. */
+> > +		if (unlikely(ret)) {
+> > +			WARN_ONCE(1, "%s error: errno (%d)\n", __func__, ret);
+> >  			goto recovery;
+> > +		}
+> >  
+> >  		/* Allocated area. */
+> >  		va = vas[area];
+> > <snip>
+> > 
+> > Any thoughts?
+> 
 
->
->>    .hpd_enable() will call pm_runtime_resume_and_get() and
->> dp_catalog_ctrl_hpd_enable().
->>
->> after .hpd_enable() irq will be delivered and handled properly.
->>
->>
->>
->>>> +
->>>>           rc = component_add(&pdev->dev, &dp_display_comp_ops);
->>>>           if (rc) {
->>>>                   DRM_ERROR("component add failed, rc=%d\n", rc);
->>>> @@ -1549,12 +1546,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
->>>>
->>>>           dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
->>>>
->>>> -       ret = dp_display_request_irq(dp_display);
->>>> -       if (ret) {
->>>> -               DRM_ERROR("request_irq failed, ret=%d\n", ret);
->>>> -               return ret;
->>>> -       }
->>>> -
->>>>           ret = dp_display_get_next_bridge(dp_display);
->>>>           if (ret)
->>>>                   return ret;
->>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
->>>> index 1e9415a..b3c08de 100644
->>>> --- a/drivers/gpu/drm/msm/dp/dp_display.h
->>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
->>>> @@ -35,7 +35,6 @@ struct msm_dp {
->>>>    int dp_display_set_plugged_cb(struct msm_dp *dp_display,
->>>>                   hdmi_codec_plugged_cb fn, struct device *codec_dev);
->>>>    int dp_display_get_modes(struct msm_dp *dp_display);
->>>> -int dp_display_request_irq(struct msm_dp *dp_display);
->>>>    bool dp_display_check_video_test(struct msm_dp *dp_display);
->>>>    int dp_display_get_test_bpp(struct msm_dp *dp_display);
->>>>    void dp_display_signal_audio_start(struct msm_dp *dp_display);
->>>> --
->>>> 2.7.4
->>>>
->
->
+--
+Uladzislau Rezki
