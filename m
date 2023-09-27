@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E427AFD96
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B2C7AFD99
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjI0IGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S230094AbjI0IGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjI0IGH (ORCPT
+        with ESMTP id S229940AbjI0IGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:06:07 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F37BF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:06:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99de884ad25so1333616666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:06:06 -0700 (PDT)
+        Wed, 27 Sep 2023 04:06:12 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3479211D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:06:11 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae75ece209so1153349066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695801964; x=1696406764; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695801969; x=1696406769; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=s9lhIWUiEHwYDI/ZE1Mrd+/X49I6RpefneqXYBV0K7o=;
-        b=ldLd8GK2hxPdTT50+icZledFOE8HkWRxj9ko2mxp40rjcVmZK2qinsnhIVjdapaGFX
-         UqkEsvMrE8qVbPnU1O/BsbWgcAL7dPNXRfV1A6MdAm53k3dZysf2AAa19kz40r3kDOXa
-         qY746og5F8K4Dig1FzT3fZSH8FvauhLBRY5F7LiTFHto5pxA+Ud6LhutPTkV54oDVfCQ
-         4ZiLTaIQIUdAF+oC+DZ+RV+8TLZXgoDU3BtwMs0W3KMo2H/L7CRRka8sm07jT84GKxii
-         gauWXVdQMGh2hsHm912zYK82lZFWPlvd2SsfKgyeHiVSt2fuuLKM++vLNK6tUom7B3hT
-         zU/Q==
+        bh=K9ukjJi21foImTbEm0qrjnPmoV37wcI+QMIE3aa8yoY=;
+        b=yVGKb65oxx8cEq9RIXIJCqIOtF9wulQLHIPuB5iq9KFdL/ROjsqQ7Fl8xX9Io9trIc
+         LKmTzg+grqDBlsoP4jpFAEA2kQ5N6p4Z3rPBgEXTiRqArobwAluuxwaZie/Db+HURC6D
+         ZEdf/XV9/p9i5xzEXGJOmRVeCR9KX9oDa9WcNVj+n3c2oFlJGiEgm7l9MM5nAWOTlakJ
+         E8qUbsT+Ei+jCu1UmSXOKcNWuONb6RdCD4ee5bqvyhE6L77aDThM1km5A4iePo5l8eOM
+         aSoEHHf0MPi/5HP5w8Rk52RrpmgkJEjnKZqBW2b/Knl7KkfC9/IxelZ2mYznXq0w49Oj
+         jmQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695801964; x=1696406764;
+        d=1e100.net; s=20230601; t=1695801969; x=1696406769;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9lhIWUiEHwYDI/ZE1Mrd+/X49I6RpefneqXYBV0K7o=;
-        b=Rdht1wwuO7Cg/FVr+3lC3i2sYCsEcdl4zWjumxPSQSbNhQ0ebY04yQwXJWqTdbGlmy
-         Gv1yt/7vluWFl0vgJwCAeb1z/SX+Ut6KeW2b4pVSR/lGYB99+6LvWX4iVSO+7mOfDXR7
-         /XM3ZbkBR0sjv9kWio7/XcLtL0D1dhBfIkebW7AFnQB1QvysJOSwdRilrYEEcJZ8RsnB
-         32QW997LdM/5ZtS0LrXCjAopnSTtP68a7WYoW43u1oITRCsXNOpBG8LXgINXc9Pc3eph
-         1Kktxy+g1epWMX1KEBXRRQ+X4EkH6VaWmTvmcoT9WpTgqmKJJASrrzJFzrNu3dfgn/Nc
-         En+Q==
-X-Gm-Message-State: AOJu0YytNJ53VrytbGAVT0DGm91LNJH1+g+ud9YdIDHr1m65BGK6PMzd
-        NV4Y8WBHHv0Zr8uL9obn3DjhRw==
-X-Google-Smtp-Source: AGHT+IEJHLpBtZHIOgcPBm1iXxyDo1WfxKr99oBFs2g4VeNxtdd/d/vypZAAAShqO3/0yuyisFZMMQ==
-X-Received: by 2002:a17:906:d6:b0:9ae:2f33:4ad0 with SMTP id 22-20020a17090600d600b009ae2f334ad0mr1187387eji.71.1695801964602;
-        Wed, 27 Sep 2023 01:06:04 -0700 (PDT)
+        bh=K9ukjJi21foImTbEm0qrjnPmoV37wcI+QMIE3aa8yoY=;
+        b=IFJKk+cNRb/Ki9PKhgwQbpXk/uZUcPparkjTzGB01akdwE3FWURqo9kxMxNjg2+yjK
+         /iRS4vgXJvmo3YYR7o8dIn+KVTDzTrP9lcI6GZsmUCsZEApSZYOYw7NMZIztVZQyw1Vq
+         vOaY6YILPk5za9KOdFwQ0fG3Yhd7VmdART2DV7xxp0FivueQ2HiUiTGG70+LCvBPzyil
+         0CBcP2kmtsZc4AbyAX85NmGtubSDhGXl+CukOTXWeEUUMSuv9jZGpAmkGCvfx+DYhgXM
+         61QN12ELIG9H2TUxKWtvry+/IH9qlP/P8QQVuFtYXkC7d8a7jnBIannNfb9Z5uO/Mqrx
+         CEXw==
+X-Gm-Message-State: AOJu0Yxo26LDYpxsk9XlxU3pLg/LQpd65c8nZTtCKVtXckmt7mQbHGb1
+        YELhg69o77P7tDTGzhTf8LQzJw==
+X-Google-Smtp-Source: AGHT+IGSsErM4GgtA4srZWZB5qJHQKIrKc49Jw6bsHahREm0lFs5337RlB5WiqGWhiBTVRTzJgs62w==
+X-Received: by 2002:a17:906:3107:b0:9a2:1ce5:1243 with SMTP id 7-20020a170906310700b009a21ce51243mr1084592ejx.60.1695801969617;
+        Wed, 27 Sep 2023 01:06:09 -0700 (PDT)
 Received: from [192.168.1.162] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id b18-20020a170906039200b009ae5674825asm8886694eja.47.2023.09.27.01.06.02
+        by smtp.gmail.com with ESMTPSA id b18-20020a170906039200b009ae5674825asm8886694eja.47.2023.09.27.01.06.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 01:06:04 -0700 (PDT)
-Message-ID: <2c351ca0-cee4-4c1b-956b-6134ad101a9a@linaro.org>
-Date:   Wed, 27 Sep 2023 10:06:01 +0200
+        Wed, 27 Sep 2023 01:06:09 -0700 (PDT)
+Message-ID: <a1a50fb2-ddc6-4f85-9369-19b4c6c3bcd6@linaro.org>
+Date:   Wed, 27 Sep 2023 10:06:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign slot for imx
- jpeg encoder/decoder
+Subject: Re: [PATCH v2 2/3] regulator: dt-bindings: Add mps,mpq2286
+ power-management IC
 Content-Language: en-US
-To:     Ming Qian <ming.qian@nxp.com>, mirela.rabulea@oss.nxp.com,
-        robh+dt@kernel.org, shawnguo@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230926101000.13392-1-ming.qian@nxp.com>
- <20230926101000.13392-2-ming.qian@nxp.com>
+To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@roeck-us.net, jdelvare@suse.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230927033953.1503440-1-saravanan@linumiz.com>
+ <20230927033953.1503440-3-saravanan@linumiz.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,74 +110,63 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230926101000.13392-2-ming.qian@nxp.com>
+In-Reply-To: <20230927033953.1503440-3-saravanan@linumiz.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 12:10, Ming Qian wrote:
-> There are total 4 slots available in the IP, and we only need to use one
-> slot in one os, assign a single slot, configure interrupt and power
-> domain only for 1 slot, not for the all 4 slots.
+On 27/09/2023 05:39, Saravanan Sekar wrote:
+> Document mpq2286 power-management IC
 > 
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
 > ---
-> v4
-> - improve commit message
-> - don't make an ABI break
-> v3
-> - add vender prefix, change property slot to nxp,slot
-> - add type for property slot
+>  .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
 > 
->  .../bindings/media/nxp,imx8-jpeg.yaml         | 45 +++++++++----------
->  1 file changed, 21 insertions(+), 24 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> index 3d9d1db37040..4bcfc815c894 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
-> @@ -32,19 +32,26 @@ properties:
->      maxItems: 1
->  
->    interrupts:
-> -    description: |
-> -      There are 4 slots available in the IP, which the driver may use
-> -      If a certain slot is used, it should have an associated interrupt
-> -      The interrupt with index i is assumed to be for slot i
-> -    minItems: 1               # At least one slot is needed by the driver
-> -    maxItems: 4               # The IP has 4 slots available for use
-> +    description:
-> +      Interrupt number for slot
-> +    maxItems: 1
->  
->    power-domains:
->      description:
->        List of phandle and PM domain specifier as documented in
->        Documentation/devicetree/bindings/power/power_domain.txt
-> -    minItems: 2               # Wrapper and 1 slot
-> -    maxItems: 5               # Wrapper and 4 slots
-> +    minItems: 1               # VPUMIX
-> +    maxItems: 2               # Wrapper and 1 slot
+> diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+> new file mode 100644
+> index 000000000000..594b929fe4b8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/regulator/mps,mpq2286.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +  nxp,slot:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Integer number of slot index used. There are 4 slots available in the IP,
-> +      and driver can use a certain slot, it should have an associated interrupt
-> +      and power-domain. In theory, it supports 4 os or vm. If not specified, 0
-> +      is used by default.
-> +    minimum: 0
-> +    maximum: 3
+> +title: Monolithic Power System MPQ2286 PMIC
+> +
+> +maintainers:
+> +  - Saravanan Sekar <saravanan@linumiz.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mps,mpq2286
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  regulators:
+> +    type: object
+> +
+> +    properties:
+> +      buck0:
 
-NAK, you still did not answer concerns why this is needed and justified.
-I keep asking and you keep ignoring...
+If you have just one buck, it should be "buck".
+
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
