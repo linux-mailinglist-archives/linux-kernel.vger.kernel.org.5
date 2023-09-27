@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAA87B0366
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8433D7B036B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjI0L6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
+        id S231159AbjI0MCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjI0L6R (ORCPT
+        with ESMTP id S229901AbjI0MCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:58:17 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3060DBE
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:58:16 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4064867903cso4746215e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695815894; x=1696420694; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GxBT05QSaKYLy2VHz5mpN5js/FV2wLDKiGhrnovBJpM=;
-        b=xq/0WbYP9QsWTd/8pk7bMcHl22hgLbTMarCfwcQdshQm+/YYbC9rA22lbvaVhSCEwa
-         R6uZ92je3wppp1tmdauk+duYzNSFECL4EtbzlsPk6P1VM23VJm6396+Yc2TL/gxBBz2L
-         7R/ZYGhWb6n7E0VXvLasInqSlgfYm/DT7pxB3+HveBD0SCO2e0Q8YWeTJmA9X2m9jMS2
-         A44wOstRnEQ7x8Q82+8sJ+nF5UaDwVZ2g148cyLJhyewKBfXj1rndI+rSJCI/mE6wffJ
-         qURG9uxMCxeU9w4kiDlaWN3hjn8FzXK/4BRCAXL3mUdOaP2jZ83A8PhXYqaFENuNKLDz
-         Lphw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695815894; x=1696420694;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GxBT05QSaKYLy2VHz5mpN5js/FV2wLDKiGhrnovBJpM=;
-        b=aapy90eAitdgvF9nAIu3sIXJ24RVXSXBgIB8dLcJA3G8uAxATO3G5d6exj+bw7nagP
-         FrM0gdAPB4kYYiNPsuvPHweXw+OsaeUxlEW8jXtZsbuR6+92sCYdxwhpe1kzgHZZ/0l6
-         q3IIdZU/rmEPnfhV75K8CPRxqOoWUa3NaQ7JWKU3QQbRP1zkFSOeDFJa1n11dL8JeKwg
-         r+uptd6HJeWYV5C+H6q9okUO+0gVa1OqFRFSLn6gVs4BzqdYTWKssRsrtWV0ynctea/r
-         KKw8cBuZWVWE1BWJoU/Mge4wIodJOyJXtGUgPlq7JL+iqalAhC4uwl0ldg8AGFuvyZNc
-         9Cug==
-X-Gm-Message-State: AOJu0YyJDsCNANY2XtxiCv92hKjgkJxGQPaQpxo4qXF3aN639GK2y4Wn
-        7T7Xl10HHYy5394D3JpVbV/SrA==
-X-Google-Smtp-Source: AGHT+IFC1nJTi1+9q1YPtODs3+1SqLVX/KlO7kVRVqmPJV7UgGFXZDSWD24bnnFuSRUjHFEAaPNKhA==
-X-Received: by 2002:a05:600c:28f:b0:405:39b4:314f with SMTP id 15-20020a05600c028f00b0040539b4314fmr1966413wmk.24.1695815894432;
-        Wed, 27 Sep 2023 04:58:14 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id t21-20020a7bc3d5000000b00405c7591b09sm5389181wmj.35.2023.09.27.04.58.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 04:58:14 -0700 (PDT)
-Message-ID: <704d7983-16e0-a614-7db8-b1c71859800c@linaro.org>
-Date:   Wed, 27 Sep 2023 13:58:13 +0200
+        Wed, 27 Sep 2023 08:02:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AF012A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:02:20 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 75E081F88F;
+        Wed, 27 Sep 2023 12:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695816139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KTfs5yhlTCE0o2SXh5aaYXX3rf4gvBwg1JvGvr+LWu0=;
+        b=DnSiAjjZuQTTj/CXNknIWTwmVKSVt+USmsNxtwCRXOFOMBIQRyOA4Lsgeqi3Bx1OVwRYhF
+        wqQixbUJdiydkqyv5nEiNxxT7G2vfmx6R54rpr4XvI2ZEIa8E2kITKOQejvIywOWPSYVl1
+        HkMCGmwEtSgW0oIxctaR8RCwauPhjSE=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D9F262C142;
+        Wed, 27 Sep 2023 12:02:18 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 14:02:17 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH printk v2 08/11] panic: Add atomic write enforcement to
+ warn/panic
+Message-ID: <ZRQZycM9uTAnxn8C@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-9-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 04/13] ACPI: thermal: Merge trip initialization
- functions
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <1785516.VLH7GnMWUR@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1785516.VLH7GnMWUR@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919230856.661435-9-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 19:51, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed 2023-09-20 01:14:53, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> In order to reduce code duplicationeve further, merge
-> acpi_thermal_init_passive/active_trip() into one function called
-> acpi_thermal_init_trip() that will be used for initializing both
-> the passive and active trip points.
+> Invoke the atomic write enforcement functions for warn/panic to
+> ensure that the information gets out to the consoles.
 > 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+> For the panic case, add explicit intermediate atomic flush
+> calls to ensure immediate flushing at important points.
+> Otherwise the atomic flushing only occurs when dropping out of
+> the elevated priority, which for panic may never happen.
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+It would be great to avoid the need for the explicit flushes
+except for the final unsafe one. Otherwise, we would play
+another Whack-a-mole game. People would report that
+panic() failed and they needed to add another explicit flush
+to find the culprit...
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> It is important to note that if there are any legacy consoles
+> registered, they will be attempting to directly print from the
+> printk-caller context, which may jeopardize the reliability of
+> the atomic consoles. Optimally there should be no legacy
+> consoles registered.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -275,6 +275,7 @@ static void panic_other_cpus_shutdown(bool crash_kexec)
+>   */
+>  void panic(const char *fmt, ...)
+>  {
+> +	enum nbcon_prio prev_prio;
+>  	static char buf[1024];
+>  	va_list args;
+>  	long i, i_next = 0, len;
+> @@ -322,6 +323,8 @@ void panic(const char *fmt, ...)
+>  	if (old_cpu != PANIC_CPU_INVALID && old_cpu != this_cpu)
+>  		panic_smp_self_stop();
+>  
+> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_PANIC);
+> +
 
+It would make sense to flush nbcon consoles the safe way
+at this point before we allow dangerous games for legacy
+consoles via bust_spinlock().
+
+>  	console_verbose();
+>  	bust_spinlocks(1);
+>  	va_start(args, fmt);
+> @@ -382,6 +385,8 @@ void panic(const char *fmt, ...)
+>  	if (_crash_kexec_post_notifiers)
+>  		__crash_kexec(NULL);
+>  
+> +	nbcon_atomic_flush_all();
+
+There should be one more safe flush after dump_stack() just
+in case the kexec fails. The legacy consoles also tried
+to flush the consoles in each called printk().
+
+...
+
+I do not want to review or comment each added or needed
+nbcon_atomic_flush_all(). I hope that they won't be needed
+in the end.
+
+Best Regards,
+Petr
