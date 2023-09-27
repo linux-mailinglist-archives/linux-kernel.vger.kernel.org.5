@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614567B0F8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E9F7B0F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjI0XWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        id S229862AbjI0XYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjI0XWn (ORCPT
+        with ESMTP id S229464AbjI0XYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:22:43 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882C0F4;
-        Wed, 27 Sep 2023 16:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695856956;
-        bh=zhfsFs/91UsszYRV8XiJIBCUPhlph09fGzAxjulnJ6k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V9vEoTj9uA4NaNN66VXUAWsrZfxuE4MRR4qck0EFI+m8H9YEsJxlOC5sWUQVhkJwx
-         rTfCUZjo9JaeJvL8fBQWfpFL1o0jjsMQXQdkICmWL/vVES2BqlVxFS2qr83WKxdDtk
-         /WxfpVlYZalxRGFSRzJgSQQ+iHzh4atAV2rA4AdQjdDMHgRuxROL0PQV1zwQv6SKIB
-         uo2mZpeXLIE+TLD+2rLqVGpNqx2DMvwschaLkl1XDDQwZJLdJJ86P8FCWLeeLYpA94
-         WjFRxVSkVLqf9dqfKh4PGvfql4YsyNyC3oay0sS1j4hwSceVpvFKY1qydAaJOTflBq
-         BZvPqlVisW47A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rwt1l1xXZz4xG0;
-        Thu, 28 Sep 2023 09:22:35 +1000 (AEST)
-Date:   Thu, 28 Sep 2023 09:22:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm tree
-Message-ID: <20230928092223.0625c6bf@canb.auug.org.au>
+        Wed, 27 Sep 2023 19:24:37 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17D2F4;
+        Wed, 27 Sep 2023 16:24:35 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b2b53e17feso287939866b.3;
+        Wed, 27 Sep 2023 16:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695857074; x=1696461874; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vP4F85bbzFRNqjMlm7kZPQ+nNsT3kjeP+jCG/TYrq88=;
+        b=fYmmKUjP/nq2jxphtDeohGJ2FsjtZNI7sojMyYd/0iobLIrGfdNxibVzOANkCHNLqF
+         3PjsjnHjbx+qd3xXvQGXmXrzTVBZQCcgXAHFmmOX9GbWhBQcS0g1rArKPiEwNfBLQe5p
+         AaUVoHqWWzyiXduQ+/9Klyiwp1EadC/N+f5wHRGxXzCYUuSxMOFbWaQv9zThh1qd8Hlt
+         Vsx3B7VM/+ChgGs3HCgca4+qt5eLwyQeR7PNhyixYW6o0wQKudvUqO3voCyOHyX6zjDN
+         aLSKysrZH0PDe1uM1XjL5rmysrViAEtxjow1cgD3FvFlTuSQpfTAVGMJm4osnCjAq9/T
+         1lCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695857074; x=1696461874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vP4F85bbzFRNqjMlm7kZPQ+nNsT3kjeP+jCG/TYrq88=;
+        b=SNXJgHc3f7g16EdjRbBRhuS8vTQRiTU79KYq4YSpPXubJyQAwHiYV6F87luzGCVhhz
+         jZ78jIkkBW6Jt274CmnZjnY8Gm7U1FgXcePZCTSSCZ5xjcr4wicLX7N3dtlTrWLwZwNe
+         kW0s3WlfBZo/7/gsUFr/P2uHUC5w9dNuq1v5yP65G9mblp/zUzF0xXfzC1dDbOP7YbOK
+         DoG/+4MQdo9wLK8Uu5YxqwUNJazOEvSnt0/KuOWEpLTHAkGSfnoiaAeJtmocKSNiGSSH
+         F07ABQMzCThGhbcGFtJGcrBdTobjhrlxUM7PNhOmW1FnNv2jigjYOyyWI9ciOZkFdprO
+         zxBQ==
+X-Gm-Message-State: AOJu0Ywn4T8DnyJDOLoKI0w0CUt5wZd1csfb+40S/7eEmemicilJ8tnq
+        Q8nMLKL+fIapGeTOAX+4y0YOKHNvyCpHMGTWnZC/S4MKkKQ=
+X-Google-Smtp-Source: AGHT+IGYks/ROw19A7ZBt3HAY8xGrI6pa8dgE2boz3KYtutGfXF7STZtC324zScNazvQpwGj/KHJ1t9AZBgkIK7/Pq4=
+X-Received: by 2002:a17:907:75ef:b0:9ae:594d:d3fc with SMTP id
+ jz15-20020a17090775ef00b009ae594dd3fcmr2658272ejc.17.1695857073839; Wed, 27
+ Sep 2023 16:24:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/exW3gC+VgL.pg5p8Sn2c+VL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-5-zhouchuyi@bytedance.com>
+In-Reply-To: <20230925105552.817513-5-zhouchuyi@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Sep 2023 16:24:22 -0700
+Message-ID: <CAEf4BzbYgf1t8tfQJ4xwfDH-o_3n+PRMBgC4AZRLbXGM=QJtzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce css open-coded iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,94 +70,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/exW3gC+VgL.pg5p8Sn2c+VL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
+>
+> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
+> creation and manipulation of struct bpf_iter_css in open-coded iterator
+> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
+> css_iter can be used to:
+>
+> 1) iterating a sepcific cgroup tree with pre/post/up order
+>
+> 2) iterating cgroup_subsystem in BPF Prog, like
+> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
+>
+> The API design is consistent with cgroup_iter. bpf_iter_css_new accepts
+> parameters defining iteration order and starting css. Here we also reuse
+> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
+> BPF_CGROUP_ITER_ANCESTORS_UP enums.
+>
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>  kernel/bpf/cgroup_iter.c                      | 57 +++++++++++++++++++
+>  kernel/bpf/helpers.c                          |  3 +
+>  .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
+>  3 files changed, 66 insertions(+)
+>
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> index 810378f04fbc..ebc3d9471f52 100644
+> --- a/kernel/bpf/cgroup_iter.c
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -294,3 +294,60 @@ static int __init bpf_cgroup_iter_init(void)
+>  }
+>
+>  late_initcall(bpf_cgroup_iter_init);
+> +
+> +struct bpf_iter_css {
+> +       __u64 __opaque[2];
+> +       __u32 __opaque_int[1];
+> +} __attribute__((aligned(8)));
+> +
 
-Hi all,
+same as before, __opaque[3] only
 
-After merging the mm tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
 
-fs/proc/task_mmu.c: In function 'pagemap_scan_pmd_entry':
-fs/proc/task_mmu.c:2153:22: error: implicit declaration of function 'pagema=
-p_scan_is_interesting_page'; did you mean 'pagemap_scan_is_interesting_vma'=
-? [-Werror=3Dimplicit-function-declaration]
- 2153 |                 if (!pagemap_scan_is_interesting_page(categories, p=
-))
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                      pagemap_scan_is_interesting_vma
+> +struct bpf_iter_css_kern {
+> +       struct cgroup_subsys_state *start;
+> +       struct cgroup_subsys_state *pos;
+> +       int order;
+> +} __attribute__((aligned(8)));
+> +
+> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+> +               struct cgroup_subsys_state *start, enum bpf_cgroup_iter_o=
+rder order)
 
-Caused by commit
+Similarly, I wonder if we should go for a more generic "flags" argument?
 
-  825ebc8e4bf9 ("fs/proc/task_mmu: hide unused pagemap_scan_backout_range()=
- function")
+> +{
+> +       struct bpf_iter_css_kern *kit =3D (void *)it;
 
-I applied the following fix patch.
+empty line
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 28 Sep 2023 09:09:26 +1000
-Subject: [PATCH] fix for "fs/proc/task_mmu: hide unused pagemap_scan_backou=
-t_range() function"
+> +       kit->start =3D NULL;
+> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
+bpf_iter_css));
+> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
+__(struct bpf_iter_css));
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/proc/task_mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+please move this up before kit->start assignment, and separate by empty lin=
+es
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index fdad3536d8ab..d4ef9a2bf95d 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1940,6 +1940,7 @@ static void make_uffd_wp_huge_pte(struct vm_area_stru=
-ct *vma,
- 		set_huge_pte_at(vma->vm_mm, addr, ptep,
- 				make_pte_marker(PTE_MARKER_UFFD_WP), psize);
- }
-+#endif /* CONFIG_HUGETLB_PAGE */
-=20
- #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HUGETLB_PAGE)
- static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
-@@ -1954,7 +1955,7 @@ static void pagemap_scan_backout_range(struct pagemap=
-_scan_private *p,
-=20
- 	p->found_pages -=3D (end - addr) / PAGE_SIZE;
- }
--#endif /* CONFIG_HUGETLB_PAGE */
-+#endif
-=20
- static bool pagemap_scan_is_interesting_page(unsigned long categories,
- 					     const struct pagemap_scan_private *p)
-@@ -1967,7 +1968,6 @@ static bool pagemap_scan_is_interesting_page(unsigned=
- long categories,
-=20
- 	return true;
- }
--#endif
-=20
- static bool pagemap_scan_is_interesting_vma(unsigned long categories,
- 					    const struct pagemap_scan_private *p)
---=20
-2.40.1
+> +       switch (order) {
+> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
+> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
+> +       case BPF_CGROUP_ITER_ANCESTORS_UP:
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       kit->start =3D start;
+> +       kit->pos =3D NULL;
+> +       kit->order =3D order;
+> +       return 0;
+> +}
+> +
+> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_ite=
+r_css *it)
+> +{
+> +       struct bpf_iter_css_kern *kit =3D (void *)it;
 
---=20
-Cheers,
-Stephen Rothwell
+empty line
 
---Sig_/exW3gC+VgL.pg5p8Sn2c+VL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +       if (!kit->start)
+> +               return NULL;
+> +
+> +       switch (kit->order) {
+> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
+> +               kit->pos =3D css_next_descendant_pre(kit->pos, kit->start=
+);
+> +               break;
+> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
+> +               kit->pos =3D css_next_descendant_post(kit->pos, kit->star=
+t);
+> +               break;
+> +       default:
 
------BEGIN PGP SIGNATURE-----
+we know it's BPF_CGROUP_ITER_ANCESTORS_UP, so why not have that here explic=
+itly?
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUUuS8ACgkQAVBC80lX
-0Gz2NAf7BSq5rSHp4iPeMG8uICJaxX4PAOHsvghAlh1Q7ktGHmz0p7BBSS3dC2nK
-KkBAp0xg07y60mCimE8gyHUDlzbStzBxGT03fyn3oxdOXjwlVkdl5T4HKLWDvAYB
-nb/fG557+ANmdmSYMRx2XcDSdnB9YSO7vUcmJ9rCqEe18mp8c5Z2HuAijrhEG5ZM
-X6Em0t41u3v1vZtLpXE96ERAYh0VOktmZSWvfpNNTZapOGm1qNdubnMnG+fTsra/
-/x0m8AckmxJjD9wdoEV0Fr58e34AdChR71ycli1g3TbsoG3IQo4ltauIU0HVfxjR
-wk7kCbrJqXTbiLs1DqU5Hh5Q9ZVV/A==
-=/4/u
------END PGP SIGNATURE-----
+> +               kit->pos =3D kit->pos ? kit->pos->parent : kit->start;
+> +       }
+> +
+> +       return kit->pos;
 
---Sig_/exW3gC+VgL.pg5p8Sn2c+VL--
+wouldn't this implementation never return the "start" css? is that intentio=
+nal?
+
+> +}
+> +
+> +__bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+> +{
+> +}
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 556262c27a75..9c3af36249a2 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2510,6 +2510,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_IT=
+ER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
+> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
+ng/selftests/bpf/bpf_experimental.h
+> index d989775dbdb5..aa247d1d81d1 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -174,4 +174,10 @@ extern int bpf_iter_task_new(struct bpf_iter_task *i=
+t, struct task_struct *task,
+>  extern struct task_struct *bpf_iter_task_next(struct bpf_iter_task *it) =
+__weak __ksym;
+>  extern void bpf_iter_task_destroy(struct bpf_iter_task *it) __weak __ksy=
+m;
+>
+> +struct bpf_iter_css;
+> +extern int bpf_iter_css_new(struct bpf_iter_css *it,
+> +                               struct cgroup_subsys_state *start, enum b=
+pf_cgroup_iter_order order) __weak __ksym;
+> +extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css=
+ *it) __weak __ksym;
+> +extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
+> +
+>  #endif
+> --
+> 2.20.1
+>
