@@ -2,213 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4097B09C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340717B09C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbjI0QP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        id S231494AbjI0QPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbjI0QPQ (ORCPT
+        with ESMTP id S231657AbjI0QPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:15:16 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41324196
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:15:13 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qlXBj-0003ta-P5; Wed, 27 Sep 2023 18:14:59 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qlXBh-009Ngb-Oy; Wed, 27 Sep 2023 18:14:57 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qlXBh-000LXL-2H;
-        Wed, 27 Sep 2023 18:14:57 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Sili Luo <rootlab@huawei.com>, stable@vger.kernel.org,
-        kernel@pengutronix.de, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] can: j1939: Fix UAF in j1939_sk_match_filter during setsockopt(SO_J1939_FILTER)
-Date:   Wed, 27 Sep 2023 18:14:56 +0200
-Message-Id: <20230927161456.82772-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+        Wed, 27 Sep 2023 12:15:35 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE011BD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso8679212a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695831333; x=1696436133; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qk/M+saCBlOrifX9o0L6oxM9T2M5RIIV6XdENJ7/hVU=;
+        b=EWjJi1jqh6WTxu5oWMb4VHh6Tv+tHmmslrdt+e2SEtQ8ihfyO52L0Z+0oikG7inGG3
+         9OGc6TVEDdEYrXS9w+V2wJFguqao+tfsXvWuMwz4il198ie7VFe5VB/lwaWGcdsc4nI0
+         BeLI+46dJjyqE5ApjQjCeSrYsMT1oA+3GPkhg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695831333; x=1696436133;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qk/M+saCBlOrifX9o0L6oxM9T2M5RIIV6XdENJ7/hVU=;
+        b=pkruklo6gC9jCnR/TPjDlFdKK1tY2/r6Y4qlaJuJPDy8zFQHicfb99KVRmlVpxNDKV
+         +3Kir4hm7CnuiUAOBa+quct91Kor4OZ1A9jEsd8IzlXqQbgTbuRBM3T0ejMIiuSkVLvs
+         SL8m6FLiFXSgSx7xRejnuDYdJti7+wc82xMAC0AwogpgwvHjV/n6NVnCUjITHxARnP/b
+         SgPEQHr80nC/kkl3NYczRWBGt2L0qahW1un+87yoPDD3OwnfBBtZe3vw6NfPGy8kZV7x
+         ZHaed4h43+iYGbDZnkuhR7lV2uvK4u53V9PBUSKbXzZx+Y9o9i2SXAAfuWmd5OK4HTiy
+         JjjQ==
+X-Gm-Message-State: AOJu0Ywum59egdaMFh9q9f4A6Rmwq7V3W5/lGVHt2h0kTBitDkJg4jwy
+        9dn2xHYTHNSmBJORbNocQUr6cQ==
+X-Google-Smtp-Source: AGHT+IGEWFo3Z0KRLdbeKNA9TZxiDU0ZlL7pCm1jg2RuPiQ94pBSvnMYFSNa/cMOgbj+bsYfP7FGbg==
+X-Received: by 2002:a05:6a20:ce92:b0:152:efa4:21b with SMTP id if18-20020a056a20ce9200b00152efa4021bmr2513269pzb.5.1695831333107;
+        Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c14-20020aa7880e000000b0069100e70943sm11945318pfo.24.2023.09.27.09.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 09:15:32 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 09:15:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org,
+        workflows@vger.kernel.org, mario.limonciello@amd.com
+Subject: Re: [PATCH 3/3] get_maintainer: add patch-only pattern matching type
+Message-ID: <202309270913.911E51C@keescook>
+References: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
+ <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lock jsk->sk to prevent UAF when setsockopt(..., SO_J1939_FILTER, ...)
-modifies jsk->filters while receiving packets.
+On Wed, Sep 27, 2023 at 03:19:16AM +0000, Justin Stitt wrote:
+> Add the "D:" type which behaves the same as "K:" but will only match
+> content present in a patch file.
+> 
+> To illustrate:
+> 
+> Imagine this entry in MAINTAINERS:
+> 
+> NEW REPUBLIC
+> M: Han Solo <hansolo@rebelalliance.co>
+> W: https://www.jointheresistance.org
+> D: \bstrncpy\b
+> 
+> Our maintainer, Han, will only be added to the recipients if a patch
+> file is passed to get_maintainer (like what b4 does):
+> $ ./scripts/get_maintainer.pl 0004-some-change.patch
+> 
+> If the above patch has a `strncpy` present in the subject, commit log or
+> diff then Han will be to/cc'd.
+> 
+> However, in the event of a file from the tree given like:
+> $ ./scripts/get_maintainer.pl ./lib/string.c
+> 
+> Han will not be noisily to/cc'd (like a K: type would in this
+> circumstance)
+> 
+> Note that folks really shouldn't be using get_maintainer on tree files
+> anyways [1].
+> 
+> [1]: https://lore.kernel.org/all/20230726151515.1650519-1-kuba@kernel.org/
 
-Following trace was seen on affected system:
- ==================================================================
- BUG: KASAN: slab-use-after-free in j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
- Read of size 4 at addr ffff888012144014 by task j1939/350
+As Greg suggested, please drop the above paragraph and link. Then this
+looks good to me.
 
- CPU: 0 PID: 350 Comm: j1939 Tainted: G        W  OE      6.5.0-rc5 #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
- Call Trace:
-  print_report+0xd3/0x620
-  ? kasan_complete_mode_report_info+0x7d/0x200
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  kasan_report+0xc2/0x100
-  ? j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  __asan_load4+0x84/0xb0
-  j1939_sk_recv_match_one+0x1af/0x2d0 [can_j1939]
-  j1939_sk_recv+0x20b/0x320 [can_j1939]
-  ? __kasan_check_write+0x18/0x20
-  ? __pfx_j1939_sk_recv+0x10/0x10 [can_j1939]
-  ? j1939_simple_recv+0x69/0x280 [can_j1939]
-  ? j1939_ac_recv+0x5e/0x310 [can_j1939]
-  j1939_can_recv+0x43f/0x580 [can_j1939]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  ? raw_rcv+0x42/0x3c0 [can_raw]
-  ? __pfx_j1939_can_recv+0x10/0x10 [can_j1939]
-  can_rcv_filter+0x11f/0x350 [can]
-  can_receive+0x12f/0x190 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  can_rcv+0xdd/0x130 [can]
-  ? __pfx_can_rcv+0x10/0x10 [can]
-  __netif_receive_skb_one_core+0x13d/0x150
-  ? __pfx___netif_receive_skb_one_core+0x10/0x10
-  ? __kasan_check_write+0x18/0x20
-  ? _raw_spin_lock_irq+0x8c/0xe0
-  __netif_receive_skb+0x23/0xb0
-  process_backlog+0x107/0x260
-  __napi_poll+0x69/0x310
-  net_rx_action+0x2a1/0x580
-  ? __pfx_net_rx_action+0x10/0x10
-  ? __pfx__raw_spin_lock+0x10/0x10
-  ? handle_irq_event+0x7d/0xa0
-  __do_softirq+0xf3/0x3f8
-  do_softirq+0x53/0x80
-  </IRQ>
-  <TASK>
-  __local_bh_enable_ip+0x6e/0x70
-  netif_rx+0x16b/0x180
-  can_send+0x32b/0x520 [can]
-  ? __pfx_can_send+0x10/0x10 [can]
-  ? __check_object_size+0x299/0x410
-  raw_sendmsg+0x572/0x6d0 [can_raw]
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  ? apparmor_socket_sendmsg+0x2f/0x40
-  ? __pfx_raw_sendmsg+0x10/0x10 [can_raw]
-  sock_sendmsg+0xef/0x100
-  sock_write_iter+0x162/0x220
-  ? __pfx_sock_write_iter+0x10/0x10
-  ? __rtnl_unlock+0x47/0x80
-  ? security_file_permission+0x54/0x320
-  vfs_write+0x6ba/0x750
-  ? __pfx_vfs_write+0x10/0x10
-  ? __fget_light+0x1ca/0x1f0
-  ? __rcu_read_unlock+0x5b/0x280
-  ksys_write+0x143/0x170
-  ? __pfx_ksys_write+0x10/0x10
-  ? __kasan_check_read+0x15/0x20
-  ? fpregs_assert_state_consistent+0x62/0x70
-  __x64_sys_write+0x47/0x60
-  do_syscall_64+0x60/0x90
-  ? do_syscall_64+0x6d/0x90
-  ? irqentry_exit+0x3f/0x50
-  ? exc_page_fault+0x79/0xf0
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+I would immediately want to send this patch too, so please feel free to
+add this to your series (and I bet many other hints on "git grep 'K:.\\b'"
+would want to switch from K: to D: too):
 
- Allocated by task 348:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_alloc_info+0x1f/0x30
-  __kasan_kmalloc+0xb5/0xc0
-  __kmalloc_node_track_caller+0x67/0x160
-  j1939_sk_setsockopt+0x284/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
- Freed by task 349:
-  kasan_save_stack+0x2a/0x50
-  kasan_set_track+0x29/0x40
-  kasan_save_free_info+0x2f/0x50
-  __kasan_slab_free+0x12e/0x1c0
-  __kmem_cache_free+0x1b9/0x380
-  kfree+0x7a/0x120
-  j1939_sk_setsockopt+0x3b2/0x450 [can_j1939]
-  __sys_setsockopt+0x15c/0x2f0
-  __x64_sys_setsockopt+0x6b/0x80
-  do_syscall_64+0x60/0x90
-  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Fixes: 9d71dd0c70099 ("can: add support of SAE J1939 protocol")
-Reported-by: Sili Luo <rootlab@huawei.com>
-Suggested-by: Sili Luo <rootlab@huawei.com>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: stable@vger.kernel.org
----
- net/can/j1939/socket.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index b28c976f52a0..2ce24bf78c72 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -262,12 +262,17 @@ static bool j1939_sk_match_dst(struct j1939_sock *jsk,
- static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 				  const struct j1939_sk_buff_cb *skcb)
- {
--	const struct j1939_filter *f = jsk->filters;
--	int nfilter = jsk->nfilters;
-+	const struct j1939_filter *f;
-+	int nfilter;
-+
-+	lock_sock(&jsk->sk);
-+
-+	f = jsk->filters;
-+	nfilter = jsk->nfilters;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5f18c6ba3c3c..830e10866acf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5057,7 +5057,7 @@ F:	Documentation/kbuild/llvm.rst
+ F:	include/linux/compiler-clang.h
+ F:	scripts/Makefile.clang
+ F:	scripts/clang-tools/
+-K:	\b(?i:clang|llvm)\b
++D:	\b(?i:clang|llvm)\b
  
- 	if (!nfilter)
- 		/* receive all when no filters are assigned */
--		return true;
-+		goto filter_match_found;
+ CLK API
+ M:	Russell King <linux@armlinux.org.uk>
+@@ -8199,7 +8199,7 @@ F:	lib/strcat_kunit.c
+ F:	lib/strscpy_kunit.c
+ F:	lib/test_fortify/*
+ F:	scripts/test_fortify.sh
+-K:	\b__NO_FORTIFY\b
++D:	\b__NO_FORTIFY\b
  
- 	for (; nfilter; ++f, --nfilter) {
- 		if ((skcb->addr.pgn & f->pgn_mask) != f->pgn)
-@@ -276,9 +281,15 @@ static bool j1939_sk_match_filter(struct j1939_sock *jsk,
- 			continue;
- 		if ((skcb->addr.src_name & f->name_mask) != f->name)
- 			continue;
--		return true;
-+		goto filter_match_found;
- 	}
-+
-+	release_sock(&jsk->sk);
- 	return false;
-+
-+filter_match_found:
-+	release_sock(&jsk->sk);
-+	return true;
- }
+ FPGA DFL DRIVERS
+ M:	Wu Hao <hao.wu@intel.com>
+@@ -11457,9 +11457,9 @@ F:	include/linux/overflow.h
+ F:	include/linux/randomize_kstack.h
+ F:	kernel/configs/hardening.config
+ F:	mm/usercopy.c
+-K:	\b(add|choose)_random_kstack_offset\b
+-K:	\b__check_(object_size|heap_object)\b
+-K:	\b__counted_by\b
++D:	\b(add|choose)_random_kstack_offset\b
++D:	\b__check_(object_size|heap_object)\b
++D:	\b__counted_by\b
  
- static bool j1939_sk_recv_match_one(struct j1939_sock *jsk,
+ KERNEL JANITORS
+ L:	kernel-janitors@vger.kernel.org
+@@ -17354,7 +17354,7 @@ F:	drivers/acpi/apei/erst.c
+ F:	drivers/firmware/efi/efi-pstore.c
+ F:	fs/pstore/
+ F:	include/linux/pstore*
+-K:	\b(pstore|ramoops)
++D:	\b(pstore|ramoops)
+ 
+ PTP HARDWARE CLOCK SUPPORT
+ M:	Richard Cochran <richardcochran@gmail.com>
+@@ -19302,8 +19302,8 @@ F:	include/uapi/linux/seccomp.h
+ F:	kernel/seccomp.c
+ F:	tools/testing/selftests/kselftest_harness.h
+ F:	tools/testing/selftests/seccomp/*
+-K:	\bsecure_computing
+-K:	\bTIF_SECCOMP\b
++D:	\bsecure_computing
++D:	\bTIF_SECCOMP\b
+ 
+ SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) Broadcom BRCMSTB DRIVER
+ M:	Kamal Dasu <kamal.dasu@broadcom.com>
+
 -- 
-2.39.2
-
+Kees Cook
