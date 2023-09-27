@@ -2,124 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1347B0328
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C407B032D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbjI0LeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S231459AbjI0LgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjI0Ldw (ORCPT
+        with ESMTP id S231410AbjI0LgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:33:52 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0370CCE4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:33:49 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so12983171a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:33:49 -0700 (PDT)
+        Wed, 27 Sep 2023 07:36:04 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFBEF3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:36:02 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3200b181b67so1550326f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:36:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695814428; x=1696419228; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hiw0l/YJs5LuIPO7437gKP5naXwV1fdbKFaylpAs7Wg=;
-        b=FXnsJ4XYxIR+OGNywfSS4HWpK30SpUMyKz0viOZurgqCnIwni/28CX3Z2izo5a+LIa
-         ptkkE/zmO22QcQKgQPHSoKIEW+2Cn7TYQtwG2G0CNGoiDLfXLfBGR83XdyJtJOxfg+yy
-         wDN2MuFus+ilvNAoZI6mqefeKEUIxgkyjGcWaVFeU18rWwlZ+4PX/Z9F+6lMpWHmYzvJ
-         ewpfXYDkh2MQfJeIRpyaC9YKLxaVWkWKJjJmuuC3rbdBSLc8qcms68ymUqJ/IpA+Ao22
-         X1y+VThL19/ZarhCnb0uT2jn9c5iUKDAlm0opIEb+d8NAaFURN/OytCAYPEJkONOv5uD
-         9r/Q==
+        d=gmail.com; s=20230601; t=1695814561; x=1696419361; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YRFVxzj+hVFD0IJT/IGMwbr1NPpMK93Z+5C9tH0fQfo=;
+        b=ZVRgbd4nwPX8Yc4oFzX8uxg26YXWX8e/K6akbr8sAYKEPjbzi26SuszSbIrTQELppe
+         TADsE/4PHSdMQ0sPQlP1vVz3X7B1R+GTiSOiwUVqocwfcRInJu8Tu69vIa3+Lvna3dSr
+         Z6+Z2ESd0c8N37O6T/cif1b4RwOvUJGm+VKPs0X1L6V67rXJ0zCVMKGVc93DaTje4Aac
+         rhXj07LhW4VAftIYIlwJdzJ//DcYoj+s/XQSCw6TF+uml7XtQI2/GtWvEFpA1hu0FXp+
+         U1sllC62KNCCNkhIXhRypz0ijJMUzB7Y1ZU2Xc0sw2XqNsa4Zp4JIDfe+pr6yAOFBFx6
+         vr2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695814428; x=1696419228;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hiw0l/YJs5LuIPO7437gKP5naXwV1fdbKFaylpAs7Wg=;
-        b=gpTi2OCOqCTc/fREqVGgjLIL9oDdhpfvNEfc1kPwt8MpVAfOAyr8htdhOr6UO6ziU1
-         rTZvX+wefJ9t1Da2rgyevVtfsasr9Y6zV4/p/AjUtf7mF6XwdJ/WyLN8ExwVassO9NGx
-         vdWj7rhli9euV2v0Voq4TCO1kjQuqpiXlz8REiEvwuHRXAK2Vv0UZ/6qKkTywUUoJfDs
-         a+Tyr09QpeTyPXcQwdGpAOBUPjSDhVd6W57FpwYWouUp8SZFsuPnVyaZLrZw5He/p3Ri
-         Ofv0vaM6eRofNkyt7LN8wbIMf4UCCJcFx4QY6eB5shekH2sLi2mVymQl8wHXdxhxfIGU
-         1Ezw==
-X-Gm-Message-State: AOJu0YyrlXuDEC3qoDQ4RqLp9qTLWbnDNEoml2b7LiQGGCy5CaZtUo/6
-        +G9vvROAJreCxejyYH+w9cyCXQ==
-X-Google-Smtp-Source: AGHT+IG2AvO6bACWwN5NeZct/z3bZh+C67Q+OYM0rMsYha8kQihum8cQvnGl0j0OVIMTwMRuIMnRPQ==
-X-Received: by 2002:a05:6402:645:b0:534:7a4a:9fe8 with SMTP id u5-20020a056402064500b005347a4a9fe8mr1610496edx.40.1695814428133;
-        Wed, 27 Sep 2023 04:33:48 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id a2-20020aa7cf02000000b005232ea6a330sm8065681edy.2.2023.09.27.04.33.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 04:33:47 -0700 (PDT)
-Message-ID: <e4b507bf-b0c3-4a52-bab4-3585b75ce300@linaro.org>
-Date:   Wed, 27 Sep 2023 13:33:46 +0200
+        d=1e100.net; s=20230601; t=1695814561; x=1696419361;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YRFVxzj+hVFD0IJT/IGMwbr1NPpMK93Z+5C9tH0fQfo=;
+        b=sOTq9Pyn+ZQsYq08mMAoZWjuNn2Mg/69NYFBPHRJTpzaHCVhx4mUXPZFP8BsWuolBQ
+         1nj6ko1eSY2BJ1sSeR1zellcN2A2XByyZhpQwyFV5s833KdPj265udoH+zO3WpUeR7lv
+         ZhvqkDlqU2xTWZ4owrJawuLXqRFcSiEGby8sdO5SQ6xnMNlWkOlbjge6ugQY75Ip6ugt
+         IuqCNA8xoJnKJOldV/pcsnINUVYNy/2YExzP2Sq/i/9ElTqHl2ksbcihrlgEHxxzcwFq
+         b2lynmGOrXiBYOqiqaIEXCbsEU2ne9ZXgc7FVa+SEMpMaciGmychSJtN3ePpIeJDXqw8
+         a0Bw==
+X-Gm-Message-State: AOJu0YwWEfyc2rv8XgDGYFp0O3WkVQgFDXr1s43QXGYKwEuqblzUDOuR
+        nq95kSnTS766m059mWM1+Is=
+X-Google-Smtp-Source: AGHT+IHKmKHutWvHupgciI0XgpXrodsbTAdezHCuwMWoW4BstTpHwBYaFy4VorZtx8vHj5s3ZdZ9cg==
+X-Received: by 2002:a5d:568e:0:b0:31a:ea18:c516 with SMTP id f14-20020a5d568e000000b0031aea18c516mr1548970wrv.3.1695814560929;
+        Wed, 27 Sep 2023 04:36:00 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.guest.codethink.co.uk ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id t3-20020a5d5343000000b0030ae53550f5sm16792874wrv.51.2023.09.27.04.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 04:36:00 -0700 (PDT)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ALSA: aloop: Add support for the non-interleaved access mode
+Date:   Wed, 27 Sep 2023 12:35:54 +0100
+Message-Id: <20230927113555.14877-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] iommu/arm-smmu-qcom: Add SM7150 SMMUv2
-Content-Language: en-US
-To:     Danila Tikhonov <danila@jiaxyga.com>, will@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dmitry.baryshkov@linaro.org, quic_saipraka@quicinc.com,
-        quic_bjorande@quicinc.com, a39.skl@gmail.com,
-        robdclark@chromium.org, mani@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913184526.20016-1-danila@jiaxyga.com>
- <20230913184526.20016-3-danila@jiaxyga.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230913184526.20016-3-danila@jiaxyga.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.2023 20:45, Danila Tikhonov wrote:
-> SM7150 uses a qcom,smmu-v2-style SMMU just for Adreno and friends.
-> Add a compatible for it.
-> 
-> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The current version of the loopback driver supports interleaved access
+mode only. This patch introduces support for the non-interleaved
+access mode.
 
-Konrad
+When in the interleaved mode, the 'copy_play_buf' function copies data
+from the playback to the capture buffer using one memcpy call. This call
+copies samples for multiple, interleaved channels.
+
+In the non-interleaved mode we have multiple channel buffers, so we have
+to perform multiple memcpy calls to copy samples channel after channel.
+
+Add new function called 'copy_play_buf_part_n', which copies a part of
+each channel buffer from playback to capture. Modify the 'copy_play_buf'
+to use the corresponding memory copy function(just memcpy /
+copy_play_buf_part_n) depending on the access mode.
+
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ sound/drivers/aloop.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index a38e602b4fc6..ab116b1fed96 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -158,6 +158,9 @@ struct loopback_pcm {
+ 	unsigned long last_jiffies;
+ 	/* If jiffies timer is used */
+ 	struct timer_list timer;
++
++	/* size of per channel buffer in case of non-interleaved access */
++	unsigned int channel_buf_n;
+ };
+ 
+ static struct platform_device *devices[SNDRV_CARDS];
+@@ -335,7 +338,8 @@ static int loopback_check_format(struct loopback_cable *cable, int stream)
+ 							substream->runtime;
+ 	check = runtime->format != cruntime->format ||
+ 		runtime->rate != cruntime->rate ||
+-		runtime->channels != cruntime->channels;
++		runtime->channels != cruntime->channels ||
++		runtime->access != cruntime->access;
+ 	if (!check)
+ 		return 0;
+ 	if (stream == SNDRV_PCM_STREAM_CAPTURE) {
+@@ -472,6 +476,7 @@ static int loopback_prepare(struct snd_pcm_substream *substream)
+ 
+ 	dpcm->buf_pos = 0;
+ 	dpcm->pcm_buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
++	dpcm->channel_buf_n = dpcm->pcm_buffer_size / runtime->channels;
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		/* clear capture buffer */
+ 		dpcm->silent_size = dpcm->pcm_buffer_size;
+@@ -522,6 +527,22 @@ static void clear_capture_buf(struct loopback_pcm *dpcm, unsigned int bytes)
+ 	}
+ }
+ 
++static void copy_play_buf_part_n(struct loopback_pcm *play, struct loopback_pcm *capt,
++				 unsigned int size, unsigned int src_off, unsigned int dst_off)
++{
++	unsigned int channels = capt->substream->runtime->channels;
++	unsigned int size_p_ch = size / channels;
++	unsigned int src_off_ch = src_off / channels;
++	unsigned int dst_off_ch = dst_off / channels;
++	int i;
++
++	for (i = 0; i < channels; i++) {
++		memcpy(capt->substream->runtime->dma_area + capt->channel_buf_n * i + dst_off_ch,
++		       play->substream->runtime->dma_area + play->channel_buf_n * i + src_off_ch,
++		       size_p_ch);
++	}
++}
++
+ static void copy_play_buf(struct loopback_pcm *play,
+ 			  struct loopback_pcm *capt,
+ 			  unsigned int bytes)
+@@ -556,7 +577,11 @@ static void copy_play_buf(struct loopback_pcm *play,
+ 			size = play->pcm_buffer_size - src_off;
+ 		if (dst_off + size > capt->pcm_buffer_size)
+ 			size = capt->pcm_buffer_size - dst_off;
+-		memcpy(dst + dst_off, src + src_off, size);
++		if (runtime->access == SNDRV_PCM_ACCESS_RW_NONINTERLEAVED ||
++		    runtime->access == SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			copy_play_buf_part_n(play, capt, size, src_off, dst_off);
++		else
++			memcpy(dst + dst_off, src + src_off, size);
+ 		capt->silent_size = 0;
+ 		bytes -= size;
+ 		if (!bytes)
+@@ -878,7 +903,7 @@ static const struct snd_pcm_hardware loopback_pcm_hardware =
+ {
+ 	.info =		(SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP |
+ 			 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE |
+-			 SNDRV_PCM_INFO_RESUME),
++			 SNDRV_PCM_INFO_RESUME | SNDRV_PCM_INFO_NONINTERLEAVED),
+ 	.formats =	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+ 			 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |
+ 			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE |
+-- 
+2.34.1
+
