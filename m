@@ -2,110 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41977B0EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327577B0EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjI0W3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 18:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S229664AbjI0Wb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 18:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjI0W3d (ORCPT
+        with ESMTP id S229500AbjI0Wb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 18:29:33 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8632102;
-        Wed, 27 Sep 2023 15:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y5BdNredrDHTYUunP3kApqKLWcDG2AzXoWP37/0LaLo=; b=ndvyW/v5AnnTWjFcOaHmQtJ2tQ
-        BC/6lzWxYgmdgHXT3PvPZcC090LQrp5ml02Ae1GnoSZckoSqvjoU59jpnfAR30t9sQc4/Tr/mYnNI
-        X6fsO3Ipq3PoKVycIJsEvT0+99hFr4CUSn/aQRGG2eC0g6Iw2svNRD/I3rMzmeTP9B1nb7c4dqeqA
-        JN6364DWbEtruq3HNM0pL9YLgknS628sDSI3CSoX5x4axSRNWXVW2YPZpfLHfh77TVYhq6vn6Ypxd
-        WcP/K9r5N10De0XaKEEw5J4cGIg6JXFmGw4wiy5LDY2ZiUC1DhwwA6Vw2c8s4Kjh2Vk+HNoezE5u+
-        4u/hMT3A==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qld1m-00CP4N-2B;
-        Wed, 27 Sep 2023 22:29:07 +0000
-Date:   Wed, 27 Sep 2023 23:29:06 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 03/19] fs: release anon dev_t in deactivate_locked_super
-Message-ID: <20230927222906.GO800259@ZenIV>
-References: <20230913111013.77623-1-hch@lst.de>
- <20230913111013.77623-4-hch@lst.de>
- <20230913232712.GC800259@ZenIV>
- <20230926093834.GB13806@lst.de>
- <20230926212515.GN800259@ZenIV>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926212515.GN800259@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 18:31:27 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB72FB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:31:26 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c4ec85ea9so233334607b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695853885; x=1696458685; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yPFPSld1QoxNNv2eOiTPtaeDc/jtQaoLteL64zdeiXU=;
+        b=kZ4XSwqVrMmKuD8FA7L0Wj44EDWvr11JwzdxaVcNe1IgX7jFd5gmKu4N4pgBYweuiC
+         OKrcoe5QNWVrnwdqJ6mnfNr2X5nUXWH/m0TdEP1f+mGdgEIXMgpV48e9bSJijmjQ14O4
+         Teo+a4oUm80LZz3uo90XmohNkPdtS/8dPBaXYA76b+IsP+iaV0+vepyFnCyIjI1Nk+Lb
+         jKcOVg22xhp7VuXQjYEmmgH4iaZAFvWfQRYrY19R3GGBOnPcGKmu7Q9jk83AxpJ8jf19
+         1lBcM/tux1Rmn4Un+Ssl80mfh02FxatpUEaBJQ+9hQbevKsu8cM7wWKphJKf1WLtgICK
+         uEJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695853885; x=1696458685;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yPFPSld1QoxNNv2eOiTPtaeDc/jtQaoLteL64zdeiXU=;
+        b=nvcbBr6N4bYoD0ylBy3CXNkUwu7f1c96+BlJ3tjcpKBinQooyaepoHPgzhW4n6MHKb
+         2fLDEildCGRpBzLbnh9Wd5uIW2pUh+oRxL1IvFSIiEWy6lYlRzJS7tAJRwEyA4+/4fpM
+         QcAQIBczGdds8DARmyVqx0BNGjo/RSkxEKdvwf3UvAntBfLlX1WEOEBR9/1JviS+y+ie
+         DDkyduJ1wuO6ZtMakgE2NvZX5fiRcSJVtcxOSuo9tjQl0siCs4u4wrRkzVdd/aG25CxD
+         SESNybX6gXcVm8+kl1dpn9wHs66OthE88ocj1EMqRDn7Dx3OPdsBDUZ8+olbu1kmZsrD
+         74nw==
+X-Gm-Message-State: AOJu0YxJ4YyInoXz2uehcGYU9+M8vut5MkPCbLzdJuGolBYdBZN/1u8z
+        uDt5k+wcN636oO4g1yZNXJd5Onlrkjw=
+X-Google-Smtp-Source: AGHT+IHzMWTwaEgO6mf9o8MaJUtvk19Egxe0QVczeyRnzbzsBUsGOjmR+c7nEst3ug6Uxjox+Nt5NLKNrf4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ad25:0:b0:59f:3cde:b33a with SMTP id
+ l37-20020a81ad25000000b0059f3cdeb33amr50816ywh.6.1695853885399; Wed, 27 Sep
+ 2023 15:31:25 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 15:31:23 -0700
+In-Reply-To: <20230824215244.3897419-1-kyle.meyer@hpe.com>
+Mime-Version: 1.0
+References: <20230824215244.3897419-1-kyle.meyer@hpe.com>
+Message-ID: <ZRStOxiGwvDwGlNq@google.com>
+Subject: Re: [PATCH v3] KVM: x86: Add CONFIG_KVM_MAX_NR_VCPUS
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kyle Meyer <kyle.meyer@hpe.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@intel.com, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, dmatlack@google.com, russ.anderson@hpe.com,
+        dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:25:15PM +0100, Al Viro wrote:
+On Thu, Aug 24, 2023, Kyle Meyer wrote:
+> Add a Kconfig entry to set the maximum number of vCPUs per KVM guest and
+> set the default value to 4096 when MAXSMP is enabled.
 
-> Before your patch: foo_kill_super() calls kill_anon_super(),
-> which calls kill_super_notify(), which removes the sucker from
-> the list, then frees ->s_fs_info.  After your patch:
-> removal from the lists happens via the call of kill_super_notify()
-> *after* both of your methods had been called, while freeing
-> ->s_fs_info happens from the method call.  IOW, you've restored
-> the situation prior to "super: ensure valid info".  The whole
-> point of that commit had been to make sure that we have nothing
-> in the lists with ->s_fs_info pointing to a freed object.
+I'd like to capture why the max is set to 4096, both the justification and why
+we don't want to go further at this point.
 
-More detailed example: take a look at NFS.  We have ->get_tree() there
-call sget_fc() with nfs_compare_super() as possible 'test' callback.
-It does look at ->s_fs_info of the superblocks found on the list
-of instances for fs type in question.  Moreover, it proceeds to
-call nfs_compare_mount_options(), which chases pointers from that
-(at the very least fetch ->client in nfs_server instance ->s_fs_info
-points to and dereferences that).
+If you've no objection, I'll massage the changelog to this when applying:
 
-We really, really do not want nfs_free_server() happen while the
-superblock is visible in the instances list.  Now, in your tree
-nfs_free_sb() call nfs_free_server().  *Without* having called
-kill_super_notify() first - you do that only after the call of
-->free_sb().
+  Add a Kconfig entry to set the maximum number of vCPUs per KVM guest and
+  set the default value to 4096 when MAXSMP is enabled, as there are use
+  cases that want to create more than the currently allow 1024 vCPUs and
+  are more than happy to eat the memory overhead.
 
-So with this series applied we have UAF on race between mount and
-umount.  For NFS.  No block devices involved.
+  The Hyper-V TLFS doesn't allow more than 64 sparse banks, i.e. allows a
+  maximum of 4096 virtual CPUs. Cap KVM's maximum number of virtual CPUs
+  to 4096 to avoid exceeding Hyper-V's limit as KVM support for Hyper-V is
+  unconditional, and alternatives like dynamically disabling Hyper-V
+  enlightenments that rely on sparse banks would require non-trivial code
+  changes.
 
-Old logics had been "after generic_shutdown_super() the private
-parts of superblock belong to filesystem alone; they might be
-accessed by methods called from RCU pathwalk, but that's it".
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
+> ---
+> v2 -> v3: Default KVM_MAX_VCPUS to 1024 when CONFIG_KVM_MAX_NR_VCPUS is not
+> defined. This prevents build failures in arch/x86/events/intel/core.c and
+> drivers/vfio/vfio_main.c when KVM is disabled.
+> 
+>  arch/x86/include/asm/kvm_host.h |  4 ++++
+>  arch/x86/kvm/Kconfig            | 11 +++++++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3bc146dfd38d..cd27e0a00765 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -39,7 +39,11 @@
+>  
+>  #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  
 
-I still don't see any clear rules for the new one.  And the more
-I'm looking, the more sceptical I get about the approach you've
-taken, TBH...
+And another thing I'll add if you don't object is a comment to explain that this
+is purely to play nice with CONFIG_KVM=n.  And FWIW, I hope to make this go away
+entirely: https://lore.kernel.org/all/20230916003118.2540661-27-seanjc@google.com
+
+/*
+ * CONFIG_KVM_MAX_NR_VCPUS is defined iff CONFIG_KVM!=n, provide a dummy max if
+ * KVM is disabled (arbitrarily use default from CONFIG_KVM_MAX_NR_VCPUS).
+ */ 
+
+> +#ifdef CONFIG_KVM_MAX_NR_VCPUS
+> +#define KVM_MAX_VCPUS CONFIG_KVM_MAX_NR_VCPUS
+> +#else
+>  #define KVM_MAX_VCPUS 1024
+> +#endif
+>  
+>  /*
+>   * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index 89ca7f4c1464..e730e8255e22 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -141,4 +141,15 @@ config KVM_XEN
+>  config KVM_EXTERNAL_WRITE_TRACKING
+>  	bool
+>  
+> +config KVM_MAX_NR_VCPUS
+> +	int "Maximum number of vCPUs per KVM guest"
+> +	depends on KVM
+> +	range 1024 4096
+> +	default 4096 if MAXSMP
+> +	default 1024
+> +	help
+> +	  Set the maximum number of vCPUs per KVM guest. Larger values will increase
+> +	  the memory footprint of each KVM guest, regardless of how many vCPUs are
+> +	  configured.
+
+Last nit, I think the last linke should be like so:
+
+       the memory footprint of each KVM guest, regardless of how many vCPUs are
+       created for a given VM.
+
+No need for a v4 unless you object to any of the above, I'm happt to fixup when
+applying.
