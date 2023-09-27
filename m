@@ -2,191 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EA47AFEEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B707AFEF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjI0It1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S230221AbjI0IvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjI0ItY (ORCPT
+        with ESMTP id S230248AbjI0IvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:49:24 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD7A3;
-        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c3bd829b86so83289205ad.0;
-        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695804562; x=1696409362; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
-        b=OznP9QddYD/P6SLu1IihEPpKDHVvJJZCKkNpl/GsiaSwPis2NgEXljT2DBH9R9w/bi
-         WtnciHWgRRm+sZ9WLhrB98dewHCAx5gBKMNVXBsbDxqhJJPvwMjYWk06wZnJlBt7mPIE
-         gy1msnawdL5Q+8Dxdh4jDlHKc67EOgm5hGDYPf0nL3mIDLqyQEGxqh978g9um0mYT9Bj
-         hoz3FOt2oiKjNdSsP1IJ9idvDfGABNyNBRh+tk+m7SYyNH2mB3lXbwBTuWc1+KXAN49q
-         QZ4ZpEIx0/0fomoTAStWoyrZdFp1/PaiO9SjrySgjMCCkdHEmbOmN//mCVzincuUAib+
-         px4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804562; x=1696409362;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
-        b=DOJgs8p31UaZ0jd4cYZ64NYIYn4fmAjn6ct8Avyvl8DJWWYX4TEKUjTIFyu5qBZluJ
-         vVY3VmA1OF8jeXCKlYpNvXx05BbfHDBqNHzXozU2MLW3Ck0qXFwIXPsYeqMmIQKmMi3g
-         E7QFjvoeLVLytF7EDJgECJ9SPceKPqYgpEgIywGii47JuQ20h4dTwNQs4Hp2WsiMQwG5
-         EpcBBwcoa2UGhsbVC2QpHNFih7pBSMiA2dZgg6aQzYZR56CYGD+Wq8k2oPjzuNm+j8U2
-         gk38q7FF4t6w9mXPPqcTADam3EcAghiXdlzElxzdRc+P0HW2fLMUhiSA3MXpZe2+7Hfe
-         BNew==
-X-Gm-Message-State: AOJu0Yz/cEPuzLIW7T4Q4es9V+8uMxnz6tYsfrLGfQV5s3xzJGRSHt0F
-        8s+ukaPykQTgij/Qgrcug9fYyitDr3k=
-X-Google-Smtp-Source: AGHT+IHOIvlC0VTTSD1TDqihjByVlmint/jkmEcXp1TPBsQlERqjLLSm7j2rCoIykA/lAs6dVQsmxQ==
-X-Received: by 2002:a17:902:da8c:b0:1c5:a60c:4ee with SMTP id j12-20020a170902da8c00b001c5a60c04eemr1257482plx.47.1695804562075;
-        Wed, 27 Sep 2023 01:49:22 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001bb99e188fcsm12495621plx.194.2023.09.27.01.49.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 01:49:21 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:19:17 +0530
-Message-Id: <87zg18f1bm.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
-In-Reply-To: <20230919201532.310085-3-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 04:51:04 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1120F4;
+        Wed, 27 Sep 2023 01:51:02 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 16:49:44
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 16:49:44 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     aradford@gmail.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: 3w-sas: Clean up errors in 3w-sas.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <38a151ef.88d.18ad5d47214.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDHZD+o7BNl7_u9AA--.630W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwAts+
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> There are several reasons to add a general function ext4_mb_mark_context
-> to update block bitmap and group descriptor on disk:
-> 1. pair behavior of alloc/free bits. For example,
-> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
-> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
-> 2. remove repeat code to read from disk, update and write back to disk.
-> 3. reduce future unit test mocks to catch real IO to update structure
-> on disk.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
->  1 file changed, 77 insertions(+), 70 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index cf09adfbaf11..e1320eea46e9 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
->  	ext4_groupinfo_destroy_slabs();
->  }
->  
-> +static int
-> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
-> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
-
-
-ext4_grpblk_t is defined as int.
-    /* data type for block offset of block group */
-    typedef int ext4_grpblk_t;
-
-I think len should be unsigned int (u32) here. 
-
-> +{
-> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
-> +	struct buffer_head *bitmap_bh = NULL;
-> +	struct ext4_group_desc *gdp;
-> +	struct buffer_head *gdp_bh;
-> +	int err;
-> +	unsigned int i, already, changed;
-> +
-> +	bitmap_bh = ext4_read_block_bitmap(sb, group);
-> +	if (IS_ERR(bitmap_bh))
-> +		return PTR_ERR(bitmap_bh);
-> +
-> +	err = -EIO;
-> +	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
-> +	if (!gdp)
-> +		goto out_err;
-> +
-> +	ext4_lock_group(sb, group);
-> +	if (ext4_has_group_desc_csum(sb) &&
-> +	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-> +		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
-> +		ext4_free_group_clusters_set(sb, gdp,
-> +			ext4_free_clusters_after_init(sb, group, gdp));
-> +	}
-> +
-> +	already = 0;
-> +	for (i = 0; i < len; i++)
-> +		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
-> +				state)
-> +			already++;
-> +	changed = len - already;
-> +
-> +	if (state) {
-> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
-> +		ext4_free_group_clusters_set(sb, gdp,
-> +			ext4_free_group_clusters(sb, gdp) - changed);
-> +	} else {
-> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
-> +		ext4_free_group_clusters_set(sb, gdp,
-> +			ext4_free_group_clusters(sb, gdp) + changed);
-> +	}
-> +
-> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> +	ext4_group_desc_csum_set(sb, group, gdp);
-> +	ext4_unlock_group(sb, group);
-> +
-> +	if (sbi->s_log_groups_per_flex) {
-> +		ext4_group_t flex_group = ext4_flex_group(sbi, group);
-> +		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
-> +					   s_flex_groups, flex_group);
-> +
-> +		if (state)
-> +			atomic64_sub(changed, &fg->free_clusters);
-> +		else
-> +			atomic64_add(changed, &fg->free_clusters);
-> +	}
-> +
-> +	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-> +	if (err)
-> +		goto out_err;
-> +	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-> +	if (err)
-> +		goto out_err;
-> +
-> +	sync_dirty_buffer(bitmap_bh);
-> +	sync_dirty_buffer(gdp_bh);
-> +
-> +out_err:
-> +	brelse(bitmap_bh);
-> +	return err;
-> +}
->  
->  /*
->   * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
-> @@ -4079,15 +4153,11 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
->  void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
->  		     int len, bool state)
-
-Even ext4_mb_mark_bb should take len as unsigned int IMO.
-For e.g. ext4_fc_replay_add_range() passes map.m_len which is also
-unsigned int.
-
-
-Otherwise the patch looks good to me. Feel free to add - 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
+cGFjZSByZXF1aXJlZCBhZnRlciB0aGF0ICcsJyAoY3R4OlZ4VikKRVJST1I6IG9wZW4gYnJhY2Ug
+J3snIGZvbGxvd2luZyBzdHJ1Y3QgZ28gb24gdGhlIHNhbWUgbGluZQoKU2lnbmVkLW9mZi1ieTog
+R3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0tLQogZHJpdmVycy9zY3NpLzN3LXNh
+cy5oIHwgMTkgKysrKysrKystLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9u
+cygrKSwgMTEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpLzN3LXNhcy5o
+IGIvZHJpdmVycy9zY3NpLzN3LXNhcy5oCmluZGV4IDA5NmRlYzI5ZTJhYy4uMzQ0M2NjYmY3M2Ux
+IDEwMDY0NAotLS0gYS9kcml2ZXJzL3Njc2kvM3ctc2FzLmgKKysrIGIvZHJpdmVycy9zY3NpLzN3
+LXNhcy5oCkBAIC00Niw4ICs0Niw3IEBACiAjZGVmaW5lIF8zV19TQVNfSAogCiAvKiBBRU4gc2V2
+ZXJpdHkgdGFibGUgKi8KLXN0YXRpYyBjaGFyICp0d2xfYWVuX3NldmVyaXR5X3RhYmxlW10gPQot
+eworc3RhdGljIGNoYXIgKnR3bF9hZW5fc2V2ZXJpdHlfdGFibGVbXSA9IHsKIAkiTm9uZSIsICJF
+UlJPUiIsICJXQVJOSU5HIiwgIklORk8iLCAiREVCVUciLCBOVUxMCiB9OwogCkBAIC0xNTIsMTEg
+KzE1MSwxMSBAQCBzdGF0aWMgY2hhciAqdHdsX2Flbl9zZXZlcml0eV90YWJsZVtdID0KIC8qIEJp
+dG1hc2sgbWFjcm9zIHRvIGVsaW1pbmF0ZSBiaXRmaWVsZHMgKi8KIAogLyogb3Bjb2RlOiA1LCBy
+ZXNlcnZlZDogMyAqLwotI2RlZmluZSBUV19PUFJFU19JTih4LHkpICgoeCA8PCA1KSB8ICh5ICYg
+MHgxZikpCisjZGVmaW5lIFRXX09QUkVTX0lOKHgsIHkpICgoeCA8PCA1KSB8ICh5ICYgMHgxZikp
+CiAjZGVmaW5lIFRXX09QX09VVCh4KSAoeCAmIDB4MWYpCiAKIC8qIG9wY29kZTogNSwgc2dsb2Zm
+c2V0OiAzICovCi0jZGVmaW5lIFRXX09QU0dMX0lOKHgseSkgKCh4IDw8IDUpIHwgKHkgJiAweDFm
+KSkKKyNkZWZpbmUgVFdfT1BTR0xfSU4oeCwgeSkgKCh4IDw8IDUpIHwgKHkgJiAweDFmKSkKICNk
+ZWZpbmUgVFdfU0dMX09VVCh4KSAoKHggPj4gNSkgJiAweDcpCiAKIC8qIHNldmVyaXR5OiAzLCBy
+ZXNlcnZlZDogNSAqLwpAQCAtMjA0LDExICsyMDMsMTEgQEAgc3RhdGljIGNoYXIgKnR3bF9hZW5f
+c2V2ZXJpdHlfdGFibGVbXSA9CiAJKHdyaXRlbChUV0xfSVNTVUVfU09GVF9SRVNFVCwgVFdMX0hJ
+QkRCX1JFR19BRERSKHR3X2RldikpKQogCiAvKiBNYWNyb3MgKi8KLSNkZWZpbmUgVFdfUFJJTlRL
+KGgsYSxiLGMpIHsgXAorI2RlZmluZSBUV19QUklOVEsoaCwgYSwgYiwgYykgeyBcCiBpZiAoaCkg
+XAotcHJpbnRrKEtFUk5fV0FSTklORyAiM3ctc2FzOiBzY3NpJWQ6IEVSUk9SOiAoMHglMDJYOjB4
+JTA0WCk6ICVzLlxuIixoLT5ob3N0X25vLGEsYixjKTsgXAorcHJpbnRrKEtFUk5fV0FSTklORyAi
+M3ctc2FzOiBzY3NpJWQ6IEVSUk9SOiAoMHglMDJYOjB4JTA0WCk6ICVzLlxuIiwgaC0+aG9zdF9u
+bywgYSwgYiwgYyk7IFwKIGVsc2UgXAotcHJpbnRrKEtFUk5fV0FSTklORyAiM3ctc2FzOiBFUlJP
+UjogKDB4JTAyWDoweCUwNFgpOiAlcy5cbiIsYSxiLGMpOyBcCitwcmludGsoS0VSTl9XQVJOSU5H
+ICIzdy1zYXM6IEVSUk9SOiAoMHglMDJYOjB4JTA0WCk6ICVzLlxuIiwgYSwgYiwgYyk7IFwKIH0K
+ICNkZWZpbmUgVFdfTUFYX0xVTlMgMTYKICNkZWZpbmUgVFdfQ09NTUFORF9TSVpFIChzaXplb2Yo
+ZG1hX2FkZHJfdCkgPiA0ID8gNiA6IDQpCkBAIC0zMTAsOCArMzA5LDcgQEAgdHlwZWRlZiBzdHJ1
+Y3QgVEFHX1RXX0luaXRjb25uZWN0IHsKIH0gVFdfSW5pdGNvbm5lY3Q7CiAKIC8qIEV2ZW50IGlu
+Zm8gc3RydWN0dXJlICovCi10eXBlZGVmIHN0cnVjdCBUQUdfVFdfRXZlbnQKLXsKK3R5cGVkZWYg
+c3RydWN0IFRBR19UV19FdmVudCB7CiAJdW5zaWduZWQgaW50IHNlcXVlbmNlX2lkOwogCXVuc2ln
+bmVkIGludCB0aW1lX3N0YW1wX3NlYzsKIAl1bnNpZ25lZCBzaG9ydCBhZW5fY29kZTsKQEAgLTM0
+OCw4ICszNDYsNyBAQCB0eXBlZGVmIHN0cnVjdCB7CiB9IFRXX1BhcmFtX0FwYWNoZTsKIAogLyog
+Q29tcGF0aWJpbGl0eSBpbmZvcm1hdGlvbiBzdHJ1Y3R1cmUgKi8KLXR5cGVkZWYgc3RydWN0IFRB
+R19UV19Db21wYXRpYmlsaXR5X0luZm8KLXsKK3R5cGVkZWYgc3RydWN0IFRBR19UV19Db21wYXRp
+YmlsaXR5X0luZm8gewogCWNoYXIgZHJpdmVyX3ZlcnNpb25bMzJdOwogCXVuc2lnbmVkIHNob3J0
+IHdvcmtpbmdfc3JsOwogCXVuc2lnbmVkIHNob3J0IHdvcmtpbmdfYnJhbmNoOwotLSAKMi4xNy4x
+Cg==
