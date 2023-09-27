@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8F87B03A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8FF7B03A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbjI0MNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        id S231654AbjI0MNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbjI0MNV (ORCPT
+        with ESMTP id S231638AbjI0MNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:13:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF6CCD9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695816746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxP1yuTUEp+02dovUMlVDBiyWThstH4vw04Sljh8/2M=;
-        b=JPgll2/4REwrVIgi8gxUIKdBs2UAB1b9aTAQ38NE5Tyki1BFHlRp/BvaP8rkw04DTwUdJl
-        s+xKBrayBJCC43Es9HL0fREJbCi0zPzQ9lHZ6rrltbSYrmFEJaC3JPrXyR3OU/jjsFSVhu
-        vhr+lLx8kzQDSc7Nr2kJXjJetaBIA/w=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-447-ztKu2Z9SNPCpTK5kJ19O1w-1; Wed, 27 Sep 2023 08:12:21 -0400
-X-MC-Unique: ztKu2Z9SNPCpTK5kJ19O1w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FDA5811E7B;
-        Wed, 27 Sep 2023 12:12:21 +0000 (UTC)
-Received: from localhost (dhcp-192-239.str.redhat.com [10.33.192.239])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AFC44492B05;
-        Wed, 27 Sep 2023 12:12:20 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-In-Reply-To: <20230927132536.4b19ab2f.pasic@linux.ibm.com>
-Organization: "Red Hat GmbH, Sitz: Werner-von-Siemens-Ring 12, D-85630
- Grasbrunn, Handelsregister: Amtsgericht =?utf-8?Q?M=C3=BCnchen=2C?= HRB
- 153243,
- =?utf-8?Q?Gesch=C3=A4ftsf=C3=BChrer=3A?= Ryan Barnhart, Charles Cachera,
- Michael O'Neill, Amy
- Ross"
-References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
- <20230926184158.4ca2c0c3.pasic@linux.ibm.com> <877coc2aj8.fsf@redhat.com>
- <20230927132536.4b19ab2f.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.37 (https://notmuchmail.org)
-Date:   Wed, 27 Sep 2023 14:12:19 +0200
-Message-ID: <874jjf3jdo.fsf@redhat.com>
+        Wed, 27 Sep 2023 08:13:06 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23046CFA;
+        Wed, 27 Sep 2023 05:12:51 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RATCso031345;
+        Wed, 27 Sep 2023 12:12:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GfLxy6NW7pVVRzAZZfz4B4qGDlxBa3LB37XO0ccyL3E=;
+ b=C4IlZT8w51smZExqQpUoLSMuMxq52LFsTU5ZUqV67eODTFOQj7fOu2+AYURxeoxfeATz
+ LFldxRo1Id3GnE3ARKLYpyGKw/UIZ9HR12Sjtdp7d4dX1szp/3W3FDhOgEIUWk9Rsg4Z
+ cv8r5YLzUV4/A2a7Rj/AAwFVqXqXGgKuV3M29EukafiDS6fvcLH5VzD2IB7RRkrSi0g3
+ g/NuxMKTZ1HHDCw0nGHj4zJmX1l47K69WCUh6Tu3+FEIG9MhVPGN3CGMkBJhWuUvYJYJ
+ Rk9xlKA5PUzEOe89gJGsODrwqs3jVPLdw9fulLCsGkJ2tUsjZPRe18A7IuFVl/Xk456L Aw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbv6638wy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 12:12:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38RCCbZr010161
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 12:12:37 GMT
+Received: from [10.216.29.85] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
+ 2023 05:12:30 -0700
+Message-ID: <f3eba136-74d4-4f54-b35d-ce3236db9f67@quicinc.com>
+Date:   Wed, 27 Sep 2023 17:42:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/11] arm64: dts: qcom: ipq8074: include the GPLL0 as
+ clock provider for mailbox
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Sricharan Ramabadhran" <quic_srichara@quicinc.com>,
+        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
+ <20230913-gpll_cleanup-v2-8-c8ceb1a37680@quicinc.com>
+ <731f4e05-6205-432b-8cd5-29d5e1c2222d@linaro.org>
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <731f4e05-6205-432b-8cd5-29d5e1c2222d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: bgerQsRCE6GkEYH4JuOKW_26eZUJDDRV
+X-Proofpoint-GUID: bgerQsRCE6GkEYH4JuOKW_26eZUJDDRV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_06,2023-09-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 mlxlogscore=730 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270102
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27 2023, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-> On Wed, 27 Sep 2023 12:08:43 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
+On 9/27/2023 5:03 PM, Konrad Dybcio wrote:
+> On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
+>> While the kernel is booting up, APSS PLL will be running at 800MHz with
+>> GPLL0 as source. Once the cpufreq driver is available, APSS PLL will be
+>> configured to the rate based on the opp table and the source also will
+>> be changed to APSS_PLL_EARLY. So allow the mailbox to consume the GPLL0,
+>> with this inclusion, CPU Freq correctly reports that CPU is running at
+>> 800MHz rather than 24MHz.
+>>
+>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>> ---
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 >
->> > On the other hand virtio_airq_handler() calls vring_interrupt() with
->> > interrupts enabled. (While vring_interrupt() is called in a (read)
->> > critical section in virtio_airq_handler() we use read_lock() and
->> > not read_lock_irqsave() to grab the lock. Whether that is correct in
->> > it self (i.e. disregarding the crypto problem) or not I'm not sure right
->> > now. Will think some more about it tomorrow.) If the way to go forward
->> > is disabling interrupts in virtio-ccw before vring_interrupt() is
->> > called, I would be glad to spin a patch for that.  
->> 
->> virtio_airq_handler() is supposed to be an interrupt handler for an
->> adapter interrupt -- as such I would expect it to always run with
->> interrupts disabled (and I'd expect vring_interrupt() to be called
->> with interrupts disabled as well; if that's not the case, I think it
->> would need to run asynchronously.) At least that was my understanding at
->> the time I wrote the code.
->
-> Thanks Connie! I don't quite understand what do you mean by "run with
-> interrupts disabled" in this context.
->
-> Do you mean that if I were to add the following warning:
->
-> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> index ac67576301bf..2a9c73f5964f 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -211,6 +211,8 @@ static void virtio_airq_handler(struct airq_struct *airq,
->         struct airq_info *info = container_of(airq, struct airq_info, airq);
->         unsigned long ai;
->  
-> +       WARN_ONCE(in_irq(), "irqs are ought to be disabled but are not\n");
-> +
->         inc_irq_stat(IRQIO_VAI);
->
-> it would/should never trigger, or do you mean something different?
->
-> If yes, does that mean that you would expect the common airq code (i.e. something
-> like do_airq_interrupt()) to disable interrupts, or call virtio_airq_handler()?
-> asynchronously sort of as a bottom half (my understanding of bottom halves is currently
-> not complete).
->
-> If no what do you actually mean?
+> Konrad
 
-My understanding (at the time) was that we're coming from the low-level
-interrupt handler (which disables interrupts via the NEW PSW);
-interrupts will be re-enabled once the basic processing is done. This
-might no longer be the case, but I currently don't have the time to dig
-into the code -- it has been some time.
+Thanks Konrad.
+
+I just realized that, in commit message, the statement "APSS PLL will be 
+running at 800MHz" should be "APSS clock / CPU clock will be running at 
+800MHz".
+
+Bjorn, will you be able to fix it up while applying (all 4 DTS changes 
+needs update) or shall I respin it?
+
+Thanks,
+
+Kathiravan T.
 
