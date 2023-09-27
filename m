@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE0E7AFA07
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF87AFA0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjI0FXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
+        id S229723AbjI0FYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjI0FWg (ORCPT
+        with ESMTP id S229791AbjI0FXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:22:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46345FD1;
-        Tue, 26 Sep 2023 22:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695791982; x=1727327982;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XWRHK3XHMCPUS7DjwBYEn6sN3WEf4Pd1a63R09LlTdM=;
-  b=Rn0ykur+VAe+a1zUi7FEh4gFnxrFp628QOzK1Yld8tZhYzThnszJp/w+
-   Ywz2A0oi8KtkX4j/5zi+g3SG3duu/9UfmpT5BMmMUt7G6Fx2d3PeegCjk
-   8e/8j2kTtqx3d+tlzb2hvCy47F3H+b3hTj8/CWLUnzKfs4YHM6cCA0C6v
-   TLqQH/aIfG191BNg9R+LE/gD9lYMoAH4vXBHB6uXNPkmhzW34XHyhmWBM
-   eHkfrUGMlBsUoQFi4HPfYCjGistMDujHxTvc6e6zwGuSFzFgimPi38UZW
-   +sEoJGpwLdsVYwLJcSCh9le0vKpCGCd5lEyeqJFTr0WfmNwHYazmgFNau
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381633578"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="381633578"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 22:19:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="725676254"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="725676254"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.84]) ([10.238.8.84])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 22:19:32 -0700
-Message-ID: <483f9e1e-7d01-5f06-3bfa-3788d2554724@linux.intel.com>
-Date:   Wed, 27 Sep 2023 13:19:29 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-12-seanjc@google.com>
- <d66795f8-e524-2912-4b71-92ca4ffe8807@linux.intel.com>
- <ZQteNbPfx6P3r6B8@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZQteNbPfx6P3r6B8@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 01:23:54 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79F4205
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:21:00 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81e9981ff4so15177536276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695792059; x=1696396859; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lz/tzt2FhoJSlisVyBotc0Kj5HYUeKExNXWDpILSgIc=;
+        b=jxPSRuCh2GiA5ml2AR0opCZ88ky6+UTpPBhYDJpn5sXvyQwKuI/mwdBIZOaYL7wPtu
+         i3FzcUZ4jj65FV/lLI1grLztvVU44S5nygVz7YhgY7+8ZKaPHbUw70ciOMexYtYJb2c0
+         obnHNiTmphB52b7IoHuoOz+KZV+Wkli92J2JazC8U/ZoyEZIB+lydEqI+GRitHeTwqIL
+         bxUHGZxMECI0AqCkcSBdLgJAHYPzQWQoBYMn1dQqldu6zSyAJNJBcXtcqI/PgnVNFa7T
+         gFH2s8OJzbJfmJo15bwRGJ1PI1z0ZbXPqRxkJe9lVf1EgDnZYT4uwzk266g3Cr9zUesi
+         X7OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695792059; x=1696396859;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lz/tzt2FhoJSlisVyBotc0Kj5HYUeKExNXWDpILSgIc=;
+        b=wJnhf6U3Sl0nYSaEu52aEMI/tXXmgAMkJL4tKh935IJvXpk1cQtuh5ajYQ2ZPid+ue
+         gvDREWkU8R5hNy3UYG5CbRgzk78n2ONi0eS37KTCodjq1dwd9fGJYKXYeqgVrwk7YgJD
+         dMosGzqd+URTF9XjugBHcF0e4HIysHIPPwOrMzavPlXERTRNu6cGDaVilDFAGt4MnNrP
+         6PqRwvjOeQXLYiFA6byWQDnLfykmBspgTtM3agUKhIaglZ3c2RCh5VK4PktG+yskRLkF
+         O50DTbvIf5Se73SvvIkwhGr3dj7ioUHQvMaq4/fqItxf6hp/jh7VYReLRqy9cbpFmk8h
+         K/wg==
+X-Gm-Message-State: AOJu0YxRhJaRCp9p00cPMFQeOsJYCbJ1gClcpuDx7w64CKu8qQmt6mLD
+        9oi74kld278ZUqGMZOngRvg8xK8OmPfm5sWKFg==
+X-Google-Smtp-Source: AGHT+IGQ4S6InwXRWTgaURsWBQh6RxYVFt/Bp+IrO6ECsGXqShMbbeNAl9naPNeF/L8Wg9aHddRgZy3gQ/CyC+vwJA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:aa09:0:b0:d7a:6a4c:b657 with SMTP
+ id s9-20020a25aa09000000b00d7a6a4cb657mr12365ybi.0.1695792059592; Tue, 26 Sep
+ 2023 22:20:59 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 05:20:58 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALm7E2UC/x3NQQqEMAxA0atI1gZsZRS9irgoMc5kYVsSEUW8u
+ 2WWb/P/DcYqbDBWNygfYpJigasroF+IX0ZZisE3vm0G36PtGilfuKgcrIabGCH5nHRHSspIGII burZzK9MHSigrr3L+J9P8PC9p7qJ0dAAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695792058; l=1837;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=yQqGrF2k0OLEIxxzfq32VFlgneWmvHqUwZOd9GeKl9Q=; b=GcVEbzE3m6R3BQuN95/HUu/Su4qXiV7N+d85g46JeEu4i/Hy5Trt6MURz/eeYNCmmQt/TOPsI
+ UCr87Jtq+Y9D+Uya8HayxqfYkZrp7eEP4oaqYAlYThIOw6C2MGCel/P
+X-Mailer: b4 0.12.3
+Message-ID: <20230927-strncpy-drivers-misc-c2port-core-c-v1-1-978f6d220a54@google.com>
+Subject: [PATCH] c2port: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
+We expect `c2dev->name` to be NUL-terminated based on its usage with
+format strings:
+|       dev_info(c2dev->dev, "C2 port %s removed\n", c2dev->name);
 
-On 9/21/2023 5:03 AM, Sean Christopherson wrote:
-> On Mon, Sep 18, 2023, Binbin Wu wrote:
->>
->> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
->>> From: Chao Peng <chao.p.peng@linux.intel.com>
->> [...]
->>> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
->>> +/*
->>> + * Returns true if _all_ gfns in the range [@start, @end) have attributes
->>> + * matching @attrs.
->>> + */
->>> +bool kvm_range_has_memory_attributes(struct kvm *kvm, gfn_t start, gfn_t end,
->>> +				     unsigned long attrs)
->>> +{
->>> +	XA_STATE(xas, &kvm->mem_attr_array, start);
->>> +	unsigned long index;
->>> +	bool has_attrs;
->>> +	void *entry;
->>> +
->>> +	rcu_read_lock();
->>> +
->>> +	if (!attrs) {
->>> +		has_attrs = !xas_find(&xas, end);
->> IIUIC, xas_find() is inclusive for "end", so here should be "end - 1" ?
-> Yes, that does appear to be the case.  Inclusive vs. exclusive on gfn ranges has
-> is the bane of my existence.
+Moreover, NUL-padding is _not_ required as c2dev is zero-allocated:
+|       c2dev = kzalloc(sizeof(struct c2port_device), GFP_KERNEL);
 
-Seems this one is not included in the "KVM: guest_memfd fixes" patch series?
-https://lore.kernel.org/kvm/20230921203331.3746712-1-seanjc@google.com/
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
+Let's also drop `C2PORT_NAME_LEN - 1` for `sizeof(dest)` which is more
+idiomatic strscpy usage.
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/misc/c2port/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+index f574c83b82cf..2bb1dd2511f9 100644
+--- a/drivers/misc/c2port/core.c
++++ b/drivers/misc/c2port/core.c
+@@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+ 	}
+ 	dev_set_drvdata(c2dev->dev, c2dev);
+ 
+-	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
++	strscpy(c2dev->name, name, sizeof(c2dev->name));
+ 	c2dev->ops = ops;
+ 	mutex_init(&c2dev->mutex);
+ 
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230927-strncpy-drivers-misc-c2port-core-c-aa196361fec5
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
