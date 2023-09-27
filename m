@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C29A7AFB54
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8657AFB57
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjI0Gqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        id S229555AbjI0Gsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjI0Gqq (ORCPT
+        with ESMTP id S229458AbjI0Gsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:46:46 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABD1FC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:46:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5046bf37ec1so7330189e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:46:44 -0700 (PDT)
+        Wed, 27 Sep 2023 02:48:38 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A282D6;
+        Tue, 26 Sep 2023 23:48:37 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-277564f049dso4297673a91.1;
+        Tue, 26 Sep 2023 23:48:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695797203; x=1696402003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gqgmtzUwVMXQljcEBuFUtjGd5XOCZ/3np4UYnKXu4pk=;
-        b=tcUr6fmmIrMvCb9goCuY7Y7/4qehnjyS7YopL7wKREehvNQHO8MlW09T8X9C5CMGGR
-         3mvoxJxQDPXo21mrl5rD8jwOYH1ebnGuSHzs50nGupqlHP6BeLxFNJk6kYMQPJ23BaL1
-         cZsx8Keq2iFYgKJijKxtxhHbZ9D9aDmM5tMY6mj9bWwCYYTys3B4kJaTTA37yBvR/urM
-         mhS9TDPUSjKtdD7dVfbKk5C9RFwtov1inN+tOBhzysQi8t+gtXbIC5qoCnPX/6Nh5Gb1
-         bNLwlhNLtRsLXN8o79z5fQsjdiusozoFqBFlgEXUrm7YTtFzAQGrCI/p3Kszc0O0Q6/G
-         mvyA==
+        d=gmail.com; s=20230601; t=1695797317; x=1696402117; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SuwAtYX6gqnY1oBY5U9XN8rrNUG8GpTYVOL7/kcBiJo=;
+        b=Tv+WsoGW9nQHd0VtLE1xPqn5/hO0gvlA8tmzTz4YaW62O3+smGZtIrAlJLS2D/q6s7
+         thXEs4FWLt1gSr/e6oYqJj163OrBUvdDw+3oKaG2VCDcj2hAv9xwBoqmsqmb13SYBhPA
+         QxXhLXoDt51EuP9xgA4XBPHkFeaTHY1fINcF+syVAG6H05X0tixXw6DfXxDEDh7iq32Z
+         3AqZ/QkxacfjiAxAO9guoj/ljJzRDvP/DkbZYWnxfmHCcdf9StCgDx0rGgy5+V5DJ8OU
+         YfH6BXkBjYbTQ6ew7DdYzWLxWNrSP501E6Fx8vhPUA9Lm0jCgbvILQUzjJcBwOmTZiX9
+         Avjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695797203; x=1696402003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gqgmtzUwVMXQljcEBuFUtjGd5XOCZ/3np4UYnKXu4pk=;
-        b=IuoVTLG0xjhcierpcYFIx2YJtygmTqqKj06c1kSHobizTDdUsGhUI1LDGtHZ+yHBrO
-         Z3yQRaZ2LwgREyqEFevgDgibdF1Gk7vKS94HSkLLU+zID18Oo920dAgV56j9UAKsNB6z
-         SP4OZL55ZvPhpinj2XWPdMNVWIAIKz4j8FW4v0bABrt1v8Rf7sQa2mJjVGQu6Sulfohh
-         dQtn8CQGgo0fcWq50OsQR4e+ITAbqSA+XxNe9Igv6NfnRh8C1E5kR1Cml1p/ajxmRsQW
-         r8mFrs9F7b28YwH7+788lWgnLR5HsmG+Nft/VOrsy3NQ0eXdiKCJKEuJs0YKU0J4Z/N0
-         1ZMQ==
-X-Gm-Message-State: AOJu0YwIRZzUGC/O9Fj5s+2Tv6yWtFVwidwgcmb+9nfOYVNhlO2neuW6
-        +e0exYrL5lN8w/XuwTtkkOFKIIULOwcfNwl8bsM97w==
-X-Google-Smtp-Source: AGHT+IFFF5izbNKGb5lX7zFsym8oaDDP8QRH2c8xfWSygp4yaOul6c7TXvdgTha4FS+sCtZVuUn0Xv1fzmWcoaYW4Ic=
-X-Received: by 2002:a19:5e55:0:b0:503:985:92c4 with SMTP id
- z21-20020a195e55000000b00503098592c4mr852305lfi.52.1695797202582; Tue, 26 Sep
- 2023 23:46:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695797317; x=1696402117;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SuwAtYX6gqnY1oBY5U9XN8rrNUG8GpTYVOL7/kcBiJo=;
+        b=d6Beld0AE1Qh5T+5xU6VORKrHUT1Yg0EBvvaXKrD/jJrJu26ubT5GJYcnrKtz67BLo
+         ZWNzjnrENThokApGftHUf3VOitSWSb/L9sMTJQug/qJJ1FEBOD2a/OnVac0nJvdreKsh
+         eAOT+FBk7QS33M0dNiX0zJBXF6CGqYRnyGB6tzAg5APfRzyrP+FKuLWFCYEJ6tMFOI3J
+         uLAQPpijYQFRBW/gCOuIlNiOcl8uSbPxdhlLspu3HTonIq/FgbafBJxm9NOPt7Ab6zb5
+         dykkIRhlYFPUGcyaT5aMGa1mYPUBl6Vscl4l70LtZ1gwL/FEx0qyFlObsmOW2gF/wgig
+         /7OQ==
+X-Gm-Message-State: AOJu0YzPKx4gtAThsF7kVaZPQXvbaPTvmOAWQkCDxIPzcuZGwgWJi587
+        a8uUcj0DaglYFTaKv2XjK14=
+X-Google-Smtp-Source: AGHT+IFc8NZ42fyNpLIIUEAYBXpQjn58ccKZ/e7Jnkl0mwVBMEdJyOqn8C+M6jS1N/1ancR56WQRDg==
+X-Received: by 2002:a17:90a:f40f:b0:274:e8e0:1503 with SMTP id ch15-20020a17090af40f00b00274e8e01503mr837496pjb.16.1695797316632;
+        Tue, 26 Sep 2023 23:48:36 -0700 (PDT)
+Received: from sol (60-242-83-31.tpgi.com.au. [60.242.83.31])
+        by smtp.gmail.com with ESMTPSA id gf4-20020a17090ac7c400b0026f919ff9a1sm12522329pjb.10.2023.09.26.23.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 23:48:36 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:48:28 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v1 5/5] gpiolib: cdev: Utilize more bitmap APIs
+Message-ID: <ZRPQPL97T2DXbAHv@sol>
+References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
+ <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
+ <ZRN7FRWvZnmpDD/v@yury-ThinkPad>
 MIME-Version: 1.0
-References: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
- <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com> <2023092713-music-democrat-cea3@gregkh>
-In-Reply-To: <2023092713-music-democrat-cea3@gregkh>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Wed, 27 Sep 2023 15:46:30 +0900
-Message-ID: <CAFhGd8rJ=-SVB2NLhjoHbpHS-3ar0g0qT0LY4YTakp8eD83s7Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] get_maintainer: add patch-only pattern matching type
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, workflows@vger.kernel.org,
-        mario.limonciello@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRN7FRWvZnmpDD/v@yury-ThinkPad>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 3:14=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Wed, Sep 27, 2023 at 03:19:16AM +0000, Justin Stitt wrote:
-> > Note that folks really shouldn't be using get_maintainer on tree files
-> > anyways [1].
->
-> That's not true, Linus and I use it on a daily basis this way, it's part
-> of our normal workflow, AND the workflow of the kernel security team.
->
-> So please don't take that valid use-case away from us.
+On Tue, Sep 26, 2023 at 05:46:07PM -0700, Yury Norov wrote:
+> On Tue, Sep 26, 2023 at 08:20:07AM +0300, Andy Shevchenko wrote:
+> > Currently we have a few bitmap calls that are open coded in the library
+> > module. Let's convert them to use generic bitmap APIs instead.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Fair. I'm on the side of keeping the "K:'' behavior the way it is and
-that's why I'm proposing adding "D:" to provide a more granular
-content matching type operating strictly on patches. It's purely
-opt-in.
+> > +	bitmap_from_arr64(mask, &lv->mask, GPIO_V2_LINES_MAX);
+> > +	bitmap_from_arr64(bits, &lv->bits, GPIO_V2_LINES_MAX);
+> > +
+> > +	num_set = bitmap_gather(vals, bits, mask, lr->num_lines);
+> 
+> It looks like GPIO_V2_LINES_MAX is always 64, and so I wonder: is
+> my understanding correct that all bits in ->mask and ->bits beyond
+> lr->num_lines are clear?
+> 
 
-The patch I linked mentioned steering folks away from using
-tree files but not necessarily removing the behavior.
+The lv fields come from userspace and so cannot be guaranteed to be
+zeroed beyond lr->num_lines.  Any set bits beyond that must be ignored,
+one way or another.
 
->
-> thanks,
->
-> greg k-h
+> If so, you can seemingly pass the GPIO_V2_LINES_MAX instead of
+> lr->num_lines, and that way it will be small_cons_nbits()-optimized.
+> 
 
-Thanks
-Justin
+But that would be decidedly non-optimal for the most common case where
+lr->num_lines == 1.
+
+Cheers,
+Kent.
