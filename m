@@ -2,142 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897177AFB1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC507AFB24
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjI0Gcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
+        id S229802AbjI0GdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI0Gcu (ORCPT
+        with ESMTP id S229617AbjI0GdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:32:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E159C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:32:48 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R3u25e011005;
-        Wed, 27 Sep 2023 06:32:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=h5K1jlSfNrsARIhYsOUQRLM3hcs6F6i6uIdfZHvbKBU=;
- b=ZsevH2crWpUKqktKcnOyaPes74V9iY6oq3rLMFnFP97/6ZHb8dKu3qoQKAbKfjHmQG/7
- 7EnBn6d+Aus09Oh6ZFD65sEzkiOo/ZkXvUSE4rMU3ppDg752iqy79F3BGlj9UQB5sLIa
- taPvUtreJpWvhLRaKTg+tYoOwP0W01y4tv4iQxKjLtISwosP9Fh+Zozo6tlXOaMvu/VL
- wHjlm2hB9w35jeiE64Qpyl888RGD8TOm/fJe6IKWt18O5Hb9jS1cMYhpVlwZnVXBZJR1
- GT2oW8Ddp1guCLte7Q8U9UgEOPG64eMxUdBIkZutVpNTXbBM4FrD15qZSt15qTrJ9MA8 fw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbv662nu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 06:32:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R6WTLb016756
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 06:32:29 GMT
-Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 26 Sep
- 2023 23:32:27 -0700
-Message-ID: <dcb9094a-8e58-83ed-83af-05b879c23788@quicinc.com>
-Date:   Wed, 27 Sep 2023 14:32:25 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH] driver core: Clear FWNODE_FLAG_LINKS_ADDED in
- device_links_purge()
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <rafael@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_tingweiz@quicinc.com>,
-        <saravanak@google.com>
-References: <1695781810-5700-1-git-send-email-quic_zhenhuah@quicinc.com>
- <2023092705-canopy-spiritism-b0e1@gregkh>
-From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
-In-Reply-To: <2023092705-canopy-spiritism-b0e1@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7RmESI4hHrFmRA8sW30UcEbkdYDXNOQh
-X-Proofpoint-GUID: 7RmESI4hHrFmRA8sW30UcEbkdYDXNOQh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 bulkscore=0 phishscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270054
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 02:33:19 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8F6F4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:33:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9adca291f99so1275878866b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1695796395; x=1696401195; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T708F5QyhTdSRBo0vkbwGJcJTd2q8jjeOwZduLQ6af4=;
+        b=OxYooSxZ/WhtvBZWVgJBfx9u+BDCWlewHJqOvmrZLqfysuCUmFsca26/TBKNArOmdI
+         9JLqTqlteiqUa7M/Qfg24OvO0TW5UaYES4k0W+XhWGhXSYEcPgOdjKIhBS+IEB/Uhtdk
+         +O2KyOkb1YGGLJ8KaSPIPO7WjSmmuV8IqVc5C5yPXQFi1fJEysMffGNcKdV+FfSmBAzQ
+         we+lZh503R05Azi+Kigz86jx/u8YWmpH1odxhZGjYxHSPeH7uGh+m6n+JM4+ZAvxJghQ
+         Fm9JOd/Kktw/EpKCQCOrVVTGFgwXWDXHYzcmaPQbdyFIG5A1dQHVFDb/HztsFUfbkyBx
+         pR1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695796395; x=1696401195;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T708F5QyhTdSRBo0vkbwGJcJTd2q8jjeOwZduLQ6af4=;
+        b=uHjaZEXVGekU5DkipLzoZ7DQMWIWT986LaY/tAuCGyxYRC/z66srBvgHuK3qRfr5OK
+         sWcZpEpDS6n5WUlT35JzKahpJyrDI7Wr3eL35GggoklLZ9le2DVcMnA3TtwI/oL44N82
+         TM0tMrvmpgCrw8/7nxxRRn8UNU7LqDT+QvAJDID3eOurSbIOw9a8avMI6PIuFPIDrxyM
+         YTfP9fG3APszI/G/WH1u2Oc4gItzCjKOba2UkbPtFZ9UbKrlZQoxnSDRvzcj7t/3PCCY
+         gkCn4P69kaGhiQPfq7sJNG7dz4R32bcJcb1EEBUUZubirj1orE21TLCtmGkB1gOC3SeB
+         eaaA==
+X-Gm-Message-State: AOJu0YxB0f6S7Ttf+G43Ed9vglBzeQJ3qlEKKZEi0rBYkfxNAzjVdnZp
+        nIau4idEeIQwflCbjsAsSq9HDg==
+X-Google-Smtp-Source: AGHT+IEOdVKh3lqrnVsm5wgtPLXy5Xv/FFQE8Bm/j/IIYkd2ZH2UDUPzX449yWw9sMd34VT6PLwL3g==
+X-Received: by 2002:a17:906:5390:b0:9aa:25f5:8d95 with SMTP id g16-20020a170906539000b009aa25f58d95mr858687ejo.59.1695796394622;
+        Tue, 26 Sep 2023 23:33:14 -0700 (PDT)
+Received: from smtpclient.apple (213-225-13-130.nat.highway.a1.net. [213.225.13.130])
+        by smtp.gmail.com with ESMTPSA id p7-20020a170906140700b009829d2e892csm8988478ejc.15.2023.09.26.23.33.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 26 Sep 2023 23:33:14 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH v3 2/3] KEYS: trusted: Introduce support for NXP DCP-based
+ trusted keys
+From:   David Gstir <david@sigma-star.at>
+In-Reply-To: <CVS3WN3Q04XY.B40S4RBH9QM7@suppilovahvero>
+Date:   Wed, 27 Sep 2023 08:33:01 +0200
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        Li Yang <leoyang.li@nxp.com>, Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <085CABBD-1EA1-44A9-AA9C-C04039A627AB@sigma-star.at>
+References: <20230918141826.8139-1-david@sigma-star.at>
+ <20230918141826.8139-3-david@sigma-star.at>
+ <CVS3WN3Q04XY.B40S4RBH9QM7@suppilovahvero>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+X-Mailer: Apple Mail (2.3731.700.6)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jarkko,
+
+> On 25.09.2023, at 17:34, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>=20
+> On Mon Sep 18, 2023 at 5:18 PM EEST, David Gstir wrote:
+>> DCP (Data Co-Processor) is the little brother of NXP's CAAM IP.
+>>=20
+>> Beside of accelerated crypto operations, it also offers support for
+>> hardware-bound keys. Using this feature it is possible to implement a =
+blob
+>> mechanism just like CAAM offers. Unlike on CAAM, constructing and
+>> parsing the blob has to happen in software.
+>>=20
+>> We chose the following format for the blob:
+>=20
+> Who is we?
+
+The authors of this patch. But I=E2=80=99ll rephrase that to get rid
+of the academic paper style.
+
+> And there is no choosing anything if the below structure if hardware
+> defined (not software defined):
+
+The below structure is actually software-defined by this patch.
+Contrary to CAAM, DCP does not have a key blob feature.
+DCP=E2=80=99s hardware-bound UNIQUE or OTP key is used to bind
+these key blobs to a specific DCP chip.
 
 
-On 2023/9/27 13:57, Greg KH wrote:
-> On Wed, Sep 27, 2023 at 10:30:10AM +0800, Zhenhua Huang wrote:
->> Flag FWNODE_FLAG_LINKS_ADDED stops fwnode links creation. Current kernel
->> only adds it once after fwnode links creation in fw_devlink_parse_fwnode().
->> After that even device links being purged, the flag will not be cleared.
->>
->> Fwnode links are converted to device links and will not be added back
->> forever in normal case. Essentially if a device is registered and
->> unregisted (also deleted) before it is probed (due to missing fwlink
->> dependencies, abort in device_links_check_suppliers), the fwlink is not
->> setup next when device is newly created again. This means the probe gets
->> called without meeting all dependencies.
->>
->> It usuallly happens in the case of a glue driver. Of_platform_populate()
->> allows us to populate subnodes. We may do it in ancestor node probing
->> function, then check subnode's probing status because there may be chances
->> that suppliers of subnode are not ready. We may further need to do
->> of_platform_depopulate(which purges device links) and in some time
->> of_platform_populate() again. Such case we miss fwnode links(so that device
->> links) during second time of populating subnodes.
->>
->> Fix it by Clearing FWNODE_FLAG_LINKS_ADDED flag in purging device link
->> func, indicates both fwnode links and device links are absent.
->>
->> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+>=20
+>> /*
+>> * struct dcp_blob_fmt - DCP BLOB format.
+>> *
+>> * @fmt_version: Format version, currently being %1
+>> * @blob_key: Random AES 128 key which is used to encrypt @payload,
+>> *            @blob_key itself is encrypted with OTP or UNIQUE device =
+key in
+>> *            AES-128-ECB mode by DCP.
+>> * @nonce: Random nonce used for @payload encryption.
+>> * @payload_len: Length of the plain text @payload.
+>> * @payload: The payload itself, encrypted using AES-128-GCM and =
+@blob_key,
+>> *           GCM auth tag of size AES_BLOCK_SIZE is attached at the =
+end of it.
+>> *
+>> * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + =
+@payload_len +
+>> * AES_BLOCK_SIZE.
+>> */
+>> struct dcp_blob_fmt {
+>> __u8 fmt_version;
+>> __u8 blob_key[AES_KEYSIZE_128];
+>> __u8 nonce[AES_KEYSIZE_128];
+>> __le32 payload_len;
+>> __u8 payload[];
+>> } __packed;
+>>=20
+>> @payload is the key provided by trusted_key_ops->seal().
+>>=20
+>> By default the UNIQUE device key is used, it is also possible to use
+>> the OTP key. While the UNIQUE device key should be unique it is not
+>> entirely clear whether this is the case due to unclear documentation.
+>> If someone wants to be sure they can burn their own unique key
+>> into the OTP fuse and set the use_otp_key module parameter.
+>>=20
+>> Co-developed-by: Richard Weinberger <richard@nod.at>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> Co-developed-by: David Oberhollenzer =
+<david.oberhollenzer@sigma-star.at>
+>> Signed-off-by: David Oberhollenzer =
+<david.oberhollenzer@sigma-star.at>
+>> Signed-off-by: David Gstir <david@sigma-star.at>
 >> ---
->>   drivers/base/core.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/base/core.c b/drivers/base/core.c
->> index b7d7f41..2a1975d 100644
->> --- a/drivers/base/core.c
->> +++ b/drivers/base/core.c
->> @@ -1630,6 +1630,10 @@ static void device_links_purge(struct device *dev)
->>   		__device_link_del(&link->kref);
->>   	}
->>   
->> +	/* Clear flags in fwnode. Give a chance to create fwnode link again */
->> +	if (dev->fwnode)
->> +		dev->fwnode->flags &= ~FWNODE_FLAG_LINKS_ADDED;
->> +
->>   	device_links_write_unlock();
->>   }
->>   
->> -- 
->> 2.7.4
->>
-> 
-> What commit id does this fix?
+>> .../admin-guide/kernel-parameters.txt         |  13 +
+>=20
+> Separate commit for this.
+>=20
+>> MAINTAINERS                                   |   9 +
+>=20
+> Ditto (i.e. total two additional patches).
 
-This commit c2c724c868c4("driver core: Add fw_devlink_parse_fwtree()"). 
-Changelog mentioned:
-"This function also ensures that no fwnode is parsed more than once by
-     marking the fwnodes as parsed."
+Will do for v4!=20
 
 Thanks,
-Zhenhua
+- David=
