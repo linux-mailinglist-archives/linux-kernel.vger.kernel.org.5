@@ -2,200 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB807B0C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A65E7B0C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjI0Sfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S229566AbjI0So4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjI0Sf1 (ORCPT
+        with ESMTP id S229437AbjI0Sow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:35:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BBAF9;
-        Wed, 27 Sep 2023 11:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695839725; x=1727375725;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sSnqKwznZ643tdWp7bKokf1XL8PGHFesLHbNZE3xMRs=;
-  b=l77gC86/aFh3+6YezXPBLasQvL9j4EBVyELTNQdK4nmje9JFE4MX8VXG
-   Pj8h6ZdII7+zzWvVcc4y8FZ8fIYhcOD57t2xq1wbQ3IlhJ8odG9wTK9bQ
-   yCf121YejAR/XugnxrSTAi9mWfxCJusMolmtSFGNhGYYJGmZba7o6NwG+
-   LkEAF/uat1XTkaN9ksixTklcVUW3VaHKIeBZOzdhJ1gH2YANmBtYYVkTl
-   xBbTcUFVBddKc5W1DDZQbn9qiAsMCOu+b4lD4GLWQfcFYsq9CcBaVAU1W
-   kYoxqLx6UygO8lm1sa4oCcXCsdovjLNjDqxx9hUpSSsiPCqv9CG1fZK2G
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="468183572"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="468183572"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 11:35:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="725924688"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="725924688"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 11:35:22 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:35:21 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:35:21 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 11:35:21 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.46) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:35:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CWKSYf44X9qgt932gz5JWv2xwjWlYQp5rmGO8sDU/Ni/9FHOLGjtnJKCpj6VX5GTqTyNUSHehP+NzaZ1MnEb1XA52/LkCH7SR2RidBL+smHuyNh4Q5/1S7Z6k0g36dgF/t49qw45hiUvnuEoZJBQKUtK2KRu1iVIWYgbH+59bdjaA0U9M1QqgOwbkZEM9dCPkXANtERPFgShA7V+bCQg6YCyXPzfnNYw3BYoQfeG8fvO7Rv0nP5Nnjfh/dl0I+D2by383701mt4AvPdwQgSg+L6LACK2PuI8pKqjIyLwZqqo8UTSX/RLBqiShFJxLJx15JjxcrjBVsHd4jGr6ZSovQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mAWKxSMHDir0y6CCD4783t8De5x2DtDaecih8nlc7UA=;
- b=HmIHUKqoK+XxAhbeT77IB+EDL8AU64WHls4BoaUIGEEDaVpHN39DlbP5p0mMFagIchUWaMwZ+wgaRzft79fRXOatuFYeS98Lz/CnupLOCFsHEnC1w/TUeiLA9vW1Q7dwk3qO9VbJItoMLckrQ5ZSABv3l0c3FDdwTLmOLJWzWG61aJti3kpXk/27Z2MFLy6RBEq7bXZO3T88SUhDMpJEdkIFnfBNwb8VnNGDIYELp/fAkBI9sbA4PDwOjuqWM5EKPgWB2CNgKLH2es+gSXQoBSYk2O3g/oWWs9oxVD0/uPtAZe/LE4sux4uUe0uOzs99mabZtb5VD8Zv0T0Ih0T5NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by BL1PR11MB5240.namprd11.prod.outlook.com (2603:10b6:208:30a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Wed, 27 Sep
- 2023 18:35:18 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 18:35:18 +0000
-Message-ID: <5305cedf-80e7-aa87-1566-d1cc102c5cf5@intel.com>
-Date:   Wed, 27 Sep 2023 11:35:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v10 10/10] x86/resctrl: Display RMID of resource group
-Content-Language: en-US
-To:     Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
-CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
-        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
-        <songmuchun@bytedance.com>, <peterz@infradead.org>,
-        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
-        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
-        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
-        <sandipan.das@amd.com>, <tony.luck@intel.com>,
-        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
-        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
-        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
-        <quic_jiles@quicinc.com>, <peternewman@google.com>
-References: <20230915224227.1336967-1-babu.moger@amd.com>
- <20230915224227.1336967-11-babu.moger@amd.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230915224227.1336967-11-babu.moger@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR2101CA0025.namprd21.prod.outlook.com
- (2603:10b6:302:1::38) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Wed, 27 Sep 2023 14:44:52 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897088F;
+        Wed, 27 Sep 2023 11:44:50 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 9A9F16017F;
+        Wed, 27 Sep 2023 20:44:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695840285; bh=1qH0GP+R/GxKsrMPBQpHw00MqLdFqpwgjdZGJ+r6ZEA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sVT6Uh1gy/o/m8pM+U/ZhbrAwq2iy1TGXvfKXNyvYPYC+gYcATKMmdMvCtfxPoHQu
+         b9HTSyQY/zEdRNOeXmc0HQ0Def+mA0RpFQ7d+y20bmLIL+o/c9377mwSVaj55EYBlR
+         ViRQdpa65yDgZhA4OjQIouthiX+J5SLHM3SnEjC5x6QQY7P4IwC3io7XoPkm9atdwM
+         U/CwCv6+YSzaHbRDN1I/36LZWKKd8xcwpi5qewle1UmHAI3fzQ5Gz+lIfhO1umGkY0
+         x24x6pFBL5x2+SiiAveb4YsrjHIC6YXhnqWA+R2dUIOoxEB9sl19s5PHB1mhRh8FR7
+         uYMN0bB6g8flQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yD9YtxdCfPDu; Wed, 27 Sep 2023 20:44:42 +0200 (CEST)
+Received: from defiant.home (78-2-200-97.adsl.net.t-com.hr [78.2.200.97])
+        by domac.alu.hr (Postfix) with ESMTPSA id CD65260174;
+        Wed, 27 Sep 2023 20:44:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1695840282; bh=1qH0GP+R/GxKsrMPBQpHw00MqLdFqpwgjdZGJ+r6ZEA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EcAG9J8u9wKDk+Xcgc9K1XzL3IXinf4+1pXGuUc2emwv8uH1npi+6Z+cSmgyLcgKS
+         geHdtDa6XP0B266Qr8IzwVts5iP0umKsyddtGukypt/O9iG5FkgvifN1oWj/meXifs
+         z8so6vrK3OGZU/aUkep0ILj2NI31nIHPfvJoy8WgXxs2vLzyp2OL/gc9r5nG9492iv
+         njsgG8doaX6aO0NRU2Web/GJhBa0QU3Q+ZC/nHQxfs7vA6RlDYr20SJP6aP3u84Pfb
+         BLaFxMrB2Clg3woGJ92LQ871QeZ8OWE1BpgXdO9Mhd/x9I9ZvOYEM/R8QtWz9ZQJqm
+         GPzxCTCkmUTFg==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     nic_swsd@realtek.com, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Marco Elver <elver@google.com>
+Subject: [PATCH RFC v1 1/3] r8169: fix the KCSAN reported data-race in rtl_tx() while reading tp->cur_tx
+Date:   Wed, 27 Sep 2023 20:41:57 +0200
+Message-Id: <20230927184158.243575-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|BL1PR11MB5240:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99b868d3-586c-4755-3503-08dbbf887fc9
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: x1B5QI6XI+VLYBsFDT8hCiG1D5+eh24JPpZmvjzXiXbPQ0atJfuK/IoLb0qK4xVlyArAQ8AE5F6UuT4DBxDLRPnLwv0HtCQU7mXkiuOw4xqx08DxlTwKTuenoCJjhqMuxP+h+Vz00zmXeYzrMg5Lxg6wBFGAzYJn28ffbIs8ZY/L6MUHlgYrxi4llI45RFLWhmjbi+A9gQ282N8iZhUd3KtfxRT1DT7tpLDy0vdJUPhJ3SbX6crnLYo6aKfxDbYjySp7LSVjoCkGeKL1jiaxdaYtPDfQxufBrz+Fk8YI7zIvvgAuOtFUbqRhpQlf5NWiuKO+165rxBYpapAM8S8/qKCdFDKD7Dyp/adiS1aTwDoewKmc4WVO72hVGcBa1oW+neFFDNrh21Q5eEEka5MyaSr2PWcaRDSU4PoJ/kjTqCRwo+I4OkGUotp63AnFFv4kQINEuhUDnZe71vTSUCYTx1+Vf9p4/eWLxePSg/kJMCtybIYdO/LVjYbqxzkhBMVzEWNdKZn0TVKpLAzlrGvQRrAoBGJEOmfHUovjL9+UOfWKeSodmC3rm+bI+k0ggxg/qxg0b+ck12HBODRpZvTx8RinVCoY8T5E4DmMJU6BSLiiFw3XPfs17cvgr5zWNyHNy6gBBcsP5kBaaBYhFQqIzw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(366004)(396003)(230922051799003)(451199024)(1800799009)(186009)(31686004)(6512007)(41300700001)(4744005)(316002)(4326008)(2906002)(8936002)(53546011)(7416002)(66476007)(7406005)(8676002)(5660300002)(44832011)(36756003)(478600001)(2616005)(6506007)(6486002)(31696002)(38100700002)(86362001)(66946007)(6666004)(82960400001)(66556008)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YU40MFdpV3FNSVBsRVdPNG9JaThuNkt6Vys2MFc2OGhwOGN4TWxLaXkySmVp?=
- =?utf-8?B?NFBQd3FIdGZWZDVhSEtnQ0J1SGwySVlHZWpubzZCMFl4d3o5OEd1c2dIazkr?=
- =?utf-8?B?Y0tzVzZxb1lMQkJyTWZPWjdWb09YQ055MHl4NkY0eU8wcnhkM291eGROL1Mr?=
- =?utf-8?B?bjNleFlqUFB4SzUxOEE1M0JlMktuNEJzQUlXTDRwS3dnVWVPMGYyMlFzNjdk?=
- =?utf-8?B?MmZ0U2VwQTYwU2dWNGVTbXBXdVNBNDFKTElrbTNmSDlacVNZQVRmcGZ6QXdy?=
- =?utf-8?B?aldDajk1VDJzTjNmbCtLOXFRWG1FcGdjK0pneGJqUHdFdHYyaHVMbE92a0Fr?=
- =?utf-8?B?dWJWNG9WYllHa3p5L0dxUjdMWUwvM2FlTkhxUDBYU2QrOTlFN3Jwa0dHSnlT?=
- =?utf-8?B?QjZYb21qNDdQeTk2WkxGRy9EOVM4ak96bzZSY1dOR2c1ejk0ZWdLWG5SRzBZ?=
- =?utf-8?B?S1haS2tEdFM0ampGYkcycjhvdUN2c1ZnQ29LbWcvbGV2NndpWTVnRmpsUFIr?=
- =?utf-8?B?NDI2cklKWkdNQ0lvL1ZsQ1l6SlBWVGJBc2dCUDhnR0RvNlBIQ1VOK1ZUNXdT?=
- =?utf-8?B?bmpibXVMR1VBaU9mb2FKWnhtZDMybjc4TTBUb3NCaXZEYWJkejB1eUtTeFhw?=
- =?utf-8?B?MEpJUFJCc3JpRzdicDZpRGlsdnVjRHNQV0dxeWVoN2NwUzhSRnV6SEc2Wkdj?=
- =?utf-8?B?amRXQmZjamJlY0s1RWgxbVpKVXNCREMydmViUHcydW9jN0Zwek94NGVUZ0xZ?=
- =?utf-8?B?eFEwcDFqdDREUjl5TFhzc3kvSytPdnROVWhIamd1cjRpZzZLaDV6SXJ4NlVT?=
- =?utf-8?B?cFVpRTJKemJIblhTK0ZVdzhKODdtV1pNZUs0VGZEUzNCUzFWZDdMR0d1bHF6?=
- =?utf-8?B?U3FTZGt5TmlEdjdIQTRWZXJZTFEreUk3SDJxUmtFbmZnZ2lqYUh0eHhqZWhQ?=
- =?utf-8?B?MnQrcDgvc0NJaVZ2d3gzcUd4N1FobjlWUXY2QWM4aXgzMGxCbHVoeTREc1Uv?=
- =?utf-8?B?L2R0YXk5eFVsZGNkM2tTRWlwL0d1dm0wRmlwNjZackpZVHFra29IMm52Vng5?=
- =?utf-8?B?KzlObjljTUxaRjVQTUZDY3JxRU45YnM3R09yMUZBazIrWFA5NHM1S1lDNGY2?=
- =?utf-8?B?TVREUTNpTDZGMy9ab3hndDlHVkh6Y29kV3VqOVhRWVRsc3hiTUZsRXNrMVBn?=
- =?utf-8?B?VmowaDVCcmxETVI2Z1l0c25NblVOWFZTbXlqMzlCU3VVdXZIeUF4U2ZJMGlB?=
- =?utf-8?B?Z3h6ZWxVVW9uYVVjU1hjSEVuYlB1RFgrc1gwTCs5aE9zamFTOWc0eGpwbWMy?=
- =?utf-8?B?RWlMVGtJWTBSVkNlVTFwVVpVWWVRczEyTnhEenFPaERudHRZcGc1TFplYjdK?=
- =?utf-8?B?Mk1mVnNaM2FOTnJKb00xQ25RTjNqR1FyN2hNSk5LSXdra294dHNGVTdwTW1s?=
- =?utf-8?B?TmtqZE9ma1JlNTFBeGJReTBSaFRVdjhqL1ZmNncvV0U0cXV2Z0E2RllxNkVG?=
- =?utf-8?B?TU5tY2NPN1IxeE5oRVlvcmZWREgxbndsMTVrREVxaUs0L0tBNFNKNVIrK09x?=
- =?utf-8?B?aklCdk9kZk9zek80Ui9aeENOdVhYd21HdWZWMWg1K0dCemQvYVBNQ09ObG5M?=
- =?utf-8?B?VTg5TG92UDJHelluZjVoODhlcFFkenlOZTc4aENxcUx1VVVMSFFqU0l0b0Fy?=
- =?utf-8?B?THZWOGU0N1Q0R0hQRXlpbWNLb2R2NUx4Z0xPQzVUckJjZnpVTm84Si9NU3Rr?=
- =?utf-8?B?TDFSNC9HbkV4WnMxK2UzOUpYUDlyVkVVN2ZFRzZpYVZJQjdnRTFqUnQrdW5I?=
- =?utf-8?B?TkFnRjlDRHU3d3VXYjNPanFaTHNWa0NYdklIeEFzTGw2ZkhkdE9QN3JUQVpm?=
- =?utf-8?B?OURpTGN3ZVV3U0x1bDN5S0R3dlF0aFJYVjVxOFFnSHMwVll4clNuSnZpYjE0?=
- =?utf-8?B?dlVjOTR3S2E0ZkV0Yzk2bmdJNnlVSVBCK2o2akU3bmgxYkJHVHVWanVQNzFo?=
- =?utf-8?B?VE1zRmV0UW92NUcvaGJQTFUvcDc4MVpMd2ZaYU04UHRKYmFrYnE0VlpVVGZq?=
- =?utf-8?B?bXFlL3lWWnIrSFJYaE5vNkpTV3NYYTNVNzVld0F6MklNeEJIYzFyclo4U3dR?=
- =?utf-8?B?VlgwS1QxbVhmNTZJZEhaT3lQUG1sVTZEZkJ0d3E0SEx6cVVtODFwTHBBdU5z?=
- =?utf-8?B?alE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99b868d3-586c-4755-3503-08dbbf887fc9
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 18:35:18.5562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aIi7OGJi+XgB8zKgNyr4CgHNf8I55SZy9F7b9h6F+nbdXBOW3muSjUHhBac2bGaGbgCGqrW4yhfVeE7y+4G8SefRgnlk0pr9xMQJZSBs6bA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5240
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Babu,
+KCSAN reported the following data-race:
 
-On 9/15/2023 3:42 PM, Babu Moger wrote:
-> In x86, hardware uses RMID to identify a monitoring group. When a user
-> creates a monitor group these details are not visible. These details
-> can help resctrl debugging.
-> 
-> Add RMID(mon_hw_id) to the monitor groups display in resctrl interface.
-> Users can see these details when resctrl is mounted with "-o debug" option.
-> 
-> Other architectures do not use "RMID". Use the name mon_hw_id to refer
-> to "RMID" in an effort to keep the naming generic.
-> 
-> For example:
->  $cat /sys/fs/resctrl/mon_groups/mon_grp1/mon_hw_id
->  3
-> 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
+==================================================================
+BUG: KCSAN: data-race in rtl8169_poll [r8169] / rtl8169_start_xmit [r8169]
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+write (marked) to 0xffff888102474b74 of 4 bytes by task 5358 on cpu 29:
+rtl8169_start_xmit (drivers/net/ethernet/realtek/r8169_main.c:4254) r8169
+dev_hard_start_xmit (./include/linux/netdevice.h:4889 ./include/linux/netdevice.h:4903 net/core/dev.c:3544 net/core/dev.c:3560)
+sch_direct_xmit (net/sched/sch_generic.c:342)
+__dev_queue_xmit (net/core/dev.c:3817 net/core/dev.c:4306)
+ip_finish_output2 (./include/linux/netdevice.h:3082 ./include/net/neighbour.h:526 ./include/net/neighbour.h:540 net/ipv4/ip_output.c:233)
+__ip_finish_output (net/ipv4/ip_output.c:311 net/ipv4/ip_output.c:293)
+ip_finish_output (net/ipv4/ip_output.c:328)
+ip_output (net/ipv4/ip_output.c:435)
+ip_send_skb (./include/net/dst.h:458 net/ipv4/ip_output.c:127 net/ipv4/ip_output.c:1486)
+udp_send_skb (net/ipv4/udp.c:963)
+udp_sendmsg (net/ipv4/udp.c:1246)
+inet_sendmsg (net/ipv4/af_inet.c:840 (discriminator 4))
+sock_sendmsg (net/socket.c:730 net/socket.c:753)
+__sys_sendto (net/socket.c:2177)
+__x64_sys_sendto (net/socket.c:2185)
+do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
 
-Reinette
+read to 0xffff888102474b74 of 4 bytes by interrupt on cpu 21:
+rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4397 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+__napi_poll (net/core/dev.c:6527)
+net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+__do_softirq (kernel/softirq.c:553)
+__irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+irq_exit_rcu (kernel/softirq.c:647)
+common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+call_cpuidle (kernel/sched/idle.c:135)
+do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+
+value changed: 0x002f4815 -> 0x002f4816
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+==================================================================
+
+The write side of drivers/net/ethernet/realtek/r8169_main.c is:
+==================
+   4251         /* rtl_tx needs to see descriptor changes before updated tp->cur_tx */
+   4252         smp_wmb();
+   4253
+ → 4254         WRITE_ONCE(tp->cur_tx, tp->cur_tx + frags + 1);
+   4255
+   4256         stop_queue = !netif_subqueue_maybe_stop(dev, 0, rtl_tx_slots_avail(tp),
+   4257                                                 R8169_TX_STOP_THRS,
+   4258                                                 R8169_TX_START_THRS);
+
+The read side is the function rtl_tx():
+
+   4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+   4356                    int budget)
+   4357 {
+   4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
+   4359         struct sk_buff *skb;
+   4360
+   4361         dirty_tx = tp->dirty_tx;
+   4362
+   4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+   4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
+   4365                 u32 status;
+   4366
+   4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
+   4368                 if (status & DescOwn)
+   4369                         break;
+   4370
+   4371                 skb = tp->tx_skb[entry].skb;
+   4372                 rtl8169_unmap_tx_skb(tp, entry);
+   4373
+   4374                 if (skb) {
+   4375                         pkts_compl++;
+   4376                         bytes_compl += skb->len;
+   4377                         napi_consume_skb(skb, budget);
+   4378                 }
+   4379                 dirty_tx++;
+   4380         }
+   4381
+   4382         if (tp->dirty_tx != dirty_tx) {
+   4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
+   4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
+   4385
+   4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
+   4387                                               rtl_tx_slots_avail(tp),
+   4388                                               R8169_TX_START_THRS);
+   4389                 /*
+   4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
+   4391                  * too close. Let's kick an extra TxPoll request when a burst
+   4392                  * of start_xmit activity is detected (if it is not detected,
+   4393                  * it is slow enough). -- FR
+   4394                  * If skb is NULL then we come here again once a tx irq is
+   4395                  * triggered after the last fragment is marked transmitted.
+   4396                  */
+ → 4397                 if (tp->cur_tx != dirty_tx && skb)
+   4398                         rtl8169_doorbell(tp);
+   4399         }
+   4400 }
+
+Obviously from the code, an earlier detected data-race for tp->cur_tx was fixed in the
+line 4363:
+
+   4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+
+but the same solution is required for protecting the other access to tp->cur_tx:
+
+ → 4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+   4398                         rtl8169_doorbell(tp);
+
+The write in the line 4254 is protected with WRITE_ONCE(), but the read in the line 4397
+might have suffered read tearing under some compiler optimisations.
+
+The fix eliminated the KCSAN data-race report for this bug.
+
+It is yet to be evaluated what happens if tp->cur_tx changes between the test in line 4363
+and line 4397. This test should certainly not be cached by the compiler in some register
+for such a long time, while asynchronous writes to tp->cur_tx might have occurred in line
+4254 in the meantime.
+
+Fixes: 94d8a98e6235c ("r8169: reduce number of workaround doorbell rings")
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: nic_swsd@realtek.com
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Marco Elver <elver@google.com>
+Cc: netdev@vger.kernel.org
+Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+v1:
+ the initial patch proposal. fixes the KCSAN warning.
+
+ drivers/net/ethernet/realtek/r8169_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 6351a2dc13bc..281aaa851847 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -4394,7 +4394,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+ 		 * If skb is NULL then we come here again once a tx irq is
+ 		 * triggered after the last fragment is marked transmitted.
+ 		 */
+-		if (tp->cur_tx != dirty_tx && skb)
++		if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+ 			rtl8169_doorbell(tp);
+ 	}
+ }
+-- 
+2.34.1
+
