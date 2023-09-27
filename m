@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0A97AFDD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A637AFDC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjI0ILr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
+        id S230221AbjI0ILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjI0ILA (ORCPT
+        with ESMTP id S230188AbjI0IK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:11:00 -0400
+        Wed, 27 Sep 2023 04:10:59 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04F6CC4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E4B1B0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:54 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPd9-0007vL-1t; Wed, 27 Sep 2023 10:10:47 +0200
+        id 1qlPd9-0007vd-6k; Wed, 27 Sep 2023 10:10:47 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPd8-009I6x-Ka; Wed, 27 Sep 2023 10:10:46 +0200
+        id 1qlPd8-009I70-Q2; Wed, 27 Sep 2023 10:10:46 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPd8-005BQD-Ba; Wed, 27 Sep 2023 10:10:46 +0200
+        id 1qlPd8-005BQH-Gr; Wed, 27 Sep 2023 10:10:46 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Benson Leung <bleung@chromium.org>,
@@ -35,15 +35,15 @@ To:     Benson Leung <bleung@chromium.org>,
 Cc:     Guenter Roeck <groeck@chromium.org>,
         chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 03/27] platform/chrome: cros_ec_lightbar: Convert to platform remove callback returning void
-Date:   Wed, 27 Sep 2023 10:10:16 +0200
-Message-Id: <20230927081040.2198742-4-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 04/27] platform/chrome: cros_ec_lpc: Convert to platform remove callback returning void
+Date:   Wed, 27 Sep 2023 10:10:17 +0200
+Message-Id: <20230927081040.2198742-5-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
 References: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1998; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=Tfs5gi7h7v1Dwa3H1JCi2pH6aHZKCdFVdfdoZK+EHJA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlE+NgCQKHZFj5mqOwyG6uYKFEWnnxsQRTVtbJ1 /YmRJcnkKyJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRPjYAAKCRCPgPtYfRL+ TgEwB/4iiOJeH8c8mxCUWtYw9NVWS834cnqPM7W8mzvLCpmz/PHR4fvj9Px95xRvwOn/gWJfVWY 0WJySnZFHYiQIZ8reBiJw3DqVIh4Ka7byTW7+8kaClQKd9HA/ZaDdD/xGpm37Xgg+GsH1Awaq/7 sAeVd3eLLzYDNQ9gisnGhwP/t4cM8/7l0Ar8Txf1OvpbmiPbXDvQFYtKAU74U5fC14uzxwwyRxX 5lr1Qn8xTvimqO6QJXGJlWB8xnkLCJJAbkug0UiVHXDGyd9axwUlgiwvNelul4yGeQY96ACVXQA 21HaoxUcIbf1ZkmsU0XZFgUvdAA+8P9/59MD48ZzjMkXoyMN
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1943; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=UaQf0aOVJXiwdHwFWYo4P0yhmaqn5f73vpG9iCiRQPg=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlE+Nh8vWZtz/iFdllV5+D+P+cfjaMU6C4DQ7d0 /+1D3PLh0SJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRPjYQAKCRCPgPtYfRL+ Tp3FB/9lOQ/A452SjdzNZdgRv/RkGyVoKEua5t6iB3pV5YLNbs3o2QgaowqnxYbDooMVrzKIIOC ENs6k+iT0W+SnomZwuyUsry1H63YYawHFMk3OIgS/yJZRdyA3xaoOlqauVsYCqFYTFPgbqvH+Nw JY8zcKh6+bA6qQVBOWOyzXdSUf9+CCaWZn/xWS4XgseRDpKY5ZC7rdO2/CHUWip619zYnjGxbEL qwUuEAKtcQtvim/fRwpkazLjcI3WvTN2UgboVMcdMELLI2BTY5UiEPGRTf6xjDe04OvB91G+JF6 hDbptCQ6gTQTafv427EjajEyQZzOLqw5PCmZ95Cv9zODuDdi
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -74,40 +74,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/platform/chrome/cros_ec_lightbar.c | 6 ++----
+ drivers/platform/chrome/cros_ec_lpc.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_lightbar.c b/drivers/platform/chrome/cros_ec_lightbar.c
-index 376425bbd8ff..6677cc6c4984 100644
---- a/drivers/platform/chrome/cros_ec_lightbar.c
-+++ b/drivers/platform/chrome/cros_ec_lightbar.c
-@@ -560,7 +560,7 @@ static int cros_ec_lightbar_probe(struct platform_device *pd)
- 	return ret;
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
+index 356572452898..897090f0f26e 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -460,7 +460,7 @@ static int cros_ec_lpc_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int cros_ec_lightbar_remove(struct platform_device *pd)
-+static void cros_ec_lightbar_remove(struct platform_device *pd)
+-static int cros_ec_lpc_remove(struct platform_device *pdev)
++static void cros_ec_lpc_remove(struct platform_device *pdev)
  {
- 	struct cros_ec_dev *ec_dev = dev_get_drvdata(pd->dev.parent);
+ 	struct cros_ec_device *ec_dev = platform_get_drvdata(pdev);
+ 	struct acpi_device *adev;
+@@ -471,8 +471,6 @@ static int cros_ec_lpc_remove(struct platform_device *pdev)
+ 					   cros_ec_lpc_acpi_notify);
  
-@@ -569,8 +569,6 @@ static int cros_ec_lightbar_remove(struct platform_device *pd)
- 
- 	/* Let the EC take over the lightbar again. */
- 	lb_manual_suspend_ctrl(ec_dev, 0);
+ 	cros_ec_unregister(ec_dev);
 -
 -	return 0;
  }
  
- static int __maybe_unused cros_ec_lightbar_resume(struct device *dev)
-@@ -603,7 +601,7 @@ static struct platform_driver cros_ec_lightbar_driver = {
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ static const struct acpi_device_id cros_ec_lpc_acpi_device_ids[] = {
+@@ -580,7 +578,7 @@ static struct platform_driver cros_ec_lpc_driver = {
+ 		.probe_type = PROBE_FORCE_SYNCHRONOUS,
  	},
- 	.probe = cros_ec_lightbar_probe,
--	.remove = cros_ec_lightbar_remove,
-+	.remove_new = cros_ec_lightbar_remove,
+ 	.probe = cros_ec_lpc_probe,
+-	.remove = cros_ec_lpc_remove,
++	.remove_new = cros_ec_lpc_remove,
  };
  
- module_platform_driver(cros_ec_lightbar_driver);
+ static struct platform_device cros_ec_lpc_device = {
 -- 
 2.40.1
 
