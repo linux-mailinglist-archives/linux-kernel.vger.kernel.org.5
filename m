@@ -2,143 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F382C7B04E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C2F7B04EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjI0NFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 09:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
+        id S231810AbjI0NGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 09:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbjI0NFB (ORCPT
+        with ESMTP id S231378AbjI0NGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 09:05:01 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32612136
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:04:59 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso1473657366b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695819897; x=1696424697; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9pyRPFM/sI4rOWP+tRGMK/egiWElrb+QbrVYo7Uy96U=;
-        b=K5zwiUkznYW0Dkup4+sMUjtwyjdkWBlFOGt9mxLy1bexbUEDWHG79+I41thZL6wL+E
-         k/VRLN6LhHBddV4h+8bDNaE/f2h2e0ho16whPt2Rad/H+t02vmDdRIPl35SdpxtF+QIU
-         FHbZC2pGUzI7xD8jj2Qej05ON7/MSV47mzooKFmLwTojbs0gkky9UMkMhMmpALwgdryo
-         VZE9jagFiqXDy/hM+oUmQNLMhrA2meSH02mmxY4CCNRXngNfFPK9GrGcPPJYpvhfyjpU
-         tHpMB/sal8MNRHEDdK9nXk/QMmW5h/9k4V8eJdPNrktzAqC9rXvU8Z1rM23XpCOUSXYw
-         KJFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695819897; x=1696424697;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9pyRPFM/sI4rOWP+tRGMK/egiWElrb+QbrVYo7Uy96U=;
-        b=ov42APqelybgHf5Ookk1yUaJxR9KvcORb18JxthIE7HMitu+/valmwjWzigFy8F+bs
-         r+r/VT5G0w04LMwcmB0ZXBXS3TE55Kl9eWX5nFD8e+FSS2Z1IhhNfSlhUO1OTLCXBIaH
-         koCSi6xUhbQ3q6tc8bBX/fuE4YLi47q4mpMwUJ84c4DncVEZp/sB2av+wsyleszMjHgl
-         nHs+jb4iWHrLCcTjMQjeZJpRcz3cc35osHixva9MdwvGPuD/WjrZ+icLAbSV8GTRVvsd
-         GLMaNw9Jc6sYutpF8veVYI1offvCd2CHuwImlz7DPop7f6azGZnTKl1bWg7w8XEidPvc
-         KxjQ==
-X-Gm-Message-State: AOJu0YwDaJRQq+yf4fXqsUEBBdww0NNkjt8Yvs3OkFXBkahuafYGKEar
-        yHwP3yjJaKnVUfZjopn/+upA
-X-Google-Smtp-Source: AGHT+IFqyNEC2JG004BLvFeQ883vvmzZmbXiMQhzHmmFHvL4w/Lf027wOmvQvTqgLndBUE84MjF0KA==
-X-Received: by 2002:a17:906:7694:b0:9b2:82d2:a2db with SMTP id o20-20020a170906769400b009b282d2a2dbmr1434401ejm.28.1695819897021;
-        Wed, 27 Sep 2023 06:04:57 -0700 (PDT)
-Received: from thinkpad ([2a02:2454:9d09:3f00:b024:394e:56d7:d8b4])
-        by smtp.gmail.com with ESMTPSA id ep14-20020a1709069b4e00b009a168ab6ee2sm8703004ejc.164.2023.09.27.06.04.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 06:04:56 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 15:04:55 +0200
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, abel.vesa@linaro.org
-Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
-Message-ID: <20230927130455.GB19623@thinkpad>
-References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
- <20230926210823.GA427669@bhelgaas>
+        Wed, 27 Sep 2023 09:06:14 -0400
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [IPv6:2001:bc8:228b:9000::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4061BF4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:06:12 -0700 (PDT)
+Received: from [IPV6:2a02:8109:aa40:4e0:b5c6:9671:3477:8fde]
+        by sdfg.com.ar (chasquid) with ESMTPSA
+        tls TLS_AES_128_GCM_SHA256
+        (over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+        ; Wed, 27 Sep 2023 13:06:05 +0000
+Message-ID: <c658a72a-b3f6-4504-a940-7ff946c81559@sdfg.com.ar>
+Date:   Wed, 27 Sep 2023 15:06:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] tools/nolibc: Add workarounds for centos-7
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org
+References: <20230926133647.467179-1-rodrigo@sdfg.com.ar>
+ <20230926133647.467179-2-rodrigo@sdfg.com.ar>
+ <e8ed17e6-8eb3-404d-9669-5e5b413904ed@t-8ch.de>
+From:   Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <e8ed17e6-8eb3-404d-9669-5e5b413904ed@t-8ch.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230926210823.GA427669@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 04:08:23PM -0500, Bjorn Helgaas wrote:
-> On Sun, Sep 24, 2023 at 06:07:13PM +0200, Manivannan Sadhasivam wrote:
-> > PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
-> > the bandwidth support in the driver. Otherwise, the default bandwidth of
-> > 985 MBps will be used.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 297442c969b6..6853123f92c1 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> >  	case 2:
-> >  		bw = MBps_to_icc(500);
-> >  		break;
-> > +	case 3:
-> > +		bw = MBps_to_icc(985);
-> > +		break;
-> >  	default:
-> >  		WARN_ON_ONCE(1);
-> >  		fallthrough;
-> > -	case 3:
-> > -		bw = MBps_to_icc(985);
-> > +	case 4:
-> > +		bw = MBps_to_icc(1969);
-> 
-> The bare numbers here are sort of weird.  I assume they correspond to
-> the Supported Link Speeds Vector in Link Cap 2, and I expected them to
-> correspond somehow to PCIE_SPEED2MBS_ENC(), which computes the usable
-> PCIe bandwidth per lane.  I see the ratios between 250, 500, 986, 1969
-> *do* match up with the ratios of PCIE_SPEED2MBS_ENC() values, but I
-> don't know the PCIE_SPEED2MBS_ENC() values aren't used:
-> 
->             SLS Vector                         PCIE_SPEED2MBS_ENC()
->   CLS 1:  bit 0  2.5 GT/s   MBps_to_icc(250)      2000 Mbps
->   CLS 2:  bit 1  5.0 GT/s   MBps_to_icc(500)      4000 Mbps
->   CLS 3:  bit 2  8.0 GT/s   MBps_to_icc(985)      7879 Mbps
->   CLS 4:  bit 3 16.0 GT/s   MBps_to_icc(1969)    15753 Mbps
-> 
-> This is just my curiosity, probably no change is needed, or at most a
-> short comment.
-> 
+On 9/27/23 01:30, Thomas Weißschuh wrote:
+> thanks for your patch!
 
-You are right. I'm not aware of this macro before and yes, I can make use of it.
+Thank you for nolibc :)
 
-> I do notice that pcie-qcom-ep.c uses #defines like PCIE_GEN1_BW_MBPS,
-> and it seems like both could use the same style.
+> On 2023-09-26 15:36:47+0200, Rodrigo Campos wrote:
+>> Centos-7 doesn't include statx on its linux/stat.h file. So, let's just
+>> define it if the include doesn't define STATX_BASIC_STATS.
 > 
-> Also agree with Konrad that the ordering ends up looking unusual;
-> maybe would be more readable if the default case repeated the speed
-> you want instead of using the fallthrough.
+> Could you mention which version of the kernel headers you compiled this
+> with and with which version you tested it?
+
+It was on CI using vagrant, it is:
+
+  kernel-headers   x86_64 3.10.0-1160.99.1.el7
+
+And this kernel:
+
+Linux cirrus-task-6368858685046784 3.10.0-1160.95.1.el7.x86_64 #1 SMP 
+Mon Jul 24 13:59:37 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+Luckily this info is exposed in their CI easily, see here: 
+https://cirrus-ci.com/task/6368858685046784?logs=host_info#L1. The 
+host_info and "Run install_dependencies" have this kind of info.
+
+> Also which is the exact revision you use to extract nolibc?
+
+As from Linux 6.6-rc3 (6465e260f48790807eef06b583b38ca9789b6072)
+
+> Does nolibc actually support statx()/stat() on centos-7 with these changes?
+
+Oh, I haven't tried that, sorry I didn't mention. We are basically just 
+using exceve(), but the thing is that "sutrct statx" and 
+"STATX_BASIC_STATS" are used in sys.h, so compilation fails.
+
+And just a forward declaration of the struct won't help, as it is not 
+just a pointer, in stat() we instantiate it.
+
+
+> I'm asking because I tried to reproduce it and for me CentOS 7 with
+> kernel-headers 3.10.0-1160.99.1.el7 doesn't define __NR_statx.
+> Without this symbol the statx() and stat() functions should just always
+> return -ENOSYS.
+> It seems a bit wasteful to introduce 200 new lines of code for a "feature"
+> that will not do anything.
 > 
+> FYI the hard requirement for the statx syscall is fairly new, it was
+> added in commit af93807eaef6 ("tools/nolibc: remove the old sys_stat support").
 
-Yes, that would be more readable.
+Oh, great pointer, thanks!
 
-- Mani
+> As you are vendoring nolibc, if you don't need stat/statx support in
+> for your usecase you could drop the support for it in your vendored
+> copy.
+> Or we try to reintroduce compatibility for stat() without the statx()
+> syscall. But given the really limited applicability, personally I'm
+> against that.
 
-> >  		break;
-> >  	}
+We can definitely remove that struct statx bits in our vendoring. It 
+will simplify updating if we don't have to patch it, so if we can't 
+include a fix in nolibc, I think we will continue doing the hack 
+ourselves and that is all. It is not too bad :)
 
--- 
-மணிவண்ணன் சதாசிவம்
+I don't think it is worth for nolibc, at least for this use case, to 
+reintroduce compatibility for stat() without statx().
+
+For now we are work-arounding it by doing basically the same thing I'm 
+doing here:
+	https://github.com/opencontainers/runc/blob/96a61d3bf0dcc26343bfafe5112934d73d280dd3/libcontainer/dmz/xstat.h
+
+We then include this file before nolibc.h, and then the type works as fine:
+	https://github.com/opencontainers/runc/blob/96a61d3bf0dcc26343bfafe5112934d73d280dd3/libcontainer/dmz/_dmz.c
+
+Would it be acceptable for nolibc if I just define what we use:
+  * struct statx
+  * struct statx_timestamp (used inside struct statx)
+  * STATX_BASIC_STATS (or STATX_* constants too, as you prefer)
+
+?
+
+> 
+> Some more notes below.
+> 
+>> This makes nolibc work on centos-7 just fine, before this patch it
+>> failed with:
+>>
+>> 	nolibc/sys.h:987:78: warning: ‘struct statx’ declared inside parameter list [enabled by default]
+>> 	 int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+>>
+>> Please note that while on types.h we can still include linux/stat.h
+>> and it won't cause any issues, it seems simpler if we just always
+>> include "statx.h" instead of that file and be safe. That is why I
+>> changed types.h too.
+> 
+> All of nolibc will end up included into the same namespace by design.
+> It seems weird that it would make a difference from where this file is
+> included.
+
+No, sorry, I just wanted to say that we should include "statx.h" instead 
+of "<linux/stat.h>" as that does the define for old distros that don't 
+do it.
+
+It is true that we can include "statx.h" in nolibc.h and that should do 
+the trick too.
+
+>> diff --git tools/include/nolibc/statx.h tools/include/nolibc/statx.h
+>> new file mode 100644
+>> index 000000000000..d05528754154
+>> --- /dev/null
+>> +++ tools/include/nolibc/statx.h
+>> @@ -0,0 +1,218 @@
+> 
+> Below you mention that this was copied from
+> tools/include/uapi/linux/stat.h, but...
+> 
+>> +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
+> 
+> The original code was "GPL-2.0 WITH Linux-syscall-note".
+
+Oh, great point, sorry I didn't realize. What should we do, then?
+
+Do you know what is the proper way to just define the same types here 
+(i.e. struct statx and what I mentioned is what we really need a few 
+lines above)?
+
+>> +#define S_IFMT  00170000
+>> +#define S_IFSOCK 0140000
+>> +#define S_IFLNK	 0120000
+>> +#define S_IFREG  0100000
+>> +#define S_IFBLK  0060000
+>> +#define S_IFDIR  0040000
+>> +#define S_IFCHR  0020000
+>> +#define S_IFIFO  0010000
+>> +#define S_ISUID  0004000
+>> +#define S_ISGID  0002000
+>> +#define S_ISVTX  0001000
+>> +
+>> +#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
+>> +#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
+>> +#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+>> +#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
+>> +#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
+>> +#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
+>> +#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
+>> +
+>> +#define S_IRWXU 00700
+>> +#define S_IRUSR 00400
+>> +#define S_IWUSR 00200
+>> +#define S_IXUSR 00100
+>> +
+>> +#define S_IRWXG 00070
+>> +#define S_IRGRP 00040
+>> +#define S_IWGRP 00020
+>> +#define S_IXGRP 00010
+>> +
+>> +#define S_IRWXO 00007
+>> +#define S_IROTH 00004
+>> +#define S_IWOTH 00002
+>> +#define S_IXOTH 00001
+> 
+> We already have all of these in types.h.
+
+Yes, I realized but I thought it was simpler conceptually if we include 
+the whole file. This way there are no differences if the host has this 
+or not.
+
+I can definitely remove this if you prefer and just define what we 
+strictly need.
+
+>> diff --git tools/include/nolibc/sys.h tools/include/nolibc/sys.h
+>> index fdb6bd6c0e2f..d3e45793682a 100644
+>> --- tools/include/nolibc/sys.h
+>> +++ tools/include/nolibc/sys.h
+>> @@ -20,9 +20,9 @@
+>>   #include <linux/time.h>
+>>   #include <linux/auxvec.h>
+>>   #include <linux/fcntl.h> /* for O_* and AT_* */
+>> -#include <linux/stat.h>  /* for statx() */
+> 
+> So this means that compatibility with user applications that also
+> include <linux/stat.h> on their own is broken?
+> That would not be good.
+
+
+Hmm, no, it just means that if we want to get struct statx in all 
+distros, including centos-7, we should use the other include that will 
+define it for centos.
+
+We can keep this here as long as we also include xstat.h, in some other 
+part.
+
+
+
+
+Best,
+Rodrigo
