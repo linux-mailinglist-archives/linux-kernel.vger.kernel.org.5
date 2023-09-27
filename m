@@ -2,50 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6CD7AFAE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C80F7AFAE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjI0GTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        id S229800AbjI0GTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjI0GS4 (ORCPT
+        with ESMTP id S229584AbjI0GS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 02:18:56 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D453911D;
-        Tue, 26 Sep 2023 23:18:54 -0700 (PDT)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA8A1AC;
+        Tue, 26 Sep 2023 23:18:55 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwRJT26vpz4f3jZd;
-        Wed, 27 Sep 2023 14:18:49 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RwRJQ0rSfz4f3l7F;
+        Wed, 27 Sep 2023 14:18:46 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAXrt1IyRNl_QoCBg--.53663S4;
+        by APP4 (Coremail) with SMTP id gCh0CgAXrt1IyRNl_QoCBg--.53663S5;
         Wed, 27 Sep 2023 14:18:50 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     mariusz.tkaczyk@linux.intel.com, xni@redhat.com, song@kernel.org
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH v3 0/2] md: simplify md_seq_ops
-Date:   Wed, 27 Sep 2023 14:12:39 +0800
-Message-Id: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
+Subject: [PATCH v3 1/2] md: factor out a helper from mddev_put()
+Date:   Wed, 27 Sep 2023 14:12:40 +0800
+Message-Id: <20230927061241.1552837-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
+References: <20230927061241.1552837-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXrt1IyRNl_QoCBg--.53663S4
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5E7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-TRANSID: gCh0CgAXrt1IyRNl_QoCBg--.53663S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47Kr4xtr4Utry3GF4UArb_yoW8WFWrpa
+        yfta9xCrW8XrW3J3yUJrsru3W5X3Za9rWDtryxWws5ZFy5ur15Gw1Fga4rJryDGa4fAF45
+        Za18WFWDCryFgrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqAp5UUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -59,21 +64,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Changes in v3:
- - rework patch 1, because the condition is confusing
+There are no functional changes, prepare to simplify md_seq_ops in next
+patch.
 
-Changes in v2:
- - don't hold lock while show mddev in md_seq_show
- - add patch 1
- - add commit message
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/md/md.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-Yu Kuai (2):
-  md: factor out a helper from mddev_put()
-  md: simplify md_seq_ops
-
- drivers/md/md.c | 129 +++++++++++++++---------------------------------
- 1 file changed, 39 insertions(+), 90 deletions(-)
-
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 10cb4dfbf4ae..73782cafad4e 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -616,23 +616,28 @@ static inline struct mddev *mddev_get(struct mddev *mddev)
+ 
+ static void mddev_delayed_delete(struct work_struct *ws);
+ 
++static void __mddev_put(struct mddev *mddev)
++{
++	if (mddev->raid_disks || !list_empty(&mddev->disks) ||
++	    mddev->ctime || mddev->hold_active)
++		return;
++
++	/* Array is not configured at all, and not held active, so destroy it */
++	set_bit(MD_DELETED, &mddev->flags);
++
++	/*
++	 * Call queue_work inside the spinlock so that flush_workqueue() after
++	 * mddev_find will succeed in waiting for the work to be done.
++	 */
++	queue_work(md_misc_wq, &mddev->del_work);
++}
++
+ void mddev_put(struct mddev *mddev)
+ {
+ 	if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+ 		return;
+-	if (!mddev->raid_disks && list_empty(&mddev->disks) &&
+-	    mddev->ctime == 0 && !mddev->hold_active) {
+-		/* Array is not configured at all, and not held active,
+-		 * so destroy it */
+-		set_bit(MD_DELETED, &mddev->flags);
+ 
+-		/*
+-		 * Call queue_work inside the spinlock so that
+-		 * flush_workqueue() after mddev_find will succeed in waiting
+-		 * for the work to be done.
+-		 */
+-		queue_work(md_misc_wq, &mddev->del_work);
+-	}
++	__mddev_put(mddev);
+ 	spin_unlock(&all_mddevs_lock);
+ }
+ 
 -- 
 2.39.2
 
