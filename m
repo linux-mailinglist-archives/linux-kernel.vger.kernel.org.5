@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D74F7AFE32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB0D7AFDBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbjI0IWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S230257AbjI0ILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjI0ILE (ORCPT
+        with ESMTP id S230189AbjI0IK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:11:04 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E32FCEA
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:11:00 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlPdE-0008Bd-8B; Wed, 27 Sep 2023 10:10:52 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlPdD-009I8V-Kp; Wed, 27 Sep 2023 10:10:51 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlPdD-005BRm-BW; Wed, 27 Sep 2023 10:10:51 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Xing Tong Wu <xingtong.wu@siemens.com>,
-        Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH 27/27] platform/x86/siemens: simatic-ipc-batt-f7188x: Convert to platform remove callback returning void
-Date:   Wed, 27 Sep 2023 10:10:40 +0200
-Message-Id: <20230927081040.2198742-28-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
-References: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
+        Wed, 27 Sep 2023 04:10:59 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2822E1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:54 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3231d67aff2so6935637f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695802252; x=1696407052; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NBmOuCvdW9NVL1Xq7Sds9uqW+w+rqXLS8qDFF1herE8=;
+        b=wplplTF1qcvKMbJrwn1Up67yl4q8GxN9VnoEY272AHk86WK/sOU4wbRm4Y9FAogAoQ
+         eImV/fbNYtpo2HL0K7yxzJyKyTPKeDaTCSCf4AQrkEzFyA2RuPy3u76vQ8fIfB8Z0Iuf
+         /t5SQ3aQmPr61OTfAYiTa2RZQOs7+WJf8p+VfuMaIrVh6VglkS7o0pbKgUkjKz7+pjxL
+         rmbL/QW49h5uqH2X8F3ooS6BuGhYhXvf/UmJaR0maQ99yYEFX0tM0csmjJkNSY58EKB6
+         RIXGd79Xxyp+k+NPsDDPZey3GRYQHx9/IRCUCUc8qxNFdAeh3POlzRgwQtOE9rRu6qYb
+         CMNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695802252; x=1696407052;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NBmOuCvdW9NVL1Xq7Sds9uqW+w+rqXLS8qDFF1herE8=;
+        b=bMquJLS9uOiY7P4pezUtXdfYQaMkzAPhDlX0oPUvO811l/uhWmFPH7IYwn9Q4Zt1b5
+         +2XzggUap/+Z+nglFM9DMBoImKNBiljqYj6+G5MgnMywl5bdHrloa1hAr0EpU/ynmPWf
+         50kQu6GDyvDGR7zt9+KwBiLO0tLGRHvcoSUsVBnGRGelCOwmhwbulfJqEgyl0FQ4S7zJ
+         bV8R4+rFdTfOQOcXijFSLpX4asZVXT00SlCt8ftnOHDC9MpGk33ZHUntdkX/M9Mdwv+t
+         X9Bx41G1ILyBxWidhErABX4rit31g6hxq60jhExmQ+ZMbPhr9vHh7aH2Rk7Og7icnudi
+         uHpA==
+X-Gm-Message-State: AOJu0YzoBP+LyMqkPvFPmEnL820r8CdXhvbHitxxf69uCARFRpI9Dvb0
+        Ts+ZDAsqcG4uyA8/XpmSsy6XqA==
+X-Google-Smtp-Source: AGHT+IEKTsuknU2uuQEZaxLZtK8OwodOqhENja8RJX6uJxZpy29yQQXcdMSM3cppVDtiu8cEn9yLww==
+X-Received: by 2002:adf:fe49:0:b0:314:350a:6912 with SMTP id m9-20020adffe49000000b00314350a6912mr1190372wrs.36.1695802252428;
+        Wed, 27 Sep 2023 01:10:52 -0700 (PDT)
+Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id m16-20020a056000009000b0031c71693449sm16622619wrx.1.2023.09.27.01.10.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 01:10:52 -0700 (PDT)
+Message-ID: <3dccacd8-4249-87f8-690c-6083374dc9d1@blackwall.org>
+Date:   Wed, 27 Sep 2023 11:10:50 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1921; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ppuhwm0gU6+2BGzuuvFr4fZQMjeNK1Hrm/CuJZG8tv4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlE+N8ZBf0B8Ls8/0BGKt+T6Vq2yd6huAyrsjPr JIXMiX14lWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRPjfAAKCRCPgPtYfRL+ ThqLB/47y3ScJPN+FC65DzwCmtW7dqtILGPC5gzujTdltNJLOSqjhrG2ilqZlNjGAeZNAPYiPSq E2aRJ9nl/904GtO23D7r0F8XaE7e6XD5MtVVbxz+XTjE4tHefbuMwqjDW16t6OeLBHbrwpzdAV5 QCF5QrBAQr29dqLc8RpHhy2367CgLq1tqEf6h4P6u0YzD+dQWgNuvU4SiGeahSnDKSmw5bp4dPO gfFcncvsg29Sw4PSK7LcmCX+uApEiNOuih/OvcydlOti8FfI6APMwtNqKbNxKJsA7WjhbKEFD3W SyfvGzFAMQPrjKdGwzQbwbVLgdKWUhHyzFx664mOG9N0TR9T
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] bridge: MTU auto tuning ignores IFLA_MTU on NEWLINK
+Content-Language: en-US
+To:     Trent Lloyd <trent.lloyd@canonical.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230927075713.1253681-1-trent.lloyd@canonical.com>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20230927075713.1253681-1-trent.lloyd@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+On 9/27/23 10:57, Trent Lloyd wrote:
+> Commit 804b854d374e ("net: bridge: disable bridge MTU auto tuning if it
+> was set manually") disabled auto-tuning of the bridge MTU when the MTU
+> was explicitly set by the user, however that would only happen when the
+> MTU was set after creation. This commit ensures auto-tuning is also
+> disabled when the MTU is set during bridge creation.
+> 
+> Currently when the br_netdev_ops br_change_mtu function is called, the
+> flag BROPT_MTU_SET_BY_USER is set. However this function is only called
+> when the MTU is changed after interface creation and is not called if
+> the MTU is specified during creation with IFLA_MTU (br_dev_newlink).
+> 
+> br_change_mtu also does not get called if the MTU is set to the same
+> value it currently has, which makes it difficult to work around this
+> issue (especially for the default MTU of 1500) as you have to first
+> change the MTU to some other value and then back to the desired value.
+> 
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+Yep, I think I also described this in the commit message of my patch.
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+> Add new selftests to ensure the bridge MTU is handled correctly:
+>   - Bridge created with user-specified MTU (1500)
+>   - Bridge created with user-specified MTU (2000)
+>   - Bridge created without user-specified MTU
+>   - Bridge created with user-specified MTU set after creation (2000)
+> 
+> Regression risk: Any workload which erroneously specified an MTU during
+> creation but accidentally relied upon auto-tuning to a different value
+> may be broken by this change.
+> 
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/platform/x86/siemens/simatic-ipc-batt-f7188x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Hmm, you're right. There's a risk of regression. Also it acts 
+differently when set to 1500 as you've mentioned. I think they should 
+act the same, also bridge's fake rtable RTAX_MTU is not set.
 
-diff --git a/drivers/platform/x86/siemens/simatic-ipc-batt-f7188x.c b/drivers/platform/x86/siemens/simatic-ipc-batt-f7188x.c
-index 19c302a68911..5e77e05fdb5d 100644
---- a/drivers/platform/x86/siemens/simatic-ipc-batt-f7188x.c
-+++ b/drivers/platform/x86/siemens/simatic-ipc-batt-f7188x.c
-@@ -45,11 +45,9 @@ static struct gpiod_lookup_table simatic_ipc_batt_gpio_table_bx_59a = {
- 	}
- };
- 
--static int simatic_ipc_batt_f7188x_remove(struct platform_device *pdev)
-+static void simatic_ipc_batt_f7188x_remove(struct platform_device *pdev)
- {
- 	simatic_ipc_batt_remove(pdev, batt_lookup_table);
--
--	return 0;
- }
- 
- static int simatic_ipc_batt_f7188x_probe(struct platform_device *pdev)
-@@ -75,7 +73,7 @@ static int simatic_ipc_batt_f7188x_probe(struct platform_device *pdev)
- 
- static struct platform_driver simatic_ipc_batt_driver = {
- 	.probe = simatic_ipc_batt_f7188x_probe,
--	.remove = simatic_ipc_batt_f7188x_remove,
-+	.remove_new = simatic_ipc_batt_f7188x_remove,
- 	.driver = {
- 		.name = KBUILD_MODNAME,
- 	},
--- 
-2.40.1
+> Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2034099
+> Fixes: 804b854d374e ("net: bridge: disable bridge MTU auto tuning if it was set manually")
+> Signed-off-by: Trent Lloyd <trent.lloyd@canonical.com>
+> ---
 
