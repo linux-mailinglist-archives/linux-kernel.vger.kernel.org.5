@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA7E7B07A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4357B07AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbjI0PHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        id S232316AbjI0PIL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 11:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232271AbjI0PHC (ORCPT
+        with ESMTP id S232271AbjI0PIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:07:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6CDF5;
-        Wed, 27 Sep 2023 08:07:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B636DC433C9;
-        Wed, 27 Sep 2023 15:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695827221;
-        bh=Ny/gCvfKBPdMKiIev+iUrhO5AMlDUJHmTAYehDxlXrI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ls/nysvPG9FN8fMDGsrnQm9puuGbTJuhoX7VWW3ioIdtrUNtaMF2OoZ/hdqdD8sxF
-         CaLww1i4BwTuj3I3XeeIPw44DRpE4DhwQFfig9qWO2IGXST9HHe3Lc17FDKX92urG4
-         zRHn94gbnfus/6PEelHXExAhD5fpRe3a3cmmME5G7HGsXEXOuijI8aVdJKFGyPmBMg
-         gx9pjBZ9z/24bTrXoBwUfWHHFCcoBF+ofHgYGy/dDNB12CDHEbFQ34puTlWNAScm5U
-         R6EfMGyTCqwFjeOEI4afRAB1TioHcfk8qZn2p3EW/+nH0f6aZg9raVasKScV6Sl7XA
-         h4g2EUPCv9QEQ==
-Date:   Wed, 27 Sep 2023 17:06:58 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     charles.kearney@hpe.com
-Cc:     verdun@hpe.com, nick.hawkins@hpe.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/1] spi: spi-gxp: BUG: Correct spi write return value
-Message-ID: <ZRRFEqfpbzU5H2uV@finisterre.sirena.org.uk>
-References: <20230920215339.4125856-1-charles.kearney@hpe.com>
+        Wed, 27 Sep 2023 11:08:09 -0400
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAF8F4;
+        Wed, 27 Sep 2023 08:08:08 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-57de3096e25so281522eaf.1;
+        Wed, 27 Sep 2023 08:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695827288; x=1696432088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JLgUPwRvAPA8jd102uQ0DZ4SGf6ggVl5r/JJMTLaDvY=;
+        b=uTPfJLbwkjKPKxblqCJeWmZHAuEeeflTvFid9gSzEDStPJ/gx3ebB2BWiaQ/wZDloV
+         ZW0/AGzBkN9T0UFtwIcUtP3wqoV/4DQEWeHIxC54vO0OQZlLUnX/UdZBGS5ZDhzmWSHB
+         GrVt8ESUqsA8oQoTXCwRdSMm6degsNhYVkwitsHspo7xGzSXrWRZ31nuieM62onKgHXJ
+         f/5/SMh7DVAP04zE9JLQ1utII2qRTMll0/wr4mZTsXitkhh1X2Y3avEfcO7HLbN917BO
+         243bK/+oefsa2JHtwwKbr0nPIlnuh9vsLew3y70AELHM3P5N11mL6m9RhjeCNNRJfMwY
+         Q/5g==
+X-Gm-Message-State: AOJu0YxnNInrNEKXRNeLBq6bhxsChoc4xlBnUiWVQ8oKph1YJDjF+Cw8
+        iQXdFAtlFax9FUkKTDHwpljD4c8Gcgy6V1jhTA8=
+X-Google-Smtp-Source: AGHT+IGxapHK1mKy+yb4sAqwkZyYR20GheCsnbkVDbtaT2auUj/pRBrwkd5ToZJDeesAl9lSkE/l+ey1Vav5vfcPGE4=
+X-Received: by 2002:a4a:c58f:0:b0:57b:7804:9d72 with SMTP id
+ x15-20020a4ac58f000000b0057b78049d72mr2592125oop.1.1695827287685; Wed, 27 Sep
+ 2023 08:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0xpmS17rT4yr99XO"
-Content-Disposition: inline
-In-Reply-To: <20230920215339.4125856-1-charles.kearney@hpe.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
+ <CAJZ5v0hq37x_v6Z0Vqj2h8D5QZM8zWE4=GfrMk7YAEfUjeRydA@mail.gmail.com> <20230927144552.pqolbw5p22sgc22l@bogus>
+In-Reply-To: <20230927144552.pqolbw5p22sgc22l@bogus>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Sep 2023 17:07:56 +0200
+Message-ID: <CAJZ5v0iXcqxBWY7hCWkQ+iXUvnrVGHFTnNBtn88iVGj=LLBJcg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] ACPI: PCC: Define and use the common PCC shared
+ memory regions related macros
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 27, 2023 at 4:47 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Wed, Sep 27, 2023 at 04:19:21PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Sep 26, 2023 at 2:33 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > This set of 3 small patches intend to consolidate and replace the existing
+> > > locally defined macros within couple of PCC client drivers when accessing
+> > > the command and status bitfields.
+> > >
+> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > ---
+> > > Sudeep Holla (3):
+> > >       ACPI: PCC: Add PCC shared memory region command and status bitfields
+> > >       i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
+> > >       hwmon: (xgene) Migrate to use generic PCC shmem related macros
+> > >
+> > >  drivers/hwmon/xgene-hwmon.c            | 16 +++++-----------
+> > >  drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++++------------
+> > >  include/acpi/pcc.h                     | 11 +++++++++++
+> > >  3 files changed, 20 insertions(+), 23 deletions(-)
+> > > ---
+> >
+> > This is fine with me.
+> >
+> > How do you want to route it?
+>
+> I have to respin this to include another driver.
+>
+> I also have 2 PCC mailbox driver changes that I wanted to send a pull request
+> to you. I can make this part of that PR or you can take it directly. Both
+> hwmon and i2c maintainers have acked now.
 
---0xpmS17rT4yr99XO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 20, 2023 at 09:53:38PM +0000, charles.kearney@hpe.com wrote:
-> From: Charles Kearney <charles.kearney@hpe.com>
->=20
-> Bug fix to correct return value of gxp_spi_write function to zero.
-> Completion of succesful operation should return zero.
-
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
-
---0xpmS17rT4yr99XO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUURREACgkQJNaLcl1U
-h9DmpQf+LWYwI0HuTAnZrJCddZqRPiMyMZeNbiFZpyEEIJYkE77oNoZqH4JnB6Uo
-S7mp5AxA9s0uoMdkcCtund85teKODnUVeTlnc4H1uoT9cbEBPQzVTqDUMwDMAsrS
-hPViyW2Qf2a7hkVgFznbJ0pcCJ6wB9FVcXmtlBbS2EocE9adXhC05BzafIQVioIy
-taMI1g5d1KE8OTmv3uhu9HLNB8+6iIfwRrkZJoDVWZMSuLUMZQm8C0IbBJaLHAV+
-FxAzbsLQIjr4ORU6setDmquJQ39Y2ZsOiXfnRWSqaNBPejUEowLKToL/0LnpMMM0
-xgGoxls/PUtRgSBnRSZkeDwm/DaUvg==
-=h13j
------END PGP SIGNATURE-----
-
---0xpmS17rT4yr99XO--
+A PR would be convenient. :-)
