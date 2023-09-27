@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E2F7B0339
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020417B033D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjI0LjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        id S231485AbjI0Lk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbjI0LjQ (ORCPT
+        with ESMTP id S231391AbjI0Lk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:39:16 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7E3F3;
-        Wed, 27 Sep 2023 04:39:16 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so8426336b3a.1;
-        Wed, 27 Sep 2023 04:39:16 -0700 (PDT)
+        Wed, 27 Sep 2023 07:40:56 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E5180
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:40:54 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so1450582866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695814755; x=1696419555; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Qms51CQ2WQSXHU/5tuuz4JkW0EAA9NoxeleH7bPZoRI=;
-        b=O/D+AAPhB957RPQgl+xQwAMs+t3+VqsEjMkN+eXVmZf3D8/OwgT90IrMmpo9IsVklp
-         suabVKna7i9b5S/MKMrgCn6GdUMKSxRupw8hzEjyX8tmHkosOfAMPLT41eE4Nc6+BEjF
-         0+7MVBL2fClIeKj9ePuTQ4u+89Gprp/hM5RDWBvMx0A/vOWQq97ja4l7vKHgC+gNWYkr
-         e/Mzixg/E23HRcUIrWq69Disytrv9GaiVkxykGOwdcy/iq1QrS60W+0PTt6aqEZoWCoc
-         yFwsaIuKFaIMIP4KROmf7aADzNGGLuHWiLWVKzZQQZQqruDYanmT2vtL6j75esbcOsLw
-         ExBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695814755; x=1696419555;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+        d=linaro.org; s=google; t=1695814853; x=1696419653; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qms51CQ2WQSXHU/5tuuz4JkW0EAA9NoxeleH7bPZoRI=;
-        b=Cxhzi/IGz59F0P41ZgThPF2RiQyo+MzP4HS1ZNoeyC5zj97logyyyH2PxwvjJcIdwu
-         ZFVq2qWUl0fAWIYnZ7sfNEPAUlNxmnwHqUuWo0H+nZ6ZLukbX0k9O56qgtTHL/XCWDNH
-         rZECRQ403pY92PB+q67SzTrjLdw0AySIadmj5hKzZMp2kaRNd4hbLG1rqVdNBTN3EHz2
-         c3LkjtTHDafLfLTXdOgk8vAzRVhAdatheJnIFIC4/SMpG3zQBo8HwITQ+g1b+OywkJ7X
-         rjDFy+5mcp2Tzaqdk2Y4R/UlKnBMWze4Kz2XmYcrKd7judWJQb7QgbEyn+mLuoDzPEtO
-         J/IQ==
-X-Gm-Message-State: AOJu0Yxc7Rp1vPk4hEFboaKMnIrNXGSDg5DRL3yHosGDhVM5cm2wD7DI
-        iMVfpbmP3e7UbulvqmDB+9Kk/BrUi+U=
-X-Google-Smtp-Source: AGHT+IEBOY2HOlEm/QyiAFW2DeIbaY8QW2fLElGZ4O7aWhYkkfUWiYhyo9C7oLvo5g40d3+7TD6z+A==
-X-Received: by 2002:a05:6a21:66cb:b0:15e:9e62:7082 with SMTP id ze11-20020a056a2166cb00b0015e9e627082mr1395953pzb.29.1695814754695;
-        Wed, 27 Sep 2023 04:39:14 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id u4-20020a17090a518400b00268dac826d4sm12727592pjh.0.2023.09.27.04.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 04:39:14 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 17:09:10 +0530
-Message-Id: <87cyy3g80x.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 11/12] ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc
-In-Reply-To: <20230919201532.310085-12-shikemeng@huaweicloud.com>
+        bh=GxIR3EO6aP2fK/+9UgrcHthkeV5Bvuqoj4iTIScM8Jo=;
+        b=B5IO8Md65dBvNmflYDE9Z+JQ88AbgH8OkIYFSy7m+NLl2Udmrbnt8GoWweNg30akWT
+         hcYONLNFO/lqdxKSsgcJN2fS8ZZ1lL9nnnUlEQoXPMeBgOw42Yy2l3L5kRbAZz9PjHtG
+         sjdopCXycQQq/K85qKf2XCaEPeJEdEW7DipfUTm7jGvcqtVcXa+DkHdzZplZQOj3IOeg
+         agYjq5xAzo6ILqG4l5MniDLmccVPPI33W+he9TgrynKeOWWRZVnvxRvQDj9slxDoikqq
+         RcjZFtLWIWU428kt4cWyWESGM8Aukq0WsnsvxjFGxbzxQH1rA/5fspdWenrDkKt7hrii
+         L7Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695814853; x=1696419653;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GxIR3EO6aP2fK/+9UgrcHthkeV5Bvuqoj4iTIScM8Jo=;
+        b=IBpPKxPjMkwSMfBxnd9p5jBYt1+4qUt6XopfUqVVuxrOKJUcReszwxSl1jOYWpv4/S
+         3Trp62YmJAoGM431p3tjAeAwu6bSpvD++U/oT2Pcj/qpOlbBwEAkI+21pg6rth3o45lp
+         jRG1se4s6u4raaKxKsE4qLaYTXdx2m1yjXiAXyGDvEeTVrWjQbu5Pf2zzrBr/H6clQdo
+         Gj44p6UalteBFhr9hl2KO0jNnz3k8kIz3mWMSFAxqEjxJx3VV+pVh7tFMfaPenQ/uxrj
+         luwU+p32DavIbh5p7+yAAvLZzHTgi5oldsFffHRI5IYGM5Jc8y2qczql/+QalJtDZv+X
+         TC+g==
+X-Gm-Message-State: AOJu0Yy019Dlu6+TMSISgJlFgC6mIDavLXFlM8VTzRUrxJQK88aLt4fO
+        7gyw/ULDb5jt0JBAOs+WdJ25iQ==
+X-Google-Smtp-Source: AGHT+IFxtNBQUKXcnlNppuZs8Xdyd86OoDEAtuanVddwZ5SqZfpvcCCeQW9hKBkzcqdxI6kE+xebCA==
+X-Received: by 2002:a17:906:738b:b0:9ae:3435:ad45 with SMTP id f11-20020a170906738b00b009ae3435ad45mr1421170ejl.76.1695814853182;
+        Wed, 27 Sep 2023 04:40:53 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id ep14-20020a1709069b4e00b009a168ab6ee2sm8591168ejc.164.2023.09.27.04.40.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 04:40:52 -0700 (PDT)
+Message-ID: <96c1e8b9-6e77-435f-8a65-b7d92fd5aae2@linaro.org>
+Date:   Wed, 27 Sep 2023 13:40:50 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 2/4] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
+ soc
+Content-Language: en-US
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, mani@kernel.org, alim.akhtar@samsung.com,
+        bvanassche@acm.org, avri.altman@wdc.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230927081858.15961-1-quic_nitirawa@quicinc.com>
+ <20230927081858.15961-3-quic_nitirawa@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230927081858.15961-3-quic_nitirawa@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> Here are prepared work:
-> 1. Include mballoc-test.c to mballoc.c to be able test static function
-> in mballoc.c.
-> 2. Implement static stub to avoid read IO to disk.
-> 3. Construct fake super_block. Only partial members are set, more members
-> will be set when more functions are tested.
-> Then unit test for ext4_mb_new_blocks_simple is added.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On 27.09.2023 10:18, Nitin Rawat wrote:
+> Add UFS host controller and PHY nodes for sc7280 soc.
+> 
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 > ---
->  fs/ext4/mballoc-test.c | 325 +++++++++++++++++++++++++++++++++++++++++
->  fs/ext4/mballoc.c      |   4 +
->  2 files changed, 329 insertions(+)
->  create mode 100644 fs/ext4/mballoc-test.c
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
 
-I guess I missed to add by RB in previous revision. I see there are no
-functional changes to this patch from previous revision. 
-
-Please feel free to add - 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-Thanks!
--ritesh
+Konrad
