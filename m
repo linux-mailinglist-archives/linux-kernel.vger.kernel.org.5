@@ -2,124 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18BC7B03C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1357F7B03CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjI0MRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S231611AbjI0MSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbjI0MRQ (ORCPT
+        with ESMTP id S231659AbjI0MRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:17:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615AE19A;
-        Wed, 27 Sep 2023 05:17:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695817034; x=1727353034;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QmuETALrgMPjUAn12YFgIQeDTtWH91/gn8tjyGX6uwM=;
-  b=diFgkx02bfYFxlgNRQjJY0PysoNjOPtbpssq4JmVVE0mFlwyGn/psfVX
-   qpArlH28IBZ7sxgZCJ+bP/Ap11phykhvRn4RG3C3HMI3HF+kA7kiLlvOK
-   r0clrjJLh5UP4WcHONSZ3XgWpy1YtroJ3JcKxa7b1GaWQioQp8RLufyKB
-   ZSKzHEdpxdu/R5nYZDrGgwH7nS28Nw15HoD3bUa41L61yebOCGg+xTbQD
-   8VmiCNK4Ft06dLEZTKV176Xn5qIrpGS/PVp3EUnUWY8NlaQfbxgYy/8Mr
-   ROCPCUuHTZBfOquzv94Ifch3U932C4+lNjDx/Oc7MNshT6wQr1DzTFJr9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381710844"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="381710844"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:17:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="778518582"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="778518582"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:17:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qlTTW-00000000scN-2fgC;
-        Wed, 27 Sep 2023 15:17:06 +0300
-Date:   Wed, 27 Sep 2023 15:17:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 5/5] gpiolib: cdev: Utilize more bitmap APIs
-Message-ID: <ZRQdQnL5VbX659cl@smile.fi.intel.com>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
- <ZROGG44v5kfktdVs@sol>
+        Wed, 27 Sep 2023 08:17:47 -0400
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A859194;
+        Wed, 27 Sep 2023 05:17:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vt-RWub_1695817060;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vt-RWub_1695817060)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Sep 2023 20:17:41 +0800
+Date:   Wed, 27 Sep 2023 20:17:40 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Albert Huang <huangjie.albert@bytedance.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
+ containers.
+Message-ID: <20230927121740.GF92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
+ <20230927034209.GE92403@linux.alibaba.com>
+ <20230927055528.GP1642130@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZROGG44v5kfktdVs@sol>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230927055528.GP1642130@unreal>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 09:32:11AM +0800, Kent Gibson wrote:
-> On Tue, Sep 26, 2023 at 08:20:07AM +0300, Andy Shevchenko wrote:
-> > Currently we have a few bitmap calls that are open coded in the library
-> > module. Let's convert them to use generic bitmap APIs instead.
-> 
-> Firstly, I didn't consider using the bitmap module here as, in my mind at
-> least, that is intended for bitmaps wider than 64 bits, or with variable
-> width. In this case the bitmap is fixed at 64 bits, so bitops seemed more
-> appropriate.
-> 
-> And I would argue that they aren't "open coded" - they are parallelized
-> to reduce the number of passes over the bitmap.
-> This change serialises them, e.g. the get used to require 2 passes over
-> the bitmap, it now requires 3 or 4.  The set used to require 1 and now
-> requires 2.
-> And there are additional copies that the original doesn't require.
-> So your change looks less efficient to me - unless there is direct
-> hardware support for bitmap ops??
-> 
-> Wrt the argument that the serialized form is clearer and more
-> maintainable, optimised code is frequently more cryptic - as noted in
-> bitmap.c itself, and this code has remained unchanged since it was merged
-> 3 years ago, so the only maintenance it has required is to be more
-> maintainable??  Ok then.
-> 
-> Your patch is functionally equivalent and pass my uAPI tests, so 
-> 
-> Tested-by: Kent Gibson <warthog618@gmail.com>
+On Wed, Sep 27, 2023 at 08:55:28AM +0300, Leon Romanovsky wrote:
+>On Wed, Sep 27, 2023 at 11:42:09AM +0800, Dust Li wrote:
+>> On Mon, Sep 25, 2023 at 10:35:45AM +0800, Albert Huang wrote:
+>> >If the netdevice is within a container and communicates externally
+>> >through network technologies like VXLAN, we won't be able to find
+>> >routing information in the init_net namespace. To address this issue,
+>> 
+>> Thanks for your founding !
+>> 
+>> I think this is a more generic problem, but not just related to VXLAN ?
+>> If we use SMC-R v2 and the netdevice is in a net namespace which is not
+>> init_net, we should always fail, right ? If so, I'd prefer this to be a bugfix.
+>
+>BTW, does this patch take into account net namespace of ib_device?
 
-Thanks for testing!
+I think this patch is irrelevant with the netns of ib_device.
 
-> but my preference is to leave it as is.
+SMC has a global smc_ib_devices list reported by ib_client, and checked
+the netns using rdma_dev_access_netns. So I think we should have handled
+that well.
 
-As Yury mentioned we need to look at bitmap APIs and make them possible to have
-a compile-time optimizations. With that in mind, I would prefer bitmap APIs
-over open-coded stuff which is hardly to be understood (yes, I still point
-out that it takes a few hours to me, maybe because I'm stupid enough, to
-get what's the heck is going one there, esp. for the == 1 case).
+Best regards,
+Dust
 
-Yet, it opens a way to scale this in case we might have v3 ABI that let's say
-allows to work with 512 GPIOs at a time. With your code it will be much harder
-to achieve and see what you wrote about maintenance (in that case).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>
+>Thanks
+>
+>> 
+>> Best regards,
+>> Dust
+>> 
+>> >we need to add a struct net parameter to the smc_ib_find_route function.
+>> >This allow us to locate the routing information within the corresponding
+>> >net namespace, ensuring the correct completion of the SMC CLC interaction.
+>> >
+>> >Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+>> >---
+>> > net/smc/af_smc.c | 3 ++-
+>> > net/smc/smc_ib.c | 7 ++++---
+>> > net/smc/smc_ib.h | 2 +-
+>> > 3 files changed, 7 insertions(+), 5 deletions(-)
+>> >
+>> >diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>> >index bacdd971615e..7a874da90c7f 100644
+>> >--- a/net/smc/af_smc.c
+>> >+++ b/net/smc/af_smc.c
+>> >@@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+>> > 		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
+>> > 	struct smc_clc_first_contact_ext *fce =
+>> > 		smc_get_clc_first_contact_ext(clc_v2, false);
+>> >+	struct net *net = sock_net(&smc->sk);
+>> > 	int rc;
+>> > 
+>> > 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
+>> >@@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+>> > 		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
+>> > 		ini->smcrv2.uses_gateway = false;
+>> > 	} else {
+>> >-		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
+>> >+		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
+>> > 				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
+>> > 				      ini->smcrv2.nexthop_mac,
+>> > 				      &ini->smcrv2.uses_gateway))
+>> >diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+>> >index 9b66d6aeeb1a..89981dbe46c9 100644
+>> >--- a/net/smc/smc_ib.c
+>> >+++ b/net/smc/smc_ib.c
+>> >@@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
+>> > 	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
+>> > }
+>> > 
+>> >-int smc_ib_find_route(__be32 saddr, __be32 daddr,
+>> >+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+>> > 		      u8 nexthop_mac[], u8 *uses_gateway)
+>> > {
+>> > 	struct neighbour *neigh = NULL;
+>> >@@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
+>> > 
+>> > 	if (daddr == cpu_to_be32(INADDR_NONE))
+>> > 		goto out;
+>> >-	rt = ip_route_output_flow(&init_net, &fl4, NULL);
+>> >+	rt = ip_route_output_flow(net, &fl4, NULL);
+>> > 	if (IS_ERR(rt))
+>> > 		goto out;
+>> > 	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
+>> >@@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+>> > 	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
+>> > 	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
+>> > 		struct in_device *in_dev = __in_dev_get_rcu(ndev);
+>> >+		struct net *net = dev_net(ndev);
+>> > 		const struct in_ifaddr *ifa;
+>> > 		bool subnet_match = false;
+>> > 
+>> >@@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+>> > 		}
+>> > 		if (!subnet_match)
+>> > 			goto out;
+>> >-		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
+>> >+		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
+>> > 						       smcrv2->daddr,
+>> > 						       smcrv2->nexthop_mac,
+>> > 						       &smcrv2->uses_gateway))
+>> >diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
+>> >index 4df5f8c8a0a1..ef8ac2b7546d 100644
+>> >--- a/net/smc/smc_ib.h
+>> >+++ b/net/smc/smc_ib.h
+>> >@@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
+>> > int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
+>> > 			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
+>> > 			 struct smc_init_info_smcrv2 *smcrv2);
+>> >-int smc_ib_find_route(__be32 saddr, __be32 daddr,
+>> >+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+>> > 		      u8 nexthop_mac[], u8 *uses_gateway);
+>> > bool smc_ib_is_valid_local_systemid(void);
+>> > int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
+>> >-- 
+>> >2.37.1 (Apple Git-137.1)
+>> 
