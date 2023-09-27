@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4357B07AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC237B07B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbjI0PIL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 11:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S232342AbjI0PJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232271AbjI0PIJ (ORCPT
+        with ESMTP id S232332AbjI0PI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:08:09 -0400
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAF8F4;
-        Wed, 27 Sep 2023 08:08:08 -0700 (PDT)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-57de3096e25so281522eaf.1;
-        Wed, 27 Sep 2023 08:08:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695827288; x=1696432088;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JLgUPwRvAPA8jd102uQ0DZ4SGf6ggVl5r/JJMTLaDvY=;
-        b=uTPfJLbwkjKPKxblqCJeWmZHAuEeeflTvFid9gSzEDStPJ/gx3ebB2BWiaQ/wZDloV
-         ZW0/AGzBkN9T0UFtwIcUtP3wqoV/4DQEWeHIxC54vO0OQZlLUnX/UdZBGS5ZDhzmWSHB
-         GrVt8ESUqsA8oQoTXCwRdSMm6degsNhYVkwitsHspo7xGzSXrWRZ31nuieM62onKgHXJ
-         f/5/SMh7DVAP04zE9JLQ1utII2qRTMll0/wr4mZTsXitkhh1X2Y3avEfcO7HLbN917BO
-         243bK/+oefsa2JHtwwKbr0nPIlnuh9vsLew3y70AELHM3P5N11mL6m9RhjeCNNRJfMwY
-         Q/5g==
-X-Gm-Message-State: AOJu0YxnNInrNEKXRNeLBq6bhxsChoc4xlBnUiWVQ8oKph1YJDjF+Cw8
-        iQXdFAtlFax9FUkKTDHwpljD4c8Gcgy6V1jhTA8=
-X-Google-Smtp-Source: AGHT+IGxapHK1mKy+yb4sAqwkZyYR20GheCsnbkVDbtaT2auUj/pRBrwkd5ToZJDeesAl9lSkE/l+ey1Vav5vfcPGE4=
-X-Received: by 2002:a4a:c58f:0:b0:57b:7804:9d72 with SMTP id
- x15-20020a4ac58f000000b0057b78049d72mr2592125oop.1.1695827287685; Wed, 27 Sep
- 2023 08:08:07 -0700 (PDT)
+        Wed, 27 Sep 2023 11:08:58 -0400
+Received: from out-197.mta1.migadu.com (out-197.mta1.migadu.com [IPv6:2001:41d0:203:375::c5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DEB12A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:08:57 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695827332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Mx7CtH6cHJrUFBld37HGiK3WgeHY8tZGKc2c0Drcq2M=;
+        b=aLkDt9Aw9FniFt3rZ02X3yb2uiZuG/fL/+LQZnLtgdENgBt2TpkfsBmplfKZfgORJ+Car3
+        FEM2u00QMiFqgQB6NVNoz46iFA+hTFjpudzfEev+erU6A6CGIannFcgCjhBHXP22g1XPGb
+        mkbfVuaA4mWkfj14/0wiM4V+WP8fH+g=
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH rfc 0/5] mm: improve performance of kernel memory accounting
+Date:   Wed, 27 Sep 2023 08:08:27 -0700
+Message-ID: <20230927150832.335132-1-roman.gushchin@linux.dev>
 MIME-Version: 1.0
-References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
- <CAJZ5v0hq37x_v6Z0Vqj2h8D5QZM8zWE4=GfrMk7YAEfUjeRydA@mail.gmail.com> <20230927144552.pqolbw5p22sgc22l@bogus>
-In-Reply-To: <20230927144552.pqolbw5p22sgc22l@bogus>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Sep 2023 17:07:56 +0200
-Message-ID: <CAJZ5v0iXcqxBWY7hCWkQ+iXUvnrVGHFTnNBtn88iVGj=LLBJcg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] ACPI: PCC: Define and use the common PCC shared
- memory regions related macros
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 4:47 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Wed, Sep 27, 2023 at 04:19:21PM +0200, Rafael J. Wysocki wrote:
-> > On Tue, Sep 26, 2023 at 2:33 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > >
-> > > This set of 3 small patches intend to consolidate and replace the existing
-> > > locally defined macros within couple of PCC client drivers when accessing
-> > > the command and status bitfields.
-> > >
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > ---
-> > > Sudeep Holla (3):
-> > >       ACPI: PCC: Add PCC shared memory region command and status bitfields
-> > >       i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
-> > >       hwmon: (xgene) Migrate to use generic PCC shmem related macros
-> > >
-> > >  drivers/hwmon/xgene-hwmon.c            | 16 +++++-----------
-> > >  drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++++------------
-> > >  include/acpi/pcc.h                     | 11 +++++++++++
-> > >  3 files changed, 20 insertions(+), 23 deletions(-)
-> > > ---
-> >
-> > This is fine with me.
-> >
-> > How do you want to route it?
->
-> I have to respin this to include another driver.
->
-> I also have 2 PCC mailbox driver changes that I wanted to send a pull request
-> to you. I can make this part of that PR or you can take it directly. Both
-> hwmon and i2c maintainers have acked now.
+This patchset improves the performance of the kernel memory accounting by ~30%
+as measured by a micro-benchmark [1]. The benchmark is very straightforward:
+1M of 64 bytes-large kmalloc() allocations.
 
-A PR would be convenient. :-)
+Below are results with the disabled kernel memory accounting, the original state
+and with this patchset applied.
+
+|             | Kmem disabled | Original | Patched |  Delta |
+|-------------+---------------+----------+---------+--------|
+| User cgroup |         29764 |    84435 |   59385 | -29.6% |
+| Root cgroup |         29742 |    48425 |   31573 | -34.8% |
+
+As we can see, the patchset removes the majority of the overhead when there is
+no actual accounting (a task belongs to the root memory cgroup) and almost
+halves the accounting overhead. Overall it improves the speed of accounted
+allocations by ~30%.
+
+The main idea is to get rid of unnecessary memcg->objcg conversions and switch
+to a scope-based protection of objcgs, which eliminates extra operations with
+objcg reference counters under a rcu read lock. More details are provided in
+individual commit descriptions.
+
+--
+[1]:
+
+static int memory_alloc_test(struct seq_file *m, void *v)
+{
+       unsigned long i, j;
+       void **ptrs;
+       ktime_t start, end;
+       s64 delta, min_delta = LLONG_MAX;
+
+       ptrs = kvmalloc(sizeof(void *) * 1000000, GFP_KERNEL);
+       if (!ptrs)
+               return -ENOMEM;
+
+       for (j = 0; j < 100; j++) {
+               start = ktime_get();
+               for (i = 0; i < 1000000; i++)
+                       ptrs[i] = kmalloc(64, GFP_KERNEL_ACCOUNT);
+               end = ktime_get();
+
+               delta = ktime_us_delta(end, start);
+               if (delta < min_delta)
+                       min_delta = delta;
+
+               for (i = 0; i < 1000000; i++)
+                       kfree(ptrs[i]);
+       }
+
+       kvfree(ptrs);
+       seq_printf(m, "%lld us\n", min_delta);
+
+       return 0;
+}
+
+--
+
+Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+
+
+Roman Gushchin (5):
+  mm: kmem: optimize get_obj_cgroup_from_current()
+  mm: kmem: add direct objcg pointer to task_struct
+  mm: kmem: make memcg keep a reference to the original objcg
+  mm: kmem: scoped objcg protection
+  percpu: scoped objcg protection
+
+ include/linux/memcontrol.h |  24 ++++-
+ include/linux/sched.h      |   4 +
+ mm/memcontrol.c            | 178 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   8 +-
+ mm/slab.h                  |  10 +--
+ 5 files changed, 187 insertions(+), 37 deletions(-)
+
+-- 
+2.42.0
+
