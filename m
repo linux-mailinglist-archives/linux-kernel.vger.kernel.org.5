@@ -2,91 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6317B0FA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2D47B0FB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjI0Xux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S229791AbjI0Xz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjI0Xuv (ORCPT
+        with ESMTP id S229445AbjI0Xzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:50:51 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B19F5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 16:50:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso1497401166b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 16:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695858647; x=1696463447; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SQOY6tEOrqC0mvJgxPaq1cgtEoQjHgAb4TcKrL7E2Jg=;
-        b=fl/ZUkNG9s23Jw+oUuFzzrZc8km9/xByCFgITl6IqKCEBSF5GMl17dthG4aajbRyi2
-         klHWp/yhD0K8Ro0lpERYVxEwt+mf3QoW8fJvDL58sKL0xsh29siHbY1oJjcvAB+ZUueB
-         z7NhVktb6NrOxcf46Uyz8iZPXuxnrA7d+BABA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695858647; x=1696463447;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SQOY6tEOrqC0mvJgxPaq1cgtEoQjHgAb4TcKrL7E2Jg=;
-        b=YgKJS4zyB7431Zzpdma5+luLwcHpnF+AXT/eiZVLslX2L7KyJiCgdtHpgluqAnA6p6
-         ecK9yVZa//CvxqDo/iDA7VAVDNIjigwxTscPIqZfQPGTBZcdmrhZ95fw36FEszyINmV0
-         Ix7XV7PHW2Y9r8GvPvhEzp9PVr26z5uDK8HoLDZyyInlK+Nr2nsB35H/nkU3UJx5Xf7D
-         7QsrV7qaCoD3uhQtiBeqd+C47PFZMXXbHDkrzGQzQJcx9kpKSktqNeVn39SAJjN4oBvb
-         OTbG12QkkA0i1ruxbrYK1HAUOc3y8TsQQuTN68rVQ78+32BBGBzg6xpuqUEC6OQnf+cX
-         jDfA==
-X-Gm-Message-State: AOJu0YzTX56JycaDbFVvh87848NTh6LxsKpfq2cPuVZ702IuLHC1YiKF
-        0NHFJVozeJeThEAtayVdeBSz67HXwoC5HfAs6hiontGC
-X-Google-Smtp-Source: AGHT+IEjzyj9Nj8DtCS4vovJhFmwj+yb9vF8dHWRGvka1nbm0/NgXzKgZu3laJ3mRS/4u94C2K+20w==
-X-Received: by 2002:a17:907:b1b:b0:9b2:b748:15db with SMTP id h27-20020a1709070b1b00b009b2b74815dbmr2003088ejl.73.1695858647104;
-        Wed, 27 Sep 2023 16:50:47 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id h11-20020a170906854b00b0099b8234a9fesm9870239ejy.1.2023.09.27.16.50.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 16:50:47 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53074ee0c2aso4001a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 16:50:47 -0700 (PDT)
-X-Received: by 2002:a50:d71d:0:b0:52f:2f32:e76c with SMTP id
- t29-20020a50d71d000000b0052f2f32e76cmr365834edi.2.1695858626384; Wed, 27 Sep
- 2023 16:50:26 -0700 (PDT)
+        Wed, 27 Sep 2023 19:55:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC997F4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 16:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695858952; x=1727394952;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=dZORVe2yhZeUfl0yDHwSScn0mAmQXIVEZk6dceeBhFQ=;
+  b=JMlW8unx/aXcCJHwgOB6TJOkE4fnqw40NS9VMtIUGAjxQiFxWSSM+UyB
+   ZTShoxzyEQm3H9aQcRxtveOqdJocfHSxvRNTrY6JVJOxSYzzxvm4+4GP9
+   +5eL5qvi7/bOrwL9kyNV+tO0B6OHtI7VrnXMTRRJy6yMw8TYCiVSGp3pt
+   rAah5pO52WLtWaElpSNA7p0unVUeiaZXFw4OUtWJBpREszL4aLXCaekhI
+   wkL3Hv2W6SYzX54T12lC0Q0cLlXFOGq37XRekYZbAD+Nx989uYH5ZsZkr
+   E0XweYNj/eoIDGoCTsNWFfGK2zVlN6Os12UOCC8U7DDcokdUsi3z9I/+P
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="448443005"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="448443005"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 16:55:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="699068377"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="699068377"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 27 Sep 2023 16:55:50 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qleNf-0000og-13;
+        Wed, 27 Sep 2023 23:55:47 +0000
+Date:   Thu, 28 Sep 2023 07:55:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function
+ parameter or member 'dsp_reset' not described in 'da8xx_rproc'
+Message-ID: <202309280746.mMdNuGQ6-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid>
- <CAL_Jsq+noP32-m5xdUCLFPFBXLxX9Ys1BNFM+9sga6KYTmDzqQ@mail.gmail.com>
- <CAD=FV=WXxGhX0Fw2nSS7PxYb1O-LUewAhoUVPn=2EpbSD2OeHQ@mail.gmail.com>
- <CAL_JsqKJyRJmwJzB1yew71Ld7BeMMat+rzhX9XtDtiFE8Dbvcw@mail.gmail.com>
- <CAD=FV=UgFzT0TW2WEV0Wmk05EXUad2EYhN2DcckAxE_Lw5gV1Q@mail.gmail.com> <ZROVSAoKF9bimnSP@nixie71>
-In-Reply-To: <ZROVSAoKF9bimnSP@nixie71>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 27 Sep 2023 16:50:13 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UR47x+t37B2+Myv0qvvOJMFxVe-Fj7js=-Ez2GWuDySg@mail.gmail.com>
-Message-ID: <CAD=FV=UR47x+t37B2+Myv0qvvOJMFxVe-Fj7js=-Ez2GWuDySg@mail.gmail.com>
-Subject: Re: [RFC PATCH] of: device: Support 2nd sources of probeable but
- undiscoverable devices
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen-Yu Tsai <wenst@chromium.org>, linux-input@vger.kernel.org,
-        Jiri Kosina <jikos@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        andriy.shevchenko@linux.intel.com, broonie@kernel.org,
-        frowand.list@gmail.com, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, james.clark@arm.com, james@equiv.tech,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,146 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+commit: b2201ee554a5811f569f31280b0079e7d6177606 remoteproc/davinci: use the reset framework
+date:   5 years ago
+config: arm-randconfig-004-20230928 (https://download.01.org/0day-ci/archive/20230928/202309280746.mMdNuGQ6-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309280746.mMdNuGQ6-lkp@intel.com/reproduce)
 
-On Tue, Sep 26, 2023 at 7:37=E2=80=AFPM Jeff LaBundy <jeff@labundy.com> wro=
-te:
->
-> Hi Doug,
->
-> On Fri, Sep 22, 2023 at 05:11:10PM -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Fri, Sep 22, 2023 at 12:08=E2=80=AFPM Rob Herring <robh+dt@kernel.or=
-g> wrote:
-> > >
-> > > > > This seems like overkill to me. Do we really need groups and a mu=
-tex
-> > > > > for each group? Worst case is what? 2-3 groups of 2-3 devices?
-> > > > > Instead, what about extending "status" with another value
-> > > > > ("fail-needs-probe"? (fail-xxx is a documented value)). Currently=
-, the
-> > > > > kernel would just ignore nodes with that status. Then we can proc=
-ess
-> > > > > those nodes separately 1-by-1.
-> > > >
-> > > > My worry here is that this has the potential to impact boot speed i=
-n a
-> > > > non-trivial way. While trackpads and touchscreens _are_ probable,
-> > > > their probe routines are often quite slow. This is even mentioned i=
-n
-> > > > Dmitry's initial patches adding async probe to the kernel. See comm=
-it
-> > > > 765230b5f084 ("driver-core: add asynchronous probing support for
-> > > > drivers") where he specifically brings up input devices as examples=
-.
->
-> Ideally, all but one driver in a group should bail out of probe quickly i=
-f
-> the device is not populated. If not, I would consider that to be a bug or=
- at
-> least room for improvement in that driver.
->
-> The reason input devices can take a while to probe is because they may be
-> loading FW over I2C or performing some sort of calibration procedure; onl=
-y
-> one driver in the group should get that far.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309280746.mMdNuGQ6-lkp@intel.com/
 
-Hmm, that's not my experience. Specifically I've seen i2c-hid devices
-whose datasheets say that you're not allowed to talk i2c to them at
-all for hundreds of milliseconds after you power them on. See, for
-instance, "i2c-hid-of-goodix.c" which has a "post_gpio_reset_delay_ms"
-of 180 ms and "i2c-hid-of-elan.c" which has one of 300 ms.
+All warnings (new ones prefixed by >>):
 
-As I understand it these touchscreens have firmware on them and that
-firmware can take a while to boot. Until the firmware boots they won't
-respond over i2c. This is simply not something that Linux can do
-anything about.
-
-About the best you could do would be to add a board-specific driver
-that understood that it could power up the rails, wait the maximum
-amount of time that all possible touchscreens might need, and then
-look for i2c ACKs. I'm still hoping to hear from Rob about how I would
-get a board-specific driver to load on a DT system so I can
-investigate / prototype this.
+>> drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function parameter or member 'dsp_reset' not described in 'da8xx_rproc'
+   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'irq' not described in 'handle_event'
+   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'p' not described in 'handle_event'
+   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'irq' not described in 'da8xx_rproc_callback'
+   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'p' not described in 'da8xx_rproc_callback'
 
 
-> > > We could add information on the class of device. touchscreen and
-> > > touchpad aliases or something.
-> >
-> > Ah, I see. So something like "fail-needs-probe-<class>". The
-> > touchscreens could have "fail-needs-probe-touchscreen" and the
-> > trackpads could have "fail-needs-probe-trackpad" ? That could work. In
-> > theory that could fall back to the same solution of grabbing a mutex
-> > based on the group ID...
-> >
-> > Also: if having the mutex in the "struct device" is seen as a bad
-> > idea, it would also be easy to remove. __driver_probe_device() could
-> > just make a call like "of_device_probe_start()" at the beginning that
-> > locks the mutex and then "of_device_probe_end()" that unlocks it. Both
-> > of those calls could easily lookup the mutex in a list, which would
-> > get rid of the need to store it in the "struct device".
-> >
-> >
-> > > > That would lead me to suggest this:
-> > > >
-> > > >   &i2c_bus {
-> > > >     trackpad-prober {
-> > > >       compatible =3D "mt8173-elm-hana-trackpad-prober";
-> > > >
-> > > >       tp1: trackpad@10 {
-> > > >         compatible =3D "hid-over-i2c";
-> > > >         reg =3D <0x10>;
-> > > >         ...
-> > > >         post-power-on-delay-ms =3D <200>;
-> > > >       };
-> > > >       tp2: trackpad@20 {
-> > > >         compatible =3D "hid-over-i2c";
-> > > >         reg =3D <0x20>;
-> > > >         ...
-> > > >         post-power-on-delay-ms =3D <200>;
-> > > >       };
-> > > >     };
-> > > >   };
-> > > >
-> > > > ...but I suspect that would be insta-NAKed because it's creating a
-> > > > completely virtual device ("mt8173-elm-hana-trackpad-prober") in th=
-e
-> > > > device tree. I don't know if there's something that's functionally
-> > > > similar that would be OK?
->
-> This solution seems a bit confusing to me, and would require more edits
-> to the dts each time a second source is added. It also means one would
-> have to write a small platform driver for each group of devices, correct?
+vim +80 drivers/remoteproc/da8xx_remoteproc.c
 
-No matter what we need to add something to the dts each time a second
-source is added, right?
+59b2355fc90e4a Suman Anna          2017-08-01  56  
+13be5432d8721d Robert Tivy         2013-04-09  57  /**
+13be5432d8721d Robert Tivy         2013-04-09  58   * struct da8xx_rproc - da8xx remote processor instance state
+13be5432d8721d Robert Tivy         2013-04-09  59   * @rproc: rproc handle
+59b2355fc90e4a Suman Anna          2017-08-01  60   * @mem: internal memory regions data
+59b2355fc90e4a Suman Anna          2017-08-01  61   * @num_mems: number of internal memory regions
+13be5432d8721d Robert Tivy         2013-04-09  62   * @dsp_clk: placeholder for platform's DSP clk
+13be5432d8721d Robert Tivy         2013-04-09  63   * @ack_fxn: chip-specific ack function for ack'ing irq
+13be5432d8721d Robert Tivy         2013-04-09  64   * @irq_data: ack_fxn function parameter
+13be5432d8721d Robert Tivy         2013-04-09  65   * @chipsig: virt ptr to DSP interrupt registers (CHIPSIG & CHIPSIG_CLR)
+13be5432d8721d Robert Tivy         2013-04-09  66   * @bootreg: virt ptr to DSP boot address register (HOST1CFG)
+13be5432d8721d Robert Tivy         2013-04-09  67   * @irq: irq # used by this instance
+13be5432d8721d Robert Tivy         2013-04-09  68   */
+13be5432d8721d Robert Tivy         2013-04-09  69  struct da8xx_rproc {
+13be5432d8721d Robert Tivy         2013-04-09  70  	struct rproc *rproc;
+59b2355fc90e4a Suman Anna          2017-08-01  71  	struct da8xx_rproc_mem *mem;
+59b2355fc90e4a Suman Anna          2017-08-01  72  	int num_mems;
+13be5432d8721d Robert Tivy         2013-04-09  73  	struct clk *dsp_clk;
+b2201ee554a581 Bartosz Golaszewski 2018-06-21  74  	struct reset_control *dsp_reset;
+13be5432d8721d Robert Tivy         2013-04-09  75  	void (*ack_fxn)(struct irq_data *data);
+13be5432d8721d Robert Tivy         2013-04-09  76  	struct irq_data *irq_data;
+13be5432d8721d Robert Tivy         2013-04-09  77  	void __iomem *chipsig;
+13be5432d8721d Robert Tivy         2013-04-09  78  	void __iomem *bootreg;
+13be5432d8721d Robert Tivy         2013-04-09  79  	int irq;
+13be5432d8721d Robert Tivy         2013-04-09 @80  };
+13be5432d8721d Robert Tivy         2013-04-09  81  
 
-While it's true that we'd end up with some extra drivers, if we do it
-correctly we don't necessarily need a driver for each group of devices
-nor even a driver per board. If several boards have very similar
-probing requirements then, even if they have unique "compatible"
-strings they could still end up using the same Linux driver.
+:::::: The code at line 80 was first introduced by commit
+:::::: 13be5432d8721d89cadae105663761f45f427842 remoteproc/davinci: add a remoteproc driver for OMAP-L13x DSP
 
-I've actually been talking offline with folks on ChromeOS more about
-this problem as well. Chen-Yu actually pointed at a patch series (that
-never landed, I guess) that has some similar ideas [1]. I guess in
-that case Hans was actually constructing device tree properties
-manually in the driver. I was thinking more of having all of the
-options listed in the device tree and then doing something that only
-causes some of them to probe.
+:::::: TO: Robert Tivy <rtivy@ti.com>
+:::::: CC: Ohad Ben-Cohen <ohad@wizery.com>
 
-If Rob was OK with it, I guess I could have some sort of top-level
-"hwmanager" node like Hans did and then have phandle links to all the
-hardware that are managed by it. Then I could just change those to
-"okay"?
-
-Ideally, though, this could somehow use device tree "overlays" I
-guess. That seems like almost a perfect fit. I guess the issue here,
-though, is that I'd want the overlays bundled together with the
-original DT and then the board-specific "hardware prober" driver to
-actually apply the overlays after probing. Does that seem sensible?
-
-
-[1] https://lore.kernel.org/linux-arm-kernel/20160901190820.21987-1-hdegoed=
-e@redhat.com/
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
