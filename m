@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFE17B07F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE237B07F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbjI0PQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        id S232383AbjI0PSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjI0PQv (ORCPT
+        with ESMTP id S232289AbjI0PSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:16:51 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CF3121;
-        Wed, 27 Sep 2023 08:16:49 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38REdBKl008435;
-        Wed, 27 Sep 2023 15:16:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=v9WDm3swDxscG39kJoxW69ln7dXHTF+Bl/xaN5IviGE=;
- b=oh4ZMEcSSsC5E/Ob9R4hjNaeeiUeZW2bvP5n97p9Neoq2h1plFTI7ywIozx+0yt15qc0
- djfHAqkD4tn/0vlf60JAmDqo7rGyo3mxGX9ampwaieZWN8yWOOWBH8GnmSOA3tC2Fce9
- E+J52mE8Rqpr5zudvjdZ5MV/NSJ9O7DI9BO5Bb4NJsg53vfo8lO7yMb7PQ1mjiV1Ye+d
- TQmbKaPAU3gssC0fO103YPIZmK9tdH3iwWEe8ImietQJnTklvn/KyrfVD4RQlS55RDTn
- SWCHZcI2NCWNsy6dIhQsSYwfSfYpDT3ZczGaNxtLQK2Cm4rQDKjApYXFIRbWgnWeDhk3 cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tcnrejp0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 15:16:44 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38REdiol011469;
-        Wed, 27 Sep 2023 15:16:44 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tcnrejnyw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 15:16:43 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38RDlpZW008192;
-        Wed, 27 Sep 2023 15:16:42 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabbnce06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 15:16:42 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38RFGdGj27460316
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Sep 2023 15:16:39 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5733420043;
-        Wed, 27 Sep 2023 15:16:39 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E06C20040;
-        Wed, 27 Sep 2023 15:16:39 +0000 (GMT)
-Received: from [9.152.224.54] (unknown [9.152.224.54])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Sep 2023 15:16:39 +0000 (GMT)
-Message-ID: <2e4bb42a-1a6c-476e-c982-c4d6cfdac63b@linux.ibm.com>
-Date:   Wed, 27 Sep 2023 17:16:38 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
- extension and loopback-ism
-To:     Wen Gu <guwen@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-Content-Language: en-US
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: D3TzLw2NxL2MMA3iaphM9MHelsWsd5FI
-X-Proofpoint-ORIG-GUID: bDksIiKl37y27rHIoRyXx7P-b45IYNCI
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 4 URL's were un-rewritten
+        Wed, 27 Sep 2023 11:18:04 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8FF121;
+        Wed, 27 Sep 2023 08:18:03 -0700 (PDT)
+Received: from [IPV6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf] (unknown [IPv6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 01CC266072FA;
+        Wed, 27 Sep 2023 16:18:00 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695827881;
+        bh=cZBkE6AW/WssOj4Sg/xEx/jkclNbZ+Y8K8ys56ebtZE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=nvQ+joYfwJYLudibSGOOzSGLGqZ+UOM4ouQwSmesmc4Rnn8MMjLisKOD74cHJrbNu
+         Hdg+Rf8A8LUaI0W5eqotS0MAgkfIn5Qp4gUveDyLdym4xfy/LWWxhWqw4zZ4OiLh3z
+         WbeER/mejIiJT6i33HVqeydwaHbS8FMoxV3q7qm7rxqGjXCCs4R5KRdzPfcoyO/A+j
+         xGdDtHGikNoAQCRVO8YB6ebSzYlqvmXfGbfa1wOyVr7fNJEL1Ufk3eVVqz+pbfttwN
+         0HyqihJMmzpZRvN3NvjmPtgAQDYMFA4+uWovXxx6T8wlJc6sGmwSBbKO1Eu/xBaMLI
+         W49r7tGjgdx+w==
+Message-ID: <3aaafe47-3733-a4d5-038d-a7e439309282@collabora.com>
+Date:   Wed, 27 Sep 2023 17:17:58 +0200
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_09,2023-09-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0
- phishscore=0 impostorscore=0 mlxlogscore=629 mlxscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270127
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+To:     Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
+Cc:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+ <20230911023038.30649-6-yong.wu@mediatek.com>
+ <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com>
+ <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
+ <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com>
+ <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
+ <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain>
+Content-Language: en-US
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,106 +88,91 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Le 27/09/2023 à 15:46, Joakim Bech a écrit :
+> On Mon, Sep 25, 2023 at 12:49:50PM +0000, Yong Wu (吴勇) wrote:
+>> On Tue, 2023-09-12 at 11:32 +0200, AngeloGioacchino Del Regno wrote:
+>>> Il 12/09/23 08:17, Yong Wu (吴勇) ha scritto:
+>>>> On Mon, 2023-09-11 at 11:29 +0200, AngeloGioacchino Del Regno
+>>>> wrote:
+>>>>> Il 11/09/23 04:30, Yong Wu ha scritto:
+>>>>>> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't
+>>>>>> work
+>>>>>> here since this is not a platform driver, therefore initialise
+>>>>>> the
+>>>>>> TEE
+>>>>>> context/session while we allocate the first secure buffer.
+>>>>>>
+>>>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>>>>>> ---
+>>>>>>     drivers/dma-buf/heaps/mtk_secure_heap.c | 61
+>>>>>> +++++++++++++++++++++++++
+>>>>>>     1 file changed, 61 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>> b/drivers/dma-
+>>>>>> buf/heaps/mtk_secure_heap.c
+>>>>>> index bbf1c8dce23e..e3da33a3d083 100644
+>>>>>> --- a/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>> @@ -10,6 +10,12 @@
+>>>>>>     #include <linux/err.h>
+>>>>>>     #include <linux/module.h>
+>>>>>>     #include <linux/slab.h>
+>>>>>> +#include <linux/tee_drv.h>
+>>>>>> +#include <linux/uuid.h>
+>>>>>> +
+>>>>>> +#define TZ_TA_MEM_UUID		"4477588a-8476-11e2-ad15-
+>>>>>> e41f1390d676"
+>>>>>> +
+>>>>> Is this UUID the same for all SoCs and all TZ versions?
+>>>> Yes. It is the same for all SoCs and all TZ versions currently.
+>>>>
+>>> That's good news!
+>>>
+>>> Is this UUID used in any userspace component? (example: Android
+>>> HALs?)
+>> No. Userspace never use it. If userspace would like to allocate this
+>> secure buffer, it can achieve through the existing dmabuf IOCTL via
+>> /dev/dma_heap/mtk_svp node.
+>>
+> In general I think as mentioned elsewhere in comments, that there isn't
+> that much here that seems to be unique for MediaTek in this patch
+> series, so I think it worth to see whether this whole patch set can be
+> made more generic. Having said that, the UUID is always unique for a
+> certain Trusted Application. So, it's not entirely true saying that the
+> UUID is the same for all SoCs and all TrustZone versions. It might be
+> true for a family of MediaTek devices and the TEE in use, but not
+> generically.
+>
+> So, if we need to differentiate between different TA implementations,
+> then we need different UUIDs. If it would be possible to make this patch
+> set generic, then it sounds like a single UUID would be sufficient, but
+> that would imply that all TA's supporting such a generic UUID would be
+> implemented the same from an API point of view. Which also means that
+> for example Trusted Application function ID's needs to be the same etc.
+> Not impossible to achieve, but still not easy (different TEE follows
+> different specifications) and it's not typically something we've done in
+> the past.
+>
+> Unfortunately there is no standardized database of TA's describing what
+> they implement and support.
+>
+> As an alternative, we could implement a query call in the TEE answering,
+> "What UUID does your TA have that implements secure unmapped heap?".
+> I.e., something that reminds of a lookup table. Then we wouldn't have to
+> carry this in UAPI, DT or anywhere else.
 
-On 24.09.23 17:16, Wen Gu wrote:
-> Wen Gu (18):
->   net/smc: decouple ism_dev from SMC-D device dump
->   net/smc: decouple ism_dev from SMC-D DMB registration
->   net/smc: extract v2 check helper from SMC-D device registration
->   net/smc: support SMCv2.x supplemental features negotiation
->   net/smc: reserve CHID range for SMC-D virtual device
->   net/smc: extend GID to 128bits only for virtual ISM device
->   net/smc: disable SEID on non-s390 architecture
->   net/smc: enable virtual ISM device feature bit
->   net/smc: introduce SMC-D loopback device
->   net/smc: implement ID-related operations of loopback
->   net/smc: implement some unsupported operations of loopback
->   net/smc: implement DMB-related operations of loopback
->   net/smc: register loopback device as SMC-Dv2 device
->   net/smc: add operation for getting DMB attribute
->   net/smc: add operations for DMB attach and detach
->   net/smc: avoid data copy from sndbuf to peer RMB in SMC-D
->   net/smc: modify cursor update logic when sndbuf mapped to RMB
->   net/smc: add interface implementation of loopback device
-> 
->  drivers/s390/net/ism_drv.c    |  20 +-
->  include/net/smc.h             |  32 ++-
->  include/uapi/linux/smc.h      |   3 +
->  include/uapi/linux/smc_diag.h |   2 +
->  net/smc/Kconfig               |  13 ++
->  net/smc/Makefile              |   2 +-
->  net/smc/af_smc.c              |  88 ++++++--
->  net/smc/smc.h                 |   7 +
->  net/smc/smc_cdc.c             |  56 ++++-
->  net/smc/smc_cdc.h             |   1 +
->  net/smc/smc_clc.c             |  64 ++++--
->  net/smc/smc_clc.h             |  10 +-
->  net/smc/smc_core.c            | 111 +++++++++-
->  net/smc/smc_core.h            |   9 +-
->  net/smc/smc_diag.c            |  11 +-
->  net/smc/smc_ism.c             | 100 ++++++---
->  net/smc/smc_ism.h             |  24 ++-
->  net/smc/smc_loopback.c        | 489 ++++++++++++++++++++++++++++++++++++++++++
->  net/smc/smc_loopback.h        |  54 +++++
->  net/smc/smc_pnet.c            |   4 +-
->  20 files changed, 996 insertions(+), 104 deletions(-)
->  create mode 100644 net/smc/smc_loopback.c
->  create mode 100644 net/smc/smc_loopback.h
+Joakim does a TA could offer a generic API and hide the hardware specific
+details (like kernel uAPI does for drivers) ?
 
+Aside that question I wonder what are the needs to perform a 'secure' playback.
+I have in mind 2 requirements:
+- secure memory regions, which means configure the hardware to ensure that only
+dedicated hardware blocks and read or write into it.
+- set hardware blocks in secure modes so they access to secure memory.
+Do you see something else ?
 
-Hello Wen Gu,
+Regards,
+Benjamin
 
-I applied and built your patches and noticed some things that you may want to consider in the next version:
-
-Series should be split up [2]
-
-Several lines exceed 80 columns [1][3]
-
-'git clang-format HEAD~18' finds several formatting issues.
-	Maybe not all of them need to be fixed.
-
-codespell *.patch
-0006-net-smc-extend-GID-to-128bits-only-for-virtual-ISM-d.patch:7: protocal ==> protocol
-
-With your patches applied I get some new warnings [4]:
-Seems there are some ntoh conversions missing
-
-  CHECK   net/smc/af_smc.c
-net/smc/af_smc.c:723:32: warning: cast to restricted __be64
-net/smc/af_smc.c:1427:52: warning: cast to restricted __be64
-  CHECK   net/smc/smc_pnet.c
-  CHECK   net/smc/smc_ib.c
-  CHECK   net/smc/smc_clc.c
-net/smc/smc_clc.c:954:72: warning: incorrect type in argument 1 (different base types)
-net/smc/smc_clc.c:954:72:    expected unsigned short [usertype] chid
-net/smc/smc_clc.c:954:72:    got restricted __be16 [usertype] chid
-net/smc/smc_clc.c:1050:29: warning: incorrect type in assignment (different base types)
-net/smc/smc_clc.c:1050:29:    expected unsigned long long [usertype] gid
-net/smc/smc_clc.c:1050:29:    got restricted __be64 [usertype]
-net/smc/smc_clc.c:1051:31: warning: incorrect type in assignment (different base types)
-net/smc/smc_clc.c:1051:31:    expected unsigned long long [usertype] token
-net/smc/smc_clc.c:1051:31:    got restricted __be64 [usertype]
-
-
-[1] linux/Documentation/process/coding-style.rst
-[2] https://www.kernel.org/doc/html/v6.3/process/maintainer-netdev.html?highlight=network
-[3] scripts/checkpatch.pl --strict --max-line-length=80 --git HEAD-18
-[4] make C=2 CF=-D__CHECK_ENDIAN__ M=net/smc -Wunused-function -Wimplicit-fallthrough -Wincompatible-function-pointer-types-strict
-
-
-
-When I installed the patches, I noticed that 
-> smcd info
-showed an SEID, even though I had no ISM device --> good
-
-
-> smcd device
-FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
-0000 0                   0000   Yes       2
-
-This needs some improvements.., but I'm not sure what is the best way to display virtual smcd interfaces in the smc-tools.
-
-
-I was able to do SMC transfers via the smcd-loopback feature :-D
-
-
+>
