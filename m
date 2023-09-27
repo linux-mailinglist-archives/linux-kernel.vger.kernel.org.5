@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7489B7B0C2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374EA7B0C32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjI0SuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S229536AbjI0Swa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI0SuA (ORCPT
+        with ESMTP id S229437AbjI0Sw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:50:00 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176598F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:49:59 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4060b623e64so35422375e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695840597; x=1696445397; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1itOLkylDTQc/2A2yBLCkbYqw9eu/lNAc5CXGwFbJ0=;
-        b=P+cDXPaCqYn7aKtatZq5pA3wPKzCmQvyrgQvn5M+VIwvojYaDmKkd6JKtxo+B0MuSw
-         aGnAf8TwaXukDXXRn7W6H7iLQCYu4qTAlJLDvhf0rBICMiPKbz2xPuKWPxL0xVB+435W
-         p/ieyeZBfNFIMhjPA8Lc7ht/jVetmatd/jBPXM9MPaaIQHAXlTF4pzAs0WtxjnwQCin/
-         5GQ+EMaKAebWcRc3Pzz31WQC+TjPlsYEVLA4xG0dthqoNd+j/wIhYzVU4IIgyHRw+uB2
-         TE8p5l8C7KOc1K1l+cXdw1ElZGTgMO/f5qWCg16C45NBkKUmOX2ZAJlFCj19TU4y5Cc5
-         de1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695840597; x=1696445397;
-        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1itOLkylDTQc/2A2yBLCkbYqw9eu/lNAc5CXGwFbJ0=;
-        b=Ptn9HlVx9bBvn+mHhixY/lQXffL57qXZ4dtSwV7EcLyz8JzTMpf4Su3LpnBK28Adf3
-         QaCoUbf1SxtDQjRp8hHf0Z+msJzYcHk7GvkitUhAu1XsyffFMxjo8v4a5NcFXUvSJTQg
-         ALYqKEd9IyBAXkpcf679BBAnrqLau4DN3jQOtKLuSJwFbPAeNryFXgpheyP9CNFxRcw6
-         HNTLM7XT0WZQIyhbgtt9LW965O36yXveAF+v1AIWtpElu8gbd/IGJPP+9CTsNYs7MCje
-         Z0uLmcWoi/2r/KzngbCsLFjyGxOtH1bDqqRYNB2aKT5SGFA7CU7X6hvaTWJbHMdQYzNh
-         XddA==
-X-Gm-Message-State: AOJu0YwJ/Yr3I78k/aIU3nrTBtaLoqqleQDshXRNbKh7a3cl/nLFePgd
-        qppv5/0zpW0vr7Sx/o0JOPE=
-X-Google-Smtp-Source: AGHT+IGeFdsdEIFmk8RA4GwxSOTEPxHmjmcwLkojsHT6AEJXOvOw35P8cqeCoxyKpOpJNO67PqbsrQ==
-X-Received: by 2002:a05:600c:2044:b0:405:3941:ce2c with SMTP id p4-20020a05600c204400b004053941ce2cmr5457597wmg.6.1695840597222;
-        Wed, 27 Sep 2023 11:49:57 -0700 (PDT)
-Received: from yoga ([2001:638:904:ffe5:5742:c50f:bd0:6aa6])
-        by smtp.gmail.com with ESMTPSA id p19-20020a05600c1d9300b0040531f5c51asm18515027wms.5.2023.09.27.11.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 11:49:56 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 20:49:50 +0200
-From:   Sven Frotscher <sven.frotscher@gmail.com>
-Subject: Re: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-To:     August Wikerfors <git@augustwikerfors.se>
-Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        mario.limonciello@amd.com, regressions@lists.linux.dev
-Message-Id: <2ZQN1S.P7M0RX306S1D3@gmail.com>
-In-Reply-To: <e8479eff-a5cb-41b0-8bf6-bcc20ccbecfb@augustwikerfors.se>
-References: <R5KN1S.18M6QDS4T9PY1@gmail.com>
-        <e8479eff-a5cb-41b0-8bf6-bcc20ccbecfb@augustwikerfors.se>
-X-Mailer: geary/44.1
+        Wed, 27 Sep 2023 14:52:28 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D4F4;
+        Wed, 27 Sep 2023 11:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1695840744;
+        bh=8oZRiC8TvCCvbc1U3s09oWhk9JsHYoBMdt9cosRWsYM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=UfKTNzBqFvwTJs2Pwg4V20sG3VT8gvUMR6av4BWW2rXDtje/mTHc9piC6RREUTJDe
+         g4QNSItmcjQVRmyJ2mM/VgrmKkS8gWwvDJGij3KebLhlsezGogEYq3EKHbrAc/6Z2h
+         AxHqNRo7gbrTpAOwu9o/dmNmqyWYKWhfYAK/YlPU=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Wed, 27 Sep 2023 20:52:21 +0200
+Subject: [PATCH] docs: submitting-patches: encourage direct notifications
+ to reviewers
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230927-docs-cc-reviewer-v1-1-2af46ceb2d3c@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAOR5FGUC/x2MQQqAIBBFryKzbsAUirpKtDAdazYaChWId89aP
+ v77r0CmxJRhFgUSXZw5hgZ9J8AeJuyE7BqDkkrLSQ3oos1oLX4y3ZSwDZsetTReaWi3M5Hn508
+ ua60vldVHM2IAAAA=
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695840741; l=1607;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=8oZRiC8TvCCvbc1U3s09oWhk9JsHYoBMdt9cosRWsYM=;
+ b=MnRSaxqNEAbHX1QM+QeisRMxytq2IWJcRAbTtPLCweS9V5xyi6EpajjQePm3w+NO2XQyO60Wv
+ CTyCnhRYc6oCgMpoJblHJw8yM9hwZiBgy66btUojD74RSR6MgFJ4l7M
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Reviewers may not receive new versions of patches via the lists.
+Without a directed notification to them they might miss those new
+versions.
 
- > > Signed-off-by: Sven Frotscher <sven.frotscher@gmail.com>
- > Since this fixes a regression caused by commit c008323fe361 which has
- > been backported to stable, please add "Fixes:" and "Cc:" tags above 
-the
- > "Signed-off-by:" tag to ensure the fix also gets backported in a 
-timely
- > manner [1]:
- >
- > Fixes: c008323fe361 ("ASoC: amd: yc: Fix a non-functional mic on 
-Lenovo 82SJ")
- > Cc: stable@vger.kernel.org
-I will.
+This is frustrating for the patch developers as they don't receive their
+earned Reviewed-by.
+It is also frustrating for the reviewers, as they might think their
+review got ignored or they have to dig up new versions from the archive
+manually.
 
- > > +>..>...>...DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
- > > +>..>...>...DMI_MATCH(DMI_PRODUCT_NAME, "82YM"),
- > Your e-mail client seems to have mangled the leading whitespace here,
- > which will prevent the patch from applying cleanly.
-My e-mail client isn't the problem here, but my Vim syntax highlighting
-for tabs... I should've noticed that when copy-pasting from test e-mail
-to patch e-mail via Vim.
+So encourage patch submitters to make sure that all reviewers get
+notified also when no Reviewed-by was issued yet.
 
-Should I reply to this thread with a [PATCH v2] message or create a new
-thread?
-Anyway, thank you for pointing out these issues.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ Documentation/process/submitting-patches.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Regards,
-Sven
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index efac910e2659..8dca82dfcd69 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -327,6 +327,8 @@ politely and address the problems they have pointed out.  When sending a next
+ version, add a ``patch changelog`` to the cover letter or to individual patches
+ explaining difference against previous submission (see
+ :ref:`the_canonical_patch_format`).
++Notify reviewers and other involved people about new versions of your patch by
++adding them to the patches CC list.
+ 
+ See Documentation/process/email-clients.rst for recommendations on email
+ clients and mailing list etiquette.
 
+---
+base-commit: 633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+change-id: 20230926-docs-cc-reviewer-023b3730af23
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
