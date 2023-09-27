@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9BD7B048D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCA97B0494
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjI0Mn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S231700AbjI0Mph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjI0Mn1 (ORCPT
+        with ESMTP id S231378AbjI0Mpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:43:27 -0400
+        Wed, 27 Sep 2023 08:45:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51A6E6;
-        Wed, 27 Sep 2023 05:43:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E8D0C433C8;
-        Wed, 27 Sep 2023 12:43:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BC7C0;
+        Wed, 27 Sep 2023 05:45:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7078C433C8;
+        Wed, 27 Sep 2023 12:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695818606;
-        bh=hot0489NCeMODOQPnfql7FbJn28GF6c4vF2S/pF88X4=;
+        s=k20201202; t=1695818734;
+        bh=3hrngeipW8QYxZDrT1J17sJTEycYuyG8C4Hf6g4f9mk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tyWPcsVLiZasHkrVXcm9nVnluFasSlBWl5wPJQBuv+eho/mQs2sCvJD+87VwOWmpf
-         0JclVCe+5GHl9GEkjM0aTOmQN9XqmW0zIDD/bDtRMUMx3FLjK0qwsgv2GkJHCGzZVt
-         vzB1HDekfqQROvqSd/RQbhjJ9N/5KhAqMDTD1jT113/dcGpJOfR8lgitEe9S5yn/u6
-         nK1VB7/iUTzFXaxKAkdTaaWxwXDaY1LOzWfmOb8xjq7Cw5NtuOHivPuABzN6Fh4iG9
-         /l2LruT31kaTAoa/cEIgOOe24Ir/M8POKw9CTlYbboazOmH35rDosXOdHnsR6MRT2l
-         qCwZUpWUnJ+yA==
-Date:   Wed, 27 Sep 2023 14:43:17 +0200
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        alim.akhtar@samsung.com, bvanassche@acm.org, avri.altman@wdc.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, cros-qcom-dts-watchers@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH V3 3/4] arm64: dts: qcom: sc7280: Add UFS nodes for
- sc7280 IDP board
-Message-ID: <20230927124317.GC18050@thinkpad>
-References: <20230927081858.15961-1-quic_nitirawa@quicinc.com>
- <20230927081858.15961-4-quic_nitirawa@quicinc.com>
+        b=Hz53PaQiWaKZ/1Zs1EME4EwCfBwffMjO/IjsKksewWqoLHutiYc6XcRIj9MYLYPOJ
+         JE46L46NLZjr3fVz3pnh6cB6RzGHdJzrZJJVyUeTKig7geGpJ/2x2pVINuZ+5dNXmA
+         zMNSdGYiOLJHin3kXKixuL8pvLjIQExHt9swOF7zRbdolSven+ki/OY4thj3Ne5zl0
+         HDrzzPayoA8zjQDIbDX9QSg7wAMsHWT1E734sJ+bBpR1N7eHSMC+6nBFGSjpbKFDaq
+         61/7XqBk6zMhSEhC0Ui6U67zSYEUhIIud16gGZcFYmengkt68rRH1ueSYjdErCQZD+
+         ioRDU3XLX/6FA==
+Date:   Wed, 27 Sep 2023 14:45:31 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Saravanan Sekar <saravanan@linumiz.com>
+Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@roeck-us.net, jdelvare@suse.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] regulator: dt-bindings: Add mps,mpq2286
+ power-management IC
+Message-ID: <ZRQj63bNWE5/rPHj@finisterre.sirena.org.uk>
+References: <20230927033953.1503440-1-saravanan@linumiz.com>
+ <20230927033953.1503440-3-saravanan@linumiz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="T0rU25F2o9sf0/UW"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927081858.15961-4-quic_nitirawa@quicinc.com>
+In-Reply-To: <20230927033953.1503440-3-saravanan@linumiz.com>
+X-Cookie: Save energy:  Drive a smaller shell.
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,52 +55,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 01:48:57PM +0530, Nitin Rawat wrote:
-> Add UFS host controller and PHY nodes for sc7280 IDP board.
-> 
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+--T0rU25F2o9sf0/UW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Mani
+On Wed, Sep 27, 2023 at 09:09:52AM +0530, Saravanan Sekar wrote:
+> Document mpq2286 power-management IC
 
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 2ff549f4dc7a..a0059527d9e4 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -499,6 +499,25 @@
->  	status = "okay";
->  };
-> 
-> +&ufs_mem_hc {
-> +	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
-> +	vcc-supply = <&vreg_l7b_2p9>;
-> +	vcc-max-microamp = <800000>;
-> +	vccq-supply = <&vreg_l9b_1p2>;
-> +	vccq-max-microamp = <900000>;
-> +	vccq2-supply = <&vreg_l9b_1p2>;
-> +	vccq2-max-microamp = <900000>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&ufs_mem_phy {
-> +	vdda-phy-supply = <&vreg_l10c_0p8>;
-> +	vdda-pll-supply = <&vreg_l6b_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
->  &usb_1 {
->  	status = "okay";
->  };
-> --
-> 2.17.1
-> 
+Acked-by: Mark Brown <broonie@kernel.org>
 
--- 
-மணிவண்ணன் சதாசிவம்
+--T0rU25F2o9sf0/UW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUUI+oACgkQJNaLcl1U
+h9DEfwf+JvfaFxh8GiR0Yh5rN8HjOavY+Bhl3rnfzmUzMBYk4XbIQgKzKIMv5KQq
+llUScvj8FvQGBT2tKE2Iv/bG/wcD0TIG8qbqFb8e+uaB8ef3bmJpglWCGVtwxXQn
+v+SqFAlVKa9IAWZbXqH4N07UBffJEmwu1vK3boVoNPokkPVab8i2rQQcE922v0q9
+J6DMYxCUUcmNV+igGkp1r4k6dP93nL3lcvueCnYjsj3CYbOVQdc71hAiBRCLl+sT
+ZsdlFdehyQYbuGrFzQ1fYdxDaoEX+29ZWHlJFETtODULMuPmZm8JtpcZWqelsTUe
+0V6DwtqFZLm5tG10HhZ979T9yzS3Xw==
+=aDqW
+-----END PGP SIGNATURE-----
+
+--T0rU25F2o9sf0/UW--
