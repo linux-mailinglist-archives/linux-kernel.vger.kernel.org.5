@@ -2,86 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9817B03D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59057B03E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjI0MTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        id S231639AbjI0MYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjI0MTR (ORCPT
+        with ESMTP id S231545AbjI0MYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:19:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F399FC;
-        Wed, 27 Sep 2023 05:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695817156; x=1727353156;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dQlnGg2+PmM8LyPFXpD+spP8XXKe98dRUKKao682eSU=;
-  b=S+8wmEnbjrd1A0iNKPgZNekJQMD8adLtbA3zAdy/SY0pdYSO/1sRvXWD
-   VQEX7JMvPsKob5yO2YsZgFgRcALV5YEbLaIgOJnbrO0OVoqXHEKSKBbfH
-   FnxFCPttR7i+cylteB9TYQ+dG1SLfTgwoiL8KsaRf+9Sk41tWaQOsdkU1
-   XLwvtdfvxDRfN7kzQ8qmCsS+nBufFMzzpfXovb+Vg6OLqhLyRFMkt0+gq
-   KKgZmpVfYKWQZ0mSvEmnraRkNjlbu6fTytA7w/1zm/ps8Ubc4X8gPw/Fd
-   wpvaB802+ubFADi935gmcGvKcDwKCOF+epStrcWJ19Hl1HPEVSo6e0Ipo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381711346"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="381711346"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:19:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="752551892"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="752551892"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:19:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qlTVX-00000000sex-1N2v;
-        Wed, 27 Sep 2023 15:19:11 +0300
-Date:   Wed, 27 Sep 2023 15:19:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: denverton: Enable platform device in the
- absence of ACPI enumeration
-Message-ID: <ZRQdvrdm4UtDs86x@smile.fi.intel.com>
-References: <20230926190818.931951-1-andriy.shevchenko@linux.intel.com>
- <20230927074355.GZ3208943@black.fi.intel.com>
+        Wed, 27 Sep 2023 08:24:44 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C441112A;
+        Wed, 27 Sep 2023 05:24:43 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38RCOcJQ044556;
+        Wed, 27 Sep 2023 07:24:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695817478;
+        bh=omWcGU25bqImfMqZN9cTZsR6dAIvmYs84CS37n8fKBY=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=BIlGz6Lod33szZFkMmplYjTR+9We0ETC540sgLvRApmH7N+WiSao9F90d8XJKRNGx
+         nn9qBLLqfGfEHVFtIehAn4Xvjw/ibQsGc3vYysVz2B6zccwNRtLS5HwZKR7a4FsgqQ
+         8b6uHEdWlxNyRxRhC5ui74ZrGXNgDl/xjz9RK8e4=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38RCOcdP031017
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Sep 2023 07:24:38 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Sep 2023 07:24:38 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Sep 2023 07:24:37 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38RCObjp049624;
+        Wed, 27 Sep 2023 07:24:37 -0500
+Date:   Wed, 27 Sep 2023 07:24:37 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+CC:     <vigneshr@ti.com>, <a-bhatia1@ti.com>, <afd@ti.com>,
+        <rogerq@kernel.org>, <s-vadapalli@ti.com>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
+ DP-bridge node
+Message-ID: <20230927122437.4a76enao7xqyw7hp@retreat>
+References: <20230927121157.278592-1-j-choudhary@ti.com>
+ <20230927121157.278592-4-j-choudhary@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230927074355.GZ3208943@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230927121157.278592-4-j-choudhary@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:43:55AM +0300, Mika Westerberg wrote:
-> On Tue, Sep 26, 2023 at 10:08:18PM +0300, Andy Shevchenko wrote:
-> > This is to cater the need for non-ACPI system whereby
-> > a platform device has to be created in order to bind
-> > with the Denverton pinctrl platform driver.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 17:41-20230927, Jayesh Choudhary wrote:
+> From: Rahul T R <r-ravikumar@ti.com>
 > 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
+> same as DSS IP in J721E, so same compatible is being used.
+> The DP is Cadence MHDP8546.
+> 
+> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 61 ++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index a0e4d8808693..5ae11b0d5d0a 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -1772,4 +1772,65 @@ c71_3: dsp@67800000 {
+>  		firmware-name = "j784s4-c71_3-fw";
+>  		status = "disabled";
+>  	};
+> +
+> +	mhdp: bridge@a000000 {
+> +		compatible = "ti,j721e-mhdp8546";
+> +		reg = <0x0 0xa000000 0x0 0x30a00>,
+> +		      <0x0 0x4f40000 0x0 0x20>;
+> +		reg-names = "mhdptx", "j721e-intg";
+> +		clocks = <&k3_clks 217 11>;
+> +		interrupt-parent = <&gic500>;
+> +		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
+> +		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
 
-Pushed to my review and testing queue, thanks!
+Document why disabled.
+
+> +
+> +		dp0_ports: ports {
+> +		};
+
+Document why empty node
+
+> +	};
+> +
+> +	dss: dss@4a00000 {
+> +		compatible = "ti,j721e-dss";
+> +		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
+> +		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
+> +		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
+> +		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
+> +		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
+> +		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
+> +		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
+> +		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
+> +		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
+> +		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
+> +		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
+> +		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
+> +		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
+> +		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
+> +		reg-names = "common_m", "common_s0",
+> +			    "common_s1", "common_s2",
+> +			    "vidl1", "vidl2","vid1","vid2",
+> +			    "ovr1", "ovr2", "ovr3", "ovr4",
+> +			    "vp1", "vp2", "vp3", "vp4",
+> +			    "wb";
+> +		clocks = <&k3_clks 218 0>,
+> +			 <&k3_clks 218 2>,
+> +			 <&k3_clks 218 5>,
+> +			 <&k3_clks 218 14>,
+> +			 <&k3_clks 218 18>;
+> +		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
+> +		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
+> +		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-names = "common_m",
+> +				  "common_s0",
+> +				  "common_s1",
+> +				  "common_s2";
+> +		status = "disabled";
+
+Same
+
+> +
+> +		dss_ports: ports {
+
+Same
+
+> +		};
+> +	};
+>  };
+> -- 
+> 2.25.1
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
