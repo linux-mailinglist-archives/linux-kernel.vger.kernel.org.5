@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2497B0398
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9367B039A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjI0MMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S231627AbjI0MMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbjI0MMQ (ORCPT
+        with ESMTP id S229901AbjI0MMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:12:16 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E4C193;
+        Wed, 27 Sep 2023 08:12:17 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8EF198;
         Wed, 27 Sep 2023 05:12:15 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38RCC3WT108068;
-        Wed, 27 Sep 2023 07:12:03 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38RCC59W034821;
+        Wed, 27 Sep 2023 07:12:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695816723;
-        bh=H1Dfo6R5Ha/McliEpjRmw3ItRnvO4jRS5D+j7YbojKk=;
+        s=ti-com-17Q1; t=1695816725;
+        bh=tLWRmtZ8Mt7Im0kdiwSUXkf9Qn/VuUInhf1GZgg2s/Y=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=cI/JtiXE96UgjNTTUvo3nEXLaLiJFr+5b4ZK7cYUn9Mv31SqehnIbQykujjiG/83T
-         E1LlnxNMqzlmrV986w9Tc5e4+dVm0E9MGNlBaWDeoiklV2M63HBI5vaQMofGZ5XBfC
-         TgtfiyYZjaIgTF7n3gx/KcB0mA97fvWi68YljhXk=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38RCC3MH097596
+        b=ak29DrP7RZHHrFSLe8KyQASq92WDb7712aeo4c1pQ/6CMQMdjALiGcl6FKTWO7wah
+         VbCPUH7QGxy+DLA8zxfRLwITV6xGS1oStUpgg1sPqBCyEsMaoJA8KZnltmOHBm3qyK
+         +dZx+DQ0ntdbY0JPKlpOBh/ApMZk1HClB4oTmFgY=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38RCC5CM002628
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Sep 2023 07:12:03 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 27 Sep 2023 07:12:05 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
- Sep 2023 07:12:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2023 07:12:04 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 27 Sep 2023 07:12:03 -0500
+ Frontend Transport; Wed, 27 Sep 2023 07:12:04 -0500
 Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38RCC21G102013;
-        Wed, 27 Sep 2023 07:12:02 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38RCC3EM008219;
+        Wed, 27 Sep 2023 07:12:04 -0500
 From:   Jayesh Choudhary <j-choudhary@ti.com>
 To:     <nm@ti.com>, <vigneshr@ti.com>, <a-bhatia1@ti.com>
 CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
@@ -48,9 +48,9 @@ CC:     <afd@ti.com>, <rogerq@kernel.org>, <s-vadapalli@ti.com>,
         <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
-Subject: [PATCH v10 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
-Date:   Wed, 27 Sep 2023 17:41:55 +0530
-Message-ID: <20230927121157.278592-4-j-choudhary@ti.com>
+Subject: [PATCH v10 4/5] arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
+Date:   Wed, 27 Sep 2023 17:41:56 +0530
+Message-ID: <20230927121157.278592-5-j-choudhary@ti.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230927121157.278592-1-j-choudhary@ti.com>
 References: <20230927121157.278592-1-j-choudhary@ti.com>
@@ -70,88 +70,172 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rahul T R <r-ravikumar@ti.com>
 
-Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
-same as DSS IP in J721E, so same compatible is being used.
-The DP is Cadence MHDP8546.
+Enable display for J784S4 EVM.
+
+Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
+DP HPD. Add the clock frequency for serdes_refclk.
+
+Add the endpoint nodes to describe connection from:
+DSS => MHDP => DisplayPort connector.
+
+Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+required for controlling DP power. Set status for all required nodes
+for DP-0 as "okay".
 
 Signed-off-by: Rahul T R <r-ravikumar@ti.com>
-[j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+[j-choudhary@ti.com: move all the changes together to enable DP-0 in EVM]
 Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 61 ++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 124 +++++++++++++++++++++++
+ 1 file changed, 124 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index a0e4d8808693..5ae11b0d5d0a 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -1772,4 +1772,65 @@ c71_3: dsp@67800000 {
- 		firmware-name = "j784s4-c71_3-fw";
- 		status = "disabled";
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index 5991c2e1d994..39b836fe97de 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -249,6 +249,28 @@ vdd_sd_dv: regulator-TLV71033 {
+ 		states = <1800000 0x0>,
+ 			 <3300000 0x1>;
  	};
 +
-+	mhdp: bridge@a000000 {
-+		compatible = "ti,j721e-mhdp8546";
-+		reg = <0x0 0xa000000 0x0 0x30a00>,
-+		      <0x0 0x4f40000 0x0 0x20>;
-+		reg-names = "mhdptx", "j721e-intg";
-+		clocks = <&k3_clks 217 11>;
-+		interrupt-parent = <&gic500>;
-+		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
-+		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
-+		status = "disabled";
-+
-+		dp0_ports: ports {
-+		};
++	dp0_pwr_3v3: regulator-dp0-prw {
++		compatible = "regulator-fixed";
++		regulator-name = "dp0-pwr";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&exp4 0 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
 +	};
 +
-+	dss: dss@4a00000 {
-+		compatible = "ti,j721e-dss";
-+		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
-+		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
-+		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
-+		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
-+		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
-+		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
-+		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
-+		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
-+		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
-+		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
-+		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
-+		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
-+		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
-+		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
-+		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
-+		reg-names = "common_m", "common_s0",
-+			    "common_s1", "common_s2",
-+			    "vidl1", "vidl2","vid1","vid2",
-+			    "ovr1", "ovr2", "ovr3", "ovr4",
-+			    "vp1", "vp2", "vp3", "vp4",
-+			    "wb";
-+		clocks = <&k3_clks 218 0>,
-+			 <&k3_clks 218 2>,
-+			 <&k3_clks 218 5>,
-+			 <&k3_clks 218 14>,
-+			 <&k3_clks 218 18>;
-+		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
-+		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
-+		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "common_m",
-+				  "common_s0",
-+				  "common_s1",
-+				  "common_s2";
-+		status = "disabled";
++	dp0: connector-dp0 {
++		compatible = "dp-connector";
++		label = "DP0";
++		type = "full-size";
++		dp-pwr-supply = <&dp0_pwr_3v3>;
 +
-+		dss_ports: ports {
++		port {
++			dp0_connector_in: endpoint {
++				remote-endpoint = <&dp0_out>;
++			};
 +		};
 +	};
  };
+ 
+ &main_pmx0 {
+@@ -289,6 +311,19 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
+ 			J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
+ 		>;
+ 	};
++
++	dp0_pins_default: dp0-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x0cc, PIN_INPUT, 12) /* (AM37) SPI0_CS0.DP0_HPD */
++		>;
++	};
++
++	main_i2c4_pins_default: main-i2c4-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
++			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
++		>;
++	};
+ };
+ 
+ &wkup_pmx2 {
+@@ -862,3 +897,92 @@ adc {
+ 		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+ 	};
+ };
++
++&serdes_refclk {
++	status = "okay";
++	clock-frequency = <100000000>;
++};
++
++&dss {
++	status = "okay";
++	assigned-clocks = <&k3_clks 218 2>,
++			  <&k3_clks 218 5>,
++			  <&k3_clks 218 14>,
++			  <&k3_clks 218 18>;
++	assigned-clock-parents = <&k3_clks 218 3>,
++				 <&k3_clks 218 7>,
++				 <&k3_clks 218 16>,
++				 <&k3_clks 218 22>;
++};
++
++&serdes_wiz4 {
++	status = "okay";
++};
++
++&serdes4 {
++	status = "okay";
++	serdes4_dp_link: phy@0 {
++		reg = <0>;
++		cdns,num-lanes = <4>;
++		#phy-cells = <0>;
++		cdns,phy-type = <PHY_TYPE_DP>;
++		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
++			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
++	};
++};
++
++&mhdp {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dp0_pins_default>;
++	phys = <&serdes4_dp_link>;
++	phy-names = "dpphy";
++};
++
++&dss_ports {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	port@0 {
++		reg = <0>;
++
++		dpi0_out: endpoint {
++			remote-endpoint = <&dp0_in>;
++		};
++	};
++};
++
++&main_i2c4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c4_pins_default>;
++	clock-frequency = <400000>;
++
++	exp4: gpio@20 {
++		compatible = "ti,tca6408";
++		reg = <0x20>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
++};
++
++&dp0_ports {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	port@0 {
++		reg = <0>;
++
++		dp0_in: endpoint {
++			remote-endpoint = <&dpi0_out>;
++		};
++	};
++
++	port@4 {
++		reg = <4>;
++
++		dp0_out: endpoint {
++			remote-endpoint = <&dp0_connector_in>;
++		};
++	};
++};
 -- 
 2.25.1
 
