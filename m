@@ -2,188 +2,659 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DE07AFAED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4707AFAF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbjI0GT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S229814AbjI0GVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjI0GTA (ORCPT
+        with ESMTP id S229965AbjI0GVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:19:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405D597;
-        Tue, 26 Sep 2023 23:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695795539; x=1727331539;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ujq6kvxXA8855c8JWhbRz7xNKsYhxAlx/fG5SjhbZCk=;
-  b=f7fPUZtTmks4rEIyhKopwkFtKtXNQ8AvI+5I959AtUc8P5qMm9VklwCj
-   vOIjqcIEBiHD7G5Ha/7ORBybuSi2G05gBjnxAOb6UV7X8wsWNWinJ0/9w
-   JF46pGUmXhJSuXFGen3eDwDfd9CAb06Qx1W/ySUEUzR3ZPaA7CR7HFZ99
-   EVeiUTbLXd/9H8DTUzXPwaSJEuoql7gBUMXZZsCri5VHmPAUrxkNiaxD7
-   6vWsLGWY76VDBJHcIY+dHYb91BjsW4CkUBUZMW1BtmDEp/MOPqKW4blEd
-   oLBGokK6514xPR/zHevyJ5VE0pGvylnOmiPk69C9u8XCSPtkb7iVKIG4e
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="372076811"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="372076811"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:18:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="698740316"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="698740316"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 23:18:58 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:18:58 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:18:57 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 23:18:57 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:18:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eGyuWUnaMk+oPPsJf2KwJL7KOdfaq+4cY7+Yjn5bG2BDxjSzl/sO193OOsRAOMhNfgQOZ8KMhzgJDD/+uweO1NdHayMEviLHCB92YDUzCpkIKmEV5KS6W8cDliUHArxRsTNuwZWWDjSmTsc07ZYe0GZ+trdexz9lS+N1qrmO2mCBG1cFLNR7wqT51rkIYMpM6fsCVX+KVYoLYgwtddJz/Jo9xoW1AbhJhSDXkV+CD0P6BUfJhVURqYBChvmo1XQrRuJxrUDZXPAfa7Nm4/Gav8jwIzeLA3XAgBNcp2g1QeDV4pgjjSD3KklGK+fe22MgWIW/hJamQAPRaL+pwezYxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ujq6kvxXA8855c8JWhbRz7xNKsYhxAlx/fG5SjhbZCk=;
- b=NLi3+BbmtGDnm8vplHlOGh3X/IpQ5P5xN8BJdStXr5TpqAHxMkWn1vbmbLzxQlTjQDtMNgoy1jTwdjNgBwMdnb8IdseRg8M7QJXYiIP4LltPcJ7sVVDZ4VUOvenRNjaPh18p7HmJ8kAzggfAvEo7foa7twpjxLAHm3TLOxjq67+x02TSJrHPHTPI3/3UQto8CO9Cpd5y8o+5wL5J39a9Qpgf8C5d9IVCgDp18eeQZ8cfNwtxQbNgnjAThLQscfgkq9xXTeWW6ylGaGiXWxp41R2j8yfx7DCHjaTXSgNmXEM3hzPVek0goFFTX0S5rzhyRTa3l++QwQhIZhKV1KchPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SJ0PR11MB5005.namprd11.prod.outlook.com (2603:10b6:a03:2d3::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
- 2023 06:18:40 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 06:18:40 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: RE: [PATCH v5 01/11] iommufd: Add data structure for Intel VT-d
- stage-1 domain allocation
-Thread-Topic: [PATCH v5 01/11] iommufd: Add data structure for Intel VT-d
- stage-1 domain allocation
-Thread-Index: AQHZ7GDojJPBJC/zbEmNoO8WS09m+bAuPAdQ
-Date:   Wed, 27 Sep 2023 06:18:40 +0000
-Message-ID: <BN9PR11MB5276B6897BC5EBF4B77CC0A48CC2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230921075431.125239-1-yi.l.liu@intel.com>
- <20230921075431.125239-2-yi.l.liu@intel.com>
-In-Reply-To: <20230921075431.125239-2-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ0PR11MB5005:EE_
-x-ms-office365-filtering-correlation-id: a2a0cc49-3e31-43df-aa98-08dbbf21979c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IEVrQi42Y8Ig/AiqM0Zq/T/r60LPT9ZdjGlXqZEbfPPXjTvp91xIJeVyh1lZyDkFnYOOldFJq5h4ug3UGVZAzERRv74+SR0d2b2GCMUJRZxAcmLebXCfOhi+9UmhmUNzHEunIha8eEpeo1uhLlz/5Ma5UhR+vCSY62tiH02RakGL88pO8VU11Mvr/lSzycYoxijKUvYdAMpVRNYmMWu4kgM3Yq9PXz4MVNUQ/oRJeSNtk5IvzMpfQsmVQzetOYbucTjjB0+7+KgkadR8aRKToki7xoemWQDYYeR2AhnIzRcG8AQ+Z6jNZBsN1H5s/ARFNE3x5QgCTfUephMA+dN9+Kmi79MEZw8Tg8rD6+m2AHPVHhNw/0Rwy0/L1jTjnIyl9Fv7YFwNnxSahuYo4RRg/FixCBHZhl9Urb8oBVRWRPVeN49MyWPlwAGIcZr6zLB6ltV+Lm29XHtFQ2jLsPTi3li/lE5w717OfQ/WA4Q9i3VV6ZgxHv7FD38EwH3jdgODlHxHS38LxaJcXTKhySaBC2HaCsUXr4fWshdkhC147PUC645CpJJTVBIksK7hyNjOJnT78QLe6KYYQYWT5tSB3ve4Pzv1o/0tRLnP9kc9qi8tpH8dly6RZO6+dGxQRIkH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39860400002)(396003)(136003)(230922051799003)(1800799009)(451199024)(186009)(41300700001)(55016003)(66476007)(64756008)(110136005)(76116006)(66946007)(66556008)(66446008)(54906003)(316002)(478600001)(71200400001)(33656002)(7416002)(2906002)(38100700002)(558084003)(86362001)(8676002)(8936002)(4326008)(5660300002)(52536014)(26005)(38070700005)(6506007)(7696005)(122000001)(82960400001)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?12/ykcr3Pxj1GprxzuTzzel8GYBkHNlAJ0JNs5lbomEzfewqIC7Yn2hlQurA?=
- =?us-ascii?Q?LHy3eb7vvKkPCxvKdRjBgYDKhVLzPb5xDChsmzJW1IMV8ay/hf0RWOVlCcRn?=
- =?us-ascii?Q?V2PTnlk53Y9U0svP9s7lNXrUKzoNSHkOqi0PQG8YMwzGyyP92/0DAQ1eSnER?=
- =?us-ascii?Q?1G+iFCVumw43evnYRRZzqTA6NIPy2ZTqZe0BzvBgRhj/DDyhCFFdKmU/UWt8?=
- =?us-ascii?Q?ydgrCGoAXuTgPtY5qHYaQw0QM6BDsLGJ0yi8FHJELc51O8qfqVj1+t4epTTM?=
- =?us-ascii?Q?ncU5Wta8AM5vgaJk601KYNjXTejIU7/8mQ9yqnoBEZUj4iyRGTX3RR9f+X0T?=
- =?us-ascii?Q?+bbnG6vjPn4gETfVHyL3q8FsOABD5vdedBqZTpi7EkLoFmpots0EOxbZeO2z?=
- =?us-ascii?Q?AdK5aZAYm3uCS0aCuac2iiah+u1o+S5cvFfiZZFscASt7Ki+Pj1WSXmzfLqo?=
- =?us-ascii?Q?QGjt3hPKbqqcAAdSFPDsIhF2M8RtSgsvHDKRI3HNko372ReBsCFfzmoXYoK5?=
- =?us-ascii?Q?dq+ZTSF2krrIkDHVSsRjRBhsVxWr+zN/3gh2uOdMNaWeNSLRo4kofJyvKK6A?=
- =?us-ascii?Q?dHGPwTICIatclxi7ayPYruotZDl7IHN3lYpW9iokUaNDQvwWUPxa0r/76Fjt?=
- =?us-ascii?Q?bvbiUwy23jgiynOHshTjfKxQQbpuXoZMqvWe/bNuNQpwDB98upLArFlLc9NT?=
- =?us-ascii?Q?s8OLiwPIpUo413bxrE9JIuLuowsYwv5iz75COYwUNrcCnH4utbZsipoPyv6c?=
- =?us-ascii?Q?RqlBe1sOgEcY3+O+Vumz+bQSvJpxFp1ymA625b/cVgpgRAJIO5uEqsSqhFdS?=
- =?us-ascii?Q?262mS14IMSwei8BtpWyPefYdFMq46+ubcnY1J94WYPB/VmdiJ1RifWOCRXUf?=
- =?us-ascii?Q?L11i5MkVJvjnPcXfRVkR9HrO2+BU6Iu2LjM/1QZAV6KY/kP1UVo1CFIjTbiQ?=
- =?us-ascii?Q?PF5frOVTSvvBXfALpVWHaSGLyx7YRwrc1nxW32Lh8uScpRCko3RyzZoCbwPx?=
- =?us-ascii?Q?xo0WcoKV22wMumt/oTeyuA1meCpU921eUmgTmUdgFT0RJ1OeUx6Gx4IB31bg?=
- =?us-ascii?Q?fQwQwVv8f66zTmf+ImO4AajQapHOOkHmwTV8FbOqmqvIfdyT/XZH6oa6//s6?=
- =?us-ascii?Q?N6QVCpShy7u5kVz3RzO7284QDUgULiiFK2UFlOr9Lvm0nGvqbD95ikUdoVnJ?=
- =?us-ascii?Q?BC6k8/cSn13tngtPF1LK0aBZ7rHzhLXllfAMTEx80Fuzg/2U3kxASUKTinTJ?=
- =?us-ascii?Q?JC/4NxPvjBdQlexFCKMQoEjh3HamRoauHV9iHXlytaO4lgBdrnYUSV73QNxA?=
- =?us-ascii?Q?j3L8owvPuGska4LvFmCyPxgaHVIVMPhzMEgd6vj0lWYqLpqF5E/Zh1woye6A?=
- =?us-ascii?Q?T2hBUFkJsGL3SpW9D6qjqBB0cwwryb7O1CWC4iSzP58MvGJNtfq0PaFUVbJy?=
- =?us-ascii?Q?SmGvBOtWrzGDL1Rdpxqh3/VAvnZylpTRXQU64ml5bvHK5ZaafAEG1vok6PvZ?=
- =?us-ascii?Q?s8VvCThsyKx4i1tcpcdCF+ZEdcSGE837CGwiqZsL5shcK8ETLilC5yHrBP82?=
- =?us-ascii?Q?n0r92JCsbm1uk2Ka1luwIyZtVE6VmirN5fwieOib?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 27 Sep 2023 02:21:00 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFC61994;
+        Tue, 26 Sep 2023 23:20:16 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38R6Jrqu010274;
+        Wed, 27 Sep 2023 01:19:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695795593;
+        bh=CFKLhZdGLbgW7Krw3T10eVx4AxJNYN3u4UAPLdFBh1E=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=FVXVjP9PY7sZbxCVC2wY08VUyWKBSo3azYLV+sfrIqRixJDq4kYFrlPpMabCnTxTR
+         js2Snf9J1nSh82wmbgvVzk9YQo+TEOAh/JiugNHtPCbyySTIlwfBtNClYPsfQf2DHn
+         bC3aWoSqiKdDgd3YSfA23KYO7L3exRLV6eaKsP6I=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38R6JrPm003092
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Sep 2023 01:19:53 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Sep 2023 01:19:53 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Sep 2023 01:19:53 -0500
+Received: from [10.24.69.199] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38R6Jk4B037998;
+        Wed, 27 Sep 2023 01:19:47 -0500
+Message-ID: <a561fd54-4527-e21c-d5f8-f3777d69c255@ti.com>
+Date:   Wed, 27 Sep 2023 11:49:45 +0530
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2a0cc49-3e31-43df-aa98-08dbbf21979c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 06:18:40.0975
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o/zWNdHNMr//Q5A0fci/uFoOB3oR/S1NdT8eNshTFLx5K4e2m2fqBgYFAUlQ363NoFkgD5G/QhGLRtnqcLgs/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5005
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
+ support
+Content-Language: en-US
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Roger Quadros <rogerq@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
+        Simon Horman <horms@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>, Roger Quadros <rogerq@ti.com>
+References: <20230921070031.795788-1-danishanwar@ti.com>
+ <87o7hvcmhf.fsf@intel.com>
+From:   MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <87o7hvcmhf.fsf@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Thursday, September 21, 2023 3:54 PM
->=20
-> This adds IOMMU_HWPT_TYPE_VTD_S1 for stage-1 hw_pagetable of Intel
-> VT-d
-> and the corressponding data structure for userspace specified parameter
-> for the domain allocation.
->=20
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+Hi Vinicius,
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+On 22/09/23 01:44, Vinicius Costa Gomes wrote:
+> MD Danish Anwar <danishanwar@ti.com> writes:
+> 
+>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>> configuration. EST allows express queue traffic to be scheduled
+>> (placed) on the wire at specific repeatable time intervals. In
+>> Linux kernel, EST configuration is done through tc command and
+>> the taprio scheduler in the net core implements a software only
+>> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+>> user indicate "flag 2" in the command which is then parsed by
+>> taprio scheduler in net core and indicate that the command is to
+>> be offloaded to h/w. taprio then offloads the command to the
+>> driver by calling ndo_setup_tc() ndo ops. This patch implements
+>> ndo_setup_tc() to offload EST configuration to ICSSG.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>> Cc: Roger Quadros <rogerq@ti.com>
+>> Cc: Andrew Lunn <andrew@lunn.ch>
+>>
+>> Changes from v1 to v2:
+>> *) Rebased on the latest next-20230821 linux-next.
+>> *) Dropped the RFC tag as merge window is open now.
+>> *) Splitted this patch from the switch mode series [v1].
+>> *) Removed TODO comment as asked by Andrew and Roger.
+>> *) Changed Copyright to 2023 as asked by Roger.
+>>
+>> v1: https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.com/
+>>
+>>  drivers/net/ethernet/ti/Makefile             |   3 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.h |   7 +
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.c    | 286 +++++++++++++++++++
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.h    | 119 ++++++++
+>>  5 files changed, 418 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
+>>
+>> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+>> index 34fd7a716ba6..0df60ded1b2d 100644
+>> --- a/drivers/net/ethernet/ti/Makefile
+>> +++ b/drivers/net/ethernet/ti/Makefile
+>> @@ -37,5 +37,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+>>  		  icssg/icssg_config.o \
+>>  		  icssg/icssg_mii_cfg.o \
+>>  		  icssg/icssg_stats.o \
+>> -		  icssg/icssg_ethtool.o
+>> +		  icssg/icssg_ethtool.o \
+>> +		  icssg/icssg_qos.o
+>>  obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> index 6635b28bc672..89c301716926 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> @@ -1166,7 +1166,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
+>>  	return 0;
+>>  }
+>>  
+>> -static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>>  {
+>>  	u32 hi_rollover_count, hi_rollover_count_r;
+>>  	struct prueth_emac *emac = clockops_data;
+>> @@ -1403,6 +1403,8 @@ static int emac_ndo_open(struct net_device *ndev)
+>>  		napi_enable(&emac->tx_chns[i].napi_tx);
+>>  	napi_enable(&emac->napi_rx);
+>>  
+>> +	icssg_qos_tas_init(ndev);
+>> +
+>>  	/* start PHY */
+>>  	phy_start(ndev->phydev);
+>>  
+>> @@ -1669,6 +1671,7 @@ static const struct net_device_ops emac_netdev_ops = {
+>>  	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
+>>  	.ndo_eth_ioctl = emac_ndo_ioctl,
+>>  	.ndo_get_stats64 = emac_ndo_get_stats64,
+>> +	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
+>>  };
+>>  
+>>  /* get emac_port corresponding to eth_node name */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> index 8b6d6b497010..5712a65bced4 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> @@ -37,6 +37,7 @@
+>>  #include "icssg_config.h"
+>>  #include "icss_iep.h"
+>>  #include "icssg_switch_map.h"
+>> +#include "icssg_qos.h"
+>>  
+>>  #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+>>  #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
+>> @@ -174,6 +175,9 @@ struct prueth_emac {
+>>  
+>>  	struct pruss_mem_region dram;
+>>  
+>> +	struct prueth_qos qos;
+>> +	struct work_struct ts_work;
+> 
+> This doesn't seem to be used anywhere. Am I missing something?
+> 
+
+I cross checked. This is actually not used anywhere. I will drop it.
+
+>> +
+>>  	struct delayed_work stats_work;
+>>  	u64 stats[ICSSG_NUM_STATS];
+>>  };
+>> @@ -285,4 +289,7 @@ u32 icssg_queue_level(struct prueth *prueth, int queue);
+>>  void emac_stats_work_handler(struct work_struct *work);
+>>  void emac_update_hardware_stats(struct prueth_emac *emac);
+>>  int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
+>> +
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
+>> +
+>>  #endif /* __NET_TI_ICSSG_PRUETH_H */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> new file mode 100644
+>> index 000000000000..63a19142ee69
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> @@ -0,0 +1,286 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Texas Instruments ICSSG PRUETH QoS submodule
+>> + * Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#include <linux/printk.h>
+>> +#include "icssg_prueth.h"
+>> +#include "icssg_switch_map.h"
+>> +
+>> +static void tas_update_fw_list_pointers(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +
+>> +	if ((readb(tas->active_list)) == TAS_LIST0) {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +	} else {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +	}
+>> +}
+>> +
+>> +static void tas_update_maxsdu_table(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u16 __iomem *max_sdu_tbl_ptr;
+>> +	u8 gate_idx;
+>> +
+>> +	/* update the maxsdu table */
+>> +	max_sdu_tbl_ptr = emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
+>> +
+>> +	for (gate_idx = 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
+>> +		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx]);
+>> +}
+>> +
+>> +static void tas_reset(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < TAS_MAX_NUM_QUEUES; i++)
+>> +		tas->max_sdu_table.max_sdu[i] = 2048;
+>> +
+>> +	tas_update_maxsdu_table(emac);
+>> +
+>> +	writeb(TAS_LIST0, tas->active_list);
+>> +
+>> +	memset_io(tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
+>> +	memset_io(tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
+>> +}
+>> +
+>> +static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int ret;
+>> +
+>> +	if (tas->state == state)
+>> +		return 0;
+>> +
+>> +	switch (state) {
+>> +	case TAS_STATE_RESET:
+>> +		tas_reset(emac);
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
+>> +		tas->state = TAS_STATE_RESET;
+>> +		break;
+>> +	case TAS_STATE_ENABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
+>> +		tas->state = TAS_STATE_ENABLE;
+>> +		break;
+>> +	case TAS_STATE_DISABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
+>> +		tas->state = TAS_STATE_DISABLE;
+>> +		break;
+>> +	default:
+>> +		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
+>> +		ret = -EINVAL;
+>> +		break;
+>> +	}
+>> +
+>> +	if (ret)
+>> +		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
+>> +	return ret;
+>> +}
+>> +
+>> +static int tas_set_trigger_list_change(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	struct ptp_system_timestamp sts;
+>> +	u32 change_cycle_count;
+>> +	u32 cycle_time;
+>> +	u64 base_time;
+>> +	u64 cur_time;
+>> +
+>> +	cycle_time = admin_list->cycle_time - 4; /* -4ns to compensate for IEP wraparound time */
+> 
+> What's going to happen when the user specifies a schedule with very
+> small intervals, like 1ns and 2ns. Would this break anything?
+> 
+
+Actually there is a minimum cycle time TAS_MIN_CYCLE_TIME. There should
+be a check here
+
+if (admin_list->cycle_time < TAS_MIN_CYCLE_TIME)
+	return -EINVAL;
+
+> Ah, just saw that there's a TAS_MIN_WINDOW_DURATION, but I didn't see it
+> used anywhere.
+> 
+>> +	base_time = admin_list->base_time;
+>> +	cur_time = prueth_iep_gettime(emac, &sts);
+>> +
+>> +	if (base_time > cur_time)
+>> +		change_cycle_count = DIV_ROUND_UP_ULL(base_time - cur_time, cycle_time);
+>> +	else
+>> +		change_cycle_count = 1;
+>> +
+>> +	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
+>> +	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUNT);
+>> +	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
+>> +
+>> +	/* config_change cleared by f/w to ack reception of new shadow list */
+>> +	writeb(1, &tas->config_list->config_change);
+>> +	/* config_pending cleared by f/w when new shadow list is copied to active list */
+>> +	writeb(1, &tas->config_list->config_pending);
+>> +
+>> +	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
+>> +}
+>> +
+>> +static int tas_update_oper_list(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u32 tas_acc_gate_close_time = 0;
+>> +	u8 idx, gate_idx, val;
+>> +	int ret;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	for (idx = 0; idx < admin_list->num_entries; idx++) {
+>> +		writeb(admin_list->entries[idx].gate_mask,
+>> +		       &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		tas_acc_gate_close_time += admin_list->entries[idx].interval;
+>> +
+>> +		/* extend last entry till end of cycle time */
+>> +		if (idx == admin_list->num_entries - 1)
+>> +			writel(admin_list->cycle_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +		else
+>> +			writel(tas_acc_gate_close_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+> 
+> Does this mean that the HW "only" supports that the total duration of
+> the schedule to be 4s? If yes, you should detect this and reject those
+> huge schedules. 
+> 
+
+Yes, the HW only supports shedules with total duration < 4s. I will add
+check to reject schedules of more than 4s duration.
+
+>> +	}
+>> +
+>> +	/* clear remaining entries */
+>> +	for (idx = admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
+>> +		writeb(0, &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		writel(0, &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +	}
+>> +
+>> +	/* update the Array of gate close time for each queue in each window */
+>> +	for (idx = 0 ; idx < admin_list->num_entries; idx++) {
+>> +		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
+>> +		for (gate_idx = 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
+>> +			u8 gate_mask_list_idx = readb(&tas->fw_shadow_list->gate_mask_list[idx]);
+>> +			u32 gate_close_time = 0;
+>> +
+>> +			if (gate_mask_list_idx & BIT(gate_idx))
+>> +				gate_close_time = readl(&tas->fw_shadow_list->win_end_time_list[idx]);
+>> +
+>> +			writel(gate_close_time,
+>> +			       &tas->fw_shadow_list->gate_close_time_list[idx][gate_idx]);
+>> +		}
+>> +	}
+>> +
+>> +	/* tell f/w to swap active & shadow list */
+>> +	ret = tas_set_trigger_list_change(emac);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Wait for completion */
+>> +	ret = readb_poll_timeout(&tas->config_list->config_change, val, !val,
+>> +				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "TAS list change completion time out\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int emac_set_taprio(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
+>> +	int ret;
+>> +
+>> +	if (taprio->cmd == TAPRIO_CMD_DESTROY)
+>> +		return tas_set_state(emac, TAS_STATE_DISABLE);
+>> +
+>> +	if (taprio->cmd != TAPRIO_CMD_REPLACE)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	ret = tas_update_oper_list(emac);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return tas_set_state(emac, TAS_STATE_ENABLE);
+>> +}
+>> +
+>> +static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
+>> +			   struct tc_taprio_qopt_offload *to)
+>> +{
+>> +	int i;
+>> +
+>> +	*to = *from;
+>> +	for (i = 0; i < from->num_entries; i++)
+>> +		to->entries[i] = from->entries[i];
+>> +}
+>> +
+>> +static int emac_setup_taprio(struct net_device *ndev, struct tc_taprio_qopt_offload *taprio)
+>> +{
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	struct tc_taprio_qopt_offload *est_new;
+>> +	int ret, idx;
+>> +
+>> +	if (!netif_running(ndev)) {
+>> +		netdev_err(ndev, "interface is down, link speed unknown\n");
+>> +		return -ENETDOWN;
+>> +	}
+>> +
+>> +	if (taprio->cycle_time_extension) {
+>> +		netdev_err(ndev, "Failed to set cycle time extension");
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	if (taprio->num_entries == 0 ||
+>> +	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
+>> +		netdev_err(ndev, "unsupported num_entries %ld in taprio config\n",
+>> +			   taprio->num_entries);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* If any time_interval is 0 in between the list, then exit */
+>> +	for (idx = 0; idx < taprio->num_entries; idx++) {
+>> +		if (taprio->entries[idx].interval == 0) {
+>> +			netdev_err(ndev, "0 interval in taprio config not supported\n");
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	if (emac->qos.tas.taprio_admin)
+>> +		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
+>> +
+>> +	est_new = devm_kzalloc(&ndev->dev,
+>> +			       struct_size(est_new, entries, taprio->num_entries),
+>> +			       GFP_KERNEL);
+> 
+> This allocation can fail.
+> 
+
+I will add the below check here.
+
+if (!est_new)
+	ret -ENOMEM;
+
+>> +	emac_cp_taprio(taprio, est_new);
+>> +	emac->qos.tas.taprio_admin = est_new;
+>> +	ret = emac_set_taprio(emac);
+>> +	if (ret)
+>> +		devm_kfree(&ndev->dev, est_new);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data)
+>> +{
+>> +	switch (type) {
+>> +	case TC_SETUP_QDISC_TAPRIO:
+>> +		return emac_setup_taprio(ndev, type_data);
+>> +	default:
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +}
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev)
+>> +{
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	bool need_setup = false;
+>> +	struct tas_config *tas;
+>> +
+>> +	tas = &emac->qos.tas.config;
+>> +
+>> +	if (tas->state == TAS_STATE_ENABLE)
+>> +		need_setup = true;
+>> +
+>> +	tas->config_list = emac->dram.va + TAS_CONFIG_CHANGE_TIME;
+>> +	tas->active_list = emac->dram.va + TAS_ACTIVE_LIST_INDEX;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	tas_set_state(emac, TAS_STATE_RESET);
+>> +
+>> +	if (need_setup)
+>> +		emac_set_taprio(emac);
+>> +}
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> new file mode 100644
+>> index 000000000000..4e2ddf81d5ec
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> @@ -0,0 +1,119 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#ifndef __NET_TI_ICSSG_QOS_H
+>> +#define __NET_TI_ICSSG_QOS_H
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/netdevice.h>
+>> +#include <net/pkt_sched.h>
+>> +
+>> +/**
+>> + * Maximum number of gate command entries in each list.
+>> + */
+>> +#define TAS_MAX_CMD_LISTS   (16)
+>> +
+>> +/**
+>> + * Maximum number of transmit queues supported by implementation
+>> + */
+>> +#define TAS_MAX_NUM_QUEUES  (8)
+>> +
+>> +/**
+>> + * Minimum cycle time supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_CYCLE_TIME  (1000000)
+>> +
+>> +/**
+>> + * Minimum TAS window duration supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_WINDOW_DURATION  (10000)
+>> +
+>> +/**
+>> + * List number 0 or 1. Also the value at memory location TAS_ACTIVE_LIST_INDEX
+>> + */
+>> +enum tas_list_num {
+>> +	TAS_LIST0 = 0,
+>> +	TAS_LIST1 = 1
+>> +};
+>> +
+>> +/**
+>> + * state of TAS in f/w
+>> + */
+>> +enum tas_state {
+>> +	/* PRU's are idle */
+>> +	TAS_STATE_DISABLE = 0,
+>> +	/* Enable TAS */
+>> +	TAS_STATE_ENABLE = 1,
+>> +	/* Firmware will reset the state machine */
+>> +	TAS_STATE_RESET = 2,
+>> +};
+>> +
+>> +/**
+>> + * Config state machine variables. See IEEE Std 802.1Q-2018 8.6.8.4
+>> + */
+>> +struct tas_config_list {
+>> +	/* New list is copied at this time */
+>> +	u64 config_change_time;
+>> +	/* config change error counter, incremented if
+>> +	 * admin->BaseTime < current time and TAS_enabled is true
+>> +	 */
+>> +	u32 config_change_error_counter;
+>> +	/* True if list update is pending */
+>> +	u8 config_pending;
+>> +	/* Set to true when application trigger updating of admin list
+>> +	 * to active list, cleared when configChangeTime is updated
+>> +	 */
+>> +	u8 config_change;
+>> +};
+>> +
+>> +/**
+>> + * Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1
+>> + */
+>> +struct tas_max_sdu_table {
+>> +	u16 max_sdu[TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * TAS List Structure based on firmware memory map
+>> + */
+>> +struct tas_firmware_list {
+>> +	/* window gate mask list */
+>> +	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
+>> +	/* window end time list */
+>> +	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
+>> +	/* Array of gate close time for each queue in each window */
+>> +	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * Main Time Aware Shaper Handle
+>> + */
+>> +struct tas_config {
+>> +	enum tas_state state;
+>> +	struct tas_max_sdu_table max_sdu_table;
+>> +	/* Config change variables */
+>> +	struct tas_config_list __iomem *config_list;
+>> +	/* Whether list 1 or list 2 is the operating list */
+>> +	u8 __iomem *active_list;
+>> +	/* active List pointer, used by firmware */
+>> +	struct tas_firmware_list __iomem *fw_active_list;
+>> +	/* shadow List pointer, used by driver */
+>> +	struct tas_firmware_list __iomem *fw_shadow_list;
+>> +};
+>> +
+>> +struct prueth_qos_tas {
+>> +	struct tc_taprio_qopt_offload *taprio_admin;
+>> +	struct tc_taprio_qopt_offload *taprio_oper;
+>> +	struct tas_config config;
+>> +};
+>> +
+>> +struct prueth_qos {
+>> +	/* IET data structure goes here */
+>> +	struct prueth_qos_tas tas;
+>> +};
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev);
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data);
+>> +#endif /* __NET_TI_ICSSG_QOS_H */
+>>
+>> base-commit: 940fcc189c51032dd0282cbee4497542c982ac59	
+>> -- 
+>> 2.34.1
+>>
+>>
+> 
+
+-- 
+Thanks and Regards,
+Danish
