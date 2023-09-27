@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD417B04D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CB87B04D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjI0M67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        id S231811AbjI0M7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjI0M65 (ORCPT
+        with ESMTP id S231805AbjI0M7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:58:57 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C578F5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:58:55 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40572aeb673so80685805e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:58:55 -0700 (PDT)
+        Wed, 27 Sep 2023 08:59:38 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457B8136;
+        Wed, 27 Sep 2023 05:59:37 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57ba5f05395so4250373eaf.1;
+        Wed, 27 Sep 2023 05:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695819533; x=1696424333; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XDBxB4K/Dc2f6E7RfsykVyDhFDN+EKOunIZYRlh5xQ4=;
-        b=de8DF/OYG/1kvRnNXKqBqgdjpYtV581zHYAUezl+J0O/u3/ejABPRiEssgkB11Zxn8
-         F6rT4/OkLTevQsjVAI1hSziWqenB843K0P0/+RcES1c2AAhAcSf5rDtlVp5oE7ji9WA7
-         /VuPYKu6KFQLWCOL5FnfX9qSgaBtyHvXa8uXGHNrQukQ0vSmRqIakdgRBODAHCqV5c3W
-         ni5c2q+5M8nQq00xz1xUqC5fst5TH5Y6h8zYa1bpLICpaxrrywzA0USF33ivfhv5Y9SK
-         pV6Q23bcnPK3ep9ZKFc9J8B+SZ/7CrfEQJ32uT9SXfKE+BvQxRFe0Qov9lxxRu/rgUkI
-         UX4g==
+        d=gmail.com; s=20230601; t=1695819576; x=1696424376; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SzrVgOmYsIRSuT5i2Iuq8x6qyRRfEUm7yS5SiLLhnY8=;
+        b=H4ZLBxr20C+4/elTAATUIDlDpXNPgi1mM+i2VMiTUxXFMsKonxpAz5u5tMVm/m+AV1
+         qg6htdB7ad/8nSUNYDA2pEDvXjyVuSFA1s2AyMp+874PMI4JAfdYy0jwPZ1O9Rwbyw4m
+         FkqYOX5bVfCkG+HZPUI35IM+iHeDqZBjrNUiRyGkscVNCX9tYkESpKEFQD0/leALw1Y1
+         Yvu+D12VsDbYuklFRWGF+TRCqaZ2kEVGLdMyZqYPe+Ceh7U4AsVMocuZl4fwJL5aEOmg
+         Cf6f1WJU7fkfGwh8WcJfa39Nk4BYiHzKeEA4QwqX5qE3Dt4TRjKJh8M/A5mThdQ8pmqG
+         cFaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695819533; x=1696424333;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XDBxB4K/Dc2f6E7RfsykVyDhFDN+EKOunIZYRlh5xQ4=;
-        b=CoKdAPRuIHE+6bMElMHPmLg+48MC3Dmqduv1J/94trIwMSLPJm3VVE5E3IfdPQc7WS
-         d03W1CNhS6RrbY5mgojR3fRmuUeoIzBL/cxx4FUUrjpLPK0oCmH2uakeJ8xkfxcMkyjv
-         j91W9QHs2wJuTD9sP0z5AV7v/0lLI/OtkO8FxqFdpcoB3Zm5aLu+sDi4D6KHlGkluv0E
-         Ypdvt9fr4g38BLNLC6LWJBnJa5mP/nfqCOv0+b/XcKYsw0YSNN3E0oMuXqiIS49Lnj0U
-         /7C5ZXQY1yxUPrxVXdJWBxvxGStzrEskg3WO2FoaNynnV7wjBy6LhvwizykNuZV8L5ZO
-         a0ag==
-X-Gm-Message-State: AOJu0Ywwz/1PiqLsQrWP2LsKvsDrZZjcVtk9KRcq5VYCzSNcMylqZoXQ
-        tMc+VZdHoZ58hCaXlNreXgqb
-X-Google-Smtp-Source: AGHT+IEDKHA7Ugd7ZSlR7GfH1BkKpWJKecatYW9bH9VwobJzVpJZUVAEALaG7FH/tUYkaetWvZnMow==
-X-Received: by 2002:a1c:7917:0:b0:401:b53e:6c3b with SMTP id l23-20020a1c7917000000b00401b53e6c3bmr1803043wme.6.1695819533523;
-        Wed, 27 Sep 2023 05:58:53 -0700 (PDT)
-Received: from thinkpad ([2a02:2454:9d09:3f00:b024:394e:56d7:d8b4])
-        by smtp.gmail.com with ESMTPSA id 12-20020a05600c240c00b003fc02e8ea68sm20417720wmp.13.2023.09.27.05.58.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 05:58:52 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:58:50 +0200
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Abel Vesa <abel.vesa@linaro.org>, lpieralisi@kernel.org,
-        kw@linux.com, andersson@kernel.org, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Add interconnect bandwidth for PCIe Gen4
-Message-ID: <20230927125850.GA19623@thinkpad>
-References: <20230924160713.217086-1-manivannan.sadhasivam@linaro.org>
- <f49d0543-17bb-4105-9cdf-3df8c116481a@linaro.org>
- <ZRFiD3EXwZI/B8JB@linaro.org>
- <18635bed-b7e3-4acb-b176-cd9f87a35c7f@linaro.org>
- <ZRFjAIYQQZnbNIdt@linaro.org>
- <09058de7-e207-414b-ab4c-88f0cbde9c22@linaro.org>
+        d=1e100.net; s=20230601; t=1695819576; x=1696424376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SzrVgOmYsIRSuT5i2Iuq8x6qyRRfEUm7yS5SiLLhnY8=;
+        b=R2Iw5pJoLQY2PsAux1GVGlpuW6YJOBC7T+FTnbFYtox9eRw1ZEqGRAv4NNym3IF+pX
+         ubL9o1FKeHCG/Q5sMdPoJGDySArco3aJ/1HPdYrGj+6PPupiwoYzbVHQ+nAbTeGtsTbd
+         YoigMCob5eWyRlToAFIMzgS4btI7SUrLWxr7WEZw6XHZwJJ8Rep2QJjvyGbyP3ZBZ8Sa
+         bKWaPbXnRjjPq8Zrf4n33JzVp27H0woeC7mpkEqSkftHyHNh8/Oqfew1wWMGHj0xMgL/
+         sA4RYzs1rPTQcesYMQ9JH7rhagNkWVT6OYGE4P8qA6izbaomScWpm18MDqKoClsi+eUK
+         dkLw==
+X-Gm-Message-State: AOJu0YynuUyNqc1g0Uzd+J1eJkbchY/ppojuNl+n42d6jW0AkonI2JlY
+        iMlQ+0sOoZGnBldeIywPAHbVdfT8bKHgjMeqkMU=
+X-Google-Smtp-Source: AGHT+IGHxeX/0rvnZnBrYX4vca7q1HBpULYfkd+KQlXBJUdVjHqN4+84zPghil8ovZ908wCta4IvbyGEjIzTVsVa9us=
+X-Received: by 2002:a4a:918f:0:b0:57b:63a6:306d with SMTP id
+ d15-20020a4a918f000000b0057b63a6306dmr1932059ooh.6.1695819576407; Wed, 27 Sep
+ 2023 05:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <09058de7-e207-414b-ab4c-88f0cbde9c22@linaro.org>
+References: <CAHp75VfRLv1=3M+a9pr=ZJgNwtBOrT9xi0UjDJMuY8uM9+ffSw@mail.gmail.com>
+ <20230926200541.35787-1-blarson@amd.com>
+In-Reply-To: <20230926200541.35787-1-blarson@amd.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 27 Sep 2023 15:59:00 +0300
+Message-ID: <CAHp75Vd3Jj_giyWKhA2OyPrY5xKhyQ6We3qkz9-yDs15F+SFRg@mail.gmail.com>
+Subject: Re: [PATCH v16 6/6] soc: amd: Add support for AMD Pensando SoC Controller
+To:     Brad Larson <blarson@amd.com>
+Cc:     adrian.hunter@intel.com, alcooperx@gmail.com, arnd@arndb.de,
+        brendan.higgins@linux.dev, briannorris@chromium.org,
+        broonie@kernel.org, catalin.marinas@arm.com, conor+dt@kernel.org,
+        davidgow@google.com, devicetree@vger.kernel.org,
+        fancer.lancer@gmail.com, gerg@linux-m68k.org, gsomlo@gmail.com,
+        hal.feng@starfivetech.com, hasegawa-hitomi@fujitsu.com,
+        j.neuschaefer@gmx.net, joel@jms.id.au, kernel@esmil.dk,
+        krzk@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        lee.jones@linaro.org, lee@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+        p.zabel@pengutronix.de, rdunlap@infradead.org, robh+dt@kernel.org,
+        samuel@sholland.org, skhan@linuxfoundation.org,
+        suravee.suthikulpanit@amd.com, thomas.lendacky@amd.com,
+        tonyhuang.sunplus@gmail.com, ulf.hansson@linaro.org,
+        vaishnav.a@ti.com, walker.chen@starfivetech.com, will@kernel.org,
+        zhuyinbo@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 12:40:34PM +0200, Konrad Dybcio wrote:
-> On 25.09.2023 12:37, Abel Vesa wrote:
-> > On 23-09-25 12:34:53, Konrad Dybcio wrote:
-> >> On 25.09.2023 12:33, Abel Vesa wrote:
-> >>> On 23-09-25 10:57:47, Konrad Dybcio wrote:
-> >>>> On 24.09.2023 18:07, Manivannan Sadhasivam wrote:
-> >>>>> PCIe Gen4 supports the interconnect bandwidth of 1969 MBps. So let's add
-> >>>>> the bandwidth support in the driver. Otherwise, the default bandwidth of
-> >>>>> 985 MBps will be used.
-> >>>>>
-> >>>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >>>>> ---
-> >>>>>  drivers/pci/controller/dwc/pcie-qcom.c | 7 +++++--
-> >>>>>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> >>>>> index 297442c969b6..6853123f92c1 100644
-> >>>>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> >>>>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> >>>>> @@ -1384,11 +1384,14 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> >>>>>  	case 2:
-> >>>>>  		bw = MBps_to_icc(500);
-> >>>>>  		break;
-> >>>>> +	case 3:
-> >>>>> +		bw = MBps_to_icc(985);
-> >>>>> +		break;
-> >>>>>  	default:
-> >>>>>  		WARN_ON_ONCE(1);
-> >>>>>  		fallthrough;
-> >>>>> -	case 3:
-> >>>>> -		bw = MBps_to_icc(985);
-> >>>>> +	case 4:
-> >>>>> +		bw = MBps_to_icc(1969);
-> >>>>>  		break;
-> >>>> Are you adding case 4 under `default`? That looks.. bizzare..
-> >>>
-> >>> That's intentional. You want it to use 1969MBps if there is a different
-> >>> gen value. AFAIU.
-> >> Gah right, then the commit message is wrong.
-> > 
-> > Yep, should be: "Otherwise, the default bandwidth of 1969 MBps will be
-> > used."
-> > 
-> > But maybe we should not default to that. Maybe we should still default
-> > to 985 MBps.
-> Perhaps we shouldn't have a default at all..
-> 
-> E.g. if the gen5 bus may get clogged if we exceed gen4
-> limits
-> 
+On Tue, Sep 26, 2023 at 11:05=E2=80=AFPM Brad Larson <blarson@amd.com> wrot=
+e:
+> On Thu, Sep 21, 2023 at 18:19:57 +0300 Andy Shevchenko <andy.shevchenko@g=
+mail.com> wrote:
+> > On Thu, Sep 14, 2023 at 12:52=E2=80=AFAM Brad Larson <blarson@amd.com> =
+wrote:
 
-So the idea here is that if we happen to run this driver on a new Gen supported
-SoC, we have to let the user know that the interconnects are running at a lower
-gen speed and it needs attention.
+...
 
-But I think we can simplify it by fixing a default bandwidth, say Gen3 and get
-rid of the fallthrough. And yeah, the same needs to be done for the pcie-qcom-ep
-driver as well.
+> >> +       u8 tx_buf[PENCTRL_MAX_MSG_LEN];
+> >> +       u8 rx_buf[PENCTRL_MAX_MSG_LEN];
+> >
+> > These are not DMA-safe, is this a problem?
+>
+> It's not a problem, the peripheral is PIO FIFO driven only.
 
-- Mani
+The question was about the SPI controller itself.
+Also, depending on the driver it may or may not require DMA-safe
+pointers. I believe with the new pump queue used in the SPI core all
+drivers that are using it are DMA-safe and the caller needs no
+additional care.
 
-> Konrad
+...
 
--- 
-மணிவண்ணன் சதாசிவம்
+> >> +       msg =3D memdup_user((struct penctrl_spi_xfer *)arg, size);
+> >> +       if (IS_ERR(msg)) {
+> >> +               ret =3D PTR_ERR(msg);
+> >> +               goto out_unlock;
+> >> +       }
+> >
+> > Wondering if you can start using cleanup.h.
+>
+> Perhaps if recommended, I don't see DEFINE_(FREE,UNLOCK,...) being used.
+
+It's guard()() and scoped_guard() for locks and __free() for the allocation=
+s.
+
+Plenty of uses in a few modules already (talking about Linux Next snapshot)=
+.
+
+...
+
+> >> +       spi->chip_select =3D current_cs;
+> >
+> > spi_set_chipselect()
+>
+> Yes, I'll change to inline function spi_set_chipselect(spi, 0, current_cs=
+).  The
+> second arg must be legacy as its unused.
+
+Actually, it's a placeholder for the future support of indexed CS'.
+
+...
+
+> >> +       u8 txbuf[3];
+> >> +       u8 rxbuf[1];
+> >
+> > Not DMA-safe. Is it a problem?
+>
+> Not a problem, the peripheral is PIO only using FIFOs.
+
+Same as somewhere above.
+
+--=20
+With Best Regards,
+Andy Shevchenko
