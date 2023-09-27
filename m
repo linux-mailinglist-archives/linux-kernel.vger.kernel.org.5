@@ -2,251 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388B17B0C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A7C7B0C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjI0TNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 15:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S229680AbjI0TOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 15:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjI0TNg (ORCPT
+        with ESMTP id S229677AbjI0TOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:13:36 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2126.outbound.protection.outlook.com [40.107.94.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CD8DD;
-        Wed, 27 Sep 2023 12:13:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YtpaOiTt1k6AYnAiraLE1Lm2T24ZA7OMIuadT0Y04/clbJaHnitKl3SOuJy4wvHjTnz71Wmya7X4O6YviE6TsSjEjwKzYMu4VRDg6xH65oQU7Dxt7veVNgd+EPab+pPb/aNmbODTG3utubSsA9VTUeL0zV/ArZmjX1C2vMbNJ13wpkBKpV74oBMurXWPqfJDjLK5jiKf2su8pp84fJd6sVjU5cL3vygZtTcSpQhJotfuPG+YZcU/igoJwow3lTWHj8kYQ3G+ybMYIrsRaWZYNzVe0DmOZZBsR61pit9FIibsSyDLYZbnXwLs3ikgk191sjXLuLwJS7m9u/Vb4ZDLCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fXDyEjaNWc31ahoJOGoK0DbMPi20RurHzJeKHrQeUyg=;
- b=iQ2Y6q4Z2VCoANqEaCMtCiS/Zv4w4o0mdxKRZ8Sd8tRZW7mv6xjg0Q+2kYedaFbFSBXqFt5R95qtO636zoU0NezNBzcwV02d28oqDytVwNNPyhsGVTaEJq2r6ZpZVTf2MdNqYNvmBFwri31bQZuk0dXmoYfZwyoo+ndKaYPvhjblrpViUXAJlR+GvcJpSNewXCnlUntrNGx+sklFSMuZKxNKuHLDpxdulR4xdBoaO/8/2zyyqG6p5zybv++SmhgeaEEgtz/YjrIp34lEUV047Qwyqax01WaKmvMzewc06pshlQ/j6KGq5Yde1uAogP17b7xvsk1BTPR66PIry9oQ3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fXDyEjaNWc31ahoJOGoK0DbMPi20RurHzJeKHrQeUyg=;
- b=OOQByZXVPkEHuQE3shtXjwQqdB4ao+R4MC8Fu756gAIrDr4W2/i57IiAqB40hKf+PH2wPtrtNJ1whn+NVWskAw2nGm2seOeRxlN3PEOqbiH/m1llCoC5Pd+KEaCTLy0APubSs0O4Yj51WztyM5EOPflinISqWMF1kmfMxIcTqnY=
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
- by BN0PR13MB4662.namprd13.prod.outlook.com (2603:10b6:408:123::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.30; Wed, 27 Sep
- 2023 19:13:29 +0000
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::28e0:7264:5057:7b20]) by CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::28e0:7264:5057:7b20%7]) with mapi id 15.20.6838.016; Wed, 27 Sep 2023
- 19:13:29 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "anna@kernel.org" <anna@kernel.org>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] nfs: decrement nrequests counter before releasing the req
-Thread-Topic: [PATCH] nfs: decrement nrequests counter before releasing the
- req
-Thread-Index: AQHZ6vuozQ1jGHNiyE+tQQequHHMj7AvF2uA
-Date:   Wed, 27 Sep 2023 19:13:29 +0000
-Message-ID: <69c748d58f834b80abda5dcd291ee29ea1cafaf7.camel@hammerspace.com>
-References: <20230919-nfs-fixes-v1-1-d22bf72e05ad@kernel.org>
-In-Reply-To: <20230919-nfs-fixes-v1-1-d22bf72e05ad@kernel.org>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR13MB5084:EE_|BN0PR13MB4662:EE_
-x-ms-office365-filtering-correlation-id: 73df1b6b-b8bd-4f4d-0a62-08dbbf8dd557
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jQF3Zd2r0ZKluM0qiERgXI4GthG4ysKXJ1cWttvn/4+owqFcaLD3VXAibTXQ20y/pQBoU2kpH72gOKU6EHYiCxNzJfMcrEHBsE+vVCt0saRdx1qHx/GVCtFmB8e2HtYcdhm3ouwrDKNc/g1O3kY6IScRCrSGtkmi/onX/NqebkFyy4Ttw16n/E+A2Kpyo8qxthcBakax1Ljyhga8Tgwt4lv9v4Ps6BocDEb/3hA0Pzb5ZILAIHyJt1s/FcLLoITOAGq8I4FCTZvmu/xZFp7bI+iMPeCJnC/5leMy3/2qfeojacUbphIF6qz5iMbjyz6Esd2t2Zr9O39yb6HpuUwVQppLPizHr6Lq0SR8UPVOWGnEiOGND89ehWt+EfFbHZ/zhdi9ZVpLIKAEdevpgkeVW8DdxnLiDn899IlRNrzkbgXpwf5lBU23kXnyNMfP35MpkMyAMDE1z9nNByGkRyb4/XZIRN03M9+MFNTp2U3HyidId1UiESnWALfyBGrxhjavcnbLZp9lpbqKhhS+2lIZ4cVbEkujVaA6mlWYONMRiogGFUjVPC+2xERvcPC98lib7QTQCNNb9+QpzFcagSutsUM0GK3lBy/YLFoGFK9MZ3MRnPZZzkI17iFYZc/OqkIYdT1YHWIbBWn3RJtmzKrhG58YTqBVUkgOkOxkDDlWDx4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39840400004)(346002)(366004)(376002)(136003)(230922051799003)(451199024)(186009)(1800799009)(2906002)(86362001)(8936002)(4326008)(5660300002)(8676002)(41300700001)(122000001)(478600001)(83380400001)(38100700002)(38070700005)(45080400002)(71200400001)(54906003)(36756003)(26005)(64756008)(6506007)(6486002)(316002)(66946007)(76116006)(110136005)(66476007)(66556008)(66446008)(2616005)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bzlhbUliWXo5VXNHdC9wN01Za2dwZ2RXQ09lUk5mVjhEcjFJRkRHWDlpZ1pK?=
- =?utf-8?B?QnpxdkhKdElCQXFNNGhYb1BJS1l4OUVPUUNUeHNBTDhLNW14ZjZNT0l3TVFZ?=
- =?utf-8?B?THRPMFp3ejRGOGhSZ0w2VWNUTlgzSk1tZWRoSWRKOG1uK0FxZUpPSkptNWlL?=
- =?utf-8?B?L1JPQ0dhb0VsbVBwL21ZNWM3UzNKc2xRTWZ1WnNGVFlwcEkxeVNsTU0vdyth?=
- =?utf-8?B?Ym4yMEh5SEdZbFhoajFJMVRibmRlMFBtb3FoT0thbk0rQlFUY1JycnlwTlNJ?=
- =?utf-8?B?MlpLY1kvMXgyT2pYQWVIcFVNNW9xWWxkSEFuTkFRU012N2JtTUpNMkROQWcv?=
- =?utf-8?B?NUhoL0ZVV0xBb052bTNmcnVZK3hERnFVdTNYN1VYTjRueThUOWp4U2tkTEZB?=
- =?utf-8?B?cFRzbEhYMVJIdmFYTG4venlxaktBK3l3ekJSalNrUmdzdjFpVWFnSHEyUG1J?=
- =?utf-8?B?ajFpT2tSMmF0SlJGd2Z4RGRlV1A3NUpNOE1IRTdxL1g3UlkyVFZncER5TG1I?=
- =?utf-8?B?TUpNc1g0cGwwWGlNaTZQdDlDalQyd3VNRzM2ZXM1aWZpM1lmcTNiWmRta0sr?=
- =?utf-8?B?bmUwRHZSYVdaVkEzbEcvZEtWbEdJRGltcmkrZWhobzRQOXBJdm5mY2VuSWlG?=
- =?utf-8?B?NG5ySVQxSmE0UWNwNEpSWVRvWGFxUkpkUVpnVnVpUDJBandFS0NQbDhvUmRZ?=
- =?utf-8?B?SVZuVlhjZnJWcjBxQnNkTFRnQUs2VWloaHdvVzZrMW4xaHFCMmFmck5NQzBN?=
- =?utf-8?B?Z09nUjNOTFVwWHFvSWFUNkp5azVyVUNXM0toVGJYZitrUkFraVlpOGdTa1Nq?=
- =?utf-8?B?M3VPRUw3bzAzVVpDTWZLVklmOEFCRVU5ejNubnM5dTFlT1JEVXRMYzVyZWxC?=
- =?utf-8?B?a2hDRWJERzRZbEswTkxLb1RCUUo5a3dyeTRxeXl5ZzVvVVAwa1JqYmtjOHR0?=
- =?utf-8?B?YWxHVU1BcDFROGs2Yjl0WGVyZFpGNU5UUFhXSW9Yako3TFNWZkV5VkpTYTVj?=
- =?utf-8?B?eDMycVoxd2lqU21nc1ZOUEczTTZTUU9Qc0MwSmc0aUt6LzNtaVFFVitYY2Z3?=
- =?utf-8?B?Q1RkdmVRSHRlQ3BDY0JRWnJZdHFvYWgzdGRUYU9FWnRkcEJ2ZjlxS25kU3k2?=
- =?utf-8?B?SEYzSGxWSzVBZUw5U3BXeVp1L29INHFzaUlNWCtmVFNmVE5YSU44aXF5di9r?=
- =?utf-8?B?RXZOOG1MWnNPL1BOOWxkZng3Nm45RmRoQTVMNmtFQzMzZnRsdDczMUs1WTJ0?=
- =?utf-8?B?Z1FRK1E5VGl5WWo0ZkJxK2JHQUcyUEYwQzZ5czF4WHRMMTFrUUF4MDRkd1Ny?=
- =?utf-8?B?ZjcwdUFjY25tQkZPcGROcFUybC90S2loOTIvUHlESFNPMnd2MXQ5ZkJCR0dq?=
- =?utf-8?B?VmkzbFNnU21yMEROb1Y4RmMvU2dSblllYnRyQzRUUURFMngvR2c2NkJKR2hI?=
- =?utf-8?B?L2twM2lGZmVvMnliWFZtMnNhWlVFek4rUGdINlJWdjNKb3Jtb2VuaVlIbFpT?=
- =?utf-8?B?ZHpFSWoyWXNpWUV0ODUzbGtpYm9hV2twSUNJejMyNzRTUHFtYXBQanNwMmVY?=
- =?utf-8?B?VDZOOVgrRjhkMERkenVHbG1hMlJwTHV6b1o5ZjRXcFVUYkhYT3hJRy9LNFl4?=
- =?utf-8?B?bExkWGRDeXY0V1Rmb0NhZ2dJbC85UFBwR211d2h5UllKYlV6SHJWMUozNm9z?=
- =?utf-8?B?UVBUbjNzbENTVnFrWW1kdUMvdnlWOG1ESmtjMmtsVVROSTN3QkliQ2hmTE4x?=
- =?utf-8?B?c3BZemJhNWVOR2hFcWJsdFdQcUlUYkNIdjVIMkJVYmpUNDdzVkd4UzhaTjFG?=
- =?utf-8?B?MkNlTlF1c0p5dGNXYUZYamswZ3EreGQ4M0ZibTRYTXUrSkpYRisvdGEyWWp4?=
- =?utf-8?B?RTV2TW0rL0E1cDJFcnJQOVNySTZMbkNyeVlHMlJZVlR3V00vYUM2OTg2aU1D?=
- =?utf-8?B?Z0pDSmVFMWtvdUxvWUxFMzBHazlFTVdRdEwvRWJ6bWp0eDFZcll5SUloWk9Z?=
- =?utf-8?B?YmxXSmFoMnZYK1ZmYXo2cmRCN3JXcmJYd2hGeEQwYXAyQ2s5ZFhYZHlRL21j?=
- =?utf-8?B?dnJNVzkya0JndkMvWXRZRmtFN01LVnc1bjdlSnFiRmNUTThqZ2JzYUMrWFZn?=
- =?utf-8?B?M3F6NytDSStvaVFScDVtbStFZS9CVC9naEZpcHNNTmhDZ2I1bHpMbXBwazBO?=
- =?utf-8?B?QUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8013B60CDC8B9541926048A19E8F0E33@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 27 Sep 2023 15:14:38 -0400
+Received: from csmtpq3-prd-nl1-vmo.edge.unified.services (csmtpq3-prd-nl1-vmo.edge.unified.services [84.116.50.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1CDD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:14:36 -0700 (PDT)
+Received: from csmtp2-prd-nl1-vmo.nl1.unified.services ([100.107.82.134] helo=csmtp2-prd-nl1-vmo.edge.unified.services)
+        by csmtpq3-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <sboyce@blueyonder.co.uk>)
+        id 1qlZzW-00Hahh-0l
+        for linux-kernel@vger.kernel.org; Wed, 27 Sep 2023 21:14:34 +0200
+Received: from [192.168.10.244] ([82.32.17.210])
+        by csmtp2-prd-nl1-vmo.edge.unified.services with ESMTPA
+        id lZzUq9eoeMRAilZzUqBiUJ; Wed, 27 Sep 2023 21:14:33 +0200
+X-SourceIP: 82.32.17.210
+X-Authenticated-Sender: sboyce@blueyonder.co.uk
+X-Spam: 0
+X-Authority: v=2.4 cv=d+kzizvE c=1 sm=1 tr=0 ts=65147f19 cx=a_exe
+ a=xwbGgp66NgX51+oEeDXSrg==:117 a=xwbGgp66NgX51+oEeDXSrg==:17
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=x7bEGLp0ZPQA:10
+ a=LsY_pDxX3eF9cKILWiQA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blueyonder.co.uk;
+        s=meg.feb2017; t=1695842073;
+        bh=Uu/oTjpG9FS5ZPpLED3hBXmrhVdruzECMAZYFtKI/8M=;
+        h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To;
+        b=BK/RYELMl28jcyLCvQJUMMd6vKjadWKaESnpylwufC39j2zG12eVdQSWqRJaI2l/F
+         CK3VCAgly1yiHsiGXGyvY5KnP4Xxx8SZO3zVNn3DmLQg864wxerH7AwyVBvbPqoRlb
+         bGRbgHNiwy7NVk97zGTxNJCoq2jR1MS5P1KqOj9OvAlAi4ewzWfjNGmxVezw7LKlkm
+         I16BdUwnQX/lEUx2JZ7YeN2Yr4IR9wdKK95I+3V07jBMrLx56/p1UP1adWgqaufKt6
+         T9oOkab0Z+Zfrk3hEtcyfVD8i8OkzRIkpoxeUcGwvRzmCq89ud1eRpxz9DzXJsxZv5
+         6bnz+PVNipRKA==
+Message-ID: <20798069-6057-4e52-9c79-8d851e0afadd@blueyonder.co.uk>
+Date:   Wed, 27 Sep 2023 20:14:32 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73df1b6b-b8bd-4f4d-0a62-08dbbf8dd557
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 19:13:29.3556
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2AjllIkQwfcYfMqwUtfkdd9gY5aMFqX2FfopE275dySfQM69H9GKXIb7Ee1gvPt4KrIsK3DDiy3jYpBcIqkmlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR13MB4662
+User-Agent: Mozilla Thunderbird
+Reply-To: sboyce@blueyonder.co.uk
+Subject: Re: Ryzen 9 7950x sound module does not not build
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ALSA <alsa-devel@alsa-project.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
+ <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
+ <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
+ <ZRLWIkyngsasQbQ7@debian.me>
+ <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
+ <40672e60-3913-4794-b84a-742b7c16d361@infradead.org>
+ <4b2c3b4e-9b21-4f80-95e1-58aa7f58131e@blueyonder.co.uk>
+ <7afa193e-6bf1-4792-89e1-ca72bc4588e9@infradead.org>
+Content-Language: en-GB
+From:   Sid Boyce <sboyce@blueyonder.co.uk>
+Organization: blueyonder.co.uk
+In-Reply-To: <7afa193e-6bf1-4792-89e1-ca72bc4588e9@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfHrs+g2aO6fnOLSILp9gB5kMqaPTJNowTbW0w1Cm8lY447AY62y8sG8XKDt/dIP556q+ZwGtL46yGYpTwBzMYIK2MeObyUhqkKIxuPOCw+Wo6stN0qwT
+ Wrgm1GBWmX0Re8FMc7iwJDwbjWaYY2kwkgDMmrRWhABggOe7kaDMCPPR2of6DgK9uUAl7ON/W+/hbw8M7SJefZRaQn5nLF6uO+ZWP5RQ5agKrwwGlefAW7Co
+ azCXhK7/XLnanMoQEaY/ayKKhQPGo6QnmXLPPzQra9v0/ZxVMDYG5ueGWsX41cFLiwUmq6KZEAbZFsbFwdZcEDe0ob8IqKyTg5G8k7HETVJiXPoj6ZvIM8fC
+ +JOx9y6zhDyKlXb9AboS9K2eqZ3MpfWAe9dQKWeFNwvbMxkVnU0S7sjSP63l5Dpmd/hvvZxB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA5LTE5IGF0IDA5OjE3IC0wNDAwLCBKZWZmIExheXRvbiB3cm90ZToNCj4g
-SSBoaXQgdGhpcyBwYW5pYyBpbiB0ZXN0aW5nOg0KPiANCj4gWyA2MjM1LjUwMDAxNl0gcnVuIGZz
-dGVzdHMgZ2VuZXJpYy80NjQgYXQgMjAyMy0wOS0xOCAyMjo1MToyNA0KPiBbIDYyODguNDEwNzYx
-XSBCVUc6IGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UsIGFkZHJlc3M6DQo+IDAwMDAw
-MDAwMDAwMDAwMDANCj4gWyA2Mjg4LjQxMjE3NF0gI1BGOiBzdXBlcnZpc29yIHJlYWQgYWNjZXNz
-IGluIGtlcm5lbCBtb2RlDQo+IFsgNjI4OC40MTMxNjBdICNQRjogZXJyb3JfY29kZSgweDAwMDAp
-IC0gbm90LXByZXNlbnQgcGFnZQ0KPiBbIDYyODguNDEzOTkyXSBQR0QgMCBQNEQgMA0KPiBbIDYy
-ODguNDE0NjAzXSBPb3BzOiAwMDAwIFsjMV0gUFJFRU1QVCBTTVAgUFRJDQo+IFsgNjI4OC40MTU0
-MTldIENQVTogMCBQSUQ6IDM0MDc5OCBDb21tOiBrd29ya2VyL3UxODo4IE5vdCB0YWludGVkDQo+
-IDYuNi4wLXJjMS1nZGNmNjIwY2VlYmFjICM5NQ0KPiBbIDYyODguNDE2NTM4XSBIYXJkd2FyZSBu
-YW1lOiBRRU1VIFN0YW5kYXJkIFBDIChRMzUgKyBJQ0g5LCAyMDA5KSwNCj4gQklPUyAxLjE2LjIt
-MS5mYzM4IDA0LzAxLzIwMTQNCj4gWyA2Mjg4LjQxNzcwMV0gV29ya3F1ZXVlOiBuZnNpb2QgcnBj
-X2FzeW5jX3JlbGVhc2UgW3N1bnJwY10NCj4gWyA2Mjg4LjQxODY3Nl0gUklQOiAwMDEwOm5mc19p
-bm9kZV9yZW1vdmVfcmVxdWVzdCsweGM4LzB4MTUwIFtuZnNdDQo+IFsgNjI4OC40MTk4MzZdIENv
-ZGU6IGZmIGZmIDQ4IDhiIDQzIDM4IDQ4IDhiIDdiIDEwIGE4IDA0IDc0IDViIDQ4IDg1DQo+IGZm
-IDc0IDU2IDQ4IDhiIDA3IGE5IDAwIDAwIDA4IDAwIDc0IDU4IDQ4IDhiIDA3IGY2IGM0IDEwIDc0
-IDUwIGU4IGM4DQo+IDQ0IGIzIGQ1IDw0OD4gOGIgMDAgZjAgNDggZmYgODggMzAgZmYgZmYgZmYg
-NWIgNWQgNDEgNWMgYzMgY2MgY2MgY2MNCj4gY2MgNDggOGINCj4gWyA2Mjg4LjQyMjM4OV0gUlNQ
-OiAwMDE4OmZmZmZiZDYxODM1M2JkYTggRUZMQUdTOiAwMDAxMDI0Ng0KPiBbIDYyODguNDIzMjM0
-XSBSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmOWEyOWY5YTI1MjgwIFJDWDoNCj4gMDAw
-MDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDI0MzUxXSBSRFg6IGZmZmY5YTI5ZjlhMjUyYjQgUlNJ
-OiAwMDAwMDAwMDAwMDAwMDBiIFJESToNCj4gZmZmZmVmNDE0NDhlMzg0MA0KPiBbIDYyODguNDI1
-MzQ1XSBSQlA6IGZmZmZlZjQxNDQ4ZTM4NDAgUjA4OiAwMDAwMDAwMDAwMDAwMDM4IFIwOToNCj4g
-ZmZmZmZmZmZmZmZmZmZmZg0KPiBbIDYyODguNDI2MzM0XSBSMTA6IDAwMDAwMDAwMDAwMzNmODAg
-UjExOiBmZmZmOWEyYTdmZmZhMDAwIFIxMjoNCj4gZmZmZjlhMjkwOTNmOThjNA0KPiBbIDYyODgu
-NDI3MzUzXSBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiBmZmZmOWEyOTIzMGY2MmUwIFIxNToN
-Cj4gZmZmZjlhMjkyMzBmNjJkMA0KPiBbIDYyODguNDI4MzU4XSBGUzrCoCAwMDAwMDAwMDAwMDAw
-MDAwKDAwMDApIEdTOmZmZmY5YTJhNzdjMDAwMDAoMDAwMCkNCj4ga25sR1M6MDAwMDAwMDAwMDAw
-MDAwMA0KPiBbIDYyODguNDI5NTEzXSBDUzrCoCAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDog
-MDAwMDAwMDA4MDA1MDAzMw0KPiBbIDYyODguNDMwNDI3XSBDUjI6IDAwMDAwMDAwMDAwMDAwMDAg
-Q1IzOiAwMDAwMDAwMjY0NzQ4MDAyIENSNDoNCj4gMDAwMDAwMDAwMDc3MGVmMA0KPiBbIDYyODgu
-NDMxNTUzXSBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjoN
-Cj4gMDAwMDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDMyNzE1XSBEUjM6IDAwMDAwMDAwMDAwMDAw
-MDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzoNCj4gMDAwMDAwMDAwMDAwMDQwMA0KPiBbIDYy
-ODguNDMzNjk4XSBQS1JVOiA1NTU1NTU1NA0KPiBbIDYyODguNDM0MTk2XSBDYWxsIFRyYWNlOg0K
-PiBbIDYyODguNDM0NjY3XcKgIDxUQVNLPg0KPiBbIDYyODguNDM1MTMyXcKgID8gX19kaWUrMHgx
-Zi8weDcwDQo+IFsgNjI4OC40MzU3MjNdwqAgPyBwYWdlX2ZhdWx0X29vcHMrMHgxNTkvMHg0NTAN
-Cj4gWyA2Mjg4LjQzNjM4OV3CoCA/IHRyeV90b193YWtlX3VwKzB4OTgvMHg1ZDANCj4gWyA2Mjg4
-LjQzNzA0NF3CoCA/IGRvX3VzZXJfYWRkcl9mYXVsdCsweDY1LzB4NjYwDQo+IFsgNjI4OC40Mzc3
-MjhdwqAgPyBleGNfcGFnZV9mYXVsdCsweDdhLzB4MTgwDQo+IFsgNjI4OC40MzgzNjhdwqAgPyBh
-c21fZXhjX3BhZ2VfZmF1bHQrMHgyMi8weDMwDQo+IFsgNjI4OC40MzkxMzddwqAgPyBuZnNfaW5v
-ZGVfcmVtb3ZlX3JlcXVlc3QrMHhjOC8weDE1MCBbbmZzXQ0KPiBbIDYyODguNDQwMTEyXcKgID8g
-bmZzX2lub2RlX3JlbW92ZV9yZXF1ZXN0KzB4YTAvMHgxNTAgW25mc10NCj4gWyA2Mjg4LjQ0MDky
-NF3CoCBuZnNfY29tbWl0X3JlbGVhc2VfcGFnZXMrMHgxNmUvMHgzNDAgW25mc10NCj4gWyA2Mjg4
-LjQ0MTcwMF3CoCA/IF9fcGZ4X2NhbGxfdHJhbnNtaXQrMHgxMC8weDEwIFtzdW5ycGNdDQo+IFsg
-NjI4OC40NDI0NzVdwqAgPyBfcmF3X3NwaW5fbG9ja19pcnFzYXZlKzB4MjMvMHg1MA0KPiBbIDYy
-ODguNDQzMTYxXcKgIG5mc19jb21taXRfcmVsZWFzZSsweDE1LzB4NDAgW25mc10NCj4gWyA2Mjg4
-LjQ0MzkyNl3CoCBycGNfZnJlZV90YXNrKzB4MzYvMHg2MCBbc3VucnBjXQ0KPiBbIDYyODguNDQ0
-NzQxXcKgIHJwY19hc3luY19yZWxlYXNlKzB4MjkvMHg0MCBbc3VucnBjXQ0KPiBbIDYyODguNDQ1
-NTA5XcKgIHByb2Nlc3Nfb25lX3dvcmsrMHgxNzEvMHgzNDANCj4gWyA2Mjg4LjQ0NjEzNV3CoCB3
-b3JrZXJfdGhyZWFkKzB4Mjc3LzB4M2EwDQo+IFsgNjI4OC40NDY3MjRdwqAgPyBfX3BmeF93b3Jr
-ZXJfdGhyZWFkKzB4MTAvMHgxMA0KPiBbIDYyODguNDQ3Mzc2XcKgIGt0aHJlYWQrMHhmMC8weDEy
-MA0KPiBbIDYyODguNDQ3OTAzXcKgID8gX19wZnhfa3RocmVhZCsweDEwLzB4MTANCj4gWyA2Mjg4
-LjQ0ODUwMF3CoCByZXRfZnJvbV9mb3JrKzB4MmQvMHg1MA0KPiBbIDYyODguNDQ5MDc4XcKgID8g
-X19wZnhfa3RocmVhZCsweDEwLzB4MTANCj4gWyA2Mjg4LjQ0OTY2NV3CoCByZXRfZnJvbV9mb3Jr
-X2FzbSsweDFiLzB4MzANCj4gWyA2Mjg4LjQ1MDI4M13CoCA8L1RBU0s+DQo+IFsgNjI4OC40NTA2
-ODhdIE1vZHVsZXMgbGlua2VkIGluOiBycGNzZWNfZ3NzX2tyYjUgYXV0aF9ycGNnc3MgbmZzdjQN
-Cj4gZG5zX3Jlc29sdmVyIG5mcyBsb2NrZCBncmFjZSBzdW5ycGMgbmxzX2lzbzg4NTlfMSBubHNf
-Y3A0MzcgdmZhdCBmYXQNCj4gOXAgbmV0ZnMgZXh0NCBrdm1faW50ZWwgY3JjMTYgbWJjYWNoZSBq
-YmQyIGpveWRldiBrdm0geGZzIGlycWJ5cGFzcw0KPiB2aXJ0aW9fbmV0IHBjc3BrciBuZXRfZmFp
-bG92ZXIgcHNtb3VzZSBmYWlsb3ZlciA5cG5ldF92aXJ0aW8gY2lycnVzDQo+IGRybV9zaG1lbV9o
-ZWxwZXIgdmlydGlvX2JhbGxvb24gZHJtX2ttc19oZWxwZXIgYnV0dG9uIGV2ZGV2IGRybSBsb29w
-DQo+IGRtX21vZCB6cmFtIHpzbWFsbG9jIGNyY3QxMGRpZl9wY2xtdWwgY3JjMzJfcGNsbXVsDQo+
-IGdoYXNoX2NsbXVsbmlfaW50ZWwgc2hhNTEyX3Nzc2UzIHNoYTUxMl9nZW5lcmljIHZpcnRpb19i
-bGsgbnZtZQ0KPiBhZXNuaV9pbnRlbCBjcnlwdG9fc2ltZCBjcnlwdGQgbnZtZV9jb3JlIHQxMF9w
-aSBpNjMwMGVzYg0KPiBjcmM2NF9yb2Nrc29mdF9nZW5lcmljIGNyYzY0X3JvY2tzb2Z0IGNyYzY0
-IHZpcnRpb19wY2kgdmlydGlvDQo+IHZpcnRpb19wY2lfbGVnYWN5X2RldiB2aXJ0aW9fcGNpX21v
-ZGVybl9kZXYgdmlydGlvX3Jpbmcgc2VyaW9fcmF3DQo+IGJ0cmZzIGJsYWtlMmJfZ2VuZXJpYyBs
-aWJjcmMzMmMgY3JjMzJjX2dlbmVyaWMgY3JjMzJjX2ludGVsIHhvcg0KPiByYWlkNl9wcSBhdXRv
-ZnM0DQo+IFsgNjI4OC40NjAyMTFdIENSMjogMDAwMDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDYw
-Nzg3XSAtLS1bIGVuZCB0cmFjZSAwMDAwMDAwMDAwMDAwMDAwIF0tLS0NCj4gWyA2Mjg4LjQ2MTU3
-MV0gUklQOiAwMDEwOm5mc19pbm9kZV9yZW1vdmVfcmVxdWVzdCsweGM4LzB4MTUwIFtuZnNdDQo+
-IFsgNjI4OC40NjI1MDBdIENvZGU6IGZmIGZmIDQ4IDhiIDQzIDM4IDQ4IDhiIDdiIDEwIGE4IDA0
-IDc0IDViIDQ4IDg1DQo+IGZmIDc0IDU2IDQ4IDhiIDA3IGE5IDAwIDAwIDA4IDAwIDc0IDU4IDQ4
-IDhiIDA3IGY2IGM0IDEwIDc0IDUwIGU4IGM4DQo+IDQ0IGIzIGQ1IDw0OD4gOGIgMDAgZjAgNDgg
-ZmYgODggMzAgZmYgZmYgZmYgNWIgNWQgNDEgNWMgYzMgY2MgY2MgY2MNCj4gY2MgNDggOGINCj4g
-WyA2Mjg4LjQ2NTEzNl0gUlNQOiAwMDE4OmZmZmZiZDYxODM1M2JkYTggRUZMQUdTOiAwMDAxMDI0
-Ng0KPiBbIDYyODguNDY1OTYzXSBSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmOWEyOWY5
-YTI1MjgwIFJDWDoNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDY3MDM1XSBSRFg6IGZm
-ZmY5YTI5ZjlhMjUyYjQgUlNJOiAwMDAwMDAwMDAwMDAwMDBiIFJESToNCj4gZmZmZmVmNDE0NDhl
-Mzg0MA0KPiBbIDYyODguNDY4MDkzXSBSQlA6IGZmZmZlZjQxNDQ4ZTM4NDAgUjA4OiAwMDAwMDAw
-MDAwMDAwMDM4IFIwOToNCj4gZmZmZmZmZmZmZmZmZmZmZg0KPiBbIDYyODguNDY5MTIxXSBSMTA6
-IDAwMDAwMDAwMDAwMzNmODAgUjExOiBmZmZmOWEyYTdmZmZhMDAwIFIxMjoNCj4gZmZmZjlhMjkw
-OTNmOThjNA0KPiBbIDYyODguNDcwMTA5XSBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiBmZmZm
-OWEyOTIzMGY2MmUwIFIxNToNCj4gZmZmZjlhMjkyMzBmNjJkMA0KPiBbIDYyODguNDcxMTA2XSBG
-UzrCoCAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5YTJhNzdjMDAwMDAoMDAwMCkNCj4g
-a25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDcyMjE2XSBDUzrCoCAwMDEwIERTOiAw
-MDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBbIDYyODguNDczMDU5XSBDUjI6
-IDAwMDAwMDAwMDAwMDAwMDAgQ1IzOiAwMDAwMDAwMjY0NzQ4MDAyIENSNDoNCj4gMDAwMDAwMDAw
-MDc3MGVmMA0KPiBbIDYyODguNDc0MDk2XSBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAw
-MDAwMDAwMDAwMDAwIERSMjoNCj4gMDAwMDAwMDAwMDAwMDAwMA0KPiBbIDYyODguNDc1MDk3XSBE
-UjM6IDAwMDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzoNCj4gMDAwMDAw
-MDAwMDAwMDQwMA0KPiBbIDYyODguNDc2MTQ4XSBQS1JVOiA1NTU1NTU1NA0KPiBbIDYyODguNDc2
-NjY1XSBub3RlOiBrd29ya2VyL3UxODo4WzM0MDc5OF0gZXhpdGVkIHdpdGggaXJxcyBkaXNhYmxl
-ZA0KPiANCj4gT25jZSB3ZSd2ZSByZWxlYXNlZCAicmVxIiwgaXQncyBub3Qgc2FmZSB0byBkZXJl
-ZmVyZW5jZSBpdCBhbnltb3JlLg0KPiBEZWNyZW1lbnQgdGhlIG5yZXF1ZXN0cyBjb3VudGVyIGJl
-Zm9yZSBkcm9wcGluZyB0aGUgcmVmZXJlbmNlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSmVmZiBM
-YXl0b24gPGpsYXl0b25Aa2VybmVsLm9yZz4NCj4gLS0tDQo+IEkndmUgb25seSBoaXQgdGhpcyBv
-bmNlIGFmdGVyIGEgbG90IG9mIHRlc3RpbmcsIHNvIEkgY2FuJ3QgY29uZmlybQ0KPiB0aGF0DQo+
-IHRoaXMgZml4ZXMgYW55dGhpbmcuIEl0IHNlZW1zIGxpa2UgdGhlIHJpZ2h0IHRoaW5nIHRvIGRv
-LCBob3dldmVyLg0KPiAtLS0NCj4gwqBmcy9uZnMvd3JpdGUuYyB8IDIgKy0NCj4gwqAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQg
-YS9mcy9uZnMvd3JpdGUuYyBiL2ZzL25mcy93cml0ZS5jDQo+IGluZGV4IDhjMWVlMWExYTI4Zi4u
-NzcyMGI1ZTQzMDE0IDEwMDY0NA0KPiAtLS0gYS9mcy9uZnMvd3JpdGUuYw0KPiArKysgYi9mcy9u
-ZnMvd3JpdGUuYw0KPiBAQCAtODAyLDggKzgwMiw4IEBAIHN0YXRpYyB2b2lkIG5mc19pbm9kZV9y
-ZW1vdmVfcmVxdWVzdChzdHJ1Y3QNCj4gbmZzX3BhZ2UgKnJlcSkNCj4gwqDCoMKgwqDCoMKgwqDC
-oH0NCj4gwqANCj4gwqDCoMKgwqDCoMKgwqDCoGlmICh0ZXN0X2FuZF9jbGVhcl9iaXQoUEdfSU5P
-REVfUkVGLCAmcmVxLT53Yl9mbGFncykpIHsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoG5mc19yZWxlYXNlX3JlcXVlc3QocmVxKTsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBhdG9taWNfbG9uZ19kZWMoJk5GU19JKG5mc19wYWdlX3RvX2lub2RlKHJlcSkpLQ0K
-PiA+bnJlcXVlc3RzKTsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG5mc19yZWxl
-YXNlX3JlcXVlc3QocmVxKTsNCj4gwqDCoMKgwqDCoMKgwqDCoH0NCj4gwqB9DQo+IA0KDQpJc24n
-dCB0aGlzIHRoZSBzYW1lIGlzc3VlIHRoYXQgU2NvdHQgTWF5aGV3IHBvc3RlZCBhIHBhdGNoICgi
-TkZTOiBGaXgNCnBvdGVudGlhbCBvb3BzIGluIG5mc19pbm9kZV9yZW1vdmVfcmVxdWVzdCgpIikg
-b24gSnVseSAyNXRoPw0KDQpBdCB0aGUgdGltZSBJIGFyZ3VlZCBmb3Igc29tZXRoaW5nIGxpa2Ug
-dGhlIGFib3ZlIHBhdGNoLCBidXQgYm90aCBTY290dA0KYW5kIHlvdSBhcmd1ZWQgdGhhdCBpdCB3
-YXMgaW5zdWZmaWNpZW50IHRvIGZpeCB0aGUgcHJvYmxlbS4NCg0KU28gd2hpY2ggcGF0Y2ggaXMg
-dGhlIG9uZSB3ZSBzaG91bGQgYXBwbHk/DQoNCkNoZWVycywNCiAgVHJvbmQNCi0tIA0KVHJvbmQg
-TXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9u
-ZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
+On 27/09/2023 16:40, Randy Dunlap wrote:
+>
+> On 9/27/23 04:27, Sid Boyce wrote:
+>> On 26/09/2023 23:13, Randy Dunlap wrote:
+> || The snd-rpl-pci-acp6x driver only supports
+> || vendor=0x1022, device=0x15e2, and PCI revision=0x62.
+>
+>>> lspci -vv
+>>
+>> 01:00.1 Audiodevice: NVIDIA Corporation Device 10fa (rev a1)
+>>         Subsystem: NVIDIA Corporation Device 1f82
+>>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+>>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>>         Latency: 0, Cache Line Size: 64 bytes
+>>         Interrupt: pin B routed to IRQ 80
+>>         IOMMU group: 11
+>>         Region 0: Memory at fc080000 (32-bit, non-prefetchable) [size=16K]
+>>         Capabilities: [60] Power Management version 3
+>>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+>>                 Status: D3 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
+>>         Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
+>>                 Address: 0000000000000000  Data: 0000
+>>         Capabilities: [78] Express (v2) Endpoint, MSI 00
+>>                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
+>>                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 75W
+>>                 DevCtl: CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
+>>                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+>>                         MaxPayload 256 bytes, MaxReadReq 512 bytes
+>>                 DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq+ AuxPwr- TransPend-
+>>                 LnkCap: Port #0, Speed 8GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+>>                         ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+>>                 LnkCtl: ASPM L0s L1 Enabled; RCB 64 bytes, Disabled- CommClk+
+>>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>>                 LnkSta: Speed 2.5GT/s (downgraded), Width x16
+>>                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+>>                 DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR+
+>>                          10BitTagComp- 10BitTagReq- OBFF Via message, ExtFmt- EETLPPrefix-
+>>                          EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
+>>                          FRS- TPHComp- ExtTPHComp-
+>>                          AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+>>                 DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
+>>                          AtomicOpsCtl: ReqEn-
+>>                 LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
+>>                          EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+>>                          Retimer- 2Retimers- CrosslinkRes: unsupported
+>>         Capabilities: [100 v2] Advanced Error Reporting
+>>                 UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>>                 UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>>                 UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+>>                 CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+>>                 CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
+>>                 AERCap: First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
+>>                         MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+>>                 HeaderLog: 00000000 00000000 00000000 00000000
+>>         Kernel driver in use: snd_hda_intel
+>>         Kernel modules: snd_hda_intel
+>>
+>> 0b:00.6 Audiodevice: Advanced Micro Devices, Inc. [AMD] Family 17h/19h HD AudioController
+>>         DeviceName: Realtek ALC897 Audio
+>>         Subsystem: ASUSTeK Computer Inc. Device 87fb
+>>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+>>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>>         Latency: 0, Cache Line Size: 64 bytes
+>>         Interrupt: pin C routed to IRQ 81
+>>         IOMMU group: 24
+>>         Region 0: Memory at fc500000 (32-bit, non-prefetchable) [size=32K]
+>>         Capabilities: [48] Vendor Specific Information: Len=08 <?>
+>>         Capabilities: [50] Power Management version 3
+>>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+>>                 Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
+>>         Capabilities: [64] Express (v2) Endpoint, MSI 00
+>>                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s <4us, L1 unlimited
+>>                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0W
+>>                 DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+>>                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+>>                         MaxPayload 256 bytes, MaxReadReq 512 bytes
+>>                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+>>                 LnkCap: Port #0, Speed 16GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <64ns, L1 <1us
+>>                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp+
+>>                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+>>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>>                 LnkSta: Speed 16GT/s, Width x16
+>>                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+>>                 DevCap2: Completion Timeout: Range ABCD, TimeoutDis+ NROPrPrP- LTR-
+>>                          10BitTagComp+ 10BitTagReq- OBFF Not Supported, ExtFmt+ EETLPPrefix+, MaxEETLPPrefixes 1
+>>                          EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
+>>                          FRS- TPHComp- ExtTPHComp-
+>>                          AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+>>                 DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
+>>                          AtomicOpsCtl: ReqEn-
+>>                 LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
+>>                          EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+>>                          Retimer- 2Retimers- CrosslinkRes: unsupported
+>>         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>>                 Address: 00000000fee00000  Data: 0000
+>>         Capabilities: [100 v1] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+>>         Capabilities: [2a0 v1] Access Control Services
+>>                 ACSCap: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
+>>                 ACSCtl: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
+>>         Kernel driver in use: snd_hda_intel
+>>         Kernel modules: snd_hda_intel
+>>
+> Sid, do you have some reason to believe that one of these devices should use the
+> snd-rpl-pci-acp6x driver?  I don't see that either one of them is the correct
+> vendor/device ID pair for that driver, but I would prefer that someone who is
+> familiar with the driver & device jump in here...
+>
+Switched to pulseaudio, results are absolutely the same as with pipewire.
+
+After reboot without USB dongle only the Digital Stereo (IEC958) showed 
+in kmix.
+
+Plugged in the USB dongle in order to get sound working.
+
+-- 
+Sid Boyce ... Hamradio License G3VBV, Keen licensed Private Pilot
+Retired IBM/Amdahl Mainframes and Sun/Fujitsu Servers Tech Support Specialist
+Microsoft Windows Free Zone - Linux used for all Computing Tasks
+
