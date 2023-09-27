@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2DF7B0F96
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22B07B0F98
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjI0XhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S229747AbjI0XkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjI0XhW (ORCPT
+        with ESMTP id S229464AbjI0Xj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:37:22 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65033F9;
-        Wed, 27 Sep 2023 16:37:18 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso1507084366b.0;
-        Wed, 27 Sep 2023 16:37:18 -0700 (PDT)
+        Wed, 27 Sep 2023 19:39:59 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFC6F4;
+        Wed, 27 Sep 2023 16:39:57 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-65b10205207so36626826d6.0;
+        Wed, 27 Sep 2023 16:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695857837; x=1696462637; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695857997; x=1696462797; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5OxzetWkN1SscgRTbAJVQV5Koq8cE2AuXIAJBttysKc=;
-        b=RuNu9iuIs5/URyLtsCqkBrpv9tFJnZtwDi74ORsQOhib8AeNWDr2xvqxja1kkX9+WT
-         5lJAP/KFnIWbmzRb85ogDvLR+Qtgh7lS8E0qtEt+j+qwUsAf7Ypul0/qEqwkgT9aqf0A
-         Db0EMPawvW/W4uZKHD42BVfyql/DExW6QAPjgEGf3xYybzbdmXZBQOPofCMBQhRPZ0iJ
-         2ZNxBkiao2bxpjXQX/3F/gK9RltPWa2CSX88B6IVKjrBkACRJFXhR6IO3VnPytmudhi5
-         WEc5OHHSc/cQL2x/nxZ1wxM7gryYliO/JpE8UgXmkfG/TWFoFiJZikBlVncoLayQgF8K
-         O2nw==
+        bh=gQWVSyMSESKVXR7lHsisu37f0DFjVJDNSkQFdAeg8Rc=;
+        b=glEnYWQKUCJsHEyo4ev9nrcbV3fvHL3I1eg+YGWrouZxy3Htwc/81fhaHMta+RAFzc
+         nr7CtV6Epb0GBmSYSViqF8dkPfG+OhbIOJjBnzlQOQ5TMXz4fwVtIB8FlVJP/nsmti4G
+         LsWjYcFXuaUy3GcHBmhDcENs4Omfvza3aY4kHRUTd+AGXnMcG90gQjPyvB5K8LOYfotl
+         s8UG6u50Oz1dHEte6kNV+0zPwHlKfbN+MERyz0xnQmBzNLsOV5O4a+53tphASdsgUkcU
+         n2xE5AcMeKO6FJVm698NDe3Wltwy6ihNJ/CVMds6WICDwZHojEOHBuidBPmJDcLUfsB0
+         TLfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695857837; x=1696462637;
+        d=1e100.net; s=20230601; t=1695857997; x=1696462797;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5OxzetWkN1SscgRTbAJVQV5Koq8cE2AuXIAJBttysKc=;
-        b=u+ZneLIN4gA+B7BsSLtaeqY/FmskDzxHNMzMUD4oLd1CMzwLs74vlzDrjbCEd0ECEb
-         BPzmiHQaWraZdZGd5Fu1eDpwGxZNborBmpGt4NGC4bmujb5roPOXiwC1SXzmtwUS6o9B
-         FfTDNSn0pSmRcRIQcHQkOkPjQ8nLYesC36/OJBQztnFeu0JCLob3z/gAFQ4lgybixZvK
-         qcmnfARXsoso9BlEM9nOqhCdR256OXDltMjUm2z+yEVNnI/x+hJJnbMiFoA9LZbqqbb0
-         nChzDfEbZIQdETUQcvY+lMf9lVyauG9SSD2/2xC6JCvQvWr6Q9TPffegfDve0WK55/w5
-         bo+A==
-X-Gm-Message-State: AOJu0YyGxu16lt7ZRKhY1gaytS9cEeup+emq2dm1ktszf7ntaHYkz8pP
-        mMNWSd9E8J8O19RxbZK23hOSny0hbFGZC9PpIX8=
-X-Google-Smtp-Source: AGHT+IHY4eTQ0vcHUEOCkyWsul07b34kuXtFvgc5YiaHNYFt+fCJ5YgnRGuziexRVhN4g/Y6UCVAZTcI2PmLYX2LTiQ=
-X-Received: by 2002:a17:906:18a1:b0:9ae:69ff:bcdb with SMTP id
- c1-20020a17090618a100b009ae69ffbcdbmr2962842ejf.31.1695857836745; Wed, 27 Sep
- 2023 16:37:16 -0700 (PDT)
+        bh=gQWVSyMSESKVXR7lHsisu37f0DFjVJDNSkQFdAeg8Rc=;
+        b=exefzGnt3/tcNcPK+zBFs/OvD33gozBa7jKHUAyBgqBrQaq7m0VSjz5JNHjWV4zwbd
+         zxO4XmLX37jbB+6g6PVsBbjuATY+owRTGvt6dJ8XqeywgZ89pUh+oh6SH5mMVfnJ6kST
+         rRI/AL4hrab8h55k3Sdmi5FK2YIyRBXMxCA3sYkU7R1KzIySVpNvQQreuleJD3FcwcQB
+         Z2wXNInvVOiV1QxXLpCejJ2/epFpPfE9QCulVGAvRIPzhDNQjgTbUAS8iuVChrcIxeoE
+         os9fQCcOqNCZbC2z1RiHnMYFcrG3hvQjE40Qn1sJhc6ori24de3IbXIWSIdbhDl7rDaE
+         JDzw==
+X-Gm-Message-State: AOJu0YxFXR8ODYBZanNkcKLNfCq5T4Y3dq4cyWSj8HZRq2bt48GJux45
+        wPhC156oIWBInzKFhlfG6Qyk9NpQWtauH/FF+XE=
+X-Google-Smtp-Source: AGHT+IFoprYkIDxUtCHlyYzh+wqHcvx4P6k6uIZuO/hY4iiSk4nxHrGQAOkw+bADmNjWozNYnrs3WHNz87mEp9N4gkU=
+X-Received: by 2002:a0c:f04c:0:b0:65b:1744:55d4 with SMTP id
+ b12-20020a0cf04c000000b0065b174455d4mr3619280qvl.3.1695857996868; Wed, 27 Sep
+ 2023 16:39:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-7-zhouchuyi@bytedance.com>
-In-Reply-To: <20230925105552.817513-7-zhouchuyi@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Sep 2023 16:37:05 -0700
-Message-ID: <CAEf4BzZKR7OXtpxak2ye5hsF3w9k8VLQb2u-dwGQQgqVG1sx+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 6/7] bpf: Let bpf_iter_task_new accept null
- task ptr
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
+References: <cover.1695804418.git.unicornxw@gmail.com> <20230927-ebony-duress-44ff45d3d253@spud>
+In-Reply-To: <20230927-ebony-duress-44ff45d3d253@spud>
+From:   Chen Wang <unicornxw@gmail.com>
+Date:   Thu, 28 Sep 2023 07:39:45 +0800
+Message-ID: <CAHAQgRC2xeqUu4mDZRJd3brcPNT4KovX65rNE7YXm+ku0+eERg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/11] Add Milk-V Pioneer RISC-V board support
+To:     Conor Dooley <conor@kernel.org>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
+        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,156 +73,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
+Conor Dooley <conor@kernel.org> =E4=BA=8E2023=E5=B9=B49=E6=9C=8828=E6=97=A5=
+=E5=91=A8=E5=9B=9B 00:09=E5=86=99=E9=81=93=EF=BC=9A
 >
-> When using task_iter to iterate all threads of a specific task, we enforc=
-e
-> that the user must pass a valid task pointer to ensure safety. However,
-> when iterating all threads/process in the system, BPF verifier still
-> require a valid ptr instead of "nullable" pointer, even though it's
-> pointless, which is a kind of surprising from usability standpoint. It
-> would be nice if we could let that kfunc accept a explicit null pointer
-> when we are using BPF_TASK_ITER_ALL/BPF_TASK_ITER_PROC and a valid pointe=
-r
-> when using BPF_TASK_ITER_THREAD.
+> Hey,
 >
-> Given a trival kfunc:
->         __bpf_kfunc void FN(struct TYPE_A *obj)
+> On Wed, Sep 27, 2023 at 04:54:38PM +0800, Chen Wang wrote:
+> > Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 [2=
+]
+> > in a standard mATX form factor. Add minimal device
+> > tree files for the SG2042 SOC and the Milk-V Pioneer board.
+> >
+> > Now only support basic uart drivers to boot up into a basic console.
+> >
+> > Thanks,
+> > Chen
+> >
+> > ---
+> >
+> > Changes in v3:
+> >   The patch series is based on v6.6-rc1. You can simply review or test
+> >   the patches at the link [5].
+> >   - add new vendor specific compatible strings to identify timer/mswi f=
+or sg2042 clint
+> >   - updated maintainers info. for sophgo devicetree
+> >   - remove the quirk changes for uart
+> >   - updated dts, such as:
+> >     - add "riscv,isa-base"/"riscv,isa-extensions" for cpus
+> >     - update l2 cache node's name
+> >     - remove memory and pmu nodes
+> >   - fixed other issues as per input from reviewers.
 >
-> BPF Prog would reject a nullptr for obj. The error info is:
-> "arg#x pointer type xx xx must point to scalar, or struct with scalar"
-> reported by get_kfunc_ptr_arg_type(). The reg->type is SCALAR_VALUE and
-> the btf type of ref_t is not scalar or scalar_struct which leads to the
-> rejection of get_kfunc_ptr_arg_type.
+> v3 looks better indeed. I had some comments on the bindings and dt
+> patches, but none were particularly major.
 >
-> This patch reuse the __opt annotation which was used to indicate that
-> the buffer associated with an __sz or __szk argument may be null:
->         __bpf_kfunc void FN(struct TYPE_A *obj__opt)
-> Here __opt indicates obj can be optional, user can pass a explicit nullpt=
-r
-> or a normal TYPE_A pointer. In get_kfunc_ptr_arg_type(), we will detect
-> whether the current arg is optional and register is null, If so, return
-> a new kfunc_ptr_arg_type KF_ARG_PTR_TO_NULL and skip to the next arg in
-> check_kfunc_args().
+> Thanks,
+> Conor.
 >
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  kernel/bpf/task_iter.c |  7 +++++--
->  kernel/bpf/verifier.c  | 13 ++++++++++++-
->  2 files changed, 17 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 9bcd3f9922b1..7ac007f161cc 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -867,7 +867,7 @@ struct bpf_iter_task_kern {
->         unsigned int type;
->  } __attribute__((aligned(8)));
->
-> -__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_=
-struct *task, unsigned int type)
-> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_=
-struct *task__opt, unsigned int type)
->  {
->         struct bpf_iter_task_kern *kit =3D (void *)it;
->         BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) !=3D sizeof(struct=
- bpf_iter_task));
-> @@ -877,14 +877,17 @@ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_t=
-ask *it, struct task_struct *
->         switch (type) {
->         case BPF_TASK_ITER_ALL:
->         case BPF_TASK_ITER_PROC:
-> +               break;
->         case BPF_TASK_ITER_THREAD:
-> +               if (!task__opt)
-> +                       return -EINVAL;
->                 break;
->         default:
->                 return -EINVAL;
->         }
->
->         if (type =3D=3D BPF_TASK_ITER_THREAD)
-> -               kit->task =3D task;
-> +               kit->task =3D task__opt;
->         else
->                 kit->task =3D &init_task;
->         kit->pos =3D kit->task;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a065e18a0b3a..a79204c75a90 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10331,6 +10331,7 @@ enum kfunc_ptr_arg_type {
->         KF_ARG_PTR_TO_CALLBACK,
->         KF_ARG_PTR_TO_RB_ROOT,
->         KF_ARG_PTR_TO_RB_NODE,
-> +       KF_ARG_PTR_TO_NULL,
->  };
->
->  enum special_kfunc_type {
-> @@ -10425,6 +10426,12 @@ static bool is_kfunc_bpf_rcu_read_unlock(struct =
-bpf_kfunc_call_arg_meta *meta)
->         return meta->func_id =3D=3D special_kfunc_list[KF_bpf_rcu_read_un=
-lock];
->  }
->
-> +static inline bool is_kfunc_arg_optional_null(struct bpf_reg_state *reg,
-> +                               const struct btf *btf, const struct btf_p=
-aram *arg)
-> +{
-> +       return register_is_null(reg) && is_kfunc_arg_optional(btf, arg);
-> +}
-> +
->  static enum kfunc_ptr_arg_type
->  get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
->                        struct bpf_kfunc_call_arg_meta *meta,
-> @@ -10497,6 +10504,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *e=
-nv,
->          */
->         if (!btf_type_is_scalar(ref_t) && !__btf_type_is_scalar_struct(en=
-v, meta->btf, ref_t, 0) &&
->             (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
-> +                       if (is_kfunc_arg_optional_null(reg, meta->btf, &a=
-rgs[argno]))
-> +                               return KF_ARG_PTR_TO_NULL;
+Thanks, Conor, I will continue imrpoving according to your commnents.
 
-This nested check seems misplaced. Maybe we shouldn't reuse __opt
-suffix which already has a different meaning (coupled with __sz). Why
-not add "__nullable" convention and just check it separately?
-
->                 verbose(env, "arg#%d pointer type %s %s must point to %ss=
-calar, or struct with scalar\n",
->                         argno, btf_type_str(ref_t), ref_tname, arg_mem_si=
-ze ? "void, " : "");
->                 return -EINVAL;
-> @@ -11028,7 +11037,7 @@ static int check_kfunc_args(struct bpf_verifier_e=
-nv *env, struct bpf_kfunc_call_
->                 }
->
->                 if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &=
-&
-> -                   (register_is_null(reg) || type_may_be_null(reg->type)=
-)) {
-> +                   (register_is_null(reg) || type_may_be_null(reg->type)=
-) && !is_kfunc_arg_optional(meta->btf, &args[i])) {
-
-nit: looks like a very long line, probably wrap to the next line?
-
->                         verbose(env, "Possibly NULL pointer passed to tru=
-sted arg%d\n", i);
->                         return -EACCES;
->                 }
-> @@ -11053,6 +11062,8 @@ static int check_kfunc_args(struct bpf_verifier_e=
-nv *env, struct bpf_kfunc_call_
->                         return kf_arg_type;
->
->                 switch (kf_arg_type) {
-> +               case KF_ARG_PTR_TO_NULL:
-> +                       continue;
->                 case KF_ARG_PTR_TO_ALLOC_BTF_ID:
->                 case KF_ARG_PTR_TO_BTF_ID:
->                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu=
-(meta))
-> --
-> 2.20.1
->
+> >
+> > Changes in v2:
+> >   The patch series is based on v6.6-rc1. You can simply review or test
+> >   the patches at the link [4].
+> >   - Improve format for comment of commitments as per input from last re=
+view.
+> >   - Improve format of DTS as per input from last review.
+> >   - Remove numa related stuff from DTS. This part is just for optimizat=
+ion, may
+> >     add it later if really needed.
+> >
+> > Changes in v1:
+> >    The patch series is based on v6.6-rc1. Due to it is not sent in thre=
+ad,
+> >    I have listed permlinks of the patchset [v1-0/12] ~ [v1-12/12] here =
+for
+> >    quick reference. You can simply review or test the patches at the li=
+nk [3].
+> >
+> > [1]: https://milkv.io/pioneer
+> > [2]: https://en.sophgo.com/product/introduce/sg2042.html
+> > [3]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-mini=
+mal
+> > [4]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-mini=
+mal-v2
+> > [5]: https://github.com/unicornx/linux-riscv/commits/milkv-pioneer-mini=
+mal-v3
+> > [v1-0/12]:https://lore.kernel.org/linux-riscv/20230915070856.117514-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-1/12]:https://lore.kernel.org/linux-riscv/20230915071005.117575-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-2/12]:https://lore.kernel.org/linux-riscv/20230915071409.117692-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-3/12]:https://lore.kernel.org/linux-riscv/20230915072242.117935-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-4/12]:https://lore.kernel.org/linux-riscv/20230915072333.117991-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-5/12]:https://lore.kernel.org/linux-riscv/20230915072358.118045-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-6/12]:https://lore.kernel.org/linux-riscv/20230915072415.118100-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-7/12]:https://lore.kernel.org/linux-riscv/20230915072431.118154-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-8/12]:https://lore.kernel.org/linux-riscv/20230915072451.118209-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-9/12]:https://lore.kernel.org/linux-riscv/20230915072517.118266-1-w=
+angchen20@iscas.ac.cn/
+> > [v1-10/12]:https://lore.kernel.org/linux-riscv/20230915072558.118325-1-=
+wangchen20@iscas.ac.cn/
+> > [v1-11/12]:https://lore.kernel.org/linux-riscv/20230915072624.118388-1-=
+wangchen20@iscas.ac.cn/
+> > [v1-12/12]:https://lore.kernel.org/linux-riscv/20230915072653.118448-1-=
+wangchen20@iscas.ac.cn/
+> >
+> > ---
+> >
+> > Chen Wang (9):
+> >   riscv: Add SOPHGO SOC family Kconfig support
+> >   dt-bindings: vendor-prefixes: add milkv/sophgo
+> >   dt-bindings: riscv: add sophgo sg2042 bindings
+> >   dt-bindings: riscv: Add T-HEAD C920 compatibles
+> >   dt-bindings: interrupt-controller: Add Sophgo SG2042 PLIC
+> >   MAINTAINERS: add two files to sophgo devicetrees entry
+> >   riscv: dts: add initial Sophgo SG2042 SoC device tree
+> >   riscv: dts: sophgo: add Milk-V Pioneer board device tree
+> >   riscv: defconfig: enable SOPHGO SoC
+> >
+> > Inochi Amaoto (2):
+> >   dt-bindings: timer: Add Sophgo sg2042 CLINT timer
+> >   dt-bindings: interrupt-controller: Add Sophgo sg2042 CLINT mswi
+> >
+> >  .../sifive,plic-1.0.0.yaml                    |    1 +
+> >  .../sophgo,sg2042-clint-mswi.yaml             |   42 +
+> >  .../devicetree/bindings/riscv/cpus.yaml       |    1 +
+> >  .../devicetree/bindings/riscv/sophgo.yaml     |   28 +
+> >  .../timer/sophgo,sg2042-clint-mtimer.yaml     |   42 +
+> >  .../devicetree/bindings/vendor-prefixes.yaml  |    4 +
+> >  MAINTAINERS                                   |    9 +
+> >  arch/riscv/Kconfig.socs                       |    5 +
+> >  arch/riscv/boot/dts/Makefile                  |    1 +
+> >  arch/riscv/boot/dts/sophgo/Makefile           |    3 +
+> >  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi   | 1880 +++++++++++++++++
+> >  .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |   19 +
+> >  arch/riscv/boot/dts/sophgo/sg2042.dtsi        |  325 +++
+> >  arch/riscv/configs/defconfig                  |    1 +
+> >  14 files changed, 2361 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-control=
+ler/sophgo,sg2042-clint-mswi.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/riscv/sophgo.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/timer/sophgo,sg20=
+42-clint-mtimer.yaml
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/Makefile
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
+> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2042.dtsi
+> >
+> >
+> > base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> > --
+> > 2.25.1
+> >
