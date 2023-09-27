@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878907AF7C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044697AF7DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbjI0BtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 21:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        id S235455AbjI0B4L convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Sep 2023 21:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234484AbjI0BrI (ORCPT
+        with ESMTP id S234825AbjI0ByH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 21:47:08 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC6ACF7;
-        Tue, 26 Sep 2023 17:54:59 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwJ6l5pMzz4f3k6X;
-        Wed, 27 Sep 2023 08:54:55 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgDHXd1ffRNlJNruBQ--.41325S3;
-        Wed, 27 Sep 2023 08:54:56 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] md: factor out a new helper to put mddev
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     mariusz.tkaczyk@linux.intel.com, xni@redhat.com,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230926025827.671407-1-yukuai1@huaweicloud.com>
- <20230926025827.671407-2-yukuai1@huaweicloud.com>
- <CAPhsuW4dXrwt7VTifcdbdwH6Uz3b4m4Z54fBfD3LDjXy89PTkQ@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <94ef3ef4-0580-416b-f672-250a91b39e10@huaweicloud.com>
-Date:   Wed, 27 Sep 2023 08:54:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 26 Sep 2023 21:54:07 -0400
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5C416EBE;
+        Tue, 26 Sep 2023 18:00:58 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-79fe6da0049so61656739f.1;
+        Tue, 26 Sep 2023 18:00:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695776457; x=1696381257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u9+1nCO1D5B1eQeTJpZBJNL5I9g9vcwJsTUle11cEt4=;
+        b=d2yf7qEBXKdRMjn3OB74W2qaJJkGfJPfZoK+LJZ5HHA2AYP9GzluioRWR1mebY3bbo
+         fePW676RyRDBFLmWvEGvFshZoQR76VoKOMWYU5DgIH72Ez4Qj1UgGopRxn9TxWA22rXQ
+         Bl+xyZIST1Kr9Xlal7EvOfPFErBDL+Wbk0K7rrWtttOuvAF2gGdaKbIfJtyL3Stj9hh+
+         cDPhTTZP/ytmw3g1jco6IZLysjKGf4/p6Pr7U/HHxlYAiFgBkRbjfl+Y3KaOr1XDY4IN
+         Ttj/aXZtxzgRrEmqwrZbdH2AaLv3V1bUOSox5iHuS7szaMg5uFgIpw6hySzZbkgkA9XP
+         LrOQ==
+X-Gm-Message-State: AOJu0YyszUI5rfkJm5pHDMSQdaLT9JUtJqODia6ZCnsb7N9/9nHiGNnc
+        DN6fayIk2k1ZPuthZrpclPw1RB5fAIPREyr5wqE=
+X-Google-Smtp-Source: AGHT+IGrl4MvN8IhXVvSTCRxo5yTkv3C8H24KaiHt8IC+9n0I5mzVpGiPcV2RurPqp45DxByroWLG3YOtKSUkbfKQmA=
+X-Received: by 2002:a6b:916:0:b0:792:6fb7:5d8f with SMTP id
+ t22-20020a6b0916000000b007926fb75d8fmr493590ioi.18.1695776457212; Tue, 26 Sep
+ 2023 18:00:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW4dXrwt7VTifcdbdwH6Uz3b4m4Z54fBfD3LDjXy89PTkQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHXd1ffRNlJNruBQ--.41325S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArWxWF48Kw1rXFy5GF17Jrb_yoW8Zr1Dpa
-        ySqa90kr4DXFy3W39rZanru3WYqws2grWktryfKwn8ZFy5Wr1DWw1Fgws5Wr1DAw1fJFs0
-        v3WUK3y7Cr1UtrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
-        UU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1695621444-56530-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <CAP-5=fWuaii1rOOvN7rJDo3UoQvkEtiJv3QiBhLRhYk1_Se7ew@mail.gmail.com> <f4812cce-14d2-9771-233f-b0db5af449be@linux.alibaba.com>
+In-Reply-To: <f4812cce-14d2-9771-233f-b0db5af449be@linux.alibaba.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 26 Sep 2023 18:00:46 -0700
+Message-ID: <CAM9d7cjjSJybJEbSdBkVH3qx7RDqriv4tqBCNw1Yi9bAeUf3Yw@mail.gmail.com>
+Subject: Re: [PATCH v10 0/7] Add metrics for Arm CMN
+To:     Jing Zhang <renyu.zj@linux.alibaba.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-在 2023/09/27 8:15, Song Liu 写道:
-> On Mon, Sep 25, 2023 at 8:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> There are no functional changes, the new helper will still hold
->> 'all_mddevs_lock' after putting mddev, and it will be used to simplify
->> md_seq_ops.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 18 +++++++++++++++---
->>   1 file changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 10cb4dfbf4ae..a5ef6f7da8ec 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -616,10 +616,15 @@ static inline struct mddev *mddev_get(struct mddev *mddev)
->>
->>   static void mddev_delayed_delete(struct work_struct *ws);
->>
->> -void mddev_put(struct mddev *mddev)
->> +static void __mddev_put(struct mddev *mddev, bool locked)
->>   {
->> -       if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
->> +       if (locked) {
->> +               spin_lock(&all_mddevs_lock);
->> +               if (!atomic_dec_and_test(&mddev->active))
->> +                       return;
->> +       } else if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
->>                  return;
->> +
-> 
-> This condition is indeed very confusing. No matter whether we call the
-> flag "locked" or "do_lock", it is not really accurate.
-> 
-> How about we factor out a helper with the following logic:
-> 
->          if (!mddev->raid_disks && list_empty(&mddev->disks) &&
->              mddev->ctime == 0 && !mddev->hold_active) {
->                  /* Array is not configured at all, and not held active,
->                   * so destroy it */
->                  set_bit(MD_DELETED, &mddev->flags);
-> 
->                  /*
->                   * Call queue_work inside the spinlock so that
->                   * flush_workqueue() after mddev_find will succeed in waiting
->                   * for the work to be done.
->                   */
->                  queue_work(md_misc_wq, &mddev->del_work);
->          }
-> 
-> and then use it at the two callers?
-> 
-> Does this make sense?
+On Mon, Sep 25, 2023 at 8:15 PM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+>
+>
+>
+> 在 2023/9/26 上午12:37, Ian Rogers 写道:
+> > On Sun, Sep 24, 2023 at 10:58 PM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+> >>
+> >> Changes since v8:
+> >> - Add fully match identifier check as suggested by Ian.
+> >> - Link: https://lore.kernel.org/lkml/1695037955-107983-1-git-send-email-renyu.zj@linux.alibaba.com/
+> >>
+> >> Jing Zhang (7):
+> >>   perf pmu: "Compat" supports regular expression matching identifiers
+> >>   perf metric: "Compat" supports regular expression matching identifiers
+> >>   perf jevents: Support EventidCode and NodeType
+> >>   perf test: Make matching_pmu effective
+> >>   perf test: Add pmu-event test for "Compat" and new event_field.
+> >>   perf jevents: Add support for Arm CMN PMU aliasing
+> >>   perf vendor events: Add JSON metrics for Arm CMN
+> >
+> > Thanks for the patience with all the to and fro. I was able to test
+> > the series with "git am -3" to get around a merge issue on
+> > perf-tools-next.
+> >
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+> > Tested-by: Ian Rogers <irogers@google.com>
+> >
+>
+> Thank you for following this series and providing many valuable suggestions.
 
-Yes, that sounds great. I'll do this in v3.
+It's not applied cleanly.  Can you please rebase onto the current
+tmp.perf-tools-next branch in the following tree?
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git
 
 Thanks,
-Kuai
-
-> 
-> Thanks,
-> Song
-> .
-> 
-
+Namhyung
