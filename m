@@ -2,138 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2937B0DCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22407B0DD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjI0VCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 17:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+        id S229744AbjI0VF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 17:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjI0VCL (ORCPT
+        with ESMTP id S229460AbjI0VF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 17:02:11 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF20126
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:02:08 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7741bffd123so723268685a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:02:08 -0700 (PDT)
+        Wed, 27 Sep 2023 17:05:57 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD8F11F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:05:55 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a200028437so24440357b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:05:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695848528; x=1696453328; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9G/HLJ01FZeXOW/EiwRF0i/XwdYFJSfQ3MESOHhln7I=;
-        b=KM6Lb2/UoXcwwPn0S2kLK+nUet4U1xQyszFCU/t3o8Ra34cx0wtzJD8pg9yaL/xXGA
-         Pj+V1pQmgi6Rq6mUmhIXoz7Gd4BVD1HTvVgpJ7RkdKzMNq9fcXzijMiWx/CrtBbMhouR
-         XzuAAk2SCSkbBM+7266H2RJwTWbSXj4xxJ1sgutln42j+1ttFbUVF/bVleE84mqPQdnb
-         P3f3ddXucPRZp6g5sB8Kg3WYstAiwk1pjTdGwLXx9AD8ZNDvC0kIAyrSR3csyDJYyKKb
-         Ujwagw2oNuOG8CbEb3LjLDdZ9qqHnLwms1gUgSs0lGpUQBl2D1Ct+peD6srgoHLsdZmf
-         MgJA==
+        d=linaro.org; s=google; t=1695848755; x=1696453555; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uStOTeDx0/Ukuzu0JJvG25AFIJvkKa932ouE8HZ3uLs=;
+        b=z0sshQMWAqSeBB03ZNcweIEs2rEq1Qvb/zopT+0FjYOhr0/wZTnl/PGUgd82+5ZyPx
+         U/RRBKv0g2K5e9oXX1Bb3E81pf8+wUmOfrKHbb0SlZoPDZ2+h4ycWG4O89shi86574UM
+         RL3E1qdCA55JlTqNSK1FwftnC90PubdrjbFGJ4gZtXwovAJb/9xzMJN8fzLtPCfrUBoH
+         PhuRtk2irR0peB/dh9gHN/65RhSvE1/6Jgq9o844+Ucw+dcstU121uCuvmZtGS1IvQTI
+         WjDPlSYqgkJt66EEjQZXiWJ2SFf0pLE+11yGLTdt1YPvaAk0e3hIHXA6gMB84QHXl6vO
+         C9xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695848528; x=1696453328;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9G/HLJ01FZeXOW/EiwRF0i/XwdYFJSfQ3MESOHhln7I=;
-        b=uK3WCroGqtZb9UTXq8W1KSbvcfpBzsFIrV/SNuIfBQ3XMDOLbvk6qvcCbqiXFF7X1j
-         cELXp7X55K7wvEWqd0S31qXXplqaE2988y/rmZYr/4zYuK8CCr4e3g09/LCB35vwbgYs
-         VpfjPgefTH/diVig02pfYVtxRK0vcCoeIs32BWjHWag36mBIvJWqSgaA7hu2TabDJ+Ya
-         P1RFa96jugfHsY2FUKGcVoozpNWzaTUm9/kBEBfrm8X1j5IImFVQclzuw2OSoWuiT/61
-         dBEFVyYalWMPzucz5jcx/3ASFpnQr6bcVNbxdi0d030CXbFECG4SJaLiTgMOh9tFKXHg
-         VlqQ==
-X-Gm-Message-State: AOJu0YxEc+/4DXhb85JIoyygLSLNo7FRNwo7AuThZbLAz0Cq1Gz1nP3Y
-        LkO6L1J0nkDLzlp2QuZOfD/JLQ==
-X-Google-Smtp-Source: AGHT+IHaNWmq04rPYSAM3Coge8OuS9p8M2ExEAsfXHcLuVDR+WYtFIlfptZTF6VlSNbvXdrlw3fXEg==
-X-Received: by 2002:a05:620a:25d4:b0:767:ae40:1cae with SMTP id y20-20020a05620a25d400b00767ae401caemr3203135qko.7.1695848528012;
-        Wed, 27 Sep 2023 14:02:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ba06])
-        by smtp.gmail.com with ESMTPSA id op34-20020a05620a536200b00772662b7804sm5746480qkn.100.2023.09.27.14.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 14:02:07 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 17:02:06 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-Message-ID: <20230927210206.GC399644@cmpxchg.org>
-References: <20230919171447.2712746-1-nphamcs@gmail.com>
- <20230919171447.2712746-2-nphamcs@gmail.com>
- <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
- <CA+CLi1httFOg4OM-0Hu3+fOvya4kpacCqN7A0upqOt4-YJiECg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1695848755; x=1696453555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uStOTeDx0/Ukuzu0JJvG25AFIJvkKa932ouE8HZ3uLs=;
+        b=YPh8ZNVxyidxmLKcmz1w0lxdn+Fq0Bm5uo91fqpv7Z0DyELd/z2ZAZs6hcuwpUjZwA
+         zEDsNjvhNhgeI+vbGgz9tsUQwU/9/YtAZqdFEJQ4qWF7VmmkUVV4bnU+8R8K3Q6fyY/Q
+         7gtrfN3yZIEEvfDaxjoelEhCQlYsJOQ4326w6E0ubSlAWvvYN9y0ZRCJIFKUhEsGr9/T
+         4KZkyF3dHaqxUqxm0whmSrwPDXfYICV5mogTfv/szFcp0ckW9Mt6bTUA2Z+4OPNDEjYq
+         DFKj3pcU6J+BCEItKcnnyTH8kuJWZRoMESI+u+za5Xpe9ZtEog1AO2/e7bcS9MnD/BAq
+         kKYQ==
+X-Gm-Message-State: AOJu0YwAh92UU8crq2fgE8HsvUeDUfauuyjNitJ0Snw9PyV1kH/1QjW0
+        bR76/40aPi1kmXGjj83rNwt0c8xvo23AABbBU+oEsw==
+X-Google-Smtp-Source: AGHT+IE0km6y8O5Y6e29Gn2cDaSHvokzeKWCzYSEz0u70AbH6xc5f8kdSMkaI9/l/srJYZ/TK7N++QbvgI4+vUtVqkk=
+X-Received: by 2002:a0d:e684:0:b0:576:93f1:d118 with SMTP id
+ p126-20020a0de684000000b0057693f1d118mr3624518ywe.2.1695848754752; Wed, 27
+ Sep 2023 14:05:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CLi1httFOg4OM-0Hu3+fOvya4kpacCqN7A0upqOt4-YJiECg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com> <1695848028-18023-2-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1695848028-18023-2-git-send-email-quic_khsieh@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 28 Sep 2023 00:04:47 +0300
+Message-ID: <CAA8EJpqB-sDsQiWmqQS+cxnupTeGBv4G9RcV8vJT3CnWqEbP8g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/8] drm/msm/dp: tie dp_display_irq_handler() with dp driver
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 09:48:10PM +0200, Domenico Cerasuolo wrote:
-> > > @@ -485,6 +487,17 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
-> > >         __folio_set_locked(folio);
-> > >         __folio_set_swapbacked(folio);
-> > >
-> > > +       /*
-> > > +        * Page fault might itself trigger reclaim, on a zswap object that
-> > > +        * corresponds to the same swap entry. However, as the swap entry has
-> > > +        * previously been pinned, the task will run into an infinite loop trying
-> > > +        * to pin the swap entry again.
-> > > +        *
-> > > +        * To prevent this from happening, we remove it from the zswap
-> > > +        * LRU to prevent its reclamation.
-> > > +        */
-> > > +       zswap_lru_removed = zswap_remove_swpentry_from_lru(entry);
-> > > +
-> >
-> > This will add a zswap lookup (and potentially an insertion below) in
-> > every single swap fault path, right?. Doesn't this introduce latency
-> > regressions? I am also not a fan of having zswap-specific details in
-> > this path.
-> >
-> > When you say "pinned", do you mean the call to swapcache_prepare()
-> > above (i.e. setting SWAP_HAS_CACHE)? IIUC, the scenario you are
-> > worried about is that the following call to charge the page may invoke
-> > reclaim, go into zswap, and try to writeback the same page we are
-> > swapping in here. The writeback call will recurse into
-> > __read_swap_cache_async(), call swapcache_prepare() and get EEXIST,
-> > and keep looping indefinitely. Is this correct?
+On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> Currently the dp_display_irq_handler() is executed at msm_dp_modeset_init()
 
-Yeah, exactly.
+dp_display_request_irq()
 
-> > If yes, can we handle this by adding a flag to
-> > __read_swap_cache_async() that basically says "don't wait for
-> > SWAP_HAS_CACHE and the swapcache to be consistent, if
-> > swapcache_prepare() returns EEXIST just fail and return"? The zswap
-> > writeback path can pass in this flag and skip such pages. We might
-> > want to modify the writeback code to put back those pages at the end
-> > of the lru instead of in the beginning.
-> 
-> Thanks for the suggestion, this actually works and it seems cleaner so I think
-> we'll go for your solution.
+> which ties irq registration to the DPU device's life cycle, while depending on
+> resources that are released as the DP device is torn down. Move register DP
 
-That sounds like a great idea.
+`registering` or `registration of`
 
-It should be pointed out that these aren't perfectly
-equivalent. Removing the entry from the LRU eliminates the lock
-recursion scenario on that very specific entry.
+> driver irq handler at dp_display_probe() to have dp_display_irq_handler()
 
-Having writeback skip on -EEXIST will make it skip *any* pages that
-are concurrently entering the swapcache, even when it *could* wait for
-them to finish.
+IRQ, s/at/to/
 
-However, pages that are concurrently read back into memory are a poor
-choice for writeback anyway, and likely to be removed from swap soon.
+> is tied with DP device.
 
-So it happens to work out just fine in this case. I'd just add a
-comment that explains the recursion deadlock, as well as the
-implication of skipping any busy entry and why that's okay.
+s/is //
+
+Moreover, your commit does more that you have described in the commit
+message. It also e.g. switches to platform_get_irq().
+
+>
+> Changes in v4:
+> -- delete dp->irq check at dp_display_request_irq()
+>
+> Changes in v3:
+> -- move calling dp_display_irq_handler() to probe
+>
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 29 +++++++++--------------------
+>  drivers/gpu/drm/msm/dp/dp_display.h |  1 -
+>  2 files changed, 9 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 76f1395..5645178 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1193,30 +1193,21 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
+>         return ret;
+>  }
+>
+> -int dp_display_request_irq(struct msm_dp *dp_display)
+> +static int dp_display_request_irq(struct dp_display_private *dp)
+>  {
+>         int rc = 0;
+> -       struct dp_display_private *dp;
+> -
+> -       if (!dp_display) {
+> -               DRM_ERROR("invalid input\n");
+> -               return -EINVAL;
+> -       }
+> -
+> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+> +       struct device *dev = &dp->pdev->dev;
+>
+> -       dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
+> +       dp->irq = platform_get_irq(dp->pdev, 0);
+>         if (!dp->irq) {
+>                 DRM_ERROR("failed to get irq\n");
+>                 return -EINVAL;
+>         }
+>
+> -       rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
+> -                       dp_display_irq_handler,
+> +       rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
+>                         IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
+>         if (rc < 0) {
+> -               DRM_ERROR("failed to request IRQ%u: %d\n",
+> -                               dp->irq, rc);
+> +               DRM_ERROR("failed to request IRQ%u: %d\n", dp->irq, rc);
+
+Please don't mix functional changes with code reformatting.
+
+>                 return rc;
+>         }
+>
+> @@ -1287,6 +1278,10 @@ static int dp_display_probe(struct platform_device *pdev)
+>
+>         platform_set_drvdata(pdev, &dp->dp_display);
+>
+> +       rc = dp_display_request_irq(dp);
+> +       if (rc)
+> +               return rc;
+
+Who will perform component teardown for you if the driver just returns
+an error here?
+
+> +
+>         rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>         if (rc) {
+>                 DRM_ERROR("component add failed, rc=%d\n", rc);
+> @@ -1549,12 +1544,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+>
+>         dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
+>
+> -       ret = dp_display_request_irq(dp_display);
+> -       if (ret) {
+> -               DRM_ERROR("request_irq failed, ret=%d\n", ret);
+> -               return ret;
+> -       }
+> -
+>         ret = dp_display_get_next_bridge(dp_display);
+>         if (ret)
+>                 return ret;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+> index 1e9415a..b3c08de 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
+> @@ -35,7 +35,6 @@ struct msm_dp {
+>  int dp_display_set_plugged_cb(struct msm_dp *dp_display,
+>                 hdmi_codec_plugged_cb fn, struct device *codec_dev);
+>  int dp_display_get_modes(struct msm_dp *dp_display);
+> -int dp_display_request_irq(struct msm_dp *dp_display);
+>  bool dp_display_check_video_test(struct msm_dp *dp_display);
+>  int dp_display_get_test_bpp(struct msm_dp *dp_display);
+>  void dp_display_signal_audio_start(struct msm_dp *dp_display);
+> --
+> 2.7.4
+>
+
+
+-- 
+With best wishes
+Dmitry
