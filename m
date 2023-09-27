@@ -2,132 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6497AF9EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE977AF9F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjI0FTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S229869AbjI0FTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjI0FSR (ORCPT
+        with ESMTP id S229500AbjI0FSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:18:17 -0400
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153002D72
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:03:46 -0700 (PDT)
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3232be274a0so3415862f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:03:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695791022; x=1696395822;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J3+aBfV97kG5by8g0MeYBJs7b1wuKUGGnXWizA0L8eY=;
-        b=qcXLZWN2R+DTvF6AufEDu3fCMfZNoCrZzALWTNgmtKl1cQ0seZ4BsrsYl6zsihO/QU
-         XhEKnMZdGbZqjWSchia3RlHsIu0lVcnE9R9QYAi18kfNXHAHAnXrO0wEB7Kkq132hhLy
-         7k3Z/1xx01YRe9jwaaaK5poqlsvuWlLaOmHTymYGyFkJi8EHKrQg1GhzoT2zifVQlOfQ
-         oncdWNOeszxZX+GEL7nBJsdt+Jj0aUEBBqWGW2Nu54f+LMQg1E5W96QBoLhj3PTxJDYA
-         WdAQr2Wm19FRIKTBIw8j5fvItM6y8qmXYd1/mffK66b4Yu1efv+M9rrlPuNEm3PY6IxN
-         ccDw==
-X-Gm-Message-State: AOJu0YzW40Pqt1ASvV6UHUynnT2LSBvK1fpWGsV3bu3b5pNq0uBW21cO
-        yCYhcjU3yCLKM5gDwyAG9zDzH4W8U94=
-X-Google-Smtp-Source: AGHT+IG99Dp/pZZRCHTrkcwM4mU+X9f8TB/zo1LJEVVINnU07YwS3lQ+5M1No31iVe8dKZmUZkIW6Q==
-X-Received: by 2002:a5d:4208:0:b0:319:7ec8:53ba with SMTP id n8-20020a5d4208000000b003197ec853bamr652796wrq.14.1695791021549;
-        Tue, 26 Sep 2023 22:03:41 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id j13-20020adfd20d000000b003232c2109cbsm6365325wrh.7.2023.09.26.22.03.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 22:03:41 -0700 (PDT)
-Message-ID: <a12593c9-9ced-4bb8-b7a5-8247b08d0e0f@kernel.org>
-Date:   Wed, 27 Sep 2023 07:03:40 +0200
+        Wed, 27 Sep 2023 01:18:20 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB9826A5;
+        Tue, 26 Sep 2023 22:04:25 -0700 (PDT)
+Received: from [192.168.7.187] ([76.103.185.250])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38R543cI2550161
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 26 Sep 2023 22:04:03 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38R543cI2550161
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1695791044;
+        bh=/CKCX+/bMK4QwZQehQM2V6fpo3oGAysyOu0z82z/O+E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NePHnPjB9AyAEh9FKNsDyyRLDRHeI8EIn3oAi+DRNzzuc7fSSNV+MVwe1MjWCspeH
+         Nf1HpCAAUzN1OZBBSkl7qZuYn+dCGHcxYSDz2ESDH643GK21cBjutTQUHxDE/WOu9Q
+         KT1Ta8z6cuLnSz28YFF7JS4wC54ZGOJBTetW6AC0BWqxtqTGKqFlKIHsTNlXYSrWKA
+         FNrfvhK4J+aks47A3DG0jii0oReyFDXQU6NXiNIBhms0zgegokng8+EMNfT/5rf5vr
+         Mcov+fMatqi6BWFRimfHnzc2cd46OUYiV+0+/ICBtMHZYpuH4Uu2J8daM4Zs5wYqCi
+         g4cp/fCC+JkuA==
+Message-ID: <2c79115e-e16d-49cc-8f5b-2363d7910269@zytor.com>
+Date:   Tue, 26 Sep 2023 22:04:01 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] firewire updates for 6.5-rc1
+Subject: Re: [PATCH] KVM: x86: Move kvm_check_request(KVM_REQ_NMI) after
+ kvm_check_request(KVM_REQ_NMI)
 Content-Language: en-US
-To:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        linux-kernel@vger.kernel.org
-References: <20230704121847.GA26576@workstation.local>
- <f3d8c72b-cd30-490c-833f-5807bd74511f@kernel.org>
- <20230926140922.GA6538@workstation.local>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20230926140922.GA6538@workstation.local>
+To:     Mingwei Zhang <mizhang@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Like Xu <likexu@tencent.com>, Kan Liang <kan.liang@intel.com>,
+        Dapeng1 Mi <dapeng1.mi@intel.com>
+References: <20230927040939.342643-1-mizhang@google.com>
+ <CAL715WJM2hMyMvNYZAcd4cSpDQ6XPFsNhtR2dsi7W=ySfy=CFw@mail.gmail.com>
+From:   Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <CAL715WJM2hMyMvNYZAcd4cSpDQ6XPFsNhtR2dsi7W=ySfy=CFw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 26. 09. 23, 16:09, Takashi Sakamoto wrote:
-> But in the reporter's environment:
+On 9/26/2023 9:15 PM, Mingwei Zhang wrote:
+> ah, typo in the subject: The 2nd KVM_REQ_NMI should be KVM_REQ_PMI.
+> Sorry about that.
 > 
-> ```
-> kernel: firewire_ohci 0000:22:00.0: enabling device (0080 -> 0083)
-> kernel: firewire_ohci 0000:22:00.0: can't find IRQ for PCI INT A; please try using pci=biosirq
-> kernel: genirq: Flags mismatch irq 0. 00000080 (firewire_ohci) vs. 00015a00 (timer)
-> kernel: firewire_ohci 0000:22:00.0: failed to allocate interrupt 0
-> kernel: firewire_ohci: probe of 0000:22:00.0 failed with error -16
-> kernel: firewire_ohci 0000:22:00.0: removed fw-ohci device
+> On Tue, Sep 26, 2023 at 9:09 PM Mingwei Zhang <mizhang@google.com> wrote:
+>>
+>> Move kvm_check_request(KVM_REQ_NMI) after kvm_check_request(KVM_REQ_NMI).
 
-Ah, that's why the system boots with acpi=noirq. It simply won't allow 
-the ohci driver to bind the device due to apparently wrong IRQ 
-configuration in the PCI device.
+Please remove it, no need to repeat the subject.
 
-You can ignore this error, IMO. ACPI tables have the IRQs setup right 
-and those should be used (ie. acpi=noirq was used only for testing). 
-Let's chase the real problem (follow the bug).
+>> When vPMU is active use, processing each KVM_REQ_PMI will generate a
+>> KVM_REQ_NMI. Existing control flow after KVM_REQ_PMI finished will fail the
+>> guest enter, jump to kvm_x86_cancel_injection(), and re-enter
+>> vcpu_enter_guest(), this wasted lot of cycles and increase the overhead for
+>> vPMU as well as the virtualization.
 
-thanks,
+Optimization is after correctness, so please explain if this is correct
+first!
+
+>>
+>> So move the code snippet of kvm_check_request(KVM_REQ_NMI) to make KVM
+>> runloop more efficient with vPMU.
+>>
+>> To evaluate the effectiveness of this change, we launch a 8-vcpu QEMU VM on
+>> an Intel SPR CPU. In the VM, we run perf with all 48 events Intel vtune
+>> uses. In addition, we use SPEC2017 benchmark programs as the workload with
+>> the setup of using single core, single thread.
+>>
+>> At the host level, we probe the invocations to vmx_cancel_injection() with
+>> the following command:
+>>
+>>      $ perf probe -a vmx_cancel_injection
+>>      $ perf stat -a -e probe:vmx_cancel_injection -I 10000 # per 10 seconds
+>>
+>> The following is the result that we collected at beginning of the spec2017
+>> benchmark run (so mostly for 500.perlbench_r in spec2017). Kindly forgive
+>> the incompleteness.
+>>
+>> On kernel without the change:
+>>      10.010018010              14254      probe:vmx_cancel_injection
+>>      20.037646388              15207      probe:vmx_cancel_injection
+>>      30.078739816              15261      probe:vmx_cancel_injection
+>>      40.114033258              15085      probe:vmx_cancel_injection
+>>      50.149297460              15112      probe:vmx_cancel_injection
+>>      60.185103088              15104      probe:vmx_cancel_injection
+>>
+>> On kernel with the change:
+>>      10.003595390                 40      probe:vmx_cancel_injection
+>>      20.017855682                 31      probe:vmx_cancel_injection
+>>      30.028355883                 34      probe:vmx_cancel_injection
+>>      40.038686298                 31      probe:vmx_cancel_injection
+>>      50.048795162                 20      probe:vmx_cancel_injection
+>>      60.069057747                 19      probe:vmx_cancel_injection
+>>
+>>  From the above, it is clear that we save 1500 invocations per vcpu per
+>> second to vmx_cancel_injection() for workloads like perlbench.
+>>
+>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 42a4e8f5e89a..302b6f8ddfb1 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -10580,12 +10580,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>>                  if (kvm_check_request(KVM_REQ_SMI, vcpu))
+>>                          process_smi(vcpu);
+>>   #endif
+>> -               if (kvm_check_request(KVM_REQ_NMI, vcpu))
+>> -                       process_nmi(vcpu);
+>>                  if (kvm_check_request(KVM_REQ_PMU, vcpu))
+>>                          kvm_pmu_handle_event(vcpu);
+>>                  if (kvm_check_request(KVM_REQ_PMI, vcpu))
+>>                          kvm_pmu_deliver_pmi(vcpu);
+>> +               if (kvm_check_request(KVM_REQ_NMI, vcpu))
+>> +                       process_nmi(vcpu);
+>>                  if (kvm_check_request(KVM_REQ_IOAPIC_EOI_EXIT, vcpu)) {
+>>                          BUG_ON(vcpu->arch.pending_ioapic_eoi > 255);
+>>                          if (test_bit(vcpu->arch.pending_ioapic_eoi,
+>>
+>> base-commit: 73554b29bd70546c1a9efc9c160641ef1b849358
+>> --
+>> 2.42.0.515.g380fc7ccd1-goog
+>>
+> 
+
 -- 
-js
-suse labs
+Thanks!
+     Xin
 
