@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073537AFF75
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1E17AFF83
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbjI0JI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        id S230263AbjI0JK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjI0JIz (ORCPT
+        with ESMTP id S230196AbjI0JKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:08:55 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E153297;
-        Wed, 27 Sep 2023 02:08:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VszrmVr_1695805730;
-Received: from 30.97.48.70(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VszrmVr_1695805730)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Sep 2023 17:08:51 +0800
-Message-ID: <c8b9fef7-e27c-6760-52a8-04045dcdc0ec@linux.alibaba.com>
-Date:   Wed, 27 Sep 2023 17:08:57 +0800
+        Wed, 27 Sep 2023 05:10:25 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3A492;
+        Wed, 27 Sep 2023 02:10:23 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 866613200A3B;
+        Wed, 27 Sep 2023 05:10:20 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 27 Sep 2023 05:10:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695805820; x=1695892220; bh=jM
+        eK127ejzIDJuM4VM/wgP8FtWBmLzqzxn8NWLLkhXg=; b=os3C1FUA7o/WzrclHY
+        SRNPRe4M+YjFSbv2wF7Zp2bNOXjQHeqzjmpaNLfbxTPAAmivQCIVmlhxx5RvS3Yk
+        aJqMy+OE8GKlxhg6fMx9NsIL+TH1SMtl+3YurAaHrTcnojvvvRdojqOBLsO88QNq
+        j0pJCjt4DEi9YSYpDraRhwhZbq/SgAhqCv4gwkzDp9HtzpH3j835V+ircMWklpGE
+        Q6e9l7RuMXaT4JqJ01Wxn9vDW5jpy+cj5a6zDsG7C1b6H/Dvq7hxfdDTkjhiJe4w
+        IG9IRU6+7a8UlvNXGr9hiLNA9e6KyS63F1oTb+MGlADV/+BWyy9EE/2BrfaIrHFe
+        YmTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695805820; x=1695892220; bh=jMeK127ejzIDJ
+        uM4VM/wgP8FtWBmLzqzxn8NWLLkhXg=; b=gCWph6jXv9d4V4KMwnYWdqwOUxB14
+        35Tvqai2gzjHBdLdXgse+L6dv2J2PH59ObyI+xJ7rbBXQPEj2qRK4bKIHQkGo5cJ
+        jdPA0TT/zhjyOiqf8f7fx6KMM+HmWp+Y6jygcy4htinMbvABAN1HaE2CKVlv7n2x
+        f4XFtYu88qP9Qp7Zg5xs10WaCf8cGC6BAhe949FaHQlzAbqRZkN3UpIUrwwzS//x
+        Q+zEhSZ7GeMpDcUTfzWjw0IgRTi5eFlJCjD/DrtOdixUTS14E5t0q6N4fdL9dFKs
+        QLhz6lmDqwSnmiQEsHIAAaNvy/Jax9C66NIQEE9XU8kxmc2Q0iGikUpYQ==
+X-ME-Sender: <xms:e_ETZQ3ok_LBT78esrESTnI0oUlDRs-hWpGscMSM4ke6D3s2VmePDQ>
+    <xme:e_ETZbGXZ6Utp2mWbab6OhS13Ld1JyPQ72KPtnX8OO0M6HmLV4p6Mwbel1saW-G64
+    4mKMRZ6OT3E0wkeLYo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddvgdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:e_ETZY708Mtm6Aee2DBJ6ggD69DITco5Rm3d26guAIo7kF_XVCeF5w>
+    <xmx:e_ETZZ0gGy17bK4UJhpqn3IA8eGuRYic4T0yXaZaneClI2e9k4UN_Q>
+    <xmx:e_ETZTG12QbPA6IZ_Vylg62d78TXGiaOjk33VuIUn_uJ01LdiqReHQ>
+    <xmx:fPETZYTXeXVTfMg9eDWancF9IDBi_irlfF7wsTE8U7bTGSJ_WmAWww>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9052AB60089; Wed, 27 Sep 2023 05:10:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 1/4] gpio: sprd: In the sleep state, the eic debounce
- clk must be forced open
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230921090027.11136-1-Wenhua.Lin@unisoc.com>
- <20230921090027.11136-2-Wenhua.Lin@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230921090027.11136-2-Wenhua.Lin@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <46a9b2f5-ecbd-494a-8a88-ff5fc7b4fe84@app.fastmail.com>
+In-Reply-To: <20230927070444.6e32666f@canb.auug.org.au>
+References: <20230927070444.6e32666f@canb.auug.org.au>
+Date:   Wed, 27 Sep 2023 11:09:59 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        "Olof Johansson" <olof@lixom.net>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm-soc-fixes tree
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 26, 2023, at 23:04, Stephen Rothwell wrote:
+> Hi all,
+>
+> Commits
+>
+>   4e7b558e320a ("soc: loongson: loongson2_pm: Populate children syscon 
+> nodes")
+>   019d79fe6c3d ("dt-bindings: soc: loongson,ls2k-pmc: Allow 
+> syscon-reboot/syscon-poweroff as child")
+>   59598d7ba6a8 ("soc: loongson: loongson2_pm: Drop useless of_device_id 
+> compatible")
+>   8e5f17483ab4 ("dt-bindings: soc: loongson,ls2k-pmc: Use fallbacks for 
+> ls2k-pmc compatible")
+>   9a7c9c7e34ac ("soc: loongson: loongson2_pm: Add dependency for INPUT")
+>
+> are missing a Signed-off-by from their committers.
 
+I have fixed it up by re-merging all patches in the arm/fixes
+branch that I had merged yesterday or earlier.
 
-On 9/21/2023 5:00 PM, Wenhua Lin wrote:
-> In the sleep state, Eic debounce has no clock and the clk of
-> debounce needs to be forced open, so that eic can wake up normally.
-> 
-> Fixes: 2788938b7946 ("gpio: eic-sprd: Make the irqchip immutable")
+Thanks for letting me know about these.
 
-Are you sure this is the right Fixes tag? This commit did not change EIC 
-debounce logics.
-
-The changes look good to me.
-
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->   drivers/gpio/gpio-eic-sprd.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index 84352a6f4973..bfa8a4c7515a 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -23,6 +23,7 @@
->   #define SPRD_EIC_DBNC_IC		0x24
->   #define SPRD_EIC_DBNC_TRIG		0x28
->   #define SPRD_EIC_DBNC_CTRL0		0x40
-> +#define SPRD_EIC_DBNC_FORCE_CLK		0x8000
->   
->   #define SPRD_EIC_LATCH_INTEN		0x0
->   #define SPRD_EIC_LATCH_INTRAW		0x4
-> @@ -214,6 +215,7 @@ static int sprd_eic_set_debounce(struct gpio_chip *chip, unsigned int offset,
->   	u32 value = readl_relaxed(base + reg) & ~SPRD_EIC_DBNC_MASK;
->   
->   	value |= (debounce / 1000) & SPRD_EIC_DBNC_MASK;
-> +	value |= SPRD_EIC_DBNC_FORCE_CLK;
->   	writel_relaxed(value, base + reg);
->   
->   	return 0;
+      Arnd
