@@ -2,66 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CFB7AFB26
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897177AFB1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjI0Gd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S229590AbjI0Gcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjI0Gdm (ORCPT
+        with ESMTP id S229478AbjI0Gcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:33:42 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1918FB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:33:40 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 14:32:23
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 14:32:23 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     linux@armlinux.org.uk, prathubaronia2011@gmail.com
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vidio: Clean up errors in serial.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 02:32:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E159C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:32:48 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R3u25e011005;
+        Wed, 27 Sep 2023 06:32:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=h5K1jlSfNrsARIhYsOUQRLM3hcs6F6i6uIdfZHvbKBU=;
+ b=ZsevH2crWpUKqktKcnOyaPes74V9iY6oq3rLMFnFP97/6ZHb8dKu3qoQKAbKfjHmQG/7
+ 7EnBn6d+Aus09Oh6ZFD65sEzkiOo/ZkXvUSE4rMU3ppDg752iqy79F3BGlj9UQB5sLIa
+ taPvUtreJpWvhLRaKTg+tYoOwP0W01y4tv4iQxKjLtISwosP9Fh+Zozo6tlXOaMvu/VL
+ wHjlm2hB9w35jeiE64Qpyl888RGD8TOm/fJe6IKWt18O5Hb9jS1cMYhpVlwZnVXBZJR1
+ GT2oW8Ddp1guCLte7Q8U9UgEOPG64eMxUdBIkZutVpNTXbBM4FrD15qZSt15qTrJ9MA8 fw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tbv662nu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 06:32:29 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R6WTLb016756
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 06:32:29 GMT
+Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 26 Sep
+ 2023 23:32:27 -0700
+Message-ID: <dcb9094a-8e58-83ed-83af-05b879c23788@quicinc.com>
+Date:   Wed, 27 Sep 2023 14:32:25 +0800
 MIME-Version: 1.0
-Message-ID: <706285a.86e.18ad556b0e1.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDHZD93zBNlV+i9AA--.623W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8ANQABsc
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RESEND PATCH] driver core: Clear FWNODE_FLAG_LINKS_ADDED in
+ device_links_purge()
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <rafael@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <saravanak@google.com>
+References: <1695781810-5700-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <2023092705-canopy-spiritism-b0e1@gregkh>
+From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
+In-Reply-To: <2023092705-canopy-spiritism-b0e1@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 7RmESI4hHrFmRA8sW30UcEbkdYDXNOQh
+X-Proofpoint-GUID: 7RmESI4hHrFmRA8sW30UcEbkdYDXNOQh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 mlxlogscore=999 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270054
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-c3BhY2UgcmVxdWlyZWQgYWZ0ZXIgdGhhdCAnLCcgKGN0eDpWeFYpCgpTaWduZWQtb2ZmLWJ5OiBH
-dW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBpbmNsdWRlL2xpbnV4L2FtYmEv
-Y2xjZC5oIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9u
-KC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9hbWJhL2NsY2QuaCBiL2luY2x1ZGUvbGlu
-dXgvYW1iYS9jbGNkLmgKaW5kZXggYjZlMGNiZWFmNTMzLi42NGRmODIzNWQ5Y2MgMTAwNjQ0Ci0t
-LSBhL2luY2x1ZGUvbGludXgvYW1iYS9jbGNkLmgKKysrIGIvaW5jbHVkZS9saW51eC9hbWJhL2Ns
-Y2QuaApAQCAtMjQ0LDcgKzI0NCw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IGNsY2RmYl9jaGVjayhz
-dHJ1Y3QgY2xjZF9mYiAqZmIsIHN0cnVjdCBmYl92YXJfc2NyZWVuaW5mbyAqdmFyCiAJdmFyLT54
-cmVzX3ZpcnR1YWwgPSB2YXItPnhyZXMgPSAodmFyLT54cmVzICsgMTUpICYgfjE1OwogCXZhci0+
-eXJlc192aXJ0dWFsID0gdmFyLT55cmVzID0gKHZhci0+eXJlcyArIDEpICYgfjE7CiAKLSNkZWZp
-bmUgQ0hFQ0soZSxsLGgpICh2YXItPmUgPCBsIHx8IHZhci0+ZSA+IGgpCisjZGVmaW5lIENIRUNL
-KGUsIGwsIGgpICh2YXItPmUgPCBsIHx8IHZhci0+ZSA+IGgpCiAJaWYgKENIRUNLKHJpZ2h0X21h
-cmdpbiwgKDUrMSksIDI1NikgfHwJLyogYmFjayBwb3JjaCAqLwogCSAgICBDSEVDSyhsZWZ0X21h
-cmdpbiwgKDUrMSksIDI1NikgfHwJLyogZnJvbnQgcG9yY2ggKi8KIAkgICAgQ0hFQ0soaHN5bmNf
-bGVuLCAoNSsxKSwgMjU2KSB8fAotLSAKMi4xNy4xCg==
+
+
+On 2023/9/27 13:57, Greg KH wrote:
+> On Wed, Sep 27, 2023 at 10:30:10AM +0800, Zhenhua Huang wrote:
+>> Flag FWNODE_FLAG_LINKS_ADDED stops fwnode links creation. Current kernel
+>> only adds it once after fwnode links creation in fw_devlink_parse_fwnode().
+>> After that even device links being purged, the flag will not be cleared.
+>>
+>> Fwnode links are converted to device links and will not be added back
+>> forever in normal case. Essentially if a device is registered and
+>> unregisted (also deleted) before it is probed (due to missing fwlink
+>> dependencies, abort in device_links_check_suppliers), the fwlink is not
+>> setup next when device is newly created again. This means the probe gets
+>> called without meeting all dependencies.
+>>
+>> It usuallly happens in the case of a glue driver. Of_platform_populate()
+>> allows us to populate subnodes. We may do it in ancestor node probing
+>> function, then check subnode's probing status because there may be chances
+>> that suppliers of subnode are not ready. We may further need to do
+>> of_platform_depopulate(which purges device links) and in some time
+>> of_platform_populate() again. Such case we miss fwnode links(so that device
+>> links) during second time of populating subnodes.
+>>
+>> Fix it by Clearing FWNODE_FLAG_LINKS_ADDED flag in purging device link
+>> func, indicates both fwnode links and device links are absent.
+>>
+>> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+>> ---
+>>   drivers/base/core.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/base/core.c b/drivers/base/core.c
+>> index b7d7f41..2a1975d 100644
+>> --- a/drivers/base/core.c
+>> +++ b/drivers/base/core.c
+>> @@ -1630,6 +1630,10 @@ static void device_links_purge(struct device *dev)
+>>   		__device_link_del(&link->kref);
+>>   	}
+>>   
+>> +	/* Clear flags in fwnode. Give a chance to create fwnode link again */
+>> +	if (dev->fwnode)
+>> +		dev->fwnode->flags &= ~FWNODE_FLAG_LINKS_ADDED;
+>> +
+>>   	device_links_write_unlock();
+>>   }
+>>   
+>> -- 
+>> 2.7.4
+>>
+> 
+> What commit id does this fix?
+
+This commit c2c724c868c4("driver core: Add fw_devlink_parse_fwtree()"). 
+Changelog mentioned:
+"This function also ensures that no fwnode is parsed more than once by
+     marking the fwnodes as parsed."
+
+Thanks,
+Zhenhua
