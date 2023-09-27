@@ -2,200 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096F97B0C56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24F17B0C5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjI0TBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 15:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S229473AbjI0TGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 15:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjI0TBs (ORCPT
+        with ESMTP id S229437AbjI0TGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:01:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4629BDD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:01:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695841307; x=1727377307;
-  h=date:from:to:cc:subject:message-id;
-  bh=lZG2+9ZD10zzqblPpS9Z8BfvH39X3yo8N/ot4/MRzpU=;
-  b=DLfZDaRVVwMAeFKOvQj++xLOg+RIaSwkxBF5lA5UWnPTJiaNNQB0A912
-   +3ZNEL6IM19XQVs+IDDsxPdknDAkwIezwG1ULvekwSCdkdfcgb5QpTHp2
-   TTOHPBFRURSU0XyjRsDK9Qz2GKXJNSlXnqfGALLSGA2O/cJSL4RsL2Y/Z
-   /V1nP69bA3Uk6i378amjUlzxEeDFyDBVqIZXo9FI7p8nnxFwG9gDvRybY
-   7yJ6ZFI8HXBhcXPKo56Tts7uuYSqfaO1taGlF13EtWTA/8SiNhk2zU34b
-   t3nr7CQKqxXOGEunwSNJaeRASjxR0yS3/IBem90EKzrOphgrlDNl06loa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="372257089"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="372257089"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 12:01:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="742814100"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="742814100"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 27 Sep 2023 12:01:21 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qlZmg-0000YV-25;
-        Wed, 27 Sep 2023 19:01:18 +0000
-Date:   Thu, 28 Sep 2023 03:00:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.09.15b] BUILD SUCCESS
- 147772c0ab78be187141f0bbc86e7625a360b5ec
-Message-ID: <202309280356.d5v2t1UJ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 15:06:01 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51EDE6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:05:58 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c12ae20a5cso193426451fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695841557; x=1696446357; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cthrC2AE+hQRI1g23zDyJaz/ao2H94DB6TkDVFhMAT8=;
+        b=N2nxCeQN0jS3NFquLLzHVyHRFuYUVcs4cJEIEPzqGvLwi3IIjLaGnoquWzhvFapMgx
+         aTevExdi96jlmH0orXSyA+E2xYdvZc4UehVEoc4EYkyW7fAtZz0J50AiXtrriDwR1KW7
+         tu69e6K8oFgzmdhkp2jV3P2ZUandmXsvyulKfOtRrowD6AhQgAdUNKP9jdML6T9z+NCF
+         K9jaFdxQZaooJN8Vz7ADGfiRHYKn0A1oD0GfHXJsiex6Y4KGTnUX8Pw+BuywA2efXnTU
+         swQfOCATm4sVGPLYVYHWLvUv+KgPIxrlZX02CFVuNiiooeF+l5wUdyG3tLh3pvoDR2ID
+         wVFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695841557; x=1696446357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cthrC2AE+hQRI1g23zDyJaz/ao2H94DB6TkDVFhMAT8=;
+        b=JHyqtLsdJgisIKmF81Le6A3Eq+wvnQsD1sxYe+kDyzmfcKT5a+cBQlC6aA92oAoGXd
+         DXxcld+FTRbaKOGhm947ZddFDMUaWm+naP02lARjuXm3ydHWhWVwybxOT99s+rt/M/ER
+         rSy0PVX0zYYa5DrikfvdgLuHYPATAY5rX2XR/J1c719joSwLQZuu0wlubInuNL1yzSdr
+         dxxwmIs5bBW3luuemH5iWHOVJOTwHN5HLESvzMyxdB259iMI3UWMu2CsZ32baz343JT1
+         q9csqCSRySsVOlo7F7TFpdWKYhcq2G8QkhhFOfSn7mXLmOxBtmFarFlItsnEy0ZaKuHP
+         sYhQ==
+X-Gm-Message-State: AOJu0YxCPbJO3K0qwUJHRzu/Q+SnHga7DxesQfInXaNJd7w9eyEmK9qg
+        j2pucfDQ3Tq4hrWN5+XqGTJJO8vkW/Y0OLrC8/05Bg==
+X-Google-Smtp-Source: AGHT+IEG0GkBc5auFmv1wHBXddUXWoWjQW9Z1kvH5V3ktssd5ya+XFoxO3wtAkfETADcwfDgbMgCpIp9vEJoQNv/VyQ=
+X-Received: by 2002:a2e:9b94:0:b0:2bf:df8c:4e5e with SMTP id
+ z20-20020a2e9b94000000b002bfdf8c4e5emr3021856lji.15.1695841555896; Wed, 27
+ Sep 2023 12:05:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
+ <169570182987.596431.14062417344858914481.stgit@dwillia2-xfh.jf.intel.com>
+ <c3d347a7-58d6-4830-aad4-d354b83f0704@linux.intel.com> <CA+1=6yfmLXJbZu7Gd7cp_HOAbmHwx54aPgozWKBikWwZSYTOZw@mail.gmail.com>
+ <6513e6079a427_91c1e294e@dwillia2-xfh.jf.intel.com.notmuch>
+ <CA+1=6yeP6dDiXVQrxMt0AaEF_7S05p4Do67=ysXK-Chfvu-9ow@mail.gmail.com> <CAMkAt6ohEnYwC8yVzye0F4gApvuyktHDP-q8-p7gJnSAyRMR_Q@mail.gmail.com>
+In-Reply-To: <CAMkAt6ohEnYwC8yVzye0F4gApvuyktHDP-q8-p7gJnSAyRMR_Q@mail.gmail.com>
+From:   Thomas Fossati <thomas.fossati@linaro.org>
+Date:   Wed, 27 Sep 2023 21:05:39 +0200
+Message-ID: <CA+1=6yczjPCaPsVc+s9_HC-6pNk52VsFviMeqqDWR4v2RFDBjw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] configfs-tsm: Introduce a shared ABI for
+ attestation reports
+To:     Peter Gonda <pgonda@google.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        linux-coco@lists.linux.dev,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.09.15b
-branch HEAD: 147772c0ab78be187141f0bbc86e7625a360b5ec  EXP workqueue: Provide one lock class key per work_on_cpu() callsite
+Hi Peter,
 
-elapsed time: 1491m
+On Wed, 27 Sept 2023 at 16:38, Peter Gonda <pgonda@google.com> wrote:
+>
+> On Wed, Sep 27, 2023 at 2:25=E2=80=AFAM Thomas Fossati
+> <thomas.fossati@linaro.org> wrote:
+> >
+> > On Wed, 27 Sept 2023 at 10:21, Dan Williams <dan.j.williams@intel.com> =
+wrote:
+> > > It can be expanded when/if those platforms expand the
+> > > size of the supported user data, or another configfs-tsm backend arri=
+ves
+> > > that needs that capability.
+> >
+> > Makes sense, thanks.
+>
+> I'm not familiar with the rats eat spec but I would assume the
+> protocol would acquire more than just the nonce in the inblob.
+> Probably some combination of claims, nonce, and information about a
+> public key?
 
-configs tested: 123
-configs skipped: 2
+Looking at existing EAT-based (or EAT-like) serialisations:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Arm CCA has a single, 64 bytes challenge (see =C2=A7A7 of =E2=80=9CRealm Ma=
+nagement
+Monitor (RMM) Specification=E2=80=9D [1].)
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230927   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20230927   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230927   gcc  
-i386         buildonly-randconfig-002-20230927   gcc  
-i386         buildonly-randconfig-003-20230927   gcc  
-i386         buildonly-randconfig-004-20230927   gcc  
-i386         buildonly-randconfig-005-20230927   gcc  
-i386         buildonly-randconfig-006-20230927   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-006-20230927   gcc  
-i386                  randconfig-011-20230927   gcc  
-i386                  randconfig-012-20230927   gcc  
-i386                  randconfig-013-20230927   gcc  
-i386                  randconfig-014-20230927   gcc  
-i386                  randconfig-015-20230927   gcc  
-i386                  randconfig-016-20230927   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230927   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230927   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230927   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230927   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230927   gcc  
-x86_64       buildonly-randconfig-002-20230927   gcc  
-x86_64       buildonly-randconfig-003-20230927   gcc  
-x86_64       buildonly-randconfig-004-20230927   gcc  
-x86_64       buildonly-randconfig-005-20230927   gcc  
-x86_64       buildonly-randconfig-006-20230927   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230927   gcc  
-x86_64                randconfig-002-20230927   gcc  
-x86_64                randconfig-003-20230927   gcc  
-x86_64                randconfig-006-20230927   gcc  
-x86_64                randconfig-016-20230927   gcc  
-x86_64                randconfig-071-20230927   gcc  
-x86_64                randconfig-072-20230927   gcc  
-x86_64                randconfig-073-20230927   gcc  
-x86_64                randconfig-074-20230927   gcc  
-x86_64                randconfig-075-20230927   gcc  
-x86_64                randconfig-076-20230927   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+CoVE too, see [2].
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Nitro instead is doing something different: GetAttestationDoc() has
+optional user-provided public key, custom user data, and a custom
+nonce passed in as separate input arguments [3].
+
+So, what @inblob's structure looks like really is a choice of the
+attester's vendor.
+
+> Does the specification allow for the data needing to be
+> signed by the TSM to be hashed first?
+
+EAT per se is mostly agnostic, it has a flexible and extensible type
+system, which can adapt to most attester =E2=80=9Cshapes=E2=80=9D.
+
+Hope this answers your questions.
+
+cheers, t
+
+[1] https://developer.arm.com/documentation/den0137/latest
+[2] https://github.com/riscv-non-isa/riscv-ap-tee/blob/main/specification/a=
+ttestation.adoc#tvm-challenge-claim
+[3] https://github.com/aws/aws-nitro-enclaves-nsm-api/blob/4b851f3006c6fa98=
+f23dcffb2cba03b39de9b8af/nsm-lib/src/lib.rs#L218
