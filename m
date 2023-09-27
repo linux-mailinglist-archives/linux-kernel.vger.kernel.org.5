@@ -2,257 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0014E7B0982
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F007B0967
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbjI0QCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S232712AbjI0PzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbjI0QCa (ORCPT
+        with ESMTP id S232650AbjI0PzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:02:30 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6C8526A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:52:14 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3512c43adebso25237115ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695829933; x=1696434733; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZLYerTGh7KYfv8f3JnRKkt0/gVDCfcm7rPw2w9t6Y1A=;
-        b=dXcsIQXdjSvSetgdeRyk1L0TDGFgnU1sA/HMX45P2nwQP9YBd+vRF5KZNONPniEfrv
-         7Vci4QRYNxnw1dsZTw6itBE4RaOfDT9FnI/SZJrBbFaRDWDnFffV++3c4lNXpq6wIiyt
-         WRhyRh0NFpuoSI15tr4cAo+DzoawMh4lqeG/ve6XAuKV0TCSU0ITP/MC/2uFNldNRM5Y
-         1N0gdTZ1gMABZ0HtD/pKTsEcYfEIbqgsp3pOAiCXZb1BzT+OcOwxnerJKPkU+Q3OJSpP
-         1mXQwBR223KSec/52JXFX3lwZiUH5Pnxh2vU2o2FwJTzlZ+lsU0hRU/N6NnfdY4ZjjAG
-         /Rlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695829933; x=1696434733;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZLYerTGh7KYfv8f3JnRKkt0/gVDCfcm7rPw2w9t6Y1A=;
-        b=N/D1TjW+AiHbXnIBK9H3Uzh4QKvUJ+HE7nKfwLCQjr60NQaV2coLQ/Gcu/7076beBS
-         Ne+P4hltEm0gJCJkHyqz7TuFbjcMxpWAu+cQZeKwjiy+tEI2QcbOS9TBImS7tJBPNb5I
-         GpddOHlnI/Vus4NQj3VQ2RzGm052yp7zyABd7D2l4lLiTLpwio/4acNQgra/MTjSItDj
-         scBH4cPJM6hyl5aCxJc+cTWA4pRbJ57sGnqGmNnzh34wLnx6LBP/TxlTem3oyuUYFJKp
-         T9TUebD2WI5aTE6qCHv3i4nLBFob8Flkyy3xzZLBXbAT/OXpdi3ZA5XuaNSlKM0QQ3lM
-         MXdQ==
-X-Gm-Message-State: AOJu0Yxx1ftmynF5iloFpDc50qjGYcy4INziVP9a9yOEEwBGzaZLsZ1j
-        V2Me47pUVrOu1AciCygAFmjrSkPXaPm+
-X-Google-Smtp-Source: AGHT+IG3sXax9IcTReeHuefqL/1ktCnSU6ky3tL0OgdRTWZx322bwT+3ENUMhdVpVh8YH/Zwt/5Bjg==
-X-Received: by 2002:a05:6e02:1609:b0:351:5aed:c13c with SMTP id t9-20020a056e02160900b003515aedc13cmr3126055ilu.14.1695829933063;
-        Wed, 27 Sep 2023 08:52:13 -0700 (PDT)
-Received: from [192.168.1.3] ([161.97.241.227])
-        by smtp.googlemail.com with ESMTPSA id x14-20020a056e020f0e00b0035134215863sm2619110ilj.55.2023.09.27.08.52.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 08:52:12 -0700 (PDT)
-Message-ID: <e08a3073-574c-c9fa-fc63-df33920165b9@gmail.com>
-Date:   Wed, 27 Sep 2023 09:52:11 -0600
+        Wed, 27 Sep 2023 11:55:02 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838FD10DB;
+        Wed, 27 Sep 2023 08:52:27 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6EE071C002E; Wed, 27 Sep 2023 17:52:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1695829945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gKmlF24D9wEYZmpPY4pyhX2RZKAFbVwikfJcj8WeaM0=;
+        b=oO1c9uhQ2eI5cunUP9Zglr8sb92Noy1qFKhmSpB8VGObMguJ5N7hwEEMiybrDyAHHvU8ss
+        wjoU8hwybc60n/+zprXid9vQ2OsKhSwhAW+c2Kb9gkg1VkMig2GDmeyD10Q2h/Whfl6aU8
+        ZEA3J/LTB1acZQZQJbaOWptd79iIZok=
+Date:   Wed, 27 Sep 2023 17:52:17 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
+        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz,
+        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org
+Subject: Re: droid4 -- weird behaviour when attempting to use usb host
+Message-ID: <ZRRPsWQiTP21hozK@duo.ucw.cz>
+References: <ZRGa+0OFNluV4T5t@localhost>
+ <20230926071415.GW5285@atomide.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        peterz@infradead.org
-From:   Dan Raymond <raymod2@gmail.com>
-Subject: [PATCH v2] arch/x86: port I/O tracing on x86
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="dNROfh5L9PZtEJdO"
+Content-Disposition: inline
+In-Reply-To: <20230926071415.GW5285@atomide.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
-available on x86 via CONFIG_MMIOTRACE but that relies on page faults
-so it doesn't work with port I/O.  This feature uses tracepoints in a
-similar manner as CONFIG_TRACE_MMIO_ACCESS.
 
-Signed-off-by: Dan Raymond <raymod2@gmail.com>
----
-V1 -> V2:
-  - create header file for prototypes to silence new compiler warning
-  - reduce CPU overhead to 2 instructions (no branching) when tracing is disabled
-  - fix imprecise IP logging by retrieving the IP off the stack instead of using
-    compile time labels
+--dNROfh5L9PZtEJdO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- arch/x86/include/asm/shared/io.h | 25 ++++++++++++++++
- arch/x86/lib/Makefile            |  1 +
- arch/x86/lib/trace_portio.c      | 21 ++++++++++++++
- include/linux/trace_portio.h     |  6 ++++
- include/trace/events/portio.h    | 49 ++++++++++++++++++++++++++++++++
- 5 files changed, 102 insertions(+)
- create mode 100644 arch/x86/lib/trace_portio.c
- create mode 100644 include/linux/trace_portio.h
- create mode 100644 include/trace/events/portio.h
+Hi!
 
-diff --git a/arch/x86/include/asm/shared/io.h b/arch/x86/include/asm/shared/io.h
-index c0ef921c0586..9e5dce1cb62d 100644
---- a/arch/x86/include/asm/shared/io.h
-+++ b/arch/x86/include/asm/shared/io.h
-@@ -2,13 +2,36 @@
- #ifndef _ASM_X86_SHARED_IO_H
- #define _ASM_X86_SHARED_IO_H
- 
-+#include <linux/trace_portio.h>
- #include <linux/types.h>
- 
-+/*
-+ * We don't want the tracing logic included in the early boot modules (under
-+ * arch/x86/boot) so we check for their include guards here.  If we don't do
-+ * this we will get compiler errors.  These checks are not present in
-+ * arch/x86/include/asm/msr.h which contains similar tracing logic.  That is
-+ * possible only because none of the msr inline functions are instantiated in
-+ * the early boot modules.  If that changes this issue will need to be addressed
-+ * there as well.  Therefore it might be better to handle this centrally in
-+ * tracepoint-defs.h.
-+ */
-+
-+#if defined(CONFIG_TRACEPOINTS) && !defined(BOOT_COMPRESSED_MISC_H) && !defined(BOOT_BOOT_H)
-+#include <linux/tracepoint-defs.h>
-+DECLARE_TRACEPOINT(portio_write);
-+DECLARE_TRACEPOINT(portio_read);
-+#define _tracepoint_enabled(tracepoint) tracepoint_enabled(tracepoint)
-+#else
-+#define _tracepoint_enabled(tracepoint) false
-+#endif
-+
- #define BUILDIO(bwl, bw, type)						\
- static inline void __out##bwl(type value, u16 port)			\
- {									\
- 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
- 		     : : "a"(value), "Nd"(port));			\
-+	if (_tracepoint_enabled(portio_write))				\
-+		do_trace_portio_write(value, port, #bwl[0]);		\
- }									\
- 									\
- static inline type __in##bwl(u16 port)					\
-@@ -16,6 +39,8 @@ static inline type __in##bwl(u16 port)					\
- 	type value;							\
- 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
- 		     : "=a"(value) : "Nd"(port));			\
-+	if (_tracepoint_enabled(portio_read))				\
-+		do_trace_portio_read(value, port, #bwl[0]);		\
- 	return value;							\
- }
- 
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index f76747862bd2..254f223c025d 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -40,6 +40,7 @@ $(obj)/inat.o: $(obj)/inat-tables.c
- clean-files := inat-tables.c
- 
- obj-$(CONFIG_SMP) += msr-smp.o cache-smp.o
-+obj-$(CONFIG_TRACEPOINTS) += trace_portio.o
- 
- lib-y := delay.o misc.o cmdline.o cpu.o
- lib-y += usercopy_$(BITS).o usercopy.o getuser.o putuser.o
-diff --git a/arch/x86/lib/trace_portio.c b/arch/x86/lib/trace_portio.c
-new file mode 100644
-index 000000000000..4b340c97b97e
---- /dev/null
-+++ b/arch/x86/lib/trace_portio.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+
-+#include <linux/instruction_pointer.h>
-+#include <linux/trace_portio.h>
-+
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/portio.h>
-+
-+void do_trace_portio_read(u32 value, u16 port, char width)
-+{
-+	trace_portio_read(value, port, width, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(do_trace_portio_read);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(portio_read);
-+
-+void do_trace_portio_write(u32 value, u16 port, char width)
-+{
-+	trace_portio_write(value, port, width, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(do_trace_portio_write);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(portio_write)
-diff --git a/include/linux/trace_portio.h b/include/linux/trace_portio.h
-new file mode 100644
-index 000000000000..013418d3d2ae
---- /dev/null
-+++ b/include/linux/trace_portio.h
-@@ -0,0 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+
-+#include <linux/types.h>
-+
-+extern void do_trace_portio_read(u32 value, u16 port, char width);
-+extern void do_trace_portio_write(u32 value, u16 port, char width);
-diff --git a/include/trace/events/portio.h b/include/trace/events/portio.h
-new file mode 100644
-index 000000000000..3591a75a475e
---- /dev/null
-+++ b/include/trace/events/portio.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM portio
-+
-+#if !defined(_TRACE_PORTIO_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_PORTIO_H
-+
-+#include <linux/tracepoint.h>
-+
-+DECLARE_EVENT_CLASS(portio_class,
-+	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
-+
-+	TP_ARGS(value, port, width, ip_addr),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, value)
-+		__field(u16, port)
-+		__field(char, width)
-+		__field(long, ip_addr)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->value = value;
-+		__entry->port = port;
-+		__entry->width = width;
-+		__entry->ip_addr = ip_addr;
-+	),
-+
-+	TP_printk("port=0x%04x value=0x%0*x %pS",
-+		__entry->port,
-+		__entry->width == 'b' ? 2 :
-+		__entry->width == 'w' ? 4 : 8,
-+		__entry->value, (void *)__entry->ip_addr)
-+);
-+
-+DEFINE_EVENT(portio_class, portio_read,
-+	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
-+	TP_ARGS(value, port, width, ip_addr)
-+);
-+
-+DEFINE_EVENT(portio_class, portio_write,
-+	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
-+	TP_ARGS(value, port, width, ip_addr)
-+);
-+
-+#endif /* _TRACE_PORTIO_H */
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
+> > I'm having some fun with usb host. Good news is it works with
+> > externally powered hub... after a while. I get some error messages
+> > about inability to go host mode, but with enough patience it
+> > eventually does enter host mode and I see my keyboard/mouse.
+> >=20
+> > And usually in that process, one of my cpu cores disappear. top no
+> > longer shows 2 cores, and I was wondering for a while if d4 is
+> > single-core system. It is not, my two cores are back after reboot.
+> >=20
+> > That's with 6.1.9 kernel from leste. Ideas how to debug this would be
+> > welcome. (Do you use usb host?)
+>=20
+> You are using a "proper" non-standard usb micro-b cable that grounds
+> the id pin, right?
 
-base-commit: be8b93b5cc7d533eb8c9b0590cdac055ecafe13a
--- 
-2.25.1
+Yes.
+
+> If not, try with one of those as it allows the hardware to do what it's
+> supposed to do.
+>=20
+> And presumably you don't have a hacked usb hub that feeds back the
+> vbus to your phone, right?
+
+Do have hacked hub. Or more precisely, have device that needs external
+power (spinning rust), and hub passes it back to the device.
+
+I'll retry with a keyboard... but I recall it behaved funny with that, too.
+
+> If you have, that should not be used as the pmic can feed vbus.
+
+Well, my plan was to use it as a desktop, and external power is useful
+that as Droid battery is not that big.
+
+Best regards,
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--dNROfh5L9PZtEJdO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZRRPsQAKCRAw5/Bqldv6
+8ra8AKC7lzjBB+3yYRhK28e2x1T8h8LbwwCgqUR1vYbz8ywFk9hMmsDOjdNra2g=
+=ItwB
+-----END PGP SIGNATURE-----
+
+--dNROfh5L9PZtEJdO--
