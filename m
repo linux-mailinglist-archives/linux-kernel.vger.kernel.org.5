@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B51DE7AFE46
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0207AFE44
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjI0I0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S230221AbjI0I0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjI0IZu (ORCPT
+        with ESMTP id S230127AbjI0IZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:25:50 -0400
-Received: from ganesha.gnumonks.org (unknown [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC5E13A;
-        Wed, 27 Sep 2023 01:25:22 -0700 (PDT)
-Received: from [78.30.34.192] (port=39392 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1qlPqu-00B95F-Su; Wed, 27 Sep 2023 10:25:02 +0200
-Date:   Wed, 27 Sep 2023 10:24:59 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     joao@overdrivepizza.com
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        rkannoth@marvell.com, wojciech.drewek@intel.com,
-        steen.hegenlund@microhip.com, keescook@chromium.org,
-        Joao Moreira <joao.moreira@intel.com>
-Subject: Re: [PATCH v2 0/2] Prevent potential write out of bounds
-Message-ID: <ZRPm2/KsmDmFTOcS@calendula>
-References: <20230927020221.85292-1-joao@overdrivepizza.com>
+        Wed, 27 Sep 2023 04:25:48 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC67DE;
+        Wed, 27 Sep 2023 01:25:13 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38R8P8Up005152;
+        Wed, 27 Sep 2023 03:25:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695803108;
+        bh=7JCLfOz6vi/ZAWl1OetwVW/EMHbMuWTaPqKghyNaO+Y=;
+        h=Date:Subject:From:To:CC:References:In-Reply-To;
+        b=JbWc0Vn0XWM0m+nIRLLef+FHhnyaOsTZIVWnTDD1Ny9QqX5OZN+7tkV4M7Vo8tYO9
+         IoAjPf8Frz2pzdcFl/ByTTLjlVdfhSrgWnmjdlP4yJGlM9IhX0cGm8Fo+vu8xJ8IPJ
+         KwdQKIP0ShgnkdQOaSrfLDjb14DJKCxrshJLmIf4=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38R8P8mT096569
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Sep 2023 03:25:08 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Sep 2023 03:25:07 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Sep 2023 03:25:07 -0500
+Received: from [10.24.68.251] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38R8P4x5093336;
+        Wed, 27 Sep 2023 03:25:04 -0500
+Message-ID: <0dfcac11-13d1-32fe-9c85-3663bcc34177@ti.com>
+Date:   Wed, 27 Sep 2023 13:55:03 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230927020221.85292-1-joao@overdrivepizza.com>
-X-Spam-Score: -1.9 (-)
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 7/7] dts: ti: k3-j712s2-mcu: Add the mcu domain
+ watchdog instances
+Content-Language: en-US
+From:   "J, KEERTHY" <j-keerthy@ti.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230927023357.9883-1-j-keerthy@ti.com>
+ <20230927023357.9883-8-j-keerthy@ti.com>
+ <877f583e-ed08-4248-ac38-28e8c3039444@linaro.org>
+ <78a9a231-ce53-7a3c-d9ce-af9d1c2a097d@ti.com>
+In-Reply-To: <78a9a231-ce53-7a3c-d9ce-af9d1c2a097d@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 07:02:19PM -0700, joao@overdrivepizza.com wrote:
-> From: Joao Moreira <joao.moreira@intel.com>
-> 
-> The function flow_rule_alloc in net/core/flow_offload.c [2] gets an
-> unsigned int num_actions (line 10) and later traverses the actions in
-> the rule (line 24) setting hw.stats to FLOW_ACTION_HW_STATS_DONT_CARE.
-> 
-> Within the same file, the loop in the line 24 compares a signed int
-> (i) to an unsigned int (num_actions), and then uses i as an array
-> index. If an integer overflow happens, then the array within the loop
-> is wrongly indexed, causing a write out of bounds.
-> 
-> After checking with maintainers, it seems that the front-end caps the
-> maximum value of num_action, thus it is not possible to reach the given
-> write out of bounds, yet, still, to prevent disasters it is better to
-> fix the signedness here.
-> 
-> Similarly, also it is also good to ensure that an overflow won't happen
-> in net/netfilter/nf_tables_offload.c's function nft_flow_rule_create by
-> making the variable unsigned and ensuring that it returns an error if
-> its value reaches UINT_MAX.
-> 
-> This issue was observed by the commit author while reviewing a write-up
-> regarding a CVE within the same subsystem [1].
 
-I keep spinning around this, this is not really an issue.
 
-No frontend uses this amount of actions.
+On 9/27/2023 1:46 PM, J, KEERTHY wrote:
+> 
+> 
+> On 9/27/2023 1:23 PM, Krzysztof Kozlowski wrote:
+>> On 27/09/2023 04:33, Keerthy wrote:
+>>> There are totally 2 instances of watchdog module in MCU domain.
+>>> These instances are coupled with the MCU domain R5F instances.
+>>> Disabling them as they are not used by Linux.
+>>>
+>>> Signed-off-by: Keerthy <j-keerthy@ti.com>
+>>
+>> Still incorrect subject prefix.
+> 
+> Sorry. I missed this :-(. I will fix all your comments in the next version.
 
-Probably cap this to uint16_t because 2^16 actions is more than
-sufficient by now.
+Hi Krzysztof,
+
+If there are no further comments on V6. Can i resend this patch alone 
+with subject corrected?
+
+Regards,
+Keerthy
+
+> 
+>>
+>> Best regards,
+>> Krzysztof
+>>
