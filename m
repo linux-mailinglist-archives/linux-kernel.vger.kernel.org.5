@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AE17AFEED
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA47AFEEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjI0IsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
+        id S230049AbjI0It1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjI0IsP (ORCPT
+        with ESMTP id S230000AbjI0ItY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:48:15 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DE7E4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:48:13 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4529d1238a9so4875551137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:48:13 -0700 (PDT)
+        Wed, 27 Sep 2023 04:49:24 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD7A3;
+        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c3bd829b86so83289205ad.0;
+        Wed, 27 Sep 2023 01:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695804493; x=1696409293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8UePqMDDAbqRhi0bsJrfurhqXQouyI8L8X5n7XzM0aw=;
-        b=FfgwJS1Rvsv35goPZ8b9P23dOQOPPUlV7AExFRNOR7J8BjwtqnzOKRsbZCibiJwTJA
-         mbD+wzPTx5xEmcy73G/DyVHiNsRVEROv33QSb9WUlEOF6J9BWwJdVmMrpKCeJb7KHAbN
-         NV2KlQcdq4Wh4cK7HBRQRkmyVL2V138IJQZFysKfxIq4PfyLYQsSPAmB+6Mhta73cRdY
-         KPnJ1u7Axrzm52VddpmuULaLD1ae1Jwt/tS19Osa+YjN+vi2yUhqEsawCtURYSYewIWh
-         Eza8dzNEeIGMrRyYZrY8T8aPFFjOsMu6Q5mWKvnzZK3xHO8vnTn8Tn+v4u33Kg6LQ+LX
-         q7pA==
+        d=gmail.com; s=20230601; t=1695804562; x=1696409362; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
+        b=OznP9QddYD/P6SLu1IihEPpKDHVvJJZCKkNpl/GsiaSwPis2NgEXljT2DBH9R9w/bi
+         WtnciHWgRRm+sZ9WLhrB98dewHCAx5gBKMNVXBsbDxqhJJPvwMjYWk06wZnJlBt7mPIE
+         gy1msnawdL5Q+8Dxdh4jDlHKc67EOgm5hGDYPf0nL3mIDLqyQEGxqh978g9um0mYT9Bj
+         hoz3FOt2oiKjNdSsP1IJ9idvDfGABNyNBRh+tk+m7SYyNH2mB3lXbwBTuWc1+KXAN49q
+         QZ4ZpEIx0/0fomoTAStWoyrZdFp1/PaiO9SjrySgjMCCkdHEmbOmN//mCVzincuUAib+
+         px4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804493; x=1696409293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8UePqMDDAbqRhi0bsJrfurhqXQouyI8L8X5n7XzM0aw=;
-        b=bsCWYpKF2r3ehgoMTetZd6G0UeUuOkZt0SxSswKssU6STPRdn1kYqsl7Ttak0nrZJf
-         brzGwWEOH+Y27uNuRiU3gf62kOsmgf9TwRY7192PVoje2lece/R6JXwv/kjuNs/D/bRb
-         njUYXPTYlbdfOB4vaZTGGZH6Wd6vzIr7xzmlpdCIWqx8ia7juQW9GjsLGb86pg5oWDJY
-         yqObPSD84PXxTQWCXjxIouJBDv8kg939ctnPk2dnz8ayD3bSAlxjQQVNgR8kOlHOFnAg
-         Tb8EiSCMHUMqwBSq5PEAmIR/rzUcgf+zaGiQtRBZzByF1gybcCKvC7LtG4CHv4agvHse
-         FHiA==
-X-Gm-Message-State: AOJu0Yw7HTPirhbYUoDBvmMDj/fBW1gZifQPhkrkktNyjZTYaSpaAlSY
-        XeReM2Gn9st3f2HPbcPmr68spSH35PkYardhGjfIkA==
-X-Google-Smtp-Source: AGHT+IFQJtKsE+gtrZBKTdP3Ub4DSJkvgu5MeAUur4etdFKcriSX73VjALIHRe+/2tItrB4gRzHHuL+FlPlRAvpeIt0=
-X-Received: by 2002:a67:fd17:0:b0:44e:8ef9:3371 with SMTP id
- f23-20020a67fd17000000b0044e8ef93371mr1313754vsr.8.1695804492779; Wed, 27 Sep
- 2023 01:48:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230926145943.42814-1-brgl@bgdev.pl> <ffb5b1a8-a4fa-f794-afc8-52eed4420a5c@redhat.com>
-In-Reply-To: <ffb5b1a8-a4fa-f794-afc8-52eed4420a5c@redhat.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 27 Sep 2023 10:48:01 +0200
-Message-ID: <CAMRc=MeoRRzc+JHCSyOqYb2t5p6GMLdA5wX_-uq15O3tdzC1mQ@mail.gmail.com>
-Subject: Re: [RFT PATCH 0/4] platform/x86: int3472: don't use gpiod_toggle_active_low()
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        d=1e100.net; s=20230601; t=1695804562; x=1696409362;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rt/Yw43hYQHNo06Frt+fQ33LFBmtCQhUztnPZ1yyNbI=;
+        b=DOJgs8p31UaZ0jd4cYZ64NYIYn4fmAjn6ct8Avyvl8DJWWYX4TEKUjTIFyu5qBZluJ
+         vVY3VmA1OF8jeXCKlYpNvXx05BbfHDBqNHzXozU2MLW3Ck0qXFwIXPsYeqMmIQKmMi3g
+         E7QFjvoeLVLytF7EDJgECJ9SPceKPqYgpEgIywGii47JuQ20h4dTwNQs4Hp2WsiMQwG5
+         EpcBBwcoa2UGhsbVC2QpHNFih7pBSMiA2dZgg6aQzYZR56CYGD+Wq8k2oPjzuNm+j8U2
+         gk38q7FF4t6w9mXPPqcTADam3EcAghiXdlzElxzdRc+P0HW2fLMUhiSA3MXpZe2+7Hfe
+         BNew==
+X-Gm-Message-State: AOJu0Yz/cEPuzLIW7T4Q4es9V+8uMxnz6tYsfrLGfQV5s3xzJGRSHt0F
+        8s+ukaPykQTgij/Qgrcug9fYyitDr3k=
+X-Google-Smtp-Source: AGHT+IHOIvlC0VTTSD1TDqihjByVlmint/jkmEcXp1TPBsQlERqjLLSm7j2rCoIykA/lAs6dVQsmxQ==
+X-Received: by 2002:a17:902:da8c:b0:1c5:a60c:4ee with SMTP id j12-20020a170902da8c00b001c5a60c04eemr1257482plx.47.1695804562075;
+        Wed, 27 Sep 2023 01:49:22 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001bb99e188fcsm12495621plx.194.2023.09.27.01.49.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 01:49:21 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:19:17 +0530
+Message-Id: <87zg18f1bm.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
+In-Reply-To: <20230919201532.310085-3-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,47 +67,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:38=E2=80=AFAM Hans de Goede <hdegoede@redhat.com=
-> wrote:
->
-> Hi Bartosz,
->
-> On 9/26/23 16:59, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > gpiod_toggle_active_low() is a badly designed API that should have neve=
-r
-> > been used elsewhere then in the MMC code. And even there we should find
-> > a better solution.
-> >
-> > Replace the uses of it in the int3472 driver with the good old temporar=
-y
-> > lookup table trick. This is not very pretty either but it's the lesser
-> > evil.
->
-> I saw your previous proposal which added a new api to directly set
-> the active_low flag, rather then toggle it.
->
-> I intended to reply to that thread to say that I liked that approach,
-> but I don't remember if I actually did reply.
->
-> I wonder what made you abandon the new function to directly set
-> the active-low flag on a gpio_desc?
->
-> For the int3472 code that would work pretty well and it would
-> be much cleaner then the temp gpio-lookup approach.
->
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-You did reply, yes. Under one of the other patches Linus W stated that
-first: adding the ability for consumers to toggle the polarity was
-added to handle the MMC slot quirk, then it was used unknowingly to
-GPIO maintainers in other places (including this driver). I then
-acknowledged the fact that it should have never existed in the first
-place as this is HW description and should be defined in ACPI, DT or
-lookup flags.
+> There are several reasons to add a general function ext4_mb_mark_context
+> to update block bitmap and group descriptor on disk:
+> 1. pair behavior of alloc/free bits. For example,
+> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+> 2. remove repeat code to read from disk, update and write back to disk.
+> 3. reduce future unit test mocks to catch real IO to update structure
+> on disk.
+>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
+>  1 file changed, 77 insertions(+), 70 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index cf09adfbaf11..e1320eea46e9 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
+>  	ext4_groupinfo_destroy_slabs();
+>  }
+>  
+> +static int
+> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
+> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
 
-I'm not sure why this information needs to be hard-coded in the driver
-in int3472_get_func_and_polarity() but maybe it could be pulled into
-gpiolib-acpi.c with other quirks?
 
-Bart
+ext4_grpblk_t is defined as int.
+    /* data type for block offset of block group */
+    typedef int ext4_grpblk_t;
+
+I think len should be unsigned int (u32) here. 
+
+> +{
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	struct buffer_head *bitmap_bh = NULL;
+> +	struct ext4_group_desc *gdp;
+> +	struct buffer_head *gdp_bh;
+> +	int err;
+> +	unsigned int i, already, changed;
+> +
+> +	bitmap_bh = ext4_read_block_bitmap(sb, group);
+> +	if (IS_ERR(bitmap_bh))
+> +		return PTR_ERR(bitmap_bh);
+> +
+> +	err = -EIO;
+> +	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
+> +	if (!gdp)
+> +		goto out_err;
+> +
+> +	ext4_lock_group(sb, group);
+> +	if (ext4_has_group_desc_csum(sb) &&
+> +	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+> +		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_clusters_after_init(sb, group, gdp));
+> +	}
+> +
+> +	already = 0;
+> +	for (i = 0; i < len; i++)
+> +		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
+> +				state)
+> +			already++;
+> +	changed = len - already;
+> +
+> +	if (state) {
+> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_group_clusters(sb, gdp) - changed);
+> +	} else {
+> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
+> +		ext4_free_group_clusters_set(sb, gdp,
+> +			ext4_free_group_clusters(sb, gdp) + changed);
+> +	}
+> +
+> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+> +	ext4_group_desc_csum_set(sb, group, gdp);
+> +	ext4_unlock_group(sb, group);
+> +
+> +	if (sbi->s_log_groups_per_flex) {
+> +		ext4_group_t flex_group = ext4_flex_group(sbi, group);
+> +		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
+> +					   s_flex_groups, flex_group);
+> +
+> +		if (state)
+> +			atomic64_sub(changed, &fg->free_clusters);
+> +		else
+> +			atomic64_add(changed, &fg->free_clusters);
+> +	}
+> +
+> +	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
+> +	if (err)
+> +		goto out_err;
+> +	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
+> +	if (err)
+> +		goto out_err;
+> +
+> +	sync_dirty_buffer(bitmap_bh);
+> +	sync_dirty_buffer(gdp_bh);
+> +
+> +out_err:
+> +	brelse(bitmap_bh);
+> +	return err;
+> +}
+>  
+>  /*
+>   * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
+> @@ -4079,15 +4153,11 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+>  void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
+>  		     int len, bool state)
+
+Even ext4_mb_mark_bb should take len as unsigned int IMO.
+For e.g. ext4_fc_replay_add_range() passes map.m_len which is also
+unsigned int.
+
+
+Otherwise the patch looks good to me. Feel free to add - 
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
+-ritesh
