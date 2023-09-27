@@ -2,188 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ED87B0829
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9CE7B0831
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbjI0P0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        id S232463AbjI0P1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbjI0P0u (ORCPT
+        with ESMTP id S232464AbjI0P1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:26:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38ABD126
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:26:48 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-573e67cc6eeso7617227a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695828407; x=1696433207; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ijGPnahnzmrBSaCobVNQmuUKYt7yPdCWIYWpIr/wTF8=;
-        b=hjKeOztX77x/UgBlb/sOUWMw2NpVfTcL6gcfBxYgDAlEOGlGQzgpcldsOKffgPbLXG
-         Pf5oMfdNRhvBigCN07hCjMRv334euBZhX7mBA1ypLVxXvH4KYq/BrYvuJi94j6abjjLC
-         mNfZLzCJKX8cdREu6Lg9Yll3QThHnZO3M+OSvicXvcXB5igrKf3SxUffcC5fPacsD2O1
-         K+1BtM/3y/NjDEe6L7S9a1KW9PjBq2A1ezP9fZRqzEW0L+Fii8iTOFC90Iox2hGxSkLh
-         8CMZ4VzMYHVnS0eHFFLwuLp/Lt0HcUiz2W1EIdP80CIqrop82Lxfm6VBidzQ1zgmqFpG
-         ecew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695828407; x=1696433207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ijGPnahnzmrBSaCobVNQmuUKYt7yPdCWIYWpIr/wTF8=;
-        b=Zhpaz7NkP8048tXFJH5F2EUniq5J9dTBDiCwjpgxrnftDG4caJ5ypGn5XpwZk6hD0a
-         m+gwcqmSdik4msbIgSHNXzAlM458aGvKLoUqJMJUpPtq8LFMgMz55dpJr7ANaXNTVgFw
-         oZLdKLRMZR9zDM8AAoCSNW9r6F5rGQ2xeOKBMf6FGWoNs+W1MXtD9RjFeCADFXSyr5vq
-         brY6XCrGLt89hzgm4d6uNHmGUym6CWMx/z9I4wj/VXzV+jz3a40nZ7DIK5Xb7zQS+MqO
-         C5ynha21YAEjq2+uxFjcw57hEFCNg/fbU1JbvvM7m2O0Nt6L0IR+zBPeZ6T4JfIG29xc
-         6L9g==
-X-Gm-Message-State: AOJu0Yx/X1s13LjDxdoSfc2YOxigvxLh7+5zB/KyMUWQAqSuBZEho30R
-        yZtk1gTNQbLnNgq6hT4gO7unJkF/7lkH4VDWcd1UpQ==
-X-Google-Smtp-Source: AGHT+IFU1LUpaO7sP7SIqPuvetp24KKi4LWrjjiTg6yxaFt1J+qS7fbA4ID8HUUXxvqmzStEvujat718B0LrMVGcjMI=
-X-Received: by 2002:a17:90a:4983:b0:268:1b60:5031 with SMTP id
- d3-20020a17090a498300b002681b605031mr2049707pjh.12.1695828407438; Wed, 27 Sep
- 2023 08:26:47 -0700 (PDT)
+        Wed, 27 Sep 2023 11:27:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BE2193;
+        Wed, 27 Sep 2023 08:27:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2991CC433C8;
+        Wed, 27 Sep 2023 15:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695828435;
+        bh=aw0/9cgQsDBVjjrJdDVGrqkQ0FgYmL9yWqvaxanLjY0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yp2KYFnf4VWnAK/lJysjzMKIFpbq+du6gQLBicsR+070pWL2pSKTmaAMM/Yk5TJLE
+         Tl5WvzYaMBYJ5ZgyzmJFa2wQyH7MXjToZ4cexLLrsP9e3lyUvOIWDfEp1AhZYBGZuu
+         vfy49iaR/HIsyBM2Nfezqn90Bm9DYGJhiAnmEigrDWSCc49yWjauA9xA3zOXO2o1CQ
+         8A5o3GqoGZDhHpXxEQtGayajJo3egrXAG1Rs2XWyU0Z6rmdJOoVqXNHBivMGpg+yRf
+         5SWe47QVd+0OvrIIDKVBU9DYM0fhm5kPqxn7kP1w3a8+w4Ew2UdNh3VvMcxd0m8mF8
+         vQyZPflYJ0x4w==
+Date:   Wed, 27 Sep 2023 16:27:09 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: PCI: brcm,iproc-pcie: Fix example
+ indentation
+Message-ID: <20230927-overspend-that-c5f8e7b9eac7@spud>
+References: <20230926155351.31117-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <20230927-snowcap-stadium-2f6aeffac59e@spud> <mhng-ed1b5d0a-469c-43e3-a0fe-b8e498cde538@palmer-ri-x1c9>
-In-Reply-To: <mhng-ed1b5d0a-469c-43e3-a0fe-b8e498cde538@palmer-ri-x1c9>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 27 Sep 2023 20:56:35 +0530
-Message-ID: <CAK9=C2Xx76i-FmTm2Qt_9PssLrLL3zUDvxOUZRyyEQZzDV7JDw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] KVM RISC-V Conditional Operations
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Conor Dooley <conor@kernel.org>, pbonzini@redhat.com,
-        atishp@atishpatra.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        shuah@kernel.org, ajones@ventanamicro.com,
-        mchitale@ventanamicro.com, devicetree@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GSZxDkacQH77W/rI"
+Content-Disposition: inline
+In-Reply-To: <20230926155351.31117-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 8:31=E2=80=AFPM Palmer Dabbelt <palmer@dabbelt.com>=
- wrote:
->
-> On Wed, 27 Sep 2023 07:45:28 PDT (-0700), Conor Dooley wrote:
-> > On Wed, Sep 27, 2023 at 07:54:49PM +0530, Anup Patel wrote:
-> >> On Mon, Sep 25, 2023 at 9:07=E2=80=AFPM Conor Dooley <conor@kernel.org=
-> wrote:
-> >> >
-> >> > On Mon, Sep 25, 2023 at 04:33:15PM +0100, Conor Dooley wrote:
-> >> > > On Mon, Sep 25, 2023 at 07:08:50PM +0530, Anup Patel wrote:
-> >> > > > This series extends KVM RISC-V to allow Guest/VM discover and us=
-e
-> >> > > > conditional operations related ISA extensions (namely XVentanaCo=
-ndOps
-> >> > > > and Zicond).
-> >> > > >
-> >> > > > To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstatee=
-n_condops_v1
-> >> > > > branch at: https://github.com/avpatel/kvmtool.git
-> >> > > >
-> >> > > > These patches are based upon the latest riscv_kvm_queue and can =
-also be
-> >> > > > found in the riscv_kvm_condops_v2 branch at:
-> >> > > > https://github.com/avpatel/linux.git
-> >> > > >
-> >> > > > Changes since v1:
-> >> > > >  - Rebased the series on riscv_kvm_queue
-> >> > > >  - Split PATCH1 and PATCH2 of v1 series into two patches
-> >> > > >  - Added separate test configs for XVentanaCondOps and Zicond in=
- PATCH7
-> >> > > >    of v1 series.
-> >> > > >
-> >> > > > Anup Patel (9):
-> >> > > >   dt-bindings: riscv: Add XVentanaCondOps extension entry
-> >> > > >   RISC-V: Detect XVentanaCondOps from ISA string
-> >> > > >   dt-bindings: riscv: Add Zicond extension entry
-> >> > > >   RISC-V: Detect Zicond from ISA string
-> >> > >
-> >> > > For these 4:
-> >> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> >> >
-> >> > Actually, now that I think of it, I'm going to temporarily un-review=
- this.
-> >> > From patch-acceptance.rst:
-> >> > | Additionally, the RISC-V specification allows implementers to crea=
-te
-> >> > | their own custom extensions.  These custom extensions aren't requi=
-red
-> >> > | to go through any review or ratification process by the RISC-V
-> >> > | Foundation.  To avoid the maintenance complexity and potential
-> >> > | performance impact of adding kernel code for implementor-specific
-> >> > | RISC-V extensions, we'll only consider patches for extensions that=
- either:
-> >> > |
-> >> > | - Have been officially frozen or ratified by the RISC-V Foundation=
-, or
-> >> > | - Have been implemented in hardware that is widely available, per =
-standard
-> >> > |   Linux practice.
-> >> >
-> >> > The xventanacondops bits don't qualify under the first entry, and I
-> >> > don't think they qualify under the second yet. Am I wrong?
-> >>
-> >> The Ventana Veyron V1 was announced in Dec 2022 at RISC-V summit
-> >> followed by press releases:
-> >> https://www.ventanamicro.com/ventana-introduces-veyron-worlds-first-da=
-ta-center-class-risc-v-cpu-product-family/
-> >> https://www.embedded.com/ventana-reveals-risc-v-cpu-compute-chiplet-fo=
-r-data-center/
-> >> https://www.prnewswire.com/news-releases/ventana-introduces-veyron-wor=
-lds-first-data-center-class-risc-v-cpu-product-family-301700985.html
-> >>
-> >> @Palmer if the above looks good to you then please ack PATCH1-to-4
-> >
-> > These are announcements AFAICT & not an indication of "being implemente=
-d
-> > in hardware that is widely available".
->
-> The second two look to just be news articles quoting the first without
-> any real new information, at least just from skimming them -- sorry if I
-> missed something, though.
->
-> The article says "SDK released with necessary software already ported to
-> Veyron" and "Veyron V1 Development Platform available", but aside from
-> quotes of the press release I can't find information on either of those
-> (or anything VT1 related, as there were some naming ambiguities).
->
-> Anup said during the call that they're still bringing up the chip and
-> haven't started sampling yet, which usually means things are far from
-> publicly availiable.  I thought I heard him say that these press
-> releases would say the chip is sampling 2H23, but I can't find anything
-> in them about sampling.
->
-> Anup also said it's availiable as IP and I remember something at Hot
-> Chips talking about an example place and route for a VT1, which also
-> sounds very much like a chip that's not availiable yet -- usually if
-> there's a chip folks are a lot more concrete about that sort of thing.
->
-> So is there you can point to about this chip actually being publicly
-> availiable?
 
-The Veyron V1 chiplet samples are not available publicly at the
-moment. Being available as an IP is not the same as chiplet
-samples being available.
+--GSZxDkacQH77W/rI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If this does not satisfy patch acceptance criteria then I will
-defer/drop the XVentanaCondOps related patches for now.
+On Tue, Sep 26, 2023 at 10:53:40AM -0500, Rob Herring wrote:
+> The example's indentation is off. While fixing this, the 'bus' node
+> is unnecessary and can be dropped. It is also preferred to split up
+> unrelated examples to their own entries.
 
-Can you ack PATCH2 and PATCH3 which deals with Zicond ?
+Damn, it really was all over the shop..
 
-Regards,
-Anup
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--GSZxDkacQH77W/rI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRJzQAKCRB4tDGHoIJi
+0qrpAQCAWVNdifbs6d9PzfN2w0yFtF1Mwu3kcAeK1uBd8DruPwEAuwbhxNAGfQKR
+QACYiLmwo+89BCxaqwXBtMDqQj9lkQQ=
+=kNLS
+-----END PGP SIGNATURE-----
+
+--GSZxDkacQH77W/rI--
