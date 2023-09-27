@@ -2,62 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2D47B0FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953DD7B0FB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjI0Xz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S229711AbjI0X6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI0Xzy (ORCPT
+        with ESMTP id S229445AbjI0X6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:55:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC997F4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 16:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695858952; x=1727394952;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=dZORVe2yhZeUfl0yDHwSScn0mAmQXIVEZk6dceeBhFQ=;
-  b=JMlW8unx/aXcCJHwgOB6TJOkE4fnqw40NS9VMtIUGAjxQiFxWSSM+UyB
-   ZTShoxzyEQm3H9aQcRxtveOqdJocfHSxvRNTrY6JVJOxSYzzxvm4+4GP9
-   +5eL5qvi7/bOrwL9kyNV+tO0B6OHtI7VrnXMTRRJy6yMw8TYCiVSGp3pt
-   rAah5pO52WLtWaElpSNA7p0unVUeiaZXFw4OUtWJBpREszL4aLXCaekhI
-   wkL3Hv2W6SYzX54T12lC0Q0cLlXFOGq37XRekYZbAD+Nx989uYH5ZsZkr
-   E0XweYNj/eoIDGoCTsNWFfGK2zVlN6Os12UOCC8U7DDcokdUsi3z9I/+P
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="448443005"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="448443005"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 16:55:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="699068377"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="699068377"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 27 Sep 2023 16:55:50 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qleNf-0000og-13;
-        Wed, 27 Sep 2023 23:55:47 +0000
-Date:   Thu, 28 Sep 2023 07:55:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function
- parameter or member 'dsp_reset' not described in 'da8xx_rproc'
-Message-ID: <202309280746.mMdNuGQ6-lkp@intel.com>
+        Wed, 27 Sep 2023 19:58:10 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8CCF4;
+        Wed, 27 Sep 2023 16:58:08 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qlePg-00049j-38;
+        Wed, 27 Sep 2023 23:57:53 +0000
+Date:   Thu, 28 Sep 2023 00:55:33 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 3/4] thermal/drivers/mediatek/lvts_thermal: make coeff
+ configurable
+Message-ID: <ZRTA9UtVm9zxf2QD@pidgin.makrotopia.org>
+References: <20230922055020.6436-1-linux@fw-web.de>
+ <20230922055020.6436-4-linux@fw-web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <20230922055020.6436-4-linux@fw-web.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,63 +56,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
-commit: b2201ee554a5811f569f31280b0079e7d6177606 remoteproc/davinci: use the reset framework
-date:   5 years ago
-config: arm-randconfig-004-20230928 (https://download.01.org/0day-ci/archive/20230928/202309280746.mMdNuGQ6-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309280746.mMdNuGQ6-lkp@intel.com/reproduce)
+On Fri, Sep 22, 2023 at 07:50:19AM +0200, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> The upcoming mt7988 has different temperature coefficients so we
+> cannot use constants in the functions lvts_golden_temp_init,
+> lvts_golden_temp_init and lvts_raw_to_temp anymore.
+> 
+> Add a field in the lvts_ctrl pointing to the lvts_data which now
+> contains the soc-specific temperature coefficents.
+> 
+> To make the code better readable, rename static int coeff_b to
+> golden_temp_offset, COEFF_A to temp_factor and COEFF_B to temp_offset.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309280746.mMdNuGQ6-lkp@intel.com/
+Tested-by: Daniel Golle <daniel@makrotopia.org>
 
-All warnings (new ones prefixed by >>):
-
->> drivers/remoteproc/da8xx_remoteproc.c:80: warning: Function parameter or member 'dsp_reset' not described in 'da8xx_rproc'
-   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'irq' not described in 'handle_event'
-   drivers/remoteproc/da8xx_remoteproc.c:89: warning: Function parameter or member 'p' not described in 'handle_event'
-   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'irq' not described in 'da8xx_rproc_callback'
-   drivers/remoteproc/da8xx_remoteproc.c:109: warning: Function parameter or member 'p' not described in 'da8xx_rproc_callback'
-
-
-vim +80 drivers/remoteproc/da8xx_remoteproc.c
-
-59b2355fc90e4a Suman Anna          2017-08-01  56  
-13be5432d8721d Robert Tivy         2013-04-09  57  /**
-13be5432d8721d Robert Tivy         2013-04-09  58   * struct da8xx_rproc - da8xx remote processor instance state
-13be5432d8721d Robert Tivy         2013-04-09  59   * @rproc: rproc handle
-59b2355fc90e4a Suman Anna          2017-08-01  60   * @mem: internal memory regions data
-59b2355fc90e4a Suman Anna          2017-08-01  61   * @num_mems: number of internal memory regions
-13be5432d8721d Robert Tivy         2013-04-09  62   * @dsp_clk: placeholder for platform's DSP clk
-13be5432d8721d Robert Tivy         2013-04-09  63   * @ack_fxn: chip-specific ack function for ack'ing irq
-13be5432d8721d Robert Tivy         2013-04-09  64   * @irq_data: ack_fxn function parameter
-13be5432d8721d Robert Tivy         2013-04-09  65   * @chipsig: virt ptr to DSP interrupt registers (CHIPSIG & CHIPSIG_CLR)
-13be5432d8721d Robert Tivy         2013-04-09  66   * @bootreg: virt ptr to DSP boot address register (HOST1CFG)
-13be5432d8721d Robert Tivy         2013-04-09  67   * @irq: irq # used by this instance
-13be5432d8721d Robert Tivy         2013-04-09  68   */
-13be5432d8721d Robert Tivy         2013-04-09  69  struct da8xx_rproc {
-13be5432d8721d Robert Tivy         2013-04-09  70  	struct rproc *rproc;
-59b2355fc90e4a Suman Anna          2017-08-01  71  	struct da8xx_rproc_mem *mem;
-59b2355fc90e4a Suman Anna          2017-08-01  72  	int num_mems;
-13be5432d8721d Robert Tivy         2013-04-09  73  	struct clk *dsp_clk;
-b2201ee554a581 Bartosz Golaszewski 2018-06-21  74  	struct reset_control *dsp_reset;
-13be5432d8721d Robert Tivy         2013-04-09  75  	void (*ack_fxn)(struct irq_data *data);
-13be5432d8721d Robert Tivy         2013-04-09  76  	struct irq_data *irq_data;
-13be5432d8721d Robert Tivy         2013-04-09  77  	void __iomem *chipsig;
-13be5432d8721d Robert Tivy         2013-04-09  78  	void __iomem *bootreg;
-13be5432d8721d Robert Tivy         2013-04-09  79  	int irq;
-13be5432d8721d Robert Tivy         2013-04-09 @80  };
-13be5432d8721d Robert Tivy         2013-04-09  81  
-
-:::::: The code at line 80 was first introduced by commit
-:::::: 13be5432d8721d89cadae105663761f45f427842 remoteproc/davinci: add a remoteproc driver for OMAP-L13x DSP
-
-:::::: TO: Robert Tivy <rtivy@ti.com>
-:::::: CC: Ohad Ben-Cohen <ohad@wizery.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+> v2:
+> - rename static int coeff_b to golden_temp_offset
+> - rename coeff.a to temp_factor and coeff.b to temp_offset
+> ---
+>  drivers/thermal/mediatek/lvts_thermal.c | 51 ++++++++++++++++---------
+>  1 file changed, 34 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
+> index effd9b00a424..c2669f405a94 100644
+> --- a/drivers/thermal/mediatek/lvts_thermal.c
+> +++ b/drivers/thermal/mediatek/lvts_thermal.c
+> @@ -80,8 +80,8 @@
+>  #define LVTS_SENSOR_MAX				4
+>  #define LVTS_GOLDEN_TEMP_MAX		62
+>  #define LVTS_GOLDEN_TEMP_DEFAULT	50
+> -#define LVTS_COEFF_A				-250460
+> -#define LVTS_COEFF_B				250460
+> +#define LVTS_COEFF_A_MT8195			-250460
+> +#define LVTS_COEFF_B_MT8195			250460
+>  
+>  #define LVTS_MSR_IMMEDIATE_MODE		0
+>  #define LVTS_MSR_FILTERED_MODE		1
+> @@ -94,7 +94,7 @@
+>  #define LVTS_MINIMUM_THRESHOLD		20000
+>  
+>  static int golden_temp = LVTS_GOLDEN_TEMP_DEFAULT;
+> -static int coeff_b = LVTS_COEFF_B;
+> +static int golden_temp_offset;
+>  
+>  struct lvts_sensor_data {
+>  	int dt_id;
+> @@ -112,6 +112,8 @@ struct lvts_ctrl_data {
+>  struct lvts_data {
+>  	const struct lvts_ctrl_data *lvts_ctrl;
+>  	int num_lvts_ctrl;
+> +	int temp_factor;
+> +	int temp_offset;
+>  };
+>  
+>  struct lvts_sensor {
+> @@ -126,6 +128,7 @@ struct lvts_sensor {
+>  
+>  struct lvts_ctrl {
+>  	struct lvts_sensor sensors[LVTS_SENSOR_MAX];
+> +	const struct lvts_data *lvts_data;
+>  	u32 calibration[LVTS_SENSOR_MAX];
+>  	u32 hw_tshut_raw_temp;
+>  	int num_lvts_sensor;
+> @@ -247,21 +250,21 @@ static void lvts_debugfs_exit(struct lvts_domain *lvts_td) { }
+>  
+>  #endif
+>  
+> -static int lvts_raw_to_temp(u32 raw_temp)
+> +static int lvts_raw_to_temp(u32 raw_temp, int temp_factor)
+>  {
+>  	int temperature;
+>  
+> -	temperature = ((s64)(raw_temp & 0xFFFF) * LVTS_COEFF_A) >> 14;
+> -	temperature += coeff_b;
+> +	temperature = ((s64)(raw_temp & 0xFFFF) * temp_factor) >> 14;
+> +	temperature += golden_temp_offset;
+>  
+>  	return temperature;
+>  }
+>  
+> -static u32 lvts_temp_to_raw(int temperature)
+> +static u32 lvts_temp_to_raw(int temperature, int temp_factor)
+>  {
+> -	u32 raw_temp = ((s64)(coeff_b - temperature)) << 14;
+> +	u32 raw_temp = ((s64)(golden_temp_offset - temperature)) << 14;
+>  
+> -	raw_temp = div_s64(raw_temp, -LVTS_COEFF_A);
+> +	raw_temp = div_s64(raw_temp, -temp_factor);
+>  
+>  	return raw_temp;
+>  }
+> @@ -269,6 +272,9 @@ static u32 lvts_temp_to_raw(int temperature)
+>  static int lvts_get_temp(struct thermal_zone_device *tz, int *temp)
+>  {
+>  	struct lvts_sensor *lvts_sensor = thermal_zone_device_priv(tz);
+> +	struct lvts_ctrl *lvts_ctrl = container_of(lvts_sensor, struct lvts_ctrl,
+> +						   sensors[lvts_sensor->id]);
+> +	const struct lvts_data *lvts_data = lvts_ctrl->lvts_data;
+>  	void __iomem *msr = lvts_sensor->msr;
+>  	u32 value;
+>  	int rc;
+> @@ -301,7 +307,7 @@ static int lvts_get_temp(struct thermal_zone_device *tz, int *temp)
+>  	if (rc)
+>  		return -EAGAIN;
+>  
+> -	*temp = lvts_raw_to_temp(value & 0xFFFF);
+> +	*temp = lvts_raw_to_temp(value & 0xFFFF, lvts_data->temp_factor);
+>  
+>  	return 0;
+>  }
+> @@ -348,10 +354,13 @@ static bool lvts_should_update_thresh(struct lvts_ctrl *lvts_ctrl, int high)
+>  static int lvts_set_trips(struct thermal_zone_device *tz, int low, int high)
+>  {
+>  	struct lvts_sensor *lvts_sensor = thermal_zone_device_priv(tz);
+> -	struct lvts_ctrl *lvts_ctrl = container_of(lvts_sensor, struct lvts_ctrl, sensors[lvts_sensor->id]);
+> +	struct lvts_ctrl *lvts_ctrl = container_of(lvts_sensor, struct lvts_ctrl,
+> +						   sensors[lvts_sensor->id]);
+> +	const struct lvts_data *lvts_data = lvts_ctrl->lvts_data;
+>  	void __iomem *base = lvts_sensor->base;
+> -	u32 raw_low = lvts_temp_to_raw(low != -INT_MAX ? low : LVTS_MINIMUM_THRESHOLD);
+> -	u32 raw_high = lvts_temp_to_raw(high);
+> +	u32 raw_low = lvts_temp_to_raw(low != -INT_MAX ? low : LVTS_MINIMUM_THRESHOLD,
+> +				       lvts_data->temp_factor);
+> +	u32 raw_high = lvts_temp_to_raw(high, lvts_data->temp_factor);
+>  	bool should_update_thresh;
+>  
+>  	lvts_sensor->low_thresh = low;
+> @@ -692,7 +701,7 @@ static int lvts_calibration_read(struct device *dev, struct lvts_domain *lvts_td
+>  	return 0;
+>  }
+>  
+> -static int lvts_golden_temp_init(struct device *dev, u32 *value)
+> +static int lvts_golden_temp_init(struct device *dev, u32 *value, int temp_offset)
+>  {
+>  	u32 gt;
+>  
+> @@ -701,7 +710,7 @@ static int lvts_golden_temp_init(struct device *dev, u32 *value)
+>  	if (gt && gt < LVTS_GOLDEN_TEMP_MAX)
+>  		golden_temp = gt;
+>  
+> -	coeff_b = golden_temp * 500 + LVTS_COEFF_B;
+> +	golden_temp_offset = golden_temp * 500 + temp_offset;
+>  
+>  	return 0;
+>  }
+> @@ -724,7 +733,7 @@ static int lvts_ctrl_init(struct device *dev, struct lvts_domain *lvts_td,
+>  	 * The golden temp information is contained in the first chunk
+>  	 * of efuse data.
+>  	 */
+> -	ret = lvts_golden_temp_init(dev, (u32 *)lvts_td->calib);
+> +	ret = lvts_golden_temp_init(dev, (u32 *)lvts_td->calib, lvts_data->temp_offset);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -735,6 +744,7 @@ static int lvts_ctrl_init(struct device *dev, struct lvts_domain *lvts_td,
+>  	for (i = 0; i < lvts_data->num_lvts_ctrl; i++) {
+>  
+>  		lvts_ctrl[i].base = lvts_td->base + lvts_data->lvts_ctrl[i].offset;
+> +		lvts_ctrl[i].lvts_data = lvts_data;
+>  
+>  		ret = lvts_sensor_init(dev, &lvts_ctrl[i],
+>  				       &lvts_data->lvts_ctrl[i]);
+> @@ -758,7 +768,8 @@ static int lvts_ctrl_init(struct device *dev, struct lvts_domain *lvts_td,
+>  		 * after initializing the calibration.
+>  		 */
+>  		lvts_ctrl[i].hw_tshut_raw_temp =
+> -			lvts_temp_to_raw(lvts_data->lvts_ctrl[i].hw_tshut_temp);
+> +			lvts_temp_to_raw(lvts_data->lvts_ctrl[i].hw_tshut_temp,
+> +					 lvts_data->temp_factor);
+>  
+>  		lvts_ctrl[i].low_thresh = INT_MIN;
+>  		lvts_ctrl[i].high_thresh = INT_MIN;
+> @@ -1223,6 +1234,8 @@ static int lvts_probe(struct platform_device *pdev)
+>  	if (irq < 0)
+>  		return irq;
+>  
+> +	golden_temp_offset = lvts_data->temp_offset;
+> +
+>  	ret = lvts_domain_init(dev, lvts_td, lvts_data);
+>  	if (ret)
+>  		return dev_err_probe(dev, ret, "Failed to initialize the lvts domain\n");
+> @@ -1338,11 +1351,15 @@ static const struct lvts_ctrl_data mt8195_lvts_ap_data_ctrl[] = {
+>  static const struct lvts_data mt8195_lvts_mcu_data = {
+>  	.lvts_ctrl	= mt8195_lvts_mcu_data_ctrl,
+>  	.num_lvts_ctrl	= ARRAY_SIZE(mt8195_lvts_mcu_data_ctrl),
+> +	.temp_factor	= LVTS_COEFF_A_MT8195,
+> +	.temp_offset	= LVTS_COEFF_B_MT8195,
+>  };
+>  
+>  static const struct lvts_data mt8195_lvts_ap_data = {
+>  	.lvts_ctrl	= mt8195_lvts_ap_data_ctrl,
+>  	.num_lvts_ctrl	= ARRAY_SIZE(mt8195_lvts_ap_data_ctrl),
+> +	.temp_factor	= LVTS_COEFF_A_MT8195,
+> +	.temp_offset	= LVTS_COEFF_B_MT8195,
+>  };
+>  
+>  static const struct of_device_id lvts_of_match[] = {
+> -- 
+> 2.34.1
+> 
