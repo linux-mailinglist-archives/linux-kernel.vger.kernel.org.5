@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1E57AF8FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EAD7AF92C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjI0EEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
+        id S229771AbjI0EUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjI0ECz (ORCPT
+        with ESMTP id S229774AbjI0ETY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:02:55 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1644492
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:36:15 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-69101022969so9126786b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1695785774; x=1696390574; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l8iHvx1dsePHhcovY1cm1S5dLZsg/5oNsoEJEmRXpTU=;
-        b=wxenVGeZB84E/L///SK9MvPtFhps5wQIQz2H6VUrXK48OY+jtiAhcuvjKtAo1AP0X+
-         t8xBlgRxSApmn9aV7eHzDC0kQ7pjebljZ0Tixim91jpBaQ48hyjJ3MvIQ5KBRFrQt04y
-         +Ky09zmRGG2V4TBAw8cXeLQXbwX969eoEESNFrTWisNcXFVVDKoPDxXzjHFS8ujrZEgL
-         N8NyHD/q9mHv9J7STuulP2DRCkQ3Xxb0JKlZ2SxQJxN+Rm4EN67O2AkxywhzVBDA86E6
-         cMvh3kYU88hKhRkgsnS0R6qO7EsBYNWis47WUU7U3cKPe4Ryza5ZcRd2rhqArBbadEFC
-         qrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695785774; x=1696390574;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l8iHvx1dsePHhcovY1cm1S5dLZsg/5oNsoEJEmRXpTU=;
-        b=udphq/NqOjLhMlSQ1zkIF2rS5Lbjus71HGw0MO1tVUpCgEP10tq++zU8XOot9skLkh
-         9xVtBVPIlGgU+weKKkBunh7BsRDl8fGJtFyxiwNyJKcAfYYLp8vYQmlUQkmZqOsOM7DP
-         JfjQjeYY3yLn7ggQW1JcJpD+knYInPnzZwr0tPMAf0up8KJFHLxkTo5z5yeSrAqXH8kt
-         3SJ8uNkiI2vbez0eKTsLxMlRFtNO6YO0rG+VbNXsAxdytaHO34V2neuFXye95tDNlX3j
-         wNEqMjMSZ888ctjhYwVzUp3UPRtFFvV9VS1iprJvUwXlMURZgqKjeJ+ifZ7MpDG941g/
-         qhUg==
-X-Gm-Message-State: AOJu0Yw2NrDEBnCBON9wceT6L+M1fLLh+1pAyzQuvBTj3OR1c2NR1G95
-        aT4KR2fr6UpCSPEoef6zVANM8vKmI7yIhg7neqA=
-X-Google-Smtp-Source: AGHT+IFg9MWz/BGS1JWCEp53YleO3c0zitqJhgHShflpegjZA+hBbgouhBmH37EO3HQwfo42LiHEhA==
-X-Received: by 2002:a05:6a00:2493:b0:690:1857:3349 with SMTP id c19-20020a056a00249300b0069018573349mr1043900pfv.25.1695785774386;
-        Tue, 26 Sep 2023 20:36:14 -0700 (PDT)
-Received: from ubuntu.huaqin.com ([101.78.151.205])
-        by smtp.gmail.com with ESMTPSA id i14-20020aa787ce000000b006870ed427b2sm11067570pfo.94.2023.09.26.20.36.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 20:36:14 -0700 (PDT)
-From:   xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-To:     broonie@kernel.org, robh+dt@kernel.org, tiwai@suse.com,
-        trevor.wu@mediatek.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patchwork-bot@kernel.org
-Cc:     xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-Subject: [v3 0/2] ASoC: mediatek: mt8188-mt6359: add rt5682s support
-Date:   Wed, 27 Sep 2023 11:36:06 +0800
-Message-Id: <20230927033608.16920-1-xiazhengqiao@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 00:19:24 -0400
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE7D659F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:40:16 -0700 (PDT)
+Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
+        by cmsmtp with ESMTP
+        id klxTq97d2WU1clLPLqwPjA; Wed, 27 Sep 2023 03:40:15 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTPS
+        id lLPHqnWYB7YYnlLPJqHf5i; Wed, 27 Sep 2023 03:40:14 +0000
+X-Authority-Analysis: v=2.4 cv=dubItns4 c=1 sm=1 tr=0 ts=6513a41e
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=CKMxHAookNUaJbGn3r6bzg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=zNV7Rl7Rt7sA:10 a=oz0wMknONp8A:10 a=LxWt8M_ywhtm8WUVVfYA:9
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=U4js+SM1U11yyB4riZ8YLEuGYKTsQkErTf8a0N1JnLc=; b=MC+WRP1pn4KkCodttFQzJrqd3W
+        FvA0tc+tRbMmV5uB1xCJT6FTCp6pYY8L4fpP0NPXFXz3Fq8xCSMmK06Q92ytYnFbKzl65BOxDMige
+        yeXIwoDUaf+yrJp9dA2Bpk++zBcPpjYPXumU3y5qRUJUWHTIjdBuk85t7zOnBw8JXj7+NGTPmDjYP
+        uz1PPEVZVWDt9vC3tpTORuUtlv5Hlolifr+hM4NuyDGMK6QFYNc7tb+0k7FUmMaJrUvbr0OGg1ZXg
+        sWfi3INxpzyBUltWOjwpXCjKfyN6RA7l87yVOymzy6Bng0yL96eqKomii20rQnY3CJdpFwP5sXjA7
+        DYmvTvHw==;
+Received: from [103.163.95.214] (port=59728 helo=discovery..)
+        by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <saravanan@linumiz.com>)
+        id 1qlLPG-000tFx-26;
+        Wed, 27 Sep 2023 09:10:10 +0530
+From:   Saravanan Sekar <saravanan@linumiz.com>
+To:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org,
+        Saravanan Sekar <saravanan@linumiz.com>
+Subject: [PATCH v2 0/3] Add support for mpq2286 PMIC IC
+Date:   Wed, 27 Sep 2023 09:09:50 +0530
+Message-Id: <20230927033953.1503440-1-saravanan@linumiz.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 103.163.95.214
+X-Source-L: No
+X-Exim-ID: 1qlLPG-000tFx-26
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (discovery..) [103.163.95.214]:59728
+X-Source-Auth: saravanan@linumiz.com
+X-Email-Count: 3
+X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfGhe2rBYG/dFSZr3ARKjcUPOun/GZN1UFRkivtZB2jmKaJqBXr/izDs92L5MdemAAig4u7raM4x67Gusn9tlSb8GhhxzzHwhaByGvpVbC7SiaGbarGm5
+ ueqnpsz9RhzCL3BehpPSQeTPmN4InDgmI7S0vevzocIkk4ooou4vJpnU7KwtwAlIw38oprU5xqExwT0tQ5jABRRSIEsKGKXUkHg=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use RT5682S as the codec and MAX98390 as the amp, add a new
-sound card named mt8188_rt5682s.
+changes in v2:
+ - fix dt check warnings
+ - fix compiler warning on cast device_get_match_data and lexicological order of compatible
 
-Changes in v3:
-- PATCH 2/2: modify mt8186_rt5682s_i2s_hw_params to mt8188_rt5682s_i2s_hw_params
-- Link to v2: https://lore.kernel.org/all/20230926040901.20338-3-xiazhengqiao@huaqin.corp-partner.google.com/ 
-              https://lore.kernel.org/all/20230926040901.20338-2-xiazhengqiao@huaqin.corp-partner.google.com/
-   
-Changes in v2:
-- PATCH 1/2: Modify mt8188_rt5682 to mt8188_rt5682s
-- PATCH 2/2: Modify all string "rt5682" to "rt5682s" and merge code 
-             in mt8188_fixup_controls
-- Link to v1: https://lore.kernel.org/all/20230925083847.1496-3-xiazhengqiao@huaqin.corp-partner.google.com/
-              https://lore.kernel.org/all/20230925083847.1496-2-xiazhengqiao@huaqin.corp-partner.google.com/
 
-xiazhengqiao (2):
-  ASoC: dt-bindings: mediatek,mt8188-mt6359: add RT5682S support
-  ASoC: mediatek: mt8188-mt6359: add rt5682s support
 
- .../sound/mediatek,mt8188-mt6359.yaml         |   1 +
- sound/soc/mediatek/Kconfig                    |   1 +
- sound/soc/mediatek/mt8188/mt8188-mt6359.c     | 141 +++++++++++++++++-
- 3 files changed, 141 insertions(+), 2 deletions(-)
+The MPQ2286 is a programmable, high frequency synchronous buck regulator with
+integrated internal high side and low side power MOSFET. Application in
+Automotive compenents such as ADAS, Infotainment, SOC System core, DDR memory.
+
+Saravanan Sekar (3):
+  hwmon: (pmbus/mpq7932) Get page count based on chip info
+  regulator: dt-bindings: Add mps,mpq2286 power-management IC
+  hwmon: (pmbus/mpq2286) Add a support for mpq2286 Power Management IC
+
+ .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
+ drivers/hwmon/pmbus/mpq7932.c                 |  9 ++-
+ 2 files changed, 65 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
 
 -- 
-2.17.1
+2.34.1
 
