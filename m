@@ -2,60 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDC67B0715
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67C7B0718
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjI0Oho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        id S232190AbjI0OiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbjI0Ohm (ORCPT
+        with ESMTP id S232103AbjI0OiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:37:42 -0400
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6739E139;
-        Wed, 27 Sep 2023 07:37:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695825448; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=aAN5wK8mJcjRahrM9xpdrkrWJEK2xbuAfUOeXKDvIocLvYMrkqV1wrk2Cnu6BrAL6jR/MdFgWxNe5lCcUcUnkMvAtaOg/HP2Y9JZ1tC97F9gQkFDpWzJpwkNMXpIFGNA/ZEPXyFFGH2qmZ1SAgNDqQSbDEc+wdBhily4TwYChPU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1695825448; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=ymOqUCZg1zNUB8SXIxzMtO2Mq3I3I9p64qCNhj72OWk=; 
-        b=MStKIM26lk1ocKnWXLx6e32UnrryizN3EyMaFuFCuVBySsyCasK8TGb0EjO2BlGCZbVg0p2fD/K47QR+rLAUnqf8LX+skexLklztCjrZyi6VRqF4qNAFGKIYKIA59pf/dC6mAGI12I8kI8fvpK6MbejCXix1zau1KGiVpwYAPhs=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=marliere.net;
-        spf=pass  smtp.mailfrom=ricardo@marliere.net;
-        dmarc=pass header.from=<ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695825448;
-        s=zmail; d=marliere.net; i=ricardo@marliere.net;
-        h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
-        bh=ymOqUCZg1zNUB8SXIxzMtO2Mq3I3I9p64qCNhj72OWk=;
-        b=uGpirVJpVIlKrNgA2Olrh9QR6VuMjJfMyo2gbKBMREz70KgEpLDF3XTyu0r9BX7t
-        nNpIgldgENqlMsOSxFkegICUPRtx97ZaWu8KYcjMlNfIqeRxhIOVvYfdFhmGiTavBCt
-        BuPpLJsddzw/4X76+J8JYFAow1TIhdCHY+2bDLXk=
-Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
-        with SMTPS id 1695825447125886.5405244262054; Wed, 27 Sep 2023 07:37:27 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 11:37:20 -0300
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     syzbot <syzbot+621409285c4156a009b3@syzkaller.appspotmail.com>
-Cc:     isely@pobox.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mchehab@kernel.org, pvrusb2@isely.net,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
- pvr2_context_set_notify
-Message-ID: <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
-References: <000000000000a02a4205fff8eb92@google.com>
+        Wed, 27 Sep 2023 10:38:20 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842D6F4;
+        Wed, 27 Sep 2023 07:38:19 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c44c0f9138so83145935ad.2;
+        Wed, 27 Sep 2023 07:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695825499; x=1696430299; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wg9JCAMjvjZwbC735OPsJLUGNr3Ze8+WvpWD8+0Wa8Y=;
+        b=jpcgxuRwqxFjr3h3My4JqjBkjrZcuYEjrA3ic5txRZbv0C2C+qa7Gu2vnyDADd1dvk
+         DK7OPM6JH7gv/duqGM2E4aQ2WXma0UI5zg08+3FomoLPbC2dMuCFBwmJSlYntMOYKph6
+         ou7Gt8BXFW3GHDDnJ/K9dLAwtvM2ihOxa/Lrqrimf+sECb3qHq+IkkLO4PGJJ96XmQ73
+         lyVHl+NqoQMMVabWx7H0IgI2rdZs66I1iJjfVsc5GyIOn5IfwynbNPXzvP3rgXAIlVHN
+         F7PbXtKNZpVqxft6VcNT0f7jEpfWA496Qa2pixw9h1PhjN0hGUGW4CtsJ9r47IF8vvOS
+         YAnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695825499; x=1696430299;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wg9JCAMjvjZwbC735OPsJLUGNr3Ze8+WvpWD8+0Wa8Y=;
+        b=wScD5+Juo2cA1mUtfkWt0ueW6wtLqHJIvNOx9SaJzCh2x2xf0OQlVQr2lnce6n7dnO
+         NhqA1eyzwzChctg+Kz4hHPjbpBIAqO79mqCtUzC/2FJaZuzI4CTZYoX6Bmao09L2Wvys
+         ttzlaFDhjal8Ol6bqK3BSo3g6aHWmzYK1nkE8cOv20nA1Cybb6ZQPSlGoOafkM1VyIbP
+         3opkyVuUbqbj4NTm4ot1kvMAfSO8pIwmz0MnbyQHAhqFdz4mNqKKsTUlM/UkU06pjVWM
+         A410C/lIoXhqkgAvfOje1cJ82o0e9R+Jlqct30hTCmBuI4cmGZNLm1G027fILQjWX+G2
+         eBFQ==
+X-Gm-Message-State: AOJu0YzugNXTyIHezz6VNKot0p8iQFr0u5yLix+UFmFJ3S1Nwqe+sVYW
+        ZChNej7MN6ls48UHZQKMrD4=
+X-Google-Smtp-Source: AGHT+IH+Pf7ytQ1lXJUd1H3FhkjrBQE6vNLJh0Hp56wth1H0Rau/gwGEsi4MFg9ftJk0alyE/L26jA==
+X-Received: by 2002:a17:903:1109:b0:1b9:e937:9763 with SMTP id n9-20020a170903110900b001b9e9379763mr2282601plh.12.1695825498846;
+        Wed, 27 Sep 2023 07:38:18 -0700 (PDT)
+Received: from [192.168.31.134] ([27.4.138.218])
+        by smtp.gmail.com with ESMTPSA id z13-20020a170903018d00b001b8062c1db3sm13141034plg.82.2023.09.27.07.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 07:38:18 -0700 (PDT)
+Message-ID: <2ada40ae-f11b-9ac5-a493-6ae2383fac2a@gmail.com>
+Date:   Wed, 27 Sep 2023 20:08:13 +0530
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="exir5lirupkd3ozp"
-Content-Disposition: inline
-In-Reply-To: <000000000000a02a4205fff8eb92@google.com>
-X-Zoho-Virus-Status: 1
-X-ZohoMailClient: External
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] thermal: imx8mm_thermal: Fix function pointer declaration
+ by adding identifier name
+Content-Language: en-US
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
+        rui.zhang@intel.com, amitk@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com
+Cc:     linux-imx@nxp.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230917083443.3220-1-bragathemanick0908@gmail.com>
+ <786d197a-a2b5-2507-f5d7-24e8224a3922@gmail.com>
+ <883b0780-1f89-40a4-fbd0-a3d4845c2826@linaro.org>
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+In-Reply-To: <883b0780-1f89-40a4-fbd0-a3d4845c2826@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,49 +81,56 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---exir5lirupkd3ozp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 25/09/23 13:17, Daniel Lezcano wrote:
+> On 22/09/2023 11:31, Bragatheswaran Manickavel wrote:
+>>
+>> On 17/09/23 14:04, Bragatheswaran Manickavel wrote:
+>>> Added identifier names to respective definitions for fix
+>>> warnings reported by checkpatch.pl
+>>>
+>>> WARNING: function definition argument 'void *' should also have an 
+>>> identifier name
+>>> WARNING: function definition argument 'int *' should also have an 
+>>> identifier name
+>>> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+>>> ---
+>>>   drivers/thermal/imx8mm_thermal.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/thermal/imx8mm_thermal.c 
+>>> b/drivers/thermal/imx8mm_thermal.c
+>>> index 14111ccf6e4c..5dc6c18f12df 100644
+>>> --- a/drivers/thermal/imx8mm_thermal.c
+>>> +++ b/drivers/thermal/imx8mm_thermal.c
+>>> @@ -78,7 +78,7 @@
+>>>   struct thermal_soc_data {
+>>>       u32 num_sensors;
+>>>       u32 version;
+>>> -    int (*get_temp)(void *, int *);
+>>> +    int (*get_temp)(void *data, int *temp);
+>>>   };
+>>>   struct tmu_sensor {
+>>
+>> Hi Team, Could someone help in reviewing it.
+>
+> Please no more "gentle reminder"
+>
+> Read:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/Documentation/process/submitting-patches.rst 
+>
+>
+> Especially, the section _9_
+>
+> Thanks
+>
+>    -- Daniel
+>
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git ce9ecca0238b140b88f43859b211c9fdfd8e5b70
+Hi Daniel,
 
---exir5lirupkd3ozp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename=patch
+Understood. Will wait for this to get reviewed.
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 14170a5d72b3..e3356f94e50e 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -27,9 +27,16 @@ static int pvr2_context_cleaned_flag;
- static struct task_struct *pvr2_context_thread_ptr;
- 
- 
-+static int pvr2_context_shutok(void)
-+{
-+	return pvr2_context_cleanup_flag && (pvr2_context_exist_first == NULL);
-+}
-+
-+
- static void pvr2_context_set_notify(struct pvr2_context *mp, int fl)
- {
- 	int signal_flag = 0;
-+	if (pvr2_context_shutok()) return;
- 	mutex_lock(&pvr2_context_mutex);
- 	if (fl) {
- 		if (!mp->notify_flag) {
-@@ -140,12 +147,6 @@ static void pvr2_context_check(struct pvr2_context *mp)
- }
- 
- 
--static int pvr2_context_shutok(void)
--{
--	return pvr2_context_cleanup_flag && (pvr2_context_exist_first == NULL);
--}
--
--
- static int pvr2_context_thread_func(void *foo)
- {
- 	struct pvr2_context *mp;
+Thanks,
+Bragathe
 
---exir5lirupkd3ozp--
