@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F237B071A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AC57B071E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjI0Oie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S232223AbjI0Ojm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232202AbjI0Oib (ORCPT
+        with ESMTP id S232169AbjI0Ojk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:38:31 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA11D19F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:38:29 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50348c54439so4169e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:38:29 -0700 (PDT)
+        Wed, 27 Sep 2023 10:39:40 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7137AF3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:39:38 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40535597f01so113172765e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695825508; x=1696430308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kwuHSbCRREo5aUbdJ9sWu968f7uoQohrIUFOvrQTtAQ=;
-        b=zKxUQlKBnZpCQkeLtlV+cRJz2UMkX7Bl16p1rDnUb1nTD75tiZa6Hha5T39t2A4TEz
-         wfQ+OdqVVXNQ4AiKriy6Yi6pNietvL2ER8a7W4jc2EbMGtf0IU4vfFufgW/t/rViAFax
-         Rs8XT99q7v18PRqGssvflae10RJHJrAmlP9Xb3/5FT5XhVmDaK8irCJqcIpCaIvG4oSl
-         1eqFto16dFU4jAnGMW4PMbmQhdY/S5lIl/vsZ6z5VvH761CjLz8JMIGhDDQ97WSJynRN
-         g0OXzYgoS4spwpQJv47tKcgEWZWuposuI+nSCt69JDvqwxntP9P0Uca/Ww3vIcSope6Y
-         Dh1g==
+        d=linaro.org; s=google; t=1695825577; x=1696430377; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/d0O6KoBBcVDhiAyK6/22CPBVqgPOAgVU0f7WwKl+90=;
+        b=X0yInaTTVG84VNJbWXWeUZk/KiDNOJA1im6tD5SHhz9gIG8Jc9rWz5jjBs3sXQSRQT
+         e/2hKDFfDBl5uXYsMgojwhJNumNJCtcXQNoGbJXbGxqmbcz061mMkiYQb8dcrf5B41mu
+         Fnacv0T7/7SMErTRk7bTuLytCRQRoldRO7TovNCRi+G7wj0vNMom3Hrsn8ipejwV42Af
+         n8dVmqmdJ+i51A9pRXVGJxLnl+hkF6KlTZETaD0NsFYc4Zgf/Vp3ZJv6pvDbqvz0RISc
+         ylSGeNAkRaXB0qi2+qBtUI87JyKUWGyHvvu5nesp/0Q9GQkPtn3KIYz1Q21+6AmRJc9k
+         5q0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695825508; x=1696430308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kwuHSbCRREo5aUbdJ9sWu968f7uoQohrIUFOvrQTtAQ=;
-        b=pNMLHf8zW1E/ou32gVzCqu89gJnkEeTW+t1jMgBYV6Cn9cuy9oxrvLyd/GDQBFp+T2
-         rlMCQY58xj3peH5SXLNoZ5IWpEa4pAh2EwZHZN8uLMY4UITX5+VNh4LTdqUviQbQxicl
-         NmU/rFE0zuKT7B72t8NhtM/zt1FuHrg2w9GA5tboGGsUShm3Jz1Nsmgqsy+PoFdo6HNa
-         hO3rHv+iD9eXQJkvqHgJCmaNnGCcu3r3FD8lunYiDrstLhkOtqodnBYhF87sh0NkLkin
-         bSVtzukWrsTy6Et/PJ42DXJyILxmLZQRjve/3rpnsaWHW36SbqKhr53oK5Kez+sprQRu
-         1wqA==
-X-Gm-Message-State: AOJu0YyiI7+cCaOaegR1T9Ta2H1IPCBmQB8ACqG1JOqD1GHrY0TjpRkI
-        EVIiejZzO1Bp7r9jdwOrEIRgPGluEvKL2MrbPOS+mKiueM3tKDBTEoc=
-X-Google-Smtp-Source: AGHT+IE0gH7zFleu7xoNGGBjmrFt70/G7NBdkx0ikfMBUwovBQX/1Ee6zh2CoeyoR1CwduIBaNurXRUJ/dV7DFnbRF4=
-X-Received: by 2002:a05:6512:3e0b:b0:504:7b50:ec9a with SMTP id
- i11-20020a0565123e0b00b005047b50ec9amr121228lfv.1.1695825507825; Wed, 27 Sep
- 2023 07:38:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695825577; x=1696430377;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/d0O6KoBBcVDhiAyK6/22CPBVqgPOAgVU0f7WwKl+90=;
+        b=OoGWmqhuDT1Nfrkl+ST9uoiviAjUsB0HLrC9eL9knxNiE4cW9kLPaVqeBPxCGZQt+J
+         zx/puivfOH0+Gvu832XM42jQb8tLPzzBHft+Si7mMYW0Omg77g6Tm8KHl60mcDyGDqVG
+         P1dLzau7AmuzROscoStVg3D9HbFe3B7DgHrvnpFdgQ+Dxz6sHZlNgCq45JfV7mCdton7
+         mZZ6DCISjKNebvwEq7HrgxlbQMPVrC7ckvrZ7Soo+fwubu3Ox50TSlNmgjpDeYK0PuY9
+         0uJNVEJJav1DlMEv9bvr4O4r/ozGlLaWLfdE28LDCLRtBI2vdFAHfi53S/IXIzlGCeWe
+         EOcg==
+X-Gm-Message-State: AOJu0YyRuW6m4er0srzVa0Gf/bHC3rTJJmij12Tqb+sRDMldhIjT9LLl
+        nAZjnywbDfSxWNX5LclkiMwAj9ItHocIuUL2AK8=
+X-Google-Smtp-Source: AGHT+IFvNEZDv5Y5OceM93YwR6RkX3JyiUbg2tuwwbpQakpWx4Px8t9lxkMzS5zdwGox0O4uB7W8nA==
+X-Received: by 2002:a5d:66c4:0:b0:31f:84a3:d188 with SMTP id k4-20020a5d66c4000000b0031f84a3d188mr1890900wrw.22.1695825576817;
+        Wed, 27 Sep 2023 07:39:36 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id r5-20020a05600c320500b003fc0505be19sm12638746wmp.37.2023.09.27.07.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 07:39:36 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 17:39:31 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Amir Goldstein <amir73il@gmail.com>, Su Hui <suhui@nfschina.com>
+Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ovl: avoid possible NULL dereference
+Message-ID: <f929f35e-2599-48e4-a77f-f2002bc94482@kadam.mountain>
+References: <20230925045059.92883-1-suhui@nfschina.com>
+ <CAOQ4uxhv=Theeq0tEiDXEjUcKLNfaZnsVjnweX84mzWYSmFiZQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
- <169570182987.596431.14062417344858914481.stgit@dwillia2-xfh.jf.intel.com>
- <c3d347a7-58d6-4830-aad4-d354b83f0704@linux.intel.com> <CA+1=6yfmLXJbZu7Gd7cp_HOAbmHwx54aPgozWKBikWwZSYTOZw@mail.gmail.com>
- <6513e6079a427_91c1e294e@dwillia2-xfh.jf.intel.com.notmuch> <CA+1=6yeP6dDiXVQrxMt0AaEF_7S05p4Do67=ysXK-Chfvu-9ow@mail.gmail.com>
-In-Reply-To: <CA+1=6yeP6dDiXVQrxMt0AaEF_7S05p4Do67=ysXK-Chfvu-9ow@mail.gmail.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Wed, 27 Sep 2023 08:38:16 -0600
-Message-ID: <CAMkAt6ohEnYwC8yVzye0F4gApvuyktHDP-q8-p7gJnSAyRMR_Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] configfs-tsm: Introduce a shared ABI for
- attestation reports
-To:     Thomas Fossati <thomas.fossati@linaro.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        linux-coco@lists.linux.dev,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samuel Ortiz <sameo@rivosinc.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxhv=Theeq0tEiDXEjUcKLNfaZnsVjnweX84mzWYSmFiZQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 2:25=E2=80=AFAM Thomas Fossati
-<thomas.fossati@linaro.org> wrote:
->
-> On Wed, 27 Sept 2023 at 10:21, Dan Williams <dan.j.williams@intel.com> wr=
-ote:
-> > It can be expanded when/if those platforms expand the
-> > size of the supported user data, or another configfs-tsm backend arrive=
-s
-> > that needs that capability.
->
-> Makes sense, thanks.
+On Wed, Sep 27, 2023 at 05:02:26PM +0300, Amir Goldstein wrote:
+> On Mon, Sep 25, 2023 at 7:52 AM Su Hui <suhui@nfschina.com> wrote:
+> >
+> > smatch warn:
+> > fs/overlayfs/copy_up.c:450 ovl_set_origin() warn:
+> > variable dereferenced before check 'fh' (see line 449)
+> >
+> > If 'fh' is NULL, passing NULL instead of 'fh->buf'.
+> >
+> > Signed-off-by: Su Hui <suhui@nfschina.com>
+> > ---
+> >  fs/overlayfs/copy_up.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> > index d1761ec5866a..086f9176b4d4 100644
+> > --- a/fs/overlayfs/copy_up.c
+> > +++ b/fs/overlayfs/copy_up.c
+> > @@ -446,7 +446,7 @@ int ovl_set_origin(struct ovl_fs *ofs, struct dentry *lower,
+> >         /*
+> >          * Do not fail when upper doesn't support xattrs.
+> >          */
+> > -       err = ovl_check_setxattr(ofs, upper, OVL_XATTR_ORIGIN, fh->buf,
+> > +       err = ovl_check_setxattr(ofs, upper, OVL_XATTR_ORIGIN, fh ? fh->buf : NULL,
+> >                                  fh ? fh->fb.len : 0, 0);
+> >         kfree(fh);
+> >
+> > --
+> > 2.30.2
+> 
+> After discussing this with Dan Carpenter, this is not a kernel bug,
+> it is a smatch bug.
 
-I'm not familiar with the rats eat spec but I would assume the
-protocol would acquire more than just the nonce in the inblob.
-Probably some combination of claims, nonce, and information about a
-public key? Does the specification allow for the data needing to be
-signed by the TSM to be hashed first?
+Yeah.  Sorry about that, Su Hui.  The ->buf struct member is not a
+pointer, it's an array.  So this isn't really a dereference, it's just
+pointer math and foo = fh->buf won't crash even if fh is NULL.
+
+I have written a fix for this in Smatch.  I'll test it a bit before I
+push it.
+
+regards,
+dan carpenter
+
