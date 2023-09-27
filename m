@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5C77B0F94
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2DF7B0F96
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjI0XeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        id S229761AbjI0XhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjI0XeO (ORCPT
+        with ESMTP id S229539AbjI0XhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:34:14 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4E6F4;
-        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3513dcd38ebso23185875ab.1;
-        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
+        Wed, 27 Sep 2023 19:37:22 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65033F9;
+        Wed, 27 Sep 2023 16:37:18 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso1507084366b.0;
+        Wed, 27 Sep 2023 16:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695857652; x=1696462452; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695857837; x=1696462637; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
-        b=C3268e7bN9aOEMO7H0jXdQF/P1NjjXjeZmbw4E76oKkwDl3SC5GhIG9mcaAfwx9uBT
-         nucMpVJNPBPqjeQlLTlcx0dz7w/WQ0IPu30uwa7diCpK2t805rzWUDIMGB6YBmU0mL0Q
-         0UQWCuhRdOY69IgQiWFfhP0llOC97H38KsTpDdU4Wovyih58YmrrpCDnSvRaHWiJT2/f
-         irGze5IsJpIka+E70FvScswcB3RvXtEG4qk6Diy7wBtiwvZj1T/mB5CkrXAZnQHiP/Qs
-         MF5kTY1N7Ewprhz8FLNvf3xd/TWpYB48GZXav9F7MccRe/FPYtVmeqUPBesAFxvwn1Ez
-         XIVA==
+        bh=5OxzetWkN1SscgRTbAJVQV5Koq8cE2AuXIAJBttysKc=;
+        b=RuNu9iuIs5/URyLtsCqkBrpv9tFJnZtwDi74ORsQOhib8AeNWDr2xvqxja1kkX9+WT
+         5lJAP/KFnIWbmzRb85ogDvLR+Qtgh7lS8E0qtEt+j+qwUsAf7Ypul0/qEqwkgT9aqf0A
+         Db0EMPawvW/W4uZKHD42BVfyql/DExW6QAPjgEGf3xYybzbdmXZBQOPofCMBQhRPZ0iJ
+         2ZNxBkiao2bxpjXQX/3F/gK9RltPWa2CSX88B6IVKjrBkACRJFXhR6IO3VnPytmudhi5
+         WEc5OHHSc/cQL2x/nxZ1wxM7gryYliO/JpE8UgXmkfG/TWFoFiJZikBlVncoLayQgF8K
+         O2nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695857652; x=1696462452;
+        d=1e100.net; s=20230601; t=1695857837; x=1696462637;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
-        b=PTlrYh9WhEs9ZqvJuRij93+mW8syWiE+ROATDkTGsxfgqFG4G55Pyt+YRWPLjtH4vF
-         DkBDAfN6XFIe+aNG8GOtGLndSPNKxqy2czlf3FVyyz8UTNGbyi8FrQP6z5H9XO8WvT4V
-         uAIfnwzotDkhUNvD0CnqYy0snz6IHSEBrK5lK1qkYGr5vgxDIVdWeqDKeaCbRRzLmw1/
-         TrSQW/sGbErx3FFLcH1dUnRsIm4F0lsgZx03V8Ljbdf3qoL8QNxP7FE8FPmrUSGpeXzP
-         /QIfMa4kf99tPBp6qy6u9hSBvIxAH3JgqI5DqfU1T0nsou2fjKCqBZ+z8YHtC4Bs+8/U
-         MZMw==
-X-Gm-Message-State: AOJu0YyHZAWL4PnxufqDsN3brGdzDABNbH+AnT7eVNGHZhj7c7X8iiIR
-        FkwUKWMwELdqy7R4EGU6lw3OD4lpbfvVU0blIwk=
-X-Google-Smtp-Source: AGHT+IH240jOGmryB4DKmJdrSZ0sw76v69veXHjvxbIKdhdqV6ViGFilCGJvjsPnRuNvxUyXjajBAwH8Z5Q4GyT1Ep0=
-X-Received: by 2002:a05:6e02:1a29:b0:351:a18:51be with SMTP id
- g9-20020a056e021a2900b003510a1851bemr4644664ile.15.1695857652609; Wed, 27 Sep
- 2023 16:34:12 -0700 (PDT)
+        bh=5OxzetWkN1SscgRTbAJVQV5Koq8cE2AuXIAJBttysKc=;
+        b=u+ZneLIN4gA+B7BsSLtaeqY/FmskDzxHNMzMUD4oLd1CMzwLs74vlzDrjbCEd0ECEb
+         BPzmiHQaWraZdZGd5Fu1eDpwGxZNborBmpGt4NGC4bmujb5roPOXiwC1SXzmtwUS6o9B
+         FfTDNSn0pSmRcRIQcHQkOkPjQ8nLYesC36/OJBQztnFeu0JCLob3z/gAFQ4lgybixZvK
+         qcmnfARXsoso9BlEM9nOqhCdR256OXDltMjUm2z+yEVNnI/x+hJJnbMiFoA9LZbqqbb0
+         nChzDfEbZIQdETUQcvY+lMf9lVyauG9SSD2/2xC6JCvQvWr6Q9TPffegfDve0WK55/w5
+         bo+A==
+X-Gm-Message-State: AOJu0YyGxu16lt7ZRKhY1gaytS9cEeup+emq2dm1ktszf7ntaHYkz8pP
+        mMNWSd9E8J8O19RxbZK23hOSny0hbFGZC9PpIX8=
+X-Google-Smtp-Source: AGHT+IHY4eTQ0vcHUEOCkyWsul07b34kuXtFvgc5YiaHNYFt+fCJ5YgnRGuziexRVhN4g/Y6UCVAZTcI2PmLYX2LTiQ=
+X-Received: by 2002:a17:906:18a1:b0:9ae:69ff:bcdb with SMTP id
+ c1-20020a17090618a100b009ae69ffbcdbmr2962842ejf.31.1695857836745; Wed, 27 Sep
+ 2023 16:37:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230926194949.2637078-1-nphamcs@gmail.com> <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
-In-Reply-To: <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 27 Sep 2023 16:33:59 -0700
-Message-ID: <CAKEwX=MVcHSHRTzHMo7W6PCiWkTNdR8zp0c4UxR4xKDZCVbPQQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] hugetlb memcg accounting
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-7-zhouchuyi@bytedance.com>
+In-Reply-To: <20230925105552.817513-7-zhouchuyi@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Sep 2023 16:37:05 -0700
+Message-ID: <CAEf4BzZKR7OXtpxak2ye5hsF3w9k8VLQb2u-dwGQQgqVG1sx+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/7] bpf: Let bpf_iter_task_new accept null
+ task ptr
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,65 +71,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 4:21=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
+> wrote:
 >
-> On Tue 26-09-23 12:49:47, Nhat Pham wrote:
-> > Currently, hugetlb memory usage is not acounted for in the memory
-> > controller, which could lead to memory overprotection for cgroups with
-> > hugetlb-backed memory. This has been observed in our production system.
-> >
-> > This patch series rectifies this issue by charging the memcg when the
-> > hugetlb folio is allocated, and uncharging when the folio is freed. In
-> > addition, a new selftest is added to demonstrate and verify this new
-> > behavior.
+> When using task_iter to iterate all threads of a specific task, we enforc=
+e
+> that the user must pass a valid task pointer to ensure safety. However,
+> when iterating all threads/process in the system, BPF verifier still
+> require a valid ptr instead of "nullable" pointer, even though it's
+> pointless, which is a kind of surprising from usability standpoint. It
+> would be nice if we could let that kfunc accept a explicit null pointer
+> when we are using BPF_TASK_ITER_ALL/BPF_TASK_ITER_PROC and a valid pointe=
+r
+> when using BPF_TASK_ITER_THREAD.
 >
-> The primary reason why hugetlb is living outside of memcg (and the core
-> MM as well) is that it doesn't really fit the whole scheme. In several
-> aspects. First and the foremost it is an independently managed resource
-> with its own pool management, use and lifetime.
+> Given a trival kfunc:
+>         __bpf_kfunc void FN(struct TYPE_A *obj)
 >
-> There is no notion of memory reclaim and this makes a huge difference
-> for the pool that might consume considerable amount of memory. While
-> this is the case for many kernel allocations as well they usually do not
-> consume considerable portions of the accounted memory. This makes it
-> really tricky to handle limit enforcement gracefully.
+> BPF Prog would reject a nullptr for obj. The error info is:
+> "arg#x pointer type xx xx must point to scalar, or struct with scalar"
+> reported by get_kfunc_ptr_arg_type(). The reg->type is SCALAR_VALUE and
+> the btf type of ref_t is not scalar or scalar_struct which leads to the
+> rejection of get_kfunc_ptr_arg_type.
 >
-> Another important aspect comes from the lifetime semantics when a proper
-> reservations accounting and managing needs to handle mmap time rather
-> than than usual allocation path. While pages are allocated they do not
-> belong to anybody and only later at the #PF time (or read for the fs
-> backed mapping) the ownership is established. That makes it really hard
-> to manage memory as whole under the memcg anyway as a large part of
-> that pool sits without an ownership yet it cannot be used for any other
-> purpose.
+> This patch reuse the __opt annotation which was used to indicate that
+> the buffer associated with an __sz or __szk argument may be null:
+>         __bpf_kfunc void FN(struct TYPE_A *obj__opt)
+> Here __opt indicates obj can be optional, user can pass a explicit nullpt=
+r
+> or a normal TYPE_A pointer. In get_kfunc_ptr_arg_type(), we will detect
+> whether the current arg is optional and register is null, If so, return
+> a new kfunc_ptr_arg_type KF_ARG_PTR_TO_NULL and skip to the next arg in
+> check_kfunc_args().
 >
-> These and more reasons where behind the earlier decision o have a
-> dedicated hugetlb controller.
-
-While I believe all of these are true, I think they are not reasons not to
-have memcg accounting. As everyone has pointed out, memcg
-accounting by itself cannot handle all situations - it is not a fix-all.
-Other mechanisms, such as the HugeTLB controller, could be the better
-solution in these cases, and hugetlb memcg accounting is definitely not
-an attempt to infringe upon these control domains.
-
-However, memcg accounting is still necessary for certain memory limits
-enforcement to work cleanly and properly - such as the use cases we have
-(as Johannes has beautifully described). It will certainly help
-administrators simplify their control workflow a lot (assuming we do not
-surprise them with this change - a new mount option to opt-in should
-help with the transition).
-
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>  kernel/bpf/task_iter.c |  7 +++++--
+>  kernel/bpf/verifier.c  | 13 ++++++++++++-
+>  2 files changed, 17 insertions(+), 3 deletions(-)
 >
-> Also I will also Nack involving hugetlb pages being accounted by
-> default. This would break any setups which mix normal and hugetlb memory
-> with memcg limits applied.
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 9bcd3f9922b1..7ac007f161cc 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -867,7 +867,7 @@ struct bpf_iter_task_kern {
+>         unsigned int type;
+>  } __attribute__((aligned(8)));
+>
+> -__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_=
+struct *task, unsigned int type)
+> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_=
+struct *task__opt, unsigned int type)
+>  {
+>         struct bpf_iter_task_kern *kit =3D (void *)it;
+>         BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) !=3D sizeof(struct=
+ bpf_iter_task));
+> @@ -877,14 +877,17 @@ __bpf_kfunc int bpf_iter_task_new(struct bpf_iter_t=
+ask *it, struct task_struct *
+>         switch (type) {
+>         case BPF_TASK_ITER_ALL:
+>         case BPF_TASK_ITER_PROC:
+> +               break;
+>         case BPF_TASK_ITER_THREAD:
+> +               if (!task__opt)
+> +                       return -EINVAL;
+>                 break;
+>         default:
+>                 return -EINVAL;
+>         }
+>
+>         if (type =3D=3D BPF_TASK_ITER_THREAD)
+> -               kit->task =3D task;
+> +               kit->task =3D task__opt;
+>         else
+>                 kit->task =3D &init_task;
+>         kit->pos =3D kit->task;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index a065e18a0b3a..a79204c75a90 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10331,6 +10331,7 @@ enum kfunc_ptr_arg_type {
+>         KF_ARG_PTR_TO_CALLBACK,
+>         KF_ARG_PTR_TO_RB_ROOT,
+>         KF_ARG_PTR_TO_RB_NODE,
+> +       KF_ARG_PTR_TO_NULL,
+>  };
+>
+>  enum special_kfunc_type {
+> @@ -10425,6 +10426,12 @@ static bool is_kfunc_bpf_rcu_read_unlock(struct =
+bpf_kfunc_call_arg_meta *meta)
+>         return meta->func_id =3D=3D special_kfunc_list[KF_bpf_rcu_read_un=
+lock];
+>  }
+>
+> +static inline bool is_kfunc_arg_optional_null(struct bpf_reg_state *reg,
+> +                               const struct btf *btf, const struct btf_p=
+aram *arg)
+> +{
+> +       return register_is_null(reg) && is_kfunc_arg_optional(btf, arg);
+> +}
+> +
+>  static enum kfunc_ptr_arg_type
+>  get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
+>                        struct bpf_kfunc_call_arg_meta *meta,
+> @@ -10497,6 +10504,8 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *e=
+nv,
+>          */
+>         if (!btf_type_is_scalar(ref_t) && !__btf_type_is_scalar_struct(en=
+v, meta->btf, ref_t, 0) &&
+>             (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
+> +                       if (is_kfunc_arg_optional_null(reg, meta->btf, &a=
+rgs[argno]))
+> +                               return KF_ARG_PTR_TO_NULL;
 
-Got it! I'll introduce some opt-in mechanisms in the next version. This is
-my oversight.
+This nested check seems misplaced. Maybe we shouldn't reuse __opt
+suffix which already has a different meaning (coupled with __sz). Why
+not add "__nullable" convention and just check it separately?
 
+>                 verbose(env, "arg#%d pointer type %s %s must point to %ss=
+calar, or struct with scalar\n",
+>                         argno, btf_type_str(ref_t), ref_tname, arg_mem_si=
+ze ? "void, " : "");
+>                 return -EINVAL;
+> @@ -11028,7 +11037,7 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>                 }
+>
+>                 if ((is_kfunc_trusted_args(meta) || is_kfunc_rcu(meta)) &=
+&
+> -                   (register_is_null(reg) || type_may_be_null(reg->type)=
+)) {
+> +                   (register_is_null(reg) || type_may_be_null(reg->type)=
+) && !is_kfunc_arg_optional(meta->btf, &args[i])) {
 
+nit: looks like a very long line, probably wrap to the next line?
+
+>                         verbose(env, "Possibly NULL pointer passed to tru=
+sted arg%d\n", i);
+>                         return -EACCES;
+>                 }
+> @@ -11053,6 +11062,8 @@ static int check_kfunc_args(struct bpf_verifier_e=
+nv *env, struct bpf_kfunc_call_
+>                         return kf_arg_type;
+>
+>                 switch (kf_arg_type) {
+> +               case KF_ARG_PTR_TO_NULL:
+> +                       continue;
+>                 case KF_ARG_PTR_TO_ALLOC_BTF_ID:
+>                 case KF_ARG_PTR_TO_BTF_ID:
+>                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu=
+(meta))
 > --
-> Michal Hocko
-> SUSE Labs
+> 2.20.1
+>
