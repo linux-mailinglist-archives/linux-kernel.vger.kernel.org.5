@@ -2,103 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E12E7B07BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408C67B07AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjI0PJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
+        id S232311AbjI0PIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbjI0PJO (ORCPT
+        with ESMTP id S232271AbjI0PIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:09:14 -0400
-Received: from out-193.mta1.migadu.com (out-193.mta1.migadu.com [IPv6:2001:41d0:203:375::c1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6811AC
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:09:07 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695827344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j6TjL0tOzMm9uw8Y9niPXJ1ezOtPxfS6WilpL+cESRE=;
-        b=V//ihQR3BNX8mCaIN2RHbsj24ybf5tsZR80ZurjIq/P4zdNE6/CNiqXGaUHELfnQzFCvFu
-        ald/Rulhzhr/xKdfWTbsCyE4U6wbBWcnVys7yuOgrgVNmXQqA6dKbwvtqUzJLSfKLVSbkz
-        VEv/GP4pB24vCqh16SVt3PIzQgO5+VI=
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: [PATCH rfc 5/5] percpu: scoped objcg protection
-Date:   Wed, 27 Sep 2023 08:08:32 -0700
-Message-ID: <20230927150832.335132-6-roman.gushchin@linux.dev>
-In-Reply-To: <20230927150832.335132-1-roman.gushchin@linux.dev>
-References: <20230927150832.335132-1-roman.gushchin@linux.dev>
+        Wed, 27 Sep 2023 11:08:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8B5F4;
+        Wed, 27 Sep 2023 08:08:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE700C433C8;
+        Wed, 27 Sep 2023 15:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695827332;
+        bh=rVJ3mC+n/SWejnI1i+ge/9fNDBh8INviovzGEmpuCQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PdhqwJM9IvrABPs00ahx0ck9XgmygnDQX1cG1z7uMeIHU49TstmxhFwfVThmw0Ki4
+         ju7moZfFlQxvuJ2S3oA2MJI6+SgLZi5LCT0k7frw2YEH0nzqulZNoNabRmH8QWoZAt
+         SGmuKKTQooxbJMXmD6vEgDTp2uZHCpztJi/sJUkArw+ynY5BpUfmauWsEhYkpu8hKB
+         SvxCC/VcS0/QXjzLHOzdMvf68jIEBDx1gtUTlejOLEQ0ZkToIydyKqdrvaRt3w+9OG
+         RXD4mI19eofbAbTLWjL6VQyA/bTopiOa9GwttMfgUAeJoTiFg6bV4wQ3BL27a+AHyh
+         6+F2OgysjfUxw==
+Date:   Wed, 27 Sep 2023 17:08:47 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     syzbot <syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com>
+Cc:     almaz.alexandrovich@paragon-software.com, hch@lst.de,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in
+ ntfs_write_bh
+Message-ID: <20230927-armaturen-bestochen-e438ec36aa99@brauner>
+References: <0000000000006777d506051db4fd@google.com>
+ <000000000000553a2106064e3d86@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <000000000000553a2106064e3d86@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to slab and kmem, switch to a scope-based protection of the
-objcg pointer to avoid.
-
-Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
----
- mm/percpu.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/mm/percpu.c b/mm/percpu.c
-index a7665de8485f..f53ba692d67a 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1628,14 +1628,12 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
- 	if (!memcg_kmem_online() || !(gfp & __GFP_ACCOUNT))
- 		return true;
- 
--	objcg = get_obj_cgroup_from_current();
-+	objcg = current_obj_cgroup();
- 	if (!objcg)
- 		return true;
- 
--	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size))) {
--		obj_cgroup_put(objcg);
-+	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
- 		return false;
--	}
- 
- 	*objcgp = objcg;
- 	return true;
-@@ -1649,6 +1647,7 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
- 		return;
- 
- 	if (likely(chunk && chunk->obj_cgroups)) {
-+		obj_cgroup_get(objcg);
- 		chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = objcg;
- 
- 		rcu_read_lock();
-@@ -1657,7 +1656,6 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
- 		rcu_read_unlock();
- 	} else {
- 		obj_cgroup_uncharge(objcg, pcpu_obj_full_size(size));
--		obj_cgroup_put(objcg);
- 	}
- }
- 
--- 
-2.42.0
-
+#syz fix: ntfs3: put resources during ntfs_fill_super()
