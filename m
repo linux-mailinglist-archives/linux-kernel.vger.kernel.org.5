@@ -2,60 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B837B073A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25BD7B0742
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjI0Oph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
+        id S232218AbjI0OrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbjI0Opf (ORCPT
+        with ESMTP id S232046AbjI0OrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:45:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ABAF4;
-        Wed, 27 Sep 2023 07:45:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB4E7C433C8;
-        Wed, 27 Sep 2023 14:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695825933;
-        bh=u5mSK+ETqJiKORZJywzslvagA7g/tSjSxUTNQ6vOmcc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S7rMseEE9HGEpW+317qdYZUAuRIVkN72nhW/YDjgrNoY+f/EpZ31mTeCmKgCbLV1F
-         4zX5Mhm7n3HumvTTiJGm9fgQckcOw6lEg6W7ns2XTshG2VSkAR8fgREeYBgmOOZOme
-         T19mfTu1SGJS/hE0pfDZU4kbfCKNVSFGPhMLghB0kvaqhM8ZOGspji6+IoRlXpV0kS
-         NGuOYyK+bPo5UNf0JpWoZw1nxS5cYihIWATMpx+tv59rl7Qsimjw5ypD1haDdrl/Mz
-         +rLlQ6tcbrHpsZ1Lp1nXc/KY+jHuWWfzw6ZbzWRDRm4grJhGVoZ3xJx3BrvqOBNhC/
-         IdVvZtUfNHigA==
-Date:   Wed, 27 Sep 2023 15:45:28 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] KVM RISC-V Conditional Operations
-Message-ID: <20230927-snowcap-stadium-2f6aeffac59e@spud>
-References: <20230925133859.1735879-1-apatel@ventanamicro.com>
- <20230925-gorged-boxer-3804735e2d18@spud>
- <20230925-reappear-unkind-7f31acdd82de@spud>
- <CAK9=C2UBgNWFTdQKt29+bNnWDgHZGd5fU+oP1bqsarkqc5+jgg@mail.gmail.com>
+        Wed, 27 Sep 2023 10:47:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4A38F4;
+        Wed, 27 Sep 2023 07:47:15 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACA521FB;
+        Wed, 27 Sep 2023 07:47:53 -0700 (PDT)
+Received: from bogus (unknown [10.57.37.227])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3CFA3F59C;
+        Wed, 27 Sep 2023 07:47:13 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 15:45:52 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 0/3] ACPI: PCC: Define and use the common PCC shared
+ memory regions related macros
+Message-ID: <20230927144552.pqolbw5p22sgc22l@bogus>
+References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
+ <CAJZ5v0hq37x_v6Z0Vqj2h8D5QZM8zWE4=GfrMk7YAEfUjeRydA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iiRtwGBozE76B1Lv"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK9=C2UBgNWFTdQKt29+bNnWDgHZGd5fU+oP1bqsarkqc5+jgg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hq37x_v6Z0Vqj2h8D5QZM8zWE4=GfrMk7YAEfUjeRydA@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,90 +49,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---iiRtwGBozE76B1Lv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 27, 2023 at 07:54:49PM +0530, Anup Patel wrote:
-> On Mon, Sep 25, 2023 at 9:07=E2=80=AFPM Conor Dooley <conor@kernel.org> w=
-rote:
+On Wed, Sep 27, 2023 at 04:19:21PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Sep 26, 2023 at 2:33 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
 > >
-> > On Mon, Sep 25, 2023 at 04:33:15PM +0100, Conor Dooley wrote:
-> > > On Mon, Sep 25, 2023 at 07:08:50PM +0530, Anup Patel wrote:
-> > > > This series extends KVM RISC-V to allow Guest/VM discover and use
-> > > > conditional operations related ISA extensions (namely XVentanaCondO=
-ps
-> > > > and Zicond).
-> > > >
-> > > > To try these patches, use KVMTOOL from riscv_zbx_zicntr_smstateen_c=
-ondops_v1
-> > > > branch at: https://github.com/avpatel/kvmtool.git
-> > > >
-> > > > These patches are based upon the latest riscv_kvm_queue and can als=
-o be
-> > > > found in the riscv_kvm_condops_v2 branch at:
-> > > > https://github.com/avpatel/linux.git
-> > > >
-> > > > Changes since v1:
-> > > >  - Rebased the series on riscv_kvm_queue
-> > > >  - Split PATCH1 and PATCH2 of v1 series into two patches
-> > > >  - Added separate test configs for XVentanaCondOps and Zicond in PA=
-TCH7
-> > > >    of v1 series.
-> > > >
-> > > > Anup Patel (9):
-> > > >   dt-bindings: riscv: Add XVentanaCondOps extension entry
-> > > >   RISC-V: Detect XVentanaCondOps from ISA string
-> > > >   dt-bindings: riscv: Add Zicond extension entry
-> > > >   RISC-V: Detect Zicond from ISA string
-> > >
-> > > For these 4:
-> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > This set of 3 small patches intend to consolidate and replace the existing
+> > locally defined macros within couple of PCC client drivers when accessing
+> > the command and status bitfields.
 > >
-> > Actually, now that I think of it, I'm going to temporarily un-review th=
-is.
-> > From patch-acceptance.rst:
-> > | Additionally, the RISC-V specification allows implementers to create
-> > | their own custom extensions.  These custom extensions aren't required
-> > | to go through any review or ratification process by the RISC-V
-> > | Foundation.  To avoid the maintenance complexity and potential
-> > | performance impact of adding kernel code for implementor-specific
-> > | RISC-V extensions, we'll only consider patches for extensions that ei=
-ther:
-> > |
-> > | - Have been officially frozen or ratified by the RISC-V Foundation, or
-> > | - Have been implemented in hardware that is widely available, per sta=
-ndard
-> > |   Linux practice.
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> > Sudeep Holla (3):
+> >       ACPI: PCC: Add PCC shared memory region command and status bitfields
+> >       i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
+> >       hwmon: (xgene) Migrate to use generic PCC shmem related macros
 > >
-> > The xventanacondops bits don't qualify under the first entry, and I
-> > don't think they qualify under the second yet. Am I wrong?
->=20
-> The Ventana Veyron V1 was announced in Dec 2022 at RISC-V summit
-> followed by press releases:
-> https://www.ventanamicro.com/ventana-introduces-veyron-worlds-first-data-=
-center-class-risc-v-cpu-product-family/
-> https://www.embedded.com/ventana-reveals-risc-v-cpu-compute-chiplet-for-d=
-ata-center/
-> https://www.prnewswire.com/news-releases/ventana-introduces-veyron-worlds=
--first-data-center-class-risc-v-cpu-product-family-301700985.html
->=20
-> @Palmer if the above looks good to you then please ack PATCH1-to-4
+> >  drivers/hwmon/xgene-hwmon.c            | 16 +++++-----------
+> >  drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++++------------
+> >  include/acpi/pcc.h                     | 11 +++++++++++
+> >  3 files changed, 20 insertions(+), 23 deletions(-)
+> > ---
+> 
+> This is fine with me.
+> 
+> How do you want to route it?
 
-These are announcements AFAICT & not an indication of "being implemented
-in hardware that is widely available".
+I have to respin this to include another driver.
 
---iiRtwGBozE76B1Lv
-Content-Type: application/pgp-signature; name="signature.asc"
+I also have 2 PCC mailbox driver changes that I wanted to send a pull request
+to you. I can make this part of that PR or you can take it directly. Both
+hwmon and i2c maintainers have acked now.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRACAAKCRB4tDGHoIJi
-0qQEAQDTNOG4ag8LjtNZMYFOnkSFGHrw50GOrUOnnHOGQ9gTaAEA4l7aRLFtSW8o
-WiJV1zWNZaMssu0BppMJh3/v3IudAw4=
-=xlPj
------END PGP SIGNATURE-----
-
---iiRtwGBozE76B1Lv--
+--
+Regards,
+Sudeep
