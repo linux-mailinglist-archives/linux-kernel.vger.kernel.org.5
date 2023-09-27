@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56617B02BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098A17B02C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbjI0LYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        id S231303AbjI0LZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjI0LY3 (ORCPT
+        with ESMTP id S231410AbjI0LZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:24:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D99194
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:24:28 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5ff5f858dso52866205ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:24:28 -0700 (PDT)
+        Wed, 27 Sep 2023 07:25:37 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A0B192
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:36 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d89ba259964so2672849276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695813867; x=1696418667; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vmVJzfHE3vQ/lTZ+43o8mLraNAwtCdKaHY6VtnSgr7U=;
-        b=ZmH/kC9lLlp3gWZkDTK5S3BptRT8iVEgK6HbUP5+EZQquHBz7qCrIwgGkSohKD8HLX
-         KPPv0BT48Ye2oXSOX/wovoeE7nlSXD5wd0e+w9pGU6BU+wFmzD1U34BcdL9rQ4IK90QV
-         fTZOp5c/GszVy4zw0kzTZp0ryrvC/LrqoOmIvv+4jHaD0+sp/7UykfPQ4/mEwF1dLO3T
-         SYcdPQF/+5tLahBP19v1DBbYHDB38N9ZvwpmSGkcOs2KDrZAoklDP5CDGMVCK0ZloMaM
-         D5tEL+r++iE5iBosmmyQx2fC7bMBIb0PMhzC1y/5tFEiMgaNLof/++hddmvz9ZpTF6O1
-         PVuw==
+        d=linaro.org; s=google; t=1695813935; x=1696418735; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3rhUxDhJJabCNT5gEkEeaWHHhWLJbXNmm+8HO9FQ4ko=;
+        b=X6Ud8EgdVTAdF1HL9SLk5O/x+IwiM7iIYWRK72d1GA7Adr4UuTxxBI/MPpVZAZ6MK+
+         dIDubhb+VpYKYZbMg2NthTVEoo81w7+yoz/tMzT8YSe9y+bZDKFpeaXAjlP71UVilLOc
+         IttMKybidSbUYAiOixUUmXa3u9+FiuzvgozHdsiZsgEBitDcYfyRQmwdno/BzC9oGYX1
+         BES0ApENr4v3dnDnoUjT0fGNQM9HQwEkuS3xEs6GpcplCXYooFwPrX6qqCt1m8a+AMlE
+         vBR20HqtfHONTqaoPD90DnQcsjodP2Fg3iiv046t/nLfVBECfd6e8JYWLfS/T0l09GLY
+         3syA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695813867; x=1696418667;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vmVJzfHE3vQ/lTZ+43o8mLraNAwtCdKaHY6VtnSgr7U=;
-        b=I6/CoIVLF8k8Vau+utFgcK4obw+8iTAWffUZUrE9ApXq3vev5L7SjfgGhIQ+VzQqpq
-         vN6UCBtWeLRs76wwe2NuJHaZ0s3LASkk/fGiM4wtTlodOSJbilTm2j3l7FtA+ZuE3xrF
-         iLVYcuu+hHHpg6pXU3hJAhbcHEzCoStMbZn1RzZ8lamRlQfR7tczfPTOikxA2bJaWEOb
-         wQCmIfduILda7PnzP2G8Y7VUaQ0TjiOvV0oZua927LagP/yh4nq2gqul4aQjf9J0lDb9
-         KucMi3/o0iLb2azAeCYisUIrq8UbqplmGmMrJgUpUF5mjPnz8EfMUCmQInouGei1qT2M
-         snWQ==
-X-Gm-Message-State: AOJu0YzICmHlvVzZD69bBZF5S+tGCKFCIoQ9OREBdF3z41xcshL1f/Xl
-        TrEY0Ik/thQcGisvQ64AKf9cPw==
-X-Google-Smtp-Source: AGHT+IGj48IsQLfFZkeOQC4tbS38mJkUy5+WRSSa3+XW5UWtGE4ixlhmRgKJ3yIrY+gEMnfBOkHekA==
-X-Received: by 2002:a17:902:e5ce:b0:1c4:32da:2037 with SMTP id u14-20020a170902e5ce00b001c432da2037mr1427219plf.64.1695813867494;
-        Wed, 27 Sep 2023 04:24:27 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001bf11cf2e21sm12751587plg.210.2023.09.27.04.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 04:24:27 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 16:54:25 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Varadarajan Narayanan <quic_varada@quicinc.com>,
-        ilia.lin@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, rafael@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_kathirav@quicinc.com, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v1 05/10] dt-bindings: cpufreq: qcom-cpufreq-nvmem:
- document IPQ5332
-Message-ID: <20230927112425.763qlhilfld5lecd@vireshk-i7>
-References: <cover.1693996662.git.quic_varada@quicinc.com>
- <8fe23b5401362e214078648926a00f7ceefaa542.1693996662.git.quic_varada@quicinc.com>
- <3f68d3bf-3273-2339-ea41-3362ced3c91b@linaro.org>
+        d=1e100.net; s=20230601; t=1695813935; x=1696418735;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3rhUxDhJJabCNT5gEkEeaWHHhWLJbXNmm+8HO9FQ4ko=;
+        b=UNBXGzSmo7CS0rjUAkUDLECrpeDkpWKFbWIUpkifZaT5isgtahiWJox4wwEIc7jmQV
+         dUNVfw+jaYRxD3NtfXjSaP3ctbiI9YTozOGqPXg9DK1U7aJUmr4ItmGKXLmTUHp7M/4z
+         +tdYAt09GFQwTe54tCw6wIdb/I5nc54IL1tBtAM2ALWobYr5GRVe8EZLjSObTE5sz+Fb
+         H1djFboMTvuEOPuDe8/Q5SUCRd0HimPgwR5XxPQ/ehGD9yWmFZl4PnIjb/FHvtz+7tEB
+         yROYKaYSLpCnn+KHvVVvGEkT8bCp8ZTUdBrCZ/Gvb8WqDp21cOO5Dja7t8Uj/csdFIxd
+         hWJQ==
+X-Gm-Message-State: AOJu0YwQ7CEE6vg+6zYm6VYemLVaocmn3KszI5sQ10aIa4lPoUfZfaqJ
+        vzyQSQf2NFNzyuMXvhfdyaFMX+LAaZeT3uzCYep/5Q==
+X-Google-Smtp-Source: AGHT+IEfgCCehiTmQ4WyCrzk+BL3JJu9a61KOY5KmvRc6K1x2XARsd+PgCX0jR5XTG9og2VdbvlhCVCECen6zvUCL9A=
+X-Received: by 2002:a25:c754:0:b0:d0a:a1fa:b8e4 with SMTP id
+ w81-20020a25c754000000b00d0aa1fab8e4mr1855377ybe.38.1695813935109; Wed, 27
+ Sep 2023 04:25:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f68d3bf-3273-2339-ea41-3362ced3c91b@linaro.org>
+References: <20230916175952.178611-1-danila@jiaxyga.com>
+In-Reply-To: <20230916175952.178611-1-danila@jiaxyga.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Sep 2023 13:24:59 +0200
+Message-ID: <CAPDyKFoogvK5STo51VVyQhrZZ=3V8piMtHm=E+YeLm_pidt+vA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] pmdomain: qcom: rpmhpd: Add support for SM7150
+To:     Danila Tikhonov <danila@jiaxyga.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,16 +70,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-09-23, 08:03, Krzysztof Kozlowski wrote:
-> On 07/09/2023 07:21, Varadarajan Narayanan wrote:
-> > Document IPQ5332 compatible for Qcom NVMEM CPUFreq driver.
-> > 
-> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > ---
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Sat, 16 Sept 2023 at 19:59, Danila Tikhonov <danila@jiaxyga.com> wrote:
+>
+> This series adds RPMH support for Qualcomm SM7150 SoC.
+>
+> Changes in v2:
+> - Use generic RPMh PD indexes.
+> - Link to v1:
+> https://lore.kernel.org/all/20230915182054.113839-1-danila@jiaxyga.com/
+>
+> Danila Tikhonov (2):
+>   dt-bindings: power: qcom,rpmpd: Add SM7150
+>   pmdomain: qcom: rpmhpd: Add support for SM7150 rpmh clocks
+>
+>  .../devicetree/bindings/power/qcom,rpmpd.yaml  |  1 +
+>  drivers/pmdomain/qcom/rpmhpd.c                 | 18 ++++++++++++++++++
+>  2 files changed, 19 insertions(+)
+>
 
-Applied. Thanks.
+Applied for next, thanks!
 
--- 
-viresh
+Kind regards
+Uffe
