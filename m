@@ -2,126 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AF87AFA0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2087AFA2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjI0FYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        id S229531AbjI0Fh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjI0FXy (ORCPT
+        with ESMTP id S229502AbjI0FhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:23:54 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79F4205
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:21:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81e9981ff4so15177536276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695792059; x=1696396859; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lz/tzt2FhoJSlisVyBotc0Kj5HYUeKExNXWDpILSgIc=;
-        b=jxPSRuCh2GiA5ml2AR0opCZ88ky6+UTpPBhYDJpn5sXvyQwKuI/mwdBIZOaYL7wPtu
-         i3FzcUZ4jj65FV/lLI1grLztvVU44S5nygVz7YhgY7+8ZKaPHbUw70ciOMexYtYJb2c0
-         obnHNiTmphB52b7IoHuoOz+KZV+Wkli92J2JazC8U/ZoyEZIB+lydEqI+GRitHeTwqIL
-         bxUHGZxMECI0AqCkcSBdLgJAHYPzQWQoBYMn1dQqldu6zSyAJNJBcXtcqI/PgnVNFa7T
-         gFH2s8OJzbJfmJo15bwRGJ1PI1z0ZbXPqRxkJe9lVf1EgDnZYT4uwzk266g3Cr9zUesi
-         X7OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695792059; x=1696396859;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lz/tzt2FhoJSlisVyBotc0Kj5HYUeKExNXWDpILSgIc=;
-        b=wJnhf6U3Sl0nYSaEu52aEMI/tXXmgAMkJL4tKh935IJvXpk1cQtuh5ajYQ2ZPid+ue
-         gvDREWkU8R5hNy3UYG5CbRgzk78n2ONi0eS37KTCodjq1dwd9fGJYKXYeqgVrwk7YgJD
-         dMosGzqd+URTF9XjugBHcF0e4HIysHIPPwOrMzavPlXERTRNu6cGDaVilDFAGt4MnNrP
-         6PqRwvjOeQXLYiFA6byWQDnLfykmBspgTtM3agUKhIaglZ3c2RCh5VK4PktG+yskRLkF
-         O50DTbvIf5Se73SvvIkwhGr3dj7ioUHQvMaq4/fqItxf6hp/jh7VYReLRqy9cbpFmk8h
-         K/wg==
-X-Gm-Message-State: AOJu0YxRhJaRCp9p00cPMFQeOsJYCbJ1gClcpuDx7w64CKu8qQmt6mLD
-        9oi74kld278ZUqGMZOngRvg8xK8OmPfm5sWKFg==
-X-Google-Smtp-Source: AGHT+IGQ4S6InwXRWTgaURsWBQh6RxYVFt/Bp+IrO6ECsGXqShMbbeNAl9naPNeF/L8Wg9aHddRgZy3gQ/CyC+vwJA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:aa09:0:b0:d7a:6a4c:b657 with SMTP
- id s9-20020a25aa09000000b00d7a6a4cb657mr12365ybi.0.1695792059592; Tue, 26 Sep
- 2023 22:20:59 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 05:20:58 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIALm7E2UC/x3NQQqEMAxA0atI1gZsZRS9irgoMc5kYVsSEUW8u
- 2WWb/P/DcYqbDBWNygfYpJigasroF+IX0ZZisE3vm0G36PtGilfuKgcrIabGCH5nHRHSspIGII burZzK9MHSigrr3L+J9P8PC9p7qJ0dAAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695792058; l=1837;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=yQqGrF2k0OLEIxxzfq32VFlgneWmvHqUwZOd9GeKl9Q=; b=GcVEbzE3m6R3BQuN95/HUu/Su4qXiV7N+d85g46JeEu4i/Hy5Trt6MURz/eeYNCmmQt/TOPsI
- UCr87Jtq+Y9D+Uya8HayxqfYkZrp7eEP4oaqYAlYThIOw6C2MGCel/P
-X-Mailer: b4 0.12.3
-Message-ID: <20230927-strncpy-drivers-misc-c2port-core-c-v1-1-978f6d220a54@google.com>
-Subject: [PATCH] c2port: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 01:37:18 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2072.outbound.protection.outlook.com [40.107.101.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF1E1F3B
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:23:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YoDpN1MNmrI0YRBYYjOVrDrp7C6n5AYtDS+5j+ZFp+yI6wla4ZkePpmC2dwwurC4FG2SL8uN/qgrjW/9fETJMwKyO5sHcZIARooOOxpxRpI2oj1b4TNKMQZN+hnYZ0/zgOxZhd0J3OraJquAgTNPArtL2WI/kARAtbpvkIPQ6rPQbI+WtumeE2z7piGcIkw2VCyR23LAlVo1gV4Euzic0T1DOfDpih0SgqgfMRfN0QlGy0bQzpRu9pWTeeApy4PnOVJDEMyZlK8xDHoMgnhNwsUx0PEbpaBSKXXyXKrzhHx0mQMVU4uCRxT80CIA4Xo7xi0i3uHCD+UoIVAeZnsOpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xwr3hbibDWq4g4ddCq/8QAbAWvpajPrv8g2ZNbZGutQ=;
+ b=Mzu6nOqagNeNPFZtSZto/ZFB1OI06fyuO9PfUvvMBmKJuMl+BqaCbJlp9y4vcid2Ino1Y6nA+pvjT0jSf+tNoFFXGUhkzJjMC2ABM7mDZutf7mgv94glisGiSKnfXisBgawQnk/2GB0zBDsffkzQwXannudizWGkl4Rsqx0nnxojg5XHF0xQ8iUAFhQiLjyCQo9kF4mRdIe2HkLbM1IeEoKtvFIAFWBmtJl/FS3sJtVPnOYhBksqeU8JsfiDlHnz6IJ43WvhR1Hop6Z7wbblOZinNDRVAoKwYND4TMa8KXzpPyZHH2bz3H2Ysc0zkdc5MFP8oZ3dwDMwn8t5yDWssg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xwr3hbibDWq4g4ddCq/8QAbAWvpajPrv8g2ZNbZGutQ=;
+ b=K5yFuVPdj4JIzWBN+p/dwVMLiJRPh1R6WZDupRyOPddm0c7EepREOl7IuKIdruK1HhTR/ALvQa/UfN++aOlMNy6BGb47zXyReaH8CuqgTtSOxEZjI+mXYcF0607CschialChw/ONMD8ehNt5TuKZ0CUO+dzxQZL/A20+qay5L8Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ0PR12MB5612.namprd12.prod.outlook.com (2603:10b6:a03:427::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Wed, 27 Sep
+ 2023 05:23:54 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::a7fa:4411:67a3:131d%4]) with mapi id 15.20.6838.016; Wed, 27 Sep 2023
+ 05:23:53 +0000
+Message-ID: <82ff7880-f323-b208-b52b-90bd568af934@amd.com>
+Date:   Wed, 27 Sep 2023 07:23:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/2] drm/amd/display: Fix null pointer dereference in
+ error message
+Content-Language: en-US
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Cong Liu <liucong2@kylinos.cn>, Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Tom Chung <chiahsuan.chung@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230926055618.119195-1-liucong2@kylinos.cn>
+ <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1PR0102CA0032.eurprd01.prod.exchangelabs.com
+ (2603:10a6:802::45) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ0PR12MB5612:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce41d6ea-d259-4a81-5203-08dbbf19f03a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bpGMaYqT5YKFFwk2aSzRj/TAfHJaL8LJkg/waaZ0FSaTki/QPyNPN0DcQxJZ/QqN7iPOpGSr5eTQ+aysoHTyWxJfv4/BzV37jGirnVSuh89u4RZW5Prj8Su/vZ+RjI5zHhnS0S0slP0gEWRgnzAjJzgXAwFS3s7VenY6Hu2BROTOSBPYUWq1Iixb3Ee+rk6ZCYdUDqIFfWKWYObRti32yfbv1KiAHAutcMPxprWFq6Bej3FW/d0/5EMr+keu8xrGIbC9v5KEHGeobJ3WAhpOz1mQhNzLD2IVSwdlGcJMLBsMoNgdkaDSiabe9vTng/l0NGRV3kinAlr5GY/dhRmFqWLkQLSAnM6qUyhtXRAosWR5fqZhcGvKwNHkBRg971MnJ1pnLHnR/S3yowrn68dZ3iwV1BAUth1wR2gWQIblEt3tKjAfFtVGL2k4b/eqWQez6Y0mjnq0QlMyyqSSMjk19BZVDXHjdeHP3VBn488UXSeovdFIUZ3TRWDNi2DwWxwAhVXz+Ypz2t3mD18wG8Azv/d194kTCk79beYuRpi9cGsor/kcB06qQ2nELJ0UNSZd8iZyKXjc6exvRoj3sPozHaL3qEIeyck+IwpFJNgsGmvC8Y/937wSTW/KKHyEtLbd5zbLP98Vtd+2JiMXyIF6WyReJrzPcqROxRxr2YZgIv4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(366004)(39860400002)(376002)(230922051799003)(186009)(1800799009)(451199024)(26005)(2616005)(53546011)(6506007)(6512007)(31696002)(86362001)(921005)(36756003)(38100700002)(83380400001)(110136005)(31686004)(15650500001)(2906002)(316002)(6636002)(66946007)(66476007)(8936002)(41300700001)(4326008)(8676002)(5660300002)(66556008)(6666004)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TEVnUkwzUlplM1lPOE5NczhZTGZlYjJMS1dvRjhqV0Q3dGRBWUVLbVhPRVBu?=
+ =?utf-8?B?MHhPcTI0WnhXZ2wrRFVYUFdOSlVHVEo2bXROS2treG8vb09hUjFyNE5WZTV6?=
+ =?utf-8?B?dGJ0SXE2bTBySWk0UW85WWI5OXJWcmo2ZlVCeWJyTmdyNXNQSktuRzZXd0Zj?=
+ =?utf-8?B?cWM0MmZXU01oRW5yNkhqRXFNV1YxTnhqYjRYUngwY1lTcklia2dWRTEzTXNN?=
+ =?utf-8?B?NVh4aUt4bkZoclB2c3lqUE4yTDFEYjNQYm5aQWZuaHhHQTh5TUplT3M1eEtl?=
+ =?utf-8?B?SUNHRUYwa1RlVDV2c1FIakUxT0RVelBVNlljeG50bDA3OTBaQVdPNnR2Y0F4?=
+ =?utf-8?B?RW4yOEtVM3o3U2YxUTlSbGNqUmFEci9tRGsrbUJNYzZUeDRGMHczZTRnRXN0?=
+ =?utf-8?B?eVJNWE81MmsvVllVc2pBSDJCQkFjZGRQRGxNM3hnWmJ3V2VoTlU5T1VuOUpi?=
+ =?utf-8?B?SEYybS9LWVZJZDl4SWMyU1BueEhOSHdoTlpSK21mREMvUWNWdjdSZWVJYU5E?=
+ =?utf-8?B?Rk9Id0VKMzFxcktaQWFtWVhHQnhuclA5ODZjdTE4Uks2Y2JUb2FOSEN1Zll3?=
+ =?utf-8?B?cGZGTlEvRTExeW1IOGh4OTVjZUZnaFhPbFVMdDh3aXhPdHJjOFA1WTBseDZ5?=
+ =?utf-8?B?NDhLVGFXaXJkN1pwYkRTZTNsNkRtQUF2TVdydmFrM0tuRXZlWTZXU1gxSWQ0?=
+ =?utf-8?B?MzhwNGNuVjk5OXh5aXZFMDBta2JnZkhDaDJienRjekdlaVl4Uk1TYzEzSndk?=
+ =?utf-8?B?bm0vaCtRNElEanU1SzNpVHlGUUpoelNXQnN0QmRsNHZ3eEUvZkxzbWQ1cG54?=
+ =?utf-8?B?V3JrcHlEdlpsRHJncGNJTjFUR0NsNXJOdXp0cGRiSzUyM3E4bHRxdHV1U3Nv?=
+ =?utf-8?B?a1lNL1Z2Ky93WFVNUDAyZ01LQlZsT0xPcDVGWTllWHJsMjJVa25kWTYvMU9P?=
+ =?utf-8?B?TmxqcURnd1JsSGVZNVNxdnRkbmROMWwvNUtGMnNsUjZsTU9sVFBBcnMvWlFi?=
+ =?utf-8?B?UEZNTkVaMU1ocUNJUnR3S3FjTTd2cW1RazJlU1VYOHpLU1pnRWRiZ1AvQWtV?=
+ =?utf-8?B?QlRDYUQ4aGxURERyM1hndURJQ2JZMFZWa0ROampmR1Azc01oTjE5aWdocXU2?=
+ =?utf-8?B?Q3psT0pGcUp1eTNVLzhLYmZFMG5Ib0xKeHJvYjh2b0xWcGVMVFBQKzczUC9j?=
+ =?utf-8?B?SzFlNkZQQkZyVDhlK216aWExUnNXNlVLQlBUblZyaW1DTFBlMENyWnZoMVk4?=
+ =?utf-8?B?SmJRZGxVajQvRXlkVkwzelJwT25GekNNMXpHT1gyWW1rTUVsTzBxUjFCOHh0?=
+ =?utf-8?B?MWwwSmdBczlsYm04YU55V0lRcDJGeWtkZzdVVVJTVHZNZ0ozUkJaSEhES3pW?=
+ =?utf-8?B?dHpsbmZraStxREF0SDFNZ2IyUFlKVHVaMDRtK0E0NjdnZU1USmh2ZFMwZ3dy?=
+ =?utf-8?B?eDRwUkZFWXoyVHFZN3hEK1VITm5Rc1JKVXpjUUtXcHRCVklWaWNwOFdseDJ3?=
+ =?utf-8?B?TUxEek1DY0lPYnF1bE9XK09PREVGSzNQQXd3bkZ0YTZKT2NVTkMvVU1BQ0o4?=
+ =?utf-8?B?MUdZbWJ1YzVvN05TOXVYb3B2aEVyZmpmOHhRbHdJRUhBa1NLaS9makx3TWNL?=
+ =?utf-8?B?SjlyQkMyUzJBSEpqQkMvamN1T1BUV0pSZTV5Q1FDYWhjSGYrUng0T283OXhw?=
+ =?utf-8?B?ZGd4YXg2d2x1bGFmbm1vWHp0S0tIRG42S2M0SmxaREZZYXUvMmJWMG91UGhT?=
+ =?utf-8?B?TmVHc0ptcno1bU4xdWhKbm5vcTVzNzBvRHlUTXRGSUlXenlHM28wS2phTE55?=
+ =?utf-8?B?bzA5eFI3RzBXWndFYy81WCsyMFZ2V3N6RkxQa2ZpUmNkdWNMWFIyUnM1Nmo2?=
+ =?utf-8?B?ZGFqck13Y1J1bHRVeUQyUVhKRXBNdytXUUMzWlRvbzB2Uy9GQWhuRmFDK1lh?=
+ =?utf-8?B?bTh2Ri8wTmJwcHozc3JXOVk4cFFZVlB4MmNlZzZJeGNoSzB3THhaMGtSRDhV?=
+ =?utf-8?B?ZEpocFlTell1ajdPWitJTndDZGlKZmt2bzBWVEpYdzdpemREamxqUnhyV3l1?=
+ =?utf-8?B?bXNITnA4R0F2UmJkM25GZGdXVm0wc21NT1ZjNXFWeWxkZEwrVFRReC9FVmRk?=
+ =?utf-8?Q?b5K0=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce41d6ea-d259-4a81-5203-08dbbf19f03a
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 05:23:53.0120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5BBmS/4j+TEdW3f3U5dSwiFGHyAMcUBfEBxEgdtcTg0IxUxkUS1/kwJEPvAD7zYg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5612
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Am 26.09.23 um 15:09 schrieb Harry Wentland:
+>
+> On 2023-09-26 01:56, Cong Liu wrote:
+>> This patch fixes a null pointer dereference in the error message that is
+>> printed when the Display Core (DC) fails to initialize. The original
+>> message includes the DC version number, which is undefined if the DC is
+>> not initialized.
+>>
+>> Fixes: 9788d087caff ("drm/amd/display: improve the message printed when loading DC")
+>> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
+>> ---
+>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> index 8e98dda1e084..bf52a909f558 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> @@ -1703,8 +1703,7 @@ static int amdgpu_dm_init(struct amdgpu_device *adev)
+>>   		DRM_INFO("Display Core v%s initialized on %s\n", DC_VER,
+>>   			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
+>>   	} else {
+>> -		DRM_INFO("Display Core v%s failed to initialize on %s\n", DC_VER,
+>> -			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
+>> +		DRM_INFO("Display Core failed to initialize with v%s!\n", DC_VER);
+> There is value in printing the version number. Let's not remove it.
+>
+> Instead you can probably fix it by doing a NULL check on adev->dm.dc->ctx.
 
-We expect `c2dev->name` to be NUL-terminated based on its usage with
-format strings:
-|       dev_info(c2dev->dev, "C2 port %s removed\n", c2dev->name);
+But as far as I understand it adev->dm.dc->ctx will always be NULL in 
+this case.
 
-Moreover, NUL-padding is _not_ required as c2dev is zero-allocated:
-|       c2dev = kzalloc(sizeof(struct c2port_device), GFP_KERNEL);
+Regards,
+Christian.
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Let's also drop `C2PORT_NAME_LEN - 1` for `sizeof(dest)` which is more
-idiomatic strscpy usage.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/misc/c2port/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-index f574c83b82cf..2bb1dd2511f9 100644
---- a/drivers/misc/c2port/core.c
-+++ b/drivers/misc/c2port/core.c
-@@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
- 	}
- 	dev_set_drvdata(c2dev->dev, c2dev);
- 
--	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-+	strscpy(c2dev->name, name, sizeof(c2dev->name));
- 	c2dev->ops = ops;
- 	mutex_init(&c2dev->mutex);
- 
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230927-strncpy-drivers-misc-c2port-core-c-aa196361fec5
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+>
+> Harry
+>
+>>   		goto error;
+>>   	}
+>>   
 
