@@ -2,115 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7A97B0D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66137B0D22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjI0UCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        id S229819AbjI0UEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjI0UCP (ORCPT
+        with ESMTP id S229664AbjI0UEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:02:15 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E82121;
-        Wed, 27 Sep 2023 13:02:14 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RJkZ32011894;
-        Wed, 27 Sep 2023 20:01:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ryZutAebLaGLyVKZ1wZ2WPr3DnN8n1DAG80EGJowehs=;
- b=DBixV+Y6w/MthTtGGUv8auiu7df9weX4/brq78PevdvCw1sECoaaM+5R4iT87qhjSgL+
- hdUy7zS256Ojq/xQg1E24st0QXoY1ajZdkiusKkHt7Vbwfj1xqq2gFt7Ns6UoJNFyIj/
- HiSY6CNFUnKlQQnmdx7JspuYLT1yy5xTrSUieZ82n8DMw+y/vitVMD0nSnyRX7Hnk5sm
- OYdfyzdbVtKfVyLsCxEbwfhVYrqc57iLygWAd8RA6f9KfjIVktV39sn1t0UVmqk/tdbl
- B5gxgMR1foTSmnryE6xuzaU/7mNgIdqbzCS4+LAK6n19h8E7iY41q4Tlf7eBotdYbDBd Cg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcpkgrrh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 20:01:42 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38RK1fxj004565
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 20:01:41 GMT
-Received: from [10.110.25.80] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
- 2023 13:01:40 -0700
-Message-ID: <29584061-a7e9-5db4-a024-eaf7774a03dd@quicinc.com>
-Date:   Wed, 27 Sep 2023 13:01:40 -0700
+        Wed, 27 Sep 2023 16:04:46 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F432114
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:04:44 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c6193d6bb4so46775ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695845084; x=1696449884; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M+XWKbIJGAs+2CKK7tWSiWj10aUmSxPjwzc7ZpoiI1E=;
+        b=4wNF6k0ql3NGzj+SCSfd8DA/aMLofLCcpjvNj3duDaEtESiv4nLwLmMYZNUOlspf/S
+         eQNywfBXBxpUZFd+3YCosvvf02fjbevsOvaanDiZQaYZX2YD8UViio8WKWrY3e0je8Nz
+         P217nt13Hm8lY4W7MyMJ2XxO64CpmDJR9U7+SWJhTNU5o1S7HxmbMUxDPhAgTN7gdtgt
+         AUU0FoOza5Kmy6a7B0cUEn8pGstJj81sgThalaOQDDtDkUqzwPB3ZAV0HOJEvJ1Pu0gU
+         SZKBnyXGH5Gd27MR7gRsptaGPUTpEoymoFb4NxFe5gOwalarsGuo/53jGxA+/j3tGpgQ
+         i3rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695845084; x=1696449884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M+XWKbIJGAs+2CKK7tWSiWj10aUmSxPjwzc7ZpoiI1E=;
+        b=rqItDHjcnEqBz8g8AfWrv9Zil74UJJ/glnlppaIqLL8Obql+MTz5uhO8xZKzUk9HCB
+         IdTXV94XRVKTg5V9YUtylS4uh2KTKnM35ElMKNpzhdXAozT57Nq/AhvvtdfFvbrZ1PL6
+         Ir6egcllNYRNDdzNgXXD+0lFquPcyGIhzevmf9D9cmgvILXr3X0hYdF4o4S66Sw5v0Ka
+         NQzQu63AcXC9G/MZsklaYnM/4BpJ9uqDni1LUHM33VV942dOFkKJyMypCd48Um8Z0hqW
+         g3UBOJdxa8ogCM0SEpmRI1ivS9tYi3yyDIsPMPbTlCl8qylZG7a2bYkqe9K2aEPvDcCV
+         P4dA==
+X-Gm-Message-State: AOJu0Yxa6sm4BOzsF1z2rbYOKQ/uj95V/HzPodbQPJWuT2bhpsxjLtDm
+        5UCeVsw2lNwqSJpVI1zsN0c7jbguB7QlzpwjAYhQvw==
+X-Google-Smtp-Source: AGHT+IGGVIFFSOgyJo8JdJxittG6SViQRjz4xTB/xRvT5NGB27U15736n2XSm+PW86J4HyH8mjwxAkUSePlEAP9pdsg=
+X-Received: by 2002:a17:902:d482:b0:1c3:fe16:9f32 with SMTP id
+ c2-20020a170902d48200b001c3fe169f32mr524985plg.15.1695845083776; Wed, 27 Sep
+ 2023 13:04:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v7 09/33] ASoC: qdsp6: q6afe: Increase APR timeout
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-CC:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230921214843.18450-1-quic_wcheng@quicinc.com>
- <20230921214843.18450-10-quic_wcheng@quicinc.com>
- <ZRRBIa+bVSqTHprO@finisterre.sirena.org.uk>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <ZRRBIa+bVSqTHprO@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: wmE0swXrHDd9mXk1xvEgSZNzbdkoY5Fi
-X-Proofpoint-ORIG-GUID: wmE0swXrHDd9mXk1xvEgSZNzbdkoY5Fi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_12,2023-09-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 phishscore=0 spamscore=0 malwarescore=0 impostorscore=0
- mlxlogscore=324 suspectscore=0 lowpriorityscore=0 adultscore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270170
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com> <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
+In-Reply-To: <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 27 Sep 2023 22:04:06 +0200
+Message-ID: <CAG48ez2WNOMwPo4OMVUHbS4mirwbqHUY5qUaaZ9DTkXdkzrjiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Wed, Sep 27, 2023 at 8:08=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+> On Wed, Sep 27, 2023 at 5:47=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
+e:
+> > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> > > From: Andrea Arcangeli <aarcange@redhat.com>
+> > >
+> > > This implements the uABI of UFFDIO_REMAP.
+> > >
+> > > Notably one mode bitflag is also forwarded (and in turn known) by the
+> > > lowlevel remap_pages method.
+> > >
+> > > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+[...]
+> > > +                       /*
+> > > +                        * folio_referenced walks the anon_vma chain
+> > > +                        * without the folio lock. Serialize against =
+it with
+> > > +                        * the anon_vma lock, the folio lock is not e=
+nough.
+> > > +                        */
+> > > +                       src_anon_vma =3D folio_get_anon_vma(src_folio=
+);
+> > > +                       if (!src_anon_vma) {
+> > > +                               /* page was unmapped from under us */
+> > > +                               err =3D -EAGAIN;
+> > > +                               goto out;
+> > > +                       }
+> > > +                       if (!anon_vma_trylock_write(src_anon_vma)) {
+> > > +                               pte_unmap(&orig_src_pte);
+> > > +                               pte_unmap(&orig_dst_pte);
+> > > +                               src_pte =3D dst_pte =3D NULL;
+> > > +                               /* now we can block and wait */
+> > > +                               anon_vma_lock_write(src_anon_vma);
+> > > +                               goto retry;
+> > > +                       }
+> > > +               }
+> >
+> > So at this point we have:
+> >
+> >  - the current src_pte
+> >  - some referenced+locked src_folio that used to be mapped exclusively
+> > at src_addr
+> >  - (the anon_vma associated with the src_folio)
+> >
+> > > +               err =3D remap_anon_pte(dst_mm, src_mm,  dst_vma, src_=
+vma,
+> > > +                                    dst_addr, src_addr, dst_pte, src=
+_pte,
+> > > +                                    orig_dst_pte, orig_src_pte,
+> > > +                                    dst_ptl, src_ptl, src_folio);
+> >
+> > And then this will, without touching folio mapcounts/refcounts, delete
+> > the current PTE at src_addr, and create a PTE at dst_addr pointing to
+> > the old src_folio, leading to incorrect refcounts/mapcounts?
+>
+> I assume this still points to the missing previous_src_pte check
+> discussed in the previous comments. Is that correct or is there yet
+> another issue?
 
-On 9/27/2023 7:50 AM, Mark Brown wrote:
-> On Thu, Sep 21, 2023 at 02:48:19PM -0700, Wesley Cheng wrote:
->> For USB offloading situations, the AFE port start command will result in a
->> QMI handshake between the Q6DSP and the main processor.  Depending on if
->> the USB bus is suspended, this routine would require more time to complete,
->> as resuming the USB bus has some overhead associated with it.  Increase the
->> timeout to 3s to allow for sufficient time for the USB QMI stream enable
->> handshake to complete.
-> 
-> ...
-> 
->> -#define TIMEOUT_MS 1000
->> +#define TIMEOUT_MS 3000
-> 
-> That seems worryingly large but if it's what the hardware/firmware needs
-> I guess there's nothing doing - even the 1s that's being replaced would
-> be nasty if we ever actually hit it.
+This is still referring to the missing previous_src_pte check.
 
-I may have gone overkill with the delay, but when I measured the 
-duration of the AFE start command it took ~1.5-2s.  It has to also 
-account for the overhead within handling the USB QMI request in the 
-qc_audio_offload driver.
+> >
+> > > +       } else {
+> > [...]
+> > > +       }
+> > > +
+> > > +out:
+> > > +       if (src_anon_vma) {
+> > > +               anon_vma_unlock_write(src_anon_vma);
+> > > +               put_anon_vma(src_anon_vma);
+> > > +       }
+> > > +       if (src_folio) {
+> > > +               folio_unlock(src_folio);
+> > > +               folio_put(src_folio);
+> > > +       }
+> > > +       if (dst_pte)
+> > > +               pte_unmap(dst_pte);
+> > > +       if (src_pte)
+> > > +               pte_unmap(src_pte);
+> > > +       mmu_notifier_invalidate_range_end(&range);
+> > > +
+> > > +       return err;
+> > > +}
+> > [...]
+> > > +ssize_t remap_pages(struct mm_struct *dst_mm, struct mm_struct *src_=
+mm,
+> > > +                   unsigned long dst_start, unsigned long src_start,
+> > > +                   unsigned long len, __u64 mode)
+> > > +{
+> > > +       struct vm_area_struct *src_vma, *dst_vma;
+> > > +       unsigned long src_addr, dst_addr;
+> > > +       pmd_t *src_pmd, *dst_pmd;
+> > > +       long err =3D -EINVAL;
+> > > +       ssize_t moved =3D 0;
+> > > +
+> > > +       /*
+> > > +        * Sanitize the command parameters:
+> > > +        */
+> > > +       BUG_ON(src_start & ~PAGE_MASK);
+> > > +       BUG_ON(dst_start & ~PAGE_MASK);
+> > > +       BUG_ON(len & ~PAGE_MASK);
+> > > +
+> > > +       /* Does the address range wrap, or is the span zero-sized? */
+> > > +       BUG_ON(src_start + len <=3D src_start);
+> > > +       BUG_ON(dst_start + len <=3D dst_start);
+> > > +
+> > > +       /*
+> > > +        * Because these are read sempahores there's no risk of lock
+> > > +        * inversion.
+> > > +        */
+> > > +       mmap_read_lock(dst_mm);
+> > > +       if (dst_mm !=3D src_mm)
+> > > +               mmap_read_lock(src_mm);
+> > > +
+> > > +       /*
+> > > +        * Make sure the vma is not shared, that the src and dst rema=
+p
+> > > +        * ranges are both valid and fully within a single existing
+> > > +        * vma.
+> > > +        */
+> > > +       src_vma =3D find_vma(src_mm, src_start);
+> > > +       if (!src_vma || (src_vma->vm_flags & VM_SHARED))
+> > > +               goto out;
+> > > +       if (src_start < src_vma->vm_start ||
+> > > +           src_start + len > src_vma->vm_end)
+> > > +               goto out;
+> > > +
+> > > +       dst_vma =3D find_vma(dst_mm, dst_start);
+> > > +       if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
+> > > +               goto out;
+> > > +       if (dst_start < dst_vma->vm_start ||
+> > > +           dst_start + len > dst_vma->vm_end)
+> > > +               goto out;
+> > > +
+> > > +       err =3D validate_remap_areas(src_vma, dst_vma);
+> > > +       if (err)
+> > > +               goto out;
+> > > +
+> > > +       for (src_addr =3D src_start, dst_addr =3D dst_start;
+> > > +            src_addr < src_start + len;) {
+> > > +               spinlock_t *ptl;
+> > > +               pmd_t dst_pmdval;
+> > > +               unsigned long step_size;
+> > > +
+> > > +               BUG_ON(dst_addr >=3D dst_start + len);
+> > > +               /*
+> > > +                * Below works because anonymous area would not have =
+a
+> > > +                * transparent huge PUD. If file-backed support is ad=
+ded,
+> > > +                * that case would need to be handled here.
+> > > +                */
+> > > +               src_pmd =3D mm_find_pmd(src_mm, src_addr);
+> > > +               if (unlikely(!src_pmd)) {
+> > > +                       if (!(mode & UFFDIO_REMAP_MODE_ALLOW_SRC_HOLE=
+S)) {
+> > > +                               err =3D -ENOENT;
+> > > +                               break;
+> > > +                       }
+> > > +                       src_pmd =3D mm_alloc_pmd(src_mm, src_addr);
+> > > +                       if (unlikely(!src_pmd)) {
+> > > +                               err =3D -ENOMEM;
+> > > +                               break;
+> > > +                       }
+> > > +               }
+> > > +               dst_pmd =3D mm_alloc_pmd(dst_mm, dst_addr);
+> > > +               if (unlikely(!dst_pmd)) {
+> > > +                       err =3D -ENOMEM;
+> > > +                       break;
+> > > +               }
+> > > +
+> > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
+> > > +               /*
+> > > +                * If the dst_pmd is mapped as THP don't override it =
+and just
+> > > +                * be strict. If dst_pmd changes into TPH after this =
+check, the
+> > > +                * remap_pages_huge_pmd() will detect the change and =
+retry
+> > > +                * while remap_pages_pte() will detect the change and=
+ fail.
+> > > +                */
+> > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
+> > > +                       err =3D -EEXIST;
+> > > +                       break;
+> > > +               }
+> > > +
+> > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma);
+> > > +               if (ptl && !pmd_trans_huge(*src_pmd)) {
+> > > +                       spin_unlock(ptl);
+> > > +                       ptl =3D NULL;
+> > > +               }
+> >
+> > This still looks wrong - we do still have to split_huge_pmd()
+> > somewhere so that remap_pages_pte() works.
+>
+> Hmm, I guess this extra check is not even needed...
 
-Thanks
-Wesley Cheng
+Hm, and instead we'd bail at the pte_offset_map_nolock() in
+remap_pages_pte()? I guess that's unusual but works...
+
+(It would be a thing to look out for if anyone tried to backport this,
+since the checks in pte_offset_map_nolock() were only introduced in
+6.5, but idk if anyone's doing that)
