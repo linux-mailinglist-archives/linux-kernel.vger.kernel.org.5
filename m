@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3327B094B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0014E7B0982
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbjI0PuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
+        id S232867AbjI0QCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbjI0PuE (ORCPT
+        with ESMTP id S232828AbjI0QCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:50:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D465227D67
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695829723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7eHWlFiucdq0IfNiQ7WXj2KUdARtYTii9zK/Td8/6q0=;
-        b=S7Cfm2sdBsCaev/j7AVLMCxU477Ur9oIomoG3oM5+DGHeMTS91XmEYi2ph2/SWxLij3uI3
-        5ZzTz9FODXhK276oXRUqxpoR7aKYSq361qCIvczq6P8QJ49jSMuf+6ZmjjlqNNWLS/Zg8n
-        NEHUJ0G6UB2dErb1XVPdcjJ/JhnS1ds=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-316-4UDvRg6ZPD6fO97ItSxtpQ-1; Wed, 27 Sep 2023 11:48:42 -0400
-X-MC-Unique: 4UDvRg6ZPD6fO97ItSxtpQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-65b23c40cefso72493156d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:48:42 -0700 (PDT)
+        Wed, 27 Sep 2023 12:02:30 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6C8526A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:52:14 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3512c43adebso25237115ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695829933; x=1696434733; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZLYerTGh7KYfv8f3JnRKkt0/gVDCfcm7rPw2w9t6Y1A=;
+        b=dXcsIQXdjSvSetgdeRyk1L0TDGFgnU1sA/HMX45P2nwQP9YBd+vRF5KZNONPniEfrv
+         7Vci4QRYNxnw1dsZTw6itBE4RaOfDT9FnI/SZJrBbFaRDWDnFffV++3c4lNXpq6wIiyt
+         WRhyRh0NFpuoSI15tr4cAo+DzoawMh4lqeG/ve6XAuKV0TCSU0ITP/MC/2uFNldNRM5Y
+         1N0gdTZ1gMABZ0HtD/pKTsEcYfEIbqgsp3pOAiCXZb1BzT+OcOwxnerJKPkU+Q3OJSpP
+         1mXQwBR223KSec/52JXFX3lwZiUH5Pnxh2vU2o2FwJTzlZ+lsU0hRU/N6NnfdY4ZjjAG
+         /Rlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695829722; x=1696434522;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7eHWlFiucdq0IfNiQ7WXj2KUdARtYTii9zK/Td8/6q0=;
-        b=BqI2w3AiYWFhAPycHYxWvPYaRKuIfX5gMh15+VLOwAfUhm5X98x9ADISoBQ/EaUEwv
-         5pVi5W2hwltSlhEMW9fdTLA4PDX4bBMbGU6Ec8dCbAVdAGE+n7eUga0uwJjk4m0G56c6
-         VoX3a9a/CP6+XIAO4ekiQg6G2lU0jWyhXYpUvIXck7DWWVu+6vp2hOrxRGLP5w7muZ5S
-         XZjRTYBgjeCsZIa57LVF0wrsWHvSBpI1H4NBokWQ38W/lJ+ORfwT3iZzlXaUO3D4uwvk
-         DgwZvtvFeSXMl98Q2PlX8EAmlhMhrb7J63UZg7ziqA0wl+Vz6kIKBEJmAyEqj5UMO5me
-         HjZQ==
-X-Gm-Message-State: AOJu0YxjaBb9iaGLtR0lwjAG7o0tldWFAC8CxNJm5gScWEnQbDZYY8h1
-        CRLbP59ySsoa1u2SGeucE2oJHkDj2UQN2e+LNo228BkoBLN1j4ZewYfuY2S8qnXOFpXKOs2giKY
-        EZLvmeZbDw+Kged9AwpXOkOE=
-X-Received: by 2002:a0c:e3c4:0:b0:65b:239f:6779 with SMTP id e4-20020a0ce3c4000000b0065b239f6779mr2411221qvl.38.1695829722172;
-        Wed, 27 Sep 2023 08:48:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGvXN24Gq7lJ4N2Pd195k1EQvGDijxPrzCysfC8L9ky0JbCss85UWdaXbwHnXlPbMaYyaElaQ==
-X-Received: by 2002:a0c:e3c4:0:b0:65b:239f:6779 with SMTP id e4-20020a0ce3c4000000b0065b239f6779mr2411199qvl.38.1695829721936;
-        Wed, 27 Sep 2023 08:48:41 -0700 (PDT)
-Received: from klayman.redhat.com (net-2-34-30-58.cust.vodafonedsl.it. [2.34.30.58])
-        by smtp.gmail.com with ESMTPSA id j12-20020a0cf30c000000b0065b0a3ae7c7sm2964022qvl.113.2023.09.27.08.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 08:48:41 -0700 (PDT)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Rae Moar <rmoar@google.com>
-Cc:     Marco Pagani <marpagan@redhat.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] kunit: run test suites only after module initialization completes
-Date:   Wed, 27 Sep 2023 17:48:27 +0200
-Message-ID: <20230927154828.122280-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1695829933; x=1696434733;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZLYerTGh7KYfv8f3JnRKkt0/gVDCfcm7rPw2w9t6Y1A=;
+        b=N/D1TjW+AiHbXnIBK9H3Uzh4QKvUJ+HE7nKfwLCQjr60NQaV2coLQ/Gcu/7076beBS
+         Ne+P4hltEm0gJCJkHyqz7TuFbjcMxpWAu+cQZeKwjiy+tEI2QcbOS9TBImS7tJBPNb5I
+         GpddOHlnI/Vus4NQj3VQ2RzGm052yp7zyABd7D2l4lLiTLpwio/4acNQgra/MTjSItDj
+         scBH4cPJM6hyl5aCxJc+cTWA4pRbJ57sGnqGmNnzh34wLnx6LBP/TxlTem3oyuUYFJKp
+         T9TUebD2WI5aTE6qCHv3i4nLBFob8Flkyy3xzZLBXbAT/OXpdi3ZA5XuaNSlKM0QQ3lM
+         MXdQ==
+X-Gm-Message-State: AOJu0Yxx1ftmynF5iloFpDc50qjGYcy4INziVP9a9yOEEwBGzaZLsZ1j
+        V2Me47pUVrOu1AciCygAFmjrSkPXaPm+
+X-Google-Smtp-Source: AGHT+IG3sXax9IcTReeHuefqL/1ktCnSU6ky3tL0OgdRTWZx322bwT+3ENUMhdVpVh8YH/Zwt/5Bjg==
+X-Received: by 2002:a05:6e02:1609:b0:351:5aed:c13c with SMTP id t9-20020a056e02160900b003515aedc13cmr3126055ilu.14.1695829933063;
+        Wed, 27 Sep 2023 08:52:13 -0700 (PDT)
+Received: from [192.168.1.3] ([161.97.241.227])
+        by smtp.googlemail.com with ESMTPSA id x14-20020a056e020f0e00b0035134215863sm2619110ilj.55.2023.09.27.08.52.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 08:52:12 -0700 (PDT)
+Message-ID: <e08a3073-574c-c9fa-fc63-df33920165b9@gmail.com>
+Date:   Wed, 27 Sep 2023 09:52:11 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        peterz@infradead.org
+From:   Dan Raymond <raymod2@gmail.com>
+Subject: [PATCH v2] arch/x86: port I/O tracing on x86
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,45 +73,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-kunit_free_suite_set()") causes test suites to run while the test
-module is still in MODULE_STATE_COMING. In that state, the module
-is not fully initialized, lacking sysfs, module_memory, args, init
-function. This behavior can cause all sorts of problems while using
-fake devices.
+Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
+available on x86 via CONFIG_MMIOTRACE but that relies on page faults
+so it doesn't work with port I/O.  This feature uses tracepoints in a
+similar manner as CONFIG_TRACE_MMIO_ACCESS.
 
-This RFC patch restores the normal execution flow, waiting for module
-initialization to complete before running the tests, and uses the
-refcount to avoid calling kunit_free_suite_set() if load_module()
-fails.
-
-Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Signed-off-by: Dan Raymond <raymod2@gmail.com>
 ---
- lib/kunit/test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+V1 -> V2:
+  - create header file for prototypes to silence new compiler warning
+  - reduce CPU overhead to 2 instructions (no branching) when tracing is disabled
+  - fix imprecise IP logging by retrieving the IP off the stack instead of using
+    compile time labels
 
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 421f13981412..242f26ad387a 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -784,13 +784,13 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+ arch/x86/include/asm/shared/io.h | 25 ++++++++++++++++
+ arch/x86/lib/Makefile            |  1 +
+ arch/x86/lib/trace_portio.c      | 21 ++++++++++++++
+ include/linux/trace_portio.h     |  6 ++++
+ include/trace/events/portio.h    | 49 ++++++++++++++++++++++++++++++++
+ 5 files changed, 102 insertions(+)
+ create mode 100644 arch/x86/lib/trace_portio.c
+ create mode 100644 include/linux/trace_portio.h
+ create mode 100644 include/trace/events/portio.h
+
+diff --git a/arch/x86/include/asm/shared/io.h b/arch/x86/include/asm/shared/io.h
+index c0ef921c0586..9e5dce1cb62d 100644
+--- a/arch/x86/include/asm/shared/io.h
++++ b/arch/x86/include/asm/shared/io.h
+@@ -2,13 +2,36 @@
+ #ifndef _ASM_X86_SHARED_IO_H
+ #define _ASM_X86_SHARED_IO_H
  
- 	switch (val) {
- 	case MODULE_STATE_LIVE:
-+		kunit_module_init(mod);
- 		break;
- 	case MODULE_STATE_GOING:
--		kunit_module_exit(mod);
-+		if (module_refcount(mod) == -1)
-+			kunit_module_exit(mod);
- 		break;
- 	case MODULE_STATE_COMING:
--		kunit_module_init(mod);
--		break;
- 	case MODULE_STATE_UNFORMED:
- 		break;
- 	}
--- 
-2.41.0
++#include <linux/trace_portio.h>
+ #include <linux/types.h>
+ 
++/*
++ * We don't want the tracing logic included in the early boot modules (under
++ * arch/x86/boot) so we check for their include guards here.  If we don't do
++ * this we will get compiler errors.  These checks are not present in
++ * arch/x86/include/asm/msr.h which contains similar tracing logic.  That is
++ * possible only because none of the msr inline functions are instantiated in
++ * the early boot modules.  If that changes this issue will need to be addressed
++ * there as well.  Therefore it might be better to handle this centrally in
++ * tracepoint-defs.h.
++ */
++
++#if defined(CONFIG_TRACEPOINTS) && !defined(BOOT_COMPRESSED_MISC_H) && !defined(BOOT_BOOT_H)
++#include <linux/tracepoint-defs.h>
++DECLARE_TRACEPOINT(portio_write);
++DECLARE_TRACEPOINT(portio_read);
++#define _tracepoint_enabled(tracepoint) tracepoint_enabled(tracepoint)
++#else
++#define _tracepoint_enabled(tracepoint) false
++#endif
++
+ #define BUILDIO(bwl, bw, type)						\
+ static inline void __out##bwl(type value, u16 port)			\
+ {									\
+ 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+ 		     : : "a"(value), "Nd"(port));			\
++	if (_tracepoint_enabled(portio_write))				\
++		do_trace_portio_write(value, port, #bwl[0]);		\
+ }									\
+ 									\
+ static inline type __in##bwl(u16 port)					\
+@@ -16,6 +39,8 @@ static inline type __in##bwl(u16 port)					\
+ 	type value;							\
+ 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+ 		     : "=a"(value) : "Nd"(port));			\
++	if (_tracepoint_enabled(portio_read))				\
++		do_trace_portio_read(value, port, #bwl[0]);		\
+ 	return value;							\
+ }
+ 
+diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+index f76747862bd2..254f223c025d 100644
+--- a/arch/x86/lib/Makefile
++++ b/arch/x86/lib/Makefile
+@@ -40,6 +40,7 @@ $(obj)/inat.o: $(obj)/inat-tables.c
+ clean-files := inat-tables.c
+ 
+ obj-$(CONFIG_SMP) += msr-smp.o cache-smp.o
++obj-$(CONFIG_TRACEPOINTS) += trace_portio.o
+ 
+ lib-y := delay.o misc.o cmdline.o cpu.o
+ lib-y += usercopy_$(BITS).o usercopy.o getuser.o putuser.o
+diff --git a/arch/x86/lib/trace_portio.c b/arch/x86/lib/trace_portio.c
+new file mode 100644
+index 000000000000..4b340c97b97e
+--- /dev/null
++++ b/arch/x86/lib/trace_portio.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0+
++
++#include <linux/instruction_pointer.h>
++#include <linux/trace_portio.h>
++
++#define CREATE_TRACE_POINTS
++#include <trace/events/portio.h>
++
++void do_trace_portio_read(u32 value, u16 port, char width)
++{
++	trace_portio_read(value, port, width, _RET_IP_);
++}
++EXPORT_SYMBOL_GPL(do_trace_portio_read);
++EXPORT_TRACEPOINT_SYMBOL_GPL(portio_read);
++
++void do_trace_portio_write(u32 value, u16 port, char width)
++{
++	trace_portio_write(value, port, width, _RET_IP_);
++}
++EXPORT_SYMBOL_GPL(do_trace_portio_write);
++EXPORT_TRACEPOINT_SYMBOL_GPL(portio_write)
+diff --git a/include/linux/trace_portio.h b/include/linux/trace_portio.h
+new file mode 100644
+index 000000000000..013418d3d2ae
+--- /dev/null
++++ b/include/linux/trace_portio.h
+@@ -0,0 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++
++#include <linux/types.h>
++
++extern void do_trace_portio_read(u32 value, u16 port, char width);
++extern void do_trace_portio_write(u32 value, u16 port, char width);
+diff --git a/include/trace/events/portio.h b/include/trace/events/portio.h
+new file mode 100644
+index 000000000000..3591a75a475e
+--- /dev/null
++++ b/include/trace/events/portio.h
+@@ -0,0 +1,49 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM portio
++
++#if !defined(_TRACE_PORTIO_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_PORTIO_H
++
++#include <linux/tracepoint.h>
++
++DECLARE_EVENT_CLASS(portio_class,
++	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
++
++	TP_ARGS(value, port, width, ip_addr),
++
++	TP_STRUCT__entry(
++		__field(u32, value)
++		__field(u16, port)
++		__field(char, width)
++		__field(long, ip_addr)
++	),
++
++	TP_fast_assign(
++		__entry->value = value;
++		__entry->port = port;
++		__entry->width = width;
++		__entry->ip_addr = ip_addr;
++	),
++
++	TP_printk("port=0x%04x value=0x%0*x %pS",
++		__entry->port,
++		__entry->width == 'b' ? 2 :
++		__entry->width == 'w' ? 4 : 8,
++		__entry->value, (void *)__entry->ip_addr)
++);
++
++DEFINE_EVENT(portio_class, portio_read,
++	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
++	TP_ARGS(value, port, width, ip_addr)
++);
++
++DEFINE_EVENT(portio_class, portio_write,
++	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
++	TP_ARGS(value, port, width, ip_addr)
++);
++
++#endif /* _TRACE_PORTIO_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
 
+base-commit: be8b93b5cc7d533eb8c9b0590cdac055ecafe13a
+-- 
+2.25.1
