@@ -2,234 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 610437B0AB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660357B0A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjI0Qyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S230204AbjI0Qn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjI0Qyb (ORCPT
+        with ESMTP id S229583AbjI0Qnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:54:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D8DD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:54:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27B43C433CC;
-        Wed, 27 Sep 2023 16:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695833670;
-        bh=pfq+SQ5jW2o9nXakRgvSgmaqn3orOhnaopBx/4PGPjM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dI0YrIfy3jXCRX8+l+D2FjpPKNs3YV7+hSTiGlNtpGtV7CQS6bd586Pt3ZyMoUV7i
-         jICgsB1K+tZwYyfcHX3fcqS+EjQyqfKN56lB5rxmhPJY1u5C5yqAJzH2Y+Sh7GcCnA
-         Wsjh/mt9gs90sacL9QsJdnhEDORTDgAeSQlZkhrVAQHBgxfLa5jj1XVu8ZHqzgIdZB
-         zk0Ns+qhq+xNHB0bKRIrrb335lwvV5BvXwFSnl0oaVCz5cqX0mwtAQkzs+FzxjX+2m
-         gh/D3N+yoUM4HM2so+vq6e9HXDseLImFHeWW1gISm9LFOO+4RJWBhgwJur/o7zClzJ
-         ononDWm9zlqqw==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org
-Subject: [PATCH 2/2] usb: dwc3: add T-HEAD TH1520 usb driver
-Date:   Thu, 28 Sep 2023 00:42:22 +0800
-Message-Id: <20230927164222.3505-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230927164222.3505-1-jszhang@kernel.org>
-References: <20230927164222.3505-1-jszhang@kernel.org>
+        Wed, 27 Sep 2023 12:43:55 -0400
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A2795;
+        Wed, 27 Sep 2023 09:43:54 -0700 (PDT)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6515d44b562so68256436d6.3;
+        Wed, 27 Sep 2023 09:43:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695833033; x=1696437833;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AEao/pkJ/HYJmlN4A0Twlg9bHlRAPLblCfEZbWhODcQ=;
+        b=em8q0SuMVOYqrjimth9KEsdy51mJXtiECIzJ4mSQBvFz5FwMAoKOMns/sf+x0Kdv0W
+         diOIFE5uFOXAgHf6Yh3DOSBvyXMh51k9GIpNDqyZI1qKJbK9mJWnFYnbkRQyIHtkRvFb
+         PSk9lUByeRVSWF5qMOO1uTTiTOVQEBZnj+qCFL2kZu23h5AstHdVVIk07x7xOm/PRp/j
+         DALoMYhsN7m5o/4hGLeHwydjpG9c5RL6v5Mjf0mfc+jSNt6JcHdpqUTt0fBmoEYsv/76
+         A5IZjQbqlNXqUnMPrA4rWti9C5Ry7I4BvrX5cl+hfnMrtfVD3+rIRMK+O0NmZCdGnn1t
+         HlZQ==
+X-Gm-Message-State: AOJu0YzMrZdZaV6cWcXOrAgn/MDKpHQVEdml5Sydk0cSLlUQDiHoVCiu
+        m5lg4xoRgVf5cb6SwM0urN3Xo4ws8E+//g==
+X-Google-Smtp-Source: AGHT+IGkkOUsS6gtV/j32p6B8APXxBrA+aatvEt+eHYHdcBEfKIJ0Jisc2GIfNs4PSkiAAOQmOT/pg==
+X-Received: by 2002:a0c:b30d:0:b0:65a:f9f3:e779 with SMTP id s13-20020a0cb30d000000b0065af9f3e779mr2108784qve.34.1695833033377;
+        Wed, 27 Sep 2023 09:43:53 -0700 (PDT)
+Received: from costa-tp.bos2.lab ([2a00:a040:1a3:cb84:45fc:12dc:6d10:9889])
+        by smtp.gmail.com with ESMTPSA id o18-20020a0ce412000000b0065b22afe53csm1730098qvl.94.2023.09.27.09.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 09:43:52 -0700 (PDT)
+From:   Costa Shulyupin <costa.shul@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Jonathan Corbet <corbet@lwn.net>, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Costa Shulyupin <costa.shul@redhat.com>
+Subject: [PATCH] docs: update link to powerpc/vmemmap_dedup.rst
+Date:   Wed, 27 Sep 2023 19:43:18 +0300
+Message-ID: <20230927164319.2686237-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds TH1520 Glue layer to support USB controller on T-HEAD TH1520 SoC.
-There is a DesignWare USB3 DRD core in TH1520 SoCs, the dwc3 core is
-the child of this USB wrapper module device.
+after move of powerpc/ to arch/
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 ---
- MAINTAINERS                   |   1 +
- drivers/usb/dwc3/Kconfig      |   9 +++
- drivers/usb/dwc3/Makefile     |   1 +
- drivers/usb/dwc3/dwc3-thead.c | 119 ++++++++++++++++++++++++++++++++++
- 4 files changed, 130 insertions(+)
- create mode 100644 drivers/usb/dwc3/dwc3-thead.c
+ Documentation/mm/vmemmap_dedup.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..d55e40060c46 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18481,6 +18481,7 @@ M:	Fu Wei <wefu@redhat.com>
- L:	linux-riscv@lists.infradead.org
- S:	Maintained
- F:	arch/riscv/boot/dts/thead/
-+F:	drivers/usb/dwc3/dwc3-thead.c
+diff --git a/Documentation/mm/vmemmap_dedup.rst b/Documentation/mm/vmemmap_dedup.rst
+index 59891f72420e..593ede6d314b 100644
+--- a/Documentation/mm/vmemmap_dedup.rst
++++ b/Documentation/mm/vmemmap_dedup.rst
+@@ -211,7 +211,7 @@ the device (altmap).
  
- RNBD BLOCK DRIVERS
- M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 98efcbb76c88..1b02f4f55b47 100644
---- a/drivers/usb/dwc3/Kconfig
-+++ b/drivers/usb/dwc3/Kconfig
-@@ -178,4 +178,13 @@ config USB_DWC3_OCTEON
- 	  Only the host mode is currently supported.
- 	  Say 'Y' or 'M' here if you have one such device.
+ The following page sizes are supported in DAX: PAGE_SIZE (4K on x86_64),
+ PMD_SIZE (2M on x86_64) and PUD_SIZE (1G on x86_64).
+-For powerpc equivalent details see Documentation/powerpc/vmemmap_dedup.rst
++For powerpc equivalent details see Documentation/arch/powerpc/vmemmap_dedup.rst
  
-+config USB_DWC3_THEAD
-+	tristate "T-HEAD Platform"
-+	depends on ARCH_THEAD || COMPILE_TEST
-+	default USB_DWC3
-+	help
-+	  Support T-HEAD platform with DesignWare Core USB3 IP.
-+	  Only the host mode is currently supported.
-+	  Say 'Y' or 'M' here if you have one such device.
-+
- endif
-diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
-index fe1493d4bbe5..9523a51dd279 100644
---- a/drivers/usb/dwc3/Makefile
-+++ b/drivers/usb/dwc3/Makefile
-@@ -55,3 +55,4 @@ obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
- obj-$(CONFIG_USB_DWC3_IMX8MP)		+= dwc3-imx8mp.o
- obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
- obj-$(CONFIG_USB_DWC3_OCTEON)		+= dwc3-octeon.o
-+obj-$(CONFIG_USB_DWC3_THEAD)		+= dwc3-thead.o
-diff --git a/drivers/usb/dwc3/dwc3-thead.c b/drivers/usb/dwc3/dwc3-thead.c
-new file mode 100644
-index 000000000000..999b1e319c72
---- /dev/null
-+++ b/drivers/usb/dwc3/dwc3-thead.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dwc3-thead.c - T-HEAD platform specific glue layer
-+ *
-+ * Inspired by dwc3-of-simple.c
-+ *
-+ * Copyright (C) 2021 Alibaba Group Holding Limited.
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include "core.h"
-+
-+#define USB_SSP_EN		0x34
-+#define  REF_SSP_EN		BIT(0)
-+#define USB_SYS			0x3c
-+#define  COMMONONN		BIT(0)
-+
-+#define USB3_DRD_SWRST		0x14
-+#define  USB3_DRD_PRST		BIT(0)
-+#define  USB3_DRD_PHYRST	BIT(1)
-+#define  USB3_DRD_VCCRST	BIT(2)
-+#define  USB3_DRD_RSTMASK	(USB3_DRD_PRST | USB3_DRD_PHYRST | USB3_DRD_VCCRST)
-+
-+struct dwc3_thead {
-+	void __iomem		*base;
-+	struct regmap		*misc_sysreg;
-+	struct regulator	*vbus;
-+};
-+
-+static void dwc3_thead_optimize_power(struct dwc3_thead *thead)
-+{
-+	u32 val;
-+
-+	/* config usb top within USB ctrl & PHY reset */
-+	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
-+			   USB3_DRD_RSTMASK, USB3_DRD_PRST);
-+
-+	/*
-+	 * dwc reg also need to be configed to save power
-+	 * 1. set USB_SYS[COMMONONN]
-+	 * 2. set DWC3_GCTL[SOFITPSYNC](done by core.c)
-+	 * 3. set GUSB3PIPECTL[SUSPENDEN] (done by core.c)
-+	 */
-+	val = readl(thead->base + USB_SYS);
-+	val |= COMMONONN;
-+	writel(val, thead->base + USB_SYS);
-+	val = readl(thead->base + USB_SSP_EN);
-+	val |= REF_SSP_EN;
-+	writel(val, thead->base + USB_SSP_EN);
-+
-+	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
-+			   USB3_DRD_RSTMASK, USB3_DRD_RSTMASK);
-+}
-+
-+static int dwc3_thead_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct dwc3_thead *thead;
-+	int ret;
-+
-+	thead = devm_kzalloc(&pdev->dev, sizeof(*thead), GFP_KERNEL);
-+	if (!thead)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, thead);
-+
-+	ret = devm_regulator_get_enable_optional(dev, "vbus");
-+	if (ret < 0 && ret != -ENODEV)
-+		return ret;
-+
-+	thead->misc_sysreg = syscon_regmap_lookup_by_phandle(np, "thead,misc-sysreg");
-+	if (IS_ERR(thead->misc_sysreg))
-+		return PTR_ERR(thead->misc_sysreg);
-+
-+	thead->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(thead->base))
-+		return PTR_ERR(thead->base);
-+
-+	dwc3_thead_optimize_power(thead);
-+
-+	return of_platform_populate(np, NULL, NULL, dev);
-+}
-+
-+static void dwc3_thead_remove(struct platform_device *pdev)
-+{
-+	of_platform_depopulate(&pdev->dev);
-+}
-+
-+static const struct of_device_id dwc3_thead_of_match[] = {
-+	{ .compatible = "thead,th1520-usb" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, dwc3_thead_of_match);
-+
-+static struct platform_driver dwc3_thead_driver = {
-+	.probe		= dwc3_thead_probe,
-+	.remove_new	= dwc3_thead_remove,
-+	.driver		= {
-+		.name	= "dwc3-thead",
-+		.of_match_table	= dwc3_thead_of_match,
-+	},
-+};
-+module_platform_driver(dwc3_thead_driver);
-+
-+MODULE_ALIAS("platform:dwc3-thead");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("DesignWare DWC3 T-HEAD Glue Driver");
-+MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
+ The differences with HugeTLB are relatively minor.
+ 
 -- 
-2.40.1
+2.41.0
 
