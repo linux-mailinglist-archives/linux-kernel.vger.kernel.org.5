@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A08DF7B0AD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9FF7B0AA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjI0RGV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 13:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56974 "EHLO
+        id S229490AbjI0QvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjI0RGT (ORCPT
+        with ESMTP id S229437AbjI0QvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:06:19 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 Sep 2023 10:06:15 PDT
-Received: from sender-of-o49.zoho.eu (sender11-of-o53.zoho.eu [31.186.226.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAADF95;
-        Wed, 27 Sep 2023 10:06:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695833431; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=hotgoDEPYTwzrbPtF5xB3V1zHmZgMpbqYamrkCWowv4aY1gfZVZsIFPlmMs9+i8KCCxQVC7AGrYz42Uj/z/P0mLnvVPDBTI4nZOFV8czeD+LiJnhUAIwFfMaeTmUMaJbsqvR+44LTxjRKwHMkhiZBFGJVDLaUha48S9E8QST5I0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1695833431; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=/KrHy5tQAsIei5Iqu5rYZG0GhfjNKeGvw6jsZ0TcLY8=; 
-        b=T+nkQv4IoPSVfjqN9+ddTcBlo0Gg7I6YmAmnVvlLFC2TM5OzT3RDFq3yoJHYmgcSsTA2LWdiOtnFk/e8zZeqOlsjPAop+PHfs7Bvu2KTHGY5XS0dju/IlCNRvK0jwjxB/X8qE1WTY5aPFFv2iz5zz8g518QJ3FyUDJ6coSbs3/0=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        spf=pass  smtp.mailfrom=devnull@uvos.xyz;
-        dmarc=pass header.from=<devnull@uvos.xyz>
-Received: from [10.0.0.2] (ip-037-201-240-143.um10.pools.vodafone-ip.de [37.201.240.143]) by mx.zoho.eu
-        with SMTPS id 1695833428206965.6284300956125; Wed, 27 Sep 2023 18:50:28 +0200 (CEST)
-Message-ID: <994d5d7187a96fa48ade9244bcc9bd57465bf487.camel@uvos.xyz>
-Subject: Re: droid4 -- weird behaviour when attempting to use usb host
-From:   Unknown <devnull@uvos.xyz>
-To:     Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
-        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz,
-        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org
-Date:   Wed, 27 Sep 2023 18:50:26 +0200
-In-Reply-To: <ZRRPsWQiTP21hozK@duo.ucw.cz>
-References: <ZRGa+0OFNluV4T5t@localhost> <20230926071415.GW5285@atomide.com>
-         <ZRRPsWQiTP21hozK@duo.ucw.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Wed, 27 Sep 2023 12:51:15 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28EF9C;
+        Wed, 27 Sep 2023 09:51:13 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38RGf4a4009144;
+        Wed, 27 Sep 2023 11:51:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=6
+        6YwtrVPB63m73rzfrkXNgTtu4wVWf9hd6q5sRDERfc=; b=qXvYGkq/xQtDPr0ut
+        UyCW1PJVEAA5IoA7TwFPqD80tzMyREgOIAMDqm5qL7EKlvbIE9UzD3hBQypP59+Y
+        cnTPids4PNVEbe4QxCXM0KDPMHIuGYYNDJAOjVce3TFLqfBKRhstOgipajcPzJhs
+        Iuqi0QBHmqxvfmkVNK8hS/XSJpH14GJyP4BfC0EokLKyK0XZ9TtxXMgTllemtJ+X
+        MZ+yw9c3+wEcwxIrxOVqMFRuo6jrGXqOrGxMe3rhs6AJG0DXnY16LQA2nQyqb499
+        WHatROUrqOJS3r3cy9I+Si4PRuCRxa1smBII/gUKSO3gWpM92ZQ/VJu+sgWnrXRn
+        GnQFw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t9vejd1ag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 11:51:03 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 27 Sep
+ 2023 17:51:01 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Wed, 27 Sep 2023 17:51:01 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.112])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5998E15B9;
+        Wed, 27 Sep 2023 16:51:01 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <brendan.higgins@linux.dev>, <davidgow@google.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] kunit: debugfs: Handle errors from alloc_string_stream()
+Date:   Wed, 27 Sep 2023 17:50:58 +0100
+Message-ID: <20230927165058.29484-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: RA6cTYiBvohA6WeMlQ8Tn2N_krYxb87g
+X-Proofpoint-ORIG-GUID: RA6cTYiBvohA6WeMlQ8Tn2N_krYxb87g
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-27 at 17:52 +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > > I'm having some fun with usb host. Good news is it works with
-> > > externally powered hub... after a while. I get some error
-> > > messages
-> > > about inability to go host mode, but with enough patience it
-> > > eventually does enter host mode and I see my keyboard/mouse.
-> > > 
-> > > And usually in that process, one of my cpu cores disappear. top
-> > > no
-> > > longer shows 2 cores, and I was wondering for a while if d4 is
-> > > single-core system. It is not, my two cores are back after
-> > > reboot.
-> > > 
-> > > That's with 6.1.9 kernel from leste. Ideas how to debug this
-> > > would be
-> > > welcome. (Do you use usb host?)
-> > 
-> > You are using a "proper" non-standard usb micro-b cable that
-> > grounds
-> > the id pin, right?
-> 
-> Yes.
-> 
-> > If not, try with one of those as it allows the hardware to do what
-> > it's
-> > supposed to do.
-> > 
-> > And presumably you don't have a hacked usb hub that feeds back the
-> > vbus to your phone, right?
-> 
-> Do have hacked hub. Or more precisely, have device that needs
-> external
-> power (spinning rust), and hub passes it back to the device.
-> 
-> I'll retry with a keyboard... but I recall it behaved funny with
-> that, too.
-> 
-> > If you have, that should not be used as the pmic can feed vbus.
-> 
-> Well, my plan was to use it as a desktop, and external power is
-> useful
-> that as Droid battery is not that big.
-> 
-> Best regards,
->                                                                 Pavel
+In kunit_debugfs_create_suite() give up and skip creating the debugfs
+file if any of the alloc_string_stream() calls return an error or NULL.
+Only put a value in the log pointer of kunit_suite and kunit_test if it
+is a valid pointer to a log.
 
-I use usb host quite a bit with xt875, mostly to have a keyboard.
-I have noted that several hubs i have don't work reliably, im not sure
-why. Its possible that they use or request too mutch power from the
-port as cpcap has a pretty small vbus out limit.
+This prevents the potential invalid dereference reported by smatch:
 
-All my regular otg adapters work fine however.
+ lib/kunit/debugfs.c:115 kunit_debugfs_create_suite() error: 'suite->log'
+	dereferencing possible ERR_PTR()
+ lib/kunit/debugfs.c:119 kunit_debugfs_create_suite() error: 'test_case->log'
+	dereferencing possible ERR_PTR()
 
-I also have a powered hub that works quite well, its item 373697032160
-on ebay
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Fixes: 05e2006ce493 ("kunit: Use string_stream for test log")
+---
+ lib/kunit/debugfs.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+index 270d185737e6..73075ca6e88c 100644
+--- a/lib/kunit/debugfs.c
++++ b/lib/kunit/debugfs.c
+@@ -109,14 +109,27 @@ static const struct file_operations debugfs_results_fops = {
+ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ {
+ 	struct kunit_case *test_case;
++	struct string_stream *stream;
+ 
+-	/* Allocate logs before creating debugfs representation. */
+-	suite->log = alloc_string_stream(GFP_KERNEL);
+-	string_stream_set_append_newlines(suite->log, true);
++	/*
++	 * Allocate logs before creating debugfs representation.
++	 * The log pointer must be NULL if there isn't a log so only
++	 * set it if the log stream was created successfully.
++	 */
++	stream = alloc_string_stream(GFP_KERNEL);
++	if (IS_ERR_OR_NULL(stream))
++		goto err;
++
++	string_stream_set_append_newlines(stream, true);
++	suite->log = stream;
+ 
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+-		test_case->log = alloc_string_stream(GFP_KERNEL);
+-		string_stream_set_append_newlines(test_case->log, true);
++		stream = alloc_string_stream(GFP_KERNEL);
++		if (IS_ERR_OR_NULL(stream))
++			goto err;
++
++		string_stream_set_append_newlines(stream, true);
++		test_case->log = stream;
+ 	}
+ 
+ 	suite->debugfs = debugfs_create_dir(suite->name, debugfs_rootdir);
+@@ -124,6 +137,12 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ 	debugfs_create_file(KUNIT_DEBUGFS_RESULTS, S_IFREG | 0444,
+ 			    suite->debugfs,
+ 			    suite, &debugfs_results_fops);
++	return;
++
++err:
++	string_stream_destroy(suite->log);
++	kunit_suite_for_each_test_case(suite, test_case)
++		string_stream_destroy(test_case->log);
+ }
+ 
+ void kunit_debugfs_destroy_suite(struct kunit_suite *suite)
+-- 
+2.30.2
 
