@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD947B0B9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EC67B0B98
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjI0SGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        id S229655AbjI0SFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjI0SF7 (ORCPT
+        with ESMTP id S229511AbjI0SFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:05:59 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A96EB
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:05:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32167a4adaaso11237515f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:05:57 -0700 (PDT)
+        Wed, 27 Sep 2023 14:05:51 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A870EB4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:05:50 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79fb78e297bso297212139f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695837956; x=1696442756; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UznxyLIywUzNQqi71J0T/nmzjMDdI/e0HYUPWfZk0Qs=;
-        b=BzqKmI6zEvzlTF1908jB8Jza6gN8os5IzgNwL2bR1lBTSeRohNgHCxlBHmw94M3evA
-         zXaIgbihRIRDqY8SvWYZ25thuNkg6fpQUlkH3fY80MXjiuiWixBdP40R4+LmEkbB1o+O
-         jU//yonzXUSerIhGcu92B6xoHUTowORflRyJA=
+        d=chromium.org; s=google; t=1695837950; x=1696442750; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4GrqlkQ0I1JKG3CG9kC5zFGUFrlkl3FrQ5k9bmVUJsY=;
+        b=oVDssoQ5a1rtKJP1wYRKaDYWc3hUy/RinUJk/QOka5colyjpnBw8E7phouZJFHZQuf
+         jwjQE1Fw7biAuxWaMUshJe1YfjOjxSVW5cI3OMaenArtj8hgMrggkkOIitFmhmmWrqwR
+         Kyi2gpDZSTzWwiiAITxDaY4e+9C322X/+LYvM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695837956; x=1696442756;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695837950; x=1696442750;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UznxyLIywUzNQqi71J0T/nmzjMDdI/e0HYUPWfZk0Qs=;
-        b=UOXMx3+fUqeqfYjwq94TO3Ig87rYqKXdayrSp2B4zp711hY21DnHuVD0//FiGxpcUm
-         n9sit0Gdy320swBN3kesng1Owwd0ofL63bNn8NOTbBXr8PEbhcMMxuJX4Rn3bigGRNx+
-         cOurVceWJRT3WkjydBHrxRn7asr0qoZzfsuG9FccsIA+FmPC7sAYYPNE2iKEKtjG8VXF
-         y+/uNiUEJJVkW9rHvdNKCC6WO4Gzs1CVxVbP/SnU6FFUOwMtWq3yfE5Kzw/fqTWtSNb+
-         h6MdtMSWXqHaC/jSHBuDG/jTQkACRuOPlzdjNUwpt6ZXMlWKZcT9GS0T9SAzi/+ojl6C
-         EY3w==
-X-Gm-Message-State: AOJu0YxbCcVAbeaD0p7sK1xZQg68nVSTEhePj/Jm7bWrbh/qiyvePwB7
-        9DM3rhUcBB0ECh8dH4jA6ukEme1a0pAqfE/WPOVlYw==
-X-Google-Smtp-Source: AGHT+IHu8d7Pnl82zz4w1ZJLInbo+MaPXEVpQfPDuZAECp43xWAohu7ynqT7rF6jdM9CMuXedIxH1g==
-X-Received: by 2002:a5d:4146:0:b0:320:976:f942 with SMTP id c6-20020a5d4146000000b003200976f942mr2685312wrq.7.1695837955593;
-        Wed, 27 Sep 2023 11:05:55 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id w27-20020a17090633db00b009a2235ed496sm9836061eja.141.2023.09.27.11.05.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 11:05:55 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5345a3dfe3bso5827217a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:05:54 -0700 (PDT)
-X-Received: by 2002:a05:6402:358:b0:534:78a6:36cb with SMTP id
- r24-20020a056402035800b0053478a636cbmr2829801edw.39.1695837954528; Wed, 27
- Sep 2023 11:05:54 -0700 (PDT)
+        bh=4GrqlkQ0I1JKG3CG9kC5zFGUFrlkl3FrQ5k9bmVUJsY=;
+        b=iEsSA50gYh/WM3OnvWF7JKlMJ6HIj7oORpq/Tw0WqHZ4CDdUx6iTeTJ6bbZ8K7TBfS
+         v+/0hJNqqvTUApX0ObEF9vD+kJDR71KxP5ZU8RImuy+1wLWE8XibR2aUzPc/Q6pmAT5p
+         wjfSQ1wRTU24JaFeNPn+lquj8PW+u9D8I8DSGBHWl3Ko5kbQ/5+7sGU2ZunOjccca/gV
+         BcdgBIYj9oQUM5jb6aa0MsGR+ZsTKxu2z8639tIA82zNkKAIQF/0YwmprHgA+bpxxoO2
+         aI/S1WZPPxvw2CWQR69Agqhg0JJHk5VtuZwtb1gTeEcvabJ3h1qeTO7IdfyUAHE3I/2W
+         3JKQ==
+X-Gm-Message-State: AOJu0YzZvXXlK/BFovCpktz+qib0RiDH9DCjwYJWCVNp602heNzLY0yd
+        9642A2vjo58sHpoD0U+G1FWMBg==
+X-Google-Smtp-Source: AGHT+IEaajljv/uey+1Fqd1NIa3A9BpHMaQNWVA3f2Xydq8XNThDYOjFx6Y3UKwlj27CGNI0r8qbOQ==
+X-Received: by 2002:a6b:ea10:0:b0:795:13ea:477a with SMTP id m16-20020a6bea10000000b0079513ea477amr2843824ioc.8.1695837950050;
+        Wed, 27 Sep 2023 11:05:50 -0700 (PDT)
+Received: from kea.bld.corp.google.com ([2620:15c:183:200:5d4f:fe51:5575:6f76])
+        by smtp.gmail.com with ESMTPSA id b17-20020a05663801b100b00439fa6ff6a9sm4032583jaq.70.2023.09.27.11.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 11:05:49 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-mtd@lists.infradead.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Rob Herring <robh@kernel.org>, Tom Rini <trini@konsulko.com>,
+        Simon Glass <sjg@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nick Terrell <terrelln@fb.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] dt-bindings: mtd: fixed-partitions: Add compression property
+Date:   Wed, 27 Sep 2023 12:05:43 -0600
+Message-ID: <20230927180545.3522628-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-References: <20230926162228.68666-1-mjguzik@gmail.com> <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
- <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
- <20230927-kosmetik-babypuppen-75bee530b9f0@brauner> <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
- <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
-In-Reply-To: <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 27 Sep 2023 11:05:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
-Message-ID: <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,30 +77,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sept 2023 at 10:56, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> Comments in the patch explicitly mention dodgin RCU for the file object.
+Sometimes the contents of a partition are compressed. Add a property to
+express this and define the algorithm used.
 
-Not the commit message,. and the comment is also actually pretty
-obscure and only talks about the freeing part.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-The cred part is what actually made me go "why is that even rcu-free'd".
+Changes in v4:
+- Add an example
 
-I *think* it's bogus, but I didn't go look at the history of it .
+Changes in v3:
+- Just add a compression property for now
 
-> Well put_cred is called synchronously, but should this happen to be
-> the last ref on them, they will get call_rcu(&cred->rcu,
-> put_cred_rcu)'ed.
+Changes in v2:
+- Use "binman" for compatible instead of "u-boot,binman"
+- Significantly rework the patch
+- Use make dt_binding_check DT_SCHEMA_FILES=Documentation/../partitions
 
-Yes. But the way it's done in __fput() you end up potentially
-RCU-delaying it twice. Odd.
+ .../mtd/partitions/fixed-partitions.yaml      | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-The reason we rcu-delay the 'struct file *' is because of the
-__fget_files_rcu() games.
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index 331e564f29dc..058253d6d889 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -29,6 +29,24 @@ properties:
+ 
+   "#size-cells": true
+ 
++  compression:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: |
++      Compression algorithm used to store the data in this partition, chosen
++      from a list of well-known algorithms.
++
++      The contents are compressed using this algorithm.
++
++    enum:
++      - none
++      - bzip2
++      - gzip
++      - lzop
++      - lz4
++      - lzma
++      - xz
++      - zstd
++
+ patternProperties:
+   "@[0-9a-f]+$":
+     $ref: partition.yaml#
+@@ -64,6 +82,7 @@ examples:
+ 
+         uimage@100000 {
+             reg = <0x0100000 0x200000>;
++            compress = "lzma";
+         };
+     };
+ 
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
-But I don't see why the cred thing is there.
-
-Historical mistake? But it all looks a bit odd, and because of that it
-worries me.
-
-              Linus
