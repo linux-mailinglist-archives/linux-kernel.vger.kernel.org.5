@@ -2,89 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AC17AF96C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D66A7AF926
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjI0Eca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S229679AbjI0ER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjI0Ebk (ORCPT
+        with ESMTP id S229543AbjI0EQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:31:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F24C37;
-        Tue, 26 Sep 2023 17:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695773784; x=1727309784;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=t9Af1Zi6usLZRsDxAutl6VclVJK9TAWeZLdJbGkOdSY=;
-  b=ddI1+awat/W5A+673tyAzsi/r9qGsGRkwxR+RmDrNK9oSYqBcTouz8G7
-   x5GfEDqmVH8gvtR2A5eEn7QVA8gjjJyWwlW3yQJkmeHotorof3oOypJU7
-   lGOa+YmOUTNQfyeGud48kWs3E39tceJAzCFPUIBxv4t0dN5YA5JVp/BYA
-   4ECMd1h3wIbG7ce55Ll49fNagBi75X187r47fAZ5rtG5lInCP6pPIpnib
-   CiZqrF6P4J5YC7Uezb8DXiit+0jMoykOWpdjPXmBXyuDrJ+03LbVr+QEb
-   pHUrOhPgwqXtB4CcmAAKEmDXUnJEuyfyB1Xerwc/owc+LtJZDM/z7RS59
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361077295"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="361077295"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 17:16:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="748993259"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="748993259"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 17:16:14 -0700
-Received: from rabakare-mobl3.amr.corp.intel.com (unknown [10.212.145.15])
-        by linux.intel.com (Postfix) with ESMTP id BF699580BBE;
-        Tue, 26 Sep 2023 17:16:14 -0700 (PDT)
-Message-ID: <850d1c1b6ef41cd039cec2fe0e67437d80856f14.camel@linux.intel.com>
-Subject: Re: [PATCH 05/11] platform/x86:intel/pmc: Move get_low_power_modes
- function
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Date:   Tue, 26 Sep 2023 17:16:14 -0700
-In-Reply-To: <a790e9e7-2748-5d2f-a035-20ef42ca87a2@linux.intel.com>
-References: <20230922213032.1770590-1-david.e.box@linux.intel.com>
-         <20230922213032.1770590-6-david.e.box@linux.intel.com>
-         <a790e9e7-2748-5d2f-a035-20ef42ca87a2@linux.intel.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Wed, 27 Sep 2023 00:16:21 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799365245;
+        Tue, 26 Sep 2023 17:16:35 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c47309a8ccso81804735ad.1;
+        Tue, 26 Sep 2023 17:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695773795; x=1696378595; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HNJwTTZACq9yLQWS8t+PsblAtdyQNZRiQBfSWneDTAI=;
+        b=HOyYLZvZsgGR7Yhfk2SJTVilR1RVXrnU0UrAnyOi6tmSaWCsv0I3m6YiW0uxBkPCUW
+         gnzR4iDuK+vuTflEjZtpRpJyrCQZqkhtD5IIPP+6apTQwiyj79REQjq/U0baFiyoIyOG
+         8mkUBOht6cqvxtTFaZUH3uDKQ2Qq64OU8NGd4IrMWXrE4JrgwJIvV/rgZXq4RsTvt6hl
+         oKmjJDRBtVenNaXffQJ44XQBebex7pnbwfeP+VKXvHkTQ/og/IEBNnDWHc1l0cPKaHkd
+         7DTwpgZIxm05ByD/nILLwjSzIaITsKmwJAnpyQCP9OfBGRcPgDQvkrW78Eh1SYLEH1y2
+         EnQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695773795; x=1696378595;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HNJwTTZACq9yLQWS8t+PsblAtdyQNZRiQBfSWneDTAI=;
+        b=CwwxR7t29v3HCP/awQUmXFiMx7CU9KpzOZXDfspGTHUNkkk6fR2Yw4DFI8sg7xD894
+         Im37PH2zVU9k4WahGoKteozhQMj20ubm3onVV/Iqe7mxSIF01BrXzYEJJXkEv3H5zolk
+         R47q8pS+k6gzCVyPLw9MPHwV0d0sqtB0pfhr9DsfswH++fYO6LMku7KnUa1d5ngeJ8BO
+         3Pg1z1bSZEdtW8htX57Tr5Hu1FJqnmR7ST5K6jM9oH3S9hln+BSqRkta+A7B6n/9PEJm
+         zNIt5jAtFJ0IHcfIVQrnYE0KAjETUjo8TW7UPehqxRwhnyZBn/uG0prg/TQf7ZUvcEnF
+         YxYg==
+X-Gm-Message-State: AOJu0Ywyt9DJXRAbIdj6GGQw+4U18lk//Kc2AfimotQeVbFbaCjA00HK
+        mBFz6ZEqwi6kmi1Myfrkswyw/NBs0o4=
+X-Google-Smtp-Source: AGHT+IGEoQ7+A0JA5z0kXlfyTZItPmnp0nZi0UEkm75KmkCl9l0iN9IZ6VcHDazRrrnAKZjflc6YYw==
+X-Received: by 2002:a17:902:d2c7:b0:1b7:f64b:379b with SMTP id n7-20020a170902d2c700b001b7f64b379bmr758925plc.17.1695773794758;
+        Tue, 26 Sep 2023 17:16:34 -0700 (PDT)
+Received: from wheely.local0.net ([203.63.110.121])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8c6890623sm11703754plf.7.2023.09.26.17.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 17:16:34 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-nfs@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] nfs: reduce stack usage of nfs_get_root
+Date:   Wed, 27 Sep 2023 10:16:23 +1000
+Message-Id: <20230927001624.750031-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-26 at 18:56 +0300, Ilpo J=C3=A4rvinen wrote:
-> On Fri, 22 Sep 2023, David E. Box wrote:
->=20
-> > From: Xi Pardee <xi.pardee@intel.com>
-> >=20
-> > Some platforms will have a need to retrieve the low power modes as part=
- of
-> > their driver initialization. As such, make the function global and call=
- it
-> > from the platform specific init code.
->=20
-> What is the real justification for this change, I don't think it's clearl=
-y=20
-> stated above?
+Move fsinfo allocation off stack, reducing stack overhead of
+nfs_get_root from 304 to 192 bytes.
 
-It needs to be moved from core code to platform init code so that (in patch=
- 9)
-we can get the entry requirement list for the enabled modes, which won't be
-known before this function is ran. I'll update the changelog.
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
+Hi,
+
+This is motivated by a stack overflow described here:
+https://lore.kernel.org/netdev/20230927001308.749910-1-npiggin@gmail.com/
+
+NFS is not really a major culprit but it seems not too hard to
+shrink the stack a little.
+
+Thanks,
+Nick
+
+ fs/nfs/getroot.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/fs/nfs/getroot.c b/fs/nfs/getroot.c
+index 11ff2b2e060f..6e4188c09639 100644
+--- a/fs/nfs/getroot.c
++++ b/fs/nfs/getroot.c
+@@ -68,7 +68,7 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
+ {
+ 	struct nfs_fs_context *ctx = nfs_fc2context(fc);
+ 	struct nfs_server *server = NFS_SB(s), *clone_server;
+-	struct nfs_fsinfo fsinfo;
++	struct nfs_fsinfo *fsinfo;
+ 	struct dentry *root;
+ 	struct inode *inode;
+ 	char *name;
+@@ -79,19 +79,23 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
+ 	if (!name)
+ 		goto out;
+ 
+-	/* get the actual root for this mount */
+-	fsinfo.fattr = nfs_alloc_fattr_with_label(server);
+-	if (fsinfo.fattr == NULL)
++	fsinfo = kmalloc(sizeof(*fsinfo), GFP_KERNEL);
++	if (!fsinfo)
+ 		goto out_name;
+ 
+-	error = server->nfs_client->rpc_ops->getroot(server, ctx->mntfh, &fsinfo);
++	/* get the actual root for this mount */
++	fsinfo->fattr = nfs_alloc_fattr_with_label(server);
++	if (fsinfo->fattr == NULL)
++		goto out_fsinfo;
++
++	error = server->nfs_client->rpc_ops->getroot(server, ctx->mntfh, fsinfo);
+ 	if (error < 0) {
+ 		dprintk("nfs_get_root: getattr error = %d\n", -error);
+ 		nfs_errorf(fc, "NFS: Couldn't getattr on root");
+ 		goto out_fattr;
+ 	}
+ 
+-	inode = nfs_fhget(s, ctx->mntfh, fsinfo.fattr);
++	inode = nfs_fhget(s, ctx->mntfh, fsinfo->fattr);
+ 	if (IS_ERR(inode)) {
+ 		dprintk("nfs_get_root: get root inode failed\n");
+ 		error = PTR_ERR(inode);
+@@ -148,11 +152,13 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
+ 		!(kflags_out & SECURITY_LSM_NATIVE_LABELS))
+ 		server->caps &= ~NFS_CAP_SECURITY_LABEL;
+ 
+-	nfs_setsecurity(inode, fsinfo.fattr);
++	nfs_setsecurity(inode, fsinfo->fattr);
+ 	error = 0;
+ 
+ out_fattr:
+-	nfs_free_fattr(fsinfo.fattr);
++	nfs_free_fattr(fsinfo->fattr);
++out_fsinfo:
++	kfree(fsinfo);
+ out_name:
+ 	kfree(name);
+ out:
+-- 
+2.40.1
+
