@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500C57B0B87
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772A47B0B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjI0R6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 13:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
+        id S229827AbjI0R6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 13:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjI0R6E (ORCPT
+        with ESMTP id S229765AbjI0R6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:58:04 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F3610D3;
-        Wed, 27 Sep 2023 10:57:50 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so28000549a12.1;
-        Wed, 27 Sep 2023 10:57:50 -0700 (PDT)
+        Wed, 27 Sep 2023 13:58:08 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BB710F1;
+        Wed, 27 Sep 2023 10:57:53 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso10604157f8f.0;
+        Wed, 27 Sep 2023 10:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695837469; x=1696442269; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695837471; x=1696442271; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sf41GpttTXH9NGnzfB9RP8nxYb55p65KkNUeRtKNh+Y=;
-        b=f96bWUp1nZ2mO97Ipql9NWSRIT8cFalcBDCVO2P/aDjQqW+8dNnqu8wMCiZukWXbvf
-         4ML9EjvFtsiA6ClhZsMSabgAkCpcCFiJbeZIqp45oMACwyLwIBrop/1+rZZWWTnIfG5b
-         X/XG2w8ZDr+BkapFLYwrT9UBvZ7e6V6QqwRwb3ZXuoiWMIHWSaaaXeO0bB1jm74prO4N
-         +C+/LhaiQMxXtEvIHIx+/+AarMfYY4du10OilEmfaxu9ikMyDr98ejJn6g92rjpM4LdM
-         QrHezpu9EYbvwfewfxMOfK6+P0xsnTalZJdWkVYdXI+/pwvap9VVkbSowI1BEOIKBxcn
-         cs8A==
+        bh=0wXh/hi9rdCXT//s8PNBxmTKFVVUBiplEMbkFSyoXnA=;
+        b=NQ9RxLX20HXei9p4kNWz42Q6HwqfdDofGH1uH6Umr0968az7VXE618UgrjDX+nTrUr
+         GJUVbXyC3fVVJ4maEcgQH/07E7DJl/isd2VtzDQqP82gOzxvGIQa8+jadrpggGLDwh+M
+         NgwlURiST6KGffkyxb8n4DUcy5tXsj4v+zPnfAi7WbvcO81c+nLWzEUU1dgzsRcxy7o2
+         iGt0iq7yVRtH/TGsm0SRoyg6MNFxYChmKS6/wr4RZHVz5klWv5gTVa9FY/OlQd2JNrZZ
+         lLCZ/sw7xNMRVuPb62fqEjahViZYU5DOoj5AxulNBK3ic90hTXUbAhz7qJkK9HEaSouv
+         j67w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695837469; x=1696442269;
+        d=1e100.net; s=20230601; t=1695837471; x=1696442271;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sf41GpttTXH9NGnzfB9RP8nxYb55p65KkNUeRtKNh+Y=;
-        b=iNhnA+hsA4Q2zim3KkuyhhoteIf2PwN7VAVUM2+yCT8511tBic8gVQNE8oSVO2AqtD
-         aPWKwvYXfwSj/UvPO373kAjlM1VxOicund3PRMfwzMvfq7VOmynsZ5jPFrt58NHXKfpp
-         wWLyF/b3ESdbrna7wXmonc4jyHLU7QAm4fv9bGXT8Asm9DLDntgB6VLPIuWAtvKxP0xu
-         Fv0jGun1CeETOs77wmcxIZlhKWPBONK0ZFfg8kNXtbO9oIp62qAtzSm46hJam1mUYPJP
-         lbF6h4JIxVpv8mqA8knE7K5QD5MZ1HpeGvb0mAvYzgAxMLxJNzicMPlIi8Q+PfXXQHFx
-         ytPw==
-X-Gm-Message-State: AOJu0YxKsHjyDevPCNwurXT9pRvEnywCOhlkUZQsQu3pjk7HXoizs8Si
-        nZS9zndzfAM5PhgePTlFIRE=
-X-Google-Smtp-Source: AGHT+IF1z+E/tX9+OE8N+e3m465FBZrG3IcOsR5RiyKEcJBCUV2BCXitgk7UqFfApjWRsa2pyKx/Ew==
-X-Received: by 2002:a17:906:2a50:b0:9a1:8993:9532 with SMTP id k16-20020a1709062a5000b009a189939532mr7184555eje.30.1695837469366;
-        Wed, 27 Sep 2023 10:57:49 -0700 (PDT)
+        bh=0wXh/hi9rdCXT//s8PNBxmTKFVVUBiplEMbkFSyoXnA=;
+        b=Uywn/B47GzSlx6SNqJokyX8PTt1mFC5lzaOLAbu+KmPKlnZxDNwsQGLBgO5Qu45uCH
+         fh+llD+0Vg4WjYPRrfshYQnOZ6WO6bCUc8JQZLE0rmsJiKS87BmOyqeNcJaRok8+I4Fe
+         OEm7hTHoPOiIZSDkpWfVQj6tFNs0GfKu5MpcuheKWXTTJjvYDsMhqw2lB4CCTtXjV5dq
+         9vIsB0GUPp0cEVCiFc5jkyaeb0ny3ubN6hlGdLGl0SJnv7IdttAIRPYbUIM075XKqQ97
+         dqw6TqFNfNjTfOtNaRN0n8Vi322mCqjS8HQJiAO50Pk6cHaSjYr2cOMwBW+sfOydaCxt
+         8hvA==
+X-Gm-Message-State: AOJu0Yzh7cZrcY3YJI7X/O7n+Lgm28cZLNP7XLVKwvi/b7/FNgLM0Ad5
+        PfNQ1/G8q8FwxcTORrhZkRs=
+X-Google-Smtp-Source: AGHT+IHIS7Y0ifE0sKpyEQp3YtYoYAk40SE8tWT3qDSU29swV5cyqBj3yCPQDREFsQL7fOMDwPrC4Q==
+X-Received: by 2002:adf:cd04:0:b0:31c:804b:5ec3 with SMTP id w4-20020adfcd04000000b0031c804b5ec3mr2393453wrm.67.1695837471218;
+        Wed, 27 Sep 2023 10:57:51 -0700 (PDT)
 Received: from primary.. ([212.34.12.50])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170906370400b0099bd8c1f67esm9654593ejc.109.2023.09.27.10.57.47
+        by smtp.gmail.com with ESMTPSA id d4-20020a170906370400b0099bd8c1f67esm9654593ejc.109.2023.09.27.10.57.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 10:57:49 -0700 (PDT)
+        Wed, 27 Sep 2023 10:57:50 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v7 11/14] USB: typec: tps6598x: Enable sleep mode for tps25750
-Date:   Wed, 27 Sep 2023 13:53:45 -0400
-Message-Id: <20230927175348.18041-12-alkuor@gmail.com>
+Subject: [PATCH v7 12/14] USB: typec: tps6598x: Add trace for tps25750 irq
+Date:   Wed, 27 Sep 2023 13:53:46 -0400
+Message-Id: <20230927175348.18041-13-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230927175348.18041-1-alkuor@gmail.com>
 References: <20230927175348.18041-1-alkuor@gmail.com>
@@ -77,90 +77,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-Allow controller to enter sleep mode after the device
-is idle for sleep time.
+tps25750 event1 register doesn't have all bits in tps6598x
+event registers, only show the events that are masked
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
 Changes in v7:
   - Add driver name to commit subject
+  - Call trace_tps25750_irq directly from tps25750 interrupt
+    handler
 Changes in v6:
-  - Use tps25750_init instead of tps25750_apply_patch in resume
-    as it initializes sleep mode
+  - Add trace irq to tipd callbacks factory
 Changes in v5:
   - Incorporating tps25750 into tps6598x driver
 
- drivers/usb/typec/tipd/core.c     | 23 +++++++++++++++++++++--
- drivers/usb/typec/tipd/tps6598x.h |  3 +++
- 2 files changed, 24 insertions(+), 2 deletions(-)
+ drivers/usb/typec/tipd/core.c  |  1 +
+ drivers/usb/typec/tipd/trace.h | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index e775c3c9bf64..19bb2105b5b2 100644
+index 19bb2105b5b2..deb2b756fec4 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -42,6 +42,7 @@
- #define TPS_REG_PD_STATUS		0x40
- #define TPS_REG_RX_IDENTITY_SOP		0x48
- #define TPS_REG_DATA_STATUS		0x5f
-+#define TPS_REG_SLEEP_CONF		0x70
- 
- /* TPS_REG_SYSTEM_CONF bits */
- #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
-@@ -1040,6 +1041,24 @@ static int tps25750_apply_patch(struct tps6598x *tps)
- 	return 0;
- };
- 
-+static int tps25750_init(struct tps6598x *tps)
-+{
-+	int ret;
-+
-+	ret = tps25750_apply_patch(tps);
-+	if (ret)
-+		return ret;
-+
-+	ret = tps6598x_write8(tps, TPS_REG_SLEEP_CONF,
-+			      TPS_SLEEP_CONF_SLEEP_MODE_ALLOWED);
-+	if (ret)
-+		dev_warn(tps->dev,
-+			 "%s: failed to enable sleep mode: %d\n",
-+			 __func__, ret);
-+
-+	return 0;
-+}
-+
- static int
- tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
- {
-@@ -1226,7 +1245,7 @@ static int tps6598x_probe(struct i2c_client *client)
- 		return ret;
- 
- 	if (is_tps25750 && ret == TPS_MODE_PTCH) {
--		ret = tps25750_apply_patch(tps);
-+		ret = tps25750_init(tps);
- 		if (ret)
- 			return ret;
+@@ -582,6 +582,7 @@ static irqreturn_t tps25750_interrupt(int irq, void *data)
+ 		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+ 		goto err_unlock;
  	}
-@@ -1365,7 +1384,7 @@ static int __maybe_unused tps6598x_resume(struct device *dev)
- 		return ret;
++	trace_tps25750_irq(event[0]);
  
- 	if (of_device_is_compatible(np, "ti,tps25750") && ret == TPS_MODE_PTCH) {
--		ret = tps25750_apply_patch(tps);
-+		ret = tps25750_init(tps);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
-index 3a9a43394134..f86b5e96efba 100644
---- a/drivers/usb/typec/tipd/tps6598x.h
-+++ b/drivers/usb/typec/tipd/tps6598x.h
-@@ -213,4 +213,7 @@
- #define TPS_PD_STATUS_PORT_TYPE_SOURCE		2
- #define TPS_PD_STATUS_PORT_TYPE_SOURCE_SINK	3
+ 	if (!(event[0] | event[1]))
+ 		goto err_unlock;
+diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
+index 12cad1bde7cc..28725234a2d8 100644
+--- a/drivers/usb/typec/tipd/trace.h
++++ b/drivers/usb/typec/tipd/trace.h
+@@ -74,6 +74,13 @@
+ 		{ APPLE_CD_REG_INT_DATA_STATUS_UPDATE,		"DATA_STATUS_UPDATE" }, \
+ 		{ APPLE_CD_REG_INT_STATUS_UPDATE,		"STATUS_UPDATE" })
  
-+/* SLEEP CONF REG */
-+#define TPS_SLEEP_CONF_SLEEP_MODE_ALLOWED	BIT(0)
++#define show_tps25750_irq_flags(flags) \
++	__print_flags_u64(flags, "|", \
++		{ TPS_REG_INT_PLUG_EVENT,			"PLUG_EVENT" }, \
++		{ TPS_REG_INT_POWER_STATUS_UPDATE,		"POWER_STATUS_UPDATE" }, \
++		{ TPS_REG_INT_STATUS_UPDATE,			"STATUS_UPDATE" }, \
++		{ TPS_REG_INT_PD_STATUS_UPDATE,			"PD_STATUS_UPDATE" })
 +
- #endif /* __TPS6598X_H__ */
+ #define TPS6598X_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
+ 						      TPS_STATUS_PP_5V0_SWITCH_MASK | \
+ 						      TPS_STATUS_PP_HV_SWITCH_MASK | \
+@@ -230,6 +237,21 @@ TRACE_EVENT(cd321x_irq,
+ 		      show_cd321x_irq_flags(__entry->event))
+ );
+ 
++TRACE_EVENT(tps25750_irq,
++	    TP_PROTO(u64 event),
++	    TP_ARGS(event),
++
++	    TP_STRUCT__entry(
++			     __field(u64, event)
++			     ),
++
++	    TP_fast_assign(
++			   __entry->event = event;
++			   ),
++
++	    TP_printk("event=%s", show_tps25750_irq_flags(__entry->event))
++);
++
+ TRACE_EVENT(tps6598x_status,
+ 	    TP_PROTO(u32 status),
+ 	    TP_ARGS(status),
 -- 
 2.34.1
 
