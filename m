@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3AB7B0944
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302637B0954
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjI0PtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        id S232749AbjI0PvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbjI0Psm (ORCPT
+        with ESMTP id S232650AbjI0Pul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:48:42 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2087.outbound.protection.outlook.com [40.107.243.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617B527E5B;
-        Wed, 27 Sep 2023 08:48:07 -0700 (PDT)
+        Wed, 27 Sep 2023 11:50:41 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2040.outbound.protection.outlook.com [40.107.244.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A0D2728C;
+        Wed, 27 Sep 2023 08:44:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=delTbURlZ9xqDHvmxQj8qzFYyvcJXE8Nx4hl7+ZC0U9A6y5LmVowfyd2dnnysLYnQ2xMs40EED8B+b2Hmo1ObbGsrOxBXHRT48I58VgBa2d/pBqA09sL8Gbu57rCS/fETC/eBQKUtqwzszvq1Nkwrn0G/3Bho5hEBfSeFwG8KxR8gHv762T6y6DRVwYqNgZR5StA1ulRLM4MJ2jPigztAcCxS8f0aLGzfwCHSL432BgH3oleLTAICFwxyViSMeTfqD5ge4mQEPWq8mMcgOt3yRRY7SlbuKnvUjPWlOPe13d9kvRhDi459pn9htG+WM+odVHOokWuSD46THpyjH0W4Q==
+ b=QWMMvEN0TATzS0drA1Q2hvMe7PBGCz2DjGQjM+RhYBHIpMVjZjsm/2PUBiIie8np03PigNq7sVDq9p7FPo4bChC4rYqD2AXW/HNlwnrCgpQ4nkNhMKLxRHmWc/XJ5tGCJ8KuX6Rr0k1T2TRT2AeDgZL/96OuNNylZmywdE5ezonpsi8wfT4lMpF1RUUwLuy0xR+kxvKvpjpjREXCIlCVBN5xvJB15ElheaVsvDOQ1jZSjYSDkVPYe3pXEfWNiIkDMcJu7sgzzH/GBWfGiF9FMxBaFZIz8lbjS6Tq5M8/QRfszBz+WNbqQacP7pRdeyIxn/IAaqFcG5HR1s3MV2Qvdg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oO7WNPE9oyPXsuzcT4aIbJpCnOpTTJbT+4kzFv6wLZI=;
- b=hNCWe5Ozy0GIYPqMvxt6itesH4PJezWaDff7CQQFmHDCVNBbvrlU7CtXpDlgq1ZFoDrCiPuMfVZyd57P0qiHEWxVM7hc7WhrNlfU1ObLGNvgN0VGBdv7aB9pq0CrPgOHWTYi3riqs6DKMxJTIOnaP2hqQ4W7Q4H7HYwq0f9r8Y5huX5hIosLn2Q6ot2eNA4Xz/kVAguUurBwr9IdgIbrSSK/V+0tZPS4aG3368N58PdXgZB7Tka6BRu3gN2UPY03ZxjZ5/CA97nokuJUUNwTXZ8HGfo8nCEI4PfwCllcSVXJkgWvkEZlqG/nNlXhjJK7zVdIjxVogM0KRJ9dySzt1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=i0oHtPCbD1zp6wtFL/bzCcLwZqL7mn3v/WaUNKgEpAk=;
+ b=kHX/6I1yHjSdlguP+JQmgbw7bBS+tdJDyigeN+vZYWWC7OZoU9CQFh2avVHCQ8fj+Or8qCA/zq6AX4w/+7NskGuWPD7Ho5Yeg2Ut+AMSW6mjq3i7Mg6u/LGf4fgwS5UUMdNgin2i1ybnIyunMl70Vv20jmlVgvH5wL4duHZff/SHduS+P+MUjQnK/yMaRwyl/aL/IoV4F9ShOmEsotlVFAJNxJ3lFcKQjEytESyC1f9oUVNFWzyvZWtU1m+am0V/Jxmm7mirKt79heKlfAVb8A7AFEiWfv5BBf3jSvvugKM9r2rkTyGxZVivWXuOJjexZ+Tt2r/6K5ZNEKFselv/9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oO7WNPE9oyPXsuzcT4aIbJpCnOpTTJbT+4kzFv6wLZI=;
- b=YqEfeDAEa56l8VCNDBwp9JIjmz6fa7/t5NFYv+Bll2u0q8330f4jDHuEJ6r0yok4bQLZjMqoKMqtAIePE5R0cA0czaHHmyi+vgGM+GRrGnYA1nGNdJMtWvnBFAG3fmiAOHbvPJCjkcslr9cx6a544piRBNiKVKCVsRcKaJ4KR1M=
-Received: from BLAP220CA0007.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::12)
- by PH0PR12MB8173.namprd12.prod.outlook.com (2603:10b6:510:296::14) with
+ bh=i0oHtPCbD1zp6wtFL/bzCcLwZqL7mn3v/WaUNKgEpAk=;
+ b=kMmgi04M9s7l++7idZowoYlsI/fbDe/+bNaMs+99zS1mR94VyapZKZ8Jzl7AGNtSvwklBJfKTzIM2G6FV7yTiPeUZ2cvsWPCsPArF1n2b8LzVCQKacP41N1+rj2qhZl3pEgJ63VNzTMPo/z5ZXGlOz+Q524AlqIZunnFqvXPh/0wmj+B6lO3mYk9Pp4LMwzgPGUbeU8gpzyOFQ/nULU23N1gEPpl9rVrFwIyICBj+y2gZMNU2BRaHrGkSXZasyPGJVba25nG5wexAGSTX0iLBWS4mI8/UpKLWggE3dCkJZE8DYRwf6oIOc+kDyni3ZvyEsrXatPjyue1hnhilXbYFQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB9250.namprd12.prod.outlook.com (2603:10b6:610:1ae::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Wed, 27 Sep
- 2023 15:48:04 +0000
-Received: from BL02EPF0001A107.namprd05.prod.outlook.com
- (2603:10b6:208:32c:cafe::b7) by BLAP220CA0007.outlook.office365.com
- (2603:10b6:208:32c::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22 via Frontend
- Transport; Wed, 27 Sep 2023 15:48:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A107.mail.protection.outlook.com (10.167.241.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Wed, 27 Sep 2023 15:48:04 +0000
-Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
- 2023 10:48:01 -0500
-From:   Robert Richter <rrichter@amd.com>
-To:     Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Terry Bowman <terry.bowman@amd.com>,
-        Robert Richter <rrichter@amd.com>
-Subject: [PATCH v11 20/20] cxl/core/regs: Rework cxl_map_pmu_regs() to use map->dev for devm
-Date:   Wed, 27 Sep 2023 17:43:39 +0200
-Message-ID: <20230927154339.1600738-21-rrichter@amd.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230927154339.1600738-1-rrichter@amd.com>
-References: <20230927154339.1600738-1-rrichter@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
+ 2023 15:44:25 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%5]) with mapi id 15.20.6838.016; Wed, 27 Sep 2023
+ 15:44:25 +0000
+Date:   Wed, 27 Sep 2023 12:44:24 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [RFC 3/8] iommufd: Support attach/replace hwpt per pasid
+Message-ID: <20230927154424.GC339126@nvidia.com>
+References: <20230926092651.17041-1-yi.l.liu@intel.com>
+ <20230926092651.17041-4-yi.l.liu@intel.com>
+ <cd258ee3-52ca-f944-7553-6a1cd01c5f7a@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd258ee3-52ca-f944-7553-6a1cd01c5f7a@linux.intel.com>
+X-ClientProxiedBy: MN2PR19CA0014.namprd19.prod.outlook.com
+ (2603:10b6:208:178::27) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A107:EE_|PH0PR12MB8173:EE_
-X-MS-Office365-Filtering-Correlation-Id: a2628563-68d5-48f5-9569-08dbbf71231a
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB9250:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d7dd0dd-5f51-462c-a8e6-08dbbf70a0ac
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fDysIEfNUQ03FrTcp1qWYXQNS9obDNLm8tEwQ1tq70U5TbI6XMPs1Jzt56ZYrPrzCzF6h/g6a4dEqPkgCHl7WdRjrIcsqyTbG5ox9TNELmdyozylpYtrg2Txlj1I9bvoBFUupFFyu+AM2nRWTq45np/VPs85PnUUh6HAGj3jtP8aHX/XaMWZCTveUNPlVrDdVjpO5rxut5q03Xzq7Um3zueU6HzfbEMcyHITclm8/SbFZ5+o5P+Stm7yq+vnfYYUGhFPMEwlPFPYoDH/BpI3xJiAb1zScdSE9cDKRyBgzLen4CJ6UiZi5AOaIN2g4NPzA8970/h57b9TiNRNrg9NnO02V8J7ZaZE5IgAAYdwH5eUNleKdtqWft19uvIzL+YzLopcfS+NJdProKMK00jrx24ou5901MdsDX92WjMP9wrhN07DU6jbfqOtPMKlw0AGpEaB89CMvS7p8Vl/6lri0eYDYfRCqtZXYWD4btFCXlWQtaM61rCQOVTEaMfww/QgJlTZUhkxjJ0PAMmTbncX3DasCl7dX2BU7mrAwM/8gcJPahwxAgcOz+R1DOku2oXjwzF1QRw/yqvUREm5+yDQRF6vJ26AqUHMWKst5MlONDjiasx03bjtpivnWaktji3dL/+6hr64md8g/JaUEgMBbBSC0FoiIOXx1BwnaVudi7zbIYN16Dg3nLY0/YrJqfC5tXTzMbNvgfgTw+rekQgO3y1l0jIqCAYXCS/cGBm4BQWg4i8iRo+05OvPfEQvSzdrbZMheQobKKI7yFUCyaHo0g==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(451199024)(82310400011)(186009)(1800799009)(40470700004)(36840700001)(46966006)(40460700003)(40480700001)(6666004)(478600001)(336012)(36860700001)(356005)(47076005)(81166007)(82740400003)(2906002)(2616005)(7416002)(41300700001)(83380400001)(426003)(16526019)(26005)(1076003)(36756003)(5660300002)(8936002)(110136005)(70586007)(316002)(54906003)(70206006)(4326008)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 15:48:04.3899
+X-Microsoft-Antispam-Message-Info: CZhDl6P2vCmQlSVT0Rh4hN6PaPa3EVQ8apIgIdolerQRkkxDItPvaO526v3IC1r2ITgVoLlnQt0Bmhg5xoAijAhHJEPPrHs6tBCYYXdMeq+12o46/r86M8dTgoaGQexq4a2tJQMjqZMdZgRd+OE7ZBm4Ge/ujPXXddyl+sY9ckJai8ExgXOC5I6qa3FCE9dcBGmdQkwl8UQXGl3wgcj6sAdZ0U+IFjjiLNg10b57HxpR9nPRuFz+spMajYM5MshxZJMmo7q4Em7r8DChuNxCsHoM3VRZgQ0GewvBqfZv3aWjZF+ETaZK5CQQY2mHHzZiigQTfs9XRIxwBe9+nt+koAqwxTo9RzB5CRLzSNBKewlF/ORzVMsSZpmrZGBfyFlqtKxCZUMA8/0PenrxYVcgkCFW22ugbC8lVTNR6a/FbAfTNeAq+7G4Br84EMeF+FLFUaNAVxuCUjXq9ZYdnXVQj4v66VGJgq4tjaXHApoxWBzHONS+i+rf08YLbeaXo1G32CIjlZo95knSIGDoJc5zeaM2gedgOT1baE6B9tF8O55aF4oYs8F7m6rI/bBFaV/jZYHD9+5GCsJac9kmvi3dqwUd4M8D67cZ4OUxjSv6GCr3Z76MqA5zn78mTGKKYgeJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(376002)(39860400002)(366004)(230922051799003)(451199024)(186009)(1800799009)(8676002)(8936002)(4326008)(53546011)(6486002)(6506007)(6512007)(478600001)(6916009)(66556008)(86362001)(2616005)(38100700002)(26005)(2906002)(41300700001)(1076003)(7416002)(66476007)(5660300002)(66946007)(33656002)(316002)(36756003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bKeQmKMmNw2DohAqhzbM+DCUbgq2NBhiVhRmvAQXkgh/bkwMZn7luExNjSdx?=
+ =?us-ascii?Q?3DC2Hch5CbiYJFrIcS/AMjGht3FZbLigQE4s66bULZr8WXeJI4WE5pRs1t07?=
+ =?us-ascii?Q?hkxhwviBWpf+RR1SAXOFu1xQpiju5WVAIsF/+uyKXZTdYB47y/JsaQDSc7wq?=
+ =?us-ascii?Q?DCnv5Fd8Av22Kei/X7ppiLOhColkZuX/bdWBCwwEhYnkAwaxDhifZedow35R?=
+ =?us-ascii?Q?WOJKXJ/2ZXS341jFpldC7W3Cs004ClEo0X1oPPOFqkC4Od9MOSNbleiOZZCJ?=
+ =?us-ascii?Q?IwmvOVe4iUgqMj7opSfEmZ8Rhn1FBB6DRss/OoJ0atHw5WF7Z0MyqcPdEge2?=
+ =?us-ascii?Q?PeMBPWpxnrgZzVa1x+C68mapXcmrLSeGmivUxoFh1RTuM84pxc/gky9IYG5I?=
+ =?us-ascii?Q?w1/Zmx8eyu2DzBRXHzzHnI9UqrXOXhbsL6oQq9fbMitpno8SaNvPKrKgYdbQ?=
+ =?us-ascii?Q?PYr67IZ1S1Mvn0QKoqmZnUe0heLb/BlThPud80S8VYMzzQETqaNKNLksPg8x?=
+ =?us-ascii?Q?j0OqX2GaWP1nIMJkMPr7jdMn9UVteOWMfeZbSW0W749rhFYRYmCVZE0/Bl1x?=
+ =?us-ascii?Q?c9k7aITsXSgM4oPndyktedXCelJ1s77weudM00Km12LIfVDKtOVvtE0DuKFa?=
+ =?us-ascii?Q?67nPJPc5nYUWS1fet9NMn50Qt7WIn8p8anW6u/HNALOGZ4lx1MCsw5pqerAg?=
+ =?us-ascii?Q?i1Z+J0Ycazp8GMjeA44MNFc1AAdHlUSH0POBzpK+mQ2hy0e+j3zYpIdML8TO?=
+ =?us-ascii?Q?qg0liyc6dzPJi54y83FCV9HvosFSMmVqRqu8UUIBYqrVW8boAHyEl56ds1KD?=
+ =?us-ascii?Q?FdW9kGFOPmy57Pfw/Y47DsJgogdHHxrnZO8w3uaqr3MJ0MzHXTU15p1XLIDR?=
+ =?us-ascii?Q?ctZOSbzLNqRkrNbsCFwmL5k2I7p6ygzp8DaOVcxSncek0KjJfc3fABDusDtu?=
+ =?us-ascii?Q?xsJEeQIX4mZmB8LHwDt6erSMTbkomWLi776yoYPRKq39UmjT8m6o3M2Rg5jB?=
+ =?us-ascii?Q?cBNFX/80ABzB8nwBZTiOn3u3HmfYaS2gr/qBtRbExF6UyY9oZUAyjVUFabcd?=
+ =?us-ascii?Q?L50RjpLbGtceEQVqkjxFqCZ/OUsznN0wb2Ns0OCQq1ngk2TgFub5RBbygMVY?=
+ =?us-ascii?Q?m2Vis0FVXGObnsjqFnUS68HBsk6YB1kBh3xvFcsdLeAmM69DK9zWrMCrw7Ov?=
+ =?us-ascii?Q?v76nWTIZizHKzvwy3GsNLFBi0d2OZqa/Zj4JMfiM2HOpm7qd4Yq3t6jVx9Oy?=
+ =?us-ascii?Q?Vz8S2SKhQAJ19xfilk+DmXKe7pv9tAIls5GYLh0C+pUOda+WF/n56zSp/V1y?=
+ =?us-ascii?Q?8ryo+eBOicAVOp7sb1v7DhTP4RnK63nzy0hQ3uTKaD3NObCpgzg/2wlaQrwJ?=
+ =?us-ascii?Q?Pdg2+8aB8tGcfIsWsiM6yWte+hzxC+t4ttXlDpbA+D5CWaapIuXGbfgVPFz+?=
+ =?us-ascii?Q?4HY3jsBo3d6Y3Wgd6lN1zlysJ8aAhPQFoHp1NsXoxBocrV2W1PI8kGQ53G2W?=
+ =?us-ascii?Q?kXayqY9W9L+x/ctTQEvojHgNB49eKLL+rnE3OYIkleGlBaJRsu0YbNFX7lgs?=
+ =?us-ascii?Q?J3rRcPadpYbn6TWTqxMj7ktIJDQBZTD8OfCRChJB?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d7dd0dd-5f51-462c-a8e6-08dbbf70a0ac
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 15:44:25.7950
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2628563-68d5-48f5-9569-08dbbf71231a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A107.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8173
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9eBDkdylksr4CvV9sxJ1lNjbZz7MNAJrDIClKpgYx9B6PKB8t8ok/wEF03suy/h3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9250
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -108,62 +123,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct cxl_register_map carries a @dev parameter for devm operations.
-Simplify the function interface to use that instead of a separate @dev
-argument.
+On Wed, Sep 27, 2023 at 10:49:29AM +0800, Baolu Lu wrote:
+> On 9/26/23 5:26 PM, Yi Liu wrote:
+> > From: Kevin Tian<kevin.tian@intel.com>
+> > 
+> > This introduces three APIs for device drivers to manage pasid attach/
+> > replace/detach.
+> > 
+> >      int iommufd_device_pasid_attach(struct iommufd_device *idev,
+> > 				    u32 pasid, u32 *pt_id);
+> >      int iommufd_device_pasid_replace(struct iommufd_device *idev,
+> > 				     u32 pasid, u32 *pt_id);
+> >      void iommufd_device_pasid_detach(struct iommufd_device *idev,
+> > 				     u32 pasid);
+> 
+> I am a bit puzzled. Do we really need both attach and replace interfaces
+> to install a hwpt onto a pasid on device? The IOMMUFD already tracks the
+> connections between hwpt and {device, pasid}, so it could easily call
+> the right iommu interfaces (attach vs. replace). Perhaps I overlooked
+> previous discussion on this.
 
-Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-Signed-off-by: Robert Richter <rrichter@amd.com>
----
- drivers/cxl/core/regs.c | 5 ++---
- drivers/cxl/cxl.h       | 3 +--
- drivers/cxl/pci.c       | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
+It was a decision that attach will fail if something is already
+attached..
 
-diff --git a/drivers/cxl/core/regs.c b/drivers/cxl/core/regs.c
-index 7b56f6f28ab1..b668be617fd7 100644
---- a/drivers/cxl/core/regs.c
-+++ b/drivers/cxl/core/regs.c
-@@ -386,10 +386,9 @@ int cxl_count_regblock(struct pci_dev *pdev, enum cxl_regloc_type type)
- }
- EXPORT_SYMBOL_NS_GPL(cxl_count_regblock, CXL);
- 
--int cxl_map_pmu_regs(struct pci_dev *pdev, struct cxl_pmu_regs *regs,
--		     struct cxl_register_map *map)
-+int cxl_map_pmu_regs(struct cxl_register_map *map, struct cxl_pmu_regs *regs)
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = map->host;
- 	resource_size_t phys_addr;
- 
- 	phys_addr = map->resource;
-diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-index 7c2c195592d6..ed90ca8ed79e 100644
---- a/drivers/cxl/cxl.h
-+++ b/drivers/cxl/cxl.h
-@@ -286,8 +286,7 @@ int cxl_map_component_regs(const struct cxl_register_map *map,
- 			   unsigned long map_mask);
- int cxl_map_device_regs(const struct cxl_register_map *map,
- 			struct cxl_device_regs *regs);
--int cxl_map_pmu_regs(struct pci_dev *pdev, struct cxl_pmu_regs *regs,
--		     struct cxl_register_map *map);
-+int cxl_map_pmu_regs(struct cxl_register_map *map, struct cxl_pmu_regs *regs);
- 
- enum cxl_regloc_type;
- int cxl_count_regblock(struct pci_dev *pdev, enum cxl_regloc_type type);
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 037792e941f2..fa94bc61af25 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -898,7 +898,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 			break;
- 		}
- 
--		rc = cxl_map_pmu_regs(pdev, &pmu_regs, &map);
-+		rc = cxl_map_pmu_regs(&map, &pmu_regs);
- 		if (rc) {
- 			dev_dbg(&pdev->dev, "Could not map PMU regs\n");
- 			break;
--- 
-2.30.2
+But for this API we could go the way of the iommu code and have only
+'set' and 'unset' as the two operations.
 
+Jason
