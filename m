@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAC97AFA76
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E61F7AFA78
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjI0F51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        id S229531AbjI0F5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0F5X (ORCPT
+        with ESMTP id S229519AbjI0F5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:57:23 -0400
+        Wed, 27 Sep 2023 01:57:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C521D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:57:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7088CC433C7;
-        Wed, 27 Sep 2023 05:57:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686D610A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:57:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5BDEC433C7;
+        Wed, 27 Sep 2023 05:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695794241;
-        bh=OcODb5oh2UAEYUkQvTSAj32lXUCk0JHhgjm9k3LkkQY=;
+        s=korg; t=1695794258;
+        bh=RZYofYOZ1MyTug1bUsL3N5Afz42CL9StXrgCWGQiYlo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SHuW7be5UJ6dJpx50FzO9wSpQ7DLxHTE23AFXvjAvTFmujUnAuE21mgL+k5EuZRtF
-         uXRZ6BPQG4NHVGLbk7gFKLdmTX400AR5HLBIFis67S9s8BLgelmK6WNJoL2ikPNYa+
-         +0AUUlvi1f75gEHanXftYaWkg+MxedqSJVxEiW9w=
-Date:   Wed, 27 Sep 2023 07:57:18 +0200
+        b=RGmqiIaBmzicq6U2wn6n/OIUecEF1XOXpg8I7mXbw2RULx0663GRqsl2Rztt7vc7t
+         F6D97InKjGDY0PM90DOWKOFpwATvRu2kY0krn01g4Ri0rvYz1+m//JzGaP92AYv6gK
+         REBTul5Lw/glesHVhRLksah9ApLMAUlgCoKM4o+c=
+Date:   Wed, 27 Sep 2023 07:57:35 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>
 Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
@@ -32,7 +32,7 @@ Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
         saravanak@google.com
 Subject: Re: [RESEND PATCH] driver core: Clear FWNODE_FLAG_LINKS_ADDED in
  device_links_purge()
-Message-ID: <2023092705-canopy-spiritism-b0e1@gregkh>
+Message-ID: <2023092722-proofread-vindicate-f26c@gregkh>
 References: <1695781810-5700-1-git-send-email-quic_zhenhuah@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -95,4 +95,4 @@ On Wed, Sep 27, 2023 at 10:30:10AM +0800, Zhenhua Huang wrote:
 > 2.7.4
 > 
 
-What commit id does this fix?
+Why is this a RESEND?  What was wrong with the first version?
