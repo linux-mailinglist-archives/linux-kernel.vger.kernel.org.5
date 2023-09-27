@@ -2,187 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A371C7B0258
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F30E7B025B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbjI0LEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        id S231296AbjI0LEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjI0LEC (ORCPT
+        with ESMTP id S229648AbjI0LEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:04:02 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA471FC;
-        Wed, 27 Sep 2023 04:04:00 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38RAqtcH007388;
-        Wed, 27 Sep 2023 13:03:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=selector1; bh=7yB8NpWtK7dweb2CR9jUC
-        ltaouL0nwx9ysquf7k9XsU=; b=6MqffwuzRrn1OHJG57ZKwmRGL7DSWZNV0eqiA
-        RW5LVYc4K10Avm+4T0WRZ266snMYvpY29q3RyyisXXHugzrt5z3834lRld5qNTqb
-        vD1BcP4hWKj3A9aNo9JuT3MPsRzb2DpOO7kgSFxxD6zd+6A4k8g3fSdrUxBGoEdo
-        n3OKi7kXLuBSSMWAOLJIGMzlmYMQhuYWPVO2aDFDbdtj/hEed1djI67C7QjPXe1E
-        YLHDkM+7lM69cmYKd5E0BgP33kyDy8fMgmfo62xvfVja1yYetDAh20ncaA8x2WZm
-        xBJfD8USXkIe90IRKzDWBsWaJfADp2qFdwtlOMFpzjUFLhYKQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9pwd9thf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 13:03:21 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E8259100058;
-        Wed, 27 Sep 2023 13:03:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D736C217B6C;
-        Wed, 27 Sep 2023 13:03:19 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
- 2023 13:03:19 +0200
-Date:   Wed, 27 Sep 2023 13:03:11 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
-Message-ID: <20230927110311.GA834168@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230901155732.252436-1-alain.volmat@foss.st.com>
- <20230901155732.252436-5-alain.volmat@foss.st.com>
- <20230905090258.GC31594@pendragon.ideasonboard.com>
- <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
- <20230922160818.GJ19112@pendragon.ideasonboard.com>
- <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
- <20230925114332.GC8583@pendragon.ideasonboard.com>
+        Wed, 27 Sep 2023 07:04:05 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D01180
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:04:03 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so7740297a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695812643; x=1696417443; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TRZ/r6+7TOpg5cdhVwD17zimKeX22UUsUqcVE65wOuQ=;
+        b=NRTXv3fSIJxhOLjzpc3t8c12lcpFQJwIQdwJ5T2cOMdlwg0UeG70/KnaxxBruhZK7G
+         cd0wo6Vl0OtMhhGpujtcHkq5d+iwBGOT9RCmIUf5ZckrmZ7CXXUlZBZOJRy5Kk8aDhHm
+         KPOwMuXlgwz3ym4GKOxevmz/zNW3dgcLRDx99fBvdKiiIbDGO6XbqqRXkfbfA8slYDPR
+         dYaiHq9fJ7TZF+LsZCfeVPFLuihl8SZM+wviLk0lLBfYn1S5NbbpB9JXMpcRiVYxNVP3
+         TzgoNYvK5k37HYO4HAwDDcrBRckt/fIAupevM1iDmN4WSEtsEEurOeQ3z4havRCh0WgQ
+         BaPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695812643; x=1696417443;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TRZ/r6+7TOpg5cdhVwD17zimKeX22UUsUqcVE65wOuQ=;
+        b=N84ERdSi2AqbR3yv3nJpWaXP9/NrYAHxfxS6eHgjuqU5rUZzyAdny4tLDL8WyC6SvB
+         X39H691iRjNO1oSlpLo/She+wSd+K0HdXXgYLRRI5fb3Y5VwClLKZGitoX7oGpQGTrQ4
+         V9M7xEE8lfD9nQT6i4LENB9I6AZeRNHn0Ty93IkW7Z/ZzN6CS/HL6/Qr+ARgGYkt7TNQ
+         1h5o9KtB1cW5WlubTLf3LarjmP3wFYp/Lnb047icvf+4CqlUfHLJughsJBYX99GKk02S
+         RPKTjhR4dTYBXyTsCDD9sxind6aGLZKaqoH+1IDHTI6q+exa1b+8I71IdxVHDbVdtGli
+         siGw==
+X-Gm-Message-State: AOJu0YwO6MvEbOT7SsC60mU9O4sDWoYtXWdZoXyi1lNquCZpsA4zmyRc
+        gvtdOojwPw62M1VJ9g4i/KHyZQ==
+X-Google-Smtp-Source: AGHT+IFPIVZlzDDqOm8WIE5A6AbsMph3KF7rtW03J3V82mEfzOSruRLOxlBuV2v6iQc/oEBPZBM63A==
+X-Received: by 2002:a05:6a20:12c6:b0:161:3120:e840 with SMTP id v6-20020a056a2012c600b001613120e840mr1706101pzg.2.1695812642959;
+        Wed, 27 Sep 2023 04:04:02 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id g1-20020a62e301000000b0068fb4f5f38fsm11454912pfh.30.2023.09.27.04.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 04:04:02 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] OPP: Remove doc style comments for internal routines
+Date:   Wed, 27 Sep 2023 16:33:55 +0530
+Message-Id: <0484680a9c7bb66cf1fb583a5178e753dd763afd.1695812634.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230925114332.GC8583@pendragon.ideasonboard.com>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_06,2023-09-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+These were previously exposed outside of the OPP core and needed doc
+style commenting. They aren't public now and don't need the same.
 
+This fixes warnings generated for builds with `W=1`:
 
-On Mon, Sep 25, 2023 at 02:43:32PM +0300, Laurent Pinchart wrote:
-> On Mon, Sep 25, 2023 at 01:35:42PM +0200, Alain Volmat wrote:
-> > On Fri, Sep 22, 2023 at 07:08:18PM +0300, Laurent Pinchart wrote:
-> > > On Fri, Sep 22, 2023 at 06:02:27PM +0200, Alain Volmat wrote:
-> > > > On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
-> > > > > On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
-> > > > > > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> > > > > > 
-> > > > > > Add dcmipp support to STM32MP135.
-> > > > > > 
-> > > > > > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> > > > > > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> > > > > > ---
-> > > > > >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
-> > > > > >  1 file changed, 8 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > > index abf2acd37b4e..beee9ec7ed0d 100644
-> > > > > > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
-> > > > > > @@ -8,5 +8,13 @@
-> > > > > >  
-> > > > > >  / {
-> > > > > >  	soc {
-> > > > > > +		dcmipp: dcmipp@5a000000 {
-> > > > > > +			compatible = "st,stm32mp13-dcmipp";
-> > > > > > +			reg = <0x5a000000 0x400>;
-> > > > > > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-> > > > > > +			resets = <&rcc DCMIPP_R>;
-> > > > > > +			clocks = <&rcc DCMIPP_K>;
-> > > > > > +			status = "disabled";
-> > > > > 
-> > > > > This needs a port, as it's marked as required in the bindings. You can
-> > > > > leave the endpoint out.
-> > > > 
-> > > > I first agreed with your comment but, having done the check (make
-> > > > CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
-> > > > node is kept disabled within our dtsi.
-> > > 
-> > > Interesting.
-> > > 
-> > > > (it is later on only enabled in dts file which as well have the port
-> > > > property).
-> > > > Indeed, to check this I changed it to okay and DTC_CHK complained about
-> > > > missing port property.
-> > > > 
-> > > > Hence, I'd think that port doesn't have to be added in this dtsi file.
-> > > > Would you agree with that ?
-> > > 
-> > > I still think the port belongs here, as it's an intrinsic property of
-> > > the dcmipp, not a property of the board. Does it cause any issue to add
-> > > a port in the .dtsi ?
-> > 
-> > I agree that the port refers more to the SoC (hence dtsi) rather than
-> > the board (hence dts), however I am wondering if this is really
-> > something usually done.  I had a look at other dtsi with node related
-> > to similar kind of devices and it seems to me that there is no such case
-> > of a dtsi with a port having nothing in it.  Did I missed something ?
-> 
-> Look at the csi@32e4000 and csi@32e5000 nodes in
-> arch/arm64/boot/dts/freescale/imx8mp.dtsi for instance. There are quite
-> a few other examples.
+core.c:2105: warning: Function parameter or member 'opp_table' not described in '_opp_set_supported_hw'
+core.c:2105: warning: Excess function parameter 'dev' description in '_opp_set_supported_hw'
+core.c:2148: warning: Function parameter or member 'opp_table' not described in '_opp_set_prop_name'
+core.c:2148: warning: Excess function parameter 'dev' description in '_opp_set_prop_name'
+core.c:2189: warning: Function parameter or member 'opp_table' not described in '_opp_set_regulators'
+core.c:2189: warning: Excess function parameter 'count' description in '_opp_set_regulators'
+core.c:2293: warning: Function parameter or member 'opp_table' not described in '_opp_set_clknames'
+core.c:2293: warning: Function parameter or member 'config_clks' not described in '_opp_set_clknames'
+core.c:2391: warning: Function parameter or member 'opp_table' not described in '_opp_set_config_regulators_helper'
+core.c:2455: warning: Function parameter or member 'opp_table' not described in '_opp_attach_genpd'
+core.c:2682: warning: Function parameter or member 'token' not described in 'dev_pm_opp_clear_config'
+core.c:2682: warning: Excess function parameter 'opp_table' description in 'dev_pm_opp_clear_config'
 
-Ok, thanks for pointer.  Understood, I add an empty port child within
-the node.  I've also covered the points of your review of the v3 and
-post now the v4.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309091558.x3JJrxFI-lkp@intel.com/
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 79 ++++------------------------------------------
+ 1 file changed, 7 insertions(+), 72 deletions(-)
 
-> 
-> > > > > With this fixed,
-> > > > > 
-> > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > > 
-> > > > > > +		};
-> > > > > >  	};
-> > > > > >  };
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 6cae2785b264..ab82aafecedf 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2089,12 +2089,7 @@ int _opp_add_v1(struct opp_table *opp_table, struct device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * _opp_set_supported_hw() - Set supported platforms
+- * @dev: Device for which supported-hw has to be set.
+- * @versions: Array of hierarchy of versions to match.
+- * @count: Number of elements in the array.
+- *
++/*
+  * This is required only for the V2 bindings, and it enables a platform to
+  * specify the hierarchy of versions it supports. OPP layer will then enable
+  * OPPs, which are available for those versions, based on its 'opp-supported-hw'
+@@ -2117,14 +2112,6 @@ static int _opp_set_supported_hw(struct opp_table *opp_table,
+ 	return 0;
+ }
+ 
+-/**
+- * _opp_put_supported_hw() - Releases resources blocked for supported hw
+- * @opp_table: OPP table returned by _opp_set_supported_hw().
+- *
+- * This is required only for the V2 bindings, and is called for a matching
+- * _opp_set_supported_hw(). Until this is called, the opp_table structure
+- * will not be freed.
+- */
+ static void _opp_put_supported_hw(struct opp_table *opp_table)
+ {
+ 	if (opp_table->supported_hw) {
+@@ -2134,11 +2121,7 @@ static void _opp_put_supported_hw(struct opp_table *opp_table)
+ 	}
+ }
+ 
+-/**
+- * _opp_set_prop_name() - Set prop-extn name
+- * @dev: Device for which the prop-name has to be set.
+- * @name: name to postfix to properties.
+- *
++/*
+  * This is required only for the V2 bindings, and it enables a platform to
+  * specify the extn to be used for certain property names. The properties to
+  * which the extension will apply are opp-microvolt and opp-microamp. OPP core
+@@ -2156,14 +2139,6 @@ static int _opp_set_prop_name(struct opp_table *opp_table, const char *name)
+ 	return 0;
+ }
+ 
+-/**
+- * _opp_put_prop_name() - Releases resources blocked for prop-name
+- * @opp_table: OPP table returned by _opp_set_prop_name().
+- *
+- * This is required only for the V2 bindings, and is called for a matching
+- * _opp_set_prop_name(). Until this is called, the opp_table structure
+- * will not be freed.
+- */
+ static void _opp_put_prop_name(struct opp_table *opp_table)
+ {
+ 	if (opp_table->prop_name) {
+@@ -2172,12 +2147,7 @@ static void _opp_put_prop_name(struct opp_table *opp_table)
+ 	}
+ }
+ 
+-/**
+- * _opp_set_regulators() - Set regulator names for the device
+- * @dev: Device for which regulator name is being set.
+- * @names: Array of pointers to the names of the regulator.
+- * @count: Number of regulators.
+- *
++/*
+  * In order to support OPP switching, OPP layer needs to know the name of the
+  * device's regulators, as the core would be required to switch voltages as
+  * well.
+@@ -2239,10 +2209,6 @@ static int _opp_set_regulators(struct opp_table *opp_table, struct device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * _opp_put_regulators() - Releases resources blocked for regulator
+- * @opp_table: OPP table returned from _opp_set_regulators().
+- */
+ static void _opp_put_regulators(struct opp_table *opp_table)
+ {
+ 	int i;
+@@ -2274,11 +2240,7 @@ static void _put_clks(struct opp_table *opp_table, int count)
+ 	opp_table->clks = NULL;
+ }
+ 
+-/**
+- * _opp_set_clknames() - Set clk names for the device
+- * @dev: Device for which clk names is being set.
+- * @names: Clk names.
+- *
++/*
+  * In order to support OPP switching, OPP layer needs to get pointers to the
+  * clocks for the device. Simple cases work fine without using this routine
+  * (i.e. by passing connection-id as NULL), but for a device with multiple
+@@ -2362,10 +2324,6 @@ static int _opp_set_clknames(struct opp_table *opp_table, struct device *dev,
+ 	return ret;
+ }
+ 
+-/**
+- * _opp_put_clknames() - Releases resources blocked for clks.
+- * @opp_table: OPP table returned from _opp_set_clknames().
+- */
+ static void _opp_put_clknames(struct opp_table *opp_table)
+ {
+ 	if (!opp_table->clks)
+@@ -2377,11 +2335,7 @@ static void _opp_put_clknames(struct opp_table *opp_table)
+ 	_put_clks(opp_table, opp_table->clk_count);
+ }
+ 
+-/**
+- * _opp_set_config_regulators_helper() - Register custom set regulator helper.
+- * @dev: Device for which the helper is getting registered.
+- * @config_regulators: Custom set regulator helper.
+- *
++/*
+  * This is useful to support platforms with multiple regulators per device.
+  *
+  * This must be called before any OPPs are initialized for the device.
+@@ -2396,13 +2350,6 @@ static int _opp_set_config_regulators_helper(struct opp_table *opp_table,
+ 	return 0;
+ }
+ 
+-/**
+- * _opp_put_config_regulators_helper() - Releases resources blocked for
+- *					 config_regulators helper.
+- * @opp_table: OPP table returned from _opp_set_config_regulators_helper().
+- *
+- * Release resources blocked for platform specific config_regulators helper.
+- */
+ static void _opp_put_config_regulators_helper(struct opp_table *opp_table)
+ {
+ 	if (opp_table->config_regulators)
+@@ -2428,12 +2375,7 @@ static void _detach_genpd(struct opp_table *opp_table)
+ 	opp_table->genpd_virt_devs = NULL;
+ }
+ 
+-/**
+- * _opp_attach_genpd - Attach genpd(s) for the device and save virtual device pointer
+- * @dev: Consumer device for which the genpd is getting attached.
+- * @names: Null terminated array of pointers containing names of genpd to attach.
+- * @virt_devs: Pointer to return the array of virtual devices.
+- *
++/*
+  * Multiple generic power domains for a device are supported with the help of
+  * virtual genpd devices, which are created for each consumer device - genpd
+  * pair. These are the device structures which are attached to the power domain
+@@ -2509,13 +2451,6 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
+ 
+ }
+ 
+-/**
+- * _opp_detach_genpd() - Detach genpd(s) from the device.
+- * @opp_table: OPP table returned by _opp_attach_genpd().
+- *
+- * This detaches the genpd(s), resets the virtual device pointers, and puts the
+- * OPP table.
+- */
+ static void _opp_detach_genpd(struct opp_table *opp_table)
+ {
+ 	/*
+@@ -2667,7 +2602,7 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_set_config);
+ 
+ /**
+  * dev_pm_opp_clear_config() - Releases resources blocked for OPP configuration.
+- * @opp_table: OPP table returned from dev_pm_opp_set_config().
++ * @token: The token returned by dev_pm_opp_set_config() previously.
+  *
+  * This allows all device OPP configurations to be cleared at once. This must be
+  * called once for each call made to dev_pm_opp_set_config(), in order to free
+-- 
+2.31.1.272.g89b43f80a514
+
