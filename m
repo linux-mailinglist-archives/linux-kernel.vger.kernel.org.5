@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8867B0F91
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5C77B0F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjI0XaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S229706AbjI0XeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjI0XaO (ORCPT
+        with ESMTP id S229464AbjI0XeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:30:14 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15AF9;
-        Wed, 27 Sep 2023 16:30:12 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ad810be221so1573196966b.2;
-        Wed, 27 Sep 2023 16:30:12 -0700 (PDT)
+        Wed, 27 Sep 2023 19:34:14 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4E6F4;
+        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3513dcd38ebso23185875ab.1;
+        Wed, 27 Sep 2023 16:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695857411; x=1696462211; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695857652; x=1696462452; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZbKiPz0S5PrH/McDrIUSrlEVbeP0Nk47uyo5DMI/g4I=;
-        b=SeNz/82i7Qtvsga7cn0qhDLDxIvpKX5CKF2MM0FSEpbvQCrXDJN/aRuUkeGx2ilvme
-         LSpSZLUapTf0sDADoC4DVdMO4msZjE1pNe+IkPoNubyJivLdp4Mo35fFQ7zctgbvoE9i
-         01SfHeJ3pWlwvp2Ay37EgtZv7GhBNUiR8AaruIhePbIn8wY9oTkyLMarnXFzqxtxWfFD
-         DTtebXPsvH/mOYdpXk15UH8wLszRYBy5tLZ+tPdUhfBkVvv5//QEKmRMC1wEU9B86Xtf
-         ZQkYbkHduGjYn3WsC8iDqiocXeJuEHSjg38QkzlffZq/rFJuc9PWwtGrFWykeJ/ISmO0
-         Oylg==
+        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
+        b=C3268e7bN9aOEMO7H0jXdQF/P1NjjXjeZmbw4E76oKkwDl3SC5GhIG9mcaAfwx9uBT
+         nucMpVJNPBPqjeQlLTlcx0dz7w/WQ0IPu30uwa7diCpK2t805rzWUDIMGB6YBmU0mL0Q
+         0UQWCuhRdOY69IgQiWFfhP0llOC97H38KsTpDdU4Wovyih58YmrrpCDnSvRaHWiJT2/f
+         irGze5IsJpIka+E70FvScswcB3RvXtEG4qk6Diy7wBtiwvZj1T/mB5CkrXAZnQHiP/Qs
+         MF5kTY1N7Ewprhz8FLNvf3xd/TWpYB48GZXav9F7MccRe/FPYtVmeqUPBesAFxvwn1Ez
+         XIVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695857411; x=1696462211;
+        d=1e100.net; s=20230601; t=1695857652; x=1696462452;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZbKiPz0S5PrH/McDrIUSrlEVbeP0Nk47uyo5DMI/g4I=;
-        b=X/EPuZxiHHKmlcm3LqSjBbb/VsBKz14mrJRqZDIiM3ZhzaoZbVpAZKgwZ+EK1kpwqr
-         lYXseseX6riVYXkMlfF4avkkdufsEQqwWZig4HrDp7nYY/RbmVuPxt/Z3UDF/nWFbZ7a
-         PCWyRnyq3Uq4o5a1qMBQKPb8qeZJDdL3VN9PqsWpzPgiz4qriBqWJcbSUJc4NxV270Vo
-         DTWI7Js8giOgYmVJu6C+RXoaPVzGlknuIStgdl5XY/s5USWV1m0UAmexzQJa66dLlj8B
-         +/b0nfinobX/Y4DVL9t2yRtZ15sCPcHoKlK5vLI5stnmlKO8RTlalz/fMa+t8TRBUcH2
-         qYtA==
-X-Gm-Message-State: AOJu0Yz3oRd6Qx7MEJq29vmjKKK5s8A+t7HWVkFI7FS1uR88OX0nhPPY
-        oNWQOb2iX1QAQxG+5x0XaZJpCcDrYKr2RI18e3J0iJeH
-X-Google-Smtp-Source: AGHT+IGMZgtSJDO5/A5UvywJSZqDi9vtZAD2iymTO1Gvi6K7UC4Jxq3SEkQWmh3wV7ewOVrSWtzjeoLvop2Fs0lEmIo=
-X-Received: by 2002:a17:906:7692:b0:9a9:f042:dec0 with SMTP id
- o18-20020a170906769200b009a9f042dec0mr2636597ejm.38.1695857411121; Wed, 27
- Sep 2023 16:30:11 -0700 (PDT)
+        bh=KuiLzV6CGoqkNcJvWLJWVbKjSzC7FqUZFKmUnpswKQ8=;
+        b=PTlrYh9WhEs9ZqvJuRij93+mW8syWiE+ROATDkTGsxfgqFG4G55Pyt+YRWPLjtH4vF
+         DkBDAfN6XFIe+aNG8GOtGLndSPNKxqy2czlf3FVyyz8UTNGbyi8FrQP6z5H9XO8WvT4V
+         uAIfnwzotDkhUNvD0CnqYy0snz6IHSEBrK5lK1qkYGr5vgxDIVdWeqDKeaCbRRzLmw1/
+         TrSQW/sGbErx3FFLcH1dUnRsIm4F0lsgZx03V8Ljbdf3qoL8QNxP7FE8FPmrUSGpeXzP
+         /QIfMa4kf99tPBp6qy6u9hSBvIxAH3JgqI5DqfU1T0nsou2fjKCqBZ+z8YHtC4Bs+8/U
+         MZMw==
+X-Gm-Message-State: AOJu0YyHZAWL4PnxufqDsN3brGdzDABNbH+AnT7eVNGHZhj7c7X8iiIR
+        FkwUKWMwELdqy7R4EGU6lw3OD4lpbfvVU0blIwk=
+X-Google-Smtp-Source: AGHT+IH240jOGmryB4DKmJdrSZ0sw76v69veXHjvxbIKdhdqV6ViGFilCGJvjsPnRuNvxUyXjajBAwH8Z5Q4GyT1Ep0=
+X-Received: by 2002:a05:6e02:1a29:b0:351:a18:51be with SMTP id
+ g9-20020a056e021a2900b003510a1851bemr4644664ile.15.1695857652609; Wed, 27 Sep
+ 2023 16:34:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-6-zhouchuyi@bytedance.com>
-In-Reply-To: <20230925105552.817513-6-zhouchuyi@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Sep 2023 16:29:59 -0700
-Message-ID: <CAEf4Bzbeb+BZBNK+VU2THdJ5x5FeWp9SXVKOhLHCeFLwYijRig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/7] bpf: teach the verifier to enforce
- css_iter and task_iter in RCU CS
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230926194949.2637078-1-nphamcs@gmail.com> <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+In-Reply-To: <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 27 Sep 2023 16:33:59 -0700
+Message-ID: <CAKEwX=MVcHSHRTzHMo7W6PCiWkTNdR8zp0c4UxR4xKDZCVbPQQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,168 +73,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
+On Wed, Sep 27, 2023 at 4:21=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
 >
-> css_iter and task_iter should be used in rcu section. Specifically, in
-> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
-> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
-> use them directly.
+> On Tue 26-09-23 12:49:47, Nhat Pham wrote:
+> > Currently, hugetlb memory usage is not acounted for in the memory
+> > controller, which could lead to memory overprotection for cgroups with
+> > hugetlb-backed memory. This has been observed in our production system.
+> >
+> > This patch series rectifies this issue by charging the memcg when the
+> > hugetlb folio is allocated, and uncharging when the folio is freed. In
+> > addition, a new selftest is added to demonstrate and verify this new
+> > behavior.
 >
-> This patch adds a new a KF flag KF_RCU_PROTECTED for bpf_iter_task_new an=
-d
-> bpf_iter_css_new. It means the kfunc should be used in RCU CS. We check
-> whether we are in rcu cs before we want to invoke this kfunc. If the rcu
-> protection is guaranteed, we would let st->type =3D PTR_TO_STACK | MEM_RC=
-U.
-> Once user do rcu_unlock during the iteration, state MEM_RCU of regs would
-> be cleared. is_iter_reg_valid_init() will reject if reg->type is UNTRUSTE=
-D.
+> The primary reason why hugetlb is living outside of memcg (and the core
+> MM as well) is that it doesn't really fit the whole scheme. In several
+> aspects. First and the foremost it is an independently managed resource
+> with its own pool management, use and lifetime.
 >
-> It is worth noting that currently, bpf_rcu_read_unlock does not
-> clear the state of the STACK_ITER reg, since bpf_for_each_spilled_reg
-> only considers STACK_SPILL. This patch also let bpf_for_each_spilled_reg
-> search STACK_ITER.
+> There is no notion of memory reclaim and this makes a huge difference
+> for the pool that might consume considerable amount of memory. While
+> this is the case for many kernel allocations as well they usually do not
+> consume considerable portions of the accounted memory. This makes it
+> really tricky to handle limit enforcement gracefully.
 >
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  include/linux/bpf_verifier.h | 19 ++++++++------
->  include/linux/btf.h          |  1 +
->  kernel/bpf/helpers.c         |  4 +--
->  kernel/bpf/verifier.c        | 48 +++++++++++++++++++++++++++---------
->  4 files changed, 50 insertions(+), 22 deletions(-)
+> Another important aspect comes from the lifetime semantics when a proper
+> reservations accounting and managing needs to handle mmap time rather
+> than than usual allocation path. While pages are allocated they do not
+> belong to anybody and only later at the #PF time (or read for the fs
+> backed mapping) the ownership is established. That makes it really hard
+> to manage memory as whole under the memcg anyway as a large part of
+> that pool sits without an ownership yet it cannot be used for any other
+> purpose.
 >
+> These and more reasons where behind the earlier decision o have a
+> dedicated hugetlb controller.
 
-[...]
+While I believe all of these are true, I think they are not reasons not to
+have memcg accounting. As everyone has pointed out, memcg
+accounting by itself cannot handle all situations - it is not a fix-all.
+Other mechanisms, such as the HugeTLB controller, could be the better
+solution in these cases, and hugetlb memcg accounting is definitely not
+an attempt to infringe upon these control domains.
+
+However, memcg accounting is still necessary for certain memory limits
+enforcement to work cleanly and properly - such as the use cases we have
+(as Johannes has beautifully described). It will certainly help
+administrators simplify their control workflow a lot (assuming we do not
+surprise them with this change - a new mount option to opt-in should
+help with the transition).
 
 >
-> -static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct =
-bpf_reg_state *reg,
-> +static int is_iter_reg_valid_init(struct bpf_verifier_env *env, struct b=
-pf_reg_state *reg,
->                                    struct btf *btf, u32 btf_id, int nr_sl=
-ots)
->  {
->         struct bpf_func_state *state =3D func(env, reg);
-> @@ -1275,26 +1286,28 @@ static bool is_iter_reg_valid_init(struct bpf_ver=
-ifier_env *env, struct bpf_reg_
->
->         spi =3D iter_get_spi(env, reg, nr_slots);
->         if (spi < 0)
-> -               return false;
-> +               return -EINVAL;
->
->         for (i =3D 0; i < nr_slots; i++) {
->                 struct bpf_stack_state *slot =3D &state->stack[spi - i];
->                 struct bpf_reg_state *st =3D &slot->spilled_ptr;
->
-> +               if (st->type & PTR_UNTRUSTED)
-> +                       return -EPERM;
->                 /* only main (first) slot has ref_obj_id set */
->                 if (i =3D=3D 0 && !st->ref_obj_id)
-> -                       return false;
-> +                       return -EINVAL;
->                 if (i !=3D 0 && st->ref_obj_id)
-> -                       return false;
-> +                       return -EINVAL;
->                 if (st->iter.btf !=3D btf || st->iter.btf_id !=3D btf_id)
-> -                       return false;
-> +                       return -EINVAL;
->
->                 for (j =3D 0; j < BPF_REG_SIZE; j++)
->                         if (slot->slot_type[j] !=3D STACK_ITER)
-> -                               return false;
-> +                               return -EINVAL;
->         }
->
-> -       return true;
-> +       return 0;
->  }
->
->  /* Check if given stack slot is "special":
-> @@ -7503,15 +7516,20 @@ static int process_iter_arg(struct bpf_verifier_e=
-nv *env, int regno, int insn_id
->                                 return err;
->                 }
->
-> -               err =3D mark_stack_slots_iter(env, reg, insn_idx, meta->b=
-tf, btf_id, nr_slots);
-> +               err =3D mark_stack_slots_iter(env, meta, reg, insn_idx, m=
-eta->btf, btf_id, nr_slots);
->                 if (err)
->                         return err;
->         } else {
->                 /* iter_next() or iter_destroy() expect initialized iter =
-state*/
-> -               if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, =
-nr_slots)) {
-> -                       verbose(env, "expected an initialized iter_%s as =
-arg #%d\n",
-> +               err =3D is_iter_reg_valid_init(env, reg, meta->btf, btf_i=
-d, nr_slots);
-> +               switch (err) {
-> +               case -EINVAL:
+> Also I will also Nack involving hugetlb pages being accounted by
+> default. This would break any setups which mix normal and hugetlb memory
+> with memcg limits applied.
 
-I'd also add default: here, in case we ever emit some other error from
-is_iter_reg_valid_init()
+Got it! I'll introduce some opt-in mechanisms in the next version. This is
+my oversight.
 
-> +                       verbose(env, "expected an initialized iter_%s as =
-arg #%d or without bpf_rcu_read_lock()\n",
->                                 iter_type_str(meta->btf, btf_id), regno);
-> -                       return -EINVAL;
-> +                       return err;
-> +               case -EPERM:
 
-I find -EPERM a bit confusing. Let's use something a bit more
-specific, e.g., -EPROTO? We are basically not following a protocol if
-we don't keep RCU-protected iterators within a single RCU region,
-right?
-
-> +                       verbose(env, "expected an RCU CS when using %s\n"=
-, meta->func_name);
-> +                       return err;
->                 }
->
->                 spi =3D iter_get_spi(env, reg, nr_slots);
-> @@ -10092,6 +10110,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_a=
-rg_meta *meta)
->         return meta->kfunc_flags & KF_RCU;
->  }
->
-> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta)
-> +{
-> +       return meta->kfunc_flags & KF_RCU_PROTECTED;
-> +}
-> +
->  static bool __kfunc_param_match_suffix(const struct btf *btf,
->                                        const struct btf_param *arg,
->                                        const char *suffix)
-> @@ -11428,6 +11451,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
->         if (env->cur_state->active_rcu_lock) {
->                 struct bpf_func_state *state;
->                 struct bpf_reg_state *reg;
-> +               u32 clear_mask =3D (1 << STACK_SPILL) | (1 << STACK_ITER)=
-;
->
->                 if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_u=
-nlock)) {
->                         verbose(env, "Calling bpf_rcu_read_{lock,unlock} =
-in unnecessary rbtree callback\n");
-> @@ -11438,7 +11462,7 @@ static int check_kfunc_call(struct bpf_verifier_e=
-nv *env, struct bpf_insn *insn,
->                         verbose(env, "nested rcu read lock (kernel functi=
-on %s)\n", func_name);
->                         return -EINVAL;
->                 } else if (rcu_unlock) {
-> -                       bpf_for_each_reg_in_vstate(env->cur_state, state,=
- reg, ({
-> +                       bpf_for_each_reg_in_vstate_mask(env->cur_state, s=
-tate, reg, clear_mask, ({
->                                 if (reg->type & MEM_RCU) {
->                                         reg->type &=3D ~(MEM_RCU | PTR_MA=
-YBE_NULL);
->                                         reg->type |=3D PTR_UNTRUSTED;
 > --
-> 2.20.1
->
+> Michal Hocko
+> SUSE Labs
