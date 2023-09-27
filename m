@@ -2,198 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D22407B0DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2157B0DD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjI0VF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 17:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33258 "EHLO
+        id S229885AbjI0VHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 17:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjI0VF5 (ORCPT
+        with ESMTP id S229460AbjI0VG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 17:05:57 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD8F11F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:05:55 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a200028437so24440357b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:05:55 -0700 (PDT)
+        Wed, 27 Sep 2023 17:06:59 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5078FD6;
+        Wed, 27 Sep 2023 14:06:55 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57bab4e9e1aso4581927eaf.3;
+        Wed, 27 Sep 2023 14:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695848755; x=1696453555; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=gmail.com; s=20230601; t=1695848814; x=1696453614; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uStOTeDx0/Ukuzu0JJvG25AFIJvkKa932ouE8HZ3uLs=;
-        b=z0sshQMWAqSeBB03ZNcweIEs2rEq1Qvb/zopT+0FjYOhr0/wZTnl/PGUgd82+5ZyPx
-         U/RRBKv0g2K5e9oXX1Bb3E81pf8+wUmOfrKHbb0SlZoPDZ2+h4ycWG4O89shi86574UM
-         RL3E1qdCA55JlTqNSK1FwftnC90PubdrjbFGJ4gZtXwovAJb/9xzMJN8fzLtPCfrUBoH
-         PhuRtk2irR0peB/dh9gHN/65RhSvE1/6Jgq9o844+Ucw+dcstU121uCuvmZtGS1IvQTI
-         WjDPlSYqgkJt66EEjQZXiWJ2SFf0pLE+11yGLTdt1YPvaAk0e3hIHXA6gMB84QHXl6vO
-         C9xw==
+        bh=p/N9J8xP2hV+7YKX8oU/ArvVYv9CGsvu0WM88Yr0OGM=;
+        b=TQglbpGf7yhciphrpm7NZkQL5uH6TO/S4TmwlbnflsHbiABuVpBm0/H5B8PGj+Qs6c
+         Gfui2O7uPgMc6MT2InHp9FnO7kzJ63wyITLQx2SWBbvXQ45eRf2mgef9eJp+nH9dfBrs
+         oGHEB9UNFS2HAVjI8I6BC1U/EH0YL45+JLnpTU7dLD8hFEBjY0TAur4GRPmzscs7l0AV
+         efT/qKSFB4dmSgScp+L5ELPcKiu7jKDKMcyY+6QRz5wB8jG4tSy1ujChqE+Fgh1YYxpR
+         e/nxSoV0HRaxarYA+CVm43T/ujS3RGCY88FCNRp+KXpEHy3oRPqxIxUY/0AZQO+O3eA9
+         cPGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695848755; x=1696453555;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=1e100.net; s=20230601; t=1695848814; x=1696453614;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uStOTeDx0/Ukuzu0JJvG25AFIJvkKa932ouE8HZ3uLs=;
-        b=YPh8ZNVxyidxmLKcmz1w0lxdn+Fq0Bm5uo91fqpv7Z0DyELd/z2ZAZs6hcuwpUjZwA
-         zEDsNjvhNhgeI+vbGgz9tsUQwU/9/YtAZqdFEJQ4qWF7VmmkUVV4bnU+8R8K3Q6fyY/Q
-         7gtrfN3yZIEEvfDaxjoelEhCQlYsJOQ4326w6E0ubSlAWvvYN9y0ZRCJIFKUhEsGr9/T
-         4KZkyF3dHaqxUqxm0whmSrwPDXfYICV5mogTfv/szFcp0ckW9Mt6bTUA2Z+4OPNDEjYq
-         DFKj3pcU6J+BCEItKcnnyTH8kuJWZRoMESI+u+za5Xpe9ZtEog1AO2/e7bcS9MnD/BAq
-         kKYQ==
-X-Gm-Message-State: AOJu0YwAh92UU8crq2fgE8HsvUeDUfauuyjNitJ0Snw9PyV1kH/1QjW0
-        bR76/40aPi1kmXGjj83rNwt0c8xvo23AABbBU+oEsw==
-X-Google-Smtp-Source: AGHT+IE0km6y8O5Y6e29Gn2cDaSHvokzeKWCzYSEz0u70AbH6xc5f8kdSMkaI9/l/srJYZ/TK7N++QbvgI4+vUtVqkk=
-X-Received: by 2002:a0d:e684:0:b0:576:93f1:d118 with SMTP id
- p126-20020a0de684000000b0057693f1d118mr3624518ywe.2.1695848754752; Wed, 27
- Sep 2023 14:05:54 -0700 (PDT)
+        bh=p/N9J8xP2hV+7YKX8oU/ArvVYv9CGsvu0WM88Yr0OGM=;
+        b=S1lR3l0uFIzYJzcMCSNSlAz0iY/6FWFsaXklhFNhiJBrBKaqNDMAem2IyMqr/sB7QZ
+         sR58AjKEO6/VqckA+f/9fA0cD8C1RAydfd5L5ev4A5TofKcJifXq0lqDEiLcpJGMGMpT
+         mW4Eei1qkDUMLDPBhlwcCfQjF1spOroAALICcas5az9cmsGoDRN79BtFzN2qSu088Q22
+         GE2MYbrW+u6vW83/wDurLw7bmAdlXgVIVDZUDaCE5cIuEz4mVaOhNb3MgWSqp/ZCRqTz
+         CafSeiXAWdy7zEEHX3N0E8tyn2NYjQdclmwBREzQcsb20f0Thuo4w598hIBZArwTtUmQ
+         a2eg==
+X-Gm-Message-State: AOJu0Yxl3wO3l8Rn6BOWKJmwEfjNtf9G7bb7Cq7+24fJgk5z5nkKfARw
+        QLfkypvUhbvdcZskg1Z288DEfTp14ovlLDslkhEZMQvD
+X-Google-Smtp-Source: AGHT+IHTNM4IyqIj174GbeMFvUR6Qu+DMzpIVDVOZFc19sZCwi0t/k7GorGdZXAsMq9fVhohkeStbjnZCH0qKyNmUgQ=
+X-Received: by 2002:a4a:7319:0:b0:57b:eee7:4a40 with SMTP id
+ s25-20020a4a7319000000b0057beee74a40mr3350538ooc.7.1695848814536; Wed, 27 Sep
+ 2023 14:06:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com> <1695848028-18023-2-git-send-email-quic_khsieh@quicinc.com>
-In-Reply-To: <1695848028-18023-2-git-send-email-quic_khsieh@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 28 Sep 2023 00:04:47 +0300
-Message-ID: <CAA8EJpqB-sDsQiWmqQS+cxnupTeGBv4G9RcV8vJT3CnWqEbP8g@mail.gmail.com>
-Subject: Re: [PATCH v4 1/8] drm/msm/dp: tie dp_display_irq_handler() with dp driver
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Received: by 2002:a05:6802:1b45:b0:4f0:1250:dd51 with HTTP; Wed, 27 Sep 2023
+ 14:06:53 -0700 (PDT)
+In-Reply-To: <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+References: <20230926162228.68666-1-mjguzik@gmail.com> <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+ <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
+ <20230927-kosmetik-babypuppen-75bee530b9f0@brauner> <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
+ <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+ <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Wed, 27 Sep 2023 23:06:53 +0200
+Message-ID: <CAGudoHH20JVecjRQEPa3q=k8ax3hqt-LGA3P1S-xFFZYxisL6Q@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Brauner <brauner@kernel.org>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+On 9/27/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> Btw, I think we could get rid of the RCU freeing of 'struct file *'
+> entirely.
 >
-> Currently the dp_display_irq_handler() is executed at msm_dp_modeset_init()
-
-dp_display_request_irq()
-
-> which ties irq registration to the DPU device's life cycle, while depending on
-> resources that are released as the DP device is torn down. Move register DP
-
-`registering` or `registration of`
-
-> driver irq handler at dp_display_probe() to have dp_display_irq_handler()
-
-IRQ, s/at/to/
-
-> is tied with DP device.
-
-s/is //
-
-Moreover, your commit does more that you have described in the commit
-message. It also e.g. switches to platform_get_irq().
-
+> The way to fix it is
 >
-> Changes in v4:
-> -- delete dp->irq check at dp_display_request_irq()
+>  (a) make sure all f_count accesses are atomic ops (the one special
+> case is the "0 -> X" initialization, which is ok)
 >
-> Changes in v3:
-> -- move calling dp_display_irq_handler() to probe
+>  (b) make filp_cachep be SLAB_TYPESAFE_BY_RCU
 >
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 29 +++++++++--------------------
->  drivers/gpu/drm/msm/dp/dp_display.h |  1 -
->  2 files changed, 9 insertions(+), 21 deletions(-)
+> because then get_file_rcu() can do the atomic_long_inc_not_zero()
+> knowing it's still a 'struct file *' while holding the RCU read lock
+> even if it was just free'd.
 >
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 76f1395..5645178 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1193,30 +1193,21 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
->         return ret;
->  }
+> And __fget_files_rcu() will then re-check that it's the *right*
+> 'struct file *' and do a fput() on it and re-try if it isn't. End
+> result: no need for any RCU freeing.
 >
-> -int dp_display_request_irq(struct msm_dp *dp_display)
-> +static int dp_display_request_irq(struct dp_display_private *dp)
->  {
->         int rc = 0;
-> -       struct dp_display_private *dp;
-> -
-> -       if (!dp_display) {
-> -               DRM_ERROR("invalid input\n");
-> -               return -EINVAL;
-> -       }
-> -
-> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
-> +       struct device *dev = &dp->pdev->dev;
->
-> -       dp->irq = irq_of_parse_and_map(dp->pdev->dev.of_node, 0);
-> +       dp->irq = platform_get_irq(dp->pdev, 0);
->         if (!dp->irq) {
->                 DRM_ERROR("failed to get irq\n");
->                 return -EINVAL;
->         }
->
-> -       rc = devm_request_irq(dp_display->drm_dev->dev, dp->irq,
-> -                       dp_display_irq_handler,
-> +       rc = devm_request_irq(dev, dp->irq, dp_display_irq_handler,
->                         IRQF_TRIGGER_HIGH, "dp_display_isr", dp);
->         if (rc < 0) {
-> -               DRM_ERROR("failed to request IRQ%u: %d\n",
-> -                               dp->irq, rc);
-> +               DRM_ERROR("failed to request IRQ%u: %d\n", dp->irq, rc);
-
-Please don't mix functional changes with code reformatting.
-
->                 return rc;
->         }
->
-> @@ -1287,6 +1278,10 @@ static int dp_display_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, &dp->dp_display);
->
-> +       rc = dp_display_request_irq(dp);
-> +       if (rc)
-> +               return rc;
-
-Who will perform component teardown for you if the driver just returns
-an error here?
-
-> +
->         rc = component_add(&pdev->dev, &dp_display_comp_ops);
->         if (rc) {
->                 DRM_ERROR("component add failed, rc=%d\n", rc);
-> @@ -1549,12 +1544,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
->
->         dp_priv = container_of(dp_display, struct dp_display_private, dp_display);
->
-> -       ret = dp_display_request_irq(dp_display);
-> -       if (ret) {
-> -               DRM_ERROR("request_irq failed, ret=%d\n", ret);
-> -               return ret;
-> -       }
-> -
->         ret = dp_display_get_next_bridge(dp_display);
->         if (ret)
->                 return ret;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-> index 1e9415a..b3c08de 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.h
-> @@ -35,7 +35,6 @@ struct msm_dp {
->  int dp_display_set_plugged_cb(struct msm_dp *dp_display,
->                 hdmi_codec_plugged_cb fn, struct device *codec_dev);
->  int dp_display_get_modes(struct msm_dp *dp_display);
-> -int dp_display_request_irq(struct msm_dp *dp_display);
->  bool dp_display_check_video_test(struct msm_dp *dp_display);
->  int dp_display_get_test_bpp(struct msm_dp *dp_display);
->  void dp_display_signal_audio_start(struct msm_dp *dp_display);
-> --
-> 2.7.4
+> But the difference is that a *new* 'struct file *' might see a
+> temporary atomic increment / decrement of the file pointer because
+> another CPU is going through that __fget_files_rcu() dance.
 >
 
+I think you attached the wrong file, it has next to no changes and in
+particular nothing for fd lookup.
+
+You may find it interesting that both NetBSD and FreeBSD have been
+doing something to that extent for years now in order to provide
+lockless fd lookup despite not having an equivalent to RCU (what they
+did have at the time is "type stable" -- objs can get reused but the
+memory can *never* get freed. utterly gross, but that's old Unix for
+you).
+
+It does work, but I always found it dodgy because it backpedals in a
+way which is not free of side effects.
+
+Note that validating you got the right file bare minimum requires
+reloading the fd table pointer because you might have been racing
+against close *and* resize.
 
 -- 
-With best wishes
-Dmitry
+Mateusz Guzik <mjguzik gmail.com>
