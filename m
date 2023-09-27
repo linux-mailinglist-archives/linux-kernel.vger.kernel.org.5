@@ -2,307 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB1D7AFE98
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A45E7AFE9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjI0IdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
+        id S230472AbjI0Idz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjI0Icp (ORCPT
+        with ESMTP id S230468AbjI0IdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:32:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B8DF4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695803519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XCNh/Zxb7VnU49Ac2SthQM3eV6QtsSLdv7jt4QZ4k7s=;
-        b=BzcY8rqg2yHIsDfir1S+85HpdU8V2fIsgf2WylJD/N2rVdAHA8bdmYec+gVhWUQ9iI7PzS
-        HSTukQs4veiv394upAFOFArOko9Qt3bG5Qfr0ihWMP1etnxfYeSzBxXx67+SjNi10vsw8g
-        RizqYx2Ak2MtiHTFtoKhrflGR1NDoiw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-664-QdQs054vPrK5WPLuwDreVQ-1; Wed, 27 Sep 2023 04:31:52 -0400
-X-MC-Unique: QdQs054vPrK5WPLuwDreVQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0314A8039CF;
-        Wed, 27 Sep 2023 08:31:52 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 43ECE2156A27;
-        Wed, 27 Sep 2023 08:31:50 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     poros@redhat.com, mschmidt@redhat.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        przemyslaw.kitszel@intel.com
-Subject: [PATCH net-next v2 7/9] i40e: Split i40e_osdep.h
-Date:   Wed, 27 Sep 2023 10:31:33 +0200
-Message-ID: <20230927083135.3237206-8-ivecera@redhat.com>
-In-Reply-To: <20230927083135.3237206-1-ivecera@redhat.com>
-References: <20230927083135.3237206-1-ivecera@redhat.com>
+        Wed, 27 Sep 2023 04:33:20 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF61D10D9;
+        Wed, 27 Sep 2023 01:32:58 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 16:31:34
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 16:31:34 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     lduncan@suse.com, cleech@redhat.com, michael.christie@oracle.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: iscsi: Clean up errors in libiscsi_tcp.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Message-ID: <7db9a4b1.889.18ad5c3d0ef.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDXaD5m6BNlifm9AA--.577W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwAisx
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Header i40e_osdep.h contains only IO primitives and couple of debug
-printing macros. Split this header file to i40e_io.h and i40e_debug.h
-and move i40e_debug_mask enum to i40e_debug.h
-
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_adminq.h |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_debug.h  | 47 +++++++++++++++++++
- drivers/net/ethernet/intel/i40e/i40e_hmc.c    |  1 -
- drivers/net/ethernet/intel/i40e/i40e_io.h     | 16 +++++++
- .../net/ethernet/intel/i40e/i40e_lan_hmc.c    |  1 -
- drivers/net/ethernet/intel/i40e/i40e_osdep.h  | 40 ----------------
- .../net/ethernet/intel/i40e/i40e_prototype.h  |  1 +
- drivers/net/ethernet/intel/i40e/i40e_type.h   | 31 ++----------
- 8 files changed, 68 insertions(+), 71 deletions(-)
- create mode 100644 drivers/net/ethernet/intel/i40e/i40e_debug.h
- create mode 100644 drivers/net/ethernet/intel/i40e/i40e_io.h
- delete mode 100644 drivers/net/ethernet/intel/i40e/i40e_osdep.h
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq.h b/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-index 1c3d2bc5c3f7..80125bea80a2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-@@ -4,8 +4,8 @@
- #ifndef _I40E_ADMINQ_H_
- #define _I40E_ADMINQ_H_
- 
-+#include <linux/mutex.h>
- #include "i40e_alloc.h"
--#include "i40e_osdep.h"
- #include "i40e_adminq_cmd.h"
- 
- #define I40E_ADMINQ_DESC(R, i)   \
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_debug.h b/drivers/net/ethernet/intel/i40e/i40e_debug.h
-new file mode 100644
-index 000000000000..27ebc72d8bfe
---- /dev/null
-+++ b/drivers/net/ethernet/intel/i40e/i40e_debug.h
-@@ -0,0 +1,47 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright(c) 2023 Intel Corporation. */
-+
-+#ifndef _I40E_DEBUG_H_
-+#define _I40E_DEBUG_H_
-+
-+#include <linux/dev_printk.h>
-+
-+/* debug masks - set these bits in hw->debug_mask to control output */
-+enum i40e_debug_mask {
-+	I40E_DEBUG_INIT			= 0x00000001,
-+	I40E_DEBUG_RELEASE		= 0x00000002,
-+
-+	I40E_DEBUG_LINK			= 0x00000010,
-+	I40E_DEBUG_PHY			= 0x00000020,
-+	I40E_DEBUG_HMC			= 0x00000040,
-+	I40E_DEBUG_NVM			= 0x00000080,
-+	I40E_DEBUG_LAN			= 0x00000100,
-+	I40E_DEBUG_FLOW			= 0x00000200,
-+	I40E_DEBUG_DCB			= 0x00000400,
-+	I40E_DEBUG_DIAG			= 0x00000800,
-+	I40E_DEBUG_FD			= 0x00001000,
-+	I40E_DEBUG_PACKAGE		= 0x00002000,
-+	I40E_DEBUG_IWARP		= 0x00F00000,
-+	I40E_DEBUG_AQ_MESSAGE		= 0x01000000,
-+	I40E_DEBUG_AQ_DESCRIPTOR	= 0x02000000,
-+	I40E_DEBUG_AQ_DESC_BUFFER	= 0x04000000,
-+	I40E_DEBUG_AQ_COMMAND		= 0x06000000,
-+	I40E_DEBUG_AQ			= 0x0F000000,
-+
-+	I40E_DEBUG_USER			= 0xF0000000,
-+
-+	I40E_DEBUG_ALL			= 0xFFFFFFFF
-+};
-+
-+struct i40e_hw;
-+struct device *i40e_hw_to_dev(struct i40e_hw *hw);
-+
-+#define hw_dbg(hw, S, A...) dev_dbg(i40e_hw_to_dev(hw), S, ##A)
-+
-+#define i40e_debug(h, m, s, ...)				\
-+do {								\
-+	if (((m) & (h)->debug_mask))				\
-+		dev_info(i40e_hw_to_dev(hw), s, ##__VA_ARGS__);	\
-+} while (0)
-+
-+#endif /* _I40E_DEBUG_H_ */
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_hmc.c b/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-index 7451d346ae83..b383aea652f3 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_hmc.c
-@@ -2,7 +2,6 @@
- /* Copyright(c) 2013 - 2018 Intel Corporation. */
- 
- #include "i40e.h"
--#include "i40e_osdep.h"
- #include "i40e_register.h"
- #include "i40e_alloc.h"
- #include "i40e_hmc.h"
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_io.h b/drivers/net/ethernet/intel/i40e/i40e_io.h
-new file mode 100644
-index 000000000000..2a2ed9a1d476
---- /dev/null
-+++ b/drivers/net/ethernet/intel/i40e/i40e_io.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright(c) 2023 Intel Corporation. */
-+
-+#ifndef _I40E_IO_H_
-+#define _I40E_IO_H_
-+
-+/* get readq/writeq support for 32 bit kernels, use the low-first version */
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+
-+#define wr32(a, reg, value)	writel((value), ((a)->hw_addr + (reg)))
-+#define rd32(a, reg)		readl((a)->hw_addr + (reg))
-+
-+#define rd64(a, reg)		readq((a)->hw_addr + (reg))
-+#define i40e_flush(a)		readl((a)->hw_addr + I40E_GLGEN_STAT)
-+
-+#endif /* _I40E_IO_H_ */
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_lan_hmc.c b/drivers/net/ethernet/intel/i40e/i40e_lan_hmc.c
-index 474365bf0648..830f1de254ef 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_lan_hmc.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_lan_hmc.c
-@@ -2,7 +2,6 @@
- /* Copyright(c) 2013 - 2018 Intel Corporation. */
- 
- #include "i40e.h"
--#include "i40e_osdep.h"
- #include "i40e_register.h"
- #include "i40e_type.h"
- #include "i40e_hmc.h"
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_osdep.h b/drivers/net/ethernet/intel/i40e/i40e_osdep.h
-deleted file mode 100644
-index fd18895cfb56..000000000000
---- a/drivers/net/ethernet/intel/i40e/i40e_osdep.h
-+++ /dev/null
-@@ -1,40 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/* Copyright(c) 2013 - 2018 Intel Corporation. */
--
--#ifndef _I40E_OSDEP_H_
--#define _I40E_OSDEP_H_
--
--#include <linux/types.h>
--#include <linux/if_ether.h>
--#include <linux/if_vlan.h>
--#include <linux/tcp.h>
--#include <linux/pci.h>
--#include <linux/highuid.h>
--
--/* get readq/writeq support for 32 bit kernels, use the low-first version */
--#include <linux/io-64-nonatomic-lo-hi.h>
--
--/* File to be the magic between shared code and
-- * actual OS primitives
-- */
--
--struct i40e_hw;
--struct device *i40e_hw_to_dev(struct i40e_hw *hw);
--
--#define hw_dbg(hw, S, A...) dev_dbg(i40e_hw_to_dev(hw), S, ##A)
--
--#define wr32(a, reg, value)	writel((value), ((a)->hw_addr + (reg)))
--#define rd32(a, reg)		readl((a)->hw_addr + (reg))
--
--#define rd64(a, reg)		readq((a)->hw_addr + (reg))
--#define i40e_flush(a)		readl((a)->hw_addr + I40E_GLGEN_STAT)
--
--#define i40e_debug(h, m, s, ...)				\
--do {								\
--	if (((m) & (h)->debug_mask))				\
--		pr_info("i40e %02x:%02x.%x " s,			\
--			(h)->bus.bus_id, (h)->bus.device,	\
--			(h)->bus.func, ##__VA_ARGS__);		\
--} while (0)
--
--#endif /* _I40E_OSDEP_H_ */
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_prototype.h b/drivers/net/ethernet/intel/i40e/i40e_prototype.h
-index 3eeee224f1fb..9c9234c0706f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_prototype.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_prototype.h
-@@ -6,6 +6,7 @@
- 
- #include "i40e_type.h"
- #include "i40e_alloc.h"
-+#include "i40e_debug.h"
- #include <linux/avf/virtchnl.h>
- 
- /* Prototypes for shared code functions that are not in
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
-index 63cbf7669827..b3980b5b6919 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_type.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
-@@ -4,7 +4,9 @@
- #ifndef _I40E_TYPE_H_
- #define _I40E_TYPE_H_
- 
--#include "i40e_osdep.h"
-+#include <linux/delay.h>
-+#include <linux/if_ether.h>
-+#include "i40e_io.h"
- #include "i40e_register.h"
- #include "i40e_adminq.h"
- #include "i40e_hmc.h"
-@@ -40,33 +42,6 @@ typedef void (*I40E_ADMINQ_CALLBACK)(struct i40e_hw *, struct i40e_aq_desc *);
- #define I40E_QTX_CTL_VM_QUEUE	0x1
- #define I40E_QTX_CTL_PF_QUEUE	0x2
- 
--/* debug masks - set these bits in hw->debug_mask to control output */
--enum i40e_debug_mask {
--	I40E_DEBUG_INIT			= 0x00000001,
--	I40E_DEBUG_RELEASE		= 0x00000002,
--
--	I40E_DEBUG_LINK			= 0x00000010,
--	I40E_DEBUG_PHY			= 0x00000020,
--	I40E_DEBUG_HMC			= 0x00000040,
--	I40E_DEBUG_NVM			= 0x00000080,
--	I40E_DEBUG_LAN			= 0x00000100,
--	I40E_DEBUG_FLOW			= 0x00000200,
--	I40E_DEBUG_DCB			= 0x00000400,
--	I40E_DEBUG_DIAG			= 0x00000800,
--	I40E_DEBUG_FD			= 0x00001000,
--	I40E_DEBUG_PACKAGE		= 0x00002000,
--	I40E_DEBUG_IWARP		= 0x00F00000,
--	I40E_DEBUG_AQ_MESSAGE		= 0x01000000,
--	I40E_DEBUG_AQ_DESCRIPTOR	= 0x02000000,
--	I40E_DEBUG_AQ_DESC_BUFFER	= 0x04000000,
--	I40E_DEBUG_AQ_COMMAND		= 0x06000000,
--	I40E_DEBUG_AQ			= 0x0F000000,
--
--	I40E_DEBUG_USER			= 0xF0000000,
--
--	I40E_DEBUG_ALL			= 0xFFFFFFFF
--};
--
- #define I40E_MDIO_CLAUSE22_STCODE_MASK		I40E_GLGEN_MSCA_STCODE_MASK
- #define I40E_MDIO_CLAUSE22_OPCODE_WRITE_MASK	I40E_GLGEN_MSCA_OPCODE_MASK(1)
- #define I40E_MDIO_CLAUSE22_OPCODE_READ_MASK	I40E_GLGEN_MSCA_OPCODE_MASK(2)
--- 
-2.41.0
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+Iihmb28qKSIgc2hvdWxkIGJlICIoZm9vICopIgpFUlJPUjogc3BhY2UgcmVxdWlyZWQgYmVmb3Jl
+IHRoZSBvcGVuIHBhcmVudGhlc2lzICcoJwpFUlJPUjogc3BhY2UgcmVxdWlyZWQgYmVmb3JlIHRo
+ZSBvcGVuIGJyYWNlICd7JwoKU2lnbmVkLW9mZi1ieTogR3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVh
+QGphcmkuY24+Ci0tLQogZHJpdmVycy9zY3NpL2xpYmlzY3NpX3RjcC5jIHwgMjAgKysrKysrKysr
+Ky0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvbGliaXNjc2lfdGNwLmMgYi9kcml2ZXJz
+L3Njc2kvbGliaXNjc2lfdGNwLmMKaW5kZXggYzE4MmFhODNmMmM5Li4xMWI5Y2Q0MWZjMWYgMTAw
+NjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9saWJpc2NzaV90Y3AuYworKysgYi9kcml2ZXJzL3Njc2kv
+bGliaXNjc2lfdGNwLmMKQEAgLTQ2MiwxNiArNDYyLDE2IEBAIHZvaWQgaXNjc2lfdGNwX2NsZWFu
+dXBfdGFzayhzdHJ1Y3QgaXNjc2lfdGFzayAqdGFzaykKIAogCXNwaW5fbG9ja19iaCgmdGNwX3Rh
+c2stPnF1ZXVlMnBvb2wpOwogCS8qIGZsdXNoIHRhc2sncyByMnQgcXVldWVzICovCi0Jd2hpbGUg
+KGtmaWZvX291dCgmdGNwX3Rhc2stPnIydHF1ZXVlLCAodm9pZCopJnIydCwgc2l6ZW9mKHZvaWQq
+KSkpIHsKLQkJa2ZpZm9faW4oJnRjcF90YXNrLT5yMnRwb29sLnF1ZXVlLCAodm9pZCopJnIydCwK
+LQkJCSAgICBzaXplb2Yodm9pZCopKTsKKwl3aGlsZSAoa2ZpZm9fb3V0KCZ0Y3BfdGFzay0+cjJ0
+cXVldWUsICh2b2lkICopJnIydCwgc2l6ZW9mKHZvaWQgKikpKSB7CisJCWtmaWZvX2luKCZ0Y3Bf
+dGFzay0+cjJ0cG9vbC5xdWV1ZSwgKHZvaWQgKikmcjJ0LAorCQkJICAgIHNpemVvZih2b2lkICop
+KTsKIAkJSVNDU0lfREJHX1RDUCh0YXNrLT5jb25uLCAicGVuZGluZyByMnQgZHJvcHBlZFxuIik7
+CiAJfQogCiAJcjJ0ID0gdGNwX3Rhc2stPnIydDsKIAlpZiAocjJ0ICE9IE5VTEwpIHsKLQkJa2Zp
+Zm9faW4oJnRjcF90YXNrLT5yMnRwb29sLnF1ZXVlLCAodm9pZCopJnIydCwKLQkJCSAgICBzaXpl
+b2Yodm9pZCopKTsKKwkJa2ZpZm9faW4oJnRjcF90YXNrLT5yMnRwb29sLnF1ZXVlLCAodm9pZCAq
+KSZyMnQsCisJCQkgICAgc2l6ZW9mKHZvaWQgKikpOwogCQl0Y3BfdGFzay0+cjJ0ID0gTlVMTDsK
+IAl9CiAJc3Bpbl91bmxvY2tfYmgoJnRjcF90YXNrLT5xdWV1ZTJwb29sKTsKQEAgLTQ5Niw3ICs0
+OTYsNyBAQCBzdGF0aWMgaW50IGlzY3NpX3RjcF9kYXRhX2luKHN0cnVjdCBpc2NzaV9jb25uICpj
+b25uLCBzdHJ1Y3QgaXNjc2lfdGFzayAqdGFzaykKIAkgKiBpcyBzdGF0dXMuCiAJICovCiAJaWYg
+KCEocmhkci0+ZmxhZ3MgJiBJU0NTSV9GTEFHX0RBVEFfU1RBVFVTKSkKLQkJaXNjc2lfdXBkYXRl
+X2NtZHNuKGNvbm4tPnNlc3Npb24sIChzdHJ1Y3QgaXNjc2lfbm9waW4qKXJoZHIpOworCQlpc2Nz
+aV91cGRhdGVfY21kc24oY29ubi0+c2Vzc2lvbiwgKHN0cnVjdCBpc2NzaV9ub3BpbiAqKXJoZHIp
+OwogCiAJaWYgKHRjcF9jb25uLT5pbi5kYXRhbGVuID09IDApCiAJCXJldHVybiAwOwpAQCAtNTgw
+LDcgKzU4MCw3IEBAIHN0YXRpYyBpbnQgaXNjc2lfdGNwX3IydF9yc3Aoc3RydWN0IGlzY3NpX2Nv
+bm4gKmNvbm4sIHN0cnVjdCBpc2NzaV9oZHIgKmhkcikKIAogCXRjcF90YXNrID0gdGFzay0+ZGRf
+ZGF0YTsKIAlyMnRzbiA9IGJlMzJfdG9fY3B1KHJoZHItPnIydHNuKTsKLQlpZiAodGNwX3Rhc2st
+PmV4cF9kYXRhc24gIT0gcjJ0c24peworCWlmICh0Y3BfdGFzay0+ZXhwX2RhdGFzbiAhPSByMnRz
+bikgewogCQlJU0NTSV9EQkdfVENQKGNvbm4sICJ0YXNrLT5leHBfZGF0YXNuKCVkKSAhPSByaGRy
+LT5yMnRzbiglZClcbiIsCiAJCQkgICAgICB0Y3BfdGFzay0+ZXhwX2RhdGFzbiwgcjJ0c24pOwog
+CQlyYyA9IElTQ1NJX0VSUl9SMlRTTjsKQEAgLTYzOCw3ICs2MzgsNyBAQCBzdGF0aWMgaW50IGlz
+Y3NpX3RjcF9yMnRfcnNwKHN0cnVjdCBpc2NzaV9jb25uICpjb25uLCBzdHJ1Y3QgaXNjc2lfaGRy
+ICpoZHIpCiAJcjJ0LT5zZW50ID0gMDsKIAogCXRjcF90YXNrLT5leHBfZGF0YXNuID0gcjJ0c24g
+KyAxOwotCWtmaWZvX2luKCZ0Y3BfdGFzay0+cjJ0cXVldWUsICh2b2lkKikmcjJ0LCBzaXplb2Yo
+dm9pZCopKTsKKwlrZmlmb19pbigmdGNwX3Rhc2stPnIydHF1ZXVlLCAodm9pZCAqKSZyMnQsIHNp
+emVvZih2b2lkICopKTsKIAljb25uLT5yMnRfcGR1c19jbnQrKzsKIAlzcGluX3VubG9jaygmdGNw
+X3Rhc2stPnBvb2wycXVldWUpOwogCkBAIC03MTUsNyArNzE1LDcgQEAgaXNjc2lfdGNwX2hkcl9k
+aXNzZWN0KHN0cnVjdCBpc2NzaV9jb25uICpjb25uLCBzdHJ1Y3QgaXNjc2lfaGRyICpoZHIpCiAJ
+SVNDU0lfREJHX1RDUChjb25uLCAib3Bjb2RlIDB4JXggYWhzbGVuICVkIGRhdGFsZW4gJWRcbiIs
+CiAJCSAgICAgIG9wY29kZSwgYWhzbGVuLCB0Y3BfY29ubi0+aW4uZGF0YWxlbik7CiAKLQlzd2l0
+Y2gob3Bjb2RlKSB7CisJc3dpdGNoIChvcGNvZGUpIHsKIAljYXNlIElTQ1NJX09QX1NDU0lfREFU
+QV9JTjoKIAkJc3Bpbl9sb2NrKCZjb25uLT5zZXNzaW9uLT5iYWNrX2xvY2spOwogCQl0YXNrID0g
+aXNjc2lfaXR0X3RvX2N0YXNrKGNvbm4sIGhkci0+aXR0KTsKQEAgLTExNzgsNyArMTE3OCw3IEBA
+IGludCBpc2NzaV90Y3BfcjJ0cG9vbF9hbGxvYyhzdHJ1Y3QgaXNjc2lfc2Vzc2lvbiAqc2Vzc2lv
+bikKIAogCQkvKiBSMlQgeG1pdCBxdWV1ZSAqLwogCQlpZiAoa2ZpZm9fYWxsb2MoJnRjcF90YXNr
+LT5yMnRxdWV1ZSwKLQkJICAgICAgc2Vzc2lvbi0+bWF4X3IydCAqIDQgKiBzaXplb2Yodm9pZCop
+LCBHRlBfS0VSTkVMKSkgeworCQkgICAgICBzZXNzaW9uLT5tYXhfcjJ0ICogNCAqIHNpemVvZih2
+b2lkICopLCBHRlBfS0VSTkVMKSkgewogCQkJaXNjc2lfcG9vbF9mcmVlKCZ0Y3BfdGFzay0+cjJ0
+cG9vbCk7CiAJCQlnb3RvIHIydF9hbGxvY19mYWlsOwogCQl9Ci0tIAoyLjE3LjEK
