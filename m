@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6D17B0E32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847787B0E44
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjI0Vjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 17:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S230018AbjI0Vlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 17:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbjI0Vjh (ORCPT
+        with ESMTP id S230007AbjI0Vlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 17:39:37 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606E2122
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:39:36 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59f6492b415so112439667b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:39:36 -0700 (PDT)
+        Wed, 27 Sep 2023 17:41:35 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE4511F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:41:32 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5041cc983f9so19665857e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695850775; x=1696455575; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tmIn/dsnWBGcOkNyP3wbdNzRj2XOsqPnxvNyHRusvkY=;
-        b=gxXSZZlVNU528/50fdr+jfPDJ4hkFDA/+wX9r6IbldCcW30VSS302JjYkwzescC30X
-         6A+CTMLvaC8n4vye5xNolesnq/hSTHZ/mpiQQJEZpI6Z4SF54EcB3fsxrPf+fDlQ9/Vf
-         tL4csEhmWrwpT0jneBz6HKsJRefRLHywM78CHsDYLqtATTwrUOVNtw7pR+NXux05jz5a
-         bFJuDaiHeDwX4r/deAjyoFgLmCsiAZk6Q0TVipGZHq1s+iZTGAJDFnTvfALJ6KhxQr+E
-         KJLqZUuVkEwUiIKdM/K8coopSgNDfx2B2dyGETyNnAtMiz2Wh61FClYbzW45TAZudaby
-         dx/g==
+        d=chromium.org; s=google; t=1695850890; x=1696455690; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3ZPhCbxws0N6c+RxZtsL4OLtzT2jJtD2gNaLRXE6jZk=;
+        b=X4E8ZJInMKf9xiOm1BpuKjvUzoEO4cmna+W9GWPVwEIibguhsjIicw3jk5dPz2WAo3
+         FIokgD+M89zjfMrdHRkHLWs2zOc0kHXZuygKR3FgocXnmeKFnhb1gsyEfu0bh4MIXKas
+         E++kcGOn4pAQLXKHf/ZFIOfsmHmcmjmL4SAts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695850775; x=1696455575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tmIn/dsnWBGcOkNyP3wbdNzRj2XOsqPnxvNyHRusvkY=;
-        b=SJAJ6RU8us48qVC1g4nOCdqWMq5Vnypy8p435JPXk+13cyoYuE9S5KEYzhCiy2z3lh
-         zCCCQnSqY/oDq6J+D8MO1Xd7Hka/m10uKnvZWPfUU3ThgjFLt7mTxrsNqI+1xInkjIK2
-         PBIRTLAhAo/qhzU7VQL8ldcJqGpuAFWFbE6G5O8G0acouxg9q5MWebkjhNz+U6AbtHjR
-         YGc54gjcgiphNr3EUbf+Whu4wTBdUq46jp5mNK+k/DXhNVSg4rTvHAvqkZVcKh2U3lwC
-         DQr82gM+eIW8fjfzu7rvYQTmyAfv7oleL7tTC54sQ+LfSqhO0VfqyymwXT+AouTpDrhG
-         fk1Q==
-X-Gm-Message-State: AOJu0YxyvdfhfSvqrnNWGCfWeI99H2hC6IFsyAmY8Y/FIeJwNv+4J4T+
-        /MdzcQA6bGoZknDWuweEdGgEy9ARS57e06RXUqP4ow==
-X-Google-Smtp-Source: AGHT+IEgtxvEZTS7nj888nK+ibjNHsD4ifyjOceNKNWggrpLBaTJimKk+ph8GiVbZOQYshyOmycJsvLK022QeVxaMwY=
-X-Received: by 2002:a81:52cd:0:b0:570:2542:cc9b with SMTP id
- g196-20020a8152cd000000b005702542cc9bmr2585219ywb.18.1695850775325; Wed, 27
- Sep 2023 14:39:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695850890; x=1696455690;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ZPhCbxws0N6c+RxZtsL4OLtzT2jJtD2gNaLRXE6jZk=;
+        b=mX9nOKfKu3SXF9woiTIFwOG4kqjt55kIDlLmz8XU9wTyuF88B5LDLFjaT40ha+LIaY
+         5UaPFbycMod4ADrjsrrViP3DIm/HQQOpElA74f3RV7Xa1mcBMsccUAlIEJt1X2LIOOCN
+         6RdtQ4KqLfH9P5z7ZzyGpcmUTCOFrxKN/uHERc7UtLO3of93SSZ2Nn2PCgb2kp8AoD4t
+         w87z4kJRHgKAfucm9a9ml0BcINVuvYEwWgci8+2zcq6oFQZSW9NWmL2LffvDEiFa82hq
+         DBf1PsEQbNQfKV2CXHGWERclYZrCpnw2R1TOqMLSDX26jrmrvDVVUirjUjxI8Oy8Ii1p
+         pgpw==
+X-Gm-Message-State: AOJu0YxHwfT+7VBzzKcJ6mL5ok9rg7RcyantmOtg1msKh77QR8mjBZbr
+        TyIm1S+1+pvM585fccWKMexura3TxO21EfrQtNUYFg==
+X-Google-Smtp-Source: AGHT+IFWMD3WqTjjVpi0l63bw4jdnCFGNGz+jsmvkSy1ubVGWSZDX9PFKymKxC9und2e4VwY9YkPdw+kH9e4OxSiqRo=
+X-Received: by 2002:a05:6512:3089:b0:504:31a0:f9e2 with SMTP id
+ z9-20020a056512308900b0050431a0f9e2mr3398152lfd.58.1695850890154; Wed, 27 Sep
+ 2023 14:41:30 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 27 Sep 2023 16:41:29 -0500
 MIME-Version: 1.0
-References: <20230920223242.3425775-1-yang@os.amperecomputing.com>
- <20230925084840.af05fefd19a101c71308a8cf@linux-foundation.org> <90fc0e8d-f378-4d6f-5f52-c14583200a2e@os.amperecomputing.com>
-In-Reply-To: <90fc0e8d-f378-4d6f-5f52-c14583200a2e@os.amperecomputing.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 27 Sep 2023 14:39:21 -0700
-Message-ID: <CAJuCfpExMWXHfZjgZ=UKf4k=zxrNOLx2R-a_wQdZ3O_+JTOq4w@mail.gmail.com>
-Subject: Re: [PATCH] mm: mempolicy: keep VMA walk if both MPOL_MF_STRICT and
- MPOL_MF_MOVE are specified
-To:     Yang Shi <yang@os.amperecomputing.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, hughd@google.com,
-        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
-        osalvador@suse.de, aquini@redhat.com, kirill@shutemov.name,
-        rientjes@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com>
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+ <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com> <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+ <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com> <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Wed, 27 Sep 2023 16:41:29 -0500
+Message-ID: <CAE-0n51Ep4zBx6bswL4Yb+F0+8dW+L2kaKQaZBi-91jsVqm_9Q@mail.gmail.com>
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add pm_runtime_force_suspend()/resume()
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, dianders@chromium.org, vkoul@kernel.org,
+        daniel@ffwll.ch, airlied@gmail.com, agross@kernel.org,
+        andersson@kernel.org, quic_jesszhan@quicinc.com,
+        quic_sbillaka@quicinc.com, marijn.suijten@somainline.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:16=E2=80=AFAM Yang Shi <yang@os.amperecomputing.=
-com> wrote:
->
->
->
-> On 9/25/23 8:48 AM, Andrew Morton wrote:
-> > On Wed, 20 Sep 2023 15:32:42 -0700 Yang Shi <yang@os.amperecomputing.co=
-m> wrote:
+Quoting Abhinav Kumar (2023-09-22 18:35:27)
+> On 9/22/2023 2:54 PM, Stephen Boyd wrote:
+> > Quoting Dmitry Baryshkov (2023-09-19 02:50:12)
+> >>
+> >> This should be hpd_notify, who starts link training, not some event.
 > >
-> >> When calling mbind() with MPOL_MF_{MOVE|MOVEALL} | MPOL_MF_STRICT,
-> >> kernel should attempt to migrate all existing pages, and return -EIO i=
-f
-> >> there is misplaced or unmovable page.  Then commit 6f4576e3687b
-> >> ("mempolicy: apply page table walker on queue_pages_range()") messed u=
-p
-> >> the return value and didn't break VMA scan early ianymore when MPOL_MF=
-_STRICT
-> >> alone.  The return value problem was fixed by commit a7f40cfe3b7a
-> >> ("mm: mempolicy: make mbind() return -EIO when MPOL_MF_STRICT is speci=
-fied"),
-> >> but it broke the VMA walk early if unmovable page is met, it may cause=
- some
-> >> pages are not migrated as expected.
-> > So I'm thinking that a7f40cfe3b7a is the suitable Fixes: target?
->
-> Yes, thanks. My follow-up email also added this.
->
+> > I think this driver should train the link during atomic_enable(), not
+> > hpd_notify() (or directly from the irq handler). The drm_bridge_funcs
+> > talk a bit about when the clocks and timing signals are supposed to be
+> > enabled. For example, struct drm_bridge_funcs::atomic_pre_enable() says
+> > the "display pipe (i.e.  clocks and timing signals) feeding this bridge
+> > will not yet be running when this callback is called". And struct
+> > drm_bridge_funcs::atomic_enable() says "this callback must enable the
+> > display link feeding the next bridge in the chain if there is one."
 > >
-> >> The code should conceptually do:
-> >>
-> >>   if (MPOL_MF_MOVE|MOVEALL)
-> >>       scan all vmas
-> >>       try to migrate the existing pages
-> >>       return success
-> >>   else if (MPOL_MF_MOVE* | MPOL_MF_STRICT)
-> >>       scan all vmas
-> >>       try to migrate the existing pages
-> >>       return -EIO if unmovable or migration failed
-> >>   else /* MPOL_MF_STRICT alone */
-> >>       break early if meets unmovable and don't call mbind_range() at a=
-ll
-> >>   else /* none of those flags */
-> >>       check the ranges in test_walk, EFAULT without mbind_range() if d=
-iscontig.
-
-With this change I think my temporary fix at
-https://lore.kernel.org/all/20230918211608.3580629-1-surenb@google.com/
-can be removed because we either scan all vmas (which means we locked
-them all) or we break early and do not call mbind_range() at all (in
-which case we don't need vmas to be locked).
-
-> >>
-> >> Fixed the behavior.
-> >>
+> > That looks to me like link training, i.e. the display link, should
+> > happen in the enable path and not hpd_notify. It looks like link
+> > training could fail, but when that happens I believe the driver should
+> > call drm_connector_set_link_status_property() with
+> > DRM_MODE_LINK_STATUS_BAD. The two callers of that which exist in the
+> > tree also call drm_kms_helper_hotplug_event() or
+> > drm_kms_helper_connector_hotplug_event() after updating the link so that
+> > userspace knows to try again.
+> >
+> > It would be nice if there was some drm_bridge_set_link_status_bad() API
+> > that bridge drivers could use to signal that the link status is bad and
+> > call the hotplug helper. Maybe it could also record some diagnostics
+> > about which bridge failed to setup the link and stop the atomic_enable()
+> > chain for that connector.
 >
+> Doing link training when we get hpd instead of atomic_enable() is a
+> design choice we have been following for a while because for the case
+> when link training fails in atomic_enable() and setting the link status
+> property as you mentioned, the compositor needs to be able to handle
+> that and also needs to try with a different resolution or take some
+> other corrective action. We have seen many compositors not able to
+> handle this complexity.
+
+The chrome compositor handles this case[1]. If the link status is set to
+bad and there are non-zero number of modes on a connected connector it
+resets the status to good to try again.
+
+> So the design sends the hotplug to usermode only
+> after link training succeeds.
+
+I suspect this is why my trogdor device turns off after rebooting when I
+apply a ChromeOS update with the lid closed and DP connected. Userspace
+wants to know that a display is connected, but this driver is still link
+training by the time userspace boots up so we don't see any drm
+connector indicating status is connected. No drm connectors connected
+means the OS should shutdown.
+
+>
+> I do not think we should change this design unless prototyped with an
+> existing compositor such as chrome or android at this point.
+
+Is this driver used with android?
+
+[1] https://source.chromium.org/chromium/chromium/src/+/main:ui/ozone/platform/drm/gpu/hardware_display_plane_manager_atomic.cc;l=114;drc=67520ac99db89395b10f2ab728b540eef0da8292
