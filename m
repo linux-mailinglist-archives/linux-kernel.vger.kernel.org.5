@@ -2,97 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451387AF820
+	by mail.lfdr.de (Postfix) with ESMTP id 1D29D7AF81F
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjI0Cag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 22:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        id S231654AbjI0Cak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236167AbjI0C0L (ORCPT
+        with ESMTP id S236211AbjI0C1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 22:26:11 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108727D86;
-        Tue, 26 Sep 2023 18:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695779612;
-        bh=orjyqxzMipv8kwfgovdAwTG4JPXHD7W6TbqcYQTsunQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YmPUSOYP3wgoXi5881h1dSMMzw+mHK3pAe/w/6MdGday1aVfCw19wv40buXfofOYx
-         9+vy1PGCLn/okHy9ddfvNBxpuLG26KaPpwGuIoqASFXHzE4e/zLn8+t8ky3lNyei8j
-         dchzhM9JdqAMr4V65MexQCaNru8MSUwgEEB73EG1CTISgF6XG2tJwbhoFmoIMot3Ye
-         Yw+I5tSBq7D5dzl23TYD4oF2d1+uxcR7JWraaan3JDd8faH+NalrZy1qjqsROWuKNY
-         bJNIwAo9VMZdZDZw9WKsnvzQy1PYfpFyIdsGSpdMqgzquTQhMpjTqurVKk8kkFsl3a
-         QVXdRDfJidujw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 26 Sep 2023 22:27:08 -0400
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B74849F5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:56:14 -0700 (PDT)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RwKQM6TZrz4x3k;
-        Wed, 27 Sep 2023 11:53:31 +1000 (AEST)
-Date:   Wed, 27 Sep 2023 11:53:30 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the rcu tree
-Message-ID: <20230927115330.69ef6671@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TebrxWbqq3O=RqDJD=p.u4X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RwKTP5TMPz8XrRH;
+        Wed, 27 Sep 2023 09:56:09 +0800 (CST)
+Received: from szxlzmapp02.zte.com.cn ([10.5.231.79])
+        by mse-fl2.zte.com.cn with SMTP id 38R1u0tg042509;
+        Wed, 27 Sep 2023 09:56:00 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp04[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Wed, 27 Sep 2023 09:56:01 +0800 (CST)
+Date:   Wed, 27 Sep 2023 09:56:01 +0800 (CST)
+X-Zmail-TransId: 2b0665138bb1ffffffff8bd-2abae
+X-Mailer: Zmail v1.0
+Message-ID: <202309270956011542404@zte.com.cn>
+In-Reply-To: <CAJuCfpG2aEv50KFWu4m8isg9dDWQxY9uCGhm=Y0N0AaqPHir8Q@mail.gmail.com>
+References: 202309141353492446199@zte.com.cn,202309141710195376952@zte.com.cn,CAJuCfpG2aEv50KFWu4m8isg9dDWQxY9uCGhm=Y0N0AaqPHir8Q@mail.gmail.com
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <surenb@google.com>
+Cc:     <hannes@cmpxchg.org>, <mingo@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <juri.lelli@redhat.com>,
+        <surenb@google.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCBsaW51eC1uZXh0XSBzY2hlZC9wc2k6IEF2b2lkIHVwZGF0ZSB0cmlnZ2VycyBhbmQgcnRwb2xsX3RvdGFsIHdoZW4gaXQgaXMgdW5uZWNlc3Nhcnk=?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 38R1u0tg042509
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 65138BB9.000/4RwKTP5TMPz8XrRH
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TebrxWbqq3O=RqDJD=p.u4X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> Sorry, I know I owe a review here. I'll try to review it by the end of
+> this week.
 
-Hi all,
-
-The following commits are also in the ftrace tree as different commits
-(but similar patches):
-
-  8f2612479c71 ("doc: Add /proc/bootconfig to proc.rst")
-  648c895fda8d ("doc: Update /proc/cmdline documentation to include boot co=
-nfig")
-
-These are commits
-
-  5f4028880652 ("doc: Add /proc/bootconfig to proc.rst")
-  6eab72b5fea3 ("doc: Update /proc/cmdline documentation to include boot co=
-nfig")
-
-in the ftrace tree.  They are causing a conflict due to the differences.
-
-I am guessing that the commits in the ftrace tree are an older verison?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TebrxWbqq3O=RqDJD=p.u4X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUTixoACgkQAVBC80lX
-0Gw0tgf/QyFlutIlCRtEOD85fbgt2dltTBki5a0F8TBEOxFBfcq/IexM0nXc+0d/
-Mxjmaai0xc/bzgWle/LQS492ZVVcss25fV25zpbZyZLKB61zpS9UXEnVRHicqzor
-lkbZRgVXmPbz38C4IEfQS8qcuve/YnSMQh2yJeQ+qe967F7Tss06Ga9QvYCA8Pxp
-ehrjJ66ePtvySKF+38Me8gulCgVAs/Nm9UyRyyLjJIc6j0s2UjyfTgXhZpneY4k3
-PIe0iP1eTbnNVScdUuJuFHtgC6QUQfrqcIMOqeQxJ0HgPoUGGBhv5nYvhnpe+C4t
-Iz5fmthjovrYjXmWG7+5FLm4BonbeQ==
-=lOu+
------END PGP SIGNATURE-----
-
---Sig_/TebrxWbqq3O=RqDJD=p.u4X--
+Never mind, always appreciate your reviewing. Hope don't disturb your
+weekend rest.
