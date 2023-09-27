@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60247B09EC
+	by mail.lfdr.de (Postfix) with ESMTP id 3C70D7B09EA
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjI0QWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S231628AbjI0QWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbjI0QWr (ORCPT
+        with ESMTP id S231374AbjI0QWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 12:22:47 -0400
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1229C
+Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C40BDD
         for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:22:46 -0700 (PDT)
 Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id 5401DCA4DC14; Wed, 27 Sep 2023 09:22:32 -0700 (PDT)
+        id 62387CA4DC16; Wed, 27 Sep 2023 09:22:32 -0700 (PDT)
 From:   Stefan Roesch <shr@devkernel.io>
 To:     kernel-team@fb.com
 Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
         hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v4 3/4] mm/ksm: document smart scan mode
-Date:   Wed, 27 Sep 2023 09:22:21 -0700
-Message-Id: <20230927162222.3827551-4-shr@devkernel.io>
+Subject: [PATCH v4 4/4] mm/ksm: document pages_skipped sysfs knob
+Date:   Wed, 27 Sep 2023 09:22:22 -0700
+Message-Id: <20230927162222.3827551-5-shr@devkernel.io>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230927162222.3827551-1-shr@devkernel.io>
 References: <20230927162222.3827551-1-shr@devkernel.io>
@@ -39,38 +39,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds documentation for the smart scan mode of KSM.
+This adds documentation for the new metric pages_skipped.
 
 Signed-off-by: Stefan Roesch <shr@devkernel.io>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- Documentation/admin-guide/mm/ksm.rst | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/admin-guide/mm/ksm.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/admin-guide/mm/ksm.rst b/Documentation/admin-g=
 uide/mm/ksm.rst
-index 776f244bdae4..2b38a8bb08af 100644
+index 2b38a8bb08af..0cadde17ae0c 100644
 --- a/Documentation/admin-guide/mm/ksm.rst
 +++ b/Documentation/admin-guide/mm/ksm.rst
-@@ -155,6 +155,15 @@ stable_node_chains_prune_millisecs
-         scan. It's a noop if not a single KSM page hit the
-         ``max_page_sharing`` yet.
-=20
-+smart_scan
-+        Historically KSM checked every candidate page for each scan. It =
-did
-+        not take into account historic information.  When smart scan is
-+        enabled, pages that have previously not been de-duplicated get
-+        skipped. How often these pages are skipped depends on how often
-+        de-duplication has already been tried and failed. By default thi=
-s
-+        optimization is enabled. The ``pages_skipped`` metric shows how
-+        effective the setting is.
-+
- The effectiveness of KSM and MADV_MERGEABLE is shown in ``/sys/kernel/mm=
-/ksm/``:
-=20
- general_profit
+@@ -178,6 +178,8 @@ pages_unshared
+         how many pages unique but repeatedly checked for merging
+ pages_volatile
+         how many pages changing too fast to be placed in a tree
++pages_skipped
++        how many pages did the "smart" page scanning algorithm skip
+ full_scans
+         how many times all mergeable areas have been scanned
+ stable_node_chains
 --=20
 2.39.3
 
