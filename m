@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B907B0DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE9F7B0DCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjI0UzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        id S229743AbjI0U6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjI0Uy7 (ORCPT
+        with ESMTP id S229493AbjI0U57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:54:59 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE79CC0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:54:48 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c6181dacf6so106388025ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:54:48 -0700 (PDT)
+        Wed, 27 Sep 2023 16:57:59 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFEE121
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:57:57 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b2b53e17feso263794666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695848088; x=1696452888; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ojApjJdra5G2e9VG7iCI1/QYu+pQelbcKUfyRfxvagM=;
-        b=t8EqehXMh8Bxqh+7BVXB2x3pkGyMz0aqujzOxWBpTvLB8auz/8GYBhLUL6lTJD+JYb
-         EPr9R2NgOFnQmAiM1LEkCqVhs0SK0R6drtM+PZMElBCgorZj+MQwU071/Orm60XkU3Cg
-         HJ/nj+6LH13MuUaxgK0jP0KgnMWXQNGd3DNqEJwr2+HCzSTzKUPFprbHsohhTWiZEqRz
-         rPAZQfG4BvET2Fm1L+yeSdkV5ZRYUs2qngcB3w6lawSPRYfu087ng/UKsvyjrx5oge1Y
-         mNg9HtP0UDKjl+ToCaHnYGjbAR2jUm7/bDgjPPO9oWNoTxsANjwR3O1L26zXG/cVRaSR
-         jZuA==
+        d=google.com; s=20230601; t=1695848276; x=1696453076; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vdc/ydgmgNMsNbxoUCD1oiRqxp/qtZNwRhbMfUlTHN4=;
+        b=fqq3HNnwuzMATEopc63sstUn0Qc5YGE0qSuQB825KGT7fWnOaEicczs7piYF2mANvd
+         KHtooO1Pqt8kMpjy4PN1us6/RWBqhy1rqYCItsdycaMfnTKMQdyfRddFQcSOr5U2EvVD
+         VT8oALeMTUGVGdiuIPR/uM3heC30t+I/LyxiNgfFwbzxUqQT6ogXeKxd4qOOZoJ7wQA2
+         nobh3wZl70JsdUurdMeYmx1ox4AzaQlO4NmjB0b9rNYI++BAexoLBQowaCiIqsmjiaYu
+         qUHqTUWNM0uufc2o+rFmHYE32445/kd7dh+DQdskibjweRrnSHrAr2Cy3N/l9sNzsFLh
+         baWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695848088; x=1696452888;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ojApjJdra5G2e9VG7iCI1/QYu+pQelbcKUfyRfxvagM=;
-        b=j1DDBmG28CWLPIFlDLCl6Pm7F9Pq3fF364THHuh2kmxAMTNkxzDwp+zpdUO/Xah4fg
-         IUQM3ikg7DI/GY/YayuTnUEhCyb0JZpsO3Wr3PG+3fmwKnhfuksRetjb3MPkZ4Ft7/su
-         /BFWWLGSmo30LuJGjKCTfYzd37AW6A57qtoKJwNfzwBVsW6Hx1xFQIRiyZXIEBABurPf
-         lUIZRnQeu51eqfWJAnFg9kl+KDM4n5PA7v0KVVt+hCeRnKzuUPGR4PbKQIndyPaMEOxv
-         zkxTpnV+JYWUnl8WCjyjQbbcHfNLUA8QgmNwz9qIeSwjCos46yQnpH0/GY4pYgJH8ofy
-         SvNw==
-X-Gm-Message-State: AOJu0Yx4EJZR44CQD7CdEVZF/fYBuMGKoZ/tjmTKsGhAXYxhJnFryhZO
-        Nb6UyGmifXReGCOYL+8lj4gHOCTYZjs=
-X-Google-Smtp-Source: AGHT+IFj1EdT+JgGVa0wI51EvOhfb55LdAwkzQLPbe8TUXZIGLvgHWRpoJJlNYQvgrk8VKDZMzPRxZN9+I4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:2452:b0:1bc:4c3d:eb08 with SMTP id
- l18-20020a170903245200b001bc4c3deb08mr39333pls.8.1695848088093; Wed, 27 Sep
- 2023 13:54:48 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 13:54:46 -0700
-In-Reply-To: <20230807065137.3408970-4-zhaotianrui@loongson.cn>
-Mime-Version: 1.0
-References: <20230807065137.3408970-1-zhaotianrui@loongson.cn> <20230807065137.3408970-4-zhaotianrui@loongson.cn>
-Message-ID: <ZRSWlqS3zQBSLFVK@google.com>
-Subject: Re: [PATCH v2 3/4] KVM: selftests: Add ucall test support for LoongArch
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695848276; x=1696453076;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vdc/ydgmgNMsNbxoUCD1oiRqxp/qtZNwRhbMfUlTHN4=;
+        b=sWEqESv3G2KXsgaNbxawKOWH9ii7BGriGI9T82v+rr3t6rAZZlo7/Bt/eYH7w8jJ4E
+         zgDZaYDYILVfwyHJRdpKoh5ESw21tr+HY3H0lx873gGi9vFLC4UYNAiiVeeEmxum218W
+         fMm9PcPHlGh3Rro3Ws/A1p6aC6yMMm2VPaGvUaUHFecdKWCvInv9BgDOVHjGzVaE5Tgo
+         sEceBOAYlVJRGCA7E4SKhUWoxuow5QqEeaAziTCkD+IBshmjLDnlB0L+A54yYHTKLDcq
+         V+H5s+Z0pPBf5zK7eVHe9PY7F4DUHfRdGGfG9sHFnVxCV0eHyKcumF1Hj7s8G3gieu+f
+         UHJQ==
+X-Gm-Message-State: AOJu0YymjS9lPjoXrGD0BAB7UUCAZM76vv4nXIpCpt2H6b8OETf9ddPk
+        o8UJdtoUDw6HLigxTY4JJZ4pHXdAQVLKoC0OCT7aFg==
+X-Google-Smtp-Source: AGHT+IE6ya4aiuqCKeFX4eCkv0dpQdxRXXuKr7lp4BmNdbwAhjzQ6khsMOEbO2k9fxgBuTyCFU8e4AIwnh7la5ovSiw=
+X-Received: by 2002:a17:906:cc57:b0:99c:6825:ca06 with SMTP id
+ mm23-20020a170906cc5700b0099c6825ca06mr2473711ejb.12.1695848275848; Wed, 27
+ Sep 2023 13:57:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230919171447.2712746-1-nphamcs@gmail.com> <20230919171447.2712746-2-nphamcs@gmail.com>
+ <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com> <20230927205153.GB399644@cmpxchg.org>
+In-Reply-To: <20230927205153.GB399644@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 27 Sep 2023 13:57:17 -0700
+Message-ID: <CAJD7tkbHsmM9tVTwv2Ve7Ekj_bgcZxVgpXKG8upNtZjAkimeZw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Chris Li <chrisl@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023, Tianrui Zhao wrote:
-> Add ucall test support for LoongArch. A ucall is a "hypercall to
-> userspace".
+On Wed, Sep 27, 2023 at 1:51=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
+> > On Tue, Sep 19, 2023 at 10:14=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
+wrote:
+> > > +                       is_empty =3D false;
+> > > +       }
+> > > +       zswap_pool_put(pool);
+> > > +
+> > > +       if (is_empty)
+> > > +               return -EINVAL;
+> > > +       if (shrunk)
+> > > +               return 0;
+> > > +       return -EAGAIN;
+> > >  }
+> > >
+> > >  static void shrink_worker(struct work_struct *w)
+> > >  {
+> > >         struct zswap_pool *pool =3D container_of(w, typeof(*pool),
+> > >                                                 shrink_work);
+> > > -       int ret, failures =3D 0;
+> > > +       int ret, failures =3D 0, memcg_selection_failures =3D 0;
+> > >
+> > > +       /* global reclaim will select cgroup in a round-robin fashion=
+. */
+> > >         do {
+> > > -               ret =3D zswap_reclaim_entry(pool);
+> > > +               /* previous next_shrink has become a zombie - restart=
+ from the top */
+> >
+> > Do we skip zombies because all zswap entries are reparented with the ob=
+jcg?
+> >
+> > If yes, why do we restart from the top instead of just skipping them?
+> > memcgs after a zombie will not be reachable now IIUC.
+> >
+> > Also, why explicitly check for zombies instead of having
+> > shrink_memcg() just skip memcgs with no zswap entries? The logic is
+> > slightly complicated.
+>
+> I think this might actually be a leftover from the initial plan to do
+> partial walks without holding on to a reference to the last scanned
+> css. Similar to mem_cgroup_iter() does with the reclaim cookie - if a
+> dead cgroup is encountered and we lose the tree position, restart.
+>
+> But now the code actually holds a reference, so I agree the zombie
+> thing should just be removed.
 
-Nit, can you explain why LoongArch uses MMIO to trigger ucall, and what alternatives
-were considred (if any)?  The main reason for the ask is because we've tossed
-around the idea of converting all architectures (except s390) to MMIO-based ucall
-in order to reduce the number of "flavors" of ucall we have to worry about it.
-If MMIO is the only reasonable choice for LoongArch, that's another reason to
-double down on MMIO as the primary choice for ucall.
-
-> Based-on: <20230803022138.2736430-1-zhaotianrui@loongson.cn>
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->  .../selftests/kvm/lib/loongarch/ucall.c       | 43 +++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
-> 
-> diff --git a/tools/testing/selftests/kvm/lib/loongarch/ucall.c b/tools/testing/selftests/kvm/lib/loongarch/ucall.c
-> new file mode 100644
-> index 000000000000..72868ddec313
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/loongarch/ucall.c
-> @@ -0,0 +1,43 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ucall support. A ucall is a "hypercall to userspace".
-> + *
-> + */
-> +#include "kvm_util.h"
-> +
-> +/*
-> + * ucall_exit_mmio_addr holds per-VM values (global data is duplicated by each
-> + * VM), it must not be accessed from host code.
-> + */
-> +static vm_vaddr_t *ucall_exit_mmio_addr;
-> +
-> +void ucall_arch_init(struct kvm_vm *vm, vm_paddr_t mmio_gpa)
-> +{
-> +	vm_vaddr_t mmio_gva = vm_vaddr_unused_gap(vm, vm->page_size, KVM_UTIL_MIN_VADDR);
-> +
-> +	virt_map(vm, mmio_gva, mmio_gpa, 1);
-> +
-> +	vm->ucall_mmio_addr = mmio_gpa;
-> +
-> +	write_guest_global(vm, ucall_exit_mmio_addr, (vm_vaddr_t *)mmio_gva);
-> +}
-> +
-> +void ucall_arch_do_ucall(vm_vaddr_t uc)
-> +{
-> +	WRITE_ONCE(*ucall_exit_mmio_addr, uc);
-
-Another uber nit, you might want to put this in the header as a static inline to
-avoid function calls.  I doubt it'll actually matter, but we've had enough weird,
-hard-to-debug issues with ucall that minimizing the amount of generated code might
-save some future pain.
+It might be nice to keep in shrink_memcg() as an optimization and for
+fairness. IIUC, if a memcg is zombified the list_lrus will be
+reparented, so we will scan the parent's list_lrus again, which can be
+unfair to that parent. It can also slow things down if we have a large
+number of zombies, as their number is virtually unbounded.
