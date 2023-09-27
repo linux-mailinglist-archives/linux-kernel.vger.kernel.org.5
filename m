@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FF77B037C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8977B037E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjI0MHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S231500AbjI0MIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjI0MHQ (ORCPT
+        with ESMTP id S229901AbjI0MIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:07:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C794EBE
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:07:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78B13C433C8;
-        Wed, 27 Sep 2023 12:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695816435;
-        bh=BcXd/ubgZpklAR5e9jYsrmlgwa+5/i+hTIvv1bYjz04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YY1ZqAPL55jB/D09VontsxjWV9x+ayVfpHHzzZkAVK8+6d3/Pipe72ZEdyiSwL9KO
-         xqXu4e1RDTdTbR5+UxvBitrCJ/aQndUFkhHMb3N8IVBJDlF8z+SjxFrwHR/lfG0deq
-         DLTWT1qvfyQoa6vTAIVtOT9TUZDB68fYiG9QSx20=
-Date:   Wed, 27 Sep 2023 14:07:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gary Rookard <garyrookard@fastmail.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3 v2] staging: rtl8192e: renamed a variable
-Message-ID: <2023092700-unmapped-sacrament-09df@gregkh>
-References: <20230927112635.27637-1-garyrookard@fastmail.org>
+        Wed, 27 Sep 2023 08:08:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C9CBE
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:08:28 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rwb1F64NszrT7R;
+        Wed, 27 Sep 2023 20:06:09 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 27 Sep 2023 20:08:25 +0800
+Message-ID: <e63a1f26-dfa2-4113-82bb-8d893b29d145@huawei.com>
+Date:   Wed, 27 Sep 2023 20:08:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927112635.27637-1-garyrookard@fastmail.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 8/9] mm: page_alloc: use a folio in
+ free_pages_prepare()
+Content-Language: en-US
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Mike Rapoport <rppt@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <ying.huang@intel.com>,
+        Zi Yan <ziy@nvidia.com>
+References: <20230926005254.2861577-1-wangkefeng.wang@huawei.com>
+ <20230926005254.2861577-9-wangkefeng.wang@huawei.com>
+ <b7818a38-d991-6cdd-c908-fe0ebc3677c6@redhat.com>
+ <75d28233-c8bd-4528-a775-8ccdc7fc3e26@huawei.com>
+In-Reply-To: <75d28233-c8bd-4528-a775-8ccdc7fc3e26@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 07:26:32AM -0400, Gary Rookard wrote:
-> Hi!,
-> 
-> This patch series renames the same mixed case variable in (3) different
-> files of staging/rtl8192e.
-> 1) rtllib.h
-> 2) rtl819x_HTProc.c
-> 3) rtllib_module.c
-> 
-> Regards,
-> -Gary Rookard <garyrookard@fastmail.org>
+Hi David and all,
+
+On 2023/9/26 17:39, Kefeng Wang wrote:
 > 
 > 
-> -- 
-> 2.41.0
+> On 2023/9/26 15:49, David Hildenbrand wrote:
+>> On 26.09.23 02:52, Kefeng Wang wrote:
+>>> The page should not a tail page in free_pages_prepare(), let's use
+>>> a folio in free_pages_prepare() to save several compound_head() calls.
+>>>
+>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> ---
+>>>   mm/page_alloc.c | 15 ++++++++-------
+>>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index 06be8821d833..a888b9d57751 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -1070,6 +1070,7 @@ static __always_inline bool 
+>>> free_pages_prepare(struct page *page,
+>>>               unsigned int order, fpi_t fpi_flags)
+>>>   {
+>>>       int bad = 0;
+>>> +    struct folio *folio = page_folio(page);
+>>
+>> We might have higher-order pages here that are not folios (not 
+>> compound pages). It looks a bit like this function really shouldn't be 
+>> working with folios in the generic way, for that reason.
+>>
+>> Wrong level of abstraction in that function.
 > 
+> Thanks for your point this, also the change also looks unnecessary too,
+> the main purpose to use a folio in this function is prepared for
+> converting page_cpupid_reset_last() to folio, as the higher-order pages
+> the next patch is not right, I will reconsider it.
 > 
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+As David mentioned，free_pages_prepare should not use folio, I won't to
+convert page_cpupid_reset_last(), that is, only the first 7 patches are
+reserved, any comments about the above patches, many thanks.
