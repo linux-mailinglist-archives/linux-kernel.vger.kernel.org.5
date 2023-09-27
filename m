@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFCB7AFEE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121B37AFEE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjI0IrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S230163AbjI0Irx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjI0IrQ (ORCPT
+        with ESMTP id S230097AbjI0Irs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:47:16 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0348CB3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:47:12 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c1c66876aso1345703266b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1695804430; x=1696409230; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7R44+izV15PlpetL04YRf6tEqOd3u3v63DX/FqhKvw=;
-        b=BSixiHM40Hz7zXgVBsquclElSHBWJPjKLKm4PSVZlZUu56huUr+ubBK32UzVHMflA4
-         fc6RvqojFeDS2hQvqi9tOEfyiDDM5r7HbjJrDYkcudBPVRZAoJ6V6ZmYNExtkRcUqtIP
-         qX8ugJMer4WEzg8E9W2U2A7dT+we3Z20U3wAU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804430; x=1696409230;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q7R44+izV15PlpetL04YRf6tEqOd3u3v63DX/FqhKvw=;
-        b=HeRqYAAPM/ZhovB6fJaOQ9eTg6Jl7IE919P81xTN7/QlZT4b1Ax9+C1bxNEK4I/yp+
-         Ggvb+RpfaH6PzGN5cfXk0GHYfnFzjWJ7+z8niUNQhcaiKJhALGfV+NV4bSebfIeo2RsD
-         KrolBW1maUNBlOBrOfWJQTY/wHRWASbk89MAK7pd4s6amYxpRbbubfw0pFIRP3a9HqJ8
-         FMflCzHF1Ta9xR0yTi9MFcvSon9IU2fsMYMDMiHHBbe/iBqL2pw5YXIfANVpILsg0h5I
-         EJ8XBB/4IaXCA/4sGIceqnSoa82v9qNWHW0o0uKY9hzhJDkANfWQSjNXsqVq2G5G/vEr
-         iL+A==
-X-Gm-Message-State: AOJu0Yyn21G64aLVoETtLXyteg3sM+p01BTb4RvJxhcNalYaSsH7uS4S
-        yz5Y7hwwjKHlJPbrFWJ7fFriFTwGKiW2snWJ7IMpkg==
-X-Google-Smtp-Source: AGHT+IHakFZR3B3G8zMwyXaAUpbmlxEnten3LWsWQmOVVXf706DBV8ir31XKJVFq7fysuifFgh/a2olHdT2hG4uPu94=
-X-Received: by 2002:a17:907:7e91:b0:9a6:426f:7dfd with SMTP id
- qb17-20020a1709077e9100b009a6426f7dfdmr1366881ejc.66.1695804430509; Wed, 27
- Sep 2023 01:47:10 -0700 (PDT)
+        Wed, 27 Sep 2023 04:47:48 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6133ECC;
+        Wed, 27 Sep 2023 01:47:47 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R7Qg6M027364;
+        Wed, 27 Sep 2023 08:47:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=DFClMcz23Gf8da0D7pNHglGNlh8JbZ50VURIo0Bxb8k=;
+ b=npEqrAHBiyP32TW6/Yu+8ZBRAzBT+ka/hXE2azEJoMbjrM2GKvaWa3TMYcXKsxl4WKMY
+ NsggJbrdePDD5pPOp1Zo9h2BFV5AwvWv37YrECLGJK3PzWToEcxDqZ4M3fSR5HDJlA/A
+ /yv3IKAWmeME62jLrnNxGG1hpbqRx2dt1FYQDkXMdU+01WvbALpSjnPQdNlJ+90OwIwZ
+ yxQxfNwa8q12OCQFfO4rd81TRp39RLiqnJUE1e5RTfLpgmhRF/juJI8J6m1GZPp8HMz8
+ orhI4oXAXb0H4XU8/2KNMHAcsdbvztZvpepAGKu2kZvQ90qfLZ0jFNXGCp7t19oRHmmV WA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcda7rena-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 08:47:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R8lL1b004704
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 08:47:22 GMT
+Received: from [10.216.34.233] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
+ 2023 01:47:17 -0700
+Message-ID: <3c18614f-eb77-4eff-be1d-068cde655b0a@quicinc.com>
+Date:   Wed, 27 Sep 2023 14:17:14 +0530
 MIME-Version: 1.0
-References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
- <44631c05-6b8a-42dc-b37e-df6776baa5d4@app.fastmail.com> <20230925-total-debatten-2a1f839fde5a@brauner>
- <CAJfpegvUCoKebYS=_3eZtCH49nObotuWc=_khFcHshKjRG8h6Q@mail.gmail.com>
- <20230925-wahlrecht-zuber-3cdc5a83d345@brauner> <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
-In-Reply-To: <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 27 Sep 2023 10:46:58 +0200
-Message-ID: <CAJfpegu3BKXE+b51cj3=QwAsxe3QyKOEG_10muEsAsGD=_vkAA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] usb: gadget: udc: Handle gadget_connect failure during
+ bind operation
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20230927073027.27952-1-quic_kriskura@quicinc.com>
+ <2023092701-facelift-projector-d1d4@gregkh>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <2023092701-facelift-projector-d1d4@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: nP6WagGRzemSeX86E-Bhsd90GT-U81k0
+X-Proofpoint-GUID: nP6WagGRzemSeX86E-Bhsd90GT-U81k0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ mlxlogscore=498 priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270071
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -75,33 +85,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sept 2023 at 15:20, Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Mon, 25 Sept 2023 at 15:19, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > > How about passing u64 *?
-> >
-> > struct statmnt_req {
-> >         __u64 mnt_id;
-> >         __u64 mask;
-> > };
-> >
-> > ?
->
-> I'm fine with that as well.
 
-So after a bit more thinking: this is okay to make life easier for
-32bit archs, but only on the kernel ABI.
 
-On the library API the args should *not* be multiplexed, as it's just
-a pointless complication.  This is just an internal implementation
-detail for the sake of legacy architectures, instead of being good API
-design.
+On 9/27/2023 1:46 PM, Greg Kroah-Hartman wrote:
+> On Wed, Sep 27, 2023 at 01:00:27PM +0530, Krishna Kurapati wrote:
+>> In the event gadget_connect call (which invokes pullup) fails,
+>> propagate the error to udc bind operation which in turn sends the
+>> error to configfs. The userspace can then retry enumeration if
+>> it chooses to.
+> 
+> Will this break userspace that is not expecting error codes to be
+> returned?  What userspace code will now be modified to handle this?
+> Where is that work happening?
+> 
+> thanks,
 
-And because it's an internal thingy, my feeling is that this struct
-could be reused for passing mnt_id to listmount(2) as well, despite
-the fact that the mask would be unused.   But I'm ready to be
-convinced otherwise...
+Hi Greg,
 
-Thanks,
-Miklos
+  This only handles cases where the pullup failed but the error code 
+wasn't returned to configfs_udc_store approrpiately. In userspace when 
+we do the following:
+
+echo "UDC NAME" > /usb_gadget/<>/UDC
+
+in the issue I was facing, the core soft reset was failing and we return 
+-110 from dwc3/core.c to udc's bind_to_driver call, but it is not 
+checked any where today and we return 0 to udc_store in configfs. The 
+userspace assumes the UDC write went through (and enum happened) but it 
+actually doesn't. If we propagate the -ETIMEDOUT coming from dwc3-core 
+all the way to configfs_udc_store, it will reach userspace as well 
+indicating that the echo command was not successful which then the user 
+can choose to retry or not. On Android devices, I saw userspace retry 
+happening when we propagate dwc3-core error to userspace. So nothing in 
+userspace breaks. It can stay as it but this time, the echo in userspace 
+will fail if pullup fails for some reason.
+
+Regards,
+Krishna,
