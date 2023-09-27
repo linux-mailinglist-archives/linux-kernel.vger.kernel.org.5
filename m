@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49F17B0769
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F757B0770
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbjI0Oza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S232179AbjI0O4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjI0Oz2 (ORCPT
+        with ESMTP id S232067AbjI0O4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:55:28 -0400
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B16BF9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:55:26 -0700 (PDT)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1dd51b98342so12253956fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:55:26 -0700 (PDT)
+        Wed, 27 Sep 2023 10:56:46 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02667139
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:56:45 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-313e742a787so7623068f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695826603; x=1696431403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sngrgBmcc0SNVGKMiz3UxrHAAX6L7zKBd8TMIQEgu/I=;
+        b=WOgYVGT5dOoRVhJF6Qn4HMadW3x8DLaZ95Ld0oVJzxMai+4yKPSVxdwYcKZxDxsZkM
+         DwSxvgz0uAXEhguosm1qU8ElSAv7BdGhut5jxgE/rbR3hWrjJbyzrsoJqMw8RV9yZwFm
+         s5HXirslZWY8eR1cy8Qf4sD8ZuyvFFU9ANrusjeZSkywUDR8EVnGsN+qX4f+e//hukss
+         lVA0UJqPSconPT304216rYeiVZOd9nwgt09Auj+zlACCdJjKXJIp/LfDbcsAAssTcff3
+         Vjtrvet2MVzg5FZxHcjF3YFDg5JXajELiSHDWt5z5tHE2TfRnH5+vQ12vPHK08Dc9X5U
+         Hkww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695826525; x=1696431325;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1695826603; x=1696431403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lBWVgveX+Gy18voOjfm0pQ+cpi+lx5U5ZfTJiFJTenI=;
-        b=sG+1Gb2VzLIX8GwPV8U5S5+eFnRixyfco5WQQMtZZgURNRVAxJXdw3ZL/soH+MWsNa
-         Dt/qM2pChU5nN00MRNMknxSgFkP3kuTlnbpI+eVZBpSrB9zEyeiZYC8RMCC1lSDCW7+0
-         n3X/jRQ7qAd+9ptgIrEuFtkq1LbK1ok44Jq0/rOWTT/YEEYGHUrvaGfJN/0iv3U2i1nV
-         eysCJ15E1t2RJz/RZupMDX9RHuJ6BzIxCOMtkRG3mb5c91aOaZgiGtms+dRFe5DWj+P1
-         vQiWjYLjJdM3s7ab6AqiKtQAPA3xbXTyQbmNktRqJzY1X3Dt4/Td4CortyFiPl9EsX/6
-         4Q0A==
-X-Gm-Message-State: AOJu0Yw4y7bOrdduNRC+UWNFFlIesoUqCC1LM4cXRDZdo7cddra4UIWg
-        J2g+47ASjiIFl4ENW/9sNPksnk2e3Zfk0yYChwqTVaSVOWqk
-X-Google-Smtp-Source: AGHT+IFu+UhBkt/FQcj8P5/rQdxSln4WN9Ws82IxG014NHtA0BQTNz7umpFu7HPlIFEY687z1hb4nsZODK+6rTOnGPtkGasNMu4b
+        bh=sngrgBmcc0SNVGKMiz3UxrHAAX6L7zKBd8TMIQEgu/I=;
+        b=JZC9xszicM4O4zxo7t/Ah+H4p1CSrhR7zXadWmcHB5OQqJwxeHUMt9PTEKvQhKzWmC
+         yz1X6TI8ezZpbmOW0GRznNQ4mAZ5DoUcLCRrCLF2UXoeJv1fZ46vAD8bKWY9GDcSQP9V
+         974uO6oZcVW96Rq41SUOu8Ah3a2c2UBoLmLPETotiyZHawxePB2Vf4p+yJ9oPwprlOTS
+         lDtWXvqYD8meYkqXAVvT6GjPzDneBIhctu5RfcpR2yhVimXIJeQGVKQXGUa7W8nbZjfs
+         xde/8JNGa92fY374BYauwTwWgzR7GYFEh9eHWEK+H7f8YjildIFOiY0wcrRcBoRgWYGo
+         qs5g==
+X-Gm-Message-State: AOJu0Yz8ATk7KySKSChGhA+Makn6VeiLaAv0uCZmYP9QspAuivb8e+HK
+        E+OSf7d4dhqQJ4c90cOQv/S0nQ==
+X-Google-Smtp-Source: AGHT+IEmnAhUscM+ELai9UJbSrjbIHumSFpekzbWpdFz9hhQRNPdNIpgopswacO/VqV16BtM9+v2+g==
+X-Received: by 2002:adf:fe09:0:b0:323:30d0:5c4d with SMTP id n9-20020adffe09000000b0032330d05c4dmr4942698wrr.19.1695826603342;
+        Wed, 27 Sep 2023 07:56:43 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id r2-20020adfe682000000b0031ff89af0e4sm17283525wrm.99.2023.09.27.07.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 07:56:42 -0700 (PDT)
+Message-ID: <bb7f32c9-249c-2ad8-135c-82098430bcfd@linaro.org>
+Date:   Wed, 27 Sep 2023 16:56:41 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5a99:b0:1d6:8292:b0f9 with SMTP id
- dt25-20020a0568705a9900b001d68292b0f9mr783361oab.7.1695826525491; Wed, 27 Sep
- 2023 07:55:25 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 07:55:25 -0700
-In-Reply-To: <gugiuvjgpoogf3k5cm4px4jwevg5torsu3d7afbbhvnrxho4zu@wkcxeb5sr5ez>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a71ad80606586122@google.com>
-Subject: Re: [syzbot] [pvrusb2?] KASAN: slab-use-after-free Read in pvr2_context_set_notify
-From:   syzbot <syzbot+621409285c4156a009b3@syzkaller.appspotmail.com>
-To:     isely@pobox.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mchehab@kernel.org, pvrusb2@isely.net, ricardo@marliere.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 05/13] thermal: core: Store trip pointer in struct
+ thermal_instance
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <1957441.PYKUYFuaPT@kreacher> <1977624.usQuhbGJ8B@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <1977624.usQuhbGJ8B@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,174 +81,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 21/09/2023 19:52, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Replace the integer trip number stored in struct thermal_instance with
+> a pointer to the relevant trip and adjust the code using the structure
+> in question accordingly.
+> 
+> The main reason for making this change is to allow the trip point to
+> cooling device binding code more straightforward, as illustrated by
+> subsequent modifications of the ACPI thermal driver, but it also helps
+> to clarify the overall design and allows the governor code overhead to
+> be reduced (through subsequent modifications).
+> 
+> The only case in which it adds complexity is trip_point_show() that
+> needs to walk the trips[] table to find the index of the given trip
+> point, but this is not a critical path and the interface that
+> trip_point_show() belongs to is problematic anyway (for instance, it
+> doesn't cover the case when the same cooling devices is associated
+> with multiple trip points).
+> 
+> This is a preliminary change and the affected code will be refined by
+> a series of subsequent modifications of thermal governors, the core and
+> the ACPI thermal driver.
+> 
+> The general functionality is not expected to be affected by this change.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in pvr2_context_set_notify
+Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-pvrusb2: Important functionality might not be entirely working.
-pvrusb2: Please consider contacting the driver author to help with further stabilization of the driver.
-pvrusb2: **********
-usb 1-1: USB disconnect, device number 102
-pvrusb2: Device being rendered inoperable
-==================================================================
-BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2fa/0x350 drivers/media/usb/pvrusb2/pvrusb2-context.c:42
-Read of size 4 at addr ffff8881093becd8 by task kworker/0:0/8
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.0-rc2-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- pvr2_context_set_notify+0x2fa/0x350 drivers/media/usb/pvrusb2/pvrusb2-context.c:42
- pvr_disconnect+0x80/0xf0 drivers/media/usb/pvrusb2/pvrusb2-main.c:79
- usb_unbind_interface+0x1dd/0x8d0 drivers/usb/core/driver.c:458
- device_remove drivers/base/dd.c:569 [inline]
- device_remove+0x11f/0x170 drivers/base/dd.c:561
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3813
- usb_disable_device+0x36c/0x7f0 drivers/usb/core/message.c:1416
- usb_disconnect+0x2e1/0x890 drivers/usb/core/hub.c:2252
- hub_port_connect drivers/usb/core/hub.c:5280 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
- port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x1be0/0x4f30 drivers/usb/core/hub.c:5822
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-Allocated by task 8:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x87/0x90 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- pvr2_context_create+0x53/0x2a0 drivers/media/usb/pvrusb2/pvrusb2-context.c:208
- pvr_probe+0x25/0xe0 drivers/media/usb/pvrusb2/pvrusb2-main.c:54
- usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3624
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
- usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3624
- usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2589
- hub_port_connect drivers/usb/core/hub.c:5440 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
- port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x2e62/0x4f30 drivers/usb/core/hub.c:5822
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-Freed by task 901:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x13c/0x190 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xff/0x330 mm/slub.c:3822
- pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:144 [inline]
- pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:159
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-The buggy address belongs to the object at ffff8881093bec00
- which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 216 bytes inside of
- freed 256-byte region [ffff8881093bec00, ffff8881093bed00)
-
-The buggy address belongs to the physical page:
-page:ffffea000424ef80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1093be
-head:ffffea000424ef80 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0x200000000000840(slab|head|node=0|zone=2)
-page_type: 0xffffffff()
-raw: 0200000000000840 ffff888100041b40 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 8817323426, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x10e1/0x2fd0 mm/page_alloc.c:3170
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
- alloc_page_interleave+0x1e/0x230 mm/mempolicy.c:2131
- alloc_pages+0x22a/0x270 mm/mempolicy.c:2293
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x251/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x12c/0x310 mm/slub.c:3517
- kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- bus_add_driver+0x92/0x630 drivers/base/bus.c:657
- driver_register+0x15c/0x4a0 drivers/base/driver.c:246
- usb_register_driver+0x24f/0x500 drivers/usb/core/driver.c:1062
- do_one_initcall+0x117/0x630 init/main.c:1232
- do_initcall_level init/main.c:1294 [inline]
- do_initcalls init/main.c:1310 [inline]
- do_basic_setup init/main.c:1329 [inline]
- kernel_init_freeable+0x5bd/0x8f0 init/main.c:1547
- kernel_init+0x1c/0x2a0 init/main.c:1437
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff8881093beb80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8881093bec00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8881093bec80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff8881093bed00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8881093bed80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
-Tested on:
-
-commit:         ce9ecca0 Linux 6.6-rc2
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f01d0a680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59eae8406319284a
-dashboard link: https://syzkaller.appspot.com/bug?extid=621409285c4156a009b3
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12ca2656680000
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
