@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40D67AFA33
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1B67AF9D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjI0FmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
+        id S229500AbjI0FOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjI0Fle (ORCPT
+        with ESMTP id S229668AbjI0FN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:41:34 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0794ED4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:43:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7fd4c23315so16261170276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:43:10 -0700 (PDT)
+        Wed, 27 Sep 2023 01:13:27 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA4F59C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:48:11 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-418157e979eso148761cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:48:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695789789; x=1696394589; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=iePGiIkzKfdzMIOYNHOPRk3cHv3ow4quHNbS62CX7cc=;
-        b=f+BgNC9iLIinJJtX9RsOwyapX+ljtdbJ6aXe875+wmA+mhGZZpFyW8IXkfcCq6foEF
-         hBi7GYcengpzpVU04f0ddt/A61YSoN7ayzrL/TX/G+iZI3LQxtupxuhxOsNq/vzo/IBG
-         +5BlZGaWVRWaMF8jGmSYi5/SolazV3zHGXhXvZnd4wJdhEYzEfJWPIrhu6QKAdnQ77kH
-         CUHUwARmC3VHOdvK9gHu/+jSB+JjPSWuI8joKEmt5Pbc+OX0EzepzllCI+GLmQHKwaC7
-         59TGzErtfZxD5ng8c+EX14dgtvH4qOil1hccALcQXOC3i5DG30McDOyzlP30HKIQgV2b
-         CXww==
+        d=google.com; s=20230601; t=1695790090; x=1696394890; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5XS7Z2HYwT7+bKR8ejv05mrlibvnmC+jgh8eL0fAPo=;
+        b=JkIUtQsbd7zRgA7jdptbDYPywpO1CMQ5rNycomxYkbnLlkRcVISGVlXEY22RrB4kx4
+         /fjhA9vV4M0J5LFaWM1xUOXxEvzGDbZ3WRJCDMKmhWaE7mJHgZ3RbxlSQL51dtXiSKrR
+         6JWL44CIscDERQwJX4YdO/UbWjN1UpcsNlcTYiPi8kA5+/nqmiPvHES1CaIAK/lMqC4w
+         3pwoEr4SXRpk55SSlwSGVDmvZfD25yfL9hVKub+JK8AJXGCVLVQrHfyaudblh+oSQiLh
+         jgKqyKznOKfkRcowSMYxJlnyidmGb19vScwrMOC1kt5qvVUKQJ0E6tOv99LTpF00XaQT
+         X5AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695789789; x=1696394589;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iePGiIkzKfdzMIOYNHOPRk3cHv3ow4quHNbS62CX7cc=;
-        b=vgVAbO7mH4nBR5dKRc8eTIYWTOqIRWpaxT9wpkzL+Yx0M4K0DEnY7jWplTXQzBAJvv
-         4OXFlKd2W+UJkTenw6Mocl7TNlaI+3RJhLXWKaURkjgb6A40+vPr5wzfoG/aTfRk9fjh
-         WbNeds+05b0n2bF55DgPew7vMI4ZgxnwMlNK4wGxlqauwxOuAnJx3qkZQZgkpoXGqbLL
-         qJ8EQYa9bFVFLxfSCEN9CBsOQwzN1ek4P1r/TeZJaE9R8T0xhHaybpWocZ88PT1VfNgs
-         pWS82lOtpTjZYYXRbaaeAZ/kR85J/055oyyXuKmXhR8XDowejBfGL1AuOODZc3crPVzG
-         HnCQ==
-X-Gm-Message-State: AOJu0YxlsBvKurpG4wz7b1J0Z9wgKZ81YYYIjlgOqaBaNWHMNyGjcoM4
-        pwcAG3SkMSCOSzhv8EdIivnYR1uQSecKEgy/gw==
-X-Google-Smtp-Source: AGHT+IFd0ooW1etTxxJiTNoTbFujxXZt/InXzvbY0UsHwCdSv0uv0h4zfagMpHW3ZgyyIZZQBDRZadcuoO6RPk4m5Q==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:503:b0:d7b:8acc:beb8 with
- SMTP id x3-20020a056902050300b00d7b8accbeb8mr10054ybs.2.1695789789581; Tue,
- 26 Sep 2023 21:43:09 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 04:43:08 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANuyE2UC/x2NSw7CMAwFr1J5jaVgQHyuglhEiQNeNER+pQJVv
- TuB5Uhv3iwEdVPQZVjIdTbYs3bYbgZKj1jvypY7kwTZhbMcGZPX1D6c3WZ18KhA7LPy+qk8tgk RnLiI5EPch5OoUH9rrsXe/9L1tq5fn35o8HkAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695789788; l=3357;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=EG1YpGCKOg76/PpeoMN8n1JVEehvPAP4ohoFDY4oUi4=; b=qhrzWo9sVm0VaNN5eB2F4JA68rayk7qenKcrcBKhCIwLhJbjdk7cI5E1kw0NBzW7Fn/9c+Wsc
- TDomOeaRGTJDjyyt3Nq2pOIikjhgZO5jnJrgq1M8e+SRVRIwLmBzEVc
-X-Mailer: b4 0.12.3
-Message-ID: <20230927-strncpy-drivers-message-fusion-mptsas-c-v1-1-edac65cd7010@google.com>
-Subject: [PATCH] scsi: message: fusion: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1695790090; x=1696394890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l5XS7Z2HYwT7+bKR8ejv05mrlibvnmC+jgh8eL0fAPo=;
+        b=SN2htA2xOqUnUq5wsiWlirAAOUQSbT2fq93ElcL3ddpL89MSDQXssYMiXgKGMlr7Hz
+         rAVkUCx6v3n1m9vjbBa9dhV7dhlgQWfQY9HgDcvcl45Zxtlh+/YTXKd/dTCtSfv+XKz5
+         Y5G4AKmU8wS7F7R8XgEi5x5rojDRukP7TH+e+uO89WZCbq7IsDuxUBAb5DJqQTPt2Yh6
+         7leaOUavhySHqvp1bGOpdzS5zCxEpbZynN8VQffr441PjeyGANNIvSHgQeyLfwcpqkDc
+         CrjCmveqj35c8Kg+FgB6HsiErIyuEb9sv4aJ2rmvzI2z59Lc17QVswsCzz0qClKKdgxx
+         KYqg==
+X-Gm-Message-State: AOJu0YweXpXpJ8/asIHO7hDl7lQG3m+hlAPzb+pDHMX4UqeFqF6ItYr+
+        Mk4iol/nMWcj8jaW3GyK3UwO748eWZXgBp9ivNeVRNVwUUpMWdEWap8=
+X-Google-Smtp-Source: AGHT+IERfSFuDjwyCdv+pYv7zxwg+m/k60xJh5HF2gkZB2tIwPOYuEB2L9y/f6uP82bTWri22fwfc6jCtPV4mjE3kRI=
+X-Received: by 2002:ac8:5b01:0:b0:410:958a:465f with SMTP id
+ m1-20020ac85b01000000b00410958a465fmr450066qtw.11.1695790090076; Tue, 26 Sep
+ 2023 21:48:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230911144139.2354015-1-kan.liang@linux.intel.com>
+In-Reply-To: <20230911144139.2354015-1-kan.liang@linux.intel.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Tue, 26 Sep 2023 21:47:57 -0700
+Message-ID: <CABPqkBQ1R9K_2L6pNp1dLmHnjwzcSiWeAhJ+J701_cojpVzwFw@mail.gmail.com>
+Subject: Re: [PATCH] perf/x86/intel: Extend the ref-cycles event to GP counters
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, ak@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,79 +70,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Mon, Sep 11, 2023 at 7:41=E2=80=AFAM <kan.liang@linux.intel.com> wrote:
+>
+> From: Kan Liang <kan.liang@linux.intel.com>
+>
+> The current ref-cycles event is only available on the fixed counter 2.
+> Starting from the GLC and GRT core, the architectural UnHalted Reference
+> Cycles event (0x013c) which is available on general-purpose counters
+> can collect the exact same events as the fixed counter 2.
+>
+> Update the mapping of ref-cycles to 0x013c. So the ref-cycles can be
+> available on both fixed counter 2 and general-purpose counters.
+>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  arch/x86/events/intel/core.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index e1543d6dc48a..a08f794a0e79 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -211,6 +211,14 @@ static struct event_constraint intel_slm_event_const=
+raints[] __read_mostly =3D
+>         EVENT_CONSTRAINT_END
+>  };
+>
+> +static struct event_constraint intel_grt_event_constraints[] __read_most=
+ly =3D {
+> +       FIXED_EVENT_CONSTRAINT(0x00c0, 0), /* INST_RETIRED.ANY */
+> +       FIXED_EVENT_CONSTRAINT(0x003c, 1), /* CPU_CLK_UNHALTED.CORE */
+> +       FIXED_EVENT_CONSTRAINT(0x0300, 2), /* pseudo CPU_CLK_UNHALTED.REF=
+ */
+> +       FIXED_EVENT_CONSTRAINT(0x013c, 2), /* CPU_CLK_UNHALTED.REF_TSC_P =
+*/
+> +       EVENT_CONSTRAINT_END
+> +};
+> +
+>  static struct event_constraint intel_skl_event_constraints[] =3D {
+>         FIXED_EVENT_CONSTRAINT(0x00c0, 0),      /* INST_RETIRED.ANY */
+>         FIXED_EVENT_CONSTRAINT(0x003c, 1),      /* CPU_CLK_UNHALTED.CORE =
+*/
+> @@ -314,6 +322,7 @@ static struct event_constraint intel_glc_event_constr=
+aints[] =3D {
+>         FIXED_EVENT_CONSTRAINT(0x0100, 0),      /* INST_RETIRED.PREC_DIST=
+ */
+>         FIXED_EVENT_CONSTRAINT(0x003c, 1),      /* CPU_CLK_UNHALTED.CORE =
+*/
+>         FIXED_EVENT_CONSTRAINT(0x0300, 2),      /* CPU_CLK_UNHALTED.REF *=
+/
+> +       FIXED_EVENT_CONSTRAINT(0x013c, 2),      /* CPU_CLK_UNHALTED.REF_T=
+SC_P */
 
-The only caller of mptsas_exp_repmanufacture_info() is
-mptsas_probe_one_phy() which can allocate rphy in either
-sas_end_device_alloc() or sas_expander_alloc(). Both of which
-zero-allocate:
-|       rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-... this is supplied to mptsas_exp_repmanufacture_info() as edev meaning
-that no future NUL-padding of edev members is needed.
+I don't think that on SKL there is a REF_TSC_P. It only appears on
+SPR. The encoding exists on SKL
+but it counts REF_XCLK which I think counts something different. Please che=
+ck.
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Note that while `strscpy(dest, src, sizeof(dest))` is more idiomatic
-strscpy usage, we should keep `SAS_EXPANDER...LEN` for length arguments
-since changing these to sizeof would mean we are getting buffers one
-character larger than expected due to the declaration for these members:
-|       char   vendor_id[SAS_EXPANDER_VENDOR_ID_LEN+1];
-|       char   product_id[SAS_EXPANDER_PRODUCT_ID_LEN+1];
-|       char   product_rev[SAS_EXPANDER_PRODUCT_REV_LEN+1];
-|       char   component_vendor_id[SAS_EXPANDER_COMPONENT_VENDOR_ID_LEN+1];
-... and simply removing the "+1" in conjunction with using sizeof() may
-not work as other code may rely on this adjusted buffer length for
-sas_expander_device members.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Note: similar to drivers/scsi/mpi3mr/mpi3mr_transport.c +212 which uses
-strscpy
----
- drivers/message/fusion/mptsas.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
-index 86f16f3ea478..1dc225701a50 100644
---- a/drivers/message/fusion/mptsas.c
-+++ b/drivers/message/fusion/mptsas.c
-@@ -2964,15 +2964,15 @@ mptsas_exp_repmanufacture_info(MPT_ADAPTER *ioc,
- 			goto out_free;
- 
- 		manufacture_reply = data_out + sizeof(struct rep_manu_request);
--		strncpy(edev->vendor_id, manufacture_reply->vendor_id,
-+		strscpy(edev->vendor_id, manufacture_reply->vendor_id,
- 			SAS_EXPANDER_VENDOR_ID_LEN);
--		strncpy(edev->product_id, manufacture_reply->product_id,
-+		strscpy(edev->product_id, manufacture_reply->product_id,
- 			SAS_EXPANDER_PRODUCT_ID_LEN);
--		strncpy(edev->product_rev, manufacture_reply->product_rev,
-+		strscpy(edev->product_rev, manufacture_reply->product_rev,
- 			SAS_EXPANDER_PRODUCT_REV_LEN);
- 		edev->level = manufacture_reply->sas_format;
- 		if (manufacture_reply->sas_format) {
--			strncpy(edev->component_vendor_id,
-+			strscpy(edev->component_vendor_id,
- 				manufacture_reply->component_vendor_id,
- 				SAS_EXPANDER_COMPONENT_VENDOR_ID_LEN);
- 			tmp = (u8 *)&manufacture_reply->component_id;
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230927-strncpy-drivers-message-fusion-mptsas-c-f22d5a4082e2
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+>         FIXED_EVENT_CONSTRAINT(0x0400, 3),      /* SLOTS */
+>         METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_RETIRING, 0),
+>         METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BAD_SPEC, 1),
+> @@ -5983,6 +5992,12 @@ static __always_inline int intel_pmu_init_hybrid(e=
+num hybrid_pmu_type pmus)
+>         return 0;
+>  }
+>
+> +static __always_inline void intel_pmu_ref_cycles_ext(void)
+> +{
+> +       if (!(x86_pmu.events_maskl & (INTEL_PMC_MSK_FIXED_REF_CYCLES >> I=
+NTEL_PMC_IDX_FIXED)))
+> +               intel_perfmon_event_map[PERF_COUNT_HW_REF_CPU_CYCLES] =3D=
+ 0x013c;
+> +}
+> +
+>  static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
+>  {
+>         x86_pmu.late_ack =3D true;
+> @@ -6005,6 +6020,8 @@ static __always_inline void intel_pmu_init_glc(stru=
+ct pmu *pmu)
+>         memcpy(hybrid_var(pmu, hw_cache_extra_regs), glc_hw_cache_extra_r=
+egs, sizeof(hw_cache_extra_regs));
+>         hybrid(pmu, event_constraints) =3D intel_glc_event_constraints;
+>         hybrid(pmu, pebs_constraints) =3D intel_glc_pebs_event_constraint=
+s;
+> +
+> +       intel_pmu_ref_cycles_ext();
+>  }
+>
+>  static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
+> @@ -6021,9 +6038,11 @@ static __always_inline void intel_pmu_init_grt(str=
+uct pmu *pmu)
+>         memcpy(hybrid_var(pmu, hw_cache_event_ids), glp_hw_cache_event_id=
+s, sizeof(hw_cache_event_ids));
+>         memcpy(hybrid_var(pmu, hw_cache_extra_regs), tnt_hw_cache_extra_r=
+egs, sizeof(hw_cache_extra_regs));
+>         hybrid_var(pmu, hw_cache_event_ids)[C(ITLB)][C(OP_READ)][C(RESULT=
+_ACCESS)] =3D -1;
+> -       hybrid(pmu, event_constraints) =3D intel_slm_event_constraints;
+> +       hybrid(pmu, event_constraints) =3D intel_grt_event_constraints;
+>         hybrid(pmu, pebs_constraints) =3D intel_grt_pebs_event_constraint=
+s;
+>         hybrid(pmu, extra_regs) =3D intel_grt_extra_regs;
+> +
+> +       intel_pmu_ref_cycles_ext();
+>  }
+>
+>  __init int intel_pmu_init(void)
+> --
+> 2.35.1
+>
