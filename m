@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9491B7B0510
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1914E7B04FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjI0NRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 09:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        id S231826AbjI0NNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 09:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231854AbjI0NRP (ORCPT
+        with ESMTP id S231760AbjI0NNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 09:17:15 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBAFF4;
-        Wed, 27 Sep 2023 06:17:13 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RD8NP1001446;
-        Wed, 27 Sep 2023 13:16:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Jyr/4l519Hb08MsN0HL9kt5kqv7LSkItoalV618mZTM=;
- b=YWxNO3aa32d56taiy1VSF4OZDqDHDL9VMyzhhtPStgt9JftSJp1/TTGuIkSjCbgmmEFs
- fcpvUQfNhLsNiHsMkTtfeA/DDhfzGtfgpJPlq/klebb/S4osaLJaxtkJjt2bwf6n5Gb5
- /WVwPYTIkkpG120loTYAWmvhpf/N9EtFxDqBaLLOUzOaEdc1Kp47+mWR1yIQlC9/tdvY
- JK8Mzp9FLGDaqsZdSnxWY6F4Zit1fCqN5WS6/Zci3mIBM9eYico0imhLIYcu6F6sOSho
- e+LZgwo26c9uUqcTjKNfE8kdXAZWM1lt91AjTuMFHZrfk7Tj279BbN+lSNpis8soNB3T /Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tckj1aw6m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 13:16:48 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38RD8M0P001413;
-        Wed, 27 Sep 2023 13:16:47 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tckj1aw42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 13:16:47 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38RD8KTG008150;
-        Wed, 27 Sep 2023 13:11:44 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3taaqykxt0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 13:11:44 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38RDBftk26018400
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Sep 2023 13:11:41 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 687972004B;
-        Wed, 27 Sep 2023 13:11:41 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18E2120040;
-        Wed, 27 Sep 2023 13:11:41 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Sep 2023 13:11:41 +0000 (GMT)
-Date:   Wed, 27 Sep 2023 15:11:38 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>
-Cc:     "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
-Message-ID: <20230927151138.1ebf82a6.pasic@linux.ibm.com>
-In-Reply-To: <874jjf3jdo.fsf@redhat.com>
-References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
-        <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
-        <877coc2aj8.fsf@redhat.com>
-        <20230927132536.4b19ab2f.pasic@linux.ibm.com>
-        <874jjf3jdo.fsf@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 27 Sep 2023 09:13:04 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CDCF4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:13:02 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso78338635e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695820381; x=1696425181; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LjEJIhDS4gJpPQVa0J4l2zKN5/ndNnbpVlOxJdWLqKM=;
+        b=c8Y3x1WcwRvo4IaarbstEepAo9/jsgo7oNS1O98KGpfc2N7OiyGXxLML1DpsmS+vyw
+         RUiYh9GcfTkHW7diVTuAlWI/fSOf44j5AQ6M3kxMRToP4hFFatZHXqISzUZd2N4R6y5f
+         IC6nnMigBnsPgwwfEE2UQPyQnaHDCLnO+DcafhBk3EYbhjyslw3/6k55HM8fZk8ohx/n
+         a32Q65WnAZDf3k0sLA+1aKrzpakx7c4Gs8zfVc1QXJCR0L+aL5DqZ87Hq0wFVjuWDT/J
+         I7NOSRSnUlsqig2cKbkYKt76zWwMKAiS6mfv5h4P6VcslmksraXlrbW70Z37MQUqrMnX
+         YJow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695820381; x=1696425181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LjEJIhDS4gJpPQVa0J4l2zKN5/ndNnbpVlOxJdWLqKM=;
+        b=gWB9Cqb59McMjuL/TY/6kTIM+XnGGw3GLH17sGQWegorC8nNXK6oJRiTsiru5jXd8g
+         p502ZeYYeHqITTmeDvdjAVQ8insBeiyYYqh+ghEMvMOIm2AfqirqtGLXQDg7NDthmlrR
+         JI1ISLYw2d4P5cZ2PO+nRdTSEaTmpnWx/PDSiShSdmfL5df13XRMpn4CmGiskpCoCnf9
+         nK2hc85MoCK3T2LZVsu7NOW62JUOidyVUC9+wyFxIZxpbnFf6iczJcnLL4MKZC61oEAX
+         zWv/5P99mu37azFJZMPFwmJzL87lesztlWM6vc+b5QdYvYgRKMHp0DBHkAzx5hOjoUTZ
+         u6vw==
+X-Gm-Message-State: AOJu0Yy88CuIubRxBRdjZ7zjK98F43kQcwjvv3JBgQOqi/yZNm1zaV+8
+        BjduQ+eVZga6jOdLiY7Bao5V+g==
+X-Google-Smtp-Source: AGHT+IEwVtUCx/Tt513h6sD4GTqmeMlw1bFudbkMznlk83J31/qYCbn5yBepxFngnTxWI51kMnSPpA==
+X-Received: by 2002:a05:600c:2604:b0:3fe:d1e9:e6b8 with SMTP id h4-20020a05600c260400b003fed1e9e6b8mr2086160wma.12.1695820381191;
+        Wed, 27 Sep 2023 06:13:01 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y1-20020a05600c364100b003fefe70ec9csm1865074wmq.10.2023.09.27.06.13.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 06:13:00 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 16:12:50 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     wangweidong.a@awinic.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, shumingf@realtek.com,
+        rf@opensource.cirrus.com, herve.codina@bootlin.com, arnd@arndb.de,
+        13916275206@139.com, ryans.lee@analog.com,
+        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
+        doug@schmorgal.com, fido_max@inbox.ru,
+        harshit.m.mogalapalli@oracle.com, liweilei@awinic.com,
+        yang.lee@linux.alibaba.com, u.kleine-koenig@pengutronix.de,
+        yijiangtao@awinic.com, colin.i.king@gmail.com, trix@redhat.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 3/8] ASoC: codecs: Modify the code related to the
+ property
+Message-ID: <c442a175-f04f-44ea-b7ee-a6de81963f4c@kadam.mountain>
+References: <20230927121634.94822-1-wangweidong.a@awinic.com>
+ <20230927121634.94822-4-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 1gHewhPRutBXCAztHqXy5XFNU1knVyuQ
-X-Proofpoint-ORIG-GUID: Ahn5fNry-NPhtqex0P4cLFesAgZPbnVL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_07,2023-09-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- malwarescore=0 suspectscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- spamscore=0 adultscore=0 impostorscore=0 mlxlogscore=666
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270110
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927121634.94822-4-wangweidong.a@awinic.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,86 +82,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 14:12:19 +0200
-Cornelia Huck <cohuck@redhat.com> wrote:
-
-> On Wed, Sep 27 2023, Halil Pasic <pasic@linux.ibm.com> wrote:
+On Wed, Sep 27, 2023 at 08:16:29PM +0800, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
 > 
-> > On Wed, 27 Sep 2023 12:08:43 +0200
-> > Cornelia Huck <cohuck@redhat.com> wrote:
-> >  
-> >> > On the other hand virtio_airq_handler() calls vring_interrupt() with
-> >> > interrupts enabled. (While vring_interrupt() is called in a (read)
-> >> > critical section in virtio_airq_handler() we use read_lock() and
-> >> > not read_lock_irqsave() to grab the lock. Whether that is correct in
-> >> > it self (i.e. disregarding the crypto problem) or not I'm not sure right
-> >> > now. Will think some more about it tomorrow.) If the way to go forward
-> >> > is disabling interrupts in virtio-ccw before vring_interrupt() is
-> >> > called, I would be glad to spin a patch for that.    
-> >> 
-> >> virtio_airq_handler() is supposed to be an interrupt handler for an
-> >> adapter interrupt -- as such I would expect it to always run with
-> >> interrupts disabled (and I'd expect vring_interrupt() to be called
-> >> with interrupts disabled as well; if that's not the case, I think it
-> >> would need to run asynchronously.) At least that was my understanding at
-> >> the time I wrote the code.  
-> >
-> > Thanks Connie! I don't quite understand what do you mean by "run with
-> > interrupts disabled" in this context.
-> >
-> > Do you mean that if I were to add the following warning:
-> >
-> > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> > index ac67576301bf..2a9c73f5964f 100644
-> > --- a/drivers/s390/virtio/virtio_ccw.c
-> > +++ b/drivers/s390/virtio/virtio_ccw.c
-> > @@ -211,6 +211,8 @@ static void virtio_airq_handler(struct airq_struct *airq,
-> >         struct airq_info *info = container_of(airq, struct airq_info, airq);
-> >         unsigned long ai;
-> >  
-> > +       WARN_ONCE(in_irq(), "irqs are ought to be disabled but are not\n");
-> > +
-> >         inc_irq_stat(IRQIO_VAI);
-> >
-> > it would/should never trigger, or do you mean something different?
-> >
-> > If yes, does that mean that you would expect the common airq code (i.e. something
-> > like do_airq_interrupt()) to disable interrupts, or call virtio_airq_handler()?
-> > asynchronously sort of as a bottom half (my understanding of bottom halves is currently
-> > not complete).
-> >
-> > If no what do you actually mean?  
-> 
-> My understanding (at the time) was that we're coming from the low-level
-> interrupt handler (which disables interrupts via the NEW PSW);
-> interrupts will be re-enabled once the basic processing is done. This
-> might no longer be the case, but I currently don't have the time to dig
-> into the code -- it has been some time.
-> 
+> Remove the "fade-enable" property because other properties
+> already implement this functionality.
+> Rename "sound-channel" to "awinic,audio-channel",
+> this is to be consistent with the "awinic,aw88395.yaml" file
 
-It disables IO interrupts. I happen to have the PSW :) But AFAIU we may
-still get machine check type interrupts.
+This feels like it should be split into two patches.
 
-So I'm leaning towards: the code is actually safe, but I will double
-check again. But then what we do on s390x probably does not fit well
-with Linux abstractions. AFAIU in Linux we don't have the granularity
-"this lock is used in irq context but only IO irq context, so we don't
-care that we may get interrupted by a non-IO irq"...
+patch 4/9: remove the "fade-enable property".
+Btw, which other properties implement this.  Can you add that to the
+commit message?
 
-This complication is why I asked what do you mean by "run with
-interrupts disabled", because this code does run with "IO interrupts
-locally disabled, but not with *all* interrupts disabled".
+patch 5/9: Rename "sound-channel" to "awinic,audio-channel".
 
-I fully understand that you are bandwith limited. I'm adding
-Peter and Vineeth, since this also concerns CIO. The easy fix for
-this warning is to disable interrupts locally I guess.
-
-In any case I will take care of this one way or another.
-
-Thanks Conny! 
-
-Regards,
-Halil
-
-
+regards,
+dan carpenter
 
