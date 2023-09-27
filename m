@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1445C7AFE5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB7F7AFE5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjI0I2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S230308AbjI0I22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjI0I1t (ORCPT
+        with ESMTP id S230310AbjI0I2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:27:49 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BC31AC;
-        Wed, 27 Sep 2023 01:27:48 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bffc55af02so172410331fa.2;
-        Wed, 27 Sep 2023 01:27:48 -0700 (PDT)
+        Wed, 27 Sep 2023 04:28:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4321A6;
+        Wed, 27 Sep 2023 01:28:04 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c15463ddd4so113029321fa.3;
+        Wed, 27 Sep 2023 01:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695803266; x=1696408066; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695803283; x=1696408083; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hj1fAt2POw3G1BVuIsXBKGLxebPu14W+cyBpSJ0ZvcI=;
-        b=FV8ocweEHg8MOpz/GP3m88ft4DP+kL++AYzTqo7SVK1cFVuHy0qLy6d40Hm38vrHaj
-         ZUcFF3oALF4W2DaBNDtP4H31SxenWPhLFATIZvAj61cMjdexJCL9wT4Xg0/CK8FwaNpA
-         fECravsyKdfcShIF6v3YMRSpuGIRrRwGN7yw3J7IgfvYs91698lxFnDm9M5NOxhL1HJg
-         cnnDz/AmKjPckbUQizjuklqvwRS51v+e7LMx/9zeuU6Z1UvoAR3AX/wLzL91Otq+ldnB
-         F1WW1l4kQwrC3PHSMXluVFBZ+5KH67Mh+1Ah+/tgT4qWfwsPDqbKiRM/Y1s24eWlO02D
-         19qg==
+        bh=jp/xqOMX+J33+aUureIjJV02KkIU6sGPnf8h+MBVqZQ=;
+        b=Pjpl6KZkMs9EU/WmfVgwqkV33km+oq9IhrboPx0BUpTqCy9ssOHHs+vrKMd8vwmpej
+         jt6w8j1EOBDXLN4HsX+4dxb5Nd/JDXmkneS5ftqueWCGhp2/x5x4OFc1niJbehJijcDm
+         97+iVW+G8jmdctALudLh+yLqtG9cqeYTVNjvIobzU6S4Vp+xYcvxxndIgo1KUDLWqsL4
+         F9riIuhsMFv8QQXP3laZvBXUsWdnavSicOonKYslaTtwFIdL5Fpy1pU5JgU2lgXd/PGv
+         bHTLHFMTsImj0gp4MH0xbJwnZ9XjgfAdevlBF5mum9d6oXsFPDwhICrm3BvH8tGhx0id
+         mZWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695803266; x=1696408066;
+        d=1e100.net; s=20230601; t=1695803283; x=1696408083;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hj1fAt2POw3G1BVuIsXBKGLxebPu14W+cyBpSJ0ZvcI=;
-        b=LQl78bnKQzC+12GXOP7iEflB7Hund3B/09Hk8eiaY6GulXRJ/+qWt8atOYnkvdj2bv
-         JIumaMMnZZzFVm49FddezNEm1PFlVzgOdyf6QTxTuanaJOkuNQx//e1mLuumdfNuI5zT
-         i4ewB8QJsf+j2UXkd58An3odKIi/pqnp1I58o6Yw3tyHDBYDHvoiXD9ec/nf+d6kPDbc
-         tXuyVwrNKnObIGnNoqEJQnKbpdYgena0j6u/SRicoH6RTQUBGTbfN3zbcCvl/g9ChEGO
-         xWEsjVRL8d5ScJluM/Zx9HJCRM9K9jrMNMjvcxheo132GKN6w5aZ6IElimG7a3+okLP5
-         NGBA==
-X-Gm-Message-State: AOJu0YwwRzKg96LBmJFBPjMAYRtXj+/Q75EqUGhKH3+sBqGJk313B98a
-        ghbHFHcAZG8OzXLszapYBxk=
-X-Google-Smtp-Source: AGHT+IEt/OpJyHtIN1ai4xGP0BH/uIzC9mzeDahbG3aAQiXYDWUoiUCtV76TBdGUS3UiZ7XaV2pwFA==
-X-Received: by 2002:a2e:9612:0:b0:2bc:be3c:9080 with SMTP id v18-20020a2e9612000000b002bcbe3c9080mr1314766ljh.27.1695803266085;
-        Wed, 27 Sep 2023 01:27:46 -0700 (PDT)
+        bh=jp/xqOMX+J33+aUureIjJV02KkIU6sGPnf8h+MBVqZQ=;
+        b=HR99WUvHLqtpencP5SJPt+AfQE/zWCVYk2P2JoeaKnfz1I1uIYuim4pRsac3G4IHcY
+         +UIBR3HKI9Ko2buOd4O1F5dlfx6o2HZK0HoZrOhkvlnBhQp3xKtIRFBq/1dw4dhHW5I3
+         l6Lqzrou1bN0FR1DdNL29lJKUpHEMbPCnyj6n7t8WRTEx7lc3JgTWLP4fQdmKBR93Bxb
+         8xkwRvm4s21wo7z5Jiuj4g51R12uXzjamR0Unsj3DGJCcVO7ILPSXDurcOMs6+N2uQrR
+         0vbZjzFkz67M46qzlirm7V+9J0tL//wgpH189iFpXinMxzBfSz4PUEXWtmXBuMSWC/Ea
+         JGnw==
+X-Gm-Message-State: AOJu0YwMSxC8k+dlG6GdZE60aHyXZszSyqgA/Ytqdke0ZRZTC+CrKHi2
+        G5lsqmYfeQ+KZFsIMqwfwbU=
+X-Google-Smtp-Source: AGHT+IFb0PK/+kOqD/LFrtUf7f80rDIVVZNB8NLX2C+RPIULy5PsAtScxDNzw2QGWSHEmqiugJit+g==
+X-Received: by 2002:a2e:8010:0:b0:2bd:102c:4161 with SMTP id j16-20020a2e8010000000b002bd102c4161mr1480084ljg.43.1695803283107;
+        Wed, 27 Sep 2023 01:28:03 -0700 (PDT)
 Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id y4-20020a2e95c4000000b002ba586d27a2sm3038128ljh.26.2023.09.27.01.27.44
+        by smtp.gmail.com with ESMTPSA id b10-20020a2e848a000000b002bf6852d135sm3003306ljh.94.2023.09.27.01.28.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 01:27:45 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 11:27:41 +0300
+        Wed, 27 Sep 2023 01:28:02 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 11:27:57 +0300
 From:   Matti Vaittinen <mazziesaccount@gmail.com>
 To:     Matti Vaittinen <mazziesaccount@gmail.com>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
@@ -66,12 +66,12 @@ Cc:     Jonathan Cameron <jic23@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/5] iio: improve doc for available_scan_mask
-Message-ID: <4e43bf0186df5c8a56b470318b4827605f9cad6c.1695727471.git.mazziesaccount@gmail.com>
+Subject: [PATCH v4 3/5] dt-bindings: Add ROHM BM1390 pressure sensor
+Message-ID: <08796e6b28d2c67933b1a1a5eca0f43da322a597.1695727471.git.mazziesaccount@gmail.com>
 References: <cover.1695727471.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ysY46l6I9tFYuZdP"
+        protocol="application/pgp-signature"; boundary="TfjuISBGJ0mmRPk2"
 Content-Disposition: inline
 In-Reply-To: <cover.1695727471.git.mazziesaccount@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,59 +85,92 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ysY46l6I9tFYuZdP
+--TfjuISBGJ0mmRPk2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The available_scan_mask is an array of bitmaps representing the channels
-which can be simultaneously enabled by the driver. In many cases, the
-hardware can offer more channels than what the user is interested in
-obtaining. In such cases, it may be preferred that only a subset of
-channels are enabled, and the driver reads only a subset of the channels
-=66rom the hardware.
+BM1390GLV-Z is a pressure sensor which performs internal temperature
+compensation for the MEMS. Pressure range is from 300 hPa to 1300 hPa
+and sample averaging and IIR filtering is built in sensor. Temperature
+measurement is also supported.
 
-Some devices can't support all channel combinations. For example, the
-BM1390 pressure sensor must always read the pressure data in order to
-acknowledge the watermark IRQ, while reading temperature can be omitted.
-So, the available scan masks would be 'pressure and temperature' and
-'pressure only'.
-
-When IIO searches for the scan mask it asks the driver to use, it will
-pick the first suitable one from the 'available_scan_mask' array. Hence,
-ordering the masks in the array makes a difference. We should 'prefer'
-reading just the pressure from the hardware (as it is a cheaper operation
-than reading both pressure and temperature) over reading both pressure
-and temperature. Hence, we should set the 'only pressure' as the first
-scan mask in available_scan_mask array. If we set the 'pressure and
-temperature' as first in the array, then the 'only temperature' will never
-get used as 'pressure and temperature' can always serve the user's
-needs.
-
-Add (minimal) kerneldoc to the 'available_scan_mask' to hint the user
-that the ordering of masks matters.
+Add dt-bindings for the sensor.
 
 Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
----
- include/linux/iio/iio.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-index 202e55b0a28b..7bfa1b9bc8a2 100644
---- a/include/linux/iio/iio.h
-+++ b/include/linux/iio/iio.h
-@@ -556,7 +556,9 @@ struct iio_buffer_setup_ops {
-  *			and owner
-  * @buffer:		[DRIVER] any buffer present
-  * @scan_bytes:		[INTERN] num bytes captured to be fed to buffer demux
-- * @available_scan_masks: [DRIVER] optional array of allowed bitmasks
-+ * @available_scan_masks: [DRIVER] optional array of allowed bitmasks. Sor=
-t the
-+ *			   array in order of preference, the most preferred
-+ *			   masks first.
-  * @masklength:		[INTERN] the length of the mask established from
-  *			channels
-  * @active_scan_mask:	[INTERN] union of all scan masks requested by buffers
+---
+Revision history:
+v1 =3D> v2:
+- Improve spelling in description
+- Drop unnecessary '|'
+- Use correct example (fix compatible)
+---
+ .../bindings/iio/pressure/rohm,bm1390.yaml    | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/rohm,bm1=
+390.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yam=
+l b/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml
+new file mode 100644
+index 000000000000..7c4ca6322bf8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/rohm,bm1390.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/rohm,bm1390.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ROHM BM1390 pressure sensor
++
++maintainers:
++  - Matti Vaittinen <mazziesaccount@gmail.com>
++
++description:
++  BM1390GLV-Z is a pressure sensor which performs internal temperature
++  compensation for the MEMS. Pressure range is from 300 hPa to 1300 hPa
++  and sample averaging and IIR filtering is built in. Temperature
++  measurement is also supported.
++
++properties:
++  compatible:
++    const: rohm,bm1390glv-z
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  vdd-supply: true
++
++required:
++  - compatible
++  - reg
++  - vdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells =3D <1>;
++        #size-cells =3D <0>;
++        pressure-sensor@5d {
++            compatible =3D "rohm,bm1390glv-z";
++            reg =3D <0x5d>;
++
++            interrupt-parent =3D <&gpio1>;
++            interrupts =3D <29 IRQ_TYPE_LEVEL_LOW>;
++
++            vdd-supply =3D <&vdd>;
++        };
++    };
 --=20
 2.41.0
 
@@ -154,19 +187,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---ysY46l6I9tFYuZdP
+--TfjuISBGJ0mmRPk2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUT530ACgkQeFA3/03a
-ocVWFggAzH/J6YyXt2/bFTdC4/7cF9pTBmmxoFHEZ9Gdda0iWn6aXAL0VVjfBqxd
-0qjKQGd4iPI0Zhwq1BulAAe6+fkpaFS034VD7vLz8uMj2nGLRGFAiSdh1XV5p9xe
-nIf2lFYts605GZvmpbMAbUgoXCjhUHuFlId/Az/brI86vlLhMJnGC/1GIO1tZV++
-gCBY3AoycklGLNnFviVCLjt8Gkn2qPgT3ZZc5zadtKFR8rQY5q2hmlrfpdg9RpD7
-7ko0xsynsMnv7XRAJxtpKD+mW6Xk/nyLwA3ENqzMjRj9K3+OFlsBm6D+bzH92rBR
-GSM3U14IBVeVpFmZPAESzT4olJeAYQ==
-=/H1j
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUT540ACgkQeFA3/03a
+ocUzXwgAxR4FUgws79gwtQqbAtk+ZDbawpPVK9+yi03P2fLUzcLhvV0NGle49Nk0
+ulmJWzA+nPND7jICXPcEntsBBSCNbOuMnU6fTazPgmPDZmQPr/IYtmqbnLeZDvUr
+hhujuVIl5Au+Muj+TWTgVxQAzhukgv5qXmg+TvJwAsdIL79SskybxStO9LB128CO
+EvHXF6A7Ym2i+VBiKhGkgtlxXGWyhz9rZ5Pzz+OOgEpI3CJHewTkQHDw11lz8J8v
+be/fOITZyrJfwIDhjyJwdqYdOxxA0pC2RasF0SQ3eMwGhXJfQkqBZkXvMW+mAQEV
+yevOUXWB6FE/Jtna4POWhn1yppk99g==
+=3iyJ
 -----END PGP SIGNATURE-----
 
---ysY46l6I9tFYuZdP--
+--TfjuISBGJ0mmRPk2--
