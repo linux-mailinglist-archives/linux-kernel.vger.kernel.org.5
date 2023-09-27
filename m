@@ -2,379 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE83C7B0BF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CED7B0BFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjI0SbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
+        id S229670AbjI0SbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI0Sa6 (ORCPT
+        with ESMTP id S229648AbjI0SbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:30:58 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7808DDD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:30:56 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3514ece5ed4so22075ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695839456; x=1696444256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MIjAuBLH35Ezjhzsj4X9szK/gj5rFSWTPmQeixZLFj8=;
-        b=WWfAdtRsGDTUqOB/md3MOKvXXVrt24mNHnr87F5+NXrqG6MBKdcSnE59OVB2V7vLmM
-         2wvzWjPmXfcglFLqe2V1J1lZM5gtRQM0dW0cVAD7sixLv60vAFqxZixmemGXVUoWEZZp
-         2uJXkqBRje35vYwx71OKqoiQof331HoZ1Z5y6oqAmfBtySEscxCd+FXKs5DE82HSG64N
-         magTvkBYKoGOjVq17nKWktB4UEuLSxPWt6SAzUUfkWQj7hYZtb+2PoB/o6WmqhombrQ8
-         lUcJxbSryOaISgBh+lszVf6STXlxg+2ULSgNGQeKJL7+0edj6DOvsOWFFzsQZSol8HfZ
-         W/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695839456; x=1696444256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MIjAuBLH35Ezjhzsj4X9szK/gj5rFSWTPmQeixZLFj8=;
-        b=pjcLyvCP4aMaTGNkCjwnOCwoRGlbmULNWxmBv9OIOSYRg/OTmQZ60XzXUcqtcehOde
-         CKUTgaVP/nSS2/XrIrdGtxrvW3Z5aSmbBeOYldskuaZwpGhnCSJ+eNLXIxGuU/uvypoM
-         Eph4Iw7TGhwhR8Pc7OfDpADD0BI4n5435AFImp2zzoANHdvtEfV1u5m7khKGp7Mq51z/
-         bG8x+9xadH+XcAZFSIPMQaxaY+T9lYJI/J8hMZ90RK22GnmNSXCCdbIXOtfSUaeO1Vn4
-         V4cWX0oD3sI6a3wFnydi4YnN0UBf5rG4D2YdgpSV0OWbD388MwdQdQ/nmHza5Zz7f73c
-         32DQ==
-X-Gm-Message-State: AOJu0Yw6Yd1WO+7hR0eW34E31Dasz9T6mBs4UeKcUFl++ZGRNgIbm+Jz
-        7df3DrJ/UMY+2UuA6PNCRtv0XX5wncSM95q+qu4z
-X-Google-Smtp-Source: AGHT+IEBzfsnNoqmTprE6FHEsgZGaX4uGBHU2VwOFBRqtTLDhWDti9N+DZ17As3ZWOEqg/HPosXrOSIPTqYDQHRd+Gc=
-X-Received: by 2002:a05:6e02:214c:b0:348:d358:467c with SMTP id
- d12-20020a056e02214c00b00348d358467cmr723464ilv.2.1695839455522; Wed, 27 Sep
- 2023 11:30:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
- <20230911125936.10648-13-yunfei.dong@mediatek.com> <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
- <d4cedcb0-32ed-495d-a8cd-a635d5105824@xs4all.nl> <5307203d79c0d90cc742a315bb161fa796b9960f.camel@mediatek.com>
- <bafc37e8-96e8-41c0-b805-c6477f0d7c4a@xs4all.nl> <CA+ddPcN6EaFERC60_Z_-ZmWzqyUEwxiDCZwt_U6Y-gpaAu76tA@mail.gmail.com>
- <ff7aa575-c820-4dfa-853f-77438b8b149a@xs4all.nl> <b7d661637eacbda3e83d192b1126fc3970c4f50d.camel@collabora.com>
- <c3d14f64-bf04-46b9-ac7b-af7ef9014335@xs4all.nl> <00302ac675af858eb11d8398f100921af806bc30.camel@mediatek.com>
- <3e053387-4ba6-49bc-a59a-46854e0a7c26@xs4all.nl> <CA+ddPcOaCKq5Nd_3eWwJ3=oAf=5t-Z+w51NqapXN8VBuvbTw3g@mail.gmail.com>
- <71cadec5-06df-4490-9b06-e3af6bb43498@xs4all.nl> <CA+ddPcN0ivYa+vfvs-8PDpkDFkC=1gkM6fkeP7kE8Wqbi1w+dw@mail.gmail.com>
- <CA+ddPcMX=6ek-EVRMxJcRfZxRuLTGL3A-jeeNaifNF0E5AvVHw@mail.gmail.com> <d774c0e4-5ab2-4d3e-ae87-eb311aeaa1c2@xs4all.nl>
-In-Reply-To: <d774c0e4-5ab2-4d3e-ae87-eb311aeaa1c2@xs4all.nl>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Wed, 27 Sep 2023 11:30:39 -0700
-Message-ID: <CA+ddPcMFM40S0sH70-StdjdJ_YpX6vfwTeXAYBJLtm911gPU9Q@mail.gmail.com>
-Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to decoder driver
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     =?UTF-8?B?WXVuZmVpIERvbmcgKOiRo+S6kemjnik=?= 
-        <Yunfei.Dong@mediatek.com>,
-        "nicolas.dufresne@collabora.com" <nicolas.dufresne@collabora.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "frkoenig@chromium.org" <frkoenig@chromium.org>,
-        "stevecho@chromium.org" <stevecho@chromium.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "nhebert@chromium.org" <nhebert@chromium.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
-        "hsinyi@chromium.org" <hsinyi@chromium.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>
+        Wed, 27 Sep 2023 14:31:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89BB191;
+        Wed, 27 Sep 2023 11:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695839474; x=1727375474;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=dR557I5IC9fTEH0DtPQ50IhOgvN91/OcUIKnCvX564I=;
+  b=mjzmMNfAD5rljKsCxf72z38KO/Q7o9vtLFr+4kQGaOQTMkHrO6scv+9R
+   BN4Tf7Rk1dkqTjS+NlgplEBSa/lHsHfqC0PCIew47tK3REucuXVqaXVJF
+   /xSwUcOLUz+71s2+IE4w16m2i9UCmjtJcIAi475kxmRVlWWj3Ga8qnMZs
+   aYOgJRFsP3rUj8iA8M6gzRakhmvmC/H59nx4KzKHu8jN2KCml6GbJLghd
+   0PlkvtqgClyT38LhluQSuVME+2kKXtq+Oj8WxmgIJRjQ+rnbvMZYvviE5
+   u/H5y8dn8qla1wEHPRj/zm5/nQELaIjaeP8EItaTNbJBpdtsUbpZBnFdn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="501802"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="501802"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 11:31:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="864945286"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="864945286"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 11:31:06 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 27 Sep 2023 11:31:05 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 27 Sep 2023 11:31:04 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 11:31:04 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 27 Sep 2023 11:31:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NPPQH8EsM+8vGocVLhsVRdoB7HCF/wLAvpla2o+XzEdebStqJOFbTbHQHo6asRt5yK+SIFVXpXdaWuBMEXpy5ZVwW3h90Nzcjbv8FG35J2F97h4395a9OcUIEFx+Xme+sfFwhf3S6w6IaTYGs+3AXTH8ECDdUxb3XWZ88+B2QOeI685fK7KJ/sSYYJ3BDUB732igMX1RrWKBMFnhrA6tSEQ/plDzJe8/1mhcKQFM8U024bab9EFl8Dwm03+m9QMZQpO0vomTTrPKgJYEFgJTbIoAxIZxPl+WcNFMnu87jSajAop+7wIeNHvtBO7vsJ8VjaYP6cO1sLlOyc45y+T4pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ganT3jEcrsWvd8Rj3hHeJovyyth5ycHEg3JU4l3+RTM=;
+ b=O8FzPE1HBZRM3oEjVfLxQTjFZYiSEx4izbYXmvyMqPn3Dh7J6FE7+WTMYI1oKNF7G4AuviiwMNndUzhLRcB1OQXE9ETfoGMHtJk1JPOIODmL42mtlmfFalX6jmTvI3DPWCeRGCDptdsUhd4OIY4HAA3KZqU3dIh0L4GuED1PZPl98GRLjLnvvmHvpY/YYlMrLt28ak5rIMc3luSZKKHZQ36XP4fZ24u4HCvfL4R3eEPuYYbnIbET3TwNpq5n/AdQ6Q94AdKlHFFCn9Wz62DgoT/dPPUOGy+B3B97Kw3Wb7bHamFFta9NN7XXnUt7ip7hByZPQBJhO/EvtCaneu7bqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by CH0PR11MB5411.namprd11.prod.outlook.com (2603:10b6:610:d2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.25; Wed, 27 Sep
+ 2023 18:31:01 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
+ 18:31:01 +0000
+Message-ID: <dc1281bd-68ce-18f8-e4fe-d2d07535f047@intel.com>
+Date:   Wed, 27 Sep 2023 11:30:57 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v10 01/10] x86/resctrl: Add multiple tasks to the resctrl
+ group at once
+Content-Language: en-US
+To:     Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
+CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
+        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
+        <songmuchun@bytedance.com>, <peterz@infradead.org>,
+        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
+        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
+        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
+        <sandipan.das@amd.com>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
+        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
+        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
+        <quic_jiles@quicinc.com>, <peternewman@google.com>
+References: <20230915224227.1336967-1-babu.moger@amd.com>
+ <20230915224227.1336967-2-babu.moger@amd.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20230915224227.1336967-2-babu.moger@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0031.namprd03.prod.outlook.com
+ (2603:10b6:303:8e::6) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH0PR11MB5411:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1018301a-4885-495f-91c5-08dbbf87e663
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /+Z5gdI8WMRscbSO8P3VvNpUoNEWmnKJFcIFhjV31DyYtnJlhy4gbaUl/3t2z2MCOGB8EJHVoOKVTM56Mm3PR2t/nhYpr1VK/jIqmZaNokDb+v9RwybM66w1q9MImsKL7Cpseh5O0Ie3dcD4dxsI4jAfJem3nBsXuDYTdNf9ewAfdqYZzkGzKCu/plBWC8bauuusr7HMzhTX4GIRHfxrt3IpUjfNtW4GuuiCS6iNUzlpZZ5lnvtnLyRScrqL5sqynGHi/ItHyAS/YNSfEQvnBEBkmoXgl+6S64vuZtydMHIQ7/NNsMCFNolqRcfK/reKMlP7tz4ruo+xXvK72CTSlsFL1fpA6yEwd8d2C2m0qLof6Yb/KrN+XqavJMQawhTxfS+HyOBgUM1PD0HsuvxnC0JQ/2tdDfm+Vmde3hpAHjwLHHY9isePyxDlYYQZmrseqlmgJJVvy9WqZYBLpx9lZSazSjZrge38eS4JadeqqRUDXTbV3JclWAh5FK5CiQj4KzNdlhYJzulMtwKN7S/qAmkmtdYOEborBFi7CxabuMTzKcVsMbJ6yuq/7Vy9uO5p4jcWI4LHLuaVXFjogJQIMU7tVmEEl4rP8camb+E00h3UblKMbFE6d42i/kvqXzho+ElG4DDraj+bhnI9RwAUCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(376002)(136003)(230922051799003)(1800799009)(451199024)(186009)(7416002)(31686004)(66476007)(44832011)(66556008)(5660300002)(7406005)(2906002)(66946007)(6666004)(478600001)(6486002)(6506007)(6512007)(86362001)(66899024)(53546011)(2616005)(41300700001)(26005)(316002)(8676002)(4326008)(83380400001)(8936002)(38100700002)(82960400001)(36756003)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MnZQdklFbTBMMWJLenpQcmRFOXZyWG9lTkVkWXluZEZUTHdVemI2bXBUaFV5?=
+ =?utf-8?B?YnpXMHoyTGp0TEg0aWlHOVE2TnJPRFc2ay9oc1lZTGNNdXo2aWk5RHYxaXk1?=
+ =?utf-8?B?emFYZnVERjgvTUVkVTNnY3NoTWoyUEJtOWhSL1UrdDhKZXFjRjFOZjN2L00r?=
+ =?utf-8?B?eDVCdzV3SWI2dHl3ZkN3dnVmK1hMM2pNejVYTy8rZ0ozYThsSzJKR0xyZzNu?=
+ =?utf-8?B?S1pvMWNpSnBUMGV5QnhhYjFHN3g3Z1lvV2tQL3NhQlNDcnVWOXNXWm1xMUww?=
+ =?utf-8?B?OVFmbzk0R1gyaGwrNkR6dTV6UEpDNFZpVkJueTNyc1RnWTRpWndldXZZbHhq?=
+ =?utf-8?B?cWY1SksvKzhBK2YwUjhzRnhLUCtqY2hHd1dyTU5aaHFkUXhJdVJZQVVaL1ZO?=
+ =?utf-8?B?S0JUZVZnRDRmQjMyMW5icGY3S1UxMUNPOXduWGt1bWFRM1pCb0dZY2Z5M1ZS?=
+ =?utf-8?B?akJMSEdZZW5nZGhuYjlwMnJhWXFGU2VBOGFsbE1aMk9va2RVazNtaXdRSG43?=
+ =?utf-8?B?V1Y3NmR2czRhNTV1TzMyVGU4U0VBN3hXa1pVdWNaNjJ6NFFvaEM5SEY5RnlC?=
+ =?utf-8?B?OU1hRkFFWS8raURKTUJKODVlSHZmN1EyaEE2Sk1IN2d3dkVmdmxxVEFuSC8w?=
+ =?utf-8?B?RWppOGREUGxpTFF6b2ZvTXhmZThGUnk1aUYvV2tXSjQra2hnazRZaFdZTUFD?=
+ =?utf-8?B?U3ZGRjBxa01aNXI0LzU1NE1SWXFvaXp2WExleXpheUoxYXNaQTEyQ1JnTjYy?=
+ =?utf-8?B?eWVHZ2lwcVArU2dSUjJsaTNpRDJRMVNIOGczZkovQlY4SjNsd3hNU0JJcGRx?=
+ =?utf-8?B?QzhwQXhBSkRBTktlQlpMMHEvc3hVdUpNZkhDSE9Cdm1IRDA5Z3V0VklNNlpM?=
+ =?utf-8?B?WXp5Sjg2cDUzcVdUckhUejVIRXFPZ0JMekYxYjlZRWlmaDBkdUIyTVpRUHQy?=
+ =?utf-8?B?ektWRW5SWG9PVkplcGRVNlRPMVhWTndBeFJ6YlR5eWFBbnFoSUtoaFFzaTQ5?=
+ =?utf-8?B?Z3lTcTc2QXpIUmpRSGtMcmtoUXJ2ZnV0R3MvRm8xRWNCYXpWV2FBbEFoVDN5?=
+ =?utf-8?B?c0dpK2lBeVRzOXc1UzE1MnlQZVNWZUQ2UzFyNCtDdWJrYnlNZ2NFMm94VzdH?=
+ =?utf-8?B?dGFFbFNnZ2xGT1ZTcEVObWJhVWhaUThSc3BET1JOM3UrWHl4K3hDTVZWQUhD?=
+ =?utf-8?B?eUwxMWlpLzhjL3MwTDVpN2xzaW9tQ1dHcEEwcndiS3pFR2Myalg3Tkd3cys3?=
+ =?utf-8?B?ekYrcFFVM1hVdFoyVmtoMlNIRGFiclVtOEpkSGZldHB6V21ZVzF1K3dGT2U4?=
+ =?utf-8?B?ekVxcVlRRFZycHBER0plcjNoNHJ4MlhEeDV6azYyb1hpNVo0N1V4RWxCMXJL?=
+ =?utf-8?B?aXd0SVk2RElDTzQ1MFdLdjdYem0vSWZycWhVc1hLSkJXaEg0OHFOREtNSjJP?=
+ =?utf-8?B?QzNBTC9VbFNsQmROTTJMdlc5MW5EbDRnZzI1cThWZkE2T2VKS2lBUU4vNEZx?=
+ =?utf-8?B?QWRTV01vVG5McTdVekVUR0dncDJvME5Udk9ucTFwcWxoalg1dDhKT3I0dDRO?=
+ =?utf-8?B?M1NCd1YyTTJhT1IxZkgwbkhDQm9zY21OMmNXQnEyWlJpRTl6Y3E1SFVsc25y?=
+ =?utf-8?B?UkVoOFgyQWVMU0JXV1ZDcWNnZGlQYUUzbUdMWXRGc3RPM001VFk1S0dSL3gv?=
+ =?utf-8?B?cXMyZ3VsSVJtbTR0MFphK05rRFovQ2RsRG5PL3NFdDVYNkJYRDNTKzhTT05Z?=
+ =?utf-8?B?Q0hxcFVTb2c3T2pMNHR1U2EyWXgyUERHcFVaMUYyRUErUnkvdGRvdEJvTENF?=
+ =?utf-8?B?WWp3YVFxeVhidmZtMVhFUitPc0Zid0NnZjFtRW84czFRWHBMSURWZUc2MUg5?=
+ =?utf-8?B?Zm5ic1dzVG4yQWxqNmdsL2IwNExzc2dzQW5FbUFDeW5zOXhab2pRTVpIN0Ez?=
+ =?utf-8?B?SFNFemtkRDJ3TE14dmNhZW05WDN5M0dkWTQ4dzBmdnc2UU9FWlRKOStjbTJW?=
+ =?utf-8?B?bUx4T0RPbXBBK2FuSWZLNFBGUWJtNzRpSlo0NjZKV25xUDZiVlBHUW9QN3FH?=
+ =?utf-8?B?dDllejVQTDlTTUdBVDk0dnFGbHlkUFQ2bStZbkcrczZqZ0VtWWZYc0FzVXhM?=
+ =?utf-8?B?dUNhdm8ya2pHQit4bXliQlpWckZqMjh1MVdZUzBBdG5XZUpGSXZGRnQ2UjdT?=
+ =?utf-8?B?c0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1018301a-4885-495f-91c5-08dbbf87e663
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 18:31:01.2374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XAn/x9JdpYG1WzbfgMMh65wNCaYM4k9eg43nhmsGKeU+JTRWSKHU9S3Hhd3nhTjhYCI7Mtni3/lT6DnTstDayMlk57fiEOYkOl6tK+Kl2EY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5411
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sounds great Hans! I'll work with Mediatek to update their code for that.
+Hi Babu,
 
-On Wed, Sep 27, 2023 at 12:26=E2=80=AFAM Hans Verkuil <hverkuil-cisco@xs4al=
-l.nl> wrote:
->
-> On 26/09/2023 22:59, Jeffrey Kardatzke wrote:
-> > Hans,
-> >
-> > I've been looking through the v4l2/vbuf2 code to get an idea of the
-> > details for implementing a new memory type for secure buffers.  What
-> > it comes down to essentially is that it would behave just like
-> > V4L2_MEMORY_DMABUF, but then there would be an extra check in
-> > __prepare_dmabuf (in videobuf2-core.c) when the memory type is SECURE
-> > to ensure that it is actually from a secure dma-buf allocation.  So
-> > I'm thinking an alternate solution might be cleaner so we don't have
-> > two memory types that are handled nearly identically in most of the
-> > code. What do you think about a new memory flag like
-> > V4L2_MEMORY_FLAG_SECURE?  This would be set in vb2_queue struct like
-> > the other existing memory flag. Then when it gets into
-> > __prepare_dmabuf and invokes attach_dmabuf on each buffer...that call
-> > could then check for the existence of that flag, and if it's there it
-> > could validate it is actually secure memory.  Then in various other
-> > dmabuf vb2_mem_ops (maybe alloc, get_userptr, vaddr and mmap) those
-> > could also check for the secure flag, and if present return an
-> > error/null.  Then also in the driver specific vb2_ops for queue_setup,
-> > the MTK driver could recognize the flag there and then configure
-> > itself for secure mode.
-> >
-> > How does that sound as an overall strategy?
->
-> Yes, I actually had the same thought.
->
-> You would also need a new capability: V4L2_BUF_CAP_SUPPORTS_SECURE_MEMORY
->
-> It makes more sense than creating a new V4L2_MEMORY_ type, and it still
-> is handled at the right place (creating the buffers).
->
-> Regards,
->
->         Hans
->
-> >
-> > Cheers,
-> > Jeff
-> >
-> > On Mon, Sep 25, 2023 at 9:51=E2=80=AFAM Jeffrey Kardatzke <jkardatzke@g=
-oogle.com> wrote:
-> >>
-> >> On Mon, Sep 25, 2023 at 2:00=E2=80=AFAM Hans Verkuil <hverkuil-cisco@x=
-s4all.nl> wrote:
-> >>>
-> >>> On 22/09/2023 21:17, Jeffrey Kardatzke wrote:
-> >>>> On Fri, Sep 22, 2023 at 1:44=E2=80=AFAM Hans Verkuil <hverkuil-cisco=
-@xs4all.nl> wrote:
-> >>>>>
-> >>>>> On 22/09/2023 05:28, Yunfei Dong (=E8=91=A3=E4=BA=91=E9=A3=9E) wrot=
-e:
-> >>>>>> Hi Hans,
-> >>>>>>
-> >>>>>> Thanks for your help to give some good advice.
-> >>>>>> On Wed, 2023-09-20 at 09:20 +0200, Hans Verkuil wrote:
-> >>>>>>>
-> >>>>>>>>>>> In any case, using a control to switch to secure mode and usi=
-ng
-> >>>>>>> a control
-> >>>>>>>>>>> to convert a dmabuf fd to a secure handle seems a poor choice=
- to
-> >>>>>>> me.
-> >>>>>>>>>>>
-> >>>>>>>>>>> I was wondering if it wouldn't be better to create a new
-> >>>>>>> V4L2_MEMORY_ type,
-> >>>>>>>>>>> e.g. V4L2_MEMORY_DMABUF_SECURE (or perhaps _DMABUF_OPTEE). Th=
-at
-> >>>>>>> ensures that
-> >>>>>>>>>>> once you create buffers for the first time, the driver can
-> >>>>>>> switch into secure
-> >>>>>>>>>>> mode, and until all buffers are released again you know that =
-the
-> >>>>>>> driver will
-> >>>>>>>>>>> stay in secure mode.
-> >>>>>>>>>>
-> >>>>>>>>>> Why do you think the control for setting secure mode is a poor
-> >>>>>>> choice?
-> >>>>>>>>>> There's various places in the driver code where functionality
-> >>>>>>> changes
-> >>>>>>>>>> based on being secure/non-secure mode, so this is very much a
-> >>>>>>> 'global'
-> >>>>>>>>>> setting for the driver. It could be inferred based off a new
-> >>>>>>> memory
-> >>>>>>>>>> type for the queues...which then sets that flag in the driver;
-> >>>>>>> but
-> >>>>>>>>>> that seems like it would be more fragile and would require
-> >>>>>>> checking
-> >>>>>>>>>> for incompatible output/capture memory types. I'm not against
-> >>>>>>> another
-> >>>>>>>>>> way of doing this; but didn't see why you think the proposed
-> >>>>>>> method is
-> >>>>>>>>>> a poor choice.
-> >>>>>>>>>
-> >>>>>>>>> I assume you are either decoding to secure memory all the time,=
- or
-> >>>>>>> not
-> >>>>>>>>> at all. That's something you would want to select the moment yo=
-u
-> >>>>>>> allocate
-> >>>>>>>>> the first buffer. Using the V4L2_MEMORY_ value would be the
-> >>>>>>> natural place
-> >>>>>>>>> for that. A control can typically be toggled at any time, and i=
-t
-> >>>>>>> makes
-> >>>>>>>>> no sense to do that for secure streaming.
-> >>>>>>>>>
-> >>>>>>>>> Related to that: if you pass a dmabuf fd you will need to check
-> >>>>>>> somewhere
-> >>>>>>>>> if the fd points to secure memory or not. You don't want to mix
-> >>>>>>> the two
-> >>>>>>>>> but you want to check that at VIDIOC_QBUF time.
-> >>>>>>>>>
-> >>>>>>>>> Note that the V4L2_MEMORY_ value is already checked in the v4l2
-> >>>>>>> core,
-> >>>>>>>>> drivers do not need to do that.
-> >>>>>>>>
-> >>>>>>>> Just to clarify a bit, and make sure I understand this too. You =
-are
-> >>>>>>> proposing to
-> >>>>>>>> introduce something like:
-> >>>>>>>>
-> >>>>>>>>    V4L2_MEMORY_SECURE_DMABUF
-> >>>>>>>>
-> >>>>>>>> Which like V4L2_MEMORY_DMABUF is meant to import dmabuf, while
-> >>>>>>> telling the
-> >>>>>>>> driver that the memory is secure according to the definition of
-> >>>>>>> "secure" for the
-> >>>>>>>> platform its running on.
-> >>>>>>>>
-> >>>>>>>> This drivers also allocate secure SHM (a standard tee concept) a=
-nd
-> >>>>>>> have internal
-> >>>>>>>> allocation for reconstruction buffer and some hw specific refere=
-nce
-> >>>>>>> metadata. So
-> >>>>>>>> the idea would be that it would keep allocation using the dmabuf
-> >>>>>>> heap internal
-> >>>>>>>> APIs ? And decide which type of memory based on the memory type
-> >>>>>>> found in the
-> >>>>>>>> queue?
-> >>>>>>>
-> >>>>>>> Yes. Once you request the first buffer you basically tell the dri=
-ver
-> >>>>>>> whether it
-> >>>>>>> will operate in secure or non-secure mode, and that stays that wa=
-y
-> >>>>>>> until all
-> >>>>>>> buffers are freed. I think that makes sense.
-> >>>>>>>
-> >>>>>>
-> >>>>>> According to iommu's information, the dma operation for secure and=
- non-
-> >>>>>> secure are the same, whether just need to add one memory type in v=
-4l2
-> >>>>>> framework the same as V4L2_MEMORY_DMABUF? The dma operation in
-> >>>>>> videobuf2-dma-contig.c can use the same functions.
-> >>>>>
-> >>>>> So if I pass a non-secure dma fd to the capture queue of the codec,=
- who
-> >>>>> will check that it can't write the data to that fd? Since doing so =
-would
-> >>>>> expose the video. Presumably at some point the tee code will preven=
-t that?
-> >>>>> (I sincerely hope so!)
-> >>>>
-> >>>> It is entirely the job of the TEE to prevent this. Nothing in the
-> >>>> kernel should allow exploitation of what happens in the TEE no matte=
-r
-> >>>> what goes on in the kernel
-> >>>>
-> >>>>>
-> >>>>> Having a separate V4L2_MEMORY_DMABUF_SECURE type is to indicate to =
-the
-> >>>>> driver that 1) it can expect secure dmabuf fds, 2) it can configure=
- itself
-> >>>>> for that (that avoids using a control to toggle between normal and =
-secure mode),
-> >>>>> and at VIDIOC_QBUF time it is easy for the V4L2 core to verify that=
- the
-> >>>>> fd that is passed in is for secure memory. This means that mistakes=
- by
-> >>>>> userspace are caught at QBUF time.
-> >>>>>
-> >>>>> Of course, this will not protect you (people can disable this check=
- by
-> >>>>> recompiling the kernel), that still has to be done by the firmware,=
- but
-> >>>>> it catches userspace errors early on.
-> >>>>>
-> >>>>> Also, while for this hardware the DMA operation is the same, that m=
-ight
-> >>>>> not be the case for other hardware.
-> >>>>
-> >>>> That's a really good point. So one of the other models that is used
-> >>>> for secure video decoding is to send the encrypted buffer into the
-> >>>> video decoder directly (i.e. V4L2_MEMORY_MMAP) and then also send in
-> >>>> all the corresponding crypto parameters (i.e. algorithm, IV,
-> >>>> encryption pattern, etc.). Then the video driver internally does the
-> >>>> decryption and decode in one operation.  That's not what we want to
-> >>>> use here for Mediatek; but I've done other integrations that work th=
-at
-> >>>> way (that was for VAAPI [1], not V4L2...but there are other ARM
-> >>>> implementations that do operate that way).  So if we end up requirin=
-g
-> >>>> V4L2_MEMORY_DMABUF_SECURE to indicate secure mode and enforce it on
-> >>>> output+capture, that'll close off other potential solutions in the
-> >>>> future.
-> >>>>
-> >>>> Expanding on your point about DMA operations being different on
-> >>>> various hardware, that also makes me think a general check for this =
-in
-> >>>> v4l2 code may also be limiting. There are various ways secure video
-> >>>> pipelines are done, so leaving these checks up to the individual
-> >>>> drivers that implement secure video decode may be more pragmatic. If
-> >>>> there's a generic V4L2 _CID_SECURE_MODE control, that makes it more
-> >>>> general for how drivers can handle secure video decode.
-> >>>
-> >>> No, using a control for this is really wrong.
-> >>>
-> >>> The reason why I want it as a separate memory type is that that is
-> >>> what you use when you call VIDIOC_REQBUFS, and that ioctl is also
-> >>> when things are locked down in a driver. As long as no buffers have
-> >>> been allocated, you can still change formats, parameters, etc. But
-> >>> once buffers are allocated, most of that can't be changed, since
-> >>> changing e.g. the format would also change the buffer sizes.
-> >>>
-> >>> It also locks down who owns the buffers by storing the file descripto=
-r.
-> >>> This prevents other processes from hijacking the I/O streaming, only
-> >>> the owner can stream buffers.
-> >>>
-> >>> So it is a natural point in the sequence for selecting secure
-> >>> buffers.
-> >>>
-> >>> If you request V4L2_MEMORY_DMABUF_SECURE for the output, then the
-> >>> capture side must also use DMABUF_SECURE. Whether or not you can
-> >>> use regular DMABUF for the output side and select DMABUF_SECURE
-> >>> on the capture side is a driver decision. It can be useful to
-> >>> support this for testing the secure capture using regular video
-> >>> streams (something Nicolas discussed as well), but it depends on
-> >>> the hardware whether you can use that technique.
-> >>
-> >> OK, that does work for the additional cases I mentioned.  And for
-> >> testing...we would still want to use DMABUF_SECURE on both ends for
-> >> Mediatek at least (that's the only way they support it). But rather
-> >> than having to bother with a clearkey implementation...we can just do
-> >> something that directly copies compressed video into the secure
-> >> dmabufs and then exercises the whole pipeline from there. This same
-> >> thing happens with the 'clear lead' that is sometimes there with
-> >> encrypted video (where the first X seconds are unencrypted and then it
-> >> switches to encrypted...but you're still using the secure video
-> >> pipeline on the unencrypted frames in that case).
-> >>
-> >>
-> >>>
-> >>> Regards,
-> >>>
-> >>>         Hans
-> >>>
-> >>>>
-> >>>> [1] - https://github.com/intel/libva/blob/master/va/va.h#L2177
-> >>>>
-> >>>>>
-> >>>>> Regards,
-> >>>>>
-> >>>>>         Hans
-> >>>>>
-> >>>>>>
-> >>>>>> Best Regards,
-> >>>>>> Yunfei Dong
-> >>>>>>
-> >>>>>
-> >>>
->
+On 9/15/2023 3:42 PM, Babu Moger wrote:
+> The resctrl task assignment for monitor or control group needs to be
+> done one at a time. For example:
+> 
+>   $mount -t resctrl resctrl /sys/fs/resctrl/
+>   $mkdir /sys/fs/resctrl/ctrl_grp1
+>   $echo 123 > /sys/fs/resctrl/ctrl_grp1/tasks
+>   $echo 456 > /sys/fs/resctrl/ctrl_grp1/tasks
+>   $echo 789 > /sys/fs/resctrl/ctrl_grp1/tasks
+> 
+> This is not user-friendly when dealing with hundreds of tasks.
+> 
+> Support multiple task assignment in one command with tasks ids separated
+> by commas. For example:
+>   $echo 123,456,789 > /sys/fs/resctrl/ctrl_grp1/tasks
+> 
+> Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+> Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+
+x86 area aims to have a uniform view of commit tags.
+Please review the "Ordering of commit tags" section within
+Documentation/process/maintainer-tip.rst and apply that
+custom to this whole series.
+
+Reinette
+
+
