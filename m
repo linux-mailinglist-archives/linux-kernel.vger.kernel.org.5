@@ -2,53 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129577B07D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBBB7B07DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbjI0PNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S232359AbjI0PNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjI0PNJ (ORCPT
+        with ESMTP id S232334AbjI0PNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:13:09 -0400
+        Wed, 27 Sep 2023 11:13:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA893F5;
-        Wed, 27 Sep 2023 08:13:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA932C433C8;
-        Wed, 27 Sep 2023 15:13:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D665F9;
+        Wed, 27 Sep 2023 08:13:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E879C433C7;
+        Wed, 27 Sep 2023 15:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695827588;
-        bh=g5EOXFHedEBnggecBSFHP8NOek2TJapAj4sjU/UIAz4=;
+        s=k20201202; t=1695827614;
+        bh=M59HXSnofJHl+d0SzaDEQ+iFiL1u7mpzFZkkV512/mg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mxgaPNkc986KVYs3slQ+tMkDMhuGs1SZJEnQSCDks5EJZqTJ09v5w5xzWElWVQlHp
-         e7FN3HgM/tb8EXKMB/2CexMjdwXYPxWXTW8Z7fUyY38cLl6OqR5KJeTJBNCsmNu/Vl
-         9Xjn/fmYvizs05tRnO/vbgslZyGoMSmA/XMbB3C2D+ChQ+QUVR0auIO6wDMpm1W31G
-         UPa+zYTE7sTLPv2ybAOms8QfGlJ2IrC5Xao/sMXdgOhlTxze81sH4HeMuuvdHGSSX2
-         i1TeYB+IXYQw4WOfxFvs010/sG5ji9ERz8Tksjm97dD8nidsXX2M2BaSS715P6ptx4
-         aEjlMTo1IpuJA==
-Date:   Wed, 27 Sep 2023 16:13:03 +0100
+        b=YRf964xRaUPDySff6eLJgM9Lx2KtcqOwEvT3EgL4trCBHw0lapy0dFi1XIenuyfi+
+         6Tvm4uao7BYtDJ4T2HmMhpAEg4vmvzW3gkDRuzH4DxFxrGZKT306CiwuiAwskU5lL9
+         mzT01FVQyLty2Hp9nZff35g0YWa7YY60ZtT9X0hCNw4qbg5MYHvXVvRss5ZXvHnz+O
+         DzP9h4dPOyFsWg7/0HZSDRaWaNDIkwYdG1STMhDAihjEAcFOX7HLBZsyM0EcJO0ad4
+         SQzQp1wtQZH1odv/cu/uIr2mMnNGPg/GRzHanZ9PKF1FvhUIc7Lu0VfrCHy0tNRsP2
+         UUOtHQkgIW7yQ==
+Date:   Wed, 27 Sep 2023 16:13:30 +0100
 From:   Conor Dooley <conor@kernel.org>
 To:     Rob Herring <robh@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
+Cc:     Sebastian Reichel <sre@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: thermal: nvidia,tegra124-soctherm: Add
- missing unevaluatedProperties on child node schemas
-Message-ID: <20230927-tiling-hunting-453feaac8b1c@spud>
-References: <20230926164500.101593-1-robh@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: power/supply: sbs-manager: Add missing
+ unevaluatedProperties on child node schemas
+Message-ID: <20230927-swimming-gender-3579e2771ffa@spud>
+References: <20230926164446.101327-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IhOOYgmqxIzylWTn"
+        protocol="application/pgp-signature"; boundary="vLhAzWIRrewJs9du"
 Content-Disposition: inline
-In-Reply-To: <20230926164500.101593-1-robh@kernel.org>
+In-Reply-To: <20230926164446.101327-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,12 +54,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---IhOOYgmqxIzylWTn
+--vLhAzWIRrewJs9du
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 26, 2023 at 11:44:52AM -0500, Rob Herring wrote:
+On Tue, Sep 26, 2023 at 11:44:42AM -0500, Rob Herring wrote:
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
 > child node schemas. That ensures only documented properties are
@@ -82,43 +76,41 @@ Thanks,
 Conor.
 
 > ---
->  .../bindings/thermal/nvidia,tegra124-soctherm.yaml           | 5 +++++
->  1 file changed, 5 insertions(+)
+>  .../devicetree/bindings/power/supply/sbs,sbs-manager.yaml   | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >=20
-> diff --git a/Documentation/devicetree/bindings/thermal/nvidia,tegra124-so=
-ctherm.yaml b/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soc=
-therm.yaml
-> index 04a2ba1aa946..b0237d236021 100644
-> --- a/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.=
-yaml
-> +++ b/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.=
-yaml
-> @@ -68,7 +68,12 @@ properties:
->      patternProperties:
->        "^(light|heavy|oc1)$":
->          type: object
-> +        additionalProperties: false
+> diff --git a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manag=
+er.yaml b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.ya=
+ml
+> index f255f3858d08..2e21846463ba 100644
+> --- a/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/sbs,sbs-manager.yaml
+> @@ -47,6 +47,12 @@ patternProperties:
+>    "^i2c@[1-4]$":
+>      type: object
+>      $ref: /schemas/i2c/i2c-controller.yaml#
+> +    unevaluatedProperties: false
 > +
->          properties:
-> +          "#cooling-cells":
-> +            const: 2
-> +
->            nvidia,priority:
->              $ref: /schemas/types.yaml#/definitions/uint32
->              minimum: 1
+> +    properties:
+> +      reg:
+> +        minimum: 1
+> +        maximum: 4
+> =20
+>  examples:
+>    - |
 > --=20
 > 2.40.1
 >=20
 
---IhOOYgmqxIzylWTn
+--vLhAzWIRrewJs9du
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRGfwAKCRB4tDGHoIJi
-0pL5AP93nGR1ok7VfGFI8vPrm3J9Y/DSPEG2zoqDGmjLAOyZHwD+OeCakWy91CkC
-Eur1LH00tjtdCXMthnUKfCT3lj9c8wo=
-=CF+b
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRGmgAKCRB4tDGHoIJi
+0gypAP0dN5ITkZ+G3bk0n/yF3+Z1vTnBZrJIUo0Jps5Tg7OMigD/adydJeyXH7Cf
+C7uGu5/5p/xMHpKf7cDEplM8NlAJuQI=
+=e37f
 -----END PGP SIGNATURE-----
 
---IhOOYgmqxIzylWTn--
+--vLhAzWIRrewJs9du--
