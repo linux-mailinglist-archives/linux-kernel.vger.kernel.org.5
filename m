@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EA37B0428
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534AB7B0435
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjI0M3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S231193AbjI0McW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjI0M3j (ORCPT
+        with ESMTP id S229531AbjI0McU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:29:39 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022E3192;
-        Wed, 27 Sep 2023 05:29:37 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40566f8a093so78685595e9.3;
-        Wed, 27 Sep 2023 05:29:36 -0700 (PDT)
+        Wed, 27 Sep 2023 08:32:20 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D854C0;
+        Wed, 27 Sep 2023 05:32:19 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c135cf2459so167166951fa.0;
+        Wed, 27 Sep 2023 05:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695817775; x=1696422575; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=djhGgzEttuBwypRoTD2e7qd8nkSbwt4HcuoP4naClbc=;
-        b=T1vxRkgobVuEmy6Gz7IHeQuRs49WWLYWxWBFjZ7+8feXTId1NtFjvEJjUltQdfwpGk
-         dHcmsIyG1aGPmIEOk+QbmX++XFLXitPspNtBjTqC/l/PfoPqB7vMv+2Etn8XU6JoC9qN
-         Uv/cFARJHXGIGF+288ja9sZuisnEeeWtOAX1ZXj9Li/USj9QiBtkMzVVwgDWgu5dUqAs
-         NMQlxRR+p29pVCCFdpzCFF3eBuhWzE05XdFgZyyR/ki7h8Q0ct8qTj5ehCVTXRt3N1dZ
-         SAIOQ3mB+HoWNRt+hs1eydJ7FaxD11dQzm+nScHqSMs50LKgBpioVmJ3P97Pp516kf8S
-         rQrg==
+        d=gmail.com; s=20230601; t=1695817938; x=1696422738; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OZqZ0i46ZbfB53UJOvUsR3ac/FK/L9kDlsccF+BQc6I=;
+        b=daChzakE3Kl4dT6g3EYRYyYN2SHfSk1a/Jo6J+nhh0ldLYXp3ziYHC5DNLDt4j+t5K
+         KDU/QNEOF126owm0PdevY43q7f4fkE9LVJW2z7ilgtrcvRHqBeipQ9yMFbUZvspPTzm/
+         IRUbLr3bB8aX8iVSjc5tWfHMvS3id7zZezoUWXHPPgEtQ337uWWVqT3KTUKEqpwlPEdh
+         SWfuTn4GOT5kNAwUipXUr0DscJzdosL8zuMYrZ6nIsYfl0wQkjpEJEiR+pX6AIYnkPzp
+         CFLIJWlI0NFg5evk2AR8OgTuXfIoKYHRMsCg+14a5BSJmi32ZyIajME1B0sXJ5oVxnwi
+         0gGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695817775; x=1696422575;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=djhGgzEttuBwypRoTD2e7qd8nkSbwt4HcuoP4naClbc=;
-        b=BlkW/8/leXqul+xuyC2TwclDDvr8RWUjudEWSKqyn74ewP/Ajld6rtxu9WSpO6NTiH
-         QOyk9qjtFjddSmo8AkqGidqEqcmrYt7clVc/7Dgy+6odVvlrIc9+KNWLkvs+ycvg7zOo
-         yjXWLpNH8ozm93D9gxE+SV53glYXoFY29EI/wN0GZ8OreZCnPmVR40b+J7dnz2dojy7m
-         cBrxgK7QtfJjpdpZX7YYXMA+j93e4fqm/O1DwI1VYdHj1oAQ89zfWe3//mRJLbieo2K5
-         JEhH69sazCAN8UMcOF7ctbIK2/cxxKoFoVyz/UPip9PzFXcgwjHr3XK9L7ocY6IPa6so
-         n/xw==
-X-Gm-Message-State: AOJu0Yx3i09AehFZCvDRAPH2GKXZjKvuvgj7GKQS/ERAnB1zLRFza9df
-        XelXHfkDxxnO484qq6dTXHk=
-X-Google-Smtp-Source: AGHT+IHcQL3pFBI02XxvUXVb6GR+GG2cph2JWQp8B1W1KKSu38pGMBYcBmAR8ek1iOZ6aemezFAIAA==
-X-Received: by 2002:a05:6000:1188:b0:31a:d4e4:4f63 with SMTP id g8-20020a056000118800b0031ad4e44f63mr1488621wrx.18.1695817775087;
-        Wed, 27 Sep 2023 05:29:35 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id 8-20020a05600c230800b004042dbb8925sm4521218wmo.38.2023.09.27.05.29.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 05:29:34 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        d=1e100.net; s=20230601; t=1695817938; x=1696422738;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OZqZ0i46ZbfB53UJOvUsR3ac/FK/L9kDlsccF+BQc6I=;
+        b=a59xL6FeB4G/3BVsHlGSsfMyKCC7GDkVYd5inGu9SxNxPkjOLf1ZAWx+2cpuzGRnMX
+         7TGdmwPbDHOcRKYT8BCOxd+IjLLyPJTusDFURF3jBiTNCHZoCTmHPJ/YLvNh2tA292Ll
+         YXtlYpBaRegI4CvaSlo1FQnvg8j/XGvxiFQxC65uj0jY/68mO1VZrJZxTjJIY4RPmn7x
+         yq2lyLNudC4bia5Q5f1Wnjz1nG4RxswLO2SaEqj+H9SCll+g1Zo+8z+gf17Q2Mk2yk9n
+         f3xMWVlI300Cnxi52FlG7keZGu6UDsinUtRjpEF85xwQ05DjMgn5VHyPlpgOY6M8UJ/5
+         Z/Ug==
+X-Gm-Message-State: AOJu0YzTAfxi9UhHAIpXBc8xfNnwv/imB2NKIASuQAiIWqUEcvRDB+6I
+        6vQ/xpNzufzj81QWexfoAh0=
+X-Google-Smtp-Source: AGHT+IFmoB4WikFU+B1c7rCtwR8zPyofWug3I3QyKA9JKmEgXhOMbYa7WLMuKvgBA41xT/G+4RKC6g==
+X-Received: by 2002:a2e:9a8e:0:b0:2bf:f84e:c1ec with SMTP id p14-20020a2e9a8e000000b002bff84ec1ecmr1939557lji.13.1695817937386;
+        Wed, 27 Sep 2023 05:32:17 -0700 (PDT)
+Received: from [172.16.183.71] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id p23-20020a2e8057000000b002c0d9d83f71sm3033259ljg.62.2023.09.27.05.32.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 05:32:16 -0700 (PDT)
+Message-ID: <a7096e0c-7132-5511-2fe0-1172caec5a7f@gmail.com>
+Date:   Wed, 27 Sep 2023 15:32:15 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 1/5] tools: iio: iio_generic_buffer ensure alignment
+Content-Language: en-US, en-GB
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Simon Horman <horms@kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 2/2] net: stmmac: add support for DMA Arbitration Scheme
-Date:   Wed, 27 Sep 2023 14:29:28 +0200
-Message-Id: <20230927122928.22033-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230927122928.22033-1-ansuelsmth@gmail.com>
-References: <20230927122928.22033-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Benjamin Bara <bbara93@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1695727471.git.mazziesaccount@gmail.com>
+ <e986b4562ca663e19ea30b81d15221c15bd87227.1695727471.git.mazziesaccount@gmail.com>
+ <ZRQfyNX9WsvmpZ1r@smile.fi.intel.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <ZRQfyNX9WsvmpZ1r@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,58 +87,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for DMA Arbitration Scheme tune up to program the DMA to put
-priority on Rx instead of applying Round-Robin logic.
+On 9/27/23 15:27, Andy Shevchenko wrote:
+> On Wed, Sep 27, 2023 at 11:26:07AM +0300, Matti Vaittinen wrote:
+>> The iio_generic_buffer can return garbage values when the total size of
+>> scan data is not a multiple of the largest element in the scan. This can be
+>> demonstrated by reading a scan, consisting, for example of one 4-byte and
+>> one 2-byte element, where the 4-byte element is first in the buffer.
+>>
+>> The IIO generic buffer code does not take into account the last two
+>> padding bytes that are needed to ensure that the 4-byte data for next
+>> scan is correctly aligned.
+>>
+>> Add the padding bytes required to align the next sample with the scan size.
+> 
+> ...
+> 
+>> +	/*
+>> +	 * We wan't the data in next sample to also be properly aligned so
+> 
+> Pardon me, won't or want, I didn't get?..
 
-This special DMA bus mode was defined in the header from a long time but
-was never actually implemented. This option is used on the original
-setup on the ipq806x-gmac driver based on DWMAC1000.
+Both :D Well, purpose was to say want, but as I try to explain we get 
+what we want only in some case - in other cases we won't ;) Anyways, 
+this is something that should be fixed - thanks :)
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c   | 3 +++
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 1 +
- include/linux/stmmac.h                                | 1 +
- 3 files changed, 5 insertions(+)
+> 
+>> +	 * we'll add padding at the end if needed.
+>> +	 *
+>> +	 * Please note, this code does ensure alignment to maximum channel
+>> +	 * size. It works only as long as the channel sizes are 1, 2, 4 or 8
+>> +	 * bytes. Also, on 32 bit platforms it might be enough to align also
+> 
+> 32-bit
+> 
+>> +	 * the 8 byte elements to 4 byte boundary - which this code is not
+> 
+> 8-byte
+> 4-byte
+> 
+>> +	 * doing.
+>> +	 */
+> 
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
-index daf79cdbd3ec..14eb7e8d61ea 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
-@@ -104,6 +104,9 @@ static void dwmac1000_dma_init(void __iomem *ioaddr,
- 	if (dma_cfg->aal)
- 		value |= DMA_BUS_MODE_AAL;
- 
-+	if (dma_cfg->arbit)
-+		value |= DMA_BUS_MODE_DA;
-+
- 	writel(value, ioaddr + DMA_BUS_MODE);
- 
- 	/* Mask interrupts by writing to CSR7 */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 843bd8804bfa..f5791b03b320 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -576,6 +576,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 	dma_cfg->pblx8 = !of_property_read_bool(np, "snps,no-pbl-x8");
- 
- 	dma_cfg->aal = of_property_read_bool(np, "snps,aal");
-+	dma_cfg->arbit = of_property_read_bool(np, "snps,arbit");
- 	dma_cfg->fixed_burst = of_property_read_bool(np, "snps,fixed-burst");
- 	dma_cfg->mixed_burst = of_property_read_bool(np, "snps,mixed-burst");
- 
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index c0079a7574ae..04a61f1eba90 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -97,6 +97,7 @@ struct stmmac_dma_cfg {
- 	int fixed_burst;
- 	int mixed_burst;
- 	bool aal;
-+	bool arbit;
- 	bool eame;
- 	bool multi_msi_en;
- 	bool dche;
+Thanks!
+
+Yours,
+	-- Matti
+
 -- 
-2.40.1
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
