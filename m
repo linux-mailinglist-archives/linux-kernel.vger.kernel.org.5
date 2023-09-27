@@ -2,151 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D66A7AF926
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0FD7AFA34
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjI0ER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S229832AbjI0Fmd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 01:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjI0EQV (ORCPT
+        with ESMTP id S229527AbjI0Flu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:16:21 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799365245;
-        Tue, 26 Sep 2023 17:16:35 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c47309a8ccso81804735ad.1;
-        Tue, 26 Sep 2023 17:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695773795; x=1696378595; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNJwTTZACq9yLQWS8t+PsblAtdyQNZRiQBfSWneDTAI=;
-        b=HOyYLZvZsgGR7Yhfk2SJTVilR1RVXrnU0UrAnyOi6tmSaWCsv0I3m6YiW0uxBkPCUW
-         gnzR4iDuK+vuTflEjZtpRpJyrCQZqkhtD5IIPP+6apTQwiyj79REQjq/U0baFiyoIyOG
-         8mkUBOht6cqvxtTFaZUH3uDKQ2Qq64OU8NGd4IrMWXrE4JrgwJIvV/rgZXq4RsTvt6hl
-         oKmjJDRBtVenNaXffQJ44XQBebex7pnbwfeP+VKXvHkTQ/og/IEBNnDWHc1l0cPKaHkd
-         7DTwpgZIxm05ByD/nILLwjSzIaITsKmwJAnpyQCP9OfBGRcPgDQvkrW78Eh1SYLEH1y2
-         EnQA==
+        Wed, 27 Sep 2023 01:41:50 -0400
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658D13C21;
+        Tue, 26 Sep 2023 17:50:41 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-79f989480e0so314028139f.3;
+        Tue, 26 Sep 2023 17:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695773795; x=1696378595;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HNJwTTZACq9yLQWS8t+PsblAtdyQNZRiQBfSWneDTAI=;
-        b=CwwxR7t29v3HCP/awQUmXFiMx7CU9KpzOZXDfspGTHUNkkk6fR2Yw4DFI8sg7xD894
-         Im37PH2zVU9k4WahGoKteozhQMj20ubm3onVV/Iqe7mxSIF01BrXzYEJJXkEv3H5zolk
-         R47q8pS+k6gzCVyPLw9MPHwV0d0sqtB0pfhr9DsfswH++fYO6LMku7KnUa1d5ngeJ8BO
-         3Pg1z1bSZEdtW8htX57Tr5Hu1FJqnmR7ST5K6jM9oH3S9hln+BSqRkta+A7B6n/9PEJm
-         zNIt5jAtFJ0IHcfIVQrnYE0KAjETUjo8TW7UPehqxRwhnyZBn/uG0prg/TQf7ZUvcEnF
-         YxYg==
-X-Gm-Message-State: AOJu0Ywyt9DJXRAbIdj6GGQw+4U18lk//Kc2AfimotQeVbFbaCjA00HK
-        mBFz6ZEqwi6kmi1Myfrkswyw/NBs0o4=
-X-Google-Smtp-Source: AGHT+IGEoQ7+A0JA5z0kXlfyTZItPmnp0nZi0UEkm75KmkCl9l0iN9IZ6VcHDazRrrnAKZjflc6YYw==
-X-Received: by 2002:a17:902:d2c7:b0:1b7:f64b:379b with SMTP id n7-20020a170902d2c700b001b7f64b379bmr758925plc.17.1695773794758;
-        Tue, 26 Sep 2023 17:16:34 -0700 (PDT)
-Received: from wheely.local0.net ([203.63.110.121])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001b8c6890623sm11703754plf.7.2023.09.26.17.16.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 17:16:34 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-nfs@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] nfs: reduce stack usage of nfs_get_root
-Date:   Wed, 27 Sep 2023 10:16:23 +1000
-Message-Id: <20230927001624.750031-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1695775840; x=1696380640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=49VLLRdtyvTR9zrUZJfnDfe9+Yw6E25El1lehQytcPs=;
+        b=mM77ZXb39cItcCMSR6Vg7Yska+rnHCXT8ffib6LbemqdyTUEFR96NbIhNjAjJSoD0f
+         nMmnxjz0uMzD3GL675fYRPekQwRqWaEc8XULgTWV/09XyrDjYOGdZwRCZvNCa4LFBCXY
+         31b9p3S3eUhpAYaK1Ke+cw6hBCtE+ZzDlQO1bbcjyXgvifmluK0FdV86xE/jXXMO17sT
+         gz5W6cbAi2tOwy9nvgefLIV1Hlt4lZoOc+BHtDzNMRF9/d1c3acNk+xOAMmH5836NLXa
+         VKke8Unq5H6xfyi5JKEHMf6GPx7zTj7o8bT92Yz3IdrZ36KSLz3qoEgkmBkIDfTJ+EUu
+         Hpyg==
+X-Gm-Message-State: AOJu0YzCI7mC4IfjvxGxd/DTW4vljDoa+o2RFpV7UB7meHTpQdBui3C/
+        QvZ9fQMPhR/CI5RT38DkcFVNtcUatz1YwA6aMuo=
+X-Google-Smtp-Source: AGHT+IHfqddDhz0mWHuZuybn15arEe1k1jWr2QNcgQQvttagjCshwasBMO6deSBz8icSk4kdZ667J4Lr+E8uYwj9LoA=
+X-Received: by 2002:a6b:6806:0:b0:79f:b6b3:9dde with SMTP id
+ d6-20020a6b6806000000b0079fb6b39ddemr481066ioc.9.1695775840642; Tue, 26 Sep
+ 2023 17:50:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230922234444.3115821-1-namhyung@kernel.org> <CAP-5=fVMdX+vLPNBSe-8arKGvAGcdgHGt7ypEX-J-SZpUi2PGg@mail.gmail.com>
+In-Reply-To: <CAP-5=fVMdX+vLPNBSe-8arKGvAGcdgHGt7ypEX-J-SZpUi2PGg@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 26 Sep 2023 17:50:29 -0700
+Message-ID: <CAM9d7cg0ZoGHJ1hMBFviEg4hSmx0V8nBZyTAP+hkiDzEQUZAKw@mail.gmail.com>
+Subject: Re: [PATCH] perf record: Fix BTF type checks in the off-cpu profiling
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move fsinfo allocation off stack, reducing stack overhead of
-nfs_get_root from 304 to 192 bytes.
+Hi Ian,
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
-Hi,
+On Sun, Sep 24, 2023 at 11:03 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Fri, Sep 22, 2023 at 4:44 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The BTF func proto for a tracepoint has one more argument than the
+> > actual tracepoint function since it has a context argument at the
+> > begining.  So it should compare to 5 when the tracepoint has 4
+> > arguments.
+> >
+> >   typedef void (*btf_trace_sched_switch)(void *, bool, struct task_struct *, struct task_struct *, unsigned int);
+> >
+> > Also, recent change in the perf tool would use a hand-written minimal
+> > vmlinux.h to generate BTF in the skeleton.  So it won't have the info
+> > of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
+> > check the type in the kernel.
+> >
+> > Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch")
+> > Cc: Song Liu <song@kernel.org>
+> > Cc: Hao Luo <haoluo@google.com>
+> > CC: bpf@vger.kernel.org
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+>
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-This is motivated by a stack overflow described here:
-https://lore.kernel.org/netdev/20230927001308.749910-1-npiggin@gmail.com/
+Thanks for the review!
 
-NFS is not really a major culprit but it seems not too hard to
-shrink the stack a little.
+>
+> > ---
+> >  tools/perf/util/bpf_off_cpu.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
+> > index 01f70b8e705a..21f4d9ba023d 100644
+> > --- a/tools/perf/util/bpf_off_cpu.c
+> > +++ b/tools/perf/util/bpf_off_cpu.c
+> > @@ -98,7 +98,7 @@ static void off_cpu_finish(void *arg __maybe_unused)
+> >  /* v5.18 kernel added prev_state arg, so it needs to check the signature */
+> >  static void check_sched_switch_args(void)
+> >  {
+> > -       const struct btf *btf = bpf_object__btf(skel->obj);
+> > +       const struct btf *btf = btf__load_vmlinux_btf();
+> >         const struct btf_type *t1, *t2, *t3;
+> >         u32 type_id;
+> >
+> > @@ -116,7 +116,8 @@ static void check_sched_switch_args(void)
+> >                 return;
+> >
+> >         t3 = btf__type_by_id(btf, t2->type);
+> > -       if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 4) {
+> > +       /* btf_trace func proto has one more argument for the context */
+> > +       if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 5) {
+> >                 /* new format: pass prev_state as 4th arg */
+>
+> nit: does this comment need updating?
+
+No, it's the 4th arg and the sched_switch is called like.
+
+        trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next,
+prev_state);
 
 Thanks,
-Nick
-
- fs/nfs/getroot.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/fs/nfs/getroot.c b/fs/nfs/getroot.c
-index 11ff2b2e060f..6e4188c09639 100644
---- a/fs/nfs/getroot.c
-+++ b/fs/nfs/getroot.c
-@@ -68,7 +68,7 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
- {
- 	struct nfs_fs_context *ctx = nfs_fc2context(fc);
- 	struct nfs_server *server = NFS_SB(s), *clone_server;
--	struct nfs_fsinfo fsinfo;
-+	struct nfs_fsinfo *fsinfo;
- 	struct dentry *root;
- 	struct inode *inode;
- 	char *name;
-@@ -79,19 +79,23 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
- 	if (!name)
- 		goto out;
- 
--	/* get the actual root for this mount */
--	fsinfo.fattr = nfs_alloc_fattr_with_label(server);
--	if (fsinfo.fattr == NULL)
-+	fsinfo = kmalloc(sizeof(*fsinfo), GFP_KERNEL);
-+	if (!fsinfo)
- 		goto out_name;
- 
--	error = server->nfs_client->rpc_ops->getroot(server, ctx->mntfh, &fsinfo);
-+	/* get the actual root for this mount */
-+	fsinfo->fattr = nfs_alloc_fattr_with_label(server);
-+	if (fsinfo->fattr == NULL)
-+		goto out_fsinfo;
-+
-+	error = server->nfs_client->rpc_ops->getroot(server, ctx->mntfh, fsinfo);
- 	if (error < 0) {
- 		dprintk("nfs_get_root: getattr error = %d\n", -error);
- 		nfs_errorf(fc, "NFS: Couldn't getattr on root");
- 		goto out_fattr;
- 	}
- 
--	inode = nfs_fhget(s, ctx->mntfh, fsinfo.fattr);
-+	inode = nfs_fhget(s, ctx->mntfh, fsinfo->fattr);
- 	if (IS_ERR(inode)) {
- 		dprintk("nfs_get_root: get root inode failed\n");
- 		error = PTR_ERR(inode);
-@@ -148,11 +152,13 @@ int nfs_get_root(struct super_block *s, struct fs_context *fc)
- 		!(kflags_out & SECURITY_LSM_NATIVE_LABELS))
- 		server->caps &= ~NFS_CAP_SECURITY_LABEL;
- 
--	nfs_setsecurity(inode, fsinfo.fattr);
-+	nfs_setsecurity(inode, fsinfo->fattr);
- 	error = 0;
- 
- out_fattr:
--	nfs_free_fattr(fsinfo.fattr);
-+	nfs_free_fattr(fsinfo->fattr);
-+out_fsinfo:
-+	kfree(fsinfo);
- out_name:
- 	kfree(name);
- out:
--- 
-2.40.1
-
+Namhyung
