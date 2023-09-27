@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B672A7B0B14
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EFD7B0B23
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjI0RaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 13:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S229637AbjI0RdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 13:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjI0RaQ (ORCPT
+        with ESMTP id S229437AbjI0RdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:30:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEC4A1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 10:30:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D3FAC433C8;
-        Wed, 27 Sep 2023 17:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1695835815;
-        bh=Zg50glGvDdtglLFeZM0bVA5Rp7XkwmC5KIuofPJt15E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lUZuSpIbYG7fm1DmDBwneBunRiwwnO9n1D97Mot1zBcW074CD3Q87G6K4PT4+IM5/
-         fFAso1btjJGuIqO5h0/Igolm70aJ45buEC5xNZW9JNUvGOstyFW+h5gZLnXhYJkae0
-         1QpdlQithxVcio0X7UpkSGZZ+okn1dzuXX2RGIfA=
-Date:   Wed, 27 Sep 2023 10:30:14 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: Re: [PATCH next v4 0/5] minmax: Relax type checks in min() and
- max().
-Message-Id: <20230927103014.683e41b855cb2cd4ea163fa5@linux-foundation.org>
-In-Reply-To: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
-References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 13:33:03 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45362B4;
+        Wed, 27 Sep 2023 10:32:59 -0700 (PDT)
+Received: from p200300ccff4287001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff42:8700:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qlYP1-004Exv-Lj; Wed, 27 Sep 2023 19:32:47 +0200
+Received: from andi by aktux with local (Exim 4.96)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qlYP0-0091bC-1w;
+        Wed, 27 Sep 2023 19:32:46 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        bcousson@baylibre.com, tony@atomide.com, andreas@kemnade.info,
+        chenhuiz@axis.com, jean-baptiste.maneyrol@tdk.com,
+        andy.shevchenko@gmail.com, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH v3 0/3] ARM: omap: omap4-embt2ws: Add IMU on control unit
+Date:   Wed, 27 Sep 2023 19:32:42 +0200
+Message-Id: <20230927173245.2151083-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Sep 2023 08:14:40 +0000 David Laight <David.Laight@ACULAB.COM> wrote:
+Contrary to the IMU at the head, a bit needs to be set to
+make probe of the magnetometer successful.
 
-> A quick grep shows 5734 min() and 4597 min_t().
-> Having the casts on almost half of the calls shows that something
-> is clearly wrong.
+Changes in V3:
+- correct another - vs _ issue in device tree
+- more standard kernel version description
 
-My preferred approach to fixing min() warnings is "the types are wrong".
-But often getting the types better is hard.
+Changes in V2:
+- add types in binding doc
+- more description / comments in binding doc
+- limit register change to imu9150
+- correct node name in device tree (- vs _)
 
-Is there a plan afoot to go around existing code doing some
-min_t()->min() conversions?
+Andreas Kemnade (3):
+  dt-bindings: iio: imu: mpu6050: Add level shifter
+  iio: imu: mpu6050: add level shifter flag
+  ARM: dts: omap: omap4-embt2ws: Add IMU at control unit
+
+ .../bindings/iio/imu/invensense,mpu6050.yaml    |  5 +++++
+ .../boot/dts/ti/omap/omap4-epson-embt2ws.dts    | 17 ++++++++++++++++-
+ drivers/iio/imu/inv_mpu6050/inv_mpu_aux.c       | 13 +++++++++++++
+ drivers/iio/imu/inv_mpu6050/inv_mpu_core.c      |  3 +++
+ drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h       |  1 +
+ 5 files changed, 38 insertions(+), 1 deletion(-)
+
+-- 
+2.39.2
+
