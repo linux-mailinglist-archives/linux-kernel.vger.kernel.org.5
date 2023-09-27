@@ -2,201 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A7C7B0C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DAE7B0C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjI0TOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 15:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        id S229620AbjI0TQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 15:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjI0TOi (ORCPT
+        with ESMTP id S229459AbjI0TQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:14:38 -0400
-Received: from csmtpq3-prd-nl1-vmo.edge.unified.services (csmtpq3-prd-nl1-vmo.edge.unified.services [84.116.50.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C1CDD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:14:36 -0700 (PDT)
-Received: from csmtp2-prd-nl1-vmo.nl1.unified.services ([100.107.82.134] helo=csmtp2-prd-nl1-vmo.edge.unified.services)
-        by csmtpq3-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <sboyce@blueyonder.co.uk>)
-        id 1qlZzW-00Hahh-0l
-        for linux-kernel@vger.kernel.org; Wed, 27 Sep 2023 21:14:34 +0200
-Received: from [192.168.10.244] ([82.32.17.210])
-        by csmtp2-prd-nl1-vmo.edge.unified.services with ESMTPA
-        id lZzUq9eoeMRAilZzUqBiUJ; Wed, 27 Sep 2023 21:14:33 +0200
-X-SourceIP: 82.32.17.210
-X-Authenticated-Sender: sboyce@blueyonder.co.uk
-X-Spam: 0
-X-Authority: v=2.4 cv=d+kzizvE c=1 sm=1 tr=0 ts=65147f19 cx=a_exe
- a=xwbGgp66NgX51+oEeDXSrg==:117 a=xwbGgp66NgX51+oEeDXSrg==:17
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=x7bEGLp0ZPQA:10
- a=LsY_pDxX3eF9cKILWiQA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blueyonder.co.uk;
-        s=meg.feb2017; t=1695842073;
-        bh=Uu/oTjpG9FS5ZPpLED3hBXmrhVdruzECMAZYFtKI/8M=;
-        h=Date:Reply-To:Subject:To:Cc:References:From:In-Reply-To;
-        b=BK/RYELMl28jcyLCvQJUMMd6vKjadWKaESnpylwufC39j2zG12eVdQSWqRJaI2l/F
-         CK3VCAgly1yiHsiGXGyvY5KnP4Xxx8SZO3zVNn3DmLQg864wxerH7AwyVBvbPqoRlb
-         bGRbgHNiwy7NVk97zGTxNJCoq2jR1MS5P1KqOj9OvAlAi4ewzWfjNGmxVezw7LKlkm
-         I16BdUwnQX/lEUx2JZ7YeN2Yr4IR9wdKK95I+3V07jBMrLx56/p1UP1adWgqaufKt6
-         T9oOkab0Z+Zfrk3hEtcyfVD8i8OkzRIkpoxeUcGwvRzmCq89ud1eRpxz9DzXJsxZv5
-         6bnz+PVNipRKA==
-Message-ID: <20798069-6057-4e52-9c79-8d851e0afadd@blueyonder.co.uk>
-Date:   Wed, 27 Sep 2023 20:14:32 +0100
+        Wed, 27 Sep 2023 15:16:11 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30858DD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:16:08 -0700 (PDT)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38RJFaMG2909858
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 27 Sep 2023 12:15:37 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38RJFaMG2909858
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023091101; t=1695842137;
+        bh=s18+eLVTjLsv4CJZXCk3CBfJS3Bs/nded3iVDh14DxU=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=PmAuyNSp0pHArexEAkemrY0qtq5HafRGvvtj+iKQZRZhVZ7Axsn7UEAMcWbzroh1j
+         pqfD1JQ606SniXv0gpNS5MYkxjjGz8fCAaoD8RL+F3nY3TINcEzgD3ojW+mFU6wCGr
+         /w+oNXr8qOw/guQaXW8goCEAs5kXETGXQ4crgRj0cJo9Rp0rbAVh09Bt9n1WMXPS9n
+         qHGqh6DP1D66hlD7f+mww6flomyrpzcd5k5950vLjiv9W4roPQKzhK/K6Wv1CDoMkP
+         PGKiNc+8SMoFT/W7uWRpck7S+BhZ6UFuGIVfRVFg3UsHna8w1UgVFloeWFhydFLGHv
+         0Yc6gcXi1lL3w==
+Date:   Wed, 27 Sep 2023 12:15:34 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Ingo Molnar <mingo@kernel.org>, xin@zytor.com
+CC:     linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_1/1=5D_x86/entry=3A_remove_unu?= =?US-ASCII?Q?sed_argument_=25rsi_passed_to_exc=5Fnmi=28=29?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZRPif+9R8pp1v+m1@gmail.com>
+References: <20230926061319.1929127-1-xin@zytor.com> <ZRPif+9R8pp1v+m1@gmail.com>
+Message-ID: <0EE710EE-C0A3-4D29-BEF3-5FF888A5AD01@zytor.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: sboyce@blueyonder.co.uk
-Subject: Re: Ryzen 9 7950x sound module does not not build
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ALSA <alsa-devel@alsa-project.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
- <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
- <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
- <ZRLWIkyngsasQbQ7@debian.me>
- <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
- <40672e60-3913-4794-b84a-742b7c16d361@infradead.org>
- <4b2c3b4e-9b21-4f80-95e1-58aa7f58131e@blueyonder.co.uk>
- <7afa193e-6bf1-4792-89e1-ca72bc4588e9@infradead.org>
-Content-Language: en-GB
-From:   Sid Boyce <sboyce@blueyonder.co.uk>
-Organization: blueyonder.co.uk
-In-Reply-To: <7afa193e-6bf1-4792-89e1-ca72bc4588e9@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfHrs+g2aO6fnOLSILp9gB5kMqaPTJNowTbW0w1Cm8lY447AY62y8sG8XKDt/dIP556q+ZwGtL46yGYpTwBzMYIK2MeObyUhqkKIxuPOCw+Wo6stN0qwT
- Wrgm1GBWmX0Re8FMc7iwJDwbjWaYY2kwkgDMmrRWhABggOe7kaDMCPPR2of6DgK9uUAl7ON/W+/hbw8M7SJefZRaQn5nLF6uO+ZWP5RQ5agKrwwGlefAW7Co
- azCXhK7/XLnanMoQEaY/ayKKhQPGo6QnmXLPPzQra9v0/ZxVMDYG5ueGWsX41cFLiwUmq6KZEAbZFsbFwdZcEDe0ob8IqKyTg5G8k7HETVJiXPoj6ZvIM8fC
- +JOx9y6zhDyKlXb9AboS9K2eqZ3MpfWAe9dQKWeFNwvbMxkVnU0S7sjSP63l5Dpmd/hvvZxB
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2023 16:40, Randy Dunlap wrote:
+On September 27, 2023 1:06:23 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrot=
+e:
 >
-> On 9/27/23 04:27, Sid Boyce wrote:
->> On 26/09/2023 23:13, Randy Dunlap wrote:
-> || The snd-rpl-pci-acp6x driver only supports
-> || vendor=0x1022, device=0x15e2, and PCI revision=0x62.
+>* xin@zytor=2Ecom <xin@zytor=2Ecom> wrote:
 >
->>> lspci -vv
->>
->> 01:00.1 Audiodevice: NVIDIA Corporation Device 10fa (rev a1)
->>         Subsystem: NVIDIA Corporation Device 1f82
->>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
->>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->>         Latency: 0, Cache Line Size: 64 bytes
->>         Interrupt: pin B routed to IRQ 80
->>         IOMMU group: 11
->>         Region 0: Memory at fc080000 (32-bit, non-prefetchable) [size=16K]
->>         Capabilities: [60] Power Management version 3
->>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
->>                 Status: D3 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
->>         Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
->>                 Address: 0000000000000000  Data: 0000
->>         Capabilities: [78] Express (v2) Endpoint, MSI 00
->>                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
->>                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 75W
->>                 DevCtl: CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
->>                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
->>                         MaxPayload 256 bytes, MaxReadReq 512 bytes
->>                 DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq+ AuxPwr- TransPend-
->>                 LnkCap: Port #0, Speed 8GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
->>                         ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
->>                 LnkCtl: ASPM L0s L1 Enabled; RCB 64 bytes, Disabled- CommClk+
->>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
->>                 LnkSta: Speed 2.5GT/s (downgraded), Width x16
->>                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
->>                 DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR+
->>                          10BitTagComp- 10BitTagReq- OBFF Via message, ExtFmt- EETLPPrefix-
->>                          EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
->>                          FRS- TPHComp- ExtTPHComp-
->>                          AtomicOpsCap: 32bit- 64bit- 128bitCAS-
->>                 DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
->>                          AtomicOpsCtl: ReqEn-
->>                 LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
->>                          EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
->>                          Retimer- 2Retimers- CrosslinkRes: unsupported
->>         Capabilities: [100 v2] Advanced Error Reporting
->>                 UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
->>                 UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
->>                 UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
->>                 CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
->>                 CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
->>                 AERCap: First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
->>                         MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
->>                 HeaderLog: 00000000 00000000 00000000 00000000
->>         Kernel driver in use: snd_hda_intel
->>         Kernel modules: snd_hda_intel
->>
->> 0b:00.6 Audiodevice: Advanced Micro Devices, Inc. [AMD] Family 17h/19h HD AudioController
->>         DeviceName: Realtek ALC897 Audio
->>         Subsystem: ASUSTeK Computer Inc. Device 87fb
->>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
->>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->>         Latency: 0, Cache Line Size: 64 bytes
->>         Interrupt: pin C routed to IRQ 81
->>         IOMMU group: 24
->>         Region 0: Memory at fc500000 (32-bit, non-prefetchable) [size=32K]
->>         Capabilities: [48] Vendor Specific Information: Len=08 <?>
->>         Capabilities: [50] Power Management version 3
->>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
->>                 Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
->>         Capabilities: [64] Express (v2) Endpoint, MSI 00
->>                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s <4us, L1 unlimited
->>                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0W
->>                 DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
->>                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
->>                         MaxPayload 256 bytes, MaxReadReq 512 bytes
->>                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
->>                 LnkCap: Port #0, Speed 16GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <64ns, L1 <1us
->>                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp+
->>                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
->>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
->>                 LnkSta: Speed 16GT/s, Width x16
->>                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
->>                 DevCap2: Completion Timeout: Range ABCD, TimeoutDis+ NROPrPrP- LTR-
->>                          10BitTagComp+ 10BitTagReq- OBFF Not Supported, ExtFmt+ EETLPPrefix+, MaxEETLPPrefixes 1
->>                          EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
->>                          FRS- TPHComp- ExtTPHComp-
->>                          AtomicOpsCap: 32bit- 64bit- 128bitCAS-
->>                 DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
->>                          AtomicOpsCtl: ReqEn-
->>                 LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
->>                          EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
->>                          Retimer- 2Retimers- CrosslinkRes: unsupported
->>         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
->>                 Address: 00000000fee00000  Data: 0000
->>         Capabilities: [100 v1] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
->>         Capabilities: [2a0 v1] Access Control Services
->>                 ACSCap: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
->>                 ACSCtl: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
->>         Kernel driver in use: snd_hda_intel
->>         Kernel modules: snd_hda_intel
->>
-> Sid, do you have some reason to believe that one of these devices should use the
-> snd-rpl-pci-acp6x driver?  I don't see that either one of them is the correct
-> vendor/device ID pair for that driver, but I would prefer that someone who is
-> familiar with the driver & device jump in here...
+>> From: "Xin Li (Intel)" <xin@zytor=2Ecom>
+>>=20
+>> exc_nmi() only takes one argument of type struct pt_regs *, but
+>> asm_exc_nmi() calls it with 2 arguments=2E The second one passed
+>> in %rsi seems a leftover, so simply remove it=2E
+>>=20
+>> BTW, fix 2 slips in the comments=2E
+>>=20
+>> Signed-off-by: Xin Li (Intel) <xin@zytor=2Ecom>
+>> Acked-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+>> ---
+>>  arch/x86/entry/entry_64=2ES | 10 ++++------
+>>  1 file changed, 4 insertions(+), 6 deletions(-)
 >
-Switched to pulseaudio, results are absolutely the same as with pipewire.
+>I've split this into two patches, because the comment fixes
+>are entirely unrelated to this patch=2E
+>
+>[ I've propagated the SOBs and Acked-by's to the two patches,
+>  as I presume is fine by everyone involved? ]
+>
+>Thanks,
+>
+>	Ingo
 
-After reboot without USB dongle only the Digital Stereo (IEC958) showed 
-in kmix.
-
-Plugged in the USB dongle in order to get sound working.
-
--- 
-Sid Boyce ... Hamradio License G3VBV, Keen licensed Private Pilot
-Retired IBM/Amdahl Mainframes and Sun/Fujitsu Servers Tech Support Specialist
-Microsoft Windows Free Zone - Linux used for all Computing Tasks
-
+Perfect, thanks!
