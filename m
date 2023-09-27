@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09047B089D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B727B087A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjI0Pgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
+        id S232627AbjI0Pgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjI0PgP (ORCPT
+        with ESMTP id S232511AbjI0PgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 11:36:15 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC39136;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507E719E;
         Wed, 27 Sep 2023 08:36:13 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C8F06607332;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A93F86607333;
         Wed, 27 Sep 2023 16:36:10 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695828970;
-        bh=dORnTzB2rXmsaHgnhN9KRI5xHQJEBU6mRdZelnGjotA=;
+        s=mail; t=1695828971;
+        bh=Osy0YWOEVUvzSOYoJm+JBXSigMNkmpw77qpRTwkivks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KMDgUwonf2lW5eRH7lA4RKRlpDlHdXq0Q2LfIFDyLzsDKPFhC4b24/93gkehWt8AJ
-         TJ1MqsMNw22xNF8lNLdkA3vXHkFdn2gn0FGaaQixTVA8pGu8A9ibqCSCQn8Z8HG+7D
-         0vKDgzPINWPePIZOn2sPIM9JCrEu5Ncf6ih970cu9RKs9CtixgfhBcX8RXt92+w6AR
-         /FsIUxGDx4QHv+LVbX/Fhxi6vh7XvU62/amHu9w3cLeZEiW24CfFFU/1zYoxI3lP/h
-         ysVEnog4uRlqd6Fsl913z+44m1cNjkx3sDKpKC8y9GawmiC54ToLTvBq0fAWY14eKN
-         XedA+BZtLsntA==
+        b=PGWaQ2ufXEVKBrTte19CfVxo6Z3XZFO+2YiY4NgHFYYJEMsSXksi50YlVqsSVdNFm
+         ejcqcCSyaS6mmYX+YVhBRmZ2Dptuj8QggasrsqwmhhOBtpz3S04AXAXV/qPEGO952Q
+         WYTJsUpsJybCaa2w+m1BYpra2JLsMBcAHv0OCXakBViWFTA0JGhqeUPkGBokZcSjJy
+         cxyFuM9uCyWuwI7rNZVcpOR8oxUkqKvwyVTAV6auoFLWAUT0dMvP8OueZthTDq8DWk
+         5gkEXP6i5WmolXDZo+JeBXwwa4AeQMNOIvnlt0O2K1iC4zJ6/sDiEijDQD3G5cEUGl
+         XwgyqEzoJGowg==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v8 07/53] media: sti: hva: Use vb2_get_buffer() instead of directly access to buffers array
-Date:   Wed, 27 Sep 2023 17:35:12 +0200
-Message-Id: <20230927153558.159278-8-benjamin.gaignard@collabora.com>
+Subject: [PATCH v8 08/53] media: visl: Use vb2_get_buffer() instead of directly access to buffers array
+Date:   Wed, 27 Sep 2023 17:35:13 +0200
+Message-Id: <20230927153558.159278-9-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
 References: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
@@ -61,37 +61,69 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Use vb2_get_buffer() instead of directly access to vb2_buffer buffer array.
+This could allow to change the type bufs[] field of vb2_buffer structure if
+needed.
 After each call to vb2_get_buffer() we need to be sure that we get
 a valid pointer so check the return value of all of them.
-Remove index range test since it is done by vb2_get_buffer().
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/platform/st/sti/hva/hva-v4l2.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/media/test-drivers/visl/visl-dec.c | 28 ++++++++++++++++------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/st/sti/hva/hva-v4l2.c b/drivers/media/platform/st/sti/hva/hva-v4l2.c
-index 3a848ca32a0e..cfe83e9dc01b 100644
---- a/drivers/media/platform/st/sti/hva/hva-v4l2.c
-+++ b/drivers/media/platform/st/sti/hva/hva-v4l2.c
-@@ -569,14 +569,11 @@ static int hva_qbuf(struct file *file, void *priv, struct v4l2_buffer *buf)
- 		struct vb2_buffer *vb2_buf;
+diff --git a/drivers/media/test-drivers/visl/visl-dec.c b/drivers/media/test-drivers/visl/visl-dec.c
+index 318d675e5668..ba20ea998d19 100644
+--- a/drivers/media/test-drivers/visl/visl-dec.c
++++ b/drivers/media/test-drivers/visl/visl-dec.c
+@@ -290,13 +290,20 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
+ 	for (i = 0; i < out_q->num_buffers; i++) {
+ 		char entry[] = "index: %u, state: %s, request_fd: %d, ";
+ 		u32 old_len = len;
+-		char *q_status = visl_get_vb2_state(out_q->bufs[i]->state);
++		struct vb2_buffer *vb2;
++		char *q_status;
++
++		vb2 = vb2_get_buffer(out_q, i);
++		if (!vb2)
++			continue;
++
++		q_status = visl_get_vb2_state(vb2->state);
  
- 		vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, buf->type);
--
--		if (buf->index >= vq->num_buffers) {
--			dev_dbg(dev, "%s buffer index %d out of range (%d)\n",
--				ctx->name, buf->index, vq->num_buffers);
-+		vb2_buf = vb2_get_buffer(vq, buf->index);
-+		if (!vb2_buf) {
-+			dev_dbg(dev, "%s buffer index %d not found\n", ctx->name, buf->index);
- 			return -EINVAL;
- 		}
--
--		vb2_buf = vb2_get_buffer(vq, buf->index);
- 		stream = to_hva_stream(to_vb2_v4l2_buffer(vb2_buf));
- 		stream->bytesused = buf->bytesused;
- 	}
+ 		len += scnprintf(&buf[len], TPG_STR_BUF_SZ - len,
+ 				 entry, i, q_status,
+-				 to_vb2_v4l2_buffer(out_q->bufs[i])->request_fd);
++				 to_vb2_v4l2_buffer(vb2)->request_fd);
+ 
+-		len += visl_fill_bytesused(to_vb2_v4l2_buffer(out_q->bufs[i]),
++		len += visl_fill_bytesused(to_vb2_v4l2_buffer(vb2),
+ 					   &buf[len],
+ 					   TPG_STR_BUF_SZ - len);
+ 
+@@ -342,13 +349,20 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
+ 	len = 0;
+ 	for (i = 0; i < cap_q->num_buffers; i++) {
+ 		u32 old_len = len;
+-		char *q_status = visl_get_vb2_state(cap_q->bufs[i]->state);
++		struct vb2_buffer *vb2;
++		char *q_status;
++
++		vb2 = vb2_get_buffer(cap_q, i);
++		if (!vb2)
++			continue;
++
++		q_status = visl_get_vb2_state(vb2->state);
+ 
+ 		len += scnprintf(&buf[len], TPG_STR_BUF_SZ - len,
+ 				 "index: %u, status: %s, timestamp: %llu, is_held: %d",
+-				 cap_q->bufs[i]->index, q_status,
+-				 cap_q->bufs[i]->timestamp,
+-				 to_vb2_v4l2_buffer(cap_q->bufs[i])->is_held);
++				 vb2->index, q_status,
++				 vb2->timestamp,
++				 to_vb2_v4l2_buffer(vb2)->is_held);
+ 
+ 		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 16, &buf[old_len]);
+ 		frame_dprintk(ctx->dev, run->dst->sequence, "%s", &buf[old_len]);
 -- 
 2.39.2
 
