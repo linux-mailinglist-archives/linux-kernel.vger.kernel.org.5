@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3F37B0989
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE407B0A37
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjI0QD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+        id S231256AbjI0Qc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbjI0QDM (ORCPT
+        with ESMTP id S232554AbjI0PgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:03:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B7C121;
-        Wed, 27 Sep 2023 09:02:35 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 18:02:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695830553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
-        b=gA8E7/z/ye+UWQvTptCUxfM7HS3iYd/tK9vXkmkbp6ehYQxjZfhSnwUbo4yeTQVXJ9IyaK
-        8wwAtn2uo82b34MM6QBT6xBYWLHHZHhUQxGiLRWHByNXFKXmbA2NGgWBwPixIIC7qn67Q0
-        rXHrEqx5L933ymrrywoXolbIUbAnG0yGsz7c0XyJmjfTWkMe8gKDoTyWp+Q9+TsYh6mrfE
-        ZNxJCnQvTyxZ13dpeZ7/wj6oYmTKRHzkxrouy8xoZEUrQ6rMcvQcIQGGMWXBr8+Rz1ibrB
-        q0E2C/9dyj2TETBAiMJrYc13NWVAl8mzXrUff1NU3ponoQLgs3BldvxYTFfGrg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695830553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
-        b=YReDyt9JG3c9HFVm3jjR59KBPrudAz6g1lOu804uGt8ruhv64qozjuWhLyNqZHyepfHAYV
-        cCC1Rw8pXSmPDmAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <20230927160231.XRCDDSK4@linutronix.de>
+        Wed, 27 Sep 2023 11:36:18 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA781AE;
+        Wed, 27 Sep 2023 08:36:16 -0700 (PDT)
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A8D2B6607343;
+        Wed, 27 Sep 2023 16:36:13 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695828974;
+        bh=vXuJIhvUaCiRCOnUer8AX7BKf/0It7kvtpm2er6AYGM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hGxXr9ApKuTnrLtoyKv81j2VUeYmwYWrJa1Jh4fBHhL5uT60nRzU3ilONTz4f8N8z
+         pTx1DXtzHis+RUs/KvTJhXscJUjAekcBX/0ohVty7GtJ4/7NM8TNx5CvG12Z1d77pr
+         9/djU9LjzD4EwV8+Cx24/mc0btgEAhCFUXh2cfEgnWe7G4tNBViOoH0jicNOEwCn2x
+         mKTftSOQV6TBuyazNO/JIYqG4wgOFEIrSLIDEE6fNNqKd7/nKuykNE6lG6LJ4c1uDE
+         0BybZ5D9Yto6hUfSUhjP4BzYtMXoxtgRkO0j05Zm6HV+gqErwmoARFNXAcS61joPaM
+         7sW+PqFcrp/Xw==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v8 14/53] media: test-drivers: vivid: Increase max supported buffers for capture queues
+Date:   Wed, 27 Sep 2023 17:35:19 +0200
+Message-Id: <20230927153558.159278-15-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
+References: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -69,85 +60,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
-triggers a lockdep if used from NMI because lockdep expects a deadlock
-since nothing disables NMIs while the lock is acquired.
+Change the maximum number of buffers of some capture queues in order
+to test max_num_buffers field.
 
-Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
-complains if used from NMI.
+Allow to allocate up to:
+- 64 buffers for video capture queue.
+- 1024 buffers for sdr capture queue.
+- 32768 buffers for vbi capture queue.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
+ drivers/media/test-drivers/vivid/vivid-core.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-The splat:
-| =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-| WARNING: inconsistent lock state
-| 6.6.0-rc3-rt5+ #85 Not tainted
-| --------------------------------
-| inconsistent {INITIAL USE} -> {IN-NMI} usage.
-| swapper/0/0 [HC1[1]:SC0[0]:HE0:SE1] takes:
-| ffffffff828e6c90 (console_srcu){....}-{0:0}, at: console_srcu_read_lock+0=
-x3a/0x50
-| {INITIAL USE} state was registered at:
-=E2=80=A6
-|        CPU0
-|        ----
-|   lock(console_srcu);
-|   <Interrupt>
-|     lock(console_srcu);
-|
-|  *** DEADLOCK ***
-|
-
-My guess is that trylock annotation should not apply to
-rcu_lock_acquire(). This would distinguish it from from non-NMI safe
-srcu_read_lock_nmisafe() and NMI check in rcu_read_unlock() is only
-there to survive if accidentally used in-NMI.
-
- include/linux/rcupdate.h | 6 ++++++
- include/linux/srcu.h     | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 5e5f920ade909..44aab5c0bd2c1 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -303,6 +303,11 @@ static inline void rcu_lock_acquire(struct lockdep_map=
- *map)
- 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
- }
-=20
-+static inline void rcu_try_lock_acquire(struct lockdep_map *map)
-+{
-+	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
-+}
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index e95bdccfc18e..58a059140365 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -876,6 +876,13 @@ static int vivid_create_queue(struct vivid_dev *dev,
+ 	q->type = buf_type;
+ 	q->io_modes = VB2_MMAP | VB2_DMABUF;
+ 	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
++	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		q->max_num_buffers = 64;
++	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
++		q->max_num_buffers = 1024;
++	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
++		q->max_num_buffers = 32768;
 +
- static inline void rcu_lock_release(struct lockdep_map *map)
- {
- 	lock_release(map, _THIS_IP_);
-@@ -317,6 +322,7 @@ int rcu_read_lock_any_held(void);
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
-=20
- # define rcu_lock_acquire(a)		do { } while (0)
-+# define rcu_try_lock_acquire(a)	do { } while (0)
- # define rcu_lock_release(a)		do { } while (0)
-=20
- static inline int rcu_read_lock_held(void)
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 127ef3b2e6073..236610e4a8fa5 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_st=
-ruct *ssp) __acquires(ssp
-=20
- 	srcu_check_nmi_safety(ssp, true);
- 	retval =3D __srcu_read_lock_nmisafe(ssp);
--	rcu_lock_acquire(&ssp->dep_map);
-+	rcu_try_lock_acquire(&ssp->dep_map);
- 	return retval;
- }
-=20
---=20
-2.40.1
+ 	if (allocators[dev->inst] != 1)
+ 		q->io_modes |= VB2_USERPTR;
+ 	q->drv_priv = dev;
+-- 
+2.39.2
 
