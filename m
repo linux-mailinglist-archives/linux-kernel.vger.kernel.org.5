@@ -2,214 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1757AFB3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB4A7AFB3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjI0Glo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
+        id S229882AbjI0Gmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjI0Gll (ORCPT
+        with ESMTP id S229478AbjI0Gmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:41:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70647DE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:41:39 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d85fc108f0eso15525399276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695796898; x=1696401698; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+yP0qHUJH7sO2KgRz3yivnxn+m8P4l8V6unnDvl/tBE=;
-        b=uRVFJfyPRzEDUZ0USgKfyN6ajnoXp6oPASneL/q6udY7wsGbT3kKtk+VdCtulyIPjr
-         z/toV/qvw+m9JqDDxdTucQWvANd0oSL9hGwxIcvIaK7oDY5h7MDbzrn8PwKxvWWeu9A1
-         AXEbaiEJ0Bahv/XICyiwpcXcacYGybAhXEFikVvQBN9ChhkzCdEjqu+ehofPgFBBLj8C
-         2XQZM7DEfCdicmtOFHb/aqzmbb3g8oNOCDyNntvCF01pSaiSZk1kwUPWFjoAc3bgl9rd
-         60Zf0dOChb0lQedxKVzw2GKdNG7FkLIJmCBSkDMnZlcwhRBv5T+eNy/hTt2WtmoeLldL
-         I6YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695796898; x=1696401698;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+yP0qHUJH7sO2KgRz3yivnxn+m8P4l8V6unnDvl/tBE=;
-        b=YBIvj3MU1rGmWwvkmLAK3ecZsA6yPgQFXM583rEONHBB3XAAst+pqa38iNRYmd5wSJ
-         i8UZwmwGOyHknLIf/aaQH9xtbEqDlEl0O3AJe5s4nno0N2aeKeEwdPq3K5QELwpG61vs
-         E5/Nmp31/FCgGgo9fxh6JRFXvQ4+b6O2rsI+bzoeN7hvVNRvwyBmdee7J9nXHjZnA58D
-         1ifRfbFJqLGwp/CddFniVV4uJxXFUXYAwikAxjgqrzZu5VaAP3kqIay22zdaNrqHZyS0
-         2MBmZoseP7MQwB5PvZeMrTXldMBsxCcJ5yYkkZ99ewusMHDbKMe8FzdeqegFWS7E7Ky3
-         3DrA==
-X-Gm-Message-State: AOJu0Yyrb6HJo4ixgeJtDtpsIK02+Z/acTDSU2pbLG5vwTLI2MuYDkrO
-        e2HrSxoZaQvfDqDMdrpd1rI/H/5Bbdpfdo/nQQ==
-X-Google-Smtp-Source: AGHT+IEVCCuMI/uy+Ltg5u5M7A4hgRyW/gCmF8sn1IuFuDTTOBFPGmO2kHmy+heH9Iq0t3g3VcTknBCD7VhmotgVLA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1682:b0:d81:78ec:c403 with
- SMTP id bx2-20020a056902168200b00d8178ecc403mr13774ybb.12.1695796898745; Tue,
- 26 Sep 2023 23:41:38 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 06:41:37 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKHOE2UC/x3NMQ6DMAxA0asgz7WUJiCgV6kYmmDAAwHZIWqFu
- Hsjxrf8f4KSMCm8qhOEMitvseD5qCAsnzgT8lgM1lhnetuiJolh/+EonEkU1zXgsmnCfHhnDAb 0rXf91FlquhpKZxea+Hs/3sN1/QGl6Ar9cwAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695796897; l=5550;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=YPZfe2Wyy7QnsQhjAGzhJqwDXvMubl0PpcqCu4zLYvI=; b=DVmX3rW9B9/NdIy6Sx1tPZhSRgJUBHuGbPKG2EobRxqUmLqriHBIfHZa6/44chl99vMNeGrDV
- ufoIE9dRsqwDdET0IHyIJy7USZl/n6oXtJwqFm9YsEIrFepousjKoKk
-X-Mailer: b4 0.12.3
-Message-ID: <20230927-strncpy-drivers-mmc-host-vub300-c-v1-1-77426f62eef4@google.com>
-Subject: [PATCH] mmc: vub300: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 02:42:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F416A3;
+        Tue, 26 Sep 2023 23:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bwSyQRC8fefri4b5hVn1/4OFLP01ho9a6ehRwWTRQ2s=; b=Ch9pFe5srylk8UXwJciBojBdIk
+        eVhQ4z55lvGIi6BibacYdGzvVXWgrPIIDWYBzTJlF0AuhVW3lp1Vwy9bhHOeEffyos2SlfNI8RHfI
+        LChM5xLG6rv3budzi0pbvRTzs5u+w54uI4f+1Hy8CqUz40ytL/50tY6DvNujVZvvYfSehGUz0ryyq
+        SGI2CL7DRTyDm9Bclnlm33CXHe4VurmlDJqTw1vw/F79ovRJdBQe6wyzBzoRePyrcBcuRb5MxyNkt
+        vKVz2JgtLxNNHhCcHA/5nIwHDuTwnTbebl2Aye+6jBUFFoEfBznJ6YstH+8PiS1jNodKLejlwFaIl
+        dKMbZFeA==;
+Received: from [54.239.6.185] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qlOFv-00CK8R-3u; Wed, 27 Sep 2023 06:42:43 +0000
+Message-ID: <74df3c302d26300f9114638d3ed6c2f565974bc6.camel@infradead.org>
+Subject: Re: [PATCH] KVM: x86: Use fast path for Xen timer delivery
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     kvm <kvm@vger.kernel.org>
+Cc:     Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        "Griffoul, Fred" <fgriffo@amazon.com>
+Date:   Wed, 27 Sep 2023 08:42:40 +0200
+In-Reply-To: <445abd6377cf1621a2d306226cab427820583967.camel@infradead.org>
+References: <445abd6377cf1621a2d306226cab427820583967.camel@infradead.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-VUI9vus9X6IaLYR68Ual"
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
 
-We expect `vub300->vub_name` to be NUL-terminated based on its uses with
-format strings:
-| 	dev_info(&vub300->udev->dev, "using %s for SDIO offload processing\n",
-| 		 vub300->vub_name);
+--=-VUI9vus9X6IaLYR68Ual
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-NUL-padding is not needed. We can see cleaning out vub_name simply
-consists of:
-|       vub300->vub_name[0] = 0;
+On Fri, 2023-09-22 at 10:20 +0100, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+>=20
+> Most of the time there's no need to kick the vCPU and deliver the timer
+> event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fast()
+> directly from the timer callback, and only fall back to the slow path
+> when it's necessary to do so.
+>=20
+> This gives a significant improvement in timer latency testing (using
+> nanosleep() for various periods and then measuring the actual time
+> elapsed).
+>=20
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 
-Considering the above, for all 11 cases a suitable replacement is
-`strscpy` [2] due to the fact that it guarantees NUL-termination on the
-destination buffer without unnecessarily NUL-padding.
+Hm, scratch that. It brings back the race condition Paolo talks about in
+https://lore.kernel.org/kvm/0709ac62f664c0f3123fcdeabed3b79038cef3b6.camel@=
+infradead.org/T/
 
-To be clear, there is no existing bug in the current implementation as
-the string literals are all small enough as to not cause a buffer
-overread. Nonetheless, this gets us 11 steps closer to removing strncpy
-uses.
+Well, not *quite*... there's no race with clearing timer_expires
+because I forgot to clear it at all :)
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/mmc/host/vub300.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+I think I'll be able to fix it up with an hrtimer_cancel() in the rare
+ioctl attr_get path to avoid the race.=20
 
-diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
-index 9ec593d52f0f..de3f443f5fdc 100644
---- a/drivers/mmc/host/vub300.c
-+++ b/drivers/mmc/host/vub300.c
-@@ -512,7 +512,7 @@ static void new_system_port_status(struct vub300_mmc_host *vub300)
- 		vub300->card_present = 1;
- 		vub300->bus_width = 0;
- 		if (disable_offload_processing)
--			strncpy(vub300->vub_name, "EMPTY Processing Disabled",
-+			strscpy(vub300->vub_name, "EMPTY Processing Disabled",
- 				sizeof(vub300->vub_name));
- 		else
- 			vub300->vub_name[0] = 0;
-@@ -1216,7 +1216,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 		dev_err(&vub300->udev->dev,
- 			"corrupt offload pseudocode in firmware %s\n",
- 			vub300->vub_name);
--		strncpy(vub300->vub_name, "corrupt offload pseudocode",
-+		strscpy(vub300->vub_name, "corrupt offload pseudocode",
- 			sizeof(vub300->vub_name));
- 		return;
- 	}
-@@ -1250,7 +1250,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 				"not enough memory for xfer buffer to send"
- 				" INTERRUPT_PSEUDOCODE for %s %s\n", fw->data,
- 				vub300->vub_name);
--			strncpy(vub300->vub_name,
-+			strscpy(vub300->vub_name,
- 				"SDIO interrupt pseudocode download failed",
- 				sizeof(vub300->vub_name));
- 			return;
-@@ -1259,7 +1259,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 		dev_err(&vub300->udev->dev,
- 			"corrupt interrupt pseudocode in firmware %s %s\n",
- 			fw->data, vub300->vub_name);
--		strncpy(vub300->vub_name, "corrupt interrupt pseudocode",
-+		strscpy(vub300->vub_name, "corrupt interrupt pseudocode",
- 			sizeof(vub300->vub_name));
- 		return;
- 	}
-@@ -1293,7 +1293,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 				"not enough memory for xfer buffer to send"
- 				" TRANSFER_PSEUDOCODE for %s %s\n", fw->data,
- 				vub300->vub_name);
--			strncpy(vub300->vub_name,
-+			strscpy(vub300->vub_name,
- 				"SDIO transfer pseudocode download failed",
- 				sizeof(vub300->vub_name));
- 			return;
-@@ -1302,7 +1302,7 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 		dev_err(&vub300->udev->dev,
- 			"corrupt transfer pseudocode in firmware %s %s\n",
- 			fw->data, vub300->vub_name);
--		strncpy(vub300->vub_name, "corrupt transfer pseudocode",
-+		strscpy(vub300->vub_name, "corrupt transfer pseudocode",
- 			sizeof(vub300->vub_name));
- 		return;
- 	}
-@@ -1336,13 +1336,13 @@ static void __download_offload_pseudocode(struct vub300_mmc_host *vub300,
- 		dev_err(&vub300->udev->dev,
- 			"corrupt dynamic registers in firmware %s\n",
- 			vub300->vub_name);
--		strncpy(vub300->vub_name, "corrupt dynamic registers",
-+		strscpy(vub300->vub_name, "corrupt dynamic registers",
- 			sizeof(vub300->vub_name));
- 		return;
- 	}
- 
- copy_error_message:
--	strncpy(vub300->vub_name, "SDIO pseudocode download failed",
-+	strscpy(vub300->vub_name, "SDIO pseudocode download failed",
- 		sizeof(vub300->vub_name));
- }
- 
-@@ -1370,11 +1370,11 @@ static void download_offload_pseudocode(struct vub300_mmc_host *vub300)
- 		 vub300->vub_name);
- 	retval = request_firmware(&fw, vub300->vub_name, &card->dev);
- 	if (retval < 0) {
--		strncpy(vub300->vub_name, "vub_default.bin",
-+		strscpy(vub300->vub_name, "vub_default.bin",
- 			sizeof(vub300->vub_name));
- 		retval = request_firmware(&fw, vub300->vub_name, &card->dev);
- 		if (retval < 0) {
--			strncpy(vub300->vub_name,
-+			strscpy(vub300->vub_name,
- 				"no SDIO offload firmware found",
- 				sizeof(vub300->vub_name));
- 		} else {
-@@ -1758,7 +1758,7 @@ static void vub300_cmndwork_thread(struct work_struct *work)
- 			 * has been already downloaded to the VUB300 chip
- 			 */
- 		} else if (0 == vub300->mmc->card->sdio_funcs) {
--			strncpy(vub300->vub_name, "SD memory device",
-+			strscpy(vub300->vub_name, "SD memory device",
- 				sizeof(vub300->vub_name));
- 		} else {
- 			download_offload_pseudocode(vub300);
+--=-VUI9vus9X6IaLYR68Ual
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230927-strncpy-drivers-mmc-host-vub300-c-b7b39f82e584
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTI3MDY0MjQwWjAvBgkqhkiG9w0BCQQxIgQgWK5r+Tku
+rmR7Xf8mmb/qcEiDdQLWQkKsqn+nCBTV9sEwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCdFsKXRFroVMMVZgd9bdCmQKiEHzA0XcFf
+VmfWG+F5UTUevEOxtjm76KBLwY84ngNpk5jSzcw8UQAJKlHsx3z+mp5Bf/JdAcnb4+IBrSYyah8d
+iyjSKOlwWkj7ulM7+e/nT2U6TuRCiGSgfQdxozptVZx+iIRlufjILOSEp6Y67QQ68nv6uMfwIOd1
+DekyUxVmQFnrI7VqFvKne4nt7/pGkDkNQasdoXSJ7PL4VtKxPM3f8YIQRgvpaEWzTo5/98uB9uS5
+YDPtNu+pnTEr2nqqbzId1bLeGg6jRIJIAk72lXLlI0h+9k+7sLpOAq92TmlVcuvmZsOOLzpPkM89
+czJZxkY1rCxdxIZhLuaodisNDDpAk85p2uQ7Tr+ASnoIV2hKk9ccsEI7RQjgOSm5i8T6mQFpZlOg
+7ITbQXKM2sof33VYgeRFQDkPN/rRo2BpsTOONkTOW/ySxGq2OqG8FliCmzDwhWbGoPzpcFO7o4I1
+upavnvowCvPThxVTULx5V8MdAPmFqnXuPQFBlAUyf8sTBwzIHfm04pbQNrguAw0qA4WsUDhp1s/j
+70HAE+UdKSjCKyRWWbJRS4gOExq+4TYexJnkGthtbfXijXHMPwN7pzfCdDQwKhvxT83RllhlHJI6
+ihTC+1vizL2a7WdML+Mm9aIYenfdRMEs31odnYnqPAAAAAAAAA==
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
+--=-VUI9vus9X6IaLYR68Ual--
