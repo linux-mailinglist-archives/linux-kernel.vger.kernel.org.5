@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92CD7AFB9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37847AFBA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjI0HCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        id S229940AbjI0HEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjI0HCR (ORCPT
+        with ESMTP id S229458AbjI0HD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:02:17 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AD5121
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:02:16 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-452c0d60616so6481208137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695798135; x=1696402935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PIhw6V2vNvwuHPJdanJymYad1CWCeReXt9hAkVYiSu8=;
-        b=UUgp2qkBRuw7atZO+bq6YhZnv2XP7IXd16nAdUZoFPR6yYKrrje3qoKCG8PWe+lXZA
-         wvB6L/b2+jWifMiFq2LqfScOb5McaPyr2PYzZvk/ALoL6VW2SHkFRXRTaOUvDD1IGoHf
-         ITmQj2ihroFVxBp29v3yyrtt+7r4ErTriCU25/tuGZFctbEV2L4PwyKDhg1o6oBDNOGT
-         HP1HGeGNkUro89LmwjFXv9IxiUI4w2v3dQP6TpVZoFaNzNKjsYz9lDXyuSXIwU0eiwqt
-         Dud/Vjhj74jiZ3HK5VGJR00Uvdcm+B5JEEbgSrmp3KrKxH+4A1JhuTZCA4KDgkZniqJM
-         tmMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695798135; x=1696402935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PIhw6V2vNvwuHPJdanJymYad1CWCeReXt9hAkVYiSu8=;
-        b=lWjQ/U51kS1rYEC1fibOjh+PogZAknS6oU1JmwaC8WCZSUse1EoKSuuP5uOJbRYzbH
-         eg3XNXbt6Phm3kvelsIyhiOiN0L2d/45yqjP04D2/RXeIPI5emO6tBNkTSFCudYSkLKC
-         Z+wQF15Xfj0Cmv32EUzcYT/ZlVhFWAz08jFVf6SKfsLUMPy1dtSmghdzBB6vazq5j9os
-         DL3+M3emtTxnxY68AP/RF4HoJRSvhiQUYsNDYfXVob2Sts8u/hMkDLYNu/qvLv+m7vnq
-         NUGIBQC4IIw8epK42vW/BR13+UpIJDYkeyYTilwy6zIWDX29ps0azEXvkBbZfzm1XWwA
-         FTrw==
-X-Gm-Message-State: AOJu0Yx8pFHuFvaK38vHpwiEru8ozxbW8jYTURb3fKt+mqluBaYp1cfI
-        cGIuPKtg0qvadWpzg9FOBjERmnZV0VDV6NB/CJMPEQ==
-X-Google-Smtp-Source: AGHT+IFeBg+cETieioky1nVVQRLBCT9NkB2t+sJgbjsopgLmTzgcBajxJFtqUg5cY06CWtryBPEjDMHEXp1rIT8Co8E=
-X-Received: by 2002:a05:6102:3e0f:b0:450:985f:ef28 with SMTP id
- j15-20020a0561023e0f00b00450985fef28mr2450526vsv.5.1695798135672; Wed, 27 Sep
- 2023 00:02:15 -0700 (PDT)
+        Wed, 27 Sep 2023 03:03:56 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB5C0DE;
+        Wed, 27 Sep 2023 00:03:54 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:02:35
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 15:02:35 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [SCSI] aic7xxx: Clean up errors in aiclib.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20230926145943.42814-1-brgl@bgdev.pl> <20230926145943.42814-3-brgl@bgdev.pl>
- <ZRL4PYeX21bwCPR0@smile.fi.intel.com>
-In-Reply-To: <ZRL4PYeX21bwCPR0@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 27 Sep 2023 09:02:04 +0200
-Message-ID: <CAMRc=Mf7P4sWdhgTV+jVD8HEVpxbSuGK8JjJb5Q9djCkKUeUcg@mail.gmail.com>
-Subject: Re: [RFT PATCH 2/4] platform/x86: int3472: led: don't use gpiod_toggle_active_low()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-ID: <5645eb7.87d.18ad5725a91.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDHZD+L0xNl4O29AA--.625W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwABsS
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 5:27=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Sep 26, 2023 at 04:59:41PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Instead of acpi_get_and_request_gpiod() + gpiod_toggle_active_low(), us=
-e
-> > temporary lookup tables with appropriate lookup flags.
->
-> ...
->
-> > +     int3472->pled.gpio =3D skl_int3472_gpiod_get_from_temp_lookup(
-> > +                             int3472->dev, path, agpio->pin_table[0],
-> > +                             "int3472,privacy-led", polarity,
-> > +                             GPIOD_OUT_LOW);
->
-> Personally I found this style weird. I prefer to have longer line over
-> the split on the parentheses.
->
-
-I in turn prefer this one. Checkpatch doesn't complain either way so
-I'll leave it to the maintainers of this driver to decide.
-
-Bart
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+b3BlbiBicmFjZSAneycgZm9sbG93aW5nIHN0cnVjdCBnbyBvbiB0aGUgc2FtZSBsaW5lCkVSUk9S
+OiByZXR1cm4gaXMgbm90IGEgZnVuY3Rpb24sIHBhcmVudGhlc2VzIGFyZSBub3QgcmVxdWlyZWQK
+RVJST1I6IHNwYWNlIHJlcXVpcmVkIGFmdGVyIHRoYXQgJywnIChjdHg6VnhWKQoKU2lnbmVkLW9m
+Zi1ieTogR3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0tLQogZHJpdmVycy9zY3Np
+L2FpYzd4eHgvYWljbGliLmggfCAxMCArKysrLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
+cnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS9haWM3
+eHh4L2FpY2xpYi5oIGIvZHJpdmVycy9zY3NpL2FpYzd4eHgvYWljbGliLmgKaW5kZXggYmEwOGVi
+M2M0ZTNiLi5hN2QwYTJkOTEyY2QgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9haWM3eHh4L2Fp
+Y2xpYi5oCisrKyBiL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpY2xpYi5oCkBAIC01Nyw4ICs1Nyw3
+IEBACiAjaWZuZGVmCV9BSUNMSUJfSAogI2RlZmluZSBfQUlDTElCX0gKIAotc3RydWN0IHNjc2lf
+c2Vuc2UKLXsKK3N0cnVjdCBzY3NpX3NlbnNlIHsKIAl1aW50OF90IG9wY29kZTsKIAl1aW50OF90
+IGJ5dGUyOwogCXVpbnQ4X3QgdW51c2VkWzJdOwpAQCAtNzIsOCArNzEsNyBAQCBzdHJ1Y3Qgc2Nz
+aV9zZW5zZQogI2RlZmluZQkJU0NTSV9SRVZfU1BDCQkzCiAjZGVmaW5lCQlTQ1NJX1JFVl9TUEMy
+CQk0CiAKLXN0cnVjdCBzY3NpX3NlbnNlX2RhdGEKLXsKK3N0cnVjdCBzY3NpX3NlbnNlX2RhdGEg
+ewogCXVpbnQ4X3QgZXJyb3JfY29kZTsKICNkZWZpbmUJU1NEX0VSUkNPREUJCQkweDdGCiAjZGVm
+aW5lCQlTU0RfQ1VSUkVOVF9FUlJPUgkweDcwCkBAIC0xMzUsNyArMTMzLDcgQEAgc2NzaV80YnRv
+dWwodWludDhfdCAqYnl0ZXMpCiAJICAgICAoYnl0ZXNbMV0gPDwgMTYpIHwKIAkgICAgIChieXRl
+c1syXSA8PCA4KSB8CiAJICAgICBieXRlc1szXTsKLQlyZXR1cm4gKHJ2KTsKKwlyZXR1cm4gcnY7
+CiB9CiAKIC8qIE1hY3JvcyBmb3IgZ2VuZXJhdGluZyB0aGUgZWxlbWVudHMgb2YgdGhlIFBDSSBJ
+RCB0YWJsZXMuICovCkBAIC0xNDQsNyArMTQyLDcgQEAgc2NzaV80YnRvdWwodWludDhfdCAqYnl0
+ZXMpCiAKICNkZWZpbmUgSURfQyh4LCBjKQkJCQkJCVwKIHsJCQkJCQkJCVwKLQlHRVRJRCh4LDMy
+KSwgR0VUSUQoeCw0OCksIEdFVElEKHgsMCksIEdFVElEKHgsMTYpLAlcCisJR0VUSUQoeCwgMzIp
+LCBHRVRJRCh4LCA0OCksIEdFVElEKHgsIDApLCBHRVRJRCh4LCAxNiksCVwKIAkoYykgPDwgOCwg
+MHhGRkZGMDAsIDAJCQkJCVwKIH0KIAotLSAKMi4xNy4xCg==
