@@ -2,211 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 317A17AF887
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4A47AF88F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjI0DQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51118 "EHLO
+        id S231723AbjI0DS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbjI0DOv (ORCPT
+        with ESMTP id S231585AbjI0DQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:14:51 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C991D7293
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:34:52 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68bed2c786eso8033692b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:34:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695782092; x=1696386892; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MEoyNhEirsDID+iSINOkm/zSxakfDUSa2NzmIBoMrtU=;
-        b=GMGLItkY20tnShqsQSE1ZhhboeJoA4hi90EFgQw+P5N6+y00MJxEgvvxs8L44DXShX
-         336Qt0yAie1pjEVaU79cnyRBt7skxYSzpxnG/nisuELTEKMCPBJWk5pdOsfs+4/AB0xq
-         5zSFPiqdDv2RHeTYJvUYWap4ai0J42PbGvQno=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695782092; x=1696386892;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MEoyNhEirsDID+iSINOkm/zSxakfDUSa2NzmIBoMrtU=;
-        b=Uo0EfpuErnk9EiSG6YjK+oen8J8CiTNp91yJiR+OQ6KrTFJcQ63Jf13EfodX4Q9YoV
-         QAZuaA4PA6QA1BtGi67gao7JLnCHMq2rlDxP0eyFXEFfGe5TBQ6Zyb5pIcl9LDLtpm15
-         HRWgdpwtFRJsEnZrDz0V1KAWQ34nqlHHFRS1kO5znJtgRk7Li0HJ3LsCx9uJhiolPb8T
-         qGTjkVfieE3FN5I6fQMMRziZfqUBRjYPTT3Oaw8r3v7CiV+UJ+PmiTicifok4Uu9AMfy
-         6Emj4uwktmvAN9Ma8oxzGoPs2z6K2a+9h96EawSKaMkpBSX2gfa/Ll8/OschwNpbCwmk
-         w0dg==
-X-Gm-Message-State: AOJu0YyYAkTkA4SxaQt3pPVuxDZ3kz0b9mY4gn9Qo3YdFwbzUFrcFRAJ
-        hwjSmrXPdokwe/AKJAMqCd2Dfl7rmt1orRs9+PI=
-X-Google-Smtp-Source: AGHT+IH3mtSkhCwY4l5NpnakMGAz2fqDSfIVRDAs1r22pVm2l9sPYt/EIE/sGjn2HyWVPFLAH2dqvA==
-X-Received: by 2002:a05:6a00:139d:b0:692:780a:de89 with SMTP id t29-20020a056a00139d00b00692780ade89mr882056pfg.33.1695782092187;
-        Tue, 26 Sep 2023 19:34:52 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z26-20020aa785da000000b006883561b421sm10697260pfn.162.2023.09.26.19.34.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 19:34:51 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 19:34:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sebastian Ott <sebott@redhat.com>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        sam@gentoo.org, Rich Felker <dalias@libc.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] binfmt_elf: Support segments with 0 filesz and
- misaligned starts
-Message-ID: <202309261929.BE87B8B7@keescook>
-References: <20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net>
- <36e93c8e-4384-b269-be78-479ccc7817b1@redhat.com>
- <87zg1bm5xo.fsf@email.froward.int.ebiederm.org>
- <37d3392c-cf33-20a6-b5c9-8b3fb8142658@redhat.com>
- <87jzsemmsd.fsf_-_@email.froward.int.ebiederm.org>
- <84e974d3-ae0d-9eb5-49b2-3348b7dcd336@redhat.com>
- <202309251001.C050864@keescook>
- <87v8bxiph5.fsf@email.froward.int.ebiederm.org>
+        Tue, 26 Sep 2023 23:16:19 -0400
+Received: from out-209.mta0.migadu.com (out-209.mta0.migadu.com [91.218.175.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702B283F8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:38:00 -0700 (PDT)
+Message-ID: <0ab15605-7522-786f-00f2-c06077da1168@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695782278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rzy/yzJGX3vmZN6LvPzIURfZfV+Wu7k4Zhqp+zRpEvo=;
+        b=vPkjuV+maDyWuWd101llsu2JyGnwUSULUJB/OcMI4sx1ihqKc6iyTu/kNxZuEOPhQEM6k/
+        PZnRtvbkqdeijgki11/JnTXxCM4cJ8ErLWfxq+0lqodOV9jkJL9hS+M/q28tmQcE3V4E8p
+        HQwt0lXk1+9Wy1d5T0t33JJk6bjvSNQ=
+Date:   Wed, 27 Sep 2023 10:37:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87v8bxiph5.fsf@email.froward.int.ebiederm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH net-next v5] net/core: Introduce netdev_core_stats_inc()
+ for trace
+Content-Language: en-US
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+References: <20230919135517.286766-1-yajun.deng@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20230919135517.286766-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:27:02PM -0500, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Mon, Sep 25, 2023 at 05:27:12PM +0200, Sebastian Ott wrote:
-> >> On Mon, 25 Sep 2023, Eric W. Biederman wrote:
-> >> > 
-> >> > Implement a helper elf_load that wraps elf_map and performs all
-> >> > of the necessary work to ensure that when "memsz > filesz"
-> >> > the bytes described by "memsz > filesz" are zeroed.
-> >> > 
-> >> > Link: https://lkml.kernel.org/r/20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net
-> >> > Reported-by: Sebastian Ott <sebott@redhat.com>
-> >> > Reported-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> >> > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> >> > ---
-> >> > fs/binfmt_elf.c | 111 +++++++++++++++++++++---------------------------
-> >> > 1 file changed, 48 insertions(+), 63 deletions(-)
-> >> > 
-> >> > Can you please test this one?
-> >
-> > Eric thanks for doing this refactoring! This does look similar to the
-> > earlier attempt:
-> > https://lore.kernel.org/lkml/20221106021657.1145519-1-pedro.falcato@gmail.com/
-> > and it's a bit easier to review.
-> 
-> I need to context switch away for a while so Kees if you will
-> I will let you handle the rest of this one.
-> 
-> 
-> A couple of thoughts running through my head for anyone whose ambitious
-> might include cleaning up binfmt_elf.c
-> 
-> The elf_bss variable in load_elf_binary can be removed.
-> 
-> Work for a follow on patch is using my new elf_load in load_elf_interp
-> and possibly in load_elf_library.  (More code size reduction).
-> 
-> An outstanding issue is if the first segment has filesz 0, and has a
-> randomized locations.  But that is the same as today.
-> 
-> There is a whole question does it make sense for the elf loader
-> to have it's own helper vm_brk_flags in mm/mmap.c or would it
-> make more sense for binfmt_elf to do what binfmt_elf_fdpic does and
-> have everything to go through vm_mmap.
-> 
-> I think replacing vm_brk_flags with vm_mmap would allow fixing the
-> theoretical issue of filesz 0 and randomizing locations.
-> 
-> 
-> 
-> In this change I replaced an open coded padzero that did not clear
-> all of the way to the end of the page, with padzero that does.
+Hi, MAINTAINERS,
 
-Yeah, the resulting code is way more readable now.
+Kindly ping...
 
-> I also stopped checking the return of padzero as there is at least
-> one known case where testing for failure is the wrong thing to do.
-> It looks like binfmt_elf_fdpic may have the proper set of tests
-> for when error handling can be safely completed.
-> 
-> I found a couple of commits in the old history
-> https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
-> that look very interesting in understanding this code.
-> 
-> commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fail")
-> commit c6e2227e4a3e ("[SPARC64]: Missing user access return value checks in fs/binfmt_elf.c and fs/compat.c")
-> commit 5bf3be033f50 ("v2.4.10.1 -> v2.4.10.2")
-> 
-> Looking at commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fail"):
-> >  commit 39b56d902bf35241e7cba6cc30b828ed937175ad
-> >  Author: Pavel Machek <pavel@ucw.cz>
-> >  Date:   Wed Feb 9 22:40:30 2005 -0800
-> > 
-> >     [PATCH] binfmt_elf: clearing bss may fail
-> >     
-> >     So we discover that Borland's Kylix application builder emits weird elf
-> >     files which describe a non-writeable bss segment.
-> >     
-> >     So remove the clear_user() check at the place where we zero out the bss.  I
-> >     don't _think_ there are any security implications here (plus we've never
-> >     checked that clear_user() return value, so whoops if it is a problem).
-> >     
-> >     Signed-off-by: Pavel Machek <pavel@suse.cz>
-> >     Signed-off-by: Andrew Morton <akpm@osdl.org>
-> >     Signed-off-by: Linus Torvalds <torvalds@osdl.org>
-> 
-> It seems pretty clear that binfmt_elf_fdpic with skipping clear_user
-> for non-writable segments and otherwise calling clear_user (aka padzero)
-> and checking it's return code is the right thing to do.
-> 
-> I just skipped the error checking as that avoids breaking things.
-> 
-> It looks like Borland's Kylix died in 2005 so it might be safe to
-> just consider read-only segments with memsz > filesz an error.
+Thanks
 
-I really feel like having a read-only BSS is a pathological state that
-should be detected early?
 
-> Looking at commit 5bf3be033f50 ("v2.4.10.1 -> v2.4.10.2") the
-> binfmt_elf.c bits confirm my guess that the weird structure is because
-> before that point binfmt_elf.c assumed there would be only a single
-> segment with memsz > filesz.  Which is why the code was structured so
-> weirdly.
-
-Agreed.
-
-> Looking a little farther it looks like the binfmt_elf.c was introduced
-> in Linux v1.0, with essentially the same structure in load_elf_binary as
-> it has now.  Prior to that Linux hard coded support for a.out binaries
-> in execve.  So if someone wants to add a Fixes tag it should be
-> "Fixes: v1.0"
-> 
-> Which finally explains to me why the code is so odd.  For the most part
-> the code has only received maintenance for the last 30 years or so.
-> Strictly 29 years, but 30 has a better ring to it.
-> 
-> Anyway those are my rambling thoughts that might help someone.
-> For now I will be happy if we can get my elf_load helper tested
-> to everyone's satisfaction and merged.
-
-I'm probably going to pull most of this email into the commit log for
-the v2 patch -- there's good history here worth capturing.
-
--- 
-Kees Cook
+On 2023/9/19 21:55, Yajun Deng wrote:
+> Although there is a kfree_skb_reason() helper function that can be used to
+> find the reason why this skb is dropped, but most callers didn't increase
+> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+>
+> For the users, people are more concerned about why the dropped in ip
+> is increasing.
+>
+> Introduce netdev_core_stats_inc() for trace. Also, move dev_core_stats()
+> and netdev_core_stats_alloc() to dev.c, as they are not called externally.
+>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+> v5: Access the per cpu pointer before reach the relevant offset.
+> v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
+> v3: __cold should be added to the netdev_core_stats_alloc().
+> v2: use __cold instead of inline in dev_core_stats().
+> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
+> ---
+>   include/linux/netdevice.h | 21 ++++-----------------
+>   net/core/dev.c            | 26 ++++++++++++++++++++++++--
+>   2 files changed, 28 insertions(+), 19 deletions(-)
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index db3d8429d50d..4c258d44c7d2 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -4001,32 +4001,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+>   	return false;
+>   }
+>   
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
+> -
+> -static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
+> -{
+> -	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+> -	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+> -
+> -	if (likely(p))
+> -		return p;
+> -
+> -	return netdev_core_stats_alloc(dev);
+> -}
+> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
+>   
+>   #define DEV_CORE_STATS_INC(FIELD)						\
+>   static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
+>   {										\
+> -	struct net_device_core_stats __percpu *p;				\
+> -										\
+> -	p = dev_core_stats(dev);						\
+> -	if (p)									\
+> -		this_cpu_inc(p->FIELD);						\
+> +	netdev_core_stats_inc(dev,						\
+> +			offsetof(struct net_device_core_stats, FIELD));		\
+>   }
+>   DEV_CORE_STATS_INC(rx_dropped)
+>   DEV_CORE_STATS_INC(tx_dropped)
+>   DEV_CORE_STATS_INC(rx_nohandler)
+>   DEV_CORE_STATS_INC(rx_otherhost_dropped)
+> +#undef DEV_CORE_STATS_INC
+>   
+>   static __always_inline int ____dev_forward_skb(struct net_device *dev,
+>   					       struct sk_buff *skb,
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 606a366cc209..4bc0161bc0d6 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+>   }
+>   EXPORT_SYMBOL(netdev_stats_to_stats64);
+>   
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
+> +static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
+> +		struct net_device *dev)
+>   {
+>   	struct net_device_core_stats __percpu *p;
+>   
+> @@ -10510,7 +10511,28 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
+>   	/* This READ_ONCE() pairs with the cmpxchg() above */
+>   	return READ_ONCE(dev->core_stats);
+>   }
+> -EXPORT_SYMBOL(netdev_core_stats_alloc);
+> +
+> +static inline struct net_device_core_stats __percpu *netdev_core_stats(
+> +		struct net_device *dev)
+> +{
+> +	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+> +	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+> +
+> +	if (likely(p))
+> +		return p;
+> +
+> +	return netdev_core_stats_alloc(dev);
+> +}
+> +
+> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+> +{
+> +	struct net_device_core_stats __percpu *p;
+> +
+> +	p = netdev_core_stats(dev);
+> +	if (p)
+> +		(*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+> +}
+> +EXPORT_SYMBOL_GPL(netdev_core_stats_inc);
+>   
+>   /**
+>    *	dev_get_stats	- get network device statistics
