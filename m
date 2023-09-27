@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9837AFBE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D3F7AFBE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjI0HVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S229458AbjI0HWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjI0HVe (ORCPT
+        with ESMTP id S229880AbjI0HWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:21:34 -0400
+        Wed, 27 Sep 2023 03:22:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEF410E;
-        Wed, 27 Sep 2023 00:21:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A650C433C7;
-        Wed, 27 Sep 2023 07:21:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E510E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:22:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB79C433C7;
+        Wed, 27 Sep 2023 07:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695799293;
-        bh=TvYNB+3F24ELcD9mVneJy07mTn3mHrunWhOd2Ry3R5I=;
+        s=k20201202; t=1695799322;
+        bh=m5nfXz80AWeNtcIS3xT2eMv/ZWCdRSi9WrXYqrxYqO8=;
         h=From:To:Cc:Subject:Date:From;
-        b=fBuKlV1rQLt6hdVwyObNGLVV/SlX5W51lp1K3JoBM93EKu3ImzRnLviMtS5eNmO/N
-         SEojQFwSykRk+DeV7SoWC2ZsEfrMnS7k1BuuRAJ7LTM+22DYVg8A+mbietuXKkQ/oX
-         Y/35Zht892YLU/ddfO2pOD8T5VzkXmk007xytX5FUnUuSZ4KAp4oTWBVPcutpJYLSH
-         qosJgsRCS/FmZwZhfYu6SB/+yJNHBRZzZI0e9AiiuoE4ssQv3w0c6ZwYKaJGweyBP1
-         7mGZfq0xiFqHH6dT07Wd105eNb5oOrpmUi57KAE2LZpx+RDQ/A9lzndYuPAszQhDrI
-         SgMmKkc6WhDmw==
+        b=h0xpiHy+ZovLsv2A6p13vmT/0h9gFwVFLq8EgBzJpTut0o8awrM7l08zbXFDqu90t
+         Cro4MYvgyiv/X6qvHRpDmasv6bbfVEvFNjbP08ZdAn15c61yBC75Kip4qcRKwwbNM/
+         bSmmOEpMucRdNp4AJ7iGKoZ79+3jsxkc5UqoMVUXlbX6VeDKU9klN8y8NAWCdkWVXl
+         sBs27S64ZOi/BoGohFFsAH5Qbtv1lVZWDvSOPrYuj0Cdy/cDvlJMvQUxszNqgNoLhp
+         vjTzyGmzJetND31JIX8VIQdXUzcy+eZce1ci7rRiVLJ3KDia2KUvvzRZlFA2Wxs1eV
+         pW4G4OoH7m0dA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Wentong Wu <wentong.wu@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: pci: intel: ivsc: select V4L2_FWNODE
-Date:   Wed, 27 Sep 2023 09:21:19 +0200
-Message-Id: <20230927072127.2529885-1-arnd@kernel.org>
+To:     Oded Gabbay <ogabbay@kernel.org>, Tomer Tayar <ttayar@habana.ai>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ofir Bitton <obitton@habana.ai>,
+        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+        Ohad Sharabi <osharabi@habana.ai>,
+        Dafna Hirschfeld <dhirschfeld@habana.ai>,
+        farah kassabri <fkassabri@habana.ai>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] accel/habanalabs: add missing debugfs function stubs
+Date:   Wed, 27 Sep 2023 09:21:53 +0200
+Message-Id: <20230927072157.2544601-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,31 +52,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Some missing select statements were already added back, but I ran into
-another one that is missing:
+Two function stubs were removed in an earlier commit but are now needed
+again:
 
-ERROR: modpost: "v4l2_fwnode_endpoint_free" [drivers/media/pci/intel/ivsc/ivsc-csi.ko] undefined!
-ERROR: modpost: "v4l2_fwnode_endpoint_alloc_parse" [drivers/media/pci/intel/ivsc/ivsc-csi.ko] undefined!
-ERROR: modpost: "v4l2_fwnode_endpoint_parse" [drivers/media/pci/intel/ivsc/ivsc-csi.ko] undefined!
+drivers/accel/habanalabs/common/device.c: In function 'hl_device_init':
+drivers/accel/habanalabs/common/device.c:2231:14: error: implicit declaration of function 'hl_debugfs_device_init'; did you mean 'drm_debugfs_dev_init'? [-Werror=implicit-function-declaration]
+ 2231 |         rc = hl_debugfs_device_init(hdev);
+drivers/accel/habanalabs/common/device.c:2367:9: error: implicit declaration of function 'hl_debugfs_device_fini'; did you mean 'hl_debugfs_remove_file'? [-Werror=implicit-function-declaration]
+ 2367 |         hl_debugfs_device_fini(hdev);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 29006e196a566 ("media: pci: intel: ivsc: Add CSI submodule")
+Fixes: 3b9abb4fa642e ("accel/habanalabs: expose debugfs files later")
+Fixes: 09fe78d2e4421 ("accel/habanalabs: register compute device as an accel device")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/pci/intel/ivsc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/accel/habanalabs/common/habanalabs.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/media/pci/intel/ivsc/Kconfig b/drivers/media/pci/intel/ivsc/Kconfig
-index 0acea4678fc0d..6a2995b02d274 100644
---- a/drivers/media/pci/intel/ivsc/Kconfig
-+++ b/drivers/media/pci/intel/ivsc/Kconfig
-@@ -7,6 +7,7 @@ config INTEL_VSC
- 	select MEDIA_CONTROLLER
- 	select VIDEO_V4L2_SUBDEV_API
- 	select V4L2_ASYNC
-+	select V4L2_FWNODE
- 	help
- 	  This adds support for Intel Visual Sensing Controller (IVSC).
+diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
+index 2a3acdbf91714..1655c101c7052 100644
+--- a/drivers/accel/habanalabs/common/habanalabs.h
++++ b/drivers/accel/habanalabs/common/habanalabs.h
+@@ -4041,6 +4041,15 @@ void hl_debugfs_set_state_dump(struct hl_device *hdev, char *data,
  
+ #else
+ 
++static inline int hl_debugfs_device_init(struct hl_device *hdev)
++{
++	return 0;
++}
++
++static inline void hl_debugfs_device_fini(struct hl_device *hdev)
++{
++}
++
+ static inline void hl_debugfs_add_device(struct hl_device *hdev)
+ {
+ }
 -- 
 2.39.2
 
