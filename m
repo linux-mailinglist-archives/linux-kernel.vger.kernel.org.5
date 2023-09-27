@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A227AFF93
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500817AFF95
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjI0JNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        id S230254AbjI0JNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjI0JN0 (ORCPT
+        with ESMTP id S229750AbjI0JNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:13:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D434CC
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:13:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1247C433C8;
-        Wed, 27 Sep 2023 09:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695806005;
-        bh=5ni2a/DB+QDF/FumPKPmxhwyxTIswmMyT0P7nFDDOjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ol/Uxc7PcT/MtG/rPG+r7m+HvHrK7JO+Z40E79QzTlG7bW7aKNMPuoLcyB30Oev2u
-         yJnnJUKl+pf2JidNgW7Uw7J+XSQ9mUzfviLiYb5wHE4YO3/CJSlluw83Wih1+TlMD9
-         VMWvLPtA/SUgt0wLYBt4GnUmmDxY4TVaXUGuqoMDVTzbBKGcs0bzUUPMpkIhP0h8r5
-         H9Y7w/9v571/uQQJPGwtRfZHzP58g+8XjwZNGjKUc2QnuU33HuoYU5yrqKicyjuV1A
-         8e72codJFL4mEsdffKV+PW1jLf+xcb/wXxOsYIKFGRipodHP9B5RrTIFIqZ7WK0lC3
-         YLo/abeR+foMA==
-Date:   Wed, 27 Sep 2023 11:13:22 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang@richtek.com
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
+        Wed, 27 Sep 2023 05:13:32 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C557297;
+        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6c4b9e09521so5421974a34.3;
+        Wed, 27 Sep 2023 02:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695806009; x=1696410809; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
+        b=j1N+LDqYgX6WL8Zxoy2YSEjM5ivxwEz9n0LJlc7yVlKyGHy5lCDCwDhekI2Sx/YwWz
+         uVvZb504pizqQgm9ZzjiJhtM/y5eJUdAck8cXcQ6iPK1BPOscsxp+m55sHHR3Hlhk5e3
+         kGCSCXAPwtgT9TAbQM3TCWzHY2o79ITRd35pHzi8cksVBxASxCfw3ZwbFTaS9TDogj7F
+         wuSnd6RWpUTAOwI+67LPxl+iF1Wc//ZG76AE9zlMfE6kky3RDkN0Nvd8ZfkG3N/LYrWD
+         nuuHjrc+4zopsXf5T6ckqWWLmgHXM0f5PY45ycTN0RdpxJ7a+XHDJjKRvWAa0tz8IXH0
+         tZ1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695806009; x=1696410809;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EiseefzOHNtXbNuZxOy1E2AG1BUXOi6I3t8WlJGIaG8=;
+        b=hjVpkX+BSBk/ZHz6RVuDSRHvFFMaCFVOEproJ2RXWl0wdx+U0j9lf1SwkmRR1EXmnm
+         TWWHNfzICLPgVAjzV+fEYvEJLTgxoSBLwJZeeBh3vG02RfnO0//YwAfjDh7kU82Wp/Ph
+         kGbmW/47a12AhAjBVLoKbs+l8BYrZ7VmPNyyd3vUEUmIg76y2a9bYk9u3IoiM4k4r8rp
+         nCFxIFD+sbLCciojaVP2np4sT1kDTzWLO2luQ6kwfVMHe9mF/ZIbQ8/dh9WQ+tT2vNtC
+         rUO9CORUU58TytcnLzKRntnamf0qqzhZXgpfTLR7nso03nE5l2JOO1HKwj87LU+nSXPd
+         vXPQ==
+X-Gm-Message-State: AOJu0Yz3YlxPBDofdTizPEwZfcDzXSBqSd2K77dFtLoeMUJXKDWne1Ub
+        ns3k9JswLyWywa2lHUzs3AbIdecEyJU=
+X-Google-Smtp-Source: AGHT+IEgoQPlSZuEuHoIprSSsFiV+5wehZgmRH1fe1RDxFYw1tju6jM5a8nT9JRMGhHVBc0CXcbONQ==
+X-Received: by 2002:a05:6358:7e84:b0:135:47e8:76e2 with SMTP id o4-20020a0563587e8400b0013547e876e2mr1420493rwn.4.1695806009336;
+        Wed, 27 Sep 2023 02:13:29 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id t1-20020a63b701000000b00577f8f4df6bsm9381310pgf.18.2023.09.27.02.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 02:13:28 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:43:24 +0530
+Message-Id: <87ttrgf07f.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: codecs: rtq9128: Add TDM data source selection
-Message-ID: <ZRPyMolOIjLBWXPC@finisterre.sirena.org.uk>
-References: <1695780376-32301-1-git-send-email-cy_huang@richtek.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5fIGTM3mlZcEO9YK"
-Content-Disposition: inline
-In-Reply-To: <1695780376-32301-1-git-send-email-cy_huang@richtek.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v7 04/12] ext4: extend ext4_mb_mark_context to support allocation under journal
+In-Reply-To: <20230919201532.310085-5-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
---5fIGTM3mlZcEO9YK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Previously, ext4_mb_mark_context is only called under fast commit
+> replay path, so there is no valid handle when we update block bitmap
+> and group descriptor. This patch try to extend ext4_mb_mark_context
+> to be used by code under journal. There are several improvement:
+> 1. add "handle_t *handle" to struct ext4_mark_context to journal block
+> bitmap and group descriptor update inside ext4_mb_mark_context (the
+> added journal code is based on ext4_mb_mark_diskspace_used where
+> ext4_mb_mark_context is going to be used.)
 
-On Wed, Sep 27, 2023 at 10:06:16AM +0800, cy_huang@richtek.com wrote:
+> 2. add EXT4_MB_BITMAP_MARKED_CHECK flag to control check if bits in block
+> bitmap are already marked as allocation code under journal asserts that
+> all bits to be changed are not marked before.
 
-> Since rtq9128 can support 4 channel I2S mode audio data, there are two
-> dedicated data input pins for CH12 and CH34.  But in TDM mode, input
-> source was already drived on one data pin for multiple data slots. In
-> this case, only one input source is needed for TDM mode.
->=20
-> This patch is to add the data source pin selection for CH12 and CH34.
+Maybe we can reword this to... 
+Adds a flag argument to ext4_mb_mark_context() which controls
+a. EXT4_MB_BITMAP_MARKED_CHECK - whether block bitmap checking is needed.
+b. EXT4_MB_SYNC_UPDATE - whether dirty buffers (bitmap and group descriptor) needs sync.
 
-> +	SOC_ENUM("CH12 TDM Data Select", rtq9128_ch12_tdm_data_select_enum),
-> +	SOC_ENUM("CH34 TDM Data Select", rtq9128_ch34_tdm_data_select_enum),
 
-Is this something that's going to be changing dynamically at runtime or
-should this be a device property that's set either by firmware or when
-we're doing the TDM setup?  This sounds like something I'd expect to be
-fixed by the board design.
+> 3. add "ext4_grpblk_t changed" to struct ext4_mark_context to notify number
+> of bits in block bitmap has changed.
 
---5fIGTM3mlZcEO9YK
-Content-Type: application/pgp-signature; name="signature.asc"
+We should remove above point 3 as there is no "struct ext4_mark_context"
+in this v7 series.
 
------BEGIN PGP SIGNATURE-----
+>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 64 ++++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 49 insertions(+), 15 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUT8jEACgkQJNaLcl1U
-h9AD9gf/XjwqNVU01O8geeDs/n0uPuij3TFEV+9FdQXoWkepHbUHI3z9MKx9QH2w
-mrLYz27YdS0unjrkqXZk6L53daybs2KxJQCb1HlV3/YsFiwsWII6ZCYeAZASTwFs
-SOXf8ZJmdkgXJxf0lYq+m7dNCG6e9EVqC2XlUWvbnUdVkYstni7TKSK7i/lvoT/1
-+4WezkK8onTaoz3mprbc2TBDGfwATC5LA7E2CGZ0734rZd9XjyzY0wK8SPJn5cL3
-1rNPGqvjzdc+f6VtpVKvZHK3JhONqKMCX+DWrf6Wx24QxjA5xzYpKMBviVSzEbMh
-MDPRg6Bo5Dl8fezHnz75NQjf2hUBog==
-=oiAQ
------END PGP SIGNATURE-----
 
---5fIGTM3mlZcEO9YK--
+The changes looks good to me. With commit msg updated, feel free to add-
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
