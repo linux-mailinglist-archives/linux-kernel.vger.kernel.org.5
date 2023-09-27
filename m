@@ -2,125 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020417B033D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D977B0341
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjI0Lk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        id S231482AbjI0Lm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjI0Lk4 (ORCPT
+        with ESMTP id S231132AbjI0Lm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:40:56 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E5180
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:40:54 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so1450582866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:40:54 -0700 (PDT)
+        Wed, 27 Sep 2023 07:42:27 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5DFF3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:42:25 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d862533ea85so10768093276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:42:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695814853; x=1696419653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GxIR3EO6aP2fK/+9UgrcHthkeV5Bvuqoj4iTIScM8Jo=;
-        b=B5IO8Md65dBvNmflYDE9Z+JQ88AbgH8OkIYFSy7m+NLl2Udmrbnt8GoWweNg30akWT
-         hcYONLNFO/lqdxKSsgcJN2fS8ZZ1lL9nnnUlEQoXPMeBgOw42Yy2l3L5kRbAZz9PjHtG
-         sjdopCXycQQq/K85qKf2XCaEPeJEdEW7DipfUTm7jGvcqtVcXa+DkHdzZplZQOj3IOeg
-         agYjq5xAzo6ILqG4l5MniDLmccVPPI33W+he9TgrynKeOWWRZVnvxRvQDj9slxDoikqq
-         RcjZFtLWIWU428kt4cWyWESGM8Aukq0WsnsvxjFGxbzxQH1rA/5fspdWenrDkKt7hrii
-         L7Iw==
+        d=linaro.org; s=google; t=1695814945; x=1696419745; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aIt1l7/IgUpo4k3Bjm4G/lamSevl4u5gHJJCk6sbhjY=;
+        b=xsPg3XBei4POs485522lXmJI/VVXzDFUOyKO++s/cN5omgrmCmLhN+3ym0UBNxwUMD
+         vmWtmGawHIqSLV3FC6hLxzu785CBsANaxcFkJhibDM0Y6khDgt8ef17x3ako3qZnvXFM
+         yUMYJAwWpIKprLoQoIwxqCKypujE67zgC+y9d7/UwQZF9wvvDOfnRZAMCCQmKFnCCvgo
+         k2i0kiZsctiQzF9+tx5sL1BL/33/PVpew8Pe25/rI1TF5jZaf/WGK08bZMcRQt6NmNAR
+         gMJbnbOPTpRCipjzSNd8w8hzIJL9WLMfN/FZtMUWUl1/6jkA7+V/TPy2di2j1zzd7Vr2
+         VpZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695814853; x=1696419653;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GxIR3EO6aP2fK/+9UgrcHthkeV5Bvuqoj4iTIScM8Jo=;
-        b=IBpPKxPjMkwSMfBxnd9p5jBYt1+4qUt6XopfUqVVuxrOKJUcReszwxSl1jOYWpv4/S
-         3Trp62YmJAoGM431p3tjAeAwu6bSpvD++U/oT2Pcj/qpOlbBwEAkI+21pg6rth3o45lp
-         jRG1se4s6u4raaKxKsE4qLaYTXdx2m1yjXiAXyGDvEeTVrWjQbu5Pf2zzrBr/H6clQdo
-         Gj44p6UalteBFhr9hl2KO0jNnz3k8kIz3mWMSFAxqEjxJx3VV+pVh7tFMfaPenQ/uxrj
-         luwU+p32DavIbh5p7+yAAvLZzHTgi5oldsFffHRI5IYGM5Jc8y2qczql/+QalJtDZv+X
-         TC+g==
-X-Gm-Message-State: AOJu0Yy019Dlu6+TMSISgJlFgC6mIDavLXFlM8VTzRUrxJQK88aLt4fO
-        7gyw/ULDb5jt0JBAOs+WdJ25iQ==
-X-Google-Smtp-Source: AGHT+IFxtNBQUKXcnlNppuZs8Xdyd86OoDEAtuanVddwZ5SqZfpvcCCeQW9hKBkzcqdxI6kE+xebCA==
-X-Received: by 2002:a17:906:738b:b0:9ae:3435:ad45 with SMTP id f11-20020a170906738b00b009ae3435ad45mr1421170ejl.76.1695814853182;
-        Wed, 27 Sep 2023 04:40:53 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id ep14-20020a1709069b4e00b009a168ab6ee2sm8591168ejc.164.2023.09.27.04.40.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 04:40:52 -0700 (PDT)
-Message-ID: <96c1e8b9-6e77-435f-8a65-b7d92fd5aae2@linaro.org>
-Date:   Wed, 27 Sep 2023 13:40:50 +0200
+        d=1e100.net; s=20230601; t=1695814945; x=1696419745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aIt1l7/IgUpo4k3Bjm4G/lamSevl4u5gHJJCk6sbhjY=;
+        b=NkkJqh02CUjmxcthadGrjDq1qjsOZrSkATt/ND5DAvc+aUnn6YuiIVtYk3VQGKrAab
+         UMAzJpdLpO0A1FucAabaDLPtONAXcTAKj4N3ofr9Ozl2MvDmE+GVl7b0O50mEhIwG8i2
+         q/M6jJ2NGt3a+U2O29eCBMH/bVLgw2173BiGCiAEVUXSq3Aq88MEcG38FWif5LqIyTbN
+         QIS2n28mKKMnIAxsNlRiUVglD8aRBt3KpSdOod4F5UoMIvTZ8SihsooB3/qlijdXHUMv
+         RJhfCIn+1xNMUw3V1/qLHUauvn5W4IgsFn799P7aVR12lfr3ETiJ+GCo2qqP3LoL2Zwf
+         KZ/g==
+X-Gm-Message-State: AOJu0YytBA47/+b55UYgSmGijwD3atMhZ+j4C1ZuZknwTs1lwkfmk8Tm
+        rik3Ilgq8uwXl16hheJ5m7IuOdK/Werh5+WrsO0xfA==
+X-Google-Smtp-Source: AGHT+IHBVFquJJT8K4Rl86v3hUqmDvjlekCjqCBE5F8bmAbHvZ8Ouu4MachaenQPWgpZPR02xLIw1xRN9sVjV4UBFTI=
+X-Received: by 2002:a25:dccb:0:b0:d81:ce57:571a with SMTP id
+ y194-20020a25dccb000000b00d81ce57571amr1701528ybe.54.1695814944913; Wed, 27
+ Sep 2023 04:42:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 2/4] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
- soc
-Content-Language: en-US
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, mani@kernel.org, alim.akhtar@samsung.com,
-        bvanassche@acm.org, avri.altman@wdc.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230927081858.15961-1-quic_nitirawa@quicinc.com>
- <20230927081858.15961-3-quic_nitirawa@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230927081858.15961-3-quic_nitirawa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
+ <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de> <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
+In-Reply-To: <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Sep 2023 13:41:49 +0200
+Message-ID: <CAPDyKFodCrFPVTdNo8VBG8FHs26MVaY9WcOmYyu7YwjahvuzTA@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/simpledrm: Add support for multiple "power-domains"
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>, j@jannau.net,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.09.2023 10:18, Nitin Rawat wrote:
-> Add UFS host controller and PHY nodes for sc7280 soc.
-> 
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
+On Tue, 26 Sept 2023 at 09:32, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+>
+> CC genpd
+>
+> On Mon, Sep 18, 2023 at 10:24=E2=80=AFAM Thomas Zimmermann <tzimmermann@s=
+use.de> wrote:
+> > Am 12.09.23 um 22:22 schrieb Janne Grunau via B4 Relay:
+> > > From: Janne Grunau <j@jannau.net>
+> > >
+> > > Multiple power domains need to be handled explicitly in each driver. =
+The
+> > > driver core can not handle it automatically since it is not aware of
+> > > power sequencing requirements the hardware might have. This is not a
+> > > problem for simpledrm since everything is expected to be powered on b=
+y
+> > > the bootloader. simpledrm has just ensure it remains powered on durin=
+g
+> > > its lifetime.
+> > > This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
+> > > systems. The HDMI output initialized by the bootloader requires keepi=
+ng
+> > > the display controller and a DP phy power domain on.
+> > >
+> > > Signed-off-by: Janne Grunau <j@jannau.net>
+>
+> Thanks for your patch, which is now commit 61df9ca231075e70
+> ("drm/simpledrm: Add support for multiple "power-domains"") in
+> drm-misc/for-linux-next.
+>
+> > As a simpledrm patch:
+> >
+> > Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> >
+> > Do you want to wait for another review from  someone with
+> > power-management expertise?
+>
+> Yeah, why not? Let's CC them, so they become aware...
+>
+> > Do we need a similar patch for ofdrm?
 
-Konrad
+Drivers/subsystems for devices that are attached to multiple PM
+domains are getting more and more common. Clearly there is boilerplate
+code in drivers that we could get rid of, by using some common helper
+functions to deal with attach/detach.
+
+I believe there have been some attempts to add such helpers too, but
+we didn't quite reach a point where those were ready to be applied. It
+sounds like someone (me? :-)) needs to find some time to revisit this.
+Until then, there is no other way than having each driver to deal with
+this.
+
+Kind regards
+Uffe
+
+> >
+> > Best regards
+> > Thomas
+> >
+> > > ---
+> > > Changes in v2:
+> > > - removed broken drm_err() log statement only ment for debugging
+> > > - removed commented cast
+> > > - use correct format spcifier for 'int' in log statement
+> > > - add 'continue;' after failure to get device for power_domain
+> > > - use drm_warn() in non fatal error cases
+> > > - removed duplicate PTR_ERR conversion
+> > > - Link to v1: https://lore.kernel.org/r/20230910-simpledrm-multiple-p=
+ower-domains-v1-1-f8718aefc685@jannau.net
+> > > ---
+> > >   drivers/gpu/drm/tiny/simpledrm.c | 105 ++++++++++++++++++++++++++++=
++++++++++++
+> > >   1 file changed, 105 insertions(+)
+> > >
+> > > diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/=
+simpledrm.c
+> > > index ff86ba1ae1b8..9c597461d1e2 100644
+> > > --- a/drivers/gpu/drm/tiny/simpledrm.c
+> > > +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> > > @@ -6,6 +6,7 @@
+> > >   #include <linux/of_address.h>
+> > >   #include <linux/platform_data/simplefb.h>
+> > >   #include <linux/platform_device.h>
+> > > +#include <linux/pm_domain.h>
+> > >   #include <linux/regulator/consumer.h>
+> > >
+> > >   #include <drm/drm_aperture.h>
+> > > @@ -227,6 +228,12 @@ struct simpledrm_device {
+> > >       unsigned int regulator_count;
+> > >       struct regulator **regulators;
+> > >   #endif
+> > > +     /* power-domains */
+> > > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > > +     int pwr_dom_count;
+> > > +     struct device **pwr_dom_devs;
+> > > +     struct device_link **pwr_dom_links;
+> > > +#endif
+> > >
+> > >       /* simplefb settings */
+> > >       struct drm_display_mode mode;
+> > > @@ -468,6 +475,101 @@ static int simpledrm_device_init_regulators(str=
+uct simpledrm_device *sdev)
+> > >   }
+> > >   #endif
+> > >
+> > > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > > +/*
+> > > + * Generic power domain handling code.
+> > > + *
+> > > + * Here we handle the power-domains properties of our "simple-frameb=
+uffer"
+> > > + * dt node. This is only necessary if there is more than one power-d=
+omain.
+> > > + * A single power-domains is handled automatically by the driver cor=
+e. Multiple
+> > > + * power-domains have to be handled by drivers since the driver core=
+ can't know
+> > > + * the correct power sequencing. Power sequencing is not an issue fo=
+r simpledrm
+> > > + * since the bootloader has put the power domains already in the cor=
+rect state.
+> > > + * simpledrm has only to ensure they remain active for its lifetime.
+> > > + *
+> > > + * When the driver unloads, we detach from the power-domains.
+> > > + *
+> > > + * We only complain about errors here, no action is taken as the mos=
+t likely
+> > > + * error can only happen due to a mismatch between the bootloader wh=
+ich set
+> > > + * up the "simple-framebuffer" dt node, and the PM domain providers =
+in the
+> > > + * device tree. Chances are that there are no adverse effects, and i=
+f there are,
+> > > + * a clean teardown of the fb probe will not help us much either. So=
+ just
+> > > + * complain and carry on, and hope that the user actually gets a wor=
+king fb at
+> > > + * the end of things.
+> > > + */
+> > > +static void simpledrm_device_detach_genpd(void *res)
+> > > +{
+> > > +     int i;
+> > > +     struct simpledrm_device *sdev =3D res;
+> > > +
+> > > +     if (sdev->pwr_dom_count <=3D 1)
+> > > +             return;
+> > > +
+> > > +     for (i =3D sdev->pwr_dom_count - 1; i >=3D 0; i--) {
+> > > +             if (!sdev->pwr_dom_links[i])
+> > > +                     device_link_del(sdev->pwr_dom_links[i]);
+> > > +             if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
+> > > +                     dev_pm_domain_detach(sdev->pwr_dom_devs[i], tru=
+e);
+> > > +     }
+> > > +}
+> > > +
+> > > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sd=
+ev)
+> > > +{
+> > > +     struct device *dev =3D sdev->dev.dev;
+> > > +     int i;
+> > > +
+> > > +     sdev->pwr_dom_count =3D of_count_phandle_with_args(dev->of_node=
+, "power-domains",
+> > > +                                                      "#power-domain=
+-cells");
+> > > +     /*
+> > > +      * Single power-domain devices are handled by driver core nothi=
+ng to do
+> > > +      * here. The same for device nodes without "power-domains" prop=
+erty.
+> > > +      */
+> > > +     if (sdev->pwr_dom_count <=3D 1)
+> > > +             return 0;
+> > > +
+> > > +     sdev->pwr_dom_devs =3D devm_kcalloc(dev, sdev->pwr_dom_count,
+> > > +                                            sizeof(*sdev->pwr_dom_de=
+vs),
+> > > +                                            GFP_KERNEL);
+> > > +     if (!sdev->pwr_dom_devs)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     sdev->pwr_dom_links =3D devm_kcalloc(dev, sdev->pwr_dom_count,
+> > > +                                             sizeof(*sdev->pwr_dom_l=
+inks),
+> > > +                                             GFP_KERNEL);
+> > > +     if (!sdev->pwr_dom_links)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     for (i =3D 0; i < sdev->pwr_dom_count; i++) {
+> > > +             sdev->pwr_dom_devs[i] =3D dev_pm_domain_attach_by_id(de=
+v, i);
+> > > +             if (IS_ERR(sdev->pwr_dom_devs[i])) {
+> > > +                     int ret =3D PTR_ERR(sdev->pwr_dom_devs[i]);
+> > > +                     if (ret =3D=3D -EPROBE_DEFER) {
+> > > +                             simpledrm_device_detach_genpd(sdev);
+> > > +                             return ret;
+> > > +                     }
+> > > +                     drm_warn(&sdev->dev,
+> > > +                              "pm_domain_attach_by_id(%u) failed: %d=
+\n", i, ret);
+> > > +                     continue;
+> > > +             }
+> > > +
+> > > +             sdev->pwr_dom_links[i] =3D device_link_add(dev,
+> > > +                                                      sdev->pwr_dom_=
+devs[i],
+> > > +                                                      DL_FLAG_STATEL=
+ESS |
+> > > +                                                      DL_FLAG_PM_RUN=
+TIME |
+> > > +                                                      DL_FLAG_RPM_AC=
+TIVE);
+> > > +             if (!sdev->pwr_dom_links[i])
+> > > +                     drm_warn(&sdev->dev, "failed to link power-doma=
+in %d\n", i);
+> > > +     }
+> > > +
+> > > +     return devm_add_action_or_reset(dev, simpledrm_device_detach_ge=
+npd, sdev);
+> > > +}
+> > > +#else
+> > > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sd=
+ev)
+> > > +{
+> > > +     return 0;
+> > > +}
+> > > +#endif
+> > > +
+> > >   /*
+> > >    * Modesetting
+> > >    */
+> > > @@ -651,6 +753,9 @@ static struct simpledrm_device *simpledrm_device_=
+create(struct drm_driver *drv,
+> > >       if (ret)
+> > >               return ERR_PTR(ret);
+> > >       ret =3D simpledrm_device_init_regulators(sdev);
+> > > +     if (ret)
+> > > +             return ERR_PTR(ret);
+> > > +     ret =3D simpledrm_device_attach_genpd(sdev);
+> > >       if (ret)
+> > >               return ERR_PTR(ret);
+> > >
+> > >
+> > > ---
+> > > base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
+> > > change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
