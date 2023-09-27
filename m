@@ -2,209 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AF97B0BFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839587B0C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjI0ScC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
+        id S229686AbjI0Sch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjI0ScB (ORCPT
+        with ESMTP id S229437AbjI0Scg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:32:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CD78F;
-        Wed, 27 Sep 2023 11:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695839520; x=1727375520;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=9qv7TLRlgpdsg71lPSumPrQLnepqGcvD/iqo+YDWKFE=;
-  b=Q9ePsOFh48EuR32cqYNtge6qOyoFEZilEH8d9hK+gCTooAlw2xAH4AA7
-   +SgMee5Q8t01KhkMMcx2DVY8AQ8ohro8223/KguCWC7wB7QanJdxdZ23j
-   2NwxIsBFlrIHRlCKImujzXqFJDt6wo9jo+eCQ5kyI2OXbEVnl7Sx7ZcwH
-   MloS1Si/E4w9MERj8cjSZuJ1B4Za668gKWJadLom6NjrN+yprhs7cyHN8
-   u9N14zUdoso9dP/p1d60bwrK0+98LORhs1fzoZJpf0sBBPRAfvvriKYjh
-   K8g3KaD1hLQMpz9FeV7Lfs+zizB0lnJs4pQKql463YqMd7x6mEq9vLPX0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="502030"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="502030"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 11:31:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="864945564"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="864945564"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 11:31:57 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:31:56 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:31:56 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 11:31:56 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 11:31:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VBmI4xVdatRcpN/EwkTxzIhS6Wlzc07BeJFJe1iZ/UosLXEQH5AztnFzreSn5lNjmts+D3v8XySzrD2D4NWWmHBnHcRkMBUI9t7+531d3r/Hjuk4ZoRQ2UGcZw24N9+8SarZCqQ4v96QcYNqh9SO3GTe9QBi0b4OypLRAtxNkFcMM7ULGzrzVGkzlPQns1wBsbniOVW0MZXQxHwTM/akCLCKsP9NvGMau8NPMKk2J8jjQ5vKvjofmiGJyzBtto/ocZo20iSfoh4P+XXVWshGum9P04HCofm5W7vx3xKCOkAt9GgWtqSB7a4vPr3lOS6qTC3BWDlD+jiyrnDY5mwuaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vg2yduT6orrF6f/UdAxOrsmRzH2DaWMYnWMQVsrg8zo=;
- b=KOfJ27M2v3EY13BIe0AOOJDyn/xFL8wY0LDkN3/NuLdQf9LggEwLJxqMqqQOdMQrYffr/M+9hyr+H57kFMX06vZiD1EDyTAb5+HwiJpe+ptrU6ZXK1J3bc6svvzZUZIN7cwof5I3w9J7u+n3aIa3onKIavLZVEDfOn9FXI0VcHzg7aGuMupdO0QrMSo0qqxHGyq7N/+lrGD7BCCbzV7G2UYqC/qfPjZQlZwDfZrt+j843f1upQyklN7JssV1fUszKZAgLOZKlfPoOl1SETHhl/mVGhHjW5Ile//t7VVdaTvpwRee7XCiA22Esvpy718CE/sqOWYTzVqNpWz1PCIsGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SJ0PR11MB4927.namprd11.prod.outlook.com (2603:10b6:a03:2d6::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
- 2023 18:31:53 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 18:31:53 +0000
-Message-ID: <49c10592-5e95-30cf-7bfa-7105a16bc315@intel.com>
-Date:   Wed, 27 Sep 2023 11:31:49 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v10 03/10] x86/resctrl: Rename rftype flags for
- consistency
-Content-Language: en-US
-To:     Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
-CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
-        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
-        <songmuchun@bytedance.com>, <peterz@infradead.org>,
-        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
-        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
-        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
-        <sandipan.das@amd.com>, <tony.luck@intel.com>,
-        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
-        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
-        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
-        <quic_jiles@quicinc.com>, <peternewman@google.com>
-References: <20230915224227.1336967-1-babu.moger@amd.com>
- <20230915224227.1336967-4-babu.moger@amd.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230915224227.1336967-4-babu.moger@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0034.namprd03.prod.outlook.com
- (2603:10b6:303:8e::9) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Wed, 27 Sep 2023 14:32:36 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB018F;
+        Wed, 27 Sep 2023 11:32:34 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3231dff4343so5289819f8f.0;
+        Wed, 27 Sep 2023 11:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695839553; x=1696444353; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekDcWyVkbd7zDXNRjBeJ3lySaiZP1rXVA38mYoAQqBc=;
+        b=gQwLPtDJimUZfMiMBDUOyuVnIDqf2sh9z/tByCtY9djP7BfKHLgUdE7bXz8HTiVQUi
+         GtJrvtTU4DRyisMwUv/gW0q33SCXXxzdoDZ81jIKiodNQFxmKV/XoXn4Ewrm871y15JN
+         LexsZKF1J4n9GeUppX2G3V1ieAyE0sIi98LOlZnsI5L9n88znFpJQyq/kb1eUPI1Jq2a
+         sydb7vMTi1r1xxIlaa+J8TPh/+A0KOt1EWfM+nBDCgLElzRXmHjZnx9ffDWIzZE3LFMS
+         yuJh0pRBzdgS/YNakc7iounI23D99i2vQ9eVfTSoaqegL/B680k6CPweMk/p970mdJK7
+         +6Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695839553; x=1696444353;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ekDcWyVkbd7zDXNRjBeJ3lySaiZP1rXVA38mYoAQqBc=;
+        b=ZS6Cylo3TQGS+Py8gMq8N8jjIISKufIrVeQLTHvf1fZrHRY9tZPr8VyEkrA6yZOx4A
+         LbU+QzIj9bkbt0qNqpO9zp7M2lI7iAkT15g5V8qWnqIN6aF4ibsHbyMnzbinWN/XdaWp
+         i7o2tqeeKJ04C1cmNXHfcEb927gCb+DQovQzepVze2cBCL8TaVPzK4t/emptRr3RUQYu
+         X9mtl740mlbVTOxNaBd/HBFXOFp3mXZfOTFdZiDNq/fXoO63bX5N9SjuS8huvmI3LOnJ
+         nZoHHj3fodzCVlrUV22rcaVCkrJU8xxIJQ21oNTl5kIMfwiogl9ooQmLzFV3/9hhDZsS
+         9fpw==
+X-Gm-Message-State: AOJu0YxvKw44ewyTQC6ARd8xRuurJZF3jkWxS/TmccgJfgGiJ5UGVbRx
+        /c2zgz7l8S5Vd8vWdloJij0=
+X-Google-Smtp-Source: AGHT+IFziQLslK/sQ1tfjmko+BbqIY6+BkCYktdKi6rhWL09EYY0F2BMwsfItteaR88eRy6vIhiEVA==
+X-Received: by 2002:a05:6000:4cf:b0:31f:d50e:a14f with SMTP id h15-20020a05600004cf00b0031fd50ea14fmr2498610wri.10.1695839552461;
+        Wed, 27 Sep 2023 11:32:32 -0700 (PDT)
+Received: from f (cst-prg-67-191.cust.vodafone.cz. [46.135.67.191])
+        by smtp.gmail.com with ESMTPSA id b12-20020a5d634c000000b0031ad2f9269dsm17639613wrw.40.2023.09.27.11.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 11:32:31 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 20:32:09 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Brauner <brauner@kernel.org>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+Message-ID: <ZRR1Kc/dvhya7ME4@f>
+References: <20230926162228.68666-1-mjguzik@gmail.com>
+ <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+ <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
+ <20230927-kosmetik-babypuppen-75bee530b9f0@brauner>
+ <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
+ <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ0PR11MB4927:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f3e8ee1-e28f-4e3c-2bfc-08dbbf88056a
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oNmNmpnL3yR5uoXdwavmtPBgQfO94wr2wNjSbTGAvyEs5Nd/Fj7HXwZqaNprqVzZbBq/W0fDL2rrgXWQZZTTgZ5oTH1PAE4A0uFlLBedSxzm65CtyfWmp+WpEWK+SCfkaY9Quyij6T5HdwK8HAAJIV6ujvZYyo3z9L1WgGur604GUjt7MHuIaG0l+s8pOKzgqZq9RSmS3u8HmYACbLUr7M79mfUUJWsIB28WUH2FVN7EXFSs7fP808uB1xuKDK4Egc5Jv7d0FZD/QGu9WuHIqEX6XVy5LycoAuSIUnOiUCGCID7NPM2iFEp102ZMNcdmSA52Ab55M4MsvKURLF2/geDf6OyB8yymw90UAYvL0UkxVKuwWQiPPRAlsbp+ccjMWULc3W9eVJDXRfeAGoU5NT7VyGxgRn4Y92njhTT/s/VhbZJflRHRVZfxUuqh6n2LiZ/H9PaV6rZq+zp/DjrLfdLQFjTfz3z1f0ikKByOxraCpWZibGkjZPxN00bY40cZA3cw5Pcyj7/aPOeNYRj4iTh8q5JdqTqgLDy3lDwMfF5qIP6Gf2kUoMCSUUm65+PhBkL9eg8aJjPshegWw6bbHmfyQCOYEfkmSXvYzhem0jPe3g2AaHEN8QnD2qyOP8Vw/jv2bpCKNr8WuOTAPV1stg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(136003)(346002)(230922051799003)(451199024)(186009)(1800799009)(31686004)(6506007)(26005)(5660300002)(7416002)(7406005)(44832011)(4744005)(2906002)(316002)(41300700001)(36756003)(8936002)(8676002)(4326008)(6512007)(86362001)(66946007)(6666004)(6486002)(66556008)(31696002)(66476007)(82960400001)(2616005)(53546011)(38100700002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RkMwNGJWU3c2SStnY3owRjRLTzRCdThyQTVKR2cvSnRRSXpsM2ZQbW1POUlI?=
- =?utf-8?B?ajJwOEhpSWtPQ2ltTmkzY09KVGhweDhlam8xZHV6OTZqSnErSzNYTDZ4WXBz?=
- =?utf-8?B?TjJzS01rRGdzN1Ezc1IwTlNVS1o0UjAwNDd1by9UdGtLUm9KM2lxbi8ydW8r?=
- =?utf-8?B?emZoYW10dDdkc0NkS2pLb1M3eTVyNXR4R2g4ejZrc3gyNUtRdC9JWHo3d2dQ?=
- =?utf-8?B?OWNaZlpWYjlFd0xQbk9pclBsQ0dFMVBZNWxRMVpMcEtEc2Z6MC9KelNIRGFI?=
- =?utf-8?B?d3pwaEJMRUtLb1JvMlZFbWJFSmxQaFl4WlpCb2Y4bUxvMVZzdUpZa0NncnNF?=
- =?utf-8?B?OTI2dnA4ZTcxWGhtcUdTa0tjeHV5R3ZVOHd3QTZsN1FiUFFXT2tiYkNnZ2VR?=
- =?utf-8?B?RkxwVi8rb1hUdzUxWUVCQ0VWdTVLOVdiUnVJMG14dW9ZRCtwM3E3Zmtadkht?=
- =?utf-8?B?M2M0UjNLeDRSajRxNHRaVFcvUVhtVnJSRVd1NTA4dWpoaUJIUTdaMjNoNmdI?=
- =?utf-8?B?b3dHcklkZzJBTkhuNStzbTBhcTVvMkRtOEJ6bWY3cU9ITDIvUkFkaXk4VFpP?=
- =?utf-8?B?NDJBemJwcDdnR0R5bExWaUtMckNoQVRERTB1WjlWZWJwakptc1NYUk4rZTI5?=
- =?utf-8?B?dWViT1VidmUzQk1TK29IeldtM0lBT1d1dWJDcFpWbkpqSW9oQWQ2ZkdDQUZh?=
- =?utf-8?B?YlZhNk8zS1dxSVpIV1QzeE1aWWlidG5wZHFEYWxhaTdlOWgzUW0wRFVjOERG?=
- =?utf-8?B?TU1GK20rUmdrUDlyakgrT3hzWEN2RUJaOGFzSlFCNWtKbFh6dkNuRnFqSzhY?=
- =?utf-8?B?bnhaaVc5NitOZXd3Z01ya3BsaGNEb0JYZkNDMnZFRGxJM0ZybEo2MUxTTmlC?=
- =?utf-8?B?T2g5SFRHclRNVk0xUFhiMDluaklncXFxd1Vab09NanVyVWdsMnkrcUFCUFhI?=
- =?utf-8?B?SDRXZTNhSG5KUWFQZEU0c2tFWDdLUmZ4ZUlBSnhTTWxxTUhZdlBnTmFEUmhH?=
- =?utf-8?B?enFkUGZHY0hSb05UUUViUTF0cnR0enFsYlhxSGd0R0FxOTZyU0JYMU54cFFK?=
- =?utf-8?B?d2wwemFsMmJwL1ljZ1hnNHFjOFhKaDRsOFpVd0d3TzhGWlNvZ1V0VXc1Yldu?=
- =?utf-8?B?NWRWczlDYWM2T0VsUU5TM1ZubmxPSlBCNlN0dzI2aUdRTldranBVT0llanpF?=
- =?utf-8?B?YTFsbE5pUzB4NVJnM3EvaFR5Q3E3YXdzY3d2cHNDMjEybTNMRTNWeWE4VTBX?=
- =?utf-8?B?QTFlUzA2SkI2UEpOMG52NzJDMDB2N2gvRFUyMDdWNGR1MGtEUmtTby84RUFs?=
- =?utf-8?B?OTRqZXBEVS9raWRtNTlpU0gyOWpxZERncExJUEdBc2FVNGJ5UHFOQkNNSDVG?=
- =?utf-8?B?Ty9zUDBZZ0RzK21mRmlpK0NvK1dyL0VKa2ovazVrTTNYMUdXL1BrQmlNVk5n?=
- =?utf-8?B?eG9wZjFUZWpRVHo2ZWZuWm95T1pwaE01QkNIV3owaXlBWFZDV1c1OEVFNk1v?=
- =?utf-8?B?TkhpTDV4VzdRUTY3L1ZoQXVQNTNSWWpnbzZRMDdkczU0UDlpS3MyOTgrVWht?=
- =?utf-8?B?SUJ6ZzdmVytNbkRpYlJTcEtSZmtYdW5HQVhJaFV0TlJhdU1lMG1FRnJPdlN6?=
- =?utf-8?B?N1haWXdWYlYwZDNzbWtlWUNUN2IrRGxVS1VDd2JPKzR3OXdOTi8rM2lzOXJp?=
- =?utf-8?B?UUQxelA0eVZxRHFqOWFxYXJXZmJxNjZWcEhNR1ZPWUkzc1dweUowR2lKYXNp?=
- =?utf-8?B?MUFEcVJzYXVQZ28rTVBkNWFNVnE0NGdNdVRuOHlLUFNTZytKKzZZOFc0SmZC?=
- =?utf-8?B?OVFlTVh0cXh5NWlIN1VHM1F0elppZ1B0SFFtbEdwUm1BaGw1ZmZUY3M1VGFt?=
- =?utf-8?B?L1lmejhLY3Iwd29xTDgzN29FMjY0Qm40UjZlYlJjd05UZ2x5Y0ZqT2FmM3hn?=
- =?utf-8?B?emdOWldyN1ZsUDY3YkROUjJVZFZaVmh1ckdyTWt3Y2V1cllGNllHNDg0VDFL?=
- =?utf-8?B?OHU3MmpMdDU2b2ZwQkx0WVY4ZnFFTForQTJiaitDTnFicW5MdER3a2VyQVRP?=
- =?utf-8?B?cTF4VFQwM09EYm0rYnVKSVlKRDdRVVZZRXB4OXRlQTJpRG1uSitaeXFEdmdE?=
- =?utf-8?B?aGZzMGVZZmp1SmNSSTVmdkczSXdKYWNraEx5N3ZxdEE3c0FGV3dOUjlNdmRj?=
- =?utf-8?B?V1E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f3e8ee1-e28f-4e3c-2bfc-08dbbf88056a
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 18:31:53.2230
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k3amSk0dYU4zGr1XNfHZOpc6F/BJFYeXSjit1cT23IRQQbwo3f1Ymrdu89Rgl0jx1ebIylo0wd5LITwVYab4Niql9ZAV0sHAJvZDSpY/w1o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4927
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Babu,
-
-On 9/15/2023 3:42 PM, Babu Moger wrote:
-> resctrl associates rftype flags with its files so that files can be chosen
-> based on the resource, whether it is info or base, and if it is control
-> or monitor type file. These flags use the RF_ as well as RFTYPE_ prefixes.
+On Wed, Sep 27, 2023 at 11:05:37AM -0700, Linus Torvalds wrote:
+> On Wed, 27 Sept 2023 at 10:56, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> >
+> > Comments in the patch explicitly mention dodgin RCU for the file object.
 > 
-> Change the prefix to RFTYPE_ for all these flags to be consistent.
+> Not the commit message,. and the comment is also actually pretty
+> obscure and only talks about the freeing part.
 > 
-> Also add the flag RFTYPE_MON_BASE, which contains the files required for
-> MON group only.
 
-This appears to be appending an unexpected (because it introduces an unused flag)
-change without motivation as an afterthought.
+How about this:
 
-How about:
-	Add RFTYPE_MON_BASE that will be used in a later patch. RFTYPE_MON_BASE
-	complements existing RFTYPE_CTRL_BASE and represents files
-	belonging to monitoring groups.
+================== cut here ==================
 
-Feel free to improve.
+vfs: shave work on failed file open
 
+Failed opens (mostly ENOENT) legitimately happen a lot, for example here
+are stats from stracing kernel build for few seconds (strace -fc make):
+
+  % time     seconds  usecs/call     calls    errors syscall
+  ------ ----------- ----------- --------- --------- ------------------
+    0.76    0.076233           5     15040      3688 openat
+
+(this is tons of header files tried in different paths)
+
+In the common case of there being nothing to close (only the file object
+to free) there is a lot of overhead which can be avoided.
+
+This boils down to 2 items:
+1. avoiding delegation of fput to task_work, see 021a160abf62 ("fs:
+use __fput_sync in close(2)" for more details on overhead)
+2. avoiding freeing the file with RCU
+
+Benchmarked with will-it-scale with a custom testcase based on
+tests/open1.c, stuffed into tests/openneg.c:
+[snip]
+        while (1) {
+                int fd = open("/tmp/nonexistent", O_RDONLY);
+                assert(fd == -1);
+
+                (*iterations)++;
+        }
+[/snip]
+
+Sapphire Rapids, openneg_processes -t 1 (ops/s):
+before:	1950013
+after:	2914973 (+49%)
+
+file refcount is checked with an atomic cmpxchg as a safety belt against
+buggy consumers. Technically it is not necessary, but it happens to not
+be measurable due to several other atomics which immediately follow.
+Optmizing them away to make this atomic into a problem is left as an
+exercise for the reader.
+
+================== cut here ==================
+ 
+Comment in v2 is:
+
+/*
+ * Clean up after failing to open (e.g., open(2) returns with -ENOENT).
+ *
+ * This represents opportunities to shave on work in the common case of
+ * FMODE_OPENED not being set:
+ * 1. there is nothing to close, just the file object to free and consequently
+ *    no need to delegate to task_work
+ * 2. as nobody else had seen the file then there is no need to delegate
+ *    freeing to RCU
+ */
+
+I don't see anything wrong with it as far as information goes.
+
+> > Well put_cred is called synchronously, but should this happen to be
+> > the last ref on them, they will get call_rcu(&cred->rcu,
+> > put_cred_rcu)'ed.
 > 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
+> Yes. But the way it's done in __fput() you end up potentially
+> RCU-delaying it twice. Odd.
+> 
+> The reason we rcu-delay the 'struct file *' is because of the
+> __fget_files_rcu() games.
+> 
+> But I don't see why the cred thing is there.
+> 
+> Historical mistake? But it all looks a bit odd, and because of that it
+> worries me.
+> 
 
-The patch looks good. With the changelog cleared up:
+put_cred showed up in file_free_rcu in d76b0d9b2d87 ("CRED: Use creds in
+file structs"). Commit message does not claim any dependency on this
+being in an rcu callback already and it looks like it was done this way
+because this was the ony spot with kmem_cache_free(filp_cachep, f) --
+you ensured put_cred was always called without inspecting any other
+places.
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-
-Reinette
-
+If there is something magic going on here I don't see it, it definitely
+was not intended at least.
