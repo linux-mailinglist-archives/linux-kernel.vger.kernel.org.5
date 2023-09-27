@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EFE7B02D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227E27B02D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbjI0L0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        id S231578AbjI0L0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjI0LZx (ORCPT
+        with ESMTP id S231460AbjI0L0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:25:53 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505B71B6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:49 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id ffacd0b85a97d-3200597bfc5so8329904f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:49 -0700 (PDT)
+        Wed, 27 Sep 2023 07:26:02 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA0B1B5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:51 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1eb48d346so60705237b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:25:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695813947; x=1696418747; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695813950; x=1696418750; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sg+l4AZqIjzZdAaAwEVRBA1XU/OEUMwb2p3CABcyD1c=;
-        b=jOKDwqBtMbeCeYiTjWu4QKR1urFyjADm+DhAq3yU9D4EPymCSj0CyrZ5D8ZeCsHRSA
-         rcu+dZD9uWUoVPRF0V80XsleivemJAe3tu/OirdbOXXT75G4bNTChWBfD61VpjKvs7r/
-         ThOb/17hfeG1Y9KFoNxIUILqtoby/UwdjCGGWeskQ0IYnRNZOhCTiR1EXTQ9+YoDLkVv
-         tZkD5qyC/PI3kROAvBY9hu2edJV1JdvnXp3WPgwUnwSZOp6+00QgjCF3VjFCa1+XP1nY
-         4huVFdcllD21Hej5vR0zo6TywNjcRWXhXilFx+To1A6mjVby2/WAN2MV22hAe6NrkzAw
-         9+bg==
+        bh=fj32EN9jrUIkb2wzfxrKtc2Y3Ax+u71fUp4xcpv8B/Q=;
+        b=TdvtmnogFqxrm62pBVa4QdvHDHxnVRzB/GlMjAWwqwnZZTdDgOaDI7tacsyk7xHbxU
+         19UIChUc5KojmO2Rt5T9vKlTqnKnmtkujA+dM2qR+HGQ7V5aX8v9qdV5jnXMkYFCp7h0
+         Hh3BMApEE3XfQcr645tLOxcN/y+McWep0y0FslgjCT4Xddu9Dhui6j2w9DsY4Pz9L2tJ
+         xfj13VwHgqKHR2XHQ8YKx1pRDLfo89qGYV7+N/q8zVH9HYEiIiiX/zCQGZIV8KbXhCZK
+         IaplWuAW7zUjrf7cXcwHBYvxwGoZzF8nKlu225z/Zndn4slHsbs+v4s2CXACOqoSwhU4
+         twAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695813947; x=1696418747;
+        d=1e100.net; s=20230601; t=1695813950; x=1696418750;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sg+l4AZqIjzZdAaAwEVRBA1XU/OEUMwb2p3CABcyD1c=;
-        b=KHNW3sMgZQEvPrWuHMQgZmdpuqBv2pS3hIJoddPirBoQ3EwjFAlNUIrVJyfvvAnkxR
-         VnmDX4vWCNjj2dTH2RcETmIXb0SB1/CA+ps0hBA8ZGlv2/Zh3GKq9hFriVQx3brwE4dU
-         k6pl+SpWrCXoIFSBHHs7tkwZRbPTZC8vQ18lRDjg8VE8eT7S0eJxD73rFdwDzzWb5Bqc
-         g/Uk1vhGHD9ufAItKyoRtjJ0qo5BNwB6wslsKkYCGdLto6Fo59GiOPMB/xRPE+dk3w4T
-         OnFBFqT3kztB2Ljgq+wMaS5YMPTix2kPO7PwPMu7fMhqIUBIfu4IXqrl/XenKeLqMRB5
-         NAgw==
-X-Gm-Message-State: AOJu0YzGNb6Hg7diXHR5M536fxTsBkBBuPCG49/nmS771rXnarY27l3W
-        tS3bd3AiiAcsiH2INhhLYgdoYmL+HBlBTxU/Xcsw0aFhyXtNHCX16zpT0jiuYuwHmG0oAuox5nB
-        qs+Ig5mhwySuADWB4al/AbxqKJUq29eTIbKgZwdqsaKBn9Tv/nZWEy9pPVeoYO9kJsK+SfSrBat
-        KSJwjg1KFV3Q==
-X-Google-Smtp-Source: AGHT+IHPrx/jXai9ztlh+8kqBcUIhuwWCWlP9e5KVrE4MuvGMOnAf2SPceNMd1VhY9NqEPpwFuLqE/msc13mlIHYKUU=
+        bh=fj32EN9jrUIkb2wzfxrKtc2Y3Ax+u71fUp4xcpv8B/Q=;
+        b=gi7dP/HjdSqShHIYW76FREHHkbKAHXuRVfaV6a5r1UkV/YfVnRB/DMQlpfrtj7uezJ
+         GObcWTgg9afrv6r83nx/SIBSz8JIUebA2l4obbyo6qYpkvxq3z9zkgd6cXQf60nMmdYt
+         dJf2qdWSPwvh2saVd+LdzKLgfqe6uKCJnp+jaIiTLLWN1zbKxP+VGuo4mewEwKSctVc9
+         omXcF6blILMwlgZf+dddPyJNmlqLltJ08ZfcWlfQavHTbrSoMDxyVDe8mzPmC8erAehN
+         X+XsMdFTy1f3mqX3OpWKQUdxaR1cBUT/HrO+Uukx7TN8fH+e/JhMM6jsjI/3WyoiJc6k
+         4qBg==
+X-Gm-Message-State: AOJu0Yxh8w7lMXhUIoscXO52//E3qHDH1Vhyme4oX1IqUiIpCpWlWPze
+        qBFQENYF08qA98ovOJMYMgNmO5aZ5+YmlDIMFqJ/AepO2HP0XH4D7JKV0KwCnQa6vdBo9yJ9p0K
+        6nmY7Aq2L0UZeQchoWEu2+QAanVEQ1KPqQte2rL07XjMotd2pTb4JcUXaAzCRCRsULPTYhQLiag
+        TcMUx+lWV+uA==
+X-Google-Smtp-Source: AGHT+IHxCJ923kxJMZh2TT9e3CG4y38u82v/079rxMmN4eNxHyioud7MJSX14GEDAGr1IVx94nj6U1Gvg9BdVTgumEg=
 X-Received: from seb.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:31bd])
- (user=sebastianene job=sendgmr) by 2002:a5d:4145:0:b0:31f:f72b:520c with SMTP
- id c5-20020a5d4145000000b0031ff72b520cmr7783wrq.6.1695813947441; Wed, 27 Sep
- 2023 04:25:47 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 11:25:11 +0000
+ (user=sebastianene job=sendgmr) by 2002:a05:6902:1613:b0:d80:ff9:d19e with
+ SMTP id bw19-20020a056902161300b00d800ff9d19emr23618ybb.9.1695813950463; Wed,
+ 27 Sep 2023 04:25:50 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 11:25:12 +0000
 In-Reply-To: <20230927112517.2631674-1-sebastianene@google.com>
 Mime-Version: 1.0
 References: <20230927112517.2631674-1-sebastianene@google.com>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230927112517.2631674-6-sebastianene@google.com>
-Subject: [PATCH 05/11] arm64: ptdump: Introduce stage-2 pagetables format description
+Message-ID: <20230927112517.2631674-7-sebastianene@google.com>
+Subject: [PATCH 06/11] arm64: ptdump: Register a debugfs entry for the host
+ stage-2 page-tables
 From:   Sebastian Ene <sebastianene@google.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@android.com, will@kernel.org, ryan.roberts@arm.com,
@@ -71,138 +72,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an array which holds human readable information about the format of
-a stage-2 descriptor. The array is then used by the descriptor parser
-to extract information about the memory attributes.
+Initialize the structures used to keep the state of the stage-2 ptdump
+walker. To satisfy the ptdump API for parsing no VMA regions, initialize
+a memory structure. Since we are going to parse a snapshot of the host
+stage-2 paget-tables we don't rely on the locking from the memory
+structure.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/mm/ptdump.c | 91 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ arch/arm64/kvm/Kconfig | 12 ++++++++++++
+ arch/arm64/mm/ptdump.c | 26 ++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
+diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+index 83c1e09be42e..2974bb5c4838 100644
+--- a/arch/arm64/kvm/Kconfig
++++ b/arch/arm64/kvm/Kconfig
+@@ -71,4 +71,16 @@ config PROTECTED_NVHE_STACKTRACE
+ 
+ 	  If unsure, or not using protected nVHE (pKVM), say N.
+ 
++config NVHE_EL2_PTDUMP_DEBUGFS
++	bool "Present the stage-2 pagetables to debugfs"
++	depends on NVHE_EL2_DEBUG && PTDUMP_DEBUGFS
++	help
++	  Say Y here if you want to show the pKVM host stage-2 kernel pagetable
++	  layout in a debugfs file. This information is only useful for kernel developers
++	  who are working in architecture specific areas of the kernel.
++	  It is probably not a good idea to enable this feature in a production
++	  kernel.
++
++	  If in doubt, say N.
++
+ endif # VIRTUALIZATION
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index d531e24ea0b2..8c4f06ca622a 100644
+index 8c4f06ca622a..25c0640e82aa 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
-@@ -24,6 +24,7 @@
- #include <asm/memory.h>
- #include <asm/pgtable-hwdef.h>
- #include <asm/ptdump.h>
-+#include <asm/kvm_pgtable.h>
- 
- 
- enum address_markers_idx {
-@@ -171,6 +172,66 @@ static const struct prot_bits pte_bits[] = {
- 	}
- };
- 
-+static const struct prot_bits stage2_pte_bits[] = {
-+	{
-+		.mask	= PTE_VALID,
-+		.val	= PTE_VALID,
-+		.set	= " ",
-+		.clear	= "F",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_HI_S2_XN,
-+		.val	= KVM_PTE_LEAF_ATTR_HI_S2_XN,
-+		.set	= "XN",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R,
-+		.set	= "R",
-+		.clear	= " ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W,
-+		.set	= "W",
-+		.clear	= " ",
-+	}, {
-+		.mask	= KVM_PTE_LEAF_ATTR_LO_S2_AF,
-+		.val	= KVM_PTE_LEAF_ATTR_LO_S2_AF,
-+		.set	= "AF",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= PTE_NG,
-+		.val	= PTE_NG,
-+		.set	= "FnXS",
-+		.clear	= "  ",
-+	}, {
-+		.mask	= PTE_CONT,
-+		.val	= PTE_CONT,
-+		.set	= "CON",
-+		.clear	= "   ",
-+	}, {
-+		.mask	= PTE_TABLE_BIT,
-+		.val	= PTE_TABLE_BIT,
-+		.set	= "   ",
-+		.clear	= "BLK",
-+	}, {
-+		.mask	= KVM_PGTABLE_PROT_SW0,
-+		.val	= KVM_PGTABLE_PROT_SW0,
-+		.set	= "SW0", /* PKVM_PAGE_SHARED_OWNED */
-+	}, {
-+		.mask   = KVM_PGTABLE_PROT_SW1,
-+		.val	= KVM_PGTABLE_PROT_SW1,
-+		.set	= "SW1", /* PKVM_PAGE_SHARED_BORROWED */
-+	}, {
-+		.mask	= KVM_PGTABLE_PROT_SW2,
-+		.val	= KVM_PGTABLE_PROT_SW2,
-+		.set	= "SW2",
-+	}, {
-+		.mask   = KVM_PGTABLE_PROT_SW3,
-+		.val	= KVM_PGTABLE_PROT_SW3,
-+		.set	= "SW3",
-+	},
-+};
-+
- struct pg_level {
- 	const struct prot_bits *bits;
- 	const char *name;
-@@ -202,6 +263,30 @@ static struct pg_level pg_level[] = {
- 	},
- };
- 
-+static struct pg_level stage2_pg_level[] = {
-+	{ /* pgd */
-+		.name	= "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* p4d */
-+		.name	= "P4D",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pud */
-+		.name	= (CONFIG_PGTABLE_LEVELS > 3) ? "PUD" : "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pmd */
-+		.name	= (CONFIG_PGTABLE_LEVELS > 2) ? "PMD" : "PGD",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	}, { /* pte */
-+		.name	= "PTE",
-+		.bits	= stage2_pte_bits,
-+		.num	= ARRAY_SIZE(stage2_pte_bits),
-+	},
-+};
-+
- static void dump_prot(struct pg_state *st, const struct prot_bits *bits,
- 			size_t num)
- {
-@@ -340,6 +425,12 @@ static void __init ptdump_initialize(void)
- 		if (pg_level[i].bits)
- 			for (j = 0; j < pg_level[i].num; j++)
- 				pg_level[i].mask |= pg_level[i].bits[j].mask;
-+
-+	for (i = 0; i < ARRAY_SIZE(stage2_pg_level); i++)
-+		if (stage2_pg_level[i].bits)
-+			for (j = 0; j < stage2_pg_level[i].num; j++)
-+				stage2_pg_level[i].mask |=
-+					stage2_pg_level[i].bits[j].mask;
+@@ -469,6 +469,21 @@ void ptdump_check_wx(void)
+ 		pr_info("Checked W+X mappings: passed, no W+X pages found\n");
  }
  
- static struct ptdump_info kernel_ptdump_info = {
++#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
++static struct ptdump_info stage2_kernel_ptdump_info;
++static struct addr_marker ipa_address_markers[] = {
++	{ 0,	"IPA start"},
++	{ -1,	"IPA end"},
++	{ -1,	NULL},
++};
++
++/* Initialize a memory structure used by ptdump to walk the no-VMA region */
++static struct mm_struct ipa_init_mm = {
++	.mm_mt		= MTREE_INIT_EXT(mm_mt, MM_MT_FLAGS,
++					 ipa_init_mm.mmap_lock),
++};
++#endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
++
+ static int __init ptdump_init(void)
+ {
+ 	address_markers[PAGE_END_NR].start_address = PAGE_END;
+@@ -477,6 +492,17 @@ static int __init ptdump_init(void)
+ #endif
+ 	ptdump_initialize();
+ 	ptdump_debugfs_register(&kernel_ptdump_info, "kernel_page_tables");
++
++#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
++	stage2_kernel_ptdump_info = (struct ptdump_info) {
++		.markers	= ipa_address_markers,
++		.mm		= &ipa_init_mm,
++	};
++
++	init_rwsem(&ipa_init_mm.mmap_lock);
++	ptdump_debugfs_register(&stage2_kernel_ptdump_info,
++				"host_stage2_kernel_page_tables");
++#endif
+ 	return 0;
+ }
+ device_initcall(ptdump_init);
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
