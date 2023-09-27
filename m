@@ -2,418 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F8F7B0418
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394ED7B04F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbjI0M2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S231855AbjI0NHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 09:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjI0M2h (ORCPT
+        with ESMTP id S231826AbjI0NHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:28:37 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E8402139;
-        Wed, 27 Sep 2023 05:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=B53hY
-        oLnIk6ygf7LWyIKjxm7/j4fwIl1INinLTwMaGM=; b=mO24yqwp8IV86MsiX9lAf
-        WDzDnuUmwuDfz8v32xzZiLFeXAo9OBqhRZog86tqP77jiQJw5g6BU+fIwk441w9y
-        D6ZuhSQ45BnDFo19kp7Ybe6kDPimLnfKl+t+/h2AJMFqScuF18JuPhRsnRpMg3l6
-        tkTR/10liDGLm+I3Q8wIkk=
-Received: from test-Z390-GAMING-X.bayhubtech.com (unknown [58.48.115.170])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wAXY6HAHxRl78MKDQ--.24784S2;
-        Wed, 27 Sep 2023 20:27:45 +0800 (CST)
-From:   liuchang_125125@163.com
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     shaper.liu@bayhubtech.com, chevron.li@bayhubtech.com,
-        thomas.hu@bayhubtech.com, charl.liu@bayhubtech.com,
-        Charl Liu <liuchang_125125@163.com>
-Subject: [PATCH V1 1/1] mmc: sdhci-pci-o2micro: Fix Bayhub SD host hardware tuning compatibility issue for BanQ card
-Date:   Wed, 27 Sep 2023 20:26:52 +0800
-Message-Id: <20230927122652.4969-1-liuchang_125125@163.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 27 Sep 2023 09:07:49 -0400
+Received: from correo1.cdmx.gob.mx (mtax.cdmx.gob.mx [189.240.235.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E80180
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:07:47 -0700 (PDT)
+Received: from cdmx.gob.mx ([10.250.108.150])
+        by correo1.cdmx.gob.mx  with ESMTP id 38RD6kE7001779-38RD6kE9001779
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 27 Sep 2023 07:06:46 -0600
+Received: from cdmx.gob.mx (localhost [127.0.0.1])
+        by cdmx.gob.mx (Postfix) with ESMTPS id 4A349245648;
+        Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by cdmx.gob.mx (Postfix) with ESMTP id 1DBA724751C;
+        Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
+DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx 1DBA724751C
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=cdmx.gob.mx; s=DKIM1; c=relaxed/relaxed;
+ h=content-type:mime-version:subject:to:from:date:reply-to:message-id;
+ bh=rbCGcTJSOVdxWQVJZtY1DjWa3k6lXdwZwrNXiXGvY0o=;
+ b=IjpV2fBjFjs7H7NnHV/L7pZ8J5X02CHnvMRA2u7aeqMSq4kB/rDaIFJHfsJkS6rA0pewktCgybE3
+        lpqstH081Uvhs6fBjH2Shx4ykqJpq65UUX4iAls04qQUb04DyNT89ENQp049JnJctK0jKylsCozh
+        IAD6Ar0D+3aDTdcBIXz+IpBvXs0aczLDLRxuQndaGBBjxgyo3z+UMrvWsN807CWmB4gM16ySKsHp
+        QP+TSTtD4UzaCK9zXz6ODW4hLYE3BwDA7seOGveGIuNpEclTmEmbg0nNYDX+DtSDWtEw2HHiefDe
+        VjcMBN78LYJR/w15z8C9O6VEBKtDbdOskrYNQw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
+        s=2020J4N146MXCTY; t=1695813991;
+        bh=rbCGcTJSOVdxWQVJZtY1DjWa3k6lXdwZwrNXiXGvY0o=;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
+         From:Date:Reply-To:Message-Id;
+        b=SxdvC8wlwKWLkRMjM/ZQih0eNqXRM2kU7H42dEwsdMmm71aPBnUgfEpmr3bOCJPb2
+         zo9CHj0zkceN0uFgXD3ZDht2yaS0yB3GUzsZwMl2sZiit4IVxvWDiF/sUHH0I6q+W9
+         b36FQAVpZt9d779vRpvOoK8VRassGgZGEkUBlNwo=
+X-Virus-Scanned: amavisd-new at cdmx.gob.mx
+Received: from cdmx.gob.mx ([127.0.0.1])
+        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OKEnLFTnUbij; Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
+Received: from [193.232.179.65] (unknown [154.6.13.140])
+        by cdmx.gob.mx (Postfix) with ESMTPSA id EE238245648;
+        Wed, 27 Sep 2023 06:26:25 -0500 (CDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAXY6HAHxRl78MKDQ--.24784S2
-X-Coremail-Antispam: 1Uf129KBjvAXoW3CF13GFy7WF4kArykur48WFg_yoW8JF18Xo
-        WfW3Z5tw18Gw1fXFykt3s7KFyUC34UKa1rJa15ur4DZa4xGa1rXr4SkF4fXFy3Wr1Fgryk
-        uryxK34FyrW5Ar1kn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RW5l8DUUUU
-X-Originating-IP: [58.48.115.170]
-X-CM-SenderInfo: polxux5dqjsiqsvrjki6rwjhhfrp/1tbiNwH3WVWBqdqKcAAAsF
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: SPENDE
+To:     Recipients <oportillor@cdmx.gob.mx>
+From:   "Leonard Valentinovich" <oportillor@cdmx.gob.mx>
+Date:   Wed, 27 Sep 2023 15:26:57 +0300
+Reply-To: sirleonard@englandmail.com
+Message-Id: <20230927112625.EE238245648@cdmx.gob.mx>
+X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [154.6.13.140 listed in zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5117]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charl Liu <liuchang_125125@163.com>
-
-1.Driver get the card's MID and OID by init_card callback
-function to judge whether the card is BanQ card
-2.Update tuning setting to make sure tuning done can be set
-3.Stop transfer for CMD19 after tuning done is set to avoid data
-line inhibit and then set input phase manually for BanQ card
-
-Signed-off-by: Charl Liu <liuchang_125125@163.com>
----
-Change in V1:
-Update the tuning process to be compatibility with BanQ card.
----
- drivers/mmc/host/sdhci-pci-o2micro.c | 204 ++++++++++++++++++++++++---
- 1 file changed, 182 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
-index 7bfee28116af..ab898c583323 100644
---- a/drivers/mmc/host/sdhci-pci-o2micro.c
-+++ b/drivers/mmc/host/sdhci-pci-o2micro.c
-@@ -36,6 +36,7 @@
- #define O2_SD_MISC_CTRL2	0xF0
- #define O2_SD_INF_MOD		0xF1
- #define O2_SD_MISC_CTRL4	0xFC
-+#define O2_SD_DLL_CTRL		0x1B0
- #define O2_SD_MISC_CTRL		0x1C0
- #define O2_SD_EXP_INT_REG	0x1E0
- #define O2_SD_PWR_FORCE_L0	0x0002
-@@ -78,7 +79,8 @@ static const u32 dmdn_table[] = {0x2B1C0000,
- #define DMDN_SZ ARRAY_SIZE(dmdn_table)
- 
- struct o2_host {
--	u8 dll_adjust_count;
-+	u8 dll_adjust_count: 4;
-+	u8 banq_card_setting: 4;
- };
- 
- static void sdhci_o2_wait_card_detect_stable(struct sdhci_host *host)
-@@ -311,14 +313,104 @@ static int sdhci_o2_dll_recovery(struct sdhci_host *host)
- 	return ret;
- }
- 
-+static void sdhci_o2_send_stop_transmission(struct sdhci_host *host)
-+{
-+	struct mmc_host *mmc = host->mmc;
-+	struct mmc_command cmd = {};
-+	struct mmc_request mrq = {};
-+
-+	cmd.opcode = MMC_STOP_TRANSMISSION;
-+	cmd.flags = MMC_RSP_R1B | MMC_CMD_AC;
-+	cmd.busy_timeout = 150;
-+
-+	mrq.cmd = &cmd;
-+
-+	mmc_wait_for_req(mmc, &mrq);
-+
-+	/*
-+	 * Command CRC error may occur due to compatibility issue.
-+	 * It is normal and ignore it here.
-+	 */
-+	if ((cmd.error != 0) && (cmd.error != -EILSEQ))
-+		pr_err("%s: CMD12 error: %d\n", mmc_hostname(mmc), cmd.error);
-+}
-+
-+static void sdhci_o2_tuning_setting(struct mmc_host *mmc, bool isbanq, u8 phase_num)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct sdhci_pci_chip *chip = slot->chip;
-+	struct o2_host *o2_host = sdhci_pci_priv(slot);
-+	u32 reg_val;
-+
-+	if (isbanq) {
-+		/* update tuning command times for BanQ card */
-+		pci_read_config_dword(chip->pdev, O2_SD_TUNING_CTRL, &reg_val);
-+		reg_val &= 0x00FFFFFF;
-+		reg_val |= 0x02000000;
-+		pci_write_config_dword(chip->pdev, O2_SD_TUNING_CTRL, reg_val);
-+	} else {
-+		reg_val = sdhci_readl(host, O2_SD_DLL_CTRL);
-+		reg_val &= ~BIT(28);
-+		sdhci_writel(host, reg_val, O2_SD_DLL_CTRL);
-+
-+		/* Update tuning command times for normal card */
-+		pci_read_config_dword(chip->pdev, O2_SD_TUNING_CTRL, &reg_val);
-+		reg_val &= 0x00FFFFFF;
-+		reg_val |= (phase_num * 3) << 24;
-+		pci_write_config_dword(chip->pdev, O2_SD_TUNING_CTRL, reg_val);
-+	}
-+}
-+
-+static void sdhci_o2_configure_banq_best_input_phase(struct sdhci_host *host)
-+{
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct sdhci_pci_chip *chip = slot->chip;
-+
-+	u32 response = 0;
-+	u16 dll_phase_configure = 0;
-+	u16 best_input_phase = 0;
-+
-+	switch (chip->pdev->device) {
-+	case PCI_DEVICE_ID_O2_FUJIN2:
-+		best_input_phase = 0x0;
-+		break;
-+
-+	case PCI_DEVICE_ID_O2_SEABIRD0:
-+	case PCI_DEVICE_ID_O2_SEABIRD1:
-+		best_input_phase = 0x0;
-+		break;
-+
-+	case PCI_DEVICE_ID_O2_GG8_9860:
-+	case PCI_DEVICE_ID_O2_GG8_9861:
-+	case PCI_DEVICE_ID_O2_GG8_9862:
-+	case PCI_DEVICE_ID_O2_GG8_9863:
-+		best_input_phase = 0xB;
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	/* configure the best input phase (0xB) for BanQ card */
-+	dll_phase_configure = sdhci_readw(host, 0x1B2);
-+	dll_phase_configure = (dll_phase_configure & (u16)0xF0FF) |
-+		(best_input_phase << 8) | BIT(12);
-+	sdhci_writew(host, dll_phase_configure, 0x1B2);
-+}
-+
- static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
- 	struct sdhci_pci_slot *slot = sdhci_priv(host);
- 	struct sdhci_pci_chip *chip = slot->chip;
-+	struct mmc_card *card = mmc->card;
-+	struct o2_host *o2_host = sdhci_pci_priv(slot);
- 	int current_bus_width = 0;
- 	u32 scratch32 = 0;
-+	u16 data_timeout_counter_value = 0;
- 	u16 scratch = 0;
-+	u8 phase_num = 0;
- 	u8  scratch_8 = 0;
- 	u32 reg_val;
- 
-@@ -334,6 +426,31 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 	if (WARN_ON(!mmc_op_tuning(opcode)))
- 		return -EINVAL;
- 
-+	if ((chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9860) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9861) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9862) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9863)) {
-+		phase_num = 14;
-+	} else {
-+		phase_num = 11;
-+	}
-+
-+	/* UnLock WP */
-+	pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
-+	scratch_8 &= 0x7f;
-+	pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
-+
-+	sdhci_o2_tuning_setting(mmc, (bool)o2_host->banq_card_setting, phase_num);
-+
-+	if (o2_host->banq_card_setting) {
-+		/*
-+		 * set data timeout counter value to 0 to ensure that
-+		 * the tuning process can be completed
-+		 */
-+		data_timeout_counter_value = sdhci_readw(host, SDHCI_TIMEOUT_CONTROL);
-+		sdhci_writew(host, data_timeout_counter_value & (u16)0xFFF0, SDHCI_TIMEOUT_CONTROL);
-+	}
-+
- 	/* Force power mode enter L0 */
- 	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
- 	scratch |= O2_SD_PWR_FORCE_L0;
-@@ -351,23 +468,13 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 		reg_val &= ~SDHCI_CLOCK_CARD_EN;
- 		sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
- 
--		if (host->timing == MMC_TIMING_MMC_HS200 ||
--		    host->timing == MMC_TIMING_UHS_SDR104) {
--			/* UnLock WP */
--			pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
--			scratch_8 &= 0x7f;
--			pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
--
-+		if ((host->timing == MMC_TIMING_MMC_HS200) ||
-+			(host->timing == MMC_TIMING_UHS_SDR104)) {
- 			/* Set pcr 0x354[16] to choose dll clock, and set the default phase */
- 			pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &reg_val);
- 			reg_val &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
- 			reg_val |= (O2_SD_SEL_DLL | O2_SD_FIX_PHASE);
- 			pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, reg_val);
--
--			/* Lock WP */
--			pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
--			scratch_8 |= 0x80;
--			pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
- 		}
- 
- 		/* Start clk */
-@@ -375,10 +482,19 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 		reg_val |= SDHCI_CLOCK_CARD_EN;
- 		sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
- 		break;
-+	case PCI_DEVICE_ID_O2_GG8_9860:
-+	case PCI_DEVICE_ID_O2_GG8_9861:
-+	case PCI_DEVICE_ID_O2_GG8_9862:
-+	case PCI_DEVICE_ID_O2_GG8_9863:
- 	default:
- 		break;
- 	}
- 
-+	/* Lock WP */
-+	pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
-+	scratch_8 |= 0x80;
-+	pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
-+
- 	/* wait DLL lock, timeout value 5ms */
- 	if (readx_poll_timeout(sdhci_o2_pll_dll_wdt_control, host,
- 		scratch32, (scratch32 & O2_DLL_LOCK_STATUS), 1, 5000))
-@@ -416,6 +532,20 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 		sdhci_set_bus_width(host, current_bus_width);
- 	}
- 
-+	/* update input phase for BanQ card */
-+	if (o2_host->banq_card_setting) {
-+		/* recover the data timeout counter value */
-+		sdhci_writew(host, data_timeout_counter_value, SDHCI_TIMEOUT_CONTROL);
-+
-+		/*
-+		 * Stop transfer for CMD19 after tuning done is set to
-+		 * avoid data line inhibit
-+		 */
-+		sdhci_o2_send_stop_transmission(host);
-+
-+		sdhci_o2_configure_banq_best_input_phase(host);
-+	}
-+
- 	/* Cancel force power mode enter L0 */
- 	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
- 	scratch &= ~(O2_SD_PWR_FORCE_L0);
-@@ -428,6 +558,24 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 	return 0;
- }
- 
-+static void sdhci_o2_init_card(struct mmc_host *mmc, struct mmc_card *card)
-+{
-+	struct sdhci_host *host = mmc_priv(mmc);
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct o2_host *o2_host = sdhci_pci_priv(slot);
-+	unsigned int manfid;
-+	unsigned short oemid;
-+
-+	manfid = card->raw_cid[0] >> 24;
-+	oemid = (card->raw_cid[0] >> 8) & 0xFFFF;
-+
-+	/* judge whether the card is BanQ card */
-+	if (manfid == 0x89 && oemid == 0x303)
-+		o2_host->banq_card_setting = 1;
-+	else
-+		o2_host->banq_card_setting = 0;
-+}
-+
- static void o2_pci_led_enable(struct sdhci_pci_chip *chip)
- {
- 	int ret;
-@@ -596,15 +744,20 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
- 	scratch &= 0x7f;
- 	pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
- 
--	if (chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9860 ||
--	    chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9861 ||
--	    chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9862 ||
--	    chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9863) {
-+	if ((chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9860) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9861) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9862) ||
-+		(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9863)) {
- 		dmdn_208m = 0x2c500000;
- 		dmdn_200m = 0x25200000;
- 	} else {
- 		dmdn_208m = 0x2c280000;
- 		dmdn_200m = 0x25100000;
-+
-+		/* open-clock for old project */
-+		pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &scratch_32);
-+		scratch_32 &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
-+		pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, scratch_32);
- 	}
- 
- 	if ((host->timing == MMC_TIMING_UHS_SDR104) && (clock == 200000000)) {
-@@ -619,10 +772,6 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
- 			o2_pci_set_baseclk(chip, dmdn_200m);
- 	}
- 
--	pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &scratch_32);
--	scratch_32 &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
--	pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, scratch_32);
--
- 	/* Lock WP */
- 	pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch);
- 	scratch |= 0x80;
-@@ -632,6 +781,11 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
- 	sdhci_o2_enable_clk(host, clk);
- }
- 
-+static void sdhci_o2_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
-+{
-+	sdhci_writeb(host, 0x0E, SDHCI_TIMEOUT_CONTROL);
-+}
-+
- static int sdhci_pci_o2_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
-@@ -705,6 +859,7 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
- 	host = slot->host;
- 
- 	o2_host->dll_adjust_count = 0;
-+	o2_host->banq_card_setting = 0;
- 	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
- 
- 	/*
-@@ -718,7 +873,9 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
- 
- 	sdhci_pci_o2_enable_msi(chip, host);
- 
-+	host->mmc_host_ops.init_card = sdhci_o2_init_card;
- 	host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
-+
- 	switch (chip->pdev->device) {
- 	case PCI_DEVICE_ID_O2_SDS0:
- 	case PCI_DEVICE_ID_O2_SEABIRD0:
-@@ -770,6 +927,8 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
- 		host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
- 		slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
- 		host->mmc_host_ops.init_sd_express = sdhci_pci_o2_init_sd_express;
-+
-+		sdhci_writel(host, 0xFFFFFFFF, SDHCI_INT_STATUS);
- 		break;
- 	default:
- 		break;
-@@ -1022,7 +1181,7 @@ static int sdhci_pci_o2_probe(struct sdhci_pci_chip *chip)
- 		/* Set output delay*/
- 		pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &scratch_32);
- 		scratch_32 &= 0xFF0FFF00;
--		scratch_32 |= 0x00B0003B;
-+		scratch_32 |= 0x00B000CB;
- 		pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, scratch_32);
- 
- 		/* Lock WP */
-@@ -1051,6 +1210,7 @@ static const struct sdhci_ops sdhci_pci_o2_ops = {
- 	.set_bus_width = sdhci_set_bus_width,
- 	.reset = sdhci_reset,
- 	.set_uhs_signaling = sdhci_set_uhs_signaling,
-+	.set_timeout = sdhci_o2_set_timeout,
- };
- 
- const struct sdhci_pci_fixes sdhci_o2 = {
-
-base-commit: 0e945134b680040b8613e962f586d91b6d40292d
--- 
-2.34.1
-
+Guten Tag. Mein Name ist Leonard Valentinovich
+Sie gehoren zu den ausgewahlten Personen, die eine Spende von meinem Untern=
+ehmen (Access Industries) erhalten. Wenn Sie an einer finanziellen Spende i=
+nteressiert sind, schreiben Sie mir bitte fur weitere Einzelheiten zuruck.
