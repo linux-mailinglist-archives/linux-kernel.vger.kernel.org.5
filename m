@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE42A7AFED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFCB7AFEE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjI0Ioa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S230268AbjI0IrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjI0Io2 (ORCPT
+        with ESMTP id S230262AbjI0IrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:44:28 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0CFD6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:44:27 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a1f00b75aaso21101987b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:44:27 -0700 (PDT)
+        Wed, 27 Sep 2023 04:47:16 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0348CB3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:47:12 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c1c66876aso1345703266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695804266; x=1696409066; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z2a9BLS4u3DgICvLzOii5evpo5Bqh/hTtSobhBQ9qFg=;
-        b=LE2UcuhNgnQszwITPoxCxRb6EGj+9wZDVXj8jNtBXELIZrXK/PwPsfrVp/B0h7fmNT
-         wVetQbwf5qgRyopDRzKkxfCv2NuyKEEo203fmtpxwsC/EwcNJDf7GSOd6iNPvJblTOik
-         uXf6UF+I0r4KCSvj27DewIcTpQm0b9d1m2+Cic5q1Ps60XaRdPvK18a9AhzfRLsKWZ0D
-         Gf0nkPHN9KB0dMPP/FocyGX/hrwZuZ8XYg7Ztk/iAoVr2qnsvJCwWDwDPJUrQDT0a6lr
-         uDSvsaLB2AHAxm+XOA+h/EcgpJy0Ca/WFC5Nj2nOCKXSDWHKHyfgL0oGCrhG3vdjzVaV
-         mDrg==
+        d=szeredi.hu; s=google; t=1695804430; x=1696409230; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7R44+izV15PlpetL04YRf6tEqOd3u3v63DX/FqhKvw=;
+        b=BSixiHM40Hz7zXgVBsquclElSHBWJPjKLKm4PSVZlZUu56huUr+ubBK32UzVHMflA4
+         fc6RvqojFeDS2hQvqi9tOEfyiDDM5r7HbjJrDYkcudBPVRZAoJ6V6ZmYNExtkRcUqtIP
+         qX8ugJMer4WEzg8E9W2U2A7dT+we3Z20U3wAU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804266; x=1696409066;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z2a9BLS4u3DgICvLzOii5evpo5Bqh/hTtSobhBQ9qFg=;
-        b=Rs0bt8Scp/33rcYHI4pCADyEKbCpwLmwEhEZcD1lo2G3iZrHEY1yR+uVn6lZHFlkE/
-         f8UxBkuMzwwFoLiOZhkeeJXHt7MqubT7sjqVLfjJuF0UVEsrkYZ7Liq1UgBNoY2RrlxP
-         kiN6Mj4o5LgK+0Sr/CD332XnnhzQ4yORPmu61tB7KnyrQM5UE7flDSxqkL4Dx6NBPB4k
-         QfK3Df9qQpUWrTPy7sx8iHcGrjMmcT0gezfZHo+q9/CvNhzZ2i7Xbop5TZAsAyg5UlSs
-         ibvv3a/Xgj8ZS+id/VM5aGv3zhNHggDGegc7lCGr8nqlSncASIh7QuL38H04deomCCrJ
-         9hag==
-X-Gm-Message-State: AOJu0Yyogtt7cFioumkClSWxHSOZ+YOuLf3EkZio96ENKlzemMuefZoG
-        WCbqFWtcZXD3h6LGOxu3X3essUugS21mGTwMCPuNGw==
-X-Google-Smtp-Source: AGHT+IFI3OXUIw2YZjlJU3xxbWIddHpKtE/ek2D2wzGlJ0JTneFMoPW0I+2IJDJjj40UcgXnDZmQNbomJZ1OppPYI68=
-X-Received: by 2002:a81:c253:0:b0:59b:f736:4948 with SMTP id
- t19-20020a81c253000000b0059bf7364948mr1497316ywg.33.1695804266446; Wed, 27
- Sep 2023 01:44:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695804430; x=1696409230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q7R44+izV15PlpetL04YRf6tEqOd3u3v63DX/FqhKvw=;
+        b=HeRqYAAPM/ZhovB6fJaOQ9eTg6Jl7IE919P81xTN7/QlZT4b1Ax9+C1bxNEK4I/yp+
+         Ggvb+RpfaH6PzGN5cfXk0GHYfnFzjWJ7+z8niUNQhcaiKJhALGfV+NV4bSebfIeo2RsD
+         KrolBW1maUNBlOBrOfWJQTY/wHRWASbk89MAK7pd4s6amYxpRbbubfw0pFIRP3a9HqJ8
+         FMflCzHF1Ta9xR0yTi9MFcvSon9IU2fsMYMDMiHHBbe/iBqL2pw5YXIfANVpILsg0h5I
+         EJ8XBB/4IaXCA/4sGIceqnSoa82v9qNWHW0o0uKY9hzhJDkANfWQSjNXsqVq2G5G/vEr
+         iL+A==
+X-Gm-Message-State: AOJu0Yyn21G64aLVoETtLXyteg3sM+p01BTb4RvJxhcNalYaSsH7uS4S
+        yz5Y7hwwjKHlJPbrFWJ7fFriFTwGKiW2snWJ7IMpkg==
+X-Google-Smtp-Source: AGHT+IHakFZR3B3G8zMwyXaAUpbmlxEnten3LWsWQmOVVXf706DBV8ir31XKJVFq7fysuifFgh/a2olHdT2hG4uPu94=
+X-Received: by 2002:a17:907:7e91:b0:9a6:426f:7dfd with SMTP id
+ qb17-20020a1709077e9100b009a6426f7dfdmr1366881ejc.66.1695804430509; Wed, 27
+ Sep 2023 01:47:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230923131432.21721-1-matti.lehtimaki@gmail.com> <20230923131432.21721-2-matti.lehtimaki@gmail.com>
-In-Reply-To: <20230923131432.21721-2-matti.lehtimaki@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 27 Sep 2023 10:44:15 +0200
-Message-ID: <CACRpkdbs-k2QU9XrZj1sUE5e8QEdfQ=AWhxtvtxA9d7fkC+NOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: msm8226: Add MPM pin mappings
-To:     =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-3-mszeredi@redhat.com>
+ <44631c05-6b8a-42dc-b37e-df6776baa5d4@app.fastmail.com> <20230925-total-debatten-2a1f839fde5a@brauner>
+ <CAJfpegvUCoKebYS=_3eZtCH49nObotuWc=_khFcHshKjRG8h6Q@mail.gmail.com>
+ <20230925-wahlrecht-zuber-3cdc5a83d345@brauner> <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
+In-Reply-To: <CAJfpegvAVJUhgKZH2Dqo1s1xyT3nSopUg6J+8pEFYOnFDssH8g@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 27 Sep 2023 10:46:58 +0200
+Message-ID: <CAJfpegu3BKXE+b51cj3=QwAsxe3QyKOEG_10muEsAsGD=_vkAA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] add statmnt(2) syscall
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 3:14=E2=80=AFPM Matti Lehtim=C3=A4ki
-<matti.lehtimaki@gmail.com> wrote:
-
-> Add pin <-> wakeirq mappings to allow for waking up the AP from sleep
-> through MPM-connected pins.
+On Mon, 25 Sept 2023 at 15:20, Miklos Szeredi <miklos@szeredi.hu> wrote:
 >
-> Signed-off-by: Matti Lehtim=C3=A4ki <matti.lehtimaki@gmail.com>
+> On Mon, 25 Sept 2023 at 15:19, Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > > How about passing u64 *?
+> >
+> > struct statmnt_req {
+> >         __u64 mnt_id;
+> >         __u64 mask;
+> > };
+> >
+> > ?
+>
+> I'm fine with that as well.
 
-Both v2 patches applied!
+So after a bit more thinking: this is okay to make life easier for
+32bit archs, but only on the kernel ABI.
 
-Yours,
-Linus Walleij
+On the library API the args should *not* be multiplexed, as it's just
+a pointless complication.  This is just an internal implementation
+detail for the sake of legacy architectures, instead of being good API
+design.
+
+And because it's an internal thingy, my feeling is that this struct
+could be reused for passing mnt_id to listmount(2) as well, despite
+the fact that the mask would be unused.   But I'm ready to be
+convinced otherwise...
+
+Thanks,
+Miklos
