@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0207AFE44
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F5E7AFE4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbjI0I0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S230327AbjI0I0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjI0IZs (ORCPT
+        with ESMTP id S230150AbjI0IZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:25:48 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC67DE;
-        Wed, 27 Sep 2023 01:25:13 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38R8P8Up005152;
-        Wed, 27 Sep 2023 03:25:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695803108;
-        bh=7JCLfOz6vi/ZAWl1OetwVW/EMHbMuWTaPqKghyNaO+Y=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=JbWc0Vn0XWM0m+nIRLLef+FHhnyaOsTZIVWnTDD1Ny9QqX5OZN+7tkV4M7Vo8tYO9
-         IoAjPf8Frz2pzdcFl/ByTTLjlVdfhSrgWnmjdlP4yJGlM9IhX0cGm8Fo+vu8xJ8IPJ
-         KwdQKIP0ShgnkdQOaSrfLDjb14DJKCxrshJLmIf4=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38R8P8mT096569
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 27 Sep 2023 03:25:08 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
- Sep 2023 03:25:07 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 27 Sep 2023 03:25:07 -0500
-Received: from [10.24.68.251] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38R8P4x5093336;
-        Wed, 27 Sep 2023 03:25:04 -0500
-Message-ID: <0dfcac11-13d1-32fe-9c85-3663bcc34177@ti.com>
-Date:   Wed, 27 Sep 2023 13:55:03 +0530
+        Wed, 27 Sep 2023 04:25:51 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8291A8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:25:23 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c135cf2459so160113811fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695803122; x=1696407922; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mBwF4TjOFyMQxtQEAd+K0NWN+3oWRxy6Qb0vWZMLSfQ=;
+        b=MC2Pb8oSCrGEf2Modf//RHPSDeqWUoX52Q1PuzB7cIClcveH+Sl6pNWKn0jOTfyw39
+         8ZVbZAMg9hk02hHQ3EJiOppmnXgp1IDyAc+c5Avd1NoAlS9whDDUVwLDuXyble+x22uc
+         IVSs2bIXC9ztyFgzxqXTUlC08YTo3ZytFlpwuO0BP9sVUiq2rj+tVV8GEDpdaYFw+TKI
+         DOW5RvybBmlj+qQXLN5tW8tN3ztBf9rPUhUlcOdI/hkZg52NiR1Y7J9YLc6w35jKSYwu
+         jYTndf+5pwUuWOzou3WihIxvNV0HyjM8nXaJiqzwNrWs1JOIDpAOS1VdYLd/FyClFAOd
+         5V9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695803122; x=1696407922;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mBwF4TjOFyMQxtQEAd+K0NWN+3oWRxy6Qb0vWZMLSfQ=;
+        b=Q4lh8XIhxaRnA/MJjlcPNeTq63WFPPX8VGrw2UG7wdzAdssDI99kJg9DuLSOyKK2Xy
+         ZWZZk+XuneQGob/prJ2IrociA4i4s3AtUDpu8qeNDVfCTT+0BtwjH9nNQSUwpb4pP6fP
+         oD7RL5F7ZHSr4aLXj6bjrDfgEBHfG3F3SB5Tmt2U/HtKKkLbdwsX6wUDaMjaMmMWkByk
+         x9d7xnDsFfAYrkPUc9ttrJ0iC00tHrPgVnnM8RjWipM4uwDNJB1ljZYmvZe+f5kqlayC
+         B9N5LVf33nmrunCEjfgKI1a6kepHf/JcNVqdVFZ6OKxrOkF6wd1vbdGqO97EL7vyt59H
+         STyQ==
+X-Gm-Message-State: AOJu0YyvjOL7LbsJ6+5Rkk/pPLr17hTfEjjJfaAwttPEcTXowsdcxDkW
+        UyWrGOd0404Nu1SeRAWbC2ys/M4vcK3w2jYBcBssaw==
+X-Google-Smtp-Source: AGHT+IFLYKNnSn8AMqtBsr7P4yryUjv2RNpVyFePMS9VlgGOQLYBn1L0H3VlWicRyWTB9+TEUYCH/1xAuPdUbGyKsT8=
+X-Received: by 2002:a05:651c:228:b0:2bf:eccb:548 with SMTP id
+ z8-20020a05651c022800b002bfeccb0548mr1347411ljn.0.1695803121875; Wed, 27 Sep
+ 2023 01:25:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 7/7] dts: ti: k3-j712s2-mcu: Add the mcu domain
- watchdog instances
-Content-Language: en-US
-From:   "J, KEERTHY" <j-keerthy@ti.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
-        <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230927023357.9883-1-j-keerthy@ti.com>
- <20230927023357.9883-8-j-keerthy@ti.com>
- <877f583e-ed08-4248-ac38-28e8c3039444@linaro.org>
- <78a9a231-ce53-7a3c-d9ce-af9d1c2a097d@ti.com>
-In-Reply-To: <78a9a231-ce53-7a3c-d9ce-af9d1c2a097d@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
+ <169570182987.596431.14062417344858914481.stgit@dwillia2-xfh.jf.intel.com>
+ <c3d347a7-58d6-4830-aad4-d354b83f0704@linux.intel.com> <CA+1=6yfmLXJbZu7Gd7cp_HOAbmHwx54aPgozWKBikWwZSYTOZw@mail.gmail.com>
+ <6513e6079a427_91c1e294e@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <6513e6079a427_91c1e294e@dwillia2-xfh.jf.intel.com.notmuch>
+From:   Thomas Fossati <thomas.fossati@linaro.org>
+Date:   Wed, 27 Sep 2023 10:25:05 +0200
+Message-ID: <CA+1=6yeP6dDiXVQrxMt0AaEF_7S05p4Do67=ysXK-Chfvu-9ow@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] configfs-tsm: Introduce a shared ABI for
+ attestation reports
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-coco@lists.linux.dev,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Peter Gonda <pgonda@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        dave.hansen@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 27 Sept 2023 at 10:21, Dan Williams <dan.j.williams@intel.com> wrote:
+> It can be expanded when/if those platforms expand the
+> size of the supported user data, or another configfs-tsm backend arrives
+> that needs that capability.
 
-
-On 9/27/2023 1:46 PM, J, KEERTHY wrote:
-> 
-> 
-> On 9/27/2023 1:23 PM, Krzysztof Kozlowski wrote:
->> On 27/09/2023 04:33, Keerthy wrote:
->>> There are totally 2 instances of watchdog module in MCU domain.
->>> These instances are coupled with the MCU domain R5F instances.
->>> Disabling them as they are not used by Linux.
->>>
->>> Signed-off-by: Keerthy <j-keerthy@ti.com>
->>
->> Still incorrect subject prefix.
-> 
-> Sorry. I missed this :-(. I will fix all your comments in the next version.
-
-Hi Krzysztof,
-
-If there are no further comments on V6. Can i resend this patch alone 
-with subject corrected?
-
-Regards,
-Keerthy
-
-> 
->>
->> Best regards,
->> Krzysztof
->>
+Makes sense, thanks.
