@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F89D7AFA94
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C872D7AFA96
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjI0GCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
+        id S229940AbjI0GDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjI0GCO (ORCPT
+        with ESMTP id S229884AbjI0GCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:02:14 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5A9CDB;
-        Tue, 26 Sep 2023 23:01:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD420C433C7;
-        Wed, 27 Sep 2023 06:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695794464;
-        bh=5bU3gzx6D/KCU0/C5mz2JXiNA41aaEP8U6oXybPm8gI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j2LRf4pJ6rPQn6ySzyf20SC7ew+5hiHg0ZgTGztrtSHsf+ONc0fSbPWBjlR9BQEcF
-         T9u0I6IHdfCXvEtS+qRFuUJFBEdCb9gUa1iDa3NEL90zruzcMkXboJd04FQft3n+wA
-         JDYbRNptapF/6wySxZlqHvmS2oV11NdlYt4NoVdQ=
-Date:   Wed, 27 Sep 2023 08:01:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <2023092737-daily-humility-f01c@gregkh>
-References: <1695407915-12216-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1695407915-12216-16-git-send-email-nunodasneves@linux.microsoft.com>
- <2023092342-staunch-chafe-1598@gregkh>
- <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
- <2023092630-masculine-clinic-19b6@gregkh>
- <ZRJyGrm4ufNZvN04@liuwe-devbox-debian-v2>
- <2023092614-tummy-dwelling-7063@gregkh>
- <ZRKBo5Nbw+exPkAj@liuwe-devbox-debian-v2>
- <2023092646-version-series-a7b5@gregkh>
- <05119cbc-155d-47c5-ab21-e6a08eba5dc4@linux.microsoft.com>
+        Wed, 27 Sep 2023 02:02:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC7A10F7;
+        Tue, 26 Sep 2023 23:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695794531; x=1727330531;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=43EZ2ak+dWd0Ucwj/uSlickdL5vUgMcvJYeX+1FPrpM=;
+  b=luDR8bH2iyplUggPg9PwZIPqBRhITU9q9A9aP219mll4fAYRq5/MY8vN
+   DaxkcFHl0Z1ITi+J1qn/TVHplRu14X3at76ydWHhvdDFeNouS/iF/A7K0
+   9V6Qge/rlnBYAtO6kDW+D5SCeQtr88xRfkrBlIk4VPOvxv15Iga5HGQIf
+   wjWUA5E3TVAnDRQHqHndblC4m2GRnTsFdwaOOOI1uCAWhoAn/TaLvpawc
+   DrEWHr/GRh897g+gSF2P+HTs1V0cin3NlGEzAADEIstsNXtcQR56bDUn2
+   aQ377eMcXxEWET9g+xBo0vZnJO5c47HuGEKbsgc+DQ86xPsApAetpaVBM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="468025992"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="468025992"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:02:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="742594936"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="742594936"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.84]) ([10.238.8.84])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:02:01 -0700
+Message-ID: <303a3382-32e7-6afd-bdfa-1cefdbdfb41e@linux.intel.com>
+Date:   Wed, 27 Sep 2023 14:01:59 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05119cbc-155d-47c5-ab21-e6a08eba5dc4@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 07/13] KVM: x86/mmu: Track PRIVATE impact on hugepage
+ mappings for all memslots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Michael Roth <michael.roth@amd.com>
+References: <20230921203331.3746712-1-seanjc@google.com>
+ <20230921203331.3746712-8-seanjc@google.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20230921203331.3746712-8-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,75 +66,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 02:52:36PM -0700, Nuno Das Neves wrote:
-> On 9/26/2023 1:03 AM, Greg KH wrote:
-> > On Tue, Sep 26, 2023 at 07:00:51AM +0000, Wei Liu wrote:
-> > > On Tue, Sep 26, 2023 at 08:31:03AM +0200, Greg KH wrote:
-> > > > On Tue, Sep 26, 2023 at 05:54:34AM +0000, Wei Liu wrote:
-> > > > > On Tue, Sep 26, 2023 at 06:52:46AM +0200, Greg KH wrote:
-> > > > > > On Mon, Sep 25, 2023 at 05:07:24PM -0700, Nuno Das Neves wrote:
-> > > > > > > On 9/23/2023 12:58 AM, Greg KH wrote:
-> > > > > > > > Also, drivers should never call pr_*() calls, always use the proper
-> > > > > > > > dev_*() calls instead.
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > We only use struct device in one place in this driver, I think that is the
-> > > > > > > only place it makes sense to use dev_*() over pr_*() calls.
-> > > > > > 
-> > > > > > Then the driver needs to be fixed to use struct device properly so that
-> > > > > > you do have access to it when you want to print messages.  That's a
-> > > > > > valid reason to pass around your device structure when needed.
-> > > > > 
-> 
-> What is the tangible benefit of using dev_*() over pr_*()?
 
-Unified reporting and handling of userspace of kernel log messages so
-they can be classified properly as well as dealing correctly with the
-dynamic debugging kernel infrastructure.
 
-Why wouldn't you want to use it?
+On 9/22/2023 4:33 AM, Sean Christopherson wrote:
+> Track the effects of private attributes on potential hugepage mappings if
+> the VM supports private memory, i.e. even if the target memslot can only
+> ever be mapped shared.  If userspace configures a chunk of memory as
+> private, KVM must not allow that memory to be mapped shared regardless of
+> whether or not the *current* memslot can be mapped private.  E.g. if the
+> guest accesses a private range using a shared memslot, then KVM must exit
+> to userspace.
+How does usersapce handle this case?
+IIRC, in gmem v12 patch set, it says a memslot can not be convert to 
+private from shared.
+So, userspace should delete the old memslot and and a new one?
 
-> As I said,
-> our use of struct device is very limited compared to all the places we
-> may need to log errors.
 
-Then please fix that.
+> Fixes: 5bb0b4e162d1 ("KVM: x86: Disallow hugepages when memory attributes are mixed")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 269d4dc47c98..148931cf9dba 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -7314,10 +7314,12 @@ bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
+>   	lockdep_assert_held(&kvm->slots_lock);
+>   
+>   	/*
+> -	 * KVM x86 currently only supports KVM_MEMORY_ATTRIBUTE_PRIVATE, skip
+> -	 * the slot if the slot will never consume the PRIVATE attribute.
+> +	 * Calculate which ranges can be mapped with hugepages even if the slot
+> +	 * can't map memory PRIVATE.  KVM mustn't create a SHARED hugepage over
+> +	 * a range that has PRIVATE GFNs, and conversely converting a range to
+> +	 * SHARED may now allow hugepages.
+>   	 */
+> -	if (!kvm_slot_can_be_private(slot))
+> +	if (WARN_ON_ONCE(!kvm_arch_has_private_mem(kvm)))
+>   		return false;
+>   
+>   	/*
+> @@ -7372,7 +7374,7 @@ void kvm_mmu_init_memslot_memory_attributes(struct kvm *kvm,
+>   {
+>   	int level;
+>   
+> -	if (!kvm_slot_can_be_private(slot))
+> +	if (!kvm_arch_has_private_mem(kvm))
+>   		return;
+>   
+>   	for (level = PG_LEVEL_2M; level <= KVM_MAX_HUGEPAGE_LEVEL; level++) {
 
-> pr_*() is used by many, many drivers; it seems to be the norm.
-
-Not at all, it is not.
-
-> We can certainly add a pr_fmt to improve the logging.
-
-Please do it correctly so you don't have to go and add support for it
-later when your tools people ask you why they can't properly parse your
-driver's kernel log messages.
-
-> > > If we're working with real devices like network cards or graphics cards
-> > > I would agree -- it is easy to imagine that we have several cards of the
-> > > same model in the system -- but in real world there won't be two
-> > > hypervisor instances running on the same hardware.
-> > > 
-> > > We can stash the struct device inside some private data fields, but that
-> > > doesn't change the fact that we're still having one instance of the
-> > > structure. Is this what you want? Or do you have something else in mind?
-> > 
-> > You have a real device, it's how userspace interacts with your
-> > subsystem.  Please use that, it is dynamically created and handled and
-> > is the correct representation here.
-> > 
-> 
-> Are you referring to the struct device we get from calling
-> misc_register?
-
-Yes.
-
-> How would you suggest we get a reference to that device via e.g. open()
-> or ioctl() without keeping a global reference to it?
-
-You explicitly have it in your open() and ioctl() call, you never need a
-global reference for it the kernel gives it to you!
-
-thanks,
-
-greg k-h
