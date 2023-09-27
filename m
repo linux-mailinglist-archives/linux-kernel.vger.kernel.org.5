@@ -2,50 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF597AF8B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403297AF8B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjI0Dgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
+        id S229513AbjI0Dgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjI0D2m (ORCPT
+        with ESMTP id S229816AbjI0Dax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:28:42 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6051BCF;
-        Tue, 26 Sep 2023 19:58:22 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RwLpX5h9KzrSDS;
-        Wed, 27 Sep 2023 10:56:04 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 27 Sep 2023 10:58:19 +0800
-Message-ID: <512f2079-6fcb-f2c5-d64d-d0e124cd2853@huawei.com>
-Date:   Wed, 27 Sep 2023 10:58:19 +0800
+        Tue, 26 Sep 2023 23:30:53 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2078.outbound.protection.outlook.com [40.107.93.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794F31854C;
+        Tue, 26 Sep 2023 20:00:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iAGRceZetgudq5OoUm8hhaXMmehU5cgEZi5ETJv4Dy5CDe8/c07Oy7aRoh809hPzC05efk2GNJKnLJ2jLaovLd9NaTn6DD67jeKao6C0N1NU/nPooxpQK8vPGwuxqQWjX4VWKRNYuSOzKebzyYXq+pFg5QWy+mHCPtZEmuTIhnn4MczDFIRpM3rn9XHgXZ9XPdJdFban4eLnLB+0S7kbyboBIhcnTPN7iCZyTlk49MiH7OIOrZfQ1K3HgN5Au1bKS8ISiOOSK3pWTuUC4wvB1ifS0faAv04EbYnqZ1dT7Gg7yyUqNYKgNcnXqbfrYbvK42EgL5+ZBtVdlt7OWYnErQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=El8zzyVk1qQyDp3JDE02KYwNtiRcQLW+Elfrv2N1ESY=;
+ b=frfcACn+LieiBhSQAGtuOYEeVWOfC1bVM9eOyF1hJs+X6t2hXhXGneTcvOrg1fYCdKC3RJLTD/Nl5FrvC3/vcHPUg1yZuhelWW2UFSodDjO9e3rdVkJL1dftSfvkfoz5FOYWPRUKRsvkgPxK2vBZ45wI3HTUd7mJcjV972PVc7fvINzHEkr5qgK1fFZ1oXieS5/PUlNYD4kyIzjHC5SLkvQZJKWrx4cVOoUr2IiYbQhk0Bbu9V1loZzwOicX9Qt+Y6Lwn5TIT/sTq1HYL+3Sf/JSca8E8hmcoNZQrf/jzX/u8iik8HUbB6nUJZMbRcTqFHSlip+KzvXyrWPohYtxVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=El8zzyVk1qQyDp3JDE02KYwNtiRcQLW+Elfrv2N1ESY=;
+ b=TN14n1PAk7izCZCER6odBdcjxyxO8oqUiDa3k3p6PPAYZvMZFSJ8IExgr5/OY0JiZlRVly6c4ImbGJ3JgxDRaNtUZqY6odJLu4EsRaIQfyHF3QpLizeYMdGCldQZad1ZTkktInyXyeQcs94K8beDeDqh0tBy+yNeA6h0T2/X7sE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=labundy.com;
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21) by BN8PR08MB6178.namprd08.prod.outlook.com
+ (2603:10b6:408:7c::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
+ 2023 03:00:01 +0000
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::4528:c7c7:de7:aec2]) by SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::4528:c7c7:de7:aec2%6]) with mapi id 15.20.6813.027; Wed, 27 Sep 2023
+ 03:00:01 +0000
+Date:   Tue, 26 Sep 2023 21:59:53 -0500
+From:   Jeff LaBundy <jeff@labundy.com>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Subject: Re: [PATCH 2/2] Input: add Himax HX852x(ES) touchscreen driver
+Message-ID: <ZROaqRiWa6ReVH/D@nixie71>
+References: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
+ <20230913-hx852x-v1-2-9c1ebff536eb@gerhold.net>
+ <ZQYUe46/rj8jqNvg@nixie71>
+ <ZQcx7oQyL6RM06Jt@gerhold.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQcx7oQyL6RM06Jt@gerhold.net>
+X-ClientProxiedBy: DM6PR12CA0026.namprd12.prod.outlook.com
+ (2603:10b6:5:1c0::39) To SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH 4/4] fpga: add a platform driver to the FPGA Region test
- suite
-Content-Language: en-US
-To:     Marco Pagani <marpagan@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>
-References: <20230926163911.66114-1-marpagan@redhat.com>
- <20230926163911.66114-5-marpagan@redhat.com>
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-In-Reply-To: <20230926163911.66114-5-marpagan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|BN8PR08MB6178:EE_
+X-MS-Office365-Filtering-Correlation-Id: db5a669f-30a6-4274-ee15-08dbbf05d6c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GYF620/XlBMqaGqfEBfQL4o+7doxi9siiohSTx6/PgYL5534ffY7qeBhJC+l75S6g9kTcPVfsFmOWYG7WGGIDWgYKf+CblTagHs6wbQrTal85TTIJC0XHYlqUd1PJmxv508J1dZ9T3P7fs5Xx7G6MUKZddSPSMjjp6mk5HI18qe7KQ1uzzFz8guZdMKx9wqGip2b7IBzqmadSXK7i3iij8runqkfy6W+NX2jkE5eF/GyTSTogqQitPVZiGLSTxKAg+MXq8qh9otduI1swsneVjcOTZ62t1xPKA9M5iVPgx01Rdhpa7yXHOwEWHL8DGscHt4RNQ6A445a0vY36tfNhMUdQJMwJKnHtrJ2brgf678mjfvmROXprZ9FKmOl95pREP1HkVI1y33/8oYuO4Z7xUsHyfgfcVMRftw/7i+dI52YMGe2422NSlkbJXQI6tIsumZZQ91ZEJsjxP7/bOtgro676GKms6u8TeCMXsqCuX5Vav93syCEZniFEwkPsyJ7BN1mx7Bv5bQUxkUKS/5XjkFvdl1UKdlnnrxNK5CeQrg71ky9yZgDz7BiQtbTzKXk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(136003)(39830400003)(366004)(396003)(376002)(230922051799003)(1800799009)(186009)(451199024)(6512007)(9686003)(6486002)(6506007)(66899024)(6666004)(83380400001)(38100700002)(86362001)(33716001)(26005)(2906002)(30864003)(4326008)(8676002)(8936002)(41300700001)(7416002)(66556008)(66946007)(54906003)(6916009)(66476007)(5660300002)(316002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Esf+ZmXk5+6SxIYuXtt3a6LCLIZkDruDa1KGXjtwIpa3NNANXIzbfYKForLt?=
+ =?us-ascii?Q?aWijAqqrYqEEKvCQIB2kDGKkZaYJ5CE909taR2O/JIf27n/nPonsZtrQDs6K?=
+ =?us-ascii?Q?J+VCzFJGjDlgH9N1N3c/0DnKukTprMMT8RzjAqLEBLutK5zAqgsfzpe9fmZj?=
+ =?us-ascii?Q?ArzlAOPYgJxVoTrbfo3+QAlU8dwl1Qiow41N+/+Whtni322goZ89wLlTuSfD?=
+ =?us-ascii?Q?BrFaCdWLl1UCx2pgaEwtMDiJ20r3gPHjxuo1XXs3QnIbdTLrLCdgrD51PJwV?=
+ =?us-ascii?Q?rAgra4lBcNA240TbELCRfoXVjAuu6OEDEu45TdZilOB0kBJpxFixGrKqrMqs?=
+ =?us-ascii?Q?wAMa+J+Q7NzKZecnvDh9/xojP0v3ecriWSmbbQSFe6yGJRFOTmmRWsb3uOcR?=
+ =?us-ascii?Q?/BsjJq2XVipzsBM8q/EpERCG6Z/a5v+sU/qv72/x2+OCuF3ttrOuefGYfbxa?=
+ =?us-ascii?Q?k2RnKQiM7dOzxBYIvuYAZ4E4xF4miPvPx3sTi3owBv1rJL0oBtbzw2UQwBOe?=
+ =?us-ascii?Q?g3gnRimOlsFOVFH2oD9VmW0eVC7IYCVTARGl+6crdZ/UWtkECnagZd2h3aQr?=
+ =?us-ascii?Q?0sRUiU7MC0xg93h4r09p2d2P7Ok6nnsElsjqU0dJC51qOHqMoiELgkOLcDrl?=
+ =?us-ascii?Q?GU/yevqSCAYIqZsGQpnGOXAgIXxTrx4JgJ33CZa2m/y+HE1HVabnz2uWSoy/?=
+ =?us-ascii?Q?kX1lh0xhDIgHqSaYkaavI7de9nBy5EQCStt/xWNMeTALb3Hy3VwroP8JvIJR?=
+ =?us-ascii?Q?j8K4T7gEZtMbjTGvsYPQE9f7nh8/+acucz7oSMTaS4ADGD5cH0p2YDpZsRJA?=
+ =?us-ascii?Q?bxFEAdUAvy3eFV5kxkjW/U7j/xJ7Mdm1DDi8ueu1zgbVZERKkzmWQ0F7NqSe?=
+ =?us-ascii?Q?q3scz6Bn5jJH5nKrOwc5WcwPm2bIxEphczQRqwnzMeRJrfEeSRKHRe5ekrNX?=
+ =?us-ascii?Q?M4sEYLjAuZFYbO8Fd513BDMObDvZYe5SViGtzuvJR6N5lyXzGt5XHPx0zvJk?=
+ =?us-ascii?Q?6gWiSbn2+RJSZh8wDDq+m+vMqcSOLucCshQFEta8v+THyeSFByUIFVb6xPE9?=
+ =?us-ascii?Q?Sn6UR872x+Ws/DEP6Ts3KkcupAwZy3uZ8r0lpTxLQrY7+ckSLWw4n16Rin5/?=
+ =?us-ascii?Q?LI79KAC7hxRVfTgoYEZ54QH+KWg56EDubJIulSrEDgl/kJRsWl8k2n4/kxKJ?=
+ =?us-ascii?Q?95mOyXeA/FgWSGmMo0EUXngNoxtwpp2XyBK1eWNVCJQlI/X79nN6nwh6XBkg?=
+ =?us-ascii?Q?TPjxFswb552fW8yjE8G459b8UO9HWLDyssFwumTlS8a6FC1r1wCzd44Zw8rc?=
+ =?us-ascii?Q?oLyhAWjmpMutPNuE0fcUpQbmJEK7u8OVZRjEB7TV7pDZbVkxEwW9hzsxv5uo?=
+ =?us-ascii?Q?t2X29FuOH9tclW+W7R5gW8SAzoVBimHuC/q8PkeFDti1nzThgi5OqgL/sfKx?=
+ =?us-ascii?Q?7tmowShFAEYlEmvG7MZhgxzoDakY5QOlnoFBNPhm4kp2J43DDLgu8uViFuqJ?=
+ =?us-ascii?Q?FBrHxGFJjAR+8I5oYjWGB1soFGtJVpN3Z35Y3gPLYwUizGJz5XBBdQ4vq8Oi?=
+ =?us-ascii?Q?Bg0l5DuWmArAoXr3Bx0lrARiH++ThlCQ8lXDlcDp?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db5a669f-30a6-4274-ee15-08dbbf05d6c8
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 03:00:00.9564
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ig82lo1ORXH9No0+YXcttg6gvCg/VP4ttUl1tZ5LYyx+hogpdRC/KIJOfWJ8IYH6z/nwCgPtBlKZj7TkqAC6Uw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR08MB6178
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,496 +121,685 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephan,
 
-
-On 2023/9/27 0:39, Marco Pagani wrote:
-> Register a minimal platform driver associated with the parent platform
-> device used for testing to prevent a null-ptr-deref when try_module_get()
-> is called by fpga_region_get(). Also, fix a typo in the suite's name.
+On Sun, Sep 17, 2023 at 07:05:50PM +0200, Stephan Gerhold wrote:
+> Hi Jeff,
 > 
-> Fixes: 64a5f972c93d ("fpga: add an initial KUnit suite for the FPGA Region")
-> Reported-by: Jinjie Ruan <ruanjinjie@huawei.com>
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> ---
->  drivers/fpga/tests/fpga-region-test.c | 26 +++++++++++++++++++++-----
->  1 file changed, 21 insertions(+), 5 deletions(-)
+> Thanks a lot for your detailed review!
+
+Thank you for the productive discussion.
+
 > 
-> diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
-> index 9f9d50ee7871..5ff688b394f9 100644
-> --- a/drivers/fpga/tests/fpga-region-test.c
-> +++ b/drivers/fpga/tests/fpga-region-test.c
-> @@ -15,6 +15,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/types.h>
->  
-> +#include "fpga-test-helpers.h"
-> +
->  struct mgr_stats {
->  	u32 write_count;
->  };
-> @@ -132,6 +134,18 @@ static void fpga_region_test_program_fpga(struct kunit *test)
->  	fpga_image_info_free(img_info);
->  }
->  
-> +TEST_PLATFORM_DRIVER(test_platform_driver);
-> +
-> +static int fpga_region_test_suite_init(struct kunit_suite *suite)
-> +{
-> +	return platform_driver_register(&test_platform_driver);
+> On Sat, Sep 16, 2023 at 03:47:55PM -0500, Jeff LaBundy wrote:
+> > On Wed, Sep 13, 2023 at 03:25:30PM +0200, Stephan Gerhold wrote:
+> > > From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > > 
+> > > Add a simple driver for the Himax HX852x(ES) touch panel controller,
+> > > with support for multi-touch and capacitive touch keys.
+> > > 
+> > > The driver is somewhat based on sample code from Himax. However, that
+> > > code was so extremely confusing that we spent a significant amount of
+> > > time just trying to understand the packet format and register commands.
+> > > In this driver they are described with clean structs and defines rather
+> > > than lots of magic numbers and offset calculations.
+> > > 
+> > > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > > Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+> > > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > > ---
+> > >  MAINTAINERS                              |   7 +
+> > >  drivers/input/touchscreen/Kconfig        |  10 +
+> > >  drivers/input/touchscreen/Makefile       |   1 +
+> > >  drivers/input/touchscreen/himax_hx852x.c | 491 +++++++++++++++++++++++++++++++
+> > >  4 files changed, 509 insertions(+)
+> > > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 90f13281d297..c551c60b0598 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -9331,6 +9331,13 @@ S:	Maintained
+> > >  F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx83112b.yaml
+> > >  F:	drivers/input/touchscreen/himax_hx83112b.c
+> > >  
+> > > +HIMAX HX852X TOUCHSCREEN DRIVER
+> > > +M:	Stephan Gerhold <stephan@gerhold.net>
+> > > +L:	linux-input@vger.kernel.org
+> > > +S:	Maintained
+> > > +F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx852es.yaml
+> > > +F:	drivers/input/touchscreen/himax_hx852x.c
+> > > +
+> > >  HIPPI
+> > >  M:	Jes Sorensen <jes@trained-monkey.org>
+> > >  L:	linux-hippi@sunsite.dk
+> > > diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+> > > index e3e2324547b9..8e5667ae5dab 100644
+> > > --- a/drivers/input/touchscreen/Kconfig
+> > > +++ b/drivers/input/touchscreen/Kconfig
+> > > @@ -427,6 +427,16 @@ config TOUCHSCREEN_HIDEEP
+> > >  	  To compile this driver as a module, choose M here : the
+> > >  	  module will be called hideep_ts.
+> > >  
+> > > +config TOUCHSCREEN_HIMAX_HX852X
+> > > +	tristate "Himax HX852x(ES) touchscreen"
+> > > +	depends on I2C
+> > > +	help
+> > > +	  Say Y here if you have a Himax HX852x(ES) touchscreen.
+> > > +	  If unsure, say N.
+> > > +
+> > > +	  To compile this driver as a module, choose M here: the module
+> > > +	  will be called himax_hx852x.
+> > > +
+> > >  config TOUCHSCREEN_HYCON_HY46XX
+> > >  	tristate "Hycon hy46xx touchscreen support"
+> > >  	depends on I2C
+> > > diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+> > > index 62bd24f3ac8e..f42a87faa86c 100644
+> > > --- a/drivers/input/touchscreen/Makefile
+> > > +++ b/drivers/input/touchscreen/Makefile
+> > > @@ -48,6 +48,7 @@ obj-$(CONFIG_TOUCHSCREEN_EXC3000)	+= exc3000.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
+> > > +obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX852X)	+= himax_hx852x.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
+> > >  obj-$(CONFIG_TOUCHSCREEN_ILITEK)	+= ilitek_ts_i2c.o
+> > > diff --git a/drivers/input/touchscreen/himax_hx852x.c b/drivers/input/touchscreen/himax_hx852x.c
+> > > new file mode 100644
+> > > index 000000000000..31616dcfc5ab
+> > > --- /dev/null
+> > > +++ b/drivers/input/touchscreen/himax_hx852x.c
+> > > @@ -0,0 +1,491 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/*
+> > > + * Himax HX852x(ES) Touchscreen Driver
+> > > + * Copyright (c) 2020-2023 Stephan Gerhold <stephan@gerhold.net>
+> > > + * Copyright (c) 2020 Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > > + *
+> > > + * Based on the Himax Android Driver Sample Code Ver 0.3 for HMX852xES chipset:
+> > > + * Copyright (c) 2014 Himax Corporation.
+> > > + */
+> > > +
+> > > +#include <asm/unaligned.h>
+> > > +#include <linux/delay.h>
+> > > +#include <linux/gpio/consumer.h>
+> > > +#include <linux/i2c.h>
+> > > +#include <linux/input.h>
+> > > +#include <linux/input/mt.h>
+> > > +#include <linux/input/touchscreen.h>
+> > > +#include <linux/interrupt.h>
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/module.h>
+> > 
+> > Please explicitly #include of_device.h.
+> > 
+> 
+> Ack, thanks!
+> 
+> > > +#include <linux/regulator/consumer.h>
+> > > +
+> > > +#define HX852X_COORD_SIZE(fingers)	((fingers) * sizeof(struct hx852x_coord))
+> > > +#define HX852X_WIDTH_SIZE(fingers)	ALIGN(fingers, 4)
+> > > +#define HX852X_BUF_SIZE(fingers)	(HX852X_COORD_SIZE(fingers) + \
+> > > +					 HX852X_WIDTH_SIZE(fingers) + \
+> > > +					 sizeof(struct hx852x_touch_info))
+> > > +
+> > > +#define HX852X_MAX_FINGERS		12
+> > 
+> > Well, that's a new one :)
+> > 
+> 
+> FWIW: I'm not sure if any controller exists that actually supports 12,
+> but the bits are layed out in a way that it would be possible. :-)
+> 
+> > > +#define HX852X_MAX_KEY_COUNT		4
+> > > +#define HX852X_MAX_BUF_SIZE		HX852X_BUF_SIZE(HX852X_MAX_FINGERS)
+> > > +
+> > > +#define HX852X_TS_SLEEP_IN		0x80
+> > > +#define HX852X_TS_SLEEP_OUT		0x81
+> > > +#define HX852X_TS_SENSE_OFF		0x82
+> > > +#define HX852X_TS_SENSE_ON		0x83
+> > > +#define HX852X_READ_ONE_EVENT		0x85
+> > > +#define HX852X_READ_ALL_EVENTS		0x86
+> > > +#define HX852X_READ_LATEST_EVENT	0x87
+> > > +#define HX852X_CLEAR_EVENT_STACK	0x88
+> > > +
+> > > +#define HX852X_REG_SRAM_SWITCH		0x8c
+> > > +#define HX852X_REG_SRAM_ADDR		0x8b
+> > > +#define HX852X_REG_FLASH_RPLACE		0x5a
+> > > +
+> > > +#define HX852X_SRAM_SWITCH_TEST_MODE	0x14
+> > > +#define HX852X_SRAM_ADDR_CONFIG		0x7000
+> > > +
+> > > +struct hx852x {
+> > > +	struct i2c_client *client;
+> > > +	struct input_dev *input_dev;
+> > > +	struct touchscreen_properties props;
+> > > +
+> > > +	struct gpio_desc *reset_gpiod;
+> > > +	struct regulator_bulk_data supplies[2];
+> > > +
+> > > +	unsigned int max_fingers;
+> > > +	unsigned int keycount;
+> > > +	u32 keycodes[HX852X_MAX_KEY_COUNT];
+> > 
+> > Nit: might as well make keycodes 'unsigned int' for consistency; I also do not
+> > feel the newlines are necessary.
+> > 
+> 
+> I don't mind having the newlines but also don't mind removing them,
+> will drop them in v2!
+> 
+> > > +};
+> > > +
+> > > +struct hx852x_config {
+> > > +	u8 rx_num;
+> > > +	u8 tx_num;
+> > > +	u8 max_pt;
+> > > +	u8 padding1[3];
+> > > +	__be16 x_res;
+> > > +	__be16 y_res;
+> > > +	u8 padding2[2];
+> > > +} __packed __aligned(4);
+> > 
+> > What is the reason to include trailing padding in this packed struct? Does the
+> > controller require the entire register length to be read for some reason?
+> > 
+> 
+> Given your question I guess "padding" might be the wrong word here.
+> Basically the driver we based this on reads this config in a
+> semi-obfuscated way like this:
+> 
+> 	char data[12];
+> 	i2c_himax_read(..., data, 12, ...);
+> 	rx_num = data[0];
+> 	/* ... */
+> 	x_res = data[6]*256 + data[7];
+> 	/* ... */
+> 
+> data[10] and data[11] are not used in the vendor code, so we don't know
+> what is encoded there, if there is something encoded there, if only on
+> some models or only on some firmware versions.
+> 
+> I would prefer to keep the read/write operations similar to the vendor
+> driver. Who knows if there are peculiar firmware versions that would
+> fail if the read size is not correct. And maybe there is actually
+> interesting data in there?
+> 
+> Maybe "unknown" would be more clear than "padding"?
 
-modprobe fpga-region-test and then there is still a null-ptr-deref.
+If it is unknown whether a specific number of bytes must be read from the
+controller for it to remain in a valid state, then I think it is fine to
+keep your existing implementation, as well as the original name 'padding'.
 
-root@syzkaller:~# modprobe fpga-region-test
-[   39.603646] KTAP version 1
-[   39.603866] 1..1
-[   39.604574] ------------[ cut here ]------------
-[   39.604921] kobject: '(null)' (ffffffffa0271490): is not initialized,
-yet kobject_get() is being called.
-[   39.605842] WARNING: CPU: 3 PID: 1862 at lib/kobject.c:637
-kobject_get+0x98/0xe0
-[   39.606445] Modules linked in: fpga_region_test(+) fpga_region
-fpga_bridge
-[   39.607000] CPU: 3 PID: 1862 Comm: modprobe Tainted: G
- N 6.6.0-rc3+ #54
-[   39.607640] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.15.0-1 04/01/2014
-[   39.608304] RIP: 0010:kobject_get+0x98/0xe0
-[   39.608651] Code: 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03
-80 3c 02 00 75 44 49 8b 34 24 4c 89 e2 48 c7 c7 20 63 ac 84 e8 38 fe 24
-fd <0f> 0b eb a2 48 89 ef be 01 00 00 00 e8 d7 de a4 fe 4c 89 e0 5d 41
-[   39.610140] RSP: 0018:ffff888106f87298 EFLAGS: 00010286
-[   39.610583] RAX: 0000000000000000 RBX: ffffffff848a3660 RCX:
-0000000000000000
-[   39.611153] RDX: 0000000000000002 RSI: ffffffff847b4d40 RDI:
-0000000000000001
-[   39.611736] RBP: ffff888106002740 R08: 0000000000000001 R09:
-ffffed1020df0e12
-[   39.612298] R10: ffff888106f87097 R11: 3a7463656a626f6b R12:
-ffffffffa0271490
-[   39.612882] R13: ffff888106002758 R14: ffffffffa0271490 R15:
-ffff88810b6a9798
-[   39.613458] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
-knlGS:0000000000000000
-[   39.614079] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   39.614542] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
-0000000000770ee0
-[   39.615110] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[   39.615680] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[   39.616227] PKRU: 55555554
-[   39.616456] Call Trace:
-[   39.616652]  <TASK>
-[   39.616825]  ? __warn+0xc9/0x260
-[   39.617085]  ? irq_work_queue+0x35/0x50
-[   39.617410]  ? kobject_get+0x98/0xe0
-[   39.617711]  ? report_bug+0x345/0x400
-[   39.618002]  ? handle_bug+0x3c/0x70
-[   39.618278]  ? exc_invalid_op+0x14/0x40
-[   39.618596]  ? asm_exc_invalid_op+0x16/0x20
-[   39.618926]  ? kobject_get+0x98/0xe0
-[   39.619208]  ? kobject_get+0x98/0xe0
-[   39.619510]  kobject_add_internal+0x9e/0x870
-[   39.619850]  kobject_add+0x120/0x1f0
-[   39.620138]  ? kset_create_and_add+0x160/0x160
-[   39.620500]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   39.620881]  ? _raw_spin_lock+0x87/0xe0
-[   39.621185]  ? kobject_create_and_add+0x3c/0xb0
-[   39.621566]  kobject_create_and_add+0x68/0xb0
-[   39.621913]  module_add_driver+0x260/0x350
-[   39.622237]  bus_add_driver+0x2c9/0x580
-[   39.622556]  driver_register+0x133/0x460
-[   39.622867]  kunit_run_tests+0xdb/0xef0
-[   39.623169]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.623540]  ? __sched_text_end+0xa/0xa
-[   39.623845]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   39.624230]  ? __kunit_test_suites_exit+0x80/0x80
-[   39.624615]  ? set_track_prepare+0x8a/0xd0
-[   39.624935]  ? get_object+0x70/0x70
-[   39.625212]  ? alloc_inode+0x12a/0x1e0
-[   39.625541]  ? new_inode+0x14/0x230
-[   39.625818]  ? __debugfs_create_file+0xc8/0x5d0
-[   39.626178]  ? __kunit_test_suites_init+0x73/0x140
-[   39.626577]  ? kunit_module_notify+0x3ab/0x440
-[   39.626925]  ? notifier_call_chain+0xbf/0x280
-[   39.627274]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.627647]  ? __sched_text_end+0xa/0xa
-[   39.627958]  ? projid_m_show+0x200/0x200
-[   39.628279]  ? kasan_set_track+0x21/0x30
-[   39.628607]  ? _raw_spin_lock+0x87/0xe0
-[   39.628911]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.629238]  ? _raw_spin_lock+0x87/0xe0
-[   39.629566]  ? __d_instantiate+0x1d5/0x3b0
-[   39.629894]  ? alloc_inode+0x72/0x1e0
-[   39.630197]  ? up_write+0x6d/0xa0
-[   39.630506]  ? __debugfs_create_file+0x3b5/0x5d0
-[   39.630881]  __kunit_test_suites_init+0xde/0x140
-[   39.631248]  kunit_module_notify+0x3ab/0x440
-[   39.631602]  ? __kunit_test_suites_init+0x140/0x140
-[   39.631985]  ? preempt_count_add+0x79/0x150
-[   39.632319]  notifier_call_chain+0xbf/0x280
-[   39.632665]  ? kasan_quarantine_put+0x21/0x1a0
-[   39.633020]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   39.633470]  ? notifier_call_chain+0x280/0x280
-[   39.633828]  ? 0xffffffffa0268000
-[   39.634099]  load_module+0x4af0/0x67d0
-[   39.634402]  ? module_frob_arch_sections+0x20/0x20
-[   39.634795]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   39.635200]  ? kernel_read_file+0x3ca/0x510
-[   39.635549]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   39.635884]  ? init_module_from_file+0xd2/0x130
-[   39.636237]  init_module_from_file+0xd2/0x130
-[   39.636591]  ? __ia32_sys_init_module+0xa0/0xa0
-[   39.636948]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   39.637318]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.637663]  idempotent_init_module+0x339/0x610
-[   39.638022]  ? init_module_from_file+0x130/0x130
-[   39.638390]  ? __fget_light+0x57/0x500
-[   39.638711]  __x64_sys_finit_module+0xba/0x130
-[   39.639066]  do_syscall_64+0x35/0x80
-[   39.639355]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   39.639771] RIP: 0033:0x7fecc9f1b839
-[   39.640065] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   39.641519] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
-0000000000000139
-[   39.642105] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
-00007fecc9f1b839
-[   39.642679] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
-0000000000000005
-[   39.643236] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
-000055fe429e7d20
-[   39.643807] R10: 0000000000000005 R11: 0000000000000246 R12:
-0000000000000000
-[   39.644370] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
-000055fe429e7d20
-[   39.644943]  </TASK>
-[   39.645122] ---[ end trace 0000000000000000 ]---
-[   39.645513] ------------[ cut here ]------------
-[   39.645876] refcount_t: addition on 0; use-after-free.
-[   39.646301] WARNING: CPU: 3 PID: 1862 at lib/refcount.c:25
-refcount_warn_saturate+0x120/0x190
-[   39.646992] Modules linked in: fpga_region_test(+) fpga_region
-fpga_bridge
-[   39.647551] CPU: 3 PID: 1862 Comm: modprobe Tainted: G        W
- N 6.6.0-rc3+ #54
-[   39.648193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.15.0-1 04/01/2014
-[   39.648868] RIP: 0010:refcount_warn_saturate+0x120/0x190
-[   39.649287] Code: 1d bc 3f 40 0a 80 fb 01 0f 87 5a f8 67 01 83 e3 01
-0f 85 5d ff ff ff 48 c7 c7 e0 99 7a 84 c6 05 9c 3f 40 0a 01 e8 30 1e 80
-fe <0f> 0b e9 43 ff ff ff 0f b6 1d 86 3f 40 0a 80 fb 01 0f 87 4f f8 67
-[   39.650771] RSP: 0018:ffff888106f87280 EFLAGS: 00010286
-[   39.651185] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-0000000000000000
-[   39.651766] RDX: 0000000000000002 RSI: 0000000000000004 RDI:
-0000000000000001
-[   39.652328] RBP: 0000000000000002 R08: 0000000000000001 R09:
-ffffed10233b4ef1
-[   39.652902] R10: ffff888119da778b R11: 746e756f63666572 R12:
-ffffffffa0271490
-[   39.653483] R13: ffff888106002758 R14: ffffffffa0271490 R15:
-ffff88810b6a9798
-[   39.654041] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
-knlGS:0000000000000000
-[   39.654697] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   39.655155] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
-0000000000770ee0
-[   39.655746] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[   39.656312] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[   39.656894] PKRU: 55555554
-[   39.657116] Call Trace:
-[   39.657319]  <TASK>
-[   39.657516]  ? __warn+0xc9/0x260
-[   39.657782]  ? refcount_warn_saturate+0x120/0x190
-[   39.658158]  ? report_bug+0x345/0x400
-[   39.658467]  ? handle_bug+0x3c/0x70
-[   39.658760]  ? exc_invalid_op+0x14/0x40
-[   39.659069]  ? asm_exc_invalid_op+0x16/0x20
-[   39.659405]  ? refcount_warn_saturate+0x120/0x190
-[   39.659806]  kobject_get+0xbd/0xe0
-[   39.660088]  kobject_add_internal+0x9e/0x870
-[   39.660441]  kobject_add+0x120/0x1f0
-[   39.660747]  ? kset_create_and_add+0x160/0x160
-[   39.661108]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   39.661512]  ? _raw_spin_lock+0x87/0xe0
-[   39.661820]  ? kobject_create_and_add+0x3c/0xb0
-[   39.662184]  kobject_create_and_add+0x68/0xb0
-[   39.662554]  module_add_driver+0x260/0x350
-[   39.662890]  bus_add_driver+0x2c9/0x580
-[   39.663207]  driver_register+0x133/0x460
-[   39.663547]  kunit_run_tests+0xdb/0xef0
-[   39.663866]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.664232]  ? __sched_text_end+0xa/0xa
-[   39.664560]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   39.664960]  ? __kunit_test_suites_exit+0x80/0x80
-[   39.665343]  ? set_track_prepare+0x8a/0xd0
-[   39.665702]  ? get_object+0x70/0x70
-[   39.665985]  ? alloc_inode+0x12a/0x1e0
-[   39.666294]  ? new_inode+0x14/0x230
-[   39.666600]  ? __debugfs_create_file+0xc8/0x5d0
-[   39.666970]  ? __kunit_test_suites_init+0x73/0x140
-[   39.667359]  ? kunit_module_notify+0x3ab/0x440
-[   39.667742]  ? notifier_call_chain+0xbf/0x280
-[   39.668093]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.668478]  ? __sched_text_end+0xa/0xa
-[   39.668796]  ? projid_m_show+0x200/0x200
-[   39.669115]  ? kasan_set_track+0x21/0x30
-[   39.669459]  ? _raw_spin_lock+0x87/0xe0
-[   39.669773]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.670106]  ? _raw_spin_lock+0x87/0xe0
-[   39.670419]  ? __d_instantiate+0x1d5/0x3b0
-[   39.670766]  ? alloc_inode+0x72/0x1e0
-[   39.671070]  ? up_write+0x6d/0xa0
-[   39.671344]  ? __debugfs_create_file+0x3b5/0x5d0
-[   39.671738]  __kunit_test_suites_init+0xde/0x140
-[   39.672122]  kunit_module_notify+0x3ab/0x440
-[   39.672487]  ? __kunit_test_suites_init+0x140/0x140
-[   39.672890]  ? preempt_count_add+0x79/0x150
-[   39.673232]  notifier_call_chain+0xbf/0x280
-[   39.673588]  ? kasan_quarantine_put+0x21/0x1a0
-[   39.673953]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   39.674395]  ? notifier_call_chain+0x280/0x280
-[   39.674785]  ? 0xffffffffa0268000
-[   39.675061]  load_module+0x4af0/0x67d0
-[   39.675377]  ? module_frob_arch_sections+0x20/0x20
-[   39.675786]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   39.676209]  ? kernel_read_file+0x3ca/0x510
-[   39.676565]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   39.676908]  ? init_module_from_file+0xd2/0x130
-[   39.677277]  init_module_from_file+0xd2/0x130
-[   39.677668]  ? __ia32_sys_init_module+0xa0/0xa0
-[   39.678041]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   39.678437]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.678784]  idempotent_init_module+0x339/0x610
-[   39.679156]  ? init_module_from_file+0x130/0x130
-[   39.679556]  ? __fget_light+0x57/0x500
-[   39.679870]  __x64_sys_finit_module+0xba/0x130
-[   39.680237]  do_syscall_64+0x35/0x80
-[   39.680553]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   39.680973] RIP: 0033:0x7fecc9f1b839
-[   39.681271] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   39.682793] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
-0000000000000139
-[   39.683399] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
-00007fecc9f1b839
-[   39.683993] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
-0000000000000005
-[   39.684584] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
-000055fe429e7d20
-[   39.685160] R10: 0000000000000005 R11: 0000000000000246 R12:
-0000000000000000
-[   39.685760] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
-000055fe429e7d20
-[   39.686337]  </TASK>
-[   39.686537] ---[ end trace 0000000000000000 ]---
-[   39.686924] general protection fault, probably for non-canonical
-address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
-[   39.687789] KASAN: null-ptr-deref in range
-[0x0000000000000018-0x000000000000001f]
-[   39.688397] CPU: 3 PID: 1862 Comm: modprobe Tainted: G        W
- N 6.6.0-rc3+ #54
-[   39.689054] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.15.0-1 04/01/2014
-[   39.689741] RIP: 0010:kobject_namespace+0x71/0x150
-[   39.690141] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
-b8 00 00 00 00 00 fc ff df 49 8b 5c 24 28 48 8d 7b 18 48 89 fa 48 c1 ea
-03 <80> 3c 02 00 0f 85 c1 00 00 00 48 8b 43 18 48 85 c0 74 79 4c 89 e7
-[   39.691661] RSP: 0018:ffff888106f87288 EFLAGS: 00010206
-[   39.692087] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
-0000000000000000
-[   39.692683] RDX: 0000000000000003 RSI: 0000000000000004 RDI:
-0000000000000018
-[   39.693275] RBP: ffff888106002740 R08: 0000000000000001 R09:
-ffffed10233b4ef1
-[   39.693882] R10: ffff888119da778b R11: 746e756f63666572 R12:
-ffffffffa0271490
-[   39.694465] R13: ffff888106002758 R14: ffff888106002768 R15:
-ffffffff84ac7020
-[   39.695044] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
-knlGS:0000000000000000
-[   39.695703] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   39.696180] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
-0000000000770ee0
-[   39.696770] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[   39.697346] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[   39.697955] PKRU: 55555554
-[   39.698180] Call Trace:
-[   39.698386]  <TASK>
-[   39.698577]  ? die_addr+0x3d/0xa0
-[   39.698861]  ? exc_general_protection+0x144/0x220
-[   39.699253]  ? asm_exc_general_protection+0x22/0x30
-[   39.699667]  ? kobject_namespace+0x71/0x150
-[   39.700016]  kobject_add_internal+0x267/0x870
-[   39.700396]  kobject_add+0x120/0x1f0
-[   39.700708]  ? kset_create_and_add+0x160/0x160
-[   39.701087]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   39.701506]  ? _raw_spin_lock+0x87/0xe0
-[   39.701839]  ? kobject_create_and_add+0x3c/0xb0
-[   39.702223]  kobject_create_and_add+0x68/0xb0
-[   39.702604]  module_add_driver+0x260/0x350
-[   39.702954]  bus_add_driver+0x2c9/0x580
-[   39.703284]  driver_register+0x133/0x460
-[   39.703627]  kunit_run_tests+0xdb/0xef0
-[   39.703955]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.704342]  ? __sched_text_end+0xa/0xa
-[   39.704693]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   39.705108]  ? __kunit_test_suites_exit+0x80/0x80
-[   39.705533]  ? set_track_prepare+0x8a/0xd0
-[   39.705880]  ? get_object+0x70/0x70
-[   39.706181]  ? alloc_inode+0x12a/0x1e0
-[   39.706505]  ? new_inode+0x14/0x230
-[   39.706809]  ? __debugfs_create_file+0xc8/0x5d0
-[   39.707188]  ? __kunit_test_suites_init+0x73/0x140
-[   39.707597]  ? kunit_module_notify+0x3ab/0x440
-[   39.707980]  ? notifier_call_chain+0xbf/0x280
-[   39.708354]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   39.708750]  ? __sched_text_end+0xa/0xa
-[   39.709085]  ? projid_m_show+0x200/0x200
-[   39.709423]  ? kasan_set_track+0x21/0x30
-[   39.709761]  ? _raw_spin_lock+0x87/0xe0
-[   39.710094]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.710443]  ? _raw_spin_lock+0x87/0xe0
-[   39.710773]  ? __d_instantiate+0x1d5/0x3b0
-[   39.711131]  ? alloc_inode+0x72/0x1e0
-[   39.711458]  ? up_write+0x6d/0xa0
-[   39.711753]  ? __debugfs_create_file+0x3b5/0x5d0
-[   39.712150]  __kunit_test_suites_init+0xde/0x140
-[   39.712557]  kunit_module_notify+0x3ab/0x440
-[   39.712943]  ? __kunit_test_suites_init+0x140/0x140
-[   39.713385]  ? preempt_count_add+0x79/0x150
-[   39.713761]  notifier_call_chain+0xbf/0x280
-[   39.714118]  ? kasan_quarantine_put+0x21/0x1a0
-[   39.714511]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   39.714994]  ? notifier_call_chain+0x280/0x280
-[   39.715374]  ? 0xffffffffa0268000
-[   39.715688]  load_module+0x4af0/0x67d0
-[   39.716021]  ? module_frob_arch_sections+0x20/0x20
-[   39.716435]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   39.716893]  ? kernel_read_file+0x3ca/0x510
-[   39.717267]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   39.717648]  ? init_module_from_file+0xd2/0x130
-[   39.718042]  init_module_from_file+0xd2/0x130
-[   39.718418]  ? __ia32_sys_init_module+0xa0/0xa0
-[   39.718832]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   39.719237]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   39.719608]  idempotent_init_module+0x339/0x610
-[   39.720006]  ? init_module_from_file+0x130/0x130
-[   39.720418]  ? __fget_light+0x57/0x500
-[   39.720760]  __x64_sys_finit_module+0xba/0x130
-[   39.721160]  do_syscall_64+0x35/0x80
-[   39.721488]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   39.721931] RIP: 0033:0x7fecc9f1b839
-[   39.722236] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   39.723816] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
-0000000000000139
-[   39.724470] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
-00007fecc9f1b839
-[   39.725091] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
-0000000000000005
-[   39.725719] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
-000055fe429e7d20
-[   39.726337] R10: 0000000000000005 R11: 0000000000000246 R12:
-0000000000000000
-[   39.726966] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
-000055fe429e7d20
-[   39.727604]  </TASK>
-[   39.727804] Modules linked in: fpga_region_test(+) fpga_region
-fpga_bridge
-[   39.728401] Dumping ftrace buffer:
-[   39.728719]    (ftrace buffer empty)
-[   39.729058] ---[ end trace 0000000000000000 ]---
-[   39.729539] RIP: 0010:kobject_namespace+0x71/0x150
-[   39.729967] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
-b8 00 00 00 00 00 fc ff df 49 8b 5c 24 28 48 8d 7b 18 48 89 fa 48 c1 ea
-03 <80> 3c 02 00 0f 85 c1 00 00 00 48 8b 43 18 48 85 c0 74 79 4c 89 e7
-[   39.731622] RSP: 0018:ffff888106f87288 EFLAGS: 00010206
-[   39.732076] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
-0000000000000000
-[   39.732745] RDX: 0000000000000003 RSI: 0000000000000004 RDI:
-0000000000000018
-[   39.733381] RBP: ffff888106002740 R08: 0000000000000001 R09:
-ffffed10233b4ef1
-[   39.734054] R10: ffff888119da778b R11: 746e756f63666572 R12:
-ffffffffa0271490
-[   39.734696] R13: ffff888106002758 R14: ffff888106002768 R15:
-ffffffff84ac7020
-[   39.735318] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
-knlGS:0000000000000000
-[   39.736022] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   39.736542] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
-0000000000770ee0
-[   39.737170] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-0000000000000000
-[   39.737818] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-0000000000000400
-[   39.738446] PKRU: 55555554
-[   39.738695] Kernel panic - not syncing: Fatal exception
-[   39.739930] Dumping ftrace buffer:
-[   39.740176]    (ftrace buffer empty)
-[   39.740485] Kernel Offset: disabled
-[   39.740794] Rebooting in 1 seconds..
+> 
+> > > +
+> > > +struct hx852x_coord {
+> > > +	__be16 x;
+> > > +	__be16 y;
+> > > +} __packed __aligned(4);
+> > > +
+> > > +struct hx852x_touch_info {
+> > > +	u8 finger_num;
+> > > +	__le16 finger_pressed;
+> > 
+> > It's interesting that most registers/packets use big endian (e.g. x_res) while
+> > only this uses little endian. Is that expected?
+> > 
+> 
+> Yes, it's really like that. If you look closely the __le16 is also the
+> only 16-bit number that isn't aligned properly. I guess for the
+> "protocol designers" this fields was maybe not a 16-bit number but two
+> separate fields. No idea what they were thinking.
 
+ACK.
 
-> +}
-> +
-> +static void fpga_region_test_suite_exit(struct kunit_suite *suite)
-> +{
-> +	platform_driver_unregister(&test_platform_driver);
-> +}
-> +
->  /*
->   * The configuration used in this test suite uses a single bridge to
->   * limit the code under test to a single unit. The functions used by the
-> @@ -146,14 +160,15 @@ static int fpga_region_test_init(struct kunit *test)
->  	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->  
-> -	ctx->mgr_pdev = platform_device_register_simple("mgr_pdev", PLATFORM_DEVID_AUTO, NULL, 0);
-> +	ctx->mgr_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
-> +							NULL, 0);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->mgr_pdev);
->  
->  	ctx->mgr = devm_fpga_mgr_register(&ctx->mgr_pdev->dev, "Fake FPGA Manager", &fake_mgr_ops,
->  					  &ctx->mgr_stats);
->  	KUNIT_ASSERT_FALSE(test, IS_ERR_OR_NULL(ctx->mgr));
->  
-> -	ctx->bridge_pdev = platform_device_register_simple("bridge_pdev", PLATFORM_DEVID_AUTO,
-> +	ctx->bridge_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
->  							   NULL, 0);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->bridge_pdev);
->  
-> @@ -163,7 +178,7 @@ static int fpga_region_test_init(struct kunit *test)
->  
->  	ctx->bridge_stats.enable = true;
->  
-> -	ctx->region_pdev = platform_device_register_simple("region_pdev", PLATFORM_DEVID_AUTO,
-> +	ctx->region_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
->  							   NULL, 0);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->region_pdev);
->  
-> @@ -195,12 +210,13 @@ static void fpga_region_test_exit(struct kunit *test)
->  static struct kunit_case fpga_region_test_cases[] = {
->  	KUNIT_CASE(fpga_region_test_class_find),
->  	KUNIT_CASE(fpga_region_test_program_fpga),
-> -
->  	{}
->  };
->  
->  static struct kunit_suite fpga_region_suite = {
-> -	.name = "fpga_mgr",
-> +	.name = "fpga_region",
-> +	.suite_init = fpga_region_test_suite_init,
-> +	.suite_exit = fpga_region_test_suite_exit,
->  	.init = fpga_region_test_init,
->  	.exit = fpga_region_test_exit,
->  	.test_cases = fpga_region_test_cases,
+> 
+> > > +	u8 padding;
+> > 
+> > Same question with regard to trailing padding.
+> > 
+> 
+> I think the same answer as above applies here. Additionally here, the
+> packet format seems to be intentionally 4-byte/32-bit aligned (see
+> comment in hx852x_handle_events()) so I would say it makes sense to also
+> read an aligned size from the controller.
+> 
+> > > +} __packed __aligned(4);
+> > > +
+> > > +static int hx852x_i2c_read(struct hx852x *hx, u8 cmd, void *data, u16 len)
+> > > +{
+> > > +	struct i2c_client *client = hx->client;
+> > > +	int ret;
+> > > +
+> > > +	struct i2c_msg msg[] = {
+> > > +		{
+> > > +			.addr = client->addr,
+> > > +			.flags = 0,
+> > > +			.len = 1,
+> > > +			.buf = &cmd,
+> > > +		},
+> > > +		{
+> > > +			.addr = client->addr,
+> > > +			.flags = I2C_M_RD,
+> > > +			.len = len,
+> > > +			.buf = data,
+> > > +		}
+> > > +	};
+> > > +
+> > > +	ret = i2c_transfer(client->adapter, msg, ARRAY_SIZE(msg));
+> > > +	if (ret != ARRAY_SIZE(msg)) {
+> > > +		dev_err(&client->dev, "failed to read %#x: %d\n", cmd, ret);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > This function does not appear to be doing anything unique (e.g. retry loop to
+> > deal with special HW condition, etc.), so I do not see any reason to open-code
+> > a standard write-then-read operation.
+> > 
+> > Can i2c_smbus API simply replace this function,
+> 
+> As far as I know the SMBus standard and API is limited to reading a
+> maximum of 32 bytes (I2C_SMBUS_BLOCK_MAX). With >= 6 fingers the touch
+> packet sizes will exceed that.
+> 
+> > or better yet, can this driver
+> > simply use regmap? In fact, that is what the other mainline Himax driver uses.
+> 
+> Regmap could maybe work, but I think it does not really fit. The I2C
+> interface here does not provide a consistent register map. Problem is,
+> for regmap_config we would need to define "reg_bits" and "val_bits".
+> This does not really exist here: The commands are usually sent without
+> any arguments, sometimes with a single byte (HX852X_REG_SRAM_SWITCH) and
+> sometimes with a word (HX852X_REG_SRAM_ADDR). There isn't a specific
+> register set with values here but more like random "commands".
+> 
+> Since SMBus doesn't allow reading more than 32 bytes and regmap does not
+> fit I think this custom but fairly standard routine is necessary. :/
+
+That makes sense; thank you for the follow-up.
+
+> 
+> > 
+> > > +
+> > > +static int hx852x_power_on(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	int error;
+> > > +
+> > > +	error = regulator_bulk_enable(ARRAY_SIZE(hx->supplies), hx->supplies);
+> > > +	if (error < 0) {
+> > 
+> > Nit: if (error) as you have done elsewhere.
+> > 
+> 
+> Thanks, will fix this.
+> 
+> > > +		dev_err(dev, "failed to enable regulators: %d\n", error);
+> > > +		return error;
+> > > +	}
+> > > +
+> > > +	gpiod_set_value_cansleep(hx->reset_gpiod, 1);
+> > > +	msleep(20);
+> > > +	gpiod_set_value_cansleep(hx->reset_gpiod, 0);
+> > > +	msleep(20);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int hx852x_start(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	int error;
+> > > +
+> > > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_OUT);
+> > > +	if (error) {
+> > > +		dev_err(dev, "failed to send TS_SLEEP_OUT: %d\n", error);
+> > > +		return error;
+> > > +	}
+> > > +	msleep(30);
+> > > +
+> > > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_ON);
+> > > +	if (error) {
+> > > +		dev_err(dev, "failed to send TS_SENSE_ON: %d\n", error);
+> > > +		return error;
+> > > +	}
+> > > +	msleep(20);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void hx852x_stop(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	int error;
+> > > +
+> > > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_OFF);
+> > > +	if (error)
+> > > +		dev_err(dev, "failed to send TS_SENSE_OFF: %d\n", error);
+> > 
+> > Granted the function is of void type, should we not still return if there
+> > is an error?
+> > 
+> > Actually, I would still keep this function as an int for future re-use, even
+> > though hx852x_input_close() simply ignores the value. This way, the return
+> > value can be propagated to the return value of hx852x_suspend() and elsewhere.
+> > 
+> > > +
+> > > +	msleep(20);
+> > > +
+> > > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_IN);
+> > > +	if (error)
+> > > +		dev_err(dev, "failed to send TS_SLEEP_IN: %d\n", error);
+> > 
+> > Same here; no need to sleep following a register write that seemingly did
+> > not happen.
+> > 
+> > > +
+> > > +	msleep(30);
+> > > +}
+> > > +
+> > > +static void hx852x_power_off(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	int error;
+> > > +
+> > > +	error = regulator_bulk_disable(ARRAY_SIZE(hx->supplies), hx->supplies);
+> > > +	if (error)
+> > > +		dev_err(dev, "failed to disable regulators: %d\n", error);
+> > > +}
+> > 
+> > Same comment with regard to function type; it's nice for internal helpers
+> > to be of type int, even if the core callback using it is void.
+> > 
+> > > +
+> > > +static int hx852x_read_config(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	struct hx852x_config conf = {0};
+> > 
+> > No need to initialize.
+> > 
+> > > +	int x_res, y_res;
+> > > +	int error;
+> > > +
+> > > +	error = hx852x_power_on(hx);
+> > > +	if (error)
+> > > +		return error;
+> > > +
+> > > +	/* Sensing must be turned on briefly to load the config */
+> > > +	error = hx852x_start(hx);
+> > > +	if (error)
+> > > +		goto power_off;
+> > > +
+> > > +	hx852x_stop(hx);
+> > 
+> > See my earlier comment about promoting this function's type to int.
+> > 
+> > > +
+> > > +	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH,
+> > > +					  HX852X_SRAM_SWITCH_TEST_MODE);
+> > > +	if (error)
+> > > +		goto power_off;
+> > > +
+> > > +	error = i2c_smbus_write_word_data(hx->client, HX852X_REG_SRAM_ADDR,
+> > > +					  HX852X_SRAM_ADDR_CONFIG);
+> > > +	if (error)
+> > > +		goto exit_test_mode;
+> > > +
+> > > +	error = hx852x_i2c_read(hx, HX852X_REG_FLASH_RPLACE, &conf, sizeof(conf));
+> > > +	if (error)
+> > > +		goto exit_test_mode;
+> > > +
+> > > +	x_res = be16_to_cpu(conf.x_res);
+> > > +	y_res = be16_to_cpu(conf.y_res);
+> > > +	hx->max_fingers = (conf.max_pt & 0xf0) >> 4;
+> > > +	dev_dbg(dev, "x res: %d, y res: %d, max fingers: %d\n",
+> > > +		x_res, y_res, hx->max_fingers);
+> > > +
+> > > +	if (hx->max_fingers > HX852X_MAX_FINGERS) {
+> > > +		dev_err(dev, "max supported fingers: %d, found: %d\n",
+> > > +			HX852X_MAX_FINGERS, hx->max_fingers);
+> > > +		error = -EINVAL;
+> > > +		goto exit_test_mode;
+> > > +	}
+> > > +
+> > > +	if (x_res && y_res) {
+> > > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_X, 0, x_res - 1, 0, 0);
+> > > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_Y, 0, y_res - 1, 0, 0);
+> > > +	}
+> > > +
+> > > +exit_test_mode:
+> > > +	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+> > 
+> > Nit: it would still be nice to preserve as many return values as possible, perhaps
+> > as follows:
+> > 
+> > +exit_test_mode:
+> > 	error = i2c_smbus_write_byte_data(...) ? : error;
+> > 
+> > > +power_off:
+> > > +	hx852x_power_off(hx);
+> > > +	return error;
+> > 
+> > Similarly, with hx852x_power_off() being promoted to int as suggested above,
+> > this could be:
+> > 
+> > 	return hx852x_power_off(...) ? : error;
+> > 
+> > There are other idiomatic ways to do the same thing based on your preference.
+> > Another (perhaps more clear) option would be to move some of these test mode
+> > functions into a helper, which would also avoid some goto statements.
+> > 
+> 
+> Thanks for your suggestions regarding the error handling / return codes.
+> For v2 I will play with the different options you gave and look which
+> one feels best. :-)
+> 
+> > > +}
+> > > +
+> > > +static int hx852x_handle_events(struct hx852x *hx)
+> > > +{
+> > > +	/*
+> > > +	 * The event packets have variable size, depending on the amount of
+> > > +	 * supported fingers (hx->max_fingers). They are laid out as follows:
+> > > +	 *  - struct hx852x_coord[hx->max_fingers]: Coordinates for each finger
+> > > +	 *  - u8[ALIGN(hx->max_fingers, 4)]: Touch width for each finger
+> > > +	 *      with padding for 32-bit alignment
+> > > +	 *  - struct hx852x_touch_info
+> > > +	 *
+> > > +	 * Load everything into a 32-bit aligned buffer so the coordinates
+> > > +	 * can be assigned directly, without using get_unaligned_*().
+> > > +	 */
+> > > +	u8 buf[HX852X_MAX_BUF_SIZE] __aligned(4);
+> > > +	struct hx852x_coord *coord = (struct hx852x_coord *)buf;
+> > > +	u8 *width = &buf[HX852X_COORD_SIZE(hx->max_fingers)];
+> > > +	struct hx852x_touch_info *info = (struct hx852x_touch_info *)
+> > > +		&width[HX852X_WIDTH_SIZE(hx->max_fingers)];
+> > > +	unsigned long finger_pressed, key_pressed;
+> > 
+> > It seems these only need to be u16.
+> > 
+> 
+> Right. However, unsigned long is necessary for using it with
+> for_each_set_bit(), which wants a pointer to an unsigned long.
+> I can change it for key_pressed though.
+
+Thanks for the clarification; the existing implementation seems fine then.
+
+> 
+> > > +	unsigned int i, x, y, w;
+> > > +	int error;
+> > > +
+> > > +	error = hx852x_i2c_read(hx, HX852X_READ_ALL_EVENTS, buf,
+> > > +				HX852X_BUF_SIZE(hx->max_fingers));
+> > > +	if (error)
+> > > +		return error;
+> > > +
+> > > +	finger_pressed = get_unaligned_le16(&info->finger_pressed);
+> > > +	key_pressed = finger_pressed >> HX852X_MAX_FINGERS;
+> > > +
+> > > +	/* All bits are set when no touch is detected */
+> > > +	if (info->finger_num == 0xff || !(info->finger_num & 0x0f))
+> > > +		finger_pressed = 0;
+> > > +	if (key_pressed == 0xf)
+> > > +		key_pressed = 0;
+> > > +
+> > > +	for_each_set_bit(i, &finger_pressed, hx->max_fingers) {
+> > > +		x = be16_to_cpu(coord[i].x);
+> > > +		y = be16_to_cpu(coord[i].y);
+> > > +		w = width[i];
+> > > +
+> > > +		input_mt_slot(hx->input_dev, i);
+> > > +		input_mt_report_slot_state(hx->input_dev, MT_TOOL_FINGER, 1);
+> > > +		touchscreen_report_pos(hx->input_dev, &hx->props, x, y, true);
+> > > +		input_report_abs(hx->input_dev, ABS_MT_TOUCH_MAJOR, w);
+> > > +	}
+> > > +	input_mt_sync_frame(hx->input_dev);
+> > > +
+> > > +	for (i = 0; i < hx->keycount; i++)
+> > > +		input_report_key(hx->input_dev, hx->keycodes[i], key_pressed & BIT(i));
+> > > +
+> > > +	input_sync(hx->input_dev);
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static irqreturn_t hx852x_interrupt(int irq, void *ptr)
+> > > +{
+> > > +	struct hx852x *hx = ptr;
+> > > +	int error;
+> > > +
+> > > +	error = hx852x_handle_events(hx);
+> > > +	if (error) {
+> > > +		dev_err(&hx->client->dev, "failed to handle events: %d\n", error);
+> > > +		return IRQ_NONE;
+> > > +	}
+> > > +
+> > > +	return IRQ_HANDLED;
+> > > +}
+> > > +
+> > > +static int hx852x_input_open(struct input_dev *dev)
+> > > +{
+> > > +	struct hx852x *hx = input_get_drvdata(dev);
+> > > +	int error;
+> > > +
+> > > +	error = hx852x_power_on(hx);
+> > > +	if (error)
+> > > +		return error;
+> > > +
+> > > +	error = hx852x_start(hx);
+> > > +	if (error) {
+> > > +		hx852x_power_off(hx);
+> > > +		return error;
+> > > +	}
+> > > +
+> > > +	enable_irq(hx->client->irq);
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void hx852x_input_close(struct input_dev *dev)
+> > > +{
+> > > +	struct hx852x *hx = input_get_drvdata(dev);
+> > > +
+> > > +	hx852x_stop(hx);
+> > > +	disable_irq(hx->client->irq);
+> > > +	hx852x_power_off(hx);
+> > > +}
+> > > +
+> > > +static int hx852x_parse_properties(struct hx852x *hx)
+> > > +{
+> > > +	struct device *dev = &hx->client->dev;
+> > > +	int error;
+> > > +
+> > > +	hx->keycount = device_property_count_u32(dev, "linux,keycodes");
+> > > +	if (hx->keycount <= 0) {
+> > > +		hx->keycount = 0;
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	if (hx->keycount > HX852X_MAX_KEY_COUNT) {
+> > > +		dev_err(dev, "max supported keys: %d, found: %d\n",
+> > 
+> > Nit: these should both be printed as %u.
+> > 
+> 
+> Right, thanks!
+> 
+> > > +			HX852X_MAX_KEY_COUNT, hx->keycount);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	error = device_property_read_u32_array(dev, "linux,keycodes",
+> > > +					       hx->keycodes, hx->keycount);
+> > > +	if (error)
+> > > +		dev_err(dev, "failed to read linux,keycodes: %d\n", error);
+> > > +
+> > > +	return error;
+> > > +}
+> > > +
+> > > +static int hx852x_probe(struct i2c_client *client)
+> > > +{
+> > > +	struct device *dev = &client->dev;
+> > > +	struct hx852x *hx;
+> > > +	int error, i;
+> > > +
+> > > +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
+> > > +				     I2C_FUNC_SMBUS_WRITE_BYTE |
+> > > +				     I2C_FUNC_SMBUS_WRITE_BYTE_DATA |
+> > > +				     I2C_FUNC_SMBUS_WRITE_WORD_DATA)) {
+> > > +		dev_err(dev, "not all i2c functionality supported\n");
+> > > +		return -ENXIO;
+> > > +	}
+> > > +
+> > > +	hx = devm_kzalloc(dev, sizeof(*hx), GFP_KERNEL);
+> > > +	if (!hx)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	hx->client = client;
+> > > +	hx->input_dev = devm_input_allocate_device(dev);
+> > > +	if (!hx->input_dev)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	hx->input_dev->name = "Himax HX852x";
+> > > +	hx->input_dev->id.bustype = BUS_I2C;
+> > > +	hx->input_dev->open = hx852x_input_open;
+> > > +	hx->input_dev->close = hx852x_input_close;
+> > > +
+> > > +	i2c_set_clientdata(client, hx);
+> > > +	input_set_drvdata(hx->input_dev, hx);
+> > > +
+> > > +	hx->supplies[0].supply = "vcca";
+> > > +	hx->supplies[1].supply = "vccd";
+> > > +	error = devm_regulator_bulk_get(dev, ARRAY_SIZE(hx->supplies), hx->supplies);
+> > > +	if (error < 0)
+> > > +		return dev_err_probe(dev, error, "failed to get regulators");
+> > > +
+> > > +	hx->reset_gpiod = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> > > +	if (IS_ERR(hx->reset_gpiod))
+> > > +		return dev_err_probe(dev, error, "failed to get reset gpio");
+> > 
+> > Can the reset GPIO be optional?
+> > 
+> 
+> I'm afraid I have no idea if the controller needs this or not. Would it
+> be better to keep it required until someone confirms otherwise or have
+> it optional for the other way around?
+
+If you have a datasheet handy, or your hardware provides a means for you to
+test and confirm whether reset can be left out, I would make the reset GPIO
+optional. Often times, these controllers are part of a module and reset may
+be tied high locally as opposed to adding another signal to a flex cable.
+
+If you have no way to confirm, I would keep it as required for now; it is not
+too cumbersome to be changed later if the need arises on different hardware.
+
+> 
+> Thanks!
+> Stephan
+
+Kind regards,
+Jeff LaBundy
