@@ -2,95 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C137F7B00FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E7E7B00FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjI0Jvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S230406AbjI0JwA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 05:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjI0Jva (ORCPT
+        with ESMTP id S230499AbjI0Jvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:51:30 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1811F10E;
-        Wed, 27 Sep 2023 02:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vKsM+wBJcSBpQ28kkR+epO1vMvl77ryBtmDcTsO1n2o=; b=WN+B+LSEPWBw93eSmhjO8z6kXf
-        7W197rTkyEhmau3NLA7GhTeOuKhCJdhZSOvV5kLcVTVoM3q0Yf6fmqx21fz10ofOODe9JAR8Xy4uf
-        pz5OM5p6xhblup8KPRb3TyU0zTBr/QUE8XPLjVyniSptlJGQFp5X2cU0qpnUtqORWK42gggZdhGa2
-        sRGrsrIL9nZEXk7twT4WwP4pRhsp//OEa/muAbigomaJy+tyAWbxWN86+Qn3XHlFEGlKdW26Efw7m
-        nYxBuZcrC3Dbj13FdJw2OtSHfj+rbyZ6/ObYFaCQd3m7+8VcTtOeJeSYbWkGD5UVnhp+pXS9mUO49
-        65q6iSUw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42172)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qlRCQ-0003j8-0e;
-        Wed, 27 Sep 2023 10:51:18 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qlRCP-0001Kv-QV; Wed, 27 Sep 2023 10:51:17 +0100
-Date:   Wed, 27 Sep 2023 10:51:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH] net: sfp: add quirk for Fiberstone
- GPON-ONU-34-20BI
-Message-ID: <ZRP7FU3BglzFBfgX@shell.armlinux.org.uk>
-References: <20230919124720.8210-1-ansuelsmth@gmail.com>
- <ZQmkv9o329m98CUG@shell.armlinux.org.uk>
- <5615a39b3402e7499fd531c928845e102fba6f1c.camel@redhat.com>
+        Wed, 27 Sep 2023 05:51:55 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B309192;
+        Wed, 27 Sep 2023 02:51:54 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59bf1dde73fso137594607b3.3;
+        Wed, 27 Sep 2023 02:51:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695808313; x=1696413113;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=URclzgkzbuk7qvKcvbCEsThVgg1SGyUhQn8jsEUe6I8=;
+        b=vIwRBc8KvYuEaOpeSGs0o+GTItWh3z2aA8GAf+ttcK6I1lJZQwlxzn2aUIDsPlomoW
+         +zGYzYKIDU7KwmpC3O7Iq1Vi8tQQUU6zHM2UQvcQC2jpsN7OCcyHntM97FPhUjNjg41v
+         Vs6JNYTXNScqyv9bP70pv0fABkAZQf09KGjWROeumFCdALd4nu2CLluuHZ4NaZgoJxfh
+         WQCiBEu2zZW1rpmrZiYmOrAHDMCianvn4+k79OKWOuN7JDOg8xKe8T910wG8+8iwIMzF
+         c8LTxRRS9QQeUZlce4kqmq4/HC4lIfDzcBXi7DZXRRiTRTDNV7/wS0hEZDJXj5tbgf+o
+         skaQ==
+X-Gm-Message-State: AOJu0Yxc6lfHo32zb9hNrbPUGpbqROEDEN+YB99jz2qBERwBv9W3UQ/Q
+        54JrU+hlkBRqRG0nV6tkdvnyxneq8WFFxw==
+X-Google-Smtp-Source: AGHT+IF9/r9TS5kRAsvJuDXgjlhfF24839TybiQhQtCHEfzfKOgb0YNGyIs52AP9MStUJrIEuvE2gQ==
+X-Received: by 2002:a0d:c5c5:0:b0:59c:aea:d877 with SMTP id h188-20020a0dc5c5000000b0059c0aead877mr1456390ywd.40.1695808313246;
+        Wed, 27 Sep 2023 02:51:53 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id p72-20020a0de64b000000b0059beb468cb3sm3627784ywe.32.2023.09.27.02.51.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 02:51:52 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59c215f2f4aso137550557b3.1;
+        Wed, 27 Sep 2023 02:51:52 -0700 (PDT)
+X-Received: by 2002:a0d:d808:0:b0:59b:ec40:a121 with SMTP id
+ a8-20020a0dd808000000b0059bec40a121mr1841815ywe.3.1695808312511; Wed, 27 Sep
+ 2023 02:51:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5615a39b3402e7499fd531c928845e102fba6f1c.camel@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926210818.197356-1-fabrizio.castro.jz@renesas.com> <20230926210818.197356-3-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20230926210818.197356-3-fabrizio.castro.jz@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 27 Sep 2023 11:51:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWUr5ReouCWV3WsOJE=2faBO-y70aDC8W8qBGVBhaMTAg@mail.gmail.com>
+Message-ID: <CAMuHMdWUr5ReouCWV3WsOJE=2faBO-y70aDC8W8qBGVBhaMTAg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] spi: rzv2m-csi: Add Slave mode support
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 04:40:45PM +0200, Paolo Abeni wrote:
-> Hi Russel,
-> 
-> On Tue, 2023-09-19 at 14:40 +0100, Russell King (Oracle) wrote:
-> > On Tue, Sep 19, 2023 at 02:47:20PM +0200, Christian Marangi wrote:
-> > > Fiberstone GPON-ONU-34-20B can operate at 2500base-X, but report 1.2GBd
-> > > NRZ in their EEPROM.
-> > > 
-> > > The module also require the ignore tx fault fixup similar to Huawei MA5671A
-> > > as it gets disabled on error messages with serial redirection enabled.
-> > 
-> > I'll send you shortly a different approach for the "ignore tx fault"
-> > thing that I'd like you to test please.
-> 
-> Said patch is not blocking this one, am I correct?
+Hi Fabrizio,
 
-Correct, but Christian has not responded in any way despite me sending
-him the patch that I'd like tested, which is very disappointing.
+On Tue, Sep 26, 2023 at 11:08 PM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+> The CSI IP found inside the Renesas RZ/V2M SoC supports
+> both SPI Master and SPI Slave roles.
+>
+> When working in slave mode, the CSI IP has the option
+> of using its Slave Select (SS) pin to enable TX and RX
+> operations. Since the SPI slave cannot control the clock,
+> when working as slave it's best not to stop operations
+> during a transfer, as by doing so the IP will not send or
+> receive data, regardless of clock and active level on pin SS.
+> A side effect from not stopping operations is that the RX
+> FIFO needs to be flushed, word by word, when RX data needs
+> to be discarded.
+>
+> Finally, when in slave mode timings are tighter, as missing a
+> deadline translates to errors being thrown, resulting in
+> aborting the transfer. In order to speed things up, we can
+> avoid waiting for the TX FIFO to be empty, we can just wait
+> for the RX FIFO to contain at least the number of words that
+> we expect.
+>
+> Add slave support to the currently existing CSI driver.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-This is what I fear - that merging his patch removes the incentive to
-test my patch. Oh well, I guess I will just send my patch that I can't
-test to be merged anyway, and to hell with it. If it breaks this and
-other modules, I'm sure someone will eventually send a report about
-that.
+Thanks for your patch!
+
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -861,8 +861,10 @@ config SPI_RSPI
+>  config SPI_RZV2M_CSI
+>         tristate "Renesas RZ/V2M CSI controller"
+>         depends on ARCH_RENESAS || COMPILE_TEST
+> +       depends on SPI_SLAVE
+
+Isn't that a bit too strict?
+The driver can/should be used/usable in host mode when SPI_SLAVE
+is not enabled.
+
+>         help
+> -         SPI driver for Renesas RZ/V2M Clocked Serial Interface (CSI)
+> +         SPI driver for Renesas RZ/V2M Clocked Serial Interface (CSI).
+> +         CSI supports master and slave roles.
+>
+>  config SPI_QCOM_QSPI
+>         tristate "QTI QSPI controller"
+
+> --- a/drivers/spi/spi-rzv2m-csi.c
+> +++ b/drivers/spi/spi-rzv2m-csi.c
+
+> @@ -99,6 +112,9 @@ struct rzv2m_csi_priv {
+>         wait_queue_head_t wait;
+>         u32 errors;
+>         u32 status;
+> +       int mode;
+
+Do you need this flag?
+You can use spi_controller_is_target() instead.
+
+> +       int slave_select;
+> +       bool slave_aborted;
+>  };
+>
+>  static void rzv2m_csi_reg_write_bit(const struct rzv2m_csi_priv *csi,
+
+> @@ -279,32 +303,23 @@ static int rzv2m_csi_wait_for_interrupt(struct rzv2m_csi_priv *csi,
+>
+>         rzv2m_csi_enable_irqs(csi, enable_bits);
+>
+> -       ret = wait_event_timeout(csi->wait,
+> -                                ((csi->status & wait_mask) == wait_mask) ||
+> -                                csi->errors, HZ);
+> +       if (csi->mode == RZV2M_CSI_SPI_SLAVE) {
+
+spi_controller_is_target()
+
+> +               ret = wait_event_interruptible(csi->wait,
+> +                               ((csi->status & wait_mask) == wait_mask) ||
+> +                               csi->errors || csi->slave_aborted);
+
+target_aborted (everywhere)
+
+> +               if (ret || csi->slave_aborted)
+> +                       ret = -EINTR;
+> +       } else {
+> +               ret = wait_event_timeout(csi->wait,
+> +                               ((csi->status & wait_mask) == wait_mask) ||
+> +                               csi->errors, HZ) == 0 ? -ETIMEDOUT : 0;
+> +       }
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
