@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1E57B0779
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58C07B077A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbjI0PA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+        id S232270AbjI0PAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjI0PAZ (ORCPT
+        with ESMTP id S232067AbjI0PA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:00:25 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F92D180
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:00:24 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so9390755e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695826823; x=1696431623; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NewR8mz3IDKSzbhyhEdNVdjJ713zwUsUtm4gHKiLJro=;
-        b=oimuB8CgT98N8oKbqJao/E4cuj5pR1VCQXqSdVjbugHUbApUvSCJFbR2BKOOW5jR1v
-         uNOfLNIfxx/t9gLU3u6WrctHo9/KxbJ2+sCMWLYgoyG9cFkeHkhFDvarbOHDkddokYBi
-         q7rCfdg5G34/NDlJ8IZyy1mx3bxQv+0HQzbXatQS5hcPku8S+6jGWFR+iny/ZxfjCwD5
-         tt99vIspuB2/bWrjPwXtM7qP/tU5hrMibMf1YKtio7tN15kTxUVy8tuUzz9OlDM2w2iF
-         zWm+NCeijAkl0mT2WJlnwSOx6XlRcQU4DLE+oo5oYHSMD/GynBQRteZ3dvpozBzCzDU7
-         t/lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695826823; x=1696431623;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NewR8mz3IDKSzbhyhEdNVdjJ713zwUsUtm4gHKiLJro=;
-        b=BN00mKOAVN2zzSIH1tnkEF6Yhv43NJDcXb6YPPYIHa88jBypEeERlMTzdDsfgOPyhJ
-         JJBhkhW7w/SCQMCBLUIbDja84q09ML5HgJF2ddKtzaYsN1vuuuwgc8c+RZpzpMjo9WIm
-         s0x5YYHTCmxVYdZ9VT6ZMjpyY5p6sFbHgmGdq1v+gYcNTqi7cWedUu2P1VkvzlKzk3t3
-         UN8poqkWLtt+bWnv82bHb38xYg8Qd9sIY3b5idC9Ts64+4y+yIwmKds9cDxMf7HDH2J7
-         n+oDFWUwr+eAGq4TjJCN8Rcj1OwpFmgb4xw9+wds+0NjhbxJGbuUuiphXSSe/rD2BYUs
-         C2rg==
-X-Gm-Message-State: AOJu0Yyp78Jdw44cQmQHIdxHPbXdHH1JbCNEZayD1+4OzL9IHMehMbFR
-        Fig2EfSHZqo3VCUUYHzMdlUStw==
-X-Google-Smtp-Source: AGHT+IETTSPE9U+FYpjyRNTB+9sCf6QDVtfDMiQViMJoD01LWgrGCZjwBY+nkwnsQw5TGzj7/1jgUA==
-X-Received: by 2002:a7b:c409:0:b0:3ff:ca80:eda3 with SMTP id k9-20020a7bc409000000b003ffca80eda3mr2253169wmi.10.1695826822830;
-        Wed, 27 Sep 2023 08:00:22 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id j13-20020adfd20d000000b003232c2109cbsm7453676wrh.7.2023.09.27.08.00.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 08:00:20 -0700 (PDT)
-Message-ID: <3c9f7b7d-a9ca-79ae-4e64-367a82f953bc@linaro.org>
-Date:   Wed, 27 Sep 2023 17:00:19 +0200
+        Wed, 27 Sep 2023 11:00:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB095F4;
+        Wed, 27 Sep 2023 08:00:27 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3FC1D21871;
+        Wed, 27 Sep 2023 15:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695826826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ntrsNhAyOOgMXZMp6zh4HTN0Tx78MaxJouIAxQNAnI8=;
+        b=Ti6s3RfzLpsWtNcGRLkWU78lEcclV7iQ8fZ8Sk/gHgmoL6gZikY8cEs53gy2XRqaXyBkeR
+        yg+hVf19WoF2a/z52qzb9MDxryiWrtARId2lzxKiHdIQHNziR3jx9Nvnj9SsefNuSGmuHd
+        N6G/151E9e0jDELXUPhczncG47APK6M=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DC3842C145;
+        Wed, 27 Sep 2023 15:00:24 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 17:00:24 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH printk v2 10/11] rcu: Add atomic write enforcement for
+ rcu stalls
+Message-ID: <ZRRDiAUJMHAgiDnD@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-11-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 06/13] thermal: gov_fair_share: Rearrange
- get_trip_level()
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <1882755.CQOukoFCf9@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1882755.CQOukoFCf9@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919230856.661435-11-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,71 +65,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 19:54, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed 2023-09-20 01:14:55, John Ogness wrote:
+> Invoke the atomic write enforcement functions for rcu stalls to
+> ensure that the information gets out to the consoles.
 > 
-> Make get_trip_level() access the thermal zone's trip table directly
-> instead of using __thermal_zone_get_trip() which adds overhead related
-> to the unnecessary bounds checking and copying the trip point data.
+> It is important to note that if there are any legacy consoles
+> registered, they will be attempting to directly print from the
+> printk-caller context, which may jeopardize the reliability of
+> the atomic consoles. Optimally there should be no legacy
+> consoles registered.
 > 
-> Also rearrange the code in it to make it somewhat easier to follow.
-> 
-> The general functionality is not expected to be changed.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 > ---
->   drivers/thermal/gov_fair_share.c |   22 ++++++++++------------
->   1 file changed, 10 insertions(+), 12 deletions(-)
+>  kernel/rcu/tree_stall.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Index: linux-pm/drivers/thermal/gov_fair_share.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/gov_fair_share.c
-> +++ linux-pm/drivers/thermal/gov_fair_share.c
-> @@ -21,23 +21,21 @@
->    */
->   static int get_trip_level(struct thermal_zone_device *tz)
->   {
-> -	struct thermal_trip trip;
-> -	int count;
-> +	const struct thermal_trip *trip = tz->trips;
-> +	int i;
->   
-> -	for (count = 0; count < tz->num_trips; count++) {
-> -		__thermal_zone_get_trip(tz, count, &trip);
-> -		if (tz->temperature < trip.temperature)
-> +	if (tz->temperature < trip->temperature)
-> +		return 0;
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 6f06dc12904a..0a58f8b233d8 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -8,6 +8,7 @@
+>   */
+>  
+>  #include <linux/kvm_para.h>
+> +#include <linux/console.h>
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+> @@ -582,6 +583,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+>  
+>  static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  {
+> +	enum nbcon_prio prev_prio;
+>  	int cpu;
+>  	unsigned long flags;
+>  	unsigned long gpa;
+> @@ -597,6 +599,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	if (rcu_stall_is_suppressed())
+>  		return;
+>  
+> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
 > +
-> +	for (i = 0; i < tz->num_trips - 1; i++) {
-> +		trip++;
-> +		if (tz->temperature < trip->temperature)
->   			break;
->   	}
+>  	/*
+>  	 * OK, time to rat on our buddy...
+>  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
+> @@ -651,6 +655,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	panic_on_rcu_stall();
+>  
+>  	rcu_force_quiescent_state();  /* Kick them all. */
+> +
+> +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
 
-Is it possible to use for_each_thermal_trip() instead ? That would make 
-the code more self-encapsulate
+The locations looks reasonable to me. I just hope that we would
+use another API: nbcon_emergency_enter()/exit() in the end.
 
-> -	/*
-> -	 * count > 0 only if temperature is greater than first trip
-> -	 * point, in which case, trip_point = count - 1
-> -	 */
-> -	if (count > 0)
-> -		trace_thermal_zone_trip(tz, count - 1, trip.type);
-> +	trace_thermal_zone_trip(tz, i, tz->trips[i].type);
->   
-> -	return count;
-> +	return i;
->   }
->   
->   static long get_target_state(struct thermal_zone_device *tz,
-> 
-> 
-> 
+Note that the new API it would allow to flush the messages in
+the emergency context immediately from printk().
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+In that case, we would to handle nmi_trigger_cpumask_backtrace()
+some special way.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+This function would be called from the emergency context but
+the nmi_cpu_backtrace() callbacks would be called on other
+CPUs in normal context.
 
+For this case I would add something like:
+
+void nbcon_flush_all_emergency(void)
+{
+	emum nbcon_prio = nbcon_get_default_prio();
+
+	if (nbcon_prio >= NBCON_PRIO_EMERGENCY)
+		nbcon_flush_all();
+}
+
+, where the POC of nbcon_get_default_prio() and nbcon_flush_all()
+was in the replay to the 7th patch, see
+https://lore.kernel.org/all/ZRLBxsXPCym2NC5Q@alley/
+
+
+Best Regards,
+Petr
