@@ -2,152 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0447B0263
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FEE7B0268
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjI0LGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        id S231313AbjI0LG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbjI0LGB (ORCPT
+        with ESMTP id S231308AbjI0LGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:06:01 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5A1194
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:05:59 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso1336752266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:05:59 -0700 (PDT)
+        Wed, 27 Sep 2023 07:06:25 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1AA13A;
+        Wed, 27 Sep 2023 04:06:24 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c60778a3bfso66481505ad.1;
+        Wed, 27 Sep 2023 04:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695812758; x=1696417558; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X4MNJypFjWhOXg+vjR8/6N1m0XwqdwpdrXf8qtp+Kfc=;
-        b=vnrBHK8OmUxcdByFT+xxVfqd1hvUD0uDHkLefXQ/ow9eygvUHT16ACmSmr9cwgFSiO
-         ABM4JKbGpr/XsM2q84d/3nivrkNKGmKAi4t/WVxoBe0tKOfxC12ePLmU6HafkaVhx3II
-         GK7Eri5QMzrTecIcHFV4/cvK4+mNFEhkBOafU/ZCxgEQneF4Sbz2fwTjh5HJs6X1fYcy
-         MLkP3dE0jDiCHcyhtrFSAuHSaPMn/mVN+rZ9fuXJPwFHOhBZg8zdkQKC87wuGJ9mAXG6
-         NWcGqxCbPAx2GBXn4g43kRQkVjBN0ubhlsH9xbJBUP6XwYO30wKHltIsw5fFshHYb5EU
-         RW+g==
+        d=gmail.com; s=20230601; t=1695812783; x=1696417583; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dJOVwtHQyTbslSpjfBitXSuheNCEieFwv87lFiuO0e4=;
+        b=AGG4GKT9Nfm7YZcZ+WK6e5OiEZqFGMj/jYnAMsdJKLym+BjJ2VabecAZ25zGZQiB7w
+         l/0aSRBWgjF1Faw7VoOQj8kfCeuDUF8dBmuvlvNaRyZjZbEZ5s99TP6xmgnasxq+Lg1J
+         Qg7twYI4nbZo+GWd5kGe5RzhhLUXob2S+ZT4xenBt0QA7T2cIjArWbJjDWZOwnlqShcV
+         yd0txzI46P9nHgGqSUAV9aRxXZylJ0KACgqluXmA0qhtqkruVdPblYf33+4NQ4aL+ZFz
+         VruPiKOd6yFlJ2kay4kUdX7dzguA4B3CbsrPmDdwBTqmH3RApW1pdyf4oQYMnP2iNgpK
+         9N4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695812758; x=1696417558;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X4MNJypFjWhOXg+vjR8/6N1m0XwqdwpdrXf8qtp+Kfc=;
-        b=QP1InUFG67f0NgMaQtSUxUVEcd4oqSY9GnDq50P3+/rfhyPt4bx9GCTeNT1A0Da99z
-         6ogxpPlILWVoIjspIqZ7PRM7p2SyKkJSxbmHg+90AIcZbomVBAJGP+CHpCUhNLTxKJMO
-         a5o1UVhvFc+47sxJ4xM71cHvG818DVFmInM8gyl54jbZwVt+f/ww8wrx3ifDRL4BwDFz
-         JpT7JOVIi5e+viTTiOA6qrFpy+j4lYaOFiLxjKq1OhlaHEX24Qd4w9etefZTk99gN+V3
-         IwkZImdXlQ1N2SqdBrvTh84F5RxixOSjmpGk+5GZSENTOe/hdFvRg9K2431TOAA9fY3g
-         bxKQ==
-X-Gm-Message-State: AOJu0YwkJg8JEac3fQN33j3C050rGzpsuV8osWNtKFELJ0i24CO4zvfS
-        DHjaBzWRNcnN6Zm5j+cn2e43OQ==
-X-Google-Smtp-Source: AGHT+IGe5XHS5ZU+n0G4YE9QX62/Daz5mEmdvc2HFNeTQgta0/VGL8VhH3AUp4VGsIwvB6VyUJJ6Ow==
-X-Received: by 2002:a17:907:78d8:b0:9a1:c447:3c62 with SMTP id kv24-20020a17090778d800b009a1c4473c62mr1427055ejc.49.1695812758428;
-        Wed, 27 Sep 2023 04:05:58 -0700 (PDT)
-Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
-        by smtp.gmail.com with ESMTPSA id ey6-20020a1709070b8600b009b2b7333c8bsm421980ejc.81.2023.09.27.04.05.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 04:05:58 -0700 (PDT)
-Message-ID: <354e5b45-468e-4fe6-9646-6b4d9596393a@linaro.org>
-Date:   Wed, 27 Sep 2023 13:05:56 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sm6375-pdx225: Add USBPHY
- regulators
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1695812783; x=1696417583;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dJOVwtHQyTbslSpjfBitXSuheNCEieFwv87lFiuO0e4=;
+        b=hz2i4oDA/pnUlzD/Qg2yjzF/Zrk24gxdJWTR6llInlowAd2byV5Eyzi0CkYhfRxmvP
+         2P1hzWk3LfiQs7f928WtrDKZKPQBGicoAyX94F3sCQdenDhsonSpeoj1Z2eqBqGPibLN
+         fEteFtqTEirWCkrDvPQ4hnsmVJAPHR9VLAWVfXY1mqG+wz8/3aNkrc/sjSMHyoShgMZy
+         Cdz+Mvt1OmzMCAlZKiWsKO3jzpGTmKbc1FGuH/D2OIeOIJM1oox2gwUTXU3UdeOKJoSQ
+         7f12ISAY5ynDrmS4cKh8Lz6DhVNX2DvfJvmoDrJjFrOxvMUm806Ze6uZ31xnkQAH7L92
+         GiIw==
+X-Gm-Message-State: AOJu0Ywx5TTOMZT48framdkSmHHWmDEeT7PcFwF3BfL5Dm+VbbwRorVp
+        00sBJlefetPhupgeffBtUUr4Wkr6tiE=
+X-Google-Smtp-Source: AGHT+IHGJyc5X9QIGk5v8z83vxna6oBlQiLfhrPYWSJPyk+YiOKb89q7WCne8KDZjPONZGqTQnHkqg==
+X-Received: by 2002:a17:903:187:b0:1bf:826:9e30 with SMTP id z7-20020a170903018700b001bf08269e30mr1504287plg.16.1695812783029;
+        Wed, 27 Sep 2023 04:06:23 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id n11-20020a170902d2cb00b001c06dcd453csm12797430plc.236.2023.09.27.04.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 04:06:22 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 16:36:18 +0530
+Message-Id: <87o7hng9jp.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230927-topic-6375_stuff-v1-0-12243e36b45c@linaro.org>
- <20230927-topic-6375_stuff-v1-4-12243e36b45c@linaro.org>
- <8bbdf132-a007-4cb7-b842-a81de7c1629a@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <8bbdf132-a007-4cb7-b842-a81de7c1629a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 06/12] ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
+In-Reply-To: <20230919201532.310085-7-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.09.2023 13:01, Bryan O'Donoghue wrote:
-> On 27/09/2023 10:21, Konrad Dybcio wrote:
->> To make dtbs_check happy and the software more aware of what's going
->> on, describe the HSUSB PHY's regulators and tighten up VDDA_PLL to match.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts b/arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts
->> index bbec7aee60be..0ce4fa8de8b0 100644
->> --- a/arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts
->> +++ b/arch/arm64/boot/dts/qcom/sm6375-sony-xperia-murray-pdx225.dts
->> @@ -243,8 +243,8 @@ pm6125_l6: l6 {
->>           };
->>             pm6125_l7: l7 {
->> -            regulator-min-microvolt = <720000>;
->> -            regulator-max-microvolt = <1050000>;
->> +            regulator-min-microvolt = <880000>;
->> +            regulator-max-microvolt = <880000>;
-> 
-> Where did the old values come from and why are the new values better ?
-> 
-> Consider enumerating that in the commit log.
-That's the pretty standard situation where:
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-- downstream defines very loose ranges
-- developer uses these very loose ranges as a guideline
-- some hardware (often the exclusive user of that regulator)
-  has a hidden-ish request of a tighter range
-- the developer realizes that and has to fix up the ranges
+> This patch separates block bitmap and buddy bitmap freeing in order to
+> update block bitmap with ext4_mb_mark_context in following patch.
+>
+> Separated freeing is safe with concurrent allocation as long as:
+> 1. Firstly allocate block in buddy bitmap, and then in block bitmap.
+> 2. Firstly free block in block bitmap, and then buddy bitmap.
+> Then freed block will only be available to allocation when both buddy
+> bitmap and block bitmap are updated by freeing.
+> Allocation obeys rule 1 already, just do sperated freeing with rule 2.
+>
+> Separated freeing has no race with generate_buddy as:
+> Once ext4_mb_load_buddy_gfp is executed successfully, the update-to-date
+> buddy page can be found in sbi->s_buddy_cache and no more buddy
+> initialization of the buddy page will be executed concurrently until
+> buddy page is unloaded. As we always do free in "load buddy, free,
+> unload buddy" sequence, separated freeing has no race with generate_buddy.
+>
 
-Konrad
+Agreed. And thanks for adding a separate patch which talks about this
+change. 
+
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 98 +++++++++++++++++++++++------------------------
+>  1 file changed, 49 insertions(+), 49 deletions(-)
+
+The patch looks good to me. Please feel free to add - 
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
