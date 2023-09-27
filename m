@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C235E7B0197
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EAD7B01A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjI0KRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 06:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
+        id S231209AbjI0KTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 06:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI0KRD (ORCPT
+        with ESMTP id S229478AbjI0KTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 06:17:03 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68776210C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:17:01 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690bd59322dso8137568b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695809821; x=1696414621; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYa/zLWhaWlLbyEdQHtV25GBy6ERU5sz2cDVOjL/pMw=;
-        b=GaseYJ1EQfoqiCJUEROuqNeR9TItOOn1+6WG85O1hkdtbm7+5ADy3SWWfvVsQtxMRD
-         8zQdMn7tiMZVxUOf1Ukl2dZqx+KWEy8uPdAbdT6XTIIFE30n+V7EhhisOvCgz/jmbnPd
-         gEjoRLlGnDNTnmWC2FODtAxcgZ9JLh8garnU7807OogVZxiXGuMT1Lb0qC4RuGbp6+c+
-         vO1Bugbvl37ZFLIsFdxgfSSnqYd/EWObLSGuZANxSNw74iq3ejvAdYoq1qZYX3XJFDlb
-         hbDgwIyEFSrJVocrwB+XpIF6CbM/YQlg4iaYU9OaasYIjWGNDAurfcXdNEouu7nvqiR8
-         dUCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695809821; x=1696414621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VYa/zLWhaWlLbyEdQHtV25GBy6ERU5sz2cDVOjL/pMw=;
-        b=ir4RaCMR2fICl3Zyl3ut2lsl/HrNchpyBbKs2SUmrFZpl6GhGaZ6C18F15ykaBajza
-         XaZ8THDNJwEi+7rDOEt4k1Zkw8eTp6tVVBpoggpIsNNS5F61xZWC1aQcKZO15WsASO0u
-         qNujVr2xQs0TRLKe657Ice3L4lpeA0/xM3gvIOiyu2T2Y6+uWW0jm0fATBTqhCDQdu4q
-         xgtp0QeLAImD0oNrIY6auiHDSP58Yoqxf+EbzvogrZCk3sIEt1VJPn15wycdpfdz5A/c
-         Rrl+lVhnkIXqQF7aBLHU1XPpqSCxbxDhkDHRowbBPAvKYZdAvESglV68cq7H45tyJZca
-         hTqw==
-X-Gm-Message-State: AOJu0YyeCzAL4/Q681JNG3bu1Hqq0CQiscZtbZ1/hpvS10CI7Si7qDR2
-        UOV89CRBTMWrtQUCdRBf4Z/xLg==
-X-Google-Smtp-Source: AGHT+IG0FtIdKo4pE/Mc/4f7lWF8kAzb8tGrmno1c4Zlw+TyOskgF9G2Q1o33B/OdPikAYHuwXuP1Q==
-X-Received: by 2002:a05:6a00:22cd:b0:68f:c057:b567 with SMTP id f13-20020a056a0022cd00b0068fc057b567mr1654534pfj.26.1695809820656;
-        Wed, 27 Sep 2023 03:17:00 -0700 (PDT)
-Received: from [10.84.145.144] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b0068fe7c4148fsm11327222pfd.57.2023.09.27.03.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 03:17:00 -0700 (PDT)
-Message-ID: <8c758106-c0a1-5eb2-83c9-ab019039cec7@bytedance.com>
-Date:   Wed, 27 Sep 2023 18:16:54 +0800
+        Wed, 27 Sep 2023 06:19:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDF3210C;
+        Wed, 27 Sep 2023 03:19:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18759C433C7;
+        Wed, 27 Sep 2023 10:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695809948;
+        bh=0PmME+5Au82O+VzIZuXB83pi8BaLUH3zUZNmXJdkrUw=;
+        h=From:Subject:Date:To:Cc:From;
+        b=UUVM9YpTeVoJO7P9hubHPoCkeQFm1IGkHTUaVajqOqHbJigSKZkr0pN0IkSjW3xqX
+         F0yKQniqdk+kNmIvXzKbFFIaqA0WDX4tro39EcusJujOF3MEuwutz4H0o5NoX6c6nO
+         vIaVIsUUGa85ciSfeWaUT1f5nArjW2mVn7XnsyRUBTbRogpMgAifiTsJxA0Nl6nUdl
+         4vq9gh785fcHtUj4K4hCJo0dzOd/O/kCDobeJ2Z3b26irOUwB8dVs5Q4kSWZKkYomg
+         fIlcAMZDD2IR8+gR2mIXrBQh5LnYnByF7Sdw/ARtqOxnyWPtUMD+2r3pnVoUrBqK1w
+         uAf8h3oiFR8NQ==
+From:   Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/3] selftests: timers: Convert some more of the timers
+ tests to KTAP
+Date:   Wed, 27 Sep 2023 12:18:56 +0200
+Message-Id: <20230927-ktap-posix-timers-v1-0-399de1cbfbea@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v3 5/7] bpf: teach the verifier to enforce
- css_iter and task_iter in RCU CS
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
- <20230925105552.817513-6-zhouchuyi@bytedance.com>
- <CALOAHbBrSasWs1=15TB0O+DnKohVKQrRWTM6x9zP-VR1G9zehQ@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CALOAHbBrSasWs1=15TB0O+DnKohVKQrRWTM6x9zP-VR1G9zehQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJEBFGUC/x3MQQ5AMBBA0avIrE1CUeUqYtEwmIhqOiKSxt01l
+ m/xfwShwCTQZxEC3Sx8uoQyz2DarFsJeU4GVaiq6JTG/bIe/Sn84MUHBUHdUteaWuvSNJA6H2j
+ h538O4/t+Gqfw/GMAAAA=
+To:     Shuah Khan <shuah@kernel.org>, John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1408; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=0PmME+5Au82O+VzIZuXB83pi8BaLUH3zUZNmXJdkrUw=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlFAGXHvGD3YtH5Be1xhGkqOjkUjLKQQ+Q8Nsbe
+ bdu8rk1DriJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRQBlwAKCRAk1otyXVSH
+ 0MJGB/94fv4Ns+92xD2BTjAF4KBDDqEgvHJZUOUnmdoFrI9d+PowvFNZtxT0W6+0hZzIlcD1vZb
+ uW4D97T6Zzylj0Svz3HYyv2um0EeLG5IhsQDIMVtkuJPTwJYhUcxCuRREhX4cdnsOd2cMzdiOFj
+ fL+LVmjY3bEwIQvQi2KH8JQ62fHbYgcVDpvoSKSWGzi/Sd3WHHK1rSCAkKzQw8jpA/ePC42JXO+
+ MtKOY++xh4+NtJDvlHIM5MNHnZewcSl045TIc5A+TbouC66mi4Zkrsk+Ve0XmJ5PreWFI/7Chy+
+ fqzQlC80GLWOUyC78mVDIrM95vmOtY2FAB6jk9+Y+0521wXd
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,272 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KTAP is the standard output format for selftests, providing a method for
+systems running the selftests to get results from individual tests
+rather than just a pass/fail for the test program as a whole.  While
+many of the timers tests use KTAP some have custom output formats, let's
+convert a few more to KTAP to make them work better in automation.
 
+The posix_timers test made use of perror(), I've added a generic helper
+to kselftest.h for that since it seems like it'll be useful elsewhere.
 
-在 2023/9/27 18:00, Yafang Shao 写道:
-> On Mon, Sep 25, 2023 at 6:56 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->> css_iter and task_iter should be used in rcu section. Specifically, in
->> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
->> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
->> use them directly.
->>
->> This patch adds a new a KF flag KF_RCU_PROTECTED for bpf_iter_task_new and
->> bpf_iter_css_new. It means the kfunc should be used in RCU CS. We check
->> whether we are in rcu cs before we want to invoke this kfunc. If the rcu
->> protection is guaranteed, we would let st->type = PTR_TO_STACK | MEM_RCU.
->> Once user do rcu_unlock during the iteration, state MEM_RCU of regs would
->> be cleared. is_iter_reg_valid_init() will reject if reg->type is UNTRUSTED.
->>
->> It is worth noting that currently, bpf_rcu_read_unlock does not
->> clear the state of the STACK_ITER reg, since bpf_for_each_spilled_reg
->> only considers STACK_SPILL. This patch also let bpf_for_each_spilled_reg
->> search STACK_ITER.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> 
-> This patch should be ahead of patch #2 and you introduce
-> KF_RCU_PROTECTED in it then use this flag in later patches.
-> BTW, I can't apply your series on bpf-next. I think you should rebase
-> it on the latest bpf-next, otherwise the BPF CI can't be triggered.
-> 
+There are more tests that don't use KTAP, several of them just run a
+single test so don't really benefit from KTAP and there were a couple
+where the conversion was a bit more complex so I've left them for now.
 
-Sorry for the mistake, will rebase in v4.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Mark Brown (3):
+      kselftest: Add a ksft_perror() helper
+      selftests: timers: Convert posix_timers test to generate KTAP output
+      selftests: timers: Convert nsleep-lat test to generate KTAP output
 
->> ---
->>   include/linux/bpf_verifier.h | 19 ++++++++------
->>   include/linux/btf.h          |  1 +
->>   kernel/bpf/helpers.c         |  4 +--
->>   kernel/bpf/verifier.c        | 48 +++++++++++++++++++++++++++---------
->>   4 files changed, 50 insertions(+), 22 deletions(-)
->>
->> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->> index a3236651ec64..b5cdcc332b0a 100644
->> --- a/include/linux/bpf_verifier.h
->> +++ b/include/linux/bpf_verifier.h
->> @@ -385,19 +385,18 @@ struct bpf_verifier_state {
->>          u32 jmp_history_cnt;
->>   };
->>
->> -#define bpf_get_spilled_reg(slot, frame)                               \
->> +#define bpf_get_spilled_reg(slot, frame, mask)                         \
->>          (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
->> -         (frame->stack[slot].slot_type[0] == STACK_SPILL))             \
->> +         ((1 << frame->stack[slot].slot_type[0]) & (mask))) \
->>           ? &frame->stack[slot].spilled_ptr : NULL)
->>
->>   /* Iterate over 'frame', setting 'reg' to either NULL or a spilled register. */
->> -#define bpf_for_each_spilled_reg(iter, frame, reg)                     \
->> -       for (iter = 0, reg = bpf_get_spilled_reg(iter, frame);          \
->> +#define bpf_for_each_spilled_reg(iter, frame, reg, mask)                       \
->> +       for (iter = 0, reg = bpf_get_spilled_reg(iter, frame, mask);            \
->>               iter < frame->allocated_stack / BPF_REG_SIZE;              \
->> -            iter++, reg = bpf_get_spilled_reg(iter, frame))
->> +            iter++, reg = bpf_get_spilled_reg(iter, frame, mask))
->>
->> -/* Invoke __expr over regsiters in __vst, setting __state and __reg */
->> -#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr)   \
->> +#define bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, __mask, __expr)   \
->>          ({                                                               \
->>                  struct bpf_verifier_state *___vstate = __vst;            \
->>                  int ___i, ___j;                                          \
->> @@ -409,7 +408,7 @@ struct bpf_verifier_state {
->>                                  __reg = &___regs[___j];                  \
->>                                  (void)(__expr);                          \
->>                          }                                                \
->> -                       bpf_for_each_spilled_reg(___j, __state, __reg) { \
->> +                       bpf_for_each_spilled_reg(___j, __state, __reg, __mask) { \
->>                                  if (!__reg)                              \
->>                                          continue;                        \
->>                                  (void)(__expr);                          \
->> @@ -417,6 +416,10 @@ struct bpf_verifier_state {
->>                  }                                                        \
->>          })
->>
->> +/* Invoke __expr over regsiters in __vst, setting __state and __reg */
->> +#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr) \
->> +       bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, 1 << STACK_SPILL, __expr)
->> +
->>   /* linked list of verifier states used to prune search */
->>   struct bpf_verifier_state_list {
->>          struct bpf_verifier_state state;
->> diff --git a/include/linux/btf.h b/include/linux/btf.h
->> index 928113a80a95..c2231c64d60b 100644
->> --- a/include/linux/btf.h
->> +++ b/include/linux/btf.h
->> @@ -74,6 +74,7 @@
->>   #define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
->>   #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
->>   #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
->> +#define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
->>
->>   /*
->>    * Tag marking a kernel function as a kfunc. This is meant to minimize the
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 9c3af36249a2..aa9e03fbfe1a 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2507,10 +2507,10 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
->> -BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
->> +BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
->>   BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
->> -BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
->> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
->>   BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
->>   BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 2367483bf4c2..a065e18a0b3a 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -1172,7 +1172,12 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
->>
->>   static void __mark_reg_known_zero(struct bpf_reg_state *reg);
->>
->> +static bool in_rcu_cs(struct bpf_verifier_env *env);
->> +
->> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta);
->> +
->>   static int mark_stack_slots_iter(struct bpf_verifier_env *env,
->> +                                struct bpf_kfunc_call_arg_meta *meta,
->>                                   struct bpf_reg_state *reg, int insn_idx,
->>                                   struct btf *btf, u32 btf_id, int nr_slots)
->>   {
->> @@ -1193,6 +1198,12 @@ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
->>
->>                  __mark_reg_known_zero(st);
->>                  st->type = PTR_TO_STACK; /* we don't have dedicated reg type */
->> +               if (is_kfunc_rcu_protected(meta)) {
->> +                       if (in_rcu_cs(env))
->> +                               st->type |= MEM_RCU;
-> 
-> I think this change is incorrect.  The type of st->type is enum
-> bpf_reg_type, but MEM_RCU is enum bpf_type_flag.
-> Or am I missing something?
-Looking at is_rcu_reg(), It seems OK to add MEM_RCU flag to st->type.
+ tools/testing/selftests/kselftest.h           | 14 +++++
+ tools/testing/selftests/timers/nsleep-lat.c   | 26 ++++-----
+ tools/testing/selftests/timers/posix_timers.c | 81 ++++++++++++++-------------
+ 3 files changed, 67 insertions(+), 54 deletions(-)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230926-ktap-posix-timers-67e978466185
 
-static bool is_rcu_reg(const struct bpf_reg_state *reg)
-{
-	return reg->type & MEM_RCU;
-}
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-Here is the previous discussion link:
-https://lore.kernel.org/lkml/CAADnVQKu+a6MKKfJy8NVmwtpEw1ae-_8opsGjdvvfoUjwE1sog@mail.gmail.com/
-
-Thanks.
-
-> 
->> +                       else
->> +                               st->type |= PTR_UNTRUSTED;
->> +               }
->>                  st->live |= REG_LIVE_WRITTEN;
->>                  st->ref_obj_id = i == 0 ? id : 0;
->>                  st->iter.btf = btf;
->> @@ -1267,7 +1278,7 @@ static bool is_iter_reg_valid_uninit(struct bpf_verifier_env *env,
->>          return true;
->>   }
->>
->> -static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->> +static int is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->>                                     struct btf *btf, u32 btf_id, int nr_slots)
->>   {
->>          struct bpf_func_state *state = func(env, reg);
->> @@ -1275,26 +1286,28 @@ static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_
->>
->>          spi = iter_get_spi(env, reg, nr_slots);
->>          if (spi < 0)
->> -               return false;
->> +               return -EINVAL;
->>
->>          for (i = 0; i < nr_slots; i++) {
->>                  struct bpf_stack_state *slot = &state->stack[spi - i];
->>                  struct bpf_reg_state *st = &slot->spilled_ptr;
->>
->> +               if (st->type & PTR_UNTRUSTED)
->> +                       return -EPERM;
->>                  /* only main (first) slot has ref_obj_id set */
->>                  if (i == 0 && !st->ref_obj_id)
->> -                       return false;
->> +                       return -EINVAL;
->>                  if (i != 0 && st->ref_obj_id)
->> -                       return false;
->> +                       return -EINVAL;
->>                  if (st->iter.btf != btf || st->iter.btf_id != btf_id)
->> -                       return false;
->> +                       return -EINVAL;
->>
->>                  for (j = 0; j < BPF_REG_SIZE; j++)
->>                          if (slot->slot_type[j] != STACK_ITER)
->> -                               return false;
->> +                               return -EINVAL;
->>          }
->>
->> -       return true;
->> +       return 0;
->>   }
->>
->>   /* Check if given stack slot is "special":
->> @@ -7503,15 +7516,20 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
->>                                  return err;
->>                  }
->>
->> -               err = mark_stack_slots_iter(env, reg, insn_idx, meta->btf, btf_id, nr_slots);
->> +               err = mark_stack_slots_iter(env, meta, reg, insn_idx, meta->btf, btf_id, nr_slots);
->>                  if (err)
->>                          return err;
->>          } else {
->>                  /* iter_next() or iter_destroy() expect initialized iter state*/
->> -               if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots)) {
->> -                       verbose(env, "expected an initialized iter_%s as arg #%d\n",
->> +               err = is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots);
->> +               switch (err) {
->> +               case -EINVAL:
->> +                       verbose(env, "expected an initialized iter_%s as arg #%d or without bpf_rcu_read_lock()\n",
->>                                  iter_type_str(meta->btf, btf_id), regno);
->> -                       return -EINVAL;
->> +                       return err;
->> +               case -EPERM:
->> +                       verbose(env, "expected an RCU CS when using %s\n", meta->func_name);
->> +                       return err;
->>                  }
->>
->>                  spi = iter_get_spi(env, reg, nr_slots);
->> @@ -10092,6 +10110,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
->>          return meta->kfunc_flags & KF_RCU;
->>   }
->>
->> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta)
->> +{
->> +       return meta->kfunc_flags & KF_RCU_PROTECTED;
->> +}
->> +
->>   static bool __kfunc_param_match_suffix(const struct btf *btf,
->>                                         const struct btf_param *arg,
->>                                         const char *suffix)
->> @@ -11428,6 +11451,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>          if (env->cur_state->active_rcu_lock) {
->>                  struct bpf_func_state *state;
->>                  struct bpf_reg_state *reg;
->> +               u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
->>
->>                  if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
->>                          verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
->> @@ -11438,7 +11462,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>                          verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
->>                          return -EINVAL;
->>                  } else if (rcu_unlock) {
->> -                       bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
->> +                       bpf_for_each_reg_in_vstate_mask(env->cur_state, state, reg, clear_mask, ({
->>                                  if (reg->type & MEM_RCU) {
->>                                          reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
->>                                          reg->type |= PTR_UNTRUSTED;
->> --
->> 2.20.1
->>
->>
-> 
-> 
