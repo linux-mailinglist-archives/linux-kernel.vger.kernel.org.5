@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEA97B0F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2567B0F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjI0Wsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 18:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S230013AbjI0WtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 18:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjI0WsO (ORCPT
+        with ESMTP id S229926AbjI0WtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 18:48:14 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9342102
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:48:12 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c5fddcf2f1so135790325ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:48:12 -0700 (PDT)
+        Wed, 27 Sep 2023 18:49:21 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A071B1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:49:15 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c6193d6bb4so75985ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695854892; x=1696459692; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6h9NlhRD8hF3JGpC0yj7VRjIJqQSgsUALXY/NiPb6h0=;
-        b=W9P9xxx/gnYx5osYpeI76vzlOzUEZfBvOLYTAO10FfRylT1mRq2bCMYcS1+hZft3AY
-         eGZxePpApMxNN6c3WlWJBYdNELeMLib6wf1nyJ5oA4p5JDg7FCt1iW+URV2HCAkBPm2b
-         eqQeNetpEjf0hkEkQ0YyuyF1TCs6Vs9UTvLLXUReoJtc6/JIdz05h1AAlp1beXi2B0lQ
-         isFXBAT7jFPTgJQ8P+kuxLj6ro5eRYIb2ZFthvt5nDPRxsDGJoktPaerzsb8uVoQZzDu
-         n62biOqvhU0Oo26flZg4+asLR8fOy1TKIRJYK5XRG5g8V4oNQYf9ODdXlY15hK8yzQ+i
-         2DEA==
+        d=google.com; s=20230601; t=1695854955; x=1696459755; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XIJKJLaNcL8GDk+Ht7dCkCTcNn0oTRzFCuMLCDfzqz0=;
+        b=AaSwqqVeTdv/v3H+H80PAcofpbSf4vm8a0iBx5kRp/QN8d5Q7k4kEMAwranTVwK5DI
+         zxl0b+yUVWrp0Bfvlh94o6xMQohl7MzeA82Jf1T4ZnXrId3OwMnWUSOv81jl/yDlNN6N
+         ZMZuQ5pA6WIGvyZBa+lsdo3b22ubzzpFXw1tL7kF821Ych4NmYLEtRXfXat12nJO9IIN
+         8l3as0d5Vmxdy1O4+XMmZg4ivZ4hoq922Q7UVY363liccm1ZO8yIfjh1PTvOWgfrohHx
+         jecj7jeBZcIFrywKs5pFQeQwFqnYXCe+vO6ZwSn2zFptJ6C1BHyAeY2bb7lNtHrasfpr
+         2oVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695854892; x=1696459692;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6h9NlhRD8hF3JGpC0yj7VRjIJqQSgsUALXY/NiPb6h0=;
-        b=oWKkRB7qu8zr+7JcouQvxbeuXqo44qFvVnYE5l3LGh3qHItGKZQPzuHtLfPKib4Z7r
-         i+kAY4TGNeQMY+tgrEDYR9HZNP9mdfVKgLbFueL4HQbHEv/fHwsJFcFYtQbtckJOBNfd
-         t5f2OWadFWaqvUy5qPluC6F9CjAg0/vAZKnpihor4NgXSTkldVJpqwlTJzcNnU1JWKFL
-         mW3wrkTwHCR8SN8e6bz+aENjPI70aWUTEA4Sk78LXMrQ1tBUUyU3PfF2VCRLA44rSq6x
-         N2emBL1gUzbYKm5yiPMIvr+cwFRTveCG2n7HNEpwIpjE3v1C526rh7wFAecR0X9aSY65
-         fFmw==
-X-Gm-Message-State: AOJu0Yz71/nrM7dM5v3awK3SlMAcAJPP+laIxxttpcyL8rpIQfq6OPIJ
-        zQPVVIQ1P2mW0+EDwZ96/DBtniKs+XD9RA3ZdHE=
-X-Google-Smtp-Source: AGHT+IHK+0biBPVWxcHovzaXWOtINj3uMRtfg9f7R8EmqXuweOi238eHtIUJiD/eg0+vD4plv8qwETomHuFNs3pZDjQ=
-X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
- (user=samitolvanen job=sendgmr) by 2002:a17:903:2350:b0:1c6:d25:8750 with
- SMTP id c16-20020a170903235000b001c60d258750mr47383plh.10.1695854892186; Wed,
- 27 Sep 2023 15:48:12 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 22:48:04 +0000
-In-Reply-To: <20230927224757.1154247-8-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20230927224757.1154247-8-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2082; i=samitolvanen@google.com;
- h=from:subject; bh=4N5TA1RYsqEG6l9M0xplln+cBa1Qt0iz0MCbO5csiTU=;
- b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBlFLEdbuqhUGRkvHlpnRFoLVngxWUbGDzCKHZjB
- gXmrezGpZuJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZRSxHQAKCRBMtfaEi7xW
- 7uL3C/9V/COsf71wMsf8LAD8PbXFSUssu/Ulme80Bc+IvZbku+VH0yCAi+0as+ACJEpRsTnNbIQ
- pScn4vacTqNH+5w4IriZtrxed/+JlJlJ3oFsv2kgI5IxJP44McljBfgT1GRyGCHurDabqPsJYX5
- TaGUz9a7+gFF6iVgMLHb9uNWunfwjDU0mlECp6rp+occD5rm4k0XsmhUdYYDNB2N7vwL4ar7t7Y
- bRUrWcDXIDTzByGd1qZFeUPJ4XRuZmExIhm3XrLYrmbZvkYIH6oKzVv5knn9MHzzjsjfdiVDoME
- e2Bibk2Mj6F9ABYdpfXOcVNTMcGMZtsjvwmAv9Qx3j7PwTa5naJ0np9PriPDIM2jsshK4hOOa65
- Z+fMEcQII52/5PTX5HX9sXBqn/ly0o9tU3LTzbR4GGVs6W1Rzk4Yoden9lVz+2Ti9QdMMMmqjSM hvdcZcYO8OTXRXZtW4dNPx1A4wMY6pfJadi3BaYatIPrJyHzova74Yk95MQNhaBqyh0DU=
-X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
-Message-ID: <20230927224757.1154247-14-samitolvanen@google.com>
-Subject: [PATCH v4 6/6] lkdtm: Fix CFI_BACKWARD on RISC-V
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Clement Leger <cleger@rivosinc.com>, Guo Ren <guoren@kernel.org>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
+        d=1e100.net; s=20230601; t=1695854955; x=1696459755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XIJKJLaNcL8GDk+Ht7dCkCTcNn0oTRzFCuMLCDfzqz0=;
+        b=I04a+pyqgpeaycaEt7IkdWmaFCXVrTtNf7cKguXegHNZ+wT7sI6wgQbcIYLM9m+gdh
+         Wk/TF8I8nbpJzrWeEO51cx4rP+DIvigNrMv0nUOJdf1c54f+Au10uOc+0FB3W7eV8xui
+         WF51/06zaHLmJBx+V5KsUlnN1/xG6JuupCLsdNZgi4iu4Yr79TyzsKqcb9Rt73G2IjJp
+         aFSZMd6LK3pH6+UDVkY474DhUIGX4IfBMNyWa6oCOX1e+yKLk9vwgdpSXj2dFqjlkbUG
+         i0bbKCxWHiPrkqVFfiztqgjuBlVDht7DQqC1Zh72KtEVcZIi+T7s6lqygfug1rL0UAnZ
+         +AZg==
+X-Gm-Message-State: AOJu0Yw0yGlGIM+nCORPL/Wf9tm+nUeVwOYTMVHHh/tvvBYts62ygKNe
+        YmvJ3RrAy4AX8/NMWVDxbEkiF/0tQ3T+X0nD4C+2Fw==
+X-Google-Smtp-Source: AGHT+IFg4xs/UWNT30KLKAXtF/O8kFcQ5dG9ij6JaTG86Q1zxSkGAbGJpi6P6KLyxdxnH8Dbwsd8eB1Rrn4s8EKe6hI=
+X-Received: by 2002:a17:902:e751:b0:1c6:112f:5ceb with SMTP id
+ p17-20020a170902e75100b001c6112f5cebmr562761plf.25.1695854955102; Wed, 27 Sep
+ 2023 15:49:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
+ <CAG48ez2WNOMwPo4OMVUHbS4mirwbqHUY5qUaaZ9DTkXdkzrjiQ@mail.gmail.com>
+ <CAJuCfpGcsBE2XqPJSVo1gdE_O96gzS5=ET=u0uSBSX3Lj56CtA@mail.gmail.com> <CAJuCfpHY5zhkS0OPxOK-twb6pDJg6OpXZnPquw_9wBmbjFiF9Q@mail.gmail.com>
+In-Reply-To: <CAJuCfpHY5zhkS0OPxOK-twb6pDJg6OpXZnPquw_9wBmbjFiF9Q@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 28 Sep 2023 00:48:37 +0200
+Message-ID: <CAG48ez3w7kbetfhEd7trLhOKJYPw4jSVBeOC+psZZR84d-hJaw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,53 +82,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RISC-V, the return address is before the current frame pointer,
-unlike on most other architectures. Use the correct offset on RISC-V
-to fix the CFI_BACKWARD test.
+On Wed, Sep 27, 2023 at 11:08=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+> On Wed, Sep 27, 2023 at 1:42=E2=80=AFPM Suren Baghdasaryan <surenb@google=
+.com> wrote:
+> >
+> > On Wed, Sep 27, 2023 at 1:04=E2=80=AFPM Jann Horn <jannh@google.com> wr=
+ote:
+> > >
+> > > On Wed, Sep 27, 2023 at 8:08=E2=80=AFPM Suren Baghdasaryan <surenb@go=
+ogle.com> wrote:
+> > > > On Wed, Sep 27, 2023 at 5:47=E2=80=AFAM Jann Horn <jannh@google.com=
+> wrote:
+> > > > > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <suren=
+b@google.com> wrote:
+> > > > > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
+> > > > > > +               /*
+> > > > > > +                * If the dst_pmd is mapped as THP don't overri=
+de it and just
+> > > > > > +                * be strict. If dst_pmd changes into TPH after=
+ this check, the
+> > > > > > +                * remap_pages_huge_pmd() will detect the chang=
+e and retry
+> > > > > > +                * while remap_pages_pte() will detect the chan=
+ge and fail.
+> > > > > > +                */
+> > > > > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
+> > > > > > +                       err =3D -EEXIST;
+> > > > > > +                       break;
+> > > > > > +               }
+> > > > > > +
+> > > > > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma);
+> > > > > > +               if (ptl && !pmd_trans_huge(*src_pmd)) {
+> > > > > > +                       spin_unlock(ptl);
+> > > > > > +                       ptl =3D NULL;
+> > > > > > +               }
+> > > > >
+> > > > > This still looks wrong - we do still have to split_huge_pmd()
+> > > > > somewhere so that remap_pages_pte() works.
+> > > >
+> > > > Hmm, I guess this extra check is not even needed...
+> > >
+> > > Hm, and instead we'd bail at the pte_offset_map_nolock() in
+> > > remap_pages_pte()? I guess that's unusual but works...
+> >
+> > Yes, that's what I was thinking but I agree, that seems fragile. Maybe
+> > just bail out early if (ptl && !pmd_trans_huge())?
+>
+> No, actually we can still handle is_swap_pmd() case by splitting it
+> and remapping the individual ptes. So, I can bail out only in case of
+> pmd_devmap().
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Acked-by: Kees Cook <keescook@chromium.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/misc/lkdtm/cfi.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+FWIW I only learned today that "real" swap PMDs don't actually exist -
+only migration entries, which are encoded as swap PMDs, exist. You can
+see that when you look through the cases that something like
+__split_huge_pmd() or zap_pmd_range() actually handles.
 
-diff --git a/drivers/misc/lkdtm/cfi.c b/drivers/misc/lkdtm/cfi.c
-index fc28714ae3a6..6a33889d0902 100644
---- a/drivers/misc/lkdtm/cfi.c
-+++ b/drivers/misc/lkdtm/cfi.c
-@@ -68,12 +68,20 @@ static void lkdtm_CFI_FORWARD_PROTO(void)
- #define no_pac_addr(addr)      \
- 	((__force __typeof__(addr))((uintptr_t)(addr) | PAGE_OFFSET))
- 
-+#ifdef CONFIG_RISCV
-+/* https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-cc.adoc#frame-pointer-convention */
-+#define FRAME_RA_OFFSET		(-1)
-+#else
-+#define FRAME_RA_OFFSET		1
-+#endif
-+
- /* The ultimate ROP gadget. */
- static noinline __no_ret_protection
- void set_return_addr_unchecked(unsigned long *expected, unsigned long *addr)
- {
- 	/* Use of volatile is to make sure final write isn't seen as a dead store. */
--	unsigned long * volatile *ret_addr = (unsigned long **)__builtin_frame_address(0) + 1;
-+	unsigned long * volatile *ret_addr =
-+		(unsigned long **)__builtin_frame_address(0) + FRAME_RA_OFFSET;
- 
- 	/* Make sure we've found the right place on the stack before writing it. */
- 	if (no_pac_addr(*ret_addr) == expected)
-@@ -88,7 +96,8 @@ static noinline
- void set_return_addr(unsigned long *expected, unsigned long *addr)
- {
- 	/* Use of volatile is to make sure final write isn't seen as a dead store. */
--	unsigned long * volatile *ret_addr = (unsigned long **)__builtin_frame_address(0) + 1;
-+	unsigned long * volatile *ret_addr =
-+		(unsigned long **)__builtin_frame_address(0) + FRAME_RA_OFFSET;
- 
- 	/* Make sure we've found the right place on the stack before writing it. */
- 	if (no_pac_addr(*ret_addr) == expected)
--- 
-2.42.0.515.g380fc7ccd1-goog
-
+So I think if you wanted to handle all the PMD types properly here
+without splitting, you could do that without _too_ much extra code.
+But idk if it's worth it.
