@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEACB7B097D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5347B0980
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbjI0QBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
+        id S232269AbjI0QCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbjI0QBn (ORCPT
+        with ESMTP id S230410AbjI0QCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:01:43 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E223F139
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:01:40 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c62d61dc96so34909155ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695830500; x=1696435300; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=n15H0FheNa3mqwmWOOLwdjuLknHFCZpBdaYFxw9dy2I=;
-        b=Gvj/rZAPooCRMXaXBC7k1XyqIv+TVI2aYApHIVeH3g4ip/PdkFuSS2fJ17G+xfZSqz
-         PL3QeXSmn6Nr3EoZ/FXYvd/e8TGrTucVSO9a2bBJNj7nbYtJpgzFuHplewIgxNs8L8HU
-         Z3S50JwcjkTVdZsrQOvFSy/0xQ3k+noV1Zfso=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695830500; x=1696435300;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n15H0FheNa3mqwmWOOLwdjuLknHFCZpBdaYFxw9dy2I=;
-        b=RjmmEGtm+Hb/XCOU0W6+qMxIXGwfxAAhBWhSoyCNGCDtRgoVs05rtXCwn2z3vyz3LT
-         zYCvNCPB5zJJYvDJesapWPbR6zjLU6d+nbpwC/uXBiHIXxxhVuJo9yC32eut/5lqtsDA
-         x+2r97GSJnBn9fQpfnMwQyHZQmIAgZrytUSUE8CwWXMZEilV2PHc3qb1Ap0DaFl+6PMH
-         1m2rD6QGQorNHWESnaU9dBbWST/7czO+ZdXFgitIY4IRIz1d4M4jtl4wc1ndPhG63q3M
-         8k0WqnCeaiXwHEP07OJ+bqmMEGZPy+vqJQR9mxgwJWeWh5iIMQ+yTIq6s82MizmaDbqW
-         86IQ==
-X-Gm-Message-State: AOJu0YyVu1dc8G+XFHvhnCgMdU0G7mx6NcZRfxBCsCdAi0x0P/4CBlLV
-        yrZ6YjzdDx1M172O+BiQAb7A7A==
-X-Google-Smtp-Source: AGHT+IGrBR+utDzRL8afQeGJmUYEVj5u/kadJGYYsKrk0xcLszK9da5IGy/cQqmOdKo3WGrF094bUw==
-X-Received: by 2002:a17:902:c14c:b0:1c5:bcdf:fe93 with SMTP id 12-20020a170902c14c00b001c5bcdffe93mr2094485plj.27.1695830500304;
-        Wed, 27 Sep 2023 09:01:40 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i3-20020a170902c94300b001c6092d35b9sm8399659pla.85.2023.09.27.09.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 09:01:39 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 09:01:38 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Subject: Re: [PATCH 0/3] get_maintainer: add patch-only keyword matching
-Message-ID: <202309270859.B83F72E179@keescook>
-References: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
- <CAKwvOdn4wwaBYzddLuXunjvCyH7HU8Brds-ZCYzsSxsAg4275Q@mail.gmail.com>
+        Wed, 27 Sep 2023 12:02:01 -0400
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2082.outbound.protection.outlook.com [40.107.12.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A952D9C
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:01:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ubp1wZdjWDQy/etPz/ImEhio5xHhCXKdZWQvzI2ie/Tidt48nkqjU+sKf6Yf4s+k1gmbN8bKT6DC8Omd44Tb0kGSbWJiSa2ZMjSXZmAJ8g1/HL1p7MXdINsKUNvxcNZ1k0Cvtr+lKqkj4KPMvLpOaLOJc00yvfgGzK4draHKS62v9560oMIlX/uqLTcsu6oWTpPDiuZrMzkHm1kqSmknkjgjOK6PHoE7F612e8jORZhrldnW/UJRN2AqR80Kiv3Di+nX2eo5Zs0BthKj5HpW/WcKplOM4ngBrax7ZPdgwrz4JG2YLVWUKlXcvkJe96WeOjwMuXg52sFnC4wjJhO5Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZBKNQf79SLsNVFbzvjyy9qkwCFtquBfwVGKlvrpzB5Q=;
+ b=UYKXzm6F34YYblj3/t564DqkOzWtCIqh0YH4vr+kOaPpt1gakuw7X6eW2IwVl+6QBeihnbVLSa0/PU5rTYfcbdJNwsROlcHpH5HRQ49p+qXvvYL8QfPps4+mfaSeTOrJ22F17oY4gUAxqf/AiKSmod25PDq0KFdIwKuVHgxNDY+T3LqRfNVPHDXOJPYg3Hemha0yns5vdxW7hmf3PCN7JNyJBgCOgik6qA9k+Fta+liEgJDj5WvjsWdGZZXrgXpHH6HgU+OJiZXlScG70/+bgUNdqBpod9htztNZLoIfFvtuKBWWUaE4YIBnNxKysM8AGuUseciFTFfX8zENral9xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZBKNQf79SLsNVFbzvjyy9qkwCFtquBfwVGKlvrpzB5Q=;
+ b=A/gdJTvM7T/RL0erHfWNDObPw55gIqz9N2/0pvxULyyjGL4wm8kKtuai8JKHTe8LDkt4HCFwsFZcasjNaVV5GlpCiGa79PzdteN8Pp6UjjqkE7maELAgRy9ROBTK/8l/WGcuIJ72bQYk0wSyIgZa+6tDwMfBDKvP3Zc1LFNxBA+bCz4QbTyv4OzJ7wRmr3uPKFt7kXiCv4cZJmgwTRm6LZfgbX7YLho9qIGy73iIwCajPdA18uhLl5LR5AgHZJ2TdCRlqgt8rR5/TN8PRLDa452OJEqOuyohhy5QRe3DNpbOelRjXW8HUA0YOR1O9ddEdgq9ZqhBUbakjwzV9+lksQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MR1P264MB2308.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:35::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Wed, 27 Sep
+ 2023 16:01:57 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6813.027; Wed, 27 Sep 2023
+ 16:01:57 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Ariel Miculas <ariel.miculas@gmail.com>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
+ PTRACE_PEEKUSER and PTRACE_POKEUSER
+Thread-Topic: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
+ PTRACE_PEEKUSER and PTRACE_POKEUSER
+Thread-Index: AQHYe+wVZ/yxK3g4vk2yaVkdS+lXbbAxXrMAgAA5JQCAAB6KAIAACaWA
+Date:   Wed, 27 Sep 2023 16:01:57 +0000
+Message-ID: <9afcdb29-db22-3f5c-b596-da7567b707ff@csgroup.eu>
+References: <CAPDJoNtU9Vuh87PxDkxo+7M_Kg_K4PPNGksPuW_guFbChYu-jA@mail.gmail.com>
+ <20220601155702.176588-1-ariel.miculas@gmail.com>
+ <CAPDJoNvZmeeU+T94rp8BJ0+bH5pDXQCEKPHiQF0Kcu=JrRRfrg@mail.gmail.com>
+ <CAPDJoNsb-HtfOQhD6ntZ8Hqx3fv3WAh1U5Jd3GzyN5EwO8znWA@mail.gmail.com>
+ <CAPDJoNuR8pNa+rp-PG_eeS14EvpMBLAmjNf9JvL=+0QTpwww-w@mail.gmail.com>
+ <d6bd3632-207e-b232-b4a1-0c592a3aaae9@csgroup.eu>
+ <CAPDJoNvADrCj8L2RAthXVbBxMNrjbY_4pnHu0QtKKARgyoQ-QA@mail.gmail.com>
+In-Reply-To: <CAPDJoNvADrCj8L2RAthXVbBxMNrjbY_4pnHu0QtKKARgyoQ-QA@mail.gmail.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2308:EE_
+x-ms-office365-filtering-correlation-id: c809fa9a-bb75-4d0f-c812-08dbbf7313a9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JxC1lQ6EHdohXteZa9i8DqOjzdNTIbYiAXM8o04LZLvCor8X/SXkZLMcR2M2/DALnmG2aSByHh4SeO4i+qd+li7WbIgXgjhnpBCQkBqmpqDGPYhllxcG/dDcbEfpCXhW6CKZaNafP+KiBjeUdn+emgL40MR3M/52Gp1GG7oA7w//K/p51xi5Yu9oumuhkYary0Wc9gynDrgBpu6BD80WjmWUA//jl1s1j5tIS9h6ndm/iRt93IGKYOxHkVc/klaDYi9rcNMScMScUyEt70cCnUamD4bsMfGrn5uoxZjABLDC+i3pyB2A5LT/0CJQ0VA0aJm4HqqU8QentjgWSh4sSV0aFEqNZsDtwhmu4TRecviBMddIYwEddRU5zqcjt3k7+2Jk0EcGNbHQPtKEfw17Z7l4mBt+xwOETwW3zaAQEDP6L0pRi7etG7MQ8eI4sueYlBipzwjzgYsAGzfBdlMmYLjGiGR4AM0+j4ilcEz943ZQ4TiAM4clIIrsOFtxWow4oNx9/9urt6i/Omka9VEGstW3i4wTpAMaEOp2LrjND8j+/uuHpJmaUXJFhHLYrRqQPkLXxUmTS5EuDB1RXDIWW7YzAO5KWM4RafscRcz4Z/WAQ0jXRIMxS4LfnrLvzNBNbIDbE+VOUDK//ifpzCSSoqG9cXsY8XcUCeU0fxhBxbI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39850400004)(230922051799003)(1800799009)(186009)(451199024)(2906002)(4744005)(38100700002)(38070700005)(86362001)(36756003)(71200400001)(6512007)(31696002)(6506007)(2616005)(966005)(6486002)(478600001)(26005)(41300700001)(44832011)(31686004)(8936002)(8676002)(4326008)(316002)(6916009)(122000001)(76116006)(91956017)(66556008)(54906003)(5660300002)(66946007)(64756008)(66476007)(66446008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eTk4b1RiNHh5RzdMMTMwZ2dFVXVQMXQ1UnE2WGdEQitta2l2UG5lcTJZeHFn?=
+ =?utf-8?B?MzdJbkNSTXlVUW9vdmpGOUMycXNjZFdJVzF4bFpLL1JiMnJEdWNSSWtKT3FW?=
+ =?utf-8?B?T0kzNVVYRmlLOFdGTlJwd0o2MHB4dlQrVzd3SnFXSEJ5cmp0Q3RlbkpWRFkv?=
+ =?utf-8?B?V0NUWmlsSnEyaGdqb0pxc2ErYmdraUM2SUpHMVNZMTZLNFlMcDM2dTFzeUpZ?=
+ =?utf-8?B?TXJqczRUaEhISndvTHV3UWxaZHlmNERobmhJclJrajRSczVRSGg5ZTRSWmxU?=
+ =?utf-8?B?NDNrOHVDOEh5M3A3UTFZNWtQVm4xTTh2VU1IVUJOdS9lM2hWa0J4K2xXdWFL?=
+ =?utf-8?B?NVl4VzZveFhqbGE1L3lvcDRubjRWbVhFTmhES3ZXT2V6TmJFR2tzWUhWdENv?=
+ =?utf-8?B?Y3FCSW04U1V4OXgrT05GUkdNekRycXQ3dnRTSkF1WVFxVEpYTE5YaFhPNDAz?=
+ =?utf-8?B?aGJPVnhnZ3N0b1VOdnhVVXdSUnl2UzgrQlZKVmFaVjUxV2t6cjdza0dHUDFJ?=
+ =?utf-8?B?SEpmOVlxQ08xUFZoNytNSSt5YUl2QVl5Zko4K1ZlREtKV0trUEEwZDF2dFV4?=
+ =?utf-8?B?Z1RLYWdlcEM2bW1LanRjbTBvMEw3M2twbDdVQ2pLWEtURE41MG9hZHQ2cGdY?=
+ =?utf-8?B?SzRqZXlOT3BlTnBDbEsrOC9ZaVVybnZxdkFXTVdYdHd4YmdKa2IyaFViVGtR?=
+ =?utf-8?B?VGZRZEhIeTY3U3lUaXNaZWQvc1lTcDBWelZqSk9VelRoaXNJRTNRakFCZXFl?=
+ =?utf-8?B?ZzRwTWhUWVF2NHdQcGl2VFNjZXBsZDlNRHBab3p3UjV4V0VYWEliQ1BCTVFz?=
+ =?utf-8?B?SzFIVHgyNHNSbzZaWmtMV1dWUVlEZ0VGcldFNm5keERWVFBrdXNrenZBUTFE?=
+ =?utf-8?B?R01BU0d6YkVWVDllSjA5emNQT1ZzM1RNTmIxN29mNEU5cllMaFVIVzdHL0dj?=
+ =?utf-8?B?Z3VwekNyUXNveFlnMzhZSERxV3l2WkhrUkI1VnNoR1NJTFNPRTlWU3VXN2Nx?=
+ =?utf-8?B?bGRMY1Vhb2Mvb1ZtczNJeWZuT3YxZ0k5V25uQnV1SnM1akhDbnZML3lpYzM0?=
+ =?utf-8?B?OXEvbzgwbXdnMEpFcmlWMVJNYXhwY3dncmZBS1dOeVE1NmdSQU40cWtyai9X?=
+ =?utf-8?B?akl1WkZUZTdYVi9HcmpVR0NtYnYwNWxKS3ZFRzZlU2tJcG1QVWk3RU1tQ0d4?=
+ =?utf-8?B?MDV2Y2gxaytBcVlXemVWQWFoM3NvNXRQRmhzRXhVcXhxL1Q0bVB5bHRDN0lP?=
+ =?utf-8?B?ekpnZ0RFeFJDeGpzSTJ5VVZuTVVIZ2pwQnBQK3dpSnRYMzV1N1c3dUlPZHBk?=
+ =?utf-8?B?ZXBMVTdrVEhzeDdYcERnVjlURGl6RlVHQmtVcDVwd015ays4MDBQQXZIRDEw?=
+ =?utf-8?B?LzduQlV2YXpoai9meXM5TDZSNXd6Ujlxbit5dHRnenFZZmw5QlMrRkhiS0R3?=
+ =?utf-8?B?emNWa0ZLM1k3YVJMejIxWWoyR0pNOVpoWWNwRkhnTEMybUExSVZRU29KVEhL?=
+ =?utf-8?B?OXhmVzRlQnl0UzlUT3ZxNHdPQWUrSEYrRzk0ZWRRKzRtNi9MK29tLzhvSUtt?=
+ =?utf-8?B?NFBwNFVVem5rNGZrMFNpRHpCZ0lKVjBOeEljL1I2VTFCSWpmak5DVU8zNE5W?=
+ =?utf-8?B?QlVsazgxNnFnb1VzQ3kyb0dRS0x2T0IxOVFRTjdhR2xyZVl0dXIrRVorT0FN?=
+ =?utf-8?B?TlVjQWpDQlhpNEY1Y0xwWDRXSy9vSHNFeE94VlV5Z1BWMGNxVW1WbHN6a0xn?=
+ =?utf-8?B?SzRTTzZNZDFxeEdWTHlMWisxRUM1QTNNb2lsYkE2cjdUS2ExT0Vyb1hsMEJj?=
+ =?utf-8?B?bkZSc0RjeW14b1ZyTEpNNHNBS0JLMmVhTnRaVDY4ZnBtaHRDU0tvbzNTU2Zp?=
+ =?utf-8?B?RXBnVG9CZUxWZWFCMUlnUEt1eHlSQWNSNmdBSk9YQVhVb1hETzFIZk55TGZh?=
+ =?utf-8?B?bElrUGhhUWl4WWd6bEUvcXpsTDUwdXFGOFBsWi9ZMThrQmpVRFRNanhQTFFp?=
+ =?utf-8?B?SzR0cVJSUWxHYlVhVTFxTzd1K2RBNWRFQ0RPQW4zWHhJWEcyc1FtWk1Ka1Nx?=
+ =?utf-8?B?eTBlZVlvdG1WdjYxcTJYZi9GYTEweHlwN3VLM2t4dzAvQ21lQVUrdCtKNmpv?=
+ =?utf-8?B?RGZFNFNQdDcyM1psSjZLMDFKNkZvbW5nVkJsMVM4OXNTaVZNdGhTSm1GWHpm?=
+ =?utf-8?B?Vmc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3D805823BA2DCF429115D680CD69E3B1@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdn4wwaBYzddLuXunjvCyH7HU8Brds-ZCYzsSxsAg4275Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c809fa9a-bb75-4d0f-c812-08dbbf7313a9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 16:01:57.4816
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d2aUEIYzXg6JlLBBIEHWyXuW/lKQQCmGXZNTfezA/CHbrye5lY6lJZgAD3sGbskiFxS8vPVGIvKtcn1MY8LTQaH4Ye/PcRvw61zPZPXcnms=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2308
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 08:24:58AM -0700, Nick Desaulniers wrote:
-> On Tue, Sep 26, 2023 at 8:19 PM Justin Stitt <justinstitt@google.com> wrote:
-> >
-> > This series aims to add "D:" which behaves exactly the same as "K:" but
-> > works only on patch files.
-> >
-> > The goal of this is to reduce noise when folks use get_maintainer on
-> > tree files as opposed to patches. This use case should be steered away
-> > from [1] but "D:" should help maintainers reduce noise in their inboxes
-> > regardless, especially when matching omnipresent keywords like [2]. In
-> > the event of [2] Kees would be to/cc'd from folks running get_maintainer
-> > on _any_ file containing "__counted_by". The number of these files is
-> > rising and I fear for his inbox as his goal, as I understand it, is to
-> > simply monitor the introduction of new __counted_by annotations to
-> > ensure accurate semantics.
-> 
-> Something like this (whether this series or a different approach)
-> would be helpful to me as well; we use K: to get cc'ed on patches
-> mentioning clang or llvm, but our ML also then ends up getting cc'ed
-> on every follow up patch to most files.
-> 
-> This is causing excessive posts on our ML. As a result, it's a
-> struggle to get folks to cc themselves to the ML, which puts the code
-> review burden on fewer people.
-> 
-> Whether it's a new D: or refinement to the behavior of K:, I applaud
-> the effort.  Hopefully we can find an approach that works for
-> everyone.
-
-Yes, please! I would use this immediately -- there are a bunch of places
-where pstore, strings, hardening, etc all want review if certain
-functions or structures are changed in a patch, but we're not
-maintainers of the files they appear in.
-
-> > Justin Stitt (3):
-> >       MAINTAINERS: add documentation for D:
-> >       get_maintainer: add patch-only pattern matching type
-
-Can we squash these two changes together, and then likely add some
-patches for moving things out of K: ?
-
--- 
-Kees Cook
+DQoNCkxlIDI3LzA5LzIwMjMgw6AgMTc6MjcsIEFyaWVsIE1pY3VsYXMgYSDDqWNyaXTCoDoNCj4g
+SSd2ZSBmb3J3YXJkZWQgdGhpcyBvbGQgZW1haWwgdGhyZWFkIGZvciB2aXNpYmlsaXR5IGFuZCBk
+aXNjdXNzaW9uJ3MNCj4gc2FrZSBhcm91bmQgbXkgcmVjZW50IGJsb2cgcG9zdCBbMV1bMl0NCg0K
+QWgsIHJpZ2h0LCBpdCdzIGJlZW4gc3VwZXJzZWRlZCBieSANCmh0dHBzOi8vcGF0Y2h3b3JrLm96
+bGFicy5vcmcvcHJvamVjdC9saW51eHBwYy1kZXYvcGF0Y2gvMjAyMjA2MDkxMzMyNDUuNTczNTY1
+LTEtbXBlQGVsbGVybWFuLmlkLmF1Lw0KDQpTbyBJIG1hcmsgdGhlIG5ldyBvbmUgc3VwZXJzZWRl
+ZCBhcyB3ZWxsLg0KDQpCeSB0aGUgd2F5LCBpcyB5b3VyIG90aGVyIHBhdGNoIHN0aWxsIGFwcGxp
+Y2FibGUsIHJlZiANCmh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eHBw
+Yy1kZXYvcGF0Y2gvMjAyMjA2MTAxMDI4MjEuMjUyNzI5LTEtYXJpZWwubWljdWxhc0BiZWxkZW4u
+Y29tLyANCj8NCg0KVGhhbmtzDQpDaHJpc3RvcGhlDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IEFyaWVs
+DQo+IA0KPiBbMV0gaHR0cHM6Ly9uZXdzLnljb21iaW5hdG9yLmNvbS9pdGVtP2lkPTM3NjcxOTkx
+DQo+IFsyXSBodHRwczovL3d3dy5yZWRkaXQuY29tL3IvcHJvZ3JhbW1pbmcvY29tbWVudHMvMTZ0
+ZjVuZS9ob3dfaV9nb3Rfcm9iYmVkX29mX215X2ZpcnN0X2tlcm5lbF9jb250cmlidXRpb24vP3Jl
+Zj1zaGFyZSZyZWZfc291cmNlPWxpbmsNCg==
