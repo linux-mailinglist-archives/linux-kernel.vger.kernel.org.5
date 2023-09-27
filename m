@@ -2,240 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF07B0806
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4B57B080A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbjI0PTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S232396AbjI0PVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjI0PTe (ORCPT
+        with ESMTP id S232289AbjI0PVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:19:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1581AA;
-        Wed, 27 Sep 2023 08:19:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CEDFC433C7;
-        Wed, 27 Sep 2023 15:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695827970;
-        bh=KMukbBBeXV+l1cuq0Jp1Wo0ccigkbIimAikppeeUBdo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G89s4vfLyLbRHxXx784woGm8pxlfza/V2sFYJjv8+uizc/xzGdCPdbR3lMo4D1xFh
-         Zc1Mv0GuT0foHxGRV27J4PRopQVoQ2DR2QIuX4d0qQqkpYzwGzv0UVkc0lNa99D8Tp
-         /1zbmrvFTealguaZAdaE5va8auj5qpgGhXstXoz3yYxzCROEHE0nm/yPVtJs/I68pq
-         8YznlGWm8GV8bccFmcs2gCM+xWo2L1idm7fkLyN1BZW5UAo1iz8KMl0oAAIhw4ULHs
-         emrcjptFlj7UU/hf+TguuP4d2Que/MrSTMxhiLuekfgLhWcxUcqEmi/ToTHkb5n3Ln
-         tv4IaJVK+WKog==
-Date:   Wed, 27 Sep 2023 16:19:26 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: hwmon: ltc2991: add bindings
-Message-ID: <20230927-curve-trodden-5f8f150aa738@spud>
-References: <20230926140544.80934-1-antoniu.miclaus@analog.com>
+        Wed, 27 Sep 2023 11:21:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73CC121
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695828014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/EIbBjpy9O83n9qhTihg7QeV6q2TpAQGQwYAPKsUVIA=;
+        b=K01LKSaed/MPl3hSmA3N+Lf9sYM61H5LPVjm1mNY3xkbyV6+Q6fQzyuUKDSh+86RQFkFC5
+        V5G37yO+9cXOeTE+u+6D9qksfH0mh9M0CN+7uJ3w4gBpBynwqJX8au8LRB1vVuQZ86Vdup
+        0YR8MK31Vw/xyyFEJAmM9nMclGFdOx8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-VRfhcXSfOWONNqhEXd4YJA-1; Wed, 27 Sep 2023 11:20:12 -0400
+X-MC-Unique: VRfhcXSfOWONNqhEXd4YJA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-320004980a2so9290598f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:20:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695828011; x=1696432811;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/EIbBjpy9O83n9qhTihg7QeV6q2TpAQGQwYAPKsUVIA=;
+        b=GPffq/OHj/jXUH9rWKG6OsdzwSgdW+c5o1Ab8Z340PiDwLOsJlcdoqXAqYsSfbvqRa
+         xU1KRu9xrCN4Cfq2qVIt4p7Fx9hZ0G+4hSsUFumENs4dzPmXXO9BQjLesQca1r+/Rqbb
+         MtxLqXb7M56hGHPv4BIgyrdmO39Sds06sV+kpufLdWJgEAK/MZAc3RzJvlvGfKYx//KB
+         8ZgKk9ZWyw0ZjEHpz7lCQcLcwRLUhcO7eiqlKsEn9EO47qBCI9XVoOn+JIV3M85Txfg9
+         g1P3f5Y6bN8ZB5MxpzC1yEOFxvGkmn8+p/KybQY6/2Yi6e9TFHvYmPN+WJBYi0+jpkfY
+         SNxA==
+X-Gm-Message-State: AOJu0Yz6pdZOJp2wildxtr3jZsXzf5MLCOOamDSO6+caYerKnsSoDL/D
+        k/fXirYaEHpxzaxKEXwFqiZKz2mcU1H3e1hxy6n55nHpDppkjqVO5g2q9O/kazflIwbf/gxJDlF
+        IpxStwB8RJTQkKUTQabw8LdbR
+X-Received: by 2002:a5d:4cc7:0:b0:314:a3f:9c08 with SMTP id c7-20020a5d4cc7000000b003140a3f9c08mr1876007wrt.39.1695828011761;
+        Wed, 27 Sep 2023 08:20:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGdjsQhdmBlcldN4VQo0/wB1Ma3pLJGSeiqWpRsH5/5aS/zWnrBptxpvSLI02eGQaomR+j8gQ==
+X-Received: by 2002:a5d:4cc7:0:b0:314:a3f:9c08 with SMTP id c7-20020a5d4cc7000000b003140a3f9c08mr1875993wrt.39.1695828011418;
+        Wed, 27 Sep 2023 08:20:11 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:16e:b9f6:556e:c001:fe18:7e0a])
+        by smtp.gmail.com with ESMTPSA id x17-20020a5d6511000000b0031fd849e797sm17324370wru.105.2023.09.27.08.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 08:20:10 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 11:20:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     liming.wu@jaguarmicro.com
+Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, 398776277@qq.com
+Subject: Re: [PATCH 2/2] tools/virtio: Add hints when module is not installed
+Message-ID: <20230927111904-mutt-send-email-mst@kernel.org>
+References: <20230926050021.717-1-liming.wu@jaguarmicro.com>
+ <20230926050021.717-2-liming.wu@jaguarmicro.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iuF1VGb0w26bLJMI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230926140544.80934-1-antoniu.miclaus@analog.com>
+In-Reply-To: <20230926050021.717-2-liming.wu@jaguarmicro.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---iuF1VGb0w26bLJMI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Sep 26, 2023 at 05:05:29PM +0300, Antoniu Miclaus wrote:
-> Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
-> monitor.
->=20
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+On Tue, Sep 26, 2023 at 01:00:20PM +0800, liming.wu@jaguarmicro.com wrote:
+> From: Liming Wu <liming.wu@jaguarmicro.com>
+> 
+> Need to insmod vhost_test.ko before run virtio_test.
+> Give some hints to users.
+> 
+> Signed-off-by: Liming Wu <liming.wu@jaguarmicro.com>
 > ---
->  .../bindings/hwmon/adi,ltc2991.yaml           | 114 ++++++++++++++++++
->  1 file changed, 114 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2991.y=
-aml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml b/D=
-ocumentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
-> new file mode 100644
-> index 000000000000..6174e0113ef8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
-> @@ -0,0 +1,114 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
+>  tools/virtio/virtio_test.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
+> index 028f54e6854a..ce2c4d93d735 100644
+> --- a/tools/virtio/virtio_test.c
+> +++ b/tools/virtio/virtio_test.c
+> @@ -135,6 +135,10 @@ static void vdev_info_init(struct vdev_info* dev, unsigned long long features)
+>  	dev->buf = malloc(dev->buf_size);
+>  	assert(dev->buf);
+>  	dev->control = open("/dev/vhost-test", O_RDWR);
 > +
-> +$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices LTC2991 Octal I2C Voltage, Current and Temperature=
- Monitor
-> +
-> +maintainers:
-> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-> +
-> +description: |
-> +  The LTC2991 is used to monitor system temperatures, voltages and curre=
-nts.
-> +  Through the I2C serial interface, the eight monitors can individually =
-measure
-> +  supply voltages and can be paired for differential measurements of cur=
-rent
-> +  sense resistors or temperature sensing transistors.
-> +
-> +  Datasheet:
-> +    https://www.analog.com/en/products/ltc2991.html
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ltc2991
+> +	if (dev->control < 0)
+> +		fprintf(stderr, "Install vhost_test module" \
+> +		"(./vhost_test/vhost_test.ko) firstly\n");
 
-if you aren't expecting to add other devices that can share the binding,
-make this const: rather than enum:.
+Thanks!
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  vcc-supply: true
-> +
-> +patternProperties:
-> +  "^channel@[0-3]$":
-> +    type: object
-> +    description: |
+things to improve:
 
-The |s are only needed when you have formatting to preserve.
+firstly -> first
+add space before (
+End sentence with a dot
+align "" on the two lines
 
-> +      Represents the differential/temperature channels.
-> +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          The channel number. LTC2992 can monitor 4 currents/temperature=
-s.
-> +        items:
-> +          minimum: 0
-> +          maximum: 3
-> +
-> +      shunt-resistor-mili-ohms:
+>  	assert(dev->control >= 0);
+>  	r = ioctl(dev->control, VHOST_SET_OWNER, NULL);
+>  	assert(r >= 0);
+> -- 
+> 2.34.1
 
-The standard properties here are ohms and micro-ohms. Also, "milli" has
-2 ls.
-
-> +        description:
-> +          The value of curent sense resistor in miliohms. Enables differ=
-ential
-> +          input pair.
-> +
-> +      temperature-enable:
-
-This seems like a vendor property that should have a vendor prefix?
-
-> +        description:
-> +          Enables temperature readings for a input pair.
-
-TBH, this seems like it is used just to control software behaviour.
-Why would you want to actually disable this in DT?
-
-Cheers,
-Conor.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - vcc-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        hwmon@48 {
-> +            compatible =3D "adi,ltc2991";
-> +            reg =3D <0x48>;
-> +            vcc-supply =3D <&vcc>;
-> +        };
-> +    };
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        hwmon@48 {
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <0>;
-> +
-> +            compatible =3D "adi,ltc2991";
-> +            reg =3D <0x48>;
-> +            vcc-supply =3D <&vcc>;
-> +
-> +            channel@0 {
-> +                    reg =3D <0x0>;
-> +                    shunt-resistor-mili-ohms =3D <100>;
-> +            };
-> +
-> +            channel@1 {
-> +                    reg =3D <0x1>;
-> +                    shunt-resistor-mili-ohms =3D <100>;
-> +            };
-> +
-> +            channel@2 {
-> +                    reg =3D <0x2>;
-> +                    temperature-enable;
-> +            };
-> +
-> +            channel@3 {
-> +                    reg =3D <0x3>;
-> +                    temperature-enable;
-> +            };
-> +        };
-> +    };
-> +...
-> --=20
-> 2.42.0
->=20
-
---iuF1VGb0w26bLJMI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRH/QAKCRB4tDGHoIJi
-0qHwAQCiWCU/Tlc8g1FHrSZV758HOtDVXDLRKZCW+A9AyAh69wEAuzrvI4A+tcmf
-x7zyh1FMSN2R7D9AznlAoNIKPIT60A8=
-=g7xt
------END PGP SIGNATURE-----
-
---iuF1VGb0w26bLJMI--
