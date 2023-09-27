@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F47AFF39
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927D47AFF3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjI0JAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
+        id S230218AbjI0JA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjI0JAG (ORCPT
+        with ESMTP id S230287AbjI0JAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:00:06 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC06CC
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:00:04 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59c26aa19b7so131349547b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695805204; x=1696410004; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TutIAe4KzHZUJ9ATW3VpQ4iw5gN1jLgS94r63g8BT3A=;
-        b=G/C9h8ACQ4gisppe+8QdxxZVETy2BjOPzbl93h6IFvwnlaZOF7aLwhGnVgF/vCzmpp
-         /sYd/c15H27j9S7/5J3Ee30LhgNKyrO2fPMvDYrBIPH8LntDvp4ae0qj90nuHF1XxCgX
-         NoFZ4LoAbmV2LONc/J/sgI+VqiyPfK02DixUCkfGsvcHyVBilXKOiEYCqL3dlQ6Vga1d
-         WqGrPFH5yzlZRLJP8VqnoDytB4PCEV07zBJV11+7UFh9qA/EkQ7EKkZ6z4DNzMffDEvH
-         6ULUeOFnTcwXME2V1C3k7g01hbn/FgeHm0zi98u1Gv0KktMGGygV6jKeGNF6OO8PSmLf
-         8Arg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695805204; x=1696410004;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TutIAe4KzHZUJ9ATW3VpQ4iw5gN1jLgS94r63g8BT3A=;
-        b=XGvg0v3DHZJ/RuYHm8mVYtLotr858U0t2N24lmF1qZUZ1G2oL1xJvhC6ZI8bhsjAuq
-         3mJWayVTKHjYZyK8uvLe/+sOmxOyM5GiP7ubFBtD7bL7Sqi9FiJRQeY5C604vgO8QqZA
-         a82Hq0aoTnK2jlcYa3NfiIzqvigrLjWrK81bEyyclVtxxs7lxg24YiOAHJgUh8Nz9KO3
-         HJBgr7w9ny4fiIx74Hzc48FUV2OfhnncatXZ4Uo1AZ99SU5qsKQOjY4zASUeX2+GcYBV
-         kiH06E2GY95sYuqLgNlYp0UQPI7Ld9BajCsGWfH21ooLPDDBqm0LluljUAG/d6z7yS6H
-         MjXQ==
-X-Gm-Message-State: AOJu0YzGdT1rcCQ2nIm56YhSrTJVjrq4AdhcX76t6qlYqy7uJZgy8kta
-        EKwK15bGRF2pCv4kJVHihDtnhl2mPgkf9/FaJifv2Q==
-X-Google-Smtp-Source: AGHT+IEnVNlxtU365OSVa+Vju3oylJH3jIZadB6OzZFRZDu29MnEdrWa5VJAMDN8qQBkpr8ELeV9VjCIo0BH0fj47CQ=
-X-Received: by 2002:a0d:df45:0:b0:59f:7dcf:edee with SMTP id
- i66-20020a0ddf45000000b0059f7dcfedeemr1832413ywe.9.1695805203882; Wed, 27 Sep
- 2023 02:00:03 -0700 (PDT)
+        Wed, 27 Sep 2023 05:00:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DF6136;
+        Wed, 27 Sep 2023 02:00:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA96C433C7;
+        Wed, 27 Sep 2023 09:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695805215;
+        bh=3hwoD84olVZvjou5/kpVm2ZQJLfeUVEZBHvliNaakz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fwEW/w7n8LRFF9M0zplL9D8uw/SWwiTSVd0hIYDS9p/5TOw47gAFnttbn9UIvIDWm
+         rOZ+yF2krn173lbJYz3yZ91794OuDlI752kcTAZ19MQ83Ps+RaFYW9Do6NDMKeWrO+
+         JT1UHT1FnzBnD5aE/Rw5FfRavK0k8+8Gk55yZvTpZAZM52HCp+N7Gps5aDRPpCMnXY
+         nDOmw8PX/rbGikM4rN8leN1WFnd4FQr0CaY9vPjM3+XrmOVQojHztPhmZOQQpdzWpt
+         /qZOJcF4NONUIAq0sCUqm/T0Jj4oA1LxIgPdQFslxN30bO5k9aD38eQKh2DbsrFi2s
+         P+oAfb3y0RTSw==
+Date:   Wed, 27 Sep 2023 11:00:12 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 1/2] spi: renesas,rzv2m-csi: Add SPI Slave related
+ properties
+Message-ID: <ZRPvHJXbuZ9Db2Go@finisterre.sirena.org.uk>
+References: <20230926210818.197356-1-fabrizio.castro.jz@renesas.com>
+ <20230926210818.197356-2-fabrizio.castro.jz@renesas.com>
+ <CAMuHMdUibHxPBCLbeWdNrEk_szm+o4cOcskEMZAqUufNTzQKMQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230922175006.work.421-kees@kernel.org>
-In-Reply-To: <20230922175006.work.421-kees@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 27 Sep 2023 10:59:52 +0200
-Message-ID: <CACRpkdaVauiB0M3PNjGgcAj2Cw1gZ=NenkOuh=PKT=8uEYc5rA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: uniphier: Annotate struct uniphier_pinctrl_reg_region
- with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QiSZLj8ULhE5uAOG"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUibHxPBCLbeWdNrEk_szm+o4cOcskEMZAqUufNTzQKMQ@mail.gmail.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,32 +61,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 7:50=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
 
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
->
-> As found with Coccinelle[1], add __counted_by for struct uniphier_pinctrl=
-_reg_region.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+--QiSZLj8ULhE5uAOG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Excellent!
-Patch applied.
+On Wed, Sep 27, 2023 at 09:59:05AM +0200, Geert Uytterhoeven wrote:
+> On Tue, Sep 26, 2023 at 11:08=E2=80=AFPM Fabrizio Castro
 
-Yours,
-Linus Walleij
+> > +    type: boolean
+> > +    description:
+> > +      Use CSI Slave Selection (SS) pin to enable transmission and rece=
+ption when
+> > +      in slave mode.
+
+> Can't this be done in a more generic way? I had expected that the
+> existing SPI_NO_CS flag can be set using a property in the "slave" subnod=
+e,
+> but apparently there is no "spi-no-cs" property defined yet.
+
+The description is clearly saying there is a chip select, _NO_CS seems
+entirely inappropriate.  It's not specified in the device tree because
+when there's no chip select for a device it's a fundamental property of
+how the device is controlled and we don't need any information beyond
+the compatible.
+
+--QiSZLj8ULhE5uAOG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUT7xsACgkQJNaLcl1U
+h9Cv4Qf/XYUHiyb3CeUAVkgA5kzU23PQo4xps4f/9NjXmDxMNXGjd1mJz9drxsHP
+orKXtyGMHXzQH+Md2RB4J7NMy+6W9wNCugC9rM11EClpnnSCvbqOMiybxgmW3kwa
+nCpefQU+RK6Glv+wL1wNrKEJIWHKjefkFTODIJb2mxQ3QRhTBoOQcT1r0VZHJiTP
+x5F44Hjq8apm/HBve10boE2dk+9NeRN7rKvT0HRaCSU0nN4tBtICJbYZjj++2o0b
+6GHQCti/Dp+JahGpi4Q1MbUmS4XsZ33+pvXcxuFmkrJy/EkfzRTs0+5mYAcqM5x/
+HN+l2oJlUTEqr+jp38Aqxdm9doYEtg==
+=VLyd
+-----END PGP SIGNATURE-----
+
+--QiSZLj8ULhE5uAOG--
