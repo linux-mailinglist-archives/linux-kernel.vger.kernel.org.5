@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3437B04C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359C27B04C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbjI0M4V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 08:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S231786AbjI0M4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbjI0M4S (ORCPT
+        with ESMTP id S231749AbjI0M4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:56:18 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13068E6;
-        Wed, 27 Sep 2023 05:56:11 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 10AC58348D;
-        Wed, 27 Sep 2023 14:56:10 +0200 (CEST)
-From:   Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH RFC v2 3/6] ARM: pxa: Convert Spitz CF power control to GPIO
- descriptors
-Date:   Wed, 27 Sep 2023 14:56:07 +0200
-Message-ID: <5984688.lOV4Wx5bFT@radijator>
-In-Reply-To: <ZRMDqVCtrUyhcqaw@smile.fi.intel.com>
-References: <20230926-pxa-gpio-v2-0-984464d165dd@skole.hr>
- <20230926-pxa-gpio-v2-3-984464d165dd@skole.hr>
- <ZRMDqVCtrUyhcqaw@smile.fi.intel.com>
+        Wed, 27 Sep 2023 08:56:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD6D194;
+        Wed, 27 Sep 2023 05:56:22 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50482ba2b20so1067158e87.1;
+        Wed, 27 Sep 2023 05:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695819380; x=1696424180; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0DE0mLNtJsF5eQFGXeJoUeYHt3jhgAAPiZzB3iqa8Xc=;
+        b=jXbZOMGnfxsvHaX4PASafK/KkaE21INIUlIr3XlDPulB0FGPF90TNFp902WqieFXSq
+         qpxPJ7uOKzhUVr7GdczoR33USwKn+uOHZ2eE+wTogJIYzpCkillAUBcfZX/3SOKoRx1s
+         lH/FVbGg3B1Qd0rIETA9/UY1BBBEynT4cmC4piJkHoe/gs5j/PPWfDT+xIZ9yST5hasD
+         KkDzRX/ORj5FQGs1yVaJ4D11HSe6D5lw4uQK9kx2WiMXiSJe2r4Fh2Xbr3K24X7Y0wRB
+         EyRrQvFZfARjen4p7AavVLE/moIZXgHbtihklBqHsQc2L5UUS7ISF3o7xkMTK2M6IX25
+         Gg3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695819380; x=1696424180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0DE0mLNtJsF5eQFGXeJoUeYHt3jhgAAPiZzB3iqa8Xc=;
+        b=jvJ4a3qpg1c5j0mfYQZYf0jWq282SOAMDuKV/kVl4YT+oJkmJOiV3gThQBJ7WYPRn2
+         7xN4oxWQz2ixu2J82Y0aqmf5E0sxbNsg6qRAfUZ+3R7JZ2mm/Hzv+arej2S/aa0MrLQr
+         IyvtQja/v7nZXb0KxWkxsjb44cBeCtbKwbViY6OJjOGQ1SFVKZVf/Vauu4ViHzgQhJHo
+         lfP2ulkjo9RFb52BUj3meLOFIVCKXXJ/av8DMBLPpIxbzO3z6VuZ1dPbrrhwSpKNK6qM
+         jbH8uadW/66qyNXGFdI1TC/AdvwaKpenb/F9l6MZaTII/kuncJh5LqlKllIF2cvpzrce
+         rDeQ==
+X-Gm-Message-State: AOJu0YzCSzmpoznQaA0CUh/zbKOLB8b038dajKxLDCnUoa6OMeenNkXS
+        TuvPdSV7yIKenBj1RRVaKvA=
+X-Google-Smtp-Source: AGHT+IHLF/ceQR2phD4Q7ymVsxwHgQ+3Arg2p4oysiQlBVXiVH7QYDHUVepdBU9075xxznJcYJJmQg==
+X-Received: by 2002:a05:6512:31c8:b0:502:df19:83b3 with SMTP id j8-20020a05651231c800b00502df1983b3mr2265767lfe.10.1695819380151;
+        Wed, 27 Sep 2023 05:56:20 -0700 (PDT)
+Received: from fedora ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id x20-20020a05651c105400b002c02b36d381sm3169889ljm.88.2023.09.27.05.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 05:56:19 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 15:56:14 +0300
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Mehdi Djait <mehdi.djait.k@gmail.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: iio: Add KX132ACR-LBZ accelerometer
+Message-ID: <5c9e03ffad5e6e5970d6e71fb02eab4b652e109f.1695819243.git.mazziesaccount@gmail.com>
+References: <cover.1695819243.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
-Autocrypt: addr=duje.mihanovic@skole.hr;
- keydata=
- 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
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vKcSQKi0NsG61EPv"
+Content-Disposition: inline
+In-Reply-To: <cover.1695819243.git.mazziesaccount@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -135,34 +80,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, September 26, 2023 6:15:37 PM CEST Andy Shevchenko wrote:
-> On Tue, Sep 26, 2023 at 05:46:24PM +0200, Duje Mihanović wrote:
-> > Sharp's Spitz board still uses the legacy GPIO interface for controlling
-> > the power supply to its CF and SD card slots.
-> > 
-> > Convert it to use the GPIO descriptor interface.
-> 
-> ...
-> 
-> > +	cf_power = gpiod_get(&pxa_device_mci.dev, "cf_power", GPIOD_ASIS);
-> > +	if (IS_ERR(cf_power)) {
-> > +		dev_err(&pxa_device_mci.dev,
-> > +				"failed to get power control GPIO with 
-%ld\n",
-> > +				PTR_ERR(cf_power));
-> > +		return;
-> > +	}
-> > 
-> > +	gpiod_put(cf_power);
-> 
-> Don't you want to use guarded gpiod_get()?
-> Okay, it seems not yet in the pending list, but we can survive without that.
 
-Can you please elaborate? If I understand correctly, the if statement right 
-after gpiod_get is a guard.
+--vKcSQKi0NsG61EPv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Duje
+ROHM KX132ACR-LBZ is an accelerometer for industrial applications. It
+has a subset of KX022A functionalities, dropping support for tap, free
+fall and tilt detection engines. Also, the register interface is an exact
+subset of what is found on KX022A.
+
+Extend the kionix,kx022a.yaml file to support the KX132ACR-LBZ device
+
+Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+---
+ .../devicetree/bindings/iio/accel/kionix,kx022a.yaml   | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/accel/kionix,kx022a.yaml=
+ b/Documentation/devicetree/bindings/iio/accel/kionix,kx022a.yaml
+index 034b69614416..66ea894dbe55 100644
+--- a/Documentation/devicetree/bindings/iio/accel/kionix,kx022a.yaml
++++ b/Documentation/devicetree/bindings/iio/accel/kionix,kx022a.yaml
+@@ -4,21 +4,23 @@
+ $id: http://devicetree.org/schemas/iio/accel/kionix,kx022a.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+=20
+-title: ROHM/Kionix KX022A and KX132-1211 Accelerometers
++title: ROHM/Kionix KX022A, KX132-1211 and KX132ACR-LBZ Accelerometers
+=20
+ maintainers:
+   - Matti Vaittinen <mazziesaccount@gmail.com>
+=20
+ description: |
+-  KX022A and KX132-1211 are 3-axis accelerometers supporting +/- 2G, 4G, 8=
+G and
+-  16G ranges, variable output data-rates and a hardware-fifo buffering.
+-  KX022A and KX132-1211 can be accessed either via I2C or SPI.
++  KX022A, KX132ACR-LBZ and KX132-1211 are 3-axis accelerometers supporting
++  +/- 2G, 4G, 8G and 16G ranges, variable output data-rates and a
++  hardware-fifo buffering. These accelerometers can be accessed either
++  via I2C or SPI.
+=20
+ properties:
+   compatible:
+     enum:
+       - kionix,kx022a
+       - kionix,kx132-1211
++      - rohm,kx132acr-lbz
+=20
+   reg:
+     maxItems: 1
+--=20
+2.41.0
 
 
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--vKcSQKi0NsG61EPv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUUJm4ACgkQeFA3/03a
+ocVwUQgAtro0Hwf1L+y3eJ5ohf4R4KoWv7sYOT9lvDobutdyRNYZbUV2NVajrXg2
+4pzNT35eNr5FIQ/sMgEUUvNjtTR6UNMwM6iILsqjr03urdbiYxMveW+ouAX9eOOT
+/McUK4VqUu8wElPpPR9xIO4t19Eyu0bftqN/ql3X2nKBd7Gi0lXRPjiNc/UP1xm1
+8mnH8XYKwYhV4hulMZcc2bsh9CT6H41LVZDf+Nd+hlT4gkjAWzigLKoD6k98a2bu
+hpip2MCb3sAUtNYDfqOz3X6OyW/8hOZ7Dbv84bysfEsKnZGxM90Vcw4OssH/4Igp
+wTbPnnE6ZM2ZmQPPAkGgqzQOgWvUhw==
+=U9oE
+-----END PGP SIGNATURE-----
+
+--vKcSQKi0NsG61EPv--
