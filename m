@@ -2,119 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CBC7AFF0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FBC7AFF18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjI0IzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
+        id S230236AbjI0I40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjI0IzV (ORCPT
+        with ESMTP id S230027AbjI0I4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:55:21 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51759D6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:55:20 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27736c2a731so5968962a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695804920; x=1696409720; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2otPEB/xF2y2gWB3F3HzuUrVDzeh6ktV3K7Sy+EklX0=;
-        b=EbmpA7qT9M07ebVuaPitNjzgcOedRb9DydqODUjph9L9OPUcAwRfTGDOcewdYuszZT
-         TbBmw0tdaA/anFCxTZnHd2j2mOkpxzKXE5/lUqcNeOzOr15iXYpNxTx1ziHSmwBccRCO
-         ZUItyftG46X8ffNRQfy3OcB85aEXXMWXbPWv2YwISp61vO0gaG8M6GZtvSYMThlqRVVK
-         J4tJP3Te8pOFWXISLDXSFHgZIJFctPONCdEZHjJ2pw2mFxuChBBR/IqT2yTYFvDqNB78
-         Lto0LYTHYL6ivRQzepkILBW9y2gZYVUCmBGfqWNxmrLgiVtRqDhKQ9Iaj2qCaP3Tip/6
-         6fbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695804920; x=1696409720;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2otPEB/xF2y2gWB3F3HzuUrVDzeh6ktV3K7Sy+EklX0=;
-        b=GXaIQgplsUsbHzIiWPK89IXUc+/fzEPGOUpBa2nF6bc5fAPXZGijZXMz91x9Q1+Qyj
-         535/QZpqSp3wQKg2AWr6GwtFzU83AOzSh1pW73Z/z1Vc3v0YWuVSaIILe93W5+9YLfBR
-         j8ircnwttirCvgeyfLLg6GqWuLh8Ch//h/QjJwfFilU824fYdMOSAo+c43542+p8Rs05
-         rdteQ9SGig+4YgrxO4jLabj7l8rZja55EzPGew4kji//jewhgz2y/7hUg6bpagZFGLWN
-         QclP9hnw8Go/OkNe4Il4pTUTOtFlKIEK54sOcAMOoq+Flk27yrdSZ63MhHZL6zydP8MK
-         OYuw==
-X-Gm-Message-State: AOJu0Yz3SB2BySSZ/A3xG2XTCmuZ0OUcpwoRShjTeDnMza4OTeaxfU3s
-        QRjV4E77wMDkw/ZNQ8hQ5RB4IA==
-X-Google-Smtp-Source: AGHT+IG/oCqceFX/Qd4NKpfRUZDTTCa9LfZsFCLlueXp5y0ROoFg+gfO1s0WqoKsLZQKLcS8odhwMQ==
-X-Received: by 2002:a17:90b:4d89:b0:274:bf7a:60cd with SMTP id oj9-20020a17090b4d8900b00274bf7a60cdmr1143971pjb.34.1695804919803;
-        Wed, 27 Sep 2023 01:55:19 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id lj8-20020a17090b344800b0026b4decfe59sm11424070pjb.31.2023.09.27.01.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 01:55:19 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 14:25:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: schedutil: Merge initialization code of sg_cpu
- in single loop
-Message-ID: <20230927085517.udfg3udsqkmrugj2@vireshk-i7>
-References: <20230908031604.2262422-1-liaochang1@huawei.com>
+        Wed, 27 Sep 2023 04:56:23 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91651BF;
+        Wed, 27 Sep 2023 01:56:22 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R8fwt9003378;
+        Wed, 27 Sep 2023 08:55:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=lIdgU+j4pcq6jgSk/q19qdaxkwH1rtCWHqvoVCfZIT4=;
+ b=gMLHMIgbd0OHt2L39u5X2z9jCc+8hmAe0RgqF5igvrD7NALxCV6PuuTIRFmhWj5AWad1
+ Zo//FrrS24Bs/hyNmnq5uJSgOU9iltfJWRO2RlQjdkx/j6qlxx/5vQd4KREhF1VNV/Bo
+ gEDvHIC0e3MS88IR6+zXbNXCX1pMn1rWxdby0r6gPyOwJz0SZf1nyKdGlKo4J4HfTd/g
+ TI5OvYCrbxA/wdukKkUG1vkUJ9MZFHL2SzL7qbyIlWtz98kRREkCpWile4E4o1OXJJzN
+ CenqSvytDspSEtB7BzEaDF7M85TKLR8Sf4seckFi5VCfOOBZvSnA/fZuwKo/G1Ua0KgY fQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tch40r8sd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 08:55:30 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38R8hiew007669;
+        Wed, 27 Sep 2023 08:55:29 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tch40r8s0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 08:55:29 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38R6btJ6011003;
+        Wed, 27 Sep 2023 08:55:28 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabukhy17-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 08:55:27 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38R8tOsm22086172
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Sep 2023 08:55:24 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9702D20049;
+        Wed, 27 Sep 2023 08:55:24 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E425B2004F;
+        Wed, 27 Sep 2023 08:55:23 +0000 (GMT)
+Received: from [9.152.212.236] (unknown [9.152.212.236])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Sep 2023 08:55:23 +0000 (GMT)
+Message-ID: <cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com>
+Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and
+ optimized IOTLB flushing
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Wed, 27 Sep 2023 10:55:23 +0200
+In-Reply-To: <20230926160832.GM13795@ziepe.ca>
+References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
+         <ZRLy_AaJiXxZ2AfK@8bytes.org> <20230926160832.GM13795@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fk640NFOtXDH3DMsOHfVdr5_SUPSgU-Z
+X-Proofpoint-GUID: XCoTgBapi9PTwWMlIJs26pFRy3h2v45s
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908031604.2262422-1-liaochang1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 malwarescore=0 clxscore=1011
+ adultscore=0 spamscore=0 phishscore=0 mlxlogscore=664 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270069
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-23, 03:16, Liao Chang wrote:
-> The initialization code of the per-cpu sg_cpu struct is currently split
-> into two for-loop blocks. This can be simplified by merging the two
-> blocks into a single loop. This will make the code more maintainable.
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  kernel/sched/cpufreq_schedutil.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 4492608b7d7f..f3a95def49cc 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -767,14 +767,6 @@ static int sugov_start(struct cpufreq_policy *policy)
->  
->  	sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
->  
-> -	for_each_cpu(cpu, policy->cpus) {
-> -		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
-> -
-> -		memset(sg_cpu, 0, sizeof(*sg_cpu));
-> -		sg_cpu->cpu			= cpu;
-> -		sg_cpu->sg_policy		= sg_policy;
-> -	}
-> -
->  	if (policy_is_shared(policy))
->  		uu = sugov_update_shared;
->  	else if (policy->fast_switch_enabled && cpufreq_driver_has_adjust_perf())
-> @@ -785,6 +777,9 @@ static int sugov_start(struct cpufreq_policy *policy)
->  	for_each_cpu(cpu, policy->cpus) {
->  		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
->  
-> +		memset(sg_cpu, 0, sizeof(*sg_cpu));
-> +		sg_cpu->cpu = cpu;
-> +		sg_cpu->sg_policy = sg_policy;
->  		cpufreq_add_update_util_hook(cpu, &sg_cpu->update_util, uu);
->  	}
->  	return 0;
+On Tue, 2023-09-26 at 13:08 -0300, Jason Gunthorpe wrote:
+> On Tue, Sep 26, 2023 at 05:04:28PM +0200, Joerg Roedel wrote:
+> > Hi Niklas,
+> >=20
+> > On Fri, Aug 25, 2023 at 12:11:15PM +0200, Niklas Schnelle wrote:
+> > > Niklas Schnelle (6):
+> > >       iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM =
+return
+> > >       s390/pci: prepare is_passed_through() for dma-iommu
+> > >       s390/pci: Use dma-iommu layer
+> > >       iommu/s390: Disable deferred flush for ISM devices
+> > >       iommu/dma: Allow a single FQ in addition to per-CPU FQs
+> > >       iommu/dma: Use a large flush queue and timeout for shadow_on_fl=
+ush
+> >=20
+> > Turned out this series has non-trivial conflicts with Jasons
+> > default-domain work so I had to remove it from the IOMMU tree for now.
+> > Can you please rebase it to the latest iommu/core branch and re-send? I
+> > will take it into the tree again then.
+>=20
+> Niklas, I think you just 'take yours' to resolve this. All the
+> IOMMU_DOMAIN_PLATFORM related and .default_domain =3D parts should be
+> removed. Let me know if you need anything
+>=20
+> Thanks,
+> Jason
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hi Joerg, Hi Jason,
 
--- 
-viresh
+I've run into an unfortunate problem, not with the rebase itself but
+with the iommu/core branch.=C2=A0
+
+Jason is right, I basically need to just remove the platform ops and
+.default_domain ops. This seems to work fine for an NVMe both in the
+host and also when using the IOMMU with vfio-pci + KVM.=C2=A0I've already
+pushed the result of that to my git.kernel.org:
+https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=3Db4/=
+dma_iommu
+
+The problem is that something seems to  be broken in the iommu/core
+branch. Regardless of whether I have my DMA API conversion on top or
+with the base iommu/core branch I can not use ConnectX-4 VFs.
+
+# lspci
+111a:00:00.0 Ethernet controller: Mellanox Technologies MT27710 Family [Con=
+nectX-4 Lx Virtual Function]
+# dmesg | grep mlx
+[    3.189749] mlx5_core 111a:00:00.0: mlx5_mdev_init:1802:(pid 464): Faile=
+d initializing cmdif SW structs, aborting
+[    3.189783] mlx5_core: probe of 111a:00:00.0 failed with error -12
+
+This same card works on v6.6-rc3 both with and without my DMA API
+conversion patch series applied. Looking at mlx5_mdev_init() ->=20
+mlx5_cmd_init(). The -ENOMEM seems to come from the following
+dma_pool_create():
+
+cmd->pool =3D dma_pool_create("mlx5_cmd", mlx5_core_dma_dev(dev), size, ali=
+gn, 0);
+
+I'll try to debug this further but wanted to let you know already in
+case you have some ideas. Either way as it doesn't seem to be related
+to the DMA API conversion I can sent that out again regardless if you
+want, really don't want to miss another cycle.
+
+Thanks,
+Niklas
