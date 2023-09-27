@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FC57B0DEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E277B0DF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjI0VQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 17:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
+        id S229952AbjI0VTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 17:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0VQs (ORCPT
+        with ESMTP id S229918AbjI0VS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 17:16:48 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74CD411D
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:16:47 -0700 (PDT)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D3A0E20B74C0;
-        Wed, 27 Sep 2023 14:16:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D3A0E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695849406;
-        bh=zYLgfwVrqDBS5frwkU8WzeM8Y0joHuphXzHL6ORt8IQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M0SXuX3UgyBOV9oaIX9KR51wH0ziOm3zfSdokPvXzVppb8Aw0aYgy7dG1HKNk5up4
-         T+C2/sekryPVXwvedjpzqHaWrV+wjHJuLPXQC7vYEoDT2Wg8GylGY3a2sCEmk59ZCU
-         xDiGNIRBlB/mMDe7P3+7MHleB+jXYi8+girDGRs8=
-From:   Sonia Sharma <sosha@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     sosha@microsoft.com
-Subject: [PATCH v5 net-next] net: hv_netvsc: fix netvsc_send_completion to avoid multiple message length checks
-Date:   Wed, 27 Sep 2023 14:16:42 -0700
-Message-Id: <1695849402-20376-1-git-send-email-sosha@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 17:18:59 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAB111D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:18:57 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59f1dff5298so139452147b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695849536; x=1696454336; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UiA24Vnoe9mDlXFXQmDQoe2D01RtP5rHlDPFXWiZnis=;
+        b=ttM3Al7pUoQkeKdTct1F1IMNr2Ar5gNr0ttE6KExq7MQzOIjjLUSSiCW+GJrnQZ67O
+         nXDk8tBDX4JHLiaiKyGOCq4582bTakP0IvT6mNCFAXy9QQr9Ya71bpeh9N4dm5MoNJdf
+         lLBqkYvjaqjFhL2hHBUxYZ32Dp1GWzdMbPk6TSWjxYOf4YGQ3KoSssImO7SzvOb3t63e
+         1BwsN4kya3jzJ2VbYZ880ysNutgNGeIS9JYOAILtcdzmxrf6PFEoQlrRzXfLLrwLsV3P
+         ZR8hQsUBZy25yqEut61VEzLIxHXjcXwaivUCgS0DdSfwWsgXm1dKIpo6Uw0378QL9LMh
+         eCrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695849536; x=1696454336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UiA24Vnoe9mDlXFXQmDQoe2D01RtP5rHlDPFXWiZnis=;
+        b=k8lVaZfgSfVSp5W/pYLl/T7y5KCECAMSeaX2FCZqK2g2PKsJ6kcevpuXCm/MzO4H4J
+         DGxPrZt7aqB1xWDLL2R1D77Kp+NXleSyD17gU6bt0WLS40Q7dr1y4SjdCcvpNtvBMOcA
+         meUHz4WvQiL1QgZBgLvFAaXEJS8fuBO+YFXB3RaBaiIkshJVgmglgk17zA2qj8AYhG+8
+         elNIoy4XIqDewLQ62Mkp3LfDugDm8/HP83dkmBDJlpUus9fp68NPpDqZ+K4k3Dv+Jbto
+         7uAyZPNtvOHe5GlhMx7CMdPzz3u7pIWJ3Osg4XkPpM2CPYR/xci9tGHiqh/EtSd2LVGI
+         50EQ==
+X-Gm-Message-State: AOJu0YwuM/eBofZ/xgrR2vHBA64mHQk0oMQKJFOWin3yhxowXlhKfCnm
+        36BQfG/Dpg74EOkLQdXiNNhsiREGflkVJOZvcXWHJg==
+X-Google-Smtp-Source: AGHT+IG1QuRlqd5WUg5LSq9Sa+2WG3+pH9aEWm6KmPW4M8nLweQkVnYD51xD/qDJ9L+z4gIuMfCpNnkLCGu0v7Z3tZY=
+X-Received: by 2002:a81:6f03:0:b0:59f:773a:b14c with SMTP id
+ k3-20020a816f03000000b0059f773ab14cmr3251803ywc.37.1695849536678; Wed, 27 Sep
+ 2023 14:18:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com> <1695848028-18023-5-git-send-email-quic_khsieh@quicinc.com>
+In-Reply-To: <1695848028-18023-5-git-send-email-quic_khsieh@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 28 Sep 2023 00:17:50 +0300
+Message-ID: <CAA8EJpqwDOPD3dkWO1ap2pjMVnP1r2giUE0bAjTYzPBiz1aewA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/8] drm/msm/dp: move parser->parse() and
+ dp_power_client_init() to probe
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sonia Sharma <sonia.sharma@linux.microsoft.com>
+On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+> Move parser->parse() and dp_power_client_init() from dp_display_bind()
+> to dp_display_probe() in preparation of adding pm_runtime framework
+> at next patch.
+>
+> Changes in v4:
+> -- split this patch out of "incorporate pm_runtime framework into DP driver" patch
+>
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 7ae3b8b..3ef141c 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -276,11 +276,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+>         dp->dp_display.drm_dev = drm;
+>         priv->dp[dp->id] = &dp->dp_display;
+>
+> -       rc = dp->parser->parse(dp->parser);
+> -       if (rc) {
+> -               DRM_ERROR("device tree parsing failed\n");
+> -               goto end;
+> -       }
+>
+>
+>         dp->drm_dev = drm;
+> @@ -291,11 +286,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
+>                 goto end;
+>         }
+>
+> -       rc = dp_power_client_init(dp->power);
+> -       if (rc) {
+> -               DRM_ERROR("Power client create failed\n");
+> -               goto end;
+> -       }
+>
+>         rc = dp_register_audio_driver(dev, dp->audio);
+>         if (rc) {
+> @@ -1249,6 +1239,18 @@ static int dp_display_probe(struct platform_device *pdev)
+>                 return -EPROBE_DEFER;
+>         }
+>
+> +       rc = dp->parser->parse(dp->parser);
+> +       if (rc) {
+> +               DRM_ERROR("device tree parsing failed\n");
+> +               return -EPROBE_DEFER;
+> +       }
+> +
+> +       rc = dp_power_client_init(dp->power);
+> +       if (rc) {
+> +               DRM_ERROR("Power client create failed\n");
+> +               return -EPROBE_DEFER;
+> +       }
 
-The switch statement in netvsc_send_completion() is incorrectly validating
-the length of incoming network packets by falling through to the next case.
-Avoid the fallthrough. Instead break after a case match and then process
-the complete() call.
-The current code has not caused any known failures. But nonetheless, the
-code should be corrected as a different ordering of the switch cases might
-cause a length check to fail when it should not.
+Hit enter too soon. No submodules teardown, so NAK.
 
-Signed-off-by: Sonia Sharma <sonia.sharma@linux.microsoft.com>
+Also please propagate returned error codes instead of inventing
+EPROBE_DEFER on your own.
 
----
-Changes in v3:
-* added return statement in default case as pointed by Michael Kelley.
-Changes in v4:
-* added fixes tag
-* modified commit message to explain the issue fixed by patch.
-Changes in v5:
-* Dropped fixes tag as suggested by Simon Horman.
-* fixed indentation
----
- drivers/net/hyperv/netvsc.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+> +
+>         /* setup event q */
+>         mutex_init(&dp->event_mutex);
+>         init_waitqueue_head(&dp->event_q);
+> --
+> 2.7.4
+>
 
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 82e9796c8f5e..0f7e4d377776 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -851,7 +851,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_RECV_BUF_COMPLETE:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -860,7 +860,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_SEND_BUF_COMPLETE:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -869,7 +869,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG5_TYPE_SUBCHANNEL:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -878,10 +878,6 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		/* Copy the response back */
--		memcpy(&net_device->channel_init_pkt, nvsp_packet,
--		       sizeof(struct nvsp_message));
--		complete(&net_device->channel_init_wait);
- 		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_RNDIS_PKT_COMPLETE:
-@@ -904,13 +900,19 @@ static void netvsc_send_completion(struct net_device *ndev,
- 
- 		netvsc_send_tx_complete(ndev, net_device, incoming_channel,
- 					desc, budget);
--		break;
-+		return;
- 
- 	default:
- 		netdev_err(ndev,
- 			   "Unknown send completion type %d received!!\n",
- 			   nvsp_packet->hdr.msg_type);
-+		return;
- 	}
-+
-+	/* Copy the response back */
-+	memcpy(&net_device->channel_init_pkt, nvsp_packet,
-+	       sizeof(struct nvsp_message));
-+	complete(&net_device->channel_init_wait);
- }
- 
- static u32 netvsc_get_next_send_section(struct netvsc_device *net_device)
+
 -- 
-2.25.1
-
+With best wishes
+Dmitry
