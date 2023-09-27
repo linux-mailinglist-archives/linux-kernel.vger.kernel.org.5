@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F527B0BE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A2A7B0BE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 20:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbjI0SYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 14:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
+        id S229665AbjI0SZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 14:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjI0SYS (ORCPT
+        with ESMTP id S229536AbjI0SZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 14:24:18 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE81F5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:24:16 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-65b2463d651so24961216d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:24:16 -0700 (PDT)
+        Wed, 27 Sep 2023 14:25:40 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4050FDD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:25:39 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3231df054c4so7743577f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 11:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695839056; x=1696443856; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695839138; x=1696443938; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qWpsRjwmUIn37reupPi+utPeMXSOLSGyvQ+OBrd+Mx8=;
-        b=I5oavEoBnIiboxie1Zt6K9sZiTMIvkSwudD4A85sCapnx1Esj3z95PHJ4FhXAe4ujn
-         TRIS8EbVAnp79AkGBkU5J0JBFXs+6c9CVRLd+BZZFtEsVX0N7oCDs5pUYHJqxWzg1BcN
-         aMRWYo/FSBq1WaDu10Adkm+J92N+031WtengHkYvx4haNQhBjgm4JCT1YDGKSYK5GY6P
-         Pm3xTXYebguK1NG/7V6ufn9zKtCC0sw/e2lZnCbWDUiTAULs1T+kxEaHZINxybFE9lDd
-         J0IYm5g8X4AckiuLYq8MQIq/P/zvMndBWnrr3He7g/NUjrlDEsgai5XyuPSyyN5MzYIN
-         MWrQ==
+        bh=WFhF8RUb+Bu9+rM6xrYeWt5o4VbnL73BwlvF+/CLnlY=;
+        b=i7u+UY0KrNjq6vDldMk8ty0loVs6CbAY6lTBad8iVEAe+ruNxpbZzMB1qpVIlcHTNu
+         SbnxmXFRRIi3SbvtoKaKRjH6/fGSIC+Xi50ND8yqDQDMmW6Qm5Z8WZPmPbYhoX8yow65
+         h8vXcfhvbs40rT2d6AgZcSj4/xD/zrDsKV43NKoebcTxRN3sAttqs6MJdktmAoupf6Fo
+         CpesRK/xckk+KvYc/T1C5gaiOmrktJj1JxuJM75Z00ZFoCToNrzpotGk0GKeeykxYs1Y
+         B0DezaZYLQjPrT2un8ufM2oYQEXV1qIItS4nctCpPAj9Hujwsdto6F4Sz320a4k+5w1C
+         phrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695839056; x=1696443856;
+        d=1e100.net; s=20230601; t=1695839138; x=1696443938;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qWpsRjwmUIn37reupPi+utPeMXSOLSGyvQ+OBrd+Mx8=;
-        b=MLGcOetSURatfuFGcYK8wkAyoMWZqV28HLQGI3SglMfN4rB1b4GhgAZKo85qcsua2H
-         AbmCd6UfRNb3t0e0M1j9g/SmU4h2jRj1Bfs3wpdRKW3wOzzDBxxOxaXFs1iGb44YSLOH
-         VDfjaOJRNxyC0WIXQkFkqZOBmAXFj9hvS6VFMtlWs36asqHaD9cJ8t6VB8ADt/s/Z8s7
-         qDXT8ielGcACGa/HES9AY7CLy1K7wzQX4V3ccwgg1y1xHfVjFlyyQn/hkMWqC81grIRs
-         vLR56tGT+j4OLe8Pnj2QVPuX2m5HhCwdPUGs/usS5Uz3xRLxlWu3bGrKvvatjAq5OQFg
-         EMuQ==
-X-Gm-Message-State: AOJu0Yy9FUNURvgQ36cenUnLCmxEtS/PErj7+HsS/2ii3S8h+vU1UCp+
-        WxhYlhDQa6wynsYM7X819xlEtJ9B2VFiBtRyro+49Q==
-X-Google-Smtp-Source: AGHT+IGhWGRmm8dUh/cNFf9vDCIt/TP02tK4GmYi2a3Wv5AszHwFSzVOwvN7DhycV7sCeV+X7NZt8SA7Hj1jotnQqeo=
-X-Received: by 2002:a05:6214:b2b:b0:65c:fec5:6f0 with SMTP id
- w11-20020a0562140b2b00b0065cfec506f0mr2355028qvj.45.1695839055820; Wed, 27
- Sep 2023 11:24:15 -0700 (PDT)
+        bh=WFhF8RUb+Bu9+rM6xrYeWt5o4VbnL73BwlvF+/CLnlY=;
+        b=rhMbzLUnf00bcNSaFD4TRmQuGASbu//BkR63EHRNHLRlj/WNGBJM1SoPqR6I5N5YvB
+         5nTWjiq8yyA4Z2BPywCeTdPT+vFKQ3auYONdRd1/s0RdAzX3UwWypS6yv3bmtJizQ3Jq
+         ITvDNqotcLcH+eFkzF+BfzHD9WPkmDogD0rAV7f7Dcan0cZSufmHqwMA3Foz/8usH2lf
+         txb7NvbFxZp5D1/s5hb7hOqBWPev/zMRQpv47sUxPHZ0hmoJBtYcxW5EEkt7Q3NFkGnF
+         xEEqbzHB13kDKqFaLjvcHxmEn97qG1UFIaY5MVuN3tzUJJz8qzdvdT4zVyS7af1Xdpjl
+         F6EA==
+X-Gm-Message-State: AOJu0YyZQRvjVXpHCqD5FzVq0wHPZS5f7kMyf3Xk5mjWfcc4OhvXyi2r
+        IDoX4v6BklrYdTjwQ/O6rcBzxwbnXzmXrYlJnd1e1g==
+X-Google-Smtp-Source: AGHT+IHIYVkQLwWoPb+88gb1yMyqkYxT1InPOY5PMBoDofZ8kX8dESzReiqpG2SpAsaSdlnLjgyCI6biew8zpQzuFIY=
+X-Received: by 2002:adf:f986:0:b0:322:5d58:99b4 with SMTP id
+ f6-20020adff986000000b003225d5899b4mr2685547wrr.0.1695839137441; Wed, 27 Sep
+ 2023 11:25:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230927040939.342643-1-mizhang@google.com> <CAL715WJM2hMyMvNYZAcd4cSpDQ6XPFsNhtR2dsi7W=ySfy=CFw@mail.gmail.com>
- <2c79115e-e16d-49cc-8f5b-2363d7910269@zytor.com> <ZRRT8zUfekA1QrQL@google.com>
-In-Reply-To: <ZRRT8zUfekA1QrQL@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Wed, 27 Sep 2023 11:23:39 -0700
-Message-ID: <CAL715WKn1RPiY23x3WAi7BASyLDSZuEO7CJ6FObCxOmRpBwh7Q@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Move kvm_check_request(KVM_REQ_NMI) after kvm_check_request(KVM_REQ_NMI)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Xin Li <xin@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Like Xu <likexu@tencent.com>, Kan Liang <kan.liang@intel.com>,
-        Dapeng1 Mi <dapeng1.mi@intel.com>
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com> <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+In-Reply-To: <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 27 Sep 2023 11:25:22 -0700
+Message-ID: <CAJuCfpHf6BWaf_k5dBx7mAz49kF5BwBhW_mUxu4E_p2iAy9-iA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,188 +79,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 9:10=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
+On Wed, Sep 27, 2023 at 6:29=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> On Tue, Sep 26, 2023, Xin Li wrote:
-> > On 9/26/2023 9:15 PM, Mingwei Zhang wrote:
-> > > ah, typo in the subject: The 2nd KVM_REQ_NMI should be KVM_REQ_PMI.
-> > > Sorry about that.
-> > >
-> > > On Tue, Sep 26, 2023 at 9:09=E2=80=AFPM Mingwei Zhang <mizhang@google=
-.com> wrote:
-> > > >
-> > > > Move kvm_check_request(KVM_REQ_NMI) after kvm_check_request(KVM_REQ=
-_NMI).
+> >> +static int remap_anon_pte(struct mm_struct *dst_mm, struct mm_struct =
+*src_mm,
+> >> +                         struct vm_area_struct *dst_vma,
+> >> +                         struct vm_area_struct *src_vma,
+> >> +                         unsigned long dst_addr, unsigned long src_ad=
+dr,
+> >> +                         pte_t *dst_pte, pte_t *src_pte,
+> >> +                         pte_t orig_dst_pte, pte_t orig_src_pte,
+> >> +                         spinlock_t *dst_ptl, spinlock_t *src_ptl,
+> >> +                         struct folio *src_folio)
+> >> +{
+> >> +       struct anon_vma *dst_anon_vma;
+> >> +
+> >> +       double_pt_lock(dst_ptl, src_ptl);
+> >> +
+> >> +       if (!pte_same(*src_pte, orig_src_pte) ||
+> >> +           !pte_same(*dst_pte, orig_dst_pte) ||
+> >> +           folio_test_large(src_folio) ||
+> >> +           folio_estimated_sharers(src_folio) !=3D 1) {
+>
+> ^ here you should check PageAnonExclusive. Please get rid of any
+> implicit explicit/implcit mapcount checks.
+
+Ack.
+
+>
+> >> +               double_pt_unlock(dst_ptl, src_ptl);
+> >> +               return -EAGAIN;
+> >> +       }
+> >> +
+> >> +       BUG_ON(!folio_test_anon(src_folio));
+> >> +
+> >> +       dst_anon_vma =3D (void *)dst_vma->anon_vma + PAGE_MAPPING_ANON=
+;
+> >> +       WRITE_ONCE(src_folio->mapping,
+> >> +                  (struct address_space *) dst_anon_vma);
+>
+> I have some cleanups pending for page_move_anon_rmap(), that moves the
+> SetPageAnonExclusive hunk out. Here we should be using
+> page_move_anon_rmap() [or rather, folio_move_anon_rmap() after my cleanup=
+s]
+>
+> I'll send them out soonish.
+
+Should I keep this as is in my next version until you post the
+cleanups? I can add a TODO comment to convert it to
+folio_move_anon_rmap() once it's ready.
+
+>
+> >> +       WRITE_ONCE(src_folio->index, linear_page_index(dst_vma,
+> >> +                                                     dst_addr)); >> +
+> >> +       orig_src_pte =3D ptep_clear_flush(src_vma, src_addr, src_pte);
+> >> +       orig_dst_pte =3D mk_pte(&src_folio->page, dst_vma->vm_page_pro=
+t);
+> >> +       orig_dst_pte =3D maybe_mkwrite(pte_mkdirty(orig_dst_pte),
+> >> +                                    dst_vma);
 > >
-> > Please remove it, no need to repeat the subject.
+> > I think there's still a theoretical issue here that you could fix by
+> > checking for the AnonExclusive flag, similar to the huge page case.
+> >
+> > Consider the following scenario:
+> >
+> > 1. process P1 does a write fault in a private anonymous VMA, creating
+> > and mapping a new anonymous page A1
+> > 2. process P1 forks and creates two children P2 and P3. afterwards, A1
+> > is mapped in P1, P2 and P3 as a COW page, with mapcount 3.
+> > 3. process P1 removes its mapping of A1, dropping its mapcount to 2.
+> > 4. process P2 uses vmsplice() to grab a reference to A1 with get_user_p=
+ages()
+> > 5. process P2 removes its mapping of A1, dropping its mapcount to 1.
+> >
+> > If at this point P3 does a write fault on its mapping of A1, it will
+> > still trigger copy-on-write thanks to the AnonExclusive mechanism; and
+> > this is necessary to avoid P3 mapping A1 as writable and writing data
+> > into it that will become visible to P2, if P2 and P3 are in different
+> > security contexts.
+> >
+> > But if P3 instead moves its mapping of A1 to another address with
+> > remap_anon_pte() which only does a page mapcount check, the
+> > maybe_mkwrite() will directly make the mapping writable, circumventing
+> > the AnonExclusive mechanism.
+> >
 >
-> Heh, from Documentation/process/maintainer-kvm-x86.rst:
->
->   Changelog
->   ~~~~~~~~~
->   Most importantly, write changelogs using imperative mood and avoid pron=
-ouns.
->
->   See :ref:`describe_changes` for more information, with one amendment: l=
-ead with
->   a short blurb on the actual changes, and then follow up with the contex=
-t and
->   background.  Note!  This order directly conflicts with the tip tree's p=
-referred
->   approach!  Please follow the tip tree's preferred style when sending pa=
-tches
->   that primarily target arch/x86 code that is _NOT_ KVM code.
->
-> That said, I do prefer that the changelog intro isn't just a copy+paste o=
-f the
-> shortlog, and the shortlog and changelog should use conversational langua=
-ge instead
-> of describing the literal code movement.
->
-> > > > When vPMU is active use, processing each KVM_REQ_PMI will generate =
-a
->
-> This is not guaranteed.
->
-> > > > KVM_REQ_NMI. Existing control flow after KVM_REQ_PMI finished will =
-fail the
-> > > > guest enter, jump to kvm_x86_cancel_injection(), and re-enter
-> > > > vcpu_enter_guest(), this wasted lot of cycles and increase the over=
-head for
-> > > > vPMU as well as the virtualization.
->
-> As above, use conversational language, the changelog isn't meant to be a =
-play-by-play.
->
-> E.g.
->
->   KVM: x86: Service NMI requests *after* PMI requests in VM-Enter path
->
->   Move the handling of NMI requests after PMI requests in the VM-Enter pa=
-th
->   so that KVM doesn't need to cancel and redo VM-Enter in the likely
->   scenario that the vCPU has configured its LVPTC entry to generate an NM=
-I.
->
->   Because APIC emulation "injects" NMIs via KVM_REQ_NMI, handling PMI
->   requests after NMI requests means KVM won't detect the pending NMI requ=
-est
->   until the final check for outstanding requests.  Detecting requests at =
-the
->   final stage is costly as KVM has already loaded guest state, potentiall=
-y
->   queued events for injection, disabled IRQs, dropped SRCU, etc., most of
->   which needs to be unwound.
->
-> > Optimization is after correctness, so please explain if this is correct
-> > first!
->
-> Not first.  Leading with an in-depth description of KVM requests and NMI =
-handling
-> is not going to help understand *why* this change is being first.  But I =
-do agree
-> that this should provide an analysis of why it's ok to swap the order, sp=
-ecificially
-> why it's architecturally ok if KVM drops an NMI due to the swapped orderi=
-ng, e.g.
-> if the PMI is coincident with two other NMIs (or one other NMI and NMIs a=
-re blocked).
->
-> > > > So move the code snippet of kvm_check_request(KVM_REQ_NMI) to make =
-KVM
-> > > > runloop more efficient with vPMU.
-> > > >
-> > > > To evaluate the effectiveness of this change, we launch a 8-vcpu QE=
-MU VM on
->
-> Avoid pronouns.  There's no need for all the "fluff", just state the setu=
-p, the
-> test, and the results.
->
-> Really getting into the nits, but the whole "8-vcpu QEMU VM" versus
-> "the setup of using single core, single thread" is confusing IMO.  If the=
-re were
-> potential performance downsides and/or tradeoffs, then getting the gory d=
-etails
-> might be necessary, but that's not the case here, and if it were really n=
-ecessary
-> to drill down that deep, then I would want to better quantify the impact,=
- e.g. in
-> terms latency.
->
->   E.g. on Intel SPR running SPEC2017 benchmark and Intel vtune in the gue=
-st,
->   handling PMI requests before NMI requests reduces the number of cancele=
-d
->   runs by ~1500 per second, per vCPU (counted by probing calls to
->   vmx_cancel_injection()).
->
-> > > > an Intel SPR CPU. In the VM, we run perf with all 48 events Intel v=
-tune
-> > > > uses. In addition, we use SPEC2017 benchmark programs as the worklo=
-ad with
-> > > > the setup of using single core, single thread.
-> > > >
-> > > > At the host level, we probe the invocations to vmx_cancel_injection=
-() with
-> > > > the following command:
-> > > >
-> > > >      $ perf probe -a vmx_cancel_injection
-> > > >      $ perf stat -a -e probe:vmx_cancel_injection -I 10000 # per 10=
- seconds
-> > > >
-> > > > The following is the result that we collected at beginning of the s=
-pec2017
-> > > > benchmark run (so mostly for 500.perlbench_r in spec2017). Kindly f=
-orgive
-> > > > the incompleteness.
-> > > >
-> > > > On kernel without the change:
-> > > >      10.010018010              14254      probe:vmx_cancel_injectio=
-n
-> > > >      20.037646388              15207      probe:vmx_cancel_injectio=
-n
-> > > >      30.078739816              15261      probe:vmx_cancel_injectio=
-n
-> > > >      40.114033258              15085      probe:vmx_cancel_injectio=
-n
-> > > >      50.149297460              15112      probe:vmx_cancel_injectio=
-n
-> > > >      60.185103088              15104      probe:vmx_cancel_injectio=
-n
-> > > >
-> > > > On kernel with the change:
-> > > >      10.003595390                 40      probe:vmx_cancel_injectio=
-n
-> > > >      20.017855682                 31      probe:vmx_cancel_injectio=
-n
-> > > >      30.028355883                 34      probe:vmx_cancel_injectio=
-n
-> > > >      40.038686298                 31      probe:vmx_cancel_injectio=
-n
-> > > >      50.048795162                 20      probe:vmx_cancel_injectio=
-n
-> > > >      60.069057747                 19      probe:vmx_cancel_injectio=
-n
-> > > >
-> > > >  From the above, it is clear that we save 1500 invocations per vcpu=
- per
-> > > > second to vmx_cancel_injection() for workloads like perlbench.
->
-> Nit, this really should have:
->
->   Suggested-by: Sean Christopherson <seanjc@google.com>
->
-> I personally don't care about the attribution, but (a) others often do ca=
-re and
-> (b) the added context is helpful.  E.g. for bad/questionable suggestsions=
-/ideas,
-> knowing that person X was also involved helps direct and/or curate questi=
-ons/comments
-> accordingly.
+> Yes, can_change_pte_writable() contains the exact logic when we can turn
+> something easily writable even if it wasn't writable before. which
+> includes that PageAnonExclusive is set. (but with uffd-wp or softdirty
+> tracking, there is more to consider)
 
-For sure! I will also pay more attention to that in the future.
+For uffd_remap can_change_pte_writable() would fail it VM_WRITE is not
+set, but we want remapping to work for RO memory as well. Are you
+saying that a PageAnonExclusive() check alone would not be enough
+here?
 
-Thanks.
--Mingwei
+Thanks,
+Suren.
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
