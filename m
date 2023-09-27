@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2381E7B04A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C097B04A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbjI0MsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S231747AbjI0MtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbjI0MsH (ORCPT
+        with ESMTP id S231730AbjI0MtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:48:07 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD08912A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:48:05 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-693375d2028so1036946b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:48:05 -0700 (PDT)
+        Wed, 27 Sep 2023 08:49:01 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C573E6;
+        Wed, 27 Sep 2023 05:49:00 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79fa416b7ffso334246339f.2;
+        Wed, 27 Sep 2023 05:49:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695818885; x=1696423685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F+q11IEuEpxpbMHfQrNpP6uY5LoxWEiXG+rgWu0fXno=;
-        b=aNCpfdFvCeYSflXBGAO7S4irD9Ie8f6J2wMDYfVog47BlXgMUjBbNT39ND0gALV887
-         qOQs+VEK2/J0vqVsvYw9oBPGxXrvKPQwdApa/JaARQVPvXr215qaiaMGOIMYwZIrO1Bg
-         eiS3XqmirrVZEGta5Y8k0TDdbZCNEflJYHBkWXe2g6llSzHqv/nKz+BVeWlJVHXaKFpZ
-         yp/92IwKDyNvAN6MHODBOj13bATbhKSjPVr6pAILreDaCGExJKmOk7WoN8GhWdQN3W5B
-         0i4MOFc37qVS85IOXUj5aalldGgbH0pVhP9euZEtWb4FLJiVS37NshJOTvFYqku0yNa3
-         I4HA==
+        d=gmail.com; s=20230601; t=1695818940; x=1696423740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hEv5gTzCBSNWos/XoZhX+HMntbjZFYSz9lEJ4TMjS+0=;
+        b=T8R+UQ/+RXlETDER3JBxyVIu7CU75u/gBW6s1FYuWgZ5K9zag9VicAp/SYEx7T1lLM
+         /NkgbyI0qs3PE/MT0kwAhgOxLB/PC2sAXQkyxc2LDFIUQP4Z4G/QaDKTWoEk1ARNv8nr
+         PiS1r6nlVqkE/2K1uoY5V3DMYHhtnEOohl+fkLczeIp6cY5CyIO+Q/GwRRSl+Oh6emCk
+         lh6HRyp/XfcZ4yA9lS9gx/2BuVrZU7j2EsdLk1wUOTtABkI5XYj6tw62aUS4NvtHzB+A
+         5AQu2C0wDT6K6e6N93xaBQGrABdQvM+fxbYJ4OZ4vPdBD299AeTYi7vQB5ufbZOUauDn
+         A/gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695818885; x=1696423685;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695818940; x=1696423740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F+q11IEuEpxpbMHfQrNpP6uY5LoxWEiXG+rgWu0fXno=;
-        b=CUwSlcMX74MxAbicBs13eJlgFBk+Fyl3AUGElF7RjPopsQiMJWIuFH3zdbdpw8LUul
-         gGD6j/oLsfHKd99wOl2O/6tTtffUk4Yg6VRkBttOPB+WfVIgp0btTBm+c79rDqqSe5Qd
-         AeC0SEPC2A1WMMtoOKWow2b0JiuBfUjJSJGyN59WM4sL8RmrVHXMc94ScxSa3jTe7d9i
-         u1F+NfH5aMhuwVBXEa5Mn9wkWZI3sV0DkoKzKLMHg/V2n4PY8AnuTZnEnaP7eCJMtSQa
-         S2zcrwq0AQPFGIR9vdnp431l9Cgsn7sgmO8STNoEGAML3gCLBlpmoIGw5z5CJbjdyzvJ
-         knyQ==
-X-Gm-Message-State: AOJu0YxPaOavX4m5fhjndtlRT69k3DFQ8XQe6Z+0kaSkyZ7YOgygxf8M
-        YVfvWIkoGEDHwLx9aL7z9LKpn6/ERaYYZX8rG3Q=
-X-Google-Smtp-Source: AGHT+IGQdPYHMqTr4zNlzxJt6CA/xWfpM/ppZnKjYbKGmAsCanhjAOi4K+CnfdCrirywt9q82CL1CgNeAe1zxdaPCgE=
-X-Received: by 2002:a05:6a20:1607:b0:15a:3eaa:b7f8 with SMTP id
- l7-20020a056a20160700b0015a3eaab7f8mr2188328pzj.50.1695818884995; Wed, 27 Sep
- 2023 05:48:04 -0700 (PDT)
+        bh=hEv5gTzCBSNWos/XoZhX+HMntbjZFYSz9lEJ4TMjS+0=;
+        b=Rxzr8lyK5SlvjOJGQdjNrJN/Oiapx7HjM1GhDwQ28nmYUIljPrsZTlaV+Pc79WbBVo
+         uwDsASCRjHd3LM91B/yRqzirI+aejrFKgZGoEDQs6DjLvx+Z8TOhrNxqY7sGjm0hZP/0
+         03gyIdLQ5COZajUoNh+TGjyvhwc4mTJ4rpxRGtXpWzW4w1RJyFhfqNi0lf3GaARmAlBL
+         Yn+Cz2Zjju1oLoLqnHqf5ZIE/EmRFbJwFf4jNY17DOrVTHZcGZ5tEHQhhWpAXGq8u4BZ
+         xtjvg+6i4u8Jl+YVPKANOaolK38hfZ5xjy0Zd/zgxHd/ofVUZZHvD9a4NFBU6ASpkcHx
+         5jVA==
+X-Gm-Message-State: AOJu0YyriwZ/dJyGDbqGmbBqA85+whVVNzjueaCduRBOs+4A6/Ie/DUh
+        IThcn8+6QxVAhpaXDeYBY/o=
+X-Google-Smtp-Source: AGHT+IGBWI9TSRFdCwoD10pgG78eddGuSS6x0I2f47WdbCulTSWC+kijzDLc/jUMknyMOxBPbLj1Ig==
+X-Received: by 2002:a05:6602:3355:b0:79f:cdb4:3f87 with SMTP id c21-20020a056602335500b0079fcdb43f87mr1877939ioz.4.1695818939692;
+        Wed, 27 Sep 2023 05:48:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j19-20020a6bf913000000b007836252a084sm3895077iog.48.2023.09.27.05.48.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 05:48:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 27 Sep 2023 05:48:56 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] hwmon: refactor deprecated strncpy
+Message-ID: <9837d8dd-d802-4d5d-bca7-6e029658ba76@roeck-us.net>
+References: <20230921-strncpy-drivers-hwmon-acpi_power_meter-c-v3-1-307552c6ec3f@google.com>
 MIME-Version: 1.0
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
- <20230818-samsung-dsim-v1-1-b39716db6b7a@pengutronix.de> <CAHCN7x+J_umWCBvivuZsrHTvjw=4CvBqOSeO-j_+fTMm=DdAOg@mail.gmail.com>
- <CAAQKjZM9UGgzAgfg-Rt92BNdvLuUJ90=QRUrd=FnDFwGvoC-zA@mail.gmail.com>
-In-Reply-To: <CAAQKjZM9UGgzAgfg-Rt92BNdvLuUJ90=QRUrd=FnDFwGvoC-zA@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 27 Sep 2023 07:47:53 -0500
-Message-ID: <CAHCN7xJLH2oBzvn6V0VRpisr1Pmh3knx0t0Vesck5q_-RGnN6A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] drm/bridge: samsung-dsim: add more mipi-dsi device
- debug information
-To:     Inki Dae <daeinki@gmail.com>
-Cc:     Michael Tretter <m.tretter@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>, kernel@pengutronix.de,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921-strncpy-drivers-hwmon-acpi_power_meter-c-v3-1-307552c6ec3f@google.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 3, 2023 at 8:05=E2=80=AFPM Inki Dae <daeinki@gmail.com> wrote:
->
-> 2023=EB=85=84 8=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 7:38,=
- Adam Ford <aford173@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >
-> > On Mon, Aug 28, 2023 at 10:59=E2=80=AFAM Michael Tretter
-> > <m.tretter@pengutronix.de> wrote:
-> > >
-> > > From: Marco Felsch <m.felsch@pengutronix.de>
-> > >
-> > > Since the MIPI configuration can be changed on demand it is very usef=
-ul
-> > > to print more MIPI settings during the MIPI device attach step.
-> > >
-> > > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> > > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-> >
-> > Reviewed-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
-> > Tested-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
->
-> Reviewed-by: Inki Dae <inki.dae@samsung.com>
-> Acked-by: Inki Dae <inki.dae@samsung.com>
+On Thu, Sep 21, 2023 at 05:41:46AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> Let's refactor this kcalloc() + strncpy() into a kmemdup_nul() which has
+> more obvious behavior and is less error prone.
+> 
+> To avoid truncating the last byte supply `...length + 1` to
+> kmemdup_nul() as `element->string.length` does not account for the
+> trailing null as made obvious from it's definition (and associated
+> comment):
+> |       u32 length;	/* # of bytes in string, excluding trailing null */
+> 
+> ... this is precisely what the original kcalloc invocation did as well.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-What needs to be done in order to get this accepted?  This series is a
-very nice improvement in i.MX8M Mini / Nano.
+I have multiple patches with the hwmon: prefix but no driver,
+like this one, suggesting the change is in the hwmon core,
+when in reality it is in some hwmon driver.
+I am not going to apply any of those, and I am not even going to
+look into them.
 
-adam
->
-> >
-> > > ---
-> > >  drivers/gpu/drm/bridge/samsung-dsim.c | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/=
-bridge/samsung-dsim.c
-> > > index 73ec60757dbc..6778f1751faa 100644
-> > > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> > > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> > > @@ -1711,7 +1711,10 @@ static int samsung_dsim_host_attach(struct mip=
-i_dsi_host *host,
-> > >                 return ret;
-> > >         }
-> > >
-> > > -       DRM_DEV_INFO(dev, "Attached %s device\n", device->name);
-> > > +       DRM_DEV_INFO(dev, "Attached %s device (lanes:%d bpp:%d mode-f=
-lags:0x%lx)\n",
-> > > +                    device->name, device->lanes,
-> > > +                    mipi_dsi_pixel_format_to_bpp(device->format),
-> > > +                    device->mode_flags);
-> > >
-> > >         drm_bridge_add(&dsi->bridge);
-> > >
-> > >
-> > > --
-> > > 2.39.2
-> > >
+Guenter
