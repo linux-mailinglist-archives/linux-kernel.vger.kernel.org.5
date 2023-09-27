@@ -2,287 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66137B0D22
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F857B0D24
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjI0UEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        id S229803AbjI0UGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjI0UEq (ORCPT
+        with ESMTP id S229664AbjI0UGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:04:46 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F432114
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:04:44 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c6193d6bb4so46775ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:04:44 -0700 (PDT)
+        Wed, 27 Sep 2023 16:06:07 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47061CC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:06:03 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77574dec71bso130670085a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:06:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695845084; x=1696449884; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M+XWKbIJGAs+2CKK7tWSiWj10aUmSxPjwzc7ZpoiI1E=;
-        b=4wNF6k0ql3NGzj+SCSfd8DA/aMLofLCcpjvNj3duDaEtESiv4nLwLmMYZNUOlspf/S
-         eQNywfBXBxpUZFd+3YCosvvf02fjbevsOvaanDiZQaYZX2YD8UViio8WKWrY3e0je8Nz
-         P217nt13Hm8lY4W7MyMJ2XxO64CpmDJR9U7+SWJhTNU5o1S7HxmbMUxDPhAgTN7gdtgt
-         AUU0FoOza5Kmy6a7B0cUEn8pGstJj81sgThalaOQDDtDkUqzwPB3ZAV0HOJEvJ1Pu0gU
-         SZKBnyXGH5Gd27MR7gRsptaGPUTpEoymoFb4NxFe5gOwalarsGuo/53jGxA+/j3tGpgQ
-         i3rQ==
+        d=sifive.com; s=google; t=1695845162; x=1696449962; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=40eq+oYmKp+ilulUb5AKkmUrv9jJ6ytF+Xz3YyFv3Ww=;
+        b=m3QotSWL0LbTLGVCtR856Q9shkiILgEWli+B5VRuAYqgyOJwfBMqWKFnFTXwe7yxgj
+         1GwQ38yQPbIHJKnoFl8HvSALMCSiUDA6yexEr/zC4lP1vRym+R4rcijgdW8lUBXwDcY+
+         nebuA4sc2HIOam3lUGkWIU0L7QbPnXiKzlcsobVyQNNZnejVdoPV7MQS/4XbgJbWIeMd
+         di7afvPwMcolWHFUvEb6PEYUClIASJIdHEQAR4qAU2iKu3uOX4FLrWeOYda/BH4VagBw
+         uiPatDqOpabfToFTWIluyWUrCj86hEbg5LUZLsxppX40F+okSI92INrn7SbPy8ICdHK7
+         KHFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695845084; x=1696449884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M+XWKbIJGAs+2CKK7tWSiWj10aUmSxPjwzc7ZpoiI1E=;
-        b=rqItDHjcnEqBz8g8AfWrv9Zil74UJJ/glnlppaIqLL8Obql+MTz5uhO8xZKzUk9HCB
-         IdTXV94XRVKTg5V9YUtylS4uh2KTKnM35ElMKNpzhdXAozT57Nq/AhvvtdfFvbrZ1PL6
-         Ir6egcllNYRNDdzNgXXD+0lFquPcyGIhzevmf9D9cmgvILXr3X0hYdF4o4S66Sw5v0Ka
-         NQzQu63AcXC9G/MZsklaYnM/4BpJ9uqDni1LUHM33VV942dOFkKJyMypCd48Um8Z0hqW
-         g3UBOJdxa8ogCM0SEpmRI1ivS9tYi3yyDIsPMPbTlCl8qylZG7a2bYkqe9K2aEPvDcCV
-         P4dA==
-X-Gm-Message-State: AOJu0Yxa6sm4BOzsF1z2rbYOKQ/uj95V/HzPodbQPJWuT2bhpsxjLtDm
-        5UCeVsw2lNwqSJpVI1zsN0c7jbguB7QlzpwjAYhQvw==
-X-Google-Smtp-Source: AGHT+IGGVIFFSOgyJo8JdJxittG6SViQRjz4xTB/xRvT5NGB27U15736n2XSm+PW86J4HyH8mjwxAkUSePlEAP9pdsg=
-X-Received: by 2002:a17:902:d482:b0:1c3:fe16:9f32 with SMTP id
- c2-20020a170902d48200b001c3fe169f32mr524985plg.15.1695845083776; Wed, 27 Sep
- 2023 13:04:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695845162; x=1696449962;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=40eq+oYmKp+ilulUb5AKkmUrv9jJ6ytF+Xz3YyFv3Ww=;
+        b=oYH4C9Kwa+QfJphoIvtpvCaq20LDzf+Lm6+z5vhmUe80Ul/AfCV/WZOQHY6WGcHnaZ
+         V0SU+SOSA06u2xhVzqrqmKdplUxfABrgiPDJelsTY073ViMazNVRVpiFa9fXmrZL6B0S
+         jYNqB8HRK9KmbuQMJe7K7uuMHSTFhNrwd1PKiTYjlVsrgwsqftayHb5u4nMWkdXyVCuP
+         qiFhcddSxOWOo+S8yjF4Ds/hnZPIlzrk68aBhyUEQ/J7n3y6RU09f81idBsHpdWe/rIh
+         6t3uZXzNGlDcEowZf8GDPrZu80a4t2V0TvhcUwlcGv/Ls0qYHgT1zIj6GXdwWFJTwGEj
+         30qg==
+X-Gm-Message-State: AOJu0YyyiPNlN+5PzdpI7Q5+B+lX2ae5aD0R842CW2QVB4Q5837xWnO7
+        UgGXqEXCyDZ5oM17W2GKiX6i6g==
+X-Google-Smtp-Source: AGHT+IFMPOm8j34YhAJhK1SHuhjb4UEAdjponWhdyf6i2zFU73RSkmiApsy5guU+H6KCC9P8kOSl2A==
+X-Received: by 2002:a0c:e54f:0:b0:655:dd4b:d077 with SMTP id n15-20020a0ce54f000000b00655dd4bd077mr2926340qvm.51.1695845162374;
+        Wed, 27 Sep 2023 13:06:02 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:40d8:421c:60ef:36d5? ([2600:1700:2000:b002:40d8:421c:60ef:36d5])
+        by smtp.gmail.com with ESMTPSA id l19-20020a0ce513000000b00655e2005350sm2650867qvm.9.2023.09.27.13.06.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 13:06:01 -0700 (PDT)
+Message-ID: <71833cb5-1dfc-42d3-a2a2-6abe8520aee2@sifive.com>
+Date:   Wed, 27 Sep 2023 15:06:01 -0500
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com> <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
-In-Reply-To: <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 27 Sep 2023 22:04:06 +0200
-Message-ID: <CAG48ez2WNOMwPo4OMVUHbS4mirwbqHUY5qUaaZ9DTkXdkzrjiQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] usb: dwc3: add T-HEAD TH1520 usb driver
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+References: <20230927164222.3505-1-jszhang@kernel.org>
+ <20230927164222.3505-3-jszhang@kernel.org>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20230927164222.3505-3-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 8:08=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
-> On Wed, Sep 27, 2023 at 5:47=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
-e:
-> > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > > From: Andrea Arcangeli <aarcange@redhat.com>
-> > >
-> > > This implements the uABI of UFFDIO_REMAP.
-> > >
-> > > Notably one mode bitflag is also forwarded (and in turn known) by the
-> > > lowlevel remap_pages method.
-> > >
-> > > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-[...]
-> > > +                       /*
-> > > +                        * folio_referenced walks the anon_vma chain
-> > > +                        * without the folio lock. Serialize against =
-it with
-> > > +                        * the anon_vma lock, the folio lock is not e=
-nough.
-> > > +                        */
-> > > +                       src_anon_vma =3D folio_get_anon_vma(src_folio=
-);
-> > > +                       if (!src_anon_vma) {
-> > > +                               /* page was unmapped from under us */
-> > > +                               err =3D -EAGAIN;
-> > > +                               goto out;
-> > > +                       }
-> > > +                       if (!anon_vma_trylock_write(src_anon_vma)) {
-> > > +                               pte_unmap(&orig_src_pte);
-> > > +                               pte_unmap(&orig_dst_pte);
-> > > +                               src_pte =3D dst_pte =3D NULL;
-> > > +                               /* now we can block and wait */
-> > > +                               anon_vma_lock_write(src_anon_vma);
-> > > +                               goto retry;
-> > > +                       }
-> > > +               }
-> >
-> > So at this point we have:
-> >
-> >  - the current src_pte
-> >  - some referenced+locked src_folio that used to be mapped exclusively
-> > at src_addr
-> >  - (the anon_vma associated with the src_folio)
-> >
-> > > +               err =3D remap_anon_pte(dst_mm, src_mm,  dst_vma, src_=
-vma,
-> > > +                                    dst_addr, src_addr, dst_pte, src=
-_pte,
-> > > +                                    orig_dst_pte, orig_src_pte,
-> > > +                                    dst_ptl, src_ptl, src_folio);
-> >
-> > And then this will, without touching folio mapcounts/refcounts, delete
-> > the current PTE at src_addr, and create a PTE at dst_addr pointing to
-> > the old src_folio, leading to incorrect refcounts/mapcounts?
->
-> I assume this still points to the missing previous_src_pte check
-> discussed in the previous comments. Is that correct or is there yet
-> another issue?
+On 2023-09-27 11:42 AM, Jisheng Zhang wrote:
+> Adds TH1520 Glue layer to support USB controller on T-HEAD TH1520 SoC.
+> There is a DesignWare USB3 DRD core in TH1520 SoCs, the dwc3 core is
+> the child of this USB wrapper module device.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  MAINTAINERS                   |   1 +
+>  drivers/usb/dwc3/Kconfig      |   9 +++
+>  drivers/usb/dwc3/Makefile     |   1 +
+>  drivers/usb/dwc3/dwc3-thead.c | 119 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 130 insertions(+)
+>  create mode 100644 drivers/usb/dwc3/dwc3-thead.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 90f13281d297..d55e40060c46 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18481,6 +18481,7 @@ M:	Fu Wei <wefu@redhat.com>
+>  L:	linux-riscv@lists.infradead.org
+>  S:	Maintained
+>  F:	arch/riscv/boot/dts/thead/
+> +F:	drivers/usb/dwc3/dwc3-thead.c
+>  
+>  RNBD BLOCK DRIVERS
+>  M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
+> diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+> index 98efcbb76c88..1b02f4f55b47 100644
+> --- a/drivers/usb/dwc3/Kconfig
+> +++ b/drivers/usb/dwc3/Kconfig
+> @@ -178,4 +178,13 @@ config USB_DWC3_OCTEON
+>  	  Only the host mode is currently supported.
+>  	  Say 'Y' or 'M' here if you have one such device.
+>  
+> +config USB_DWC3_THEAD
+> +	tristate "T-HEAD Platform"
+> +	depends on ARCH_THEAD || COMPILE_TEST
+> +	default USB_DWC3
+> +	help
+> +	  Support T-HEAD platform with DesignWare Core USB3 IP.
+> +	  Only the host mode is currently supported.
+> +	  Say 'Y' or 'M' here if you have one such device.
+> +
+>  endif
+> diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
+> index fe1493d4bbe5..9523a51dd279 100644
+> --- a/drivers/usb/dwc3/Makefile
+> +++ b/drivers/usb/dwc3/Makefile
+> @@ -55,3 +55,4 @@ obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
+>  obj-$(CONFIG_USB_DWC3_IMX8MP)		+= dwc3-imx8mp.o
+>  obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
+>  obj-$(CONFIG_USB_DWC3_OCTEON)		+= dwc3-octeon.o
+> +obj-$(CONFIG_USB_DWC3_THEAD)		+= dwc3-thead.o
+> diff --git a/drivers/usb/dwc3/dwc3-thead.c b/drivers/usb/dwc3/dwc3-thead.c
+> new file mode 100644
+> index 000000000000..999b1e319c72
+> --- /dev/null
+> +++ b/drivers/usb/dwc3/dwc3-thead.c
+> @@ -0,0 +1,119 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * dwc3-thead.c - T-HEAD platform specific glue layer
+> + *
+> + * Inspired by dwc3-of-simple.c
+> + *
+> + * Copyright (C) 2021 Alibaba Group Holding Limited.
+> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "core.h"
+> +
+> +#define USB_SSP_EN		0x34
+> +#define  REF_SSP_EN		BIT(0)
+> +#define USB_SYS			0x3c
+> +#define  COMMONONN		BIT(0)
+> +
+> +#define USB3_DRD_SWRST		0x14
+> +#define  USB3_DRD_PRST		BIT(0)
+> +#define  USB3_DRD_PHYRST	BIT(1)
+> +#define  USB3_DRD_VCCRST	BIT(2)
+> +#define  USB3_DRD_RSTMASK	(USB3_DRD_PRST | USB3_DRD_PHYRST | USB3_DRD_VCCRST)
+> +
+> +struct dwc3_thead {
+> +	void __iomem		*base;
+> +	struct regmap		*misc_sysreg;
+> +	struct regulator	*vbus;
+> +};
+> +
+> +static void dwc3_thead_optimize_power(struct dwc3_thead *thead)
+> +{
+> +	u32 val;
+> +
+> +	/* config usb top within USB ctrl & PHY reset */
+> +	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
+> +			   USB3_DRD_RSTMASK, USB3_DRD_PRST);
+> +
+> +	/*
+> +	 * dwc reg also need to be configed to save power
+> +	 * 1. set USB_SYS[COMMONONN]
+> +	 * 2. set DWC3_GCTL[SOFITPSYNC](done by core.c)
+> +	 * 3. set GUSB3PIPECTL[SUSPENDEN] (done by core.c)
+> +	 */
+> +	val = readl(thead->base + USB_SYS);
+> +	val |= COMMONONN;
+> +	writel(val, thead->base + USB_SYS);
+> +	val = readl(thead->base + USB_SSP_EN);
+> +	val |= REF_SSP_EN;
+> +	writel(val, thead->base + USB_SSP_EN);
+> +
+> +	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
+> +			   USB3_DRD_RSTMASK, USB3_DRD_RSTMASK);
+> +}
+> +
+> +static int dwc3_thead_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct dwc3_thead *thead;
+> +	int ret;
+> +
+> +	thead = devm_kzalloc(&pdev->dev, sizeof(*thead), GFP_KERNEL);
+> +	if (!thead)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, thead);
 
-This is still referring to the missing previous_src_pte check.
+No need to set driver data, since you never access it.
 
-> >
-> > > +       } else {
-> > [...]
-> > > +       }
-> > > +
-> > > +out:
-> > > +       if (src_anon_vma) {
-> > > +               anon_vma_unlock_write(src_anon_vma);
-> > > +               put_anon_vma(src_anon_vma);
-> > > +       }
-> > > +       if (src_folio) {
-> > > +               folio_unlock(src_folio);
-> > > +               folio_put(src_folio);
-> > > +       }
-> > > +       if (dst_pte)
-> > > +               pte_unmap(dst_pte);
-> > > +       if (src_pte)
-> > > +               pte_unmap(src_pte);
-> > > +       mmu_notifier_invalidate_range_end(&range);
-> > > +
-> > > +       return err;
-> > > +}
-> > [...]
-> > > +ssize_t remap_pages(struct mm_struct *dst_mm, struct mm_struct *src_=
-mm,
-> > > +                   unsigned long dst_start, unsigned long src_start,
-> > > +                   unsigned long len, __u64 mode)
-> > > +{
-> > > +       struct vm_area_struct *src_vma, *dst_vma;
-> > > +       unsigned long src_addr, dst_addr;
-> > > +       pmd_t *src_pmd, *dst_pmd;
-> > > +       long err =3D -EINVAL;
-> > > +       ssize_t moved =3D 0;
-> > > +
-> > > +       /*
-> > > +        * Sanitize the command parameters:
-> > > +        */
-> > > +       BUG_ON(src_start & ~PAGE_MASK);
-> > > +       BUG_ON(dst_start & ~PAGE_MASK);
-> > > +       BUG_ON(len & ~PAGE_MASK);
-> > > +
-> > > +       /* Does the address range wrap, or is the span zero-sized? */
-> > > +       BUG_ON(src_start + len <=3D src_start);
-> > > +       BUG_ON(dst_start + len <=3D dst_start);
-> > > +
-> > > +       /*
-> > > +        * Because these are read sempahores there's no risk of lock
-> > > +        * inversion.
-> > > +        */
-> > > +       mmap_read_lock(dst_mm);
-> > > +       if (dst_mm !=3D src_mm)
-> > > +               mmap_read_lock(src_mm);
-> > > +
-> > > +       /*
-> > > +        * Make sure the vma is not shared, that the src and dst rema=
-p
-> > > +        * ranges are both valid and fully within a single existing
-> > > +        * vma.
-> > > +        */
-> > > +       src_vma =3D find_vma(src_mm, src_start);
-> > > +       if (!src_vma || (src_vma->vm_flags & VM_SHARED))
-> > > +               goto out;
-> > > +       if (src_start < src_vma->vm_start ||
-> > > +           src_start + len > src_vma->vm_end)
-> > > +               goto out;
-> > > +
-> > > +       dst_vma =3D find_vma(dst_mm, dst_start);
-> > > +       if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
-> > > +               goto out;
-> > > +       if (dst_start < dst_vma->vm_start ||
-> > > +           dst_start + len > dst_vma->vm_end)
-> > > +               goto out;
-> > > +
-> > > +       err =3D validate_remap_areas(src_vma, dst_vma);
-> > > +       if (err)
-> > > +               goto out;
-> > > +
-> > > +       for (src_addr =3D src_start, dst_addr =3D dst_start;
-> > > +            src_addr < src_start + len;) {
-> > > +               spinlock_t *ptl;
-> > > +               pmd_t dst_pmdval;
-> > > +               unsigned long step_size;
-> > > +
-> > > +               BUG_ON(dst_addr >=3D dst_start + len);
-> > > +               /*
-> > > +                * Below works because anonymous area would not have =
-a
-> > > +                * transparent huge PUD. If file-backed support is ad=
-ded,
-> > > +                * that case would need to be handled here.
-> > > +                */
-> > > +               src_pmd =3D mm_find_pmd(src_mm, src_addr);
-> > > +               if (unlikely(!src_pmd)) {
-> > > +                       if (!(mode & UFFDIO_REMAP_MODE_ALLOW_SRC_HOLE=
-S)) {
-> > > +                               err =3D -ENOENT;
-> > > +                               break;
-> > > +                       }
-> > > +                       src_pmd =3D mm_alloc_pmd(src_mm, src_addr);
-> > > +                       if (unlikely(!src_pmd)) {
-> > > +                               err =3D -ENOMEM;
-> > > +                               break;
-> > > +                       }
-> > > +               }
-> > > +               dst_pmd =3D mm_alloc_pmd(dst_mm, dst_addr);
-> > > +               if (unlikely(!dst_pmd)) {
-> > > +                       err =3D -ENOMEM;
-> > > +                       break;
-> > > +               }
-> > > +
-> > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
-> > > +               /*
-> > > +                * If the dst_pmd is mapped as THP don't override it =
-and just
-> > > +                * be strict. If dst_pmd changes into TPH after this =
-check, the
-> > > +                * remap_pages_huge_pmd() will detect the change and =
-retry
-> > > +                * while remap_pages_pte() will detect the change and=
- fail.
-> > > +                */
-> > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
-> > > +                       err =3D -EEXIST;
-> > > +                       break;
-> > > +               }
-> > > +
-> > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma);
-> > > +               if (ptl && !pmd_trans_huge(*src_pmd)) {
-> > > +                       spin_unlock(ptl);
-> > > +                       ptl =3D NULL;
-> > > +               }
-> >
-> > This still looks wrong - we do still have to split_huge_pmd()
-> > somewhere so that remap_pages_pte() works.
->
-> Hmm, I guess this extra check is not even needed...
+> +
+> +	ret = devm_regulator_get_enable_optional(dev, "vbus");
+> +	if (ret < 0 && ret != -ENODEV)
+> +		return ret;
 
-Hm, and instead we'd bail at the pte_offset_map_nolock() in
-remap_pages_pte()? I guess that's unusual but works...
+If you want to ignore -ENODEV, use the non-_optional variant.
 
-(It would be a thing to look out for if anyone tried to backport this,
-since the checks in pte_offset_map_nolock() were only introduced in
-6.5, but idk if anyone's doing that)
+> +
+> +	thead->misc_sysreg = syscon_regmap_lookup_by_phandle(np, "thead,misc-sysreg");
+> +	if (IS_ERR(thead->misc_sysreg))
+> +		return PTR_ERR(thead->misc_sysreg);
+> +
+> +	thead->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(thead->base))
+> +		return PTR_ERR(thead->base);
+> +
+> +	dwc3_thead_optimize_power(thead);
+> +
+> +	return of_platform_populate(np, NULL, NULL, dev);
+
+Using devm_of_platform_populate() will avoid the .remove_new hook.
+
+Regards,
+Samuel
+
+> +}
+> +
+> +static void dwc3_thead_remove(struct platform_device *pdev)
+> +{
+> +	of_platform_depopulate(&pdev->dev);
+> +}
+> +
+> +static const struct of_device_id dwc3_thead_of_match[] = {
+> +	{ .compatible = "thead,th1520-usb" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, dwc3_thead_of_match);
+> +
+> +static struct platform_driver dwc3_thead_driver = {
+> +	.probe		= dwc3_thead_probe,
+> +	.remove_new	= dwc3_thead_remove,
+> +	.driver		= {
+> +		.name	= "dwc3-thead",
+> +		.of_match_table	= dwc3_thead_of_match,
+> +	},
+> +};
+> +module_platform_driver(dwc3_thead_driver);
+> +
+> +MODULE_ALIAS("platform:dwc3-thead");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("DesignWare DWC3 T-HEAD Glue Driver");
+> +MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
+
