@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3227AFD8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4587AFD8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjI0IEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        id S230039AbjI0IEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbjI0IEp (ORCPT
+        with ESMTP id S229993AbjI0IEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:04:45 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ED0191
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:04:43 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bffa8578feso178523101fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695801881; x=1696406681; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HK/8Dajte472KzlqsoW1YYI86LGqovc35i9+35GKRvo=;
-        b=UJo9Dx6EqyAYAUBmNa3UMbh8yRolRwSGuN7RYptpBdwanv3UuYKhL/F+gMOpadwm6H
-         edTrMYnwkhc71Wuk+MvXjLCUacuzhQf3trj7n1j3aSZJwaz5chLDBUpcrtjUM0dXSM4D
-         AIck4CJvF6h2eHcpfd1eGb0s7fjamVkiglUZx/9txk9byIDhSC2VGnxgI4tFFAeEZgMA
-         MADM67NKTP4Ltg4iwOiPB91UwnJIyNRvC43BMnf3WjoKivykYQESMJh5ZmDalvJekKt6
-         gD3vEirm/ctzvVJl8w7gxa4Cq8BDIvtRrDA9/WhMCPZ7jXBRj7L81BWDPYNI71TvAYto
-         rvgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695801881; x=1696406681;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HK/8Dajte472KzlqsoW1YYI86LGqovc35i9+35GKRvo=;
-        b=mgTGC7t4TVcS1E0SSaM9xXgrehE9MLl0N8ozaVdF1R0piSfM/DSha8oX9N9zsJ05TC
-         CG415uLBxuuNG7aP5oz5wsF8XOibPwOfEmTr4fCocTQfXj5lhTTg7JLDlxg16PUgMU8v
-         1uZr+NIwQXqmUbniF+IynHoxJIPaZMvkzTtzptqaxoVduTApaE0+h3yog3aMsDQVwiUb
-         mb4pB65LACoIJz+2RqnLMoSX6qRPXkPQYT07L5Xky4guewULF/iS4MCnEtscugxa7kcF
-         mKnGV4EADKFN/VdcHOfCVwJPb5GhFFUxZJ8dsteyHkTFPKtb1ch24g90t+x8bcRgzuen
-         1j/g==
-X-Gm-Message-State: AOJu0YzefEIDSNfiRvlGolt4IbeWKMb7IpEA+KatSqNWC4VSP9pYocqs
-        oY47z6LVTftdt8TMbk2TOcnen+UmnnqgkMlc1g6SdYR/Y/r6lBoj1sHVsQ==
-X-Google-Smtp-Source: AGHT+IEZiqCCfFdYdxhBJFji3jZg8flP+hiyvqepe1yVonPxH26q/oTC8hEiCRjYYWJvK9nVjA8/SrSKyVrYJv72jJM=
-X-Received: by 2002:a2e:a230:0:b0:2c0:2b44:6eb7 with SMTP id
- i16-20020a2ea230000000b002c02b446eb7mr1300087ljm.35.1695801881296; Wed, 27
- Sep 2023 01:04:41 -0700 (PDT)
+        Wed, 27 Sep 2023 04:04:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F5BF;
+        Wed, 27 Sep 2023 01:04:28 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 08:04:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695801867;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6y4/x56gepc6BHyqsAM4Ueox9yfbDdfnwV5Rb7kalmc=;
+        b=ed1X0SRmdE5ubj1DS54klTu122q/zgYbeX1W55si6TaDBwdI/rvds6+UO3UsuslblxlIRU
+        18SnbTLBbsT0if4pxP9NJNNJF3N9FLjvjDo/T41Mv8amwLf4EUivSOQEoGIFx3dmSIuwot
+        a1O469gVVXjNHZfBzQZZ8f6qsooX0KLV9qcbzbJRBgtK60tS+CFUsAl8fBd18JOUZPoKol
+        irCkWkSY89aeHD8Z0HDuDBBKTTmMtNtae6gfzC6eYmSwPcwUDe/cR2mr/jFO5hEwmPEeyH
+        bqi4aGGVcPageakXg13v6OM1WIoCpNhh9sv7neFrLzKj8hww5TgZhd6ww3J9XQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695801867;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6y4/x56gepc6BHyqsAM4Ueox9yfbDdfnwV5Rb7kalmc=;
+        b=1ASpo4EyjBRB36zgcBSEfxUNjzEW24Npry1n3o38gHzKClv53g9MIb990wTgZdDd327zIN
+        DI9+p8skCQpF9gCg==
+From:   "tip-bot2 for Muralidhara M K" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/amd_nb: Add AMD Family MI300 PCI IDs
+Cc:     Muralidhara M K <muralidhara.mk@amd.com>,
+        Suma Hegde <suma.hegde@amd.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230926051932.193239-1-suma.hegde@amd.com>
+References: <20230926051932.193239-1-suma.hegde@amd.com>
 MIME-Version: 1.0
-References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
- <169570182987.596431.14062417344858914481.stgit@dwillia2-xfh.jf.intel.com> <c3d347a7-58d6-4830-aad4-d354b83f0704@linux.intel.com>
-In-Reply-To: <c3d347a7-58d6-4830-aad4-d354b83f0704@linux.intel.com>
-From:   Thomas Fossati <thomas.fossati@linaro.org>
-Date:   Wed, 27 Sep 2023 10:04:25 +0200
-Message-ID: <CA+1=6yfmLXJbZu7Gd7cp_HOAbmHwx54aPgozWKBikWwZSYTOZw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] configfs-tsm: Introduce a shared ABI for
- attestation reports
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-coco@lists.linux.dev,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Peter Gonda <pgonda@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samuel Ortiz <sameo@rivosinc.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <169580186617.27769.8445368377007522193.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,27 +66,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+The following commit has been merged into the x86/platform branch of tip:
 
-> On 9/25/2023 9:17 PM, Dan Williams wrote:
-> > +++ b/include/linux/tsm.h
-> > @@ -0,0 +1,63 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef __TSM_H
-> > +#define __TSM_H
-> > +
-> > +#include <linux/sizes.h>
-> > +#include <linux/types.h>
-> > +#include <linux/device.h>
-> > +
-> > +#define TSM_INBLOB_MAX 64
+Commit-ID:     24775700eaa93ff83b2a0f1e005879cdf186cdd9
+Gitweb:        https://git.kernel.org/tip/24775700eaa93ff83b2a0f1e005879cdf186cdd9
+Author:        Muralidhara M K <muralidhara.mk@amd.com>
+AuthorDate:    Tue, 26 Sep 2023 05:19:32 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 27 Sep 2023 09:53:23 +02:00
 
-I guess @inblob is supposed to (possibly) accommodate nonces from a
-challenger, correct?
-If so, 64 bytes may not be enough for attesters that produce
-EAT-formatted reports -- see [1], and [2].
+x86/amd_nb: Add AMD Family MI300 PCI IDs
 
-[1] https://www.ietf.org/archive/id/draft-ietf-rats-eat-21.html#section-4.1-5
-[2] https://github.com/ietf-rats-wg/eat/pull/421/files
+Add new Root, Device 18h Function 3, and Function 4 PCI IDS
+for AMD F19h Model 90h-9fh (MI300A).
 
-cheers, thanks
+Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
+Signed-off-by: Suma Hegde <suma.hegde@amd.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20230926051932.193239-1-suma.hegde@amd.com
+---
+ arch/x86/kernel/amd_nb.c | 5 +++++
+ include/linux/pci_ids.h  | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
+index 356de95..10c2a3c 100644
+--- a/arch/x86/kernel/amd_nb.c
++++ b/arch/x86/kernel/amd_nb.c
+@@ -27,6 +27,7 @@
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_ROOT		0x153a
+ #define PCI_DEVICE_ID_AMD_1AH_M20H_ROOT		0x1507
+ #define PCI_DEVICE_ID_AMD_MI200_ROOT		0x14bb
++#define PCI_DEVICE_ID_AMD_MI300_ROOT		0x14f8
+ 
+ #define PCI_DEVICE_ID_AMD_17H_DF_F4		0x1464
+ #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F4	0x15ec
+@@ -43,6 +44,7 @@
+ #define PCI_DEVICE_ID_AMD_19H_M78H_DF_F4	0x12fc
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4	0x12c4
+ #define PCI_DEVICE_ID_AMD_MI200_DF_F4		0x14d4
++#define PCI_DEVICE_ID_AMD_MI300_DF_F4		0x152c
+ 
+ /* Protect the PCI config register pairs used for SMN. */
+ static DEFINE_MUTEX(smn_mutex);
+@@ -62,6 +64,7 @@ static const struct pci_device_id amd_root_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_ROOT) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_ROOT) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_ROOT) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_ROOT) },
+ 	{}
+ };
+ 
+@@ -93,6 +96,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F3) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F3) },
+ 	{}
+ };
+ 
+@@ -115,6 +119,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F4) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F4) },
+ 	{}
+ };
+ 
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 5fb3d4c..91b457d 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -579,6 +579,7 @@
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3 0x12c3
+ #define PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3 0x16fb
+ #define PCI_DEVICE_ID_AMD_MI200_DF_F3	0x14d3
++#define PCI_DEVICE_ID_AMD_MI300_DF_F3	0x152b
+ #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+ #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+ #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
