@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5ABF7B0C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B817B0C9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjI0TeD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 15:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        id S229776AbjI0Teb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 15:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjI0Tdz (ORCPT
+        with ESMTP id S229595AbjI0Te0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:33:55 -0400
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1E0198;
-        Wed, 27 Sep 2023 12:33:53 -0700 (PDT)
-Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay05.hostedemail.com (Postfix) with ESMTP id 3FDD240E1A;
-        Wed, 27 Sep 2023 19:33:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 4324135;
-        Wed, 27 Sep 2023 19:33:47 +0000 (UTC)
-Message-ID: <60df84ba0615a26b1d0523037961fb1e5154fb43.camel@perches.com>
-Subject: Re: [PATCH 3/3] get_maintainer: add patch-only pattern matching type
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Date:   Wed, 27 Sep 2023 12:33:45 -0700
-In-Reply-To: <202309270913.911E51C@keescook>
-References: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
-         <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com>
-         <202309270913.911E51C@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 27 Sep 2023 15:34:26 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB351B2;
+        Wed, 27 Sep 2023 12:34:19 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RIx6RT007876;
+        Wed, 27 Sep 2023 19:34:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=5/Withjkp7BxI9AgxCuFLL2xAgHIN8igANqjSkzu3Q4=;
+ b=jUlw4V3mup3Csoqfqd8xQpMCoGbhvcsd8QlLpf6GQBiA5FUNGzMp8+ksstEksKGHtkxc
+ 4VFEGI7m/LOg8cboVqYZJ+02SroYSWz4gAeEH2XEX4hkCU/nTRZZooPqkh4G58naVTWB
+ K5R7qE3eWBtDPsfkjr7zJI8vUvrxLm/DTbUvJ4u81nuGLZMAICvuIHS90sYCUXmtOiSJ
+ hJGMHvnkkiKoa4dexQsgMwR1i01ceQKclHdBp0ufnUO6Jr0JkS+TZdyzN5YZO76GUso+
+ mbz6NqDiCKsq1hc4CLaeZww59debUUaQwTPh+arQ8aXlY2GVSHcSOOwwMW2LzZYlHxpY cQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9rjujf30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Sep 2023 19:34:10 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38RI0MGv030591;
+        Wed, 27 Sep 2023 19:34:10 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf8cueh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Sep 2023 19:34:10 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38RJY90l008431;
+        Wed, 27 Sep 2023 19:34:09 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3t9pf8cub4-1;
+        Wed, 27 Sep 2023 19:34:08 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Steffen Maier <maier@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Christof Schmitt <christof.schmitt@de.ibm.com>,
+        James Bottomley <James.Bottomley@suse.de>,
+        Swen Schillig <swen@vnet.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v3] scsi: zfcp: Fix a double put in zfcp_port_enqueue
+Date:   Wed, 27 Sep 2023 15:34:00 -0400
+Message-Id: <169584315413.1272983.1280092821984155852.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230923103723.10320-1-dinghao.liu@zju.edu.cn>
+References: <20230923103723.10320-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-X-Stat-Signature: wzzjqh7dki85yc9js1zi79rtajcecaoj
-X-Rspamd-Server: rspamout04
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_12,2023-09-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=956 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309270166
+X-Proofpoint-ORIG-GUID: v71FJI6HIYe9Cxeax3MQtVJ-uf3-PIqe
+X-Proofpoint-GUID: v71FJI6HIYe9Cxeax3MQtVJ-uf3-PIqe
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Rspamd-Queue-Id: 4324135
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+AdXi6X+8sFMUeeQydWXCeSqTe2H6e5M4=
-X-HE-Tag: 1695843227-82629
-X-HE-Meta: U2FsdGVkX1/UULqkEz6aLDLy5IPrQ9XTIuN8jtw1LSnLV1B1wOA4djPYSikWYcSlAyjOySNHDvEbw1indOrjOIIWvvQ1KUIDFJpPsnnfrOi2JUIfb2bw/UQyknwzqXs837T62tM0FkaSKX94YDovP+ZrUtw9AHuPGjpxC5EGfkbSs/3N2/OnoRS/MX8lASbhF0wwBUL443I/Yvcq02b3oufTzIBwdaylzKoyjZJLYbWGk9ai4h/8EcL5BNsb3Ooa4m5L8/RO0n7CQOl0wFVUQT27cssvFPw0NuTFRKOYaZLAv3xBXExg4N6+h9mAUKcWH8x0LVXgNBmYsoVXyT+hknfFnQFMou6W7GWq8e+Cf2NQY2+e2egWHWM9O97AJl57mZeOoOWVDhZa9fdqUKifXgZtUU9wGUOzPHRNJJKPoWfYc2NJ6gUaG7fa0pqXb598
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-27 at 09:15 -0700, Kees Cook wrote:
-> On Wed, Sep 27, 2023 at 03:19:16AM +0000, Justin Stitt wrote:
-> > Add the "D:" type which behaves the same as "K:" but will only match
-> > content present in a patch file.
-> > 
-> > To illustrate:
-> > 
-> > Imagine this entry in MAINTAINERS:
-> > 
-> > NEW REPUBLIC
-> > M: Han Solo <hansolo@rebelalliance.co>
-> > W: https://www.jointheresistance.org
-> > D: \bstrncpy\b
-> > 
-> > Our maintainer, Han, will only be added to the recipients if a patch
-> > file is passed to get_maintainer (like what b4 does):
-> > $ ./scripts/get_maintainer.pl 0004-some-change.patch
-> > 
-> > If the above patch has a `strncpy` present in the subject, commit log or
-> > diff then Han will be to/cc'd.
-> > 
-> > However, in the event of a file from the tree given like:
-> > $ ./scripts/get_maintainer.pl ./lib/string.c
-> > 
-> > Han will not be noisily to/cc'd (like a K: type would in this
-> > circumstance)
-> > 
-> > Note that folks really shouldn't be using get_maintainer on tree files
-> > anyways [1].
-> > 
-> > [1]: https://lore.kernel.org/all/20230726151515.1650519-1-kuba@kernel.org/
+On Sat, 23 Sep 2023 18:37:23 +0800, Dinghao Liu wrote:
+
+> When device_register() fails, zfcp_port_release() will be called
+> after put_device(). As a result, zfcp_ccw_adapter_put() will be
+> called twice: one in zfcp_port_release() and one in the error path
+> after device_register(). So the reference on the adapter object is
+> doubly put, which may lead to a premature free. Fix this by adjusting
+> the error tag after device_register().
 > 
-> As Greg suggested, please drop the above paragraph and link. Then this
-> looks good to me.
-> 
-> I would immediately want to send this patch too, so please feel free to
-> add this to your series (and I bet many other hints on "git grep 'K:.\\b'"
-> would want to switch from K: to D: too):
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> @@ -5057,7 +5057,7 @@ F:	Documentation/kbuild/llvm.rst
->  F:	include/linux/compiler-clang.h
->  F:	scripts/Makefile.clang
->  F:	scripts/clang-tools/
-> -K:	\b(?i:clang|llvm)\b
-> +D:	\b(?i:clang|llvm)\b
+> [...]
 
-etc...
+Applied to 6.6/scsi-fixes, thanks!
 
-My assumption is that the K: --file use is just unnecessary
-and it'd be better to only use the K: lookup on patches.
+[1/1] scsi: zfcp: Fix a double put in zfcp_port_enqueue
+      https://git.kernel.org/mkp/scsi/c/b481f644d917
 
-(and I've somehow stuffed up the receiving side of my
- email configuration so please ignore any emails to me
- that bounce for a while)
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
