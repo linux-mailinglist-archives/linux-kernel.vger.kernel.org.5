@@ -2,151 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB407B018D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3A27B0191
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjI0KJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 06:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S231213AbjI0KKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 06:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbjI0KJG (ORCPT
+        with ESMTP id S229634AbjI0KKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 06:09:06 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257F110DA
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:08:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c60128d3f6so271625ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:08:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695809324; x=1696414124; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6+0109Hnx9kemuPMlRKLMOKu7MOL7tHz3JqA7OO+XZ8=;
-        b=0Z78nAUeJBs7XcY7O4iKSnvjDMUMqqU4xhwZcSBlmO0Wpp4rV4aNQTbxYjKud16fop
-         x5pthIwY/f0amjIZ4d5t3lQeCwFMTXd0PXDRscncMlCFaPcz/fT6sREScVZ6BetF/0jU
-         6c0xO00KfHSZFQHv7cTBaYptbKYXqylnLpMd9AdC/eRWDFc4P9eCn9E2cK4IvTH9uA0z
-         5r4kFBLUlhxktCZYGtVhXWEWcsWMKoT0fFJCF5aPFGaRE97hkjZe5EvA+dc6ehFujimA
-         /oMKkgg2j7LKsTQS9FITGWwPDEqoDMsnvdx9v7dSBqljJ9nIa4urJDMlfcZt41jldXav
-         iO1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695809324; x=1696414124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6+0109Hnx9kemuPMlRKLMOKu7MOL7tHz3JqA7OO+XZ8=;
-        b=CgZTNmHrOkrrCktt03nAn94o7rYYdqD4A4gmr3IJnoDxDRGHZLhfPLfJ0FuEFgXXFL
-         cmHgyWHc4m92V2p/SEWtA7LjTXKupZgmgAp/dh3bbb0ZGtSIbJdze6E8/B3+6bwNnYXa
-         70rRClzzcVV2TyRuaraeQ771OvoiP45jGW2/gpMD5PCO52Bf0ViAyJMguuelegSJfaid
-         cU+XvYVdQqRP91zsi/Mm2K/5owYGW6e5O/Fo7whjPZxxUCKDQO2l21rjMrCU/EVNYWpd
-         CqxtroZCIqo3NDas4J5fh/qU80P7tvrrGAXH1OecXgSKDGfPorXTGCE12nQzAJ2XkXtJ
-         Kvpg==
-X-Gm-Message-State: AOJu0YyJ+k166y+zIba2ZTHXPFdaMODA15RKKy9gM9ydELFXOY+mcrR3
-        oaencLWhD8MJ8WQPeT5vgFyHP0wmWnrpD1yZce/Btw==
-X-Google-Smtp-Source: AGHT+IH6K+5arI22wv/ElFc7XIdj0Hu0aH/vgPvWGTLzPNbGOd7dq07dYCEiX3+1MZD/rkNQ3VaIVFrGv7BnO89ED1U=
-X-Received: by 2002:a17:902:f2cc:b0:1b9:d96c:bca7 with SMTP id
- h12-20020a170902f2cc00b001b9d96cbca7mr403770plc.25.1695809324164; Wed, 27 Sep
- 2023 03:08:44 -0700 (PDT)
+        Wed, 27 Sep 2023 06:10:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C701B6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695809329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuruE1nulZgndw+cQHO0vj1TexCC3+sKU/XFHVoq3fQ=;
+        b=bbbAi4MZTEGmpfStSCmsegtoVKFjJm6d738RTx52LcyREL8AgUjLRrab79oump1tbfYYya
+        cxsM52sJZtLCxoMCEg1+yUkP8TmGHXCCc3AFSdo4brX+3sG5bXMzki2roLbS0Bk/d8g9Kr
+        +VvsesakLsbbZuyfuvZDsxZGVlujpps=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-586-H03athJJOsSVs1ir8KZCwg-1; Wed, 27 Sep 2023 06:08:46 -0400
+X-MC-Unique: H03athJJOsSVs1ir8KZCwg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 761551C06E14;
+        Wed, 27 Sep 2023 10:08:45 +0000 (UTC)
+Received: from localhost (dhcp-192-239.str.redhat.com [10.33.192.239])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7773214026F7;
+        Wed, 27 Sep 2023 10:08:44 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
+In-Reply-To: <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
+Organization: "Red Hat GmbH, Sitz: Werner-von-Siemens-Ring 12, D-85630
+ Grasbrunn, Handelsregister: Amtsgericht =?utf-8?Q?M=C3=BCnchen=2C?= HRB
+ 153243,
+ =?utf-8?Q?Gesch=C3=A4ftsf=C3=BChrer=3A?= Ryan Barnhart, Charles Cachera,
+ Michael O'Neill, Amy
+ Ross"
+References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
+ <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
+User-Agent: Notmuch/0.37 (https://notmuchmail.org)
+Date:   Wed, 27 Sep 2023 12:08:43 +0200
+Message-ID: <877coc2aj8.fsf@redhat.com>
 MIME-Version: 1.0
-References: <918e147601697b1d4b8f8589f5751e05d6ceccdf.1695371055.git.maciej.wieczor-retman@intel.com>
- <20230922141441.3353077-1-peternewman@google.com> <xnjmmsj5pjskbqeynor2ztha5dmkhxa44j764ohtjhtywy7idb@soobjiql4liy>
-In-Reply-To: <xnjmmsj5pjskbqeynor2ztha5dmkhxa44j764ohtjhtywy7idb@soobjiql4liy>
-From:   Peter Newman <peternewman@google.com>
-Date:   Wed, 27 Sep 2023 12:08:33 +0200
-Message-ID: <CALPaoCgm8ed0p3Nw53d=Hgs0WnunkRUwAriyuKqu6+5Ty-QVTw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] x86/resctrl: Enable non-contiguous bits in Intel CAT
-To:     =?UTF-8?Q?Maciej_Wiecz=C3=B3r=2DRetman?= 
-        <maciej.wieczor-retman@intel.com>
-Cc:     bp@alien8.de, dave.hansen@linux.intel.com, fenghua.yu@intel.com,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        reinette.chatre@intel.com, tglx@linutronix.de, eranian@google.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maciej,
+On Tue, Sep 26 2023, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-On Wed, Sep 27, 2023 at 11:20=E2=80=AFAM Maciej Wiecz=C3=B3r-Retman
-<maciej.wieczor-retman@intel.com> wrote:
-> On 2023-09-22 at 16:14:41 +0200, Peter Newman wrote:
-> >On Fri, Sep 22, 2023 at 10:48:23AM +0200, Maciej Wieczor-Retman wrote:
-> >> In Intel CAT CPUID.0x10.1:ECX[3] and CPUID.0x10.2:ECX[3] stopped
-> >> being reserved and now carry information about non-contiguous 1s
-> >> value support for L3 and L2 cache respectively. The CAT
-> >> capacity bitmask (CBM) supports a non-contiguous 1s value if
-> >> the bit is set.
-> >
-> >How new of an SDM do I need? The June 2023 revision I downloaded today d=
-idn't
-> >list it.
+> [..]
+>> --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+>> +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+>> @@ -61,8 +61,9 @@ static void virtio_crypto_akcipher_finalize_req(
+>>  	vc_akcipher_req->src_buf = NULL;
+>>  	vc_akcipher_req->dst_buf = NULL;
+>>  	virtcrypto_clear_request(&vc_akcipher_req->base);
+>> -
+>> +	local_bh_disable();
+>>  	crypto_finalize_akcipher_request(vc_akcipher_req->base.dataq->engine, req, err);
+>> +	local_bh_enable();
 >
-> It's not currently in the SDM but in the Intel=C2=AE Architecture
-> Instruction Set Extensions and Future Features (which I mentioned in the
-> second paragraph of the cover letter). My version of the ISA pdf was
-> from June 2023.
+> Thanks Gonglei!
 >
-
-I see it now, thanks!
-
-> >> -    cpuid_count(0x00000010, idx, &eax.full, &ebx, &ecx, &edx.full);
-> >> +    cpuid_count(0x00000010, idx, &eax.full, &ebx, &ecx.full, &edx.ful=
-l);
-> >>      hw_res->num_closid =3D edx.split.cos_max + 1;
-> >>      r->cache.cbm_len =3D eax.split.cbm_len + 1;
-> >>      r->default_ctrl =3D BIT_MASK(eax.split.cbm_len + 1) - 1;
-> >>      r->cache.shareable_bits =3D ebx & r->default_ctrl;
-> >>      r->data_width =3D (r->cache.cbm_len + 3) / 4;
-> >> +    if (boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_INTEL)
-> >> +            r->cache.arch_has_sparse_bitmaps =3D ecx.split.noncont;
-> >
-> >This seems to be called after the clearing of arch_has_sparse_bitmaps in
-> >cache_alloc_hsw_probe(). If we can't make use of the CPUID bit on Haswel=
-l,
-> >is it safe to use its value here?
+> I did this a quick spin, and it does not seem to be sufficient on s390x.
+> Which does not come as a surprise to me, because 
 >
-> I believe the calls go like this for a haswell system:
-> resctrl_late_init() -> check_quirks() -> __check_quirks_intel() ->
-> -> cache_alloc_hsw_probe()
+> #define lockdep_assert_in_softirq()                                     \
+> do {                                                                    \
+>         WARN_ON_ONCE(__lockdep_enabled                  &&              \
+>                      (!in_softirq() || in_irq() || in_nmi()));          \
+> } while (0)
 >
-> There this line is executed:
->         rdt_alloc_capable =3D true;
-> where rdt_alloc_capable is global in the file scope.
+> will still warn because  in_irq() still evaluates to true (your patch
+> addresses the !in_softirq() part).
 >
-> Then later in:
-> resctrl_late_init() -> get_rdt_resources() -> get_rdt_alloc_resources()
+> I don't have any results on x86 yet. My current understanding is that the
+> virtio-pci transport code disables interrupts locally somewhere in the
+> call chain (actually in vp_vring_interrupt() via spin_lock_irqsave())
+> and then x86 would be fine. But I will get that verified.
 >
-> this is executed at the function beginning:
->         if (rdt_alloc_capable)
->                 return true;
+> On the other hand virtio_airq_handler() calls vring_interrupt() with
+> interrupts enabled. (While vring_interrupt() is called in a (read)
+> critical section in virtio_airq_handler() we use read_lock() and
+> not read_lock_irqsave() to grab the lock. Whether that is correct in
+> it self (i.e. disregarding the crypto problem) or not I'm not sure right
+> now. Will think some more about it tomorrow.) If the way to go forward
+> is disabling interrupts in virtio-ccw before vring_interrupt() is
+> called, I would be glad to spin a patch for that.
+
+virtio_airq_handler() is supposed to be an interrupt handler for an
+adapter interrupt -- as such I would expect it to always run with
+interrupts disabled (and I'd expect vring_interrupt() to be called
+with interrupts disabled as well; if that's not the case, I think it
+would need to run asynchronously.) At least that was my understanding at
+the time I wrote the code.
+
 >
-> So the rest of the get_rdt_alloc_resources() is skipped and calls to
-> rdt_get_cache_alloc_cfg() never get executed.
+> Copying Conny, as she may have an opinion on this (if I'm not wrong she
+> authored that code).
+>
+> Regards,
+> Halil
 
-Yuck. But it works I guess.
-
-The series looks fine to me.
-
-Reviewed-by: Peter Newman <peternewman@google.com>
-
-I applied the series and was able to confirm the behavior was still
-correct for contiguous-bitmap Intel hardware and that sprase_bitmaps
-is true on AMD and continues to work as expected.
-
-Tested-by: Peter Newman <peternewman@google.com>
-
-I'm not sure if I have access to any Intel hardware with
-non-contiguous bitmaps right now. Are you able to say where that would
-be implemented?
-
-Thanks!
--Peter
