@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9942F7AFAC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF307AFACC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229555AbjI0GKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
+        id S229597AbjI0GOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI0GKl (ORCPT
+        with ESMTP id S229478AbjI0GN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:10:41 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E81B3;
-        Tue, 26 Sep 2023 23:10:40 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c434c33ec0so78253455ad.3;
-        Tue, 26 Sep 2023 23:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695795039; x=1696399839; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TyVIuA0BaMwLMxnZKzpQRdN52T1fvyT+B4ncon9Lv2I=;
-        b=foXu9kVc/AsefpALsvO4BoZnN0dG4B5rYE93fhSIVANgZnFCRvmaAGgu+oj4CMtnwQ
-         owk5LLtOQvcMxQbw8kGzkvOi+MDM5zna6enttWAYAfQbmt5row7TR5ki/4qA0z801fTP
-         wl10+E/8iZOoaOXLbkg3KuN4se885RpOR7VthJP1nsWsJ5lOeRechE1edMc6V82hDio0
-         nCMZ37p+ir8RBTSrzDCXHBzzYqn5lINolYZUh0SsDJqZEh0SBVR9aqjMg7EKarLkEV9k
-         Ky/+dVFK7pYju1dV+AHnJxldi3vV+qz8Qq5wFiNwqN/hoHJU3tULXbfSUWpuobjmyHjk
-         7WaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695795039; x=1696399839;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TyVIuA0BaMwLMxnZKzpQRdN52T1fvyT+B4ncon9Lv2I=;
-        b=fNX0mpOYntW4LGeGFtct3Ctp4R4Bv36C2TQdo6Mg2MFajkgWT63E51dKkwYQbpK06z
-         XGq4m8imF0eLwN+1eiNVPq+pUaGnDCyAnsMXtHibEXeQe3fciiY8uQ3m+LcY8+LA4A+C
-         76DmGe1R2vCzYacl52pJPBg6YkGWI+K2iUDRA8uO70fB7v3eF+Par0EtAPxM3acfD+la
-         OCZnJR3gORGsmuiSdxX+KgkTxiYgkYdwy7G6NhUkPJbSUm0xGvOtbQMcsiHUs1snVpBu
-         hV3K+Rg0GMqlCZt17sODHgStj8E+xWd+hqarJnrq8j2KA/6Wlaz3hLT2U9XYeDoYNBHD
-         NgBQ==
-X-Gm-Message-State: AOJu0YzMLskphboUnIX1vXy0jCfRe3qnYX7EloZOGuz0Zr2+706HKfQc
-        ElLYLbnvdLIQ9c5uECUxu+mFS8ceSnc=
-X-Google-Smtp-Source: AGHT+IHwJ4q2Q8OTA5KHeThTLH4zGUEiwgr4sRcOwvb35xzSpQ4OxRtpy8CuI3DUMIGSzeEFprd8DA==
-X-Received: by 2002:a17:903:2684:b0:1c6:19da:b2a5 with SMTP id jf4-20020a170903268400b001c619dab2a5mr795767plb.32.1695795038945;
-        Tue, 26 Sep 2023 23:10:38 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170902ed0200b001c444f185b4sm6054789pld.237.2023.09.26.23.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 23:10:38 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 11:40:34 +0530
-Message-Id: <874jjggn8l.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/12] ext4: make state in ext4_mb_mark_bb to be bool
-In-Reply-To: <20230919201532.310085-2-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 02:13:58 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D19897;
+        Tue, 26 Sep 2023 23:13:56 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 14:12:35
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 14:12:35 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     willy@infradead.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xarray: Clean up errors in xarray.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <4f35bcee.861.18ad5449079.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwD3lD_VxxNlp+W9AA--.669W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAFEWFEYxtJMwAPs9
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> As state could only be either 0 or 1, just make it bool.
-
-Sure.
-
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/ext4.h        | 2 +-
->  fs/ext4/fast_commit.c | 8 ++++----
->  fs/ext4/mballoc.c     | 2 +-
->  3 files changed, 6 insertions(+), 6 deletions(-)
-
-But why not convert at all places?
-
-git grep "ext4_mb_mark_bb" .
-fs/ext4/ext4.h:extern void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
-fs/ext4/extents.c:                                      ext4_mb_mark_bb(inode->i_sb,
-fs/ext4/extents.c:                      ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-fs/ext4/fast_commit.c:                  ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-fs/ext4/fast_commit.c:                  ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, 0);
-fs/ext4/fast_commit.c:                                          ext4_mb_mark_bb(inode->i_sb,
-fs/ext4/fast_commit.c:                          ext4_mb_mark_bb(inode->i_sb, map.m_pblk,
-fs/ext4/mballoc.c:void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
-fs/ext4/mballoc.c:      ext4_mb_mark_bb(sb, block, 1, 1);
-
--ritesh
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+ImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKClNpZ25lZC1vZmYtYnk6IEd1b0h1YSBD
+aGVuZyA8Y2hlbmd1b2h1YUBqYXJpLmNuPgotLS0KIGluY2x1ZGUvbGludXgveGFycmF5LmggfCAy
+ICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYg
+LS1naXQgYS9pbmNsdWRlL2xpbnV4L3hhcnJheS5oIGIvaW5jbHVkZS9saW51eC94YXJyYXkuaApp
+bmRleCBjYjU3MWRmY2Y0YjEuLjQ5MDkzNTdiN2UyYSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51
+eC94YXJyYXkuaAorKysgYi9pbmNsdWRlL2xpbnV4L3hhcnJheS5oCkBAIC0yOTcsNyArMjk3LDcg
+QEAgc3RydWN0IHhhcnJheSB7CiAJc3BpbmxvY2tfdAl4YV9sb2NrOwogLyogcHJpdmF0ZTogVGhl
+IHJlc3Qgb2YgdGhlIGRhdGEgc3RydWN0dXJlIGlzIG5vdCB0byBiZSB1c2VkIGRpcmVjdGx5LiAq
+LwogCWdmcF90CQl4YV9mbGFnczsKLQl2b2lkIF9fcmN1ICoJeGFfaGVhZDsKKwl2b2lkIF9fcmN1
+ICp4YV9oZWFkOwogfTsKIAogI2RlZmluZSBYQVJSQVlfSU5JVChuYW1lLCBmbGFncykgewkJCQlc
+Ci0tIAoyLjE3LjEK
