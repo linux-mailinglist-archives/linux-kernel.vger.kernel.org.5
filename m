@@ -2,405 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683DE7B09FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E557B09FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbjI0QZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S231374AbjI0QZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjI0QZ2 (ORCPT
+        with ESMTP id S231659AbjI0QZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:25:28 -0400
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AEE7EB;
-        Wed, 27 Sep 2023 09:25:25 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.03,181,1694703600"; 
-   d="scan'208";a="177447629"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 28 Sep 2023 01:25:24 +0900
-Received: from mulinux.home (unknown [10.226.92.108])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id ACBD9401F564;
-        Thu, 28 Sep 2023 01:25:20 +0900 (JST)
-From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/2] spi: rzv2m-csi: Add target mode support
-Date:   Wed, 27 Sep 2023 17:25:08 +0100
-Message-Id: <20230927162508.328736-3-fabrizio.castro.jz@renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927162508.328736-1-fabrizio.castro.jz@renesas.com>
-References: <20230927162508.328736-1-fabrizio.castro.jz@renesas.com>
+        Wed, 27 Sep 2023 12:25:39 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2073.outbound.protection.outlook.com [40.107.220.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CF2E6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:25:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e/TmBEeqowe7+jgDsVA94Tq2eal7nTUA+8GmdqQ96xUhBrQ2bV69PzUwb4diY6w2nj8bn5Jl/50RwBG9JEJv2YNdh8bhYUkISvGd1R0c59XQuGToxJ1+2pFWxdRXfRsGKTneNy2U1jYXyXD3YYNW5roSlrB8eQ0VniaJoHjQ6mPzGSsgapoWa9xjhK7FccfTZwOjqFhgPDYKNRwDuQai+9YkSljthXBipqar3JarNOJpvYlRlCAHlVuognRaFfurfmq3DrVg5D3nyJYlYfWFaU4jdDoM5UT9MjQnjaS/TH11+BBj8ldc8JtmNtgOvYAOjfLVKqhGAXcNx6SblY+wFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c0Nsa7Qtnrga1lo7WbqdK7bjdH38PJWcNDAlO1V0ocU=;
+ b=DxDfSfN8m34XmWqFCj7TeWdHJwsDWtbgI561yrb4DpioJ8msJIjP7GJwMWkM8t3aPX0VnsrYBuXtmu2E2W5pCImfdSPk8V4mRArla1bceQtw48VvP1d7ry09gTTklhnpkLEsXSKMlhiaOem32qMbEqGz7l0yna+9azVw3OvxtZopCE0/AyXvBH1I3/zq9lLLHISq9lMpNNmbMwNGewvYNScajTXPjiaGY7oqlq9zwLbCUjF5StRTuevzpmwIRYkppXhcm8mDLicRivf/n3x91u8A9ooHMXW7shaXoU4mbagW+pZ8Xm6H1vIPIyZX3jS1GLin996QreJtusUTKMikng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c0Nsa7Qtnrga1lo7WbqdK7bjdH38PJWcNDAlO1V0ocU=;
+ b=LW862p0ysd9+8IalCLozgAnGI3Hl0tGaYAjZNh9e4ae5pdoKBtu0ZW6PFQOiM8xmrjLFVAZgReKyI9hC5aupybSTfgT8QpOhTzRzIlAPBH9zer1hNKoifaluWmYKN8PnBl20A89NXXNUzc6LHC5nvKmdYjYHLcadHbnsm3vx4D8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
+ by SJ0PR12MB7457.namprd12.prod.outlook.com (2603:10b6:a03:48d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Wed, 27 Sep
+ 2023 16:25:27 +0000
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::65a:db41:7713:c60f]) by PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::65a:db41:7713:c60f%5]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
+ 16:25:26 +0000
+Message-ID: <c13cf5f2-d768-ffd2-96ed-b395d48dd7c0@amd.com>
+Date:   Wed, 27 Sep 2023 21:55:13 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 0/1] drm/amdkfd: Fix unaligned doorbell absolute offset
+ for gfx8
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, shashank.sharma@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Felix.Kuehling@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230927161616.3335-1-Arvind.Yadav@amd.com>
+Content-Language: en-US
+From:   "Yadav, Arvind" <arvyadav@amd.com>
+In-Reply-To: <20230927161616.3335-1-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA1P287CA0007.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::24) To PH7PR12MB6000.namprd12.prod.outlook.com
+ (2603:10b6:510:1dc::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|SJ0PR12MB7457:EE_
+X-MS-Office365-Filtering-Correlation-Id: 75efb534-231d-4664-2e20-08dbbf765b82
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l244lEASqiLDB6tQlG+4MzjSYEiiVT0sxE5wjFcaFgfaudNUWoa9RmDPket/prvd9rF/sIU2yCIMINgmh6lqhpX5ACAb+ELsT1e0xf0pix42PWIP6dg2iwWJtjfYM5gIKzsovAJNYCSbwP/kJwj2EdP6s/1VNTJhuUOd2KP5uqPlKAkJ6lv/FNoRjohck1N2KPJfokxiOxcZkWh6j4vRk0wBKSPNPnMqBdPkntTF8oMZjQxfqdJZflZQfEGORIruxjEquVBbVsCdv1kbLtCh7VdJTFbq1KXOWef2Ko7uYUeuqWrhrex70Cbi0oQW5vEbKofX6+NfMweUgqmfYjBD+Nqo1qmcr0p+TZDoMZlXCNNCdyj/3tptIuSnd7Mfgavb7oRSUMyGrFAE+0SWp/ukgQJHn/NETUw4uB+GbOhIl7jQj+3jFKfghusi5+9jRSWKV4bHh2u3rAQwDcQNIxCf/WbBeOgDH7M6Za1C8dFdAayJJh2blSOjAdS0QYKTGhiD3TCQpaMSUtqj4UDG//jTNaxAOeF+6E4bKSqMACKOLe5hSyCz8ROVDTHCJlJbeqdfBGIdpTzW55+lYHD/8/MICyDzRtUSgkmuuSsOYCEC8e22+TncQOUra4erhG1bX4z0zkTXg8Kuh0H/jj5dzJ5lag==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(1800799009)(451199024)(186009)(41300700001)(31686004)(66946007)(316002)(8676002)(4326008)(66556008)(66476007)(5660300002)(8936002)(6636002)(83380400001)(4744005)(38100700002)(2906002)(478600001)(6486002)(26005)(6666004)(6512007)(53546011)(2616005)(31696002)(6506007)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bHNPR2lKaSt0UFFoZkEzbDVVK1ZUNmNiYm8weGQ4T1BHcXdXSGxoZGg4RzVN?=
+ =?utf-8?B?NlNIM2pvMTA1LysreUFNRXdianppbEY0V2YwWGJZT09od09uV2UxaDhxNC8w?=
+ =?utf-8?B?K3B0RnBDaTlnUXpPTTZFc0psKzJZT0FNbGx6NXNxRHVBNHhUN3Q2dXBsY0gy?=
+ =?utf-8?B?cjhKQU8zWHdtY3Y4ZktYakVVclZoekw5WE1YTkhmUmR4MjVMSThyU0tibnZ1?=
+ =?utf-8?B?aFlWUDU1OXBNM2JmQ29xVDV1Nis4TEN1WVR2dGNpNjhyakJNOEFKWGdhN2Za?=
+ =?utf-8?B?YzNVaHU4cGQrRC9WR3psc3RrOVVSK1gwM0RpSnpteW5mcFlmZU8vMzI1ZkFn?=
+ =?utf-8?B?SkZDSVVoTnRNSUhuais3Wlg0NW55ZWN2VTBTR1R2R3k2YWgwMGlsYXMrSTZW?=
+ =?utf-8?B?WjFlbngxVmFkclpwbzZGa3lSUytuVFZIUDA5cnRoOHR6aHdTZ0pzSk96S2Y5?=
+ =?utf-8?B?eStsb2duS0dGcVY4Y1JsZ3hRbkdCZmZBRUJZdnFveC9OdmZuWWtETWRxUzJu?=
+ =?utf-8?B?MzNjSDFjR21QbXNiUUgyaUY2YWM1Z0JoN2VidzNRQVREczBwVXR3SkNHbFJm?=
+ =?utf-8?B?RUhHMmRhcXhoWXdxMjFvUndZR3RBVzBIUXlwNGNxaituWHN6dFllSmtIQlBn?=
+ =?utf-8?B?R2U3VThVa2YyTmlLOGtibEVQR1FYTXVJcWU3TDJRcW10L2oyTGV6dlRkZzJm?=
+ =?utf-8?B?MkduZnVhVlFNanhmQmRyZC9OMDBzUkpuWE1TTXMyN3JKOUVBc1IvSzNMbkhC?=
+ =?utf-8?B?MnJPbXFxc3RLNld5TTY3a3BwbGU1dE8yZDRId3NmS1VqeXZLSy91R3NpMVJq?=
+ =?utf-8?B?Vit3a1JGL1FaaWVnbW9XbkpkZGx2TXEzVytNeTF4bUdEZHp4V2NrWE1WRmxC?=
+ =?utf-8?B?cTYxT2lvS2Z6dFh5YzBYMU5LbGNvaFNvUGViNVZoYVpXbXhyOTFpenA2amlU?=
+ =?utf-8?B?ZlRlbmdOVWQwWnhyaFUzTVIwZmlyd0Q1NWo5bjAxYnBZQ2NsK0VrS3ZrNHF0?=
+ =?utf-8?B?OVU5UXdOSFY3Q04wbjN4T2RXcUhUeVVpSEo1aFRYTllJeWt3V2Rtck5ZWjZv?=
+ =?utf-8?B?emJTQlg3WDF3WW42MDFidzUwRmlCV1h6ZVFycldJcEVQSW9CN21SVHMzMjFw?=
+ =?utf-8?B?NTlFWEZWVzl6RlI2ZGU0alBsMzNHQUJMWjhCL09NaStvZ0JsZUUxQlUvSEgr?=
+ =?utf-8?B?cVZmNE5OUWNISllOTkxYY0crUlo2V3hjcDJqMGZXa1owQ3hya0VpU2IvY044?=
+ =?utf-8?B?R2drc0FNTmxsaFRrSmF5ZVI1a29pUVRhdVNqMDQ2d0JFTjQybHI3M1hNa0R1?=
+ =?utf-8?B?aEhXQmJtSjM4dHhPVXUyQTZPc1hjTGZkWVF5Q0QwZzdsWjRFb1RDaXI3SGtp?=
+ =?utf-8?B?RHp2NzJwQU9tSkNpUmRFbVBNWXcra3hrY3RmbkxWLys0alNaZnBld1lLTzh6?=
+ =?utf-8?B?cTZKL1RHNTRyN2dlQkYyRzhxL2VhbHo4RFQwaFVuMy9NTEJJRzg1aFhwUTd2?=
+ =?utf-8?B?N2w5OXNoUWlFU0VTUlRrYWRLbGYxamFFM3E2aElXZXphVXlIQkhXeUIwbWNn?=
+ =?utf-8?B?dllISS91bG1yQzB5SU1NTkw2bHNYZU5BbWxEMllKaExFQ011a2VWbkY2ekNq?=
+ =?utf-8?B?dzRnRGIyOWpYYkErRGRzd3hvb3REUmJ3aWpFdUQxK0YwWFpZMm01OStBN1hp?=
+ =?utf-8?B?QlpZS2RkMUU5eFpKS0J1TDJCdmcvWmlrNXZlMU1uNzFBdXJuZXlDckY1Ukt5?=
+ =?utf-8?B?WTBFVEVDTFVXaVFBUmlkZjI1Z0JtQ1lSbkQzY3FWTnoydG5kSFVFV3JYY1pu?=
+ =?utf-8?B?czdaWFBwc3pWcGdFWlZiRXVpdFQrTnVJR2tNN2NseVJzQWMrSnJXTnN6MU9Y?=
+ =?utf-8?B?S2FHNytsN3ZiVTRYNzIzWTFkNUFJWWYrS0t1bXJtT25SSlk4TSsxY1R6V1Nr?=
+ =?utf-8?B?MlhmMXhrWWduL29jWVFBUzMzaDZkeUNyeE1kSnVxbGg3YTNGNjdsWHVPdStB?=
+ =?utf-8?B?Q1FuZlM0NnU4REQ2NU9yUU1GZVp5cnVHWkc5eCt4TnJmLzV4SUZrK2lVMEdT?=
+ =?utf-8?B?R2JPRElPc2xxc1NzYUJ2Z1lSWjh6eGdUT0Y4S2JETWFDNEJCZVJCVmczbXFR?=
+ =?utf-8?Q?ruOiSLEYey/6O7VEUAErMqz/s?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75efb534-231d-4664-2e20-08dbbf765b82
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 16:25:26.9259
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 056HHw8OGEmdaJWmVVRJDdwCoQT2zGpIfckn/nRtZQKnntYlGXbJGq1GXr3q0t5vmCDtXgMQQzoSL+Z6ZU8dLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7457
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CSI IP found inside the Renesas RZ/V2M SoC supports
-both SPI host and SPI target roles.
+Adding Felix.Kuehling@amd.com for review.
 
-When working in target mode, the CSI IP has the option
-of using its Slave Selection (SS) pin to enable TX and RX
-operations. Since the SPI target cannot control the clock,
-when working as target it's best not to stop operations
-during a transfer, as by doing so the IP will not send or
-receive data, regardless of clock and active level on pin SS.
-A side effect from not stopping operations is that the RX
-FIFO needs to be flushed, word by word, when RX data needs
-to be discarded.
+Thanks
+~Arvind
 
-Finally, when in target mode timings are tighter, as missing a
-deadline translates to errors being thrown, resulting in
-aborting the transfer. In order to speed things up, we can
-avoid waiting for the TX FIFO to be empty, we can just wait
-for the RX FIFO to contain at least the number of words that
-we expect.
-
-Add target support to the currently existing CSI driver.
-
-Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
----
-v1->v2: I have dropped properties renesas,csi-ss and
-        renesas,csi-ss-high. The driver now uses property
-	renesas,csi-no-ss to disable the SS pin.
-	The driver now looks for SPI_CS_HIGH within the SPI
-	mode field to configure the SS pin as active high.
-	I have dropped "depends on SPI_SLAVE" from Kconfig.
-	The current role doesn't get stored within the private
-	data structure anymore, I am using spi_controller_is_target
-	instead to check the role.
-	I have also purged "master" and "slave" as naming
-	schemes, I am now using "host" and "target" (in the code
-	and also in the changelog) and related APIs instead.
-
- drivers/spi/Kconfig         |   3 +-
- drivers/spi/spi-rzv2m-csi.c | 127 +++++++++++++++++++++++-------------
- 2 files changed, 85 insertions(+), 45 deletions(-)
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 2c21d5b96fdc..d4ac184bce95 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -862,7 +862,8 @@ config SPI_RZV2M_CSI
- 	tristate "Renesas RZ/V2M CSI controller"
- 	depends on ARCH_RENESAS || COMPILE_TEST
- 	help
--	  SPI driver for Renesas RZ/V2M Clocked Serial Interface (CSI)
-+	  SPI driver for Renesas RZ/V2M Clocked Serial Interface (CSI).
-+	  CSI supports both SPI host and SPI target roles.
- 
- config SPI_QCOM_QSPI
- 	tristate "QTI QSPI controller"
-diff --git a/drivers/spi/spi-rzv2m-csi.c b/drivers/spi/spi-rzv2m-csi.c
-index d0f51b17aa7c..741e0f44c49c 100644
---- a/drivers/spi/spi-rzv2m-csi.c
-+++ b/drivers/spi/spi-rzv2m-csi.c
-@@ -11,6 +11,7 @@
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
- #include <linux/log2.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/reset.h>
-@@ -38,6 +39,9 @@
- #define CSI_MODE_SETUP		0x00000040
- 
- /* CSI_CLKSEL */
-+#define CSI_CLKSEL_SS_ENA	BIT(19)
-+#define CSI_CLKSEL_SS_POL	BIT(18)
-+#define CSI_CLKSEL_SS		(CSI_CLKSEL_SS_ENA | CSI_CLKSEL_SS_POL)
- #define CSI_CLKSEL_CKP		BIT(17)
- #define CSI_CLKSEL_DAP		BIT(16)
- #define CSI_CLKSEL_MODE		(CSI_CLKSEL_CKP|CSI_CLKSEL_DAP)
-@@ -82,6 +86,10 @@
- 
- #define CSI_MAX_SPI_SCKO	(8 * HZ_PER_MHZ)
- 
-+#define CSI_CLKSEL_SS_DISABLED			0
-+#define CSI_CLKSEL_SS_ENABLED_ACTIVE_LOW	BIT(1)
-+#define CSI_CLKSEL_SS_ENABLED_ACTIVE_HIGH	GENMASK(1, 0)
-+
- struct rzv2m_csi_priv {
- 	void __iomem *base;
- 	struct clk *csiclk;
-@@ -99,6 +107,8 @@ struct rzv2m_csi_priv {
- 	wait_queue_head_t wait;
- 	u32 errors;
- 	u32 status;
-+	bool target_aborted;
-+	bool use_ss_pin;
- };
- 
- static void rzv2m_csi_reg_write_bit(const struct rzv2m_csi_priv *csi,
-@@ -193,6 +203,14 @@ static int rzv2m_csi_read_rxfifo(struct rzv2m_csi_priv *csi)
- 	return 0;
- }
- 
-+static inline void rzv2m_csi_empty_rxfifo(struct rzv2m_csi_priv *csi)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < csi->words_to_transfer; i++)
-+		readl(csi->base + CSI_IFIFO);
-+}
-+
- static inline void rzv2m_csi_calc_current_transfer(struct rzv2m_csi_priv *csi)
- {
- 	unsigned int bytes_transferred = max(csi->bytes_received, csi->bytes_sent);
-@@ -279,32 +297,23 @@ static int rzv2m_csi_wait_for_interrupt(struct rzv2m_csi_priv *csi,
- 
- 	rzv2m_csi_enable_irqs(csi, enable_bits);
- 
--	ret = wait_event_timeout(csi->wait,
--				 ((csi->status & wait_mask) == wait_mask) ||
--				 csi->errors, HZ);
-+	if (spi_controller_is_target(csi->controller)) {
-+		ret = wait_event_interruptible(csi->wait,
-+				((csi->status & wait_mask) == wait_mask) ||
-+				csi->errors || csi->target_aborted);
-+		if (ret || csi->target_aborted)
-+			ret = -EINTR;
-+	} else {
-+		ret = wait_event_timeout(csi->wait,
-+				((csi->status & wait_mask) == wait_mask) ||
-+				csi->errors, HZ) == 0 ? -ETIMEDOUT : 0;
-+	}
- 
- 	rzv2m_csi_disable_irqs(csi, enable_bits);
- 
- 	if (csi->errors)
- 		return -EIO;
- 
--	if (!ret)
--		return -ETIMEDOUT;
--
--	return 0;
--}
--
--static int rzv2m_csi_wait_for_tx_empty(struct rzv2m_csi_priv *csi)
--{
--	int ret;
--
--	if (readl(csi->base + CSI_OFIFOL) == 0)
--		return 0;
--
--	ret = rzv2m_csi_wait_for_interrupt(csi, CSI_INT_TREND, CSI_CNT_TREND_E);
--	if (ret == -ETIMEDOUT)
--		csi->errors |= TX_TIMEOUT_ERROR;
--
- 	return ret;
- }
- 
-@@ -312,7 +321,7 @@ static inline int rzv2m_csi_wait_for_rx_ready(struct rzv2m_csi_priv *csi)
- {
- 	int ret;
- 
--	if (readl(csi->base + CSI_IFIFOL) == csi->bytes_to_transfer)
-+	if (readl(csi->base + CSI_IFIFOL) >= csi->bytes_to_transfer)
- 		return 0;
- 
- 	ret = rzv2m_csi_wait_for_interrupt(csi, CSI_INT_R_TRGR,
-@@ -388,6 +397,7 @@ static void rzv2m_csi_setup_operating_mode(struct rzv2m_csi_priv *csi,
- static int rzv2m_csi_setup(struct spi_device *spi)
- {
- 	struct rzv2m_csi_priv *csi = spi_controller_get_devdata(spi->controller);
-+	u32 slave_selection = CSI_CLKSEL_SS_DISABLED;
- 	int ret;
- 
- 	rzv2m_csi_sw_reset(csi, 0);
-@@ -402,8 +412,17 @@ static int rzv2m_csi_setup(struct spi_device *spi)
- 	rzv2m_csi_reg_write_bit(csi, CSI_MODE, CSI_MODE_DIR,
- 				!!(spi->mode & SPI_LSB_FIRST));
- 
--	/* Set the operation mode as master */
--	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_SLAVE, 0);
-+	/* Set the role, 1 for target and 0 for host */
-+	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_SLAVE,
-+				!!spi_controller_is_target(csi->controller));
-+
-+	if (csi->use_ss_pin)
-+		slave_selection = spi->mode & SPI_CS_HIGH ?
-+			CSI_CLKSEL_SS_ENABLED_ACTIVE_HIGH :
-+			CSI_CLKSEL_SS_ENABLED_ACTIVE_LOW;
-+
-+	/* Configure the slave selection (SS) pin */
-+	rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_SS, slave_selection);
- 
- 	/* Give the IP a SW reset */
- 	ret = rzv2m_csi_sw_reset(csi, 1);
-@@ -431,9 +450,13 @@ static int rzv2m_csi_pio_transfer(struct rzv2m_csi_priv *csi)
- 	/* Make sure the TX FIFO is empty */
- 	writel(0, csi->base + CSI_OFIFOL);
- 
-+	/* Make sure the RX FIFO is empty */
-+	writel(0, csi->base + CSI_IFIFOL);
-+
- 	csi->bytes_sent = 0;
- 	csi->bytes_received = 0;
- 	csi->errors = 0;
-+	csi->target_aborted = false;
- 
- 	rzv2m_csi_disable_all_irqs(csi);
- 	rzv2m_csi_clear_all_irqs(csi);
-@@ -452,28 +475,21 @@ static int rzv2m_csi_pio_transfer(struct rzv2m_csi_priv *csi)
- 
- 		rzv2m_csi_enable_irqs(csi, CSI_INT_OVERF | CSI_INT_UNDER);
- 
--		/* Make sure the RX FIFO is empty */
--		writel(0, csi->base + CSI_IFIFOL);
--
- 		writel(readl(csi->base + CSI_INT), csi->base + CSI_INT);
- 		csi->status = 0;
- 
--		rzv2m_csi_start_stop_operation(csi, 1, false);
--
- 		/* TX */
- 		if (csi->txbuf) {
- 			ret = rzv2m_csi_fill_txfifo(csi);
- 			if (ret)
- 				break;
- 
--			ret = rzv2m_csi_wait_for_tx_empty(csi);
--			if (ret)
--				break;
--
- 			if (csi->bytes_sent == csi->buffer_len)
- 				tx_completed = true;
- 		}
- 
-+		rzv2m_csi_start_stop_operation(csi, 1, false);
-+
- 		/*
- 		 * Make sure the RX FIFO contains the desired number of words.
- 		 * We then either flush its content, or we copy it onto
-@@ -483,31 +499,28 @@ static int rzv2m_csi_pio_transfer(struct rzv2m_csi_priv *csi)
- 		if (ret)
- 			break;
- 
--		/* RX */
--		if (csi->rxbuf) {
-+		if (!spi_controller_is_target(csi->controller))
- 			rzv2m_csi_start_stop_operation(csi, 0, false);
- 
-+		/* RX */
-+		if (csi->rxbuf) {
- 			ret = rzv2m_csi_read_rxfifo(csi);
- 			if (ret)
- 				break;
- 
- 			if (csi->bytes_received == csi->buffer_len)
- 				rx_completed = true;
-+		} else {
-+			rzv2m_csi_empty_rxfifo(csi);
- 		}
- 
--		ret = rzv2m_csi_start_stop_operation(csi, 0, true);
--		if (ret)
--			goto pio_quit;
--
- 		if (csi->errors) {
- 			ret = -EIO;
--			goto pio_quit;
-+			break;
- 		}
- 	}
- 
- 	rzv2m_csi_start_stop_operation(csi, 0, true);
--
--pio_quit:
- 	rzv2m_csi_disable_all_irqs(csi);
- 	rzv2m_csi_enable_rx_trigger(csi, false);
- 	rzv2m_csi_clear_all_irqs(csi);
-@@ -529,7 +542,8 @@ static int rzv2m_csi_transfer_one(struct spi_controller *controller,
- 
- 	rzv2m_csi_setup_operating_mode(csi, transfer);
- 
--	rzv2m_csi_setup_clock(csi, transfer->speed_hz);
-+	if (!spi_controller_is_target(csi->controller))
-+		rzv2m_csi_setup_clock(csi, transfer->speed_hz);
- 
- 	ret = rzv2m_csi_pio_transfer(csi);
- 	if (ret) {
-@@ -546,24 +560,48 @@ static int rzv2m_csi_transfer_one(struct spi_controller *controller,
- 	return ret;
- }
- 
-+static int rzv2m_csi_target_abort(struct spi_controller *ctlr)
-+{
-+	struct rzv2m_csi_priv *csi = spi_controller_get_devdata(ctlr);
-+
-+	csi->target_aborted = true;
-+	wake_up(&csi->wait);
-+
-+	return 0;
-+}
-+
- static int rzv2m_csi_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
- 	struct spi_controller *controller;
- 	struct device *dev = &pdev->dev;
- 	struct rzv2m_csi_priv *csi;
- 	struct reset_control *rstc;
-+	bool target_mode;
- 	int irq;
- 	int ret;
- 
--	controller = devm_spi_alloc_host(dev, sizeof(*csi));
-+	target_mode = of_property_read_bool(np, "spi-slave");
-+
-+	if (target_mode)
-+		controller = devm_spi_alloc_target(dev, sizeof(*csi));
-+	else
-+		controller = devm_spi_alloc_host(dev, sizeof(*csi));
-+
- 	if (!controller)
- 		return -ENOMEM;
- 
- 	csi = spi_controller_get_devdata(controller);
- 	platform_set_drvdata(pdev, csi);
- 
-+	csi->use_ss_pin = false;
-+	if (spi_controller_is_target(controller) &&
-+	    !of_property_read_bool(np, "renesas,csi-no-ss"))
-+		csi->use_ss_pin = true;
-+
- 	csi->dev = dev;
- 	csi->controller = controller;
-+	csi->target_aborted = false;
- 
- 	csi->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(csi->base))
-@@ -589,11 +627,12 @@ static int rzv2m_csi_probe(struct platform_device *pdev)
- 
- 	init_waitqueue_head(&csi->wait);
- 
--	controller->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LSB_FIRST;
-+	controller->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LSB_FIRST | SPI_CS_HIGH;
- 	controller->bits_per_word_mask = SPI_BPW_MASK(16) | SPI_BPW_MASK(8);
- 	controller->setup = rzv2m_csi_setup;
- 	controller->transfer_one = rzv2m_csi_transfer_one;
- 	controller->use_gpio_descriptors = true;
-+	controller->target_abort = rzv2m_csi_target_abort;
- 
- 	device_set_node(&controller->dev, dev_fwnode(dev));
- 
--- 
-2.34.1
-
+On 9/27/2023 9:46 PM, Arvind Yadav wrote:
+> On older chips, the absolute doorbell offset within
+> the doorbell page is based on the queue ID.
+> KFD is using queue ID and doorbell size to get an
+> absolute doorbell offset in userspace.
+>
+> This patch is to adjust the absolute doorbell offset
+> against the doorbell id considering the doorbell
+> size of 32/64 bit.
+>
+> Arvind Yadav (1):
+>    drm/amdkfd: Fix unaligned doorbell absolute offset for gfx8
+>
+>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+>
