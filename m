@@ -2,159 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5FC7B0658
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239AD7B065A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbjI0OPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S232034AbjI0OQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232090AbjI0OO6 (ORCPT
+        with ESMTP id S232001AbjI0OP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:14:58 -0400
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D8CF3;
-        Wed, 27 Sep 2023 07:14:55 -0700 (PDT)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 7B0C4520173;
-        Wed, 27 Sep 2023 16:14:53 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Wed, 27 Sep
- 2023 16:14:53 +0200
-Date:   Wed, 27 Sep 2023 16:14:44 +0200
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
-        <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
-        <stern@rowland.harvard.edu>, <yangyingliang@huawei.com>,
-        <jinpu.wang@ionos.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>
-Subject: Re: [PATCH] usb: hcd: xhci: Add set command timer delay API
-Message-ID: <20230927141444.GA7390@vmlxhi-118.adit-jv.com>
-References: <20230818092353.124658-1-hgajjar@de.adit-jv.com>
- <2c029018-a926-6fda-ed71-937ac74d00b0@linux.intel.com>
- <20230821095547.GA9820@vmlxhi-118.adit-jv.com>
- <d88dbe7e-4558-970d-5601-d4d906829d47@linux.intel.com>
- <20230904095738.GA5312@vmlxhi-118.adit-jv.com>
- <862738cd-7a48-345e-3663-5d8e7127712b@linux.intel.com>
+        Wed, 27 Sep 2023 10:15:57 -0400
+Received: from forward101a.mail.yandex.net (forward101a.mail.yandex.net [IPv6:2a02:6b8:c0e:500:1:45:d181:d101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD92FC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:15:54 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net [IPv6:2a02:6b8:c15:2c95:0:640:f90:0])
+        by forward101a.mail.yandex.net (Yandex) with ESMTP id 1677F46C7C;
+        Wed, 27 Sep 2023 17:15:50 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id lFRTMEYDS8c0-8GpxeEjA;
+        Wed, 27 Sep 2023 17:15:49 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+        t=1695824149; bh=aeHwYt1SjUcVXCfZhg9GtQOuDvp3I0qbmol6N2Jju/4=;
+        h=Message-Id:Date:Cc:Subject:To:From;
+        b=kiDNH+0jb3SdCJXBARwVakGwEXYev9s5zSg9zdv5gVt+XaSpVmAiwxHwUVIwfjJGX
+         xwWQQM02Perwn0QnMY9BOGJOdla8DGtBFgFHMhHGAjkqMpHo5xD8mvCnt6hv7djo0F
+         te+XVMLod4JJ0C1C9o75njM80kUDfEwl5cN2tiuo=
+Authentication-Results: mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jean Delvare <jdelvare@suse.de>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [RFC PATCH] mtd: nand: add support for ts72xx
+Date:   Wed, 27 Sep 2023 17:15:25 +0300
+Message-Id: <20230927141532.25525-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <862738cd-7a48-345e-3663-5d8e7127712b@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 05:31:12PM +0300, Mathias Nyman wrote:
-> On 4.9.2023 12.57, Hardik Gajjar wrote:
-> > 
-> > In our setup, we have a arm64 target with a DWC3 USB3 IP core,
-> > connected through a USB hub (specifically designed for automotive use)
-> > to the Android phone. Interestingly,when replicating this setup with
-> > the x86 Ubuntu machine, we encountered a discrepancy.
-> > 
-> > The primary difference between the two setups lies in the utilization
-> > of the DWC3 USB IP core.
-> 
-> Because of the SPLIT transactions seen below it looks like phone is being
-> enumerated at Full or Low speed behind the automotive High-speed HUB.
-> 
-> > 
-> > Working Case:
-> > 
-> > 0,HS,202,0:17.672.512,1.333 us,8 B,I,00,00,SETUP txn (SPLIT),80 06 00 01 00 00 40 00
-> > 1,HS,203,0:17.672.512,83 ns,4 B,,00,00,   SPLIT packet,78 0D 03 70
-> > 1,HS,204,0:17.672.513,66 ns,3 B,,00,00,   SETUP packet,2D 00 10
-> > 1,HS,205,0:17.672.513,200 ns,11 B,,00,00,   DATA0 packet,C3 80 06 00 01 00 00 40 00 DD 94
-> > 1,HS,206,0:17.672.514,33 ns,1 B,,00,00,   ACK packet,D2
-> > 0,HS,207,0:17.672.535,5.625.983 ms,,I,00,00,[256 CSPLIT-SETUP-NYET],
-> > 
-> 
-> The working case shows a GET_DESCRIPTOR DEVICE request (80 06 00 01).
-> Was the SET ADDRESS request (00 05) seen before or after this?
-> 
-> > Non-Working Case:
-> > 
-> > 0,HS,164,0:10.982.303,3.116 us,8 B,I,00,00,SETUP txn (SPLIT-STALL),00 05 04 00 00 00 00 00
-> > 1,HS,165,0:10.982.303,83 ns,4 B,,00,00,   SPLIT packet,78 01 02 A0
-> > 1,HS,166,0:10.982.303,66 ns,3 B,,00,00,   SETUP packet,2D 00 10
-> > 1,HS,167,0:10.982.304,200 ns,11 B,,00,00,   DATA0 packet,C3 00 05 04 00 00 00 00 00 EB 70
-> > 1,HS,168,0:10.982.304,50 ns,1 B,,00,00,   ACK packet,D2
-> > 1,HS,169,0:10.982.305,866 ns,,,00,00,   CSPLIT-SETUP-STALL,
-> > 2,HS,170,0:10.982.305,83 ns,4 B,,00,00,      SPLIT packet,78 81 02 78
-> > 2,HS,171,0:10.982.306,66 ns,3 B,,00,00,      SETUP packet,2D 00 10
-> > 2,HS,172,0:10.982.306,50 ns,1 B,,00,00,      STALL packet,1E
-> 
-> In the failing case the SET ADDRESS (00 05) request STALLs.
-> Was there a GET_DESCRIPOR request before this?
-> 
-> This could still be a case where the order of SET ADDRES and GET DESCRIPTOR
-> requests matter.
-> 
-> See if you can force new scheme enumeration, it should make hub driver issue
-> a GET_DESCRIPTOR request before SET ADDRESS.
-> 
-> Probably testable with some quick hack that forces use_new_scheme() to return
->  "true" in hub.c
-In failing case, there is no GET_DESCRIPTOR DEVICE request.
+Technologic Systems has it's own nand controller implementation in CPLD.
 
-The result is even worse when enabling the 'new_scheme.'
-Instead of a timeout, it directly crashes and restarts the USB subsystem.
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+Hello Miquèl.
 
-In any case, we cannot use the 'new_scheme' because it exposes additional transactions
-in USB enumeration. This leads to additional delays in the enumeration of all devices,
-potentially exceeding the suggested time limit
-> 
-> > 
-> > Upon close inspection of the USB analyzer data for both cases,
-> > it becomes evident that a STALL packet consistently appears in
-> > the non-working scenario.
-> > 
-> > This stands in contrast to the working case, where the channel
-> > remains open, allowing for the successful execution of the following
-> > high-speed enumeration commands.
-> > 
-> > In the event of a stall, we require an interruption from the host to
-> > resume communication.
-> > Given that there is a fixed 5-second command delay, this interruption
-> > can only occur after this timeout period.
-> > 
-> > Therefore, I would like to propose a solution: providing an additional
-> > API to control this command timeout or as you suggested, adding a timeout
-> > parameter to struct xhci_command, and use that when calling xhci_mod_cmd_timer()
-> > without the need to address any potential bugs in the xHCI driver.
-> 
-> Lets first see if changing enumeration scheme helps.
-> 
-> If not, and the enumeration issue is only seen for devices behind this specific
-> automotive hub, then a quirk could be set for it that adjusts the timeout.
-> 
-> Also let me know if you find xhci driver bugs, those need to be fixed anyway.
->
-I couldn't identify any issues with the xHCI driver either. However, I'd like
-to propose the implementation of a more generic mechanism to control the 5-second
-(HZ*5) timeout. This would offer better flexibility and help reduce enumeration
-time in case of bus errors.
+Can you please take a look on it as RFC, so no need for the whole series spinning ?
 
-As of now, following your suggestion, I will add a parameter in the set_address
-API and use the Quirk in hub.c to pass either the default or customized timeout
-to the xHCI driver. However, in that case also we may need minor modifications in
-xhci driver.
+I've got rid of all legacy stuff i think, however:
 
-soon will submit Patch-v2
+- look's like i me ts7250 is missing READCACHE and i couldn't find any docs 
+  for this controller, so as legacy had no READCACHE, i mark it as non-supported
+- legacy wait implementation had no delays - only timeout and if i set 
+  readb_poll_timeout() to something reasonable i experience speed degradation 
+  on mtd_speedtest, can it be left as 0 ?
 
-Thanks,
-Hardik
+---
+ drivers/mtd/nand/raw/Kconfig                  |   7 +
+ drivers/mtd/nand/raw/Makefile                 |   1 +
+ .../nand/raw/technologic-nand-controller.c    | 233 ++++++++++++++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 drivers/mtd/nand/raw/technologic-nand-controller.c
 
-> Thanks
-> -Mathias
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index cbf8ae85e1ae..3937c10dea1c 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -449,6 +449,13 @@ config MTD_NAND_RENESAS
+ 	  Enables support for the NAND controller found on Renesas R-Car
+ 	  Gen3 and RZ/N1 SoC families.
+ 
++config MTD_NAND_TS72XX
++	tristate "ts72xx NAND controller"
++	depends on ARCH_EP93XX && HAS_IOMEM
++	help
++	  Enables support for NAND controller on ts72xx SBCs.
++	  This is a legacy driver based on gen_nand.
++
+ comment "Misc"
+ 
+ config MTD_SM_COMMON
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 25120a4afada..44d8f5b7cfd2 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -23,6 +23,7 @@ omap2_nand-objs := omap2.o
+ obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
+ obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
+ obj-$(CONFIG_MTD_NAND_MARVELL)		+= marvell_nand.o
++obj-$(CONFIG_MTD_NAND_TS72XX)		+= technologic-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+ obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+ obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
+new file mode 100644
+index 000000000000..4751955f26ee
+--- /dev/null
++++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
+@@ -0,0 +1,233 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Technologic Systems TS72xx NAND controller driver
++ *
++ * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
++ *
++ * Derived from: plat_nand.c
++ *  Author: Vitaly Wool <vitalywool@gmail.com>
++ */
++
++#include <linux/bits.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/platnand.h>
++
++#define TS72XX_NAND_CONTROL_ADDR_LINE	BIT(22)	/* 0xN0400000 */
++#define TS72XX_NAND_BUSY_ADDR_LINE	BIT(23)	/* 0xN0800000 */
++
++#define TS72XX_NAND_ALE			BIT(0)
++#define TS72XX_NAND_CLE			BIT(1)
++#define TS72XX_NAND_NCE			BIT(2)
++
++#define TS72XX_NAND_CTRL_CLE		(TS72XX_NAND_NCE | TS72XX_NAND_CLE)
++#define TS72XX_NAND_CTRL_ALE		(TS72XX_NAND_NCE | TS72XX_NAND_ALE)
++
++struct ts72xx_nand_data {
++	struct nand_controller	controller;
++	struct nand_chip	chip;
++	void __iomem		*base;
++	void __iomem		*ctrl;
++	void __iomem		*busy;
++};
++
++static inline struct ts72xx_nand_data *chip_to_ts72xx(struct nand_chip *chip)
++{
++	return container_of(chip, struct ts72xx_nand_data, chip);
++}
++
++static int ts72xx_nand_attach_chip(struct nand_chip *chip)
++{
++	switch (chip->ecc.engine_type) {
++	case NAND_ECC_ENGINE_TYPE_SOFT:
++		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++		break;
++	case NAND_ECC_ENGINE_TYPE_ON_HOST:
++		return -EINVAL;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static void ts72xx_nand_ctrl(struct nand_chip *chip, u8 value)
++{
++	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
++	unsigned char bits = ioread8(data->ctrl) & ~GENMASK(2, 0);
++
++	iowrite8(bits | value, data->ctrl);
++}
++
++static int ts72xx_nand_exec_instr(struct nand_chip *chip,
++				const struct nand_op_instr *instr)
++{
++	struct ts72xx_nand_data *data = chip_to_ts72xx(chip);
++	unsigned int i, timeout_us;
++	u32 status;
++	int ret;
++
++	switch (instr->type) {
++	case NAND_OP_CMD_INSTR:
++		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_CLE);
++		iowrite8(instr->ctx.cmd.opcode, data->base);
++		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
++		break;
++
++	case NAND_OP_ADDR_INSTR:
++		ts72xx_nand_ctrl(chip, TS72XX_NAND_CTRL_ALE);
++		for (i = 0; i < instr->ctx.addr.naddrs; i++)
++			iowrite8(instr->ctx.addr.addrs[i], data->base);
++		ts72xx_nand_ctrl(chip, TS72XX_NAND_NCE);
++		break;
++
++	case NAND_OP_DATA_IN_INSTR:
++		ioread8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
++		break;
++
++	case NAND_OP_DATA_OUT_INSTR:
++		iowrite8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
++		break;
++
++	case NAND_OP_WAITRDY_INSTR:
++		timeout_us = instr->ctx.waitrdy.timeout_ms * 1000;
++		ret = readb_poll_timeout(data->busy, status, status & BIT(5), 0, timeout_us);
++		if (ret)
++			return ret;
++
++		break;
++	}
++
++	if (instr->delay_ns)
++		ndelay(instr->delay_ns);
++
++	return 0;
++}
++
++static int ts72xx_nand_exec_op(struct nand_chip *chip,
++			       const struct nand_operation *op, bool check_only)
++{
++	const struct nand_op_instr *instr = NULL;
++	unsigned int i, op_id;
++	int ret;
++
++	if (check_only) {
++		for (op_id = 0; op_id < op->ninstrs; op_id++) {
++			instr = &op->instrs[op_id];
++			if (instr->type == NAND_OP_CMD_INSTR &&
++			    (instr->ctx.cmd.opcode == NAND_CMD_READCACHEEND ||
++			     instr->ctx.cmd.opcode == NAND_CMD_READCACHESEQ))
++				return -EOPNOTSUPP;
++		}
++
++		return 0;
++	}
++
++	for (i = 0; i < op->ninstrs; i++) {
++		ret = ts72xx_nand_exec_instr(chip, &op->instrs[i]);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static const struct nand_controller_ops ts72xx_nand_ops = {
++	.attach_chip = ts72xx_nand_attach_chip,
++	.exec_op = ts72xx_nand_exec_op,
++};
++
++static int ts72xx_nand_probe(struct platform_device *pdev)
++{
++	struct ts72xx_nand_data *data;
++	struct fwnode_handle *child;
++	struct mtd_info *mtd;
++	int err;
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	nand_controller_init(&data->controller);
++	data->controller.ops = &ts72xx_nand_ops;
++	data->chip.controller = &data->controller;
++
++	data->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(data->base))
++		return PTR_ERR(data->base);
++	data->ctrl = data->base + TS72XX_NAND_CONTROL_ADDR_LINE;
++	data->busy = data->base + TS72XX_NAND_BUSY_ADDR_LINE;
++
++	child = fwnode_get_next_child_node(dev_fwnode(&pdev->dev), NULL);
++	if (!child)
++		return dev_err_probe(&pdev->dev, -ENXIO,
++				"ts72xx controller node should have exactly one child\n");
++
++	nand_set_flash_node(&data->chip, to_of_node(child));
++	mtd = nand_to_mtd(&data->chip);
++	mtd->dev.parent = &pdev->dev;
++	platform_set_drvdata(pdev, data);
++
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
++	/* Scan to find existence of the device */
++	err = nand_scan(&data->chip, 1);
++	if (err)
++		goto err_handle_put;
++
++	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
++	if (err)
++		goto err_clean_nand;
++
++	return 0;
++
++err_clean_nand:
++	nand_cleanup(&data->chip);
++err_handle_put:
++	fwnode_handle_put(child);
++	return err;
++}
++
++static void ts72xx_nand_remove(struct platform_device *pdev)
++{
++	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
++	struct nand_chip *chip = &data->chip;
++	int ret;
++
++	ret = mtd_device_unregister(nand_to_mtd(chip));
++	WARN_ON(ret);
++	nand_cleanup(chip);
++}
++
++static const struct of_device_id ts72xx_id_table[] = {
++	{ .compatible = "technologic,ts7200-nand" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ts72xx_id_table);
++
++static struct platform_driver ts72xx_nand_driver = {
++	.driver = {
++		.name = "ts72xx-nand",
++		.of_match_table = ts72xx_id_table,
++	},
++	.probe = ts72xx_nand_probe,
++	.remove_new = ts72xx_nand_remove,
++};
++module_platform_driver(ts72xx_nand_driver);
++
++MODULE_AUTHOR("Nikita Shubin <nikita.shubin@maquefel.me");
++MODULE_DESCRIPTION("Technologic Systems TS72xx NAND controller driver");
++MODULE_LICENSE("GPL");
+-- 
+2.39.2
+
