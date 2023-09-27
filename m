@@ -2,136 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40447B07A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A7A7B07A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbjI0PG3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 11:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        id S232317AbjI0PHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbjI0PG2 (ORCPT
+        with ESMTP id S232287AbjI0PHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:06:28 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4B6F9;
-        Wed, 27 Sep 2023 08:06:26 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-57bc11c197aso813417eaf.1;
-        Wed, 27 Sep 2023 08:06:26 -0700 (PDT)
+        Wed, 27 Sep 2023 11:07:01 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BC4FC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:07:00 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-503f39d3236so18411483e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695827218; x=1696432018; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gGcjx0T8d9ndkjDrFc6BSXcIE1q0YyUuM9qOom+Dsxo=;
+        b=Lb1DFu0CDPBtlX9VyEMO69Gd0/wtNBGgoLEMqaXzwL2JMIl47sqlCUATjpI7wltjXL
+         MELpALFE63vSE5DWq5uI1ugkWn6WRzrBFnHFPcZ7gqONHxWhRpD/QAKgg3dDxu2pk/tB
+         fnToBlRPhfBh8YQtLmLf+FgD7BLSVBVTl8k7rgTO3+4LFyVjoZJb6dWdg5rqr+L/jPlb
+         cMWlAVuZTd6kVLX/I5ubsbu4IiBR+RTf7EnyosTNK8IWuXkKC5Jt8A69HPIAbTlEnJLU
+         MzJ4M0rHrn1oFf291FxL5EiVIgzJMt+ifk4Z1xHKLDro+8QMVWer6IGENGg+ReL4liad
+         rUKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695827186; x=1696431986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IOU2TsYoHI87o4MQ2qgkhZ2w81LG4U8JjmVaBsHW46M=;
-        b=Y286ki/9nVqIz94z3jG+5TW4bwlwplWSKxouwkazTaqbOLLuqxNw+U8LaL9oxMjAwC
-         ngCIwcd79mimx2MOviB3YHpmPfnPXLiX8t8wvAdESBm9CZclSJu+XGpnw7gB1svfL+sC
-         gE/hW7Ek8Xvanxd3KPzYU29XXAmQflkFc7Ye26xWve+Vo/PRDC/JJAUt7eNbYock3Hpv
-         3F2U391KGoz7OyByyV+0LjJ6vDCdJjWT8gf35HJD+IIbUXmoCc4sWEDmUc7ieTa+NrYO
-         x2A9qsIDdWjvouBEM+lH57I8yTN0G4tmvhSqfEzWXmyZJT5w6mBKTGq/6lCwDJzDMhxs
-         YYow==
-X-Gm-Message-State: AOJu0YwhD9eG9SKyRbOtnNR+TOnfC2QkrVNHyfznB/R3VzmfrBXR9CHF
-        TV4ZjBvoHkl+brytRnfWl7amSh9RZ1M5I3/PB5E=
-X-Google-Smtp-Source: AGHT+IG9SK7oeqtUGZZk6NA1P5Pb49ChbMqBRIPibOc013j+ztYHwfD+qdKOyFYjoZUcjfLwRDVXHexlXzP/BtGYivw=
-X-Received: by 2002:a05:6820:2182:b0:57b:7e31:c12 with SMTP id
- ce2-20020a056820218200b0057b7e310c12mr2355007oob.1.1695827185901; Wed, 27 Sep
- 2023 08:06:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695827218; x=1696432018;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gGcjx0T8d9ndkjDrFc6BSXcIE1q0YyUuM9qOom+Dsxo=;
+        b=upuqewTKnws3CfbXInO7pmycdSGX2jfTh6HKaoliPrJWy+C/SZ5DtaHenCR/pSqTU5
+         bKYfLnHQQdO2s01L4HzWXxQjXxRlQbO3Uigci8lBxIY9d9xCybbXxlKxAhy+QvwQcSGj
+         RUbUfTzFQx1/lt6wQTpPrH6chVvc8EEfrzdaf6EZO7fM6VHxeI9NOHDzV5Hn7pw1E+pO
+         5ML8oHKEGCsZywVvjy5Q8No0KZPjUUWLmi8hwtM6lUhTwi1JN18yMOG1YMuObbd5bQUq
+         nCDOXNJ11YEcO+SXkxFJy7qsjQbrEtveomMOuJ1MWwupJKP03tA6s0d/ZCCJZzmXaq1i
+         POfQ==
+X-Gm-Message-State: AOJu0YxCgd0YrQZ3ykJpTb8Jcy6NpDd6pZRhxTschjsdNOXn1iRTlqr0
+        xdpPPX1WfW/Fir+2k1wiZYkTOw==
+X-Google-Smtp-Source: AGHT+IGc+fYT4wq6gSYiJMfVSThddlYgdpMFxGS80Lq6V2WTmVtpBmq3S3/pkdIapX97XcpQ6v5AXg==
+X-Received: by 2002:a05:6512:21c8:b0:500:be57:ce53 with SMTP id d8-20020a05651221c800b00500be57ce53mr1668929lft.42.1695827217984;
+        Wed, 27 Sep 2023 08:06:57 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id j6-20020aa7ca46000000b0052889d090bfsm8354407edt.79.2023.09.27.08.06.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 08:06:57 -0700 (PDT)
+Message-ID: <ea9374d9-34bc-4e9e-aba2-4ca50e5090f2@linaro.org>
+Date:   Wed, 27 Sep 2023 17:06:55 +0200
 MIME-Version: 1.0
-References: <1957441.PYKUYFuaPT@kreacher> <1882755.CQOukoFCf9@kreacher> <3c9f7b7d-a9ca-79ae-4e64-367a82f953bc@linaro.org>
-In-Reply-To: <3c9f7b7d-a9ca-79ae-4e64-367a82f953bc@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 27 Sep 2023 17:06:14 +0200
-Message-ID: <CAJZ5v0ifXSWd4QL+j-=8OBr1aQr0WAeMBGYtis_gkHJDBLeWMg@mail.gmail.com>
-Subject: Re: [PATCH v1 06/13] thermal: gov_fair_share: Rearrange get_trip_level()
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] PCI: qcom: Make use of QCOM_PCIE_LINK_SPEED_TO_BW()
+ macro for encoding link speed
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com
+Cc:     andersson@kernel.org, bhelgaas@google.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, abel.vesa@linaro.org
+References: <20230927145738.115843-1-manivannan.sadhasivam@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230927145738.115843-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 5:00 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 21/09/2023 19:54, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Make get_trip_level() access the thermal zone's trip table directly
-> > instead of using __thermal_zone_get_trip() which adds overhead related
-> > to the unnecessary bounds checking and copying the trip point data.
-> >
-> > Also rearrange the code in it to make it somewhat easier to follow.
-> >
-> > The general functionality is not expected to be changed.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/thermal/gov_fair_share.c |   22 ++++++++++------------
-> >   1 file changed, 10 insertions(+), 12 deletions(-)
-> >
-> > Index: linux-pm/drivers/thermal/gov_fair_share.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/thermal/gov_fair_share.c
-> > +++ linux-pm/drivers/thermal/gov_fair_share.c
-> > @@ -21,23 +21,21 @@
-> >    */
-> >   static int get_trip_level(struct thermal_zone_device *tz)
-> >   {
-> > -     struct thermal_trip trip;
-> > -     int count;
-> > +     const struct thermal_trip *trip = tz->trips;
-> > +     int i;
-> >
-> > -     for (count = 0; count < tz->num_trips; count++) {
-> > -             __thermal_zone_get_trip(tz, count, &trip);
-> > -             if (tz->temperature < trip.temperature)
-> > +     if (tz->temperature < trip->temperature)
-> > +             return 0;
-> > +
-> > +     for (i = 0; i < tz->num_trips - 1; i++) {
-> > +             trip++;
-> > +             if (tz->temperature < trip->temperature)
-> >                       break;
-> >       }
->
-> Is it possible to use for_each_thermal_trip() instead ? That would make
-> the code more self-encapsulate
+On 27.09.2023 16:57, Manivannan Sadhasivam wrote:
+> Instead of hardcoding the link speed in MBps, let's make use of the
+> existing QCOM_PCIE_LINK_SPEED_TO_BW() macro that does the encoding of the
+> link speed for us.
+> 
+> This eliminates the need for a switch case in qcom_pcie_icc_update() and
+> also works for future Gen speeds without any code modifications.
+> 
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+> 
+> Changes in v2:
+> 
+> - Switched to QCOM_PCIE_LINK_SPEED_TO_BW() macro as per Bjorn's suggestion
+>   https://lore.kernel.org/linux-pci/20230924160713.217086-1-manivannan.sadhasivam@linaro.org/
+> 
+>  drivers/pci/controller/dwc/pcie-qcom.c | 24 ++++++------------------
+>  1 file changed, 6 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 297442c969b6..dce80d6dc88f 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -148,6 +148,9 @@
+>  
+>  #define QCOM_PCIE_CRC8_POLYNOMIAL		(BIT(2) | BIT(1) | BIT(0))
+>  
+> +#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
+> +		MBps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]) / BITS_PER_BYTE)
+Mbps_to_icc (lowercase b) is precisely that
 
-It is possible in principle, but this is a governor which is regarded
-as part of the core, isn't it?
-
-So is an extra overhead related to using a callback (which may be
-subject to retpolines and such) really justified in this case?
-
->
-> > -     /*
-> > -      * count > 0 only if temperature is greater than first trip
-> > -      * point, in which case, trip_point = count - 1
-> > -      */
-> > -     if (count > 0)
-> > -             trace_thermal_zone_trip(tz, count - 1, trip.type);
-> > +     trace_thermal_zone_trip(tz, i, tz->trips[i].type);
-> >
-> > -     return count;
-> > +     return i;
-> >   }
-> >
-> >   static long get_target_state(struct thermal_zone_device *tz,
-> >
-> >
-> >
->
-> --
+Konrad
