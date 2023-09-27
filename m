@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03DE7B0425
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EA37B0428
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjI0M3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S231309AbjI0M3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjI0M3h (ORCPT
+        with ESMTP id S230383AbjI0M3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:29:37 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9609E193;
-        Wed, 27 Sep 2023 05:29:35 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-406402933edso24203735e9.2;
-        Wed, 27 Sep 2023 05:29:35 -0700 (PDT)
+        Wed, 27 Sep 2023 08:29:39 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022E3192;
+        Wed, 27 Sep 2023 05:29:37 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40566f8a093so78685595e9.3;
+        Wed, 27 Sep 2023 05:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695817774; x=1696422574; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MqrlAO5sztrD1NimOBbmkaeWGCBRbknzZR3MhxUtqJk=;
-        b=naup93iuZZIHBNrg7x06YTu29vDlozLnf14gcX4NkFnP6km2GgY81WxeMEtmhst4r4
-         pXuXP5UsTUccFlTLz/3epMlW9SKXP711dtH7vsqqO4DE2HMfn40P5M8tSfLVfoTYjDtd
-         Ra9cAQ3K3SITOUIk0S0ssbYv9Klv1NvLXP8tQq9RRUEX0QzPr0ZCVRIKigu3OJJqDcUR
-         IrTbxI0Q6wEzatIL5UdCIo6GQiWUKeoGYIsjb7VmLQOmivsF2oR5aTspp5Uq2W+Aq3IO
-         DfWMVnDTGHoNOc8uqjbhNlm5aRmz/FTM4J3z5Y3Z2YvCWbDCcuMWudGChxsLsD2i/zN9
-         An5g==
+        d=gmail.com; s=20230601; t=1695817775; x=1696422575; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=djhGgzEttuBwypRoTD2e7qd8nkSbwt4HcuoP4naClbc=;
+        b=T1vxRkgobVuEmy6Gz7IHeQuRs49WWLYWxWBFjZ7+8feXTId1NtFjvEJjUltQdfwpGk
+         dHcmsIyG1aGPmIEOk+QbmX++XFLXitPspNtBjTqC/l/PfoPqB7vMv+2Etn8XU6JoC9qN
+         Uv/cFARJHXGIGF+288ja9sZuisnEeeWtOAX1ZXj9Li/USj9QiBtkMzVVwgDWgu5dUqAs
+         NMQlxRR+p29pVCCFdpzCFF3eBuhWzE05XdFgZyyR/ki7h8Q0ct8qTj5ehCVTXRt3N1dZ
+         SAIOQ3mB+HoWNRt+hs1eydJ7FaxD11dQzm+nScHqSMs50LKgBpioVmJ3P97Pp516kf8S
+         rQrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695817774; x=1696422574;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MqrlAO5sztrD1NimOBbmkaeWGCBRbknzZR3MhxUtqJk=;
-        b=hKJJDlEhKrkL1CRTAcLW2N/P8UBEoB9JHpo2DQeJS/gQxofnwyHjaGF9Pe071uyHw1
-         NRX9WUVFy3D46ZZfp7z1Efw+G5Q6SXFVU9GXTux9bFyTao41jHGplag/ceVvfr2Me1g7
-         oa20BYvfJuJeVoSYaC470OQaxkz0qbJyMquosi/C2gb5nA66yQDhuyujahyZjUbQNT/q
-         Ew2JRSmXhk36jqS5sKobKKTqfWCRtAvi2zGFN94d6HPw4v9/Ju9iwe6GUrO9IZxEaYUj
-         lg355CAvqDnndUXZCFJeMgxbKTXFur3LRN0Xsx9CyYWmPwkkHTO2qPAgUzUoMRD5mk+f
-         ESig==
-X-Gm-Message-State: AOJu0Yw2cpzrqIBF94V8mn2QEhAikQsmPQHx87MlUcTcGMyiq7I3L4fb
-        nbRpYzUDbk+5UEOkTTkLMfI=
-X-Google-Smtp-Source: AGHT+IF5xtLdTh5ebA3MvomjOgILvnz4IhFIHGw6vrUOiVXXmVjun0KXM08k7tob5hnd5+T2RFQvmA==
-X-Received: by 2002:a5d:5348:0:b0:315:8a13:ef17 with SMTP id t8-20020a5d5348000000b003158a13ef17mr1430106wrv.65.1695817773679;
-        Wed, 27 Sep 2023 05:29:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695817775; x=1696422575;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=djhGgzEttuBwypRoTD2e7qd8nkSbwt4HcuoP4naClbc=;
+        b=BlkW/8/leXqul+xuyC2TwclDDvr8RWUjudEWSKqyn74ewP/Ajld6rtxu9WSpO6NTiH
+         QOyk9qjtFjddSmo8AkqGidqEqcmrYt7clVc/7Dgy+6odVvlrIc9+KNWLkvs+ycvg7zOo
+         yjXWLpNH8ozm93D9gxE+SV53glYXoFY29EI/wN0GZ8OreZCnPmVR40b+J7dnz2dojy7m
+         cBrxgK7QtfJjpdpZX7YYXMA+j93e4fqm/O1DwI1VYdHj1oAQ89zfWe3//mRJLbieo2K5
+         JEhH69sazCAN8UMcOF7ctbIK2/cxxKoFoVyz/UPip9PzFXcgwjHr3XK9L7ocY6IPa6so
+         n/xw==
+X-Gm-Message-State: AOJu0Yx3i09AehFZCvDRAPH2GKXZjKvuvgj7GKQS/ERAnB1zLRFza9df
+        XelXHfkDxxnO484qq6dTXHk=
+X-Google-Smtp-Source: AGHT+IHcQL3pFBI02XxvUXVb6GR+GG2cph2JWQp8B1W1KKSu38pGMBYcBmAR8ek1iOZ6aemezFAIAA==
+X-Received: by 2002:a05:6000:1188:b0:31a:d4e4:4f63 with SMTP id g8-20020a056000118800b0031ad4e44f63mr1488621wrx.18.1695817775087;
+        Wed, 27 Sep 2023 05:29:35 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id 8-20020a05600c230800b004042dbb8925sm4521218wmo.38.2023.09.27.05.29.32
+        by smtp.googlemail.com with ESMTPSA id 8-20020a05600c230800b004042dbb8925sm4521218wmo.38.2023.09.27.05.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 05:29:33 -0700 (PDT)
+        Wed, 27 Sep 2023 05:29:34 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -72,10 +73,12 @@ To:     "David S. Miller" <davem@davemloft.net>,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 1/2] dt-bindings: net: snps,dwmac: DMA Arbitration scheme
-Date:   Wed, 27 Sep 2023 14:29:27 +0200
-Message-Id: <20230927122928.22033-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH 2/2] net: stmmac: add support for DMA Arbitration Scheme
+Date:   Wed, 27 Sep 2023 14:29:28 +0200
+Message-Id: <20230927122928.22033-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230927122928.22033-1-ansuelsmth@gmail.com>
+References: <20230927122928.22033-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -88,31 +91,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document new binding snps,arbit to program the DMA to use Arbitration
-scheme. (Rx has priority over Tx)
+Add support for DMA Arbitration Scheme tune up to program the DMA to put
+priority on Rx instead of applying Round-Robin logic.
+
+This special DMA bus mode was defined in the header from a long time but
+was never actually implemented. This option is used on the original
+setup on the ipq806x-gmac driver based on DWMAC1000.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c   | 3 +++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 1 +
+ include/linux/stmmac.h                                | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index 5c2769dc689a..4499f221c29b 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -442,6 +442,12 @@ properties:
-     description:
-       Use Address-Aligned Beats
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
+index daf79cdbd3ec..14eb7e8d61ea 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c
+@@ -104,6 +104,9 @@ static void dwmac1000_dma_init(void __iomem *ioaddr,
+ 	if (dma_cfg->aal)
+ 		value |= DMA_BUS_MODE_AAL;
  
-+  snps,arbit:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Program the DMA to use Arbitration scheme.
-+      (Rx has priority over Tx)
++	if (dma_cfg->arbit)
++		value |= DMA_BUS_MODE_DA;
 +
-   snps,fixed-burst:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
+ 	writel(value, ioaddr + DMA_BUS_MODE);
+ 
+ 	/* Mask interrupts by writing to CSR7 */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 843bd8804bfa..f5791b03b320 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -576,6 +576,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+ 	dma_cfg->pblx8 = !of_property_read_bool(np, "snps,no-pbl-x8");
+ 
+ 	dma_cfg->aal = of_property_read_bool(np, "snps,aal");
++	dma_cfg->arbit = of_property_read_bool(np, "snps,arbit");
+ 	dma_cfg->fixed_burst = of_property_read_bool(np, "snps,fixed-burst");
+ 	dma_cfg->mixed_burst = of_property_read_bool(np, "snps,mixed-burst");
+ 
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index c0079a7574ae..04a61f1eba90 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -97,6 +97,7 @@ struct stmmac_dma_cfg {
+ 	int fixed_burst;
+ 	int mixed_burst;
+ 	bool aal;
++	bool arbit;
+ 	bool eame;
+ 	bool multi_msi_en;
+ 	bool dche;
 -- 
 2.40.1
 
