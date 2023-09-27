@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31C67AF8B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EDD7AF8C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjI0DhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S229582AbjI0DnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjI0Dd0 (ORCPT
+        with ESMTP id S229718AbjI0DiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:33:26 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3321A1BD7;
-        Tue, 26 Sep 2023 20:01:25 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VsyiB2f_1695783680;
-Received: from 30.240.112.49(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VsyiB2f_1695783680)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Sep 2023 11:01:22 +0800
-Message-ID: <afea2d15-d73a-1ba0-a364-8e24ffbb583d@linux.alibaba.com>
-Date:   Wed, 27 Sep 2023 11:01:19 +0800
+        Tue, 26 Sep 2023 23:38:06 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C741A64A;
+        Tue, 26 Sep 2023 20:05:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwM0l4zsfz4f3kpj;
+        Wed, 27 Sep 2023 11:04:55 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP1 (Coremail) with SMTP id cCh0CgBHy6vWmxNl3palBQ--.62671S2;
+        Wed, 27 Sep 2023 11:04:55 +0800 (CST)
+Subject: Re: [PATCH] fuse: remove unneeded lock which protecting update of
+ congestion_threshold
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>, miklos@szeredi.hu,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230914154553.71939-1-shikemeng@huaweicloud.com>
+ <9a5d4c82-1ab3-e96d-98bb-369acc8404d1@fastmail.fm>
+ <177d891e-9258-68bb-72aa-4d4126403b7e@huaweicloud.com>
+ <73e673d6-ecb8-dec9-bdc0-6dde9c4e76cb@fastmail.fm>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <a66f94b8-4330-4e0d-589c-a031a5b3802c@huaweicloud.com>
+Date:   Wed, 27 Sep 2023 11:04:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: Questions: Should kernel panic when PCIe fatal error occurs?
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "tanxiaofei@huawei.com" <tanxiaofei@huawei.com>,
-        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, gregkh@linuxfoundation.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        mahesh@linux.ibm.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Linux PCI <linux-pci@vger.kernel.org>, bhelgaas@google.com,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "lenb@kernel.org" <lenb@kernel.org>
-References: <20230926230247.GA429368@bhelgaas>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230926230247.GA429368@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+In-Reply-To: <73e673d6-ecb8-dec9-bdc0-6dde9c4e76cb@fastmail.fm>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBHy6vWmxNl3palBQ--.62671S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4DKr1rZrWUJry5CF1DAwb_yoWrJw45pr
+        WktFy2kFZ8Zws5urnFyF1Uu34rt3yfta1UWFyqgryUZrZ8Jw1F9FW2vrWYgFyUAr4xJa4q
+        qF4Yg343ZF98AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,94 +67,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/9/27 07:02, Bjorn Helgaas wrote:
-> On Fri, Sep 22, 2023 at 10:46:36AM +0800, Shuai Xue wrote:
->> ...
+on 9/19/2023 9:12 PM, Bernd Schubert wrote:
 > 
->> Actually, this is a question from my colleague from firmware team.
->> The original question is that:
+> 
+> On 9/19/23 08:11, Kemeng Shi wrote:
 >>
->>     "Should I set CPER_SEV_FATAL for Generic Error Status Block when a
->>     PCIe fatal error is detected? If set, kernel will always panic.
->>     Otherwise, kernel will always not panic."
 >>
->> So I pull a question about desired behavior of Linux kernel first :)
->> From the perspective of the kernel, CPER_SEV_FATAL for Generic Error
->> Status Block is not reasonable. The kernel will attempt to recover
->> Fatal errors, although recovery may fail.
+>> on 9/16/2023 7:06 PM, Bernd Schubert wrote:
+>>>
+>>>
+>>> On 9/14/23 17:45, Kemeng Shi wrote:
+>>>> Commit 670d21c6e17f6 ("fuse: remove reliance on bdi congestion") change how
+>>>> congestion_threshold is used and lock in
+>>>> fuse_conn_congestion_threshold_write is not needed anymore.
+>>>> 1. Access to supe_block is removed along with removing of bdi congestion.
+>>>> Then down_read(&fc->killsb) which protecting access to super_block is no
+>>>> needed.
+>>>> 2. Compare num_background and congestion_threshold without holding
+>>>> bg_lock. Then there is no need to hold bg_lock to update
+>>>> congestion_threshold.
+>>>>
+>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>> ---
+>>>>    fs/fuse/control.c | 4 ----
+>>>>    1 file changed, 4 deletions(-)
+>>>>
+>>>> diff --git a/fs/fuse/control.c b/fs/fuse/control.c
+>>>> index 247ef4f76761..c5d7bf80efed 100644
+>>>> --- a/fs/fuse/control.c
+>>>> +++ b/fs/fuse/control.c
+>>>> @@ -174,11 +174,7 @@ static ssize_t fuse_conn_congestion_threshold_write(struct file *file,
+>>>>        if (!fc)
+>>>>            goto out;
+>>>>    -    down_read(&fc->killsb);
+>>>> -    spin_lock(&fc->bg_lock);
+>>>>        fc->congestion_threshold = val;
+>>>> -    spin_unlock(&fc->bg_lock);
+>>>> -    up_read(&fc->killsb);
+>>>>        fuse_conn_put(fc);
+>>>>    out:
+>>>>        return ret;
+>>>
+>>> Yeah, I don't see readers holding any of these locks.
+>>> I just wonder if it wouldn't be better to use WRITE_ONCE to ensure a single atomic operation to store the value.
+>> Sure, WRITE_ONCE looks better. I wonder if we should use READ_ONCE from reader.
+>> Would like to get any advice. Thanks!
 > 
-> I don't know the semantics of CPER_SEV_FATAL or why it's there.
-> With CPER, we have *two* error severities: a "native" one defined by
-> the PCIe spec and another defined by the platform via CPER.
+Sorry for the dealy - it toke me some time to go through the barrier documents.
+> I'm not entirely sure either, but I _think_ the compiler is free to store a 32 bit value  with multiple operations (like 2 x 16 bit). In that case a competing reading thread might read garbage...
+> Although I don't see this documented here
+> https://www.kernel.org/doc/Documentation/memory-barriers.txt
+I found this is documented in section
+"(*) For aligned memory locations whose size allows them to be accessed..."
+Then WRITE_ONCE is absolutely needed now as you menthioned before.
+> Though documented there is that the compile is free to optimize out the storage at all, see
+> "(*) Similarly, the compiler is within its rights to omit a store entirely"
 > 
-> I speculate that the reason for the CPER severity could be to provide
-> a severity for error sources that don't have a "native" severity like
-> AER does, or for the vendor to force the OS to restart (for
-> CPER_SEV_FATAL, anyway) in cases where it might not otherwise.
-
-Agreed, it is the key point.
-
-Per ACPI 6.5 18.1 Hardware Errors and Error Sources[1]:
-
-	- An uncorrected error is a hardware error condition that cannot be
-	corrected by the hardware or by the firmware. Uncorrected errors
-	are either fatal or non-fatal.
-
-	- A fatal hardware error is an uncorrected or uncontained error
-	condition that is determined to be unrecoverable by the hardware.
-	When a fatal uncorrected error occurs, the system is restarted to
-	prevent propagation of the error.
-
-	A non-fatal hardware error is an uncorrected error condition from
-	which OSPM can attempt recovery by trying to correct the error.
-	These are also referred to as correctable or recoverable errors.
-
-Based on our discussion and the PCIe and APCI Spec:
-
-- Native AER fatal error defined in PCIe does not indate that there's
-uncontained data corruption.
-- The kernel is capable of handle native AER fatal and non-fatal errors.
-- When a CPER_SEV_FATAL error nofitied by firmware, it indicates the
-platform wants to force the OS to restart, and the APEI/GHES driver follows
-the Spec now.
-
-(Please correct me if I misunderstand any)
-
-
 > 
-> In the native case, we only have the PCIe severity and don't have the
-> CPER severity at all, and I suspect that unless there's uncontained
-> data corruption, we would rather handle even the most severe PCIe
-> fatal error by disabling the specific device(s) instead of panicking
-> and restarting the whole machine.
+> Regarding READ_ONCE, I don't have a strong opinion, if the compiler makes some optimizations and the value would be wrong for a few cycles, would that matter for that variable? Unless the compiler would be really creative and the variable would get never updated... For sure READ_ONCE would be safer, but I don't know if it is needed
+> SSee section
+> "The compiler is within its rights to omit a load entirely if it know"
+> in the document above.
+I go through all examples of optimizations in document and congestion_threshold
+has no same trouble descripted in document.
+For specifc case you menthioned that "The compiler is within its rights to omit
+a load entirely if it know". The compiler will keep the first load and only omit
+successive loads from same variable in loop. As there is no repeat loading from
+congestion_threshold in loop, congestion_threshold is out of this trouble.
+Anyway, congestion_threshold is more like a hint and the worst case is that it is
+stale for a few cycles. I prefer to keep reading congestion_threshold without
+READ_ONCE and will do it in next version if it's fine to you. Thanks!
 > 
-> So for PCIe errors, I'm not sure setting CPER_SEV_FATAL is beneficial
-> unless the platform wants to force the OS to panic, e.g., maybe the
-> platform knows about data corruption and/or the vendor wants the OS to
-> panic as part of a reliability story.
-
-So back to the original question, I think your above comments are clear enough.
-
+> Thanks,
+> Bernd
 > 
-> Presumably the platform has already logged the error, and I assume the
-> platform *could* restart without even returning to the OS, but maybe
-> it wants the OS to do a crashdump or shutdown in a more orderly way.
+> 
+> 
 > 
 
-If the system is reset in platform without even returning to the OS,
-it is not visible to end user. IMHO, it always a bad choice.
-The OS can provide enhanced debuggability, for example:
-
-- providing details about the runtime context through crashdump
-- saving error information to persistent storage
-
-Thank you for your patience and valuable feedback. It is greatly appreciated
-and truly helpful.
-
-Best Regards and Cheers.
-Shuai
-
-
-
-
-[1] https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#hardware-errors-and-error-sources
