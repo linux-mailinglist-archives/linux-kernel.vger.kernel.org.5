@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4B57B080A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88B77B080B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbjI0PVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S232408AbjI0PVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjI0PVF (ORCPT
+        with ESMTP id S232338AbjI0PVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:21:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73CC121
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695828014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/EIbBjpy9O83n9qhTihg7QeV6q2TpAQGQwYAPKsUVIA=;
-        b=K01LKSaed/MPl3hSmA3N+Lf9sYM61H5LPVjm1mNY3xkbyV6+Q6fQzyuUKDSh+86RQFkFC5
-        V5G37yO+9cXOeTE+u+6D9qksfH0mh9M0CN+7uJ3w4gBpBynwqJX8au8LRB1vVuQZ86Vdup
-        0YR8MK31Vw/xyyFEJAmM9nMclGFdOx8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-557-VRfhcXSfOWONNqhEXd4YJA-1; Wed, 27 Sep 2023 11:20:12 -0400
-X-MC-Unique: VRfhcXSfOWONNqhEXd4YJA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-320004980a2so9290598f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:20:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695828011; x=1696432811;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/EIbBjpy9O83n9qhTihg7QeV6q2TpAQGQwYAPKsUVIA=;
-        b=GPffq/OHj/jXUH9rWKG6OsdzwSgdW+c5o1Ab8Z340PiDwLOsJlcdoqXAqYsSfbvqRa
-         xU1KRu9xrCN4Cfq2qVIt4p7Fx9hZ0G+4hSsUFumENs4dzPmXXO9BQjLesQca1r+/Rqbb
-         MtxLqXb7M56hGHPv4BIgyrdmO39Sds06sV+kpufLdWJgEAK/MZAc3RzJvlvGfKYx//KB
-         8ZgKk9ZWyw0ZjEHpz7lCQcLcwRLUhcO7eiqlKsEn9EO47qBCI9XVoOn+JIV3M85Txfg9
-         g1P3f5Y6bN8ZB5MxpzC1yEOFxvGkmn8+p/KybQY6/2Yi6e9TFHvYmPN+WJBYi0+jpkfY
-         SNxA==
-X-Gm-Message-State: AOJu0Yz6pdZOJp2wildxtr3jZsXzf5MLCOOamDSO6+caYerKnsSoDL/D
-        k/fXirYaEHpxzaxKEXwFqiZKz2mcU1H3e1hxy6n55nHpDppkjqVO5g2q9O/kazflIwbf/gxJDlF
-        IpxStwB8RJTQkKUTQabw8LdbR
-X-Received: by 2002:a5d:4cc7:0:b0:314:a3f:9c08 with SMTP id c7-20020a5d4cc7000000b003140a3f9c08mr1876007wrt.39.1695828011761;
-        Wed, 27 Sep 2023 08:20:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGdjsQhdmBlcldN4VQo0/wB1Ma3pLJGSeiqWpRsH5/5aS/zWnrBptxpvSLI02eGQaomR+j8gQ==
-X-Received: by 2002:a5d:4cc7:0:b0:314:a3f:9c08 with SMTP id c7-20020a5d4cc7000000b003140a3f9c08mr1875993wrt.39.1695828011418;
-        Wed, 27 Sep 2023 08:20:11 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:16e:b9f6:556e:c001:fe18:7e0a])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d6511000000b0031fd849e797sm17324370wru.105.2023.09.27.08.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 08:20:10 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 11:20:05 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     liming.wu@jaguarmicro.com
-Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, 398776277@qq.com
-Subject: Re: [PATCH 2/2] tools/virtio: Add hints when module is not installed
-Message-ID: <20230927111904-mutt-send-email-mst@kernel.org>
-References: <20230926050021.717-1-liming.wu@jaguarmicro.com>
- <20230926050021.717-2-liming.wu@jaguarmicro.com>
+        Wed, 27 Sep 2023 11:21:19 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6DE192;
+        Wed, 27 Sep 2023 08:21:17 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38RFL7Ig121242;
+        Wed, 27 Sep 2023 10:21:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695828067;
+        bh=yZDf+G265tlcCz/+xbyevaHnVFHSn7if37D6SE5CeO0=;
+        h=Date:Subject:To:References:From:In-Reply-To;
+        b=eBH1Vxiqxjsj8pkOIKbuUkCEUuZXPU4N/mN6gLdgbzqZkD8TTwrGJTRUcQzfP6D0c
+         e74cAQ1QKklHwOldoQnlGRQvpmf3oxASIUzXloQqlefJVPKeS0EivLMgscD+EaXq90
+         0/Fg5358/t0jowMNWgtci9beFYXOTPVtKJ3fiKm0=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38RFL74d031015
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Sep 2023 10:21:07 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Sep 2023 10:21:07 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Sep 2023 10:21:07 -0500
+Received: from [10.249.141.75] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38RFL3s4010422;
+        Wed, 27 Sep 2023 10:21:04 -0500
+Message-ID: <1ec11ea0-30f7-83b5-5b7c-2f54f6036519@ti.com>
+Date:   Wed, 27 Sep 2023 20:51:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926050021.717-2-liming.wu@jaguarmicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 6/9] arm64: dts : ti: k3-am68-sk-som: Add DDR carveout
+ memory nodes for R5F
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>
+References: <20230906112422.2846151-1-a-nandan@ti.com>
+ <20230906112422.2846151-7-a-nandan@ti.com>
+Content-Language: en-US
+From:   "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20230906112422.2846151-7-a-nandan@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,42 +74,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 01:00:20PM +0800, liming.wu@jaguarmicro.com wrote:
-> From: Liming Wu <liming.wu@jaguarmicro.com>
-> 
-> Need to insmod vhost_test.ko before run virtio_test.
-> Give some hints to users.
-> 
-> Signed-off-by: Liming Wu <liming.wu@jaguarmicro.com>
+
+On 9/6/2023 4:54 PM, Apurva Nandan wrote:
+> Two carveout reserved memory nodes each have been added for each of the
+> R5F remote processor device within both the MCU and MAIN domains for the
+> TI K3 AM68 SK boards. These nodes are assigned to the respective rproc
+> device nodes as well. The first region will be used as the DMA pool for
+> the rproc device, and the second region will furnish the static carveout
+> regions for the firmware memory.
+>
+> The current carveout addresses and sizes are defined statically for each
+> device. The R5F processors do not have an MMU, and as such require the
+> exact memory used by the firmwares to be set-aside. The firmware images
+> do not require any RSC_CARVEOUT entries in their resource tables either
+> to allocate the memory for firmware memory segments.
+>
+> Note that the R5F1 carveouts are needed only if the R5F cluster is
+> running in Split (non-LockStep) mode. The reserved memory nodes can be
+> disabled later on if there is no use-case defined to use the
+> corresponding
+> remote processor.
+>
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 > ---
->  tools/virtio/virtio_test.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
-> index 028f54e6854a..ce2c4d93d735 100644
-> --- a/tools/virtio/virtio_test.c
-> +++ b/tools/virtio/virtio_test.c
-> @@ -135,6 +135,10 @@ static void vdev_info_init(struct vdev_info* dev, unsigned long long features)
->  	dev->buf = malloc(dev->buf_size);
->  	assert(dev->buf);
->  	dev->control = open("/dev/vhost-test", O_RDWR);
-> +
-> +	if (dev->control < 0)
-> +		fprintf(stderr, "Install vhost_test module" \
-> +		"(./vhost_test/vhost_test.ko) firstly\n");
+>   arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 156 +++++++++++++++++++++
+>   1 file changed, 156 insertions(+)
 
-Thanks!
+Reviewed by: Udit Kumar<u-kumar1@ti.com>
 
-things to improve:
-
-firstly -> first
-add space before (
-End sentence with a dot
-align "" on the two lines
-
->  	assert(dev->control >= 0);
->  	r = ioctl(dev->control, VHOST_SET_OWNER, NULL);
->  	assert(r >= 0);
-> -- 
-> 2.34.1
-
+> [...]
