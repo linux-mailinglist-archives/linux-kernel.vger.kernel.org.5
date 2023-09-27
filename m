@@ -2,65 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BEB7AFC15
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638457AFC08
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbjI0H2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S230030AbjI0H1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjI0H2I (ORCPT
+        with ESMTP id S229940AbjI0H1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:28:08 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25438191;
-        Wed, 27 Sep 2023 00:28:05 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:26:47
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 15:26:47 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [SCSI] aic7xxx: Clean up errors in aic79xx_inline.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 03:27:14 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19A4191
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:27:12 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b29186e20aso629832666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:27:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1695799631; x=1696404431; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jicr0C9o+OP8Bl8W0wwK/zVRRNXHvssftPu6icJ2MsI=;
+        b=XkVl8o123ihVz+lFiWu+F+e1d1duROYny3PDlo/G4YE4UPXS9pUtDLmFCRXvB7G6ew
+         YNz2fb1rBUSLPyHyRb+TNJT1qIJMXQBoHHUitrjotTBZ6bsQMIXwVLCr0LjMVTXWdgyb
+         dRp+BtJdP7HerJz8gpW4eFogwMCl7HyAY6ym1ZS3Z7pxDGIKHQrtk/J6TtubAb8CZtst
+         fAiCrDsAC4M5KzQvx3ZJBWBAhTcM4UevrjMZlGxuomFyZEFHeZGfthzrZLB8h7Y/n/JS
+         96w5AxYG0XDby/h4Dt12/5LbbDuXSUXTm09fnzDKmCJFbbbn82Sq679+OOvx8rzwk49K
+         IYNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695799631; x=1696404431;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jicr0C9o+OP8Bl8W0wwK/zVRRNXHvssftPu6icJ2MsI=;
+        b=nONvwOp/G1AVNU9Zl89h3x3cLyw+531gmVq2PlC/DPux1mUpT6Od6wE8UZXA+115jB
+         UacCFVAd9GejqknfIqgISfto8xpcL/XgwqU34DE1YaFzpgpWpyNGAE5O5TGB33AKA9pQ
+         r3b9HCgKZjECxmu3jaRGqPUKEr/YAKPXGXMYzcdTBL4W/i6bL1nXKjwoAMOxcIrfmAQg
+         bIKehAfSOHQVth8uQK+24cxXKbo379TowRx2PRSNqUyHjan6yoUWWl+PWGz6GkkFYdPq
+         3LlCwWnt53LWYtuZN+KLRyMqdOqdS7IpkhIiL+Wrc1dRQJmFv4TLGPQizLGd4n1ZJTtb
+         JoIQ==
+X-Gm-Message-State: AOJu0Yw+7gIbnw5nUbWStUwSqIDGTjDqFf1JXFeF+yUp/kPzSTSzQeP3
+        u2uVEQMU2/q8yYNPMl70GrF39Q==
+X-Google-Smtp-Source: AGHT+IGVch1VtqFhycPP9kneRFs/qrXR1z3hJ3lQWj3uG9ohGT7avGn+bJyDfZdr17bZiiLnFRcXdw==
+X-Received: by 2002:a17:906:1dd:b0:9ae:42da:803c with SMTP id 29-20020a17090601dd00b009ae42da803cmr1014846ejj.48.1695799631122;
+        Wed, 27 Sep 2023 00:27:11 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm8776380ejc.55.2023.09.27.00.27.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 00:27:10 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 09:27:09 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
+        greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
+        alex@ghiti.fr, Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] RISC-V: KVM: Add Svadu Extension Support for
+ Guest/VM
+Message-ID: <20230927-408c4f85a0ee1d2caa1779f3@orel>
+References: <20230922085701.3164-1-yongxuan.wang@sifive.com>
+ <20230922085701.3164-4-yongxuan.wang@sifive.com>
 MIME-Version: 1.0
-Message-ID: <3c2920eb.881.18ad5887ee9.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD832RNls_C9AA--.677W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwANse
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922085701.3164-4-yongxuan.wang@sifive.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-cmV0dXJuIGlzIG5vdCBhIGZ1bmN0aW9uLCBwYXJlbnRoZXNlcyBhcmUgbm90IHJlcXVpcmVkCgpT
-aWduZWQtb2ZmLWJ5OiBHdW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBkcml2
-ZXJzL3Njc2kvYWljN3h4eC9haWM3OXh4X2lubGluZS5oIHwgMiArLQogMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3Np
-L2FpYzd4eHgvYWljNzl4eF9pbmxpbmUuaCBiL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpYzc5eHhf
-aW5saW5lLmgKaW5kZXggNzY0NGUzZDJlYzIyLi5mNmUyYmQzZjIxY2IgMTAwNjQ0Ci0tLSBhL2Ry
-aXZlcnMvc2NzaS9haWM3eHh4L2FpYzc5eHhfaW5saW5lLmgKKysrIGIvZHJpdmVycy9zY3NpL2Fp
-Yzd4eHgvYWljNzl4eF9pbmxpbmUuaApAQCAtMTEwLDcgKzExMCw3IEBAIHN0YXRpYyBpbmxpbmUg
-c2l6ZV90IGFoZF9zZ19zaXplKHN0cnVjdCBhaGRfc29mdGMgKmFoZCkKIHsKIAlpZiAoKGFoZC0+
-ZmxhZ3MgJiBBSERfNjRCSVRfQUREUkVTU0lORykgIT0gMCkKIAkJcmV0dXJuIChzaXplb2Yoc3Ry
-dWN0IGFoZF9kbWE2NF9zZWcpKTsKLQlyZXR1cm4gKHNpemVvZihzdHJ1Y3QgYWhkX2RtYV9zZWcp
-KTsKKwlyZXR1cm4gc2l6ZW9mKHN0cnVjdCBhaGRfZG1hX3NlZyk7CiB9CiAKIC8qKioqKioqKioq
-KioqKioqKioqKioqKiBNaXNjZWxsYW5lb3VzIFN1cHBvcnQgRnVuY3Rpb25zICoqKioqKioqKioq
-KioqKioqKioqKioqLwotLSAKMi4xNy4xCgo=
+On Fri, Sep 22, 2023 at 08:56:49AM +0000, Yong-Xuan Wang wrote:
+> We extend the KVM ISA extension ONE_REG interface to allow VMM
+> tools  to detect and enable Svadu extension for Guest/VM.
+> 
+> Also set the HADE bit in henvcfg CSR if Svadu extension is
+> available for Guest/VM.
+> 
+> Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+> ---
+>  arch/riscv/include/uapi/asm/kvm.h | 1 +
+>  arch/riscv/kvm/vcpu.c             | 3 +++
+>  arch/riscv/kvm/vcpu_onereg.c      | 1 +
+>  3 files changed, 5 insertions(+)
+> 
+> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
+> index 992c5e407104..3c7a6c762d0f 100644
+> --- a/arch/riscv/include/uapi/asm/kvm.h
+> +++ b/arch/riscv/include/uapi/asm/kvm.h
+> @@ -131,6 +131,7 @@ enum KVM_RISCV_ISA_EXT_ID {
+>  	KVM_RISCV_ISA_EXT_ZICSR,
+>  	KVM_RISCV_ISA_EXT_ZIFENCEI,
+>  	KVM_RISCV_ISA_EXT_ZIHPM,
+> +	KVM_RISCV_ISA_EXT_SVADU,
+
+This register will show up as "new" in kselftests test[1]. We should add
+another patch to this series to update the test to handle/test it.
+
+[1] tools/testing/selftests/kvm/riscv/get-reg-list.c
+
+>  	KVM_RISCV_ISA_EXT_MAX,
+>  };
+>  
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index 82229db1ce73..91b92a1f4e33 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -487,6 +487,9 @@ static void kvm_riscv_vcpu_update_config(const unsigned long *isa)
+>  	if (riscv_isa_extension_available(isa, ZICBOZ))
+>  		henvcfg |= ENVCFG_CBZE;
+>  
+> +	if (riscv_isa_extension_available(isa, SVADU))
+> +		henvcfg |= ENVCFG_HADE;
+> +
+>  	csr_write(CSR_HENVCFG, henvcfg);
+>  #ifdef CONFIG_32BIT
+>  	csr_write(CSR_HENVCFGH, henvcfg >> 32);
+> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+> index 1b7e9fa265cb..211915dad677 100644
+> --- a/arch/riscv/kvm/vcpu_onereg.c
+> +++ b/arch/riscv/kvm/vcpu_onereg.c
+> @@ -36,6 +36,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
+>  	/* Multi letter extensions (alphabetically sorted) */
+>  	KVM_ISA_EXT_ARR(SSAIA),
+>  	KVM_ISA_EXT_ARR(SSTC),
+> +	KVM_ISA_EXT_ARR(SVADU),
+>  	KVM_ISA_EXT_ARR(SVINVAL),
+>  	KVM_ISA_EXT_ARR(SVNAPOT),
+>  	KVM_ISA_EXT_ARR(SVPBMT),
+> -- 
+> 2.17.1
+>
+
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+
+Thanks,
+drew
