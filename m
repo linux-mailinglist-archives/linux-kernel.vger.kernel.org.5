@@ -2,184 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEB37B0504
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3093E7B0509
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjI0NOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 09:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S231874AbjI0NPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 09:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbjI0NOb (ORCPT
+        with ESMTP id S231760AbjI0NPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 09:14:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BCE2C11D
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:14:29 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94D42DA7;
-        Wed, 27 Sep 2023 06:15:07 -0700 (PDT)
-Received: from [192.168.178.45] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5ECD83F5A1;
-        Wed, 27 Sep 2023 06:14:27 -0700 (PDT)
-Message-ID: <8ac1576c-909b-ec6b-930d-0683ca288bf9@arm.com>
-Date:   Wed, 27 Sep 2023 15:14:21 +0200
+        Wed, 27 Sep 2023 09:15:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5473FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:15:09 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id EE57A21880;
+        Wed, 27 Sep 2023 13:15:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695820507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R1lJlxF9feC5+oLdQvnirtsv5D6sDWokNHxdvRBj354=;
+        b=PxBGJ/p/qeBZ1VWYBbtFczveMJzqPzSLtWr915pYoVX7/fCaF4ZkX/1kzTB+kPWMlqomGe
+        WTxsjqTxZuDuFL9S2L0tlJ23N1PcSwXwxQePVdU1PsbKzZmx3/o7e2189ImWdSndRSKCG7
+        V/N4noB5Ec0xlCTAKnFUboY7ehz9rrI=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8082D2C142;
+        Wed, 27 Sep 2023 13:15:06 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 15:15:05 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH printk v2 09/11] panic: Add atomic write enforcement to
+ oops
+Message-ID: <ZRQq2ZqMN34qLs44@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-10-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4] sched/topology: change behaviour of sysctl
- sched_energy_aware based on the platform
-Content-Language: en-US
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
-        mgorman@techsingularity.net, mingo@kernel.org,
-        pierre.gondois@arm.com, yu.c.chen@intel.com,
-        tim.c.chen@linux.intel.com, pauld@redhat.com
-References: <20230926100046.405188-1-sshegde@linux.vnet.ibm.com>
- <caab4d10-3ed6-faa7-5435-3086f3878537@arm.com>
- <d054e362-4a11-ee36-ddb6-870d88278e78@linux.vnet.ibm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <d054e362-4a11-ee36-ddb6-870d88278e78@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919230856.661435-10-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, BTW s/quentin.perret@arm.com/qperret@google.com
-
-On 27/09/2023 10:14, Shrikanth Hegde wrote:
+On Wed 2023-09-20 01:14:54, John Ogness wrote:
+> Invoke the atomic write enforcement functions for oops to
+> ensure that the information gets out to the consoles.
 > 
+> Since there is no single general function that calls both
+> oops_enter() and oops_exit(), the nesting feature of atomic
+> write sections is taken advantage of in order to guarantee
+> full coverage between the first oops_enter() and the last
+> oops_exit().
 > 
-> On 9/27/23 2:59 AM, Dietmar Eggemann wrote:
->> On 26/09/2023 12:00, Shrikanth Hegde wrote:
-
-[...]
-
->>> At present, though platform doesn't support EAS, this sysctl returns 1
->>> and it ends up calling rebuild of sched domain on write to 1 and
->>
->> sched domains are not rebuild in this case, i.e.
->> partition_sched_domains_locked() does not call detach_destroy_domains()
->> or build_sched_domains(). Only build_perf_domains() is called which
->> bails out if !sysctl_sched_energy_aware or one of the EAS conditions is
->> not true.
->>
+> It is important to note that if there are any legacy consoles
+> registered, they will be attempting to directly print from the
+> printk-caller context, which may jeopardize the reliability of
+> the atomic consoles. Optimally there should be no legacy
+> consoles registered.
 > 
-> ok. that's because it goes to match1 and match2 right?
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -630,6 +634,36 @@ bool oops_may_print(void)
+>   */
+>  void oops_enter(void)
+>  {
+> +	enum nbcon_prio prev_prio;
+> +	int cpu = -1;
+> +
+> +	/*
+> +	 * If this turns out to be the first CPU in oops, this is the
+> +	 * beginning of the outermost atomic section. Otherwise it is
+> +	 * the beginning of an inner atomic section.
+> +	 */
 
-yes.
+This sounds strange. What is the advantage of having the inner
+atomic context, please? It covers only messages printed inside
+oops_enter() and not the whole oops_enter()/exit(). Also see below.
 
-[...]
+> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
+> +
+> +	if (atomic_try_cmpxchg_relaxed(&oops_cpu, &cpu, smp_processor_id())) {
+> +		/*
+> +		 * This is the first CPU in oops. Save the outermost
+> +		 * @prev_prio in order to restore it on the outermost
+> +		 * matching oops_exit(), when @oops_nesting == 0.
+> +		 */
+> +		oops_prev_prio = prev_prio;
+> +
+> +		/*
+> +		 * Enter an inner atomic section that ends at the end of this
+> +		 * function. In this case, the nbcon_atomic_enter() above
+> +		 * began the outermost atomic section.
+> +		 */
+> +		prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
+> +	}
+> +
+> +	/* Track nesting when this CPU is the owner. */
+> +	if (cpu == -1 || cpu == smp_processor_id())
+> +		oops_nesting++;
+> +
+>  	tracing_off();
+>  	/* can't trust the integrity of the kernel anymore: */
+>  	debug_locks_off();
+> @@ -637,6 +671,9 @@ void oops_enter(void)
+>  
+>  	if (sysctl_oops_all_cpu_backtrace)
+>  		trigger_all_cpu_backtrace();
+> +
+> +	/* Exit inner atomic section. */
+> +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
 
->>> @@ -231,6 +289,14 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
->>>  		return -EPERM;
->>>
->>>  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
->>> +	if (!sched_is_eas_possible(cpu_active_mask)) {
->>
->> This is using `cpu_active_mask` so EAS can only be disabled system-wide.
->>
->> So I experimented with an exclusive cpuset setup creating a symmetric
->> (cs1) and an asymmetric (cs2) island on my Juno with its cpumask = [l B
->> B l l l] (l - little CPU, B - Big CPU).
->>
->> root@juno:~# cd /sys/fs/cgroup/cpuset
->> root@juno:/sys/fs/cgroup/cpuset# mkdir cs1
->> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs1/cpuset.cpu_exclusive
->> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs1/cpuset.mems
->> root@juno:/sys/fs/cgroup/cpuset# echo 4,5 > cs1/cpuset.cpus
->> root@juno:/sys/fs/cgroup/cpuset# mkdir cs2
->> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs2/cpuset.cpu_exclusive
->> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs2/cpuset.mems
->> root@juno:/sys/fs/cgroup/cpuset# echo 0-3 > cs2/cpuset.cpus
->> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cpuset.sched_load_balance
->>
->> [ 3021.761278] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
->> cpus=0,3-5 nr_pstate=5 }
->>
->> root@juno:~# echo 0 > /proc/sys/kernel/sched_energy_aware
->>
->> log messages:
->> ...
->> [ 3143.538583] rd 4-5: Disabling EAS
->> [ 3143.549569] rd 0-3: Disabling EAS
->> [ 3143.560681] sched_energy_set: stopping EAS
->> ...
->>
->> root@juno:~# echo 1 > /proc/sys/kernel/sched_energy_aware
->>
->> log messages:
->> ...
->> [ 3223.277521] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
->> cpus=0,3-5 nr_pstate=5 }
->> [ 3223.293409] sched_energy_set: starting EAS
->>
->> Seems still to work correctly.
-> 
-> I see that can be a issue. using first cpu here check to asymmetric cpu capacity. 
-> It would have worked here, since the first group had asymmetry. ( l B B l ). 
-> It wouldn't have worked if the first group had like ( l l ) and second group has ( l B B l )
+This will not flush the messages when:
 
-Yeah, that's true.
+   + This CPU owns oops_cpu. The flush will have to wait for exiting
+     the outer loop.
 
-  sched_is_eas_possible(const struct cpumask *cpu_mask)
-
-    !per_cpu(sd_asym_cpucapacity, cpumask_first(cpu_mask));
-
-cpusets cs1=[0,5] and cs2=[1-4] as such an example.
+     In this case, the inner atomic context is not needed.
 
 
-> Instead of cpu_active_mask, I can make use of ndoms_cur and doms_cur[i] logic to 
-> traverse through possible doms, and if none of the domains have asymmetric cpu capacity
-> return false.  Does that look right?
+   + oops_cpu is owner by another CPU, the other CPU is
+     just flushing the messages and block the per-console
+     lock.
 
-  rebuild_sched_domains()
+     The good thing is that the messages printed by this oops_enter()
+     would likely get flushed by the other CPU.
 
-    rebuild_sched_domains_locked()
+     The bad thing is that oops_exit() on this CPU won't call
+     nbcon_atomic_exit() so that the following OOPS messages
+     from this CPU might need to wait for the printk kthread.
+     IMHO, this is not what we want.
 
-      ndoms = generate_sched_domains(&doms, &attr)
 
-You would need generate_sched_domains() in sched_energy_aware_handler()?
+One solution would be to store prev_prio in per-CPU array
+so that each CPU could call its own nbcon_atomic_exit().
 
->> [...]
->>
->>> @@ -458,6 +487,8 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
->>>  	return !!pd;
->>>
->>>  free:
->>> +	if (sched_debug())
->>> +		pr_warn("rd %*pbl: Disabling EAS", cpumask_pr_args(cpu_map));
->>
->> Shouldn't this be used in condition `if (!sysctl_sched_energy_aware)`?
->> Otherwise we have 2 warnings when the other conditions which leads to
->> `goto free` aren't met.
-> Since sched_energy_set has the info messages about start and stop of EAS, maybe 
-> this debug is not needed. Will remove it. Doing it only `if (!sysctl_sched_energy_aware)`
+But I start liking more and more the idea with storing
+and counting nested emergency contexts in struct task_struct.
+It is the alternative implementation in reply to the 7th patch,
+https://lore.kernel.org/r/ZRLBxsXPCym2NC5Q@alley
 
-OK.
+Then it will be enough to simply call:
 
-> also doesn't seem correct, as calling free in this function would free the perf_domains.  
+   + nbcon_emergency_enter() in oops_enter()
+   + nbcon_emergency_exit() in oops_enter()
 
-But !sched_is_eas_possible() also does `goto free` and in there we we
-emit pr_info's indicating why EAS isn't possible right now.
+Best Regards,
+Petr
 
-When issuing a:
-
-# echo 0 > /proc/sys/kernel/sched_energy_aware
-
-we would see in the logs:
-
-...
-[  416.325324] rd 0-5: sysctl_sched_energy_aware is N   <-- (*)
-[  416.337844] sched_energy_set: stopping EAS
-...
-
-but maybe (*) is not necessary ...
+PS: I just hope that you didn't add all this complexity just because
+    we preferred this behavior at LPC 2022. Especially I hope
+    that it was not me who proposed and preferred this.
