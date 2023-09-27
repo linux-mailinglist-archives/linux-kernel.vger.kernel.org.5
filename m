@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3A57B0C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9317B0C7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 21:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjI0TVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 15:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        id S229662AbjI0T1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 15:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjI0TVt (ORCPT
+        with ESMTP id S229459AbjI0T1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 15:21:49 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0228F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:21:46 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bff7d81b5eso202015121fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695842504; x=1696447304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ET8vDjRxZmD/gtfR63OsJJa9r1kBzCcQAiKWB7PIBa0=;
-        b=LzKTYX7Jv4SnY1Yudh6U9JmVkbymKuvk54oD1cuPwfnz8SrWxEmmRNrPWszQVRoaue
-         5GcyEn+BP6QUD5keEtCfTje28Y9St/YN+6PQgX3lFN0dYz+szOKThPkZzDdfmHkoFu/f
-         2k35H+Mk0TEhu2/xWQNpeUJLINLmNRuVPOZRnR1w5oFnzh0TOvS5iPo9U6mndyvpRJTq
-         4PUVcLk8yHEzZnERjbW37nxEyNyhMt+VD8ovOdmz0xHLrr9yB2q0fp5DP7stc2GIHhwg
-         jhF831RYQZy1OA4Qpd+He02JC7fj3Sul4VCSnING4ymozhk/RazzWsu+NDnT2tBVsQQk
-         Fk+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695842504; x=1696447304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ET8vDjRxZmD/gtfR63OsJJa9r1kBzCcQAiKWB7PIBa0=;
-        b=NexieoPWaAZ3L7vO+K2BSrgY82xVZ9NdkI9CWE26YUi3zfXJf1LPVrF+b1TTQWzQQ9
-         ydQhiwds1Z/CNjcxUCJ2/sBqRNGf8pHDpH3VHv5e0suJA1159xBp7d5ciNlpsEaRKLp+
-         YnQwxH0681GDyk8dAhV5+VBd6M/FupqXRbIis7f/+gSTdd0+NYOIDLo3Yl9z3PS4XwBX
-         a1+RlTM4TWL+cVF13LHGEYDEb31l9uKHc6KyPQ2HQQ6YwoGuA7g4Ngjr1AKj6jsiyOvm
-         fPlVRzERpIhby4AEChup9Zl9l5N7T4+cnXGBGhctwX1y+2nFWLHQeXMjaQeRxYG0Q2ci
-         DjhA==
-X-Gm-Message-State: AOJu0YzJ7U13oQSpKKlSGk8SCt+fFsug8wW3IHrXHZ7sy/fEBZQJfp/d
-        hWyrk53RNQZ+j8X1tSweArd2CKjkcg==
-X-Google-Smtp-Source: AGHT+IHz98pWnYgAoX9LLN6BI6sPelJP6WX47N+toUrrMt0trgp0iHa/o6v/TDn4gHbC8Nns/J1TMQ==
-X-Received: by 2002:a2e:901a:0:b0:2c0:2bb1:20ee with SMTP id h26-20020a2e901a000000b002c02bb120eemr2727316ljg.26.1695842504373;
-        Wed, 27 Sep 2023 12:21:44 -0700 (PDT)
-Received: from p183 ([46.53.250.251])
-        by smtp.gmail.com with ESMTPSA id bv13-20020a170906b1cd00b00993a37aebc5sm9753699ejb.50.2023.09.27.12.21.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 12:21:43 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 22:21:41 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     David Laight <david.laight@aculab.com>
-Cc:     linux-kernel@vger.kernel.org, willy@infradead.org,
-        torvalds@linux-foundation.org, Jason@zx2c4.com, hch@infradead.org,
-        david.laight@aculab.com, andriy.shevchenko@linux.intel.com,
-        akpm@linux-foundation.org
-Subject: Re: + minmax-add-umina-b-and-umaxa-b.patch added to
- mm-nonmm-unstable branch
-Message-ID: <d74a3644-1d03-42c7-b258-4d5d63416ee0@p183>
-References: <20230927173033.AF86DC433C7@smtp.kernel.org>
+        Wed, 27 Sep 2023 15:27:04 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147588F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 12:27:03 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 815ED5C2870;
+        Wed, 27 Sep 2023 15:27:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 27 Sep 2023 15:27:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1695842822; x=1695929222; bh=ts
+        90YHb/UaoHFjOysxvIPXihv4YjnfJXAbM5VWK5Xn8=; b=u/LotQs6nK0oJTv88m
+        CVRuvzao2gf8Xai+cyoXc3D4gUNL8D1MKrJcClrOV7aOEMfes83JeGoB1+Ba2sZv
+        2bvROOIrflzJnbjJD41mKyd2doBifbaNoJTLDrxvSZ0VOTyQmNyebv9MZwSvvLxs
+        sXwEhvKxC21e9rpRXJ1WyPyGokJzkvUQgfn1IDlrruZm8weh11bp59SUlRo/D0qz
+        bh6WN3a8RT2qzvD8W3EFDbQkBpLhZDpfEvcwCWIB42GMqZ68zQMeiIOBM11V68sT
+        pBsg8jZe3Zg97DbMaB7NtlXuRfYjeiHa80TWWMvG6aUA/wjNJH3S1ISFjsNosLUm
+        eduw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695842822; x=1695929222; bh=ts90YHb/UaoHF
+        jOysxvIPXihv4YjnfJXAbM5VWK5Xn8=; b=DaIK4/ohHVAu0Pxxt6pOtYkXckHNx
+        nlJfu+NAC0m7E0L536vs7SlXOMY47XZqpSspLNGIIn6N9+3bOoa9FyIgfkOWmZU5
+        YK34uSd6uC2uyqYRo0X7s/zvIN4SCRRPhF+tXLYj+zsGSizHVFcb//cArS+6tAcv
+        zgocvcSFUwJ2oF3tSNvcwDzbTXHHjIAoe/xjryuwqh0DtAd4u+f5K/mT1ZqqQqTA
+        8Og4qiAODfJtoFqK0L/WS40DOWY70kcx8LYJ7AWA6xgTUJmyOJKm9IQZrqDIUFcP
+        RhOXL+RciHl9uoQYPzZ0d3jeSnzB0vYkG/PZRNSwbi5DE3A7jHRuoysdg==
+X-ME-Sender: <xms:BoIUZWpH2Oq-LXZRkwxzTE_TTL2KjK1KPBvIEAYcmxgf8oiFNHJffQ>
+    <xme:BoIUZUrA7VeX5V0POSPmgnu15oH41CnuWYoEUX_X9ljKxeyOjEqk2tznmVV252y7s
+    _f_Rmyv0Ri55zaogTg>
+X-ME-Received: <xmr:BoIUZbOzlXJKkmdY9mu_m26nDHuqRXssU3KWBOn8uoJz9m6luxR90q0z2l4Q8fehrDQIfxh_jHbBPPRWb4gJhIc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdeggdejgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpehgrghrhihr
+    ohhokhgrrhgusehfrghsthhmrghilhdrohhrghenucggtffrrghtthgvrhhnpeeiuddvle
+    ektdfhgeetvedvjeegkeeuvddttdejleefvdeuvefhlefgveevieeukeenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrh
+    gusehfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:BoIUZV7BF3Ej7DPJXuw1qVgpWj3uxrlOOda8qAXuVQB2LuAy64836Q>
+    <xmx:BoIUZV6Nw4Ee_jQhiXcUDPHaIIYE4Ix2gcuXsQsOzRwCVxL_brluhQ>
+    <xmx:BoIUZVhB1EiiijRf3LJ2DnkTU56TcxXdOQ6JtV6t_Ih7WMzpZJv9HQ>
+    <xmx:BoIUZVGoY7yH6m3d01sRU27ZjiZm2n5PcHeCR73v8-PwVAQI-3TmVg>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Sep 2023 15:27:01 -0400 (EDT)
+References: <20230927112635.27637-1-garyrookard@fastmail.org>
+ <cb28b28a-64d1-4a38-942a-cac31e0dd48e@kadam.mountain>
+User-agent: mu4e 1.10.6; emacs 28.2
+From:   garyrookard@fastmail.org
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3 v2] staging: rtl8192e: renamed a variable
+Date:   Wed, 27 Sep 2023 15:25:11 -0400
+In-reply-to: <cb28b28a-64d1-4a38-942a-cac31e0dd48e@kadam.mountain>
+Message-ID: <87r0mjju3k.fsf@fastmail.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230927173033.AF86DC433C7@smtp.kernel.org>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:30:33AM -0700, Andrew Morton wrote:
-> +#define umin(x, y)	\
-> +	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
+Okay, already have one done that way.
+Dan Carpenter <dan.carpenter@linaro.org> writes:
 
-kmin() and kmax() are (of course!) much better names.
+> On Wed, Sep 27, 2023 at 07:26:32AM -0400, Gary Rookard wrote:
+>> Hi!,
+>> 
+>> This patch series renames the same mixed case variable in (3) different
+>> files of staging/rtl8192e.
+>> 1) rtllib.h
+>> 2) rtl819x_HTProc.c
+>> 3) rtllib_module.c
+>> 
+>
+> You need to do this all in one patch, otherwise the kernel can't compile
+> if we only apply 1 or just 1 and 2.
+>
+> regards,
+> dan carpenter
+
