@@ -2,148 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 782617B0960
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5037B094E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjI0PwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
+        id S232825AbjI0Pu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232539AbjI0Pvl (ORCPT
+        with ESMTP id S232795AbjI0PuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:51:41 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AFB59DB
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:40:12 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-65b2463d651so23057846d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695829211; x=1696434011; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9oIEXPNWkoSP0yICfThZznT48YRRSxNiQbO+UpaNXk=;
-        b=REPvhS0od8YGeIuF8pH6xO7Z6Nm5hZjrPlyVdh7k+7W57+wslImmwmFDpr9Si1InPQ
-         v9MKY4koSdpGP9mGG1NiWxhdKQqDUG7D5oDSypk78gCbbiG0P67vj0AzPT/AxcKejuoG
-         8jdjFvm4LXJ4bZqorrR3X66+ui3ZaiaEsEa96mHzBIl5EzTTpygaN1VywN/JTi966tvF
-         RFZZ4jSkT71tem9hdvKNonJ5b/2pZXxsTznO30rtUPo5hqep55nUvnsMjhyl8hI/Iy5n
-         jPHsWwKXRTzW/KOFjoC9Y7qzBFFdHd1ktdahzs6YfoT5jKaqsI7/Bh5cHg5CzMLkx6Y9
-         ItgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695829211; x=1696434011;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t9oIEXPNWkoSP0yICfThZznT48YRRSxNiQbO+UpaNXk=;
-        b=QEL40QdDwVYG30RApdwjXKJYaggpgCLWhqmQtAPje/uEE1te+F10H2cbPVvQkOdw4B
-         f4AwTEOswmn2GOSZ33WFU4VRSXYqMXRwQFciPLjjrYUNcCQRxfQCf6Dma0jiwS33w7H/
-         Y6WHbEZdeZhcsVZqm2HLabm5Dtd/Xd1yArULtj/5r3vtU0Infx5Vm/WecRAt47uf1t4P
-         cwR/W9XxyhCErwlG4lhIYPJBdF0LgX7P9cug8JsGkfI+I8+R2W0cdYm2TEkKB/YGSjaf
-         vSkk1R4gQXvJIbeF5G0bNQOsHIK8SZH3hc05cA2ZieTTEoFU/CSD5xgm1sJaM983Biss
-         ppZQ==
-X-Gm-Message-State: AOJu0Yym191AtQtJVOxuXSuYYf1RVAGmjhDfvotOmxeSH7zQLcwn0xuJ
-        HoWKO6jYq56QJ1vOKwiWU/9SdQ==
-X-Google-Smtp-Source: AGHT+IEBIEK8bL4oC9/JbUXAJTo9b7yotL8eHtI4zGCh9Ar0J6VaF2Vk0l+zBuzNRh2jU30sxMvEWQ==
-X-Received: by 2002:a0c:de03:0:b0:64f:8d4c:1c0b with SMTP id t3-20020a0cde03000000b0064f8d4c1c0bmr2581322qvk.43.1695829210841;
-        Wed, 27 Sep 2023 08:40:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id i11-20020a0cab4b000000b00655e4f57732sm3474144qvb.35.2023.09.27.08.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 08:40:10 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qlWe1-001Qtr-JG;
-        Wed, 27 Sep 2023 12:40:09 -0300
-Date:   Wed, 27 Sep 2023 12:40:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
- IOTLB flushing
-Message-ID: <20230927154009.GN13795@ziepe.ca>
-References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
- <ZRLy_AaJiXxZ2AfK@8bytes.org>
- <20230926160832.GM13795@ziepe.ca>
- <cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com>
- <ZRP8CiBui7suB5D6@8bytes.org>
- <b06a14de270a63050b0d027c24b333dba25001a4.camel@linux.ibm.com>
- <e1efbbd827e34800bd7fb0ea687645cc6c65e1ab.camel@linux.ibm.com>
- <6dab29f58ac1ccd58caaee031f98f4d0d382cbcd.camel@linux.ibm.com>
- <a672b6b122c7a5f708614346885c190a6960aaea.camel@linux.ibm.com>
+        Wed, 27 Sep 2023 11:50:09 -0400
+Received: from mail-4318.protonmail.ch (mail-4318.protonmail.ch [185.70.43.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFB37EFB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1695829215; x=1696088415;
+        bh=Sf8EpJ/Ze06akGLTx+VzhLG9yK6e28N13HnngGDh80A=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=pPUCUrQ5ejL/9UgTfvM5uw+azq3xRdeFhiOSe0238hTBG0AjFbgBKH4TzFRjWkclM
+         7KX4H162PJUXoS43vYHKOAO4HIS5Wr2KXTy8W7aPnsFSbpy5N2vF4avExT6eoovrSd
+         Zsv5pTBUAA3Zqvjmj0t62G8PyRy8b0bv/ahn8smv2RgR71iTBDPD8f9/w5BF60UBCd
+         xLxyAog6LhnpDZzKa8FQ6HfBl/EYK+1RDxfpzzQV1y4Mxg6EOieU0ID2foNSvf3f2D
+         nahOKaIUdKzjAYFgu+0NII72V9ufJp5t24fntLXYwM7HOy4sn7S89FsWIcSuHEP5GQ
+         RB9Z/olpJZrpA==
+Date:   Wed, 27 Sep 2023 15:40:09 +0000
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+From:   Turritopsis Dohrnii Teo En Ming <tdtem@protonmail.com>
+Cc:     Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ceo@teo-en-ming-corp.com
+Subject: Re: My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+
+Message-ID: <BeZs4jBxhofIdjWavbuANlZ5zUrV2Wtdf9QMX5CPx_X_KT4PvKvD8c4Qc0LP_LPjKyvIy3SOjTMFgkq4xlrSKSubWZrzJLuudmSCo1Q9wLE=@protonmail.com>
+In-Reply-To: <ZQzlFgJTZzTVkKeN@debian.me>
+References: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com> <ZQzlFgJTZzTVkKeN@debian.me>
+Feedback-ID: 80245632:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a672b6b122c7a5f708614346885c190a6960aaea.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 05:24:20PM +0200, Niklas Schnelle wrote:
 
-> Ok, another update. On trying it out again this problem actually also
-> occurs when applying this v12 on top of v6.6-rc3 too. Also I guess
-> unlike my prior thinking it probably doesn't occur with
-> iommu.forcedac=1 since that still allows IOVAs below 4 GiB and we might
-> be the only ones who don't support those. From my point of view this
-> sounds like a mlx5_core issue they really should call
-> dma_set_mask_and_coherent() before their first call to
-> dma_alloc_coherent() not after. So I guess I'll send a v13 of this
-> series rebased on iommu/core and with an additional mlx5 patch and then
-> let's hope we can get that merged in a way that doesn't leave us with
-> broken ConnectX VFs for too long.
 
-Yes, OK. It definitely sounds wrong that mlx5 is doing dma allocations before
-setting it's dma_set_mask_and_coherent(). Please link to this thread
-and we can get Leon or Saeed to ack it for Joerg.
 
-(though wondering why s390 is the only case that ever hit this?)
 
-Jason
+
+Sent with Proton Mail secure email.
+
+------- Original Message -------
+On Friday, September 22nd, 2023 at 8:51 AM, Bagas Sanjaya <bagasdotme@gmail=
+.com> wrote:
+
+
+> [trimming personal and obvious political info]
+>=20
+> On Thu, Sep 21, 2023 at 04:20:06PM +0000, Turritopsis Dohrnii Teo En Ming=
+ wrote:
+>=20
+> > My brand new vivo V25 Pro 5G Android mobile phone is running on Linux k=
+ernel 4.19.191+. Are there any severe/critical security vulnerabilities in =
+Linux kernel 4.19.191+ that will allow government-sponsored or state-backed=
+ hackers or Advanced Persistent Threats (APTs) to take over absolute contro=
+l of my brand new vivo mobile phone? Can I download, compile and install th=
+e latest Linux kernel 6.5.4 from sources on my brand new vivo mobile phone =
+by myself? I would like to know how I can do it.
+>=20
+>=20
+> There are Android Security Bulletin listings on [1], with vivo-specific
+> bulletins can be found at [2].
+>=20
+> For building kernels, you can follow official Android guide [3]. Or
+> you can also visit XDA forums [4] where people posted their own custom
+> kernels. But usually your vendor (vivo) takes care of kernel updates
+> anyway.
+
+So if I want to build the latest Linux kernel 6.5.4 for my vivo V25 Pro 5G =
+mobile phone, I can follow the guides at link [3] and link [4].
+
+>=20
+> > I have decided to buy this vivo mobile phone because my Samsung Galaxy =
+A32 5G mobile phone has now become extremely slow in performance and lags l=
+ike hell. Maybe too many apps were installed.
+>=20
+>=20
+> What are these apps besides built-in ones?
+
+Besides the built-in apps, all the other apps come from Google Play Store. =
+There is one exception though. The Douyin app was installed through an APK =
+file and it does not come from Google Play Store.
+
+>=20
+> > Opening and using apps is now a slow and painful experience. The phone =
+camera is even worse. Taking a photo or selfie takes 2-3 seconds. If you mo=
+ve the phone by a bit before the 3 seconds is up, your photo or selfie will=
+ turn out very blur. So you need to set a timer of 2 seconds when you take =
+a selfie or photo. Taking videos with the phone camera is also very laggy a=
+nd choppy. The recorded video will turn out to be choppy.
+>=20
+>=20
+> What is your Samsung phone specification then?
+
+My Samsung phone is the Samsung Galaxy A32 5G. The specs can be found on gs=
+marena.com.
+
+>=20
+> Thanks.
+>=20
+> [1]: https://source.android.com/docs/security/bulletin/asb-overview
+> [2]: https://www.vivo.com/en/security
+> [3]: https://source.android.com/docs/setup/build/building-kernels
+> [4]: https://forum.xda-developers.com
+>
+=20
+Regards,
+
+Mr. Turritopsis Dohrnii Teo En Ming
+Targeted Individual in Singapore
