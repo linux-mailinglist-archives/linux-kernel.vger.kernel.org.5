@@ -2,330 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADAC7AF8E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFA77AF8D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjI0D6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36610 "EHLO
+        id S229632AbjI0DzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:55:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjI0D4b (ORCPT
+        with ESMTP id S229460AbjI0Dyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:56:31 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC2C4494
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:36:20 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690d2441b95so7701706b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1695785779; x=1696390579; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4dZFig+3lzqh/aktoSPWYMfOgcYhjyowi8/cXJ999RM=;
-        b=a75UnDWZDB02UXRB5WCNSnD7lQv+0YXiY8gOE/DsP+XQ2vGvCMw3PZygFoeo6MgEss
-         tQ9TaGTujL+Btd0qSt4a9vN6HD/Rj0tS7AEXd9sa8ccE7823XHDDYIIISJNx3+shz6a1
-         11jOk5fwKb2G0EG/nMryK2l4vOon+D6NhRxxQitPErlgNjUikJexA7h6fnVFhGqQ3QuT
-         5NiDqpqhTkdvtUaNQQULlPTgRRiHjJKqUlKugOe0f5wP5ZeQQ2GV5Jbc5tCUa2GsuBI5
-         +yMoOpNfIXHan6qNdNZNyBhJIv+a4umdbyZuZbjIz+rWWEJGiXHB2vFZq08rD7alFU0s
-         rg3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695785779; x=1696390579;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4dZFig+3lzqh/aktoSPWYMfOgcYhjyowi8/cXJ999RM=;
-        b=WZQFkNUk+sY8qdSNZ4aNDp2xdEsfqMdb3KCSnyGqZUh4mW8QD6gBmvu57BoTuzBrx3
-         dsG3MJ+3DTyjQlsO/hrrMQCNzPN67OO/d4pdaNzOGMkDvZlcijBsmBEoXgd5v7CAhMZE
-         jALpOnAKfnNsPhEk1WD0Jsa5XmwcCc/kZYyD6voB+vJpbF8MKhRPRi+w9F3qHc0pHsga
-         V7N0zOxfyRrfCPZlkjzkAVrpDmQyndtCn3B1dGvCjdoEGwPikvQYoDQEFkPhZYm3Rpqk
-         n946raOrfXVJWOcz3WmD9alzcLNH/F59HTNQqbZOsI+ms4Xd5baLMLCH2tPXkYTSjLpg
-         obHw==
-X-Gm-Message-State: AOJu0YxkIIAbobDQXLwVmdjs3h1JlCV913QzkaLV0I3yC/Mjoqiam6pM
-        cluAOlGf3sxe4L92XAip6J3S9w==
-X-Google-Smtp-Source: AGHT+IECPIa3OEa/VOUrQGvdi+LlV4SzWBSp039xcVtZI1syUXVx65cyhfC41kTUUSGf0HWo37eDZw==
-X-Received: by 2002:a62:ee06:0:b0:68f:a92a:8509 with SMTP id e6-20020a62ee06000000b0068fa92a8509mr5668270pfi.7.1695785779387;
-        Tue, 26 Sep 2023 20:36:19 -0700 (PDT)
-Received: from ubuntu.huaqin.com ([101.78.151.205])
-        by smtp.gmail.com with ESMTPSA id i14-20020aa787ce000000b006870ed427b2sm11067570pfo.94.2023.09.26.20.36.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 20:36:19 -0700 (PDT)
-From:   xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-To:     broonie@kernel.org, robh+dt@kernel.org, tiwai@suse.com,
-        trevor.wu@mediatek.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patchwork-bot@kernel.org
-Cc:     xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-Subject: [v3 2/2] ASoC: mediatek: mt8188-mt6359: add rt5682s support
-Date:   Wed, 27 Sep 2023 11:36:08 +0800
-Message-Id: <20230927033608.16920-3-xiazhengqiao@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230927033608.16920-1-xiazhengqiao@huaqin.corp-partner.google.com>
-References: <20230927033608.16920-1-xiazhengqiao@huaqin.corp-partner.google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 26 Sep 2023 23:54:39 -0400
+X-Greylist: delayed 101 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 20:40:44 PDT
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02E0472A5;
+        Tue, 26 Sep 2023 20:40:43 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.31] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 11:37:30
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.31]
+Date:   Wed, 27 Sep 2023 11:37:30 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] netdev: Clean up errors in netdevice.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <2de2b453.859.18ad4b697c8.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDXaD56oxNlRNC9AA--.563W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAFEWFEYxtJMwAFs3
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use RT5682S as the codec and MAX98390 as the amp, add a new
-sound card named mt8188_rt5682s.
-
-Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
----
- sound/soc/mediatek/Kconfig                |   1 +
- sound/soc/mediatek/mt8188/mt8188-mt6359.c | 141 +++++++++++++++++++++-
- 2 files changed, 140 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 8d1bc8814486..43c8fea00439 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -250,6 +250,7 @@ config SND_SOC_MT8188_MT6359
- 	select SND_SOC_MAX98390
- 	select SND_SOC_NAU8315
- 	select SND_SOC_NAU8825
-+	select SND_SOC_RT5682S
- 	help
- 	  This adds support for ASoC machine driver for MediaTek MT8188
- 	  boards with the MT6359 and other I2S audio codecs.
-diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-index e2416b981e1f..66f246126728 100644
---- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-@@ -17,6 +17,7 @@
- #include "mt8188-afe-common.h"
- #include "../../codecs/nau8825.h"
- #include "../../codecs/mt6359.h"
-+#include "../../codecs/rt5682.h"
- #include "../common/mtk-afe-platform-driver.h"
- #include "../common/mtk-soundcard-driver.h"
- #include "../common/mtk-dsp-sof-common.h"
-@@ -32,7 +33,7 @@
-  #define TEST_MISO_DONE_2	BIT(29)
- 
- #define NAU8825_HS_PRESENT	BIT(0)
--
-+#define RT5682S_HS_PRESENT	BIT(1)
- /*
-  * Maxim MAX98390
-  */
-@@ -52,6 +53,8 @@
- #define SOF_DMA_UL4 "SOF_DMA_UL4"
- #define SOF_DMA_UL5 "SOF_DMA_UL5"
- 
-+#define RT5682S_CODEC_DAI     "rt5682s-aif1"
-+
- /* FE */
- SND_SOC_DAILINK_DEFS(playback2,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("DL2")),
-@@ -258,6 +261,17 @@ static struct snd_soc_jack_pin nau8825_jack_pins[] = {
- 	},
- };
- 
-+static struct snd_soc_jack_pin rt5682s_jack_pins[] = {
-+	{
-+		.pin    = "Headphone Jack",
-+		.mask   = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin    = "Headset Mic",
-+		.mask   = SND_JACK_MICROPHONE,
-+	},
-+};
-+
- struct mt8188_card_data {
- 	const char *name;
- 	unsigned long quirk;
-@@ -316,10 +330,18 @@ static const struct snd_soc_dapm_widget mt8188_nau8825_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- };
- 
-+static const struct snd_soc_dapm_widget mt8188_rt5682s_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+};
-+
- static const struct snd_kcontrol_new mt8188_nau8825_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- };
- 
-+static const struct snd_kcontrol_new mt8188_rt5682s_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+};
-+
- static const struct snd_soc_dapm_route mt8188_mt6359_routes[] = {
- 	/* SOF Uplink */
- 	{SOF_DMA_UL4, NULL, "O034"},
-@@ -772,6 +794,55 @@ static int mt8188_nau8825_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- };
- 
-+static int mt8188_rt5682s_codec_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
-+	struct mt8188_mt6359_priv *priv = soc_card_data->mach_priv;
-+	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
-+	struct snd_soc_jack *jack = &priv->headset_jack;
-+	int ret;
-+
-+	ret = snd_soc_dapm_new_controls(&card->dapm, mt8188_rt5682s_widgets,
-+					ARRAY_SIZE(mt8188_rt5682s_widgets));
-+	if (ret) {
-+		dev_err(rtd->dev, "unable to add rt5682s card widget, ret %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_add_card_controls(card, mt8188_rt5682s_controls,
-+					ARRAY_SIZE(mt8188_rt5682s_controls));
-+	if (ret) {
-+		dev_err(rtd->dev, "unable to add rt5682s card controls, ret %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
-+					 SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+					 SND_JACK_BTN_1 | SND_JACK_BTN_2 |
-+					 SND_JACK_BTN_3,
-+					 jack,
-+					 rt5682s_jack_pins,
-+					 ARRAY_SIZE(rt5682s_jack_pins));
-+	if (ret) {
-+		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+	ret = snd_soc_component_set_jack(component, jack, NULL);
-+
-+	if (ret) {
-+		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+};
-+
- static void mt8188_nau8825_codec_exit(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
-@@ -779,6 +850,13 @@ static void mt8188_nau8825_codec_exit(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_component_set_jack(component, NULL, NULL);
- }
- 
-+static void mt8188_rt5682s_codec_exit(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
-+
-+	snd_soc_component_set_jack(component, NULL, NULL);
-+}
-+
- static int mt8188_nau8825_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params)
- {
-@@ -813,6 +891,51 @@ static const struct snd_soc_ops mt8188_nau8825_ops = {
- 	.hw_params = mt8188_nau8825_hw_params,
- };
- 
-+static int mt8188_rt5682s_i2s_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	unsigned int rate = params_rate(params);
-+	int bitwidth;
-+	int ret;
-+
-+	bitwidth = snd_pcm_format_width(params_format(params));
-+	if (bitwidth < 0) {
-+		dev_err(card->dev, "invalid bit width: %d\n", bitwidth);
-+		return bitwidth;
-+	}
-+
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x00, 0x0, 0x2, bitwidth);
-+	if (ret) {
-+		dev_err(card->dev, "failed to set tdm slot\n");
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, RT5682_PLL1, RT5682_PLL1_S_BCLK1,
-+				  rate * 32, rate * 512);
-+	if (ret) {
-+		dev_err(card->dev, "failed to set pll\n");
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-+				     rate * 512, SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(card->dev, "failed to set sysclk\n");
-+		return ret;
-+	}
-+
-+	return snd_soc_dai_set_sysclk(cpu_dai, 0, rate * 128,
-+				      SND_SOC_CLOCK_OUT);
-+}
-+
-+static const struct snd_soc_ops mt8188_rt5682s_i2s_ops = {
-+	.hw_params = mt8188_rt5682s_i2s_hw_params,
-+};
-+
- static int mt8188_sof_be_hw_params(struct snd_pcm_substream *substream,
- 				   struct snd_pcm_hw_params *params)
- {
-@@ -1148,7 +1271,7 @@ static void mt8188_fixup_controls(struct snd_soc_card *card)
- 	struct mt8188_card_data *card_data = (struct mt8188_card_data *)priv->private_data;
- 	struct snd_kcontrol *kctl;
- 
--	if (card_data->quirk & NAU8825_HS_PRESENT) {
-+	if (card_data->quirk & (NAU8825_HS_PRESENT | RT5682S_HS_PRESENT)) {
- 		struct snd_soc_dapm_widget *w, *next_w;
- 
- 		for_each_card_widgets_safe(card, w, next_w) {
-@@ -1190,6 +1313,7 @@ static int mt8188_mt6359_dev_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dai_link;
- 	bool init_mt6359 = false;
- 	bool init_nau8825 = false;
-+	bool init_rt5682s = false;
- 	bool init_max98390 = false;
- 	bool init_dumb = false;
- 	int ret, i;
-@@ -1306,6 +1430,13 @@ static int mt8188_mt6359_dev_probe(struct platform_device *pdev)
- 					dai_link->exit = mt8188_nau8825_codec_exit;
- 					init_nau8825 = true;
- 				}
-+			} else if (!strcmp(dai_link->codecs->dai_name, RT5682S_CODEC_DAI)) {
-+				dai_link->ops = &mt8188_rt5682s_i2s_ops;
-+				if (!init_rt5682s) {
-+					dai_link->init = mt8188_rt5682s_codec_init;
-+					dai_link->exit = mt8188_rt5682s_codec_exit;
-+					init_rt5682s = true;
-+				}
- 			} else {
- 				if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
- 					if (!init_dumb) {
-@@ -1343,9 +1474,15 @@ static struct mt8188_card_data mt8188_nau8825_card = {
- 	.quirk = NAU8825_HS_PRESENT,
- };
- 
-+static struct mt8188_card_data mt8188_rt5682s_card = {
-+	.name = "mt8188_rt5682s",
-+	.quirk = RT5682S_HS_PRESENT,
-+};
-+
- static const struct of_device_id mt8188_mt6359_dt_match[] = {
- 	{ .compatible = "mediatek,mt8188-mt6359-evb", .data = &mt8188_evb_card, },
- 	{ .compatible = "mediatek,mt8188-nau8825", .data = &mt8188_nau8825_card, },
-+	{ .compatible = "mediatek,mt8188-rt5682s", .data = &mt8188_rt5682s_card, },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, mt8188_mt6359_dt_match);
--- 
-2.17.1
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+dGhhdCBvcGVuIGJyYWNlIHsgc2hvdWxkIGJlIG9uIHRoZSBwcmV2aW91cyBsaW5lCkVSUk9SOiBz
+cGFjZXMgcmVxdWlyZWQgYXJvdW5kIHRoYXQgJz0nIChjdHg6VnhWKQoKU2lnbmVkLW9mZi1ieTog
+R3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0tLQogaW5jbHVkZS9saW51eC9uZXRk
+ZXZpY2UuaCB8IDUgKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDMgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9uZXRkZXZpY2UuaCBiL2luY2x1
+ZGUvbGludXgvbmV0ZGV2aWNlLmgKaW5kZXggN2U1MjBjMTRlYjhjLi41NTEzNzJmNDJiZTYgMTAw
+NjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvbmV0ZGV2aWNlLmgKKysrIGIvaW5jbHVkZS9saW51eC9u
+ZXRkZXZpY2UuaApAQCAtMjMwNiw3ICsyMzA2LDcgQEAgc3RydWN0IG5ldF9kZXZpY2UgewogCiAJ
+c3RydWN0IGxpc3RfaGVhZAlsaW5rX3dhdGNoX2xpc3Q7CiAKLQllbnVtIHsgTkVUUkVHX1VOSU5J
+VElBTElaRUQ9MCwKKwllbnVtIHsgTkVUUkVHX1VOSU5JVElBTElaRUQgPSAwLAogCSAgICAgICBO
+RVRSRUdfUkVHSVNURVJFRCwJLyogY29tcGxldGVkIHJlZ2lzdGVyX25ldGRldmljZSAqLwogCSAg
+ICAgICBORVRSRUdfVU5SRUdJU1RFUklORywJLyogY2FsbGVkIHVucmVnaXN0ZXJfbmV0ZGV2aWNl
+ICovCiAJICAgICAgIE5FVFJFR19VTlJFR0lTVEVSRUQsCS8qIGNvbXBsZXRlZCB1bnJlZ2lzdGVy
+IHRvZG8gKi8KQEAgLTI1MDEsOCArMjUwMSw3IEBAIHN0cnVjdCBuZXRkZXZfcXVldWUgKm5ldGRl
+dl9nZXRfdHhfcXVldWUoY29uc3Qgc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKIH0KIAogc3RhdGlj
+IGlubGluZSBzdHJ1Y3QgbmV0ZGV2X3F1ZXVlICpza2JfZ2V0X3R4X3F1ZXVlKGNvbnN0IHN0cnVj
+dCBuZXRfZGV2aWNlICpkZXYsCi0JCQkJCQkgICAgY29uc3Qgc3RydWN0IHNrX2J1ZmYgKnNrYikK
+LXsKKwkJCQkJCSAgICBjb25zdCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKSB7CiAJcmV0dXJuIG5ldGRl
+dl9nZXRfdHhfcXVldWUoZGV2LCBza2JfZ2V0X3F1ZXVlX21hcHBpbmcoc2tiKSk7CiB9CiAKLS0g
+CjIuMTcuMQo=
