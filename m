@@ -2,47 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286937AF8C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D047AF812
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjI0DnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S235530AbjI0CUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbjI0DkB (ORCPT
+        with ESMTP id S230121AbjI0CSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:40:01 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB404270B
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:06:12 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RwLxn1LJJzNnw3;
-        Wed, 27 Sep 2023 11:02:21 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 27 Sep
- 2023 11:06:10 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Patrick Wang <patrick.wang.shcn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH 3/3] mm/kmemleak: fix print format of pointer in pr_debug()
-Date:   Wed, 27 Sep 2023 11:59:23 +0800
-Message-ID: <20230927035923.1425340-4-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230927035923.1425340-1-liushixin2@huawei.com>
-References: <20230927035923.1425340-1-liushixin2@huawei.com>
+        Tue, 26 Sep 2023 22:18:52 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8FE140C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:44:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwKD60djlz4f3mHY
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:44:38 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP3 (Coremail) with SMTP id _Ch0CgCnB1cGiRNl7AWaBQ--.25675S2;
+        Wed, 27 Sep 2023 09:44:40 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        osalvador@suse.de, willy@infradead.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/page_alloc: correct start page when guard page debug is enabled
+Date:   Wed, 27 Sep 2023 17:44:01 +0800
+Message-Id: <20230927094401.68205-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500009.china.huawei.com (7.185.36.225)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgCnB1cGiRNl7AWaBQ--.25675S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFWrWF4DJrWUAryrZrWkJFb_yoW8CF47pF
+        yIkw1jkws8G3y5Ca1xAFZFkr1rJ3909FWkCryxXw48XwnxJrW2kw17trnF9F18GF9rGFW5
+        JFs0yryrJa1UAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+        8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_
+        tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
+        xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+        0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
+        80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,155 +58,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With 0x%p, the pointer will be hashed and print (____ptrval____) instead.
-And with 0x%pa, the pointer can be successfully printed but with duplicate
-prefixes, which looks like:
+When guard page debug is enabled and set_page_guard returns success, we
+miss to forward page to point to start of next split range and we will do
+split unexpectedly in page range without target page. Move start page
+update before set_page_guard to fix this.
 
- kmemleak: kmemleak_free(0x(____ptrval____))
- kmemleak: kmemleak_free_part_phys(0x0x0000000a1af86000)
+As we split to wrong target page, then splited pages are not able to merge
+back to original order when target page is put back and splited pages
+except target page is not usable. To be specific:
 
-Use %pa instead of 0x%p or 0x%pa to print the pointer, and use 0x%px for
-__percpu pointer to prevent crash. Then the print will be like:
+Consider target page is the third page in buddy page with order 2.
+| buddy-2 | Page | Target | Page |
 
- kmemleak: kmemleak_free(0xffff9111c145b020)
- kmemleak: kmemleak_free_percpu(0x00000000000333b0)
- kmemleak: kmemleak_free_part_phys(0x0000000a1af80000)
+After break down to target page, we will only set first page to Guard
+because of bug.
+| Guard   | Page | Target | Page |
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+When we try put_page_back_buddy with target page, the buddy page of target
+if neither guard nor buddy, Then it's not able to construct original page
+with order 2
+| Guard | Page | buddy-0 | Page |
+
+All pages except target page is not in free list and is not usable.
+
+Fixes: 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages")
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: stable@vger.kernel.org
 ---
- mm/kmemleak.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index 5a2bbd85df57..c1053db98f55 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -981,7 +981,7 @@ static void object_no_scan(unsigned long ptr)
- void __ref kmemleak_alloc(const void *ptr, size_t size, int min_count,
- 			  gfp_t gfp)
- {
--	pr_debug("%s(0x%p, %zu, %d)\n", __func__, ptr, size, min_count);
-+	pr_debug("%s(%pa, %zu, %d)\n", __func__, ptr, size, min_count);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 191e552a4c83..e18e0e20eff8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6691,6 +6691,7 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+ 			next_page = page;
+ 			current_buddy = page + size;
+ 		}
++		page = next_page;
  
- 	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
- 		create_object((unsigned long)ptr, size, min_count, gfp);
-@@ -1002,7 +1002,7 @@ void __ref kmemleak_alloc_percpu(const void __percpu *ptr, size_t size,
- {
- 	unsigned int cpu;
- 
--	pr_debug("%s(0x%p, %zu)\n", __func__, ptr, size);
-+	pr_debug("%s(0x%px, %zu)\n", __func__, ptr, size);
- 
- 	/*
- 	 * Percpu allocations are only scanned and not reported as leaks
-@@ -1026,7 +1026,7 @@ EXPORT_SYMBOL_GPL(kmemleak_alloc_percpu);
-  */
- void __ref kmemleak_vmalloc(const struct vm_struct *area, size_t size, gfp_t gfp)
- {
--	pr_debug("%s(0x%p, %zu)\n", __func__, area, size);
-+	pr_debug("%s(%pa, %zu)\n", __func__, area, size);
- 
- 	/*
- 	 * A min_count = 2 is needed because vm_struct contains a reference to
-@@ -1049,7 +1049,7 @@ EXPORT_SYMBOL_GPL(kmemleak_vmalloc);
-  */
- void __ref kmemleak_free(const void *ptr)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
- 		delete_object_full((unsigned long)ptr);
-@@ -1067,7 +1067,7 @@ EXPORT_SYMBOL_GPL(kmemleak_free);
-  */
- void __ref kmemleak_free_part(const void *ptr, size_t size)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
- 		delete_object_part((unsigned long)ptr, size, false);
-@@ -1085,7 +1085,7 @@ void __ref kmemleak_free_percpu(const void __percpu *ptr)
- {
- 	unsigned int cpu;
- 
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(0x%px)\n", __func__, ptr);
- 
- 	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
- 		for_each_possible_cpu(cpu)
-@@ -1106,7 +1106,7 @@ void __ref kmemleak_update_trace(const void *ptr)
- 	struct kmemleak_object *object;
- 	unsigned long flags;
- 
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (!kmemleak_enabled || IS_ERR_OR_NULL(ptr))
- 		return;
-@@ -1137,7 +1137,7 @@ EXPORT_SYMBOL(kmemleak_update_trace);
-  */
- void __ref kmemleak_not_leak(const void *ptr)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
- 		make_gray_object((unsigned long)ptr);
-@@ -1155,7 +1155,7 @@ EXPORT_SYMBOL(kmemleak_not_leak);
-  */
- void __ref kmemleak_ignore(const void *ptr)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr)	;
- 
- 	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
- 		make_black_object((unsigned long)ptr, false);
-@@ -1175,7 +1175,7 @@ EXPORT_SYMBOL(kmemleak_ignore);
-  */
- void __ref kmemleak_scan_area(const void *ptr, size_t size, gfp_t gfp)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (kmemleak_enabled && ptr && size && !IS_ERR(ptr))
- 		add_scan_area((unsigned long)ptr, size, gfp);
-@@ -1193,7 +1193,7 @@ EXPORT_SYMBOL(kmemleak_scan_area);
-  */
- void __ref kmemleak_no_scan(const void *ptr)
- {
--	pr_debug("%s(0x%p)\n", __func__, ptr);
-+	pr_debug("%s(%pa)\n", __func__, ptr);
- 
- 	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
- 		object_no_scan((unsigned long)ptr);
-@@ -1209,7 +1209,7 @@ EXPORT_SYMBOL(kmemleak_no_scan);
-  */
- void __ref kmemleak_alloc_phys(phys_addr_t phys, size_t size, gfp_t gfp)
- {
--	pr_debug("%s(0x%pa, %zu)\n", __func__, &phys, size);
-+	pr_debug("%s(%pa, %zu)\n", __func__, &phys, size);
- 
- 	if (kmemleak_enabled)
- 		/*
-@@ -1229,7 +1229,7 @@ EXPORT_SYMBOL(kmemleak_alloc_phys);
-  */
- void __ref kmemleak_free_part_phys(phys_addr_t phys, size_t size)
- {
--	pr_debug("%s(0x%pa)\n", __func__, &phys);
-+	pr_debug("%s(%pa)\n", __func__, &phys);
- 
- 	if (kmemleak_enabled)
- 		delete_object_part((unsigned long)phys, size, true);
-@@ -1243,7 +1243,7 @@ EXPORT_SYMBOL(kmemleak_free_part_phys);
-  */
- void __ref kmemleak_ignore_phys(phys_addr_t phys)
- {
--	pr_debug("%s(0x%pa)\n", __func__, &phys);
-+	pr_debug("%s(%pa)\n", __func__, &phys);
- 
- 	if (kmemleak_enabled)
- 		make_black_object((unsigned long)phys, true);
+ 		if (set_page_guard(zone, current_buddy, high, migratetype))
+ 			continue;
+@@ -6698,7 +6699,6 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+ 		if (current_buddy != target) {
+ 			add_to_free_list(current_buddy, zone, high, migratetype);
+ 			set_buddy_order(current_buddy, high);
+-			page = next_page;
+ 		}
+ 	}
+ }
 -- 
-2.25.1
+2.30.0
 
