@@ -2,120 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F757B0770
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A06D7B0773
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbjI0O4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        id S232260AbjI0O5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjI0O4q (ORCPT
+        with ESMTP id S232067AbjI0O5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:56:46 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02667139
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:56:45 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-313e742a787so7623068f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:56:44 -0700 (PDT)
+        Wed, 27 Sep 2023 10:57:44 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4378FF5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:57:42 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9338e4695so188585971fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695826603; x=1696431403; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sngrgBmcc0SNVGKMiz3UxrHAAX6L7zKBd8TMIQEgu/I=;
-        b=WOgYVGT5dOoRVhJF6Qn4HMadW3x8DLaZ95Ld0oVJzxMai+4yKPSVxdwYcKZxDxsZkM
-         DwSxvgz0uAXEhguosm1qU8ElSAv7BdGhut5jxgE/rbR3hWrjJbyzrsoJqMw8RV9yZwFm
-         s5HXirslZWY8eR1cy8Qf4sD8ZuyvFFU9ANrusjeZSkywUDR8EVnGsN+qX4f+e//hukss
-         lVA0UJqPSconPT304216rYeiVZOd9nwgt09Auj+zlACCdJjKXJIp/LfDbcsAAssTcff3
-         Vjtrvet2MVzg5FZxHcjF3YFDg5JXajELiSHDWt5z5tHE2TfRnH5+vQ12vPHK08Dc9X5U
-         Hkww==
+        d=linaro.org; s=google; t=1695826660; x=1696431460; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kF3xTzsn9HLZQj02Y4JAVq4+cnHK5cK7+MRBOAK1zto=;
+        b=zSHzsHoystgSRI8WbSiGKcLfQskrpMxRxAB7ABn3riafYp8WN13+U4YT8L77Mw6W0f
+         HlnWyaGbi6Sy2AFz0T6jr3/fu55o6cvQj3/AiSF56I2EYHpCa6Shb30U/6pYPW80mW1l
+         qOemVXQDrwuXuXOme4SGTK+owFNnvrGjEOq0MPcU17uz01WoZmeKqcgBHdfAaeD8EYy9
+         jsBYUPRiE+YWntvqQt2BVNqephU2XWl4P5A4zn8g3Q1hwNduz3WgCK8RfvhEwR6WMm2X
+         lyUauhquPV8zo7Np3nWwrw2cxyqRwuaqd9X5L7w5qTW2JbtWLdjKrO7MBtxREuuQZoBq
+         Bf7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695826603; x=1696431403;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sngrgBmcc0SNVGKMiz3UxrHAAX6L7zKBd8TMIQEgu/I=;
-        b=JZC9xszicM4O4zxo7t/Ah+H4p1CSrhR7zXadWmcHB5OQqJwxeHUMt9PTEKvQhKzWmC
-         yz1X6TI8ezZpbmOW0GRznNQ4mAZ5DoUcLCRrCLF2UXoeJv1fZ46vAD8bKWY9GDcSQP9V
-         974uO6oZcVW96Rq41SUOu8Ah3a2c2UBoLmLPETotiyZHawxePB2Vf4p+yJ9oPwprlOTS
-         lDtWXvqYD8meYkqXAVvT6GjPzDneBIhctu5RfcpR2yhVimXIJeQGVKQXGUa7W8nbZjfs
-         xde/8JNGa92fY374BYauwTwWgzR7GYFEh9eHWEK+H7f8YjildIFOiY0wcrRcBoRgWYGo
-         qs5g==
-X-Gm-Message-State: AOJu0Yz8ATk7KySKSChGhA+Makn6VeiLaAv0uCZmYP9QspAuivb8e+HK
-        E+OSf7d4dhqQJ4c90cOQv/S0nQ==
-X-Google-Smtp-Source: AGHT+IEmnAhUscM+ELai9UJbSrjbIHumSFpekzbWpdFz9hhQRNPdNIpgopswacO/VqV16BtM9+v2+g==
-X-Received: by 2002:adf:fe09:0:b0:323:30d0:5c4d with SMTP id n9-20020adffe09000000b0032330d05c4dmr4942698wrr.19.1695826603342;
-        Wed, 27 Sep 2023 07:56:43 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id r2-20020adfe682000000b0031ff89af0e4sm17283525wrm.99.2023.09.27.07.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 07:56:42 -0700 (PDT)
-Message-ID: <bb7f32c9-249c-2ad8-135c-82098430bcfd@linaro.org>
-Date:   Wed, 27 Sep 2023 16:56:41 +0200
+        d=1e100.net; s=20230601; t=1695826660; x=1696431460;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kF3xTzsn9HLZQj02Y4JAVq4+cnHK5cK7+MRBOAK1zto=;
+        b=puU5UtPVjoXDfiM6aVLGqSwP5pSEZKCC+HBfBlLa5zMREOMZZCtjvbX5dee7G+0cSe
+         qBmB+K/SUzLZ37kC0mopEfaM9xlXU3cYh6HPEfuki5HGVpxg9T5HBHrYoSLaV1dYM2QX
+         Y4Xh8l9fygycjfU6ywB0o0c+1COWllCZyO26/d2zwg9JrgkPK6fy/N8hekGuaJev/SPl
+         ql3hiHWV/s+J7xmBYirHY+o880CpotbMnODuGN5AluZKR6v5E954IqIBI2NdWpS6LUHI
+         XWUxwtiWIPxRsaStAv1r1VhYP+kyiF7VNKeb70xRzwPWNxTdPevJJTMAEvFOQsTc/wT+
+         hiIA==
+X-Gm-Message-State: AOJu0YyWtA1D5FsM9hkcLdWL1SeU/1U6YwMxOru3v4XRlWVT4Cq/AdMH
+        EzcEnpfecpOxV1p8O+wQTNkS
+X-Google-Smtp-Source: AGHT+IGG7mnyMmEuRPdbZUTFhUCWPBXMktolkIEDpgdfwWvheKVZBGucA66WnqOUDknn4aOsIf4umw==
+X-Received: by 2002:a2e:9d55:0:b0:2c0:1cfd:8698 with SMTP id y21-20020a2e9d55000000b002c01cfd8698mr2040919ljj.36.1695826660497;
+        Wed, 27 Sep 2023 07:57:40 -0700 (PDT)
+Received: from thinkpad.fritz.box ([2a02:2454:9d09:3f00:b024:394e:56d7:d8b4])
+        by smtp.gmail.com with ESMTPSA id j26-20020a170906831a00b0099bc8bd9066sm9405220ejx.150.2023.09.27.07.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 07:57:39 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     lpieralisi@kernel.org, kw@linux.com
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
+        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        abel.vesa@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2] PCI: qcom: Make use of QCOM_PCIE_LINK_SPEED_TO_BW() macro for encoding link speed
+Date:   Wed, 27 Sep 2023 16:57:38 +0200
+Message-Id: <20230927145738.115843-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 05/13] thermal: core: Store trip pointer in struct
- thermal_instance
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <1977624.usQuhbGJ8B@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1977624.usQuhbGJ8B@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 19:52, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Replace the integer trip number stored in struct thermal_instance with
-> a pointer to the relevant trip and adjust the code using the structure
-> in question accordingly.
-> 
-> The main reason for making this change is to allow the trip point to
-> cooling device binding code more straightforward, as illustrated by
-> subsequent modifications of the ACPI thermal driver, but it also helps
-> to clarify the overall design and allows the governor code overhead to
-> be reduced (through subsequent modifications).
-> 
-> The only case in which it adds complexity is trip_point_show() that
-> needs to walk the trips[] table to find the index of the given trip
-> point, but this is not a critical path and the interface that
-> trip_point_show() belongs to is problematic anyway (for instance, it
-> doesn't cover the case when the same cooling devices is associated
-> with multiple trip points).
-> 
-> This is a preliminary change and the affected code will be refined by
-> a series of subsequent modifications of thermal governors, the core and
-> the ACPI thermal driver.
-> 
-> The general functionality is not expected to be affected by this change.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+Instead of hardcoding the link speed in MBps, let's make use of the
+existing QCOM_PCIE_LINK_SPEED_TO_BW() macro that does the encoding of the
+link speed for us.
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+This eliminates the need for a switch case in qcom_pcie_icc_update() and
+also works for future Gen speeds without any code modifications.
 
+Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+
+Changes in v2:
+
+- Switched to QCOM_PCIE_LINK_SPEED_TO_BW() macro as per Bjorn's suggestion
+  https://lore.kernel.org/linux-pci/20230924160713.217086-1-manivannan.sadhasivam@linaro.org/
+
+ drivers/pci/controller/dwc/pcie-qcom.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 297442c969b6..dce80d6dc88f 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -148,6 +148,9 @@
+ 
+ #define QCOM_PCIE_CRC8_POLYNOMIAL		(BIT(2) | BIT(1) | BIT(0))
+ 
++#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
++		MBps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]) / BITS_PER_BYTE)
++
+ #define QCOM_PCIE_1_0_0_MAX_CLOCKS		4
+ struct qcom_pcie_resources_1_0_0 {
+ 	struct clk_bulk_data clks[QCOM_PCIE_1_0_0_MAX_CLOCKS];
+@@ -1347,7 +1350,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+ 	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+ 	 * for the pcie-mem path.
+ 	 */
+-	ret = icc_set_bw(pcie->icc_mem, 0, MBps_to_icc(250));
++	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+ 	if (ret) {
+ 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+ 			ret);
+@@ -1360,7 +1363,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+ {
+ 	struct dw_pcie *pci = pcie->pci;
+-	u32 offset, status, bw;
++	u32 offset, status;
+ 	int speed, width;
+ 	int ret;
+ 
+@@ -1377,22 +1380,7 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+ 	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+ 	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+ 
+-	switch (speed) {
+-	case 1:
+-		bw = MBps_to_icc(250);
+-		break;
+-	case 2:
+-		bw = MBps_to_icc(500);
+-		break;
+-	default:
+-		WARN_ON_ONCE(1);
+-		fallthrough;
+-	case 3:
+-		bw = MBps_to_icc(985);
+-		break;
+-	}
+-
+-	ret = icc_set_bw(pcie->icc_mem, 0, width * bw);
++	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+ 	if (ret) {
+ 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+ 			ret);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.25.1
 
