@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 394ED7B04F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 15:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55017B042C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbjI0NHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 09:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        id S231130AbjI0Mai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjI0NHt (ORCPT
+        with ESMTP id S229880AbjI0Mag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 09:07:49 -0400
-Received: from correo1.cdmx.gob.mx (mtax.cdmx.gob.mx [189.240.235.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E80180
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 06:07:47 -0700 (PDT)
-Received: from cdmx.gob.mx ([10.250.108.150])
-        by correo1.cdmx.gob.mx  with ESMTP id 38RD6kE7001779-38RD6kE9001779
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 27 Sep 2023 07:06:46 -0600
-Received: from cdmx.gob.mx (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTPS id 4A349245648;
-        Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id 1DBA724751C;
-        Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx 1DBA724751C
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=cdmx.gob.mx; s=DKIM1; c=relaxed/relaxed;
- h=content-type:mime-version:subject:to:from:date:reply-to:message-id;
- bh=rbCGcTJSOVdxWQVJZtY1DjWa3k6lXdwZwrNXiXGvY0o=;
- b=IjpV2fBjFjs7H7NnHV/L7pZ8J5X02CHnvMRA2u7aeqMSq4kB/rDaIFJHfsJkS6rA0pewktCgybE3
-        lpqstH081Uvhs6fBjH2Shx4ykqJpq65UUX4iAls04qQUb04DyNT89ENQp049JnJctK0jKylsCozh
-        IAD6Ar0D+3aDTdcBIXz+IpBvXs0aczLDLRxuQndaGBBjxgyo3z+UMrvWsN807CWmB4gM16ySKsHp
-        QP+TSTtD4UzaCK9zXz6ODW4hLYE3BwDA7seOGveGIuNpEclTmEmbg0nNYDX+DtSDWtEw2HHiefDe
-        VjcMBN78LYJR/w15z8C9O6VEBKtDbdOskrYNQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=2020J4N146MXCTY; t=1695813991;
-        bh=rbCGcTJSOVdxWQVJZtY1DjWa3k6lXdwZwrNXiXGvY0o=;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
-         From:Date:Reply-To:Message-Id;
-        b=SxdvC8wlwKWLkRMjM/ZQih0eNqXRM2kU7H42dEwsdMmm71aPBnUgfEpmr3bOCJPb2
-         zo9CHj0zkceN0uFgXD3ZDht2yaS0yB3GUzsZwMl2sZiit4IVxvWDiF/sUHH0I6q+W9
-         b36FQAVpZt9d779vRpvOoK8VRassGgZGEkUBlNwo=
-X-Virus-Scanned: amavisd-new at cdmx.gob.mx
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id OKEnLFTnUbij; Wed, 27 Sep 2023 06:26:31 -0500 (CDT)
-Received: from [193.232.179.65] (unknown [154.6.13.140])
-        by cdmx.gob.mx (Postfix) with ESMTPSA id EE238245648;
-        Wed, 27 Sep 2023 06:26:25 -0500 (CDT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 27 Sep 2023 08:30:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01FEE6;
+        Wed, 27 Sep 2023 05:30:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E15B0C433C7;
+        Wed, 27 Sep 2023 12:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695817834;
+        bh=unuz/ZkoOU/fFz50dgZgbKbNNxMqoaxZaY2nWVd7Lzo=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=oo7sfn3i5ZQq9Ou63bFiW5jNRtEYLc1iwIfxZuUOH8ku0F1Q8eftqP8iOQmo30VkT
+         6caTFGtFe2gckMnrxUUR/KKRXyN9NUI9vMIhIcShdAQVoZ9kRZuSEHuQtsMRUPrYH/
+         rc2f4o114sMtHbLktCjtAqsfj2SO+38V6U60PMPh3fEOeG4x3iTQai3B4fZfQam7Ji
+         RBGBYnYZ541JP95C3xxEFTnvCc362enn9UCfBLt+3ufdIOD95Fc3wZTl9+unLMaQiX
+         NNXm28Jx74nppwaXO9cEcn8NKKkNk2GJKTZDz2OdEJ9LCIeJ4EKUpenBVbTdpdJmT4
+         b6lSGIRfPZZLg==
+References: <20230918071905.296081-1-hanchunchao@inspur.com>
+ <ZQoMqI/QGPWEpkEi@rh> <ZQoPaXNAwtu4wl02@casper.infradead.org>
+User-agent: mu4e 1.8.10; emacs 27.1
+From:   Chandan Babu R <chandanbabu@kernel.org>
+To:     corbet@lwn.net
+Cc:     Dave Chinner <dchinner@redhat.com>,
+        Charles Han <hanchunchao@inspur.com>, djwong@kernel.org,
+        allison.henderson@oracle.com, bhelgaas@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] Documentation: xfs: Remove repeated word in comments
+Date:   Wed, 27 Sep 2023 17:57:01 +0530
+In-reply-to: <ZQoPaXNAwtu4wl02@casper.infradead.org>
+Message-ID: <8734yz3ijc.fsf@debian-BULLSEYE-live-builder-AMD64>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: SPENDE
-To:     Recipients <oportillor@cdmx.gob.mx>
-From:   "Leonard Valentinovich" <oportillor@cdmx.gob.mx>
-Date:   Wed, 27 Sep 2023 15:26:57 +0300
-Reply-To: sirleonard@englandmail.com
-Message-Id: <20230927112625.EE238245648@cdmx.gob.mx>
-X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [154.6.13.140 listed in zen.spamhaus.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5117]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: ******
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guten Tag. Mein Name ist Leonard Valentinovich
-Sie gehoren zu den ausgewahlten Personen, die eine Spende von meinem Untern=
-ehmen (Access Industries) erhalten. Wenn Sie an einer finanziellen Spende i=
-nteressiert sind, schreiben Sie mir bitte fur weitere Einzelheiten zuruck.
+On Tue, Sep 19, 2023 at 10:15:21 PM +0100, Matthew Wilcox wrote:
+> On Wed, Sep 20, 2023 at 07:03:36AM +1000, Dave Chinner wrote:
+>> [cc linux-xfs@vger.kernel.org]
+>> 
+>> Hi Charles,
+>> 
+>> For future reference, can you CC the XFS list on XFS documentation
+>> changes please?  That's much preferable to sending patches to random
+>> developers and hoping they notice it....
+>> 
+>> On Mon, Sep 18, 2023 at 03:19:05PM +0800, Charles Han wrote:
+>> > Remove the repeated word "the" in comments.
+>> > 
+>> > Signed-off-by: Charles Han <hanchunchao@inspur.com>
+>> > ---
+>> >  Documentation/filesystems/xfs-online-fsck-design.rst | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> > 
+>> > diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs-online-fsck-design.rst
+>
+> To be fair, this new file isn't listed in MAINTAINERS, so
+> scripts/get_maintainer.pl doesn't know about it.  May I
+> suggest the attached patch?
+>
+> [2. text/plain; 0001-XFS-Update-MAINTAINERS-to-catch-all-XFS-documentatio.patch]...
+
+Hi Jonathan,
+
+I am planning to apply these two patches to xfs-linux's for-next branch and
+later send them to Linus. Please let me know if you have any objections.
+
+-- 
+Chandan
