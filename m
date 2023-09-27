@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0323A7AFB4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863267AFA99
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjI0Gpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
+        id S229690AbjI0GEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjI0Gpn (ORCPT
+        with ESMTP id S229677AbjI0GDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:45:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F382D6;
-        Tue, 26 Sep 2023 23:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695797142; x=1727333142;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fjpZ8Wfu81snskyoNajzNhzf6MUHxeEtKQbFHYozL5s=;
-  b=G57yTHZfEk4IfBym6OT6Uutt71q3DYYJN0HguEwT6XM9K6flHjEOePHW
-   2x76FOLhF2EEYXWscoTagFP0ShwL4/yZzS8FB2xee/zaDdkPxKtJECXxD
-   MHLYxtecSAElmOeVOmcpXFjkAWsoFwtv4Ne477HRkM7Su10OChbGE2oTe
-   IVosohBslsubyx9Zdnoxckh02wYCRwQFlRbFNxD2T4ASh5Uxlm7TkLf8A
-   ttrksbT28X9sO6fA1PIrwon7sKnZ2uuocR1GxvJd5z5ZkS20uFE7EEVHG
-   +v302JGazsqmSrNFwB5cFQ6egBLU278GmFYLS1DvXwDcnPOMw1wVbBIvt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361130910"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="361130910"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:45:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784212545"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784212545"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO binbinwu-mobl.sh.intel.com) ([10.238.8.84])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:45:38 -0700
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, weihong.zhang@intel.com,
-        kirill.shutemov@linux.intel.com, binbin.wu@linux.intel.com
-Subject: [PATCH] selftests/x86/lam: Zero out buffer for readlink()
-Date:   Sun, 24 Sep 2023 07:33:46 +0800
-Message-Id: <20230923233346.12726-1-binbin.wu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 27 Sep 2023 02:03:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A27019F;
+        Tue, 26 Sep 2023 23:03:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1657C433C8;
+        Wed, 27 Sep 2023 06:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695794583;
+        bh=01fluBx6Of2K/eByxUSW3CGmW9JZOv7Q2Sa2ea4VCTQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bOTINPwqBFbxA86JbXopC7VwtUeZoBv2BDvOoR4G9bkSlczSxu7GtkCIEXi7UQQdJ
+         Yh19cYWPAEtdmDrgqnyAuQxLXNDElCoNmE8r4fTDNvf4P1oQyYDlBrQ5ZR8AZ/okWi
+         dgZP+gB71akdEEQA8rIe8E0556tvCSggxO0aqc6skpXrsJBIYZE9OORmthqvYZS90p
+         PInHLs6psi/qkoCF1rs4vZmzVsAkgmmYvzc3QVzQ2FnwevNCve4MfzeeByUmBbgr9J
+         G00Rh3/u+UtxBR5zzj1UDF3XU5WOjnBCp3y0g4z0GuPuADkvoA5q/vJJ6KEYJFo0g5
+         I3Bo/S11+YPHA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs/proc/task_mmu: hide unused pagemap_scan_backout_range() function
+Date:   Wed, 27 Sep 2023 08:02:23 +0200
+Message-Id: <20230927060257.2975412-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zero out the buffer for readlink() since readlink() does not append a
-terminating null byte to the buffer.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Fixes: 833c12ce0f430 ("selftests/x86/lam: Add inherit test cases for linear-address masking")
+This function has two callers, each of which are hidden behind an #ifdef:
 
-Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+fs/proc/task_mmu.c:2022:13: error: 'pagemap_scan_backout_range' defined but not used [-Werror=unused-function]
+
+Add another conditional to check for both options to avoid the
+unused-function warning.
+
+Fixes: 93538f467c0f6 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- tools/testing/selftests/x86/lam.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A different fix "fs-proc-task_mmu-implement-ioctl-to-get-and-optionally-clear-info-about-ptes-fix-2"
+was applied already but is wrong and introduces a worse result:
+fs/proc/task_mmu.c:2105:17: error: implicit declaration of function 'pagemap_scan_backout_range'; did you mean 'pagemap_scan_push_range'? [-Werror=implicit-function-declaration]
 
-diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
-index eb0e46905bf9..9f06942a8e25 100644
---- a/tools/testing/selftests/x86/lam.c
-+++ b/tools/testing/selftests/x86/lam.c
-@@ -680,7 +680,7 @@ static int handle_execve(struct testcases *test)
- 		perror("Fork failed.");
- 		ret = 1;
- 	} else if (pid == 0) {
--		char path[PATH_MAX];
-+		char path[PATH_MAX] = {0};
+Please use this one instead if no other fix has been merged in the meantime.
+---
+ fs/proc/task_mmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 27da6337d6754..f5d3f2b8fa944 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -2019,6 +2019,7 @@ static bool pagemap_scan_push_range(unsigned long categories,
+ 	return true;
+ }
  
- 		/* Set LAM mode in parent process */
- 		if (set_lam(lam) != 0)
-
-base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HUGETLB_PAGE)
+ static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+ 				       unsigned long addr, unsigned long end)
+ {
+@@ -2031,6 +2032,7 @@ static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+ 
+ 	p->found_pages -= (end - addr) / PAGE_SIZE;
+ }
++#endif
+ 
+ static int pagemap_scan_output(unsigned long categories,
+ 			       struct pagemap_scan_private *p,
 -- 
-2.25.1
+2.39.2
 
