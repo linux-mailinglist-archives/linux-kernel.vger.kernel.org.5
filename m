@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8206C7B0961
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC797B094F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbjI0Pwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S232638AbjI0Pup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232824AbjI0Pw1 (ORCPT
+        with ESMTP id S232772AbjI0Pu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:52:27 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A718A5C2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:42:16 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso874677966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:42:16 -0700 (PDT)
+        Wed, 27 Sep 2023 11:50:26 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3E0D036
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:42:51 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690b7cb71aeso8719228b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:42:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695829335; x=1696434135; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HJX6uCAXlp8YiM1mzBPWE9EjoeKjHDxFPb16xjkTeog=;
-        b=cUjZXIRxlhtznyDonZLSGZt1auu34ENgNaschCAaOMCKn3W18JgMpGvoFRSGILJP5j
-         eAzxyZQQ3kR13RCl/4uREa0WWzinngzFCVRCy16jJzA3RT1zCQALYmi502bElgSuKRG2
-         Mm7UzcGQhwjUsfrPUcRuksrvOn/6RJEq5iNz9U83Vfe8Cq0OtRHm3yiN4umDEkE+Zmva
-         uDgubAO+j7XMTnAuwnwfChW1s/OMgf9SgwCPWKtcbhJftdxuIxpmvP7EwQRAdIq7jdso
-         +y4uAmUhj6X29MXI7c2S9dk/9gyCjzYmpOwdCQK4aBK+5MxYJQK6PiC4+71rdldjsuxT
-         VpNQ==
+        d=bytedance.com; s=google; t=1695829370; x=1696434170; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e+KczYJ63iTfnuMsHD4IMClJxOV5m4dNcMyA1mqDD9g=;
+        b=RLhwbE5cF0AchcrKRjBTtVBNA2oVXu2QTVVh6MJ9Ue4WgkSdIkayZ6YTp2NI5dr2G8
+         Ozy2UO4I8rx3jZdn+ycpNbQ7rewp4IBrVrEMHneNdjbMi2hxhqyhrbK5Ehf3AwWwZYQW
+         Sqv4TL1DIhUcNfGnxYBIxRfkXimpF8nQX+i7wOUWZ8h4/vhkLGoH1EqQZ2qa3fgLh9rS
+         Z34lIsCHRNLOFEJ5MtSXRBBU6EwP45inYMrrQyowlhXjkVWTJ5xllTZGvOualR3eqTte
+         lrm6a8uiXM6SmqR632zFc+hHyImYQ0bXojujQCy40bLTacK3/24fcmVyXyeyyF4GA7bB
+         N8xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695829335; x=1696434135;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HJX6uCAXlp8YiM1mzBPWE9EjoeKjHDxFPb16xjkTeog=;
-        b=k2Nif8gFt9pCr6dHJamHesk+wLiYEmcSUd7fn3vhfRxzG1DMuoJDlE483f3o0o3CHX
-         7Z+tLLpTFuy3uOAJr6dztWJWUYiGuK8mr69KHS/RueOLXL5uePeD0atRACmiYsNnyPyM
-         jexl0ZJkI/r8UhdFXt9QbSTihN+Z66CLZGXzUmhmpu5jaJRvlTe9Af9zI6hQxULApMGI
-         oMHtgBMBc+BGoJneCyCBjb/Xls2DsQUtl4Rfa5UXIslMGKb4Z56poylbOz8aDVHwNXvo
-         MZStG389YViUzOOart1yGfP8w2rjeg4rmpdEyUralQvJ8US62fTNYD20RPdxm7Ript7m
-         YAnQ==
-X-Gm-Message-State: AOJu0Yy2qQXLq1cEIqx7tH3fOHHRLIfpYZ0c3IzPNV3wIOXJP4PfE+9u
-        6Ixt69fIAIAOGB8We3cJ9KYUS9w7AQ==
-X-Google-Smtp-Source: AGHT+IG1SDKWtAg8FvUkCtnL5hXdKNWTHpnvqaVi3MgY9ufEQQZI+EToD2lcmH104cs4K+SPGGEIvg==
-X-Received: by 2002:a17:907:788d:b0:9a5:a701:2b90 with SMTP id ku13-20020a170907788d00b009a5a7012b90mr2078170ejc.40.1695829334449;
-        Wed, 27 Sep 2023 08:42:14 -0700 (PDT)
-Received: from p183 ([46.53.250.251])
-        by smtp.gmail.com with ESMTPSA id cb8-20020a170906a44800b00988dbbd1f7esm9411126ejb.213.2023.09.27.08.42.13
+        d=1e100.net; s=20230601; t=1695829370; x=1696434170;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e+KczYJ63iTfnuMsHD4IMClJxOV5m4dNcMyA1mqDD9g=;
+        b=K+eHP+9XNRcodbOUX327+KEWzlrgjCQTsFY/IgYauvyNa7JTWxmFvirvU6r5NrfJ/G
+         SPCQ1l7FanLTdx1MLzuQvCwKMKHnZ+6ziI7iMdgl8aVd2/xSw08zGnnSxXqwD/S6Z0Zy
+         0jK/fM7jhNj/PenuWvXVdaF+lfBuGDjwUVBeLsorVAubkHJnyV9kkgskL1x+EkTzM04t
+         NFRV/wF3vlIQEQWl4XBBT4Xk3UWwLwaye0RfSYzFD57vSOOVCmHxamiwiQkXBjaH88f1
+         kFYdFugSjz5mZ8ocuPvQkzykSdwwFWQGOYarbjomJyg8K1cLS4u/d2QoWFPk7fjoSVKb
+         HsXw==
+X-Gm-Message-State: AOJu0YwXeMoeXu4NdwyY/dOHkGqYf6LoExUBlPwW81MjBd24l9jQPYdM
+        diI2ReSXKHWxzzUl9UylMI+fuA==
+X-Google-Smtp-Source: AGHT+IFRfQ/0KX1bSuu5UuM2JxSiQwHD4x642i16XMLdBILDBkTo7GJS+ledc4uHjgaqOgLCqUIbcg==
+X-Received: by 2002:a05:6a21:9983:b0:15d:1646:285a with SMTP id ve3-20020a056a21998300b0015d1646285amr3860484pzb.21.1695829370365;
+        Wed, 27 Sep 2023 08:42:50 -0700 (PDT)
+Received: from localhost ([49.7.199.230])
+        by smtp.gmail.com with ESMTPSA id v3-20020a655c43000000b005782ad723casm10120152pgr.27.2023.09.27.08.42.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 08:42:13 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 18:42:11 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86: compile boot code with -std=gnu11 too
-Message-ID: <2058761e-12a4-4b2f-9690-3c3c1c9902a5@p183>
+        Wed, 27 Sep 2023 08:42:50 -0700 (PDT)
+From:   Jian Zhang <zhangjian.3032@bytedance.com>
+To:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
+        joel@jms.id.au, andrew@aj.id.au
+Cc:     zhangjian3032@gmail.com, yulei.sh@bytedance.com,
+        xiexinnan@bytedance.com, Andi Shyti <andi.shyti@kernel.org>,
+        Tommy Huang <tommy_huang@aspeedtech.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        linux-i2c@vger.kernel.org (open list:ARM/ASPEED I2C DRIVER),
+        openbmc@lists.ozlabs.org (moderated list:ARM/ASPEED I2C DRIVER),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT),
+        linux-aspeed@lists.ozlabs.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
+Date:   Wed, 27 Sep 2023 23:42:43 +0800
+Message-Id: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use -std=gnu11 for consistency with main kernel code.
+When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
+as a slave, a situation arises where the master sends a START signal
+without the accompanying STOP signal. This action results in a
+persistent I2C bus timeout. The core issue stems from the fact that
+the i2c controller remains in a slave read state without a timeout
+mechanism. As a consequence, the bus perpetually experiences timeouts.
 
-It doesn't seem to change anything in vmlinux.
+In this case, the i2c bus will be reset, but the slave_state reset is
+missing.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeout occurs")
+Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
 ---
+ drivers/i2c/busses/i2c-aspeed.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/x86/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index 5a416b39b818..18f618625472 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -933,6 +933,7 @@ static int aspeed_i2c_init(struct aspeed_i2c_bus *bus,
+ 	/* If slave has already been registered, re-enable it. */
+ 	if (bus->slave)
+ 		__aspeed_i2c_reg_slave(bus, bus->slave->addr);
++	bus->slave_state = ASPEED_I2C_SLAVE_INACTIVE;
+ #endif /* CONFIG_I2C_SLAVE */
 
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -43,7 +43,7 @@ endif
- 
- # How to compile the 16-bit code.  Note we always compile for -march=i386;
- # that way we can complain to the user if the CPU is insufficient.
--REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
-+REALMODE_CFLAGS	:= -std=gnu11 -m16 -g -Os -DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
- 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
- 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
- 		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
+ 	/* Set interrupt generation of I2C controller */
+--
+2.30.2
+
