@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F239B7B0D9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2481A7B0DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjI0Uv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
+        id S229740AbjI0UxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjI0Uv5 (ORCPT
+        with ESMTP id S229500AbjI0UxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:51:57 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C67911F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:51:55 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7741c2fae49so693906685a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695847914; x=1696452714; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kRCNzMNNybq7cAu+oy1LC+Etj9MlXZAFVZAiufmH92A=;
-        b=Xlzu/GFVefzrGUDyHTZji5baHV0GPkfaleH5J16F3/I2qPimOF9bCqysC4oPQOqmqk
-         d90M4cIdy2to8geX49BJG/UFB6fvwo2au42wmm15fzD/kMRt2AaerwezpLQM6G57DC/z
-         BWzxzwHWA/2GUFlJRwZV5nYC1zCQyWmUxvqsQdW4maOFS3AufHLob4dIG4yiHykOIJaX
-         5VQv8GXsrh1KGsXZ5V1gSfjn+525nMdqTUoY0XcT8OLC7rO4y6h76zhxLuKpqTNw9vv2
-         oEwO0KS/RzFbJbeHSMf+ZqkRyNgOiMAg5TcuXLcp27cndRk11sPoeJoMvu3sv3TQhKWb
-         SKXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695847914; x=1696452714;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kRCNzMNNybq7cAu+oy1LC+Etj9MlXZAFVZAiufmH92A=;
-        b=FAHUmW5o70lgSDLyCNc/wLVpAikGxlj5XsxsSIyeP5YPgFPYAvnIcHLOmna/gbWtSg
-         aU9Q85583OYxfll8NTm56V5uwoR1RqeDDe69tUN9Y2EEPjHyUMQ8Qzb624N4+xiw5Y0r
-         nJNdXD2pM/hk5NOvSbjknRAsNcSkbiuP0ZGv+Tmn1dGUVgfcBCA6pUsB6KvOZC73Hg5r
-         unpieLirPLzAeF2JP3HvJ4WXPqv+CdHRuiTyW+yWF6GuL/Siq3GacVK45HxPEJWlBCZz
-         +6XNowPEoDEwISU3Ns2kRNa7PkGEzgiSdVsYbDVIwJSC4dtvVCWrm84H4ZBqr/iUlFRx
-         9CiA==
-X-Gm-Message-State: AOJu0YygBJb0H4NKJ8evP6a1pK91FOgfYaPojiNnhEzpJrhOyxI1G8kB
-        HhaFBKuSYIwSEngzwWnGPxmRGg==
-X-Google-Smtp-Source: AGHT+IEsDnnRUIaHnSP/hHJDWWLMNozyqerJ1lkvVvG4CfdgK9DeET5BnAp5Nyc0BU67X2rrjVz1vQ==
-X-Received: by 2002:ac8:4e81:0:b0:403:ac95:c6a9 with SMTP id 1-20020ac84e81000000b00403ac95c6a9mr3566477qtp.30.1695847914504;
-        Wed, 27 Sep 2023 13:51:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ba06])
-        by smtp.gmail.com with ESMTPSA id w19-20020ac86b13000000b00417f330026bsm5001070qts.49.2023.09.27.13.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 13:51:54 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 16:51:53 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
-Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
-Message-ID: <20230927205153.GB399644@cmpxchg.org>
-References: <20230919171447.2712746-1-nphamcs@gmail.com>
- <20230919171447.2712746-2-nphamcs@gmail.com>
- <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
+        Wed, 27 Sep 2023 16:53:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1326D6
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:53:05 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RKeKkD010773;
+        Wed, 27 Sep 2023 20:52:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=b5LcypNykH88hu7uuVC2JrXF47pi48vCFkJwhZs4TLY=;
+ b=M0XHCznZcz0TSv8ZzzsOAGfO6NxdQ7DR3RSPnURF7ucCvPWfhuroivXniOhyBPdGojcs
+ Ehl4/0YCygxUPaMZFoVg5PIx3uBD0pNaMe1z5O9q2tICJJSAh7aHufLhYANFXRaSvCyk
+ HcW9DpQHO5UxpaBmpcbp5oNQ+g0VRFo4karaH/olsLxaoz+RIIZ8eciRuiS2w14fZhVV
+ dHwIyN2sDHt7wGwCCVkqcWczYu+E44VaAGRQovhl2CWzWA17Ey3jHeqIW+wDel0nq8SQ
+ RtsK2CcKhXHSK1WEVhs6hY+N/7fSBlFV2fx4OWbK+fT5ImVr1Tn7ZUJMhWQojNr8D3tm aw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tc9b8ad3g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 20:52:38 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38RKqcw0004151
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 20:52:38 GMT
+Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
+ 2023 13:52:37 -0700
+Message-ID: <48d44c53-77db-4278-96eb-c7bb3b030888@quicinc.com>
+Date:   Wed, 27 Sep 2023 13:52:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] drm/ci: uprev mesa version - fix container build
+Content-Language: en-US
+To:     Helen Koike <helen.koike@collabora.com>,
+        <dri-devel@lists.freedesktop.org>
+CC:     <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <rodrigosiqueiramelo@gmail.com>, <melissa.srw@gmail.com>,
+        <mairacanal@riseup.net>, <linux-kernel@vger.kernel.org>,
+        <robdclark@gmail.com>, <daniel@fooishbar.org>,
+        <vignesh.raman@collabora.com>, <jani.nikula@linux.intel.com>,
+        <mripard@kernel.org>, <michel.daenzer@mailbox.org>,
+        <quic_abhinavk@quicinc.com>
+References: <20230922171237.550762-1-helen.koike@collabora.com>
+ <20230922171237.550762-2-helen.koike@collabora.com>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20230922171237.550762-2-helen.koike@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: AVknecJMdZbI7vDzc3p66fkQXWfg0foO
+X-Proofpoint-ORIG-GUID: AVknecJMdZbI7vDzc3p66fkQXWfg0foO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_13,2023-09-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ clxscore=1011 phishscore=0 priorityscore=1501 spamscore=0 adultscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270178
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
-> On Tue, Sep 19, 2023 at 10:14 AM Nhat Pham <nphamcs@gmail.com> wrote:
-> > +                       is_empty = false;
-> > +       }
-> > +       zswap_pool_put(pool);
-> > +
-> > +       if (is_empty)
-> > +               return -EINVAL;
-> > +       if (shrunk)
-> > +               return 0;
-> > +       return -EAGAIN;
-> >  }
-> >
-> >  static void shrink_worker(struct work_struct *w)
-> >  {
-> >         struct zswap_pool *pool = container_of(w, typeof(*pool),
-> >                                                 shrink_work);
-> > -       int ret, failures = 0;
-> > +       int ret, failures = 0, memcg_selection_failures = 0;
-> >
-> > +       /* global reclaim will select cgroup in a round-robin fashion. */
-> >         do {
-> > -               ret = zswap_reclaim_entry(pool);
-> > +               /* previous next_shrink has become a zombie - restart from the top */
-> 
-> Do we skip zombies because all zswap entries are reparented with the objcg?
-> 
-> If yes, why do we restart from the top instead of just skipping them?
-> memcgs after a zombie will not be reachable now IIUC.
-> 
-> Also, why explicitly check for zombies instead of having
-> shrink_memcg() just skip memcgs with no zswap entries? The logic is
-> slightly complicated.
 
-I think this might actually be a leftover from the initial plan to do
-partial walks without holding on to a reference to the last scanned
-css. Similar to mem_cgroup_iter() does with the reclaim cookie - if a
-dead cgroup is encountered and we lose the tree position, restart.
 
-But now the code actually holds a reference, so I agree the zombie
-thing should just be removed.
+On 9/22/2023 10:12 AM, Helen Koike wrote:
+> When building containers, some rust packages were installed without
+> locking the dependencies version, which got updated and started giving
+> errors like:
+> 
+> error: failed to compile `bindgen-cli v0.62.0`, intermediate artifacts can be found at `/tmp/cargo-installkNKRwf`
+> Caused by:
+>    package `rustix v0.38.13` cannot be built because it requires rustc 1.63 or newer, while the currently active rustc version is 1.60.0
+> 
+> A patch to Mesa was recently added fixing this error, so update it.
+> 
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+
+Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+
+> 
+> ---
+> 
+> v2:
+> - point to upstream mesa/mesa (solved the TODO and removed RFC tag)
+> ---
+>   drivers/gpu/drm/ci/gitlab-ci.yml  | 15 ++++++++++++++-
+>   drivers/gpu/drm/ci/lava-submit.sh |  2 +-
+>   2 files changed, 15 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index 2c4df53f5dfe..522f83db1a07 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -1,6 +1,6 @@
+>   variables:
+>     DRM_CI_PROJECT_PATH: &drm-ci-project-path mesa/mesa
+> -  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 0dc961645c4f0241f8512cb0ec3ad59635842072
+> +  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 1cdc4be14b66108ae0e8069686ac3efe52bef3cb
+>   
+>     UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+>     TARGET_BRANCH: drm-next
+> @@ -24,6 +24,8 @@ variables:
+>     PIPELINE_ARTIFACTS_BASE: ${S3_HOST}/artifacts/${CI_PROJECT_PATH}/${CI_PIPELINE_ID}
+>     # per-job artifact storage on MinIO
+>     JOB_ARTIFACTS_BASE: ${PIPELINE_ARTIFACTS_BASE}/${CI_JOB_ID}
+> +  # default kernel for rootfs before injecting the current kernel tree
+> +  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/gfx-ci/linux/v6.4.12-for-mesa-ci-f6b4ad45f48d
+>   
+>     LAVA_JOB_PRIORITY: 30
+>   
+> @@ -86,6 +88,17 @@ include:
+>         - '/.gitlab-ci/container/gitlab-ci.yml'
+>         - '/.gitlab-ci/test/gitlab-ci.yml'
+>         - '/.gitlab-ci/lava/lava-gitlab-ci.yml'
+> +      - '/src/microsoft/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/zink/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/crocus/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/softpipe/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/llvmpipe/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/virgl/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/drivers/nouveau/ci/gitlab-ci-inc.yml'
+> +      - '/src/gallium/frontends/lavapipe/ci/gitlab-ci-inc.yml'
+> +      - '/src/intel/ci/gitlab-ci-inc.yml'
+> +      - '/src/freedreno/ci/gitlab-ci-inc.yml'
+> +      - '/src/amd/ci/gitlab-ci-inc.yml'
+>     - drivers/gpu/drm/ci/image-tags.yml
+>     - drivers/gpu/drm/ci/container.yml
+>     - drivers/gpu/drm/ci/static-checks.yml
+> diff --git a/drivers/gpu/drm/ci/lava-submit.sh b/drivers/gpu/drm/ci/lava-submit.sh
+> index 0c4456b21b0f..379f26ea87cc 100755
+> --- a/drivers/gpu/drm/ci/lava-submit.sh
+> +++ b/drivers/gpu/drm/ci/lava-submit.sh
+> @@ -22,7 +22,7 @@ cp "$SCRIPTS_DIR"/setup-test-env.sh results/job-rootfs-overlay/
+>   
+>   # Prepare env vars for upload.
+>   section_start variables "Variables passed through:"
+> -KERNEL_IMAGE_BASE_URL="https://${BASE_SYSTEM_HOST_PATH}" \
+> +KERNEL_IMAGE_BASE="https://${BASE_SYSTEM_HOST_PATH}" \
+>   	artifacts/ci-common/generate-env.sh | tee results/job-rootfs-overlay/set-job-env-vars.sh
+>   section_end variables
+>   
+> -- 
+> 2.34.1
+> 
