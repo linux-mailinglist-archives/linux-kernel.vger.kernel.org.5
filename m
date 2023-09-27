@@ -2,67 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D1B7B0F88
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614567B0F8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjI0XVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        id S229998AbjI0XWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 19:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjI0XU7 (ORCPT
+        with ESMTP id S229469AbjI0XWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:20:59 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6251AF4;
-        Wed, 27 Sep 2023 16:20:57 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9adca291f99so1526335666b.2;
-        Wed, 27 Sep 2023 16:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695856856; x=1696461656; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dmrgC3kiMjmQ6SkAMsL82ZSNHcLV8JzvXRoTFPoIZ0s=;
-        b=af6hQN497eFjOAH2zCY3sSZfJcDpODKOsZxce/KVIea5zO5pYF5AGnW+Kn60N/94Gc
-         GVBDXzdsX6O/0u+MQE7tRIJOwIZU++aXzsbUdW89NkqqdwBLwqQ+ycXJt/YepDMjUWO3
-         9lw3mN2VM/mGU1CizWbQuLOFZlSD+cxostN14wiW2z96zdfk9+1iNmcf1kUHaMicIrhB
-         4ZVC9V4B4trwMFG1IwTSDl6P9tiTDA0ntSe5F7FTd2ogejFTQQZlvvLNkxF8OLAgnbYg
-         4heit1Z6zdju7Zg3HFLkwsLz61+GO+QG/HMTqXuklSqOQLbVZzQwWsO1mCSi4H2Epbw3
-         f9NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695856856; x=1696461656;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dmrgC3kiMjmQ6SkAMsL82ZSNHcLV8JzvXRoTFPoIZ0s=;
-        b=BfGPXgT5OR8A0vdOuDYEDekzXUCpOuqEbc2/1VthqgJJKZ4mnaX1jLTOUaPsINRyw8
-         WhVXgD8AySGwYYyidi69Vn0TECPV2cLY0CN4r6ViIA6AsIN6DOL7Q7SUteY8DWv+D9nK
-         ktnHciRehm93e4RLGpcOJ0zqENKbmBVCpgtwIpLtjRHwZo0dHS4DNzJMhr0T6HnQKTTR
-         fVBAKUNDSsNPg9q0Lh2xA3gu+r6ieFMFQwVgoNOvLS8SwNYca7u5MOOUrKpab8vmd/gY
-         BiIpWSm2XmtuOXZPGsLdmpNpfA0ym9DAt0GajGmpat0JpcGCTqqLK35G1ef4twpSnhbj
-         i5vA==
-X-Gm-Message-State: AOJu0YyR/dWiVIP8FywEhG35qmz2RDindp3B+uUUuzbeWCCIV4We5sze
-        +VT5CtJViRGqIHqNLEhJQIxVT1v6SX0vuhR5NZw=
-X-Google-Smtp-Source: AGHT+IGLhRnMiQxHokAESTwZcv4kyN1BigNUr8uRO6KqYSpCSEFn+TXR43g5ngemi4pFIuVc/VZtq/Ph1X6Iju/3JyI=
-X-Received: by 2002:a17:906:847c:b0:9a5:d095:a8e1 with SMTP id
- hx28-20020a170906847c00b009a5d095a8e1mr2621922ejc.11.1695856855470; Wed, 27
- Sep 2023 16:20:55 -0700 (PDT)
+        Wed, 27 Sep 2023 19:22:43 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882C0F4;
+        Wed, 27 Sep 2023 16:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695856956;
+        bh=zhfsFs/91UsszYRV8XiJIBCUPhlph09fGzAxjulnJ6k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V9vEoTj9uA4NaNN66VXUAWsrZfxuE4MRR4qck0EFI+m8H9YEsJxlOC5sWUQVhkJwx
+         rTfCUZjo9JaeJvL8fBQWfpFL1o0jjsMQXQdkICmWL/vVES2BqlVxFS2qr83WKxdDtk
+         /WxfpVlYZalxRGFSRzJgSQQ+iHzh4atAV2rA4AdQjdDMHgRuxROL0PQV1zwQv6SKIB
+         uo2mZpeXLIE+TLD+2rLqVGpNqx2DMvwschaLkl1XDDQwZJLdJJ86P8FCWLeeLYpA94
+         WjFRxVSkVLqf9dqfKh4PGvfql4YsyNyC3oay0sS1j4hwSceVpvFKY1qydAaJOTflBq
+         BZvPqlVisW47A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rwt1l1xXZz4xG0;
+        Thu, 28 Sep 2023 09:22:35 +1000 (AEST)
+Date:   Thu, 28 Sep 2023 09:22:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20230928092223.0625c6bf@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com> <20230925105552.817513-4-zhouchuyi@bytedance.com>
-In-Reply-To: <20230925105552.817513-4-zhouchuyi@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Sep 2023 16:20:43 -0700
-Message-ID: <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: Introduce task open coded iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/exW3gC+VgL.pg5p8Sn2c+VL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,187 +52,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
-> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
-> creation and manipulation of struct bpf_iter_task in open-coded iterator
-> style. BPF programs can use these kfuncs or through bpf_for_each macro to
-> iterate all processes in the system.
->
-> The API design keep consistent with SEC("iter/task"). bpf_iter_task_new()
-> accepts a specific task and iterating type which allows:
-> 1. iterating all process in the system
->
-> 2. iterating all threads in the system
->
-> 3. iterating all threads of a specific task
-> Here we also resuse enum bpf_iter_task_type and rename BPF_TASK_ITER_TID
-> to BPF_TASK_ITER_THREAD, rename BPF_TASK_ITER_TGID to BPF_TASK_ITER_PROC.
->
-> The newly-added struct bpf_iter_task has a name collision with a selftest
-> for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
-> renamed in order to avoid the collision.
->
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  include/linux/bpf.h                           |  8 +-
->  kernel/bpf/helpers.c                          |  3 +
->  kernel/bpf/task_iter.c                        | 96 ++++++++++++++++---
->  .../testing/selftests/bpf/bpf_experimental.h  |  5 +
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 18 ++--
->  .../{bpf_iter_task.c =3D> bpf_iter_tasks.c}     |  0
->  6 files changed, 106 insertions(+), 24 deletions(-)
->  rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c =3D> bpf_iter_=
-tasks.c} (100%)
->
+--Sig_/exW3gC+VgL.pg5p8Sn2c+VL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hi all,
 
-> @@ -692,9 +692,9 @@ static int bpf_iter_fill_link_info(const struct bpf_i=
-ter_aux_info *aux, struct b
->  static void bpf_iter_task_show_fdinfo(const struct bpf_iter_aux_info *au=
-x, struct seq_file *seq)
->  {
->         seq_printf(seq, "task_type:\t%s\n", iter_task_type_names[aux->tas=
-k.type]);
-> -       if (aux->task.type =3D=3D BPF_TASK_ITER_TID)
-> +       if (aux->task.type =3D=3D BPF_TASK_ITER_THREAD)
->                 seq_printf(seq, "tid:\t%u\n", aux->task.pid);
-> -       else if (aux->task.type =3D=3D BPF_TASK_ITER_TGID)
-> +       else if (aux->task.type =3D=3D BPF_TASK_ITER_PROC)
->                 seq_printf(seq, "pid:\t%u\n", aux->task.pid);
->  }
->
-> @@ -856,6 +856,80 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bp=
-f_iter_css_task *it)
->         bpf_mem_free(&bpf_global_ma, kit->css_it);
->  }
->
-> +struct bpf_iter_task {
-> +       __u64 __opaque[2];
-> +       __u32 __opaque_int[1];
+After merging the mm tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-this should be __u64 __opaque[3], because struct takes full 24 bytes
+fs/proc/task_mmu.c: In function 'pagemap_scan_pmd_entry':
+fs/proc/task_mmu.c:2153:22: error: implicit declaration of function 'pagema=
+p_scan_is_interesting_page'; did you mean 'pagemap_scan_is_interesting_vma'=
+? [-Werror=3Dimplicit-function-declaration]
+ 2153 |                 if (!pagemap_scan_is_interesting_page(categories, p=
+))
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                      pagemap_scan_is_interesting_vma
 
-> +} __attribute__((aligned(8)));
-> +
-> +struct bpf_iter_task_kern {
-> +       struct task_struct *task;
-> +       struct task_struct *pos;
-> +       unsigned int type;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_=
-struct *task, unsigned int type)
+Caused by commit
 
-nit: type -> flags, so we can add a bit more stuff, if necessary
+  825ebc8e4bf9 ("fs/proc/task_mmu: hide unused pagemap_scan_backout_range()=
+ function")
 
-> +{
-> +       struct bpf_iter_task_kern *kit =3D (void *)it;
+I applied the following fix patch.
 
-empty line after variable declarations
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 28 Sep 2023 09:09:26 +1000
+Subject: [PATCH] fix for "fs/proc/task_mmu: hide unused pagemap_scan_backou=
+t_range() function"
 
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) !=3D sizeof(struct=
- bpf_iter_task));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_kern) !=3D
-> +                                       __alignof__(struct bpf_iter_task)=
-);
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/proc/task_mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-and I'd add empty line here to keep BUILD_BUG_ON block separate
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index fdad3536d8ab..d4ef9a2bf95d 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1940,6 +1940,7 @@ static void make_uffd_wp_huge_pte(struct vm_area_stru=
+ct *vma,
+ 		set_huge_pte_at(vma->vm_mm, addr, ptep,
+ 				make_pte_marker(PTE_MARKER_UFFD_WP), psize);
+ }
++#endif /* CONFIG_HUGETLB_PAGE */
+=20
+ #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HUGETLB_PAGE)
+ static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+@@ -1954,7 +1955,7 @@ static void pagemap_scan_backout_range(struct pagemap=
+_scan_private *p,
+=20
+ 	p->found_pages -=3D (end - addr) / PAGE_SIZE;
+ }
+-#endif /* CONFIG_HUGETLB_PAGE */
++#endif
+=20
+ static bool pagemap_scan_is_interesting_page(unsigned long categories,
+ 					     const struct pagemap_scan_private *p)
+@@ -1967,7 +1968,6 @@ static bool pagemap_scan_is_interesting_page(unsigned=
+ long categories,
+=20
+ 	return true;
+ }
+-#endif
+=20
+ static bool pagemap_scan_is_interesting_vma(unsigned long categories,
+ 					    const struct pagemap_scan_private *p)
+--=20
+2.40.1
 
-> +       kit->task =3D kit->pos =3D NULL;
-> +       switch (type) {
-> +       case BPF_TASK_ITER_ALL:
-> +       case BPF_TASK_ITER_PROC:
-> +       case BPF_TASK_ITER_THREAD:
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (type =3D=3D BPF_TASK_ITER_THREAD)
-> +               kit->task =3D task;
-> +       else
-> +               kit->task =3D &init_task;
-> +       kit->pos =3D kit->task;
-> +       kit->type =3D type;
-> +       return 0;
-> +}
-> +
-> +__bpf_kfunc struct task_struct *bpf_iter_task_next(struct bpf_iter_task =
-*it)
-> +{
-> +       struct bpf_iter_task_kern *kit =3D (void *)it;
-> +       struct task_struct *pos;
-> +       unsigned int type;
-> +
-> +       type =3D kit->type;
-> +       pos =3D kit->pos;
-> +
-> +       if (!pos)
-> +               goto out;
-> +
-> +       if (type =3D=3D BPF_TASK_ITER_PROC)
-> +               goto get_next_task;
-> +
-> +       kit->pos =3D next_thread(kit->pos);
-> +       if (kit->pos =3D=3D kit->task) {
-> +               if (type =3D=3D BPF_TASK_ITER_THREAD) {
-> +                       kit->pos =3D NULL;
-> +                       goto out;
-> +               }
-> +       } else
-> +               goto out;
-> +
-> +get_next_task:
-> +       kit->pos =3D next_task(kit->pos);
-> +       kit->task =3D kit->pos;
-> +       if (kit->pos =3D=3D &init_task)
-> +               kit->pos =3D NULL;
+--=20
+Cheers,
+Stephen Rothwell
 
-I can't say I completely follow the logic (e.g., for
-BPF_TASK_ITER_PROC, why do we do next_task() on first next() call)?
-Can you elabore the expected behavior for various combinations of
-types and starting task argument?
+--Sig_/exW3gC+VgL.pg5p8Sn2c+VL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> +
-> +out:
-> +       return pos;
-> +}
-> +
-> +__bpf_kfunc void bpf_iter_task_destroy(struct bpf_iter_task *it)
-> +{
-> +}
-> +
->  DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
->
->  static void do_mmap_read_unlock(struct irq_work *entry)
-> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testi=
-ng/selftests/bpf/bpf_experimental.h
-> index d3ea90f0e142..d989775dbdb5 100644
-> --- a/tools/testing/selftests/bpf/bpf_experimental.h
-> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
-> @@ -169,4 +169,9 @@ extern int bpf_iter_css_task_new(struct bpf_iter_css_=
-task *it,
->  extern struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_ta=
-sk *it) __weak __ksym;
->  extern void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it) __we=
-ak __ksym;
->
-> +struct bpf_iter_task;
-> +extern int bpf_iter_task_new(struct bpf_iter_task *it, struct task_struc=
-t *task, unsigned int type) __weak __ksym;
-> +extern struct task_struct *bpf_iter_task_next(struct bpf_iter_task *it) =
-__weak __ksym;
-> +extern void bpf_iter_task_destroy(struct bpf_iter_task *it) __weak __ksy=
-m;
-> +
->  #endif
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
+-----BEGIN PGP SIGNATURE-----
 
-please split out selftests changes from kernel-side changes. We only
-combine them if kernel changes break selftests, preventing bisection.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUUuS8ACgkQAVBC80lX
+0Gz2NAf7BSq5rSHp4iPeMG8uICJaxX4PAOHsvghAlh1Q7ktGHmz0p7BBSS3dC2nK
+KkBAp0xg07y60mCimE8gyHUDlzbStzBxGT03fyn3oxdOXjwlVkdl5T4HKLWDvAYB
+nb/fG557+ANmdmSYMRx2XcDSdnB9YSO7vUcmJ9rCqEe18mp8c5Z2HuAijrhEG5ZM
+X6Em0t41u3v1vZtLpXE96ERAYh0VOktmZSWvfpNNTZapOGm1qNdubnMnG+fTsra/
+/x0m8AckmxJjD9wdoEV0Fr58e34AdChR71ycli1g3TbsoG3IQo4ltauIU0HVfxjR
+wk7kCbrJqXTbiLs1DqU5Hh5Q9ZVV/A==
+=/4/u
+-----END PGP SIGNATURE-----
 
-[...]
+--Sig_/exW3gC+VgL.pg5p8Sn2c+VL--
