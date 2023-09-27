@@ -2,196 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AABC87AFB7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E497AFB8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjI0G5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S229928AbjI0G6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0G5P (ORCPT
+        with ESMTP id S229757AbjI0G6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:57:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E355A3;
-        Tue, 26 Sep 2023 23:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695797834; x=1727333834;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=B+o2Mp8Waxvj8gtzeIo2cM7FTxKuVQFJuKHHBuAu9DE=;
-  b=dvXE+iTpiuTfWWbZnXQq50qSlDUjhJiSZGiw3xEVawPffe82b/lbVSzv
-   6ciUDxxp/s/2+iZtFUK69gWpao5EHJaJok77XYk4lRJwPV5508UUOlFhO
-   nXDbeSLzdNuvyR6hp9lUPQ5oMC/cc9l8pP6bVxyh/aNEuWdllNjYRvx5V
-   jkO5/5WYi0athbN4QnDNiibBwIraTwkuPg9EtqXojUbqDXWEfQeD6pHAn
-   yIp2zXirx9xE28XbZldtwdvgvsj+KhDVd7wY6P2keNdrEX/szZg5oWUlb
-   TA6niffbSdSDSh0gtvRjvvvqzLh40c0GtPzJSR4bZNOJK4qAyT2RYUdD2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361132692"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="361132692"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 23:56:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784214490"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784214490"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 23:56:53 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:56:49 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:56:49 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 23:56:49 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.46) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 23:56:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i1cniRQxwZKt4H4sSG+YeSytTKfZlPMgC568EjVZIO6ET6nS8bnPD9OAmTzbyiJZGkZZpoZFNEV+DWsoGQPN7AOwniwhnQn6/1b/ZLp1iVbg0dadBPmeojFCYHCECG5Vjf9BaWRqV4CZSZntwtXcyLJqfVlg54DK7uBvdg+DRHlkNZjtH7Ewdhqf4IcIO4tfe2MqjI9U8jAwOke7GMCqJbj/H2c7hP8IQC815pIEOSGWErzobXkKCbEB3vPCIq22wcUS78vZTZbqQ3jqxMYs4kxKmhb7kXtfFpps6e/LqvBbXdxs5kyF6Bczm0y2is2MlulmM0hx/Yp0eOKEmjlnRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Aca2/vM5ouj2vATM+jdeQ9apT4y4Gi28dJ5m3+byIu4=;
- b=afqWDF8Hw2cwnkGLb5is1XHpzpH2AoQaIuLiLgXdYC7nVeGGqIR54ANI7290hX6ErY9sZkuOXJ2NDtPXvycnwpLwcPjI1UwwZld2JOsPRsNdYKUjSroAaoNehgLl1zIOKb77H2ddpRo8q0zj92vHTCK4SxPgttdlmxGHsCrL5rgO40dOIQdvjPhI2LtlEj+DE6M/o1375DtHe6pNnW9BfVcj7rb5juL3tN99qnOOMI/B+hjJhfkUIDDUGrVyjQLvlnt82lPSTeIcoPW5F3PMGJnfzIYZkzYcqmqKsnU8IHsf4q9RjaqonWVG1gPX8wS7Iflowr7kxStWd7xX4te1ug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DM4PR11MB6501.namprd11.prod.outlook.com (2603:10b6:8:88::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6813.28; Wed, 27 Sep 2023 06:56:46 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 06:56:46 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: RE: [PATCH v5 10/11] iommu/vt-d: Add nested domain allocation
-Thread-Topic: [PATCH v5 10/11] iommu/vt-d: Add nested domain allocation
-Thread-Index: AQHZ7GDrjeYLNxdr8Eee9XQGFZYhi7AuRkjA
-Date:   Wed, 27 Sep 2023 06:56:46 +0000
-Message-ID: <BN9PR11MB527619427F9C41061FB3CA408CC2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230921075431.125239-1-yi.l.liu@intel.com>
- <20230921075431.125239-11-yi.l.liu@intel.com>
-In-Reply-To: <20230921075431.125239-11-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DM4PR11MB6501:EE_
-x-ms-office365-filtering-correlation-id: 416cf112-f958-486a-d680-08dbbf26ea65
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OHLWwgumggqoAODHGhvvRiwb8cIOZBbH42IKBAyARUxy5yksihcl7V0BFBMMpHhkgegA1kpDQTW8yowiBgr/dUcg2JgugFN67GSaHJFTk3dyVgksvSwqu3Bz5xQ62C1JDr9FidPgkhJYH7VhKJHP/T1Eqm28/hp4SOe6QxEwU7xehcTvUX4L/644T3+MKtl6RZyO1xdnyTef/0dulTL4b1rzLNtx8SEcf8zUerfvD29WowYHuxD44IdsI/nnj+X3OL3MsKPiTqhD1XS6gC9X6/otlClO7qj2ihzgcPJ+UJ/59eqvQlN0I5u19RtU6oU5LumNDO0Xap/ZcaJ68f9zK8HXcnXugSls4zfxO8YOGht2lwFmGN3Kn1ZaCxa/YMnn3aZq+jQ7fiAYAf8zyNu8GdsAq7Bsw3OAku6MuMfJpZlaijgTqdw50gqRC2EDXnzHrARS8rIEOGkUJ/Fvqsm392IwliwKf6Omi1UlfqHYGHRZjISqOnRlrAMn4bBQHRwxu4mT3s1oCnQ0HvvMwBW9O/BhRZdQCLifXIBvxZ0Fvv4wTJnvYoGhsT9eNkFN89XgR3vxkgd7VK+hYV5pJiMWUqPMW0scffr26OOoJon3JuOk1rG2wkbM8bXB4C/fVqgwRJFP7CyexoR6iGdNcYiYzw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(346002)(376002)(230922051799003)(186009)(451199024)(1800799009)(4744005)(7416002)(2906002)(8936002)(66446008)(66946007)(66476007)(76116006)(64756008)(54906003)(316002)(110136005)(66556008)(52536014)(4326008)(55016003)(8676002)(41300700001)(5660300002)(83380400001)(26005)(33656002)(86362001)(82960400001)(38100700002)(122000001)(38070700005)(478600001)(7696005)(9686003)(6506007)(71200400001)(309714004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+gcf0ZaBnzsRdvrV3Wn/+0FWKlbWkDxg4v+Itf1Qp/C/tf8PCafbPkOr7sUt?=
- =?us-ascii?Q?a23rPin1ypSMnAb5twlzTareqZJ/h5QcKlwXn+Uq+Pj6JX7x2V+Ri9m6Isan?=
- =?us-ascii?Q?RrwH3c1sRqe0xYJRZVa3zMosTuzgfekhUCM2eobEnozwHz0N40yWrmnvZfsC?=
- =?us-ascii?Q?VMrNygZ0IZ5Ti+B12XjZXutOMUIV2bzA5NivY2WxGGlb7P3MXbVwJnCe/4iu?=
- =?us-ascii?Q?+oPpe6X0cU1Y7RGjMjUwgVuewycCzeCWP9I7D2xO3FPMYBTJUAn0cUk2FEmi?=
- =?us-ascii?Q?4KnXF/xV5ISeuyPdLnl7DSXsL3D2MEQTwTVELUN1sQ1UlkzU7R/pNbKjWnJV?=
- =?us-ascii?Q?pQCcD5X11DS8uEE2lGphzNJxAWxUeQh58KyJn8NqNYV5jJw6OA98aMyqBFTN?=
- =?us-ascii?Q?/oqcYDF26IDK+UCRiIwW6A/JB5whg/cX7WP/JcA9nU0J3qH9xgKNsGs7C00m?=
- =?us-ascii?Q?bLnagbqNEBKZmssxXEtdUWVUO2yZaQqw0OXVFya6s6jiRjFL9fT+O+3z6RlR?=
- =?us-ascii?Q?OObpqa7ATMi94Q1clp1VvVuepWxITcOwOw/JFz2Jr13jkFAlLf2x0fjsfYYp?=
- =?us-ascii?Q?Tdd30Mgknsn0POsf8SAMownx5L79rZH588psXdaXtMeajQHPvGqS8LoiR6+i?=
- =?us-ascii?Q?atUKFaZKM0ck9e+0yIKPoAGkcxxow0IWGYLoAR8eAuGS/7tthgghdxm3Z1GY?=
- =?us-ascii?Q?/36PlhWctnwo5UzfpjbXqEuINc2wP8rtDrj1N3ErHxDvkiruWI+DNfK37IeS?=
- =?us-ascii?Q?NsIEfNQm3/96Wnhi2Ub7OunTOcq9WKeOV0J+dXHUOJlRqtGFTxqH8s4H3+P/?=
- =?us-ascii?Q?rCZJ/fTvnmrUFXWie54IEaxTl7db7DBfgnWeu5JLnJVOiZfmrLR0fHOFPPsx?=
- =?us-ascii?Q?t8pTqmaw5up3M9oKXzyqT002l+XY1GvQBlH8YRsBn8NmddCHHsqMyc46buL9?=
- =?us-ascii?Q?bH6yWxt21epzV8e3AKe1Gh2U2XFMT23C2V2h/kD0v79Q4s0AqvgW4cGU5CcE?=
- =?us-ascii?Q?L8Ay89FMxcgiRE/Evo6z1QC4/zDNWGOMXdMrzXfOyuxdtzLsZa8oddjJUXmh?=
- =?us-ascii?Q?eK+IHeOAymsHvYVEwmxs24dRb7l1sdlGUnnGtCbQ0Q6vhHACuryElnPGRhnE?=
- =?us-ascii?Q?KAs/RGm7+QnjUu9GtRTjlo4yUS1pEnauThg6tfgQHFyJy77ifZV3WlegFisv?=
- =?us-ascii?Q?PBFFLX6llysfacPYd6+qbTZA6t+2Zjvp0M7e2Cm/SIPh/MKjiwSesgfHiMFH?=
- =?us-ascii?Q?JHcA4Ay5FTRJac4ov8oS2QMDfygIrKrvOj8fWrQUgOpvVZUO1hwrmieEkMuP?=
- =?us-ascii?Q?uzkAyfcTzslOndODpb2jqq86XHHm29a82Wq1yfDCn6toQwUv+nWmrwpT1ZH8?=
- =?us-ascii?Q?xN+0OSNAJ11RyGBvX600VznulNo6HRJg1CiWzwmHcziGODfQnANAOLo05kCP?=
- =?us-ascii?Q?R2soEogzGpCNJmx1u2aCv0ceol5gafGgzQJoC3+NUpti2ph86MSEzH1+w57/?=
- =?us-ascii?Q?qaYAPeGVve9freeCKXuyAnvN2Wt6TCitg23sBEaZC6L0cUnrAkXD5r0BXI6G?=
- =?us-ascii?Q?iGi92YCJtUSzQUOZJHDHAo/3VaUu5JqFg4UU8M6Z?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 27 Sep 2023 02:58:42 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9B7D6;
+        Tue, 26 Sep 2023 23:58:41 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38QLTNqi006223;
+        Wed, 27 Sep 2023 06:58:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=1JPRMkBEdyKk7oKqtMorRqkKFZiq/eCbKVfKVWvw/8s=;
+ b=j4f7qUPE1xQaJtTa6nZl4W//hfXjWP5a2DFCPZl8T0jADiS8+vk+ZlihvKPLWcndWMDR
+ Io99PmShvV3XhYzlX9ToHqCUbz3Jbsk7DSwMOdZqem/pFY3tYzdT584CxVORSTojonz4
+ NB32mTuF0HPRr+J5G10VoYlxUDcF6l/J2GItREUnlJfN1puMP3GaH4cwQy84KxCeBZbM
+ omffYvkUO2xYO+AofidEXUfZ9qoBPZbSX9C4fkZ0kyOsn25EmBVNOCFsPCzaRMmimFYD
+ vBOJQAYCoj93OdOnBvpG+dacfNDwgplgn35foQRey2IleSHdCzuaJO6+swavPa1B7zYk dA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9pxc0pjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Sep 2023 06:58:07 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38R6CI0V030811;
+        Wed, 27 Sep 2023 06:58:06 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfdd2yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Sep 2023 06:58:05 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38R6u0dh023218;
+        Wed, 27 Sep 2023 06:58:05 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3t9pfdd2xb-1;
+        Wed, 27 Sep 2023 06:58:05 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com,
+        kamalesh.babulal@oracle.com, kernel test robot <lkp@intel.com>
+Subject: [PATCH next] cgroup/cpuset: Cleanup signedness issue in cpu_exclusive_check()
+Date:   Tue, 26 Sep 2023 23:58:01 -0700
+Message-ID: <20230927065801.2139969-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 416cf112-f958-486a-d680-08dbbf26ea65
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 06:56:46.5000
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TGQvQhNRT75OYKi6k2uuB9vqH2kQyC0z4hc/rKqV/uRZcnYAUed8+3n47ESIJvM5Q4EPW6vH+1rQbUYgWnN6vA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6501
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309270058
+X-Proofpoint-GUID: TdBcfUHpmIQ-MCe_6iUo7Dn4JgRp97J1
+X-Proofpoint-ORIG-GUID: TdBcfUHpmIQ-MCe_6iUo7Dn4JgRp97J1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Thursday, September 21, 2023 3:55 PM
->=20
->=20
-> +	if (hwpt_type !=3D IOMMU_HWPT_TYPE_DEFAULT &&
-> +	    hwpt_type !=3D IOMMU_HWPT_TYPE_VTD_S1)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if ((hwpt_type =3D=3D IOMMU_HWPT_TYPE_DEFAULT) =3D=3D !!parent)
-> +		return ERR_PTR(-EINVAL);
+Smatch complains about returning negative error codes from a type
+bool function.
 
-this is probably too strict. What about intel-iommu driver supports a
-IOMMU_HWPT_TYPE_VTD_S2 later for some tweak w/o nesting?
+kernel/cgroup/cpuset.c:705 cpu_exclusive_check() warn:
+	signedness bug returning '(-22)'
 
-let's make the parent match specific to VTD_S1 type.
+The code works correctly, but it is confusing.  The current behavior is
+that cpu_exclusive_check() returns true if it's *NOT* exclusive.  Rename
+it to cpusets_are_exclusive() and reverse the returns so it returns true
+if it is exclusive and false if it's not.  Update both callers as well.
 
-> +
-> +	if (parent && request_nest_parent)
-> +		return ERR_PTR(-EINVAL);
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202309201706.2LhKdM6o-lkp@intel.com/
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on sattic analysis, only compile tested
+---
+ kernel/cgroup/cpuset.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-this check should be moved to iommufd?
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 15f399153a2e..afefddd33c3e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -719,18 +719,18 @@ static inline struct cpumask *fetch_xcpus(struct cpuset *cs)
+ }
+ 
+ /*
+- * cpu_exclusive_check() - check if two cpusets are exclusive
++ * cpusets_are_exclusive() - check if two cpusets are exclusive
+  *
+- * Return 0 if exclusive, -EINVAL if not
++ * Return true if exclusive, false if not
+  */
+-static inline bool cpu_exclusive_check(struct cpuset *cs1, struct cpuset *cs2)
++static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+ {
+ 	struct cpumask *xcpus1 = fetch_xcpus(cs1);
+ 	struct cpumask *xcpus2 = fetch_xcpus(cs2);
+ 
+ 	if (cpumask_intersects(xcpus1, xcpus2))
+-		return -EINVAL;
+-	return 0;
++		return false;
++	return true;
+ }
+ 
+ /*
+@@ -833,7 +833,7 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+ 	cpuset_for_each_child(c, css, par) {
+ 		if ((is_cpu_exclusive(trial) || is_cpu_exclusive(c)) &&
+ 		    c != cur) {
+-			if (cpu_exclusive_check(trial, c))
++			if (!cpusets_are_exclusive(trial, c))
+ 				goto out;
+ 		}
+ 		if ((is_mem_exclusive(trial) || is_mem_exclusive(c)) &&
+@@ -1864,7 +1864,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 			cpuset_for_each_child(child, css, parent) {
+ 				if (child == cs)
+ 					continue;
+-				if (cpu_exclusive_check(cs, child)) {
++				if (!cpusets_are_exclusive(cs, child)) {
+ 					exclusive = false;
+ 					break;
+ 				}
+-- 
+2.41.0
 
