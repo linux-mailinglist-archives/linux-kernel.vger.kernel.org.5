@@ -2,47 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299E97AFC14
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4829D7AFC18
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjI0H2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        id S229458AbjI0H33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjI0H2F (ORCPT
+        with ESMTP id S230007AbjI0H3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:28:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED819F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:28:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1DC3C433C7;
-        Wed, 27 Sep 2023 07:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695799681;
-        bh=9gu4XJee6O0dpZOG3eN7wwGofutqh1ynUN/BQDueH5s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f1PMuBW5uQukJ/RmRDFQTo0nMACF9NGlAUQAKIvv8MnLB9DLyWVsJUWaWi5443fwX
-         9i/NaOt83sJUnAKtPT7RJ6FSE3uJQiMJWcQi3B6fAyBQOS4bz8BLg/Ig6fFfP0r83U
-         ggMd9frtFMrYxziFmLMDim5/Au9chGSx2Kj2wH20Ncrfmj8xL1HLY4yH3JpCxMesdD
-         z0ZqgJKJNwbEJLdepCQhrVW37aLU+dd7bAHDEStY3s1YYvumU1Wc4i+skgmIL9JfU6
-         W1xn7+MtIiAhMrbybK6XQ4qNq1rdeWYI8C7E+WVm6QWv+Fz+YHu6y2080AnS/OT3VW
-         ZAO7Sc73o3/xQ==
-From:   Roger Quadros <rogerq@kernel.org>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, vladimir.oltean@nxp.com
-Cc:     horms@kernel.org, s-vadapalli@ti.com, srk@ti.com, vigneshr@ti.com,
-        p-varis@ti.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rogerq@kernel.org
-Subject: [PATCH v5 net-next 4/4] net: ethernet: ti: am65-cpsw: add sw tx/rx irq coalescing based on hrtimers
-Date:   Wed, 27 Sep 2023 10:27:41 +0300
-Message-Id: <20230927072741.21221-5-rogerq@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927072741.21221-1-rogerq@kernel.org>
-References: <20230927072741.21221-1-rogerq@kernel.org>
+        Wed, 27 Sep 2023 03:29:08 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBDF1B0;
+        Wed, 27 Sep 2023 00:29:06 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R4kUmr024276;
+        Wed, 27 Sep 2023 07:28:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=BLTmAj9c74uRGVTtwdPNUwAzx0B4vAqvHGoZje3AMhw=;
+ b=hyfHnEMtJKdjXJ/zjLCLjIc1mGURp2BJHubn/wXejPhokL58kH/gmjf+FSnNwp0p4uE/
+ uZ3xlyUgR2y8f7hhi2p9uaI9xOURDk3yjOqG/4frOtN3BJAWuTIJVBRS9NMgQKXUG5km
+ wDFvtgb+MFfnzNdGuOydG+nCBeLjbn2fORxpbuDHT40bcoYbnV7rXGtXSwHxfdKPlZfa
+ dg9snYAembWG7qY3ljdOM+d3H/G0mqC8GuwVU0w88uOW0oz7fWm96MVo8QvA9L9sMOtJ
+ 9BBhFZzQRXWdJuuOkueBSECcBiqIjxHodv066K81A6j/Pi5NtHf8pqVh3FdDCJaAqH2z nA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tc43ms7yn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 07:28:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R7SulE021380
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 07:28:56 GMT
+Received: from [10.216.34.233] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 27 Sep
+ 2023 00:28:52 -0700
+Message-ID: <05201136-5c67-47e7-a3f1-a7af051a2a00@quicinc.com>
+Date:   Wed, 27 Sep 2023 12:58:49 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] usb: gadget: udc: Handle gadget_connect failure during
+ bind operation
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20230926193708.22405-1-quic_kriskura@quicinc.com>
+ <2178cf29-5e5c-4ed6-8d1c-916bc7036589@rowland.harvard.edu>
+ <62083b55-0b78-4ebc-ab78-1c1d99f92507@quicinc.com>
+ <f2bd7593-eff9-46ac-a94b-964eb4787740@quicinc.com>
+ <9384ac6a-f877-4835-b1ec-0e620a5ba8ba@rowland.harvard.edu>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <9384ac6a-f877-4835-b1ec-0e620a5ba8ba@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Y-0oaYrekRWC7HjRSZcQ2K7VzQZe7P89
+X-Proofpoint-GUID: Y-0oaYrekRWC7HjRSZcQ2K7VzQZe7P89
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=820 malwarescore=0
+ adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270060
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,314 +88,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-Add SW IRQ coalescing based on hrtimers for TX and RX data path which
-can be enabled by ethtool commands:
 
-- RX coalescing
-  ethtool -C eth1 rx-usecs 50
+On 9/27/2023 2:54 AM, Alan Stern wrote:
+> On Wed, Sep 27, 2023 at 01:54:34AM +0530, Krishna Kurapati PSSNV wrote:
+>>
+>>
+>> On 9/27/2023 1:36 AM, Krishna Kurapati PSSNV wrote:
+>>>>>    drivers/usb/gadget/udc/core.c | 23 +++++++++++++++++++----
+>>>>>    1 file changed, 19 insertions(+), 4 deletions(-)
+>>>>>
+>>>>>    static void vbus_event_work(struct work_struct *work)
+>>>>> @@ -1604,12 +1608,23 @@ static int gadget_bind_driver(struct
+>>>>> device *dev)
+>>>>>        }
+>>>>>        usb_gadget_enable_async_callbacks(udc);
+>>>>>        udc->allow_connect = true;
+>>>>> -    usb_udc_connect_control_locked(udc);
+>>>>> +    ret = usb_udc_connect_control_locked(udc);
+>>>>> +    if (ret) {
+>>>>> +        mutex_unlock(&udc->connect_lock);
+>>>>> +        goto err_connect_control;
+>>>>> +    }
+>>>>> +
+>>>>>        mutex_unlock(&udc->connect_lock);
+>>>>>        kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+>>>>>        return 0;
+>>>>> + err_connect_control:
+>>>>> +    usb_gadget_disable_async_callbacks(udc);
+>>>>> +    if (gadget->irq)
+>>>>> +        synchronize_irq(gadget->irq);
+>>>>> +    usb_gadget_udc_stop_locked(udc);
+>>>>
+>>>> Not good -- usb_gadget_udc_stop_locked() expects you to be holding
+>>>> udc->connect_lock, but you just dropped the lock!  Also, you never set
+>>>> udc->allow_connect back to false.
+>>>>
+>>>> You should move the mutex_unlock() call from inside the "if" statement
+>>>> to down here, and add a line for udc->allow_connect.
+>>>>
+>>>
+>>> Hi Alan,
+>>>
+>>>    Thanks for the review. Will push v5 addressing the changes.
+>>>
+>>>
+>> Hi Alan,
+>>
+>> I tried out the following diff:
+>>
+>> -       usb_udc_connect_control_locked(udc);
+>> +       ret = usb_udc_connect_control_locked(udc);
+>> +       if (ret)
+>> +               goto err_connect_control;
+>> +
+>>          mutex_unlock(&udc->connect_lock);
+>>
+>>          kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+>>          return 0;
+>>
+>> + err_connect_control:
+>> +       udc->allow_connect = false;
+>> +       usb_gadget_disable_async_callbacks(udc);
+>> +       if (gadget->irq)
+>> +               synchronize_irq(gadget->irq);
+>> +       usb_gadget_udc_stop_locked(udc);
+>> +       mutex_unlock(&udc->connect_lock);
+>> +
+>>
+>> If I clear UDC and fail dwc3 soft reset on purpose, I see UDC_store failing:
+>>
+>> #echo a600000.usb > /sys/kernel/config/usb_gadget/g1/UDC
+>> [  127.394087] dwc3 a600000.usb: request 000000003f43f907 was not queued to
+>> ep0out
+>> [  127.401637] udc a600000.usb: failed to start g1: -110
+>> [  127.406841] configfs-gadget.g1: probe of gadget.0 failed with error -110
+>> [  127.413809] UDC core: g1: couldn't find an available UDC or it's busy
+>>
+>> The same output came when I tested v4 as well. Every time soft_reset would
+>> fail when I try to write to UDC, UDC_store fails and above log will come up.
+> 
+> Isn't that what you want?  I thought the whole purpose of this patch was
+> to make it so that configfs would realize when
+> usb_udc_connect_control_locked() had failed.   So you should be happy
+> that the log shows a failure occurred.
+>  >> Can you help confirm if the diff above is proper as I don't see any 
+diff in
+>> the logs in v4 and about to push v5.
+> 
+> "Diff in the logs in v4"?  What does that mean?  A diff is a comparison
+> between two text files (often between before-and-after versions of a
+> source code file).  Why would you expect a diff to show up in the logs?
+> 
+> This revised patch looks okay to me.
+> 
+Thanks for the confirmation. Will push v5.
 
-- TX coalescing can be enabled per TX queue
-
-  - by default enables coalesing for TX0
-  ethtool -C eth1 tx-usecs 50
-  - configure TX0
-  ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
-  - configure TX1
-  ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
-  - configure TX0 and TX1
-  ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce tx-usecs 100
-
-  show configuration for TX0 and TX1:
-  ethtool -Q eth0 queue_mask 3 --show-coalesce
-
-Comparing to gro_flush_timeout and napi_defer_hard_irqs, this patch
-allows to enable IRQ coalesing for RX path separately.
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 79 +++++++++++++++++++++
- drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 59 ++++++++++++---
- drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  4 ++
- 3 files changed, 134 insertions(+), 8 deletions(-)
-
-Changelog:
-v5: Included in this series. No change.
-v1: initial patch.
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-index f6b081b7e754..d53360b00e7c 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-@@ -862,6 +862,80 @@ static void am65_cpsw_get_mm_stats(struct net_device *ndev,
- 	s->MACMergeHoldCount = readl(base + AM65_CPSW_STATN_IET_TX_HOLD);
- }
- 
-+static int am65_cpsw_get_coalesce(struct net_device *ndev, struct ethtool_coalesce *coal,
-+				  struct kernel_ethtool_coalesce *kernel_coal,
-+				  struct netlink_ext_ack *extack)
-+{
-+	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	struct am65_cpsw_tx_chn *tx_chn;
-+
-+	tx_chn = &common->tx_chns[0];
-+
-+	coal->rx_coalesce_usecs = common->rx_pace_timeout / 1000;
-+	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout / 1000;
-+
-+	return 0;
-+}
-+
-+static int am65_cpsw_get_per_queue_coalesce(struct net_device *ndev, u32 queue,
-+					    struct ethtool_coalesce *coal)
-+{
-+	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	struct am65_cpsw_tx_chn *tx_chn;
-+
-+	if (queue >= AM65_CPSW_MAX_TX_QUEUES)
-+		return -EINVAL;
-+
-+	tx_chn = &common->tx_chns[queue];
-+
-+	coal->tx_coalesce_usecs = tx_chn->tx_pace_timeout / 1000;
-+
-+	return 0;
-+}
-+
-+static int am65_cpsw_set_coalesce(struct net_device *ndev, struct ethtool_coalesce *coal,
-+				  struct kernel_ethtool_coalesce *kernel_coal,
-+				  struct netlink_ext_ack *extack)
-+{
-+	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	struct am65_cpsw_tx_chn *tx_chn;
-+
-+	tx_chn = &common->tx_chns[0];
-+
-+	if (coal->rx_coalesce_usecs && coal->rx_coalesce_usecs < 20)
-+		return -EINVAL;
-+
-+	if (coal->tx_coalesce_usecs && coal->tx_coalesce_usecs < 20)
-+		return -EINVAL;
-+
-+	common->rx_pace_timeout = coal->rx_coalesce_usecs * 1000;
-+	tx_chn->tx_pace_timeout = coal->tx_coalesce_usecs * 1000;
-+
-+	return 0;
-+}
-+
-+static int am65_cpsw_set_per_queue_coalesce(struct net_device *ndev, u32 queue,
-+					    struct ethtool_coalesce *coal)
-+{
-+	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	struct am65_cpsw_tx_chn *tx_chn;
-+
-+	if (queue >= AM65_CPSW_MAX_TX_QUEUES)
-+		return -EINVAL;
-+
-+	tx_chn = &common->tx_chns[queue];
-+
-+	if (coal->tx_coalesce_usecs && coal->tx_coalesce_usecs < 20) {
-+		dev_info(common->dev, "defaulting to min value of 20us for tx-usecs for tx-%u\n",
-+			 queue);
-+		coal->tx_coalesce_usecs = 20;
-+	}
-+
-+	tx_chn->tx_pace_timeout = coal->tx_coalesce_usecs * 1000;
-+
-+	return 0;
-+}
-+
- const struct ethtool_ops am65_cpsw_ethtool_ops_slave = {
- 	.begin			= am65_cpsw_ethtool_op_begin,
- 	.complete		= am65_cpsw_ethtool_op_complete,
-@@ -879,6 +953,11 @@ const struct ethtool_ops am65_cpsw_ethtool_ops_slave = {
- 	.get_ts_info		= am65_cpsw_get_ethtool_ts_info,
- 	.get_priv_flags		= am65_cpsw_get_ethtool_priv_flags,
- 	.set_priv_flags		= am65_cpsw_set_ethtool_priv_flags,
-+	.supported_coalesce_params = ETHTOOL_COALESCE_USECS,
-+	.get_coalesce           = am65_cpsw_get_coalesce,
-+	.set_coalesce           = am65_cpsw_set_coalesce,
-+	.get_per_queue_coalesce = am65_cpsw_get_per_queue_coalesce,
-+	.set_per_queue_coalesce = am65_cpsw_set_per_queue_coalesce,
- 
- 	.get_link		= ethtool_op_get_link,
- 	.get_link_ksettings	= am65_cpsw_get_link_ksettings,
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 2004f6a020d3..5a35269e2bbe 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -496,8 +496,10 @@ static int am65_cpsw_nuss_common_stop(struct am65_cpsw_common *common)
- 					msecs_to_jiffies(1000));
- 	if (!i)
- 		dev_err(common->dev, "tx timeout\n");
--	for (i = 0; i < common->tx_ch_num; i++)
-+	for (i = 0; i < common->tx_ch_num; i++) {
- 		napi_disable(&common->tx_chns[i].napi_tx);
-+		hrtimer_cancel(&common->tx_chns[i].tx_hrtimer);
-+	}
- 
- 	for (i = 0; i < common->tx_ch_num; i++) {
- 		k3_udma_glue_reset_tx_chn(common->tx_chns[i].tx_chn,
-@@ -516,6 +518,7 @@ static int am65_cpsw_nuss_common_stop(struct am65_cpsw_common *common)
- 	}
- 
- 	napi_disable(&common->napi_rx);
-+	hrtimer_cancel(&common->rx_hrtimer);
- 
- 	for (i = 0; i < AM65_CPSW_MAX_RX_FLOWS; i++)
- 		k3_udma_glue_reset_rx_chn(common->rx_chns.rx_chn, i,
-@@ -806,6 +809,15 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
- 	return ret;
- }
- 
-+static enum hrtimer_restart am65_cpsw_nuss_rx_timer_callback(struct hrtimer *timer)
-+{
-+	struct am65_cpsw_common *common =
-+			container_of(timer, struct am65_cpsw_common, rx_hrtimer);
-+
-+	enable_irq(common->rx_chns.irq);
-+	return HRTIMER_NORESTART;
-+}
-+
- static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
- {
- 	struct am65_cpsw_common *common = am65_cpsw_napi_to_common(napi_rx);
-@@ -833,7 +845,13 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
- 	if (num_rx < budget && napi_complete_done(napi_rx, num_rx)) {
- 		if (common->rx_irq_disabled) {
- 			common->rx_irq_disabled = false;
--			enable_irq(common->rx_chns.irq);
-+			if (unlikely(common->rx_pace_timeout)) {
-+				hrtimer_start(&common->rx_hrtimer,
-+					      ns_to_ktime(common->rx_pace_timeout),
-+					      HRTIMER_MODE_REL_PINNED);
-+			} else {
-+				enable_irq(common->rx_chns.irq);
-+			}
- 		}
- 	}
- 
-@@ -939,7 +957,7 @@ static void am65_cpsw_nuss_tx_wake(struct am65_cpsw_tx_chn *tx_chn, struct net_d
- }
- 
- static int am65_cpsw_nuss_tx_compl_packets(struct am65_cpsw_common *common,
--					   int chn, unsigned int budget)
-+					   int chn, unsigned int budget, bool *tdown)
- {
- 	struct device *dev = common->dev;
- 	struct am65_cpsw_tx_chn *tx_chn;
-@@ -962,6 +980,7 @@ static int am65_cpsw_nuss_tx_compl_packets(struct am65_cpsw_common *common,
- 		if (cppi5_desc_is_tdcm(desc_dma)) {
- 			if (atomic_dec_and_test(&common->tdown_cnt))
- 				complete(&common->tdown_complete);
-+			*tdown = true;
- 			break;
- 		}
- 
-@@ -984,7 +1003,7 @@ static int am65_cpsw_nuss_tx_compl_packets(struct am65_cpsw_common *common,
- }
- 
- static int am65_cpsw_nuss_tx_compl_packets_2g(struct am65_cpsw_common *common,
--					      int chn, unsigned int budget)
-+					      int chn, unsigned int budget, bool *tdown)
- {
- 	struct device *dev = common->dev;
- 	struct am65_cpsw_tx_chn *tx_chn;
-@@ -1005,6 +1024,7 @@ static int am65_cpsw_nuss_tx_compl_packets_2g(struct am65_cpsw_common *common,
- 		if (cppi5_desc_is_tdcm(desc_dma)) {
- 			if (atomic_dec_and_test(&common->tdown_cnt))
- 				complete(&common->tdown_complete);
-+			*tdown = true;
- 			break;
- 		}
- 
-@@ -1030,21 +1050,40 @@ static int am65_cpsw_nuss_tx_compl_packets_2g(struct am65_cpsw_common *common,
- 	return num_tx;
- }
- 
-+static enum hrtimer_restart am65_cpsw_nuss_tx_timer_callback(struct hrtimer *timer)
-+{
-+	struct am65_cpsw_tx_chn *tx_chns =
-+			container_of(timer, struct am65_cpsw_tx_chn, tx_hrtimer);
-+
-+	enable_irq(tx_chns->irq);
-+	return HRTIMER_NORESTART;
-+}
-+
- static int am65_cpsw_nuss_tx_poll(struct napi_struct *napi_tx, int budget)
- {
- 	struct am65_cpsw_tx_chn *tx_chn = am65_cpsw_napi_to_tx_chn(napi_tx);
-+	bool tdown = false;
- 	int num_tx;
- 
- 	if (AM65_CPSW_IS_CPSW2G(tx_chn->common))
--		num_tx = am65_cpsw_nuss_tx_compl_packets_2g(tx_chn->common, tx_chn->id, budget);
-+		num_tx = am65_cpsw_nuss_tx_compl_packets_2g(tx_chn->common, tx_chn->id,
-+							    budget, &tdown);
- 	else
--		num_tx = am65_cpsw_nuss_tx_compl_packets(tx_chn->common, tx_chn->id, budget);
-+		num_tx = am65_cpsw_nuss_tx_compl_packets(tx_chn->common,
-+							 tx_chn->id, budget, &tdown);
- 
- 	if (num_tx >= budget)
- 		return budget;
- 
--	if (napi_complete_done(napi_tx, num_tx))
--		enable_irq(tx_chn->irq);
-+	if (napi_complete_done(napi_tx, num_tx)) {
-+		if (unlikely(tx_chn->tx_pace_timeout && !tdown)) {
-+			hrtimer_start(&tx_chn->tx_hrtimer,
-+				      ns_to_ktime(tx_chn->tx_pace_timeout),
-+				      HRTIMER_MODE_REL_PINNED);
-+		} else {
-+			enable_irq(tx_chn->irq);
-+		}
-+	}
- 
- 	return 0;
- }
-@@ -1676,6 +1715,8 @@ static int am65_cpsw_nuss_ndev_add_tx_napi(struct am65_cpsw_common *common)
- 
- 		netif_napi_add_tx(common->dma_ndev, &tx_chn->napi_tx,
- 				  am65_cpsw_nuss_tx_poll);
-+		hrtimer_init(&tx_chn->tx_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
-+		tx_chn->tx_hrtimer.function = &am65_cpsw_nuss_tx_timer_callback;
- 
- 		ret = devm_request_irq(dev, tx_chn->irq,
- 				       am65_cpsw_nuss_tx_irq,
-@@ -1900,6 +1941,8 @@ static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
- 
- 	netif_napi_add(common->dma_ndev, &common->napi_rx,
- 		       am65_cpsw_nuss_rx_poll);
-+	hrtimer_init(&common->rx_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
-+	common->rx_hrtimer.function = &am65_cpsw_nuss_rx_timer_callback;
- 
- 	ret = devm_request_irq(dev, rx_chn->irq,
- 			       am65_cpsw_nuss_rx_irq,
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index 1e4a045057fc..7da0492dc091 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -75,6 +75,8 @@ struct am65_cpsw_tx_chn {
- 	struct k3_cppi_desc_pool *desc_pool;
- 	struct k3_udma_glue_tx_channel *tx_chn;
- 	spinlock_t lock; /* protect TX rings in multi-port mode */
-+	struct hrtimer tx_hrtimer;
-+	unsigned long tx_pace_timeout;
- 	int irq;
- 	u32 id;
- 	u32 descs_num;
-@@ -138,6 +140,8 @@ struct am65_cpsw_common {
- 	struct napi_struct	napi_rx;
- 
- 	bool			rx_irq_disabled;
-+	struct hrtimer		rx_hrtimer;
-+	unsigned long		rx_pace_timeout;
- 
- 	u32			nuss_ver;
- 	u32			cpsw_ver;
--- 
-2.34.1
-
+Regards,
+Krishna,
