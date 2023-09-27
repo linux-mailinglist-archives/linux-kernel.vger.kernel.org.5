@@ -2,475 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 989287B0E4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449477B0E50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 23:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbjI0VnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 17:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
+        id S230012AbjI0Vor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 17:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0VnA (ORCPT
+        with ESMTP id S229458AbjI0Voq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 17:43:00 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6797B11D
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:42:57 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59f6041395dso110714967b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 14:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695850976; x=1696455776; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iw+tq1qkIKeC4mIxHQyKHbYnepVl6Il7XFngeKElnQU=;
-        b=KdkDpF/w8bQbYvDGXlnviv+8IolPazPTUvN0aA/vBl5F08K9IGbMlArt1OiF8geKKT
-         nCI4Ji6PuVe8NozAKvCWR0Q0ZtkSReCErNjBMYNtE96FModMTH50xWvv6hGmoWwiX3xU
-         yK2n5hp1A4nyKfxvRgscbrwREP0yFy4gancCWnVLkYKwcg8HoA6wJZFzugLOtjwteSLt
-         953i2e6MJ6MVBN0hf1ghMgo6ynQ2Zabh46+Bw0ZTn2gWAg2Ko8kGZ/MRiGxZo4dgrLP5
-         4IIq1pG9N898Tza6wBgoJ+cmwbZeHd6fUSEMPQ1960RrCIKaWzDY6NXyPLH+8J4Kk+SA
-         IfWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695850976; x=1696455776;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Iw+tq1qkIKeC4mIxHQyKHbYnepVl6Il7XFngeKElnQU=;
-        b=LilvmJ6S2MQuw8RCd5lC8j8Zu+/BI0ZBTYe6JPiwDPfX75gXNn/Flm96QDpK7RHhp0
-         ofMZeoLZWcbkylYQipd5ybLtMJJ2uKwmvYjxQX2gcugNjRtm1AAT3Jca+gkzMnWaXpNr
-         QoaIRmiHUr8cxSwoiLAxw8RHDdzhpdf37UB6qy8Guzuo/WuAKiDmPLaBc1SKd7DNm3XF
-         2S8QyszHwT6xst1m6ZKlKGIfXobMwsrs4LAgg9aO+RAR7UiLutL8lVo/FCfa/YX3kARI
-         w8VKIGDAgP0kdKftHCSjSvIW9MrWAL6vXXB4kvz9yPnuS2ppKvEy46AsN7N0cO90I8uo
-         zD4g==
-X-Gm-Message-State: AOJu0Yyl6sUBdMl/w9fOEQWA5cMQx8wCq7XGYt6vOQRsAHA6TfyHs5Z9
-        PtR8RUedWGl64vRV6PfXeMFhRME8JxPiGpra1l+e7w==
-X-Google-Smtp-Source: AGHT+IFjcZjK/yrX5+yNzqPhXAHk0xTtSwRjCo7lxnIM9og4yUo9kVzgJw5nNIxwCD09XUuBA0tWEAYTIueEEYuxHiE=
-X-Received: by 2002:a0d:d78c:0:b0:5a1:d11e:b745 with SMTP id
- z134-20020a0dd78c000000b005a1d11eb745mr3642131ywd.24.1695850976464; Wed, 27
- Sep 2023 14:42:56 -0700 (PDT)
+        Wed, 27 Sep 2023 17:44:46 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0542A11F;
+        Wed, 27 Sep 2023 14:44:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dhEtWlb2H05PjHhjqgFIFyLipfR8AB/Qo06dB40tIMR4JXA61zbzNe9TxhftHHTsM6b8zCEzZzvgU/TNdJ4BEXJheL3o/gTUtlNCStxXnwY2ZPpUfigUnqyAtlU2uBZdfKMIYTLezc811E8+4fRG1n2W62dzf82Gln12kM14UVubYUQdBRXUecDW/l18xL4CC6ooiXJqBtPxBDqIQ6Co7zqYMuaY2iSPmpvYsqmdcPsrqq7Db1cwedts9oTWClKwH8yN+DI8Eo7YkouQbN28rGRUjGvMo05fTDZwS7AW9J062p1YHP4/4wL2hcqK+4lUQbmOOjGrt2EJY2XMSvP9fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=89FZBXaUrrtRKlHegKWqpSVctPcNcwdseqT+5hHwhPk=;
+ b=SlvYtAWc9VdX4/jq3kxrCOy7DVxudRHGCMwVdBMXgAZLJE8SQ5x2RVoBbuTEvC/w6H4FsKhp05qjaSBiiMOmNsLTMS4YXaKQYz2RgDATKiyKW7lnPHuOfk9kO7KjpK/PswboYkxM7UT0dLJpU4etaz1mC3l5Cvf0GMjhrDWmubv4C6PS20hj7s4Vq9+EAjczvFH3+q5Ha2RL80dnCylJc2epthVhUeE3MEpE/lFXisNxdhvBmeogp0KKAQsdwaT7tIGbBkFRguF7xira1+KDCpW/sE4o2Y0AzWjDs+elNFHxUxD1mU5IkhcfrF4ds/KmuPNSjXhnr/DT/QQcrvJ5IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89FZBXaUrrtRKlHegKWqpSVctPcNcwdseqT+5hHwhPk=;
+ b=vB4wG66u/QfXCTpyE2ZQt/iIz8MlfAO160aTz0HYDxX/Dtb5nTXvZ2qSdLo51vCQw/S34X2VoINXyGXrweJe7uYL/qxsc24JGe4qbKu0zVJpXb4oy7quKupAr3MT3exAHVseLz4VfysJOflG+YV7gHOZcUHjwQA3JPpZQLUJrlM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by BY5PR12MB4888.namprd12.prod.outlook.com (2603:10b6:a03:1d8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.32; Wed, 27 Sep
+ 2023 21:44:41 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6838.016; Wed, 27 Sep 2023
+ 21:44:41 +0000
+Message-ID: <c58a017d-81ff-a797-5b3c-af5a016319bb@amd.com>
+Date:   Wed, 27 Sep 2023 16:44:35 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v10 01/10] x86/resctrl: Add multiple tasks to the resctrl
+ group at once
+Content-Language: en-US
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Babu Moger <babu.moger@amd.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+References: <20230915224227.1336967-1-babu.moger@amd.com>
+ <20230915224227.1336967-2-babu.moger@amd.com>
+ <dc1281bd-68ce-18f8-e4fe-d2d07535f047@intel.com>
+From:   "Moger, Babu" <bmoger@amd.com>
+In-Reply-To: <dc1281bd-68ce-18f8-e4fe-d2d07535f047@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR04CA0094.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::35) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com> <1695848028-18023-6-git-send-email-quic_khsieh@quicinc.com>
-In-Reply-To: <1695848028-18023-6-git-send-email-quic_khsieh@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 28 Sep 2023 00:41:46 +0300
-Message-ID: <CAA8EJpptTDQVO189OcXqJw+VN+1EkgaQd6TJwcGpGxdYTR1vhQ@mail.gmail.com>
-Subject: Re: [PATCH v4 5/8] drm/msm/dp: incorporate pm_runtime framework into
- DP driver
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|BY5PR12MB4888:EE_
+X-MS-Office365-Filtering-Correlation-Id: c194663c-3365-4434-0331-08dbbfa2f45e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BP2kTgspAb4Z/moTEmE+Guc1EcnaQP+Prcios0E+hK6XoBGDqzO100vj8lpQxs0e0Jyu2zQH9cIrSSdz2yST1bXWo+qrBOb+gdn/MBwoD8t39Huu9yCUtx/7HP7+8rzbHEDnq99NnCEjizGUTcZftAbSVjykYXYMKeXrHlrpmw+5eTFS2UCy/h5BBCPhxJcpenPkruTXcEHrfdcLVeWdwhX5oyEgBknhp50UCc7VN7kgfrmjKOkYG74G4XDqZGskSBw5Sm/RZLUd23eat2mHt7jUDierG9U0otyRV2bAr+CoxcBLcaWcQ22TohxrGwiwjbSl5pnEzrqSkLrn7tG25+lrgSKsBLKClAgBPFXt/0hKV0Vux4Kmpn2hzTqt53b2hdlRJtWkk6qmfhmCD7kCaTAPANZbJ+8rRzrAUTSDKSU5rctBMKz+1LAjRYDciqAJmew3JYeZ5+mpb00bmZWjqSv8AHBBckAd9gPL7ZJ3kmL0gBiACB1zq8Ij16tOVKapzhBrW1WlJJPpBoUpBsgnhzMKl/iFwZM3OsfWkBRSDUqj0/sUFeYulCfLtEIIcExQF8hN6ul4/y03D/+WeDIpHLz0lPPsgmjKYXuT4Idofne4APImGTi126b8zEUY2RxmY7gYtooNCdZ+3IbJOKQh+KYOOTBwhr5DOUC0m0TocaQhb24t9xt7cGzlAMgUctOT/UFRR9EVziO9v2+emqjOFw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(478600001)(83380400001)(2616005)(41300700001)(31686004)(6512007)(26005)(66899024)(36756003)(6666004)(53546011)(31696002)(6506007)(4326008)(8936002)(66476007)(8676002)(5660300002)(316002)(66946007)(7406005)(7416002)(66556008)(110136005)(38100700002)(2906002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?akZSV0JpMlFYbjFnR05mdXhLNDZ2dXBJTzBWWExJUkZLMmliZ3R4SlJNQnBP?=
+ =?utf-8?B?RUdLVUhOM25NRGc1clZJOFNqSFZ0SnJmaU1qSloxanozcFhoRnRFM3RqYWRy?=
+ =?utf-8?B?QnhwMGdWTjdWSmRuOXVQYlBnZkpiNFMwdTk1ZisxZ2ZGUVA4VWhodExjODNO?=
+ =?utf-8?B?eldmdUg2Y3B6ZjcrSlZZaUlnblBLa3RIYThEVkkwTUVtOWttSTJpQ0tIeitJ?=
+ =?utf-8?B?QWtvb25PZnBXdHBjdE9tekp3N3A0QVRibzE2SmdyV0hTOElqMktDdGlZVTBV?=
+ =?utf-8?B?dHRIWHRzTVhpN3VNc2ppL1Y0c0NQTWROcVEzSjJmNVdnbU0wci9KTVhQTWFK?=
+ =?utf-8?B?c0p3VUl4LzZ3M0hKVGpsUjFkSTZZZFpxeitPMHNKbDdrbkFFd3JTVjJRTDFv?=
+ =?utf-8?B?Q3Q3Y0VmazVGMHdzZy9IODBPTFRBUVlpeG9sK0QwMHhBQjNnR0paRE9Dc2s5?=
+ =?utf-8?B?dEo4TktvSHJZaGJ1WkZtZ1NqRG9VS2NXcnVuRHVoSmwvZEV2Qm9RbFZOaHhJ?=
+ =?utf-8?B?R0ZqYVpHSEoxTHcrUXZDb2VuR1JJeGJ5V1RrdDR1cmtwZklhZHlLUFJmSHR4?=
+ =?utf-8?B?djhNcmt5UDYxNUxNUDliLzVpTytTTmw0MDAyUTEvL0xHWGl4RFoyT1BhTU1C?=
+ =?utf-8?B?dXh3VE1GWFVaMUhibm40QkthazBsMnFia1IxTHMyNDdnMmxaNVg5RUdrYllx?=
+ =?utf-8?B?dUtSS2xpbkVMd21DUU9LZXJOK3RwZEprNWF4d2hZaXpMSXpFZ2gxWXZ5K01X?=
+ =?utf-8?B?Wlh2azd0Um11Zk5BMWVJSlFsYjc3L0dLcmRXTmxIQ2h2cWdOaGUwN21KTE1z?=
+ =?utf-8?B?bjF4aTQ5Tzk5U2dsTlFRYnIyWlRWTUI5VFVrOS9FZ0t2aW51T0l5ZGdKTkVV?=
+ =?utf-8?B?RUlYUTZwRmM1TStnZDZ4OVYwdVZQSGxQeUpENzlwTlkvOVBGR1Zwekt0TzVr?=
+ =?utf-8?B?OEM3NG1uNzdPcndGcFQ5RTBLSTFKTFJNTm9kQ0RpWUVycjAyUFRWSFZnajF1?=
+ =?utf-8?B?aUNkWmxKOEFMSTIydjBwVTVHMkU3WFYzR0RwTEc2MXpJcTgzV1RXVHNvNXR1?=
+ =?utf-8?B?TDlXVXZBWnlta2M4WHVWVWc3d1NPT3p6OTkydDFSbXU0L0lQRHNsdWR6OTVG?=
+ =?utf-8?B?cy8zK0FVL1ZkUnNySi9rM1d0QlJKOSthV0VLOXUzSkNOQVM3SDE4SVdtSmJ6?=
+ =?utf-8?B?cGI0ZGYrZzg5SzMwaXp3VXF2ZE40MUFRcjZrZWhDZ0l1MUJpR0M4ZzVxQWNo?=
+ =?utf-8?B?ZE1zdVAzaFF4YUJWUndrQkltRmNSSWZRYzJqRm91SG90cURzTmVCdnNJR0tn?=
+ =?utf-8?B?Z1lGbUtQWE5jb2R4WEpRRmVuVjliNjZhSTBFQXJ2c0F6VUgxTE9kSjV0SHNp?=
+ =?utf-8?B?VW5lSlNiN3BzZ044VUxZeUlpYm9kdkdaUlZvdUIyMjhTWmRXd2NTcEVWRlZ5?=
+ =?utf-8?B?SlVSbHltdDRReno0TTE1SHhXSTR0eDJVdTZwcXpBaWc1Z093anMzeG5QRFJL?=
+ =?utf-8?B?S1pybkU1L0ZFeWJ4dHB4UUZqYk85MzhSQUFPNnZERlpkMlg1SFdLb250QW9u?=
+ =?utf-8?B?SktWcnNKbGlvVFdZSHptSm14eFFtTis0cDZJcXdTMTl4cGxwdEN5OGxrdUVG?=
+ =?utf-8?B?aUZ4SmdDZmxvU29tZEpGTFZRQTVHMTkvTXB1UGJhc3g5aFhpNE1aSmpsVGoy?=
+ =?utf-8?B?ZHQwRi9DNC9oY1Jtc0YvN2hFSXdBZUZsUklGK0xQWkRxMGZUVXFQRTMvaTRF?=
+ =?utf-8?B?LzR3ZEdQN01EM2RuUFhwMVFEcis4UGk3UGNOcmpBcUYrMS9IVnZZc2lNOHZH?=
+ =?utf-8?B?cjgycGROWDAwbXJiY0xYczJ1SlBta1RZdDczUDNMa1dmQnJnbFFCc2xycVdr?=
+ =?utf-8?B?TGhrUE94SytmZU5VVUExaEhvVDRWRTlnUnFWbitPUXhISHdFQXBMK1cvMEZy?=
+ =?utf-8?B?bFRYeHJzbEdCU0JyNU1leEx4a095bzZqRjhBMmttVUVUWE9ldDFuaTJOSm80?=
+ =?utf-8?B?eSs3Tm5JRXZuaEhLTnNOOWtOSWw3b3pNQVgrYW1FR09jcktOblIzQ3pSemhn?=
+ =?utf-8?B?UWNBQ1RXNHN3djVDUm5PSmxqS1RzRWxERkVxY0NaTTZUdmUvR2h2WVRTbEl3?=
+ =?utf-8?Q?+e5Bzg5C+FLcfjCsI6A4XoXG/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c194663c-3365-4434-0331-08dbbfa2f45e
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 21:44:41.0105
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BWHUEPmD86w+Gc6zpVAnezdHhn+bxXvK0PYrDgxEplrzr5G7o6uM3K+L6E+KqSap
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4888
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
-> Currently DP driver is executed independent of PM runtime framework.
-> This lead to msm edp panel can not be detected by edp_panel driver at
-> generic_edp_panel_probe() due to aux dpcd read failed at msm edp driver.
+Hi Reinette,
 
-eDP, AUX, DPCD. leads. not being detected, s/at/during.
+On 9/27/2023 1:30 PM, Reinette Chatre wrote:
+> Hi Babu,
+>
+> On 9/15/2023 3:42 PM, Babu Moger wrote:
+>> The resctrl task assignment for monitor or control group needs to be
+>> done one at a time. For example:
+>>
+>>    $mount -t resctrl resctrl /sys/fs/resctrl/
+>>    $mkdir /sys/fs/resctrl/ctrl_grp1
+>>    $echo 123 > /sys/fs/resctrl/ctrl_grp1/tasks
+>>    $echo 456 > /sys/fs/resctrl/ctrl_grp1/tasks
+>>    $echo 789 > /sys/fs/resctrl/ctrl_grp1/tasks
+>>
+>> This is not user-friendly when dealing with hundreds of tasks.
+>>
+>> Support multiple task assignment in one command with tasks ids separated
+>> by commas. For example:
+>>    $echo 123,456,789 > /sys/fs/resctrl/ctrl_grp1/tasks
+>>
+>> Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> x86 area aims to have a uniform view of commit tags.
+> Please review the "Ordering of commit tags" section within
+> Documentation/process/maintainer-tip.rst and apply that
+> custom to this whole series.
 
-Also there is no msm eDP driver.
+After reading it, it appears this should be the order. starting with Author SOB. Hope this is what you meant.
 
-> Incorporating pm runtime framework into DP driver so that both power and
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-Incorporate. PM
+Thanks
+Babu
 
-> clocks to enable/disable host controller fits with PM runtime mechanism.
-
-Ugh?
-
-> Once pm runtime framework is incorporated into DP driver, wake up device
-
-waking
-
-> from power up path is not necessary. Hence remove it.
-> Since DP is part of user interface, we choice to use autosuspend feature
-> with timer of one second. pm runtime suspends is prevented from happening
-> until timer expired.
-
-No, this is not the right reason to use autosuspend. Please use normal
-suspend unless there is a performance regression caused by the
-suspend/resume paths.
-
->
-> Changes in v4:
-> -- reworded commit text to explain why pm_framework is required for edp panel
-> -- reworded commit text to explain autosuspend is choiced
-> -- delete EV_POWER_PM_GET and PM_EV_POWER_PUT from changes #3
-> -- delete dp_display_pm_get() and dp_display_pm_Put() from changes #3
-> -- return value from pm_runtime_resume_and_get() directly
-> -- check return value of devm_pm_runtime_enable()
-> -- delete pm_runtime_xxx from dp_display_remove()
-> -- drop dp_display_host_init() from EV_HPD_INIT_SETUP
->
-> Changes in v3:
-> -- incorporate removing pm_runtime_xx() from dp_pwer.c to this patch
-> -- use pm_runtime_resume_and_get() instead of pm_runtime_get()
-> -- error checking pm_runtime_resume_and_get() return value
-> -- add EV_POWER_PM_GET and PM_EV_POWER_PUT to handle HPD_GPIO case
->
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_aux.c     |  6 +++
->  drivers/gpu/drm/msm/dp/dp_display.c | 95 +++++++++++++++++++++++++++----------
->  drivers/gpu/drm/msm/dp/dp_power.c   | 16 -------
->  drivers/gpu/drm/msm/dp/dp_power.h   | 11 -----
->  4 files changed, 77 insertions(+), 51 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-> index 8e3b677..22eb774 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -291,6 +291,10 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
->                 return -EINVAL;
->         }
->
-> +       ret = pm_runtime_resume_and_get(dp_aux->dev);
-> +       if (ret)
-> +               return  ret;
-> +
->         mutex_lock(&aux->mutex);
->         if (!aux->initted) {
->                 ret = -EIO;
-> @@ -364,6 +368,8 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
->
->  exit:
->         mutex_unlock(&aux->mutex);
-> +       pm_runtime_mark_last_busy(dp_aux->dev);
-> +       pm_runtime_put_autosuspend(dp_aux->dev);
->
->         return ret;
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 3ef141c..bfb4692 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -276,8 +276,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
->         dp->dp_display.drm_dev = drm;
->         priv->dp[dp->id] = &dp->dp_display;
->
-> -
-> -
-
-Is this also a part of pm_runtime support? No, it is not.
-
->         dp->drm_dev = drm;
->         dp->aux->drm_dev = drm;
->         rc = dp_aux_register(dp->aux);
-> @@ -286,7 +284,6 @@ static int dp_display_bind(struct device *dev, struct device *master,
->                 goto end;
->         }
->
-> -
-
-And this. If you want to clean up stray empty lines, please split that
-to a separate patch.
-
->         rc = dp_register_audio_driver(dev, dp->audio);
->         if (rc) {
->                 DRM_ERROR("Audio registration Dp failed\n");
-> @@ -310,15 +307,10 @@ static void dp_display_unbind(struct device *dev, struct device *master,
->         struct dp_display_private *dp = dev_get_dp_display_private(dev);
->         struct msm_drm_private *priv = dev_get_drvdata(master);
->
-> -       /* disable all HPD interrupts */
-> -       if (dp->core_initialized)
-> -               dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_INT_MASK, false);
-> -
->         kthread_stop(dp->ev_tsk);
->
->         of_dp_aux_depopulate_bus(dp->aux);
->
-> -       dp_power_client_deinit(dp->power);
->         dp_unregister_audio_driver(dev, dp->audio);
->         dp_aux_unregister(dp->aux);
->         dp->drm_dev = NULL;
-> @@ -460,6 +452,16 @@ static void dp_display_host_deinit(struct dp_display_private *dp)
->  static int dp_display_usbpd_configure_cb(struct device *dev)
->  {
->         struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> +       int ret;
-> +
-> +       if (!dp->dp_display.internal_hpd) {
-
-I'd say, drop the condition here.
-
-> +               /* hpd through gpio */
-
-Why? !internal_hpd means any possible way of delivering an HPD event.
-For example, via the USB-C TCPM.
-
-> +               ret = pm_runtime_resume_and_get(&dp->pdev->dev);
-
-Which function contains corresponding pm_runtime_put()?
-
-> +               if (ret) {
-> +                       DRM_ERROR("failed to start power\n");
-
-failed to resume
-
-> +                       return ret;
-> +               }
-> +       }
->
->         dp_display_host_phy_init(dp);
->
-> @@ -1086,7 +1088,6 @@ static int hpd_event_thread(void *data)
->
->                 switch (todo->event_id) {
->                 case EV_HPD_INIT_SETUP:
-> -                       dp_display_host_init(dp_priv);
->                         break;
->                 case EV_HPD_PLUG_INT:
->                         dp_hpd_plug_handle(dp_priv, todo->data);
-> @@ -1263,6 +1264,13 @@ static int dp_display_probe(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, &dp->dp_display);
->
-> +       rc = devm_pm_runtime_enable(&pdev->dev);
-> +       if (rc)
-> +               return rc;
-
-Missing submodules deinit.
-
-> +
-> +       pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
-> +       pm_runtime_use_autosuspend(&pdev->dev);
-> +
->         rc = dp_display_request_irq(dp);
->         if (rc)
->                 return rc;
-> @@ -1285,6 +1293,34 @@ static int dp_display_remove(struct platform_device *pdev)
->
->         platform_set_drvdata(pdev, NULL);
->
-> +       dp_display_deinit_sub_modules(dp);
-
-There is already a call to dp_display_deinit_sub_modules() in
-dp_display_remove().
-> +
-> +       return 0;
-> +}
-> +
-> +static int dp_pm_runtime_suspend(struct device *dev)
-> +{
-> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> +
-> +       if (dp->dp_display.is_edp) {
-> +               dp_display_host_phy_exit(dp);
-> +               dp_catalog_ctrl_hpd_disable(dp->catalog);
-> +       }
-
-I don't see where this code was removed.
-
-> +       dp_display_host_deinit(dp);
-> +
-> +       return 0;
-> +}
-> +
-> +static int dp_pm_runtime_resume(struct device *dev)
-> +{
-> +       struct dp_display_private *dp = dev_get_dp_display_private(dev);
-> +
-> +       dp_display_host_init(dp);
-> +       if (dp->dp_display.is_edp) {
-> +               dp_catalog_ctrl_hpd_enable(dp->catalog);
-> +               dp_display_host_phy_init(dp);
-> +       }
-> +
->         return 0;
->  }
->
-> @@ -1389,6 +1425,7 @@ static int dp_pm_suspend(struct device *dev)
->  }
->
->  static const struct dev_pm_ops dp_pm_ops = {
-> +       SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
->         .suspend = dp_pm_suspend,
->         .resume =  dp_pm_resume,
->  };
-> @@ -1473,10 +1510,6 @@ static int dp_display_get_next_bridge(struct msm_dp *dp)
->         aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
->
->         if (aux_bus && dp->is_edp) {
-> -               dp_display_host_init(dp_priv);
-> -               dp_catalog_ctrl_hpd_enable(dp_priv->catalog);
-> -               dp_display_host_phy_init(dp_priv);
-> -
->                 /*
->                  * The code below assumes that the panel will finish probing
->                  * by the time devm_of_dp_aux_populate_ep_devices() returns.
-> @@ -1578,6 +1611,11 @@ void dp_bridge_atomic_enable(struct drm_bridge *drm_bridge,
->                 dp_hpd_plug_handle(dp_display, 0);
->
->         mutex_lock(&dp_display->event_mutex);
-> +       if (pm_runtime_resume_and_get(&dp_display->pdev->dev)) {
-> +               DRM_ERROR("failed to start power\n");
-
-failed to resume.
-
-> +               mutex_unlock(&dp_display->event_mutex);
-> +               return;
-> +       }
->
->         state = dp_display->hpd_state;
->         if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
-> @@ -1642,10 +1680,9 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
->         mutex_lock(&dp_display->event_mutex);
->
->         state = dp_display->hpd_state;
-> -       if (state != ST_DISCONNECT_PENDING && state != ST_CONNECTED) {
-> -               mutex_unlock(&dp_display->event_mutex);
-> -               return;
-> -       }
-> +       if (state != ST_DISCONNECT_PENDING && state != ST_CONNECTED)
-> +               drm_dbg_dp(dp->drm_dev, "type=%d wrong hpd_state=%d\n",
-> +                          dp->connector_type, state);
->
->         dp_display_disable(dp_display);
->
-> @@ -1658,6 +1695,9 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
->         }
->
->         drm_dbg_dp(dp->drm_dev, "type=%d Done\n", dp->connector_type);
-> +
-> +       pm_runtime_mark_last_busy(&dp_display->pdev->dev);
-> +       pm_runtime_put_autosuspend(&dp_display->pdev->dev);
->         mutex_unlock(&dp_display->event_mutex);
->  }
->
-> @@ -1697,6 +1737,12 @@ void dp_bridge_hpd_enable(struct drm_bridge *bridge)
->         struct dp_display_private *dp = container_of(dp_display, struct dp_display_private, dp_display);
->
->         mutex_lock(&dp->event_mutex);
-> +       if (pm_runtime_resume_and_get(&dp->pdev->dev)) {
-> +               DRM_ERROR("failed to start power\n");
-> +               mutex_unlock(&dp->event_mutex);
-> +               return;
-> +       }
-> +
->         dp_catalog_ctrl_hpd_enable(dp->catalog);
->
->         /* enable HDP interrupts */
-> @@ -1718,6 +1764,9 @@ void dp_bridge_hpd_disable(struct drm_bridge *bridge)
->         dp_catalog_ctrl_hpd_disable(dp->catalog);
->
->         dp_display->internal_hpd = false;
-> +
-> +       pm_runtime_mark_last_busy(&dp->pdev->dev);
-> +       pm_runtime_put_autosuspend(&dp->pdev->dev);
->         mutex_unlock(&dp->event_mutex);
->  }
->
-> @@ -1732,13 +1781,11 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
->         if (dp_display->internal_hpd)
->                 return;
->
-> -       if (!dp->core_initialized) {
-> -               drm_dbg_dp(dp->drm_dev, "not initialized\n");
-> -               return;
-> -       }
-> -
-> -       if (!dp_display->link_ready && status == connector_status_connected)
-> +       /* hpd through gpio */
-
-Lack of the comment might be better than the incorrect comment.
-
-> +       if (!dp_display->link_ready && status == connector_status_connected) {
-> +               dp->hpd_state = ST_DISCONNECTED;
-
-Is this also a part of pm_runtime support?
-
->                 dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
-> -       else if (dp_display->link_ready && status == connector_status_disconnected)
-> +       } else if (dp_display->link_ready && status == connector_status_disconnected) {
->                 dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
-> +       }
->  }
-> diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
-> index 5cb84ca..863c766 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_power.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_power.c
-> @@ -152,20 +152,9 @@ int dp_power_client_init(struct dp_power *dp_power)
->
->         power = container_of(dp_power, struct dp_power_private, dp_power);
->
-> -       pm_runtime_enable(power->dev);
-> -
->         return dp_power_clk_init(power);
->  }
->
-> -void dp_power_client_deinit(struct dp_power *dp_power)
-> -{
-> -       struct dp_power_private *power;
-> -
-> -       power = container_of(dp_power, struct dp_power_private, dp_power);
-> -
-> -       pm_runtime_disable(power->dev);
-> -}
-> -
->  int dp_power_init(struct dp_power *dp_power)
->  {
->         int rc = 0;
-> @@ -173,11 +162,7 @@ int dp_power_init(struct dp_power *dp_power)
->
->         power = container_of(dp_power, struct dp_power_private, dp_power);
->
-> -       pm_runtime_get_sync(power->dev);
-> -
->         rc = dp_power_clk_enable(dp_power, DP_CORE_PM, true);
-> -       if (rc)
-> -               pm_runtime_put_sync(power->dev);
->
->         return rc;
->  }
-> @@ -189,7 +174,6 @@ int dp_power_deinit(struct dp_power *dp_power)
->         power = container_of(dp_power, struct dp_power_private, dp_power);
->
->         dp_power_clk_enable(dp_power, DP_CORE_PM, false);
-> -       pm_runtime_put_sync(power->dev);
->         return 0;
->  }
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
-> index a3dec20..55ada51 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_power.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_power.h
-> @@ -81,17 +81,6 @@ int dp_power_clk_enable(struct dp_power *power, enum dp_pm_type pm_type,
->  int dp_power_client_init(struct dp_power *power);
->
->  /**
-> - * dp_power_clinet_deinit() - de-initialize clock and regulator modules
-> - *
-> - * @power: instance of power module
-> - * return: 0 for success, error for failure.
-> - *
-> - * This API will de-initialize the DisplayPort's clocks and regulator
-> - * modules.
-> - */
-> -void dp_power_client_deinit(struct dp_power *power);
-> -
-> -/**
->   * dp_power_get() - configure and get the DisplayPort power module data
->   *
->   * @parser: instance of parser module
-> --
-> 2.7.4
->
-
-
--- 
-With best wishes
-Dmitry
