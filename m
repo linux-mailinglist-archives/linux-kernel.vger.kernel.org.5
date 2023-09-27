@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5347B0980
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3F37B0989
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbjI0QCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        id S232603AbjI0QD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjI0QCB (ORCPT
+        with ESMTP id S232838AbjI0QDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:02:01 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2082.outbound.protection.outlook.com [40.107.12.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A952D9C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:01:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ubp1wZdjWDQy/etPz/ImEhio5xHhCXKdZWQvzI2ie/Tidt48nkqjU+sKf6Yf4s+k1gmbN8bKT6DC8Omd44Tb0kGSbWJiSa2ZMjSXZmAJ8g1/HL1p7MXdINsKUNvxcNZ1k0Cvtr+lKqkj4KPMvLpOaLOJc00yvfgGzK4draHKS62v9560oMIlX/uqLTcsu6oWTpPDiuZrMzkHm1kqSmknkjgjOK6PHoE7F612e8jORZhrldnW/UJRN2AqR80Kiv3Di+nX2eo5Zs0BthKj5HpW/WcKplOM4ngBrax7ZPdgwrz4JG2YLVWUKlXcvkJe96WeOjwMuXg52sFnC4wjJhO5Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZBKNQf79SLsNVFbzvjyy9qkwCFtquBfwVGKlvrpzB5Q=;
- b=UYKXzm6F34YYblj3/t564DqkOzWtCIqh0YH4vr+kOaPpt1gakuw7X6eW2IwVl+6QBeihnbVLSa0/PU5rTYfcbdJNwsROlcHpH5HRQ49p+qXvvYL8QfPps4+mfaSeTOrJ22F17oY4gUAxqf/AiKSmod25PDq0KFdIwKuVHgxNDY+T3LqRfNVPHDXOJPYg3Hemha0yns5vdxW7hmf3PCN7JNyJBgCOgik6qA9k+Fta+liEgJDj5WvjsWdGZZXrgXpHH6HgU+OJiZXlScG70/+bgUNdqBpod9htztNZLoIfFvtuKBWWUaE4YIBnNxKysM8AGuUseciFTFfX8zENral9xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZBKNQf79SLsNVFbzvjyy9qkwCFtquBfwVGKlvrpzB5Q=;
- b=A/gdJTvM7T/RL0erHfWNDObPw55gIqz9N2/0pvxULyyjGL4wm8kKtuai8JKHTe8LDkt4HCFwsFZcasjNaVV5GlpCiGa79PzdteN8Pp6UjjqkE7maELAgRy9ROBTK/8l/WGcuIJ72bQYk0wSyIgZa+6tDwMfBDKvP3Zc1LFNxBA+bCz4QbTyv4OzJ7wRmr3uPKFt7kXiCv4cZJmgwTRm6LZfgbX7YLho9qIGy73iIwCajPdA18uhLl5LR5AgHZJ2TdCRlqgt8rR5/TN8PRLDa452OJEqOuyohhy5QRe3DNpbOelRjXW8HUA0YOR1O9ddEdgq9ZqhBUbakjwzV9+lksQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2308.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:35::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Wed, 27 Sep
- 2023 16:01:57 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6813.027; Wed, 27 Sep 2023
- 16:01:57 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Ariel Miculas <ariel.miculas@gmail.com>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
- PTRACE_PEEKUSER and PTRACE_POKEUSER
-Thread-Topic: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
- PTRACE_PEEKUSER and PTRACE_POKEUSER
-Thread-Index: AQHYe+wVZ/yxK3g4vk2yaVkdS+lXbbAxXrMAgAA5JQCAAB6KAIAACaWA
-Date:   Wed, 27 Sep 2023 16:01:57 +0000
-Message-ID: <9afcdb29-db22-3f5c-b596-da7567b707ff@csgroup.eu>
-References: <CAPDJoNtU9Vuh87PxDkxo+7M_Kg_K4PPNGksPuW_guFbChYu-jA@mail.gmail.com>
- <20220601155702.176588-1-ariel.miculas@gmail.com>
- <CAPDJoNvZmeeU+T94rp8BJ0+bH5pDXQCEKPHiQF0Kcu=JrRRfrg@mail.gmail.com>
- <CAPDJoNsb-HtfOQhD6ntZ8Hqx3fv3WAh1U5Jd3GzyN5EwO8znWA@mail.gmail.com>
- <CAPDJoNuR8pNa+rp-PG_eeS14EvpMBLAmjNf9JvL=+0QTpwww-w@mail.gmail.com>
- <d6bd3632-207e-b232-b4a1-0c592a3aaae9@csgroup.eu>
- <CAPDJoNvADrCj8L2RAthXVbBxMNrjbY_4pnHu0QtKKARgyoQ-QA@mail.gmail.com>
-In-Reply-To: <CAPDJoNvADrCj8L2RAthXVbBxMNrjbY_4pnHu0QtKKARgyoQ-QA@mail.gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2308:EE_
-x-ms-office365-filtering-correlation-id: c809fa9a-bb75-4d0f-c812-08dbbf7313a9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JxC1lQ6EHdohXteZa9i8DqOjzdNTIbYiAXM8o04LZLvCor8X/SXkZLMcR2M2/DALnmG2aSByHh4SeO4i+qd+li7WbIgXgjhnpBCQkBqmpqDGPYhllxcG/dDcbEfpCXhW6CKZaNafP+KiBjeUdn+emgL40MR3M/52Gp1GG7oA7w//K/p51xi5Yu9oumuhkYary0Wc9gynDrgBpu6BD80WjmWUA//jl1s1j5tIS9h6ndm/iRt93IGKYOxHkVc/klaDYi9rcNMScMScUyEt70cCnUamD4bsMfGrn5uoxZjABLDC+i3pyB2A5LT/0CJQ0VA0aJm4HqqU8QentjgWSh4sSV0aFEqNZsDtwhmu4TRecviBMddIYwEddRU5zqcjt3k7+2Jk0EcGNbHQPtKEfw17Z7l4mBt+xwOETwW3zaAQEDP6L0pRi7etG7MQ8eI4sueYlBipzwjzgYsAGzfBdlMmYLjGiGR4AM0+j4ilcEz943ZQ4TiAM4clIIrsOFtxWow4oNx9/9urt6i/Omka9VEGstW3i4wTpAMaEOp2LrjND8j+/uuHpJmaUXJFhHLYrRqQPkLXxUmTS5EuDB1RXDIWW7YzAO5KWM4RafscRcz4Z/WAQ0jXRIMxS4LfnrLvzNBNbIDbE+VOUDK//ifpzCSSoqG9cXsY8XcUCeU0fxhBxbI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39850400004)(230922051799003)(1800799009)(186009)(451199024)(2906002)(4744005)(38100700002)(38070700005)(86362001)(36756003)(71200400001)(6512007)(31696002)(6506007)(2616005)(966005)(6486002)(478600001)(26005)(41300700001)(44832011)(31686004)(8936002)(8676002)(4326008)(316002)(6916009)(122000001)(76116006)(91956017)(66556008)(54906003)(5660300002)(66946007)(64756008)(66476007)(66446008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eTk4b1RiNHh5RzdMMTMwZ2dFVXVQMXQ1UnE2WGdEQitta2l2UG5lcTJZeHFn?=
- =?utf-8?B?MzdJbkNSTXlVUW9vdmpGOUMycXNjZFdJVzF4bFpLL1JiMnJEdWNSSWtKT3FW?=
- =?utf-8?B?T0kzNVVYRmlLOFdGTlJwd0o2MHB4dlQrVzd3SnFXSEJ5cmp0Q3RlbkpWRFkv?=
- =?utf-8?B?V0NUWmlsSnEyaGdqb0pxc2ErYmdraUM2SUpHMVNZMTZLNFlMcDM2dTFzeUpZ?=
- =?utf-8?B?TXJqczRUaEhISndvTHV3UWxaZHlmNERobmhJclJrajRSczVRSGg5ZTRSWmxU?=
- =?utf-8?B?NDNrOHVDOEh5M3A3UTFZNWtQVm4xTTh2VU1IVUJOdS9lM2hWa0J4K2xXdWFL?=
- =?utf-8?B?NVl4VzZveFhqbGE1L3lvcDRubjRWbVhFTmhES3ZXT2V6TmJFR2tzWUhWdENv?=
- =?utf-8?B?Y3FCSW04U1V4OXgrT05GUkdNekRycXQ3dnRTSkF1WVFxVEpYTE5YaFhPNDAz?=
- =?utf-8?B?aGJPVnhnZ3N0b1VOdnhVVXdSUnl2UzgrQlZKVmFaVjUxV2t6cjdza0dHUDFJ?=
- =?utf-8?B?SEpmOVlxQ08xUFZoNytNSSt5YUl2QVl5Zko4K1ZlREtKV0trUEEwZDF2dFV4?=
- =?utf-8?B?Z1RLYWdlcEM2bW1LanRjbTBvMEw3M2twbDdVQ2pLWEtURE41MG9hZHQ2cGdY?=
- =?utf-8?B?SzRqZXlOT3BlTnBDbEsrOC9ZaVVybnZxdkFXTVdYdHd4YmdKa2IyaFViVGtR?=
- =?utf-8?B?VGZRZEhIeTY3U3lUaXNaZWQvc1lTcDBWelZqSk9VelRoaXNJRTNRakFCZXFl?=
- =?utf-8?B?ZzRwTWhUWVF2NHdQcGl2VFNjZXBsZDlNRHBab3p3UjV4V0VYWEliQ1BCTVFz?=
- =?utf-8?B?SzFIVHgyNHNSbzZaWmtMV1dWUVlEZ0VGcldFNm5keERWVFBrdXNrenZBUTFE?=
- =?utf-8?B?R01BU0d6YkVWVDllSjA5emNQT1ZzM1RNTmIxN29mNEU5cllMaFVIVzdHL0dj?=
- =?utf-8?B?Z3VwekNyUXNveFlnMzhZSERxV3l2WkhrUkI1VnNoR1NJTFNPRTlWU3VXN2Nx?=
- =?utf-8?B?bGRMY1Vhb2Mvb1ZtczNJeWZuT3YxZ0k5V25uQnV1SnM1akhDbnZML3lpYzM0?=
- =?utf-8?B?OXEvbzgwbXdnMEpFcmlWMVJNYXhwY3dncmZBS1dOeVE1NmdSQU40cWtyai9X?=
- =?utf-8?B?akl1WkZUZTdYVi9HcmpVR0NtYnYwNWxKS3ZFRzZlU2tJcG1QVWk3RU1tQ0d4?=
- =?utf-8?B?MDV2Y2gxaytBcVlXemVWQWFoM3NvNXRQRmhzRXhVcXhxL1Q0bVB5bHRDN0lP?=
- =?utf-8?B?ekpnZ0RFeFJDeGpzSTJ5VVZuTVVIZ2pwQnBQK3dpSnRYMzV1N1c3dUlPZHBk?=
- =?utf-8?B?ZXBMVTdrVEhzeDdYcERnVjlURGl6RlVHQmtVcDVwd015ays4MDBQQXZIRDEw?=
- =?utf-8?B?LzduQlV2YXpoai9meXM5TDZSNXd6Ujlxbit5dHRnenFZZmw5QlMrRkhiS0R3?=
- =?utf-8?B?emNWa0ZLM1k3YVJMejIxWWoyR0pNOVpoWWNwRkhnTEMybUExSVZRU29KVEhL?=
- =?utf-8?B?OXhmVzRlQnl0UzlUT3ZxNHdPQWUrSEYrRzk0ZWRRKzRtNi9MK29tLzhvSUtt?=
- =?utf-8?B?NFBwNFVVem5rNGZrMFNpRHpCZ0lKVjBOeEljL1I2VTFCSWpmak5DVU8zNE5W?=
- =?utf-8?B?QlVsazgxNnFnb1VzQ3kyb0dRS0x2T0IxOVFRTjdhR2xyZVl0dXIrRVorT0FN?=
- =?utf-8?B?TlVjQWpDQlhpNEY1Y0xwWDRXSy9vSHNFeE94VlV5Z1BWMGNxVW1WbHN6a0xn?=
- =?utf-8?B?SzRTTzZNZDFxeEdWTHlMWisxRUM1QTNNb2lsYkE2cjdUS2ExT0Vyb1hsMEJj?=
- =?utf-8?B?bkZSc0RjeW14b1ZyTEpNNHNBS0JLMmVhTnRaVDY4ZnBtaHRDU0tvbzNTU2Zp?=
- =?utf-8?B?RXBnVG9CZUxWZWFCMUlnUEt1eHlSQWNSNmdBSk9YQVhVb1hETzFIZk55TGZh?=
- =?utf-8?B?bElrUGhhUWl4WWd6bEUvcXpsTDUwdXFGOFBsWi9ZMThrQmpVRFRNanhQTFFp?=
- =?utf-8?B?SzR0cVJSUWxHYlVhVTFxTzd1K2RBNWRFQ0RPQW4zWHhJWEcyc1FtWk1Ka1Nx?=
- =?utf-8?B?eTBlZVlvdG1WdjYxcTJYZi9GYTEweHlwN3VLM2t4dzAvQ21lQVUrdCtKNmpv?=
- =?utf-8?B?RGZFNFNQdDcyM1psSjZLMDFKNkZvbW5nVkJsMVM4OXNTaVZNdGhTSm1GWHpm?=
- =?utf-8?B?Vmc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3D805823BA2DCF429115D680CD69E3B1@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Wed, 27 Sep 2023 12:03:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B7C121;
+        Wed, 27 Sep 2023 09:02:35 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 18:02:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695830553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
+        b=gA8E7/z/ye+UWQvTptCUxfM7HS3iYd/tK9vXkmkbp6ehYQxjZfhSnwUbo4yeTQVXJ9IyaK
+        8wwAtn2uo82b34MM6QBT6xBYWLHHZHhUQxGiLRWHByNXFKXmbA2NGgWBwPixIIC7qn67Q0
+        rXHrEqx5L933ymrrywoXolbIUbAnG0yGsz7c0XyJmjfTWkMe8gKDoTyWp+Q9+TsYh6mrfE
+        ZNxJCnQvTyxZ13dpeZ7/wj6oYmTKRHzkxrouy8xoZEUrQ6rMcvQcIQGGMWXBr8+Rz1ibrB
+        q0E2C/9dyj2TETBAiMJrYc13NWVAl8mzXrUff1NU3ponoQLgs3BldvxYTFfGrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695830553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EdCiO/WzKECbYs7KtcCYhKCOSLS8gRQvCAW/vFRb9F4=;
+        b=YReDyt9JG3c9HFVm3jjR59KBPrudAz6g1lOu804uGt8ruhv64qozjuWhLyNqZHyepfHAYV
+        cCC1Rw8pXSmPDmAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <20230927160231.XRCDDSK4@linutronix.de>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c809fa9a-bb75-4d0f-c812-08dbbf7313a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 16:01:57.4816
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d2aUEIYzXg6JlLBBIEHWyXuW/lKQQCmGXZNTfezA/CHbrye5lY6lJZgAD3sGbskiFxS8vPVGIvKtcn1MY8LTQaH4Ye/PcRvw61zPZPXcnms=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2308
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDI3LzA5LzIwMjMgw6AgMTc6MjcsIEFyaWVsIE1pY3VsYXMgYSDDqWNyaXTCoDoNCj4g
-SSd2ZSBmb3J3YXJkZWQgdGhpcyBvbGQgZW1haWwgdGhyZWFkIGZvciB2aXNpYmlsaXR5IGFuZCBk
-aXNjdXNzaW9uJ3MNCj4gc2FrZSBhcm91bmQgbXkgcmVjZW50IGJsb2cgcG9zdCBbMV1bMl0NCg0K
-QWgsIHJpZ2h0LCBpdCdzIGJlZW4gc3VwZXJzZWRlZCBieSANCmh0dHBzOi8vcGF0Y2h3b3JrLm96
-bGFicy5vcmcvcHJvamVjdC9saW51eHBwYy1kZXYvcGF0Y2gvMjAyMjA2MDkxMzMyNDUuNTczNTY1
-LTEtbXBlQGVsbGVybWFuLmlkLmF1Lw0KDQpTbyBJIG1hcmsgdGhlIG5ldyBvbmUgc3VwZXJzZWRl
-ZCBhcyB3ZWxsLg0KDQpCeSB0aGUgd2F5LCBpcyB5b3VyIG90aGVyIHBhdGNoIHN0aWxsIGFwcGxp
-Y2FibGUsIHJlZiANCmh0dHBzOi8vcGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eHBw
-Yy1kZXYvcGF0Y2gvMjAyMjA2MTAxMDI4MjEuMjUyNzI5LTEtYXJpZWwubWljdWxhc0BiZWxkZW4u
-Y29tLyANCj8NCg0KVGhhbmtzDQpDaHJpc3RvcGhlDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IEFyaWVs
-DQo+IA0KPiBbMV0gaHR0cHM6Ly9uZXdzLnljb21iaW5hdG9yLmNvbS9pdGVtP2lkPTM3NjcxOTkx
-DQo+IFsyXSBodHRwczovL3d3dy5yZWRkaXQuY29tL3IvcHJvZ3JhbW1pbmcvY29tbWVudHMvMTZ0
-ZjVuZS9ob3dfaV9nb3Rfcm9iYmVkX29mX215X2ZpcnN0X2tlcm5lbF9jb250cmlidXRpb24vP3Jl
-Zj1zaGFyZSZyZWZfc291cmNlPWxpbmsNCg==
+It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+triggers a lockdep if used from NMI because lockdep expects a deadlock
+since nothing disables NMIs while the lock is acquired.
+
+Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+complains if used from NMI.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+
+The splat:
+| =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+| WARNING: inconsistent lock state
+| 6.6.0-rc3-rt5+ #85 Not tainted
+| --------------------------------
+| inconsistent {INITIAL USE} -> {IN-NMI} usage.
+| swapper/0/0 [HC1[1]:SC0[0]:HE0:SE1] takes:
+| ffffffff828e6c90 (console_srcu){....}-{0:0}, at: console_srcu_read_lock+0=
+x3a/0x50
+| {INITIAL USE} state was registered at:
+=E2=80=A6
+|        CPU0
+|        ----
+|   lock(console_srcu);
+|   <Interrupt>
+|     lock(console_srcu);
+|
+|  *** DEADLOCK ***
+|
+
+My guess is that trylock annotation should not apply to
+rcu_lock_acquire(). This would distinguish it from from non-NMI safe
+srcu_read_lock_nmisafe() and NMI check in rcu_read_unlock() is only
+there to survive if accidentally used in-NMI.
+
+ include/linux/rcupdate.h | 6 ++++++
+ include/linux/srcu.h     | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5e5f920ade909..44aab5c0bd2c1 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -303,6 +303,11 @@ static inline void rcu_lock_acquire(struct lockdep_map=
+ *map)
+ 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+ }
+=20
++static inline void rcu_try_lock_acquire(struct lockdep_map *map)
++{
++	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
++}
++
+ static inline void rcu_lock_release(struct lockdep_map *map)
+ {
+ 	lock_release(map, _THIS_IP_);
+@@ -317,6 +322,7 @@ int rcu_read_lock_any_held(void);
+ #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+=20
+ # define rcu_lock_acquire(a)		do { } while (0)
++# define rcu_try_lock_acquire(a)	do { } while (0)
+ # define rcu_lock_release(a)		do { } while (0)
+=20
+ static inline int rcu_read_lock_held(void)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 127ef3b2e6073..236610e4a8fa5 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_st=
+ruct *ssp) __acquires(ssp
+=20
+ 	srcu_check_nmi_safety(ssp, true);
+ 	retval =3D __srcu_read_lock_nmisafe(ssp);
+-	rcu_lock_acquire(&ssp->dep_map);
++	rcu_try_lock_acquire(&ssp->dep_map);
+ 	return retval;
+ }
+=20
+--=20
+2.40.1
+
