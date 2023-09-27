@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CE77AF8CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77417AF872
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjI0Drk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        id S231182AbjI0DIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjI0Dph (ORCPT
+        with ESMTP id S231222AbjI0DGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:45:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161114EC8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 17:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695773916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZfUoRGmtmsURMuZ/ZaWqNBwx4yTWCRZeeYiles99YKA=;
-        b=Kp6uqSi5E1bRz0EDYx2q4hoM0RJKjz+RmeyG2B2l2yuV/pA+FIh+qVfjpInyculMhMq6dl
-        EwhZK5Npsn/YCp0mZKMk2BMxi8DZvvPfcHLiWqmV2QNm/jyrXc32LWY+U4D8L4dl7A2sHo
-        rYgzCw1CcPca78lMqJGWeEjVCchPtlo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-169-rMRX_rV-PxGwCdgn41hamw-1; Tue, 26 Sep 2023 20:18:34 -0400
-X-MC-Unique: rMRX_rV-PxGwCdgn41hamw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a681c3470fso803831266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 17:18:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695773913; x=1696378713;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZfUoRGmtmsURMuZ/ZaWqNBwx4yTWCRZeeYiles99YKA=;
-        b=NcUDz/TuOv+XutJLtCDQr0GufJZOZdSK3+T3ru3nnpFB4EIqEpVpOhrTNJlAWNRlei
-         KOAskCANDVV9Oc2BkRl8X55DItpDxR4pQAEJDESwIPE7GK+8S2EDQREaYZoqg5LEHq7h
-         t3efmldo6rYuNsLRSwmURWnhWI8Lp/PtntrUk653gBceu+uE2dO1HMX3wtmb4ZtgItYy
-         21QKXzBCfTBsMHniyQ6ZC1scBU8AaBYB7tqyLBkW7BJi+EdInueW94lwevYlLx3HrGiF
-         zdeqH9f+k+0Ru+vTZmvnNWJKGPpPo0vYujwxJhei39t4/kzkbVOiTerO/nzG1IwUKN37
-         88Kw==
-X-Gm-Message-State: AOJu0Ywfhg9mx5+IilPAL0PDK5/NEHliH1C60dCDBDlt6YcPtw/BUesx
-        HjyFcnvnoE4rI/LZ4WuCDoz3Qpm8JppgDnNyfkQrHabgYcV7MdJrNOePZVP2pfsmrBLm5Ktj+HZ
-        HHxQE4qizORi5YoG03eMjBXBl
-X-Received: by 2002:a17:906:18aa:b0:9a1:e758:fc73 with SMTP id c10-20020a17090618aa00b009a1e758fc73mr198553ejf.67.1695773913372;
-        Tue, 26 Sep 2023 17:18:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE+wIMu+OJK6/VompfluO9KYwsYp0o7+KpOhz1siwgDos3xBjAIZ2dWHdrm0YJEKFaJIu47TA==
-X-Received: by 2002:a17:906:18aa:b0:9a1:e758:fc73 with SMTP id c10-20020a17090618aa00b009a1e758fc73mr198539ejf.67.1695773913005;
-        Tue, 26 Sep 2023 17:18:33 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id i22-20020a17090671d600b0099bcdfff7cbsm8369150ejk.160.2023.09.26.17.18.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 17:18:32 -0700 (PDT)
-Message-ID: <2b062434-fcbd-de2b-decd-5000b63c2e6f@redhat.com>
-Date:   Wed, 27 Sep 2023 02:18:31 +0200
+        Tue, 26 Sep 2023 23:06:40 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9497140CE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 17:39:31 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id AFAC15C2646;
+        Tue, 26 Sep 2023 20:39:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 26 Sep 2023 20:39:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1695775168; x=1695861568; bh=FJ
+        cCaP4MuvryHEoEUOeUXajPd8VqAGlTE+SmLU44ry4=; b=Dw9OQxS+KdAP3Jr5JK
+        +M6z7yEbV0uBDa8LNmm9KcarKaVgRCoLoDcx7lcPUsWRbBxyXMZtDAqFdjg3IfOU
+        1eA1ucrxMaA9/Mm5qIgL8ZraGgEOO+98sJgaz70PlvbXODMbQq5XSmvRj73G/KzF
+        kc4Ohl2I14T645tdIHj4VapJHk0S3bT8kB9+v+nxDZblTV7gvAPBctllj7wLOb0b
+        bdQ204SV20eAcXTM93q75KlYz+D9gV3asSTTrRdiMty2EPtcCeBOvNrfynlhl7fZ
+        WcT/RwBq6tWlF3ThVCBumz1rJtet4nu2q2NuCApNHoktIo68ZNNco+4bTL0GDFL/
+        tEKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695775168; x=1695861568; bh=FJcCaP4MuvryH
+        EoEUOeUXajPd8VqAGlTE+SmLU44ry4=; b=P7wJVG+iBD4UMTt1qLcnPrIwHXJOL
+        sU6KpFrfdEZiyW2Ddi0tnq6tVhRpfeP+YA/lJZLF02zn5Q020liZzSK9w9WPPbmU
+        hH0nbcwnITbOvVgBktU6pz6TeME4W3tfEgl6uxyQsPB7NpjtiOCBlYg9IoeJ8Ppp
+        BlKXQQcLNwPX2fPd3Jm1UVn2Rw6IrcQhdLk23X8nUW36LXES5vDufCEoqW/CpV8K
+        bEnFngBEgq0v0KR8WB8YVoS5SQuxCXjx8+dShbSG4I8jR05xMe9xmGqdxSTGfgBc
+        ElD4un7mBAlqId+bKQ5g5RVTqS8XZNydNrQ9RfKezL0rI3NGvO+mOvF2g==
+X-ME-Sender: <xms:wHkTZV5IhFtQzEJruWR-oQlo0DaTshWUUiyOcWvZf2BhohiM_W-law>
+    <xme:wHkTZS5g9VIr0h47GV6NOTGD7cxJWtOSN-Tb3617liDHdUOqZWjsVHVwSwYoJ8uHX
+    v_kDWCbiGDe513C4qc>
+X-ME-Received: <xmr:wHkTZcefq0wIvjdaYN9KXeAbOM-vIgGPldq6N_vVeNY_A0a0XHzoshgkhj1t_YyC1ZeK4t1QPohywjTMOJsB3Tzb8X2hHj89lvtwCIJjsvo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddugdefjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgvfhgr
+    nhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrghtth
+    gvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdugeeu
+    tdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshh
+    hrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:wHkTZeI99_hZXge_mUQmHXqRDdPepw9lVjy8DwTYBSncAsvejclKnw>
+    <xmx:wHkTZZIpemc9LvEip4KRSWx8VSp9UWW8cuR_bgP3mggAiKwHWhCaqA>
+    <xmx:wHkTZXx72z9loB5CqMqV48CLEu2H6fyNr2gKdL8qUr2o8nv5Cjf1kw>
+    <xmx:wHkTZXjpoXzeH7o7vlLE7uJfry6WRCI-9rXGD-nKPUEprCJjQDszdg>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Sep 2023 20:39:27 -0400 (EDT)
+References: <20230926040939.516161-1-shr@devkernel.io>
+ <20230926040939.516161-2-shr@devkernel.io>
+ <ae2be79c-a030-a4d2-0d89-15efa17fe77c@redhat.com>
+ <qvqwmsx83o68.fsf@devbig1114.prn1.facebook.com>
+ <20230926140955.8b2627711116339af80731f2@linux-foundation.org>
+User-agent: mu4e 1.10.1; emacs 28.2.50
+From:   Stefan Roesch <shr@devkernel.io>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>, kernel-team@fb.com,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/4] mm/ksm: add "smart" page scanning mode
+Date:   Tue, 26 Sep 2023 17:39:09 -0700
+In-reply-to: <20230926140955.8b2627711116339af80731f2@linux-foundation.org>
+Message-ID: <qvqw5y3w30w4.fsf@devbig1114.prn1.facebook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
- control
-Content-Language: en-US
-To:     Luben Tuikov <luben.tuikov@amd.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        boris.brezillon@collabora.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230924224555.15595-1-dakr@redhat.com>
- <312983ee-ba4c-477e-8846-072c815df862@amd.com>
- <f6294659-042d-46eb-ae6e-716a6c51872d@amd.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <f6294659-042d-46eb-ae6e-716a6c51872d@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 9/27/23 01:48, Luben Tuikov wrote:
-> Hi,
-> 
-> Please also CC me to the whole set, as opposed to just one patch of the set.
-> And so in the future.
+Andrew Morton <akpm@linux-foundation.org> writes:
 
-There is no series. I created a series in the first place, but finally decided to
-send this one and a few driver patches separately. However, I just accidentally
-sent out the wrong one still containing the "1/3" addition.
+> On Tue, 26 Sep 2023 09:13:31 -0700 Stefan Roesch <shr@devkernel.io> wrote:
+>
+>> > Thinking about it, what are the cons of just enabling this always and not
+>> > exposing new toggles? Alternatively, we could make this a compile-time option.
+>> >
+>> > In general, LGTM, just curious if we really have to make this configurable.
+>> >
+>>
+>> The only downside I can see is that it might take a longer time for some
+>> pages to be de-duplicated (a new candidate page is added, but its
+>> duplicate is skipped in this round). So it will take longer to
+>> de-duplicate this page.
+>>
+>> I tested with more than one workload, but it might be useful to get some
+>> data with additional workloads. I was thinking of enabling it after one or
+>> two releases.
+>
+> We could keep the tunable and make it default "on"?
 
-- Danilo
-
-> 
-> Thanks!
-
+Sounds good to me
