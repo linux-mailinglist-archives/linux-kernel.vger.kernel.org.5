@@ -2,181 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550A67B0280
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FA27B028A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjI0LNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
+        id S231373AbjI0LPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbjI0LNO (ORCPT
+        with ESMTP id S231403AbjI0LO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:13:14 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B1B13A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:13:13 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41958410e5cso550151cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:13:13 -0700 (PDT)
+        Wed, 27 Sep 2023 07:14:59 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17071A7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:14:55 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d894b8b9b7cso6417370276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695813192; x=1696417992; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695813295; x=1696418095; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q3T0uZM81nh3MMMeHJ0x5DLvTiX2DwUPL7g6/tO7DRc=;
-        b=P2TCvwtaihwVYoXCO/s5A+oQmNqWiAJYQ7bIcJS9ylkXHxLfhQNQFqtM9fwB8f5LiB
-         gsFGX4Msi8YNfpkgxTbGuQKWzRWFT+kJmJdZdjomKd5Z0oamGymZHxTKfkLs+5t06Zjt
-         n4J/15j/Wqwcns9QYBSclWrVb3f8Aa2F10OekCqD73wrk0O+YNVaNtViHJkE8/5x9gHn
-         SxC+/4zh9bvsMvqUl7EORzLHG5C1C/ocVgj4bqQxtrb45FMKA6JguhKyCl3ebpIv+R4y
-         Cpsw9n+LYpxkIeWXk0iiR29JXpS9B16vpA/a41piyyJUXxWco/5McAcQjNS35YUAqs5v
-         L07A==
+        bh=CPJwzNvZylvTQiOIT8nQFH9SZPRi6/HairHaCmuEtNs=;
+        b=AMBmhhrE18QeWrtS2JIX7VBdZjVHc5+Sridf2a98pFccWi/5V1BaXrEsmssrwf/XT0
+         K/Qi0jWDh6+iNssAfG8NJBA4sXlzhr2zspvx/6NGRCXoLEFcxEKKWkdy9ZHy2YvnRWHL
+         wP7HihOF1Oc5Da3az9TAb3sH8EyEskZXtdb+SJT8jNySbilpHpurm4CjZEEr1kLdGp3e
+         SKXtrr8q5YLwDwsEfN5YXJ9I0AalBg7CYV/hemPhKrvkZq6vtizoYMPhCD6zI7jKLiVm
+         Ndbp/zM9tcKxzUcY78bebx/MMVBDaTK5lHb84y4OA0khTSxrsFs0HXbXbgeA1UmMCjnj
+         Mb2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695813192; x=1696417992;
+        d=1e100.net; s=20230601; t=1695813295; x=1696418095;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q3T0uZM81nh3MMMeHJ0x5DLvTiX2DwUPL7g6/tO7DRc=;
-        b=glX7Dq5YRcb/DmDH9dHEbXYLN84zIVSsgghVxVGfZd4rK3kijbdWjYLxC0qXCSlKuS
-         bky/VWMPP+PJhctMj48Pjo6JsxuLgU/Xkm2gzXbewg2vB7PthUqlIO11iunfUMI7sv2i
-         EtXYJJj3WSQwHX/jFgqrR/aPnBhLxah8Uztpz0GomMV5JpLCYCN+p7BD171wVn6SNdXa
-         9f+a5GT0dTEwjrjo9il/Us/NG7aP8eMndlbtujslZLcVNDz381yzArpGcjLGwfj6bc/D
-         zH72rVXk+v6r/yU6Ei5050L2/get2aHWfC2r0KxtGJI3gyQhk4asHQwwlebTshBJ/xKR
-         U4dA==
-X-Gm-Message-State: AOJu0YyYxqvvt7tlfKfZPXEdSJdHq+p5eNzNkDZVfokBmPW3H3J8O4Cc
-        7WxIlteSDsvUml9418o8PvQk5zOvW9SS/S7Mwp5m9g==
-X-Google-Smtp-Source: AGHT+IGlYUe+ty9S5L6G+a9UM05DUyiLGpED/5fz3M2kc6vqSgpuXjGJtjhwJ7K3Ne82Jhis9uR7jvtLWCq4xjMbd2I=
-X-Received: by 2002:ac8:7d0b:0:b0:410:653f:90e8 with SMTP id
- g11-20020ac87d0b000000b00410653f90e8mr535228qtb.11.1695813192307; Wed, 27 Sep
- 2023 04:13:12 -0700 (PDT)
+        bh=CPJwzNvZylvTQiOIT8nQFH9SZPRi6/HairHaCmuEtNs=;
+        b=CqsCoxvbQGN0TGED695C4ZgMX8Rxx0YmiHAM+sWB+S6i+sZTThi+rjKv+RMZQtnBKT
+         v77HwxQggj60ZTYILEK/GVuQOlmP+3qa4qmZHxbw8PQRCKFd52ybdooterRZlHbI4fvw
+         oKaXM5xy58UDGhYE8xHLNyqdLfHNJakGDyZnuMJvUua1d5vb2eh1r0mXcY7KQVse1MHk
+         YUXbqiWNHHRycBdbcknmprFp00bJIMpA/LuUAcTw0MJGLxN2Yfq7+YIZr1yD4HM8wMf8
+         4+E1tKbQJeEfjQznKVofxcUAv1XM1jujspLmG8TrDfgBzNjrhmXRb1X/utc1MiO2ufzX
+         8MxQ==
+X-Gm-Message-State: AOJu0YyOxteT1ZAy6HfV7z6bp5QYesDDgi6vjnJBwo6IrwQVGzQpO0pC
+        PIn9kK5ipC96ndFFKH3JVdpGM7RGFvHKNVH4Bd72iQ==
+X-Google-Smtp-Source: AGHT+IEn2A7RS/m3JUkpvx+tmDV6V0R2eCw+Of0nQLfgxCdKPWwgPYxVdAeR/zX+HB0XruKv1fpwYUQ6tD6Zm5e1DDc=
+X-Received: by 2002:a25:f810:0:b0:d7b:aaae:2037 with SMTP id
+ u16-20020a25f810000000b00d7baaae2037mr4192438ybd.22.1695813294798; Wed, 27
+ Sep 2023 04:14:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230927105858.12950-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20230927105858.12950-1-quic_kriskura@quicinc.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Wed, 27 Sep 2023 04:13:00 -0700
-Message-ID: <CANP3RGd1ZzQXE2-kDDNyfxuLZCDYoJKJQ-2uBsq++StqTDkCRg@mail.gmail.com>
-Subject: Re: [PATCH v4] usb: gadget: ncm: Handle decoding of multiple NTB's in
- unwrap call
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
-        quic_jackp@quicinc.com, stable@vger.kernel.org
+References: <20230814-void-drivers-soc-renesas-rmobile-sysc-v1-1-6648dfd854de@google.com>
+ <CAMuHMdWiC4v9fctp18bRrEH-m_-0VjMg9+XpON8vdRYwniTU3g@mail.gmail.com>
+ <CAMuHMdWk_jcZ1V7J68bw11YZ+EjEqAWOKHzanVyxo2zktbMteg@mail.gmail.com>
+ <CAPDyKFqgsHYz1hfOQ=KniNJj+u7ZSMoxS03Rixj1n2AOUdSVaQ@mail.gmail.com> <CAMuHMdW+ovx_Vbp1FQbvHESYrv3kHx5FvkjSb0V8dq857x5e9w@mail.gmail.com>
+In-Reply-To: <CAMuHMdW+ovx_Vbp1FQbvHESYrv3kHx5FvkjSb0V8dq857x5e9w@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 27 Sep 2023 13:14:19 +0200
+Message-ID: <CAPDyKFp_PfP4mVWucbMHwrRBvOAkktJDjqaYrMtEKat7raQ68A@mail.gmail.com>
+Subject: Re: [PATCH] soc: renesas: rmobile-sysc: fix -Wvoid-pointer-to-enum-cast
+ warning
+To:     Justin Stitt <justinstitt@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Linux PM list <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 3:59=E2=80=AFAM Krishna Kurapati
-<quic_kriskura@quicinc.com> wrote:
+On Wed, 27 Sept 2023 at 11:28, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
 >
-> When NCM is used with hosts like Windows PC, it is observed that there ar=
-e
-> multiple NTB's contained in one usb request giveback. Since the driver
-> unwraps the obtained request data assuming only one NTB is present, we
-> loose the subsequent NTB's present resulting in data loss.
+> Hi Ulf,
 >
-> Fix this by checking the parsed block length with the obtained data
-> length in usb request and continue parsing after the last byte of current
-> NTB.
+> On Tue, Sep 26, 2023 at 1:22=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.o=
+rg> wrote:
+> > On Mon, 18 Sept 2023 at 11:21, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+> > > On Wed, Aug 30, 2023 at 10:24=E2=80=AFAM Geert Uytterhoeven
+> > > <geert@linux-m68k.org> wrote:
+> > > > On Tue, Aug 15, 2023 at 12:11=E2=80=AFAM Justin Stitt <justinstitt@=
+google.com> wrote:
+> > > > > When building with clang 18 I see the following warning:
+> > > > > |      drivers/soc/renesas/rmobile-sysc.c:193:22: warning: cast t=
+o smaller integer
+> > > > > |               type 'enum pd_types' from 'const void *' [-Wvoid-=
+pointer-to-enum-cast]
+> > > > > |        193 |                 add_special_pd(np, (enum pd_types)=
+id->data);
+> > > > >
+> > > > > This is due to the fact that `id->data` is a void* and `enum pd_t=
+ypes`
+> > > > > has the size of an integer. This cast from pointer-width to int-w=
+idth
+> > > > > causes truncation and possible data loss. Instead, cast to `uintp=
+tr_t`
+> > > > > which has the same width as void*.
+> > > > >
+> > > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+> > > > > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > > >
+> > > > scripts/checkpatch.pl:
+> > > >
+> > > >     WARNING: Reported-by: should be immediately followed by Closes:
+> > > > with a URL to the report
+> > > >
+> > > > Hence changing the Link: tag to a Closes: tag.
+> > > >
+> > > > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > > > ---
+> > > > > Note: It should be noted that there is likely no data loss occurr=
+ing in
+> > > > > this case since the enum only has a few fields. The narrowing cas=
+t from
+> > > > > pointer to int will not lose any data.
+> > > >
+> > > > Indeed, the theoretical narrowing could only happen on a 64-bit
+> > > > platform, while this driver is only used on arm32.
+> > > >
+> > > > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > i.e. will queue in renesas-devel for v6.7.
+> > >
+> > > As the Generic PM Domain providers were moved to drivers/pmdomain/
+> > > in v6.6-rc2, and now have their own maintainer, I have moved this
+> > > commit from renesas-drivers-for-v6.7 to renesas-pmdomain-for-v6.7[1],
+> > > with s/soc/pmdomain/ in the oneline-summary.
+> > >
+> > > Ulf: if you prefer, you can still take this patch directly.
+> > > Else I will send a PR after rc3 and/or rc5, like I do with my other
+> > > renesas-<foo>-for-<version> branches.
+> > > Thanks!
+> >
+> > Apologize for the delay, been traveling lately. Anyway, I can
+> > certainly pick up the patch and carry it for v6.7. Just let me know,
+> > if/when you have dropped the patch from your tree.
 >
-> Cc: stable@vger.kernel.org
-> Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
-> Changes in v4: Replaced void* with __le16* typecast for tmp variable
-> Changes in v3: Removed explicit void* typecast for ntb_ptr variable
->
->  drivers/usb/gadget/function/f_ncm.c | 26 +++++++++++++++++++-------
->  1 file changed, 19 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
-ction/f_ncm.c
-> index 424bb3b666db..faf90a217419 100644
-> --- a/drivers/usb/gadget/function/f_ncm.c
-> +++ b/drivers/usb/gadget/function/f_ncm.c
-> @@ -1171,7 +1171,8 @@ static int ncm_unwrap_ntb(struct gether *port,
->                           struct sk_buff_head *list)
->  {
->         struct f_ncm    *ncm =3D func_to_ncm(&port->func);
-> -       __le16          *tmp =3D (void *) skb->data;
-> +       unsigned char   *ntb_ptr =3D skb->data;
-> +       __le16          *tmp;
->         unsigned        index, index2;
->         int             ndp_index;
->         unsigned        dg_len, dg_len2;
-> @@ -1184,6 +1185,10 @@ static int ncm_unwrap_ntb(struct gether *port,
->         const struct ndp_parser_opts *opts =3D ncm->parser_opts;
->         unsigned        crc_len =3D ncm->is_crc ? sizeof(uint32_t) : 0;
->         int             dgram_counter;
-> +       int             to_process =3D skb->len;
-> +
-> +parse_ntb:
-> +       tmp =3D (__le16 *)ntb_ptr;
->
->         /* dwSignature */
->         if (get_unaligned_le32(tmp) !=3D opts->nth_sign) {
-> @@ -1230,7 +1235,7 @@ static int ncm_unwrap_ntb(struct gether *port,
->                  * walk through NDP
->                  * dwSignature
->                  */
-> -               tmp =3D (void *)(skb->data + ndp_index);
-> +               tmp =3D (__le16 *)(ntb_ptr + ndp_index);
->                 if (get_unaligned_le32(tmp) !=3D ncm->ndp_sign) {
->                         INFO(port->func.config->cdev, "Wrong NDP SIGN\n")=
-;
->                         goto err;
-> @@ -1287,11 +1292,11 @@ static int ncm_unwrap_ntb(struct gether *port,
->                         if (ncm->is_crc) {
->                                 uint32_t crc, crc2;
->
-> -                               crc =3D get_unaligned_le32(skb->data +
-> +                               crc =3D get_unaligned_le32(ntb_ptr +
->                                                          index + dg_len -
->                                                          crc_len);
->                                 crc2 =3D ~crc32_le(~0,
-> -                                                skb->data + index,
-> +                                                ntb_ptr + index,
->                                                  dg_len - crc_len);
->                                 if (crc !=3D crc2) {
->                                         INFO(port->func.config->cdev,
-> @@ -1318,7 +1323,7 @@ static int ncm_unwrap_ntb(struct gether *port,
->                                                          dg_len - crc_len=
-);
->                         if (skb2 =3D=3D NULL)
->                                 goto err;
-> -                       skb_put_data(skb2, skb->data + index,
-> +                       skb_put_data(skb2, ntb_ptr + index,
->                                      dg_len - crc_len);
->
->                         skb_queue_tail(list, skb2);
-> @@ -1331,10 +1336,17 @@ static int ncm_unwrap_ntb(struct gether *port,
->                 } while (ndp_len > 2 * (opts->dgram_item_len * 2));
->         } while (ndp_index);
->
-> -       dev_consume_skb_any(skb);
-> -
->         VDBG(port->func.config->cdev,
->              "Parsed NTB with %d frames\n", dgram_counter);
-> +
-> +       to_process -=3D block_len;
-> +       if (to_process !=3D 0) {
-> +               ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
-> +               goto parse_ntb;
-> +       }
-> +
-> +       dev_consume_skb_any(skb);
-> +
->         return 0;
->  err:
->         skb_queue_purge(list);
-> --
-> 2.42.0
+> Thanks, dropped.
 
-Reviewed-by: Maciej =C5=BBenczykowski <maze@google.com>
+Applied for next, thanks!
+
+[...]
+
+Kind regards
+Uffe
