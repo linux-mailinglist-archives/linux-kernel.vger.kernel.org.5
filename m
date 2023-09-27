@@ -2,74 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C487AFBCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FBF7AFBCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjI0HS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        id S229910AbjI0HSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjI0HS4 (ORCPT
+        with ESMTP id S229458AbjI0HSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:18:56 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7101F11D;
-        Wed, 27 Sep 2023 00:18:54 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:17:35
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 15:17:35 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: aic79xx: Clean up errors in aic7xxx_proc.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 03:18:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE0011D;
+        Wed, 27 Sep 2023 00:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695799090; x=1727335090;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3lvZvOml3+lEkRnYV3uf47vqcra7BFoLiBhptCYXrwk=;
+  b=PYY6nDg/HE0YT/Gk9TlMuBhZWRevzNQNj2VbkSG7WXn8RE9ORp8d2IFa
+   C0qXgfYSeJSGG75zek2BfwaLpBFQPXrwAAsMI0uqwzYquM/sKXTpORf8/
+   F5cQYEzqniycoVv/fM7W9yOpmfgLaX1MZuIKlS05PJ/lj451w6gJKKVk+
+   lnSuj8Rc+c4bQ0qO1NMzklCBGhymJKAbAXW4y7PZQi3OYSN4davZT1nGx
+   U+ad7TN2D3mTvRSASLQAEJfsrF56lvrjZ92IQMI8CYGJ3gKlkrSqGLAgu
+   L77F6patHAR7iqfbCfmY4fqder0XdALrmta2w9J+Qa+AoQFLIg6E7VrNo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381652801"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="381652801"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 00:18:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="819319694"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="819319694"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga004.fm.intel.com with SMTP; 27 Sep 2023 00:18:05 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 27 Sep 2023 10:18:04 +0300
+Date:   Wed, 27 Sep 2023 10:18:04 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
+        ryan.eleceng@gmail.com
+Subject: Re: [PATCH v6 02/14] USB: typec: Add cmd timeout and response delay
+Message-ID: <ZRPXLBj/Y6+yiwf8@kuha.fi.intel.com>
+References: <20230923073959.86660-1-alkuor@gmail.com>
+ <20230923073959.86660-3-alkuor@gmail.com>
+ <ZRPTHeYhdtdtKZ1/@kuha.fi.intel.com>
 MIME-Version: 1.0
-Message-ID: <241fddbf.87f.18ad5801405.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwD3lD8P1xNl4++9AA--.675W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwAHsU
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRPTHeYhdtdtKZ1/@kuha.fi.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-Iihmb28qKSIgc2hvdWxkIGJlICIoZm9vICopIgpFUlJPUjogcmV0dXJuIGlzIG5vdCBhIGZ1bmN0
-aW9uLCBwYXJlbnRoZXNlcyBhcmUgbm90IHJlcXVpcmVkCgpTaWduZWQtb2ZmLWJ5OiBHdW9IdWEg
-Q2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBkcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3
-eHh4X3Byb2MuYyB8IDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAz
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpYzd4eHhf
-cHJvYy5jIGIvZHJpdmVycy9zY3NpL2FpYzd4eHgvYWljN3h4eF9wcm9jLmMKaW5kZXggNGJjOWUy
-ZGZjY2Y2Li4yNTY4MTZlNmQ1NzIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9haWM3eHh4L2Fp
-Yzd4eHhfcHJvYy5jCisrKyBiL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpYzd4eHhfcHJvYy5jCkBA
-IC0yMDYsNyArMjA2LDcgQEAgYWhjX3Byb2Nfd3JpdGVfc2VlcHJvbShzdHJ1Y3QgU2NzaV9Ib3N0
-ICpzaG9zdCwgY2hhciAqYnVmZmVyLCBpbnQgbGVuZ3RoKQogCQlnb3RvIGRvbmU7CiAJfQogCi0J
-aGF2ZV9zZWVwcm9tID0gYWhjX3ZlcmlmeV9ja3N1bSgoc3RydWN0IHNlZXByb21fY29uZmlnKili
-dWZmZXIpOworCWhhdmVfc2VlcHJvbSA9IGFoY192ZXJpZnlfY2tzdW0oKHN0cnVjdCBzZWVwcm9t
-X2NvbmZpZyAqKWJ1ZmZlcik7CiAJaWYgKGhhdmVfc2VlcHJvbSA9PSAwKSB7CiAJCXByaW50aygi
-YWhjX3Byb2Nfd3JpdGVfc2VlcHJvbTogY2tzdW0gdmVyaWZpY2F0aW9uIGZhaWxlZFxuIik7CiAJ
-CWdvdG8gZG9uZTsKQEAgLTI4MCw3ICsyODAsNyBAQCBhaGNfcHJvY193cml0ZV9zZWVwcm9tKHN0
-cnVjdCBTY3NpX0hvc3QgKnNob3N0LCBjaGFyICpidWZmZXIsIGludCBsZW5ndGgpCiAJaWYgKCFw
-YXVzZWQpCiAJCWFoY191bnBhdXNlKGFoYyk7CiAJYWhjX3VubG9jayhhaGMsICZzKTsKLQlyZXR1
-cm4gKHdyaXR0ZW4pOworCXJldHVybiB3cml0dGVuOwogfQogCiAvKgpAQCAtMzEyLDcgKzMxMiw3
-IEBAIGFoY19saW51eF9zaG93X2luZm8oc3RydWN0IHNlcV9maWxlICptLCBzdHJ1Y3QgU2NzaV9I
-b3N0ICpzaG9zdCkKIAkJCQlzZXFfcHV0YyhtLCAnXG4nKTsKIAkJCX0KIAkJCXNlcV9wcmludGYo
-bSwgIjB4JS40eCAiLAotCQkJCSAgKCh1aW50MTZfdCopYWhjLT5zZWVwX2NvbmZpZylbaV0pOwor
-CQkJCSAgKCh1aW50MTZfdCAqKWFoYy0+c2VlcF9jb25maWcpW2ldKTsKIAkJfQogCQlzZXFfcHV0
-YyhtLCAnXG4nKTsKIAl9Ci0tIAoyLjE3LjEK
+On Wed, Sep 27, 2023 at 10:00:50AM +0300, Heikki Krogerus wrote:
+> On Sat, Sep 23, 2023 at 03:39:47AM -0400, Abdel Alkuor wrote:
+> > Some commands in tps25750 take longer than 1 second
+> > to complete, and some responses need some delay before
+> > the result becomes available.
+> > 
+> > Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+> 
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+Hold on!
+
+You are not specifying the driver in the subject. You need to fix
+that.
+
+> > ---
+> > Changes in v6:
+> >   - Use tps6598x_exec_cmd as a wrapper
+> > Changes in v5:
+> >   - Incorporating tps25750 into tps6598x driver
+> > 
+> >  drivers/usb/typec/tipd/core.c | 19 +++++++++++++++----
+> >  1 file changed, 15 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> > index 37b56ce75f39..32420c61660d 100644
+> > --- a/drivers/usb/typec/tipd/core.c
+> > +++ b/drivers/usb/typec/tipd/core.c
+> > @@ -282,9 +282,10 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
+> >  	power_supply_changed(tps->psy);
+> >  }
+> >  
+> > -static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> > +static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
+> >  			     size_t in_len, u8 *in_data,
+> > -			     size_t out_len, u8 *out_data)
+> > +			     size_t out_len, u8 *out_data,
+> > +			     u32 cmd_timeout_ms, u32 res_delay_ms)
+> >  {
+> >  	unsigned long timeout;
+> >  	u32 val;
+> > @@ -307,8 +308,7 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> >  	if (ret < 0)
+> >  		return ret;
+> >  
+> > -	/* XXX: Using 1s for now, but it may not be enough for every command. */
+> > -	timeout = jiffies + msecs_to_jiffies(1000);
+> > +	timeout = jiffies + msecs_to_jiffies(cmd_timeout_ms);
+> >  
+> >  	do {
+> >  		ret = tps6598x_read32(tps, TPS_REG_CMD1, &val);
+> > @@ -321,6 +321,9 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> >  			return -ETIMEDOUT;
+> >  	} while (val);
+> >  
+> > +	/* some commands require delay for the result to be available */
+> > +	mdelay(res_delay_ms);
+> > +
+> >  	if (out_len) {
+> >  		ret = tps6598x_block_read(tps, TPS_REG_DATA1,
+> >  					  out_data, out_len);
+> > @@ -345,6 +348,14 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> >  	return 0;
+> >  }
+> >  
+> > +static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+> > +			     size_t in_len, u8 *in_data,
+> > +			     size_t out_len, u8 *out_data)
+> > +{
+> > +	return tps6598x_exec_cmd_tmo(tps, cmd, in_len, in_data,
+> > +				     out_len, out_data, 1000, 0);
+> > +}
+> > +
+> >  static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
+> >  {
+> >  	const char *cmd = (role == TYPEC_DEVICE) ? "SWUF" : "SWDF";
+> > -- 
+> > 2.34.1
+> 
+> -- 
+> heikki
+
+-- 
+heikki
