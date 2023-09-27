@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A5B7AFF49
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDACF7AFF4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjI0JBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S229486AbjI0JCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjI0JBr (ORCPT
+        with ESMTP id S230329AbjI0JCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:01:47 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9BA3;
-        Wed, 27 Sep 2023 02:01:46 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6c4b9e09521so5412175a34.3;
-        Wed, 27 Sep 2023 02:01:46 -0700 (PDT)
+        Wed, 27 Sep 2023 05:02:06 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A387E4;
+        Wed, 27 Sep 2023 02:02:04 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ae2f8bf865so4995311b6e.2;
+        Wed, 27 Sep 2023 02:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695805306; x=1696410106; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695805323; x=1696410123; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PXIpE3t2S5hvGBlA4qF3kN7EACJyW+Do/rfIdtRkLUc=;
-        b=Qgbj+kDXSNrOL8+s6qH8JiM/QySkP4ucirf4cglRfmHJ9S8E7oViI4WSsT8CJI080D
-         sts0dsgt+bLb7ej2Y8dn6dWId9Hofltb1y7vpqSu+iM19rf31/9bDWYxY6PLqfcy2/1q
-         e4SMXnNTpH4UN+eEIrJiTfnNsyBHDUuJDX3UG4Gh03ADRwH2NiX44eOqmsXc6hnFshl8
-         ZXCeAE8IMOVDx1fJ+a8Nw/RPVQK2NGOEa3tj9U004eqQctdrv3KMbg6VSyYytUW2/XVA
-         UsssapRIKFwxktpG+xKM38SwuxFzRf/k0VYWP3M1WxE0wOFFIhIW+EuDE04R3iqYQNsE
-         j+YA==
+        bh=JYb+x/wAKIajaMdzWu38bo8URRaln6e+0LguScHfSNU=;
+        b=D5orGmkfBVGNC6SA9D/OjFAUCmnJLyKjz1BAZ3dz7b6d0B7xNEB3zQYG/VCtOna7NA
+         pK5VO/7bgtjeKRt6BXZqvkJiIdYoNeXHOopRaB96hcTnXZZTp7uXSWfs5JtBTY6KeCr5
+         l/sROxY/G4MB5666sLfdmezrptO6TsTT3BJakbzGtRXa1diiggzudJ6r07AefWTk/aSp
+         czZBB5cEwy7Hll4QASRlmDewwp825L7PRu5LTqqAJXPdL51WQRWJ7S5bybmD0Akpk2/u
+         BlkVaMBiCaA99neG9zkbxsNPYPXtj7k8dX+tfZd/qWC0/f9suSjruMODIvS4V5L4dfzb
+         88Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695805306; x=1696410106;
+        d=1e100.net; s=20230601; t=1695805323; x=1696410123;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PXIpE3t2S5hvGBlA4qF3kN7EACJyW+Do/rfIdtRkLUc=;
-        b=ZGj232M1gjT12CEBDy5GFQ5AGk7q7RCcJkp8cxgnlkmjmZ45Et7YsO+B3mHmBMg+cp
-         aMt944K/SLZwTkLWPkAUawQjS4qpzShofwkjAh7Vx1xuuKu6avC4wf4dupsOKsaCVXE5
-         179DJHWUy35YESqKzp8wF6LbCQBHmtkQoxUHAGe4Wy4P8kMXnm0lcXHx8RH7WH8YgEeg
-         5Bb54qTKUl/cXQ3IMXze6V1VIj/2YwejZhiNY+sr3rwG5wXwQM0cf4+Y5Nr00D73HVgQ
-         v2ow6DfiwwOL7R9ChGNrSUTOOh8SVEEMr1ZwSWZMg3t1JN2DLloLkTiAY6kNEfA1X30q
-         WKNQ==
-X-Gm-Message-State: AOJu0YzKkmlZWpqWatIBqtmrTBZkIvsISmDjE5YfnhbUCDRM5qqAB3GN
-        NbMNs/WCsdrNrR/Ks9LtdYIKnVuxiO7AOA==
-X-Google-Smtp-Source: AGHT+IGIIPx7LpmWuBAwJyMC+B4D+B7f2hNQ3krtTefomBIb8tOVeWEMPZHi106hegZJOgN1jP48zA==
-X-Received: by 2002:a05:6830:1291:b0:6c4:cdce:5de8 with SMTP id z17-20020a056830129100b006c4cdce5de8mr1517090otp.26.1695805305760;
-        Wed, 27 Sep 2023 02:01:45 -0700 (PDT)
+        bh=JYb+x/wAKIajaMdzWu38bo8URRaln6e+0LguScHfSNU=;
+        b=UYp4Q0NcjyUVx2ZxFk8vHOIDenr4QIrMdWmD5zLkgfOHxxG98r81hyGDmjxWyHK7F7
+         FOmYjIymXkbfviPiR2WfZ2HHVzwtKiOhNx6THOHtK+IJqfx9rRZkfeYNRiZpqTCtpjXS
+         9lfZhCFXtb9j4kjKSak2nERLhb2PwgEONGvJR0k8ccEDrH1BFVO1n+mO1MUTin3y0fMJ
+         VFa497FhSgHhRxVuqH2bY3f7buj2/zOmdYcIDHn3gNy9vxSSWabGamILYvCO6O5gtvDo
+         Yo2oG2dd5+5cAM0O6LbfjALq3Z+bMhboYgnTgR4185n16I9ygzHFwcvi9701oht3qMuX
+         YCfQ==
+X-Gm-Message-State: AOJu0YxYqibnfjjD9icNKtsk5b+B3brmxL5fY6A1To/lEIqiYSYsPivO
+        3KILjBdwQgYdFgW98aGIh90=
+X-Google-Smtp-Source: AGHT+IEb5dlecz8eAtSfltSmdujtwoVtRC6Z7aE3UEu34jdVnUbAVOmlFXFYRMw5hvFLvQY4iMCrbw==
+X-Received: by 2002:aca:2b14:0:b0:3a8:1c07:17d3 with SMTP id i20-20020aca2b14000000b003a81c0717d3mr1694343oik.19.1695805323309;
+        Wed, 27 Sep 2023 02:02:03 -0700 (PDT)
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id t7-20020a05683022e700b006b9b0a08fdasm2312157otc.59.2023.09.27.02.01.44
+        by smtp.gmail.com with ESMTPSA id j1-20020a056808034100b003a7a34a4ed8sm2452085oie.33.2023.09.27.02.02.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 02:01:45 -0700 (PDT)
+        Wed, 27 Sep 2023 02:02:03 -0700 (PDT)
 From:   Chen Wang <unicornxw@gmail.com>
 To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
         devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
@@ -60,9 +60,9 @@ To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
 Cc:     Inochi Amaoto <inochiama@outlook.com>,
         Chen Wang <wangchen20@iscas.ac.cn>,
         Chen Wang <unicornxw@gmail.com>
-Subject: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT timer
-Date:   Wed, 27 Sep 2023 17:01:37 +0800
-Message-Id: <6e263430685732a4f354b45396c7422a37440ac8.1695804418.git.unicornxw@gmail.com>
+Subject: [PATCH v3 07/11] dt-bindings: interrupt-controller: Add Sophgo sg2042 CLINT mswi
+Date:   Wed, 27 Sep 2023 17:01:56 +0800
+Message-Id: <4dcfca1b0fa736a226bd01c796e4d8986ce49e63.1695804418.git.unicornxw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695804418.git.unicornxw@gmail.com>
 References: <cover.1695804418.git.unicornxw@gmail.com>
@@ -80,38 +80,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Inochi Amaoto <inochiama@outlook.com>
 
-The clint of Sophgo sg2042 is incompatible with the standard sifive
-clint, as the timer and ipi device on the different address, and can
-not be handled by the sifive,clint DT.
+Like the timer of Sophgo sg2042 clint. The machine-level software
+interrupt device (mswi) of sg2042 clint have the same problem when
+dealing with the standard sifive clint.
 
-In addition, the timers of sg2042 are mapped by per cluster, which is
-hard to merge with its ipi device.
-
-To avoid conficts caused by using the same clint compatible string when
-this device is parsed by SBI, add a new vendor specific compatible string
-to identify the timer of sg2042 soc.
+To avoid the same conficts as the timer of sg2042 clint, also add the
+vendor specific compatible string to identify the mswi of sg2042 clint.
 
 Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
 Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
 Signed-off-by: Chen Wang <unicornxw@gmail.com>
 ---
- .../timer/sophgo,sg2042-clint-mtimer.yaml     | 42 +++++++++++++++++++
+ .../sophgo,sg2042-clint-mswi.yaml             | 42 +++++++++++++++++++
  1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sophgo,sg2042-clint-mswi.yaml
 
-diff --git a/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/sophgo,sg2042-clint-mswi.yaml b/Documentation/devicetree/bindings/interrupt-controller/sophgo,sg2042-clint-mswi.yaml
 new file mode 100644
-index 000000000000..5da0947d048a
+index 000000000000..a79c4c3db3b3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/sophgo,sg2042-clint-mswi.yaml
 @@ -0,0 +1,42 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/timer/sophgo,sg2042-clint-mtimer.yaml#
++$id: http://devicetree.org/schemas/interrupt-controller/sophgo,sg2042-clint-mswi.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Sophgo CLINT Timer
++title: Sophgo sg2042 CLINT Machine-level Software Interrupt Device
 +
 +maintainers:
 +  - Inochi Amaoto <inochiama@outlook.com>
@@ -120,7 +116,7 @@ index 000000000000..5da0947d048a
 +  compatible:
 +    oneOf:
 +      - items:
-+          - const: sophgo,sg2042-clint-mtimer
++          - const: sophgo,sg2042-clint-mswi
 +
 +  reg:
 +    maxItems: 1
@@ -138,13 +134,13 @@ index 000000000000..5da0947d048a
 +
 +examples:
 +  - |
-+    timer@ac000000 {
-+      compatible = "sophgo,sg2042-clint-mtimer";
-+      interrupts-extended = <&cpu1intc 7>,
-+                            <&cpu2intc 7>,
-+                            <&cpu3intc 7>,
-+                            <&cpu4intc 7>;
-+      reg = <0xac000000 0x00010000>;
++    interrupt-controller@94000000 {
++      compatible = "sophgo,sg2042-clint-mswi";
++      interrupts-extended = <&cpu1intc 3>,
++                            <&cpu2intc 3>,
++                            <&cpu3intc 3>,
++                            <&cpu4intc 3>;
++      reg = <0x94000000 0x00010000>;
 +    };
 +...
 -- 
