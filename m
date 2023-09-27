@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A06D7B0773
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF407B0776
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbjI0O5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
+        id S232249AbjI0O7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjI0O5o (ORCPT
+        with ESMTP id S232067AbjI0O7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:57:44 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4378FF5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:57:42 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9338e4695so188585971fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695826660; x=1696431460; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kF3xTzsn9HLZQj02Y4JAVq4+cnHK5cK7+MRBOAK1zto=;
-        b=zSHzsHoystgSRI8WbSiGKcLfQskrpMxRxAB7ABn3riafYp8WN13+U4YT8L77Mw6W0f
-         HlnWyaGbi6Sy2AFz0T6jr3/fu55o6cvQj3/AiSF56I2EYHpCa6Shb30U/6pYPW80mW1l
-         qOemVXQDrwuXuXOme4SGTK+owFNnvrGjEOq0MPcU17uz01WoZmeKqcgBHdfAaeD8EYy9
-         jsBYUPRiE+YWntvqQt2BVNqephU2XWl4P5A4zn8g3Q1hwNduz3WgCK8RfvhEwR6WMm2X
-         lyUauhquPV8zo7Np3nWwrw2cxyqRwuaqd9X5L7w5qTW2JbtWLdjKrO7MBtxREuuQZoBq
-         Bf7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695826660; x=1696431460;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kF3xTzsn9HLZQj02Y4JAVq4+cnHK5cK7+MRBOAK1zto=;
-        b=puU5UtPVjoXDfiM6aVLGqSwP5pSEZKCC+HBfBlLa5zMREOMZZCtjvbX5dee7G+0cSe
-         qBmB+K/SUzLZ37kC0mopEfaM9xlXU3cYh6HPEfuki5HGVpxg9T5HBHrYoSLaV1dYM2QX
-         Y4Xh8l9fygycjfU6ywB0o0c+1COWllCZyO26/d2zwg9JrgkPK6fy/N8hekGuaJev/SPl
-         ql3hiHWV/s+J7xmBYirHY+o880CpotbMnODuGN5AluZKR6v5E954IqIBI2NdWpS6LUHI
-         XWUxwtiWIPxRsaStAv1r1VhYP+kyiF7VNKeb70xRzwPWNxTdPevJJTMAEvFOQsTc/wT+
-         hiIA==
-X-Gm-Message-State: AOJu0YyWtA1D5FsM9hkcLdWL1SeU/1U6YwMxOru3v4XRlWVT4Cq/AdMH
-        EzcEnpfecpOxV1p8O+wQTNkS
-X-Google-Smtp-Source: AGHT+IGG7mnyMmEuRPdbZUTFhUCWPBXMktolkIEDpgdfwWvheKVZBGucA66WnqOUDknn4aOsIf4umw==
-X-Received: by 2002:a2e:9d55:0:b0:2c0:1cfd:8698 with SMTP id y21-20020a2e9d55000000b002c01cfd8698mr2040919ljj.36.1695826660497;
-        Wed, 27 Sep 2023 07:57:40 -0700 (PDT)
-Received: from thinkpad.fritz.box ([2a02:2454:9d09:3f00:b024:394e:56d7:d8b4])
-        by smtp.gmail.com with ESMTPSA id j26-20020a170906831a00b0099bc8bd9066sm9405220ejx.150.2023.09.27.07.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 07:57:39 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com
-Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
-        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        abel.vesa@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2] PCI: qcom: Make use of QCOM_PCIE_LINK_SPEED_TO_BW() macro for encoding link speed
-Date:   Wed, 27 Sep 2023 16:57:38 +0200
-Message-Id: <20230927145738.115843-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 27 Sep 2023 10:59:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52066F4
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:59:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BD49C433C8;
+        Wed, 27 Sep 2023 14:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695826778;
+        bh=J5WMHeQmOYa9DaNiL6kj1L9JZ8CZSajg8MxP1uoMKSE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FQmBq3PQj4PKvUzkHXkkFH9/JcpmiCxSZ2WWd1Rqwr/OIjrCqal+CfgHOkmWb/dEw
+         z4+x6qdDG1mLyQF1GXNZslivHxCxIloJMsAzgePtAAQ8SoVJdqWbknQZMZEbb3v1l/
+         MpGF3+38TNA9lMfj4wVNYQQGgW9CpoKVnB1yM9FGp+erUuI36ngPz0DaUb8+uaw7cm
+         7dwzy7GrXYHz8q+qdee56LVDhvoAPsSEgmDWy6ruOMr/KQasD81JDXYCMqGed26LsW
+         MP5UdZSko+ftXTax8zedAE2iRfR4+hQbZGEyw1CoAgRRWh/1MYXIsPmrizuO4uZDpg
+         HI1KsWr0aDtwA==
+Date:   Wed, 27 Sep 2023 15:59:32 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Simon Horman <horms@kernel.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [net-next PATCH 1/2] dt-bindings: net: snps,dwmac: DMA
+ Arbitration scheme
+Message-ID: <20230927-dense-scoundrel-22ede0e27973@spud>
+References: <20230927122928.22033-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="00CqfJ64cfG+S8hl"
+Content-Disposition: inline
+In-Reply-To: <20230927122928.22033-1-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of hardcoding the link speed in MBps, let's make use of the
-existing QCOM_PCIE_LINK_SPEED_TO_BW() macro that does the encoding of the
-link speed for us.
 
-This eliminates the need for a switch case in qcom_pcie_icc_update() and
-also works for future Gen speeds without any code modifications.
+--00CqfJ64cfG+S8hl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+On Wed, Sep 27, 2023 at 02:29:27PM +0200, Christian Marangi wrote:
+> Document new binding snps,arbit to program the DMA to use Arbitration
+> scheme. (Rx has priority over Tx)
+>=20
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
+mentation/devicetree/bindings/net/snps,dwmac.yaml
+> index 5c2769dc689a..4499f221c29b 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -442,6 +442,12 @@ properties:
+>      description:
+>        Use Address-Aligned Beats
+> =20
+> +  snps,arbit:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Program the DMA to use Arbitration scheme.
+> +      (Rx has priority over Tx)
 
-Changes in v2:
+Can you explain please what makes this a property of the hardware, or
+otherwise makes it suitable for inclusion in DT?
 
-- Switched to QCOM_PCIE_LINK_SPEED_TO_BW() macro as per Bjorn's suggestion
-  https://lore.kernel.org/linux-pci/20230924160713.217086-1-manivannan.sadhasivam@linaro.org/
+> +
+>    snps,fixed-burst:
+>      $ref: /schemas/types.yaml#/definitions/flag
+>      description:
+> --=20
+> 2.40.1
+>=20
 
- drivers/pci/controller/dwc/pcie-qcom.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+--00CqfJ64cfG+S8hl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 297442c969b6..dce80d6dc88f 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -148,6 +148,9 @@
- 
- #define QCOM_PCIE_CRC8_POLYNOMIAL		(BIT(2) | BIT(1) | BIT(0))
- 
-+#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
-+		MBps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]) / BITS_PER_BYTE)
-+
- #define QCOM_PCIE_1_0_0_MAX_CLOCKS		4
- struct qcom_pcie_resources_1_0_0 {
- 	struct clk_bulk_data clks[QCOM_PCIE_1_0_0_MAX_CLOCKS];
-@@ -1347,7 +1350,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
- 	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
- 	 * for the pcie-mem path.
- 	 */
--	ret = icc_set_bw(pcie->icc_mem, 0, MBps_to_icc(250));
-+	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
- 	if (ret) {
- 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
- 			ret);
-@@ -1360,7 +1363,7 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
- static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
- {
- 	struct dw_pcie *pci = pcie->pci;
--	u32 offset, status, bw;
-+	u32 offset, status;
- 	int speed, width;
- 	int ret;
- 
-@@ -1377,22 +1380,7 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
- 	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
- 	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
- 
--	switch (speed) {
--	case 1:
--		bw = MBps_to_icc(250);
--		break;
--	case 2:
--		bw = MBps_to_icc(500);
--		break;
--	default:
--		WARN_ON_ONCE(1);
--		fallthrough;
--	case 3:
--		bw = MBps_to_icc(985);
--		break;
--	}
--
--	ret = icc_set_bw(pcie->icc_mem, 0, width * bw);
-+	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
- 	if (ret) {
- 		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
- 			ret);
--- 
-2.25.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRDVAAKCRB4tDGHoIJi
+0vXYAQD67f4By+s5MP5vlHvV6WZ1uTkpsDKRXlhwiGwhPFF9aAD8CRBHJ1ufdl98
+4zTcZIm8hVr0NdUOXt28M5x1qXtgmgg=
+=JEy+
+-----END PGP SIGNATURE-----
+
+--00CqfJ64cfG+S8hl--
