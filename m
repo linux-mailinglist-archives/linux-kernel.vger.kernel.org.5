@@ -2,119 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A182F7AF8F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0157AF8E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjI0EA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        id S229723AbjI0D5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjI0D65 (ORCPT
+        with ESMTP id S229562AbjI0D40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:58:57 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126AC1E978
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:19:28 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-597f461adc5so206887297b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:19:28 -0700 (PDT)
+        Tue, 26 Sep 2023 23:56:26 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC2993C8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:25:06 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4063bfc6c03so56695e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 20:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695784767; x=1696389567; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DGozN3Q2BjVab5DdC5Xqh5aKsGm98+6kSJqgQyphx4Q=;
-        b=wWxxFkNRhyFJrl2HT2Y7HKBAuHEyijl48YBQ4zrpWFFvwamXybQrAjZLJz6FJLS8qs
-         9jjNd38wrNAm6nQSX3ceOHEFR9mmPW2oaddv7AX9KqZLoW7Wa8+JIYO1VkA4idV0gtSB
-         +9W0zcWejYSxex4PV19AQXMQoolXKulgQYZTNqrWCfs2vwDxBJoI5GtsNJE8vjAtxxiC
-         bs4bSMLdiVL5Ov6DK0AE0G0Rr8qDL7qnQt26YhjcZhKOwB/gTTqsjSO0P1FNCwpNMTS4
-         kLrC5SjVOFkyzSr43c5pQyLl6TGTRdlsxYLBS0sVSAeXBKFTUEpiTC+BIBs7u7Iddebr
-         Gu7g==
+        d=google.com; s=20230601; t=1695785104; x=1696389904; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XyUAFCOTCSnBAiLEI+omhqMX95NZb6ocgqGLmZ+9h5M=;
+        b=SDcoUtlbYkSXPhi+85I6/J8Vnz5dG1wFTu36BosnICsXhuiYQQoRbEYU9nXZY+pcPZ
+         GId0lpcXbNYr+r27M3PGArKCMbHbSmWIxi7wYaUFRmRQvVECwgAzLLosX49n9pZnfJ7i
+         cQeJBUxKG+Vz/QdXObAeso4v/Ltq+Mz7pdMqNfdnY0VlFzzhkhbb0jEMQmXBJedOJ5GZ
+         M2Ya50+4FxhGoVx7zTkjA9Rmh5oXDy/p09lzvqdPTsgv9HdaDT3KzqW7O/WA7xZ7dZu9
+         yJRAf1e+jaOj9BljOIK9PVivBvi4e7d0BGCHetyvuHOsNXdl7dlQ1kjjmZHgrVqNTOMw
+         1sZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695784767; x=1696389567;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DGozN3Q2BjVab5DdC5Xqh5aKsGm98+6kSJqgQyphx4Q=;
-        b=tv99oHsWH980fO/SVvn+hmLbokwtcxdk4FuHlkam/ZCrDjVvA0kG5Wopj61MBbwzZ8
-         LkAjWUHPCA0hugEuzCExr7edHnnuTpqPrKo7/K4hmwJ2Ot+CFeRePuXzCfmSiDwOfw3O
-         GlG414nUVahIHh6O3OlzgqnWLTW+37n1JeHz6sULh5s1kZy66KCP/QRs0a718BRZFxhM
-         rhq8ROSfaLJe/1N1Qh8NirAMzKxzbiAkk3o7/SjMT/vXPJcSUMfAJgj1HeS00mDDXqfF
-         UbxaKdSV8f4LYZMLm7k//OII+m8EvBX68gUsFYLyOADyUXruHfsjIwiNPBAi0eiKHfxX
-         jDUA==
-X-Gm-Message-State: AOJu0YykcmwdxlVMUMDoQuAKeS4YIIyvQGTlPG5kGj0X9EE73opxPAiE
-        IRGKKd1ypAVHwLfC/USIN7DoMwo+ez8UbEm5CA==
-X-Google-Smtp-Source: AGHT+IFacMx8GpxVXB6axPpq+vXi8WKy5ZXo2AjxMntJypqIRg0l1HjRPdST6huJcVUl8MLsrqNan5P2YE12nFDdbg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:880b:0:b0:d89:dd12:163d with SMTP
- id c11-20020a25880b000000b00d89dd12163dmr1445ybl.1.1695784767190; Tue, 26 Sep
- 2023 20:19:27 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 03:19:13 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADGfE2UC/x2MQQqAIBAAvxJ7TrBNsvpKhEhutocsVCKI/p50m
- MMcZh5IFJkSjNUDkS5OfIQiTV3BstngSbArDiixlQN2wlM2u+WQCxSNdc44IbVCZftGkUYo6Rl p5fvfTvP7fozB+mhmAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695784766; l=1608;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=Z/OmsHcYrM5MtXvVa9TZMGeFKOHN5xCyog9zO9xwJV0=; b=lPG98gO1n66aeEpHpqKhRK8xSwE9XYPSVvpQeaoQ1BmEHFgA6zvp7wzCceTBEOWUVNotomdWM
- vmWsWEkLWirA9uPCL0HWgUEeGew3+yB6ftxyokDo8HNY/g8F8Kwa6gZ
-X-Mailer: b4 0.12.3
-Message-ID: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
-Subject: [PATCH 0/3] get_maintainer: add patch-only keyword matching
-From:   Justin Stitt <justinstitt@google.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695785104; x=1696389904;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XyUAFCOTCSnBAiLEI+omhqMX95NZb6ocgqGLmZ+9h5M=;
+        b=JvnxrGzu1Lve41cLLdCeFdbks47rnIyqWOL/hQRe3/i6L74LNLxpOHYJIyUZdPVfVr
+         dw6jaW7OOnZpCrtk1H/j+Gd9TbvNsGBIuZ0XAjXRrGgKLM1TAkO/bOM1zQ5l/JcLxHcC
+         BSwUALIb0uwq0kX6Dxir0pqxwK97aPNGwREWAUcSkvSYeB+dKpyws9Wj1j+PgvBJEdnJ
+         +wSZQL8DdNo6k/p1tJZbFO4QONk8kxQK04/FhmKUogthx2knYCwRuXuSAB5yhK6VIacG
+         cOox4x7OoVt2oyD3erCNa7QagS/CwswiLfg7SZ1Mf5OlgwShqJg5B0h+Zfx15isU+XGA
+         wzcw==
+X-Gm-Message-State: AOJu0YwRP8Kdd6r14ccGcIgTDGNb7O/F7upJeCKV1RjpezvHttOwZaw3
+        6DbUQEXmwg/joTzIyiC3Zjofn+cUrEAnhozylUjV11tTODX0gq//1YVG1g==
+X-Google-Smtp-Source: AGHT+IElt5P11QC2tEp1XRtAf3RMDfYMv7C8cEveYjInHhNqgbiilOl4KPHjgo3kqqF1eaMxy8bVDy0JLUl/YXD4o1U=
+X-Received: by 2002:a05:600c:2946:b0:405:320a:44f9 with SMTP id
+ n6-20020a05600c294600b00405320a44f9mr151329wmd.5.1695785104323; Tue, 26 Sep
+ 2023 20:25:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230923005404.3633619-1-make_ruc2021@163.com>
+In-Reply-To: <20230923005404.3633619-1-make_ruc2021@163.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 27 Sep 2023 11:24:50 +0800
+Message-ID: <CABVgOS=XrsBdMTENB6-pmr7PCV-vPY4T=sX2L-XARJR2oQ8p2g@mail.gmail.com>
+Subject: Re: [PATCH v3] list: test: potential dereference of null pointer
+To:     Ma Ke <make_ruc2021@163.com>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000c9715006064ebcdf"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series aims to add "D:" which behaves exactly the same as "K:" but
-works only on patch files.
+--000000000000c9715006064ebcdf
+Content-Type: text/plain; charset="UTF-8"
 
-The goal of this is to reduce noise when folks use get_maintainer on
-tree files as opposed to patches. This use case should be steered away
-from [1] but "D:" should help maintainers reduce noise in their inboxes
-regardless, especially when matching omnipresent keywords like [2]. In
-the event of [2] Kees would be to/cc'd from folks running get_maintainer
-on _any_ file containing "__counted_by". The number of these files is
-rising and I fear for his inbox as his goal, as I understand it, is to
-simply monitor the introduction of new __counted_by annotations to
-ensure accurate semantics.
+On Sat, 23 Sept 2023 at 08:54, Ma Ke <make_ruc2021@163.com> wrote:
+>
+> To avoid the failure of alloc, we could check the return value of
+> kmalloc() and kzalloc().
+>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
 
-See [3/3] for an illustrative example.
+Thanks very much. This looks good to me. We could change the rest of
+the allocations to also use kunit_kzalloc(), but equally that can be
+left to another patch.
 
-This series also includes a formatting pass over get_maintainer because
-I personally found it difficult to parse with the human eye.
+Reviewed-by: David Gow <davidgow@google.com>
 
-[1]: https://lore.kernel.org/all/20230726151515.1650519-1-kuba@kernel.org/
-[2]: https://lore.kernel.org/all/20230925172037.work.853-kees@kernel.org/
+Cheers,
+-- David
 
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Justin Stitt (3):
-      MAINTAINERS: add documentation for D:
-      get_maintainer: run perltidy
-      get_maintainer: add patch-only pattern matching type
+>  lib/list-test.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/list-test.c b/lib/list-test.c
+> index 0cc27de9cec8..a0b478042477 100644
+> --- a/lib/list-test.c
+> +++ b/lib/list-test.c
+> @@ -26,10 +26,12 @@ static void list_test_list_init(struct kunit *test)
+>
+>         INIT_LIST_HEAD(&list2);
+>
+> -       list4 = kzalloc(sizeof(*list4), GFP_KERNEL | __GFP_NOFAIL);
+> +       list4 = kunit_kzalloc(test, sizeof(*list4), GFP_KERNEL | __GFP_NOFAIL);
+> +       KUNIT_ASSERT_NOT_NULL(test, list4);
+>         INIT_LIST_HEAD(list4);
+>
+>         list5 = kmalloc(sizeof(*list5), GFP_KERNEL | __GFP_NOFAIL);
+> +       KUNIT_ASSERT_NOT_NULL(test, list5);
+>         memset(list5, 0xFF, sizeof(*list5));
+>         INIT_LIST_HEAD(list5);
+>
+> @@ -40,7 +42,6 @@ static void list_test_list_init(struct kunit *test)
+>         KUNIT_EXPECT_TRUE(test, list_empty_careful(list4));
+>         KUNIT_EXPECT_TRUE(test, list_empty_careful(list5));
+>
+> -       kfree(list4);
+>         kfree(list5);
+>  }
+>
+> --
+> 2.37.2
+>
 
- MAINTAINERS               |    3 +
- scripts/get_maintainer.pl | 3334 +++++++++++++++++++++++----------------------
- 2 files changed, 1718 insertions(+), 1619 deletions(-)
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230926-get_maintainer_add_d-07424a814e72
+--000000000000c9715006064ebcdf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBI
+EwjBSHx7IkO7stXp+uZin/1BuFSbDJsezcB/DGbhsTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA5MjcwMzI1MDRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAcqJ+2PWZTmhWVLkIEca/
+cTkcbgzxCof70isrgXu2L9TkEnyXO5npPxaO+k3LznlGcu4drHUirr4+NL1IGMgueEjCBcKPOlwA
+hagmCS65PlepjjYJRMPeE6RWxGOIL9+FKhP9v66S6sfGraROXH0ew9D9eAiy0muM8H5g3mOwiODD
+/2An8l9IiwDTGLWFQG//EqStPkaKZDc+eFl0pOCN0OPfegPrjB0LJXgz+MW5zvLSXu0Dz5vwcUoM
+dh7bPnHmbHEfhTAOpwb6PQAVPfvFMSNaxbW+iz5BTT/KI/NioxbQglm2mOPp2xPkBWR4FNW2lEjC
+/oPftjnB3sNhJL3w2A==
+--000000000000c9715006064ebcdf--
