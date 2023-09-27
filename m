@@ -2,194 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D65E7B0D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1097B0D7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjI0Ufk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        id S229690AbjI0Ujf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjI0Ufh (ORCPT
+        with ESMTP id S229493AbjI0Uje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:35:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E63114
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695846934; x=1727382934;
-  h=date:from:to:cc:subject:message-id;
-  bh=p4Flu/5rkx/0Ny60LxbxOSp1fLa8OnJJWG0EdtYsqTQ=;
-  b=YPZX4LVoxA876Nsm4To6xozm8tAAAu1n7VMUv7uYhou3iwh5MmF+/T9u
-   QUhF9g/Nz1KqNRh5K8o/lf2eoB5X9bwyGwOv3g/qNC9tsgnsvZB3+tFk1
-   87BjGZQ5uxA6U2pKIo+TL2wx67P+9caKoHHJauS0moJXbbRNDyi4CLz2d
-   uRkW+QZ+n52f9do1uITfJTLHDngvX19phquAW/g8YzBaPJazzuDJXBzjZ
-   McA/mwA9Y/4udsxlZBt4qlzQGN/cKqWgFm7BHh5kpmfFBSorD92f9vdna
-   pENDX5DttxxJ3sUUH//U47LOXCGXLyd85fXoY56GMZAqAESTqnIBVbfEA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="372274702"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="372274702"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 13:35:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="839589500"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="839589500"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Sep 2023 13:35:31 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qlbFp-0000dt-08;
-        Wed, 27 Sep 2023 20:35:29 +0000
-Date:   Thu, 28 Sep 2023 04:34:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 9adde744c8a85be70bf40b0df6068f4cdd1fdc3d
-Message-ID: <202309280454.YPjy9kPE-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 16:39:34 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B45311D
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:39:32 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-452527dded1so5235574137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695847171; x=1696451971; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z2gl2b6anOv/WlO5fpZiL7fnlm+S3JfLVNwXnhVppVA=;
+        b=G+laWL8CAzVQa6H1iMsBmUT6elmRbi5ZT1BZmF1zCpdQR/GR3rDDPzurwMdZ4JOaLh
+         1L03ba7TzZJKRHnnTRugXjuOV5ctsUAbJVHREVPqXe5xVi8ifhgfY/WSXuwFW8kHrjof
+         FMY9wBEBzmzF8xGQBpYhOefBHisOPPp+mrKOTE3G2by7pFCp1xVnqdnWAp4YUZUIOO3s
+         YrtwmxWjc6bTYeVLy/NeNh7yNQtf77pn1EtJjEgkmSK7iUb3toYaVoOWIp5QXVKxqFj6
+         qs9694XfKK2h4oM5PxKUxYv0ySJ/tYiLYTvpqZ/CS4dAF+L/vpSjWSS7KXNLZ3fatnd6
+         4GRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695847171; x=1696451971;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z2gl2b6anOv/WlO5fpZiL7fnlm+S3JfLVNwXnhVppVA=;
+        b=VZ60feDHd3g/kjRilfxOPRU7Q3gy9mA5oaF+DYDYhn1MJDAdi65+jRZKUv29CKgV/3
+         gGLSgRdVpDTd+OlwfQaAzc2yLAMa8pecXmQzcnjH9hcffoW+AfA/B5tLsr5FjgMnc0/x
+         hmvTh+HtbCii7PMQvwmsfKynJsEGi3NvqlHlphdk16xfm1mSoVKSUsRVpq7tNISrKi/4
+         1I531L6nYwEEils0ikWOP81s6mOa+oikr4rnsuxNf5URp7D7Lr+VvT2ikI2KKFKNxpkK
+         4m+o1uaioUHkjTUwYnptHLX6zlCFASPHapN4LKGH+Gz8IxYmFz6ykEkOKI5CzRHT5jYH
+         tlNQ==
+X-Gm-Message-State: AOJu0YwBz9fglDNMzlzu1MPLWXMx2vcI+Uno1HnTyZ6vecB6qoPGmTMI
+        Bjk5IR7qmweCsOXNxmvtPAhjSw==
+X-Google-Smtp-Source: AGHT+IHYckBTqMPbLNAfsNcVh7/kOSbCbqWFqji9OTMU0IgQOfgIaUmZJgp26NbpR8o1s0L4hy1XIw==
+X-Received: by 2002:a67:bd05:0:b0:452:b96c:313b with SMTP id y5-20020a67bd05000000b00452b96c313bmr3069566vsq.13.1695847171214;
+        Wed, 27 Sep 2023 13:39:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:ba06])
+        by smtp.gmail.com with ESMTPSA id n11-20020a0cdc8b000000b0065b2be40d58sm1426496qvk.25.2023.09.27.13.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 13:39:30 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 16:39:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Chris Li <chrisl@kernel.org>
+Subject: Re: [PATCH v2 1/2] zswap: make shrinking memcg-aware
+Message-ID: <20230927203929.GA399644@cmpxchg.org>
+References: <20230919171447.2712746-1-nphamcs@gmail.com>
+ <20230919171447.2712746-2-nphamcs@gmail.com>
+ <CAJD7tkZqm9ZsAL0triwJPLYuN02jMMS-5Y8DE7TuDJVnOCm_7Q@mail.gmail.com>
+ <20230926182436.GB348484@cmpxchg.org>
+ <CAJD7tkYN=S8uMeXthJ1rqsRwFar-nzDGESevtM_+C6yVB1VatQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkYN=S8uMeXthJ1rqsRwFar-nzDGESevtM_+C6yVB1VatQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 9adde744c8a85be70bf40b0df6068f4cdd1fdc3d  rculist.h: docs: Fix wrong function summary
+On Tue, Sep 26, 2023 at 11:37:17AM -0700, Yosry Ahmed wrote:
+> On Tue, Sep 26, 2023 at 11:24 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Mon, Sep 25, 2023 at 01:17:04PM -0700, Yosry Ahmed wrote:
+> > > +Chris Li
+> > >
+> > > On Tue, Sep 19, 2023 at 10:14 AM Nhat Pham <nphamcs@gmail.com> wrote:
+> > > >
+> > > > From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> > > >
+> > > > Currently, we only have a single global LRU for zswap. This makes it
+> > > > impossible to perform worload-specific shrinking - an memcg cannot
+> > > > determine which pages in the pool it owns, and often ends up writing
+> > > > pages from other memcgs. This issue has been previously observed in
+> > > > practice and mitigated by simply disabling memcg-initiated shrinking:
+> > > >
+> > > > https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+> > > >
+> > > > This patch fully resolves the issue by replacing the global zswap LRU
+> > > > with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+> > > >
+> > > > a) When a store attempt hits an memcg limit, it now triggers a
+> > > >    synchronous reclaim attempt that, if successful, allows the new
+> > > >    hotter page to be accepted by zswap.
+> > > > b) If the store attempt instead hits the global zswap limit, it will
+> > > >    trigger an asynchronous reclaim attempt, in which an memcg is
+> > > >    selected for reclaim in a round-robin-like fashion.
+> > >
+> > > Hey Nhat,
+> > >
+> > > I didn't take a very close look as I am currently swamped, but going
+> > > through the patch I have some comments/questions below.
+> > >
+> > > I am not very familiar with list_lru, but it seems like the existing
+> > > API derives the node and memcg from the list item itself. Seems like
+> > > we can avoid a lot of changes if we allocate struct zswap_entry from
+> > > the same node as the page, and account it to the same memcg. Would
+> > > this be too much of a change or too strong of a restriction? It's a
+> > > slab allocation and we will free memory on that node/memcg right
+> > > after.
+> >
+> > My 2c, but I kind of hate that assumption made by list_lru.
+> >
+> > We ran into problems with it with the THP shrinker as well. That one
+> > strings up 'struct page', and virt_to_page(page) results in really fun
+> > to debug issues.
+> >
+> > IMO it would be less error prone to have memcg and nid as part of the
+> > regular list_lru_add() function signature. And then have an explicit
+> > list_lru_add_obj() that does a documented memcg lookup.
+> 
+> I also didn't like/understand that assumption, but again I don't have
+> enough familiarity with the code to judge, and I don't know why it was
+> done that way. Adding memcg and nid as arguments to the standard
+> list_lru API makes the pill easier to swallow. In any case, this
+> should be done in a separate patch to make the diff here more focused
+> on zswap changes.
 
-elapsed time: 1585m
+Just like the shrinker, it was initially written for slab objects like
+dentries and inodes. Since all the users then passed in charged slab
+objects, it ended up hardcoding that assumption in the interface.
 
-configs tested: 117
-configs skipped: 2
+Once that assumption no longer holds, IMO we should update the
+interface. But agreed, a separate patch makes sense.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> > Because of the overhead, we've been selective about the memory we
+> > charge. I'd hesitate to do it just to work around list_lru.
+> 
+> On the other hand I am worried about the continuous growth of struct
+> zswap_entry. It's now at ~10 words on 64-bit? That's ~2% of the size
+> of the page getting compressed if I am not mistaken. So I am skeptical
+> about storing the nid there.
+> 
+> A middle ground would be allocating struct zswap_entry on the correct
+> node without charging it. We don't need to store the nid and we don't
+> need to charge struct zswap_entry. It doesn't get rid of
+> virt_to_page() though.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230927   gcc  
-arm                               allnoconfig   gcc  
-arm                                 defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230927   gcc  
-i386         buildonly-randconfig-004-20230927   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-005-20230927   gcc  
-i386                  randconfig-006-20230927   gcc  
-i386                  randconfig-011-20230927   gcc  
-i386                  randconfig-012-20230927   gcc  
-i386                  randconfig-013-20230927   gcc  
-i386                  randconfig-014-20230927   gcc  
-i386                  randconfig-015-20230927   gcc  
-i386                  randconfig-016-20230927   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230927   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230927   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230927   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230927   gcc  
-x86_64       buildonly-randconfig-002-20230927   gcc  
-x86_64       buildonly-randconfig-003-20230927   gcc  
-x86_64       buildonly-randconfig-004-20230927   gcc  
-x86_64       buildonly-randconfig-005-20230927   gcc  
-x86_64       buildonly-randconfig-006-20230927   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230927   gcc  
-x86_64                randconfig-002-20230927   gcc  
-x86_64                randconfig-003-20230927   gcc  
-x86_64                randconfig-004-20230927   gcc  
-x86_64                randconfig-005-20230927   gcc  
-x86_64                randconfig-006-20230927   gcc  
-x86_64                randconfig-016-20230927   gcc  
-x86_64                randconfig-071-20230927   gcc  
-x86_64                randconfig-072-20230927   gcc  
-x86_64                randconfig-073-20230927   gcc  
-x86_64                randconfig-074-20230927   gcc  
-x86_64                randconfig-075-20230927   gcc  
-x86_64                randconfig-076-20230927   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+I like that idea.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The current list_lru_add() would do the virt_to_page() too, so from
+that POV it's a lateral move. But we'd save the charging and the extra
+nid member.
