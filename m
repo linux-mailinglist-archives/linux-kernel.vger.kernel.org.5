@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2567B0F18
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1560E7B0F1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjI0WtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 18:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S229549AbjI0Wwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 18:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbjI0WtV (ORCPT
+        with ESMTP id S229460AbjI0Wwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 18:49:21 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A071B1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:49:15 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c6193d6bb4so75985ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695854955; x=1696459755; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIJKJLaNcL8GDk+Ht7dCkCTcNn0oTRzFCuMLCDfzqz0=;
-        b=AaSwqqVeTdv/v3H+H80PAcofpbSf4vm8a0iBx5kRp/QN8d5Q7k4kEMAwranTVwK5DI
-         zxl0b+yUVWrp0Bfvlh94o6xMQohl7MzeA82Jf1T4ZnXrId3OwMnWUSOv81jl/yDlNN6N
-         ZMZuQ5pA6WIGvyZBa+lsdo3b22ubzzpFXw1tL7kF821Ych4NmYLEtRXfXat12nJO9IIN
-         8l3as0d5Vmxdy1O4+XMmZg4ivZ4hoq922Q7UVY363liccm1ZO8yIfjh1PTvOWgfrohHx
-         jecj7jeBZcIFrywKs5pFQeQwFqnYXCe+vO6ZwSn2zFptJ6C1BHyAeY2bb7lNtHrasfpr
-         2oVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695854955; x=1696459755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XIJKJLaNcL8GDk+Ht7dCkCTcNn0oTRzFCuMLCDfzqz0=;
-        b=I04a+pyqgpeaycaEt7IkdWmaFCXVrTtNf7cKguXegHNZ+wT7sI6wgQbcIYLM9m+gdh
-         Wk/TF8I8nbpJzrWeEO51cx4rP+DIvigNrMv0nUOJdf1c54f+Au10uOc+0FB3W7eV8xui
-         WF51/06zaHLmJBx+V5KsUlnN1/xG6JuupCLsdNZgi4iu4Yr79TyzsKqcb9Rt73G2IjJp
-         aFSZMd6LK3pH6+UDVkY474DhUIGX4IfBMNyWa6oCOX1e+yKLk9vwgdpSXj2dFqjlkbUG
-         i0bbKCxWHiPrkqVFfiztqgjuBlVDht7DQqC1Zh72KtEVcZIi+T7s6lqygfug1rL0UAnZ
-         +AZg==
-X-Gm-Message-State: AOJu0Yw0yGlGIM+nCORPL/Wf9tm+nUeVwOYTMVHHh/tvvBYts62ygKNe
-        YmvJ3RrAy4AX8/NMWVDxbEkiF/0tQ3T+X0nD4C+2Fw==
-X-Google-Smtp-Source: AGHT+IFg4xs/UWNT30KLKAXtF/O8kFcQ5dG9ij6JaTG86Q1zxSkGAbGJpi6P6KLyxdxnH8Dbwsd8eB1Rrn4s8EKe6hI=
-X-Received: by 2002:a17:902:e751:b0:1c6:112f:5ceb with SMTP id
- p17-20020a170902e75100b001c6112f5cebmr562761plf.25.1695854955102; Wed, 27 Sep
- 2023 15:49:15 -0700 (PDT)
+        Wed, 27 Sep 2023 18:52:33 -0400
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AD9FB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:52:31 -0700 (PDT)
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx1.riseup.net (Postfix) with ESMTPS id 4RwsM31pWJzDr9m;
+        Wed, 27 Sep 2023 22:52:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1695855151; bh=gAs/bpzfBIjWnBIn0sI/kTwrsBLHFTgASUwIJke5YlI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=SDBi4d31fFqOHUrYoudL3nnJQJv5dSYKGgOibtFdubeuwhO9SdRUDZxlnlHCtsLfx
+         /itxIhmQJjQZlSAJhj85PyTiXFqqciznXCqzt+fOZrcxZ6v8q7Qt6jIhMaLtbVbWwy
+         pYIklW/ISyyZRi6KwdK5KPebPUAFWQt0eLdeTVdw=
+X-Riseup-User-ID: 1488B78AAF2C0972EEFDBA6A7A506CA056319624C69903D5ED22FEC43F308F29
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4RwsM00GL4zJq90;
+        Wed, 27 Sep 2023 22:52:27 +0000 (UTC)
+Message-ID: <8aab614e-1624-413d-693a-5934be6cdf8e@riseup.net>
+Date:   Wed, 27 Sep 2023 19:52:25 -0300
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
- <CAG48ez2WNOMwPo4OMVUHbS4mirwbqHUY5qUaaZ9DTkXdkzrjiQ@mail.gmail.com>
- <CAJuCfpGcsBE2XqPJSVo1gdE_O96gzS5=ET=u0uSBSX3Lj56CtA@mail.gmail.com> <CAJuCfpHY5zhkS0OPxOK-twb6pDJg6OpXZnPquw_9wBmbjFiF9Q@mail.gmail.com>
-In-Reply-To: <CAJuCfpHY5zhkS0OPxOK-twb6pDJg6OpXZnPquw_9wBmbjFiF9Q@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 28 Sep 2023 00:48:37 +0200
-Message-ID: <CAG48ez3w7kbetfhEd7trLhOKJYPw4jSVBeOC+psZZR84d-hJaw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/3] drm/tests: Fix kunit_release_action ctx argument
+To:     Maira Canal <mairacanal@riseup.net>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>
+Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com
+References: <20230920-kunit-kasan-fixes-v1-0-1a0fc261832d@riseup.net>
+ <20230920-kunit-kasan-fixes-v1-1-1a0fc261832d@riseup.net>
+ <771e3ddf-aa15-5ff9-9689-ec0e02bc803a@riseup.net>
+Content-Language: en-US
+From:   Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <771e3ddf-aa15-5ff9-9689-ec0e02bc803a@riseup.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 11:08=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
-com> wrote:
-> On Wed, Sep 27, 2023 at 1:42=E2=80=AFPM Suren Baghdasaryan <surenb@google=
-.com> wrote:
-> >
-> > On Wed, Sep 27, 2023 at 1:04=E2=80=AFPM Jann Horn <jannh@google.com> wr=
-ote:
-> > >
-> > > On Wed, Sep 27, 2023 at 8:08=E2=80=AFPM Suren Baghdasaryan <surenb@go=
-ogle.com> wrote:
-> > > > On Wed, Sep 27, 2023 at 5:47=E2=80=AFAM Jann Horn <jannh@google.com=
-> wrote:
-> > > > > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <suren=
-b@google.com> wrote:
-> > > > > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
-> > > > > > +               /*
-> > > > > > +                * If the dst_pmd is mapped as THP don't overri=
-de it and just
-> > > > > > +                * be strict. If dst_pmd changes into TPH after=
- this check, the
-> > > > > > +                * remap_pages_huge_pmd() will detect the chang=
-e and retry
-> > > > > > +                * while remap_pages_pte() will detect the chan=
-ge and fail.
-> > > > > > +                */
-> > > > > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
-> > > > > > +                       err =3D -EEXIST;
-> > > > > > +                       break;
-> > > > > > +               }
-> > > > > > +
-> > > > > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma);
-> > > > > > +               if (ptl && !pmd_trans_huge(*src_pmd)) {
-> > > > > > +                       spin_unlock(ptl);
-> > > > > > +                       ptl =3D NULL;
-> > > > > > +               }
-> > > > >
-> > > > > This still looks wrong - we do still have to split_huge_pmd()
-> > > > > somewhere so that remap_pages_pte() works.
-> > > >
-> > > > Hmm, I guess this extra check is not even needed...
-> > >
-> > > Hm, and instead we'd bail at the pte_offset_map_nolock() in
-> > > remap_pages_pte()? I guess that's unusual but works...
-> >
-> > Yes, that's what I was thinking but I agree, that seems fragile. Maybe
-> > just bail out early if (ptl && !pmd_trans_huge())?
->
-> No, actually we can still handle is_swap_pmd() case by splitting it
-> and remapping the individual ptes. So, I can bail out only in case of
-> pmd_devmap().
 
-FWIW I only learned today that "real" swap PMDs don't actually exist -
-only migration entries, which are encoded as swap PMDs, exist. You can
-see that when you look through the cases that something like
-__split_huge_pmd() or zap_pmd_range() actually handles.
 
-So I think if you wanted to handle all the PMD types properly here
-without splitting, you could do that without _too_ much extra code.
-But idk if it's worth it.
+On 27/09/23 19:47, Maira Canal wrote:
+> Hi Arthur,
+> 
+> On 9/20/23 03:11, Arthur Grillo wrote:
+>> The kunit_action_platform_driver_unregister is added with
+>> &fake_platform_driver as ctx, but the kunit_release_action is called
+>> pdev as ctx. Fix that by replacing it with &fake_platform_driver.
+>>
+>> Fixes: 4f2b0b583baa ("drm/tests: helpers: Switch to kunit actions")
+>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> 
+> Reviewed-by: Maíra Canal <mairacanal@riseup.net>
+> 
+> Do you need me to apply this patch to drm-misc-fixes?
+
+Yes, please do, if possible.
+
+Thanks,
+~Arthur Grillo
+
+> 
+> Best Regards,
+> - Maíra
+> 
+>> ---
+>>   drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+>> index 3d624ff2f651..3150dbc647ee 100644
+>> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+>> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+>> @@ -118,7 +118,7 @@ void drm_kunit_helper_free_device(struct kunit *test, struct device *dev)
+>>         kunit_release_action(test,
+>>                    kunit_action_platform_driver_unregister,
+>> -                 pdev);
+>> +                 &fake_platform_driver);
+>>   }
+>>   EXPORT_SYMBOL_GPL(drm_kunit_helper_free_device);
+>>  
