@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4B57B0B5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8987B0B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjI0R4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 13:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        id S229732AbjI0R6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 13:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0R4m (ORCPT
+        with ESMTP id S229729AbjI0R6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:56:42 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F0DEB;
-        Wed, 27 Sep 2023 10:56:40 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b9231e91dso5230191eaf.2;
-        Wed, 27 Sep 2023 10:56:40 -0700 (PDT)
+        Wed, 27 Sep 2023 13:58:31 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E807199F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 10:58:07 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id af79cd13be357-77428e40f71so528084785a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 10:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695837399; x=1696442199; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N65R+6NVeQxsjzZ/9Yt0tbADHWNCLlV6RIkP1ydvJS4=;
-        b=a55qfaOiK9lOQfE4tNwQ32U00gL9ArqERtvsPVF7j2GKz6CXQcu95T4R47j6H0P3ql
-         t9dfEOkNNR0Mlb7eTluXTGOm76HqWPl0REgw+gEzDigGheVR6JddspAaddIPRrHlT5KB
-         XcYK0EKCJgCyQIRlE0d/CqMKlO+CUMZ1esQjnoreaa5ravoWctAioXRBnaMDNNBDRVWM
-         gYntSqUzGIy3Pg/xi4MyrnNDqQzPvLeen8YhWf+JCipo31jKzv1XVJ55qRrP6xeDXKMN
-         ae0X05ELXJ7pG70YONjKZTi0RTCgeb8CC6PhP1NTL2Yu3+liPinqfWmV2tw39yRKjmnB
-         peZQ==
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1695837486; x=1696442286; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AQzb+SwvsGBOEDzBjP4js4Sz2yj+gakJ7LKev+o0njQ=;
+        b=C5IIxI+pINtGg0abOaawu4LgnPahsj3UVakl7upV3RgvtwX5QSy27keLxYbeNHFAG+
+         PYWOvUaVPF+pNIe3AeYKSOUNTZD3mfZdI+2LiSyD5xtKScQOqVtcLHlMYTM++WULSUg4
+         gQ93CiD3cX4m6hUkyNKBJbTP1QCiYbieQQf1Ipk3X4COFhxHTaZ7t0P9pxzHZMBMAoi+
+         5Pj53KLxnQl+qGMlbIsdpn8Mr9R90Za1sgKpBPMU8WRzFMwEmvJHQhw7LgiQYwPig6Tw
+         mjbsm/r/h7MaaJGBYw8KNsH0qEc35MSAeA8SyLoxjiMnw+aemWQluvQ3VD6lKmbX6t9b
+         RhOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695837399; x=1696442199;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695837486; x=1696442286;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N65R+6NVeQxsjzZ/9Yt0tbADHWNCLlV6RIkP1ydvJS4=;
-        b=rk21CFhxhY5cR1Vh9gHmOiPHXoEWOM0orwQfAcRttwXavQ+jJb9o+8rdXNfCCNjUQi
-         wvPSqfmV5kClguTcvhLoMEoag1PDPV6uOIJOW1KXr4qwOKEyvcKJwR3vIrJlwBI6gud5
-         nNSqITGhdw5X89PjX8GxYEs54kk+0R0AZELMD1q3BlDquLorx7IhsubR5t7lEwUYRUgW
-         2coa1bzU0i0lVG3+3TwQE/QpXJzQkRf60y4YuEw6p0zJqLOsMlX3uJRDMZk3VNCoiWlf
-         jiEqB7hFcG5KumLAeB3La+s1xkz0oFtwWKm6NO558iFtECLnYr9hNRoJcuwVjIORn3SA
-         Xkvw==
-X-Gm-Message-State: AOJu0Yx2QJ25+fuuEWARglK0sPr+fPxW4KX6R25qhdMX1cflp2uhEWf2
-        LAYJUOT/63XJc+s3U5MuWMBfiZ72bJD/fI5z+7I=
-X-Google-Smtp-Source: AGHT+IE1M1+I4nmHeUbQZJP33DB65w1VkqbCRMkekRdLlcy/PHPrshgC8bLIZPciI2mA39Rv4lP6G/81LRLpBb9xqtA=
-X-Received: by 2002:a4a:6243:0:b0:57b:82d2:8253 with SMTP id
- y3-20020a4a6243000000b0057b82d28253mr2859256oog.3.1695837399614; Wed, 27 Sep
- 2023 10:56:39 -0700 (PDT)
+        bh=AQzb+SwvsGBOEDzBjP4js4Sz2yj+gakJ7LKev+o0njQ=;
+        b=I86NFoJppdXw82eShLafWjGEX13K3NdGAGgDVv4XA1WLOp3IkjKWOEyEyBSlJWNy8w
+         ORlaoIPgX4z0LJWJxXqDtPj/5bF1nyYN16ZDFgTT0kqDJEr7hm064Rr8fAyFUomcnt0p
+         Q6demA5pzhE7MUbE0soUn8qIQRqT2qYEPE4EtryCUJCSVKcqFMCBsFNRmZWbZWiyfbEa
+         ETZ9PzdxILA2c0+2YfMe9rNuO7tCxo3We21Hvpr7Yw+M8tZrOen1SWTPn7DEL4pv34rO
+         hFhLRwM6n0bUlwN4S7A7ytO40JJwg8n3U/nOPmRcY337ywzQqC+SzDVx6AKUuZhOGTM5
+         3FoA==
+X-Gm-Message-State: AOJu0YyLsJ+DExLWu+BvZUVtLPLo/NDpspRBe7CXQynifO0I4vkg7Ir8
+        CfoWLWgfbGtQgIOSzRijPypj4Q==
+X-Google-Smtp-Source: AGHT+IEBMS9WLtGs4+++Dzkg5Mo5nm24aZkgeo3xhxJJgHUp6UGYBeiOZLJhiw6Jv5TzrYz5ZxgiEQ==
+X-Received: by 2002:a05:622a:14b:b0:416:5ead:6171 with SMTP id v11-20020a05622a014b00b004165ead6171mr3362737qtw.47.1695837486383;
+        Wed, 27 Sep 2023 10:58:06 -0700 (PDT)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id j4-20020ac84c84000000b004195b8554efsm711368qtv.24.2023.09.27.10.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 10:58:05 -0700 (PDT)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Christophe Roullier <christophe.roullier@st.com>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH net] net: stmmac: dwmac-stm32: fix resume on STM32 MCU
+Date:   Wed, 27 Sep 2023 13:57:49 -0400
+Message-ID: <20230927175749.1419774-1-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Received: by 2002:ac9:5785:0:b0:4f0:1250:dd51 with HTTP; Wed, 27 Sep 2023
- 10:56:39 -0700 (PDT)
-In-Reply-To: <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
-References: <20230926162228.68666-1-mjguzik@gmail.com> <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
- <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
- <20230927-kosmetik-babypuppen-75bee530b9f0@brauner> <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 27 Sep 2023 19:56:39 +0200
-Message-ID: <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Brauner <brauner@kernel.org>, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,60 +77,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Wed, 27 Sept 2023 at 07:10, Christian Brauner <brauner@kernel.org>
-> wrote:
->>
->> No need to resend I can massage this well enough in-tree.
->
-> Hmm. Please do, but here's some more food for thought for at least the
-> commit message.
->
-> Because there's more than the "__fput_sync()" issue at hand, we have
-> another delayed thing that this patch ends up short-circuiting, which
-> wasn't obvious from the original description.
->
-> I'm talking about the fact that our existing "file_free()" ends up
-> doing the actual release with
->
->         call_rcu(&f->f_rcuhead, file_free_rcu);
->
-> and the patch under discussion avoids that part too.
->
+The STM32MP1 keeps clk_rx enabled during suspend, and therefore the
+driver does not enable the clock in stm32_dwmac_init() if the device was
+suspended. The problem is that this same code runs on STM32 MCUs, which
+do disable clk_rx during suspend, causing the clock to never be
+re-enabled on resume.
 
-Comments in the patch explicitly mention dodgin RCU for the file object.
+This patch adds a variant flag to indicate that clk_rx remains enabled
+during suspend, and uses this to decide whether to enable the clock in
+stm32_dwmac_init() if the device was suspended.
 
-> And I actually like that it avoids it, I just think it should be
-> mentioned explicitly, because it wasn't obvious to me until I actually
-> looked at the old __fput() path. Particularly since it means that the
-> f_creds are free'd synchronously now.
->
+This approach fixes this specific bug with limited opportunity for
+unintended side-effects, but I have a follow up patch that will refactor
+the clock configuration and hopefully make it less error prone.
 
-Well put_cred is called synchronously, but should this happen to be
-the last ref on them, they will get call_rcu(&cred->rcu,
-put_cred_rcu)'ed.
+Fixes: 6528e02cc9ff ("net: ethernet: stmmac: add adaptation for stm32mp157c.")
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> I do think that's fine, although I forget what path it was that
-> required that rcu-delayed cred freeing. Worth mentioning, and maybe
-> worth thinking about.
->
-
-See above. The only spot which which plays tricks with it is
-faccessat, other than that all creds are explicitly freed with rcu.
-
-> However, when I *did* look at it, it strikes me that we could do this
-> differently.
->
-> Something like this (ENTIRELY UNTESTED) patch, which just moves this
-> logic into fput() itself.
->
-
-I did not want to do it because failed open is a special case, quite
-specific to one syscall (and maybe few others later).
-
-As is you are adding a branch to all final fputs and are preventing
-whacking that 1 -> 0 unref down the road, unless it gets moved out
-again like in my patch.
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index bdb4de59a672..28c8ca5fba6c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -105,6 +105,7 @@ struct stm32_ops {
+ 	int (*parse_data)(struct stm32_dwmac *dwmac,
+ 			  struct device *dev);
+ 	u32 syscfg_eth_mask;
++	bool clk_rx_enable_in_suspend;
+ };
+ 
+ static int stm32_dwmac_init(struct plat_stmmacenet_data *plat_dat)
+@@ -122,7 +123,8 @@ static int stm32_dwmac_init(struct plat_stmmacenet_data *plat_dat)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (!dwmac->dev->power.is_suspended) {
++	if (!dwmac->ops->clk_rx_enable_in_suspend ||
++	    !dwmac->dev->power.is_suspended) {
+ 		ret = clk_prepare_enable(dwmac->clk_rx);
+ 		if (ret) {
+ 			clk_disable_unprepare(dwmac->clk_tx);
+@@ -514,7 +516,8 @@ static struct stm32_ops stm32mp1_dwmac_data = {
+ 	.suspend = stm32mp1_suspend,
+ 	.resume = stm32mp1_resume,
+ 	.parse_data = stm32mp1_parse_data,
+-	.syscfg_eth_mask = SYSCFG_MP1_ETH_MASK
++	.syscfg_eth_mask = SYSCFG_MP1_ETH_MASK,
++	.clk_rx_enable_in_suspend = true
+ };
+ 
+ static const struct of_device_id stm32_dwmac_match[] = {
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.42.0
+
