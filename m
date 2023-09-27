@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95287AFAB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57087AFAB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjI0GHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S229770AbjI0GHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjI0GHG (ORCPT
+        with ESMTP id S229644AbjI0GH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:07:06 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51870DD;
-        Tue, 26 Sep 2023 23:07:05 -0700 (PDT)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4063da036c9so27074555e9.3;
-        Tue, 26 Sep 2023 23:07:05 -0700 (PDT)
+        Wed, 27 Sep 2023 02:07:28 -0400
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D421E11D;
+        Tue, 26 Sep 2023 23:07:26 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5043a01ee20so14389328e87.0;
+        Tue, 26 Sep 2023 23:07:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695794824; x=1696399624;
+        d=1e100.net; s=20230601; t=1695794845; x=1696399645;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ilGbwZbw+r63tsdGtSB6Sstf8G+rcZU4Qn42BZBqRc=;
-        b=rYP0xqz2lLLe046yeVqADyqTD5GXoelOEPEeVSSJMv8v3nBLor8fBL4lSkDyMY7p1T
-         bayQ6sy6x1dHZ9wWNCcSOPjkeTlibE3Ujnd9dcJ8MV9VwZlDo+GfmV4diSvl8+U73kJ+
-         OkrJ3OSdJYPnIAB+4c6SE0l/jZwAxZ7ni1mysi1Cc1UrbvDRFC057cQX18aoyCJxIxF2
-         tCZnok/s5frtBG2rMo0MzLyja1A0N9ZXgjpshYVJGf2BrYThaynqbLQGmtycesuV/zCY
-         akW7XNQqKm+LFXszgHMWkpM5ZBaPpfEzVjIiNu8Hl1GqJgWbz9alY2yrebris+s5cvda
-         PF1w==
-X-Gm-Message-State: AOJu0YxyMcAVsZodtiFv0SIdpnaK4VyP0srvPX98dwfkwvlrDDUYfL7H
-        41XZ2B41X+q2P80u+3zVz/o=
-X-Google-Smtp-Source: AGHT+IExiuRhyetKklbMtnuZX3MinJL95Qxp7MaKxoC/O93bGilh4rCdS630ztVDycq2j5nYZI2SUg==
-X-Received: by 2002:a05:600c:1587:b0:406:44fe:7621 with SMTP id r7-20020a05600c158700b0040644fe7621mr672176wmf.25.1695794823700;
-        Tue, 26 Sep 2023 23:07:03 -0700 (PDT)
+        bh=n7ZyTS+6OkRT4rkQ1RkeoSytMaHEOzDK9fhK7Tz2pPo=;
+        b=drwWkYPCQWrrDuqPmfsEyN0Xb2u1tH2I+heVF+D5pGi3cbuwM3EvebcUqO01gdtWrY
+         tj9gMAMNNaWeJRo9Usrdnit0g4h+u8y5oQOU1La7ntQEfJZmrQt0jt8zmMYzs8OkBx7U
+         Ip1EqA3oaQaJTo/ycQLuhBCrnMtwpe01FMzBZqGSYB85r2Pn2C5LLf9D/7uYO9io4xbf
+         +0ivFMcHMIR9YhXq921c1+aahGfG8zkGkrOmkyBFgYlxk9ZZyYqhVUQ9HCdbJdlXXsqX
+         bn6+KGY/fYvsGzx9ylBrqwdXj+pjqF8kSbYwGCi7UyVMWBB4KkZgPr9GDaHRkwT1b9ig
+         AIMw==
+X-Gm-Message-State: AOJu0YwM1PJy7g/0qijAn9RtJvW6rdIkQ+nnPNx0N08xrBEnEQOm3c9X
+        6P600fZSqnYDnlKpR4JvIO4=
+X-Google-Smtp-Source: AGHT+IGnJUBQAaYrmBopold+rBN/H15acJmyCp3yp3et0TZubBafpuWrwo+aEKuXo3YoVGEbaS/mFQ==
+X-Received: by 2002:a05:6512:3412:b0:4ff:a04c:8a5b with SMTP id i18-20020a056512341200b004ffa04c8a5bmr1020765lfr.47.1695794844646;
+        Tue, 26 Sep 2023 23:07:24 -0700 (PDT)
 Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
-        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040550c20cbcsm12015055wmo.24.2023.09.26.23.07.02
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040550c20cbcsm12015055wmo.24.2023.09.26.23.07.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 23:07:03 -0700 (PDT)
-Message-ID: <bb37e3ec-d0b9-4b73-ac6e-183b55e8814f@linux.com>
-Date:   Wed, 27 Sep 2023 07:07:02 +0100
+        Tue, 26 Sep 2023 23:07:24 -0700 (PDT)
+Message-ID: <1abcf806-de65-45a9-a5f3-bec3322cca4a@linux.com>
+Date:   Wed, 27 Sep 2023 07:07:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: Add gpio_intc node for Amlogic-T7 SoCs
+Subject: Re: [PATCH 2/3] irqchip: Add support for Amlogic-T7 SoCs
 Content-Language: en-US
 To:     neil.armstrong@linaro.org, Huqiang Qin <huqiang.qin@amlogic.com>,
         tglx@linutronix.de, maz@kernel.org, robh+dt@kernel.org,
@@ -53,10 +53,10 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org
 References: <20230913080924.3336391-1-huqiang.qin@amlogic.com>
- <20230913080924.3336391-4-huqiang.qin@amlogic.com>
- <4c1566e0-a502-4379-b360-9e6ef374af04@linaro.org>
+ <20230913080924.3336391-3-huqiang.qin@amlogic.com>
+ <93bb0a7e-3f58-4755-bf31-a694e60760d0@linaro.org>
 From:   Lucas Tanure <tanure@linux.com>
-In-Reply-To: <4c1566e0-a502-4379-b360-9e6ef374af04@linaro.org>
+In-Reply-To: <93bb0a7e-3f58-4755-bf31-a694e60760d0@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -71,39 +71,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14-09-2023 09:26, neil.armstrong@linaro.org wrote:
 > On 13/09/2023 10:09, Huqiang Qin wrote:
->> Add GPIO interrupt controller device.
+>> The Amlogic-T7 SoCs support 12 GPIO IRQ lines compared with previous
+>> serial chips and have something different, details are as below.
+>>
+>> IRQ Number:
+>> - 156      1 pin  on bank TESTN
+>> - 155:148  8 pins on bank H
+>> - 147:129 19 pins on bank Y
+>> - 128:115 14 pins on bank M
+>> - 114:91  24 pins on bank T
+>> - 90:77   14 pins on bank Z
+>> - 76:70    7 pins on bank E
+>> - 69:57   13 pins on bank D
+>> - 56:40   17 pins on bank W
+>> - 39:20   20 pins on bank X
+>> - 19:13    7 pins on bank C
+>> - 12:0    13 pins on bank B
 >>
 >> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
 >> ---
->>   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
+>>   drivers/irqchip/irq-meson-gpio.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
 >>
->> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi 
->> b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
->> index dae3465bd39b..21b2436c47e2 100644
->> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
->> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
->> @@ -155,6 +155,16 @@ watchdog@2100 {
->>                   clocks = <&xtal>;
->>               };
->> +            gpio_intc: interrupt-controller@4080 {
->> +                compatible = "amlogic,t7-gpio-intc",
->> +                         "amlogic,meson-gpio-intc";
->> +                reg = <0x0 0x4080 0x0 0x20>;
->> +                interrupt-controller;
->> +                #interrupt-cells = <2>;
->> +                amlogic,channel-interrupts =
->> +                    <10 11 12 13 14 15 16 17 18 19 20 21>;
->> +            };
+>> diff --git a/drivers/irqchip/irq-meson-gpio.c 
+>> b/drivers/irqchip/irq-meson-gpio.c
+>> index f88df39f4129..9a1791908598 100644
+>> --- a/drivers/irqchip/irq-meson-gpio.c
+>> +++ b/drivers/irqchip/irq-meson-gpio.c
+>> @@ -154,6 +154,10 @@ static const struct meson_gpio_irq_params 
+>> c3_params = {
+>>       INIT_MESON_S4_COMMON_DATA(55)
+>>   };
+>> +static const struct meson_gpio_irq_params t7_params = {
+>> +    INIT_MESON_S4_COMMON_DATA(157)
+>> +};
 >> +
->>               uart_a: serial@78000 {
->>                   compatible = "amlogic,t7-uart", 
->> "amlogic,meson-s4-uart";
->>                   reg = <0x0 0x78000 0x0 0x18>;
+>>   static const struct of_device_id meson_irq_gpio_matches[] 
+>> __maybe_unused = {
+>>       { .compatible = "amlogic,meson8-gpio-intc", .data = 
+>> &meson8_params },
+>>       { .compatible = "amlogic,meson8b-gpio-intc", .data = 
+>> &meson8b_params },
+>> @@ -165,6 +169,7 @@ static const struct of_device_id 
+>> meson_irq_gpio_matches[] __maybe_unused = {
+>>       { .compatible = "amlogic,meson-a1-gpio-intc", .data = &a1_params },
+>>       { .compatible = "amlogic,meson-s4-gpio-intc", .data = &s4_params },
+>>       { .compatible = "amlogic,c3-gpio-intc", .data = &c3_params },
+>> +    { .compatible = "amlogic,t7-gpio-intc", .data = &t7_params },
+>>       { }
+>>   };
 > 
-> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-I re-tested this today with Vim4 and works fine.
-By works I mean, vim4 is able to boot without panics but drops to 
-emergency shell as expected.
-
-Tested-by: Lucas Tanure <tanure@linux.com>
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.orgTested-by: Lucas Tanure <tanure@linux.com>
