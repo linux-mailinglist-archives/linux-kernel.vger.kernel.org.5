@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3ED7B00AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314657B00B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjI0JjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S230018AbjI0Jjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjI0Jio (ORCPT
+        with ESMTP id S229550AbjI0Jjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:38:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF6A19F;
-        Wed, 27 Sep 2023 02:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1695807516; x=1696412316; i=julian.ribbeck@gmx.de;
- bh=16t7el8IewpM1cnIsu1QxjB2nxpYRgSW1dxpkHZLK/E=;
- h=X-UI-Sender-Class:Date:Cc:Subject:From:To:References:In-Reply-To;
- b=dnolXnLRs/LGLCmJnKFKVvHmoFb0cf9/Gn2kobhTgOVjV0xW/gzedFzd7s0lTD7rl4jth3Kh5Pu
- gfjqTm+SQyIT6ACY9YQ5Iu7Cy+EXItYzhizDmKFiRJNBlUccGMQsWj3R5xJQpO8nXYanTav0/Qg8V
- OIw6Gur0zCEjxPrfvpiriHNpjauDNJjmA8MqLlRP1Qu3G/W9ijy6qYl+GqEV0TTMlq9MXz9B6KOgW
- YRZlDmBMYcQUVRXFH8PPx8e0OvUzbaz/q9aFJjz4jHBzrC6PAB4z65GOOv/SxZgxgmMNxMtq6ot2J
- G5lALXnAD0DLOh4oGdhsxAs2zPNCenyhWxpw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost ([95.90.255.242]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFsUv-1qsFxk3fiB-00HKHI; Wed, 27
- Sep 2023 11:38:35 +0200
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 27 Sep 2023 11:38:35 +0200
-Message-Id: <CVTLLDPXFP5D.ANP0YTD5AD0P@x1-yoga-arch>
-Cc:     <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 2/2] dt-bindings: arm: sunxi: Add
- itead,iteaduino-plus-a20
-From:   "Julian Ribbeck" <julian.ribbeck@gmx.de>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <e0e71b0c-086d-ce54-f4d3-6f594d8e5da6@linaro.org>
- <20230617205624.1178427-1-julian.ribbeck@gmx.de>
- <20230617205624.1178427-2-julian.ribbeck@gmx.de>
- <bba4acf9-23a4-d732-900b-944c4ddef08c@linaro.org>
-In-Reply-To: <bba4acf9-23a4-d732-900b-944c4ddef08c@linaro.org>
-X-Provags-ID: V03:K1:4EpkK8TTjI4S+YuKNBwvdQlGei/Yz19h1WVGU16+3dJHxxk6bbz
- dS/FMR1rXfvzaptnajrE2kAo9/qmNaVNb02uI3uprmD85ML5OaqbsCBrNUQufW7uWMM/4HI
- gF0H3n4skSXA+Paa16vJoOLGCzuiMks0GFUDNfYYnKau29EfZYWu0fvYL7/mAdc/jdf2A4w
- zBHKg/SFoXZzCaWutbgOQ==
-UI-OutboundReport: notjunk:1;M01:P0:na5xKnskk8M=;EhFKlijxBVWKLU2PDJhuNm/rmJN
- HHHuEKwHVTppvmnAYu/R3vgiVuHayEA0fxz2pS4Hu9FYRk9GvwO9Y/e48fOeZ+gdzS4M4Y7Y6
- Fa4K5XAfYEkDYY1ULbHBMpgRbD/W8+IaNk5ksWKwzYguZKxfk8lh8LTVZSEwG6wJChY2lZJqI
- k07e5Ib+ENSeF1DBiMSfJwWooRPrMPRslxTEnIYjez6eTvHpqfc5Kys2V9R20ktSUgqCC8Dpk
- udbksqekedjdbOU4nEkdjPIx0iwwpceOZJXenUqHr/RoJHgn0logD6rmVUEokfttK9x5Zy+v2
- HecceqKP7zi4pOtGr4S3dpaCnXa2SpPy4mq4clc7dXSI2Gt94/NHf0TUXmnGVV1wC0Y6d0Kfw
- yI6NGqhP9gqK816JJQoscOA65N7dfTUsT7ffoTG2/IuhpF7QWIeDLpZbImIbMVG8M0KWEUQ3s
- k1p3dVOAvrq8+36FRv/7uyyDmIi9UckI8t0aExampMlU5lEwPncKw7/IOD1XP11uKNT+pyeMn
- Hjz2ZCjiOWbEwIfx0bhv2Tlp+iBvwUkLzyGpwPg9hnkrr+VOdPVSwTrBqGfDsin1YLKk6qto9
- sOQNPaG8BLkG8avjGR/r2eH4uk52x63xlaNAKoYzzidrk6w6yg5gkRrETcneyFWyGGYEeGWdJ
- X/F68na/XEg+BdOFWcNPa9T52z3NgiwbkRQOvumMMtCmGNmk90jw72wXjVj+z2XkUx9kDKgOe
- pQwz5QLnh8f6dKg/8Nr6zhY3nwWUl7yJf5FJFwo92kxvXIB6Xw5KBzSxCF/lVzZZhOEElH54G
- USz3YyOmQVhZU5PmJ5obMLePZMp9N72R9dHLXtDtiE7OYaaQnDGoqOKGJ/0pKE0rLtjX1kBzz
- wAnrjk2YbDY+M4BBPMoXm04jHpXsMpzUvS1qAsPDTA561kTptEJeU3yclLM43NIQEI59AYhNF
- TYX4degonYaVlXtAB6pzfx9Qi0I=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 05:39:43 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7FDC0;
+        Wed, 27 Sep 2023 02:39:41 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RwWgx2MKdzMlpH;
+        Wed, 27 Sep 2023 17:35:57 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 27 Sep 2023 17:39:39 +0800
+Message-ID: <374f2f3c-e0f0-cd28-4b43-fa46a1fd5002@huawei.com>
+Date:   Wed, 27 Sep 2023 17:39:38 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [RFC PATCH v2 00/18] scsi: scsi_error: Introduce new error handle
+ mechanism
+Content-Language: en-US
+To:     Mike Christie <michael.christie@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, Hannes Reinecke <hare@suse.de>,
+        <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>,
+        <lixiaokeng@huawei.com>
+References: <20230901094127.2010873-1-haowenchao2@huawei.com>
+ <ZRGfc73BSW0yyUtI@infradead.org>
+ <47bed3cb-f307-ec55-5c28-051687dab1ea@huawei.com>
+ <a92f5e0c-1976-4fc6-ba48-7ff49546318a@oracle.com>
+ <06268327-cfed-f266-34a7-fda69411ef2a@huawei.com>
+ <27eb28b9-46e9-489f-9826-5e8f9a9a662f@oracle.com>
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <27eb28b9-46e9-489f-9826-5e8f9a9a662f@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2023/9/27 1:37, Mike Christie wrote:
+> On 9/26/23 7:57 AM, Wenchao Hao wrote:
+>> On 2023/9/26 1:54, Mike Christie wrote:
+>>> On 9/25/23 10:07 AM, Wenchao Hao wrote:
+>>>> On 2023/9/25 22:55, Christoph Hellwig wrote:
+>>>>> Before we add another new error handling mechanism we need to fix the
+>>>>> old one first.  Hannes' work on not passing the scsi_cmnd to the various
+>>>>> reset handlers hasn't made a lot of progress in the last five years and
+>>>>> we'll need to urgently fix that first before adding even more
+>>>>> complexity.
+>>>>>
+>>>> I observed Hannes's patches posted about one year ago, it has not been
+>>>> applied yet. I don't know if he is still working on it.
+>>>>
+>>>> My patches do not depend much on that work, I think the conflict can be
+>>>> solved fast between two changes.
+>>>
+>>> I think we want to figure out Hannes's patches first.
+>>>
+>>> For a new EH design we will want to be able to do multiple TMFs in parallel
+>>> on the same host/target right?
+>>>
+>>
+>> It's not necessary to do multiple TMFs in parallel, it's ok to make sure
+>> each TMFs do not affect each other.
+>>
+>> For example, we have two devices: 0:0:0:0 and 0:0:0:1
+>>
+>> Both of them request device reset, they do not happened in parallel, but
+>> would in serial. If 0:0:0:0 is performing device reset in progress, 0:0:0:1
+>> just wait 0:0:0:0 to finish.
+> 
+> I see. I guess we still get the benefit of not having to stop other devices
+> when doing TMFs.
+> 
 
-I'm not totally familiar with the process here, but it seems like my
-patch was kind of forgotten? What should I do now? Is anything still
-missing?
+Yes, it's better to support multiple TMFs in parallel than just run in serial.
+I would wait for Hannes's changes to be applied and send my change again.
 
-Greetings
-Julian
-
-On Sun Jun 18, 2023 at 10:00 AM CEST, Krzysztof Kozlowski wrote:
-> On 17/06/2023 22:55, Julian Ribbeck wrote:
-> > Add itead,iteaduino-plus-a20 bindings
-> >=20
-> > Signed-off-by: Julian Ribbeck <julian.ribbeck@gmx.de>
-> > ---
->
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> Best regards,
-> Krzysztof
+> I think we still want a common way to allocate/free and manage resources
+> drivers will use during this time. Maybe have a init_device/target/cmd/eh_priv
+> and exit_device/target/eh_priv (I'm not sure of the name, but something similar
+> to the init_cmd_priv/exit_cmd_priv we have for normal commands.
+> 
+> scsi-ml then calls into the new eh with the priv data. Drivers don't have to
+> do the preallocation and worry if it's per device/target/host.
+> 
+> I'm not 100% sure about the low level details. Check out how Hannes's is
+> handling tag management for TMFs as well.
+> 
+> 
+>>
+>>> The problem is that we need to be able to make forward progress in the EH
+>>> path and not fail just because we can't allocate memory for a TMF related
+>>> struct. To accomplish this now, drivers will use mempools, preallocate TMF
+>>> related structs/mem/tags with their scsi_cmnd related structs, preallocate
+>>> per host/target/device related structs or ignore what I wrote above and just
+>>> fail.
+>>>
+>>> Hannes's patches fix up the eh callouts so they don't pass in a scsi_cmnd
+>>> when it's not needed. That seems nice because after that, then for your new
+>>> EH we can begin to standardize on how to handle preallocation of drivers
+>>> resources needed to perform TMFs for your new EH. It could be a per
+>>> device/target/host callout to allow drivers to preallocate, then scsi-ml calls
+>>> into the drivers with that data. It doesn't have to be exactly like that or
+>>> anything close. It would be nice for drivers to not have to think about this
+>>> type of thing and scsi-ml just to handle the resource management for us when
+>>> there are multiple TMFs in progress.
+>>>
+>>
+> 
 
