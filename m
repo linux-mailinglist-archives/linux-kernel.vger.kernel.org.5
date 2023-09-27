@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98E17B07FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE87B0800
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjI0PTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        id S232417AbjI0PTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbjI0PTR (ORCPT
+        with ESMTP id S232396AbjI0PTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:19:17 -0400
+        Wed, 27 Sep 2023 11:19:19 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C001C121
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:19:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09632126
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695827955; x=1727363955;
+  t=1695827958; x=1727363958;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OsrFI+aCDANZLn+fG167H9Cm0xlCT0Xu8vBM5CGocag=;
-  b=dACwAvyT1aqZ4j6/2oaR5vzDXE3wlISaGiyFHBTfni8I4OvfSMXS7RD6
-   4DWqyOoYGudn9d+y2BhvsDDlrrnQt4lqw0WzSrIcFqBwnT3gxIG2uyteV
-   QjimSNuhUvGNezEakuadZNcD4urce04VXGAvaxotUUfLoIpY1aaIXqLuE
-   iJgrvKFt+XuId9VK8tucilHvhSX/WUSnC8XFV59J3avZwtNZJ+U/DgJeG
-   FPFGZsSmlwLdCMHMZBmtH2psDU9k29k0LtMkRdkFIadMq9oOACqwanfMJ
-   KOF0exufEOt8LDtZAhvDvfOgyFTHZnv6mQvXTU3/xdzGJGCzQn8KvetRw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="362098913"
+  bh=ZpwehE9umF+E2WRJZPjrRmVCii85Hu05XDSIsfB4XV0=;
+  b=nq1Jx8Kfy6eRKmoQSkgTOFDmN1RS+Q2ushdmvF4r7QsbGRzMb5//r+c1
+   NI43EXXxXALuvyXYLxn1Mg8qhjfTz2GQob9qL8zKNZZui9tA86mkIsAxk
+   GiMXZPIv18mSiosyLRg7zMv+kVCJYq2AjKg5c2p5+evJkYVaV+yeaNJNe
+   Q/zJ+tGEUnzR9DGyw9u1Rkx14lwK/FtHKeL31ruUZS4CDh9Yyvo2do2qJ
+   V8U0SRttOeDyF2G8bKnpjAmSUyq+Fr52BpGLh5oIchSiT7LB7cmmNV+9y
+   2ff3NCP4eaCuEQ8e0RxvB+vZBgWmOD/A5ffFtGuYTffEyKvEWXy97z/r6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="362098924"
 X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="362098913"
+   d="scan'208";a="362098924"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 08:19:15 -0700
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 08:19:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="819461130"
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="819461136"
 X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="819461130"
+   d="scan'208";a="819461136"
 Received: from cascade.sh.intel.com ([10.239.48.35])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Sep 2023 08:19:13 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 27 Sep 2023 08:19:15 -0700
 From:   Jingqi Liu <Jingqi.liu@intel.com>
 To:     iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
         Tian Kevin <kevin.tian@intel.com>,
         Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>
 Cc:     linux-kernel@vger.kernel.org, Jingqi Liu <Jingqi.liu@intel.com>
-Subject: [PATH v3 2/3] iommu/vt-d: debugfs: Create/remove debugfs file per {device, pasid}
-Date:   Wed, 27 Sep 2023 23:15:35 +0800
-Message-Id: <20230927151536.67319-3-Jingqi.liu@intel.com>
+Subject: [PATH v3 3/3] iommu/vt-d: debugfs: Support dumping a specified page table
+Date:   Wed, 27 Sep 2023 23:15:36 +0800
+Message-Id: <20230927151536.67319-4-Jingqi.liu@intel.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20230927151536.67319-1-Jingqi.liu@intel.com>
 References: <20230927151536.67319-1-Jingqi.liu@intel.com>
@@ -62,297 +62,222 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a debugfs directory per pair of {device, pasid} if the mappings of
-its page table are created and destroyed by the iommu_map/unmap()
-interfaces. i.e. /sys/kernel/debug/iommu/intel/<device source id>/<pasid>.
-Create a debugfs file in the directory for users to dump the page
-table corresponding to {device, pasid}. e.g.
-/sys/kernel/debug/iommu/intel/0000:00:02.0/0/domain_translation_struct.
+The original debugfs only dumps all page tables without pasid. With
+pasid supported, the page table with pasid also needs to be dumped.
 
-When attaching device without pasid, create a debugfs file with
-PASID#0, i.e. RID_PASID. When attaching a domain to a pasid of device,
-create a debugfs file with the specified pasid.
+This patch supports dumping a specified page table in legacy mode or
+scalable mode with or without a specified pasid.
 
-When detaching without pasid, remove the directory and file for
-PASID#0. When detaching with pasid, remove the debugfs directory and
-file of the specified pasid. Remove the entire debugfs directory of
-the specified device for releasing device.
-e.g. /sys/kernel/debug/iommu/intel/0000:00:01.0
+For legacy mode, according to bus number and DEVFN, traverse the root
+table and context table to get the pointer of page table in the
+context table entry, then dump the specified page table.
 
+For scalable mode, according to bus number, DEVFN and pasid, traverse
+the root table, context table, pasid directory and pasid table to get
+the pointer of page table in the pasid table entry, then dump the
+specified page table..
+
+Examples are as follows:
+1) Dump the page table of device "0000:00:1f.0" that only supports
+   legacy mode.
+   $ sudo cat
+   /sys/kernel/debug/iommu/intel/0000:00:1f.0/0/domain_translation_struct
+
+2) Dump the page table of device "0000:00:0a.0" with PASID "1" that
+   supports scalable mode.
+   $ sudo cat
+   /sys/kernel/debug/iommu/intel/0000:00:0a.0/1/domain_translation_struct
+
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
 Signed-off-by: Jingqi Liu <Jingqi.liu@intel.com>
 ---
- drivers/iommu/intel/debugfs.c | 133 ++++++++++++++++++++++++++++++++--
- drivers/iommu/intel/iommu.c   |  29 ++++++++
- drivers/iommu/intel/iommu.h   |  12 +++
- 3 files changed, 169 insertions(+), 5 deletions(-)
+ drivers/iommu/intel/debugfs.c | 163 +++++++++++++++++++++++++---------
+ 1 file changed, 121 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/iommu/intel/debugfs.c b/drivers/iommu/intel/debugfs.c
-index e2a3c37943a0..50dea53ba87c 100644
+index 50dea53ba87c..a0e7f2b4d4d1 100644
 --- a/drivers/iommu/intel/debugfs.c
 +++ b/drivers/iommu/intel/debugfs.c
-@@ -32,6 +32,11 @@ struct iommu_regset {
- 	const char *regs;
- };
- 
-+struct show_domain_info {
-+	struct device *dev;
-+	ioasid_t pasid;
-+};
-+
- #define DEBUG_BUFFER_SIZE	1024
- static char debug_buf[DEBUG_BUFFER_SIZE];
- 
-@@ -111,6 +116,8 @@ static const struct iommu_regset iommu_regs_64[] = {
- 	IOMMU_REGSET_ENTRY(VCRSP),
- };
- 
-+static struct dentry *intel_iommu_debug;
-+
- static int iommu_regset_show(struct seq_file *m, void *unused)
- {
- 	struct dmar_drhd_unit *drhd;
-@@ -673,16 +680,12 @@ static const struct file_operations dmar_perf_latency_fops = {
- 
- void __init intel_iommu_debugfs_init(void)
- {
--	struct dentry *intel_iommu_debug = debugfs_create_dir("intel",
--						iommu_debugfs_dir);
-+	intel_iommu_debug = debugfs_create_dir("intel", iommu_debugfs_dir);
- 
- 	debugfs_create_file("iommu_regset", 0444, intel_iommu_debug, NULL,
- 			    &iommu_regset_fops);
- 	debugfs_create_file("dmar_translation_struct", 0444, intel_iommu_debug,
- 			    NULL, &dmar_translation_struct_fops);
--	debugfs_create_file("domain_translation_struct", 0444,
--			    intel_iommu_debug, NULL,
--			    &domain_translation_struct_fops);
- 	debugfs_create_file("invalidation_queue", 0444, intel_iommu_debug,
- 			    NULL, &invalidation_queue_fops);
- #ifdef CONFIG_IRQ_REMAP
-@@ -692,3 +695,123 @@ void __init intel_iommu_debugfs_init(void)
- 	debugfs_create_file("dmar_perf_latency", 0644, intel_iommu_debug,
- 			    NULL, &dmar_perf_latency_fops);
- }
-+
-+/* Create a debugfs directory for each device. */
-+void intel_iommu_debugfs_create_dev(struct device *dev)
-+{
-+	struct dentry *dev_dir;
-+
-+	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
-+	if (!dev_dir) {
-+		dev_dir = debugfs_create_dir(dev_name(dev), intel_iommu_debug);
-+		if (IS_ERR(dev_dir))
-+			pr_info("%s: Failed to create debugfs directory.\n",
-+				dev_name(dev));
-+	} else
-+		dput(dev_dir);
-+}
-+
-+void intel_iommu_debugfs_remove_dev(struct device *dev)
-+{
-+	struct dentry *dev_dir, *sub_dir, *dentry;
-+	struct list_head *plist;
-+
-+	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
-+	if (!dev_dir)
-+		return;
-+
-+	list_for_each(plist, &(dev_dir->d_subdirs)) {
-+		sub_dir = list_entry(plist, struct dentry, d_child);
-+		if(sub_dir) {
-+			dentry = debugfs_lookup("domain_translation_struct",
-+						sub_dir);
-+			if (!dentry)
-+				continue;
-+
-+			if (dentry->d_inode->i_private)
-+				kfree(dentry->d_inode->i_private);
-+
-+			dput(dentry);
-+		}
-+	}
-+
-+	debugfs_remove_recursive(dev_dir);
-+	dput(dev_dir);
-+}
-+
-+/*
-+ * Create a debugfs directory per pair of {device, pasid},
-+ * then create the corresponding debugfs file in this directory
-+ * for user to dump its page table. e.g.
-+ * /sys/kernel/debug/iommu/intel/0000:00:01.0/0/domain_translation_struct
-+ */
-+void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
-+					  struct device *dev, u32 pasid)
-+{
-+	struct dentry *dev_dir, *pasid_dir;
-+	struct show_domain_info *sinfo;
-+	char dir_name[10];
-+
-+	/*
-+	 * The debugfs only dumps the page tables whose mappings are created
-+	 * and destroyed by the iommu_map/unmap() interfaces. Check the
-+	 * mapping type of the domain before creating debugfs directory.
-+	 */
-+	if (!domain || !(domain->type & __IOMMU_DOMAIN_PAGING))
-+		return;
-+
-+	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
-+	if (!dev_dir)
-+		return;
-+
-+	sprintf(dir_name, "%x", pasid);
-+	pasid_dir = debugfs_create_dir(dir_name, dev_dir);
-+	if (IS_ERR(pasid_dir))
-+		goto dput_out;
-+
-+	sinfo = kzalloc(sizeof(*sinfo), GFP_KERNEL);
-+	if (!sinfo)
-+		goto dput_out;
-+
-+	sinfo->dev = dev;
-+	sinfo->pasid = pasid;
-+	debugfs_create_file("domain_translation_struct", 0444,
-+			    pasid_dir, sinfo,
-+			    &domain_translation_struct_fops);
-+dput_out:
-+	dput(dev_dir);
-+}
-+
-+/*
-+ * Remove the debugfs directory and file corresponding to each pair of
-+ * {device, pasid}.
-+ */
-+void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid)
-+{
-+	struct dentry *dev_dir, *pasid_dir, *dentry;
-+	char dir_name[10];
-+
-+	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
-+	if (!dev_dir)
-+		return;
-+
-+	sprintf(dir_name, "%x", pasid);
-+	pasid_dir = debugfs_lookup(dir_name, dev_dir);
-+	if (!pasid_dir)
-+		goto dput_dev;
-+
-+	dentry = debugfs_lookup("domain_translation_struct", pasid_dir);
-+	if (!dentry)
-+		goto dput_pasid;
-+
-+	if (dentry->d_inode->i_private)
-+		kfree(dentry->d_inode->i_private);
-+
-+	debugfs_remove_recursive(pasid_dir);
-+
-+	dput(dentry);
-+dput_pasid:
-+	dput(pasid_dir);
-+dput_dev:
-+	dput(dev_dir);
-+}
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index dd8ff358867d..af9c989035a2 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2488,6 +2488,13 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 
- 	iommu_enable_pci_caps(info);
- 
-+	/*
-+	 * Create a debugfs directory specified by RID_PASID
-+	 * in the debugfs device directory.
-+	 */
-+	intel_iommu_debugfs_create_dev_pasid(&info->domain->domain,
-+			                     dev, IOMMU_NO_PASID);
-+
- 	return 0;
- }
- 
-@@ -3997,6 +4004,12 @@ static void device_block_translation(struct device *dev)
- 
- 	domain_detach_iommu(info->domain, iommu);
- 	info->domain = NULL;
-+
-+	/*
-+	 * Remove the debugfs directory specified by RID_PASID
-+	 * in the device debugfs directory.
-+	 */
-+	intel_iommu_debugfs_remove_dev_pasid(dev, IOMMU_NO_PASID);
- }
- 
- static int md_domain_init(struct dmar_domain *domain, int guest_width)
-@@ -4424,6 +4437,9 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
- 		}
+@@ -352,58 +352,137 @@ static void pgtable_walk_level(struct seq_file *m, struct dma_pte *pde,
  	}
- 
-+	/* Create a debugfs directory per device. */
-+	intel_iommu_debugfs_create_dev(dev);
-+
- 	return &iommu->iommu;
  }
  
-@@ -4436,6 +4452,7 @@ static void intel_iommu_release_device(struct device *dev)
- 	dev_iommu_priv_set(dev, NULL);
- 	kfree(info);
- 	set_dma_ops(dev, NULL);
-+	intel_iommu_debugfs_remove_dev(dev);
- }
+-static int __show_device_domain_translation(struct device *dev, void *data)
++static int domain_translation_struct_show(struct seq_file *m, void *unused)
+ {
+-	struct dmar_domain *domain;
+-	struct seq_file *m = data;
+-	u64 path[6] = { 0 };
++	struct device_domain_info *info;
++	struct show_domain_info *sinfo;
++	bool scalable, found = false;
++	struct dmar_drhd_unit *drhd;
++	struct intel_iommu *iommu;
++	u16 devfn, bus, seg;
  
- static void intel_iommu_probe_finalize(struct device *dev)
-@@ -4729,6 +4746,12 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
- out_tear_down:
- 	intel_pasid_tear_down_entry(iommu, dev, pasid, false);
- 	intel_drain_pasid_prq(dev, pasid);
+-	domain = to_dmar_domain(iommu_get_domain_for_dev(dev));
+-	if (!domain)
+-		return 0;
++	if (!m || !m->private) {
++		seq_puts(m, "Invalid device or pasid!\n");
++		return -EINVAL;
++	}
+ 
+-	seq_printf(m, "Device %s @0x%llx\n", dev_name(dev),
+-		   (u64)virt_to_phys(domain->pgd));
+-	seq_puts(m, "IOVA_PFN\t\tPML5E\t\t\tPML4E\t\t\tPDPE\t\t\tPDE\t\t\tPTE\n");
++	sinfo = (struct show_domain_info*)m->private;
++	if (!sinfo->dev ||
++	    !dev_iommu_priv_get(sinfo->dev) ||
++	    (sinfo->pasid == IOMMU_PASID_INVALID)) {
++		seq_puts(m, "Please specify device or pasid!\n");
++		return -ENODEV;
++	}
+ 
+-	pgtable_walk_level(m, domain->pgd, domain->agaw + 2, 0, path);
+-	seq_putc(m, '\n');
++	info = dev_iommu_priv_get(sinfo->dev);
++	bus = info->bus;
++	devfn = info->devfn;
++	seg = info->segment;
+ 
+-	/* Don't iterate */
+-	return 1;
+-}
++	rcu_read_lock();
++	for_each_active_iommu(iommu, drhd) {
++		struct context_entry *context;
++		u64 pgd, path[6] = { 0 };
++		u32 sts, agaw;
+ 
+-static int show_device_domain_translation(struct device *dev, void *data)
+-{
+-	struct iommu_group *group;
++		if (seg != iommu->segment)
++			continue;
+ 
+-	device_lock(dev);
+-	group = iommu_group_get(dev);
+-	device_unlock(dev);
+-	if (!group)
+-		return 0;
++		sts = dmar_readl(iommu->reg + DMAR_GSTS_REG);
++		if (!(sts & DMA_GSTS_TES)) {
++			seq_printf(m, "DMA Remapping is not enabled on %s\n",
++				   iommu->name);
++			continue;
++		}
++		if (dmar_readq(iommu->reg + DMAR_RTADDR_REG) & DMA_RTADDR_SMT)
++			scalable = true;
++		else
++			scalable = false;
+ 
+-	/*
+-	 * The group->mutex is held across the callback, which will
+-	 * block calls to iommu_attach/detach_group/device. Hence,
+-	 * the domain of the device will not change during traversal.
+-	 *
+-	 * All devices in an iommu group share a single domain, hence
+-	 * we only dump the domain of the first device. Even though,
+-	 * this code still possibly races with the iommu_unmap()
+-	 * interface. This could be solved by RCU-freeing the page
+-	 * table pages in the iommu_unmap() path.
+-	 */
+-	iommu_group_for_each_dev(group, data, __show_device_domain_translation);
+-	iommu_group_put(group);
++		/*
++		 * The iommu->lock is held across the callback, which will
++		 * block calls to domain_attach/domain_detach. Hence,
++		 * the domain of the device will not change during traversal.
++		 *
++		 * Traversing page table possibly races with the iommu_unmap()
++		 * interface. This could be solved by RCU-freeing the page
++		 * table pages in the iommu_unmap() path.
++		 */
++		spin_lock(&iommu->lock);
+ 
+-	return 0;
+-}
++		context = iommu_context_addr(iommu, bus, devfn, 0);
++		if (!context || !context_present(context))
++			goto iommu_unlock;
+ 
+-static int domain_translation_struct_show(struct seq_file *m, void *unused)
+-{
+-	return bus_for_each_dev(&pci_bus_type, NULL, m,
+-				show_device_domain_translation);
++		if (scalable) {	/* scalable mode */
++			struct pasid_dir_entry *dir_tbl, *dir_entry;
++			struct pasid_entry *pasid_tbl, *pasid_tbl_entry;
++			u16 pasid_dir_size, dir_idx, tbl_idx, pgtt;
++			u64 pasid_dir_ptr;
 +
-+	/*
-+	 * Remove the debugfs directory of the specified pasid
-+	 * in the device debugfs directory.
-+	 */
-+	intel_iommu_debugfs_remove_dev_pasid(dev, pasid);
- }
- 
- static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
-@@ -4777,6 +4800,12 @@ static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
- 	list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
- 	spin_unlock_irqrestore(&dmar_domain->lock, flags);
- 
-+	/*
-+	 * Create a debugfs directory with specified pasid
-+	 * in the debugfs device directory.
-+	 */
-+	intel_iommu_debugfs_create_dev_pasid(domain, dev, pasid);
++			pasid_dir_ptr = context->lo & VTD_PAGE_MASK;
++			pasid_dir_size = get_pasid_dir_size(context);
 +
- 	return 0;
- out_detach_iommu:
- 	domain_detach_iommu(dmar_domain, iommu);
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index c18fb699c87a..f1c27e928886 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -883,8 +883,20 @@ static inline void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid
++			/* Dump specified device domain mappings with PASID. */
++			dir_idx = sinfo->pasid >> PASID_PDE_SHIFT;
++			tbl_idx = sinfo->pasid & PASID_PTE_MASK;
++
++			dir_tbl = phys_to_virt(pasid_dir_ptr);
++			dir_entry = &dir_tbl[dir_idx];
++
++			pasid_tbl = get_pasid_table_from_pde(dir_entry);
++			if (!pasid_tbl)
++				goto iommu_unlock;
++
++			pasid_tbl_entry = &pasid_tbl[tbl_idx];
++			if (!pasid_pte_is_present(pasid_tbl_entry))
++				goto iommu_unlock;
++
++			/*
++			 * According to PASID Granular Translation Type(PGTT),
++			 * get the page table pointer.
++			 */
++			pgtt = (u16)(pasid_tbl_entry->val[0] & GENMASK_ULL(8, 6)) >> 6;
++			agaw = (u8)(pasid_tbl_entry->val[0] & GENMASK_ULL(4, 2)) >> 2;
++
++			switch (pgtt) {
++				case PASID_ENTRY_PGTT_FL_ONLY:
++					pgd = pasid_tbl_entry->val[2];
++					break;
++				case PASID_ENTRY_PGTT_SL_ONLY:
++				case PASID_ENTRY_PGTT_NESTED:
++					pgd = pasid_tbl_entry->val[0];
++					break;
++				default:
++					goto iommu_unlock;
++			}
++			pgd &= VTD_PAGE_MASK;
++		} else { /* legacy mode */
++			pgd = context->lo & VTD_PAGE_MASK;
++			agaw = context->hi & 7;
++		}
++
++		seq_printf(m, "Device %04x:%02x:%02x.%x ",
++			   iommu->segment, bus, PCI_SLOT(devfn), PCI_FUNC(devfn));
++
++		if (scalable)
++			seq_printf(m, "with pasid %x @0x%llx\n", sinfo->pasid, pgd);
++		else
++			seq_printf(m, "@0x%llx\n", pgd);
++
++		seq_printf(m, "%-17s\t%-18s\t%-18s\t%-18s\t%-18s\t%-s\n",
++			   "IOVA_PFN", "PML5E", "PML4E", "PDPE", "PDE", "PTE");
++		pgtable_walk_level(m, phys_to_virt(pgd), agaw + 2, 0, path);
++
++		found = true;
++iommu_unlock:
++		spin_unlock(&iommu->lock);
++		if (found)
++			break;
++	}
++	rcu_read_unlock();
++
++	return 0;
+ }
+ DEFINE_SHOW_ATTRIBUTE(domain_translation_struct);
  
- #ifdef CONFIG_INTEL_IOMMU_DEBUGFS
- void intel_iommu_debugfs_init(void);
-+void intel_iommu_debugfs_create_dev(struct device *dev);
-+void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
-+					  struct device *dev, u32 pasid);
-+void intel_iommu_debugfs_remove_dev(struct device *dev);
-+void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid);
- #else
- static inline void intel_iommu_debugfs_init(void) {}
-+static inline void intel_iommu_debugfs_create_dev(struct device *dev) {}
-+static inline
-+void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
-+					  struct device *dev, u32 pasid) {}
-+static inline void intel_iommu_debugfs_remove_dev(struct device *dev) {}
-+static inline
-+void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid) {}
- #endif /* CONFIG_INTEL_IOMMU_DEBUGFS */
- 
- extern const struct attribute_group *intel_iommu_groups[];
 -- 
 2.21.3
 
