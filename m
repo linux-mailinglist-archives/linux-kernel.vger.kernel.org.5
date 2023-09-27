@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC91B7AFDC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3A27AFE2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjI0ILP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+        id S230396AbjI0ILa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjI0IK7 (ORCPT
+        with ESMTP id S230192AbjI0IK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 04:10:59 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88361B7
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCD11BB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:10:55 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPdA-0007xR-6v; Wed, 27 Sep 2023 10:10:48 +0200
+        id 1qlPdA-00080D-RB; Wed, 27 Sep 2023 10:10:48 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPd9-009I7L-NV; Wed, 27 Sep 2023 10:10:47 +0200
+        id 1qlPd9-009I7P-Vi; Wed, 27 Sep 2023 10:10:47 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qlPd9-005BQc-EN; Wed, 27 Sep 2023 10:10:47 +0200
+        id 1qlPd9-005BQg-MV; Wed, 27 Sep 2023 10:10:47 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Prashant Malani <pmalani@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Tzung-Bi Shih <tzungbi@kernel.org>
+To:     Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Brian Norris <briannorris@chromium.org>
 Cc:     chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
-Subject: [PATCH 09/27] platform/chrome: cros_usbpd_notify: Convert to platform remove callback returning void
-Date:   Wed, 27 Sep 2023 10:10:22 +0200
-Message-Id: <20230927081040.2198742-10-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 10/27] platform/chrome/wilco_ec: core: Convert to platform remove callback returning void
+Date:   Wed, 27 Sep 2023 10:10:23 +0200
+Message-Id: <20230927081040.2198742-11-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
 References: <20230927081040.2198742-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2938; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=hSEWunQsqDf9o0Gu7AfSQmYYAjV96zrpal7gSYkj2l4=; b=owGbwMvMwMXY3/A7olbonx/jabUkhlThx+mvgrMFV7z2kFm3lCWlqUUko8Tb9XNgf4xJXc53x 8o9hs86GY1ZGBi5GGTFFFnsG9dkWlXJRXau/XcZZhArE8gUBi5OAZgIXwoHww5lvfVq5s91rYw2 x50wyvB+cPb/0kUpLMvKcktr906p1+eKS/v37OqaWPWtN49Py+T57ZnAXm2zMOPi9zjJA4IiprL n5709uyBX45XgdLMtTtN2zcs4HL/MxcuxS+rShh0X/907rP/nY/f1YFa+Xu/fM7nqjAWrjUVs9n gWKD81/s80W+705U7RnY0ParolE8v/frYvrjnOvGCapJbmgU3Mp5rWp07ac3OeW4m7+/rsbYs2R 0i/OhGdpv+gz2NFV2af4mYTHXb+yBKbqdsL1c8HyGmo6Xas81hluPRByUouaW3zhe0O+zy3PeVv dv68KE9w1c8VaXeDJ8Snayxu6+05bmC1SlBGYI4Iz5qJAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1940; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ErTBgUVBzAoUk5cH94Ob31zJEYM2LgwwmCXualZPhgg=; b=owGbwMvMwMXY3/A7olbonx/jabUkhlThxxmfEz5LascytexPrvRqs/8+7eD1S0ZyPJxbCj67h 3vmHnHsZDRmYWDkYpAVU2Sxb1yTaVUlF9m59t9lmEGsTCBTGLg4BWAiT4LY/8orBVcvZNkt+buI 93Dtqxz1Wh71Ah11/Z9M0ZmsrL4Pnn48tFCqS83TIjt0gmfo8p97GPWfPjzfZ+0fXBN3upwvzKH kqdH2ZUf/Lo2bZ/fw3IVnW7pUl22v0qlfd7+/X1qtN32vUk9n89V/wbGNaZFzZ00sSbobzfik5L Kl4K5pNz8X9buIPKrZprPfr+2zY4q+q4zZvNXO79vT5DotNa43HZryeun7GskPNSkpz1h2rBc3X Lv5M1P8BVNRfcbChXzvHuSWLZdjfis9L8MjsevK9cK/OQ6nZvRvfXuT1zv1LvMS5+Ssjo898Z2K pkf1uuNzAuateDCT76LknyvRdULhDiv3q195sDat/WkCAA==
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -74,66 +75,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/platform/chrome/cros_usbpd_notify.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/platform/chrome/wilco_ec/core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_usbpd_notify.c b/drivers/platform/chrome/cros_usbpd_notify.c
-index 10670b6588e3..aacad022f21d 100644
---- a/drivers/platform/chrome/cros_usbpd_notify.c
-+++ b/drivers/platform/chrome/cros_usbpd_notify.c
-@@ -134,15 +134,13 @@ static int cros_usbpd_notify_probe_acpi(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/platform/chrome/wilco_ec/core.c b/drivers/platform/chrome/wilco_ec/core.c
+index d6a994bdc182..9b59a1bed286 100644
+--- a/drivers/platform/chrome/wilco_ec/core.c
++++ b/drivers/platform/chrome/wilco_ec/core.c
+@@ -132,7 +132,7 @@ static int wilco_ec_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int cros_usbpd_notify_remove_acpi(struct platform_device *pdev)
-+static void cros_usbpd_notify_remove_acpi(struct platform_device *pdev)
+-static int wilco_ec_remove(struct platform_device *pdev)
++static void wilco_ec_remove(struct platform_device *pdev)
  {
- 	struct device *dev = &pdev->dev;
- 	struct acpi_device *adev = ACPI_COMPANION(dev);
+ 	struct wilco_ec_device *ec = platform_get_drvdata(pdev);
  
- 	acpi_remove_notify_handler(adev->handle, ACPI_ALL_NOTIFY,
- 				   cros_usbpd_notify_acpi);
--
+@@ -142,7 +142,6 @@ static int wilco_ec_remove(struct platform_device *pdev)
+ 	platform_device_unregister(ec->rtc_pdev);
+ 	if (ec->debugfs_pdev)
+ 		platform_device_unregister(ec->debugfs_pdev);
 -	return 0;
  }
  
- static const struct acpi_device_id cros_usbpd_notify_acpi_device_ids[] = {
-@@ -157,7 +155,7 @@ static struct platform_driver cros_usbpd_notify_acpi_driver = {
- 		.acpi_match_table = cros_usbpd_notify_acpi_device_ids,
+ static const struct acpi_device_id wilco_ec_acpi_device_ids[] = {
+@@ -157,7 +156,7 @@ static struct platform_driver wilco_ec_driver = {
+ 		.acpi_match_table = wilco_ec_acpi_device_ids,
  	},
- 	.probe = cros_usbpd_notify_probe_acpi,
--	.remove = cros_usbpd_notify_remove_acpi,
-+	.remove_new = cros_usbpd_notify_remove_acpi,
+ 	.probe = wilco_ec_probe,
+-	.remove = wilco_ec_remove,
++	.remove_new = wilco_ec_remove,
  };
  
- #endif /* CONFIG_ACPI */
-@@ -209,7 +207,7 @@ static int cros_usbpd_notify_probe_plat(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int cros_usbpd_notify_remove_plat(struct platform_device *pdev)
-+static void cros_usbpd_notify_remove_plat(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct cros_ec_dev *ecdev = dev_get_drvdata(dev->parent);
-@@ -218,8 +216,6 @@ static int cros_usbpd_notify_remove_plat(struct platform_device *pdev)
- 
- 	blocking_notifier_chain_unregister(&ecdev->ec_dev->event_notifier,
- 					   &pdnotify->nb);
--
--	return 0;
- }
- 
- static struct platform_driver cros_usbpd_notify_plat_driver = {
-@@ -227,7 +223,7 @@ static struct platform_driver cros_usbpd_notify_plat_driver = {
- 		.name = DRV_NAME,
- 	},
- 	.probe = cros_usbpd_notify_probe_plat,
--	.remove = cros_usbpd_notify_remove_plat,
-+	.remove_new = cros_usbpd_notify_remove_plat,
- };
- 
- static int __init cros_usbpd_notify_init(void)
+ module_platform_driver(wilco_ec_driver);
 -- 
 2.40.1
 
