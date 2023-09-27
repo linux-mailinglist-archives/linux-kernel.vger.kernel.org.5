@@ -2,98 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1187AFC4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7B57AFD08
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjI0HrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        id S230024AbjI0Hsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjI0HrH (ORCPT
+        with ESMTP id S230226AbjI0Hsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:47:07 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176E6BF;
-        Wed, 27 Sep 2023 00:47:06 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-533df112914so7992155a12.0;
-        Wed, 27 Sep 2023 00:47:06 -0700 (PDT)
+        Wed, 27 Sep 2023 03:48:45 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6884C1B0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:48:43 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c02e232c48so178066071fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695800824; x=1696405624; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wumS1C3PQQ5KYgcSNmBkqyM+nn4oC9GlvcQr5Dhuxtc=;
-        b=jjRD59SUHioTrUlr69fYdlT34xDMGivOEZaxpHc8rEGEHm2SlerQqSQC6J3BwtdLZy
-         kAtTUWjGZkXoleGLT39sGnf1muloz7noIduiq27Y3T5udg4EMCHP7OqyfsQQ84ONnTmV
-         MAAFFGglsv3sNVEthrRnUodc2jualN8XZYM2ZhQeXlUxgNWaKlXTt1V1D36npSVkD1Ih
-         KGSWiYbKI6qw+9Fzq72mmZ9f1JNZAeiudKbO0X8eLftwXGZ3wooNxGcU5kCmWYMqveO4
-         TszYdHOyiCgVbes3UOb4V+QqJCOTM9ukObITm06L1/+uywU2Rj7WZGBaejbo3+3liZhb
-         IHKQ==
+        d=linaro.org; s=google; t=1695800921; x=1696405721; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cjDOYF7T/FlNaBw6bgVsIRpbkeeR+8h756YrDe1mwTU=;
+        b=N5XRNMjEd+28y2ArB8uZKeIg4NQq2hcMqgkhybGGQ3fSuznRrc8toshrVGZsalOglB
+         D7JKA+VcGTrCHW0Qpq8ibP4LS0vTmdZS7BIgScWjPv3d/c/fnFomsITxrLfKNDk81b1T
+         55+NRl8ZDn6Irlj85Fm75xAS9HGucoucFMBgcqvzFKAKHyVGgxT7obSDG/BBn3nghf4Z
+         7X4d0Zl7gQNk25lCem+xdo1AIdxck/OYAPkL8P3qsyoDCrGAeBPEqYrWG563epduYc6J
+         vMAitiXAqio5d5eB8e+RLIfd6p/uEIWWsi046mXot7T87IHy/8A78Vv8EPdkvRrWVaAr
+         uNpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695800824; x=1696405624;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wumS1C3PQQ5KYgcSNmBkqyM+nn4oC9GlvcQr5Dhuxtc=;
-        b=s2aAaVY+4HmUegnLYUiFKjEiWYq1/Z6ZloF72LhGIX68Mr9sqX1YVjY+mj+71yKFHl
-         B286DduznpI2FKxZ6xrIi3X/Q3dnDgqeyOlQd7gZ/3P5TTnL8nNwTeHeQyNbSszBYx1U
-         hAfSJFZDsBjEpMDNJuThusjN7zKd6EcVjIZsdk3R1y1OBJC7duEuLQTiWJ8oqzEENuEZ
-         1HfnYV472vNSVpIXwborGKyeEuaRQI69T3U7MugElffXDcJFSGpC3m2re3DEi6PhVADt
-         7kSTAEPIXwhVBMzLSewduWwBLT5PCoXcUXm79yFyKnhvR/tf8GFZZUf6b+M2uWSYAIMR
-         Fgdw==
-X-Gm-Message-State: AOJu0Yw9PtBS9PMWIbdW4G/NaJKMpbD8vJIrSrKDVIFxB6TNAsRacfsh
-        rQljvc9Kv5gFvnGNX8/OOf4=
-X-Google-Smtp-Source: AGHT+IHusU7lhGicPBVuLh3sb4Co896Bmmyzi9Xm4IsELthpKSUab7WBmJMnyROQZ8rQ/Mfm/1zFRA==
-X-Received: by 2002:a17:907:c241:b0:9ae:513d:47bd with SMTP id tj1-20020a170907c24100b009ae513d47bdmr990456ejc.26.1695800824350;
-        Wed, 27 Sep 2023 00:47:04 -0700 (PDT)
-Received: from primary ([212.34.12.50])
-        by smtp.gmail.com with ESMTPSA id t16-20020a1709066bd000b009ad8d444be4sm8816176ejs.43.2023.09.27.00.47.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 00:47:03 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 03:47:00 -0400
-From:   Abdel Alkuor <alkuor@gmail.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, conor+dt@kernel.org,
-        ryan.eleceng@gmail.com
-Subject: Re: [PATCH v6 02/14] USB: typec: Add cmd timeout and response delay
-Message-ID: <ZRPd9IHwBsDOJqJv@primary>
-References: <20230923073959.86660-1-alkuor@gmail.com>
- <20230923073959.86660-3-alkuor@gmail.com>
- <ZRPTHeYhdtdtKZ1/@kuha.fi.intel.com>
- <ZRPXLBj/Y6+yiwf8@kuha.fi.intel.com>
+        d=1e100.net; s=20230601; t=1695800921; x=1696405721;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cjDOYF7T/FlNaBw6bgVsIRpbkeeR+8h756YrDe1mwTU=;
+        b=VATL+EdzQr/Lqq4O1au0PMbV+HPzMu4WW8yLKmu21lKaMwjbxGG+LIbQf8coQ6txyW
+         TTQFwpU5JH9DnmpxqtjJyTWedPoghC1sJ3etu9ICaYEKjv8TLAn5oojMZViRDjbhykoU
+         fJ9z6Crm0xlLLNbYEi28WW+fz3hJ6JMQPN4h+fs0Am4NKynrjLI8k07wOafLaRwnuz3u
+         qGi6BbU/DLar1PyhBdzLwsOswnF1kmPhOqW10hzItd5N+6maRBn8ooT2HI8D7wirhvfh
+         GiVWnZozr6NVi9efwxOAboqWgCWdCELDsT84xKOKE03DhQykdfgswL5MvY6kcpWUxuw+
+         34yw==
+X-Gm-Message-State: AOJu0Yw2nuo7Pp1izDPkSFJCQk4x60cwNg/lMjGlr1U844shV7/Mg+9d
+        maFzYEp7jNfkabvt4nv5YcGZJw==
+X-Google-Smtp-Source: AGHT+IEyfcxZXq2JD3kKUo5F/6BG1ZAgNVJbuPYFPpf0IaIJR+PXVWQoMudr1psd/L+lxT2RdDmeYw==
+X-Received: by 2002:a2e:9919:0:b0:2bc:e46d:f4ca with SMTP id v25-20020a2e9919000000b002bce46df4camr1211139lji.46.1695800921549;
+        Wed, 27 Sep 2023 00:48:41 -0700 (PDT)
+Received: from [192.168.1.160] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
+        by smtp.gmail.com with ESMTPSA id v5-20020a1709064e8500b00993470682e5sm8792520eju.32.2023.09.27.00.48.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 00:48:40 -0700 (PDT)
+Message-ID: <2d7eac30-480c-49a4-903c-d4f2b3cdfc8d@linaro.org>
+Date:   Wed, 27 Sep 2023 09:48:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRPXLBj/Y6+yiwf8@kuha.fi.intel.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 1/3] dt-bindings: pinctrl: Add support for Amlogic T7
+ SoCs
+Content-Language: en-US
+To:     Lucas Tanure <tanure@linux.com>,
+        Huqiang Qin <huqiang.qin@amlogic.com>,
+        linus.walleij@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        brgl@bgdev.pl, andy@kernel.org
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20230922094342.637251-1-huqiang.qin@amlogic.com>
+ <20230922094342.637251-2-huqiang.qin@amlogic.com>
+ <ff2c6d41-7c9a-4633-8343-eb94404de6e8@linux.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ff2c6d41-7c9a-4633-8343-eb94404de6e8@linux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:18:04AM +0300, Heikki Krogerus wrote:
-> On Wed, Sep 27, 2023 at 10:00:50AM +0300, Heikki Krogerus wrote:
-> > On Sat, Sep 23, 2023 at 03:39:47AM -0400, Abdel Alkuor wrote:
-> > > Some commands in tps25750 take longer than 1 second
-> > > to complete, and some responses need some delay before
-> > > the result becomes available.
-> > > 
-> > > Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
-> > 
-> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> Hold on!
-> 
-> You are not specifying the driver in the subject. You need to fix
-> that.
-> 
-I will send new patches with their subject updated.
+On 27/09/2023 08:08, Lucas Tanure wrote:
+> On 22-09-2023 10:43, Huqiang Qin wrote:
+>> Add a new compatible name for Amlogic T7 pin controller, and add
+>> a new dt-binding header file which document the detail pin names.
+>>
+>> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>>
+>> V1 -> V2: Rename amlogic-t7-gpio.h to amlogic,t7-periphs-pinctrl.h
+>>            Corrected indentation format.
+>> V2 -> V3: Updated subject.
+>>
+>>   .../pinctrl/amlogic,meson-pinctrl-a1.yaml     |   1 +
+>>   .../gpio/amlogic,t7-periphs-pinctrl.h         | 179 ++++++++++++++++++
 
-Thanks,
-Abdel
+...
+
+>> +#define GPIOH_0		148
+>> +#define GPIOH_1		149
+>> +#define GPIOH_2		150
+>> +#define GPIOH_3		151
+>> +#define GPIOH_4		152
+>> +#define GPIOH_5		153
+>> +#define GPIOH_6		154
+>> +#define GPIOH_7		155
+>> +
+>> +#define GPIO_TEST_N	156
+>> +
+>> +#endif /* _DT_BINDINGS_AMLOGIC_T7_GPIO_H */
+> Tested-by: Lucas Tanure <tanure@linux.com>
+
+How can you test bindings?
+
+Best regards,
+Krzysztof
+
