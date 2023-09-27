@@ -2,206 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D2A7AF9AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DC37AF994
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjI0Esf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
+        id S229866AbjI0EhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjI0Err (ORCPT
+        with ESMTP id S229872AbjI0Efw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:47:47 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262BCCF3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:13:29 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-69101022969so9042681b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:13:29 -0700 (PDT)
+        Wed, 27 Sep 2023 00:35:52 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E718D2713;
+        Tue, 26 Sep 2023 19:26:09 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-530bc7c5bc3so12180973a12.1;
+        Tue, 26 Sep 2023 19:26:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695780808; x=1696385608; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZV6WWLW/um6fjmDxBYmHw3kQW73zJt+fvsBsocXSqds=;
-        b=DC8d5SUKAatSiQdlBhnd5VF3uy902y7PBvuSVQVWE7DHAzwMT2LVJdtRVQKWIMIT2j
-         53Gp/cgLv3p7Wy7pJK4vGLZMV250o5YFrhnIRvhrk3IbkkDWHR3D/D2kiWdb5m8EvJrM
-         gnrAAvM+y5lROMtXpstp4RevSM1+m2eGiY4M8r9kUUMjrsyGhLGcxTczj1eIPsLuNreu
-         8AnUspd8OgN9AqkNB/vK7runY7jNlC7xbXjJUOta1iQ4yFBrKlJyB8Ez6bavloQJQj7I
-         RAqd3wPrUpioJiNsIqcOvgE6HxwfLHcI1KIwXQCc5pBJq6uUx0t7/SZerQOCGSM4rrA+
-         UrEA==
+        d=jms.id.au; s=google; t=1695781568; x=1696386368; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=emIKXtRIs/yM2DWwZD9zMtoiHVTkPPbqlVWgbeCiXyc=;
+        b=DP/bBc/dIpsB5DhQVva+sSfLpN0+1lOOg6nw/SsMTCAoznpTyh/EmfVcCUW5vnRf8X
+         y6U7KmkFWqEnq+yopqQRYjYHf5IXaL871jHrOBdU6c1hCFitnO6UX2keP1DxAy3WzvqE
+         BNTCYAUgOm4xvMcYU54DuHaFc7cibNsT2aq4w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695780808; x=1696385608;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZV6WWLW/um6fjmDxBYmHw3kQW73zJt+fvsBsocXSqds=;
-        b=ID/torIGpmc3CFbpd8OZg423N/un32TXbR2rcWMMXQ60W2lp4Yai8wK245nWp8Tmxs
-         gyLNxWs9C260v7Pf12uXkpMLG5Q/xhq+OakelNkTiUZSJhV10jrT2zexsMrlG3QE7+vg
-         vPm0tmhQKKVgTdy0laC1h9ibepYadH3AXESBMv0NVaYc4FSUwQ0kuPHsgUMKRR8sM3C3
-         o7y4CjlHiy8OUooCH2O281aBXNz5X7gWSKVIPLIu4kVup9pDZFDFZ7qsAp6hL/8Rzrkr
-         oBB4MFr01Wnuxc/QMI1yNxbuZ0Q/a9DccF6ZRozjwLFSdDzWMz8bzLfbJpPN8Xw2NqTm
-         auJw==
-X-Gm-Message-State: AOJu0YwPIy1IVx6KqSkhgGttrz5QH4FBWYlG4VEGoljOvwg0xABhShkP
-        z86LVXz6wc+vPVdfiaFpXq6P8g==
-X-Google-Smtp-Source: AGHT+IE1uy7Z2/RTHVKKBhrojjBrMYzG+W9qZc3apbDrbDB/vlS2HSZCgLb+7NFBKhVe0YuAu/kyOA==
-X-Received: by 2002:a05:6a00:cd5:b0:68c:49e4:bd71 with SMTP id b21-20020a056a000cd500b0068c49e4bd71mr709094pfv.34.1695780808529;
-        Tue, 26 Sep 2023 19:13:28 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:6eef:9e73:7774:1855])
-        by smtp.gmail.com with ESMTPSA id k12-20020aa7820c000000b0068fda1db80bsm10616571pfi.75.2023.09.26.19.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 19:13:28 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 19:13:24 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 2/9] RISC-V: Detect XVentanaCondOps from ISA string
-Message-ID: <ZROPxDPYGDcGm2J/@ghost>
-References: <20230925133859.1735879-1-apatel@ventanamicro.com>
- <20230925133859.1735879-3-apatel@ventanamicro.com>
- <ZRHH25IyJJLWSolC@ghost>
- <CAK9=C2UoKxM+wknB4n8=okyXCCE6t0Vvz4jU_tBW6DMm6Vb3DA@mail.gmail.com>
- <CAK9=C2X9FpLTW4mDTNUWkoRLAXZonPzhrsOD5xrCfrqKSbaLhg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1695781568; x=1696386368;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=emIKXtRIs/yM2DWwZD9zMtoiHVTkPPbqlVWgbeCiXyc=;
+        b=Z/lhA+NBoh7LDNvHpth6LRGwpEDf5KCsQk9bBS5XEzr6oji/wkmnSxBYeWoq8KkAFX
+         aJOBHe7IQV/414fi0zed1yJOT4rw8e7aFnr1i40X28kSuVse1Je4OPQpAxfaejQww1Tl
+         /TqBycF8ebV3lPgQJRjDeQk0vmYnajRRn3vkVaTYZVmT4mQVaoPX5gopSqomvxw0HALF
+         NrQiY1V/zYTHIqmMuGBgM4ZX8x5hlWrambpkTJT289WgIJcHMzBN+YNDxpejhs4+YiFO
+         XmGueOm8ZA351yetc5xIocwGz6Ora/Q4qJcjCz2fyCpRPs7RCbRWSjcAql0tM9CQYQtF
+         y2iw==
+X-Gm-Message-State: AOJu0YwTyFFQjV5eAbgVdFs3WiTRE7jFlcoomv990c4+0Lu/PybOB6J9
+        Ekpna/RJNbfMls62SYIGX85yeaArvFqSSUGLFGY=
+X-Google-Smtp-Source: AGHT+IHCCOjXb8+6pc5O9HOXdlXxVDhFBKsFiifAI3BglZZL/BL8JlMYEB/1h28CGguKKA8HQFS3La5RDl0OFTUHTbc=
+X-Received: by 2002:a17:906:9a:b0:9b2:9d6f:2949 with SMTP id
+ 26-20020a170906009a00b009b29d6f2949mr400624ejc.57.1695781568293; Tue, 26 Sep
+ 2023 19:26:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK9=C2X9FpLTW4mDTNUWkoRLAXZonPzhrsOD5xrCfrqKSbaLhg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 27 Sep 2023 02:25:56 +0000
+Message-ID: <CACPK8XeROYz_XaB3TvUhdXm7Vm8fjC8yU+mfvA58=_FiDrBy-g@mail.gmail.com>
+Subject: Re: [PATCH 00/40] soc: Convert to platform remove callback returning void
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Li Yang <leoyang.li@nxp.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+        Huisong Li <lihuisong@huawei.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sumit Gupta <sumitg@nvidia.com>,
+        Shang XiaoJing <shangxiaojing@huawei.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        zhang songyi <zhang.songyi@zte.com.cn>,
+        Lubomir Rintel <lkundrak@v3.sk>, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Ruan Jinjie <ruanjinjie@huawei.com>, kernel@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 09:44:38AM +0530, Anup Patel wrote:
-> On Tue, Sep 26, 2023 at 9:38 AM Anup Patel <apatel@ventanamicro.com> wrote:
-> >
-> > On Mon, Sep 25, 2023 at 11:18 PM Charlie Jenkins <charlie@rivosinc.com> wrote:
-> > >
-> > > On Mon, Sep 25, 2023 at 07:08:52PM +0530, Anup Patel wrote:
-> > > > The Veyron-V1 CPU supports custom conditional arithmetic and
-> > > > conditional-select/move operations referred to as XVentanaCondOps
-> > > > extension. In fact, QEMU RISC-V also has support for emulating
-> > > > XVentanaCondOps extension.
-> > > >
-> > > > Let us detect XVentanaCondOps extension from ISA string available
-> > > > through DT or ACPI.
-> > > >
-> > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > > ---
-> > > >  arch/riscv/include/asm/hwcap.h | 1 +
-> > > >  arch/riscv/kernel/cpufeature.c | 1 +
-> > > >  2 files changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> > > > index 0f520f7d058a..b7efe9e2fa89 100644
-> > > > --- a/arch/riscv/include/asm/hwcap.h
-> > > > +++ b/arch/riscv/include/asm/hwcap.h
-> > > > @@ -59,6 +59,7 @@
-> > > >  #define RISCV_ISA_EXT_ZIFENCEI               41
-> > > >  #define RISCV_ISA_EXT_ZIHPM          42
-> > > >  #define RISCV_ISA_EXT_SMSTATEEN              43
-> > > > +#define RISCV_ISA_EXT_XVENTANACONDOPS        44
-> > > >
-> > > >  #define RISCV_ISA_EXT_MAX            64
-> > > >
-> > > > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> > > > index 3755a8c2a9de..3a31d34fe709 100644
-> > > > --- a/arch/riscv/kernel/cpufeature.c
-> > > > +++ b/arch/riscv/kernel/cpufeature.c
-> > > > @@ -182,6 +182,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
-> > > >       __RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
-> > > >       __RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
-> > > >       __RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> > > > +     __RISCV_ISA_EXT_DATA(xventanacondops, RISCV_ISA_EXT_XVENTANACONDOPS),
-> > > >  };
-> > > >
-> > > >  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
-> > > > --
-> > > > 2.34.1
-> > > >
-> > > >
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> > >
-> > > I worry about storing vendor extensions in this file. Because vendor
-> > > extensions are not standardized, they can only be expected to have the
-> > > desired behavior on hardware with the appropriate vendor id. A couple
-> >
-> > Assuming that a vendor extension is only available on hardware with
-> > appropriate vendor id is not correct because:
-> > 1) vendor A can allow vendor B to implement a custom extension
-> >     defined by vendor B
-> 
-> Typo correction: "vendor A can allow vendor B to implement a custom
-> extension defined by vendor A"
-> 
-> > 2) vendor A and vendor B can jointly develop a RISC-V CPU where
-> >     both vendors integrate their custom extensions.
-> >
-> > It is best to identify a vendor extension independently with a
-> > "X<vendor_name><extension_name>" string to keep it simple
-> > and scalable.
-> >
-> > Along these lines, each T-Head custom extension should have a
-> > "XThead<xyz>" name associated with it.
-> >
-> > > months ago I sent a patch to address this by handling vector extensions
-> > > independently for each vendor [1]. I dropped the patch because it
-> > > relied upon Heiko's T-Head vector extension support that he stopped
-> > > working on. However, I can revive this patch so you can build off of it.
-> >
-> > At least, the conditional operations don't need a hwprobe interface
-> > because an application is either compiled with or without conditional
-> > operations. In other words, effective use of conditional operation is
-> > only possible if compiler generates these instructions based on
-> > code patterns.
-> >
+On Mon, 25 Sept 2023 at 09:55, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> Hello,
+>
+> this series converts all platform drivers below drivers/soc to use
+> .remove_new(). The motivation is to get rid of an integer return code
+> that is (mostly) ignored by the platform driver core and error prone on
+> the driver side.
+>
+> See commit 5c5a7680e67b ("platform: Provide a remove callback that
+> returns no value") for an extended explanation and the eventual goal.
+>
+> As there is no single maintainer team for drivers/soc, I suggest the
+> individual maintainers to pick up "their" patches.
 
-I was conflating hwprobe with hwcap when I was thinking about this.
-However, I think it might still be beneficial to split out the vendor
-extensions. It is possible for vendors to implement each other's
-extensions but I don't expect that to be the average case. Because I do
-not expect this to be the average case, riscv_isa_ext becomes needlessly
-large as it has to contain the extensions of every vendor.
+I'd be happy if Arnd merged the lot at once. Arnd, what do you think?
 
-> > >
-> > > This scheme has the added benefit that vendors do not have to worry
-> > > about conficting extensions, and the kernel does not have to act as a
-> > > key registry for vendors.
-> >
-> > How can vendor extensions conflict if they all follow the
-> > "X<vendor_name><extension_name>" naming scheme ?
-> >
-> > >
-> > > What are your thoughts?
-> > >
-> > > - Charlie
-> > >
-> > > [1] https://lore.kernel.org/lkml/20230705-thead_vendor_extensions-v1-2-ad6915349c4d@rivosinc.com/
-> > >
-> >
-> > Regards,
-> > Anup
-> 
-> Regards,
-> Anup
+If that will be too messy then I understand. I have queued the aspeed
+ones locally and will push that out if we decide that's the best way
+to go.
 
-- Charlie
+Thanks for doing this cleanup Uwe.
+
+Cheers,
+
+Joel
