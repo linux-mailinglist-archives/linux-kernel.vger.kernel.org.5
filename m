@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E37F57AF8C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452F07AF838
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbjI0Dm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
+        id S233999AbjI0Cjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjI0DgT (ORCPT
+        with ESMTP id S229993AbjI0Chj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:36:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C3A16E90;
-        Tue, 26 Sep 2023 18:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695779807; x=1727315807;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=B4V8UJd1VttRqhaNTVjHfz83p7oeLXpMegVFKtP+eNI=;
-  b=UxZtPrFhuK534xBdP0e4E4LeFaPVRj7IZ8qoYMbOkc5f7KJguxJE2sCM
-   O1kilq1J4ZIbAmyX/EPVdEDAdehmKkwWuSCJNr6g2PmSqkQjX1mUXomnZ
-   Mva4bMlHKR171LZwDpFQymnGENaT/lcI7WK6bySsk/urxR803AeCg6XXQ
-   hV5ZUAhk2NBxGLRkw3oe/1tn2WGIhtGrnu51l5dN7WaE/sMHivf7Q23O0
-   pjml3dhCCltjIv/Uac334GapizwZkQMkyCZbSmOzlw7BzS0esBiyIpDbH
-   2vFX6VTVLIbs0swVKuiLWQq4bEkHVWbZZ1dXPSFgCNZoSftmN0W6E+EQE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="384488449"
+        Tue, 26 Sep 2023 22:37:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759641C26A;
+        Tue, 26 Sep 2023 19:02:54 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="385565329"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="384488449"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 18:56:46 -0700
+   d="scan'208";a="385565329"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:02:38 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784156380"
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="725628814"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784156380"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Sep 2023 18:56:44 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        sohil.mehta@intel.com
-Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
-        zhanb@microsoft.com, anakrish@microsoft.com,
-        mikko.ylinen@linux.intel.com, yangjie@microsoft.com
-Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for CSS
- events
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-2-haitao.huang@linux.intel.com>
- <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
- <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
- <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
-Date:   Tue, 26 Sep 2023 20:56:43 -0500
+   d="scan'208";a="725628814"
+Received: from pinksteam.jf.intel.com ([10.165.239.231])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:02:37 -0700
+From:   joao@overdrivepizza.com
+To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joao@overdrivepizza.com
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        rkannoth@marvell.com, wojciech.drewek@intel.com,
+        steen.hegenlund@microhip.com, keescook@chromium.org,
+        Joao Moreira <joao.moreira@intel.com>
+Subject: [PATCH v2 0/2] Prevent potential write out of bounds
+Date:   Tue, 26 Sep 2023 19:02:19 -0700
+Message-ID: <20230927020221.85292-1-joao@overdrivepizza.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NEUTRAL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 08:13:18 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+From: Joao Moreira <joao.moreira@intel.com>
 
-...
->> > >>  /**
->> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state
->> > >> *parent_css)
->> > >>   */
->> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
->> > >>  {
->> > >> -	kfree(css_misc(css));
->> > >> +	struct misc_cg *cg = css_misc(css);
->> > >> +	enum misc_res_type i;
->> > >> +
->> > >> +	for (i = 0; i < MISC_CG_RES_TYPES; i++)
->> > >> +		if (cg->res[i].free)
->> > >> +			cg->res[i].free(cg);
->> > >> +
->> > >> +	kfree(cg);
->> > >>  }
->> > >>
->> > >>  /* Cgroup controller callbacks */
->> > >> --
->> > >> 2.25.1
->> > >
->> > > Since the only existing client feature requires all callbacks,  
->> should
->> > > this not have that as an invariant?
->> > >
->> > > I.e. it might be better to fail unless *all* ops are non-nil (e.g.  
->> to
->> > > catch issues in the kernel code).
->> > >
->> >
->> > These callbacks are chained from cgroup_subsys, and they are defined
->> > separately so it'd be better follow the same pattern.  Or change  
->> together
->> > with cgroup_subsys if we want to do that. Reasonable?
->>
->> I noticed this one later:
->>
->> It would better to create a separate ops struct and declare the instance
->> as const at minimum.
->>
->> Then there is no need for dynamic assigment of ops and all that is in
->> rodata. This is improves both security and also allows static analysis
->> bit better.
->>
->> Now you have to dynamically trace the struct instance, e.g. in case of
->> a bug. If this one done, it would be already in the vmlinux.
->I.e. then in the driver you can have static const struct declaration
-> with *all* pointers pre-assigned.
->
-> Not sure if cgroups follows this or not but it is *objectively*
-> better. Previous work is not always best possible work...
->
+The function flow_rule_alloc in net/core/flow_offload.c [2] gets an
+unsigned int num_actions (line 10) and later traverses the actions in
+the rule (line 24) setting hw.stats to FLOW_ACTION_HW_STATS_DONT_CARE.
 
-IIUC, like vm_ops field in vma structs. Although function pointers in  
-vm_ops are assigned statically, but you still need dynamically assign  
-vm_ops for each instance of vma.
+Within the same file, the loop in the line 24 compares a signed int
+(i) to an unsigned int (num_actions), and then uses i as an array
+index. If an integer overflow happens, then the array within the loop
+is wrongly indexed, causing a write out of bounds.
 
-So the code will look like this:
+After checking with maintainers, it seems that the front-end caps the
+maximum value of num_action, thus it is not possible to reach the given
+write out of bounds, yet, still, to prevent disasters it is better to
+fix the signedness here.
 
-if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
-{
-...
-}
+Similarly, also it is also good to ensure that an overflow won't happen
+in net/netfilter/nf_tables_offload.c's function nft_flow_rule_create by
+making the variable unsigned and ensuring that it returns an error if
+its value reaches UINT_MAX.
 
-I don't see this is the pattern used in cgroups and no strong opinion  
-either way.
+This issue was observed by the commit author while reviewing a write-up
+regarding a CVE within the same subsystem [1].
 
-TJ, do you have preference on this?
+1 - https://nickgregory.me/post/2022/03/12/cve-2022-25636/
 
-Thanks
-Haitao
+Tks,
+
+Joao Moreira (2):
+  Make loop indexes unsigned
+  Make num_actions unsigned
+
+ net/core/flow_offload.c           | 4 ++--
+ net/netfilter/nf_tables_offload.c | 6 +++++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+-- 
+2.42.0
+
