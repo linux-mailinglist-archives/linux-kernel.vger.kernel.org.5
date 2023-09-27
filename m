@@ -2,141 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E8B7B09D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB227B09CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjI0QQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S231378AbjI0QQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbjI0QQv (ORCPT
+        with ESMTP id S229901AbjI0QQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:16:51 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2067.outbound.protection.outlook.com [40.107.102.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54F495
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:16:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iC8moH6m6lZvmSLv5Ya0XSFYZsIMzRJ7pYZ+9ktEtlQuVCzep4qvBizbOGe12LV0sP0dr5AAg7yQACgsAEHlzNQdiKR4Wh69YmHDwB+HdN4n1jwestzDthk6PfTvbAazAHMCWNFg7oxpJStqUVysG1nPyxmp4wpDtmbMEHH+lqNXWaLErbTITgw4+5eoBxZJeyqs7rxER/WRqvZ48dW7CFdDhrqQ4jyXtXbXbeDLXKqLtH+7qKYXukfvMz/uCyo8eif3A5L0lwY58u0YuHuRlbDB38bnlkur01GLsd5lLcHfC7SIfqSg4imzSWvIK9wR1I3BuOLr3b8KbcxjoHR9fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FUcD5q7BXr4tMLEnp/sUExSN86whZqTyrarEcoobj/I=;
- b=bWXHc/oGYvGhO36sPQNS1Hv+C+zqHIXmAtu7Vk1O7rCVS6f+uu67LHlY6/cjtGcvRcyxEQNfJBAIr2J6CUAhhrcjkxsslPcCzcxgCasiV5xLA/dvmArbsniaHYFtVOwhfLqex1iqmOom1dmQrJFb7aItAKCnPtvMA5cWb5aLnnyjndTNAGaOrbMSTq9R+usFBnSStAehnvbh6yJHl2NX/FYde3Zj4j5nc6VkwMyqgKLCw0bDgDY8kAz5mYfMD/okdHlZEngM7wqiRgprtRatAQEzWwCG0v77JmXM0paND5gkYU+GTW7Jek0YOGknPhbQ88dyactkhx9JB6E1P5Tpfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=amd.co smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FUcD5q7BXr4tMLEnp/sUExSN86whZqTyrarEcoobj/I=;
- b=JteZ22J5CCWQjiH5TwcI/eIEzIv/SUa3GCwgvE+tuPTk5DpPNqbxXkg/MWFPhUDynuRKaLmtLl8zEl9i0tftRgOYTvmGKPE38bWrGvliJhzjIM+nDNgAB2m3EuOjlg3/MzUdmZhJ7WvOA29exeSMLaY2+HySW+MzIMEJBXzjKLk=
-Received: from SJ0P220CA0028.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:41b::11)
- by CYYPR12MB8653.namprd12.prod.outlook.com (2603:10b6:930:c5::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Wed, 27 Sep
- 2023 16:16:47 +0000
-Received: from MWH0EPF000989E5.namprd02.prod.outlook.com
- (2603:10b6:a03:41b:cafe::24) by SJ0P220CA0028.outlook.office365.com
- (2603:10b6:a03:41b::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.30 via Frontend
- Transport; Wed, 27 Sep 2023 16:16:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E5.mail.protection.outlook.com (10.167.241.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Wed, 27 Sep 2023 16:16:46 +0000
-Received: from rtg-Artic.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
- 2023 11:16:43 -0500
-From:   Arvind Yadav <Arvind.Yadav@amd.com>
-To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
-        <shashank.sharma@amd.com>, <Felix.Kuehling@amd.co>,
-        <Xinhui.Pan@amd.com>, <airlied@gmail.com>, <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        Arvind Yadav <Arvind.Yadav@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: [PATCH 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset for gfx8
-Date:   Wed, 27 Sep 2023 21:46:16 +0530
-Message-ID: <20230927161616.3335-2-Arvind.Yadav@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230927161616.3335-1-Arvind.Yadav@amd.com>
-References: <20230927161616.3335-1-Arvind.Yadav@amd.com>
+        Wed, 27 Sep 2023 12:16:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D67392;
+        Wed, 27 Sep 2023 09:16:35 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1F6B1FB;
+        Wed, 27 Sep 2023 09:17:11 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C3893F59C;
+        Wed, 27 Sep 2023 09:16:28 -0700 (PDT)
+Message-ID: <96c0892f-20e6-db1f-f310-9b09d419aa6a@arm.com>
+Date:   Wed, 27 Sep 2023 17:16:23 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E5:EE_|CYYPR12MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: f59efbf0-c00a-45a5-194e-08dbbf7525ed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iikJHzLpyAOENKeCCnOE4WMvq3uUzEFkzKhu6IqOwhSHyM8TjBPbFQIUveBaItZWckAnoGPZdDQKkh1xQ4iVrSlSnQ5YUKXt7692z5VAqniesAN/uJudjB9bIqmGZo9Aab7aqiwk+jeUA/bAAJyHHmrIK5ZmkuiB6oL17/MyHOMfTV115QwR9EIT7HgNAWyruj6oqPvr/FpcBHcSGozKhgdl5cbXVr9fmw79vs3ps/UueSj3/LCyrQthmv8aqL/vs0fJEtZWLFg9cB3Bt5ff8WRg9CNoBeS4jZ4HNeKwEJWEEaUTwBWF5CpLJZO8JMDEjfqZXeVHQmVzGBYm4hv9gMBiyttBaOplKLGj1Imc1O/7PLQXs/BNRFWNb0Z6dY1CbTocbisxurFewHdFNF8D6qmJi9AfqsBkgxdAa0/9wATfU0WI9VwyuSBV+w2Y/jUzdbfGnKPe0oNW1KMBw4CDR6kFIpZWGWAk2Qbcfd/fhZESqaOyY9yLzsOnGE58g/kv995CieppaiNcKOH0QuWxZC7QXRGXUBM6b/PIHx+dNbiuEcAawVVF06/0qgYX4DQcc8uhxfauaRKPRkVsSZfN+ZbrkwOZeBJYggzmM6d6qwy5AJnbzFm8xLZUoSjfX1RgxMl9o82yCpVIJsWvaUrOYZgwAAbWsojxE5R6q/u4roIg06z5wisS0Sg7ibPd/pqZMVLI1tiYa2PeitSE+btYEKH/0X72zjVuftQ8NiXnnm9X7P/c54d9DnnSzE7VGYAOkgMeloqP+f4tJLDeb+dNGw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(1800799009)(82310400011)(186009)(451199024)(36840700001)(40470700004)(46966006)(81166007)(70586007)(110136005)(54906003)(70206006)(36860700001)(41300700001)(47076005)(316002)(7696005)(336012)(82740400003)(356005)(2616005)(426003)(6666004)(1076003)(478600001)(16526019)(26005)(5660300002)(4326008)(8676002)(83380400001)(8936002)(86362001)(2906002)(40480700001)(36756003)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 16:16:46.9712
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f59efbf0-c00a-45a5-194e-08dbbf7525ed
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8653
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
+ IOTLB flushing
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
+ <ZRLy_AaJiXxZ2AfK@8bytes.org> <20230926160832.GM13795@ziepe.ca>
+ <cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com>
+ <ZRP8CiBui7suB5D6@8bytes.org>
+ <b06a14de270a63050b0d027c24b333dba25001a4.camel@linux.ibm.com>
+ <e1efbbd827e34800bd7fb0ea687645cc6c65e1ab.camel@linux.ibm.com>
+ <6dab29f58ac1ccd58caaee031f98f4d0d382cbcd.camel@linux.ibm.com>
+ <a672b6b122c7a5f708614346885c190a6960aaea.camel@linux.ibm.com>
+ <20230927154009.GN13795@ziepe.ca>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230927154009.GN13795@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to adjust the absolute doorbell offset
-against the doorbell id considering the doorbell
-size of 32/64 bit.
+On 27/09/2023 4:40 pm, Jason Gunthorpe wrote:
+> On Wed, Sep 27, 2023 at 05:24:20PM +0200, Niklas Schnelle wrote:
+> 
+>> Ok, another update. On trying it out again this problem actually also
+>> occurs when applying this v12 on top of v6.6-rc3 too. Also I guess
+>> unlike my prior thinking it probably doesn't occur with
+>> iommu.forcedac=1 since that still allows IOVAs below 4 GiB and we might
+>> be the only ones who don't support those. From my point of view this
+>> sounds like a mlx5_core issue they really should call
+>> dma_set_mask_and_coherent() before their first call to
+>> dma_alloc_coherent() not after. So I guess I'll send a v13 of this
+>> series rebased on iommu/core and with an additional mlx5 patch and then
+>> let's hope we can get that merged in a way that doesn't leave us with
+>> broken ConnectX VFs for too long.
+> 
+> Yes, OK. It definitely sounds wrong that mlx5 is doing dma allocations before
+> setting it's dma_set_mask_and_coherent(). Please link to this thread
+> and we can get Leon or Saeed to ack it for Joerg.
+> 
+> (though wondering why s390 is the only case that ever hit this?)
 
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Probably because most systems happen to be able to satisfy the 
+allocation within the default 32-bit mask - the whole bottom 4GB of IOVA 
+space being reserved is pretty atypical.
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-index 0d3d538b64eb..c327f7f604d7 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -407,7 +407,16 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
- 
- 	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
- 								  qpd->proc_doorbells,
--								  q->doorbell_id);
-+								  0);
-+
-+	/* Adjust the absolute doorbell offset against the doorbell id considering
-+	 * the doorbell size of 32/64 bit.
-+	 */
-+	if (!KFD_IS_SOC15(dev))
-+		q->properties.doorbell_off += q->doorbell_id;
-+	else
-+		q->properties.doorbell_off += q->doorbell_id * 2;
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+TBH it makes me wonder the opposite - how this ever worked on s390 
+before? And I think the answer to that is "by pure chance", since upon 
+inspection the existing s390_pci_dma_ops implementation appears to pay 
+absolutely no attention to the device's DMA masks whatsoever :(
 
+Robin.
