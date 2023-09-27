@@ -2,44 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6502F7AFA60
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754607AFA61
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjI0Fw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S229934AbjI0Fwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjI0Fvt (ORCPT
+        with ESMTP id S229750AbjI0FwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:51:49 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63645170E;
-        Tue, 26 Sep 2023 22:49:53 -0700 (PDT)
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AE48620B74C0;
-        Tue, 26 Sep 2023 22:49:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE48620B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695793792;
-        bh=zYLgfwVrqDBS5frwkU8WzeM8Y0joHuphXzHL6ORt8IQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Pp/754cU2V+m654v727QrXirT71pL8pHi7Htgxvk49n2VPSfi6SwI3wBlvLBbpSCN
-         3ZZB1cSIoEW/kYqMfBTKoZKuQxBYc0jh6YwEuTmwktm9ATqCp5kw0OBa9pDTlNgGmq
-         zcU46rYDR40PJ5T4AHo3KS2YJKRi6g2rRNqEndTs=
-From:   Sonia Sharma <sosha@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        sosha@microsoft.com, kys@microsoft.com, mikelley@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        longli@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Subject: [PATCH v5 net-next] net: hv_netvsc: fix netvsc_send_completion to avoid multiple message length checks
-Date:   Tue, 26 Sep 2023 22:49:47 -0700
-Message-Id: <1695793787-21107-1-git-send-email-sosha@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Wed, 27 Sep 2023 01:52:04 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A94DD;
+        Tue, 26 Sep 2023 22:50:21 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 069EA5C279B;
+        Wed, 27 Sep 2023 01:50:19 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 27 Sep 2023 01:50:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695793819; x=1695880219; bh=o7
+        81UB75dWtQPWqWz6T4vyY29QjIlXMO7I9AjykpvSs=; b=YOT4isX4Z7eoYa9AnX
+        A+p+d+XSOzWhESZ3HtZ5f6sQlTcTZ8CrMeGEqmzqdI614EcFxdsaYTaPfsrHPncP
+        hwMC4AOqd2j+thNvvcFUF+CoxfFGfucoKRlRHyOz0NZaeiL4W9I7Gz2kunvnHwaS
+        4Q/9YvxoMperG28X25H3nf8af6f1T2CEHKX6hpkR8Ebx2MQPz2r2gzTu5SIU/5N4
+        Zc8BwIT4MX5KmMeVXUYIBvITzHvAGKRpVK2MDSTVjQrtn0OS3YLGzlxgYKZGGU8c
+        tsG3PMUGlsDG+i7a4U4U3W5+FJh23Jyc0EoEPbTHWUTpn556ioRFqs3SWiADyKui
+        MZCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695793819; x=1695880219; bh=o781UB75dWtQP
+        WqWz6T4vyY29QjIlXMO7I9AjykpvSs=; b=U1yJVQKvG270QvtV7tXFsPOcaZLLD
+        yEEH2DxH+BOtgfVJJPX+5AawRPDaO9+TPqhh8raF0ml6dxYGFqoG1UmZyKy1VmZN
+        KPT+bnVUmscNnHNdP5PDSx0MzZz2635/ofTrtwtfu9N2a0ICKfoR1K8N7/sdQwcA
+        O9QcI3G3XAmq1pOd4KYqgJrA8ym7Jl46fNVpQqfLG9UbhTYlnfYMUaRV6ii2LLiU
+        1NNsVcsQRWJZHE98+znNbq5/ytyP3em9yfVxJeEFMt799bq694UUVd5PgPnR0HZY
+        wy4HRRppFkWcWMrFPyvd7SpKeaDyuoQuXhXwukboxKgxBDYBf53nIS7/g==
+X-ME-Sender: <xms:mcITZX50sTS5Pr-ILjqro9fQJMD9vZ5yKgHCvUUcbutinozr9z2Tkg>
+    <xme:mcITZc7pVc5RoY9WdgFmGpecTL4V5Q4Vds7CAudgFLpiLwkNZJe1pnTQOuYsTtqRH
+    IhnchUbs7sJmJd_d9Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtddugdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpefhgefhteevtdeviedtgeffueevjeevtedvkefgvdekudfftdefledtudeljeej
+    hfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdguvggsihgrnhdrohhrghdpghhith
+    hhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:mcITZef46y8tcoyWOxRFgYpnQMVjCA9pnVenMPXV6VPbJ_hkt1cJDA>
+    <xmx:mcITZYLw73TUyWwuDs9xMDoh13nl0-yvygoOoMiJh6jBaT_OnxJzEA>
+    <xmx:mcITZbL3WQyKtGLuzdaCoVpoJ3cznnWz1dsvmmJbaW3RDVCLcs_2mQ>
+    <xmx:m8ITZRjKb7WG-BlTVXG_sEcTSG2s2dAahe-0cD8NCNkVqFdej9kiwA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D043EB60089; Wed, 27 Sep 2023 01:50:17 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
+MIME-Version: 1.0
+Message-Id: <b70fa1d5-7f38-4511-ad2a-abe1b1ad5992@app.fastmail.com>
+In-Reply-To: <20230927-strncpy-drivers-misc-c2port-core-c-v1-1-978f6d220a54@google.com>
+References: <20230927-strncpy-drivers-misc-c2port-core-c-v1-1-978f6d220a54@google.com>
+Date:   Wed, 27 Sep 2023 07:49:56 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Justin Stitt" <justinstitt@google.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] c2port: replace deprecated strncpy with strscpy
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,94 +85,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sonia Sharma <sonia.sharma@linux.microsoft.com>
+On Wed, Sep 27, 2023, at 07:20, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+>
+> We expect `c2dev->name` to be NUL-terminated based on its usage with
+> format strings:
+> |       dev_info(c2dev->dev, "C2 port %s removed\n", c2dev->name);
+>
+> Moreover, NUL-padding is _not_ required as c2dev is zero-allocated:
+> |       c2dev = kzalloc(sizeof(struct c2port_device), GFP_KERNEL);
+>
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+>
+> Let's also drop `C2PORT_NAME_LEN - 1` for `sizeof(dest)` which is more
+> idiomatic strscpy usage.
+>
+> Link: 
+> https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings 
+> [1]
+> Link: 
+> https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html 
+> [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-The switch statement in netvsc_send_completion() is incorrectly validating
-the length of incoming network packets by falling through to the next case.
-Avoid the fallthrough. Instead break after a case match and then process
-the complete() call.
-The current code has not caused any known failures. But nonetheless, the
-code should be corrected as a different ordering of the switch cases might
-cause a length check to fail when it should not.
-
-Signed-off-by: Sonia Sharma <sonia.sharma@linux.microsoft.com>
-
----
-Changes in v3:
-* added return statement in default case as pointed by Michael Kelley.
-Changes in v4:
-* added fixes tag
-* modified commit message to explain the issue fixed by patch.
-Changes in v5:
-* Dropped fixes tag as suggested by Simon Horman.
-* fixed indentation
----
- drivers/net/hyperv/netvsc.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 82e9796c8f5e..0f7e4d377776 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -851,7 +851,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_RECV_BUF_COMPLETE:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -860,7 +860,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_SEND_BUF_COMPLETE:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -869,7 +869,7 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		fallthrough;
-+		break;
- 
- 	case NVSP_MSG5_TYPE_SUBCHANNEL:
- 		if (msglen < sizeof(struct nvsp_message_header) +
-@@ -878,10 +878,6 @@ static void netvsc_send_completion(struct net_device *ndev,
- 				   msglen);
- 			return;
- 		}
--		/* Copy the response back */
--		memcpy(&net_device->channel_init_pkt, nvsp_packet,
--		       sizeof(struct nvsp_message));
--		complete(&net_device->channel_init_wait);
- 		break;
- 
- 	case NVSP_MSG1_TYPE_SEND_RNDIS_PKT_COMPLETE:
-@@ -904,13 +900,19 @@ static void netvsc_send_completion(struct net_device *ndev,
- 
- 		netvsc_send_tx_complete(ndev, net_device, incoming_channel,
- 					desc, budget);
--		break;
-+		return;
- 
- 	default:
- 		netdev_err(ndev,
- 			   "Unknown send completion type %d received!!\n",
- 			   nvsp_packet->hdr.msg_type);
-+		return;
- 	}
-+
-+	/* Copy the response back */
-+	memcpy(&net_device->channel_init_pkt, nvsp_packet,
-+	   sizeof(struct nvsp_message));
-+	complete(&net_device->channel_init_wait);
- }
- 
- static u32 netvsc_get_next_send_section(struct netvsc_device *net_device)
--- 
-2.25.1
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
