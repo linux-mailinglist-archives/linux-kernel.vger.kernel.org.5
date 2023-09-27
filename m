@@ -2,86 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC2F7AFFE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D1D7AFFED
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjI0J0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
+        id S230460AbjI0J0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjI0J03 (ORCPT
+        with ESMTP id S230440AbjI0J0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:26:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24A64EB;
-        Wed, 27 Sep 2023 02:26:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01C3F1FB;
-        Wed, 27 Sep 2023 02:27:05 -0700 (PDT)
-Received: from [10.57.0.175] (unknown [10.57.0.175])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE5E73F59C;
-        Wed, 27 Sep 2023 02:26:19 -0700 (PDT)
-Message-ID: <068aeebd-df24-5097-96e3-ebaaa7a763fd@arm.com>
-Date:   Wed, 27 Sep 2023 10:26:14 +0100
+        Wed, 27 Sep 2023 05:26:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C0010E;
+        Wed, 27 Sep 2023 02:26:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E5C5C433CC;
+        Wed, 27 Sep 2023 09:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695806801;
+        bh=8E27F9vDg06n7KRZbD66quQ/0obCYve0d6wN7L4/mIE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KUf/QhYmt4vezb7gL5zmxcPipL6aEHrAU0O1FSPwJgQsND9bZ76JxnOrpTj6yx0Td
+         BDOoxm72gtrUwFxAukZ1l08as3Phvh8wOpuv5GWxiBlK260884XxfQNob5+CxcAgf0
+         G2mZnsx/wuG1dY0m17/lI7NBM0laCHiq2jyPZo9GHwhxieYdkV6qo07RPTpElE6QNr
+         dER926bG0jSlV928zY92OAW1XKY3FEXq2MJKaDbNw/RdlLZDllMdG5bm7PeJ6TImPN
+         Xinq6VMFCBkARoiyHypA9v635fJDUMER1iWiHaMmBg7+NMdNbLNkH4ZVq23IkIBDsf
+         a7zZsXc4LBK7w==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2c123eed8b2so178042261fa.0;
+        Wed, 27 Sep 2023 02:26:41 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyOs9ENQPEStpWOXiePa+/7MffdTUX9K4h36hLAlYId8s7yE4H0
+        TPjnNH8AJ1sabRYiNIGWvAnrLJ+PyXtqLBFtRbc=
+X-Google-Smtp-Source: AGHT+IH/ulAKGuCmgc8cYYmNPY9EPUC3Ee98HEPl/vUQhauUGM2xJnvYC87tZYHNuXQ9gWNZ5whG/YJU+1RgsBmoPms=
+X-Received: by 2002:a2e:b6d3:0:b0:2c1:7fcf:c974 with SMTP id
+ m19-20020a2eb6d3000000b002c17fcfc974mr1290153ljo.23.1695806799422; Wed, 27
+ Sep 2023 02:26:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v12 0/6] iommu/dma: s390 DMA API conversion and optimized
- IOTLB flushing
-Content-Language: en-GB
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>
-Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com>
- <ZRLy_AaJiXxZ2AfK@8bytes.org> <20230926160832.GM13795@ziepe.ca>
- <cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230927055954.3755-1-quic_aiquny@quicinc.com>
+In-Reply-To: <20230927055954.3755-1-quic_aiquny@quicinc.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 27 Sep 2023 09:26:28 +0000
+X-Gmail-Original-Message-ID: <CAMj1kXEh=yQ12v1Ht6=-vgXVe8VCQTPdUD8AowkKcpyDXh_0mg@mail.gmail.com>
+Message-ID: <CAMj1kXEh=yQ12v1Ht6=-vgXVe8VCQTPdUD8AowkKcpyDXh_0mg@mail.gmail.com>
+Subject: Re: [PATCH] ARM: kprobes: Explicitly assign register for local variables
+To:     Maria Yu <quic_aiquny@quicinc.com>
+Cc:     linux@armlinux.org.uk, mhiramat@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, quic_lijuang@quicinc.com,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,74 +59,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-27 09:55, Niklas Schnelle wrote:
-> On Tue, 2023-09-26 at 13:08 -0300, Jason Gunthorpe wrote:
->> On Tue, Sep 26, 2023 at 05:04:28PM +0200, Joerg Roedel wrote:
->>> Hi Niklas,
->>>
->>> On Fri, Aug 25, 2023 at 12:11:15PM +0200, Niklas Schnelle wrote:
->>>> Niklas Schnelle (6):
->>>>        iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM return
->>>>        s390/pci: prepare is_passed_through() for dma-iommu
->>>>        s390/pci: Use dma-iommu layer
->>>>        iommu/s390: Disable deferred flush for ISM devices
->>>>        iommu/dma: Allow a single FQ in addition to per-CPU FQs
->>>>        iommu/dma: Use a large flush queue and timeout for shadow_on_flush
->>>
->>> Turned out this series has non-trivial conflicts with Jasons
->>> default-domain work so I had to remove it from the IOMMU tree for now.
->>> Can you please rebase it to the latest iommu/core branch and re-send? I
->>> will take it into the tree again then.
->>
->> Niklas, I think you just 'take yours' to resolve this. All the
->> IOMMU_DOMAIN_PLATFORM related and .default_domain = parts should be
->> removed. Let me know if you need anything
->>
->> Thanks,
->> Jason
-> 
-> Hi Joerg, Hi Jason,
-> 
-> I've run into an unfortunate problem, not with the rebase itself but
-> with the iommu/core branch.
-> 
-> Jason is right, I basically need to just remove the platform ops and
-> .default_domain ops. This seems to work fine for an NVMe both in the
-> host and also when using the IOMMU with vfio-pci + KVM. I've already
-> pushed the result of that to my git.kernel.org:
-> https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=b4/dma_iommu
-> 
-> The problem is that something seems to  be broken in the iommu/core
-> branch. Regardless of whether I have my DMA API conversion on top or
-> with the base iommu/core branch I can not use ConnectX-4 VFs.
-> 
-> # lspci
-> 111a:00:00.0 Ethernet controller: Mellanox Technologies MT27710 Family [ConnectX-4 Lx Virtual Function]
-> # dmesg | grep mlx
-> [    3.189749] mlx5_core 111a:00:00.0: mlx5_mdev_init:1802:(pid 464): Failed initializing cmdif SW structs, aborting
-> [    3.189783] mlx5_core: probe of 111a:00:00.0 failed with error -12
-> 
-> This same card works on v6.6-rc3 both with and without my DMA API
-> conversion patch series applied. Looking at mlx5_mdev_init() ->
-> mlx5_cmd_init(). The -ENOMEM seems to come from the following
-> dma_pool_create():
-> 
-> cmd->pool = dma_pool_create("mlx5_cmd", mlx5_core_dma_dev(dev), size, align, 0);
-> 
-> I'll try to debug this further but wanted to let you know already in
-> case you have some ideas.
+Hello Maria,
 
-I could imagine that potentially something in the initial default domain 
-conversion somehow interferes with the DMA ops in a way that ends up 
-causing alloc_cmd_page() to fail (maybe calling zpci_dma_init_device() 
-at the wrong point, or too many times?). FWIW I see nothing that would 
-obviously affect dma_pool_create() itself.
+On Wed, 27 Sept 2023 at 06:00, Maria Yu <quic_aiquny@quicinc.com> wrote:
+>
+> Registers r7 is removed in clobber list, so compiler may choose r7 for
+> local variables usage, while r7 will be actually updated by the inline asm
+> code.
 
-Robin.
+The inline asm does not update R7, it preserves and restores it.
 
-> Either way as it doesn't seem to be related
-> to the DMA API conversion I can sent that out again regardless if you
-> want, really don't want to miss another cycle.
-> 
-> Thanks,
-> Niklas
+> This caused the runtime behavior wrong.
+
+Could you explain how, exactly? In which cases is the preserve/restore
+of R7 failing to achieve the intended result?
+
+> While those kind of reserved registers cannot be set to clobber list
+> because of error like "inline asm clobber list contains reserved
+> registers".
+> To both working for reserved register case and non-reserved register case,
+> explicitly assign register for local variables which will be used as asm
+> input.
+>
+
+If we make this change, could we remove the references to R7 altogether?
+
+> Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
+> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+> ---
+>  arch/arm/probes/kprobes/actions-thumb.c | 32 ++++++++++++++++---------
+>  1 file changed, 21 insertions(+), 11 deletions(-)
+>
+> diff --git a/arch/arm/probes/kprobes/actions-thumb.c b/arch/arm/probes/kprobes/actions-thumb.c
+> index 51624fc263fc..f667b2f00b3e 100644
+> --- a/arch/arm/probes/kprobes/actions-thumb.c
+> +++ b/arch/arm/probes/kprobes/actions-thumb.c
+> @@ -442,8 +442,10 @@ static unsigned long __kprobes
+>  t16_emulate_loregs(probes_opcode_t insn,
+>                    struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> -       unsigned long oldcpsr = regs->ARM_cpsr;
+> -       unsigned long newcpsr;
+> +       register unsigned long oldcpsr asm("r8") = regs->ARM_cpsr;
+> +       register unsigned long newcpsr asm("r9");
+> +       register void *rregs asm("r10") = regs;
+> +       register void *rfn asm("lr") = asi->insn_fn;
+>
+>         __asm__ __volatile__ (
+>                 "msr    cpsr_fs, %[oldcpsr]     \n\t"
+> @@ -454,10 +456,10 @@ t16_emulate_loregs(probes_opcode_t insn,
+>                 "mov    r7, r11                 \n\t"
+>                 "mrs    %[newcpsr], cpsr        \n\t"
+>                 : [newcpsr] "=r" (newcpsr)
+> -               : [oldcpsr] "r" (oldcpsr), [regs] "r" (regs),
+> -                 [fn] "r" (asi->insn_fn)
+> +               : [oldcpsr] "r" (oldcpsr), [regs] "r" (rregs),
+> +                 [fn] "r" (rfn)
+>                 : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r11",
+> -                 "lr", "memory", "cc"
+> +                 "memory", "cc"
+>                 );
+>
+>         return (oldcpsr & ~APSR_MASK) | (newcpsr & APSR_MASK);
+> @@ -525,6 +527,9 @@ static void __kprobes
+>  t16_emulate_push(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> +       register void *rfn asm("lr") = asi->insn_fn;
+> +       register void *rregs asm("r10") = regs;
+> +
+>         __asm__ __volatile__ (
+>                 "mov    r11, r7                 \n\t"
+>                 "ldr    r9, [%[regs], #13*4]    \n\t"
+> @@ -534,9 +539,9 @@ t16_emulate_push(probes_opcode_t insn,
+>                 "str    r9, [%[regs], #13*4]    \n\t"
+>                 "mov    r7, r11                 \n\t"
+>                 :
+> -               : [regs] "r" (regs), [fn] "r" (asi->insn_fn)
+> +               : [regs] "r" (rregs), [fn] "r" (rfn)
+>                 : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r8", "r9", "r11",
+> -                 "lr", "memory", "cc"
+> +                 "memory", "cc"
+>                 );
+>  }
+>
+> @@ -561,6 +566,9 @@ static void __kprobes
+>  t16_emulate_pop_nopc(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> +       register void *rfn asm("lr") = asi->insn_fn;
+> +       register void *rregs asm("r8") = regs;
+> +
+>         __asm__ __volatile__ (
+>                 "mov    r11, r7                 \n\t"
+>                 "ldr    r9, [%[regs], #13*4]    \n\t"
+> @@ -570,9 +578,9 @@ t16_emulate_pop_nopc(probes_opcode_t insn,
+>                 "str    r9, [%[regs], #13*4]    \n\t"
+>                 "mov    r7, r11                 \n\t"
+>                 :
+> -               : [regs] "r" (regs), [fn] "r" (asi->insn_fn)
+> +               : [regs] "r" (rregs), [fn] "r" (rfn)
+>                 : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r9", "r11",
+> -                 "lr", "memory", "cc"
+> +                 "memory", "cc"
+>                 );
+>  }
+>
+> @@ -581,6 +589,8 @@ t16_emulate_pop_pc(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+>         register unsigned long pc asm("r8");
+> +       register void *rfn asm("lr") = asi->insn_fn;
+> +       register void *rregs asm("r10") = regs;
+>
+>         __asm__ __volatile__ (
+>                 "mov    r11, r7                 \n\t"
+> @@ -591,9 +601,9 @@ t16_emulate_pop_pc(probes_opcode_t insn,
+>                 "str    r9, [%[regs], #13*4]    \n\t"
+>                 "mov    r7, r11                 \n\t"
+>                 : "=r" (pc)
+> -               : [regs] "r" (regs), [fn] "r" (asi->insn_fn)
+> +               : [regs] "r" (rregs), [fn] "r" (rfn)
+>                 : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r9", "r11",
+> -                 "lr", "memory", "cc"
+> +                 "memory", "cc"
+>                 );
+>
+>         bx_write_pc(pc, regs);
+>
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> --
+> 2.17.1
+>
