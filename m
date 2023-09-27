@@ -2,259 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B484F7B0354
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0B97B0355
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjI0LuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S231167AbjI0LuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjI0LuF (ORCPT
+        with ESMTP id S229901AbjI0LuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:50:05 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC364121
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:50:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-98377c5d53eso1345043266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695815399; x=1696420199; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/E53cfwHh2rEnDg5UcpYwC/JM02aXoEehL2O5KPOt7o=;
-        b=b8MtE/GMtlCzZBv0k36CeHQe8AbtW2duUZT49RrtVQDfuUAVwnT2xC0l+GCpFkl/H6
-         uf3OZZVzs7FCAYYyGL2N4UvkNWRZYLImnrkxeBhE4hLKDwB00dDsKRpXToRvRudDc74S
-         /HJN0MpxOHhVQ5qBUm2HgJ4rCvu7aDc/x/CekuF120tSKR1kNV5XEHp1OgZhkTL+0knY
-         geTspkrPWrpApmDQtt7UL0Wajj05aQ9JiYE0cWTfFkUHLKrxsuNJfDBHNTp0kcaXkAeo
-         wH2l2pN31x7IYa89K4m1DSgpBlZQ6Il0lvo+/Yg7nkjaPmWkDKR00ZZwn36jPShMQ+3w
-         ZdsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695815399; x=1696420199;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/E53cfwHh2rEnDg5UcpYwC/JM02aXoEehL2O5KPOt7o=;
-        b=IoJkhBgvVAEHmdHo4htTwb32nnLRsFy2MGov6gdXFuQ2cyO8eVSx6viljiDkKPFfmU
-         zjvwVIcsmAZPpWUUlALijKi6pKh28cyu+r8AE+QjfSafdKlGfZYLgQNeiN4BujNMHXlU
-         EB+WJykGvw2+MYla/9sJoSiSQYh7I2u5azlvtnEgstThNNHbJLBk+TUFdVtE3EQT7Vg+
-         HM5cNEAfgipkNV8Zyax3XSGv1xpK9/1zwSuiq8jFdDOKZhk5QB6dSvu1mFP6/PleP/On
-         UTXFrwLr4oxmvowA5e+cQJTaost3zGcNoXKpzT6ZraeGpkMs2fzvCAYJJzYe/hCbF1cL
-         MvGg==
-X-Gm-Message-State: AOJu0YyRbEMA56kuDGjfxhLDdavbG7Gy5edJJB7GjJzm4MvltrK6vBCN
-        FzuITlyj/ENr1Izwh+lal4Q=
-X-Google-Smtp-Source: AGHT+IETXVJDmZsof7tV3c8vaJTOGTpafdIYmVusi8y090eHC6ckJIASlG60RZFFBks4nW/EzV6zgQ==
-X-Received: by 2002:a17:906:4c9:b0:9ae:6a60:81a2 with SMTP id g9-20020a17090604c900b009ae6a6081a2mr1450944eja.25.1695815399079;
-        Wed, 27 Sep 2023 04:49:59 -0700 (PDT)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id y4-20020a17090614c400b00992b510089asm9155681ejc.84.2023.09.27.04.49.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 04:49:58 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 27 Sep 2023 13:49:57 +0200
-To:     Jaeseon Sim <jason.sim@samsung.com>
-Cc:     Jaeseon Sim <jason.sim@samsung.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-Subject: Re: [PATCH] mm/vmalloc: Remove WARN_ON_ONCE related to
- adjust_va_to_fit_type
-Message-ID: <ZRQW5Wb2cT1FnrvH@pc638.lan>
-References: <ZRJ0wtzu+ZD7ALqs@pc636>
- <ZRGN0DkJ/MHsYloz@pc636>
- <ZQ1ha+wIaTJ9+aU8@MiWiFi-R3L-srv>
- <20230922062704epcms1p1722f24d4489a0435b339ce21db754ded@epcms1p1>
- <ZQ1ftk5yDBv+p6A4@MiWiFi-R3L-srv>
- <20230925105154epcms1p782c335c2355f39a9b583489c56e972f6@epcms1p7>
- <20230926052158epcms1p7fd7f3e3f523e5209977d3f5c62e85afa@epcms1p7>
- <CGME20230922061715epcms1p7cd5a37f4bba0abf4bc159b844bd8ee65@epcms1p4>
- <20230926120549epcms1p4d41733c1c3698bd00eaa7e5ea0de041d@epcms1p4>
- <ZRLQCTh9zNIp9OH7@pc636>
+        Wed, 27 Sep 2023 07:50:17 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B02FC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:50:16 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9EE8C40E014B;
+        Wed, 27 Sep 2023 11:50:14 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0riOTFrn8l0L; Wed, 27 Sep 2023 11:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695815412; bh=IMkSWjwCZ0AEwZ/ESSb06K1/xR3QElwFkAAeun7UW0A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J20HGBS9gAldoeyYQyMfdiykgS8ER3YZBMBn5TczuaAtJ2DkbE9baz+f+k2vyP/D2
+         ldS3PUvW4jvSZNh2RIiKlS1e8aQE1NvNwerEJYn8v1TG2ObrJcfhd9yF6tr0XBqmCw
+         JCUFSc/1RPClV25RuelXeqlnSZJp4M1CMCnDelqWk/8Inx+jofgdBlAz82G/fpCTJE
+         LZ+vA+6zcm5d2veAbVWCnS1lfFeDZR1M58BZUCdwOQo1uLrraC7BmXC3tbyi4dmiYk
+         d7XFGeblvsQLmsjHpI6/WsUa+AlDB/LUzrKgTbHmQiEh6yS5YdRpvFLpJdmtfFkRuX
+         M5NuCUMibLqwL+6AysyBWL/DaiH7OSxa92uvev+FQk09VGWBXZUX78MqG5awpuN0dO
+         8wTdOhjvyH3HmP+7L23W2bzUbPR8AlP2ymmUjCVtx7JN1pw5vPvl6FUpm4T6Cz8Qsq
+         1jQ2wAGRsHK4lJHlVVcoqZg1vmTsSYGLvKIzAKj2mL/+URasIf39Mm83vFFWqcMrhk
+         pmDo3jdI42+7tE5HTcMAirDPpqvBRwU9QTvM/W2O99Zro79W4NJeYtZz/s4jKynovh
+         UApqzsBVfqDChey51EKVQIjoWAwO6Z9PpQUcOTVbKcNWpKd/1eKBuvdc3ybxtRHzUd
+         Prn7y4dPFg8v+/ZMi/zpfKtA=
+Received: from nazgul.tnic (unknown [2.247.249.105])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 67F5840E00B3;
+        Wed, 27 Sep 2023 11:50:06 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 13:50:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [patch V3 23/30] x86/microcode: Provide new control functions
+Message-ID: <20230927115000.GDZRQW6LLQlUvxzRW1@fat_crate.local>
+References: <20230912065249.695681286@linutronix.de>
+ <20230912065502.202675936@linutronix.de>
+ <20230924065824.GNZQ/eEKAO8IaCcUJU@fat_crate.local>
+ <87pm25feyr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZRLQCTh9zNIp9OH7@pc636>
+In-Reply-To: <87pm25feyr.ffs@tglx>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Yes, but GFP_NOWAIT-alloc-error can easily occur for low-memory device.
-> >
-> Agree. You are really in a low memory condition. We end up here only if
-> pre-loading also has not succeeded, i.e. GFP_KERNEL also fails.
-> 
-> But i agree with you, we should "improve the warning" because we drain
-> and repeat.
-> 
-> > How about changing fix as below?:
-> > 
-> > <snip>
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -1468,6 +1468,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
-> >                  */
-> >                 va->va_start = nva_start_addr + size;
-> >         } else {
-> > +               WARN_ON_ONCE(1);
-> >                 return -1;
-> >         }
-> >  
-> > @@ -1522,7 +1523,7 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
-> >  
-> >         /* Update the free vmap_area. */
-> >         ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
-> > -       if (WARN_ON_ONCE(ret))
-> > +       if (ret)
-> >                 return vend;
-> >  
-> >  #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
-> > @@ -4143,7 +4144,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
-> >                 ret = adjust_va_to_fit_type(&free_vmap_area_root,
-> >                                             &free_vmap_area_list,
-> >                                             va, start, size);
-> > -               if (WARN_ON_ONCE(unlikely(ret)))
-> > +               if (unlikely(ret))
-> >                         /* It is a BUG(), but trigger recovery instead. */
-> >                         goto recovery;
-> >  
-> > <snip>
-> > It will WARN_ONCE_ONCE() only if classify_va_fit_type() is "(type == NOTHING_FIT)".
-> > 
-> This is good but i think it should be improved further. We need to
-> understand from the warning when no memory and when there is no a
-> vmap space, so:
-> 
-> - if NOTHING_FIT, we should WARN() for sure;
-> - Second place in the pcpu_get_vm_area(), we do not use NE_FIT. Only in
->   the begging after boot, but potentially we can trigger -ENOMEM and we
->   should warn in this case. Otherwise you just hide it;
-> - And last one if after repeating we still do not manage to allocate.
-> 
+On Tue, Sep 26, 2023 at 11:42:20AM +0200, Thomas Gleixner wrote:
+> No. That's two different things. The write above stores the information
+> fir the current CPU, while this conditional constructs the command for
+> the siblings.
 
-We should understand a reason of failing. I think error handling should
-be improved. Something like:
+Aha, I was simply pointing out that you're not checking whether the
+primary got updated but writing unconditionally SCTRL_DONE for it but
+you check ret to know what to do for the *secondaries*.
 
-<snip>
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index ef8599d394fd..03a36921a3fc 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1454,7 +1454,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
- 			 */
- 			lva = kmem_cache_alloc(vmap_area_cachep, GFP_NOWAIT);
- 			if (!lva)
--				return -1;
-+				return -ENOMEM;
- 		}
- 
- 		/*
-@@ -1468,7 +1468,7 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
- 		 */
- 		va->va_start = nva_start_addr + size;
- 	} else {
--		return -1;
-+		return -EINVAL;
- 	}
- 
- 	if (type != FL_FIT_TYPE) {
-@@ -1488,7 +1488,8 @@ adjust_va_to_fit_type(struct rb_root *root, struct list_head *head,
- static __always_inline unsigned long
- __alloc_vmap_area(struct rb_root *root, struct list_head *head,
- 	unsigned long size, unsigned long align,
--	unsigned long vstart, unsigned long vend)
-+	unsigned long vstart, unsigned long vend,
-+	int *error)
- {
- 	bool adjust_search_size = true;
- 	unsigned long nva_start_addr;
-@@ -1508,8 +1509,10 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
- 		adjust_search_size = false;
- 
- 	va = find_vmap_lowest_match(root, size, align, vstart, adjust_search_size);
--	if (unlikely(!va))
-+	if (unlikely(!va)) {
-+		*error = -ENOENT;
- 		return vend;
-+	}
- 
- 	if (va->va_start > vstart)
- 		nva_start_addr = ALIGN(va->va_start, align);
-@@ -1517,13 +1520,17 @@ __alloc_vmap_area(struct rb_root *root, struct list_head *head,
- 		nva_start_addr = ALIGN(vstart, align);
- 
- 	/* Check the "vend" restriction. */
--	if (nva_start_addr + size > vend)
-+	if (nva_start_addr + size > vend) {
-+		*error = -ERANGE;
- 		return vend;
-+	}
- 
- 	/* Update the free vmap_area. */
- 	ret = adjust_va_to_fit_type(root, head, va, nva_start_addr, size);
--	if (WARN_ON_ONCE(ret))
-+	if (ret) {
-+		*error = ret;
- 		return vend;
-+	}
- 
- #if DEBUG_AUGMENT_LOWEST_MATCH_CHECK
- 	find_vmap_lowest_match_check(root, head, size, align);
-@@ -1589,7 +1596,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 	unsigned long freed;
- 	unsigned long addr;
- 	int purged = 0;
--	int ret;
-+	int ret, error;
- 
- 	if (unlikely(!size || offset_in_page(size) || !is_power_of_2(align)))
- 		return ERR_PTR(-EINVAL);
-@@ -1613,7 +1620,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- retry:
- 	preload_this_cpu_lock(&free_vmap_area_lock, gfp_mask, node);
- 	addr = __alloc_vmap_area(&free_vmap_area_root, &free_vmap_area_list,
--		size, align, vstart, vend);
-+		size, align, vstart, vend, &error);
- 	spin_unlock(&free_vmap_area_lock);
- 
- 	trace_alloc_vmap_area(addr, size, align, vstart, vend, addr == vend);
-@@ -1662,8 +1669,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 	}
- 
- 	if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit())
--		pr_warn("vmap allocation for size %lu failed: use vmalloc=<size> to increase size\n",
--			size);
-+		pr_warn("vmap allocation for size %lu failed: "
-+			"use vmalloc=<size> to increase size, errno: (%d)\n",
-+			size, error);
- 
- 	kmem_cache_free(vmap_area_cachep, va);
- 	return ERR_PTR(-EBUSY);
-@@ -4143,9 +4151,10 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
- 		ret = adjust_va_to_fit_type(&free_vmap_area_root,
- 					    &free_vmap_area_list,
- 					    va, start, size);
--		if (WARN_ON_ONCE(unlikely(ret)))
--			/* It is a BUG(), but trigger recovery instead. */
-+		if (unlikely(ret)) {
-+			WARN_ONCE(1, "%s error: errno (%d)\n", __func__, ret);
- 			goto recovery;
-+		}
- 
- 		/* Allocated area. */
- 		va = vas[area];
-<snip>
+The actual check whether the primary got updated is the
+ucode_ctrl.result check later.
 
-Any thoughts?
+Yeah, that's ok.
 
---
-Uladzislau Rezki
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
