@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D38B7AFA32
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE457AFA6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjI0FmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
+        id S229948AbjI0Fzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjI0FlO (ORCPT
+        with ESMTP id S229847AbjI0FzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:41:14 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7BD8A74
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:35:58 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwLMF14qMz4f3n6H
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 10:35:53 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXqtkIlRNlpd30BQ--.22085S4;
-        Wed, 27 Sep 2023 10:35:55 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        osalvador@suse.de, willy@infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] mm/page_alloc: remove unnecessary next_page in break_down_buddy_pages
-Date:   Wed, 27 Sep 2023 18:35:14 +0800
-Message-Id: <20230927103514.98281-3-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230927103514.98281-1-shikemeng@huaweicloud.com>
-References: <20230927103514.98281-1-shikemeng@huaweicloud.com>
+        Wed, 27 Sep 2023 01:55:00 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56FACDE;
+        Tue, 26 Sep 2023 22:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695793675; x=1727329675;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VBfJYfk0/YYZyMKG5AzI3+DC5QI5EE3BIhfCiNwIE3A=;
+  b=rXpUArzDux9PwzqK5kqUUKmhP0vOD0K2opQQ4n9f0nGwNeOy8ErLbll1
+   BCdvX+BVNIrruphuY+t0rcDDnrlbhTAq+vnQYSVAR7JSbu681DyWqdJY9
+   r4CTNK/hRELfRhyZMX9dqTmWJ5pYZQ2Ys78JM0fMh93XFYjHUEu25lIff
+   MoaqNfrEJwVneR3yww8MUkDOLZeH21JuC1VstQTUqY0dp8cI0UPfFpSXH
+   WYlNKuSzFtRDK2RmNLfAh7N0IVzZSJ7aq3gPapiE9rawTYSMyJZv5wC08
+   dkqQLoTiGqEcg6DbQDgdrH+OIm8V7cBykbJraD8Z/mltEl9f4c+PyUmLO
+   A==;
+X-CSE-ConnectionGUID: md8lycmhRzifJ9LQu6C0LA==
+X-CSE-MsgGUID: 5JRrVWsTSI2Urbiqi2zLKQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="7065704"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 26 Sep 2023 22:47:54 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 26 Sep 2023 22:47:45 -0700
+Received: from che-dk-testitlx.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Tue, 26 Sep 2023 22:47:42 -0700
+From:   Vishvambar Panth S <vishvambarpanth.s@microchip.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <andrew@lunn.ch>
+Subject: [PATCH net] net: microchip: lan743x : bidirectional throughuput improvement
+Date:   Wed, 27 Sep 2023 16:46:23 +0530
+Message-ID: <20230927111623.9966-1-vishvambarpanth.s@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXqtkIlRNlpd30BQ--.22085S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr45Zr15Cw18ArW7ZF47urg_yoWDArb_CF
-        s7twnxtFy5tFy7ta13C3WxJrWkW34Fkr4xXF1aqrn8Ja4DXFn7J3WDJFy5CrWUuayru348
-        uasrX3y7tr4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbf8YFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-        xGYIkIc2x26280x7IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kI
-        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
-        xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28E
-        F7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F4
-        0EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_
-        Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUnwa9DUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_03_06,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next_page is only used to forward page in case target is in second
-half range. Move forward page directly to remove unnecessary next_page.
+The LAN743x/PCI11xxx DMA descriptors are always 4 dwords long, but the
+device supports placing the descriptors in memory back to back or
+reserving space in between them using its DMA_DESCRIPTOR_SPACE (DSPACE)
+configurable hardware setting. Currently DSPACE is unnecessarily set to
+match the host's L1 cache line size, resulting in space reserved in
+between descriptors in most platforms and causing a suboptimal behavior
+(single PCIe Mem transaction per descriptor). By changing the setting
+to DSPACE=16 many descriptors can be packed in a single PCIe Mem
+transaction resulting in a massive performance improvement in
+bidirectional tests without any negative effects.
+Tested and verified improvements on x64 PC and several ARM platforms
+(typical data below)
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Test setup 1: x64 PC with LAN7430 ---> x64 PC
+
+iperf3 UDP bidirectional with DSPACE set to L1 CACHE Size:
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate
+[  5][TX-C]   0.00-10.00  sec   170 MBytes   143 Mbits/sec  sender
+[  5][TX-C]   0.00-10.04  sec   169 MBytes   141 Mbits/sec  receiver
+[  7][RX-C]   0.00-10.00  sec  1.02 GBytes   876 Mbits/sec  sender
+[  7][RX-C]   0.00-10.04  sec  1.02 GBytes   870 Mbits/sec  receiver
+
+iperf3 UDP bidirectional with DSPACE set to 16 Bytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate
+[  5][TX-C]   0.00-10.00  sec  1.11 GBytes   956 Mbits/sec  sender
+[  5][TX-C]   0.00-10.04  sec  1.11 GBytes   951 Mbits/sec  receiver
+[  7][RX-C]   0.00-10.00  sec  1.10 GBytes   948 Mbits/sec  sender
+[  7][RX-C]   0.00-10.04  sec  1.10 GBytes   942 Mbits/sec  receiver
+
+Test setup 2 : RK3399 with LAN7430 ---> x64 PC
+
+RK3399 Spec:
+The SOM-RK3399 is ARM module designed and developed by FriendlyElec.
+Cores: 64-bit Dual Core Cortex-A72 + Quad Core Cortex-A53
+Frequency: Cortex-A72(up to 2.0GHz), Cortex-A53(up to 1.5GHz)
+PCIe: PCIe x4, compatible with PCIe 2.1, Dual operation mode
+
+iperf3 UDP bidirectional with DSPACE set to L1 CACHE Size:
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate
+[  5][TX-C]   0.00-10.00  sec   534 MBytes   448 Mbits/sec  sender
+[  5][TX-C]   0.00-10.05  sec   534 MBytes   446 Mbits/sec  receiver
+[  7][RX-C]   0.00-10.00  sec  1.12 GBytes   961 Mbits/sec  sender
+[  7][RX-C]   0.00-10.05  sec  1.11 GBytes   946 Mbits/sec  receiver
+
+iperf3 UDP bidirectional with DSPACE set to 16 Bytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate
+[  5][TX-C]   0.00-10.00  sec   966 MBytes   810 Mbits/sec   sender
+[  5][TX-C]   0.00-10.04  sec   965 MBytes   806 Mbits/sec   receiver
+[  7][RX-C]   0.00-10.00  sec  1.11 GBytes   956 Mbits/sec   sender
+[  7][RX-C]   0.00-10.04  sec  1.07 GBytes   919 Mbits/sec   receiver
+
+Fixes: 23f0703c125b ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Vishvambar Panth S <vishvambarpanth.s@microchip.com>
 ---
- mm/page_alloc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/microchip/lan743x_main.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index bad979493dde..7df77b58a961 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6678,20 +6678,18 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
- 				   int migratetype)
- {
- 	unsigned long size = 1 << high;
--	struct page *current_buddy, *next_page;
-+	struct page *current_buddy;
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index 52609fc13ad9..6dac6fef7d24 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -1067,7 +1067,7 @@ struct lan743x_adapter {
+ #define DMA_DESCRIPTOR_SPACING_32       (32)
+ #define DMA_DESCRIPTOR_SPACING_64       (64)
+ #define DMA_DESCRIPTOR_SPACING_128      (128)
+-#define DEFAULT_DMA_DESCRIPTOR_SPACING  (L1_CACHE_BYTES)
++#define DEFAULT_DMA_DESCRIPTOR_SPACING  (DMA_DESCRIPTOR_SPACING_16)
  
- 	while (high > low) {
- 		high--;
- 		size >>= 1;
- 
- 		if (target >= &page[size]) {
--			next_page = page + size;
- 			current_buddy = page;
-+			page = page + size;
- 		} else {
--			next_page = page;
- 			current_buddy = page + size;
- 		}
--		page = next_page;
- 
- 		if (set_page_guard(zone, current_buddy, high, migratetype))
- 			continue;
+ #define DMAC_CHANNEL_STATE_SET(start_bit, stop_bit) \
+ 	(((start_bit) ? 2 : 0) | ((stop_bit) ? 1 : 0))
 -- 
-2.30.0
+2.25.1
 
