@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3AE7AF86E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919737AF856
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjI0DG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        id S235055AbjI0Cy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjI0DE1 (ORCPT
+        with ESMTP id S235000AbjI0Cw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:04:27 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC92A3A8F
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:18:30 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-351265d0d67so5547305ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:18:30 -0700 (PDT)
+        Tue, 26 Sep 2023 22:52:27 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276E6659A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:37 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fb8f60374so45089839f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695777510; x=1696382310; darn=vger.kernel.org;
+        d=linuxfoundation.org; s=google; t=1695777996; x=1696382796; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pSK45h5LTS9VqkVC57gaj2Wd82aeyGKZrEYe4dJCVic=;
-        b=bxVM6N7U4F+Ynjj38INwi6ASqm3IBKUZ2yJDT7Ckbee+wq9E3UZNBRzyGfQcYS34Zm
-         390zUF6zyX1jXsJs0qezpAIk0Fh/LHYP2jTC2k9Oekg0LvZ2uiw1Xok3H/KHren2K1Kj
-         zuzTpI7pO+/1KMER6qwgrgRDhYD6SZbd/b9wM=
+        bh=k0LsinjnQ0psiRqDV4BJbkShjH1QSE7MgPkz+IEjFHc=;
+        b=P27TWAM76pouKVhn9k7uJh0d2mxC3rLFsCOMyLN740kl7yA3Tk0HiOW1c5W6/vxm6o
+         VEzCjGWMZo90auylb5OiKB0raT2ZtqhqVO/EZn2N+ePDCIqcWmQNUIar9D7kGovSbhQJ
+         EKH+Z0Ojbn34xLHt77dNfPCjCWR+lCDllm/+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695777510; x=1696382310;
+        d=1e100.net; s=20230601; t=1695777996; x=1696382796;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pSK45h5LTS9VqkVC57gaj2Wd82aeyGKZrEYe4dJCVic=;
-        b=cgQQuIywbviSNwCw5OeBYheHcx0LOLXb+G5+JH8L+AcbC0K8gb+InzQ6Lds1E2Chmy
-         +PcGr1Ju241VH6mBU34WgLvFaApo02RsMyUR4bQRI36ZDjeGkWKlGm2OGYQykIADgR5a
-         hB6QtQT12NjsSbnwsAPtdRNZ5fbXtg3l02YJkOo0ySe1G9xqNzcI3iVMTtl+7cYWg7TO
-         HPsYgaiOt1aSo60wzbaCcAK2PBIZRvm/4vUKfBYUBCmoncDUsToH9zpVg+ZCsYZCHAr5
-         5qoEDxOMl9Pi6TvJYIpbILS9AIQztZBwg6mpTuixlJgcezFGNL1N1Vj+Mpc1sNL09QSv
-         xnyQ==
-X-Gm-Message-State: AOJu0Yz2d3f6+h48dD2YFffYzqR1gFKjxZZZZ3mCuf2R8Ds/2NeS68+r
-        NqoyPYyDFSz8jymcIj/Mj7UGTA==
-X-Google-Smtp-Source: AGHT+IE2jaCutfBvakslg8GPNafee+TlzK+8frCnXrODTVfbk9z1YRbburEMP7cvS9iSP7ZFw0fvlQ==
-X-Received: by 2002:a92:cc46:0:b0:350:f353:4017 with SMTP id t6-20020a92cc46000000b00350f3534017mr614948ilq.0.1695777510062;
-        Tue, 26 Sep 2023 18:18:30 -0700 (PDT)
+        bh=k0LsinjnQ0psiRqDV4BJbkShjH1QSE7MgPkz+IEjFHc=;
+        b=jy1zah2+mse9NU4vTR9m7oVDq3Hlmk2k7Vyx0da+4aT3c3le5KD0QjzlXDIC1LvMMC
+         zNfCpMeeEIXUEKEovlNJ8SEXh5fSx5aZ0Mz5tfjVz6oadXFAq9isC64mkZ4oSgJHNfS6
+         0JBsGsCsP1Q3WlSla30eSvZ00Cs++hNRXL0l9XNMTGTgXwGPQHwaYDztvxOmA8ikNvCc
+         tbuKVL1uJoruk2Z7vXHIdzBqbAw0sE40DYeFaaqdKDKHBzOCkqPQmI7Nj4Nk7RVno5iI
+         MhuAzpX/+TfhPGMdoCjp4JCn0tbn174q8RkIOQ/ZyRuwNChExdP2Q1s+n3e5F5L6wQ2B
+         28HA==
+X-Gm-Message-State: AOJu0Yx51hQFhZEYHQAR1eu1/yfQ53mGnD3cmhMYfkIANWu6l1R0e9nQ
+        tBTXasKdC3NuTW8r/sIdNo9DHA==
+X-Google-Smtp-Source: AGHT+IFCOJWMcvH/PMk6PXaOABE9naegOE1OjxmKKpTl8Tq0vbJU2EbQZCuBXNzabPcsOTBAqRoEHA==
+X-Received: by 2002:a92:cac7:0:b0:351:54db:c1c9 with SMTP id m7-20020a92cac7000000b0035154dbc1c9mr594374ilq.1.1695777996416;
+        Tue, 26 Sep 2023 18:26:36 -0700 (PDT)
 Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id y3-20020a92d203000000b0034f3220c086sm2389624ily.12.2023.09.26.18.18.28
+        by smtp.gmail.com with ESMTPSA id y3-20020a92d203000000b0034f3220c086sm2393099ily.12.2023.09.26.18.26.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 18:18:29 -0700 (PDT)
-Message-ID: <fc915b30-5842-5851-bd76-71c2133685b9@linuxfoundation.org>
-Date:   Tue, 26 Sep 2023 19:18:28 -0600
+        Tue, 26 Sep 2023 18:26:35 -0700 (PDT)
+Message-ID: <cd11111a-321e-3b29-3d7b-8844189f791e@linuxfoundation.org>
+Date:   Tue, 26 Sep 2023 19:26:34 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests: Fix wrong TARGET in kselftest top level
- Makefile
+Subject: Re: [PATCH] selftests/rseq: fix kselftest Clang build warnings
 Content-Language: en-US
-To:     Juntong Deng <juntong.deng@outlook.com>, shuah@kernel.org,
-        mic@digikod.net, brauner@kernel.org, keescook@chromium.org,
-        tony.luck@intel.com, gpiccoli@igalia.com, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-riscv@lists.infradead.org,
-        bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <VI1P193MB0752596147F224B9F921C85199C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
+References: <20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com>
+ <CAFhGd8on9_DJUZqT5uKgPzOtJNn99sY3TprcPzD5pm3GmYx8oQ@mail.gmail.com>
+ <eabe9db0-c934-af2d-e5a9-9d644593851c@efficios.com>
+ <63dd7222-99dc-8e11-3a51-b132e4115ac5@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <VI1P193MB0752596147F224B9F921C85199C3A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+In-Reply-To: <63dd7222-99dc-8e11-3a51-b132e4115ac5@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,21 +83,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 12:03, Juntong Deng wrote:
-> The 'uevents' subdirectory does not exist in tools/testing/selftests/
-> and adding 'uevents' to the TARGETS list results in the following error:
+On 9/26/23 14:39, Shuah Khan wrote:
+> On 9/26/23 13:02, Mathieu Desnoyers wrote:
+>> On 9/26/23 08:20, Justin Stitt wrote:
+>>> Ping.
+>>>
+>>> Looking to get this patch and [1] slated for 6.7 which fixes some
+>>> kselftest builds on older kernels.
+>>>
+>>> On Wed, Sep 13, 2023 at 6:03 AM Justin Stitt <justinstitt@google.com> wrote:
+>>>>
+>>>> When building with Clang, I am getting many warnings from the selftests/rseq tree.
+>>>>
+>>>> Here's one such example from rseq tree:
+>>>> |  param_test.c:1234:10: error: address argument to atomic operation must be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
+>>>> |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
+>>>> |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
+>>>> |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_load'
+>>>> |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC_SEQ_CST)
+>>>> |        |                             ^                 ~~~~~~
+>>>>
+>>>> Use compiler builtins `__atomic_load_n()` and `__atomic_store_n()` with
+>>>> accompanying __ATOMIC_ACQUIRE and __ATOMIC_RELEASE, respectively. This
+>>>> will fix the warnings because the compiler builtins do not expect their
+>>>> arguments to have _Atomic type. This should also make TSAN happier.
+>>>>
+>>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+>>>> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
+>>>> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>>
+>> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>
+>> Peter, should this go through tip ?
+>>
+>> Shuah, should to go through selftests ?
+>>
 > 
-> make[1]: Entering directory 'xx/tools/testing/selftests/uevents'
-> make[1]: *** No targets specified and no makefile found. Stop.
-> make[1]: Leaving directory 'xx/tools/testing/selftests/uevents'
+> I can take this through selftests and apply it - hoping there
+> are no conflicts with what's in Peter's tree.
 > 
-> What actually exists in tools/testing/selftests/ is the 'uevent'
-> subdirectory.
-> 
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
 
-Thank you. Applied now to linux-kselftest fixes for the next rc
+Applied to linux-kselftest next for Linux 6.7-rc1
 
 thanks,
 -- Shuah
