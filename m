@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E46E7AFBB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E056A7AFBBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjI0HJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S229648AbjI0HNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjI0HJF (ORCPT
+        with ESMTP id S229499AbjI0HNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:09:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3698DD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695798499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4kaLfJmtB6MqdF1sxC45vDWpKHYD0ArvO2N0519Wf3c=;
-        b=KosUzUhHwJAOdYxTMf5qAJZNs9nM7CCReNDb6P1a7CPYun5N0wbXEGqzxpEd6NyTmI0wYQ
-        TM7FR6H6C0/44e+ng2I5+D4W1/WsBe9EFidN2ax8sFVVRkPNptBOgAp6LXUszBriB54WiL
-        sLv82i50aDizNQfBzXDSN82Qmp5df00=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-9-polHlrETPIugM8oCdkdXCA-1; Wed, 27 Sep 2023 03:08:16 -0400
-X-MC-Unique: polHlrETPIugM8oCdkdXCA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0605F3C0C4A0;
-        Wed, 27 Sep 2023 07:08:16 +0000 (UTC)
-Received: from [10.45.225.119] (unknown [10.45.225.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D90D492B16;
-        Wed, 27 Sep 2023 07:08:14 +0000 (UTC)
-Message-ID: <16cc3132-9d2c-04de-51b6-88e4476b4d26@redhat.com>
-Date:   Wed, 27 Sep 2023 09:08:13 +0200
+        Wed, 27 Sep 2023 03:13:22 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3110E126
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:13:21 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4527ba546d2so3934830137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695798800; x=1696403600; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ghpkue7N6oiwgsmKag0rzCvKeWoEMHhP4MSi8oTAVck=;
+        b=p2pGSvuXJe63WqsWpESNlKlGO+hbak4OmXhPyRV/bCBD0OiRIpVUOAGhaXyR9USvNq
+         kElwNeMbi0EbPVjcC65L2Yc0KkbdgZCevuT6PevLswUXNgr3dJXX04QhnbtvWcppY8+k
+         aHCa0Kv+dLvEkNWp5wg4IDvPAIb1oa4W+GKKoAb5/pnet7iTnHGlibhnqDKqCFEi2PjF
+         V6YRbH2/x7AdjlsXqozd1+3GOq98Dg1vCUAovUQqa4aAgwTLHMu06BB3T0c7yO70Q/H7
+         VwcHzXrVr8M854FRbucBBE6+IrKipLb7fgT8sUQqWvnM4NWmfwKGvoK7QcvYLbjUmBhr
+         7/zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695798800; x=1696403600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ghpkue7N6oiwgsmKag0rzCvKeWoEMHhP4MSi8oTAVck=;
+        b=TEmCO3PGusHnO3Cz+rHJqEIVrvONwwWL6OKb8sUHrkmfWMkoLk9wf4rEGx0ox6oVWU
+         AKLJomLXvTFF+8eh75jbqmskuHYzLeuIXAiL9fECFpr/oEv1K2oA8rlTktxYnyi9AXN0
+         uBu8mOAExS2BJ0DXuCNJ0SjTM6M96vbQEF148j96V48iPOOoy+Rs4wTz3rj3DcLgZlyy
+         wheTSRvTFMzGQCQHqrQSaqtJCAbM0UwE0jwHcQOjCujRMxVLEJDHiwm/dSoQBOJx9Cba
+         hqWVP8g5+gG/EDMgaMNrNGFSVPbgZ1D+PLdrhj7ueg/4Qc2mSFtioWx41F2MTn2aU7V7
+         rJvg==
+X-Gm-Message-State: AOJu0YyW1K8G+onauyNWl2A+FhgwjF1WqrjEZwUfA+3BFCpqzPH16bxH
+        /eamrm2pYYeeMxZP6u4qs92m6aLKr2bDpVtcxCaZMQ==
+X-Google-Smtp-Source: AGHT+IHAENgUH9UcARUTyK7pqCnC0yqp7lcr2HSBpJL/3Zx3Ubb/BJSBsI0uRd8EEbUyiSWiywWjH+q7vKFynTt06Bk=
+X-Received: by 2002:a67:e218:0:b0:452:c3a4:1f9e with SMTP id
+ g24-20020a67e218000000b00452c3a41f9emr981881vsa.19.1695798800231; Wed, 27 Sep
+ 2023 00:13:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH net-next 7/9] i40e: Move memory allocation structures to
- i40e_alloc.h
-Content-Language: en-US
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        netdev@vger.kernel.org
-Cc:     poros@redhat.com, mschmidt@redhat.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-References: <20230926182710.2517901-1-ivecera@redhat.com>
- <20230926182710.2517901-8-ivecera@redhat.com>
- <f17ed43b-7329-5566-a75e-befebd20d032@intel.com>
-From:   Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <f17ed43b-7329-5566-a75e-befebd20d032@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+References: <20230921122527.15261-1-Wenhua.Lin@unisoc.com> <20230921122527.15261-3-Wenhua.Lin@unisoc.com>
+ <ZQxjxA2UwHpTPKKr@smile.fi.intel.com>
+In-Reply-To: <ZQxjxA2UwHpTPKKr@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 27 Sep 2023 09:13:09 +0200
+Message-ID: <CAMRc=McZsmqQXEUSGaNOWLWZWGYaa--euDao6xzsXicYy-QXnQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] gpio: pmic-eic-sprd: Add can_sleep flag for PMIC
+ EIC chip
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 21, 2023 at 5:40=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
+>
+> On Thu, Sep 21, 2023 at 08:25:27PM +0800, Wenhua Lin wrote:
+> > The drivers uses a mutex and I2C bus access in its PMIC EIC chip
+> > get implementation. This means these functions can sleep and the PMIC E=
+IC
+> > chip should set the can_sleep property to true.
+> >
+> > This will ensure that a warning is printed when trying to get the
+> > value from a context that potentially can't sleep.
+>
+> This deserves a Fixes tag.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
+Added when applying and queued for fixes.
 
-On 26. 09. 23 21:57, Przemek Kitszel wrote:
-> On 9/26/23 20:27, Ivan Vecera wrote:
->> Structures i40e_dma_mem & i40e_virt_mem are defined i40e_osdep.h while
->> memory allocation functions that use them are declared in i40e_alloc.h
->> Move them to i40e_alloc.h and remove this header file dependency on
->> i40e_osdep.h header.
->>
->> Due to removal of this dependency we have to include i40e_osdep.h in 
->> files
->> that requires it.
->>
->> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
->> ---
->>   drivers/net/ethernet/intel/i40e/i40e_adminq.c |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_adminq.h |  2 +-
->>   drivers/net/ethernet/intel/i40e/i40e_alloc.h  | 21 ++++++++++++++++++-
->>   drivers/net/ethernet/intel/i40e/i40e_common.c |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_dcb.c    |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_diag.c   |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_hmc.c    |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_hmc.h    |  2 +-
->>   .../net/ethernet/intel/i40e/i40e_lan_hmc.c    |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_nvm.c    |  1 +
->>   drivers/net/ethernet/intel/i40e/i40e_osdep.h  | 19 -----------------
->>   11 files changed, 29 insertions(+), 22 deletions(-)
-> 
-> I very much like this series, but extending i40e_osdep.h usage asks for 
-> comment 😉 - please try to reorder patches to have less dependency on it 
-> first, and afterwards do split
-> (IOW first remove&reduce, then split what's left)
-> 
-> (disclaimer: I have not double checked if that's possible)
-
-I will move the patch 5 after i40e_osdep split and memory allocation 
-clean-up patches. This should simplify the changes.
-
-Thanks for comment...
-
-Ivan
-
+Bart
