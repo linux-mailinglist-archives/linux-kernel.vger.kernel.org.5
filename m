@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5162C7AFE57
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1445C7AFE5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjI0I15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        id S230204AbjI0I2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbjI0I1X (ORCPT
+        with ESMTP id S230253AbjI0I1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:27:23 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4549F;
-        Wed, 27 Sep 2023 01:27:19 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R6IxWh021728;
-        Wed, 27 Sep 2023 08:27:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=NubOk9Fr5GHnmC2WR7H/SN/HkQpOGeBqfzorOzIFcAI=;
- b=iIAX1dckmtUQYeXbwRr8oCSP944w1El0P2CT5NCB/EafBUFTNUK963ejcjQ6VZutyLNc
- d00I4otIZpRpD+Tv8n7sMDh8kk5tkP9Dmv7j4WDwmaxNxdkn8r8hetsZI/R0Qbbrdhng
- KQySm/cY/cpZmSuO9g+HxFGX0G6hcdSTaxxTFrmQ397XaXqH52zkINWyoNQY/uPOva/a
- eRHZeSFF0iycJuWP/P+G45daxHoCiKD//GE7cIHvwJa8I9QdgW9GTQj4bqS++NdmxRhy
- zgERE/j3qvdlhE7MhFjNVBYyMGKiJff2phPkIuJyTxesHhmILtBbplh9M4E4Gyfvl1wO wg== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcdyfgapa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 08:27:07 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38R8R3q5018228;
-        Wed, 27 Sep 2023 08:27:03 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t9s3kspt9-1;
-        Wed, 27 Sep 2023 08:27:03 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38R8R3xg018222;
-        Wed, 27 Sep 2023 08:27:03 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38R8R3YX018221;
-        Wed, 27 Sep 2023 08:27:03 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id 20EE15000AA; Wed, 27 Sep 2023 13:57:02 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mani@kernel.org, alim.akhtar@samsung.com, bvanassche@acm.org,
-        avri.altman@wdc.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: [PATCH V3 4/4] dt-bindings: ufs: qcom: Align clk binding property for Qualcomm UFS
-Date:   Wed, 27 Sep 2023 13:57:00 +0530
-Message-Id: <20230927082700.17593-1-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rAyZAgcwrsMVjB_tjLoTmga8z_M-yKex
-X-Proofpoint-GUID: rAyZAgcwrsMVjB_tjLoTmga8z_M-yKex
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- impostorscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309270068
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        Wed, 27 Sep 2023 04:27:49 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BC31AC;
+        Wed, 27 Sep 2023 01:27:48 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bffc55af02so172410331fa.2;
+        Wed, 27 Sep 2023 01:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695803266; x=1696408066; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hj1fAt2POw3G1BVuIsXBKGLxebPu14W+cyBpSJ0ZvcI=;
+        b=FV8ocweEHg8MOpz/GP3m88ft4DP+kL++AYzTqo7SVK1cFVuHy0qLy6d40Hm38vrHaj
+         ZUcFF3oALF4W2DaBNDtP4H31SxenWPhLFATIZvAj61cMjdexJCL9wT4Xg0/CK8FwaNpA
+         fECravsyKdfcShIF6v3YMRSpuGIRrRwGN7yw3J7IgfvYs91698lxFnDm9M5NOxhL1HJg
+         cnnDz/AmKjPckbUQizjuklqvwRS51v+e7LMx/9zeuU6Z1UvoAR3AX/wLzL91Otq+ldnB
+         F1WW1l4kQwrC3PHSMXluVFBZ+5KH67Mh+1Ah+/tgT4qWfwsPDqbKiRM/Y1s24eWlO02D
+         19qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695803266; x=1696408066;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hj1fAt2POw3G1BVuIsXBKGLxebPu14W+cyBpSJ0ZvcI=;
+        b=LQl78bnKQzC+12GXOP7iEflB7Hund3B/09Hk8eiaY6GulXRJ/+qWt8atOYnkvdj2bv
+         JIumaMMnZZzFVm49FddezNEm1PFlVzgOdyf6QTxTuanaJOkuNQx//e1mLuumdfNuI5zT
+         i4ewB8QJsf+j2UXkd58An3odKIi/pqnp1I58o6Yw3tyHDBYDHvoiXD9ec/nf+d6kPDbc
+         tXuyVwrNKnObIGnNoqEJQnKbpdYgena0j6u/SRicoH6RTQUBGTbfN3zbcCvl/g9ChEGO
+         xWEsjVRL8d5ScJluM/Zx9HJCRM9K9jrMNMjvcxheo132GKN6w5aZ6IElimG7a3+okLP5
+         NGBA==
+X-Gm-Message-State: AOJu0YwwRzKg96LBmJFBPjMAYRtXj+/Q75EqUGhKH3+sBqGJk313B98a
+        ghbHFHcAZG8OzXLszapYBxk=
+X-Google-Smtp-Source: AGHT+IEt/OpJyHtIN1ai4xGP0BH/uIzC9mzeDahbG3aAQiXYDWUoiUCtV76TBdGUS3UiZ7XaV2pwFA==
+X-Received: by 2002:a2e:9612:0:b0:2bc:be3c:9080 with SMTP id v18-20020a2e9612000000b002bcbe3c9080mr1314766ljh.27.1695803266085;
+        Wed, 27 Sep 2023 01:27:46 -0700 (PDT)
+Received: from fedora ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id y4-20020a2e95c4000000b002ba586d27a2sm3038128ljh.26.2023.09.27.01.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 01:27:45 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 11:27:41 +0300
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Benjamin Bara <bbara93@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/5] iio: improve doc for available_scan_mask
+Message-ID: <4e43bf0186df5c8a56b470318b4827605f9cad6c.1695727471.git.mazziesaccount@gmail.com>
+References: <cover.1695727471.git.mazziesaccount@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ysY46l6I9tFYuZdP"
+Content-Disposition: inline
+In-Reply-To: <cover.1695727471.git.mazziesaccount@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,48 +84,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align the binding property for clock such that "clocks" property
-comes first followed by "clock-names" property.
 
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+--ysY46l6I9tFYuZdP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+The available_scan_mask is an array of bitmaps representing the channels
+which can be simultaneously enabled by the driver. In many cases, the
+hardware can offer more channels than what the user is interested in
+obtaining. In such cases, it may be preferred that only a subset of
+channels are enabled, and the driver reads only a subset of the channels
+=66rom the hardware.
+
+Some devices can't support all channel combinations. For example, the
+BM1390 pressure sensor must always read the pressure data in order to
+acknowledge the watermark IRQ, while reading temperature can be omitted.
+So, the available scan masks would be 'pressure and temperature' and
+'pressure only'.
+
+When IIO searches for the scan mask it asks the driver to use, it will
+pick the first suitable one from the 'available_scan_mask' array. Hence,
+ordering the masks in the array makes a difference. We should 'prefer'
+reading just the pressure from the hardware (as it is a cheaper operation
+than reading both pressure and temperature) over reading both pressure
+and temperature. Hence, we should set the 'only pressure' as the first
+scan mask in available_scan_mask array. If we set the 'pressure and
+temperature' as first in the array, then the 'only temperature' will never
+get used as 'pressure and temperature' can always serve the user's
+needs.
+
+Add (minimal) kerneldoc to the 'available_scan_mask' to hint the user
+that the ordering of masks matters.
+
+Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
 ---
- .../devicetree/bindings/ufs/qcom,ufs.yaml        | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/linux/iio/iio.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-index 802640efa956..d17bdc4e934f 100644
---- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-+++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-@@ -295,14 +295,6 @@ examples:
-                             <&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_UFS_MEM_CFG>;
-             interconnect-names = "ufs-ddr", "cpu-ufs";
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 202e55b0a28b..7bfa1b9bc8a2 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -556,7 +556,9 @@ struct iio_buffer_setup_ops {
+  *			and owner
+  * @buffer:		[DRIVER] any buffer present
+  * @scan_bytes:		[INTERN] num bytes captured to be fed to buffer demux
+- * @available_scan_masks: [DRIVER] optional array of allowed bitmasks
++ * @available_scan_masks: [DRIVER] optional array of allowed bitmasks. Sor=
+t the
++ *			   array in order of preference, the most preferred
++ *			   masks first.
+  * @masklength:		[INTERN] the length of the mask established from
+  *			channels
+  * @active_scan_mask:	[INTERN] union of all scan masks requested by buffers
+--=20
+2.41.0
 
--            clock-names = "core_clk",
--                          "bus_aggr_clk",
--                          "iface_clk",
--                          "core_clk_unipro",
--                          "ref_clk",
--                          "tx_lane0_sync_clk",
--                          "rx_lane0_sync_clk",
--                          "rx_lane1_sync_clk";
-             clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
-                      <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-                      <&gcc GCC_UFS_PHY_AHB_CLK>,
-@@ -311,6 +303,14 @@ examples:
-                      <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
-                      <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
-                      <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-+            clock-names = "core_clk",
-+                          "bus_aggr_clk",
-+                          "iface_clk",
-+                          "core_clk_unipro",
-+                          "ref_clk",
-+                          "tx_lane0_sync_clk",
-+                          "rx_lane0_sync_clk",
-+                          "rx_lane1_sync_clk";
-             freq-table-hz = <75000000 300000000>,
-                             <0 0>,
-                             <0 0>,
---
-2.17.1
 
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--ysY46l6I9tFYuZdP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUT530ACgkQeFA3/03a
+ocVWFggAzH/J6YyXt2/bFTdC4/7cF9pTBmmxoFHEZ9Gdda0iWn6aXAL0VVjfBqxd
+0qjKQGd4iPI0Zhwq1BulAAe6+fkpaFS034VD7vLz8uMj2nGLRGFAiSdh1XV5p9xe
+nIf2lFYts605GZvmpbMAbUgoXCjhUHuFlId/Az/brI86vlLhMJnGC/1GIO1tZV++
+gCBY3AoycklGLNnFviVCLjt8Gkn2qPgT3ZZc5zadtKFR8rQY5q2hmlrfpdg9RpD7
+7ko0xsynsMnv7XRAJxtpKD+mW6Xk/nyLwA3ENqzMjRj9K3+OFlsBm6D+bzH92rBR
+GSM3U14IBVeVpFmZPAESzT4olJeAYQ==
+=/H1j
+-----END PGP SIGNATURE-----
+
+--ysY46l6I9tFYuZdP--
