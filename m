@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F267B0903
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4E47B0906
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbjI0Pi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
+        id S233094AbjI0PjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbjI0Pgk (ORCPT
+        with ESMTP id S232791AbjI0Pgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 11:36:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3647CCF;
-        Wed, 27 Sep 2023 08:36:34 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C5DCE9;
+        Wed, 27 Sep 2023 08:36:35 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3E4F16607330;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BC2516607389;
         Wed, 27 Sep 2023 16:36:33 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695828993;
-        bh=jDPDI95HlRE0YbU8tWH1tF/YAu4YVw3uRkbYqHG/IGc=;
+        s=mail; t=1695828994;
+        bh=od83LmKhAhKbqGYrw7/WB9PaXmjqloXPSjvbzmBGKQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VxYgp4wOZZn0UqkVCnnjBdjDp8oxGZwt1wn4CApTUY5HSCH1kKpEaJyoN/j3AHfFM
-         sZzR6Q1RlFsEZTybyvfNYQCJI37qmJprIqOVBO0Xlx3ZdX72J+kq5l/DqRBUfHyP0f
-         lZG5SbWJUIV+82sdRwdVrzdOjSeWrQg4Gl0P/Fh2QJtiYpCURx/LmtOJx0vuh3xgVS
-         FOXBZoTvNJgSU7iOGuKxiC8t46ZTUr0JDdMpHkNx5UdLMCiK3h08MWs53cdBhb5jFH
-         Fdu7Om7vS7jkf7chG+BXiQufSL9NuVgI5ZP5SkHdYTUUMLT9rw9XYcY3EaDZPCm5bj
-         zWiOWsswPjEzw==
+        b=B24J5Z8Of97NNyUNAJz/HZT9Qi/vPP8oAqa8FhJL3F3fRQ54bDAQG/yWbIjb3xW+M
+         yJQzGr7VhIGpemYTtQPc8ULjpaP3Td7B1RoYL0YbOMV7Y3Ez9pyEfp/VTvY2w03AsW
+         cJv8UzGZiy6JBSRJ8I3IvxH74JDU5KwrIG3igq8Mn5QI4fYM+NDHwcpGEsVRv4zt7W
+         CjTizA0UvCXW+UDLjiLjxR6UEMCCWXfwN1GL4ZXUOJl6uIfPknBxTzpskXg7oqSC8R
+         xh1nsbSvJcapxgquRDdDkMQ6YzcfdxG9QXp7tZdMoCBxZqlbZ07JWdERF78O6IosWm
+         +vomP7UO5sQVg==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v8 52/53] media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
-Date:   Wed, 27 Sep 2023 17:35:57 +0200
-Message-Id: <20230927153558.159278-53-benjamin.gaignard@collabora.com>
+Subject: [PATCH v8 53/53] media: test-drivers: Use helper for DELETE_BUFS ioctl
+Date:   Wed, 27 Sep 2023 17:35:58 +0200
+Message-Id: <20230927153558.159278-54-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
 References: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
@@ -60,54 +60,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create v4l2-mem2mem helpers for VIDIOC_DELETE_BUFS ioctl.
+Allow test drivers to use DELETE_BUFS by adding vb2_ioctl_delete_bufs() helper.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- .../media/platform/verisilicon/hantro_drv.c   |  1 +
- .../media/platform/verisilicon/hantro_v4l2.c  |  1 +
- drivers/media/test-drivers/vim2m.c            |  2 ++
- drivers/media/v4l2-core/v4l2-mem2mem.c        | 20 +++++++++++++++++++
- include/media/v4l2-mem2mem.h                  | 12 +++++++++++
- 5 files changed, 36 insertions(+)
+ drivers/media/test-drivers/vicodec/vicodec-core.c |  2 ++
+ drivers/media/test-drivers/vimc/vimc-capture.c    |  2 ++
+ drivers/media/test-drivers/visl/visl-video.c      |  2 ++
+ drivers/media/test-drivers/vivid/vivid-core.c     | 13 ++++++++++---
+ 4 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
-index ad6b086f0526..1195a163d9e8 100644
---- a/drivers/media/platform/verisilicon/hantro_drv.c
-+++ b/drivers/media/platform/verisilicon/hantro_drv.c
-@@ -247,6 +247,7 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
+diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
+index 69cbe2c094e1..f14a8fd506d0 100644
+--- a/drivers/media/test-drivers/vicodec/vicodec-core.c
++++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
+@@ -1339,6 +1339,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl_ops = {
+ 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
+ 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
+ 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
++	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
+ 
+ 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
+@@ -1725,6 +1726,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
+ 	dst_vq->mem_ops = &vb2_vmalloc_memops;
  	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	dst_vq->lock = &ctx->dev->vpu_mutex;
- 	dst_vq->dev = ctx->dev->v4l2_dev.dev;
-+	src_vq->supports_delete_bufs = true;
+ 	dst_vq->lock = src_vq->lock;
++	dst_vq->supports_delete_bufs = true;
  
  	return vb2_queue_init(dst_vq);
  }
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index 27a1e77cca38..0fd1c2fc78c8 100644
---- a/drivers/media/platform/verisilicon/hantro_v4l2.c
-+++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
- 	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
- 	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
- 	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
+diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
+index aa944270e716..fda7ea3a6cb6 100644
+--- a/drivers/media/test-drivers/vimc/vimc-capture.c
++++ b/drivers/media/test-drivers/vimc/vimc-capture.c
+@@ -221,6 +221,7 @@ static const struct v4l2_ioctl_ops vimc_capture_ioctl_ops = {
+ 	.vidioc_expbuf = vb2_ioctl_expbuf,
+ 	.vidioc_streamon = vb2_ioctl_streamon,
+ 	.vidioc_streamoff = vb2_ioctl_streamoff,
++	.vidioc_delete_bufs = vb2_ioctl_delete_bufs,
+ };
  
- 	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
-diff --git a/drivers/media/test-drivers/vim2m.c b/drivers/media/test-drivers/vim2m.c
-index 3e3b424b4860..17213ce42059 100644
---- a/drivers/media/test-drivers/vim2m.c
-+++ b/drivers/media/test-drivers/vim2m.c
-@@ -960,6 +960,7 @@ static const struct v4l2_ioctl_ops vim2m_ioctl_ops = {
- 	.vidioc_dqbuf		= v4l2_m2m_ioctl_dqbuf,
- 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
- 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
+ static void vimc_capture_return_all_buffers(struct vimc_capture_device *vcapture,
+@@ -435,6 +436,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
+ 	q->min_buffers_needed = 2;
+ 	q->lock = &vcapture->lock;
+ 	q->dev = v4l2_dev->dev;
++	q->supports_delete_bufs = true;
  
- 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
-@@ -1133,6 +1134,7 @@ static int queue_init(void *priv, struct vb2_queue *src_vq,
+ 	ret = vb2_queue_init(q);
+ 	if (ret) {
+diff --git a/drivers/media/test-drivers/visl/visl-video.c b/drivers/media/test-drivers/visl/visl-video.c
+index 7cac6a6456eb..bd6c112f7846 100644
+--- a/drivers/media/test-drivers/visl/visl-video.c
++++ b/drivers/media/test-drivers/visl/visl-video.c
+@@ -521,6 +521,7 @@ const struct v4l2_ioctl_ops visl_ioctl_ops = {
+ 	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
+ 	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
+ 	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
++	.vidioc_delete_bufs		= v4l2_m2m_ioctl_delete_bufs,
+ 
+ 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
+@@ -728,6 +729,7 @@ int visl_queue_init(void *priv, struct vb2_queue *src_vq,
  	dst_vq->mem_ops = &vb2_vmalloc_memops;
  	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
  	dst_vq->lock = &ctx->vb_mutex;
@@ -115,74 +130,40 @@ index 3e3b424b4860..17213ce42059 100644
  
  	return vb2_queue_init(dst_vq);
  }
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index 0cc30397fbad..d1d59943680f 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -831,6 +831,17 @@ int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- }
- EXPORT_SYMBOL_GPL(v4l2_m2m_prepare_buf);
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index 58a059140365..2ed8847ce86e 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -769,6 +769,7 @@ static const struct v4l2_ioctl_ops vivid_ioctl_ops = {
+ 	.vidioc_expbuf			= vb2_ioctl_expbuf,
+ 	.vidioc_streamon		= vb2_ioctl_streamon,
+ 	.vidioc_streamoff		= vb2_ioctl_streamoff,
++	.vidioc_delete_bufs		= vb2_ioctl_delete_bufs,
  
-+int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-+			 struct v4l2_delete_buffers *d)
-+{
-+	struct vb2_queue *vq;
-+
-+	vq = v4l2_m2m_get_vq(m2m_ctx, d->type);
-+
-+	return vb2_delete_bufs(vq, d);
-+}
-+EXPORT_SYMBOL_GPL(v4l2_m2m_delete_bufs);
-+
- int v4l2_m2m_create_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 			 struct v4l2_create_buffers *create)
- {
-@@ -1377,6 +1388,15 @@ int v4l2_m2m_ioctl_create_bufs(struct file *file, void *priv,
- }
- EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_create_bufs);
+ 	.vidioc_enum_input		= vivid_enum_input,
+ 	.vidioc_g_input			= vivid_g_input,
+@@ -876,12 +877,18 @@ static int vivid_create_queue(struct vivid_dev *dev,
+ 	q->type = buf_type;
+ 	q->io_modes = VB2_MMAP | VB2_DMABUF;
+ 	q->io_modes |= V4L2_TYPE_IS_OUTPUT(buf_type) ?  VB2_WRITE : VB2_READ;
+-	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		q->max_num_buffers = 64;
+-	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE)
++		q->supports_delete_bufs = true;
++	}
++	if (buf_type == V4L2_BUF_TYPE_SDR_CAPTURE) {
+ 		q->max_num_buffers = 1024;
+-	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
++		q->supports_delete_bufs = true;
++	}
++	if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE) {
+ 		q->max_num_buffers = 32768;
++		q->supports_delete_bufs = true;
++	}
  
-+int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
-+			       struct v4l2_delete_buffers *d)
-+{
-+	struct v4l2_fh *fh = file->private_data;
-+
-+	return v4l2_m2m_delete_bufs(file, fh->m2m_ctx, d);
-+}
-+EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_delete_bufs);
-+
- int v4l2_m2m_ioctl_querybuf(struct file *file, void *priv,
- 				struct v4l2_buffer *buf)
- {
-diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-index d6c8eb2b5201..161f85c42dc8 100644
---- a/include/media/v4l2-mem2mem.h
-+++ b/include/media/v4l2-mem2mem.h
-@@ -381,6 +381,16 @@ int v4l2_m2m_dqbuf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 			 struct v4l2_buffer *buf);
- 
-+/**
-+ * v4l2_m2m_delete_bufs() - delete buffers from the queue
-+ *
-+ * @file: pointer to struct &file
-+ * @m2m_ctx: m2m context assigned to the instance given by struct &v4l2_m2m_ctx
-+ * @d: pointer to struct &v4l2_delete_buffers
-+ */
-+int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-+			 struct v4l2_delete_buffers *d);
-+
- /**
-  * v4l2_m2m_create_bufs() - create a source or destination buffer, depending
-  * on the type
-@@ -860,6 +870,8 @@ int v4l2_m2m_ioctl_reqbufs(struct file *file, void *priv,
- 				struct v4l2_requestbuffers *rb);
- int v4l2_m2m_ioctl_create_bufs(struct file *file, void *fh,
- 				struct v4l2_create_buffers *create);
-+int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
-+			       struct v4l2_delete_buffers *d);
- int v4l2_m2m_ioctl_querybuf(struct file *file, void *fh,
- 				struct v4l2_buffer *buf);
- int v4l2_m2m_ioctl_expbuf(struct file *file, void *fh,
+ 	if (allocators[dev->inst] != 1)
+ 		q->io_modes |= VB2_USERPTR;
 -- 
 2.39.2
 
