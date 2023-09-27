@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924447B02F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BAD7B02E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbjI0L2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        id S231518AbjI0L1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjI0L2T (ORCPT
+        with ESMTP id S231612AbjI0L1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:28:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3D4CFB;
-        Wed, 27 Sep 2023 04:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695814092; x=1727350092;
-  h=from:to:in-reply-to:references:subject:message-id:date:
-   mime-version:content-transfer-encoding;
-  bh=uFGitsElrhMRHDkmcqIiTAhrwAa+OQv1/O5WTCTxAck=;
-  b=fk/AIaAWfzQ7U35eOfY1qGLU8+CVx1lX4qk5jC0fe/2/mZjGVno9V308
-   N/JrNyOD6cbHuGlKlqrfuIn2qOv3/qNBRE3Et0WRm/44wUlNvsA5yTP2w
-   wJyESY3yGis0T23ZXD3CkgWbtOcqbNzDsbvs0Bp0bAQEnjxoHDAhNhQbE
-   uZ+e+5mPDm4SCWM5T0bl9jey6Z+2CSSnSxxU3zzifB5vk1GZSsLxfEGJZ
-   awv4ccisM+McbjONWewE/ai2ry54P8gqdVHxSnScyPuAYpiLbDf0O12j3
-   75qxw+EAYYWv2eFf7VKBCXbrj8Pv1OM9OdX6npPwe9louy/x0TE0ndgoH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="468084279"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="468084279"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 04:28:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="996111025"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="996111025"
-Received: from pjfarr-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.32.193])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 04:26:53 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     hdegoede@redhat.com, mpearson-lenovo@squebb.ca, corbet@lwn.net,
-        hmh@hmh.eng.br, markgross@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        Fernando Eckhardt Valle <fevalle@ipt.br>
-In-Reply-To: <20230926202144.5906-1-fevalle@ipt.br>
-References: <20230926202144.5906-1-fevalle@ipt.br>
-Subject: Re: [PATCH v6] platform/x86: thinkpad_acpi: sysfs interface to
- auxmac
-Message-Id: <169581394434.329979.16556041128440048227.b4-ty@linux.intel.com>
-Date:   Wed, 27 Sep 2023 14:25:44 +0300
+        Wed, 27 Sep 2023 07:27:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3304C10E2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:26:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D3D1C433C8;
+        Wed, 27 Sep 2023 11:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695813995;
+        bh=3/kJu0BAtwkj3xJ9fdAbiBLvvVYc2eBsWVfENf9O048=;
+        h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
+        b=PUT96mbnyi935kDaCn6iWqoadw2bcA5kl4k5iOwiWGVd430pk0xIrzndkmBat8MT6
+         0kgG86LdZn0mBlaK6ESrTrJL4oEBfAmtN+6LE0S/RzPiHrbxol7GaPi7XJmmildsqY
+         eBhXOFzT2JHo6zduNlkR7dzPza1YNVJNYB7DB0wmVK0aFOi21/xgo01VOCxRzWNATC
+         9Po9tWszGFN4QfmCVi7LcZjj3wx1uAMUzFDb/Kw5aXfc1Cejc/oc0Nj3D9ix7OTS08
+         lOFDjKx2BHGWP/mUcw+Xegt+mYMeu+CljZ6q9LBOrum31vCHoJW8oJaWD0lD6lfyMS
+         1zHLK7RyC+Mww==
+Message-ID: <ddc10c41-515f-48c9-966d-4ae7756d208c@kernel.org>
+Date:   Wed, 27 Sep 2023 13:26:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/8] hugetlb: restructure pool allocations
+Content-Language: en-US
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+References: <20230925234837.86786-3-mike.kravetz@oracle.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Barry Song <21cnbao@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org
+From:   Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20230925234837.86786-3-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 17:21:44 -0300, Fernando Eckhardt Valle wrote:
 
-> Newer Thinkpads have a feature called MAC Address Pass-through.
-> This patch provides a sysfs interface that userspace can use
-> to get this auxiliary mac address.
+
+On 26.09.2023 01:48, Mike Kravetz wrote:
+> Allocation of a hugetlb page for the hugetlb pool is done by the routine
+> alloc_pool_huge_page.  This routine will allocate contiguous pages from
+> a low level allocator, prep the pages for usage as a hugetlb page and
+> then add the resulting hugetlb page to the pool.
 > 
+> In the 'prep' stage, optional vmemmap optimization is done.  For
+> performance reasons we want to perform vmemmap optimization on multiple
+> hugetlb pages at once.  To do this, restructure the hugetlb pool
+> allocation code such that vmemmap optimization can be isolated and later
+> batched.
 > 
+> The code to allocate hugetlb pages from bootmem was also modified to
+> allow batching.
+> 
+> No functional changes, only code restructure.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+Hi, looks like this patch prevents today's next from booting
+on at least one Qualcomm ARM64 platform. Reverting it makes
+the device boot again.
 
-
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on the review-ilpo branch the patches
-there will be added to the platform-drivers-x86/for-next branch
-and eventually will be included in the pdx86 pull-request to
-Linus for the next merge-window.
-
-The list of commits applied:
-[1/1] platform/x86: thinkpad_acpi: sysfs interface to auxmac
-      commit: e17b4df0af1c21b767067b42c227d24d61b3ad15
-
---
- i.
-
+Konrad
