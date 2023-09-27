@@ -2,75 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AE57AFBC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF4F7AFBC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjI0HPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        id S229921AbjI0HPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjI0HPd (ORCPT
+        with ESMTP id S229880AbjI0HPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:15:33 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72483136;
-        Wed, 27 Sep 2023 00:15:32 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:14:11
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 15:14:11 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: Clean up errors in aicasm.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 03:15:03 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2B313A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:15:01 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2773af0c5dbso4830164a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695798901; x=1696403701; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bja12LI17w7SlAGim+7rV0lYQwVQg67VffGOzL5a63Q=;
+        b=NtK7MWFyclEp5SNVF26d/FbChfxjHSl6IZ2rWeYm8tNp/DVqRoSucr6BVUi9DQB3t7
+         IeeyNPp/Bk2WY3XsmQz27xOGtVV3O/4APv0T2eVMz85uTswkjDaliDMnyk8Vg4FQsqTP
+         v2B35jzO3y40j7ss/Oh5OT9zLASRPKQ+LgisQzPP9FAQoB4xf8aPXTxu7oBA/1+U/pYI
+         l8uskEL80kRTms9WFU7WVroKYKJDR3rUCylkieBez3k7H0Bzeq72G6fLJwQVFeeiGw4p
+         azbDnu6WveRK4JSqlrH6cwusnR3ASMzFqhpXjBc889+FCKPxJqyyhNO9NinDp0afsIIu
+         itdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695798901; x=1696403701;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bja12LI17w7SlAGim+7rV0lYQwVQg67VffGOzL5a63Q=;
+        b=wZ3yNU/zCk2QEGc2vJxE56cyAbP6IxobjNUU3xrXbw3/SwSl+QwiHbfWP6z5jPztTE
+         1/iPlPuHj5W3l/ptBF8+goQPEIxH94ejlEMrRelNk8rXb41hiNUrFpKWNDSbuZQue0YO
+         20ITSEJkRkmsL9+P423jvZF+P3Bh/fdrxI2yjqpiGUtJRHsWrzLS9mjM8i9/PCE6P7Py
+         7kf0mgP9K7iGEwCzH527hrCuDEMW8V9ytRAGcpmeoRTH99SZrxV2r5Za66tqiMRd9OkX
+         ePMRpDmFJF5vrPAUGELTMULN2+FUUjGiZV/M2KdHmlhmmGva6aMX+6ox7clID0QfWQ+F
+         27EA==
+X-Gm-Message-State: AOJu0Yx5DpVitThR3Ghnf28m9ZMP+ZMdmNS7UGJQiFAlOOakaloBkW2A
+        8aW/DiGo9CMJFXtyPHNplZ2pFQ==
+X-Google-Smtp-Source: AGHT+IFEZBCbksbtcNTYf/GSZEytPkrOcuA47MwSgUX5XYYf4aTBNmh0w+tEc6YDfL3KznT/8qU+LA==
+X-Received: by 2002:a17:90b:1e0e:b0:269:2682:11fb with SMTP id pg14-20020a17090b1e0e00b00269268211fbmr908623pjb.8.1695798901045;
+        Wed, 27 Sep 2023 00:15:01 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090aa58800b00277326038dasm6928001pjq.39.2023.09.27.00.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 00:15:00 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 12:44:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, rafael@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v5 3/5] opp: Add dev_pm_opp_find_level_floor()
+Message-ID: <20230927071458.busudwwj26kmia4u@vireshk-i7>
+References: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
+ <1694066433-8677-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-Message-ID: <5e399c83.87e.18ad57cf98b.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDnhD9E1hNleu+9AA--.579W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwAEsX
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694066433-8677-4-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-cmV0dXJuIGlzIG5vdCBhIGZ1bmN0aW9uLCBwYXJlbnRoZXNlcyBhcmUgbm90IHJlcXVpcmVkCkVS
-Uk9SOiBzcGFjZSByZXF1aXJlZCBiZWZvcmUgdGhlIG9wZW4gcGFyZW50aGVzaXMgJygnCgpTaWdu
-ZWQtb2ZmLWJ5OiBHdW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBkcml2ZXJz
-L3Njc2kvYWljN3h4eC9haWNhc20vYWljYXNtLmMgfCAxMCArKysrKy0tLS0tCiAxIGZpbGUgY2hh
-bmdlZCwgNSBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvc2NzaS9haWM3eHh4L2FpY2FzbS9haWNhc20uYyBiL2RyaXZlcnMvc2NzaS9haWM3eHh4L2Fp
-Y2FzbS9haWNhc20uYwppbmRleCBhMjJmMGZmZmM5YjkuLjJmNzQ2MThkMDAzOCAxMDA2NDQKLS0t
-IGEvZHJpdmVycy9zY3NpL2FpYzd4eHgvYWljYXNtL2FpY2FzbS5jCisrKyBiL2RyaXZlcnMvc2Nz
-aS9haWM3eHh4L2FpY2FzbS9haWNhc20uYwpAQCAtOTcsNyArOTcsNyBAQCBGSUxFICpyZWdkaWFn
-ZmlsZTsKIGludCAgIHNyY19tb2RlOwogaW50ICAgZHN0X21vZGU7CiAKLXN0YXRpYyBTVEFJTFFf
-SEVBRCgsaW5zdHJ1Y3Rpb24pIHNlcV9wcm9ncmFtOworc3RhdGljIFNUQUlMUV9IRUFEKCwgaW5z
-dHJ1Y3Rpb24pIHNlcV9wcm9ncmFtOwogc3RydWN0IGNzX3RhaWxxIGNzX3RhaWxxOwogc3RydWN0
-IHNjb3BlX2xpc3Qgc2NvcGVfc3RhY2s7CiBzeW1saXN0X3QgcGF0Y2hfZnVuY3Rpb25zOwpAQCAt
-MTQ0LDcgKzE0NCw3IEBAIG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAltbWRlYnVnID0g
-MDsKICNlbmRpZgogCXdoaWxlICgoY2ggPSBnZXRvcHQoYXJnYywgYXJndiwgImQ6aTpsOm46bzpw
-OnI6SToiKSkgIT0gLTEpIHsKLQkJc3dpdGNoKGNoKSB7CisJCXN3aXRjaCAoY2gpIHsKIAkJY2Fz
-ZSAnZCc6CiAjaWYgREVCVUcKIAkJCWlmIChzdHJjbXAob3B0YXJnLCAicyIpID09IDApIHsKQEAg
-LTMwMSw3ICszMDEsNyBAQCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pCiAKIAlzdG9wKE5V
-TEwsIDApOwogCS8qIE5PVFJFQUNIRUQgKi8KLQlyZXR1cm4gKDApOworCXJldHVybiAwOwogfQog
-CiBzdGF0aWMgdm9pZApAQCAtNjc0LDkgKzY3NCw5IEBAIGNoZWNrX3BhdGNoKHBhdGNoX3QgKipz
-dGFydF9wYXRjaCwgaW50IHN0YXJ0X2luc3RyLAogCSpzdGFydF9wYXRjaCA9IGN1cl9wYXRjaDsK
-IAlpZiAoc3RhcnRfaW5zdHIgPCAqc2tpcF9hZGRyKQogCQkvKiBTdGlsbCBza2lwcGluZyAqLwot
-CQlyZXR1cm4gKDApOworCQlyZXR1cm4gMDsKIAotCXJldHVybiAoMSk7CisJcmV0dXJuIDE7CiB9
-CiAKIC8qCi0tIAoyLjE3LjEK
+On 07-09-23, 11:30, Krishna chaitanya chundru wrote:
+
+$Subject should have OPP instead of opp. Past history of framework can be seen
+for this.
+
+> During initialization of some drivers, need to vote for max level.
+> 
+> Adding dev_pm_opp_find_level_floor() for searching a lesser match or
+> operating on OPP in the order of decreasing level.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  drivers/opp/core.c     | 25 +++++++++++++++++++++++++
+>  include/linux/pm_opp.h |  9 +++++++++
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+> index 919cc53..6d4d226 100644
+> --- a/drivers/opp/core.c
+> +++ b/drivers/opp/core.c
+> @@ -814,6 +814,31 @@ struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>  EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_ceil);
+>  
+>  /**
+> + * dev_pm_opp_find_level_floor() - Search for a rounded floor freq
+
+freq ?
+
+> + * @dev:	device for which we do this operation
+> + * @level:	Start level
+> + *
+> + * Search for the matching floor *available* OPP from a starting level
+> + * for a device.
+> + *
+> + * Return: matching *opp and refreshes *level accordingly, else returns
+> + * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+> + * values can be:
+> + * EINVAL:	for bad pointer
+> + * ERANGE:	no match found for search
+> + * ENODEV:	if device not found in list of registered devices
+> + *
+> + * The callers are required to call dev_pm_opp_put() for the returned OPP after
+> + * use.
+> + */
+> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+> +					       unsigned long *level)
+> +{
+> +	return _find_key_floor(dev, level, 0, true, _read_level, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_floor);
+> +
+> +/**
+>   * dev_pm_opp_find_bw_ceil() - Search for a rounded ceil bandwidth
+>   * @dev:	device for which we do this operation
+>   * @bw:	start bandwidth
+> diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+> index 91f87d7..baea92f 100644
+> --- a/include/linux/pm_opp.h
+> +++ b/include/linux/pm_opp.h
+> @@ -144,6 +144,9 @@ struct dev_pm_opp *dev_pm_opp_find_level_exact(struct device *dev,
+>  struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
+>  					      unsigned int *level);
+>  
+> +struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+> +					       unsigned long *level);
+> +
+>  struct dev_pm_opp *dev_pm_opp_find_bw_ceil(struct device *dev,
+>  					   unsigned int *bw, int index);
+>  
+> @@ -314,6 +317,12 @@ static inline struct dev_pm_opp *dev_pm_opp_find_bw_ceil(struct device *dev,
+>  	return ERR_PTR(-EOPNOTSUPP);
+>  }
+>  
+> +static inline struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+
+Why add between two bw related functions ?
+
+> +							     unsigned long *level)
+> +{
+> +	return ERR_PTR(-EOPNOTSUPP);
+> +}
+> +
+>  static inline struct dev_pm_opp *dev_pm_opp_find_bw_floor(struct device *dev,
+>  					unsigned int *bw, int index)
+>  {
+
+Fixed all this and applied. Thanks.
+
+-- 
+viresh
