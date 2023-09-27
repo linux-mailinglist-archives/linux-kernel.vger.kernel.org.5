@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4AD7B0D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FCE7B0D50
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjI0UZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        id S229685AbjI0UZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjI0UZi (ORCPT
+        with ESMTP id S229458AbjI0UZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:25:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C02C114
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695846291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hz4HjlvMoyMlJFk+Px6NXXwtj0eY3c4mO7NnPf9aXgU=;
-        b=Rf3OdmVH0F0pzrMSR+UHjxipJGzWs/MHm/Y5es1nuQpbP8/zmOBqWEr+QR2Yo/yMVL3H9e
-        dBIZ9MSmQbnffJHVTIHQy8Nt4jrXPzbkqow2s1FofnnF0aWJYW8i1b0G7oueJS7N9Jkp8A
-        OMe+E6vn2i0yKIEogWO940a4VqEFIoU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-357-0xuIEUIYPXK84wg5g2ygQA-1; Wed, 27 Sep 2023 16:24:47 -0400
-X-MC-Unique: 0xuIEUIYPXK84wg5g2ygQA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E19F93C0DDA2;
-        Wed, 27 Sep 2023 20:24:46 +0000 (UTC)
-Received: from RHTPC1VM0NT (unknown [10.22.10.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3F2E1492B16;
-        Wed, 27 Sep 2023 20:24:46 +0000 (UTC)
-From:   Aaron Conole <aconole@redhat.com>
-To:     Ilya Maximets <i.maximets@ovn.org>
-Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
-        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [ovs-dev] [PATCH net-next v2] openvswitch: reduce stack usage
- in do_execute_actions
-References: <20230921194314.1976605-1-i.maximets@ovn.org>
-Date:   Wed, 27 Sep 2023 16:24:45 -0400
-In-Reply-To: <20230921194314.1976605-1-i.maximets@ovn.org> (Ilya Maximets's
-        message of "Thu, 21 Sep 2023 21:42:35 +0200")
-Message-ID: <f7t34yzpdo2.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 27 Sep 2023 16:25:33 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FBF10E;
+        Wed, 27 Sep 2023 13:25:29 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:34862)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qlb68-004E9A-TM; Wed, 27 Sep 2023 14:25:28 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:55018 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qlb67-00DYm2-Qk; Wed, 27 Sep 2023 14:25:28 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sebastian Ott <sebott@redhat.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org
+References: <20230927033634.make.602-kees@kernel.org>
+Date:   Wed, 27 Sep 2023 15:25:21 -0500
+In-Reply-To: <20230927033634.make.602-kees@kernel.org> (Kees Cook's message of
+        "Tue, 26 Sep 2023 20:42:17 -0700")
+Message-ID: <87il7v8itq.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-XM-SPF: eid=1qlb67-00DYm2-Qk;;;mid=<87il7v8itq.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18Gql5jFySccJ7lzoWBXWBHedBRO+fGkGw=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 487 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.3%), b_tie_ro: 10 (2.0%), parse: 0.90
+        (0.2%), extract_message_metadata: 15 (3.1%), get_uri_detail_list: 1.14
+        (0.2%), tests_pri_-2000: 21 (4.3%), tests_pri_-1000: 2.5 (0.5%),
+        tests_pri_-950: 1.31 (0.3%), tests_pri_-900: 1.07 (0.2%),
+        tests_pri_-200: 0.86 (0.2%), tests_pri_-100: 3.7 (0.8%),
+        tests_pri_-90: 67 (13.8%), check_bayes: 66 (13.5%), b_tokenize: 6
+        (1.3%), b_tok_get_all: 6 (1.3%), b_comp_prob: 1.99 (0.4%),
+        b_tok_touch_all: 47 (9.7%), b_finish: 0.90 (0.2%), tests_pri_0: 200
+        (41.1%), check_dkim_signature: 0.51 (0.1%), check_dkim_adsp: 2.4
+        (0.5%), poll_dns_idle: 148 (30.4%), tests_pri_10: 2.2 (0.4%),
+        tests_pri_500: 157 (32.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3 0/4] binfmt_elf: Support segments with 0 filesz and
+ misaligned starts
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ilya Maximets <i.maximets@ovn.org> writes:
+Kees Cook <keescook@chromium.org> writes:
 
-> do_execute_actions() function can be called recursively multiple
-> times while executing actions that require pipeline forking or
-> recirculations.  It may also be re-entered multiple times if the packet
-> leaves openvswitch module and re-enters it through a different port.
+> Hi,
 >
-> Currently, there is a 256-byte array allocated on stack in this
-> function that is supposed to hold NSH header.  Compilers tend to
-> pre-allocate that space right at the beginning of the function:
+> This is the continuation of the work Eric started for handling
+> "p_memsz > p_filesz" in arbitrary segments (rather than just the last,
+> BSS, segment). I've added the suggested changes:
 >
->      a88:       48 81 ec b0 01 00 00    sub    $0x1b0,%rsp
+>  - drop unused "elf_bss" variable
+>  - report padzero() errors when PROT_WRITE is present
+>  - refactor load_elf_interp() to use elf_load()
 >
-> NSH is not a very common protocol, but the space is allocated on every
-> recursive call or re-entry multiplying the wasted stack space.
->
-> Move the stack allocation to push_nsh() function that is only used
-> if NSH actions are actually present.  push_nsh() is also a simple
-> function without a possibility for re-entry, so the stack is returned
-> right away.
->
-> With this change the preallocated space is reduced by 256 B per call:
->
->      b18:       48 81 ec b0 00 00 00    sub    $0xb0,%rsp
->
-> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-> ---
+> This passes my quick smoke tests, but I'm still trying to construct some
+> more complete tests...
 
-Thanks, Ilya.
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Reviewed-by: Aaron Conole <aconole@redhat.com>
+You might also consider using elf_load in load_elf_library.
 
+The code in load_elf_library only supports files with a single program
+header, and I think is only needed for libc5.
+
+The advantage is that load_elf_library would be using well tested code,
+vm_brk would have no callers, and padzero would only be called by
+elf_load, and load_elf_library would do little more than just call
+load_elf_library.
+
+Eric
+
+>
+> -Kees
+>
+> Eric W. Biederman (1):
+>   binfmt_elf: Support segments with 0 filesz and misaligned starts
+>
+> Kees Cook (3):
+>   binfmt_elf: elf_bss no longer used by load_elf_binary()
+>   binfmt_elf: Provide prot bits as context for padzero() errors
+>   binfmt_elf: Use elf_load() for interpreter
+>
+>  fs/binfmt_elf.c | 192 ++++++++++++++++++------------------------------
+>  1 file changed, 71 insertions(+), 121 deletions(-)
