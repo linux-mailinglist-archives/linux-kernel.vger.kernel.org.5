@@ -2,209 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A39B7AFDA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7537AFDAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjI0IIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
+        id S230109AbjI0IJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbjI0IIE (ORCPT
+        with ESMTP id S230027AbjI0IJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:08:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D14B3;
-        Wed, 27 Sep 2023 01:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695802083; x=1727338083;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Rih9x4uKO7X2zbzxbyVhACcK28Wg1CQcOLHs6un1tZQ=;
-  b=WKakc0e21qs+7FAedQHma5rRWU+CHExKDRw2v1Vrby17B7S3Ys8PVJDB
-   mSeOyAOxKEIBgwiedE20B+fjl1KBTs9R/6PuiqirE+Qv4CftOIDw5FgOG
-   1e++WbgP7UNlhP8I35TMU05NRRb8Wf6aJXLg8D9ql7GEGnZdn+HRU4cBx
-   eRr48TYlVMrOEjM2NIoyQpuW/Sl9cN7r/aYUGyN19ijebTGe/DR9AXDLv
-   C6cPyaN2YjID9h+aKITue8VM2/s+Hu2Jm3e3/wun6Cb5Q5oVvbnKe+GJy
-   mMBp36Izlx9KkUHqxQeBuVUW8lYLD3QQfBCf1M1pHaPAVNGvQWTmUmFBN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="385616476"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="385616476"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 01:07:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="839340385"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="839340385"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 01:07:59 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 01:07:58 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 01:07:58 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 01:07:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hht6u43fmjE3Ukcel3XUNYIkXJ5FnbbmZZUXPsYz5hYm2HbqT0a+ccMrQGbwaEPC0+1x2fBWpG67TcPM6nuVi+JVwsP9rRsDRZ21c+rKhmuPe10Gvopk3GOQw6C6PxL5QJgM+D0GHzu/7S8q13w8z6fN7ail7Ppin3KwEn7vi4FOdowOZ6AmOhLwp2TsaI+DHOz5bhNVr93OAlse7cnmzJNSVPAvrcGlfVey5aCPc3c+n6l+Y9QuvDoRF8JGwXk1zMQK+fF3wchBkBhLYcahXV+YFkfwS2kwLiR8t4bsG+hEpDRuRah7c2esicNQX42voQwNuJSsADlJWzgLYCZh2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9Kcg7mH4NG04NJ+nF+3+GE2tKiS35+QSsncIBOCiKIk=;
- b=WYTQfckU66RX01Q/Gg03QQoDvDnUb4uE0LE4VI9xn5qLYQqS0N6msXqqUHHhK9Wt4gs95GuCvX95pm87IyAh4w72cp9uxPgR7bZOCCCri9N6XBzRqh+3I05yuzK2jYRGLXwkCJZofP+IGJDaDUnUYWdLdw+L3LOHH+IqXnLNzpGL+lyZXVF8BPpyitqPLtARUYWcVBJsVfoXbysiLgw5V75aZoTGlxOcw1g7WKU9AvWse6bkThBTcwGJmENA86I0/00d3H4b3B1D2IHSOMZc8oSV7YVnEcyY2LkygZhswBsooxuBPs/RbHrG3WM3iHDEoQmF5IgKAwgH35EFId4zbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by MN2PR11MB4518.namprd11.prod.outlook.com (2603:10b6:208:24f::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Wed, 27 Sep
- 2023 08:07:55 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 08:07:55 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "joro@8bytes.org" <joro@8bytes.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: RE: [RFC 3/3] vfio/pci: Expose PCIe PASID capability to userspace
-Thread-Topic: [RFC 3/3] vfio/pci: Expose PCIe PASID capability to userspace
-Thread-Index: AQHZ8FxBOJ6q7SodUkevUoT08ZF/YrAuTq0g
-Date:   Wed, 27 Sep 2023 08:07:54 +0000
-Message-ID: <BN9PR11MB5276375C4BE33AC0632321A68CC2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230926093121.18676-1-yi.l.liu@intel.com>
- <20230926093121.18676-4-yi.l.liu@intel.com>
-In-Reply-To: <20230926093121.18676-4-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MN2PR11MB4518:EE_
-x-ms-office365-filtering-correlation-id: 68febf0f-db79-48b4-7b29-08dbbf30da8b
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rVn1PvPh894LNAp0E6VlqvBTOhf77OTHg5jQLrRCkti4UJZELp0hfchcarja/2664By4gbG9c6iw0vuS71yhJf5XtGgvyRHWLR4xEVv3mGoHV9Ns5aKVfFLukKMaWfNrZS7dD96hlggWa0g391vFhmMmPTkHfc7HKTtgvYlycrxnjMrspnR/znX86RZETl6GYDRFJJsfSdEX0mX6jb40eenpBqPHBrFYbqI9nKJvJEaDTl0wn6touPnUfO2FUNBl74VVWfDZkrRfQ5FqXSE54elXW5sVGnsIcs68hy/9blXjP45kpDnJD7sc3veX1doNUKQ2bjkK0PL+cBfjP9COKloKoUz39vR95sDOwkPfPzar/ZIWH2Da8tnKXFaFA0zpwnQORjZri7lVkGPH3HhlHb4GaAf9jn3LKkOtO8K3FlEahBxPmWobc9YZKkMfl6gInOCNcGiQdhMm9o/lXIXhYdOLXfdh01tZ8KmVXZSHrtjj/mFjOnP+1SR6BAV/dHx6rdgOIu/q+JkJuT3Tl+uc/Tbf+sK25C4pLUYSbO7vYRmjNgZvih1mkbG47CyEDLbMFolvDR8sXd7sttSrGJlv7SnmikkVn1uFRpYIEZzNtkPIwfTiI5xlYih8M32/mqCYuUiso4027kP/ZF3FJNyGXA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(366004)(346002)(230922051799003)(1800799009)(186009)(451199024)(66946007)(7696005)(26005)(6506007)(9686003)(82960400001)(38100700002)(86362001)(38070700005)(55016003)(33656002)(122000001)(41300700001)(316002)(8676002)(8936002)(4326008)(66556008)(66446008)(66476007)(54906003)(5660300002)(110136005)(52536014)(76116006)(7416002)(2906002)(64756008)(45080400002)(71200400001)(966005)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Dho1NIsZ4hPazxZNzxDxlky3M5zPzyuTX6al1/aGgcAlmyMHhOnwNwq9kwwR?=
- =?us-ascii?Q?/3umITh7ZH2xwRG6MCTcmZOvB1uQpfU8LkwpTOf3U+jYPeqJNtUlGA86YFME?=
- =?us-ascii?Q?slG23MwjrZYTlvrYn8wa92/aLF7siDzqGjjvV2Ty9ty3Xd79uoK3ZVY7MkdW?=
- =?us-ascii?Q?ThLFRAlZ5HMilfxX2nnSBzlHMmWQitrJ2TLXylI6kx3aBc3Za9PnvLhW8IV4?=
- =?us-ascii?Q?ZVDaPyiLMT5OfuX5ZMVbHOM0dOIFQI3/Ezb8XKENx/9k07cQrSldx4/JEJyP?=
- =?us-ascii?Q?PRaj+M1Qguy84CL/S23FqZAgEQM+wD512aMhlG2lOLS7bTEef4G7M41IvSMr?=
- =?us-ascii?Q?sNzCgn5t3vchS4/jjzgAgTLomYGVLBsUx2NfgA/pLY2di0CkcUU9V4Ci5QN5?=
- =?us-ascii?Q?0Lw0yeupctckJejFbAEmE8TL3o1RFZwRcN/1/i67zuENlOrIudGe7kHn0IZm?=
- =?us-ascii?Q?MqWHeGnuWRUv67/udeQ1/DkEBzN7CD2i4B+yzEc4Cy/suP6CR8mk6lp2WFRp?=
- =?us-ascii?Q?uffXRDOzCCkwXLb0KanXVT65+wAALR/SJSesTTmop3f+DP6fKTCNkKfiC8tK?=
- =?us-ascii?Q?tzG2Wm3c+M4F4AM8avFZR81fbnhQxp886EkdY+NleZk/u+0+Nn/V8SUmKNV6?=
- =?us-ascii?Q?W6T5DzJZxsfpLE5G5ixO5Geeq9O4CAGTsSh9stXTZVtlrpXQQsxWsOLby1hm?=
- =?us-ascii?Q?sMHobHVhYITijSs2SqDADiXpjIWvuJ4AW9cDUOiAGXo1oNtSnuwI/9LUOMFJ?=
- =?us-ascii?Q?ukLR72RV6IzTlzcTPoVyv0I6XoQ0VdPQEl56m9yV9FD0XmmaP/vbFFacxy7e?=
- =?us-ascii?Q?dytQk1dsCpYkUbWQOahIrzBSPCJrMdnSfCwf8XxtuhDMUm4HyPC4NkvRKUMO?=
- =?us-ascii?Q?FY9D1UnalfCxAK/gBqPxgkNu+SYwyOmJJNQAjvqgSsPX/2/hqtufXAgKHe1x?=
- =?us-ascii?Q?O1uCOiZvIlmROFKJyGjil9Pgc/EO4gKGvI8rr89LoivLY4sCVx92ZEIPul1j?=
- =?us-ascii?Q?IZ3S7UyZcBAgdNvRE0D8/NFKzxHeZGSsVeN+Wst2I0DKlHzSF/QBLY/H9K0v?=
- =?us-ascii?Q?a4Hq5v3L/9ojBoQsotmzmfSrjhN3wxqQoQu3ic3gH4t464n3IMwjilVQg4GC?=
- =?us-ascii?Q?//B+MdFn4myNfcBGYdPIhqFJ9wcbUy4tFI8fJAugfz6ugz6iTmBQaIn62+sI?=
- =?us-ascii?Q?QQLNLEAK8Iz9oU4o3KYGef1V4fW9712FhidRi9m/VFmITD1SE9pkRadWnl1A?=
- =?us-ascii?Q?u69Fqv2drDhW+ZfQzDqwou8GLtefKxiphFAi3ltCH/rM07lu8h0Mx6QRpevj?=
- =?us-ascii?Q?f/ClrBSvqgSanumVr7Cso6sZzwvTBm6BtMto72VxK8sNM7No3AmHIwrHiiv3?=
- =?us-ascii?Q?d/j1MITg7x2W32cPylxceLe9THQrEYr4Z6a3gDOlQRCedJuM/FMQW5QMvRVh?=
- =?us-ascii?Q?gz4zcMIYlOdht0SeJ+Vl+MJWET6b0JVcYpDWpbtcmhOH5H6x6ogEuSslIK1F?=
- =?us-ascii?Q?UqycnIGwMCYTLDzf67VuHSrCGT+eX6Kdw7zen8qMVHIqrDAxKJBgI02vFoue?=
- =?us-ascii?Q?Iy4cptq+Qt+uS3U82+UuewSC6Nk0yGtn6hYpxGMQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 27 Sep 2023 04:09:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08374136
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695802106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5mqMeT0GBWYCKzb+u61vBU4JG18vUL40FriF6j8Y60Y=;
+        b=ifNmZD3eNnjZw616qQBSz4SPiK3Z8ttEwknBgBFuNuhju3eZ6jAhrV8mRCYWqbAsloCuBW
+        FJoRHThQBG10mcpVpeuCcqf7WdKaNu+MdihFm63VaNG4lbesv3HZP7h9u1L2yTmNpGuSLn
+        RAuLeeKgbZg2o3ypugJSK4ISLzH+Djo=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-259-jiN8WLB1PKuJCfjRZQ4cBg-1; Wed, 27 Sep 2023 04:08:24 -0400
+X-MC-Unique: jiN8WLB1PKuJCfjRZQ4cBg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9b274cc9636so593550066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 01:08:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695802103; x=1696406903;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5mqMeT0GBWYCKzb+u61vBU4JG18vUL40FriF6j8Y60Y=;
+        b=iETGIeRDEz4dhDGNY9sj4clPu9n0LWxLqLFStvtLaf+gw2P4nufZGcUiwxUeAzvNZJ
+         tyzCqQFCuz4w/+oQmfq7yBqwlGQfhYnsv1wRv2waprfnNJ8mxor6jSKyT06ODQuNf99h
+         /4TvTBEgWg4kwNwNIcUcIdpbjZYRto8BvuLppo2kDNu5YqkcrwYnmI7BHWsa98ivw7ch
+         9gNI4P0XMLGcMH5lJwN55/Bh1EwhKraIEyrK61IQVHzwqWVXrq/P2WID6SEDVBYDMOlE
+         eRJkuCfJcDCSNUv0h+0ssbs9laDZLN/VMU6FpSlJ1Mi8hP5jlkxYU8u+PyWUryrFwf4M
+         2JIw==
+X-Gm-Message-State: AOJu0YwjItQySgx8soQD9SyiHnkkWJAWTf+6Nr8qZTurUQ7niDQ+Gr8T
+        9bzj62g72vSd+NOsJAi1p8j2H0KSlsmRkqbye0y/3oPVQxKChfsueKM8AzXDloNp0mdia0N8CUV
+        g0pmzrJKu83z+sp77UkSLmKVvd/tSgnrE
+X-Received: by 2002:a17:906:2212:b0:9ae:56ad:65a7 with SMTP id s18-20020a170906221200b009ae56ad65a7mr987932ejs.45.1695802103019;
+        Wed, 27 Sep 2023 01:08:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGxKAz3HMBPYU5epxppQchfC2mZ+xbnrxSo7eq4GJvChG4PLWopfq+HNG36xPgmab4BliTrAQ==
+X-Received: by 2002:a17:906:2212:b0:9ae:56ad:65a7 with SMTP id s18-20020a170906221200b009ae56ad65a7mr987908ejs.45.1695802102572;
+        Wed, 27 Sep 2023 01:08:22 -0700 (PDT)
+Received: from [192.168.1.217] ([109.36.155.235])
+        by smtp.gmail.com with ESMTPSA id ha26-20020a170906a89a00b009930308425csm8893137ejb.31.2023.09.27.01.08.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 01:08:21 -0700 (PDT)
+Message-ID: <24248f7e-42f2-eea4-d748-c562f529a12f@redhat.com>
+Date:   Wed, 27 Sep 2023 10:08:18 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68febf0f-db79-48b4-7b29-08dbbf30da8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 08:07:54.8411
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yJ6ES+5pzmIuCW9yKAx79nijgnU/NYq/p4udPCScdXKWHXevTkpORB0QIiniaiwmJJZ8D2dwOO5BLDdvLUp7XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4518
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] platform/x86: thinkpad_acpi: sysfs interface to auxmac
+To:     "Fernando Eckhardt Valle (FIPT)" <fevalle@ipt.br>,
+        "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+        "mpearson-lenovo@squebb.ca" <mpearson-lenovo@squebb.ca>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "hmh@hmh.eng.br" <hmh@hmh.eng.br>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ibm-acpi-devel@lists.sourceforge.net" 
+        <ibm-acpi-devel@lists.sourceforge.net>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20230925184133.6735-1-fevalle@ipt.br>
+ <0efd719a-802d-1401-7cee-d3918b47441d@redhat.com>
+ <CPVP152MB50532B5F8BBAC92243930842D8C3A@CPVP152MB5053.LAMP152.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CPVP152MB50532B5F8BBAC92243930842D8C3A@CPVP152MB5053.LAMP152.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Tuesday, September 26, 2023 5:31 PM
->=20
-> This exposes PCIe PASID capability to userspace and where to emulate this
-> capability if wants to further expose it to VM.
->=20
-> And this only exposes PASID capability for devices which has PCIe PASID
-> extended struture in its configuration space. While for VFs, userspace
-> is still unable to see this capability as SR-IOV spec forbides VF to
-> implement PASID capability extended structure. It is a TODO in future.
-> Related discussion can be found in below links:
->=20
-> https://lore.kernel.org/kvm/20200407095801.648b1371@w520.home/
-> https://lore.kernel.org/kvm/BL1PR11MB5271A60035EF591A5BE8AC878C01A
-> @BL1PR11MB5271.namprd11.prod.outlook.com/
->=20
+Hi,
 
-Yes, we need a decision for VF case.
+On 9/26/23 20:42, Fernando Eckhardt Valle (FIPT) wrote:
+> Thanks for the review Hans, I'll send a new version with some adjustments.
+> 
+>> Note this is just a preference you keen keep this as is
+>> if you want,
+> I liked the Ilpo suggestion, with two 'gotos' is eliminated repeated code. If everything is ok, I prefer it this way.
 
-If the consensus is to continue exposing the PASID capability in vfio-pci
-config space by developing a kernel quirk mechanism to find offset for
-VF, then this patch for PF is orthogonal to that VF work and can go as it i=
-s.
+If you prefer the 2 goto solution from v5 then keeping it as is is fine.
 
-But if the decision is to have a device feature for the user to enumerate
-the vPASID capability and let the VMM take care of finding the vPASID
-cap offset, then better we start doing that for PF too since it's not good
-to have two enumeration interfaces for PF/VF respectively.
+Regards,
 
-My preference is via device feature given Qemu already includes lots of
-quirks for vfio-pci devices. Another reason is that when supporting vPASID
-with SIOV there are some arch constraints which the driver needs to
-report to the user to follow (e.g.  don't assign ENQCMD-capable sibling
-vdev's to a same guest, etc.). A device feature interface can better
-encapsulate everything related to vPASID in one place.
+Hans
 
-Thanks
-Kevin
+
+
+
+> ________________________________________
+> From: Hans de Goede <hdegoede@redhat.com>
+> Sent: Tuesday, September 26, 2023 7:23 AM
+> To: Fernando Eckhardt Valle (FIPT); ilpo.jarvinen@linux.intel.com; mpearson-lenovo@squebb.ca; corbet@lwn.net; hmh@hmh.eng.br; markgross@kernel.org; linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org; ibm-acpi-devel@lists.sourceforge.net; platform-driver-x86@vger.kernel.org
+> Subject: Re: [PATCH v5] platform/x86: thinkpad_acpi: sysfs interface to auxmac
+> 
+> Hi,
+> 
+> It looks like I just reviewed an old version, reviewing this version now ...
+> 
+> On 9/25/23 20:41, Fernando Eckhardt Valle wrote:
+>> Newer Thinkpads have a feature called MAC Address Pass-through.
+>> This patch provides a sysfs interface that userspace can use
+>> to get this auxiliary mac address.
+>>
+>> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
+>> ---
+>> Changes in v5:
+>> - Repeated code deleted.
+>> - Adjusted offset of a strscpy().
+>> Changes in v4:
+>> - strscpy() in all string copies.
+>> Changes in v3:
+>> - Added null terminator to auxmac string when copying auxiliary
+>> mac address value.
+>> Changes in v2:
+>> - Added documentation.
+>> - All handling of the auxmac value is done in the _init function.
+>> ---
+>>  .../admin-guide/laptops/thinkpad-acpi.rst     | 20 +++++
+>>  drivers/platform/x86/thinkpad_acpi.c          | 81 +++++++++++++++++++
+>>  2 files changed, 101 insertions(+)
+>>
+>> diff --git a/Documentation/admin-guide/laptops/thinkpad-acpi.rst b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+>> index e27a1c3f6..98d304010 100644
+>> --- a/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+>> +++ b/Documentation/admin-guide/laptops/thinkpad-acpi.rst
+>> @@ -53,6 +53,7 @@ detailed description):
+>>       - Lap mode sensor
+>>       - Setting keyboard language
+>>       - WWAN Antenna type
+>> +     - Auxmac
+>>
+>>  A compatibility table by model and feature is maintained on the web
+>>  site, http://ibm-acpi.sf.net/. I appreciate any success or failure
+>> @@ -1511,6 +1512,25 @@ Currently 2 antenna types are supported as mentioned below:
+>>  The property is read-only. If the platform doesn't have support the sysfs
+>>  class is not created.
+>>
+>> +Auxmac
+>> +------
+>> +
+>> +sysfs: auxmac
+>> +
+>> +Some newer Thinkpads have a feature called MAC Address Pass-through. This
+>> +feature is implemented by the system firmware to provide a system unique MAC,
+>> +that can override a dock or USB ethernet dongle MAC, when connected to a
+>> +network. This property enables user-space to easily determine the MAC address
+>> +if the feature is enabled.
+>> +
+>> +The values of this auxiliary MAC are:
+>> +
+>> +        cat /sys/devices/platform/thinkpad_acpi/auxmac
+>> +
+>> +If the feature is disabled, the value will be 'disabled'.
+>> +
+>> +This property is read-only.
+>> +
+>>  Adaptive keyboard
+>>  -----------------
+>>
+>> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+>> index d70c89d32..2324ebb46 100644
+>> --- a/drivers/platform/x86/thinkpad_acpi.c
+>> +++ b/drivers/platform/x86/thinkpad_acpi.c
+>> @@ -10785,6 +10785,82 @@ static struct ibm_struct dprc_driver_data = {
+>>       .name = "dprc",
+>>  };
+>>
+>> +/*
+>> + * Auxmac
+>> + *
+>> + * This auxiliary mac address is enabled in the bios through the
+>> + * MAC Address Pass-through feature. In most cases, there are three
+>> + * possibilities: Internal Mac, Second Mac, and disabled.
+>> + *
+>> + */
+>> +
+>> +#define AUXMAC_LEN 12
+>> +#define AUXMAC_START 9
+>> +#define AUXMAC_STRLEN 22
+>> +#define AUXMAC_BEGIN_MARKER 8
+>> +#define AUXMAC_END_MARKER 21
+>> +
+>> +static char auxmac[AUXMAC_LEN + 1];
+>> +
+>> +static int auxmac_init(struct ibm_init_struct *iibm)
+>> +{
+>> +     acpi_status status;
+>> +     struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+>> +     union acpi_object *obj;
+>> +
+>> +     status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
+>> +
+>> +     if (ACPI_FAILURE(status))
+>> +             return -ENODEV;
+> 
+> In this code path you don't initialize the "auxmac" buffer at all,
+> but your auxmac_attr_group does not have an is_visible callback,
+> so the auxmax sysfs attr will still show up.
+> 
+> Please add an is_visible callback and retuern 0 (not visible)
+> when auxmac[0] == 0; See existing is_visible code for some
+> examples.
+> 
+>> +
+>> +     obj = buffer.pointer;
+>> +
+>> +     if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
+>> +             pr_info("Invalid buffer for MAC address pass-through.\n");
+>> +             goto auxmacinvalid;
+>> +     }
+>> +
+>> +     if (obj->string.pointer[AUXMAC_BEGIN_MARKER] != '#' ||
+>> +         obj->string.pointer[AUXMAC_END_MARKER] != '#') {
+>> +             pr_info("Invalid header for MAC address pass-through.\n");
+>> +             goto auxmacinvalid;
+>> +     }
+>> +
+>> +     if (strncmp(obj->string.pointer + AUXMAC_START, "XXXXXXXXXXXX", AUXMAC_LEN) != 0)
+>> +             strscpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN + 1);
+> 
+> Please use sizeof(auxmac) as last parameter to strscpy() here.
+> 
+>> +     else
+>> +             strscpy(auxmac, "disabled", AUXMAC_LEN);
+> 
+> Please use sizeof(auxmac) as last parameter to strscpy() here.
+> 
+> Also note how you pass 2 different dest-sizes for the same dest buffer before,
+> which looks weird ...
+> 
+> 
+>> +
+>> +free:
+>> +     kfree(obj);
+>> +     return 0;
+>> +
+>> +auxmacinvalid:
+>> +     strscpy(auxmac, "unavailable", AUXMAC_LEN);
+>> +     goto free;
+>> +}
+> 
+> I'm not liking the goto dance here, I would prefer:
+> 
+>         kfree(obj);
+>         return 0;
+> 
+> auxmacinvalid:
+>         strscpy(auxmac, "unavailable", AUXMAC_LEN);
+>         kfree(obj);
+>         return 0;
+> 
+> It is quite normal for an error-exit path to repeat a kfree().
+> 
+> Note this is just a preference you keen keep this as is
+> if you want, but to me the goto free which jumps up looks
+> pretty weird.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+>> +
+>> +static struct ibm_struct auxmac_data = {
+>> +     .name = "auxmac",
+>> +};
+>> +
+>> +static ssize_t auxmac_show(struct device *dev,
+>> +                        struct device_attribute *attr,
+>> +                        char *buf)
+>> +{
+>> +     return sysfs_emit(buf, "%s\n", auxmac);
+>> +}
+>> +static DEVICE_ATTR_RO(auxmac);
+>> +
+>> +static struct attribute *auxmac_attributes[] = {
+>> +     &dev_attr_auxmac.attr,
+>> +     NULL
+>> +};
+>> +
+>> +static const struct attribute_group auxmac_attr_group = {
+>> +     .attrs = auxmac_attributes,
+>> +};
+>> +
+>>  /* --------------------------------------------------------------------- */
+>>
+>>  static struct attribute *tpacpi_driver_attributes[] = {
+>> @@ -10843,6 +10919,7 @@ static const struct attribute_group *tpacpi_groups[] = {
+>>       &proxsensor_attr_group,
+>>       &kbdlang_attr_group,
+>>       &dprc_attr_group,
+>> +     &auxmac_attr_group,
+>>       NULL,
+>>  };
+>>
+>> @@ -11414,6 +11491,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
+>>               .init = tpacpi_dprc_init,
+>>               .data = &dprc_driver_data,
+>>       },
+>> +     {
+>> +             .init = auxmac_init,
+>> +             .data = &auxmac_data,
+>> +     },
+>>  };
+>>
+>>  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
+> 
+> 
+
