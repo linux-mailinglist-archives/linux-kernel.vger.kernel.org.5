@@ -2,89 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743F37B09A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034DF7B09AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjI0QKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S232030AbjI0QKK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 12:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjI0QJ4 (ORCPT
+        with ESMTP id S231481AbjI0QKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:09:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807ECE6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:09:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21D46C433C7;
-        Wed, 27 Sep 2023 16:09:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695830992;
-        bh=29xvS6IckRi6KRlCqL8FdLLJBEWH1CFbIZ0TphFXPaA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EEyFXcxpELH4if2Vluo4qEaHH7+FfmHNIlfz7eCERLv//HxjqKpCeVxgxgyfNlJsC
-         wBwY/WWh6n8zxNYqHDolFudHROYNMssCXxmm5+rpdoNTeeAVCC/za7IWXWhUxRlvAZ
-         OOppLHTdjU0jCyoI8BcJjvhfY/nfxXGOOUwAaBI6Gc9/5x1/VnQtUETjFgjYVEH5HZ
-         VqOBtBp9J7hVchKRP0g8cNDFA1h+UZSWHfi9NJ0FfSFTCk53T2Hjog0pVdwGwQlPKh
-         2DUSOUC48pmvgIobPbN/8jJemFQI2uBPTJBgeHmpGFIvQCT/vO1GolR7pSWxlI3vN/
-         wIwLfPDEs9g+w==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50435a9f800so17582721e87.2;
-        Wed, 27 Sep 2023 09:09:52 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxxkZ1JlSLV0R8z3qn9fetOd58E4I+3IbDzqVWC02YrA8k8vsPk
-        xbq9a+mWSIiz4zHb1XAOFNNL5thbytz6hXHF/dw=
-X-Google-Smtp-Source: AGHT+IGp3+fz1AJ91MmIzVAQfTPDyNrrJTO5Zr+BTfLNgXaBr2MIyc/b/LGPxbYxlLced3r79V/W9DwssWZa77bUZYw=
-X-Received: by 2002:a05:6512:711:b0:4fe:7dcc:3dc1 with SMTP id
- b17-20020a056512071100b004fe7dcc3dc1mr1915673lfs.44.1695830990353; Wed, 27
- Sep 2023 09:09:50 -0700 (PDT)
+        Wed, 27 Sep 2023 12:10:02 -0400
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C7B1B8;
+        Wed, 27 Sep 2023 09:09:56 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-57bf04841ccso444706eaf.0;
+        Wed, 27 Sep 2023 09:09:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695830996; x=1696435796;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uoBx4haDwLKQQRn3ZmCIvGY1ND5OJ+IJ+kQUcWjxXZg=;
+        b=tPgQxZ3U4FJh2OB1AmEHhIkB3I9oLbaDeLNHHmFlhKcBEmjaQ7KAHHkMU9EBny2VF3
+         bsQG4Jt5AH94x3AJvzH/11F+xglLGGJlVt5KAUIsyw0/9RntD/gM43R80jXWbkOUQ62W
+         m2p0euFGCWJ14+Pn5581lpO07ebcY6kw6VutC+/BGUIVAemfbfldPDCPuINxIcoaLJOM
+         PQEkkfwsX19xUPJgcwVFuiLNgnISYpKMLwkcjrjddu3P/IJQ/Loq6mJvZ1ABVZI6j/uk
+         cQKRrKvbeBtAU53uGqsYG7I2JWh2n/GmRQDBRmq+lyLJwGlU6NdJ0xdJkRcn2nzvKa/4
+         ezIw==
+X-Gm-Message-State: AOJu0Yyp/uSe8YtzpHEw+58/5sLuzStbuDjtJ+lOJIRC2nVVjTYee074
+        2pnu9y/91HPIVb3pda5CfrAKCGFIAVCOW20d0kc=
+X-Google-Smtp-Source: AGHT+IEi5cA9AxvFYp7fB68YSeYwHe3jVtm4j1rrNlisxxUbOI1nfAfQyHhvuz6Cw8HTl6SXKYe00OcEDINZTFnKZJ8=
+X-Received: by 2002:a4a:c58f:0:b0:57b:7804:9d72 with SMTP id
+ x15-20020a4ac58f000000b0057b78049d72mr2771381oop.1.1695830995803; Wed, 27 Sep
+ 2023 09:09:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230922234444.3115821-1-namhyung@kernel.org>
-In-Reply-To: <20230922234444.3115821-1-namhyung@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 27 Sep 2023 09:09:38 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6mEWJcZdYbPbqt5ArBMznzQYwHBqTpKCcsB4B0o=PSGA@mail.gmail.com>
-Message-ID: <CAPhsuW6mEWJcZdYbPbqt5ArBMznzQYwHBqTpKCcsB4B0o=PSGA@mail.gmail.com>
-Subject: Re: [PATCH] perf record: Fix BTF type checks in the off-cpu profiling
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
+References: <1957441.PYKUYFuaPT@kreacher> <1882755.CQOukoFCf9@kreacher>
+ <3c9f7b7d-a9ca-79ae-4e64-367a82f953bc@linaro.org> <CAJZ5v0ifXSWd4QL+j-=8OBr1aQr0WAeMBGYtis_gkHJDBLeWMg@mail.gmail.com>
+ <d4bdea97-1e92-6422-01c4-bf7caca4ea45@linaro.org>
+In-Reply-To: <d4bdea97-1e92-6422-01c4-bf7caca4ea45@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 27 Sep 2023 18:09:44 +0200
+Message-ID: <CAJZ5v0hOJYuaJ2VXPCrHZspOjj342+NkB=nHXPT6YKvy90XXBA@mail.gmail.com>
+Subject: Re: [PATCH v1 06/13] thermal: gov_fair_share: Rearrange get_trip_level()
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Hao Luo <haoluo@google.com>,
-        bpf@vger.kernel.org
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 4:44=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Wed, Sep 27, 2023 at 5:37 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
 >
-> The BTF func proto for a tracepoint has one more argument than the
-> actual tracepoint function since it has a context argument at the
-> begining.  So it should compare to 5 when the tracepoint has 4
-> arguments.
+> On 27/09/2023 17:06, Rafael J. Wysocki wrote:
+> > On Wed, Sep 27, 2023 at 5:00 PM Daniel Lezcano
+> > <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 21/09/2023 19:54, Rafael J. Wysocki wrote:
+> >>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >>>
+> >>> Make get_trip_level() access the thermal zone's trip table directly
+> >>> instead of using __thermal_zone_get_trip() which adds overhead related
+> >>> to the unnecessary bounds checking and copying the trip point data.
+> >>>
+> >>> Also rearrange the code in it to make it somewhat easier to follow.
+> >>>
+> >>> The general functionality is not expected to be changed.
+> >>>
+> >>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >>> ---
+> >>>    drivers/thermal/gov_fair_share.c |   22 ++++++++++------------
+> >>>    1 file changed, 10 insertions(+), 12 deletions(-)
+> >>>
+> >>> Index: linux-pm/drivers/thermal/gov_fair_share.c
+> >>> ===================================================================
+> >>> --- linux-pm.orig/drivers/thermal/gov_fair_share.c
+> >>> +++ linux-pm/drivers/thermal/gov_fair_share.c
+> >>> @@ -21,23 +21,21 @@
+> >>>     */
+> >>>    static int get_trip_level(struct thermal_zone_device *tz)
+> >>>    {
+> >>> -     struct thermal_trip trip;
+> >>> -     int count;
+> >>> +     const struct thermal_trip *trip = tz->trips;
+> >>> +     int i;
+> >>>
+> >>> -     for (count = 0; count < tz->num_trips; count++) {
+> >>> -             __thermal_zone_get_trip(tz, count, &trip);
+> >>> -             if (tz->temperature < trip.temperature)
+> >>> +     if (tz->temperature < trip->temperature)
+> >>> +             return 0;
+> >>> +
+> >>> +     for (i = 0; i < tz->num_trips - 1; i++) {
+> >>> +             trip++;
+> >>> +             if (tz->temperature < trip->temperature)
+> >>>                        break;
+> >>>        }
+> >>
+> >> Is it possible to use for_each_thermal_trip() instead ? That would make
+> >> the code more self-encapsulate
+> >
+> > It is possible in principle, but this is a governor which is regarded
+> > as part of the core, isn't it?
+> >
+> > So is an extra overhead related to using a callback (which may be
+> > subject to retpolines and such) really justified in this case?
 >
->   typedef void (*btf_trace_sched_switch)(void *, bool, struct task_struct=
- *, struct task_struct *, unsigned int);
+>  From my POV, all trip points browsing should be replaced by
+> for_each_thermal_trip() so any change in the future in how we go through
+> the existing thermal trips will impact one place.
 >
-> Also, recent change in the perf tool would use a hand-written minimal
-> vmlinux.h to generate BTF in the skeleton.  So it won't have the info
-> of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
-> check the type in the kernel.
->
-> Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch=
-")
-> Cc: Song Liu <song@kernel.org>
-> Cc: Hao Luo <haoluo@google.com>
-> CC: bpf@vger.kernel.org
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> If the routine needs to be optimized, that is something we can do also
+> (may be an inline the callback?)
 
-Acked-by: Song Liu <song@kernel.org>
+OK
