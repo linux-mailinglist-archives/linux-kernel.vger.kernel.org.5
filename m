@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5B87AFF5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BD07AFF5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjI0JDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S230412AbjI0JDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjI0JDI (ORCPT
+        with ESMTP id S230364AbjI0JDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:03:08 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4C01B0;
-        Wed, 27 Sep 2023 02:03:06 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3add37de892so5290006b6e.1;
-        Wed, 27 Sep 2023 02:03:06 -0700 (PDT)
+        Wed, 27 Sep 2023 05:03:09 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13A2126
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:03:07 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-692c70bc440so5668612b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695805385; x=1696410185; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C7RhJG0eb4h1rNL5PLmu2Fo83S0B+583tqhBhK3d4JI=;
-        b=f0X0x4Mzed5uOuXDb0Op2EPbEZfcYMEKeJgAqanGCDgEardePzCqpoa+SpCypesQmF
-         N+frceqi38Dkk0a91Df2MwJDeT8uRv20MbGJ2KLSi3ZsVfQRldbAVrbVVMWg+BDl8c/z
-         yvJnela3fawd93h54ubNda8ZPe0O6S7VvKmMwKnNTetHdi+idqv/nlWtMly3Xn+USNQb
-         052sDFCgQC50qNP2CBHf8wXH2nzVLPij+kLObl7GyC0iwQf2wNr+bALn1ZMQRi1I167u
-         X8m37np0/U/fW7XSIRRWQgT7nf1lUsPZ4mc6Jq0Tw7nSlarZXpR+CcKGegK44yHMnfy5
-         jL0g==
+        d=linaro.org; s=google; t=1695805387; x=1696410187; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bj8V1LOsiyIBiVIbCC3M9pEntNFhPwnOX9TJ48ByRxU=;
+        b=rQMx0rpD5Z0UHop/JBlLieOjTeUYu6ymhm5r6jWgn3CLgYIc7J5w5tkDq9W8g6WKge
+         chaUwx0H7ML+04ZEX7JmRg6pGzSPusOUkwx+NlbKgUuRdk1AISqUIQcnrvUZdfPngdOb
+         NXGGrLxH5n/Es4rJifMochMoTjs4uZ7uIF/c1cd2fswy+Wrs1zn5/A4rArRwHFktkSjD
+         I0Nrtf1Iwm8KDMbo59YppKN0ZtDSbMqMXFBqJQZBmphuLeexoXdRcbGMf+SzsilDcjhy
+         hwBOVS47nKvfO2VxR54OkKP6nSJYYUbU4krozJY9adr2WJmwKCCITaScBHU0pKnIAH9m
+         QmbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695805385; x=1696410185;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C7RhJG0eb4h1rNL5PLmu2Fo83S0B+583tqhBhK3d4JI=;
-        b=oJFELmGW/OfOtUN+F9UdoCcHaOh1ZpoEjOaXS9Mkx3cDDieyOIWyUB5SXn6yVQwca9
-         +OpOhF4U+UzPPKalbiYdcJWfb6x2f5TVFsNZdnZmjvgKsYzXyzix0E2dwmqrEZ/7gY1k
-         h+kxBUh9gSA/Hb04rp/DV38iLBEHiYbSCPAJI7DiRNic+GMX7udtp2zdOi2sgjfQYzi7
-         Dc6kHOJirgHHZJwq1BeHlexjzK/2erfipdkYUyDGfV+GEDB8XIPLIi88cpAb1UA15Zqq
-         aShRnwrhfpVz2VPt01MuiclqUNpWwf04zSN+g8v+oTmhUCib/dU45asdX+5ykdXupMCb
-         KS4w==
-X-Gm-Message-State: AOJu0YzI6L74t86edAEf2j24wNcgpToo8mxlPL566v5ZHKh6TrsqABIX
-        ih1kktbjJF/J8JdRoY/oHxQ=
-X-Google-Smtp-Source: AGHT+IHVTwpCDD+CcCbU7lnn521yLbJzkneYegHXpDLGMd37HYDLDoN+QRnWByfeQG0DJMir+qdcVA==
-X-Received: by 2002:a05:6808:315:b0:3ab:83fe:e182 with SMTP id i21-20020a056808031500b003ab83fee182mr1543690oie.1.1695805385207;
-        Wed, 27 Sep 2023 02:03:05 -0700 (PDT)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id i14-20020a54408e000000b003ae24b38f99sm1809096oii.2.2023.09.27.02.03.04
+        d=1e100.net; s=20230601; t=1695805387; x=1696410187;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bj8V1LOsiyIBiVIbCC3M9pEntNFhPwnOX9TJ48ByRxU=;
+        b=MnVR7YAT6eQGI6pU5L/A94kcJpFzVIe7mwJEvQsqXgWL1o44LRDTEy1Up0QcSfgB0g
+         VoB2yHqjtHkUuTuW+i5y7rPekyC7++QUI/WswvGrjcWKfvIdX4T4Yk4tPbXxQXYZeQcp
+         KdjnQMgi97hFQUO68/6GkQjBDw5vzn4PsFPrMKZbHjcw92CeVEgCaVKa6SDIdXMOAp2Y
+         SUfXrMyo6ex0niAwoSv+QukiITXLZG1RA/KAmwP9WYadJ32yCAGOtIkcWZFS6HPQ03/J
+         HpSsSyDiwGJ/mK4WmjqEBhVJd9Q9AgdvyLb6MHF/QQ/NC0fDUOaSDi5YRLg6XPeZKGqJ
+         UIqQ==
+X-Gm-Message-State: AOJu0YxbagwxYUXoJ0a0OzK/f7OMunMwPtT4pTkvYJNiyYTRMO3bKiyG
+        uC4CUTbAEuBzojTQKtx1pdHojg==
+X-Google-Smtp-Source: AGHT+IH34fm0MLU1qMf9l4MpWQP5vVLDgZuarSDcwS9vgr6ozY5QUXvIbDZ4b7rjEYsPSHrQV0Z0/g==
+X-Received: by 2002:a05:6a00:2d9d:b0:68f:c9df:2ccb with SMTP id fb29-20020a056a002d9d00b0068fc9df2ccbmr1399270pfb.1.1695805386908;
+        Wed, 27 Sep 2023 02:03:06 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id e17-20020aa78251000000b0068feb378b89sm11677825pfn.171.2023.09.27.02.03.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 02:03:05 -0700 (PDT)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
-Cc:     Chen Wang <unicornxw@gmail.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>
-Subject: [PATCH v3 11/11] riscv: defconfig: enable SOPHGO SoC
-Date:   Wed, 27 Sep 2023 17:02:58 +0800
-Message-Id: <f4789b3f9c963f0d8f2653d787abb73d58b91360.1695804418.git.unicornxw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695804418.git.unicornxw@gmail.com>
-References: <cover.1695804418.git.unicornxw@gmail.com>
+        Wed, 27 Sep 2023 02:03:06 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 14:33:04 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cpufreq: pmac32: Use of_property_read_reg() to parse
+ "reg"
+Message-ID: <20230927090304.vddwsgdzblurwage@vireshk-i7>
+References: <20230925190242.1712212-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925190242.1712212-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable SOPHGO SoC config in defconfig to allow the default
-upstream kernel to boot on Milk-V Pioneer board.
+On 25-09-23, 14:02, Rob Herring wrote:
+> Use the recently added of_property_read_reg() helper to get the
+> untranslated "reg" address value.
+> 
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2:
+>  - Add missing include
+> ---
+>  drivers/cpufreq/pmac32-cpufreq.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
-Acked-by: Chao Wei <chao.wei@sophgo.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
-Signed-off-by: Chen Wang <unicornxw@gmail.com>
----
- arch/riscv/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Applied. Thanks.
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index ab86ec3b9eab..bf737cfa1d2c 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -32,6 +32,7 @@ CONFIG_SOC_SIFIVE=y
- CONFIG_SOC_STARFIVE=y
- CONFIG_ARCH_SUNXI=y
- CONFIG_SOC_VIRT=y
-+CONFIG_ARCH_SOPHGO=y
- CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PM=y
 -- 
-2.25.1
-
+viresh
