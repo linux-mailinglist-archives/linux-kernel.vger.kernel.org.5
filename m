@@ -2,170 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340717B09C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECAC7B09CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbjI0QPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S231600AbjI0QQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbjI0QPf (ORCPT
+        with ESMTP id S229901AbjI0QQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:15:35 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE011BD
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso8679212a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695831333; x=1696436133; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qk/M+saCBlOrifX9o0L6oxM9T2M5RIIV6XdENJ7/hVU=;
-        b=EWjJi1jqh6WTxu5oWMb4VHh6Tv+tHmmslrdt+e2SEtQ8ihfyO52L0Z+0oikG7inGG3
-         9OGc6TVEDdEYrXS9w+V2wJFguqao+tfsXvWuMwz4il198ie7VFe5VB/lwaWGcdsc4nI0
-         BeLI+46dJjyqE5ApjQjCeSrYsMT1oA+3GPkhg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695831333; x=1696436133;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qk/M+saCBlOrifX9o0L6oxM9T2M5RIIV6XdENJ7/hVU=;
-        b=pkruklo6gC9jCnR/TPjDlFdKK1tY2/r6Y4qlaJuJPDy8zFQHicfb99KVRmlVpxNDKV
-         +3Kir4hm7CnuiUAOBa+quct91Kor4OZ1A9jEsd8IzlXqQbgTbuRBM3T0ejMIiuSkVLvs
-         SL8m6FLiFXSgSx7xRejnuDYdJti7+wc82xMAC0AwogpgwvHjV/n6NVnCUjITHxARnP/b
-         SgPEQHr80nC/kkl3NYczRWBGt2L0qahW1un+87yoPDD3OwnfBBtZe3vw6NfPGy8kZV7x
-         ZHaed4h43+iYGbDZnkuhR7lV2uvK4u53V9PBUSKbXzZx+Y9o9i2SXAAfuWmd5OK4HTiy
-         JjjQ==
-X-Gm-Message-State: AOJu0Ywum59egdaMFh9q9f4A6Rmwq7V3W5/lGVHt2h0kTBitDkJg4jwy
-        9dn2xHYTHNSmBJORbNocQUr6cQ==
-X-Google-Smtp-Source: AGHT+IGEWFo3Z0KRLdbeKNA9TZxiDU0ZlL7pCm1jg2RuPiQ94pBSvnMYFSNa/cMOgbj+bsYfP7FGbg==
-X-Received: by 2002:a05:6a20:ce92:b0:152:efa4:21b with SMTP id if18-20020a056a20ce9200b00152efa4021bmr2513269pzb.5.1695831333107;
-        Wed, 27 Sep 2023 09:15:33 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c14-20020aa7880e000000b0069100e70943sm11945318pfo.24.2023.09.27.09.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 09:15:32 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 09:15:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Subject: Re: [PATCH 3/3] get_maintainer: add patch-only pattern matching type
-Message-ID: <202309270913.911E51C@keescook>
-References: <20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com>
- <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com>
+        Wed, 27 Sep 2023 12:16:48 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2077.outbound.protection.outlook.com [40.107.94.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538DEB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:16:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iMeUhTBB21f46ft9+jY56cCv6VtT08sq8tqPqjZ2ksXfAbAb6+1zS9Qebd1ynsEFPWNaLXcMkyd/d0vFLD8QJqpvdXf3AZbtricGIga9p+iY/ezRbC0vgGu9qTe+oIEuXPIA1o850uB+E6a8EZW8sPUbX7YF2pIckZ6tQUFUAQn1/s9dd/d6CTm28ogPl6bndjyBkrize4Pvjg8oauIoDySUbGiXNzEvTjzi2huStZAkwWjnHcbAKm7ifBipZE+jhQ02xvbPHHCcOAl9v3HlVMhMzDSonaZC7nWXjhm2/F2y9r2lC6FLbVDKrm4k1mhiQmPxNlxWC2N6Ov4VwJ+/Jg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qWB4/4//Kqx2tjsriyqEPfwArpJgf4VFwbCDjK2FTow=;
+ b=KNX4oSzW//aDsleEI6Z1BbzLd0OZ54+jtqGSxe1JA0lXzH7SChxL0cn7AaHNJ8K22YOSliRis+Rmv+UwlbYziMOpY4AL/wnI2XfKaqTaXPYzHQei2AAv+xM0vsE6XP7TxPi7J/2VsKhExfqUf9G+7+PvOBuw08lYPGiUQ5btl1YWgtCcpK4d9DAR0J7YuMMSyAJoBMS7pSNe/DMDwswvDysm0JBLJU4WcVgnS6IWHtpYTQkGecCvQK7TjWZoLz5KPjRgKa5V7TTj0e2Nqr7qy8wyBRDPMEwbZTiOPRlFaGQyVJ/JwCz+5ZtX6+FrH3gwAl/PkhzTNy1bl9EHGHj47w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=amd.co smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qWB4/4//Kqx2tjsriyqEPfwArpJgf4VFwbCDjK2FTow=;
+ b=BASIuBOkEAHz5rxbqUZL4kyym5EvsQG6o9YgkON8nt3maKDsIWs+r/l7f30Qas1x6FmHzzyjb7Clr8LtfMSNMul8la6OqPpiV/7MN7+7VvTtBb+h8CKrYf5cHvjaILaDPDAMKc0g0BrKXA2VFmDZbqT6bPpg5w4zuvoJq5Z5IW0=
+Received: from MW4PR02CA0011.namprd02.prod.outlook.com (2603:10b6:303:16d::28)
+ by DM6PR12MB4403.namprd12.prod.outlook.com (2603:10b6:5:2ab::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Wed, 27 Sep
+ 2023 16:16:42 +0000
+Received: from MWH0EPF000989E7.namprd02.prod.outlook.com
+ (2603:10b6:303:16d:cafe::30) by MW4PR02CA0011.outlook.office365.com
+ (2603:10b6:303:16d::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21 via Frontend
+ Transport; Wed, 27 Sep 2023 16:16:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000989E7.mail.protection.outlook.com (10.167.241.134) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Wed, 27 Sep 2023 16:16:41 +0000
+Received: from rtg-Artic.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
+ 2023 11:16:37 -0500
+From:   Arvind Yadav <Arvind.Yadav@amd.com>
+To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
+        <shashank.sharma@amd.com>, <Felix.Kuehling@amd.co>,
+        <Xinhui.Pan@amd.com>, <airlied@gmail.com>, <daniel@ffwll.ch>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, Arvind Yadav <Arvind.Yadav@amd.com>
+Subject: [PATCH 0/1] drm/amdkfd: Fix unaligned doorbell absolute offset for gfx8
+Date:   Wed, 27 Sep 2023 21:46:15 +0530
+Message-ID: <20230927161616.3335-1-Arvind.Yadav@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927-get_maintainer_add_d-v1-3-28c207229e72@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E7:EE_|DM6PR12MB4403:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9efabb93-be65-4c3e-b094-08dbbf7522a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ff6mTVDDE+3OOGaZ1UQ27jfAsre4dPt1FD2t8MUr7e4gY1AtYuCLLy2nFj/uYLuArK2DrQMzUiDlOzZNJAub9fE6T/dPSi/YXWRo+q0XZQbDdBmf27QO8c14jqb4XV415kApoGpKInJCFYKZlDzxelsV02ddeFCSCG3XgvTTAdwfwSEJR8kc3158G4d1Uk1jE30EpEYEYTxgsHt5LbrV8m20WhRBBasYSNIQcYaHmsukyhLKuvO2lv4XWj1V6LP3oh1lwK+f3CGt6HMV8zzERMD4rYDEmfVovta9M38bFsp4GLSbbV9jcB9lx1oaQXR1GWpFnAvyxGvSHWkPajScNaKbWD+XS4Mcq3I8LT0WLnA83Pve7NA5TlmtiScbaHsGZ7isIty+fIEYYTyCBecfDZc/KnPWgEuBSE8vPlqLJmYpvU2DsFiCHp5FeDKO5uuPZlAfSRvzyGB+g//L7ch/PzHtn+hirgxaY6KCqKW9hyvOHmJC+hg7LoD9yjvHjnEu3tPxU8XRqjAPqB4dEHu9NtkFD+/83RdAOnIL6N81VKBmBbOPAcKdMkgweWULJ+/6F6m2UtiHfmDdNqAbhBfWc03ILT6Jr/mGCiU1dPiYD7yT4agwgCsiN/BrBIEI+xrohX8vCQLPYN5Gs4f1AKQ7JOmJ+IwNadMhwTGUYyLki0etc+uenqRxrMvxiprP1CiLB7gNaygu2BFVAehZtVAeEhTpnuzxlerTXirSUI+f/qRdlsoFnLKniONzxSOvpPi5QLaE1TMh7t0OTX9hoRC7pA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(1800799009)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(26005)(16526019)(426003)(2616005)(1076003)(8936002)(5660300002)(4326008)(8676002)(83380400001)(356005)(81166007)(82740400003)(36860700001)(47076005)(7696005)(478600001)(6666004)(336012)(41300700001)(316002)(54906003)(70206006)(40480700001)(110136005)(70586007)(86362001)(2906002)(4744005)(40460700003)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 16:16:41.4963
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9efabb93-be65-4c3e-b094-08dbbf7522a9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E7.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4403
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 03:19:16AM +0000, Justin Stitt wrote:
-> Add the "D:" type which behaves the same as "K:" but will only match
-> content present in a patch file.
-> 
-> To illustrate:
-> 
-> Imagine this entry in MAINTAINERS:
-> 
-> NEW REPUBLIC
-> M: Han Solo <hansolo@rebelalliance.co>
-> W: https://www.jointheresistance.org
-> D: \bstrncpy\b
-> 
-> Our maintainer, Han, will only be added to the recipients if a patch
-> file is passed to get_maintainer (like what b4 does):
-> $ ./scripts/get_maintainer.pl 0004-some-change.patch
-> 
-> If the above patch has a `strncpy` present in the subject, commit log or
-> diff then Han will be to/cc'd.
-> 
-> However, in the event of a file from the tree given like:
-> $ ./scripts/get_maintainer.pl ./lib/string.c
-> 
-> Han will not be noisily to/cc'd (like a K: type would in this
-> circumstance)
-> 
-> Note that folks really shouldn't be using get_maintainer on tree files
-> anyways [1].
-> 
-> [1]: https://lore.kernel.org/all/20230726151515.1650519-1-kuba@kernel.org/
+On older chips, the absolute doorbell offset within 
+the doorbell page is based on the queue ID.
+KFD is using queue ID and doorbell size to get an
+absolute doorbell offset in userspace.
 
-As Greg suggested, please drop the above paragraph and link. Then this
-looks good to me.
+This patch is to adjust the absolute doorbell offset
+against the doorbell id considering the doorbell
+size of 32/64 bit. 
 
-I would immediately want to send this patch too, so please feel free to
-add this to your series (and I bet many other hints on "git grep 'K:.\\b'"
-would want to switch from K: to D: too):
+Arvind Yadav (1):
+  drm/amdkfd: Fix unaligned doorbell absolute offset for gfx8
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5f18c6ba3c3c..830e10866acf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5057,7 +5057,7 @@ F:	Documentation/kbuild/llvm.rst
- F:	include/linux/compiler-clang.h
- F:	scripts/Makefile.clang
- F:	scripts/clang-tools/
--K:	\b(?i:clang|llvm)\b
-+D:	\b(?i:clang|llvm)\b
- 
- CLK API
- M:	Russell King <linux@armlinux.org.uk>
-@@ -8199,7 +8199,7 @@ F:	lib/strcat_kunit.c
- F:	lib/strscpy_kunit.c
- F:	lib/test_fortify/*
- F:	scripts/test_fortify.sh
--K:	\b__NO_FORTIFY\b
-+D:	\b__NO_FORTIFY\b
- 
- FPGA DFL DRIVERS
- M:	Wu Hao <hao.wu@intel.com>
-@@ -11457,9 +11457,9 @@ F:	include/linux/overflow.h
- F:	include/linux/randomize_kstack.h
- F:	kernel/configs/hardening.config
- F:	mm/usercopy.c
--K:	\b(add|choose)_random_kstack_offset\b
--K:	\b__check_(object_size|heap_object)\b
--K:	\b__counted_by\b
-+D:	\b(add|choose)_random_kstack_offset\b
-+D:	\b__check_(object_size|heap_object)\b
-+D:	\b__counted_by\b
- 
- KERNEL JANITORS
- L:	kernel-janitors@vger.kernel.org
-@@ -17354,7 +17354,7 @@ F:	drivers/acpi/apei/erst.c
- F:	drivers/firmware/efi/efi-pstore.c
- F:	fs/pstore/
- F:	include/linux/pstore*
--K:	\b(pstore|ramoops)
-+D:	\b(pstore|ramoops)
- 
- PTP HARDWARE CLOCK SUPPORT
- M:	Richard Cochran <richardcochran@gmail.com>
-@@ -19302,8 +19302,8 @@ F:	include/uapi/linux/seccomp.h
- F:	kernel/seccomp.c
- F:	tools/testing/selftests/kselftest_harness.h
- F:	tools/testing/selftests/seccomp/*
--K:	\bsecure_computing
--K:	\bTIF_SECCOMP\b
-+D:	\bsecure_computing
-+D:	\bTIF_SECCOMP\b
- 
- SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) Broadcom BRCMSTB DRIVER
- M:	Kamal Dasu <kamal.dasu@broadcom.com>
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 -- 
-Kees Cook
+2.34.1
+
