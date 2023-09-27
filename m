@@ -2,68 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2BE7B0976
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E171A7B097A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjI0P7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        id S232068AbjI0QBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232542AbjI0P7I (ORCPT
+        with ESMTP id S231752AbjI0QBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:59:08 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AB4139
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:59:06 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690bd59322dso8798563b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695830346; x=1696435146; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=utRl+TWc9PyHN267mk74epV1Ewzm2gClJk4DlVuRtdw=;
-        b=N+7UTSIkrjgen/hcP67BtWxn5uh01JT4Cq8qHUwatVEv3un+8Ldqb7RfvaWLFR1PNe
-         kU6hp75pxseNvSo2+ywtkZxvAgpb7AKtYIsHHxFAqqbyioC5Qh6RkceTyOTbnpb5wZrV
-         fwM/VPBLKkaxT27TUEviJfPkXBJJaY3Sh4Nvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695830346; x=1696435146;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=utRl+TWc9PyHN267mk74epV1Ewzm2gClJk4DlVuRtdw=;
-        b=iYhNZY3liD1ojWJxMp61VtXjnCdC9FIGcgx+nb1g7tml/0Okxa+iZLd4jE2cV5Eql8
-         gspo3wbeMRVyfNYyym2U1hfnN8yAs/lE3T0qqdXDxdAInEfg9bVrU0j5l/kUJ3ayXRt/
-         K8OcLiCmJ3tWhnsY4k0PT+YQedSNvQSuanSKHUUV9KozLd24TU6aXYYGk7S08ORUYUfL
-         dPEJOgp4beOhviim67clSVIbcDGyk6TDOOGSeMxlQ/ItH446BdrjPEFHxYu5S9R51K2p
-         ExdEPnv0v+1pOviAgBNHsjHGbN9RHlpFwYR8iM57k1QHGRyXJOQRzdCdExoXpaQB//sH
-         sEsg==
-X-Gm-Message-State: AOJu0Yzv1Yt9818KLmjG5DSGUfRUNoRyixl2Z0sy04DSqIBRPU+sq1LV
-        4SSlB3osBfaWPwLSy721YDEXwQ==
-X-Google-Smtp-Source: AGHT+IGQQKE15BkC2Mvcl+UNkghrr3fsPU7wV1jTnHmm9/hYjYgN74+YUAsP+ZwmLl06l6zxGgj81Q==
-X-Received: by 2002:a05:6a00:21cf:b0:68a:69ba:6791 with SMTP id t15-20020a056a0021cf00b0068a69ba6791mr2592928pfj.8.1695830346245;
-        Wed, 27 Sep 2023 08:59:06 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x2-20020aa784c2000000b006884844dfcdsm11987898pfn.55.2023.09.27.08.59.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 08:59:05 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 08:59:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Ungerer <gerg@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, palmer@rivosinc.com,
-        ebiederm@xmission.com, brauner@kernel.org, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH] binfmt_elf_fdpic: clean up debug warnings
-Message-ID: <202309270858.680FCD9A85@keescook>
-References: <20230927132933.3290734-1-gerg@kernel.org>
+        Wed, 27 Sep 2023 12:01:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414AA121
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:01:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C16AFC433C7;
+        Wed, 27 Sep 2023 16:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695830468;
+        bh=cGg7lDklhNmelt6repmP3pClIhhjdk7i56CRb2SdcKU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S28Nno+R5snpz8UdEH/HIKuKkDyeCHzaSrDWSxCIhuP7L5uxwiFrr+rTIZoAjtedr
+         DJ6oLXWdlQ4RRNXvqUCkOQAAyRNP2DaZxx573zfGNY15ViAP5+Cpg1cFahatfx6HzG
+         59R8r5O91eUi2n6RUeAx1XVgQjkCNwpElVUN6QfpXbnhbfQApvndIQ2SEPfA7TStYO
+         EimLrRFOuE6OLtu6xfjOnm6MvIBiED2ydeDKxt9lOMHR9rgJL8ckJ6ervd33h/xIZf
+         2GBDORmczS0l6Wxl4l9YnSH8Uf5xvMXkFYwQdHRiT5yNbjvG9BkHPklPJ7Uwe1K/3P
+         ltKXitxrGYeHA==
+Date:   Wed, 27 Sep 2023 17:01:03 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Wang <unicornxw@gmail.com>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
+        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com,
+        Inochi Amaoto <inochiama@outlook.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT
+ timer
+Message-ID: <20230927-uncorrupt-bronco-72e35232b1cc@spud>
+References: <cover.1695804418.git.unicornxw@gmail.com>
+ <6e263430685732a4f354b45396c7422a37440ac8.1695804418.git.unicornxw@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Rumhzbk4+1O3PjAY"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927132933.3290734-1-gerg@kernel.org>
+In-Reply-To: <6e263430685732a4f354b45396c7422a37440ac8.1695804418.git.unicornxw@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,82 +58,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 11:29:33PM +1000, Greg Ungerer wrote:
-> The binfmt_elf_fdpic loader has some debug trace that can be enabled at
-> build time. The recent 64-bit additions cause some warnings if that
-> debug is enabled, such as:
-> 
->     fs/binfmt_elf_fdpic.c: In function ‘elf_fdpic_map_file’:
->     fs/binfmt_elf_fdpic.c:46:33: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘Elf64_Addr’ {aka ‘long long unsigned int’} [-Wformat=]
->        46 | #define kdebug(fmt, ...) printk("FDPIC "fmt"\n" ,##__VA_ARGS__ )
->           |                                 ^~~~~~~~
->     ./include/linux/printk.h:427:25: note: in definition of macro ‘printk_index_wrap’
->       427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
->           |                         ^~~~
-> 
-> Cast values to the largest possible type (which is equivilent to unsigned
-> long long in this case) and use appropriate format specifiers to match.
 
-It seems like these should all just be "unsigned long", yes?
+--Rumhzbk4+1O3PjAY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Kees
+Hey,
 
-> 
-> Fixes: b922bf04d2c1 ("binfmt_elf_fdpic: support 64-bit systems")
-> Signed-off-by: Greg Ungerer <gerg@kernel.org>
+On Wed, Sep 27, 2023 at 05:01:37PM +0800, Chen Wang wrote:
+> From: Inochi Amaoto <inochiama@outlook.com>
+>=20
+> The clint of Sophgo sg2042 is incompatible with the standard sifive
+> clint, as the timer and ipi device on the different address, and can
+> not be handled by the sifive,clint DT.
+>=20
+> In addition, the timers of sg2042 are mapped by per cluster, which is
+> hard to merge with its ipi device.
+
+I think the description here is kinda poor, it needs to be explained
+that this is an implementation of the not frozen & likely abandoned
+aclint spec.
+
+> To avoid conficts caused by using the same clint compatible string when
+> this device is parsed by SBI, add a new vendor specific compatible string
+> to identify the timer of sg2042 soc.
+
+And this whole section about avoiding conflicts is not relevant, since
+the binding is specifically for the timer. It'd be better to mention why
+a single compatible cannot work for all elements, than bring up a
+situation that does not exist and would be a misuse of the binding in
+the first place.
+
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+> Signed-off-by: Chen Wang <unicornxw@gmail.com>
+
+You only need to sign this off once. The iscas one looks like it
+probably is the relevant signoff?
+
 > ---
->  fs/binfmt_elf_fdpic.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-> index 43b2a2851ba3..97c3e8551aac 100644
-> --- a/fs/binfmt_elf_fdpic.c
-> +++ b/fs/binfmt_elf_fdpic.c
-> @@ -900,10 +900,12 @@ static int elf_fdpic_map_file(struct elf_fdpic_params *params,
->  	kdebug("- DYNAMIC[]: %lx", params->dynamic_addr);
->  	seg = loadmap->segs;
->  	for (loop = 0; loop < loadmap->nsegs; loop++, seg++)
-> -		kdebug("- LOAD[%d] : %08x-%08x [va=%x ms=%x]",
-> +		kdebug("- LOAD[%d] : %08llx-%08llx [va=%llx ms=%llx]",
->  		       loop,
-> -		       seg->addr, seg->addr + seg->p_memsz - 1,
-> -		       seg->p_vaddr, seg->p_memsz);
-> +		       (unsigned long long) seg->addr,
-> +		       (unsigned long long) seg->addr + seg->p_memsz - 1,
-> +		       (unsigned long long) seg->p_vaddr,
-> +		       (unsigned long long) seg->p_memsz);
->  
->  	return 0;
->  
-> @@ -1082,9 +1084,10 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
->  		maddr = vm_mmap(file, maddr, phdr->p_memsz + disp, prot, flags,
->  				phdr->p_offset - disp);
->  
-> -		kdebug("mmap[%d] <file> sz=%lx pr=%x fl=%x of=%lx --> %08lx",
-> -		       loop, phdr->p_memsz + disp, prot, flags,
-> -		       phdr->p_offset - disp, maddr);
-> +		kdebug("mmap[%d] <file> sz=%llx pr=%x fl=%x of=%llx --> %08lx",
-> +		       loop, (unsigned long long) phdr->p_memsz + disp,
-> +		       prot, flags, (unsigned long long) phdr->p_offset - disp,
-> +		       maddr);
->  
->  		if (IS_ERR_VALUE(maddr))
->  			return (int) maddr;
-> @@ -1146,8 +1149,9 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
->  
->  #else
->  		if (excess > 0) {
-> -			kdebug("clear[%d] ad=%lx sz=%lx",
-> -			       loop, maddr + phdr->p_filesz, excess);
-> +			kdebug("clear[%d] ad=%llx sz=%lx", loop,
-> +			       (unsigned long long) maddr + phdr->p_filesz,
-> +			       excess);
->  			if (clear_user((void *) maddr + phdr->p_filesz, excess))
->  				return -EFAULT;
->  		}
-> -- 
-> 2.25.1
-> 
+>  .../timer/sophgo,sg2042-clint-mtimer.yaml     | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/sophgo,sg2042=
+-clint-mtimer.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-=
+mtimer.yaml b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-m=
+timer.yaml
+> new file mode 100644
+> index 000000000000..5da0947d048a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.=
+yaml
+> @@ -0,0 +1,42 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/sophgo,sg2042-clint-mtimer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sophgo CLINT Timer
+> +
+> +maintainers:
+> +  - Inochi Amaoto <inochiama@outlook.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: sophgo,sg2042-clint-mtimer
 
--- 
-Kees Cook
+There's only one of these, so you don't need the oneOf.
+Also, is the clint here not a thead IP? In which case, you need to add a
+second compatible IMO. That second compatible then would be the one that
+appears in opensbi etc.
+
+Otherwise, this looks fine.
+
+Thanks,
+Conor.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts-extended:
+> +    minItems: 1
+> +    maxItems: 4095
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +
+> +examples:
+> +  - |
+> +    timer@ac000000 {
+> +      compatible =3D "sophgo,sg2042-clint-mtimer";
+> +      interrupts-extended =3D <&cpu1intc 7>,
+> +                            <&cpu2intc 7>,
+> +                            <&cpu3intc 7>,
+> +                            <&cpu4intc 7>;
+> +      reg =3D <0xac000000 0x00010000>;
+> +    };
+> +...
+> --=20
+> 2.25.1
+>=20
+
+--Rumhzbk4+1O3PjAY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRRvwAKCRB4tDGHoIJi
+0qNlAP0Sb0OKToYSPefL04TYxLi44wFiOIPYB7BuJ6hjs8WViwD/c9eLvuIugBjd
+5JDpirk/b/AI0Le/pGYSDPHZMQ26MwY=
+=JWmr
+-----END PGP SIGNATURE-----
+
+--Rumhzbk4+1O3PjAY--
