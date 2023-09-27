@@ -2,62 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 589877AFAC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E2E7AFABB
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 08:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjI0GJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 02:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S229703AbjI0GIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 02:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjI0GJB (ORCPT
+        with ESMTP id S229650AbjI0GIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 02:09:01 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 47DA5F9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 23:08:54 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 14:07:37
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 14:07:37 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     willy@infradead.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xarray: Clean up errors in xarray.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 02:08:24 -0400
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794F6B3;
+        Tue, 26 Sep 2023 23:08:22 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4053c6f1087so95274995e9.0;
+        Tue, 26 Sep 2023 23:08:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695794901; x=1696399701;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bH2ZBDFihZ5G3MXi10qtfUOqTCbjZERCfSpFkYReq6E=;
+        b=SQiJUa/9lniZJpmO4Uwy6D7+SE80BkgbOzk/4EwZbUSyvJ8882zoQAaRjaaC2C1KK4
+         iiRaV+xdiJ9QlENATPIwwRQfS2J64HyOZal/4+rH4viaNqlKe4R5+/DjPJn1jPlo3une
+         QyNa7aRZkLPwPLhuQ8acJanIfCFNKGFatqDvEhwvJtBq80Hb2pbjWXAM90T85k7UcDSu
+         hcsewn0//bVUIOUQIkEtPgvY6YW1es4CjgvuiLhBDc2DFgnrqd2VG/kodaC+s6kILmbI
+         JtDnHiLApBZXALXrA291elddnwDXDqLAjmyLBOS7FPlJ4Gh+WEgT0Zbae0xw+QC/dunj
+         Nl/w==
+X-Gm-Message-State: AOJu0YyAqttVwanmm9kZukN8ZII3KPQfFnayQJloAXPchlsbcGQeMQWD
+        r6J5X36ETsyjiAY3p4UW9UM=
+X-Google-Smtp-Source: AGHT+IEGCnSX2ywr0S6FC1D6CnGJQJEwSb0KUpp+zJof+5WezKUECmQWZoWWn5U2hNhP3cz+xHVOrA==
+X-Received: by 2002:a05:600c:2149:b0:3fb:b3aa:1c8a with SMTP id v9-20020a05600c214900b003fbb3aa1c8amr1027557wml.16.1695794900576;
+        Tue, 26 Sep 2023 23:08:20 -0700 (PDT)
+Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040550c20cbcsm12015055wmo.24.2023.09.26.23.08.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 23:08:20 -0700 (PDT)
+Message-ID: <ab5d0544-b613-42c1-9b20-ab26c3785175@linux.com>
+Date:   Wed, 27 Sep 2023 07:08:19 +0100
 MIME-Version: 1.0
-Message-ID: <7fc96e0.85f.18ad540066c.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwC3VUCpxhNlDeW9AA--.613W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAFEWFEYxtJMwANs-
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 3/3] arm64: dts: Add pinctrl node for Amlogic T7 SoCs
+Content-Language: en-US
+To:     Huqiang Qin <huqiang.qin@amlogic.com>, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, brgl@bgdev.pl, andy@kernel.org
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230922094342.637251-1-huqiang.qin@amlogic.com>
+ <20230922094342.637251-4-huqiang.qin@amlogic.com>
+From:   Lucas Tanure <tanure@linux.com>
+In-Reply-To: <20230922094342.637251-4-huqiang.qin@amlogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKClNpZ25lZC1vZmYtYnk6IEppYW5nSHVp
-IFh1IDx4dWppYW5naHVpQGNkanJsYy5jb20+Ci0tLQogaW5jbHVkZS9saW51eC94YXJyYXkuaCB8
-IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlm
-ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgveGFycmF5LmggYi9pbmNsdWRlL2xpbnV4L3hhcnJheS5o
-CmluZGV4IGNiNTcxZGZjZjRiMS4uNDkwOTM1N2I3ZTJhIDEwMDY0NAotLS0gYS9pbmNsdWRlL2xp
-bnV4L3hhcnJheS5oCisrKyBiL2luY2x1ZGUvbGludXgveGFycmF5LmgKQEAgLTI5Nyw3ICsyOTcs
-NyBAQCBzdHJ1Y3QgeGFycmF5IHsKIAlzcGlubG9ja190CXhhX2xvY2s7CiAvKiBwcml2YXRlOiBU
-aGUgcmVzdCBvZiB0aGUgZGF0YSBzdHJ1Y3R1cmUgaXMgbm90IHRvIGJlIHVzZWQgZGlyZWN0bHku
-ICovCiAJZ2ZwX3QJCXhhX2ZsYWdzOwotCXZvaWQgX19yY3UgKgl4YV9oZWFkOworCXZvaWQgX19y
-Y3UgKnhhX2hlYWQ7CiB9OwogCiAjZGVmaW5lIFhBUlJBWV9JTklUKG5hbWUsIGZsYWdzKSB7CQkJ
-CVwKLS0gCjIuMTcuMQo=
+On 22-09-2023 10:43, Huqiang Qin wrote:
+> Add pinctrl device.
+> 
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+> 
+> V1 -> V2: Unchanged.
+> V2 -> V3: Unchanged.
+> 
+>   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> index dae3465bd39b..a03c7667d2b6 100644
+> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
+> @@ -155,6 +155,22 @@ watchdog@2100 {
+>   				clocks = <&xtal>;
+>   			};
+>   
+> +			periphs_pinctrl: pinctrl@4000 {
+> +				compatible = "amlogic,t7-periphs-pinctrl";
+> +				#address-cells = <2>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +
+> +				gpio: bank@4000 {
+> +					reg = <0x0 0x4000 0x0 0x0064>,
+> +					      <0x0 0x40c0 0x0 0x0220>;
+> +					reg-names = "mux", "gpio";
+> +					gpio-controller;
+> +					#gpio-cells = <2>;
+> +					gpio-ranges = <&periphs_pinctrl 0 0 157>;
+> +				};
+> +			};
+> +
+>   			uart_a: serial@78000 {
+>   				compatible = "amlogic,t7-uart", "amlogic,meson-s4-uart";
+>   				reg = <0x0 0x78000 0x0 0x18>;
+Tested-by: Lucas Tanure <tanure@linux.com>
