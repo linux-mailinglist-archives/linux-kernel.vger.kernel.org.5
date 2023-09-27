@@ -2,83 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE237B07F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CF07B0806
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjI0PSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
+        id S232410AbjI0PTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjI0PSE (ORCPT
+        with ESMTP id S230274AbjI0PTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:18:04 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8FF121;
-        Wed, 27 Sep 2023 08:18:03 -0700 (PDT)
-Received: from [IPV6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf] (unknown [IPv6:2a01:e0a:120:3210:672:46bd:3ec7:6cdf])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 01CC266072FA;
-        Wed, 27 Sep 2023 16:18:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695827881;
-        bh=cZBkE6AW/WssOj4Sg/xEx/jkclNbZ+Y8K8ys56ebtZE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=nvQ+joYfwJYLudibSGOOzSGLGqZ+UOM4ouQwSmesmc4Rnn8MMjLisKOD74cHJrbNu
-         Hdg+Rf8A8LUaI0W5eqotS0MAgkfIn5Qp4gUveDyLdym4xfy/LWWxhWqw4zZ4OiLh3z
-         WbeER/mejIiJT6i33HVqeydwaHbS8FMoxV3q7qm7rxqGjXCCs4R5KRdzPfcoyO/A+j
-         xGdDtHGikNoAQCRVO8YB6ebSzYlqvmXfGbfa1wOyVr7fNJEL1Ufk3eVVqz+pbfttwN
-         0HyqihJMmzpZRvN3NvjmPtgAQDYMFA4+uWovXxx6T8wlJc6sGmwSBbKO1Eu/xBaMLI
-         W49r7tGjgdx+w==
-Message-ID: <3aaafe47-3733-a4d5-038d-a7e439309282@collabora.com>
-Date:   Wed, 27 Sep 2023 17:17:58 +0200
+        Wed, 27 Sep 2023 11:19:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1581AA;
+        Wed, 27 Sep 2023 08:19:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CEDFC433C7;
+        Wed, 27 Sep 2023 15:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695827970;
+        bh=KMukbBBeXV+l1cuq0Jp1Wo0ccigkbIimAikppeeUBdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G89s4vfLyLbRHxXx784woGm8pxlfza/V2sFYJjv8+uizc/xzGdCPdbR3lMo4D1xFh
+         Zc1Mv0GuT0foHxGRV27J4PRopQVoQ2DR2QIuX4d0qQqkpYzwGzv0UVkc0lNa99D8Tp
+         /1zbmrvFTealguaZAdaE5va8auj5qpgGhXstXoz3yYxzCROEHE0nm/yPVtJs/I68pq
+         8YznlGWm8GV8bccFmcs2gCM+xWo2L1idm7fkLyN1BZW5UAo1iz8KMl0oAAIhw4ULHs
+         emrcjptFlj7UU/hf+TguuP4d2Que/MrSTMxhiLuekfgLhWcxUcqEmi/ToTHkb5n3Ln
+         tv4IaJVK+WKog==
+Date:   Wed, 27 Sep 2023 16:19:26 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: hwmon: ltc2991: add bindings
+Message-ID: <20230927-curve-trodden-5f8f150aa738@spud>
+References: <20230926140544.80934-1-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
-To:     Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
-Cc:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230911023038.30649-1-yong.wu@mediatek.com>
- <20230911023038.30649-6-yong.wu@mediatek.com>
- <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com>
- <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
- <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com>
- <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
- <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain>
-Content-Language: en-US
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iuF1VGb0w26bLJMI"
+Content-Disposition: inline
+In-Reply-To: <20230926140544.80934-1-antoniu.miclaus@analog.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,91 +57,185 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Le 27/09/2023 à 15:46, Joakim Bech a écrit :
-> On Mon, Sep 25, 2023 at 12:49:50PM +0000, Yong Wu (吴勇) wrote:
->> On Tue, 2023-09-12 at 11:32 +0200, AngeloGioacchino Del Regno wrote:
->>> Il 12/09/23 08:17, Yong Wu (吴勇) ha scritto:
->>>> On Mon, 2023-09-11 at 11:29 +0200, AngeloGioacchino Del Regno
->>>> wrote:
->>>>> Il 11/09/23 04:30, Yong Wu ha scritto:
->>>>>> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't
->>>>>> work
->>>>>> here since this is not a platform driver, therefore initialise
->>>>>> the
->>>>>> TEE
->>>>>> context/session while we allocate the first secure buffer.
->>>>>>
->>>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->>>>>> ---
->>>>>>     drivers/dma-buf/heaps/mtk_secure_heap.c | 61
->>>>>> +++++++++++++++++++++++++
->>>>>>     1 file changed, 61 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c
->>>>>> b/drivers/dma-
->>>>>> buf/heaps/mtk_secure_heap.c
->>>>>> index bbf1c8dce23e..e3da33a3d083 100644
->>>>>> --- a/drivers/dma-buf/heaps/mtk_secure_heap.c
->>>>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
->>>>>> @@ -10,6 +10,12 @@
->>>>>>     #include <linux/err.h>
->>>>>>     #include <linux/module.h>
->>>>>>     #include <linux/slab.h>
->>>>>> +#include <linux/tee_drv.h>
->>>>>> +#include <linux/uuid.h>
->>>>>> +
->>>>>> +#define TZ_TA_MEM_UUID		"4477588a-8476-11e2-ad15-
->>>>>> e41f1390d676"
->>>>>> +
->>>>> Is this UUID the same for all SoCs and all TZ versions?
->>>> Yes. It is the same for all SoCs and all TZ versions currently.
->>>>
->>> That's good news!
->>>
->>> Is this UUID used in any userspace component? (example: Android
->>> HALs?)
->> No. Userspace never use it. If userspace would like to allocate this
->> secure buffer, it can achieve through the existing dmabuf IOCTL via
->> /dev/dma_heap/mtk_svp node.
->>
-> In general I think as mentioned elsewhere in comments, that there isn't
-> that much here that seems to be unique for MediaTek in this patch
-> series, so I think it worth to see whether this whole patch set can be
-> made more generic. Having said that, the UUID is always unique for a
-> certain Trusted Application. So, it's not entirely true saying that the
-> UUID is the same for all SoCs and all TrustZone versions. It might be
-> true for a family of MediaTek devices and the TEE in use, but not
-> generically.
->
-> So, if we need to differentiate between different TA implementations,
-> then we need different UUIDs. If it would be possible to make this patch
-> set generic, then it sounds like a single UUID would be sufficient, but
-> that would imply that all TA's supporting such a generic UUID would be
-> implemented the same from an API point of view. Which also means that
-> for example Trusted Application function ID's needs to be the same etc.
-> Not impossible to achieve, but still not easy (different TEE follows
-> different specifications) and it's not typically something we've done in
-> the past.
->
-> Unfortunately there is no standardized database of TA's describing what
-> they implement and support.
->
-> As an alternative, we could implement a query call in the TEE answering,
-> "What UUID does your TA have that implements secure unmapped heap?".
-> I.e., something that reminds of a lookup table. Then we wouldn't have to
-> carry this in UAPI, DT or anywhere else.
+--iuF1VGb0w26bLJMI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Joakim does a TA could offer a generic API and hide the hardware specific
-details (like kernel uAPI does for drivers) ?
+Hi,
 
-Aside that question I wonder what are the needs to perform a 'secure' playback.
-I have in mind 2 requirements:
-- secure memory regions, which means configure the hardware to ensure that only
-dedicated hardware blocks and read or write into it.
-- set hardware blocks in secure modes so they access to secure memory.
-Do you see something else ?
+On Tue, Sep 26, 2023 at 05:05:29PM +0300, Antoniu Miclaus wrote:
+> Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
+> monitor.
+>=20
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> ---
+>  .../bindings/hwmon/adi,ltc2991.yaml           | 114 ++++++++++++++++++
+>  1 file changed, 114 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2991.y=
+aml
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml b/D=
+ocumentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> new file mode 100644
+> index 000000000000..6174e0113ef8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> @@ -0,0 +1,114 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices LTC2991 Octal I2C Voltage, Current and Temperature=
+ Monitor
+> +
+> +maintainers:
+> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> +
+> +description: |
+> +  The LTC2991 is used to monitor system temperatures, voltages and curre=
+nts.
+> +  Through the I2C serial interface, the eight monitors can individually =
+measure
+> +  supply voltages and can be paired for differential measurements of cur=
+rent
+> +  sense resistors or temperature sensing transistors.
+> +
+> +  Datasheet:
+> +    https://www.analog.com/en/products/ltc2991.html
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ltc2991
 
-Regards,
-Benjamin
+if you aren't expecting to add other devices that can share the binding,
+make this const: rather than enum:.
 
->
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +  vcc-supply: true
+> +
+> +patternProperties:
+> +  "^channel@[0-3]$":
+> +    type: object
+> +    description: |
+
+The |s are only needed when you have formatting to preserve.
+
+> +      Represents the differential/temperature channels.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          The channel number. LTC2992 can monitor 4 currents/temperature=
+s.
+> +        items:
+> +          minimum: 0
+> +          maximum: 3
+> +
+> +      shunt-resistor-mili-ohms:
+
+The standard properties here are ohms and micro-ohms. Also, "milli" has
+2 ls.
+
+> +        description:
+> +          The value of curent sense resistor in miliohms. Enables differ=
+ential
+> +          input pair.
+> +
+> +      temperature-enable:
+
+This seems like a vendor property that should have a vendor prefix?
+
+> +        description:
+> +          Enables temperature readings for a input pair.
+
+TBH, this seems like it is used just to control software behaviour.
+Why would you want to actually disable this in DT?
+
+Cheers,
+Conor.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vcc-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        hwmon@48 {
+> +            compatible =3D "adi,ltc2991";
+> +            reg =3D <0x48>;
+> +            vcc-supply =3D <&vcc>;
+> +        };
+> +    };
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        hwmon@48 {
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <0>;
+> +
+> +            compatible =3D "adi,ltc2991";
+> +            reg =3D <0x48>;
+> +            vcc-supply =3D <&vcc>;
+> +
+> +            channel@0 {
+> +                    reg =3D <0x0>;
+> +                    shunt-resistor-mili-ohms =3D <100>;
+> +            };
+> +
+> +            channel@1 {
+> +                    reg =3D <0x1>;
+> +                    shunt-resistor-mili-ohms =3D <100>;
+> +            };
+> +
+> +            channel@2 {
+> +                    reg =3D <0x2>;
+> +                    temperature-enable;
+> +            };
+> +
+> +            channel@3 {
+> +                    reg =3D <0x3>;
+> +                    temperature-enable;
+> +            };
+> +        };
+> +    };
+> +...
+> --=20
+> 2.42.0
+>=20
+
+--iuF1VGb0w26bLJMI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRH/QAKCRB4tDGHoIJi
+0qHwAQCiWCU/Tlc8g1FHrSZV758HOtDVXDLRKZCW+A9AyAh69wEAuzrvI4A+tcmf
+x7zyh1FMSN2R7D9AznlAoNIKPIT60A8=
+=g7xt
+-----END PGP SIGNATURE-----
+
+--iuF1VGb0w26bLJMI--
