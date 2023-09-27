@@ -2,111 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCCA97AFF2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F977AFF31
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbjI0I6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
+        id S230336AbjI0I6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjI0I6N (ORCPT
+        with ESMTP id S230232AbjI0I6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:58:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75080BF;
-        Wed, 27 Sep 2023 01:58:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9A2EC433CD;
-        Wed, 27 Sep 2023 08:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695805090;
-        bh=5NESgz9NKBwccsQ0Ujo74kHMO5OzmxrWwiJfaekpyDs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=oKyjTmXEnqst1LSzcib9B0n6Kb/BIaQHmWuymqnxqjaxCgqEjre4/pB1ZwEdS4yzx
-         LgfxNEPc/rbI5k4Mx0/MYoszoX1yq0SDFflpdCEDoSUKAzTJTzmofAtYHAgsDTku7g
-         nbntNbvvnEUq+4kpmjld6tuQw0Fpx6ZM2GoXOqo+cV5mK+gCAyf47YxW2An6dS4GJw
-         Dy8/bwwqR+9o0Jbt7HuLDXOqE226g4K2+DoEgQU8wRFykpLWEMNoeReJk1lEeJB4OU
-         UEY91HUAQP2HxVDrQRRMGEem1YIJNTxbgdaZNbzwDDWq8jQSiaVS0sewBn/T3yHHon
-         DtaJjak5rKvxA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-In-Reply-To: <20230912-spmi-pm8909-v1-0-ba4b3bfaf87d@gerhold.net>
-References: <20230912-spmi-pm8909-v1-0-ba4b3bfaf87d@gerhold.net>
-Subject: Re: [PATCH 0/6] regulator: qcom_spmi: Add PM8909, PM8019 and
- PMA8084
-Message-Id: <169580508696.2677308.6259946007338687878.b4-ty@kernel.org>
-Date:   Wed, 27 Sep 2023 10:58:06 +0200
+        Wed, 27 Sep 2023 04:58:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC8B2191;
+        Wed, 27 Sep 2023 01:58:15 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2B321FB;
+        Wed, 27 Sep 2023 01:58:53 -0700 (PDT)
+Received: from [10.57.1.56] (unknown [10.57.1.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E04A63F59C;
+        Wed, 27 Sep 2023 01:58:12 -0700 (PDT)
+Message-ID: <01a4ad7a-8031-558f-de87-a3ffc5d6c43c@arm.com>
+Date:   Wed, 27 Sep 2023 09:58:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v9 00/13] Add support to configure TPDM DSB subunit
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1694670204-11515-1-git-send-email-quic_taozha@quicinc.com>
+ <2fe54425-70b5-95e8-1e9e-337424827adb@arm.com>
+ <b31e427e-071f-1ded-eeb0-eb9a0f5dc075@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <b31e427e-071f-1ded-eeb0-eb9a0f5dc075@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023 09:49:48 +0200, Stephan Gerhold wrote:
-> Add the necessary definitions for the PM8909, PM8019 and PMA8084 PMIC to
-> the qcom_spmi-regulator driver to allow reading the actual voltages
-> applied to the hardware at runtime. This is mainly intended for
-> debugging since the regulators are usually controlled through the
-> RPM firmware (via qcom_smd-regulator).
+On 27/09/2023 07:37, Tao Zhang wrote:
 > 
-> These PMICs are used on totally different platforms (MSM8909, MDM9607,
-> MSM8974/APQ8084). Each PMIC addition is independent and useful on it
-> own. I only bundled them to simplify review.
+> On 9/26/2023 9:12 PM, Suzuki K Poulose wrote:
+>> On 14/09/2023 06:43, Tao Zhang wrote:
+>>> Introduction of TPDM DSB subunit
+>>> DSB subunit is responsible for creating a dataset element, and is also
+>>> optionally responsible for packing it to fit multiple elements on a
+>>> single ATB transfer if possible in the configuration. The TPDM Core
+>>> Datapath requests timestamps be stored by the TPDA and then delivering
+>>> ATB sized data (depending on ATB width and element size, this could
+>>> be smaller or larger than a dataset element) to the ATB Mast FSM.
+>>>
+>>> The DSB subunit must be configured prior to enablement. This series
+>>> adds support for TPDM to configure the configure DSB subunit.
+>>>
+>>> Once this series patches are applied properly, the new tpdm nodes for
+>>> should be observed at the tpdm path /sys/bus/coresight/devices/tpdm*
+>>> which supports DSB subunit.
+>>> e.g.
+>>> root@qemuarm64:/sys/devices/platform/soc@0/6c08000.tpdm/tpdm1# ls -l
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 connections
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_edge
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_mode
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_msr
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_patt
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_patt_ts
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_patt_type
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_trig_patt
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_trig_ts
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_trig_type
+>>> -rw-r--r--    1 root     root          4096 Jan  1 00:02 enable_source
+>>> --w-------    1 root     root          4096 Jan  1 00:00 
+>>> integration_test
+>>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 power
+>>> --w-------    1 root     root          4096 Jan  1 00:02 reset_dataset
+>>> lrwxrwxrwx    1 root     root             0 Apr  5  2021 subsystem -> 
+>>> ../../../../../bus/coresight
+>>> -rw-r--r--    1 root     root          4096 Apr  5  2021 uevent
+>>> -r--r--r--    1 root     root          4096 Jan  1 00:00 
+>>> waiting_for_supplier
+>>>
+>>> We can use the commands are similar to the below to configure the
+>>> TPDMs which support DSB subunit. Enable coresight sink first.
+>>> echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
+>>> echo 1 > /sys/bus/coresight/devices/tpdm1/reset_dataset
+>>> echo 0x3 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_idx
+>>> echo 0x1 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_mask
+>>> echo 0x0 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_val
+>>> echo 1 > /sys/bus/coresight/devices/tpdm1/dsb_patt/enable_ts
+>>> echo 1 > /sys/bus/coresight/devices/tpdm1/dsb_patt/set_type
+>>> echo 0 > /sys/bus/coresight/devices/tpdm1/dsb_trig_ts
+>>> echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm1/dsb_patt/tpmr5
+>>> echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm1/dsb_trig_patt/xpr2
+>>> echo 1 > /sys/bus/coresight/devices/tpdm1/enable_source
+>>>
+>>
+>> I have reviewed this set, except for the last patch, rest looks fine.
+>> If you could resend the series with the comments addressed, we could
+>> queue this.
 > 
-> [...]
+> That's great. Thanks for your review.
+> 
+> I also want to make a minor change.
+> 
+> Can I rename "tpdm_dsb_attrs_grp" to "tpdm_dsb_attr_grp" in the next 
 
-Applied to
+Sure, that is fine. The proposed changes to the other patch look good
+too.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/6] dt-bindings: regulator: qcom,spmi: Document PM8909
-      commit: 6f20872035378ab2311cc901f8f94f8718f1b17f
-[2/6] regulator: qcom_spmi: Add PM8909 regulators
-      commit: 813d01a40ae7c0c67681c82edce8463fbbd84b08
-[3/6] dt-bindings: regulator: qcom,spmi: Document PM8019
-      commit: 350aab7f8f2c7d7368d2bbc47717696a51014078
-[4/6] regulator: qcom_spmi: Add PM8019 regulators
-      commit: 5b30cb2a317a8e2636f724e8ebf5cbe3849e786e
-[5/6] dt-bindings: regulator: qcom,spmi: Document PMA8084
-      commit: f72d04235781cf89410ffd750109f4b9931c50ea
-[6/6] regulator: qcom_spmi: Add PMA8084 regulators
-      commit: 317aa3c4fe708fcbee5b9fe5fc25e1b9e92b83f5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Suzuki
