@@ -1,142 +1,121 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1AC7B0EF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:37:14 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 5672B7B0EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 00:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjI0WhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 18:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
+        id S229879AbjI0WiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 18:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjI0WhM (ORCPT
+        with ESMTP id S229493AbjI0WiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 18:37:12 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057E1AF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 15:37:10 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0F81D5C28C9;
-        Wed, 27 Sep 2023 18:36:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 27 Sep 2023 18:36:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1695854162; x=1695940562; bh=cIxox338FB
-        bGAustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=GuBDln7zO6JgIzHn7hqRl9vLbl
-        NMYWQ5VAnTJfxHo9dAasCRyXxCiUz59yohwG3WwK/SHDaM/hP2TYHmJcU6rvdKJn
-        v0RsP/l6VyhbTV9qO/+T7sPw4Cx3wy7Bzvv+Z3mb9ED/f7x2DgCPEUZEZfmpV0hq
-        2aFWrGUm/eMqmc6llr6szKeSU3A1L40Cfg9KWCga1lRwlG6bX/T3QA1fpgmH3Iwy
-        pxg50fIukAvkAuIsZuNHX3Aak4z+UXSFNA6qsr5foD6+lXWr8L4j2jk66tyzyVJB
-        3HAZY6MZOqJqlVyJlGPU/xvS+vQ3iw1YMXR0ov3kp/efEqJwv5R61Z50Jm5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695854162; x=1695940562; bh=cIxox338FBbGA
-        ustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=lldpGNk/GHH0iqE+UgjII9+tPPPsX
-        uh8tz9w9MacOlGuXQ/pmNVfZ27R9wN6zK9lYljwhi/LCf1wmxSWd2A8cUcbS4184
-        CR9oIEFK3IbslMnsb7EB6tHSTAvwDtVahhQ4WtMLg0/oRSd1HrdyF7efGjnDy4PK
-        9dH7B4asUj2ryvspiTG0MHKgKaSPrSVcuIz6rcDohWLIZd0oiaBMviYP17qb1G6Y
-        HGN8X4CvUWR+eNmlEyszjRuvheALWTUCaCKytmyxjCjMs23r7qGJPc3MCbBWjfsj
-        FMRDCYAOShCkeSSObeyQDt4nqEbwrVwmy2Sk4fUM3opy1ag9a14toZBhQ==
-X-ME-Sender: <xms:Ua4UZS_6m5NmF3ElbXYF48NryBgJmqxIayJXqQKP0Nsf-jEkPiMcTg>
-    <xme:Ua4UZSvcealRPM2tZJWEbNLVMdMWWu5pkrdm0g22Gi-aNv-L3PoQDQ_7ebh6Ip8l5
-    NHZ4KGdQJlnZMYNcPs>
-X-ME-Received: <xmr:Ua4UZYC4td11pYzv6SGz3IuafDP4tS5RbBwxbJ_hJuubDhK7yJd7AZuhSb12kLrMvtXYqA_HfBehf6sz_9J-PFt5jQHHZ-PSs1LUOEiJrQc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgdduvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
-    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
-    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
-    hmrghilhdrohhrgh
-X-ME-Proxy: <xmx:Ua4UZaf6BQXjUj-mhg4egb8Qzb7TP3jq3sYmKDR3bQ22LPq0aPHlZw>
-    <xmx:Ua4UZXOH9aJ95ndsD8RmPD-TQuPQwyVSY2gI7l39XlabZblkyV6shQ>
-    <xmx:Ua4UZUmaJhM28Y_ibpviq8xIrFi8Bx4T2nybgsN-58fNXf90La_BIw>
-    <xmx:Uq4UZQbwMD5a00ZbhOvUAyQ_bIXJN96uu1cSzeZZARlgIxYlb6UZUA>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 18:36:01 -0400 (EDT)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v3] Subject: [PATCH v3] staging: rtl8192e: renamed (3) variables
-Date:   Wed, 27 Sep 2023 18:35:19 -0400
-Message-ID: <20230927223519.27213-1-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 27 Sep 2023 18:38:24 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41292AF;
+        Wed, 27 Sep 2023 15:38:23 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so12006318f8f.1;
+        Wed, 27 Sep 2023 15:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695854302; x=1696459102; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9RqKnQ384vFzLQtfAR/lBEgRDbU9k5LVLEF+EOb6OZQ=;
+        b=I6/YgFwUBVboKz5FiwgbP3gzm8Fe5iVNtk1hybQasMUaQ1YmgvE2dx3uW+cpvg4VzZ
+         g5YrAvnJTSquwUsF2v8E2JNjsDl9kap1BeYdxSz8hFEn9sET+UlsG+GmBb+1vymkmWbJ
+         ZVE1z1DA57GB5JQZFvozILspAs+6t+d+K1J6qtrcWZoJlgVAei+B/hGujJLCW1qvqnbk
+         q3Y+wJeKjQ0E06gC+71Tq8AuOHVpGQox9n8fe5ORxpkeoyNoxT9YnmVN4D/5X5/PQHHb
+         5Atci7bP+LVzQJ82+bxffe2DbXtAkQmi9xoqyhrJSqnzAoLoCeRVQfP05BKpeC2oIars
+         TBmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695854302; x=1696459102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9RqKnQ384vFzLQtfAR/lBEgRDbU9k5LVLEF+EOb6OZQ=;
+        b=lAHksawo0Z9FXQMHQG8hbk2XHsHTTUkdfojOrdHSXt1lwClO1MevTX9Sl2tdldgJdk
+         FVZpRF0WQd2qKxkfmeLzIdA6ggOqKyEQEJJ8XvBBBYvSdMcqDUg9OgvlfcsJNpzRdnIh
+         st9WLi7DIOrpL2m5rOdV5hxFhYza5q/z66QYwgY8VdWyYrEt/ea+CLDkq4X3d6Etq9Rg
+         w5UPyTqAXgtTjVqq2Rb0wSultl/nrHqHlhRn/n9JX5M6LBeM5auhSyO+cW8/iARSmmj5
+         HqDFdwDv6EyiTgruu4QkOxRGp1Vg7UOgEf/a1DoFlByocH173rWiZzi05nRGAiW1pE9N
+         ItOw==
+X-Gm-Message-State: AOJu0YwBzfyG0DdOR+7RxEj0L/5KMyHhY8K2+PlaI2alf019+GfsH2RV
+        3nRd70OZwq4LYfP+CHR/IBg=
+X-Google-Smtp-Source: AGHT+IEtPyqOdvggdme1F7Zk7QQYP32qu1nZmurf+Vdr4qpg/HWLBeF4/Hp888VsCYml8AiGnn90Rw==
+X-Received: by 2002:adf:e749:0:b0:320:bb1:5a73 with SMTP id c9-20020adfe749000000b003200bb15a73mr2917396wrn.22.1695854301359;
+        Wed, 27 Sep 2023 15:38:21 -0700 (PDT)
+Received: from yoga.fem.tu-ilmenau.de ([2001:638:904:ffe5:5742:c50f:bd0:6aa6])
+        by smtp.gmail.com with ESMTPSA id j2-20020a5d4642000000b00317e77106dbsm18013776wrs.48.2023.09.27.15.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 15:38:21 -0700 (PDT)
+From:   Sven Frotscher <sven.frotscher@gmail.com>
+To:     broonie@kernel.org
+Cc:     git@augustwikerfors.se, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        mario.limonciello@amd.com, regressions@lists.linux.dev,
+        Sven Frotscher <sven.frotscher@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
+Date:   Thu, 28 Sep 2023 00:36:07 +0200
+Message-ID: <20230927223758.18870-1-sven.frotscher@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch renames the vaiable in staging/rtl8192e
-HTUpdateDefaultSetting -> ht_update_default_setting
-in (3) files of rtl8192e:
-1) rtl819x_HTProc.c
-2) rtllib.h
-3) rtllib_module.c
 
-Linux Kernel Coding Style "cleanup", no change in runtime,
-staging/rtl8192e builds before and after.
+Like the Lenovo 82TL, 82V2, 82QF and 82UG, the 82YM (Yoga 7 14ARP8)
+requires an entry in the quirk list to enable the internal microphone.
+The latter two received similar fixes in commit 1263cc0f414d
+("ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG").
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+Fixes: c008323fe361 ("ASoC: amd: yc: Fix a non-functional mic on Lenovo 82SJ")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sven Frotscher <sven.frotscher@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h         | 2 +-
- drivers/staging/rtl8192e/rtllib_module.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+v3->v4 changes:
+* re-add blank line between commit message title and body
+---
+v2->v3 changes:
+* add message title of referenced commit to commit message
+* make whitespace consistent with surrounding code
+* use a patch-friendly e-mail client
+---
+v1->v2 changes:
+* add Fixes and Cc tags to commit message
+* remove redundant LKML link from commit message
+* fix mangled diff
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index a7e356e90d0e..832f595d36c2 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -67,7 +67,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
- 
- static u8 LINKSYS_MARVELL_4400N[3] = {0x00, 0x14, 0xa4};
- 
--void HTUpdateDefaultSetting(struct rtllib_device *ieee)
-+void ht_update_default_setting(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index bdbd27e382b9..ec1eef7486a2 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1785,7 +1785,7 @@ int rtllib_wx_get_rts(struct rtllib_device *ieee, struct iw_request_info *info,
- void HTSetConnectBwMode(struct rtllib_device *ieee,
- 			enum ht_channel_width bandwidth,
- 			enum ht_extchnl_offset Offset);
--void HTUpdateDefaultSetting(struct rtllib_device *ieee);
-+void ht_update_default_setting(struct rtllib_device *ieee);
- void HTConstructCapabilityElement(struct rtllib_device *ieee,
- 				  u8 *posHTCap, u8 *len,
- 				  u8 isEncrypt, bool bAssoc);
-diff --git a/drivers/staging/rtl8192e/rtllib_module.c b/drivers/staging/rtl8192e/rtllib_module.c
-index abd6bfd4dfa3..859241af617c 100644
---- a/drivers/staging/rtl8192e/rtllib_module.c
-+++ b/drivers/staging/rtl8192e/rtllib_module.c
-@@ -126,7 +126,7 @@ struct net_device *alloc_rtllib(int sizeof_priv)
- 	if (!ieee->ht_info)
- 		goto free_softmac;
- 
--	HTUpdateDefaultSetting(ieee);
-+	ht_update_default_setting(ieee);
- 	HTInitializeHTInfo(ieee);
- 	rtllib_ts_init(ieee);
- 	for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 94e9eb8e73f2..15a864dcd7bd 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -241,6 +241,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "82V2"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "82YM"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
-2.41.0
+2.42.0
 
