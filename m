@@ -2,88 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C51D7AF9C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608D27AF9C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjI0E7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S229814AbjI0FCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjI0E6u (ORCPT
+        with ESMTP id S229827AbjI0FBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:58:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F1935BE
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=7Y1qKBOuWg5Urwtt4BBusjg4Vo4nFC9PDpW8fuhezGU=; b=mjtDKKDS4uzP228lMPWRAtWwVi
-        aZYKtHf0QGZzKlIL7DaQLlNB4MXZlHtWA2hFsyAEj51GAC3OrA8k5zqDUFxKV7GtLzGEGIpWBjoWR
-        QfbAU9veCUOc1r0FrLjaPvbab+uCB7LoLZXv+uhqzSvyfHXUf0vuAkxyrFvuYHYJO9IhcvX5u4d5K
-        NTju+wwg4TbUssVzAojivZfQLvy7hBVAz3Y6W0uBETe8OdQUnFgG+ZFvlQOegX9IF0MWyE5nSGDF4
-        6AHEC3QZXN5oOB8TrgvLUCLw08esNAxRlFV1MHf5sNs9dQCDXkNVTFbJlzjmFrXKdbKPAJ/JRTxaT
-        bGjNdwWA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlM72-00HWP7-12;
-        Wed, 27 Sep 2023 04:25:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH] net: lan743x: also select PHYLIB
-Date:   Tue, 26 Sep 2023 21:25:23 -0700
-Message-ID: <20230927042523.7707-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Wed, 27 Sep 2023 01:01:23 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9234D1D28A;
+        Tue, 26 Sep 2023 21:29:55 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id C86C680A3;
+        Wed, 27 Sep 2023 04:29:51 +0000 (UTC)
+Date:   Wed, 27 Sep 2023 07:29:50 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Udit Kumar <u-kumar1@ti.com>,
+        Thomas Richard <thomas.richard@bootlin.com>
+Subject: Re: [PATCH] serial: 8250_omap: Fix errors with no_console_suspend
+Message-ID: <20230927042950.GB5285@atomide.com>
+References: <20230926061319.15140-1-tony@atomide.com>
+ <ZRLBWrjUadvGCs/y@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRLBWrjUadvGCs/y@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since FIXED_PHY depends on PHYLIB, PHYLIB needs to be set to avoid
-a kconfig warning:
+* Andy Shevchenko <andriy.shevchenko@intel.com> [230926 11:59]:
+> Btw, how close are we to getting rid the pm_runtime_irq_safe() call?
 
-WARNING: unmet direct dependencies detected for FIXED_PHY
-  Depends on [n]: NETDEVICES [=y] && PHYLIB [=n]
-  Selected by [y]:
-  - LAN743X [=y] && NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_MICROCHIP [=y] && PCI [=y] && PTP_1588_CLOCK_OPTIONAL [=y]
+Very close, I think still doable for v6.7 merge window.. Below is what I'm
+testing with, there's one error that I've seen that may or may not be
+related.
 
-Fixes: 73c4d1b307ae ("net: lan743x: select FIXED_PHY")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202309261802.JPbRHwti-lkp@intel.com
-M: Bryan Whitehead <bryan.whitehead@microchip.com>
-M: UNGLinuxDriver@microchip.com
-M: Simon Horman <horms@kernel.org>
-L: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
----
- drivers/net/ethernet/microchip/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+Regards,
 
-diff -- a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
---- a/drivers/net/ethernet/microchip/Kconfig
-+++ b/drivers/net/ethernet/microchip/Kconfig
-@@ -46,6 +46,7 @@ config LAN743X
- 	tristate "LAN743x support"
- 	depends on PCI
- 	depends on PTP_1588_CLOCK_OPTIONAL
-+	select PHYLIB
- 	select FIXED_PHY
- 	select CRC16
- 	select CRC32
+Tony
+
+8< ---------------------------
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -8,6 +8,7 @@
+  *
+  */
+ 
++#include <linux/atomic.h>
+ #include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/io.h>
+@@ -130,6 +131,7 @@ struct omap8250_priv {
+ 
+ 	u8 tx_trigger;
+ 	u8 rx_trigger;
++	atomic_t active;
+ 	bool is_suspending;
+ 	int wakeirq;
+ 	int wakeups_enabled;
+@@ -632,14 +634,21 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 	unsigned int iir, lsr;
+ 	int ret;
+ 
++	pm_runtime_get_noresume(port->dev);
++
++	/* Shallow idle state wake-up to an IO interrupt? */
++	if (atomic_add_unless(&priv->active, 1, 1)) {
++		priv->latency = priv->calc_latency;
++		schedule_work(&priv->qos_work);
++	}
++
+ #ifdef CONFIG_SERIAL_8250_DMA
+ 	if (up->dma) {
+ 		ret = omap_8250_dma_handle_irq(port);
+-		return IRQ_RETVAL(ret);
++		goto out_runtime_put;
+ 	}
+ #endif
+ 
+-	serial8250_rpm_get(up);
+ 	lsr = serial_port_in(port, UART_LSR);
+ 	iir = serial_port_in(port, UART_IIR);
+ 	ret = serial8250_handle_irq(port, iir);
+@@ -676,7 +685,9 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
+ 		schedule_delayed_work(&up->overrun_backoff, delay);
+ 	}
+ 
+-	serial8250_rpm_put(up);
++out_runtime_put:
++	pm_runtime_mark_last_busy(port->dev);
++	pm_runtime_put(port->dev);
+ 
+ 	return IRQ_RETVAL(ret);
+ }
+@@ -1270,11 +1281,8 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
+ 	u16 status;
+ 	u8 iir;
+ 
+-	serial8250_rpm_get(up);
+-
+ 	iir = serial_port_in(port, UART_IIR);
+ 	if (iir & UART_IIR_NO_INT) {
+-		serial8250_rpm_put(up);
+ 		return IRQ_HANDLED;
+ 	}
+ 
+@@ -1305,7 +1313,6 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
+ 
+ 	uart_unlock_and_check_sysrq(port);
+ 
+-	serial8250_rpm_put(up);
+ 	return 1;
+ }
+ 
+@@ -1500,8 +1507,6 @@ static int omap8250_probe(struct platform_device *pdev)
+ 	if (!of_get_available_child_count(pdev->dev.of_node))
+ 		pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
+ 
+-	pm_runtime_irq_safe(&pdev->dev);
+-
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
+ 	omap_serial_fill_features_erratas(&up, priv);
+@@ -1740,6 +1745,7 @@ static int omap8250_runtime_suspend(struct device *dev)
+ 
+ 	priv->latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
+ 	schedule_work(&priv->qos_work);
++	atomic_set(&priv->active, 0);
+ 
+ 	return 0;
+ }
+@@ -1749,6 +1755,10 @@ static int omap8250_runtime_resume(struct device *dev)
+ 	struct omap8250_priv *priv = dev_get_drvdata(dev);
+ 	struct uart_8250_port *up = NULL;
+ 
++	/* Did the hardware wake to a device IO interrupt before a wakeirq? */
++	if (atomic_read(&priv->active))
++		return 0;
++
+ 	if (priv->line >= 0)
+ 		up = serial8250_get_port(priv->line);
+ 
+@@ -1764,8 +1774,10 @@ static int omap8250_runtime_resume(struct device *dev)
+ 		spin_unlock_irq(&up->port.lock);
+ 	}
+ 
++	atomic_set(&priv->active, 1);
+ 	priv->latency = priv->calc_latency;
+ 	schedule_work(&priv->qos_work);
++
+ 	return 0;
+ }
+ 
+-- 
+2.42.0
