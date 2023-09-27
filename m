@@ -2,72 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4AE7B0314
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC547B0301
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbjI0LdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S231389AbjI0Lcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjI0LdO (ORCPT
+        with ESMTP id S230387AbjI0Lcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:33:14 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C0219C
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:33:11 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d81dd7d76e0so12544084276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:33:11 -0700 (PDT)
+        Wed, 27 Sep 2023 07:32:43 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B754A180
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:32:41 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50307acd445so17284329e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695814391; x=1696419191; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lz3IHbJCH498S7xu5c9BCiLtAi1Io9fWfKGLHW1zJKA=;
-        b=DNC/dWrSznW3hGzuYETFT3JtPeCKT5RxWoJBF8/ke1cFxvO3giEX0j39HDExOJw8Mc
-         KxwIYC6RhGRTX2JVz7vcCWo/b43PgTqPGGQ1SN7wkO2P43xI81FyTsnreDxPvolw508t
-         od07QRLx8fuc2MGgE/D0ATuxwZph5BdzZ1EFEz7JwcTIVnEOxDmqWJV7ZGkAyu1TREyf
-         26L07Jjb9a5jEikrFTYN2jkjaeMA+NNFzB4aXuBLfsVbPmuO+mMCfaM6MYk7gkghkwVb
-         /C/1FHsKhzqOCtUxzKs58+NDX2wrx0PFC1ge2VnuCSu1EJx5pYeOPa5BXufnom7hAn5m
-         DsjA==
+        d=linaro.org; s=google; t=1695814359; x=1696419159; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HdUWFQCLZSrl7zH0hUj4VOl1H38sQ0R60GSX/EJE7tU=;
+        b=lJ/LQqTW5sSn9i5DLLaUrXB4f4b3Hv0edhg1Z9rtkkHXiNc/yY6qrNvyvkURHrGvkE
+         A5Sjj1DO57GDXlkw1CHwvRY//kwwufhvGs1ca68x3nBT5xy3YaV8F2WhgvbQ1yhAvMuj
+         HnQoO/NxNjaWa26Ah6Abh46fC8bb3WzchOOJvfEzTPSqMG54AezSidzJaTx6F89vnA7Q
+         JKXeIpLfPhPspnCpgeq8NSXHGr1ZG0v8GPIkC3uOw/YitrzPw/+ZRuHWfO640Xiw71QW
+         Wjorl1Tk97WAmHIn7soTfZrI6YhVJ131Sy1fgO2HeCf5k6hc6CO8vTNhzTfBGxpw4LW2
+         62CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695814391; x=1696419191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lz3IHbJCH498S7xu5c9BCiLtAi1Io9fWfKGLHW1zJKA=;
-        b=jjFy6OJziSxXX/bzecTHwxjITvOFnE45/c1LigyLZtc4twDU6imHF1xzXyTet7Pg/W
-         FKWJQOB6JRXu3H56Miv9JLRUF1RMnEhryhDCQhe0ZfagUIqZRsNpPVLNfv6XI/Ge8Jcn
-         k9i+S+PeyNg59XnJwzBrXUUcqgF8NZTO5AAkmTg39NN3tbMo+LuO2ozJZcTsHXbxzDqL
-         KjPWpL6965NK6q34T9GTiDwEVLcTP1O3wuPnfCTpzmSRMe9xllC6X2JwdZHdgFfkPu5B
-         uhi2vnGu+WAEqBMcLhksAL6AFiRMARfWBGhYgWpCfMvnCp4ONc2uaEV52NKa/Q9SWBWQ
-         BOyg==
-X-Gm-Message-State: AOJu0YxIzErLZScKDVaMLe5+HNbW4jRuRuROhHk+gIR+Mcoy00mhJVSD
-        Mfuwp5wh3l/f3ISZycB0Lk4Oyw/Z7foJPiCkCupueQ==
-X-Google-Smtp-Source: AGHT+IGDDpFT42Omf1fTyNrmvyDJs1CTZMN1gqfZJeu1hy1Eh70d84WQ0FJYRQPUwESHBabdZM4ja0Yy+T01FJm5Nkg=
-X-Received: by 2002:a25:97c9:0:b0:d89:465f:f800 with SMTP id
- j9-20020a2597c9000000b00d89465ff800mr1643538ybo.32.1695814390831; Wed, 27 Sep
- 2023 04:33:10 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695814359; x=1696419159;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HdUWFQCLZSrl7zH0hUj4VOl1H38sQ0R60GSX/EJE7tU=;
+        b=mzDWQ/jjC1txqO7GuzBsXGkru+uc9+G3A6Gy66TZjpG16Dw3r83E7+CqF3LWF9FD82
+         wevsCw8/mCI0mWNptzmxjI8BGuN0YCbBM8AYJfTS1rvQZOyEagA1wWtUXVxJNynZUDjn
+         mBZz3aJCB73bIvdYjS1A6hgdiM7hHju+SyqxACGeJBAybjviK9aXHGQ9E8/1pRJkYMBF
+         Nr0DUJ0nws4I/XSQrBBVfQ20gbppCIpDXhMHvTWnk2o+by/9tkYXNp36rVdiHA4uy6TX
+         A1Cn7ul8XJ/pAkBsK0uEQldzj+mJa0UObmAN8XMmkhzj14YU3+G7wvCRbBh16HFsqdKk
+         qm4w==
+X-Gm-Message-State: AOJu0YwoUMvjQKs4NqL/NiwL1ahX7W/i87WrWfPDiukKQbLtMNJlWei9
+        21EMBTpF252BPePtEkEQSxAtkA==
+X-Google-Smtp-Source: AGHT+IEkHEK00EpmVPI8WUnrrnY+GIf2d6DWtNHZOcPr9e85S75Znl7+fMzO4eTxiWoYIfCLIKjDnQ==
+X-Received: by 2002:a19:f718:0:b0:503:1746:6882 with SMTP id z24-20020a19f718000000b0050317466882mr1260506lfe.37.1695814359385;
+        Wed, 27 Sep 2023 04:32:39 -0700 (PDT)
+Received: from [192.168.33.189] (178235177023.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.23])
+        by smtp.gmail.com with ESMTPSA id a2-20020aa7cf02000000b005232ea6a330sm8065681edy.2.2023.09.27.04.32.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 04:32:39 -0700 (PDT)
+Message-ID: <bef962c8-a1ff-4309-8381-fb748f198a40@linaro.org>
+Date:   Wed, 27 Sep 2023 13:32:37 +0200
 MIME-Version: 1.0
-References: <20230923114950.1697701-1-abel.vesa@linaro.org>
-In-Reply-To: <20230923114950.1697701-1-abel.vesa@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 27 Sep 2023 13:32:34 +0200
-Message-ID: <CAPDyKFrEgZhPJcYXxxZ=o_VwEi3Dav8ZLBk2vHWNuiqQp8hSZQ@mail.gmail.com>
-Subject: Re: [RESEND v3 0/5] PM: domains: Add control for switching back and
- forth to HW control
-To:     Abel Vesa <abel.vesa@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/11] clk: qcom: ipq6018: drop the CLK_SET_RATE_PARENT
+ flag from PLL clocks
+Content-Language: en-US
+To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
         Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
+ <20230913-gpll_cleanup-v2-2-c8ceb1a37680@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230913-gpll_cleanup-v2-2-c8ceb1a37680@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -78,41 +125,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Sept 2023 at 13:49, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> This is just a resend of v3:
-> https://lore.kernel.org/lkml/20230823114528.3677667-1-abel.vesa@linaro.org/
->
-> Just added Ulf's R-b tag to the 2nd patch. No other changes.
->
-> Abel Vesa (1):
->   PM: domains: Add the domain HW-managed mode to the summary
->
-> Jagadeesh Kona (3):
->   clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
->   clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
->   venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode
->
-> Ulf Hansson (1):
->   PM: domains: Allow devices attached to genpd to be managed by HW
->
->  drivers/base/power/domain.c                   | 84 ++++++++++++++++++-
->  drivers/clk/qcom/gdsc.c                       | 32 +++++++
->  drivers/clk/qcom/gdsc.h                       |  1 +
->  drivers/clk/qcom/videocc-sc7180.c             |  2 +-
->  drivers/clk/qcom/videocc-sc7280.c             |  2 +-
->  drivers/clk/qcom/videocc-sdm845.c             |  4 +-
->  drivers/clk/qcom/videocc-sm8250.c             |  4 +-
->  drivers/clk/qcom/videocc-sm8550.c             |  4 +-
->  drivers/media/platform/qcom/venus/core.c      |  4 +
->  drivers/media/platform/qcom/venus/core.h      |  1 +
->  .../media/platform/qcom/venus/pm_helpers.c    | 47 +++++------
->  include/linux/pm_domain.h                     | 17 ++++
->  12 files changed, 165 insertions(+), 37 deletions(-)
->
+On 14.09.2023 08:59, Kathiravan Thirumoorthy wrote:
+> GPLL, NSS crypto PLL clock rates are fixed and shouldn't be scaled based
+> on the request from dependent clocks. Doing so will result in the
+> unexpected behaviour. So drop the CLK_SET_RATE_PARENT flag from the PLL
+> clocks.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: d9db07f088af ("clk: qcom: Add ipq6018 Global Clock Controller support")
+> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-It looks like we need a plan for what tree to route this through. Or
-if we should use more than one tree. Bjorn, Stephen, thoughts?
-
-Kind regards
-Uffe
+Konrad
