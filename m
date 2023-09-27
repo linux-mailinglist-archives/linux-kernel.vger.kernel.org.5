@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BC47B0023
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225747B0027
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjI0Jbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S230422AbjI0JcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjI0Jb0 (ORCPT
+        with ESMTP id S229499AbjI0JcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:31:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FBAE6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:31:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4A4EC433C8;
-        Wed, 27 Sep 2023 09:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695807085;
-        bh=cZsA2Bwd5dQg9fYOxwh55qsutXEo02ZTNVCxfZZnx0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y8P+kEwL06U8frDbg5i9jjN17qhUSZOwPiDgpdAZnQx4QfYGB4Tq9t0bTW8k7ilfg
-         B4atijvydEMAXhYsJ9jRBWZmoMC1KQZhZEA+Mo2mg/gWhXxZbFr8chYsw/wpJFwVU8
-         pJdy1RIOxSvpdQ3zIYR3SwqBEy2ScBMVyzaQ7hXvh4JnWbGjuM+VfROVbMJ9QGNMmw
-         fNLlASOB0x/r+vSOMA6pL4tRQyNaSzGnHRKChxpe4T07nUqBshzpkq0mEyVz3gH14B
-         vHTBYztxuERLxslIQmqkBrn6yBsCHVnyY27UVJQnG9oqXbaaJ+OV/k+conhKfeD8yn
-         rCKTp92Pcyytg==
-Date:   Wed, 27 Sep 2023 11:31:22 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     Chancel Liu <chancel.liu@nxp.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/1] ASoC: soc-pcm.c: Make sure DAI parameters cleared
- if the DAI becomes inactive
-Message-ID: <ZRP2aghTvU4x3FUR@finisterre.sirena.org.uk>
-References: <20230920153621.711373-1-chancel.liu@nxp.com>
+        Wed, 27 Sep 2023 05:32:08 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61396EB;
+        Wed, 27 Sep 2023 02:32:06 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R9AAOp014722;
+        Wed, 27 Sep 2023 09:32:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=R6S9lb9E5gfXv/deHo8OReGIPDdJ5e4iD2Mod97pwj4=;
+ b=HhJZ7hc5PBVoCv/yuTZww8XV3l1N713GeOKwJTHKbqZNYCBl0wN2Ht37ttavaJGw+Ol1
+ A80L8DPXZcdcVTMO91ErtkifgKZTEmVr2fOa2aaLFPzVpu6yuI79Eop1KaX3d5CYUmkY
+ X+AarhyeDo1RWNxZwYb5d27E6r1PbeBX4vUfDDpLZdkJt7Fjpf4DrSlhduHctaoXIIGX
+ 6uf46KiflcIjsOrT0qhkOuTsaLa7BTfdHNFYlP1B2BlHCk63SCTyINgANrZxWxeXYRkN
+ Z/XiAIQZ8rYl2b7ejK1kAS/r1mLwu5j3yUUyuJMmUHYqPESkX9ZrWtpuqmMqrlU8BrFT zg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tc43msf6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 09:32:02 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R9W0eW027458
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 09:32:00 GMT
+Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 27 Sep 2023 02:31:56 -0700
+From:   Sridharan S N <quic_sridsn@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Sridharan S N <quic_sridsn@quicinc.com>
+Subject: [PATCH] dt-bindings: arm: qcom: drop the IPQ board types
+Date:   Wed, 27 Sep 2023 15:01:30 +0530
+Message-ID: <20230927093130.4098385-1-quic_sridsn@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CnAeQwTRQV9vuxnA"
-Content-Disposition: inline
-In-Reply-To: <20230920153621.711373-1-chancel.liu@nxp.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: l-y6uhcWbfaJDNPW8dCd5lV2Nm16Qlah
+X-Proofpoint-GUID: l-y6uhcWbfaJDNPW8dCd5lV2Nm16Qlah
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_04,2023-09-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=818 malwarescore=0
+ adultscore=0 spamscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309270077
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+IPQ bootloaders do not need these information to select the
+the DTB blob. So dropping the board names from board section.
 
---CnAeQwTRQV9vuxnA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-On Wed, Sep 20, 2023 at 11:36:20PM +0800, Chancel Liu wrote:
-> It's reasonable that DAI parameters should be cleared if current DAI beco=
-mes
-> inactive.
->=20
-> Only check DAI active status in soc_pcm_hw_free() is not enough since the=
-re's
-> the risk that DAI parameters never be cleared if there're more than one s=
-tream
-> [see A]. Only check DAI active status in soc_pcm_close() is also not enou=
-gh
-> since it will cause the cleanup just happening in soc_pcm_close() [see B].
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 7f80f48a0954..5b56f3d90d4d 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -91,24 +91,10 @@ description: |
+   The 'board' element must be one of the following strings:
+ 
+         adp
+-        ap-al02-c2
+-        ap-al02-c6
+-        ap-al02-c7
+-        ap-al02-c8
+-        ap-al02-c9
+-        ap-mi01.2
+-        ap-mi01.3
+-        ap-mi01.6
+-        ap-mi01.9
+         cdp
+-        cp01-c1
+         dragonboard
+-        hk01
+-        hk10-c1
+-        hk10-c2
+         idp
+         liquid
+-        rdp432-c2
+         mtp
+         qrd
+         rb2
+-- 
+2.34.1
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
-
---CnAeQwTRQV9vuxnA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUT9mkACgkQJNaLcl1U
-h9CZ7gf/TT2l6M7xebGR8UgDez3KbRn8MJrAq4wQDPw4rST8oHs5jSgX59/Neefh
-fvfZ1NIAmstyP9g1O8lHM7H4ROVZ8vBgXNbqNgRdXWTssOHpadjJqWXkSOE3UYv6
-ZDfdPcZuapuT8p65DUv7lsnZaKogJ/WuW8uR5+9cmVFP6CZ/A4r6kzMoqi2W6B6h
-UeTKydJrVgo+X0pfO8OJdbjU+3np4ozx7rc19yU2m3l1pM4ZJrDL6A2/3929MZkn
-83aOAoiyNXUZb2JXXdoxeFj9UtR11Aq/32oKdHt0VXLyNgpo9Ak2q//08KGTStaL
-3eFeQDEsvL/YLfyGPR3xwiKxFNk7fw==
-=IksO
------END PGP SIGNATURE-----
-
---CnAeQwTRQV9vuxnA--
