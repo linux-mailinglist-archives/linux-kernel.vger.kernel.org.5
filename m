@@ -2,153 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A9D7B0345
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C77B034B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbjI0Lmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
+        id S231409AbjI0Lqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjI0Lma (ORCPT
+        with ESMTP id S230432AbjI0Lq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:42:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07929F3;
-        Wed, 27 Sep 2023 04:42:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68382C433CA;
-        Wed, 27 Sep 2023 11:42:26 +0000 (UTC)
-Message-ID: <cf7cdafb-ccd1-42ee-9c67-5e6600f752f7@xs4all.nl>
-Date:   Wed, 27 Sep 2023 13:42:24 +0200
+        Wed, 27 Sep 2023 07:46:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FC1FC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695815142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nvsPqdWL7XgWKeKWvC9F1HtbY+HpBNK3bs0TVz67ajA=;
+        b=OMlKqdQi2jaRH2jeJPPuI4qslNen/zEYE32ku8Qgqt7U4qDmEd7vB0IoXJIrXsliC0wcfu
+        vB4wiwIz9RVqjwuiX6fn5yIvTwoDSbz36hbxsyxI1uW9RL5h2z9fErfuMQnlCA9MBIKnBJ
+        Qsbgx4mVFEKJShSIasWFUTa+DitmedM=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-IC7uE5pjOEedGU-FskNxQw-1; Wed, 27 Sep 2023 07:45:40 -0400
+X-MC-Unique: IC7uE5pjOEedGU-FskNxQw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c136b9d66aso146947111fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:45:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695815139; x=1696419939;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nvsPqdWL7XgWKeKWvC9F1HtbY+HpBNK3bs0TVz67ajA=;
+        b=n+QrAcLnMmb4h0pOqd9cJebFUsRf5+th1ZdGcc7h3QKCoUxAk2sQCOWKarltOenQWW
+         5W+bL3utDr32doa7IryYN+hU0/OP60O5VZyzY4KGs5c1Pd4emcBx/F8FZnipKsA8aY9+
+         Zl70NaLKTNbM607z85ipD/ZRrwedm9qF4MQMRo/BOzBYDjUFSHMxPZ7xVHmse5lxUDaA
+         LX8nEWQB3BbiB77yRCsc5dSW5YL9ScH9Zi9AKGyxM4eT+Zupc+PC/2ImJtl8iOjWDU4s
+         kjvwPeoVmWHltjBPyW9kQ0MzCOH78u8sRK6z1mza5v0O5C+r2Z0xFLzlizbhLYoqHazd
+         Kq7A==
+X-Gm-Message-State: AOJu0Yxg1ukz8jHy6PoM14/J/DNd4DTnss6f4cWU9ySLrMd951txyqrK
+        n3/TEZXnCFA2UDyR2/0MTJmyBahIsU2+XntFbpOslr+DtPFjs0M9Df7P5NpSMw5fbnkBiwVFneF
+        BqlUKShFcYaVpOO/XJED0RHoE
+X-Received: by 2002:a05:6512:1287:b0:503:183c:1223 with SMTP id u7-20020a056512128700b00503183c1223mr2243225lfs.7.1695815139369;
+        Wed, 27 Sep 2023 04:45:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMxjIWznnDjMe6Hk6VxuIsyF02/jJ80hi8lUi5oaXw4lt20x5rKCPRe8RS/GUfXlNVDxbElQ==
+X-Received: by 2002:a05:6512:1287:b0:503:183c:1223 with SMTP id u7-20020a056512128700b00503183c1223mr2243209lfs.7.1695815139037;
+        Wed, 27 Sep 2023 04:45:39 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:642:1aff:fe31:a15c? ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
+        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b0052a063e52b8sm7930477edx.83.2023.09.27.04.45.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 04:45:38 -0700 (PDT)
+Message-ID: <a050bc34-d98e-3d75-8c79-447dc7c913a1@redhat.com>
+Date:   Wed, 27 Sep 2023 13:45:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v6 17/17] media: qcom: camss: Comment CSID dt_id
- field
-Content-Language: en-US, nl
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20230925154707.837542-1-bryan.odonoghue@linaro.org>
- <20230925154707.837542-18-bryan.odonoghue@linaro.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
- BFUlg7JzJoUuRbKxkYb8mmqOe722j7N3HO8+ofnio5cAP5W0WwDpM0kM84BeHU0aPSTsWiGR
- yw55SOK2JBSq7hueotWLfJLobMWhQii0Zd83hGT9SIt9uHaHjgwmtTH7MSTIiaY6N14nw2Ud
- C6Uykc1va0Wqqc2ov5ihgk/2k2SKa02ookQI3e79laOrbZl5BOXNKR9LguuOZdX4XYR3Zi6/
- BsJ7pVCK9xkiVf8svlEl94IHb+sa1KrlgGv3fn5xgzDw8Z222TfFceDL/2EzUyTdWc4GaPMC
- E/c1B4UOle6ZHg02+I8tZicjzj5+yffv1lB5A1btG+AmoZrgf0X2O1B96fqgHx8w9PIpVERN
- YsmkfxvhfP3MO3oHh8UY1OLKdlKamMneCLk2up1Zlli347KMjHAVjBAiy8qOguKF9k7HOjif
- JCLYTkggrRiEiE1xg4tblBNj8WGyKH+u/hwwwBqCd/Px2HvhAsJQ7DwuuB3vBAp845BJYUU3
- 06kRihFqbO0vEt4QmcQDcbWINeZ2zX5TK7QQ91ldHdqJn6MhXulPKcM8tCkdD8YNXXKyKqNl
- UVqXnarz8m2JCbHgjEkUlAJCNd6m3pfESLZwSWsLYL49R5yxIwARAQABzSFIYW5zIFZlcmt1
- aWwgPGh2ZXJrdWlsQHhzNGFsbC5ubD7CwZUEEwECACgFAlQ84W0CGwMFCRLMAwAGCwkIBwMC
- BhUIAgkKCwQWAgMBAh4BAheAACEJEL0tYUhmFDtMFiEEBSzee8IVBTtonxvKvS1hSGYUO0wT
- 7w//frEmPBAwu3OdvAk9VDkH7X+7RcFpiuUcJxs3Xl6jpaA+SdwtZra6W1uMrs2RW8eXXiq/
- 80HXJtYnal1Y8MKUBoUVhT/+5+KcMyfVQK3VFRHnNxCmC9HZV+qdyxAGwIscUd4hSlweuU6L
- 6tI7Dls6NzKRSTFbbGNZCRgl8OrF01TBH+CZrcFIoDgpcJA5Pw84mxo+wd2BZjPA4TNyq1od
- +slSRbDqFug1EqQaMVtUOdgaUgdlmjV0+GfBHoyCGedDE0knv+tRb8v5gNgv7M3hJO3Nrl+O
- OJVoiW0G6OWVyq92NNCKJeDy8XCB1yHCKpBd4evO2bkJNV9xcgHtLrVqozqxZAiCRKN1elWF
- 1fyG8KNquqItYedUr+wZZacqW+uzpVr9pZmUqpVCk9s92fzTzDZcGAxnyqkaO2QTgdhPJT2m
- wpG2UwIKzzi13tmwakY7OAbXm76bGWVZCO3QTHVnNV8ku9wgeMc/ZGSLUT8hMDZlwEsW7u/D
- qt+NlTKiOIQsSW7u7h3SFm7sMQo03X/taK9PJhS2BhhgnXg8mOa6U+yNaJy+eU0Lf5hEUiDC
- vDOI5x++LD3pdrJVr/6ZB0Qg3/YzZ0dk+phQ+KlP6HyeO4LG662toMbFbeLcBjcC/ceEclII
- 90QNEFSZKM6NVloM+NaZRYVO3ApxWkFu+1mrVTXOwU0EVDzhbQEQANzLiI6gHkIhBQKeQaYs
- p2SSqF9c++9LOy5x6nbQ4s0X3oTKaMGfBZuiKkkU6NnHCSa0Az5ScRWLaRGu1PzjgcVwzl5O
- sDawR1BtOG/XoPRNB2351PRp++W8TWo2viYYY0uJHKFHML+ku9q0P+NkdTzFGJLP+hn7x0RT
- DMbhKTHO3H2xJz5TXNE9zTJuIfGAz3ShDpijvzYieY330BzZYfpgvCllDVM5E4XgfF4F/N90
- wWKu50fMA01ufwu+99GEwTFVG2az5T9SXd7vfSgRSkzXy7hcnxj4IhOfM6Ts85/BjMeIpeqy
- TDdsuetBgX9DMMWxMWl7BLeiMzMGrfkJ4tvlof0sVjurXibTibZyfyGR2ricg8iTbHyFaAzX
- 2uFVoZaPxrp7udDfQ96sfz0hesF9Zi8d7NnNnMYbUmUtaS083L/l2EDKvCIkhSjd48XF+aO8
- VhrCfbXWpGRaLcY/gxi2TXRYG9xCa7PINgz9SyO34sL6TeFPSZn4bPQV5O1j85Dj4jBecB1k
- z2arzwlWWKMZUbR04HTeAuuvYvCKEMnfW3ABzdonh70QdqJbpQGfAF2p4/iCETKWuqefiOYn
- pR8PqoQA1DYv3t7y9DIN5Jw/8Oj5wOeEybw6vTMB0rrnx+JaXvxeHSlFzHiD6il/ChDDkJ9J
- /ejCHUQIl40wLSDRABEBAAHCwXwEGAECAA8FAlQ84W0CGwwFCRLMAwAAIQkQvS1hSGYUO0wW
- IQQFLN57whUFO2ifG8q9LWFIZhQ7TA1WD/9yxJvQrpf6LcNrr8uMlQWCg2iz2q1LGt1Itkuu
- KaavEF9nqHmoqhSfZeAIKAPn6xuYbGxXDrpN7dXCOH92fscLodZqZtK5FtbLvO572EPfxneY
- UT7JzDc/5LT9cFFugTMOhq1BG62vUm/F6V91+unyp4dRlyryAeqEuISykhvjZCVHk/woaMZv
- c1Dm4Uvkv0Ilelt3Pb9J7zhcx6sm5T7v16VceF96jG61bnJ2GFS+QZerZp3PY27XgtPxRxYj
- AmFUeF486PHx/2Yi4u1rQpIpC5inPxIgR1+ZFvQrAV36SvLFfuMhyCAxV6WBlQc85ArOiQZB
- Wm7L0repwr7zEJFEkdy8C81WRhMdPvHkAIh3RoY1SGcdB7rB3wCzfYkAuCBqaF7Zgfw8xkad
- KEiQTexRbM1sc/I8ACpla3N26SfQwrfg6V7TIoweP0RwDrcf5PVvwSWsRQp2LxFCkwnCXOra
- gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
- sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
- UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
-In-Reply-To: <20230925154707.837542-18-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
+ control
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Luben Tuikov <luben.tuikov@amd.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230924224555.15595-1-dakr@redhat.com>
+ <312983ee-ba4c-477e-8846-072c815df862@amd.com>
+ <12f19494-7fd0-055f-4135-e17581398eb5@redhat.com>
+ <20230927092514.04776822@collabora.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20230927092514.04776822@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 17:47, Bryan O'Donoghue wrote:
-> Digging into the documentation we find that the DT_ID bitfield is used to
-> map the six bit DT to a two bit ID code. This value is concatenated to the
-> VC bitfield to create a CID value. DT_ID is the two least significant bits
-> of CID and VC the most significant bits.
+On 9/27/23 09:25, Boris Brezillon wrote:
+> On Wed, 27 Sep 2023 02:13:59 +0200
+> Danilo Krummrich <dakr@redhat.com> wrote:
 > 
-> Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+>> On 9/26/23 22:43, Luben Tuikov wrote:
+>>> Hi,
+>>>
+>>> On 2023-09-24 18:43, Danilo Krummrich wrote:
+>>>> Currently, job flow control is implemented simply by limiting the amount
+>>>> of jobs in flight. Therefore, a scheduler is initialized with a
+>>>> submission limit that corresponds to a certain amount of jobs.
+>>>
+>>> "certain"? How about this instead:
+>>> " ... that corresponds to the number of jobs which can be sent
+>>>     to the hardware."?
+>>>    
+>>>>
+>>>> This implies that for each job drivers need to account for the maximum
+>>>                                   ^,
+>>> Please add a comma after "job".
+>>>    
+>>>> job size possible in order to not overflow the ring buffer.
+>>>
+>>> Well, different hardware designs would implement this differently.
+>>> Ideally, you only want pointers into the ring buffer, and then
+>>> the hardware consumes as much as it can. But this is a moot point
+>>> and it's always a good idea to have a "job size" hint from the client.
+>>> So this is a good patch.
+>>>
+>>> Ideally, you want to say that the hardware needs to be able to
+>>> accommodate the number of jobs which can fit in the hardware
+>>> queue times the largest job. This is a waste of resources
+>>> however, and it is better to give a hint as to the size of a job,
+>>> by the client. If the hardware can peek and understand dependencies,
+>>> on top of knowing the "size of the job", it can be an extremely
+>>> efficient scheduler.
+>>>    
+>>>>
+>>>> However, there are drivers, such as Nouveau, where the job size has a
+>>>> rather large range. For such drivers it can easily happen that job
+>>>> submissions not even filling the ring by 1% can block subsequent
+>>>> submissions, which, in the worst case, can lead to the ring run dry.
+>>>>
+>>>> In order to overcome this issue, allow for tracking the actual job size
+>>>> instead of the amount job jobs. Therefore, add a field to track a job's
+>>>
+>>> "the amount job jobs." --> "the number of jobs."
+>>
+>> Yeah, I somehow manage to always get this wrong, which I guess you noticed
+>> below already.
+>>
+>> That's all good points below - gonna address them.
+>>
+>> Did you see Boris' response regarding a separate callback in order to fetch
+>> the job's submission units dynamically? Since this is needed by PowerVR, I'd
+>> like to include this in V2. What's your take on that?
+>>
+>> My only concern with that would be that if I got what Boris was saying
+>> correctly calling
+>>
+>> WARN_ON(s_job->submission_units > sched->submission_limit);
+>>
+>> from drm_sched_can_queue() wouldn't work anymore, since this could indeed happen
+>> temporarily. I think this was also Christian's concern.
 > 
-> commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
-> silently fixed the multiplication by four which would give a better
-> value for the generated CID without mentioning what was being done or why.
+> Actually, I think that's fine to account for the max job size in the
+> first check, we're unlikely to have so many native fence waits that our
+> job can't fit in an empty ring buffer.
 > 
-> Next up I haplessly changed the value back to "dt_id = vc * 4" since there
-> didn't appear to be any logic behind it.
-> 
-> Hans asked what the change was for and I honestly couldn't remember the
-> provenance of it, so I dug in.
-> 
-> Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
-> 
-> Add a comment so the next hapless programmer doesn't make this same
-> mistake.
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  drivers/media/platform/qcom/camss/camss-csid-gen2.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> index 6ba2b10326444..791f27b18c394 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> @@ -352,6 +352,18 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
->  		phy_sel = csid->phy.csiphy_id;
->  
->  	if (enable) {
-> +		/*
-> +		 * DT_ID is a two bit bitfield that is concatenated with
-> +		 * the four least significant bits of the six bit VC
-> +		 * bitfield to generate an internal CID value.
-> +		 *
-> +		 * CSID_RDI_CFG0(vc)
-> +		 * DT_ID : 28:27
-> +		 * VC    : 26:22
 
-This is 5 bits, not 6 bits as the comment above says. Which is right?
-
-> +		 * DT    : 21:16
-> +		 *
-> +		 * CID   : VC 3:0 << 2 | DT_ID 1:0
-> +		 */
->  		u8 dt_id = vc;
-
-So if dt_id is 2 bits, and vc can be more than 2 bits in the future,
-shouldn't this read "vc & 3"?
-
-Regards,
-
-	Hans
-
->  
->  		if (tg->enabled) {
+But it can happen, right? Hence, we can't have this check, do we?
 
