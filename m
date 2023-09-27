@@ -2,170 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3727B0A02
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E617B0A09
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjI0Q0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
+        id S231737AbjI0Q0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjI0Q0N (ORCPT
+        with ESMTP id S231657AbjI0Q0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:26:13 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2066.outbound.protection.outlook.com [40.107.220.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FE0F3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:26:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GBBAicT2FPGRZSWBR16wuhkTQi7BJZIQRLnqDsCvcoiQHPAC19ws3SMQxWHlgHQ9Gb/DQm1SNL+FIBDFHZhkXoH4N7DSFI7dS4VabPKcUzTtmx2PIAXd6ct1lxvozcrTTrKdbIN0b0jNO6Tqw3ItiFq69HxziUjBZ1a0DZxpGP5+06ChFYQo8G+zVPaRRKJwGNZATDF4uzoHkDJntP3YqRk/gXnP0bH3gyTHu2gHjJVs3owf9M+0xRJJj+/97Pk7eeJS07k01v85Z8crCnscF3jug+AHmUtkhotKqzY8fQpbTWl6wZQKCJblbzhQv5EMJVTTKQTeXNgf567QzCRQMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hSD6FvqOxWcxSDPN/iwCjoI7Mr5SZMADQAY3VJBkW+s=;
- b=IxaneRjzMwA4Gcgrd8Lr9s/VfkKX9pfkCSSy7YE7ZOsmyKZSUPgrrRuH3GkYpn/YqZMGZS63MqYP/wfT+izmz4O3hW8JXyok16ThuJSD6JPtj76BBtJqVI9XZPX15VGkns3aOmpeqW09bLWnWHw23aI5wWuemRC3pfswFmjQ0U4y+65cFxfjtLJWOFheQr74vm8apNsZlMNjRzheYadnYvfVPtKGkm33pco4Gy5rKGxNKgS9fmsPzhSxwtuGvZdCgM+/xngXUP+Cl39gcLZ0gBGQbnnL+7EbzE4KIBl17Tok5/oI/YhN30041HYg9/VeGVq3WEZAEdN4M+GAXXcJMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hSD6FvqOxWcxSDPN/iwCjoI7Mr5SZMADQAY3VJBkW+s=;
- b=CSeQxL3vbxyVt82YMw+J0s0FNRSRadxAxGXIcFMCAyT/BNjGdyuiCHP9AuI8p9dF+X0STpp87FPG86J/Q0JA5FVjiUPKQFAJZh+DzlCfKgXcvuw4AoPw7PvSttXqPgJoG4rf/rqkahJ+5o9G2/SqljmJeBdi0g/kSzk1H1cLU7c=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
- by SJ0PR12MB7457.namprd12.prod.outlook.com (2603:10b6:a03:48d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Wed, 27 Sep
- 2023 16:26:10 +0000
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::65a:db41:7713:c60f]) by PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::65a:db41:7713:c60f%5]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 16:26:10 +0000
-Message-ID: <fd40809d-bb6a-dfc6-6619-eb467a68c9bf@amd.com>
-Date:   Wed, 27 Sep 2023 21:55:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
- for gfx8
-Content-Language: en-US
-To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, shashank.sharma@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Felix.Kuehling@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230927161616.3335-1-Arvind.Yadav@amd.com>
- <20230927161616.3335-2-Arvind.Yadav@amd.com>
-From:   "Yadav, Arvind" <arvyadav@amd.com>
-In-Reply-To: <20230927161616.3335-2-Arvind.Yadav@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA1P287CA0003.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a00:35::16) To PH7PR12MB6000.namprd12.prod.outlook.com
- (2603:10b6:510:1dc::15)
+        Wed, 27 Sep 2023 12:26:43 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87DCCE6;
+        Wed, 27 Sep 2023 09:26:41 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 707A21FB;
+        Wed, 27 Sep 2023 09:27:19 -0700 (PDT)
+Received: from e103737-lin.cambridge.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AA363F59C;
+        Wed, 27 Sep 2023 09:26:40 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+Subject: [PATCH v2 0/4] ACPI: PCC: Define and use the common PCC shared
+ memory regions related macros
+Date:   Wed, 27 Sep 2023 17:26:09 +0100
+Message-Id: <20230927-pcc_defines-v2-0-0b8ffeaef2e5@arm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|SJ0PR12MB7457:EE_
-X-MS-Office365-Filtering-Correlation-Id: debe37fe-314b-4b72-e02e-08dbbf767570
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V0YWjdD/K4fOd7horEgAsQxJtnwP4+pYt1ZA+vZp8PlU8vLT7xROuqa/jJxRfnONCiKL1SjXUd76e5OR5olW2ERvt9Nadw4XUKIKwcT/uqpdybSK9uQAxKVNTzIjS0Ha6ks8S4B+EiyKGBQ/0yxuhxctUAPj/SMCOLGf490sMXqY2A7Ba2HfPtu/ckIBuAdzI8OD+nvKUI3lxux6n9eDa9Qfpv83HvooDNIRJJnoJsI7thWCqNViw2fVT2f18CuVCzg7i1sqT3TDzM1qc9CkN+qisa98pX2JZpbjqP1KwWncy2CaMuGrg8uNlU/C3xN5v2NeDTmQzFvyUi9BmIwDe69YE1wBzVW6iH/+StE/1VSXeTJrPh1KCqbMMa4ux+wEWA1jYwN7GszBX0iTN09zoQHg+ZoWGcqAoAwNpEEAhzvXQgk/FA2ybFkIIKfPsef3X/U/M+Sw1Uhoi3CUmhO/9V3H/uRRD6SaAJCgmh7RsZv9pAOGkxkuXluLmmChtaL1FA/hA4Z+Ub+02r3j78YzZyeISS/GjwGIjAikvnm0XMSBkQ35CVGhR+XfZ5/vOGLJISTyoN/8eRVLuX/n2mPh2XIizBGfZk+deyl89eXZAKYSt11nRZIKnvZa+Lw6+XNnNrV5+UJBmOQVnYLA4V+yOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(186009)(1800799009)(451199024)(2906002)(83380400001)(38100700002)(6666004)(6506007)(36756003)(53546011)(6512007)(31696002)(2616005)(6486002)(478600001)(26005)(41300700001)(31686004)(8936002)(8676002)(66556008)(4326008)(5660300002)(66476007)(6636002)(66946007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnBIWkRUVDJMVnVNdXlvTVlxLzgrYVhwTm5Cb1MrU2tQeXFKRnBWZHdtM2Rm?=
- =?utf-8?B?Z2x5ek53OWlQTmlxVG5oZDJhTjI5c3F4MHVhcUo3Z0pRbGQyUVBnQXdhQlll?=
- =?utf-8?B?V0JGT2JNWlNUMnBZNGdvK0Qra1pGY3lUTXdIbExkZnFkUzloU0c3NmhQaldJ?=
- =?utf-8?B?RDdzVE5HNENxTXhhMVoyVHBaNXZhNHFYUnBFQnBka2Vvdmp0bEhLQTRtQ3oz?=
- =?utf-8?B?RUtnS3EyTkxVZmgraWlNZWVoRWgwWjJHUkV5TklYemIyZEFONjhTYkhUSGhW?=
- =?utf-8?B?NWUwVVM1S2xqMy9lWXFMNVZZc1lnZk9TcUhLdkVoMnYrZnpsZGpKYjZXMzht?=
- =?utf-8?B?cEMxRDhYcmFQSmZIcE12cmFEdFFPcEUvK3ZabGhoVkVMYWx3RVdTWmZTdkhI?=
- =?utf-8?B?WVhDZE9YOTBkUm1RQXE2SWRGTUNiOER5dHQzL3J5UE80OVdGTkk3QnI0V1lX?=
- =?utf-8?B?cEFsOWIwQUNkUjRqcyt3eGVHZzRvY2MvdE1mQk1sbHdNOVZkanBhc3F4TEpu?=
- =?utf-8?B?Z1djZUlFRXB1L2NMRlJlRGpaOU0zNVExSU10bW5yME1oTklKUEw1Y3luSWJH?=
- =?utf-8?B?UE9iczNtbG14THdla09vbHpvYzdBWG1CNGo3SmJpbERiS3VoUGxrVW4yVitC?=
- =?utf-8?B?alMzVmlYL3Ira2E0OFdTNEpOQ0VxZlhpVnhZaWQ5TFVjVTNnMGJkQmlFUk4w?=
- =?utf-8?B?aWU4R0gzVjI4b2dNczU0dUdIYzZCbEFNRnlKZDY2d0dJTUhzb0xaN3NVY2xn?=
- =?utf-8?B?Ykh2eUFBL3J1UzRxQU9YVkFEaklidi9LOFlOUW1nMVNQVmJ1aXFwOVVNMjlC?=
- =?utf-8?B?cGJDOW9UTjl4YUxadGxQWkVscy9xZXppc1JqZXFtT3dDSStPM3AwVnI3dElo?=
- =?utf-8?B?Ui9ZUHJjTHI2ekFlTXd6dkd6ZGdpUktPeGQxeEJ4SkdUTURFTkNvU3dpRzZC?=
- =?utf-8?B?eVMyNWd2bVpMTHRRR3lzbUxBU3pMcWVqVlVGMVp2OVhCdTBzekQ4eTdyRHlT?=
- =?utf-8?B?dGhMKzR2dmF5MzlOcGtvay9RUUJ5MlRTVGlrS0RBQUo4NHJGMTB2aEVrTk1x?=
- =?utf-8?B?aG1rbUg2Mm44WXZCSU9WVXAwdDdnbm1wSnR0Ukt4ZVIxcSs3UmhiWnc0Q3hR?=
- =?utf-8?B?eGJMdXRmOXBodGZVeFBoTkJjM0lEMmZQSUNoamZTOXFPaGZQWEtWTkYyNkla?=
- =?utf-8?B?TlEydHFyVTVuVm1rUEZhZVU5UnBITDZJVU1sUmtXWWhtZkJzNUdBVUtXalBT?=
- =?utf-8?B?RnZ0RzNqZ2N6TTduT0JWdTVYT0VGOFRjdUg3djIzWHRreCs5OWNEQ3UvaGJB?=
- =?utf-8?B?VVBaQlg0UU9VTkd0dVRPZm05NGZhejEzb1lKMVVqREVUaXRPSUNsQjZOL296?=
- =?utf-8?B?bmJqNHZhL3VLamhoUkNRbzkwN0NibzhWa0p5azBnOXBWMVdPeUxwVGFmOUFI?=
- =?utf-8?B?WUhlcWV4T2l5ZnovMTNWRUc4TmJTWnZlMUNlV1N0YWxkdS8rVmVEOUVtMGcv?=
- =?utf-8?B?MTdURm5DbG9idHczQkJLR2IvMFg4eUxVZ0VvTVhRTytEUWVrNVNvSGpwU29P?=
- =?utf-8?B?ZnBMZmcwalVkazlIKzR3amI4VnVKbTFXcGlzWnFpVUxJN2RaWXptTXB6QW9Z?=
- =?utf-8?B?UjNYSGZCRjNpWHF0djQ4bkNycWNhbXE0ZDJoZ1pMUGVaNmhRODhvVEQ0RTBM?=
- =?utf-8?B?QjFSeGZ1dVRaQmNBMzVtV3hLU0JEZHZQU0h4WW5mYlNsdmpYYmdkSXFIN2ZI?=
- =?utf-8?B?L1A5T3RFQ29DZTNrNExwK1lOcTQ2QWpSS2ZCV1VNeGVFRUhJYmthSjhLMHI2?=
- =?utf-8?B?QUM3Rk5NL2NmbzZjRHVpMWp2clpOWXhWaVprT3pLeGdhSmUybFBwNnZ2WVBF?=
- =?utf-8?B?WlFnbklva241YzFuY1BhSjM3ODRWZWd3U2tseFhtQUNSVWV6MGRCR01hZVQy?=
- =?utf-8?B?MFBEUU9pc3VLWmxWc0VlQ2NKc0JrVGVQN2U0NVlXRE9pYjRocWhjNS9RMHV4?=
- =?utf-8?B?OUhLYng2blpzN2lidjk5L0o3QTFUeGVINXFxTUI4cS80aFRKYWNzMW8xMjkr?=
- =?utf-8?B?WXNSaVpEOFZWT00xblJ0cTh1cTNubUlOOUdXdDM1TDR6blZraWRhZFE3eEdl?=
- =?utf-8?Q?74SQUU2iaKEOb8IHFaF26LgYw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: debe37fe-314b-4b72-e02e-08dbbf767570
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 16:26:10.3592
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5Es78U/vQmSgGye+gsFIhq9pjpT+FSMVEyxNB3hfx5e+mOAnKKeIxPUKCMvDz0PxYQEI4r1+97AISOfZPiYKHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7457
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKJXFGUC/22MwQ7CIBAFf6XZsxgKQqyn/odpDIXF7qHQgCGah
+ n8Xe/Y472Vmh4yJMMOt2yFhoUwxNBCnDuxiwhMZucYguJB8EJpt1j4cegqYmbjMqFDKWXsJzdh
+ SO95H7T41Xii/Yvoc8dL/1v+d0jPOuB+EMr1WV+9Gk9azjStMtdYvP/zP7qQAAAA=
+To:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Huisong Li <lihuisong@huawei.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1339; i=sudeep.holla@arm.com;
+ h=from:subject:message-id; bh=lwT8ZnKV+w+WbSm9j2obr3XMxv9qHzx8UZUyVSqGOk4=;
+ b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlFFe/GK8S35+7w73n13E+CWi7SnJXnak49uWZd
+ KPcDX+7sHiJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZRRXvwAKCRAAQbq8MX7i
+ mB7PD/9GdBYmtGCqO/u6bYiAspw2Jk7CK5hdy7XxEu3RAaB1ojcdnNS87mc28fF7z+EvCfuYrDO
+ eA2OX2Jpz3XWXmDCVFi0hCHxGjXPUETYwut8AteGPNb0Q4WZHcCPsakFSu5m4WjrCbQ5bcav+7T
+ J/zY5lIyaw+xB+7zu5Lu2+5vTDvUaHlQMPb/VANx8jDahjIK2X/sSP7F1KJqHnC2k0Z/hG6wphs
+ Ro2XfOb0c8Mg3H3jrcWRjvggNoP7plggYwGocwTiJVmqLILnMQW+OVIEf1RcryDCjyIVddtaNUo
+ 8Mjv9DYm35gIMA6rM7GzEoGGCsHEX2p40/Pan33NI6myfdTVnumh2ml+03D5HhZnFrdXpiTpxl0
+ oGv/2abXj+SQD9s0ZzOGdV4jL9IAPsdW+9s8xmJyaRG7JB59+jIrH9qO+6gTkjE4OVu6M7UT4Ir
+ cB67bUJ22oz8ksu8WGZ7esgXnqv4TOcLHIynxcwiQAQWKaXNS9ahwOR/NarGzS8/fsjyVuNxo3N
+ eBypEzKSTHqgrha1KXfq85OGPhsrecXEGsLQtmdiN4ADheoDUyQJQI6GbQdPydzyRz5ymyhfDFu
+ Tj6oHnjhznO1cZeyhRBVvPsHdXsEy5Tgba0dskTMoUs/gmXhRdFdbdk4qaHALTkPJwBWRgT1otc
+ iFOW/9awPLBz/Ew==
+X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp;
+ fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Felix.Kuehling@amd.com for review.
+This set of 3 small patches intend to consolidate and replace the existing
+locally defined macros within couple of PCC client drivers when accessing
+the command and status bitfields.
 
-Thanks
-~Arvind
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+Changes in v2:
+- Added review/ack tags from Andi Shyti(I2C) and Guenter Roeck(hwmon)
+- Added bitfields for Initiator Responder Communications Channel flags as well
+- Migrated kunpeng_hccs soc driver to use generic PCC shmem related macros
+- Link to v1: https://lore.kernel.org/r/20230926-pcc_defines-v1-0-0f925a1658fd@arm.com
 
-On 9/27/2023 9:46 PM, Arvind Yadav wrote:
-> This patch is to adjust the absolute doorbell offset
-> against the doorbell id considering the doorbell
-> size of 32/64 bit.
->
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
-> ---
->   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> index 0d3d538b64eb..c327f7f604d7 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> @@ -407,7 +407,16 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
->   
->   	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
->   								  qpd->proc_doorbells,
-> -								  q->doorbell_id);
-> +								  0);
-> +
-> +	/* Adjust the absolute doorbell offset against the doorbell id considering
-> +	 * the doorbell size of 32/64 bit.
-> +	 */
-> +	if (!KFD_IS_SOC15(dev))
-> +		q->properties.doorbell_off += q->doorbell_id;
-> +	else
-> +		q->properties.doorbell_off += q->doorbell_id * 2;
-> +
->   	return 0;
->   }
->   
+---
+Sudeep Holla (4):
+      ACPI: PCC: Add PCC shared memory region command and status bitfields
+      i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
+      hwmon: (xgene) Migrate to use generic PCC shmem related macros
+      soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros
+
+ drivers/hwmon/xgene-hwmon.c            | 16 +++++-----------
+ drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++++------------
+ drivers/soc/hisilicon/kunpeng_hccs.c   |  8 ++------
+ include/acpi/pcc.h                     | 13 +++++++++++++
+ 4 files changed, 24 insertions(+), 29 deletions(-)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230926-pcc_defines-24be5e33b6f3
+
+Best regards,
+-- 
+Regards,
+Sudeep
+
