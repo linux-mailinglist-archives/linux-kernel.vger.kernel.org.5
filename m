@@ -2,127 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C02A7B0283
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550A67B0280
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbjI0LNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
+        id S231302AbjI0LNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbjI0LNQ (ORCPT
+        with ESMTP id S231318AbjI0LNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:13:16 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7101191;
-        Wed, 27 Sep 2023 04:13:14 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3707D3200901;
-        Wed, 27 Sep 2023 07:13:13 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 27 Sep 2023 07:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695813192; x=1695899592; bh=2g
-        R1k5tdvr6okGB4cxabccqENyYy1BsDzaxYM7gOAjg=; b=N8L3qu7IGuS3tYz7Sd
-        zUVcuPBUDQBsUSKNW6M2EI+2+ZYZ4rY+eoWrM4EuXIOkdGs6e4S2zZh5hrTz90EH
-        +CqoPQx6adFOb5hDQW2wiCPxPsyX1RMgWi3lpfnGZkXjx6echYH91u1jnSilnQ49
-        AjrpBjcbvh3/GJajom8fda99rDQR5MiAJWldlDXO6T2K3P0So54swYyyCSnuvKGQ
-        omaj4B2R8i35SDtUpQHj2cL+GOxABW0INslLNnKBOdcy1254etf1pEZMbvKwP04N
-        j63FwMVgYoO6Xsy6OMmpvG0UEF0JIiFc1cSKAh6KR2ZzBEpupB/eVIKqn9Q/9aUs
-        wU/g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695813192; x=1695899592; bh=2gR1k5tdvr6ok
-        GB4cxabccqENyYy1BsDzaxYM7gOAjg=; b=nxUAAk+ScjcqqqPXv9SO/lY9pux8I
-        9Tl++nzZx+sE2/NjL/dY42nd6fgqeWLC8DHODHPerNX94N1sQ5OJhHGmy9+SDuE2
-        VWN9ZBMaP15qMKPqhhBwUMRbLjwaMWHgornKlFzu83NbP2Tc3QEowDEP9cqt/9bI
-        0G3ca9avn/ra/ML5D10E3etkw4Nc8kkvVdG8oLg8tF5LTag3D1S94R2wixC7ux0l
-        ik7KYfUewkR98bYPR/DxK1DjwvaCvz2TC9NIyJTxQ6b1/JLdjfmiAAl7vVdrGMaL
-        IS+kpP8wht1+rDhpP+yoVnOSq1RTsl8wa53UovEUotP9BIlLD6jD+sItg==
-X-ME-Sender: <xms:Rw4UZQ-MPN2gMzJWcxWhp1EM5_9Njs0YdW84NtpPp3qh_kCcnlF0Zw>
-    <xme:Rw4UZYs4ZwD8lRKBaaYCh8lhwCv0S8feUDn07H8L-87J7uo_rsp75uyYL0owuLqaO
-    s97xIpgGunzHU1Yijk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdefgddutdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:Rw4UZWBNRIpOghMGTlB9-dPhszFwze7iURBrFQzq1fWV-sCkDnyFWA>
-    <xmx:Rw4UZQee_BWXBh7y4nBjgOgDvGBgjHLyGzOju8cMu88vjEVjUvgDFQ>
-    <xmx:Rw4UZVNXQU910jnokPJ-52xK3TkdwZry0HMVnHuguS5LSLRZ_3gj2g>
-    <xmx:SA4UZZmww0hgkVW4vp3P2AX79m733yxjHUg1LoqydOGtwFpgwyzvdg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1938FB6008D; Wed, 27 Sep 2023 07:13:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-957-ga1ccdb4cff-fm-20230919.001-ga1ccdb4c
+        Wed, 27 Sep 2023 07:13:14 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B1B13A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:13:13 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41958410e5cso550151cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695813192; x=1696417992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q3T0uZM81nh3MMMeHJ0x5DLvTiX2DwUPL7g6/tO7DRc=;
+        b=P2TCvwtaihwVYoXCO/s5A+oQmNqWiAJYQ7bIcJS9ylkXHxLfhQNQFqtM9fwB8f5LiB
+         gsFGX4Msi8YNfpkgxTbGuQKWzRWFT+kJmJdZdjomKd5Z0oamGymZHxTKfkLs+5t06Zjt
+         n4J/15j/Wqwcns9QYBSclWrVb3f8Aa2F10OekCqD73wrk0O+YNVaNtViHJkE8/5x9gHn
+         SxC+/4zh9bvsMvqUl7EORzLHG5C1C/ocVgj4bqQxtrb45FMKA6JguhKyCl3ebpIv+R4y
+         Cpsw9n+LYpxkIeWXk0iiR29JXpS9B16vpA/a41piyyJUXxWco/5McAcQjNS35YUAqs5v
+         L07A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695813192; x=1696417992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q3T0uZM81nh3MMMeHJ0x5DLvTiX2DwUPL7g6/tO7DRc=;
+        b=glX7Dq5YRcb/DmDH9dHEbXYLN84zIVSsgghVxVGfZd4rK3kijbdWjYLxC0qXCSlKuS
+         bky/VWMPP+PJhctMj48Pjo6JsxuLgU/Xkm2gzXbewg2vB7PthUqlIO11iunfUMI7sv2i
+         EtXYJJj3WSQwHX/jFgqrR/aPnBhLxah8Uztpz0GomMV5JpLCYCN+p7BD171wVn6SNdXa
+         9f+a5GT0dTEwjrjo9il/Us/NG7aP8eMndlbtujslZLcVNDz381yzArpGcjLGwfj6bc/D
+         zH72rVXk+v6r/yU6Ei5050L2/get2aHWfC2r0KxtGJI3gyQhk4asHQwwlebTshBJ/xKR
+         U4dA==
+X-Gm-Message-State: AOJu0YyYxqvvt7tlfKfZPXEdSJdHq+p5eNzNkDZVfokBmPW3H3J8O4Cc
+        7WxIlteSDsvUml9418o8PvQk5zOvW9SS/S7Mwp5m9g==
+X-Google-Smtp-Source: AGHT+IGlYUe+ty9S5L6G+a9UM05DUyiLGpED/5fz3M2kc6vqSgpuXjGJtjhwJ7K3Ne82Jhis9uR7jvtLWCq4xjMbd2I=
+X-Received: by 2002:ac8:7d0b:0:b0:410:653f:90e8 with SMTP id
+ g11-20020ac87d0b000000b00410653f90e8mr535228qtb.11.1695813192307; Wed, 27 Sep
+ 2023 04:13:12 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <9065720e-5a5c-428a-a28d-a3337ac31f85@app.fastmail.com>
-In-Reply-To: <31585f93157c5c4487b53e3bcb6aac9e92e62f92.camel@linux.ibm.com>
-References: <20230927072223.2555698-1-arnd@kernel.org>
- <31585f93157c5c4487b53e3bcb6aac9e92e62f92.camel@linux.ibm.com>
-Date:   Wed, 27 Sep 2023 13:12:49 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Mimi Zohar" <zohar@linux.ibm.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Dmitry Kasatkin" <dmitry.kasatkin@gmail.com>
-Cc:     "Paul Moore" <paul@paul-moore.com>,
-        "James Morris" <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Nayna Jain" <nayna@linux.ibm.com>,
-        "Eric Snowberg" <eric.snowberg@oracle.com>,
-        "Tianjia Zhang" <tianjia.zhang@linux.alibaba.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Oleksandr Tymoshenko" <ovt@google.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ima: rework CONFIG_IMA dependency block
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230927105858.12950-1-quic_kriskura@quicinc.com>
+In-Reply-To: <20230927105858.12950-1-quic_kriskura@quicinc.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Wed, 27 Sep 2023 04:13:00 -0700
+Message-ID: <CANP3RGd1ZzQXE2-kDDNyfxuLZCDYoJKJQ-2uBsq++StqTDkCRg@mail.gmail.com>
+Subject: Re: [PATCH v4] usb: gadget: ncm: Handle decoding of multiple NTB's in
+ unwrap call
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
+        quic_jackp@quicinc.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023, at 12:52, Mimi Zohar wrote:
-> On Wed, 2023-09-27 at 09:22 +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> Changing the direct dependencies of IMA_BLACKLIST_KEYRING and
->> IMA_LOAD_X509 caused them to no longer depend on IMA, but a
->> a configuration without IMA results in link failures:
->> 
->> arm-linux-gnueabi-ld: security/integrity/iint.o: in function `integrity_load_keys':
->> iint.c:(.init.text+0xd8): undefined reference to `ima_load_x509'
->> 
->> aarch64-linux-ld: security/integrity/digsig_asymmetric.o: in function `asymmetric_verify':
->> digsig_asymmetric.c:(.text+0x104): undefined reference to `ima_blacklist_keyring'
->> 
->> Adding explicit dependencies on IMA would fix this, but a more reliable
->> way to do this is to enclose the entire Kconfig file in an 'if IMA' block.
->> This also allows removing the existing direct dependencies.
->> 
->> Fixes: be210c6d3597f ("ima: Finish deprecation of IMA_TRUSTED_KEYRING Kconfig")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Sep 27, 2023 at 3:59=E2=80=AFAM Krishna Kurapati
+<quic_kriskura@quicinc.com> wrote:
 >
-> Oleksandr Tymoshenko's patch to address this, made it into linux-next
-> today.
+> When NCM is used with hosts like Windows PC, it is observed that there ar=
+e
+> multiple NTB's contained in one usb request giveback. Since the driver
+> unwraps the obtained request data assuming only one NTB is present, we
+> loose the subsequent NTB's present resulting in data loss.
 >
-> Commit be210c6d3597 ("ima: Finish deprecation of IMA_TRUSTED_KEYRING
-> Kconfig") made it last night into linux-next.
+> Fix this by checking the parsed block length with the obtained data
+> length in usb request and continue parsing after the last byte of current
+> NTB.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 9f6ce4240a2b ("usb: gadget: f_ncm.c added")
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+> Changes in v4: Replaced void* with __le16* typecast for tmp variable
+> Changes in v3: Removed explicit void* typecast for ntb_ptr variable
+>
+>  drivers/usb/gadget/function/f_ncm.c | 26 +++++++++++++++++++-------
+>  1 file changed, 19 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
+ction/f_ncm.c
+> index 424bb3b666db..faf90a217419 100644
+> --- a/drivers/usb/gadget/function/f_ncm.c
+> +++ b/drivers/usb/gadget/function/f_ncm.c
+> @@ -1171,7 +1171,8 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                           struct sk_buff_head *list)
+>  {
+>         struct f_ncm    *ncm =3D func_to_ncm(&port->func);
+> -       __le16          *tmp =3D (void *) skb->data;
+> +       unsigned char   *ntb_ptr =3D skb->data;
+> +       __le16          *tmp;
+>         unsigned        index, index2;
+>         int             ndp_index;
+>         unsigned        dg_len, dg_len2;
+> @@ -1184,6 +1185,10 @@ static int ncm_unwrap_ntb(struct gether *port,
+>         const struct ndp_parser_opts *opts =3D ncm->parser_opts;
+>         unsigned        crc_len =3D ncm->is_crc ? sizeof(uint32_t) : 0;
+>         int             dgram_counter;
+> +       int             to_process =3D skb->len;
+> +
+> +parse_ntb:
+> +       tmp =3D (__le16 *)ntb_ptr;
+>
+>         /* dwSignature */
+>         if (get_unaligned_le32(tmp) !=3D opts->nth_sign) {
+> @@ -1230,7 +1235,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                  * walk through NDP
+>                  * dwSignature
+>                  */
+> -               tmp =3D (void *)(skb->data + ndp_index);
+> +               tmp =3D (__le16 *)(ntb_ptr + ndp_index);
+>                 if (get_unaligned_le32(tmp) !=3D ncm->ndp_sign) {
+>                         INFO(port->func.config->cdev, "Wrong NDP SIGN\n")=
+;
+>                         goto err;
+> @@ -1287,11 +1292,11 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                         if (ncm->is_crc) {
+>                                 uint32_t crc, crc2;
+>
+> -                               crc =3D get_unaligned_le32(skb->data +
+> +                               crc =3D get_unaligned_le32(ntb_ptr +
+>                                                          index + dg_len -
+>                                                          crc_len);
+>                                 crc2 =3D ~crc32_le(~0,
+> -                                                skb->data + index,
+> +                                                ntb_ptr + index,
+>                                                  dg_len - crc_len);
+>                                 if (crc !=3D crc2) {
+>                                         INFO(port->func.config->cdev,
+> @@ -1318,7 +1323,7 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                                                          dg_len - crc_len=
+);
+>                         if (skb2 =3D=3D NULL)
+>                                 goto err;
+> -                       skb_put_data(skb2, skb->data + index,
+> +                       skb_put_data(skb2, ntb_ptr + index,
+>                                      dg_len - crc_len);
+>
+>                         skb_queue_tail(list, skb2);
+> @@ -1331,10 +1336,17 @@ static int ncm_unwrap_ntb(struct gether *port,
+>                 } while (ndp_len > 2 * (opts->dgram_item_len * 2));
+>         } while (ndp_index);
+>
+> -       dev_consume_skb_any(skb);
+> -
+>         VDBG(port->func.config->cdev,
+>              "Parsed NTB with %d frames\n", dgram_counter);
+> +
+> +       to_process -=3D block_len;
+> +       if (to_process !=3D 0) {
+> +               ntb_ptr =3D (unsigned char *)(ntb_ptr + block_len);
+> +               goto parse_ntb;
+> +       }
+> +
+> +       dev_consume_skb_any(skb);
+> +
+>         return 0;
+>  err:
+>         skb_queue_purge(list);
+> --
+> 2.42.0
 
-No, that is the patch that caused the regression for me, since it
-is missing the IMA dependencies.
-
-    Arnd
+Reviewed-by: Maciej =C5=BBenczykowski <maze@google.com>
