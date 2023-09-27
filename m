@@ -2,193 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE647AFC2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3AC7AFC2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjI0Hga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
+        id S229910AbjI0HhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjI0HgZ (ORCPT
+        with ESMTP id S229458AbjI0HhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:36:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F7B193
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695800137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ap6jvf8/2CoqbMpAwThp0QoWymIsVaHbvqKSWQ1uNLM=;
-        b=DxqZbid8+SG9xtUkotqnGYLLppNEf+Q7lITn0rNcTt4RqNFfk4TQ9tu9PI1fme8nrXa1cA
-        150h+wGO8tagfGOGSLfqzs74ibdwKMQ1Gsr7g35SwoW9DmMuxQ21G/p+qOuCqFjos5m2HV
-        r3yP+dOxVXMtwNHf5QlnB9E+oBIMxGQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-lUNwBF3GNAWxu1BcJfh43Q-1; Wed, 27 Sep 2023 03:35:36 -0400
-X-MC-Unique: lUNwBF3GNAWxu1BcJfh43Q-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-405917470e8so58144465e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:35:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695800135; x=1696404935;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ap6jvf8/2CoqbMpAwThp0QoWymIsVaHbvqKSWQ1uNLM=;
-        b=vSI9F1OLRw8wyaaPmcqyzHToO8qnMxbtd3CqGw70OTp3uNAPwkdOKNw169GKBs/zRa
-         jAEO4isZINZY3r/Myn/+5AI0dKTgaUsC4appyKMUX+xczHmqydbidt8qPxstta6cWEWl
-         saJqhTpHp4ThJhXsnb6x8Ac8SsRwGLcL5R2NevPRUWPOGo2QvDuIyZWG1jxIdSZaWe77
-         JpdUVKEbuIS9D5N8S/GiHh2OQ1BXCmPBB+/btZYdLv6mBlxXgbLUx6q0zcRQ4FljMm/A
-         SLR9tHKjmqHxQNR5b7Si5mJiWnP74CU6t80x4So7UkMQX6rLzagrOLXg1Bk+xrVJVFoG
-         e8Cw==
-X-Gm-Message-State: AOJu0YxvugDzPS6LfUaaF880IhnYBtNpK6GaRQNbF56b7QvbA+KFOFUL
-        l771lcM0otJJOOZPi/+OlJTNpRhatVMFBT6WW6GzntesCch3qvWmD9bdKda/VRwbsFbn7Bn8BqN
-        51FPgAkaYtZleO1xBdO2igQNP
-X-Received: by 2002:a7b:ce94:0:b0:401:c944:a4d6 with SMTP id q20-20020a7bce94000000b00401c944a4d6mr1190418wmj.28.1695800134934;
-        Wed, 27 Sep 2023 00:35:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFNeo+a3D1T3OSxeUepQ732xUxuE+Jh5ew/NsV6Yu1nas54YVkW3cnsBtEB4qZvL4QfCzEH8w==
-X-Received: by 2002:a7b:ce94:0:b0:401:c944:a4d6 with SMTP id q20-20020a7bce94000000b00401c944a4d6mr1190398wmj.28.1695800134503;
-        Wed, 27 Sep 2023 00:35:34 -0700 (PDT)
-Received: from sgarzare-redhat ([46.222.19.70])
-        by smtp.gmail.com with ESMTPSA id 19-20020a05600c029300b004060f0a0fdbsm4495926wmk.41.2023.09.27.00.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 00:35:33 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 09:35:31 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v1 08/12] vsock: enable setting SO_ZEROCOPY
-Message-ID: <n4si4yyqs2svmvhueyxxyev2v3wxugzjjb25wpyveg3ns5nv6i@cfb4fyq5kdaf>
-References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
- <20230922052428.4005676-9-avkrasnov@salutedevices.com>
- <ynuctxau4ta4pk763ut7gfdaqzcuyve7uf2a2iltyspravs5uf@xrtqtbhuuvwq>
- <d27b863d-8576-2c9b-c6a6-c8e55d7dad68@salutedevices.com>
+        Wed, 27 Sep 2023 03:37:11 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E62B10E;
+        Wed, 27 Sep 2023 00:37:08 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:35:50
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 15:35:50 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: Clean up errors in aic7xxx.h
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d27b863d-8576-2c9b-c6a6-c8e55d7dad68@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-ID: <3d665d21.883.18ad590c856.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDHZD9W2xNl8fG9AA--.626W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwATsA
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:38:06PM +0300, Arseniy Krasnov wrote:
->
->
->On 26.09.2023 15:56, Stefano Garzarella wrote:
->> On Fri, Sep 22, 2023 at 08:24:24AM +0300, Arseniy Krasnov wrote:
->>> For AF_VSOCK, zerocopy tx mode depends on transport, so this option must
->>> be set in AF_VSOCK implementation where transport is accessible (if
->>> transport is not set during setting SO_ZEROCOPY: for example socket is
->>> not connected, then SO_ZEROCOPY will be enabled, but once transport will
->>> be assigned, support of this type of transmission will be checked).
->>>
->>> To handle SO_ZEROCOPY, AF_VSOCK implementation uses SOCK_CUSTOM_SOCKOPT
->>> bit, thus handling SOL_SOCKET option operations, but all of them except
->>> SO_ZEROCOPY will be forwarded to the generic handler by calling
->>> 'sock_setsockopt()'.
->>>
->>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->>> ---
->>> Changelog:
->>> v5(big patchset) -> v1:
->>>  * Compact 'if' conditions.
->>>  * Rename 'zc_val' to 'zerocopy'.
->>>  * Use 'zerocopy' value directly in 'sock_valbool_flag()', without
->>>    ?: operator.
->>>  * Set 'SOCK_CUSTOM_SOCKOPT' bit for connectible sockets only, as
->>>    suggested by Bobby Eshleman <bobbyeshleman@gmail.com>.
->>>
->>> net/vmw_vsock/af_vsock.c | 46 ++++++++++++++++++++++++++++++++++++++--
->>> 1 file changed, 44 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->>> index 482300eb88e0..c05a42e02a17 100644
->>> --- a/net/vmw_vsock/af_vsock.c
->>> +++ b/net/vmw_vsock/af_vsock.c
->>> @@ -1406,8 +1406,16 @@ static int vsock_connect(struct socket *sock, struct sockaddr *addr,
->>>             goto out;
->>>         }
->>>
->>> -        if (vsock_msgzerocopy_allow(transport))
->>> +        if (vsock_msgzerocopy_allow(transport)) {
->>>             set_bit(SOCK_SUPPORT_ZC, &sk->sk_socket->flags);
->>> +        } else if (sock_flag(sk, SOCK_ZEROCOPY)) {
->>> +            /* If this option was set before 'connect()',
->>> +             * when transport was unknown, check that this
->>> +             * feature is supported here.
->>> +             */
->>> +            err = -EOPNOTSUPP;
->>> +            goto out;
->>> +        }
->>>
->>>         err = vsock_auto_bind(vsk);
->>>         if (err)
->>> @@ -1643,7 +1651,7 @@ static int vsock_connectible_setsockopt(struct socket *sock,
->>>     const struct vsock_transport *transport;
->>>     u64 val;
->>>
->>> -    if (level != AF_VSOCK)
->>> +    if (level != AF_VSOCK && level != SOL_SOCKET)
->>>         return -ENOPROTOOPT;
->>>
->>> #define COPY_IN(_v)                                       \
->>> @@ -1666,6 +1674,34 @@ static int vsock_connectible_setsockopt(struct socket *sock,
->>>
->>>     transport = vsk->transport;
->>>
->>> +    if (level == SOL_SOCKET) {
->>> +        int zerocopy;
->>> +
->>> +        if (optname != SO_ZEROCOPY) {
->>> +            release_sock(sk);
->>> +            return sock_setsockopt(sock, level, optname, optval, optlen);
->>> +        }
->>> +
->>> +        /* Use 'int' type here, because variable to
->>> +         * set this option usually has this type.
->>> +         */
->>> +        COPY_IN(zerocopy);
->>> +
->>> +        if (zerocopy < 0 || zerocopy > 1) {
->>> +            err = -EINVAL;
->>> +            goto exit;
->>> +        }
->>> +
->>> +        if (transport && !vsock_msgzerocopy_allow(transport)) {
->>> +            err = -EOPNOTSUPP;
->>> +            goto exit;
->>> +        }
->>> +
->>> +        sock_valbool_flag(sk, SOCK_ZEROCOPY,
->>> +                  zerocopy);
->>
->> it's not necessary to wrap this call.
->
->Sorry, what do you mean ?
-
-I mean that can be on the same line:
-
-	sock_valbool_flag(sk, SOCK_ZEROCOPY, zerocopy);
-
-Stefano
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+ImZvbyBfX21heWJlX3VudXNlZAkgYmFyIiBzaG91bGQgYmUgImZvbyBfX21heWJlX3VudXNlZCBi
+YXIiCkVSUk9SOiAiZm9vKgliYXIiIHNob3VsZCBiZSAiZm9vICpiYXIiCgpTaWduZWQtb2ZmLWJ5
+OiBHdW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBkcml2ZXJzL3Njc2kvYWlj
+N3h4eC9haWM3eHh4LmggfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3
+eHh4LmggYi9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3eHh4LmgKaW5kZXggOWJjNzU1YTBhMmQz
+Li4zM2YxYTlhYzQ2ODIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpYzd4eHgu
+aAorKysgYi9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3eHh4LmgKQEAgLTUxMiw3ICs1MTIsNyBA
+QCBzdHJ1Y3QgYWhjX2RtYV9zZWcgewogc3RydWN0IHNnX21hcF9ub2RlIHsKIAlidXNfZG1hbWFw
+X3QJCSBzZ19kbWFtYXA7CiAJZG1hX2FkZHJfdAkJIHNnX3BoeXNhZGRyOwotCXN0cnVjdCBhaGNf
+ZG1hX3NlZyoJIHNnX3ZhZGRyOworCXN0cnVjdCBhaGNfZG1hX3NlZyAqc2dfdmFkZHI7CiAJU0xJ
+U1RfRU5UUlkoc2dfbWFwX25vZGUpIGxpbmtzOwogfTsKIApAQCAtNzExLDcgKzcxMSw3IEBAIHN0
+cnVjdCBhaGNfaW5pdGlhdG9yX3RpbmZvIHsKICAqIG5lZ290aWF0aW9uIGlzIHRoZSBzYW1lIHJl
+Z2FyZGxlc3Mgb2Ygcm9sZS4KICAqLwogc3RydWN0IGFoY190bW9kZV90c3RhdGUgewotCXN0cnVj
+dCBhaGNfdG1vZGVfbHN0YXRlKgllbmFibGVkX2x1bnNbQUhDX05VTV9MVU5TXTsKKwlzdHJ1Y3Qg
+YWhjX3Rtb2RlX2xzdGF0ZSAqZW5hYmxlZF9sdW5zW0FIQ19OVU1fTFVOU107CiAJc3RydWN0IGFo
+Y19pbml0aWF0b3JfdGluZm8JdHJhbnNpbmZvW0FIQ19OVU1fVEFSR0VUU107CiAKIAkvKgpAQCAt
+MTEzMiw3ICsxMTMyLDcgQEAgY29uc3Qgc3RydWN0IGFoY19wY2lfaWRlbnRpdHkJKmFoY19maW5k
+X3BjaV9kZXZpY2UoYWhjX2Rldl9zb2Z0Y190KTsKIGludAkJCSBhaGNfcGNpX2NvbmZpZyhzdHJ1
+Y3QgYWhjX3NvZnRjICosCiAJCQkJCWNvbnN0IHN0cnVjdCBhaGNfcGNpX2lkZW50aXR5ICopOwog
+aW50CQkJIGFoY19wY2lfdGVzdF9yZWdpc3Rlcl9hY2Nlc3Moc3RydWN0IGFoY19zb2Z0YyAqKTsK
+LXZvaWQgX19tYXliZV91bnVzZWQJIGFoY19wY2lfcmVzdW1lKHN0cnVjdCBhaGNfc29mdGMgKmFo
+Yyk7Cit2b2lkIF9fbWF5YmVfdW51c2VkIGFoY19wY2lfcmVzdW1lKHN0cnVjdCBhaGNfc29mdGMg
+KmFoYyk7CiAKIC8qKioqKioqKioqKioqKioqKioqKioqKioqKiogRUlTQS9WTCBGcm9udCBFbmQg
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiBzdHJ1Y3QgYWljNzc3MF9pZGVudGl0
+eSAqYWljNzc3MF9maW5kX2RldmljZSh1aW50MzJfdCk7Ci0tIAoyLjE3LjEK
