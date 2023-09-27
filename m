@@ -2,337 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D977B0341
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A9D7B0345
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbjI0Lm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
+        id S231523AbjI0Lmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjI0Lm1 (ORCPT
+        with ESMTP id S231132AbjI0Lma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:42:27 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5DFF3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:42:25 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d862533ea85so10768093276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695814945; x=1696419745; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aIt1l7/IgUpo4k3Bjm4G/lamSevl4u5gHJJCk6sbhjY=;
-        b=xsPg3XBei4POs485522lXmJI/VVXzDFUOyKO++s/cN5omgrmCmLhN+3ym0UBNxwUMD
-         vmWtmGawHIqSLV3FC6hLxzu785CBsANaxcFkJhibDM0Y6khDgt8ef17x3ako3qZnvXFM
-         yUMYJAwWpIKprLoQoIwxqCKypujE67zgC+y9d7/UwQZF9wvvDOfnRZAMCCQmKFnCCvgo
-         k2i0kiZsctiQzF9+tx5sL1BL/33/PVpew8Pe25/rI1TF5jZaf/WGK08bZMcRQt6NmNAR
-         gMJbnbOPTpRCipjzSNd8w8hzIJL9WLMfN/FZtMUWUl1/6jkA7+V/TPy2di2j1zzd7Vr2
-         VpZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695814945; x=1696419745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aIt1l7/IgUpo4k3Bjm4G/lamSevl4u5gHJJCk6sbhjY=;
-        b=NkkJqh02CUjmxcthadGrjDq1qjsOZrSkATt/ND5DAvc+aUnn6YuiIVtYk3VQGKrAab
-         UMAzJpdLpO0A1FucAabaDLPtONAXcTAKj4N3ofr9Ozl2MvDmE+GVl7b0O50mEhIwG8i2
-         q/M6jJ2NGt3a+U2O29eCBMH/bVLgw2173BiGCiAEVUXSq3Aq88MEcG38FWif5LqIyTbN
-         QIS2n28mKKMnIAxsNlRiUVglD8aRBt3KpSdOod4F5UoMIvTZ8SihsooB3/qlijdXHUMv
-         RJhfCIn+1xNMUw3V1/qLHUauvn5W4IgsFn799P7aVR12lfr3ETiJ+GCo2qqP3LoL2Zwf
-         KZ/g==
-X-Gm-Message-State: AOJu0YytBA47/+b55UYgSmGijwD3atMhZ+j4C1ZuZknwTs1lwkfmk8Tm
-        rik3Ilgq8uwXl16hheJ5m7IuOdK/Werh5+WrsO0xfA==
-X-Google-Smtp-Source: AGHT+IHBVFquJJT8K4Rl86v3hUqmDvjlekCjqCBE5F8bmAbHvZ8Ouu4MachaenQPWgpZPR02xLIw1xRN9sVjV4UBFTI=
-X-Received: by 2002:a25:dccb:0:b0:d81:ce57:571a with SMTP id
- y194-20020a25dccb000000b00d81ce57571amr1701528ybe.54.1695814944913; Wed, 27
- Sep 2023 04:42:24 -0700 (PDT)
+        Wed, 27 Sep 2023 07:42:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07929F3;
+        Wed, 27 Sep 2023 04:42:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68382C433CA;
+        Wed, 27 Sep 2023 11:42:26 +0000 (UTC)
+Message-ID: <cf7cdafb-ccd1-42ee-9c67-5e6600f752f7@xs4all.nl>
+Date:   Wed, 27 Sep 2023 13:42:24 +0200
 MIME-Version: 1.0
-References: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
- <ff8e4a01-9a58-45bf-a743-08f4f6027251@suse.de> <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
-In-Reply-To: <CAMuHMdV9Ahp2ACYfRbnnnMbn9Cps939uwCQM+Md_PcCKYG=piw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 27 Sep 2023 13:41:49 +0200
-Message-ID: <CAPDyKFodCrFPVTdNo8VBG8FHs26MVaY9WcOmYyu7YwjahvuzTA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/simpledrm: Add support for multiple "power-domains"
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>, j@jannau.net,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v6 17/17] media: qcom: camss: Comment CSID dt_id
+ field
+Content-Language: en-US, nl
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        laurent.pinchart@ideasonboard.com, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230925154707.837542-1-bryan.odonoghue@linaro.org>
+ <20230925154707.837542-18-bryan.odonoghue@linaro.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20230925154707.837542-18-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sept 2023 at 09:32, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
->
-> CC genpd
->
-> On Mon, Sep 18, 2023 at 10:24=E2=80=AFAM Thomas Zimmermann <tzimmermann@s=
-use.de> wrote:
-> > Am 12.09.23 um 22:22 schrieb Janne Grunau via B4 Relay:
-> > > From: Janne Grunau <j@jannau.net>
-> > >
-> > > Multiple power domains need to be handled explicitly in each driver. =
-The
-> > > driver core can not handle it automatically since it is not aware of
-> > > power sequencing requirements the hardware might have. This is not a
-> > > problem for simpledrm since everything is expected to be powered on b=
-y
-> > > the bootloader. simpledrm has just ensure it remains powered on durin=
-g
-> > > its lifetime.
-> > > This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
-> > > systems. The HDMI output initialized by the bootloader requires keepi=
-ng
-> > > the display controller and a DP phy power domain on.
-> > >
-> > > Signed-off-by: Janne Grunau <j@jannau.net>
->
-> Thanks for your patch, which is now commit 61df9ca231075e70
-> ("drm/simpledrm: Add support for multiple "power-domains"") in
-> drm-misc/for-linux-next.
->
-> > As a simpledrm patch:
-> >
-> > Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> >
-> > Do you want to wait for another review from  someone with
-> > power-management expertise?
->
-> Yeah, why not? Let's CC them, so they become aware...
->
-> > Do we need a similar patch for ofdrm?
+On 25/09/2023 17:47, Bryan O'Donoghue wrote:
+> Digging into the documentation we find that the DT_ID bitfield is used to
+> map the six bit DT to a two bit ID code. This value is concatenated to the
+> VC bitfield to create a CID value. DT_ID is the two least significant bits
+> of CID and VC the most significant bits.
+> 
+> Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+> 
+> commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
+> silently fixed the multiplication by four which would give a better
+> value for the generated CID without mentioning what was being done or why.
+> 
+> Next up I haplessly changed the value back to "dt_id = vc * 4" since there
+> didn't appear to be any logic behind it.
+> 
+> Hans asked what the change was for and I honestly couldn't remember the
+> provenance of it, so I dug in.
+> 
+> Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
+> 
+> Add a comment so the next hapless programmer doesn't make this same
+> mistake.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid-gen2.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> index 6ba2b10326444..791f27b18c394 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+> @@ -352,6 +352,18 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
+>  		phy_sel = csid->phy.csiphy_id;
+>  
+>  	if (enable) {
+> +		/*
+> +		 * DT_ID is a two bit bitfield that is concatenated with
+> +		 * the four least significant bits of the six bit VC
+> +		 * bitfield to generate an internal CID value.
+> +		 *
+> +		 * CSID_RDI_CFG0(vc)
+> +		 * DT_ID : 28:27
+> +		 * VC    : 26:22
 
-Drivers/subsystems for devices that are attached to multiple PM
-domains are getting more and more common. Clearly there is boilerplate
-code in drivers that we could get rid of, by using some common helper
-functions to deal with attach/detach.
+This is 5 bits, not 6 bits as the comment above says. Which is right?
 
-I believe there have been some attempts to add such helpers too, but
-we didn't quite reach a point where those were ready to be applied. It
-sounds like someone (me? :-)) needs to find some time to revisit this.
-Until then, there is no other way than having each driver to deal with
-this.
+> +		 * DT    : 21:16
+> +		 *
+> +		 * CID   : VC 3:0 << 2 | DT_ID 1:0
+> +		 */
+>  		u8 dt_id = vc;
 
-Kind regards
-Uffe
+So if dt_id is 2 bits, and vc can be more than 2 bits in the future,
+shouldn't this read "vc & 3"?
 
-> >
-> > Best regards
-> > Thomas
-> >
-> > > ---
-> > > Changes in v2:
-> > > - removed broken drm_err() log statement only ment for debugging
-> > > - removed commented cast
-> > > - use correct format spcifier for 'int' in log statement
-> > > - add 'continue;' after failure to get device for power_domain
-> > > - use drm_warn() in non fatal error cases
-> > > - removed duplicate PTR_ERR conversion
-> > > - Link to v1: https://lore.kernel.org/r/20230910-simpledrm-multiple-p=
-ower-domains-v1-1-f8718aefc685@jannau.net
-> > > ---
-> > >   drivers/gpu/drm/tiny/simpledrm.c | 105 ++++++++++++++++++++++++++++=
-+++++++++++
-> > >   1 file changed, 105 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/=
-simpledrm.c
-> > > index ff86ba1ae1b8..9c597461d1e2 100644
-> > > --- a/drivers/gpu/drm/tiny/simpledrm.c
-> > > +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> > > @@ -6,6 +6,7 @@
-> > >   #include <linux/of_address.h>
-> > >   #include <linux/platform_data/simplefb.h>
-> > >   #include <linux/platform_device.h>
-> > > +#include <linux/pm_domain.h>
-> > >   #include <linux/regulator/consumer.h>
-> > >
-> > >   #include <drm/drm_aperture.h>
-> > > @@ -227,6 +228,12 @@ struct simpledrm_device {
-> > >       unsigned int regulator_count;
-> > >       struct regulator **regulators;
-> > >   #endif
-> > > +     /* power-domains */
-> > > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> > > +     int pwr_dom_count;
-> > > +     struct device **pwr_dom_devs;
-> > > +     struct device_link **pwr_dom_links;
-> > > +#endif
-> > >
-> > >       /* simplefb settings */
-> > >       struct drm_display_mode mode;
-> > > @@ -468,6 +475,101 @@ static int simpledrm_device_init_regulators(str=
-uct simpledrm_device *sdev)
-> > >   }
-> > >   #endif
-> > >
-> > > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> > > +/*
-> > > + * Generic power domain handling code.
-> > > + *
-> > > + * Here we handle the power-domains properties of our "simple-frameb=
-uffer"
-> > > + * dt node. This is only necessary if there is more than one power-d=
-omain.
-> > > + * A single power-domains is handled automatically by the driver cor=
-e. Multiple
-> > > + * power-domains have to be handled by drivers since the driver core=
- can't know
-> > > + * the correct power sequencing. Power sequencing is not an issue fo=
-r simpledrm
-> > > + * since the bootloader has put the power domains already in the cor=
-rect state.
-> > > + * simpledrm has only to ensure they remain active for its lifetime.
-> > > + *
-> > > + * When the driver unloads, we detach from the power-domains.
-> > > + *
-> > > + * We only complain about errors here, no action is taken as the mos=
-t likely
-> > > + * error can only happen due to a mismatch between the bootloader wh=
-ich set
-> > > + * up the "simple-framebuffer" dt node, and the PM domain providers =
-in the
-> > > + * device tree. Chances are that there are no adverse effects, and i=
-f there are,
-> > > + * a clean teardown of the fb probe will not help us much either. So=
- just
-> > > + * complain and carry on, and hope that the user actually gets a wor=
-king fb at
-> > > + * the end of things.
-> > > + */
-> > > +static void simpledrm_device_detach_genpd(void *res)
-> > > +{
-> > > +     int i;
-> > > +     struct simpledrm_device *sdev =3D res;
-> > > +
-> > > +     if (sdev->pwr_dom_count <=3D 1)
-> > > +             return;
-> > > +
-> > > +     for (i =3D sdev->pwr_dom_count - 1; i >=3D 0; i--) {
-> > > +             if (!sdev->pwr_dom_links[i])
-> > > +                     device_link_del(sdev->pwr_dom_links[i]);
-> > > +             if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
-> > > +                     dev_pm_domain_detach(sdev->pwr_dom_devs[i], tru=
-e);
-> > > +     }
-> > > +}
-> > > +
-> > > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sd=
-ev)
-> > > +{
-> > > +     struct device *dev =3D sdev->dev.dev;
-> > > +     int i;
-> > > +
-> > > +     sdev->pwr_dom_count =3D of_count_phandle_with_args(dev->of_node=
-, "power-domains",
-> > > +                                                      "#power-domain=
--cells");
-> > > +     /*
-> > > +      * Single power-domain devices are handled by driver core nothi=
-ng to do
-> > > +      * here. The same for device nodes without "power-domains" prop=
-erty.
-> > > +      */
-> > > +     if (sdev->pwr_dom_count <=3D 1)
-> > > +             return 0;
-> > > +
-> > > +     sdev->pwr_dom_devs =3D devm_kcalloc(dev, sdev->pwr_dom_count,
-> > > +                                            sizeof(*sdev->pwr_dom_de=
-vs),
-> > > +                                            GFP_KERNEL);
-> > > +     if (!sdev->pwr_dom_devs)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     sdev->pwr_dom_links =3D devm_kcalloc(dev, sdev->pwr_dom_count,
-> > > +                                             sizeof(*sdev->pwr_dom_l=
-inks),
-> > > +                                             GFP_KERNEL);
-> > > +     if (!sdev->pwr_dom_links)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     for (i =3D 0; i < sdev->pwr_dom_count; i++) {
-> > > +             sdev->pwr_dom_devs[i] =3D dev_pm_domain_attach_by_id(de=
-v, i);
-> > > +             if (IS_ERR(sdev->pwr_dom_devs[i])) {
-> > > +                     int ret =3D PTR_ERR(sdev->pwr_dom_devs[i]);
-> > > +                     if (ret =3D=3D -EPROBE_DEFER) {
-> > > +                             simpledrm_device_detach_genpd(sdev);
-> > > +                             return ret;
-> > > +                     }
-> > > +                     drm_warn(&sdev->dev,
-> > > +                              "pm_domain_attach_by_id(%u) failed: %d=
-\n", i, ret);
-> > > +                     continue;
-> > > +             }
-> > > +
-> > > +             sdev->pwr_dom_links[i] =3D device_link_add(dev,
-> > > +                                                      sdev->pwr_dom_=
-devs[i],
-> > > +                                                      DL_FLAG_STATEL=
-ESS |
-> > > +                                                      DL_FLAG_PM_RUN=
-TIME |
-> > > +                                                      DL_FLAG_RPM_AC=
-TIVE);
-> > > +             if (!sdev->pwr_dom_links[i])
-> > > +                     drm_warn(&sdev->dev, "failed to link power-doma=
-in %d\n", i);
-> > > +     }
-> > > +
-> > > +     return devm_add_action_or_reset(dev, simpledrm_device_detach_ge=
-npd, sdev);
-> > > +}
-> > > +#else
-> > > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sd=
-ev)
-> > > +{
-> > > +     return 0;
-> > > +}
-> > > +#endif
-> > > +
-> > >   /*
-> > >    * Modesetting
-> > >    */
-> > > @@ -651,6 +753,9 @@ static struct simpledrm_device *simpledrm_device_=
-create(struct drm_driver *drv,
-> > >       if (ret)
-> > >               return ERR_PTR(ret);
-> > >       ret =3D simpledrm_device_init_regulators(sdev);
-> > > +     if (ret)
-> > > +             return ERR_PTR(ret);
-> > > +     ret =3D simpledrm_device_attach_genpd(sdev);
-> > >       if (ret)
-> > >               return ERR_PTR(ret);
-> > >
-> > >
-> > > ---
-> > > base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
-> > > change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+Regards,
+
+	Hans
+
+>  
+>  		if (tg->enabled) {
+
