@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 444747B0D3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13BF7B0D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjI0UVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
+        id S229777AbjI0UVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjI0UVL (ORCPT
+        with ESMTP id S229685AbjI0UVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:21:11 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5469C10E
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:21:10 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-79fa416b7ffso367363139f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:21:10 -0700 (PDT)
+        Wed, 27 Sep 2023 16:21:12 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6181E10A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:21:11 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35135f69de2so25519225ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:21:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695846069; x=1696450869; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695846071; x=1696450871; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1kq9WoSgqEviF42jhwFTI980vH31ePAvDcikVyQPxtc=;
-        b=f8G63bW0U7k/6Ocv1LYU381gT0auO5VWNBu+Q78y1TcTXuaT7TS+5kRzrKlWDr5TOs
-         Hs98Gr0iD2V9OOjmsSOc9zqlfTNVNQ1jMyHCL4Bt7P3m1WhByHNEFV4+1yF2Ovy8t0Cz
-         +iZDNiZUi3Ibm7jrS7Ny2ND7aaxEOgNxNJTDk=
+        bh=t/WPzSaDS9c+jiadSigu8kAq3wHnfTKelNMfiF3LTzM=;
+        b=NFPIdVfVm9Cs8hzkeVsa84P9bc5aJOExpVnEr16PwbTM5gi6VTllZdBDI14c/F79th
+         MaCLFOXmFm1SVOfSy0WA8RpUwNjX4/R2AP2/dUX3ZwpMc7BtoaN0qQzqkhXHodiHreQO
+         I4TJllASEqF6WEezGq0r0+0ZqkUH6f4DjQ7o4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695846069; x=1696450869;
+        d=1e100.net; s=20230601; t=1695846071; x=1696450871;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1kq9WoSgqEviF42jhwFTI980vH31ePAvDcikVyQPxtc=;
-        b=av/pqw2CgAiXs3s7Sg/jqp39k4SA1OegPm6Cqy1RV7rb2zZbD98xCCLxWq7gh4dW20
-         QP9xNysvHEvJ4aXq8rHdqsGnimsy978M//dU6lTgPoCzzg+jm2xh80/ZLwHYVrLYR9UF
-         r/frPcOEf8WR9axTy3UjVB12kQxc5GXDwHBOHHrOntGB306aYGnLwLg+zWKWbVLd4Z4j
-         WDfb9DBFK4yYG+7si9VOzfMXMW/ZGPTg6Vm90w6cKGq5Qdm0hHpCaRqLEOnVkOAskcGK
-         OsJINbZ33DrqcLQMyN4BXX67a9qDprHIiRWSm5viysY9HRDqCbgGnrQcr8mNUPEAiLyE
-         HMqg==
-X-Gm-Message-State: AOJu0Yxac4Hlaxnc2nYg1DkWrCvnAqd+ePXsCrljfl7xVPnFvK1I9ufv
-        HvAs5mp//4WLmObUSOX/WZa/Jg==
-X-Google-Smtp-Source: AGHT+IFhPJEncrLdXnOVjxjuTHH/e94XYzo89HB1tZ1pWdiwxx4ZhAkrwcRurxLK1zLwja0dnf6dQQ==
-X-Received: by 2002:a5e:a610:0:b0:795:16b8:85fc with SMTP id q16-20020a5ea610000000b0079516b885fcmr2995614ioi.0.1695846069701;
-        Wed, 27 Sep 2023 13:21:09 -0700 (PDT)
+        bh=t/WPzSaDS9c+jiadSigu8kAq3wHnfTKelNMfiF3LTzM=;
+        b=mq8h/k4y7IzsYN2l7VwO4Ba2kr74ErOsBX1m+I5Tgf9+hf+2JPzMHDjPS7KpudBr4F
+         tHKtO5rTNrXCOE4qVVx70m8gwn8l8h3qHu7aCkoAVuhvQ1y3qJOv0yX21Yfw+qUDSsD6
+         f7pCdo96ecKi7k0Tnc6zeSRPLM9LZjOWlp4989GbytmzdDF0ISHyR/+9pGflm20ZOWc8
+         ChYDR+4IOwa5qSyyXyVI4WE+90NqcxhjgrBDmeGqLc99K3HzSg2JHElvwhKYazC7TDK+
+         ZI78YpSXv6ashXRZiz/7x8h3lcvGcyPAL4sHJFq3LU/eIueEfhHHfs+vl0T6M6Q0U7y9
+         P5YA==
+X-Gm-Message-State: AOJu0YyY06p3uld/7sctiygp8CtYY4z2xgbtPhUf7ji1nMzqcCRVWgVa
+        YXxktRFydOKXA2r01bcsRH3HFhANyTj//r4/Ns0=
+X-Google-Smtp-Source: AGHT+IFRbrRAe8Dnju3UVQpeWZ5Tyu9bkia5NuOv1VLGeo8FMF3tFtAq/tcjBk0rXfAM+4qlRibD1A==
+X-Received: by 2002:a92:ca0b:0:b0:34c:e7a3:894 with SMTP id j11-20020a92ca0b000000b0034ce7a30894mr4107520ils.16.1695846070751;
+        Wed, 27 Sep 2023 13:21:10 -0700 (PDT)
 Received: from kea.bld.corp.google.com ([2620:15c:183:200:5d4f:fe51:5575:6f76])
-        by smtp.gmail.com with ESMTPSA id ei15-20020a05663829af00b0042fec8620e4sm4113299jab.57.2023.09.27.13.21.08
+        by smtp.gmail.com with ESMTPSA id ei15-20020a05663829af00b0042fec8620e4sm4113299jab.57.2023.09.27.13.21.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 13:21:09 -0700 (PDT)
+        Wed, 27 Sep 2023 13:21:10 -0700 (PDT)
 From:   Simon Glass <sjg@chromium.org>
 To:     devicetree@vger.kernel.org
 Cc:     linux-mtd@lists.infradead.org,
@@ -60,87 +60,102 @@ Cc:     linux-mtd@lists.infradead.org,
         Rob Herring <robh+dt@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] dt-bindings: mtd: binman-partition: Add binman labels
-Date:   Wed, 27 Sep 2023 14:20:52 -0600
-Message-ID: <20230927202057.3676497-2-sjg@chromium.org>
+Subject: [PATCH 3/3] dt-bindings: mtd: binman-partitions: Add alignment properties
+Date:   Wed, 27 Sep 2023 14:20:53 -0600
+Message-ID: <20230927202057.3676497-3-sjg@chromium.org>
 X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 In-Reply-To: <20230927202057.3676497-1-sjg@chromium.org>
 References: <20230927202057.3676497-1-sjg@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two labels for binman entries, as a starting point for the schema.
+Add three properties for controlling alignment of partitions, aka
+'entries' in binman.
+
+For now there is no explicit mention of hierarchy, so a 'section' is
+just the 'fixed-partitions' node.
+
+These new properties are inputs to the packaging process, but are also
+needed if the firmware is repacked, to ensure that alignment
+constraints are not violated. Therefore they a provided as part of the
+schema.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
 
- .../mtd/partitions/binman-partition.yaml      | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+ .../mtd/partitions/binman-partition.yaml      | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-new file mode 100644
-index 000000000000..6ee832cb4c4c
---- /dev/null
+index 6ee832cb4c4c..9cd424447e76 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
 +++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Google LLC
+@@ -27,6 +27,42 @@ properties:
+         - u-boot       # u-boot.bin from U-Boot projec6t
+         - atf-bl31     # bl31.bin or bl31.elf from TF-A project
+ 
++  align:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      This sets the alignment of the entry. The entry offset is adjusted
++      so that the entry starts on an aligned boundary within the containing
++      section or image. For example ‘align = <16>’ means that the entry will
++      start on a 16-byte boundary. This may mean that padding is added before
++      the entry. The padding is part of the containing section but is not
++      included in the entry, meaning that an empty space may be created before
++      the entry starts. Alignment should be a power of 2. If ‘align’ is not
++      provided, no alignment is performed.
 +
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++  align-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      This sets the alignment of the entry size. For example, to ensure
++      that the size of an entry is a multiple of 64 bytes, set this to 64.
++      While this does not affect the contents of the entry within binman
++      itself (the padding is performed only when its parent section is
++      assembled), the end result is that the entry ends with the padding
++      bytes, so may grow. If ‘align-size’ is not provided, no alignment is
++      performed.
 +
-+title: Binman partition
++  align-end:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      This sets the alignment of the end of an entry with respect to the
++      containing section. Some entries require that they end on an alignment
++      boundary, regardless of where they start. This does not move the start
++      of the entry, so the contents of the entry will still start at the
++      beginning. But there may be padding at the end. While this does not
++      affect the contents of the entry within binman itself (the padding is
++      performed only when its parent section is assembled), the end result is
++      that the entry ends with the padding bytes, so may grow. If ‘align-end’
++      is not provided, no alignment is performed.
 +
-+maintainers:
-+  - Simon Glass <sjg@chromium.org>
-+
-+select: false
-+
-+description: |
-+  This corresponds to a binman 'entry'. It is a single partition which holds
-+  data of a defined type.
-+
-+allOf:
-+  - $ref: /schemas/mtd/partitions/partition.yaml#
-+
-+properties:
-+  label:
-+    items:
-+      enum:
-+        - u-boot       # u-boot.bin from U-Boot projec6t
-+        - atf-bl31     # bl31.bin or bl31.elf from TF-A project
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    partitions {
-+        compatible = "binman", "fixed-partitions";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition-u-boot@100000 {
-+            label = "u-boot";
-+            reg = <0x100000 0xf00000>;
-+        };
-+
-+        partition-atf-bl31t@200000 {
-+            label = "atf-bl31";
-+            reg = <0x200000 0x100000>;
-+        };
-+    };
+ additionalProperties: false
+ 
+ examples:
+@@ -39,10 +75,13 @@ examples:
+         partition-u-boot@100000 {
+             label = "u-boot";
+             reg = <0x100000 0xf00000>;
++            align-size = <0x1000>;
++            align-end = <0x10000>;
+         };
+ 
+         partition-atf-bl31t@200000 {
+             label = "atf-bl31";
+             reg = <0x200000 0x100000>;
++            align = <0x4000>;
+         };
+     };
 -- 
 2.42.0.515.g380fc7ccd1-goog
 
