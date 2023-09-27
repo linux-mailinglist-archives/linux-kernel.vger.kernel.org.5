@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8CB7B06D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7697B06DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbjI0OaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        id S232139AbjI0ObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbjI0O3s (ORCPT
+        with ESMTP id S232073AbjI0ObM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:29:48 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B7F1B6
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:29:46 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4053d53a1bfso101430885e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:29:46 -0700 (PDT)
+        Wed, 27 Sep 2023 10:31:12 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BA1CC7;
+        Wed, 27 Sep 2023 07:31:04 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d865685f515so11845303276.1;
+        Wed, 27 Sep 2023 07:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695824985; x=1696429785; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695825063; x=1696429863; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MZXaGIIfZuiGEdZwV32Js1I7wu0xbFZLpMopu8S/63c=;
-        b=LRr+WyT+pJrvtzeFl3/fK+ENRQ+D1e0hsD+RYczEWKCCDSfkFSRWt4FSYjeXCZD9Kp
-         GyWvm2X6/1LKNL6TZAYKYS6ht5cszmolglAiC/8c4D6CgAjxPZUVvb4Ro7F7jIN+mJr9
-         9QUrTlbND7s6NJlmOzLc404VWq8LDsLHYi2qsK1qIuybIH8JoBqrVW+voJmD1lTJVYQw
-         pYeAx+hjxY8RSBKSOlL3x3lB8jAFSTB8w9OO3qTLr40WSgcZXQ8aNLNlpHYX33BtsNo2
-         W12MVKhQ/RaB15Oij4eRJm/nbjabyZ3ifwQTuom524ifc/F+xiRgd124dftTVaLC2Uz1
-         0nDg==
+        bh=+XcH3Kg4tqaXqUqMGIX62DqKGdxuMvU3zUQWNdRoSWU=;
+        b=TX5h1zCnWPGDjUTUVKGIHt4DhaM6dHet5po93pn0BPDwOjnwPUpalc1uJlGHbWNQdN
+         jFKDIuNI6tQn2RWyK/mZkm3YMPXgSbnFSKpRyULidm6fDGplVMfyWhHTB+72szsvi4FJ
+         c/qUA1AY0Cw6kcdaNiluEoBRVy1HYyByfg54mYqk/O3pflvJk/PJPrI0DLTf74HWCbZL
+         b618avgu/o1Yam3gn7nYi+lIsj334ytyGWGgwrn2wynsgyMDFiBKm8JtMvVXe1KEJaYj
+         KJcDDklazDhYTxHnC0um+TCJdbApUBE6IgNTMIzi5nw9Bu6CgKqZTzNqmMeTaOzIK7Iu
+         DW5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695824985; x=1696429785;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695825063; x=1696429863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MZXaGIIfZuiGEdZwV32Js1I7wu0xbFZLpMopu8S/63c=;
-        b=m26yoyut1FxzS67+kK4Es+rBQz4JUVz7ZQaBKPJNVkMrkw71hSK/6bI9Ae4pSAFZJd
-         nu5j2w5iFiyhYPNqtg+iip2IjwVZFqDjiI1Wqz6r1ZMF+5bzc/+lqzWG/W8Dup2JhCM/
-         QlTolv+Pd11kaI0r9LhG3VMJiM4AMdUtqwCTjlFNXe9y/BqI05HYxuftnfMa0DuOIgH6
-         6Xnv5H/ZT1I2jGuvtHr7pOYP2nWYt26dMxN4MOtJ5ftMJzYu0mEDoXMpAbHIUQbs8IvQ
-         8wAcpt9yUaIXogAnyrJ+FHdfyNOkpbO5g8+xAoFQx4K+ln74Z+rgy5y8zdPYMK3r7WEi
-         Q2ag==
-X-Gm-Message-State: AOJu0YwoE94KOeDpq2tBV8j8+ahX2/xEbrkiJqUxhbaK4BV2UgnlIrHd
-        m/IbFqwzaNxdtpyDjtwmsFccZA==
-X-Google-Smtp-Source: AGHT+IEXsLCf66wrsjqsyNP3LGPoGey7JEWXQQyftq4Pcl8llIG+MXA78yj2kb3tXjDQEhKuOHbqGg==
-X-Received: by 2002:a7b:c3d1:0:b0:405:3d27:70e8 with SMTP id t17-20020a7bc3d1000000b004053d2770e8mr2265430wmj.36.1695824985281;
-        Wed, 27 Sep 2023 07:29:45 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4bb6:1525:9e22:4a15])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1cf702000000b003feae747ff2sm20448303wmh.35.2023.09.27.07.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 07:29:44 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v4 11/11] gpio: sysfs: drop the mention of gpiochip_find() from sysfs code
-Date:   Wed, 27 Sep 2023 16:29:31 +0200
-Message-Id: <20230927142931.19798-12-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230927142931.19798-1-brgl@bgdev.pl>
-References: <20230927142931.19798-1-brgl@bgdev.pl>
+        bh=+XcH3Kg4tqaXqUqMGIX62DqKGdxuMvU3zUQWNdRoSWU=;
+        b=Tgd1faJawegb3CXuE+EUNRmKIPl9QFzNYLXyuuz3rilyO4ag676TxxjEQgwv+UPWOp
+         xtNPIIoZIkkdx9cFcaiywS2Ajl2RD5L+6Yrmlp5T0jPFuXfg2NdxdL+XnxDi/gQUybBp
+         lQ+LZ3sj5nw2Cb6QmSdH6L/mIxPyPXM6mae8RgSe94igkGZAwW7f7qH08UWkyE/m7HZt
+         a8PlBfylXNiSbMaUioB1SM3VjunwSEUqe1k6sjxz51QPlT4F+D7LwTr+wBw57IR2cOER
+         8NnYw7449YI3JLJNTWxeuPsHvCEXZQ0ehQNxoCj3PXwEoAk8u2IJ2ISP3SKNxcly7scA
+         B8wQ==
+X-Gm-Message-State: AOJu0YwcqQ88sbpUt8Z+M/vABcLSxvjwp1w9aM25ctriu8Skcs+UMRnD
+        eLFQe1NyzCaJP7yoMzscRvtRipZB9k5YgqmWwDE=
+X-Google-Smtp-Source: AGHT+IGIaO2Tlhc7AHmo2IhY2FbTkDnzNzwRH/dCMK4WzzYx3iWVKy6RrzH1eJ55DkG9Gy4zUeGJ8/NjX4+Ek9fyZ+c=
+X-Received: by 2002:a25:688d:0:b0:d47:3fcc:9911 with SMTP id
+ d135-20020a25688d000000b00d473fcc9911mr1867935ybc.2.1695825063536; Wed, 27
+ Sep 2023 07:31:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <cover.1695819243.git.mazziesaccount@gmail.com>
+In-Reply-To: <cover.1695819243.git.mazziesaccount@gmail.com>
+From:   Mehdi Djait <mehdi.djait.k@gmail.com>
+Date:   Wed, 27 Sep 2023 16:30:52 +0200
+Message-ID: <CAFukWp0TM+v7Y93gFuHL2_ihefxxPmDkGT4R9nmruL70D7KNZA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Support ROHM KX132ACR-LBZ Accelerometer
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hello Matti,
 
-We have removed all callers of gpiochip_find() so don't mention it in
-gpiolib-sysfs.c.
+On Wed, Sep 27, 2023 at 2:56=E2=80=AFPM Matti Vaittinen
+<mazziesaccount@gmail.com> wrote:
+>
+> The ROHM KX132ACR-LBZ is an accelerometer for industrial applications.
+> It has a subset of KX022A (NOTE: Not KX132-1211) functionalities, droppin=
+g
+> support for tap, free fall and tilt detection engines. Also, the register
+> interface is an exact subset of what is found on KX022A (except the
+> WHO_AM_I register value).
+>
+> This series adds own DT compatible for the KX132ACR-LBZ and also own
+> chip-info in driver to allow handling the different 'WHO_AM_I' value.
+> The separation of the Kionix KX022A and ROHM KX132ACR-LBZ does also
+> allow adding support for the KX022A tilt/free fall/tap engines which are
+> not present on KX132ACR-LBZ.
+>
+> Matti Vaittinen (2):
+>   dt-bindings: iio: Add KX132ACR-LBZ accelerometer
+>   iio: kx022a: Support ROHM KX132ACR-LBZ
+>
+>  .../bindings/iio/accel/kionix,kx022a.yaml     | 10 +++---
+>  drivers/iio/accel/kionix-kx022a-i2c.c         |  4 ++-
+>  drivers/iio/accel/kionix-kx022a-spi.c         |  4 ++-
+>  drivers/iio/accel/kionix-kx022a.c             | 34 ++++++++++++++++++-
+>  drivers/iio/accel/kionix-kx022a.h             |  2 ++
+>  5 files changed, 47 insertions(+), 7 deletions(-)
+>
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/gpio/gpiolib-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You could also mention this device in the list of supported devices
+under drivers/iio/accel/Kconfig
 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index 50503a4525eb..6f309a3b2d9a 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -814,7 +814,7 @@ static int __init gpiolib_sysfs_init(void)
- 		 * gpiochip_sysfs_register() acquires a mutex. This is unsafe
- 		 * and needs to be fixed.
- 		 *
--		 * Also it would be nice to use gpiochip_find() here so we
-+		 * Also it would be nice to use gpio_device_find() here so we
- 		 * can keep gpio_chips local to gpiolib.c, but the yield of
- 		 * gpio_lock prevents us from doing this.
- 		 */
--- 
-2.39.2
-
+--
+Kind Regards
+Mehdi Djait
