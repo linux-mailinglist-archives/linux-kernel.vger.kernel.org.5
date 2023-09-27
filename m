@@ -2,61 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F8F7B0D12
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DE77B0D13
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 22:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjI0UAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 16:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S229785AbjI0UBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 16:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjI0UAr (ORCPT
+        with ESMTP id S229721AbjI0UBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:00:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B993810A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qlJCDiEm1PsyZ7btU88olFOkJZVUmE9aa9jDpV/uPGI=; b=dXUQNgSXhkz8i62uo5LIX08iEA
-        r3zOiUCeTcPleePVu8jh+ZGWCbulNNbzkJkO15OQyh1il6YCDwgZYWDNjLaIhEmRy0BttBtrYMjPn
-        +cA55TXN51iUPo+8HcL1ZF0DdtjJOyJRMjdTFQFPeKd9xBElZdyV/CZoaupkO4vcnsBLyU4D/6zDz
-        A1USedkgVlvt/nqneDRhK4ApTCYC+U8gHKtpQcmZEiNSh4zlpY5PrOsEyx8i2gBlOKFxib7dxZhzm
-        MKeJiCH634KigRAaeO/f1Jl+dEPGQerHwQE7ZXF4THb7DH3JHVH37SzGXhN/jEJBV6RGFZWXp1wG0
-        GPYkc/PA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qlai5-00FpW7-5r; Wed, 27 Sep 2023 20:00:37 +0000
-Date:   Wed, 27 Sep 2023 21:00:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     David Laight <david.laight@aculab.com>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Jason@zx2c4.com, hch@infradead.org,
-        andriy.shevchenko@linux.intel.com, akpm@linux-foundation.org
-Subject: Re: + minmax-add-umina-b-and-umaxa-b.patch added to
- mm-nonmm-unstable branch
-Message-ID: <ZRSJ5QMNGV7ObfrL@casper.infradead.org>
-References: <20230927173033.AF86DC433C7@smtp.kernel.org>
- <d74a3644-1d03-42c7-b258-4d5d63416ee0@p183>
+        Wed, 27 Sep 2023 16:01:06 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDCD10E
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:01:01 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-41812c94eb5so40214991cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 13:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1695844861; x=1696449661; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jDVLMXBa2XfaEHREeVH6PICOgKFD+LcSP9ho+5+MSRo=;
+        b=BSBiJnXg3jxAIe0bY0iizR/xMIJYQvgpeh1v0bShE0cEHhr04rIdEmivMNZzpCUins
+         4FwG8laG7MH1ZmyV9cPq/DCLrNjdnZ5uLe3nKXboDJbg9uhe/8Vm+r4nqi2XDyW9AoCE
+         ni5WUnTh5EqvnCjq+mpUU7yl59m8QrSkuHrpx8ckl1El8Fsnj0coIsqWfo4pq6hSfCsV
+         RETceEsJpzgpsk++rUf1tDpyadDwTqJT3qlUasMS53k5n6YAtPl6YVQMeagjplZcbMPe
+         3V9ShIpKKzSw4jqEdlyxLdHNTni5EZazQ/Wl1Ucn4kPRYLGOWOhSvpX8rD5alHsXghQF
+         CbGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695844861; x=1696449661;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jDVLMXBa2XfaEHREeVH6PICOgKFD+LcSP9ho+5+MSRo=;
+        b=DVj1MpMZL/ubuQQb+X59AOkdiA5RtNY3YDhBQCMvCsS1MPtdcZuIMo1naSnuQ3ZWQS
+         Yo5DCb8Rh0fQf2Q5w2rcGAFKZGxYV5rqMGJ/vcnQO7QunPWQxTYFF0nyxKrbQCqkDiF4
+         TOS/v+ELSI37ov15JnnFYqjhxp6X60nAxDYdu5JPwEzc+tnEqQM585/qldtWlhnQVww/
+         yXaCTGrEipw5FFUM35ozgsPxIsEliGXoWttxYtaGiSXiyb5vfbNc8kyO0baDtruxQisq
+         oLprLS5iugZ6CHQ9fDWRyjduCFyxVOMng+THanl3l1EE87ROPhGHBOAGF4xzEtR+dUPL
+         C4LA==
+X-Gm-Message-State: AOJu0Yzk7sW7BIaPjsK2uZ8g/Ols2yMv3f+01HeKMQGgYSb7freS7KK9
+        xInkU8p6cbU89QAf/27wb1YWZw==
+X-Google-Smtp-Source: AGHT+IESw2wqCLleqmOMMct8rcQaxMts2l4nFzmNamRccfP/nZV4TTrMJ3qu+Nurw6mbsWjhkSVjbQ==
+X-Received: by 2002:ac8:5f12:0:b0:417:a74f:69b6 with SMTP id x18-20020ac85f12000000b00417a74f69b6mr2365851qta.65.1695844861069;
+        Wed, 27 Sep 2023 13:01:01 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:40d8:421c:60ef:36d5? ([2600:1700:2000:b002:40d8:421c:60ef:36d5])
+        by smtp.gmail.com with ESMTPSA id d8-20020ac81188000000b00411fcc18cc1sm5560876qtj.64.2023.09.27.13.00.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 13:01:00 -0700 (PDT)
+Message-ID: <cf68f6f1-e405-4c20-b4e1-da04189d0e2f@sifive.com>
+Date:   Wed, 27 Sep 2023 15:00:59 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d74a3644-1d03-42c7-b258-4d5d63416ee0@p183>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: usb: Add T-HEAD TH1520 USB controller
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+References: <20230927164222.3505-1-jszhang@kernel.org>
+ <20230927164222.3505-2-jszhang@kernel.org>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20230927164222.3505-2-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:21:41PM +0300, Alexey Dobriyan wrote:
-> On Wed, Sep 27, 2023 at 10:30:33AM -0700, Andrew Morton wrote:
-> > +#define umin(x, y)	\
-> > +	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
+On 2023-09-27 11:42 AM, Jisheng Zhang wrote:
+> T-HEAD TH1520 platform's USB has a wrapper module around
+> the DesignWare USB3 DRD controller. Add binding information doc for
+> it.
 > 
-> kmin() and kmax() are (of course!) much better names.
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  .../bindings/usb/thead,th1520-usb.yaml        | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> new file mode 100644
+> index 000000000000..afb618eb5013
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/thead,th1520-usb.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/thead,th1520-usb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: T-HEAD TH1520 DWC3 USB Controller Glue
+> +
+> +maintainers:
+> +  - Jisheng Zhang <jszhang@kernel.org>
+> +
+> +properties:
+> +  compatible:
+> +    const: thead,th1520-usb
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 4
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ref
+> +      - const: bus_early
+> +      - const: phy
+> +      - const: suspend
 
-it's unsigned, not user.
+Except for "phy", these clocks are already documented in snps,dwc3.yaml. Are
+they necessary for the glue/PHY, or do they belong only in the controller node?
+They are not used by the driver in patch 2. Also, the PHY clock probably belongs
+with the PHY node.
+
+> +
+> +  ranges: true
+> +
+> +  '#address-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +  '#size-cells':
+> +    enum: [ 1, 2 ]
+> +
+> +# Required child node:
+> +
+> +patternProperties:
+> +  "^usb@[0-9a-f]+$":
+> +    $ref: snps,dwc3.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - ranges
+> +
+> +additionalProperties: false
+
+The driver in patch 2 uses the thead,misc-sysreg and vbus-supply properties,
+neither of which is documented here. Also, depending on the other bindings, the
+VBUS supply should be referenced from the USB PHY or connector node, not here.
+
+Regards,
+Samuel
+
+> +examples:
+> +  - |
+> +
+> +    usb {
+> +          compatible = "thead,th1520-usb";
+> +          reg = <0xec03f000 0x1000>;
+> +          clocks = <&clk 1>,
+> +                   <&clk 2>,
+> +                   <&clk 3>,
+> +                   <&clk 4>;
+> +          clock-names = "ref", "bus_early", "phy", "suspend";
+> +          ranges;
+> +          #address-cells = <1>;
+> +          #size-cells = <1>;
+> +
+> +          usb@e7040000 {
+> +                compatible = "snps,dwc3";
+> +                reg = <0xe7040000 0x10000>;
+> +                interrupts = <68>;
+> +                dr_mode = "host";
+> +          };
+> +    };
+
