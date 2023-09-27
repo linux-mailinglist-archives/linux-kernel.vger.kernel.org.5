@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 853BA7AFFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18347AFFAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjI0JPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        id S230174AbjI0JSB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 05:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjI0JPf (ORCPT
+        with ESMTP id S229583AbjI0JR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:15:35 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5149B92;
-        Wed, 27 Sep 2023 02:15:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VszroM3_1695806129;
-Received: from 30.97.48.70(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VszroM3_1695806129)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Sep 2023 17:15:29 +0800
-Message-ID: <106d5134-6829-5a25-f1b1-37e5fe20a617@linux.alibaba.com>
-Date:   Wed, 27 Sep 2023 17:15:36 +0800
+        Wed, 27 Sep 2023 05:17:59 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D9992;
+        Wed, 27 Sep 2023 02:17:57 -0700 (PDT)
+Received: from kwepemd200001.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RwWB52zCmztSVv;
+        Wed, 27 Sep 2023 17:13:33 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ kwepemd200001.china.huawei.com (7.221.188.2) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.23; Wed, 27 Sep 2023 17:17:55 +0800
+Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
+ dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2507.031;
+ Wed, 27 Sep 2023 17:17:54 +0800
+From:   "Gonglei (Arei)" <arei.gonglei@huawei.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pizhenwei@bytedance.com" <pizhenwei@bytedance.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: RE: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
+Thread-Topic: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
+Thread-Index: AdnvwZyqMOU4LXJLQHSIVFGYJFXR5QAk7LIAADLTkZA=
+Date:   Wed, 27 Sep 2023 09:17:54 +0000
+Message-ID: <3253800b49c04b3abfdd54ac7f5e13a5@huawei.com>
+References: <1914739e2de14ed396e5674aa2d4766c@huawei.com>
+ <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
+In-Reply-To: <20230926184158.4ca2c0c3.pasic@linux.ibm.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.149.11]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 2/4] gpio: sprd: Clear interrupt after set the
- interrupt type
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230921090027.11136-1-Wenhua.Lin@unisoc.com>
- <20230921090027.11136-3-Wenhua.Lin@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230921090027.11136-3-Wenhua.Lin@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,92 +65,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/21/2023 5:00 PM, Wenhua Lin wrote:
-> The initialization state of the EIC module is a high level trigger.
-> If it is currently a high level, the interrupt condition is met at
-> this time, and the EIC interrupt has a latch capability, which will
-> cause an interrupt to occur after booting. To avoid this, When setting
-> the EIC interrupt trigger type, clear the interrupt once.
-
-With Andy's comments,
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->   drivers/gpio/gpio-eic-sprd.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+> -----Original Message-----
+> From: Halil Pasic [mailto:pasic@linux.ibm.com]
+> Sent: Wednesday, September 27, 2023 12:42 AM
+> To: Gonglei (Arei) <arei.gonglei@huawei.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>; linux-crypto@vger.kernel.org;
+> Marc Hartmayer <mhartmay@linux.ibm.com>; Michael S. Tsirkin
+> <mst@redhat.com>; Jason Wang <jasowang@redhat.com>;
+> virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+> pizhenwei@bytedance.com; Halil Pasic <pasic@linux.ibm.com>; Cornelia Huck
+> <cohuck@redhat.com>
+> Subject: Re: [PATCH] crypto: virtio-crypto: call finalize with bh disabled
 > 
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index bfa8a4c7515a..96f1c7fd3988 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -375,29 +375,34 @@ static int sprd_eic_irq_set_type(struct irq_data *data, unsigned int flow_type)
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTPOL, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_EDGE_FALLING:
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTPOL, 0);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_EDGE_BOTH:
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTBOTH, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_LEVEL_HIGH:
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTMODE, 1);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTPOL, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_level_irq);
->   			break;
->   		case IRQ_TYPE_LEVEL_LOW:
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTMODE, 1);
->   			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTPOL, 0);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_level_irq);
->   			break;
->   		default:
-> @@ -410,29 +415,34 @@ static int sprd_eic_irq_set_type(struct irq_data *data, unsigned int flow_type)
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPOL, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_EDGE_FALLING:
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPOL, 0);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_EDGE_BOTH:
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMODE, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBOTH, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_edge_irq);
->   			break;
->   		case IRQ_TYPE_LEVEL_HIGH:
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMODE, 1);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPOL, 1);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_level_irq);
->   			break;
->   		case IRQ_TYPE_LEVEL_LOW:
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBOTH, 0);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMODE, 1);
->   			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPOL, 0);
-> +			sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCLR, 1);
->   			irq_set_handler_locked(data, handle_level_irq);
->   			break;
->   		default:
+> [..]
+> > --- a/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> > +++ b/drivers/crypto/virtio/virtio_crypto_akcipher_algs.c
+> > @@ -61,8 +61,9 @@ static void virtio_crypto_akcipher_finalize_req(
+> >  	vc_akcipher_req->src_buf = NULL;
+> >  	vc_akcipher_req->dst_buf = NULL;
+> >  	virtcrypto_clear_request(&vc_akcipher_req->base);
+> > -
+> > +	local_bh_disable();
+> >
+> > crypto_finalize_akcipher_request(vc_akcipher_req->base.dataq->engine,
+> > req, err);
+> > +	local_bh_enable();
+> 
+> Thanks Gonglei!
+> 
+> I did this a quick spin, and it does not seem to be sufficient on s390x.
+> Which does not come as a surprise to me, because
+> 
+> #define lockdep_assert_in_softirq()
+> \
+> do
+> {
+>      \
+>         WARN_ON_ONCE(__lockdep_enabled                  &&
+> \
+>                      (!in_softirq() || in_irq() || in_nmi()));          \
+> } while (0)
+> 
+> will still warn because  in_irq() still evaluates to true (your patch addresses
+> the !in_softirq() part).
+> 
+You are right.
+
+So I think the core of this question is: Can we call crypto_finalize_request() in the upper half of the interrupt? 
+If so, maybe we should introduce a new function, such as lockdep_assert_in_interrupt().
+
+#define lockdep_assert_in_interrupt()                               \
+do {                                                           \
+       WARN_ON_ONCE(__lockdep_enabled && !in_interrupt());        \
+} while (0)
+
+If not, why? 
+
+Herbert, do you have any suggestions? Thanks.
+
+
+Regards,
+-Gonglei
+
+> I don't have any results on x86 yet. My current understanding is that the
+> virtio-pci transport code disables interrupts locally somewhere in the call chain
+> (actually in vp_vring_interrupt() via spin_lock_irqsave()) and then x86 would be
+> fine. But I will get that verified.
+> 
+> On the other hand virtio_airq_handler() calls vring_interrupt() with interrupts
+> enabled. (While vring_interrupt() is called in a (read) critical section in
+> virtio_airq_handler() we use read_lock() and not read_lock_irqsave() to grab
+> the lock. Whether that is correct in it self (i.e. disregarding the crypto problem)
+> or not I'm not sure right now. Will think some more about it tomorrow.) If the
+> way to go forward is disabling interrupts in virtio-ccw before vring_interrupt() is
+> called, I would be glad to spin a patch for that.
+> 
+> Copying Conny, as she may have an opinion on this (if I'm not wrong she
+> authored that code).
+> 
+> Regards,
+> Halil
