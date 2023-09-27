@@ -2,130 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919737AF856
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CA47AF80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbjI0Cy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 22:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
+        id S234580AbjI0COr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235000AbjI0Cw1 (ORCPT
+        with ESMTP id S235074AbjI0CMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 22:52:27 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276E6659A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:37 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fb8f60374so45089839f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695777996; x=1696382796; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0LsinjnQ0psiRqDV4BJbkShjH1QSE7MgPkz+IEjFHc=;
-        b=P27TWAM76pouKVhn9k7uJh0d2mxC3rLFsCOMyLN740kl7yA3Tk0HiOW1c5W6/vxm6o
-         VEzCjGWMZo90auylb5OiKB0raT2ZtqhqVO/EZn2N+ePDCIqcWmQNUIar9D7kGovSbhQJ
-         EKH+Z0Ojbn34xLHt77dNfPCjCWR+lCDllm/+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695777996; x=1696382796;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k0LsinjnQ0psiRqDV4BJbkShjH1QSE7MgPkz+IEjFHc=;
-        b=jy1zah2+mse9NU4vTR9m7oVDq3Hlmk2k7Vyx0da+4aT3c3le5KD0QjzlXDIC1LvMMC
-         zNfCpMeeEIXUEKEovlNJ8SEXh5fSx5aZ0Mz5tfjVz6oadXFAq9isC64mkZ4oSgJHNfS6
-         0JBsGsCsP1Q3WlSla30eSvZ00Cs++hNRXL0l9XNMTGTgXwGPQHwaYDztvxOmA8ikNvCc
-         tbuKVL1uJoruk2Z7vXHIdzBqbAw0sE40DYeFaaqdKDKHBzOCkqPQmI7Nj4Nk7RVno5iI
-         MhuAzpX/+TfhPGMdoCjp4JCn0tbn174q8RkIOQ/ZyRuwNChExdP2Q1s+n3e5F5L6wQ2B
-         28HA==
-X-Gm-Message-State: AOJu0Yx51hQFhZEYHQAR1eu1/yfQ53mGnD3cmhMYfkIANWu6l1R0e9nQ
-        tBTXasKdC3NuTW8r/sIdNo9DHA==
-X-Google-Smtp-Source: AGHT+IFCOJWMcvH/PMk6PXaOABE9naegOE1OjxmKKpTl8Tq0vbJU2EbQZCuBXNzabPcsOTBAqRoEHA==
-X-Received: by 2002:a92:cac7:0:b0:351:54db:c1c9 with SMTP id m7-20020a92cac7000000b0035154dbc1c9mr594374ilq.1.1695777996416;
-        Tue, 26 Sep 2023 18:26:36 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id y3-20020a92d203000000b0034f3220c086sm2393099ily.12.2023.09.26.18.26.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 18:26:35 -0700 (PDT)
-Message-ID: <cd11111a-321e-3b29-3d7b-8844189f791e@linuxfoundation.org>
-Date:   Tue, 26 Sep 2023 19:26:34 -0600
+        Tue, 26 Sep 2023 22:12:45 -0400
+Received: from out-208.mta1.migadu.com (out-208.mta1.migadu.com [95.215.58.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9049C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:38:08 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1695778686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Nz6caoQZVPJenPUxtn5KQteC75zflIiT4pdokHAsttw=;
+        b=F+C2wGLKKtN0ueSSw//MQ/ZSjyS6aCRiZyJ6YlOb1fuekh72Nu5ff5Z6H39On8vrOt6mxj
+        rhBzAklP1gljRJdrJg3BZS4d6PV4hLD8FHKRZo0RTFybBUTBwUnNJ3lcX5+4e4TwLKRzZ2
+        t5Kg4LL9wEzupxrNacEixn6KSw4KXgo=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     rppt@kernel.org, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] memblock: don't run loop in memblock_add_range() twice
+Date:   Wed, 27 Sep 2023 09:37:52 +0800
+Message-Id: <20230927013752.2515238-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests/rseq: fix kselftest Clang build warnings
-Content-Language: en-US
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
-References: <20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com>
- <CAFhGd8on9_DJUZqT5uKgPzOtJNn99sY3TprcPzD5pm3GmYx8oQ@mail.gmail.com>
- <eabe9db0-c934-af2d-e5a9-9d644593851c@efficios.com>
- <63dd7222-99dc-8e11-3a51-b132e4115ac5@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <63dd7222-99dc-8e11-3a51-b132e4115ac5@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 14:39, Shuah Khan wrote:
-> On 9/26/23 13:02, Mathieu Desnoyers wrote:
->> On 9/26/23 08:20, Justin Stitt wrote:
->>> Ping.
->>>
->>> Looking to get this patch and [1] slated for 6.7 which fixes some
->>> kselftest builds on older kernels.
->>>
->>> On Wed, Sep 13, 2023 at 6:03 AM Justin Stitt <justinstitt@google.com> wrote:
->>>>
->>>> When building with Clang, I am getting many warnings from the selftests/rseq tree.
->>>>
->>>> Here's one such example from rseq tree:
->>>> |  param_test.c:1234:10: error: address argument to atomic operation must be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
->>>> |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
->>>> |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
->>>> |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_load'
->>>> |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC_SEQ_CST)
->>>> |        |                             ^                 ~~~~~~
->>>>
->>>> Use compiler builtins `__atomic_load_n()` and `__atomic_store_n()` with
->>>> accompanying __ATOMIC_ACQUIRE and __ATOMIC_RELEASE, respectively. This
->>>> will fix the warnings because the compiler builtins do not expect their
->>>> arguments to have _Atomic type. This should also make TSAN happier.
->>>>
->>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
->>>> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
->>>> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>> Signed-off-by: Justin Stitt <justinstitt@google.com>
->>
->> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>
->> Peter, should this go through tip ?
->>
->> Shuah, should to go through selftests ?
->>
-> 
-> I can take this through selftests and apply it - hoping there
-> are no conflicts with what's in Peter's tree.
-> 
+There is round twice in memblock_add_range(). The first counts the number
+of regions needed to accommodate the new area. The second actually inserts
+them. But the first round isn't really needed, we just need to check the
+counts before inserting them.
 
-Applied to linux-kselftest next for Linux 6.7-rc1
+Check the count before calling memblock_insert_region(). If the count is
+equal to the maximum value, it needs to resize the array. Otherwise,
+insert it directly.
 
-thanks,
--- Shuah
+To avoid nested calls to memblock_add_range(), we need to call
+memblock_reserve() out of memblock_double_array().
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ mm/memblock.c | 117 ++++++++++++++++++++++++--------------------------
+ 1 file changed, 57 insertions(+), 60 deletions(-)
+
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 5a88d6d24d79..3f44c84f5d0b 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -400,6 +400,8 @@ void __init memblock_discard(void)
+  * @type: memblock type of the regions array being doubled
+  * @new_area_start: starting address of memory range to avoid overlap with
+  * @new_area_size: size of memory range to avoid overlap with
++ * @new_reserve_base: starting address of new array
++ * @new_reserve_size: size of new array
+  *
+  * Double the size of the @type regions array. If memblock is being used to
+  * allocate memory for a new reserved regions array and there is a previously
+@@ -412,7 +414,9 @@ void __init memblock_discard(void)
+  */
+ static int __init_memblock memblock_double_array(struct memblock_type *type,
+ 						phys_addr_t new_area_start,
+-						phys_addr_t new_area_size)
++						phys_addr_t new_area_size,
++						phys_addr_t *new_reserve_base,
++						phys_addr_t *new_reserve_size)
+ {
+ 	struct memblock_region *new_array, *old_array;
+ 	phys_addr_t old_alloc_size, new_alloc_size;
+@@ -490,11 +494,13 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
+ 		memblock_free(old_array, old_alloc_size);
+ 
+ 	/*
+-	 * Reserve the new array if that comes from the memblock.  Otherwise, we
+-	 * needn't do it
++	 * Keep the address and size if that comes from the memblock. Otherwise,
++	 * we needn't do it.
+ 	 */
+-	if (!use_slab)
+-		BUG_ON(memblock_reserve(addr, new_alloc_size));
++	if (!use_slab) {
++		*new_reserve_base = addr;
++		*new_reserve_size = new_alloc_size;
++	}
+ 
+ 	/* Update slab flag */
+ 	*in_slab = use_slab;
+@@ -588,11 +594,12 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+ 				phys_addr_t base, phys_addr_t size,
+ 				int nid, enum memblock_flags flags)
+ {
+-	bool insert = false;
+ 	phys_addr_t obase = base;
+ 	phys_addr_t end = base + memblock_cap_size(base, &size);
+-	int idx, nr_new, start_rgn = -1, end_rgn;
++	phys_addr_t new_base = 0, new_size;
++	int idx, start_rgn = -1, end_rgn;
+ 	struct memblock_region *rgn;
++	unsigned long ocnt = type->cnt;
+ 
+ 	if (!size)
+ 		return 0;
+@@ -608,25 +615,6 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+ 		return 0;
+ 	}
+ 
+-	/*
+-	 * The worst case is when new range overlaps all existing regions,
+-	 * then we'll need type->cnt + 1 empty regions in @type. So if
+-	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
+-	 * that there is enough empty regions in @type, and we can insert
+-	 * regions directly.
+-	 */
+-	if (type->cnt * 2 + 1 <= type->max)
+-		insert = true;
+-
+-repeat:
+-	/*
+-	 * The following is executed twice.  Once with %false @insert and
+-	 * then with %true.  The first counts the number of regions needed
+-	 * to accommodate the new area.  The second actually inserts them.
+-	 */
+-	base = obase;
+-	nr_new = 0;
+-
+ 	for_each_memblock_type(idx, type, rgn) {
+ 		phys_addr_t rbase = rgn->base;
+ 		phys_addr_t rend = rbase + rgn->size;
+@@ -644,15 +632,23 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+ 			WARN_ON(nid != memblock_get_region_node(rgn));
+ #endif
+ 			WARN_ON(flags != rgn->flags);
+-			nr_new++;
+-			if (insert) {
+-				if (start_rgn == -1)
+-					start_rgn = idx;
+-				end_rgn = idx + 1;
+-				memblock_insert_region(type, idx++, base,
+-						       rbase - base, nid,
+-						       flags);
+-			}
++
++			/*
++			 * If type->cnt is equal to type->max, it means there's
++			 * not enough empty region and the array needs to be
++			 * resized. Otherwise, insert it directly.
++			 */
++			if ((type->cnt == type->max) &&
++			    memblock_double_array(type, obase, size,
++						  &new_base, &new_size))
++				return -ENOMEM;
++
++			if (start_rgn == -1)
++				start_rgn = idx;
++			end_rgn = idx + 1;
++			memblock_insert_region(type, idx++, base,
++					       rbase - base, nid,
++					       flags);
+ 		}
+ 		/* area below @rend is dealt with, forget about it */
+ 		base = min(rend, end);
+@@ -660,33 +656,28 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+ 
+ 	/* insert the remaining portion */
+ 	if (base < end) {
+-		nr_new++;
+-		if (insert) {
+-			if (start_rgn == -1)
+-				start_rgn = idx;
+-			end_rgn = idx + 1;
+-			memblock_insert_region(type, idx, base, end - base,
+-					       nid, flags);
+-		}
++		if ((type->cnt == type->max) &&
++		    memblock_double_array(type, obase, size,
++					  &new_base, &new_size))
++			return -ENOMEM;
++
++		if (start_rgn == -1)
++			start_rgn = idx;
++		end_rgn = idx + 1;
++		memblock_insert_region(type, idx, base, end - base,
++				       nid, flags);
+ 	}
+ 
+-	if (!nr_new)
++	if (ocnt == type->cnt)
+ 		return 0;
+ 
+-	/*
+-	 * If this was the first round, resize array and repeat for actual
+-	 * insertions; otherwise, merge and return.
+-	 */
+-	if (!insert) {
+-		while (type->cnt + nr_new > type->max)
+-			if (memblock_double_array(type, obase, size) < 0)
+-				return -ENOMEM;
+-		insert = true;
+-		goto repeat;
+-	} else {
+-		memblock_merge_regions(type, start_rgn, end_rgn);
+-		return 0;
+-	}
++	memblock_merge_regions(type, start_rgn, end_rgn);
++
++	/* Reserve the new array */
++	if (new_base)
++		memblock_reserve(new_base, new_size);
++
++	return 0;
+ }
+ 
+ /**
+@@ -755,6 +746,7 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+ 					int *start_rgn, int *end_rgn)
+ {
+ 	phys_addr_t end = base + memblock_cap_size(base, &size);
++	phys_addr_t new_base = 0, new_size;
+ 	int idx;
+ 	struct memblock_region *rgn;
+ 
+@@ -764,10 +756,15 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+ 		return 0;
+ 
+ 	/* we'll create at most two more regions */
+-	while (type->cnt + 2 > type->max)
+-		if (memblock_double_array(type, base, size) < 0)
++	if (type->cnt + 2 > type->max) {
++		if (memblock_double_array(type, base, size,
++					  &new_base, &new_size))
+ 			return -ENOMEM;
+ 
++		if (new_base)
++			memblock_reserve(new_base, new_size);
++	}
++
+ 	for_each_memblock_type(idx, type, rgn) {
+ 		phys_addr_t rbase = rgn->base;
+ 		phys_addr_t rend = rbase + rgn->size;
+-- 
+2.25.1
 
