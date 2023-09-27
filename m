@@ -2,127 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DF17B0379
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAFE7B037B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbjI0MFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
+        id S231548AbjI0MFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjI0MFH (ORCPT
+        with ESMTP id S231334AbjI0MFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:05:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1921B12A;
-        Wed, 27 Sep 2023 05:05:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639E2C433C7;
-        Wed, 27 Sep 2023 12:05:03 +0000 (UTC)
-Message-ID: <314cee42-c235-4d2a-b4a6-4da92d2c1548@xs4all.nl>
-Date:   Wed, 27 Sep 2023 14:05:03 +0200
+        Wed, 27 Sep 2023 08:05:41 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBED4194
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:05:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98273ae42d0so289469666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 05:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695816338; x=1696421138; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bf8mzSZ8MQaiNt+VKeK0baxYZaBkpfm4kHq2s/2nbbw=;
+        b=cpwTRBxkYl9YjLWKYzGFO7GzuEBorWSUoXJWW1WQE4CVmaFqt1F1l0w4vwSzgp1VR0
+         HzvQPHP4xrs9zXHiEJ7Zhch1fuNT9N8g5DnqiRzzLvnf+8fszX0TCSvxwXnGAWJzeEns
+         0IjNNF7CpqRSJf8vAMv3I88RZNKI7ovBKxU5V27zY1eDOaAdHF4KW+X6CNI8pZkYwrQZ
+         jklOdlrO9O/103GubJh4NTPYbeazTZZvbjSWE+1CWQ962Cs7cbmcoyqvK4dEl95eY0wT
+         gq4XeLKTPMk70hSWGsOY/ANQ8dHGe9agvQJkCpR4NjXHQqI2r8MuT1yBcz0/2DLZ8w32
+         0pCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695816338; x=1696421138;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bf8mzSZ8MQaiNt+VKeK0baxYZaBkpfm4kHq2s/2nbbw=;
+        b=D4prV4BhIWtkRluU6GcrXVQBtNG4lZVdpLrbiaEnITNRRBqRpDnyKzXYcLnpU0HgnQ
+         J4d6+u6eVCpUnu1rswm+fG9RUANUeWJTuID4admhgnGTH7O+KsQT/4hixpyeEdHh7jyP
+         CMY6/C39r3xxdNBgZJUEgQF5+s2N3DBmu+TkctDacGd+NJkLT/P8A8XuK/zyZ9TmuQom
+         xKBZ7iscPfnAFCkMA1LE5RWAuSPCgbEq/c9sKg7ZXcyesxPX50laon0e5SQZQvWDN0PX
+         pOUDdCNmw89X4OW5IKcyRcEJPB1DYpcCKCMkv+EU8YEoiJ6gI6DWwH10Ytcef0wbEu59
+         rtEg==
+X-Gm-Message-State: AOJu0Yw8RFaUJU2LTkIJMJS5WYwjT5OmLlPZXwNunrtPQ1j3K+jL+NmO
+        DbbKWp6eqoqAj/tu19+T+mOsZg==
+X-Google-Smtp-Source: AGHT+IHwrckRamzDNbotm+tHKTsseAGRsOc1DVs5MJfuf+aAU20AERmR7hVnP6n6xGGExHPMM3jtLA==
+X-Received: by 2002:a17:906:5356:b0:9ad:e1e2:3595 with SMTP id j22-20020a170906535600b009ade1e23595mr1576382ejo.7.1695816338084;
+        Wed, 27 Sep 2023 05:05:38 -0700 (PDT)
+Received: from [172.20.13.88] ([45.147.210.162])
+        by smtp.gmail.com with ESMTPSA id lz1-20020a170906fb0100b0099297782aa9sm9182234ejb.49.2023.09.27.05.05.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 05:05:37 -0700 (PDT)
+Message-ID: <3f195f5c-c989-4539-a4e5-62aff89576f5@kernel.dk>
+Date:   Wed, 27 Sep 2023 06:05:36 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v6 17/17] media: qcom: camss: Comment CSID dt_id
- field
-Content-Language: en-US, nl
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20230925154707.837542-1-bryan.odonoghue@linaro.org>
- <20230925154707.837542-18-bryan.odonoghue@linaro.org>
- <cf7cdafb-ccd1-42ee-9c67-5e6600f752f7@xs4all.nl>
- <d799f653-e00c-43be-9487-381a8ef4c849@linaro.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <d799f653-e00c-43be-9487-381a8ef4c849@linaro.org>
+Subject: Re: [PATCH 4/8] io_uring: add support for futex wake and wait
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andres@anarazel.de, tglx@linutronix.de
+References: <20230921182908.160080-1-axboe@kernel.dk>
+ <20230921182908.160080-5-axboe@kernel.dk>
+ <20230927090501.GB21810@noisy.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230927090501.GB21810@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2023 14:03, Bryan O'Donoghue wrote:
-> On 27/09/2023 12:42, Hans Verkuil wrote:
->>> +        /*
->>> +         * DT_ID is a two bit bitfield that is concatenated with
->>> +         * the four least significant bits of the six bit VC
->>> +         * bitfield to generate an internal CID value.
->>> +         *
->>> +         * CSID_RDI_CFG0(vc)
->>> +         * DT_ID : 28:27
->>> +         * VC    : 26:22
->> This is 5 bits, not 6 bits as the comment above says. Which is right?
+On 9/27/23 3:05 AM, Peter Zijlstra wrote:
+> On Thu, Sep 21, 2023 at 12:29:04PM -0600, Jens Axboe wrote:
 > 
-> Yes you're right I had "DT" which is six bits in my head when I wrote this. The VC bitfield is five.
+>> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>> +{
+>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>> +	u32 flags;
+>> +
+>> +	if (unlikely(sqe->fd || sqe->len || sqe->buf_index || sqe->file_index))
+>> +		return -EINVAL;
+>> +
+>> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+>> +	iof->futex_val = READ_ONCE(sqe->addr2);
+>> +	iof->futex_mask = READ_ONCE(sqe->addr3);
+>> +	flags = READ_ONCE(sqe->futex_flags);
+>> +
+>> +	if (flags & ~FUTEX2_VALID_MASK)
+>> +		return -EINVAL;
+>> +
+>> +	iof->futex_flags = futex2_to_flags(flags);
 > 
->>
->>> +         * DT    : 21:16
->>> +         *
->>> +         * CID   : VC 3:0 << 2 | DT_ID 1:0
->>> +         */
->>>           u8 dt_id = vc;
->> So if dt_id is 2 bits, and vc can be more than 2 bits in the future,
->> shouldn't this read "vc & 3"?
+> So prep does the flags conversion..
 > 
-> Hmm...
+>> +	if (!futex_flags_valid(iof->futex_flags))
+>> +		return -EINVAL;
+>> +
+>> +	if (!futex_validate_input(iof->futex_flags, iof->futex_val) ||
+>> +	    !futex_validate_input(iof->futex_flags, iof->futex_mask))
+>> +		return -EINVAL;
+>> +
+>> +	return 0;
+>> +}
 > 
-> val |= dt_id << RDI_CFG0_DT_ID;
+>> +int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
+>> +{
+>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>> +	struct io_ring_ctx *ctx = req->ctx;
+>> +	struct io_futex_data *ifd = NULL;
+>> +	struct futex_hash_bucket *hb;
+>> +	int ret;
+>> +
+>> +	if (!iof->futex_mask) {
+>> +		ret = -EINVAL;
+>> +		goto done;
+>> +	}
+>> +
+>> +	io_ring_submit_lock(ctx, issue_flags);
+>> +	ifd = io_alloc_ifd(ctx);
+>> +	if (!ifd) {
+>> +		ret = -ENOMEM;
+>> +		goto done_unlock;
+>> +	}
+>> +
+>> +	req->async_data = ifd;
+>> +	ifd->q = futex_q_init;
+>> +	ifd->q.bitset = iof->futex_mask;
+>> +	ifd->q.wake = io_futex_wake_fn;
+>> +	ifd->req = req;
+>> +
+>> +	ret = futex_wait_setup(iof->uaddr, iof->futex_val,
+>> +			       futex2_to_flags(iof->futex_flags), &ifd->q, &hb);
 > 
-> yes that would overrun otherwise.
+> But then wait and..
+> 
+>> +	if (!ret) {
+>> +		hlist_add_head(&req->hash_node, &ctx->futex_list);
+>> +		io_ring_submit_unlock(ctx, issue_flags);
+>> +
+>> +		futex_queue(&ifd->q, hb);
+>> +		return IOU_ISSUE_SKIP_COMPLETE;
+>> +	}
+>> +
+>> +done_unlock:
+>> +	io_ring_submit_unlock(ctx, issue_flags);
+>> +done:
+>> +	if (ret < 0)
+>> +		req_set_fail(req);
+>> +	io_req_set_res(req, ret, 0);
+>> +	kfree(ifd);
+>> +	return IOU_OK;
+>> +}
+>> +
+>> +int io_futex_wake(struct io_kiocb *req, unsigned int issue_flags)
+>> +{
+>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>> +	int ret;
+>> +
+>> +	ret = futex_wake(iof->uaddr, futex2_to_flags(iof->futex_flags),
+> 
+> ... wake do it both again?
 
-No need to repost the whole series, just post a v6.1 for this patch only.
+Oops good catch, yes just the prep side should do it of course. I'll fix
+that up.
 
-Regards,
+> Also, I think we want wake to have wake do: 
+> 
+>   'FLAGS_STRICT | iof->futex_flags'
+> 
+> See 43adf8449510 ("futex: FLAGS_STRICT"), I'm thinking that waking 0
+> futexes should honour that request by waking 0, not 1 :-)
 
-	Hans
+Thanks for the pointer, yeah agree that sounds sane. Most syscalls that
+take an number/size that is zero will indeed return zero. I'll add a
+test case for that too.
+
+-- 
+Jens Axboe
 
