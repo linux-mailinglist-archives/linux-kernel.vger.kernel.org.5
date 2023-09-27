@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124E67AFEDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6BC7AFEC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjI0IpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S230123AbjI0Iil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbjI0Io4 (ORCPT
+        with ESMTP id S229641AbjI0Iij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:44:56 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D4EFCFD;
-        Wed, 27 Sep 2023 01:37:08 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C8E41FB;
-        Wed, 27 Sep 2023 01:37:46 -0700 (PDT)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 082A83F59C;
-        Wed, 27 Sep 2023 01:37:03 -0700 (PDT)
-Message-ID: <240f888a-1394-8624-7315-8d4a198d20dd@arm.com>
-Date:   Wed, 27 Sep 2023 14:07:00 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V13 - RESEND 00/10] arm64/perf: Enable branch stack
- sampling
-Content-Language: en-US
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-Cc:     Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20230711082455.215983-1-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230711082455.215983-1-anshuman.khandual@arm.com>
+        Wed, 27 Sep 2023 04:38:39 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB3829F;
+        Wed, 27 Sep 2023 01:38:37 -0700 (PDT)
+Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 16:37:19
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Wed, 27 Sep 2023 16:37:19 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   chenguohua@jari.cn
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: Clean up errors in sni_53c710.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Message-ID: <11d7b9cb.88b.18ad5c91580.Coremail.chenguohua@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDHZD+_6RNlUPq9AA--.629W
+X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwAps6
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/11/23 13:54, Anshuman Khandual wrote:
-> This series enables perf branch stack sampling support on arm64 platform
-> via a new arch feature called Branch Record Buffer Extension (BRBE). All
-> relevant register definitions could be accessed here.
-> 
-> https://developer.arm.com/documentation/ddi0601/2021-12/AArch64-Registers
-> 
-> This series applies on 6.5-rc1.
-> 
-> Changes in V13:
-> 
-> https://lore.kernel.org/all/20230622065351.1092893-1-anshuman.khandual@arm.com/
-> 
-> - Added branch callback stubs for aarch32 pmuv3 based platforms
-> - Updated the comments for capture_brbe_regset()
-> - Deleted the comments in __read_brbe_regset()
-> - Reversed the arguments order in capture_brbe_regset() and brbe_branch_save()
-> - Fixed BRBE_BANK[0|1]_IDX_MAX indices comparison in armv8pmu_branch_read()
-> - Fixed BRBE_BANK[0|1]_IDX_MAX indices comparison in capture_brbe_regset()
-
-Hello All,
-
-Upcoming V14 series is still being worked out, and might take some more time. But
-meanwhile please find its corresponding development branch for experimentation
-purpose, if required. Thank you.
-
-https://git.gitlab.arm.com/linux-arm/linux-anshuman.git (brbe_v14_rc3)
-
-- Anshuman
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+c3BhY2UgcmVxdWlyZWQgYmVmb3JlIHRoZSBvcGVuIHBhcmVudGhlc2lzICcoJwoKU2lnbmVkLW9m
+Zi1ieTogR3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0tLQogZHJpdmVycy9zY3Np
+L3NuaV81M2M3MTAuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS9zbmlfNTNjNzEwLmMgYi9kcml2
+ZXJzL3Njc2kvc25pXzUzYzcxMC5jCmluZGV4IDY3ODY1MWI5YjRkZC4uZTIyNjIyNWQxMjM3IDEw
+MDY0NAotLS0gYS9kcml2ZXJzL3Njc2kvc25pXzUzYzcxMC5jCisrKyBiL2RyaXZlcnMvc2NzaS9z
+bmlfNTNjNzEwLmMKQEAgLTg2LDcgKzg2LDcgQEAgc3RhdGljIGludCBzbmlybTcxMF9wcm9iZShz
+dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpCiAJaG9zdC0+aXJxID0gcmMgPSBwbGF0Zm9ybV9n
+ZXRfaXJxKGRldiwgMCk7CiAJaWYgKHJjIDwgMCkKIAkJZ290byBvdXRfcHV0X2hvc3Q7Ci0JaWYo
+cmVxdWVzdF9pcnEoaG9zdC0+aXJxLCBOQ1JfNzAwX2ludHIsIElSUUZfU0hBUkVELCAic25pcm03
+MTAiLCBob3N0KSkgeworCWlmIChyZXF1ZXN0X2lycShob3N0LT5pcnEsIE5DUl83MDBfaW50ciwg
+SVJRRl9TSEFSRUQsICJzbmlybTcxMCIsIGhvc3QpKSB7CiAJCXByaW50ayhLRVJOX0VSUiAic25p
+cm03MTA6IHJlcXVlc3RfaXJxIGZhaWxlZCFcbiIpOwogCQlnb3RvIG91dF9wdXRfaG9zdDsKIAl9
+Ci0tIAoyLjE3LjEK
