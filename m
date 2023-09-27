@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3187AF8AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF597AF8B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbjI0D3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S229500AbjI0Dgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjI0D1O (ORCPT
+        with ESMTP id S229611AbjI0D2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:27:14 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7412817821;
-        Tue, 26 Sep 2023 19:55:19 -0700 (PDT)
+        Tue, 26 Sep 2023 23:28:42 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6051BCF;
+        Tue, 26 Sep 2023 19:58:22 -0700 (PDT)
 Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RwLk10f3WzVlFL;
-        Wed, 27 Sep 2023 10:52:09 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RwLpX5h9KzrSDS;
+        Wed, 27 Sep 2023 10:56:04 +0800 (CST)
 Received: from [10.67.109.254] (10.67.109.254) by
  kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 27 Sep 2023 10:55:16 +0800
-Message-ID: <6535a42b-d3e7-12d4-e986-7e1aa472d321@huawei.com>
-Date:   Wed, 27 Sep 2023 10:55:16 +0800
+ 15.1.2507.31; Wed, 27 Sep 2023 10:58:19 +0800
+Message-ID: <512f2079-6fcb-f2c5-d64d-d0e124cd2853@huawei.com>
+Date:   Wed, 27 Sep 2023 10:58:19 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.0
-Subject: Re: [PATCH 2/4] fpga: add a platform driver to the FPGA Manager test
+Subject: Re: [PATCH 4/4] fpga: add a platform driver to the FPGA Region test
  suite
 Content-Language: en-US
 To:     Marco Pagani <marpagan@redhat.com>,
@@ -35,13 +35,13 @@ To:     Marco Pagani <marpagan@redhat.com>,
         Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
 CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>
 References: <20230926163911.66114-1-marpagan@redhat.com>
- <20230926163911.66114-3-marpagan@redhat.com>
+ <20230926163911.66114-5-marpagan@redhat.com>
 From:   Ruan Jinjie <ruanjinjie@huawei.com>
-In-Reply-To: <20230926163911.66114-3-marpagan@redhat.com>
+In-Reply-To: <20230926163911.66114-5-marpagan@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemi500008.china.huawei.com (7.221.188.139)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -58,462 +58,491 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 2023/9/27 0:39, Marco Pagani wrote:
 > Register a minimal platform driver associated with the parent platform
 > device used for testing to prevent a null-ptr-deref when try_module_get()
-> is called by fpga_mgr_get().
+> is called by fpga_region_get(). Also, fix a typo in the suite's name.
 > 
-> Fixes: ccbc1c302115 ("fpga: add an initial KUnit suite for the FPGA Manager")
+> Fixes: 64a5f972c93d ("fpga: add an initial KUnit suite for the FPGA Region")
 > Reported-by: Jinjie Ruan <ruanjinjie@huawei.com>
 > Signed-off-by: Marco Pagani <marpagan@redhat.com>
 > ---
->  drivers/fpga/tests/fpga-mgr-test.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+>  drivers/fpga/tests/fpga-region-test.c | 26 +++++++++++++++++++++-----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/fpga/tests/fpga-mgr-test.c b/drivers/fpga/tests/fpga-mgr-test.c
-> index 6acec55b60ce..30de474d7def 100644
-> --- a/drivers/fpga/tests/fpga-mgr-test.c
-> +++ b/drivers/fpga/tests/fpga-mgr-test.c
-> @@ -14,6 +14,8 @@
->  #include <linux/scatterlist.h>
+> diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
+> index 9f9d50ee7871..5ff688b394f9 100644
+> --- a/drivers/fpga/tests/fpga-region-test.c
+> +++ b/drivers/fpga/tests/fpga-region-test.c
+> @@ -15,6 +15,8 @@
+>  #include <linux/platform_device.h>
 >  #include <linux/types.h>
 >  
 > +#include "fpga-test-helpers.h"
 > +
->  #define HEADER_FILL		'H'
->  #define IMAGE_FILL		'P'
->  #define IMAGE_BLOCK		1024
-> @@ -277,6 +279,18 @@ static void fpga_mgr_test_img_load_sgt(struct kunit *test)
->  	sg_free_table(ctx->img_info->sgt);
+>  struct mgr_stats {
+>  	u32 write_count;
+>  };
+> @@ -132,6 +134,18 @@ static void fpga_region_test_program_fpga(struct kunit *test)
+>  	fpga_image_info_free(img_info);
 >  }
 >  
 > +TEST_PLATFORM_DRIVER(test_platform_driver);
 > +
-> +static int fpga_mgr_test_suite_init(struct kunit_suite *suite)
+> +static int fpga_region_test_suite_init(struct kunit_suite *suite)
 > +{
 > +	return platform_driver_register(&test_platform_driver);
 
-modprobe fpga-mgr-test and there is still a null-ptr-deref.
+modprobe fpga-region-test and then there is still a null-ptr-deref.
 
-root@syzkaller:~# modprobe fpga-mgr-test
-[   45.088127] KTAP version 1
-[   45.088354] 1..1
-[   45.089520] ------------[ cut here ]------------
-[   45.089861] kobject: '(null)' (ffffffffa02121d0): is not initialized,
+root@syzkaller:~# modprobe fpga-region-test
+[   39.603646] KTAP version 1
+[   39.603866] 1..1
+[   39.604574] ------------[ cut here ]------------
+[   39.604921] kobject: '(null)' (ffffffffa0271490): is not initialized,
 yet kobject_get() is being called.
-[   45.090608] WARNING: CPU: 1 PID: 1862 at lib/kobject.c:637
+[   39.605842] WARNING: CPU: 3 PID: 1862 at lib/kobject.c:637
 kobject_get+0x98/0xe0
-[   45.091209] Modules linked in: fpga_mgr_test(+)
-[   45.091581] CPU: 1 PID: 1862 Comm: modprobe Tainted: G
+[   39.606445] Modules linked in: fpga_region_test(+) fpga_region
+fpga_bridge
+[   39.607000] CPU: 3 PID: 1862 Comm: modprobe Tainted: G
  N 6.6.0-rc3+ #54
-[   45.092201] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+[   39.607640] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
 BIOS 1.15.0-1 04/01/2014
-[   45.092870] RIP: 0010:kobject_get+0x98/0xe0
-[   45.093200] Code: 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03
+[   39.608304] RIP: 0010:kobject_get+0x98/0xe0
+[   39.608651] Code: 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03
 80 3c 02 00 75 44 49 8b 34 24 4c 89 e2 48 c7 c7 20 63 ac 84 e8 38 fe 24
 fd <0f> 0b eb a2 48 89 ef be 01 00 00 00 e8 d7 de a4 fe 4c 89 e0 5d 41
-[   45.094653] RSP: 0018:ffff8881062f7298 EFLAGS: 00010286
-[   45.095086] RAX: 0000000000000000 RBX: ffffffff848a3660 RCX:
+[   39.610140] RSP: 0018:ffff888106f87298 EFLAGS: 00010286
+[   39.610583] RAX: 0000000000000000 RBX: ffffffff848a3660 RCX:
 0000000000000000
-[   45.095649] RDX: 0000000000000002 RSI: ffffffff847b4d40 RDI:
+[   39.611153] RDX: 0000000000000002 RSI: ffffffff847b4d40 RDI:
 0000000000000001
-[   45.096205] RBP: ffff888101b6d840 R08: 0000000000000001 R09:
-ffffed1020c5ee12
-[   45.096761] R10: ffff8881062f7097 R11: 3a7463656a626f6b R12:
-ffffffffa02121d0
-[   45.097315] R13: ffff888101b6d858 R14: ffffffffa02121d0 R15:
-ffff88810661aca0
-[   45.097863] FS:  00007fabf4c34540(0000) GS:ffff888119c80000(0000)
+[   39.611736] RBP: ffff888106002740 R08: 0000000000000001 R09:
+ffffed1020df0e12
+[   39.612298] R10: ffff888106f87097 R11: 3a7463656a626f6b R12:
+ffffffffa0271490
+[   39.612882] R13: ffff888106002758 R14: ffffffffa0271490 R15:
+ffff88810b6a9798
+[   39.613458] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
 knlGS:0000000000000000
-[   45.098485] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   45.098933] CR2: 000055578ca04e20 CR3: 000000010ac0e006 CR4:
+[   39.614079] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   39.614542] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
 0000000000770ee0
-[   45.099497] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+[   39.615110] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
 0000000000000000
-[   45.100054] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+[   39.615680] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
 0000000000000400
-[   45.100615] PKRU: 55555554
-[   45.100833] Call Trace:
-[   45.101034]  <TASK>
-[   45.101206]  ? __warn+0xc9/0x260
-[   45.101480]  ? irq_work_queue+0x35/0x50
-[   45.101786]  ? kobject_get+0x98/0xe0
-[   45.102073]  ? report_bug+0x345/0x400
-[   45.102377]  ? handle_bug+0x3c/0x70
-[   45.102661]  ? exc_invalid_op+0x14/0x40
-[   45.102968]  ? asm_exc_invalid_op+0x16/0x20
-[   45.103317]  ? kobject_get+0x98/0xe0
-[   45.103604]  ? kobject_get+0x98/0xe0
-[   45.103892]  kobject_add_internal+0x9e/0x870
-[   45.104235]  kobject_add+0x120/0x1f0
-[   45.104535]  ? kset_create_and_add+0x160/0x160
-[   45.104892]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   45.105269]  ? _raw_spin_lock+0x87/0xe0
-[   45.105586]  ? kobject_create_and_add+0x3c/0xb0
-[   45.105948]  kobject_create_and_add+0x68/0xb0
-[   45.106303]  module_add_driver+0x260/0x350
-[   45.106635]  bus_add_driver+0x2c9/0x580
-[   45.106941]  driver_register+0x133/0x460
-[   45.107284]  kunit_run_tests+0xdb/0xef0
-[   45.107599]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.107962]  ? __sched_text_end+0xa/0xa
-[   45.108284]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   45.108675]  ? __kunit_test_suites_exit+0x80/0x80
-[   45.109045]  ? set_track_prepare+0x8a/0xd0
-[   45.109380]  ? get_object+0x70/0x70
-[   45.109658]  ? alloc_inode+0x12a/0x1e0
-[   45.109960]  ? new_inode+0x14/0x230
-[   45.110238]  ? __debugfs_create_file+0xc8/0x5d0
-[   45.110607]  ? __kunit_test_suites_init+0x73/0x140
-[   45.110982]  ? kunit_module_notify+0x3ab/0x440
-[   45.111341]  ? notifier_call_chain+0xbf/0x280
-[   45.111688]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.112045]  ? __sched_text_end+0xa/0xa
-[   45.112362]  ? projid_m_show+0x200/0x200
-[   45.112671]  ? kasan_set_track+0x21/0x30
-[   45.112974]  ? _raw_spin_lock+0x87/0xe0
-[   45.113290]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.113615]  ? _raw_spin_lock+0x87/0xe0
-[   45.113914]  ? __d_instantiate+0x1d5/0x3b0
-[   45.114232]  ? alloc_inode+0x72/0x1e0
-[   45.114535]  ? up_write+0x6d/0xa0
-[   45.114803]  ? __debugfs_create_file+0x3b5/0x5d0
-[   45.115180]  __kunit_test_suites_init+0xde/0x140
-[   45.115557]  kunit_module_notify+0x3ab/0x440
-[   45.115895]  ? __kunit_test_suites_init+0x140/0x140
-[   45.116287]  ? preempt_count_add+0x79/0x150
-[   45.116623]  notifier_call_chain+0xbf/0x280
-[   45.116953]  ? kasan_quarantine_put+0x21/0x1a0
-[   45.117311]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   45.117747]  ? notifier_call_chain+0x280/0x280
-[   45.118097]  ? 0xffffffffa0208000
-[   45.118372]  load_module+0x4af0/0x67d0
-[   45.118671]  ? module_frob_arch_sections+0x20/0x20
-[   45.119057]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   45.119476]  ? kernel_read_file+0x3ca/0x510
-[   45.119807]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   45.120134]  ? init_module_from_file+0xd2/0x130
-[   45.120499]  init_module_from_file+0xd2/0x130
-[   45.120843]  ? __ia32_sys_init_module+0xa0/0xa0
-[   45.121203]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   45.121589]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.121916]  idempotent_init_module+0x339/0x610
-[   45.122286]  ? init_module_from_file+0x130/0x130
-[   45.122648]  ? __fget_light+0x57/0x500
-[   45.122950]  __x64_sys_finit_module+0xba/0x130
-[   45.123323]  do_syscall_64+0x35/0x80
-[   45.123607]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   45.124001] RIP: 0033:0x7fabf471b839
-[   45.124303] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[   39.616227] PKRU: 55555554
+[   39.616456] Call Trace:
+[   39.616652]  <TASK>
+[   39.616825]  ? __warn+0xc9/0x260
+[   39.617085]  ? irq_work_queue+0x35/0x50
+[   39.617410]  ? kobject_get+0x98/0xe0
+[   39.617711]  ? report_bug+0x345/0x400
+[   39.618002]  ? handle_bug+0x3c/0x70
+[   39.618278]  ? exc_invalid_op+0x14/0x40
+[   39.618596]  ? asm_exc_invalid_op+0x16/0x20
+[   39.618926]  ? kobject_get+0x98/0xe0
+[   39.619208]  ? kobject_get+0x98/0xe0
+[   39.619510]  kobject_add_internal+0x9e/0x870
+[   39.619850]  kobject_add+0x120/0x1f0
+[   39.620138]  ? kset_create_and_add+0x160/0x160
+[   39.620500]  ? __kmem_cache_alloc_node+0x1d2/0x350
+[   39.620881]  ? _raw_spin_lock+0x87/0xe0
+[   39.621185]  ? kobject_create_and_add+0x3c/0xb0
+[   39.621566]  kobject_create_and_add+0x68/0xb0
+[   39.621913]  module_add_driver+0x260/0x350
+[   39.622237]  bus_add_driver+0x2c9/0x580
+[   39.622556]  driver_register+0x133/0x460
+[   39.622867]  kunit_run_tests+0xdb/0xef0
+[   39.623169]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.623540]  ? __sched_text_end+0xa/0xa
+[   39.623845]  ? _raw_spin_unlock_irqrestore+0x42/0x80
+[   39.624230]  ? __kunit_test_suites_exit+0x80/0x80
+[   39.624615]  ? set_track_prepare+0x8a/0xd0
+[   39.624935]  ? get_object+0x70/0x70
+[   39.625212]  ? alloc_inode+0x12a/0x1e0
+[   39.625541]  ? new_inode+0x14/0x230
+[   39.625818]  ? __debugfs_create_file+0xc8/0x5d0
+[   39.626178]  ? __kunit_test_suites_init+0x73/0x140
+[   39.626577]  ? kunit_module_notify+0x3ab/0x440
+[   39.626925]  ? notifier_call_chain+0xbf/0x280
+[   39.627274]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.627647]  ? __sched_text_end+0xa/0xa
+[   39.627958]  ? projid_m_show+0x200/0x200
+[   39.628279]  ? kasan_set_track+0x21/0x30
+[   39.628607]  ? _raw_spin_lock+0x87/0xe0
+[   39.628911]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.629238]  ? _raw_spin_lock+0x87/0xe0
+[   39.629566]  ? __d_instantiate+0x1d5/0x3b0
+[   39.629894]  ? alloc_inode+0x72/0x1e0
+[   39.630197]  ? up_write+0x6d/0xa0
+[   39.630506]  ? __debugfs_create_file+0x3b5/0x5d0
+[   39.630881]  __kunit_test_suites_init+0xde/0x140
+[   39.631248]  kunit_module_notify+0x3ab/0x440
+[   39.631602]  ? __kunit_test_suites_init+0x140/0x140
+[   39.631985]  ? preempt_count_add+0x79/0x150
+[   39.632319]  notifier_call_chain+0xbf/0x280
+[   39.632665]  ? kasan_quarantine_put+0x21/0x1a0
+[   39.633020]  blocking_notifier_call_chain_robust+0xbb/0x140
+[   39.633470]  ? notifier_call_chain+0x280/0x280
+[   39.633828]  ? 0xffffffffa0268000
+[   39.634099]  load_module+0x4af0/0x67d0
+[   39.634402]  ? module_frob_arch_sections+0x20/0x20
+[   39.634795]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
+[   39.635200]  ? kernel_read_file+0x3ca/0x510
+[   39.635549]  ? __x64_sys_fspick+0x2a0/0x2a0
+[   39.635884]  ? init_module_from_file+0xd2/0x130
+[   39.636237]  init_module_from_file+0xd2/0x130
+[   39.636591]  ? __ia32_sys_init_module+0xa0/0xa0
+[   39.636948]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
+[   39.637318]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.637663]  idempotent_init_module+0x339/0x610
+[   39.638022]  ? init_module_from_file+0x130/0x130
+[   39.638390]  ? __fget_light+0x57/0x500
+[   39.638711]  __x64_sys_finit_module+0xba/0x130
+[   39.639066]  do_syscall_64+0x35/0x80
+[   39.639355]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+[   39.639771] RIP: 0033:0x7fecc9f1b839
+[   39.640065] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   45.125754] RSP: 002b:00007ffd1f377128 EFLAGS: 00000246 ORIG_RAX:
+[   39.641519] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
 0000000000000139
-[   45.126359] RAX: ffffffffffffffda RBX: 000055578e370e10 RCX:
-00007fabf471b839
-[   45.126921] RDX: 0000000000000000 RSI: 000055578ca1bc2e RDI:
-0000000000000003
-[   45.127505] RBP: 000055578ca1bc2e R08: 0000000000000000 R09:
-000055578e373210
-[   45.128057] R10: 0000000000000003 R11: 0000000000000246 R12:
+[   39.642105] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
+00007fecc9f1b839
+[   39.642679] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
+0000000000000005
+[   39.643236] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
+000055fe429e7d20
+[   39.643807] R10: 0000000000000005 R11: 0000000000000246 R12:
 0000000000000000
-[   45.128621] R13: 000055578e370f30 R14: 0000000000040000 R15:
-000055578e370e10
-[   45.129183]  </TASK>
-[   45.129376] ---[ end trace 0000000000000000 ]---
-[   45.129744] ------------[ cut here ]------------
-[   45.130109] refcount_t: addition on 0; use-after-free.
-[   45.130555] WARNING: CPU: 1 PID: 1862 at lib/refcount.c:25
+[   39.644370] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
+000055fe429e7d20
+[   39.644943]  </TASK>
+[   39.645122] ---[ end trace 0000000000000000 ]---
+[   39.645513] ------------[ cut here ]------------
+[   39.645876] refcount_t: addition on 0; use-after-free.
+[   39.646301] WARNING: CPU: 3 PID: 1862 at lib/refcount.c:25
 refcount_warn_saturate+0x120/0x190
-[   45.131214] Modules linked in: fpga_mgr_test(+)
-[   45.131588] CPU: 1 PID: 1862 Comm: modprobe Tainted: G        W
+[   39.646992] Modules linked in: fpga_region_test(+) fpga_region
+fpga_bridge
+[   39.647551] CPU: 3 PID: 1862 Comm: modprobe Tainted: G        W
  N 6.6.0-rc3+ #54
-[   45.132205] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+[   39.648193] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
 BIOS 1.15.0-1 04/01/2014
-[   45.132854] RIP: 0010:refcount_warn_saturate+0x120/0x190
-[   45.133262] Code: 1d bc 3f 40 0a 80 fb 01 0f 87 5a f8 67 01 83 e3 01
+[   39.648868] RIP: 0010:refcount_warn_saturate+0x120/0x190
+[   39.649287] Code: 1d bc 3f 40 0a 80 fb 01 0f 87 5a f8 67 01 83 e3 01
 0f 85 5d ff ff ff 48 c7 c7 e0 99 7a 84 c6 05 9c 3f 40 0a 01 e8 30 1e 80
 fe <0f> 0b e9 43 ff ff ff 0f b6 1d 86 3f 40 0a 80 fb 01 0f 87 4f f8 67
-[   45.134712] RSP: 0018:ffff8881062f7280 EFLAGS: 00010286
-[   45.135138] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+[   39.650771] RSP: 0018:ffff888106f87280 EFLAGS: 00010286
+[   39.651185] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
 0000000000000000
-[   45.135698] RDX: 0000000000000002 RSI: ffffffff847b4d40 RDI:
+[   39.651766] RDX: 0000000000000002 RSI: 0000000000000004 RDI:
 0000000000000001
-[   45.136244] RBP: 0000000000000002 R08: 0000000000000001 R09:
-ffffed1020c5ee0f
-[   45.136804] R10: ffff8881062f707f R11: 746e756f63666572 R12:
-ffffffffa02121d0
-[   45.137367] R13: ffff888101b6d858 R14: ffffffffa02121d0 R15:
-ffff88810661aca0
-[   45.137919] FS:  00007fabf4c34540(0000) GS:ffff888119c80000(0000)
+[   39.652328] RBP: 0000000000000002 R08: 0000000000000001 R09:
+ffffed10233b4ef1
+[   39.652902] R10: ffff888119da778b R11: 746e756f63666572 R12:
+ffffffffa0271490
+[   39.653483] R13: ffff888106002758 R14: ffffffffa0271490 R15:
+ffff88810b6a9798
+[   39.654041] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
 knlGS:0000000000000000
-[   45.138551] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   45.139007] CR2: 000055578ca04e20 CR3: 000000010ac0e006 CR4:
+[   39.654697] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   39.655155] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
 0000000000770ee0
-[   45.139566] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+[   39.655746] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
 0000000000000000
-[   45.140116] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+[   39.656312] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
 0000000000000400
-[   45.140669] PKRU: 55555554
-[   45.140882] Call Trace:
-[   45.141084]  <TASK>
-[   45.141254]  ? __warn+0xc9/0x260
-[   45.141520]  ? refcount_warn_saturate+0x120/0x190
-[   45.141889]  ? report_bug+0x345/0x400
-[   45.142176]  ? handle_bug+0x3c/0x70
-[   45.142461]  ? exc_invalid_op+0x14/0x40
-[   45.142767]  ? asm_exc_invalid_op+0x16/0x20
-[   45.143101]  ? refcount_warn_saturate+0x120/0x190
-[   45.143474]  kobject_get+0xbd/0xe0
-[   45.143745]  kobject_add_internal+0x9e/0x870
-[   45.144084]  kobject_add+0x120/0x1f0
-[   45.144378]  ? kset_create_and_add+0x160/0x160
-[   45.144732]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   45.145109]  ? _raw_spin_lock+0x87/0xe0
-[   45.145426]  ? kobject_create_and_add+0x3c/0xb0
-[   45.145787]  kobject_create_and_add+0x68/0xb0
-[   45.146130]  module_add_driver+0x260/0x350
-[   45.146465]  bus_add_driver+0x2c9/0x580
-[   45.146762]  driver_register+0x133/0x460
-[   45.147084]  kunit_run_tests+0xdb/0xef0
-[   45.147404]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.147754]  ? __sched_text_end+0xa/0xa
-[   45.148056]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   45.148456]  ? __kunit_test_suites_exit+0x80/0x80
-[   45.148817]  ? set_track_prepare+0x8a/0xd0
-[   45.149145]  ? get_object+0x70/0x70
-[   45.149425]  ? alloc_inode+0x12a/0x1e0
-[   45.149716]  ? new_inode+0x14/0x230
-[   45.149989]  ? __debugfs_create_file+0xc8/0x5d0
-[   45.150347]  ? __kunit_test_suites_init+0x73/0x140
-[   45.150724]  ? kunit_module_notify+0x3ab/0x440
-[   45.151074]  ? notifier_call_chain+0xbf/0x280
-[   45.151420]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.151772]  ? __sched_text_end+0xa/0xa
-[   45.152079]  ? projid_m_show+0x200/0x200
-[   45.152403]  ? kasan_set_track+0x21/0x30
-[   45.152712]  ? _raw_spin_lock+0x87/0xe0
-[   45.153010]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.153333]  ? _raw_spin_lock+0x87/0xe0
-[   45.153635]  ? __d_instantiate+0x1d5/0x3b0
-[   45.153953]  ? alloc_inode+0x72/0x1e0
-[   45.154235]  ? up_write+0x6d/0xa0
-[   45.154509]  ? __debugfs_create_file+0x3b5/0x5d0
-[   45.154869]  __kunit_test_suites_init+0xde/0x140
-[   45.155222]  kunit_module_notify+0x3ab/0x440
-[   45.155560]  ? __kunit_test_suites_init+0x140/0x140
-[   45.155938]  ? preempt_count_add+0x79/0x150
-[   45.156259]  notifier_call_chain+0xbf/0x280
-[   45.156591]  ? kasan_quarantine_put+0x21/0x1a0
-[   45.156937]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   45.157371]  ? notifier_call_chain+0x280/0x280
-[   45.157713]  ? 0xffffffffa0208000
-[   45.157967]  load_module+0x4af0/0x67d0
-[   45.158255]  ? module_frob_arch_sections+0x20/0x20
-[   45.158630]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   45.159025]  ? kernel_read_file+0x3ca/0x510
-[   45.159353]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   45.159673]  ? init_module_from_file+0xd2/0x130
-[   45.160014]  init_module_from_file+0xd2/0x130
-[   45.160356]  ? __ia32_sys_init_module+0xa0/0xa0
-[   45.160702]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   45.161058]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.161386]  idempotent_init_module+0x339/0x610
-[   45.161727]  ? init_module_from_file+0x130/0x130
-[   45.162081]  ? __fget_light+0x57/0x500
-[   45.162378]  __x64_sys_finit_module+0xba/0x130
-[   45.162720]  do_syscall_64+0x35/0x80
-[   45.162989]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   45.163380] RIP: 0033:0x7fabf471b839
-[   45.163655] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[   39.656894] PKRU: 55555554
+[   39.657116] Call Trace:
+[   39.657319]  <TASK>
+[   39.657516]  ? __warn+0xc9/0x260
+[   39.657782]  ? refcount_warn_saturate+0x120/0x190
+[   39.658158]  ? report_bug+0x345/0x400
+[   39.658467]  ? handle_bug+0x3c/0x70
+[   39.658760]  ? exc_invalid_op+0x14/0x40
+[   39.659069]  ? asm_exc_invalid_op+0x16/0x20
+[   39.659405]  ? refcount_warn_saturate+0x120/0x190
+[   39.659806]  kobject_get+0xbd/0xe0
+[   39.660088]  kobject_add_internal+0x9e/0x870
+[   39.660441]  kobject_add+0x120/0x1f0
+[   39.660747]  ? kset_create_and_add+0x160/0x160
+[   39.661108]  ? __kmem_cache_alloc_node+0x1d2/0x350
+[   39.661512]  ? _raw_spin_lock+0x87/0xe0
+[   39.661820]  ? kobject_create_and_add+0x3c/0xb0
+[   39.662184]  kobject_create_and_add+0x68/0xb0
+[   39.662554]  module_add_driver+0x260/0x350
+[   39.662890]  bus_add_driver+0x2c9/0x580
+[   39.663207]  driver_register+0x133/0x460
+[   39.663547]  kunit_run_tests+0xdb/0xef0
+[   39.663866]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.664232]  ? __sched_text_end+0xa/0xa
+[   39.664560]  ? _raw_spin_unlock_irqrestore+0x42/0x80
+[   39.664960]  ? __kunit_test_suites_exit+0x80/0x80
+[   39.665343]  ? set_track_prepare+0x8a/0xd0
+[   39.665702]  ? get_object+0x70/0x70
+[   39.665985]  ? alloc_inode+0x12a/0x1e0
+[   39.666294]  ? new_inode+0x14/0x230
+[   39.666600]  ? __debugfs_create_file+0xc8/0x5d0
+[   39.666970]  ? __kunit_test_suites_init+0x73/0x140
+[   39.667359]  ? kunit_module_notify+0x3ab/0x440
+[   39.667742]  ? notifier_call_chain+0xbf/0x280
+[   39.668093]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.668478]  ? __sched_text_end+0xa/0xa
+[   39.668796]  ? projid_m_show+0x200/0x200
+[   39.669115]  ? kasan_set_track+0x21/0x30
+[   39.669459]  ? _raw_spin_lock+0x87/0xe0
+[   39.669773]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.670106]  ? _raw_spin_lock+0x87/0xe0
+[   39.670419]  ? __d_instantiate+0x1d5/0x3b0
+[   39.670766]  ? alloc_inode+0x72/0x1e0
+[   39.671070]  ? up_write+0x6d/0xa0
+[   39.671344]  ? __debugfs_create_file+0x3b5/0x5d0
+[   39.671738]  __kunit_test_suites_init+0xde/0x140
+[   39.672122]  kunit_module_notify+0x3ab/0x440
+[   39.672487]  ? __kunit_test_suites_init+0x140/0x140
+[   39.672890]  ? preempt_count_add+0x79/0x150
+[   39.673232]  notifier_call_chain+0xbf/0x280
+[   39.673588]  ? kasan_quarantine_put+0x21/0x1a0
+[   39.673953]  blocking_notifier_call_chain_robust+0xbb/0x140
+[   39.674395]  ? notifier_call_chain+0x280/0x280
+[   39.674785]  ? 0xffffffffa0268000
+[   39.675061]  load_module+0x4af0/0x67d0
+[   39.675377]  ? module_frob_arch_sections+0x20/0x20
+[   39.675786]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
+[   39.676209]  ? kernel_read_file+0x3ca/0x510
+[   39.676565]  ? __x64_sys_fspick+0x2a0/0x2a0
+[   39.676908]  ? init_module_from_file+0xd2/0x130
+[   39.677277]  init_module_from_file+0xd2/0x130
+[   39.677668]  ? __ia32_sys_init_module+0xa0/0xa0
+[   39.678041]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
+[   39.678437]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.678784]  idempotent_init_module+0x339/0x610
+[   39.679156]  ? init_module_from_file+0x130/0x130
+[   39.679556]  ? __fget_light+0x57/0x500
+[   39.679870]  __x64_sys_finit_module+0xba/0x130
+[   39.680237]  do_syscall_64+0x35/0x80
+[   39.680553]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+[   39.680973] RIP: 0033:0x7fecc9f1b839
+[   39.681271] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   45.165049] RSP: 002b:00007ffd1f377128 EFLAGS: 00000246 ORIG_RAX:
+[   39.682793] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
 0000000000000139
-[   45.165627] RAX: ffffffffffffffda RBX: 000055578e370e10 RCX:
-00007fabf471b839
-[   45.166168] RDX: 0000000000000000 RSI: 000055578ca1bc2e RDI:
-0000000000000003
-[   45.166733] RBP: 000055578ca1bc2e R08: 0000000000000000 R09:
-000055578e373210
-[   45.167297] R10: 0000000000000003 R11: 0000000000000246 R12:
+[   39.683399] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
+00007fecc9f1b839
+[   39.683993] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
+0000000000000005
+[   39.684584] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
+000055fe429e7d20
+[   39.685160] R10: 0000000000000005 R11: 0000000000000246 R12:
 0000000000000000
-[   45.167847] R13: 000055578e370f30 R14: 0000000000040000 R15:
-000055578e370e10
-[   45.168404]  </TASK>
-[   45.168579] ---[ end trace 0000000000000000 ]---
-[   45.168952] general protection fault, probably for non-canonical
+[   39.685760] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
+000055fe429e7d20
+[   39.686337]  </TASK>
+[   39.686537] ---[ end trace 0000000000000000 ]---
+[   39.686924] general protection fault, probably for non-canonical
 address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
-[   45.169771] KASAN: null-ptr-deref in range
+[   39.687789] KASAN: null-ptr-deref in range
 [0x0000000000000018-0x000000000000001f]
-[   45.170336] CPU: 1 PID: 1862 Comm: modprobe Tainted: G        W
+[   39.688397] CPU: 3 PID: 1862 Comm: modprobe Tainted: G        W
  N 6.6.0-rc3+ #54
-[   45.170935] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+[   39.689054] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
 BIOS 1.15.0-1 04/01/2014
-[   45.171562] RIP: 0010:kobject_namespace+0x71/0x150
-[   45.171933] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
+[   39.689741] RIP: 0010:kobject_namespace+0x71/0x150
+[   39.690141] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
 b8 00 00 00 00 00 fc ff df 49 8b 5c 24 28 48 8d 7b 18 48 89 fa 48 c1 ea
 03 <80> 3c 02 00 0f 85 c1 00 00 00 48 8b 43 18 48 85 c0 74 79 4c 89 e7
-[   45.173324] RSP: 0018:ffff8881062f7288 EFLAGS: 00010206
-[   45.173716] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
+[   39.691661] RSP: 0018:ffff888106f87288 EFLAGS: 00010206
+[   39.692087] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
 0000000000000000
-[   45.174245] RDX: 0000000000000003 RSI: ffffffff847b4d40 RDI:
+[   39.692683] RDX: 0000000000000003 RSI: 0000000000000004 RDI:
 0000000000000018
-[   45.174777] RBP: ffff888101b6d840 R08: 0000000000000001 R09:
-ffffed1020c5ee0f
-[   45.175317] R10: ffff8881062f707f R11: 746e756f63666572 R12:
-ffffffffa02121d0
-[   45.175847] R13: ffff888101b6d858 R14: ffff888101b6d868 R15:
+[   39.693275] RBP: ffff888106002740 R08: 0000000000000001 R09:
+ffffed10233b4ef1
+[   39.693882] R10: ffff888119da778b R11: 746e756f63666572 R12:
+ffffffffa0271490
+[   39.694465] R13: ffff888106002758 R14: ffff888106002768 R15:
 ffffffff84ac7020
-[   45.176377] FS:  00007fabf4c34540(0000) GS:ffff888119c80000(0000)
+[   39.695044] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
 knlGS:0000000000000000
-[   45.176977] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   45.177413] CR2: 000055578ca04e20 CR3: 000000010ac0e006 CR4:
+[   39.695703] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   39.696180] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
 0000000000770ee0
-[   45.177946] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+[   39.696770] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
 0000000000000000
-[   45.178479] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+[   39.697346] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
 0000000000000400
-[   45.179016] PKRU: 55555554
-[   45.179227] Call Trace:
-[   45.179418]  <TASK>
-[   45.179584]  ? die_addr+0x3d/0xa0
-[   45.179843]  ? exc_general_protection+0x144/0x220
-[   45.180202]  ? asm_exc_general_protection+0x22/0x30
-[   45.180570]  ? kobject_namespace+0x71/0x150
-[   45.180886]  kobject_add_internal+0x267/0x870
-[   45.181221]  kobject_add+0x120/0x1f0
-[   45.181497]  ? kset_create_and_add+0x160/0x160
-[   45.181828]  ? __kmem_cache_alloc_node+0x1d2/0x350
-[   45.182188]  ? _raw_spin_lock+0x87/0xe0
-[   45.182480]  ? kobject_create_and_add+0x3c/0xb0
-[   45.182822]  kobject_create_and_add+0x68/0xb0
-[   45.183159]  module_add_driver+0x260/0x350
-[   45.183472]  bus_add_driver+0x2c9/0x580
-[   45.183764]  driver_register+0x133/0x460
-[   45.184061]  kunit_run_tests+0xdb/0xef0
-[   45.184354]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.184700]  ? __sched_text_end+0xa/0xa
-[   45.184993]  ? _raw_spin_unlock_irqrestore+0x42/0x80
-[   45.185365]  ? __kunit_test_suites_exit+0x80/0x80
-[   45.185718]  ? set_track_prepare+0x8a/0xd0
-[   45.186027]  ? get_object+0x70/0x70
-[   45.186296]  ? alloc_inode+0x12a/0x1e0
-[   45.186578]  ? new_inode+0x14/0x230
-[   45.186848]  ? __debugfs_create_file+0xc8/0x5d0
-[   45.187199]  ? __kunit_test_suites_init+0x73/0x140
-[   45.187563]  ? kunit_module_notify+0x3ab/0x440
-[   45.187905]  ? notifier_call_chain+0xbf/0x280
-[   45.188232]  ? _raw_spin_lock_irqsave+0x8d/0xe0
-[   45.188574]  ? __sched_text_end+0xa/0xa
-[   45.188862]  ? projid_m_show+0x200/0x200
-[   45.189158]  ? kasan_set_track+0x21/0x30
-[   45.189457]  ? _raw_spin_lock+0x87/0xe0
-[   45.189747]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.190054]  ? _raw_spin_lock+0x87/0xe0
-[   45.190345]  ? __d_instantiate+0x1d5/0x3b0
-[   45.190657]  ? alloc_inode+0x72/0x1e0
-[   45.190935]  ? up_write+0x6d/0xa0
-[   45.191191]  ? __debugfs_create_file+0x3b5/0x5d0
-[   45.191545]  __kunit_test_suites_init+0xde/0x140
-[   45.191904]  kunit_module_notify+0x3ab/0x440
-[   45.192226]  ? __kunit_test_suites_init+0x140/0x140
-[   45.192601]  ? preempt_count_add+0x79/0x150
-[   45.192927]  notifier_call_chain+0xbf/0x280
-[   45.193244]  ? kasan_quarantine_put+0x21/0x1a0
-[   45.193586]  blocking_notifier_call_chain_robust+0xbb/0x140
-[   45.194015]  ? notifier_call_chain+0x280/0x280
-[   45.194360]  ? 0xffffffffa0208000
-[   45.194614]  load_module+0x4af0/0x67d0
-[   45.194909]  ? module_frob_arch_sections+0x20/0x20
-[   45.195274]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
-[   45.195672]  ? kernel_read_file+0x3ca/0x510
-[   45.195997]  ? __x64_sys_fspick+0x2a0/0x2a0
-[   45.196319]  ? init_module_from_file+0xd2/0x130
-[   45.196675]  init_module_from_file+0xd2/0x130
-[   45.197006]  ? __ia32_sys_init_module+0xa0/0xa0
-[   45.197352]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
-[   45.197724]  ? _raw_spin_lock_bh+0xe0/0xe0
-[   45.198044]  idempotent_init_module+0x339/0x610
-[   45.198392]  ? init_module_from_file+0x130/0x130
-[   45.198748]  ? __fget_light+0x57/0x500
-[   45.199043]  __x64_sys_finit_module+0xba/0x130
-[   45.199389]  do_syscall_64+0x35/0x80
-[   45.199664]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[   45.200050] RIP: 0033:0x7fabf471b839
-[   45.200325] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
+[   39.697955] PKRU: 55555554
+[   39.698180] Call Trace:
+[   39.698386]  <TASK>
+[   39.698577]  ? die_addr+0x3d/0xa0
+[   39.698861]  ? exc_general_protection+0x144/0x220
+[   39.699253]  ? asm_exc_general_protection+0x22/0x30
+[   39.699667]  ? kobject_namespace+0x71/0x150
+[   39.700016]  kobject_add_internal+0x267/0x870
+[   39.700396]  kobject_add+0x120/0x1f0
+[   39.700708]  ? kset_create_and_add+0x160/0x160
+[   39.701087]  ? __kmem_cache_alloc_node+0x1d2/0x350
+[   39.701506]  ? _raw_spin_lock+0x87/0xe0
+[   39.701839]  ? kobject_create_and_add+0x3c/0xb0
+[   39.702223]  kobject_create_and_add+0x68/0xb0
+[   39.702604]  module_add_driver+0x260/0x350
+[   39.702954]  bus_add_driver+0x2c9/0x580
+[   39.703284]  driver_register+0x133/0x460
+[   39.703627]  kunit_run_tests+0xdb/0xef0
+[   39.703955]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.704342]  ? __sched_text_end+0xa/0xa
+[   39.704693]  ? _raw_spin_unlock_irqrestore+0x42/0x80
+[   39.705108]  ? __kunit_test_suites_exit+0x80/0x80
+[   39.705533]  ? set_track_prepare+0x8a/0xd0
+[   39.705880]  ? get_object+0x70/0x70
+[   39.706181]  ? alloc_inode+0x12a/0x1e0
+[   39.706505]  ? new_inode+0x14/0x230
+[   39.706809]  ? __debugfs_create_file+0xc8/0x5d0
+[   39.707188]  ? __kunit_test_suites_init+0x73/0x140
+[   39.707597]  ? kunit_module_notify+0x3ab/0x440
+[   39.707980]  ? notifier_call_chain+0xbf/0x280
+[   39.708354]  ? _raw_spin_lock_irqsave+0x8d/0xe0
+[   39.708750]  ? __sched_text_end+0xa/0xa
+[   39.709085]  ? projid_m_show+0x200/0x200
+[   39.709423]  ? kasan_set_track+0x21/0x30
+[   39.709761]  ? _raw_spin_lock+0x87/0xe0
+[   39.710094]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.710443]  ? _raw_spin_lock+0x87/0xe0
+[   39.710773]  ? __d_instantiate+0x1d5/0x3b0
+[   39.711131]  ? alloc_inode+0x72/0x1e0
+[   39.711458]  ? up_write+0x6d/0xa0
+[   39.711753]  ? __debugfs_create_file+0x3b5/0x5d0
+[   39.712150]  __kunit_test_suites_init+0xde/0x140
+[   39.712557]  kunit_module_notify+0x3ab/0x440
+[   39.712943]  ? __kunit_test_suites_init+0x140/0x140
+[   39.713385]  ? preempt_count_add+0x79/0x150
+[   39.713761]  notifier_call_chain+0xbf/0x280
+[   39.714118]  ? kasan_quarantine_put+0x21/0x1a0
+[   39.714511]  blocking_notifier_call_chain_robust+0xbb/0x140
+[   39.714994]  ? notifier_call_chain+0x280/0x280
+[   39.715374]  ? 0xffffffffa0268000
+[   39.715688]  load_module+0x4af0/0x67d0
+[   39.716021]  ? module_frob_arch_sections+0x20/0x20
+[   39.716435]  ? rwsem_down_write_slowpath+0x11a0/0x11a0
+[   39.716893]  ? kernel_read_file+0x3ca/0x510
+[   39.717267]  ? __x64_sys_fspick+0x2a0/0x2a0
+[   39.717648]  ? init_module_from_file+0xd2/0x130
+[   39.718042]  init_module_from_file+0xd2/0x130
+[   39.718418]  ? __ia32_sys_init_module+0xa0/0xa0
+[   39.718832]  ? userfaultfd_unmap_prep+0x3d0/0x3d0
+[   39.719237]  ? _raw_spin_lock_bh+0xe0/0xe0
+[   39.719608]  idempotent_init_module+0x339/0x610
+[   39.720006]  ? init_module_from_file+0x130/0x130
+[   39.720418]  ? __fget_light+0x57/0x500
+[   39.720760]  __x64_sys_finit_module+0xba/0x130
+[   39.721160]  do_syscall_64+0x35/0x80
+[   39.721488]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+[   39.721931] RIP: 0033:0x7fecc9f1b839
+[   39.722236] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00
 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 1f f6 2c 00 f7 d8 64 89 01 48
-[   45.201713] RSP: 002b:00007ffd1f377128 EFLAGS: 00000246 ORIG_RAX:
+[   39.723816] RSP: 002b:00007ffe202a4038 EFLAGS: 00000246 ORIG_RAX:
 0000000000000139
-[   45.202278] RAX: ffffffffffffffda RBX: 000055578e370e10 RCX:
-00007fabf471b839
-[   45.202816] RDX: 0000000000000000 RSI: 000055578ca1bc2e RDI:
-0000000000000003
-[   45.203348] RBP: 000055578ca1bc2e R08: 0000000000000000 R09:
-000055578e373210
-[   45.203886] R10: 0000000000000003 R11: 0000000000000246 R12:
+[   39.724470] RAX: ffffffffffffffda RBX: 000055fe429e7d20 RCX:
+00007fecc9f1b839
+[   39.725091] RDX: 0000000000000000 RSI: 000055fe4081bc2e RDI:
+0000000000000005
+[   39.725719] RBP: 000055fe4081bc2e R08: 0000000000000000 R09:
+000055fe429e7d20
+[   39.726337] R10: 0000000000000005 R11: 0000000000000246 R12:
 0000000000000000
-[   45.204426] R13: 000055578e370f30 R14: 0000000000040000 R15:
-000055578e370e10
-[   45.204962]  </TASK>
-[   45.205140] Modules linked in: fpga_mgr_test(+)
-[   45.205500] Dumping ftrace buffer:
-[   45.205768]    (ftrace buffer empty)
-[   45.206066] ---[ end trace 0000000000000000 ]---
-[   45.206477] RIP: 0010:kobject_namespace+0x71/0x150
-[   45.206850] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
+[   39.726966] R13: 000055fe429e7e90 R14: 0000000000040000 R15:
+000055fe429e7d20
+[   39.727604]  </TASK>
+[   39.727804] Modules linked in: fpga_region_test(+) fpga_region
+fpga_bridge
+[   39.728401] Dumping ftrace buffer:
+[   39.728719]    (ftrace buffer empty)
+[   39.729058] ---[ end trace 0000000000000000 ]---
+[   39.729539] RIP: 0010:kobject_namespace+0x71/0x150
+[   39.729967] Code: 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cd 00 00 00 48
 b8 00 00 00 00 00 fc ff df 49 8b 5c 24 28 48 8d 7b 18 48 89 fa 48 c1 ea
 03 <80> 3c 02 00 0f 85 c1 00 00 00 48 8b 43 18 48 85 c0 74 79 4c 89 e7
-[   45.208501] RSP: 0018:ffff8881062f7288 EFLAGS: 00010206
-[   45.209015] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
+[   39.731622] RSP: 0018:ffff888106f87288 EFLAGS: 00010206
+[   39.732076] RAX: dffffc0000000000 RBX: 0000000000000000 RCX:
 0000000000000000
-[   45.209708] RDX: 0000000000000003 RSI: ffffffff847b4d40 RDI:
+[   39.732745] RDX: 0000000000000003 RSI: 0000000000000004 RDI:
 0000000000000018
-[   45.210473] RBP: ffff888101b6d840 R08: 0000000000000001 R09:
-ffffed1020c5ee0f
-[   45.211142] R10: ffff8881062f707f R11: 746e756f63666572 R12:
-ffffffffa02121d0
-[   45.211898] R13: ffff888101b6d858 R14: ffff888101b6d868 R15:
+[   39.733381] RBP: ffff888106002740 R08: 0000000000000001 R09:
+ffffed10233b4ef1
+[   39.734054] R10: ffff888119da778b R11: 746e756f63666572 R12:
+ffffffffa0271490
+[   39.734696] R13: ffff888106002758 R14: ffff888106002768 R15:
 ffffffff84ac7020
-[   45.212653] FS:  00007fabf4c34540(0000) GS:ffff888119c80000(0000)
+[   39.735318] FS:  00007fecca45a540(0000) GS:ffff888119d80000(0000)
 knlGS:0000000000000000
-[   45.213441] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   45.213970] CR2: 000055578ca04e20 CR3: 000000010ac0e006 CR4:
+[   39.736022] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   39.736542] CR2: 00007ffe202a0f58 CR3: 000000010ba75004 CR4:
 0000000000770ee0
-[   45.214716] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+[   39.737170] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
 0000000000000000
-[   45.215424] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+[   39.737818] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
 0000000000000400
-[   45.216089] PKRU: 55555554
-[   45.216440] Kernel panic - not syncing: Fatal exception
-[   45.217935] Dumping ftrace buffer:
-[   45.218195]    (ftrace buffer empty)
-[   45.218473] Kernel Offset: disabled
-[   45.218740] Rebooting in 1 seconds..
+[   39.738446] PKRU: 55555554
+[   39.738695] Kernel panic - not syncing: Fatal exception
+[   39.739930] Dumping ftrace buffer:
+[   39.740176]    (ftrace buffer empty)
+[   39.740485] Kernel Offset: disabled
+[   39.740794] Rebooting in 1 seconds..
+
 
 > +}
 > +
-> +static void fpga_mgr_test_suite_exit(struct kunit_suite *suite)
+> +static void fpga_region_test_suite_exit(struct kunit_suite *suite)
 > +{
 > +	platform_driver_unregister(&test_platform_driver);
 > +}
 > +
->  static int fpga_mgr_test_init(struct kunit *test)
->  {
->  	struct mgr_ctx *ctx;
-> @@ -284,7 +298,7 @@ static int fpga_mgr_test_init(struct kunit *test)
+>  /*
+>   * The configuration used in this test suite uses a single bridge to
+>   * limit the code under test to a single unit. The functions used by the
+> @@ -146,14 +160,15 @@ static int fpga_region_test_init(struct kunit *test)
 >  	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
 >  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
 >  
-> -	ctx->pdev = platform_device_register_simple("mgr_pdev", PLATFORM_DEVID_AUTO, NULL, 0);
-> +	ctx->pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO, NULL, 0);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->pdev);
+> -	ctx->mgr_pdev = platform_device_register_simple("mgr_pdev", PLATFORM_DEVID_AUTO, NULL, 0);
+> +	ctx->mgr_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
+> +							NULL, 0);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->mgr_pdev);
 >  
->  	ctx->mgr = devm_fpga_mgr_register(&ctx->pdev->dev, "Fake FPGA Manager", &fake_mgr_ops,
-> @@ -317,6 +331,8 @@ static struct kunit_case fpga_mgr_test_cases[] = {
+>  	ctx->mgr = devm_fpga_mgr_register(&ctx->mgr_pdev->dev, "Fake FPGA Manager", &fake_mgr_ops,
+>  					  &ctx->mgr_stats);
+>  	KUNIT_ASSERT_FALSE(test, IS_ERR_OR_NULL(ctx->mgr));
 >  
->  static struct kunit_suite fpga_mgr_suite = {
->  	.name = "fpga_mgr",
-> +	.suite_init = fpga_mgr_test_suite_init,
-> +	.suite_exit = fpga_mgr_test_suite_exit,
->  	.init = fpga_mgr_test_init,
->  	.exit = fpga_mgr_test_exit,
->  	.test_cases = fpga_mgr_test_cases,
+> -	ctx->bridge_pdev = platform_device_register_simple("bridge_pdev", PLATFORM_DEVID_AUTO,
+> +	ctx->bridge_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
+>  							   NULL, 0);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->bridge_pdev);
+>  
+> @@ -163,7 +178,7 @@ static int fpga_region_test_init(struct kunit *test)
+>  
+>  	ctx->bridge_stats.enable = true;
+>  
+> -	ctx->region_pdev = platform_device_register_simple("region_pdev", PLATFORM_DEVID_AUTO,
+> +	ctx->region_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
+>  							   NULL, 0);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->region_pdev);
+>  
+> @@ -195,12 +210,13 @@ static void fpga_region_test_exit(struct kunit *test)
+>  static struct kunit_case fpga_region_test_cases[] = {
+>  	KUNIT_CASE(fpga_region_test_class_find),
+>  	KUNIT_CASE(fpga_region_test_program_fpga),
+> -
+>  	{}
+>  };
+>  
+>  static struct kunit_suite fpga_region_suite = {
+> -	.name = "fpga_mgr",
+> +	.name = "fpga_region",
+> +	.suite_init = fpga_region_test_suite_init,
+> +	.suite_exit = fpga_region_test_suite_exit,
+>  	.init = fpga_region_test_init,
+>  	.exit = fpga_region_test_exit,
+>  	.test_cases = fpga_region_test_cases,
