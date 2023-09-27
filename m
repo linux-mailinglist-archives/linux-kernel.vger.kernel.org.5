@@ -2,102 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106D07AF83D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BA77AF841
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbjI0Cjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 22:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45018 "EHLO
+        id S235501AbjI0CmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjI0Chv (ORCPT
+        with ESMTP id S235498AbjI0CkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 22:37:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CDE1C26C;
-        Tue, 26 Sep 2023 19:02:56 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="385565355"
+        Tue, 26 Sep 2023 22:40:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6DD1BC1;
+        Tue, 26 Sep 2023 19:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695780492; x=1727316492;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jiTLn3Vg5DjW5KMS+3IRSYx4PUzUN/fR9h6uUPmnC/8=;
+  b=AZrw6dH8U7x4Wo5ICcGz9XsZq8MRYfi2eCZxpRcFunSZou8NgiaJ9wIT
+   eWBY/vvmEJ/QupUWNm8oam9zC1d8iNdAX8CvdqIZp2BM/D5z7nrWH5Lrw
+   onLk2e4NzX/36ctYz62ScIDa3l5TUXKpYUoLwmeoSFOteCroRpRh2z5QX
+   yZVMuCTJ2r1fxTbo60aU8HuOTGeplDlYk4+XOe7SYSqQiu60REF7VqJLJ
+   9PTe1K0GLcwPEfBmbSJIKl7682pUHpm0pcV33Lg1prVvjsuHlq9yZMVa3
+   euFLEFv3Sz48nJX8G3DqUGhRF90PJI0efPI6Fx/JjDpE9Ipk64lms4zLi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361963137"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="385565355"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:02:41 -0700
+   d="scan'208";a="361963137"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:08:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="725628857"
 X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="725628857"
-Received: from pinksteam.jf.intel.com ([10.165.239.231])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:02:41 -0700
-From:   joao@overdrivepizza.com
-To:     pablo@netfilter.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joao@overdrivepizza.com
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        rkannoth@marvell.com, wojciech.drewek@intel.com,
-        steen.hegenlund@microhip.com, keescook@chromium.org,
-        Joao Moreira <joao.moreira@intel.com>
-Subject: [PATCH v2 2/2] Make num_actions unsigned
-Date:   Tue, 26 Sep 2023 19:02:21 -0700
-Message-ID: <20230927020221.85292-3-joao@overdrivepizza.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230927020221.85292-1-joao@overdrivepizza.com>
-References: <20230927020221.85292-1-joao@overdrivepizza.com>
+   d="scan'208";a="373163"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa001.jf.intel.com with ESMTP; 26 Sep 2023 19:07:35 -0700
+Message-ID: <a5e18b46-cccc-a2f7-91ae-aa5c942cd887@linux.intel.com>
+Date:   Wed, 27 Sep 2023 10:04:51 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NEUTRAL autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [RFC 1/8] iommu: Introduce a replace API for device pasid
+To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
+        robin.murphy@arm.com
+References: <20230926092651.17041-1-yi.l.liu@intel.com>
+ <20230926092651.17041-2-yi.l.liu@intel.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230926092651.17041-2-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Moreira <joao.moreira@intel.com>
+On 9/26/23 5:26 PM, Yi Liu wrote:
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> 
+> Provide a high-level API to allow replacements of one domain with
+> another for specific pasid of a device. This is similar to
+> iommu_group_replace_domain() and it is also expected to be used
+> only by IOMMUFD.
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+> ---
+>   drivers/iommu/iommu-priv.h |  2 ++
+>   drivers/iommu/iommu.c      | 73 ++++++++++++++++++++++++++++++--------
+>   2 files changed, 60 insertions(+), 15 deletions(-)
+> 
 
-Currently, in nft_flow_rule_create function, num_actions is a signed
-integer. Yet, it is processed within a loop which increments its
-value. To prevent an overflow from occurring, make it unsigned and
-also check if it reaches UINT_MAX when being incremented.
+[...]
 
-After checking with maintainers, it was mentioned that front-end will
-cap the num_actions value and that it is not possible to reach such
-condition for an overflow. Yet, for correctness, it is still better to
-fix this.
+> @@ -3433,8 +3443,8 @@ EXPORT_SYMBOL_GPL(iommu_attach_device_pasid);
+>    * The @domain must have been attached to @pasid of the @dev with
+>    * iommu_attach_device_pasid().
+>    */
+> -void iommu_detach_device_pasid(struct iommu_domain *domain, struct device *dev,
+> -			       ioasid_t pasid)
+> +void iommu_detach_device_pasid(struct iommu_domain *domain,
+> +			       struct device *dev, ioasid_t pasid)
 
-This issue was observed by the commit author while reviewing a write-up
-regarding a CVE within the same subsystem [1].
+Above change is irrelevant.
 
-1 - https://nickgregory.me/post/2022/03/12/cve-2022-25636/
+>   {
+>   	struct iommu_group *group = iommu_group_get(dev);
+>   
+> @@ -3447,6 +3457,39 @@ void iommu_detach_device_pasid(struct iommu_domain *domain, struct device *dev,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_detach_device_pasid);
+>   
+> +/**
+> + * iommu_replace_device_pasid - replace the domain that a pasid is attached to
+> + * @domain: new IOMMU domain to replace with
+> + * @dev: the physical device
+> + * @pasid: pasid that will be attached to the new domain
+> + *
+> + * This API allows the pasid to switch domains. Return 0 on success, or an
+> + * error. The pasid will roll back to use the old domain if failure. The
+> + * caller could call iommu_detach_device_pasid() before free the old domain
+> + * in order to avoid use-after-free case.
 
-Signed-off-by: Joao Moreira <joao.moreira@intel.com>
----
- net/netfilter/nf_tables_offload.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The comment does not match the actual behavior of the code. We need to
+discuss and agree on which state the PASID should park in if replacing
+the domain fails.
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 12ab78fa5d84..d25088791a74 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -90,7 +90,8 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- {
- 	struct nft_offload_ctx *ctx;
- 	struct nft_flow_rule *flow;
--	int num_actions = 0, err;
-+	unsigned int num_actions = 0;
-+	int err;
- 	struct nft_expr *expr;
- 
- 	expr = nft_expr_first(rule);
-@@ -99,6 +100,9 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- 		    expr->ops->offload_action(expr))
- 			num_actions++;
- 
-+		if (num_actions == UINT_MAX)
-+			return ERR_PTR(-ENOMEM);
-+
- 		expr = nft_expr_next(expr);
- 	}
- 
--- 
-2.42.0
+> + */
+> +int iommu_replace_device_pasid(struct iommu_domain *domain,
+> +			       struct device *dev, ioasid_t pasid)
+> +{
+> +	struct iommu_group *group = dev->iommu_group;
+> +	int ret;
+> +
+> +	if (!domain)
+> +		return -EINVAL;
+> +
+> +	if (!group)
+> +		return -ENODEV;
+> +
+> +	mutex_lock(&group->mutex);
+> +	__iommu_remove_group_pasid(group, pasid);
+> +	xa_erase(&group->pasid_array, pasid);
+> +	ret = __iommu_group_attach_pasid(domain, group, pasid);
+> +	mutex_unlock(&group->mutex);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(iommu_replace_device_pasid, IOMMUFD_INTERNAL);
+> +
+>   /*
+>    * iommu_get_domain_for_dev_pasid() - Retrieve domain for @pasid of @dev
+>    * @dev: the queried device
 
+Best regards,
+baolu
