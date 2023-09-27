@@ -2,37 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC497B0371
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E119E7B0384
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbjI0MDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
+        id S231556AbjI0MKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbjI0MDq (ORCPT
+        with ESMTP id S231169AbjI0MK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:03:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE11A191;
-        Wed, 27 Sep 2023 05:03:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C2ECC433C7;
-        Wed, 27 Sep 2023 12:03:43 +0000 (UTC)
-Message-ID: <0e7556cd-4478-4f21-aab1-5abd1849aa51@xs4all.nl>
-Date:   Wed, 27 Sep 2023 14:03:41 +0200
+        Wed, 27 Sep 2023 08:10:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD45CBE;
+        Wed, 27 Sep 2023 05:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695816627; x=1727352627;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qpBb1Dvmlu54LR+5l2f0lLgg+l2XFidwR6LH6371XtU=;
+  b=IJJsyIY+Ej30BCLnOzlb0CS/zL68eYAYkA/SJKkokQlWaEzfBkHZYvju
+   dox7SYwg6jg9mJbUg7Gl9KjqRkm3jRct0d31vdI+11X8M5bSMmxrviDMs
+   qm0tVFjVWop9FN+QYbJUEgwpMbDv4XxqhGk7fyeT98EzF9LjffKgaW+jJ
+   KomjhBx1tLSpupGwNMm34b0e65lK+iaWDNJfeCbqzZApc9an/LgtEzKbr
+   2S+TkbtiJRWJeR3EgFIrunWTGLW+A1YXHWgzbZ9K5gbrN2Nr78CT8sTFM
+   MZPI4yuetKFFFAxfAzdj0B2MmPv3AEX55IsaHyjSZe6Dk9YEXkq6AgxWm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="372150467"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="372150467"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:10:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="892580517"
+X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
+   d="scan'208";a="892580517"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 05:09:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qlTFT-00000000sRB-0Bl3;
+        Wed, 27 Sep 2023 15:02:35 +0300
+Date:   Wed, 27 Sep 2023 15:02:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v1 2/5] lib/bitmap: Introduce bitmap_scatter() and
+ bitmap_gather() helpers
+Message-ID: <ZRQZ2m0Rb/4AkeQ3@smile.fi.intel.com>
+References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
+ <20230926052007.3917389-3-andriy.shevchenko@linux.intel.com>
+ <ZRN2adZZaGeqWNlY@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 0/2] Digiteq Automotive MGB4 driver
-Content-Language: en-US, nl
-To:     tumic@gpxsee.org, Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Martin_T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
-References: <20230925143605.4686-1-tumic@gpxsee.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230925143605.4686-1-tumic@gpxsee.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRN2adZZaGeqWNlY@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,335 +77,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Tue, Sep 26, 2023 at 05:25:13PM -0700, Yury Norov wrote:
+> On Tue, Sep 26, 2023 at 08:20:04AM +0300, Andy Shevchenko wrote:
+> > These helpers are the optimized versions of the bitmap_remap()
+> > where one of the bitmaps (source or destination) is of sequential bits.
+> 
+> If so, can you add a test that makes sure that new API is consistent
+> with the old bitmap_remap? And also provide numbers how well are they
+> optimized, comparing to bitmap_remap.
 
-Thank you for your work and patience!
+It's impossible. bitmap_remap() is universal, these APIs only for the specific
+domain.
 
-I've just merged this v11, it all looked good to me.
+> > See more in the kernel documentation of the helpers.
+> 
+> I grepped the whole kernel, not only Documentation directory, and found
+> nothing...
 
-Regards,
+It's added in this patch in the format of kernel doc.
 
-	Hans
+...
 
-On 25/09/2023 16:36, tumic@gpxsee.org wrote:
-> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+> > + * Returns: the weight of the @mask.
 > 
-> Hi,
-> This patch adds a driver for the Digiteq Automotive MGB4 grabber card.
-> MGB4 is a modular frame grabber PCIe card for automotive video interfaces
-> (FPD-Link and GMSL for now). It is based on a Xilinx FPGA and uses their
-> XDMA IP core for DMA transfers. Additionally, Xilinx I2C and SPI IP cores
-> which already have drivers in linux are used in the design.
+> Returning a weight of the mask is somewhat non-trivial... To me it
+> would be logical to return a weight of destination, for example...
+
+> But I see that in the following patch you're using the returned value.
+> Maybe add a few words to advocate that?
+
+
+I'll look into it again, maybe dst would work as well, I don't remember why
+I have chosen mask. Maybe because it's invariant here, dunno.
+
+...
+
+> > +	int n = 0;
 > 
-> The driver is a quite standard v4l2 driver, with one exception - there are
-> a lot of sysfs options that may/must be set before opening the v4l2 device
-> to adapt the card on a specific signal (see mgb4.rst for details)
-> as the card must be able to work with various signal sources (or displays)
-> that can not be auto-detected.
+> Is n signed for purpose? I think it should be consistent with
+> return value.
+
+OK. No purpose there. Perhaps it's a leftover from the first experiments
+on the implementation of these APIs.
+
+...
+
+> > + * Example:
+> > + * If @src bitmap = 0x0302, with @mask = 0x1313, @dst will be 0x001a.
 > 
-> Changes in v11
-> * Fixed broken video buffer size check.
-> * Documented video queue checks/locking during I/O reconfiguration and signal
->   parameters changes.
+> Not sure about others, but to me hex representation is quite useless,
+> moreover it's followed by binary one.
+
+Somebody is better at hex, somebody at binary one, I would leave both.
+
+> > + * Or in binary form
+> > + * @src			@mask			@dst
+> > + * 0000001100000010	0001001100010011	0000000000011010
+> > + *
+> > + * (Bits 0, 1, 4, 8, 9, 12 are copied to the bits 0, 1, 2, 3, 4, 5)
+> > + *
+> > + * Returns: the weight of the @mask.
+> > + */
 > 
-> Changes in v10:
-> * Use propper locks/is_busy functions when accessing the video devices in
->   the sysfs callbacks.
-> * Fixed issues found by the sparse/smatch tools.
+> It looks like those are designed complement to each other. Is that
+> true? If so, can you make your example showing that
+>         scatter -> gather -> scatter
+> would restore the original bitmap?
+
+It looks like you stopped reading documentation somewhere on the middle.
+The two APIs are documented with the same example which makes it clear
+that they are data-loss transformations.
+
+Do you need something like this to be added (in both documentations):
+
+  The bitmap_scatter(), when executed over the @dst bitmap, will
+  restore the @src one if the @mask is kept the same, see the example
+  in the function description.
+
+?
+
+> If I'm wrong, can you please underline that they are not complement,
+> and why?
+
+No, you are not.
+
+...
+
+> I feel like they should reside in header, because they are quite a small
+> functions indeed, and they would benefit from compile-time optimizations
+> without bloating the kernel.
 > 
-> Changes in v9:
-> * Renamed all sysfs show/store functions using the propper naming convention.
-> * Now using device_add_groups() when initializing the sysfs properties.
-> * Fixed build without debugfs support.
-> * Fixed documentation (vsync/hsync) + added default values where applicable.
-> * Fixed the rest of minor issues from v8 review.
-> 
-> Changes in v8:
-> * Fixed broken video buffer size computation.
-> * Fixed switched I2C deserializers addresses.
-> * Do not depend on hwmon.
-> 
-> Changes in v7:
-> * Now using hwmon for FPGA temperature reporting.
-> * Now using VIDIOC_S_FMT and v4l2_pix_format.bytesperline for setting
->   the alignment.
-> * Removed the magic sleep when loading the i2c/spi adapter modules (solved by
->   request_module() calls with propper - "platform:" prefixed - module
->   names).
-> * Now properly reporting all the timings info in the VIDIOC_G_DV_TIMINGS
->   ioctls.
-> * Updated the documentation.
-> * Minor fixes as discussed in the v6 review.
-> * Added debugfs access to the FPGA registers.
-> 
-> Changes in v6:
-> * Rebased to current master that includes the Xilinx XDMA driver.
-> 
-> Changes in v5:
-> * Removed unused <linux/version.h> includes
-> 
-> Changes in v4:
-> * Redesigned the signal change handling logic. Now using the propper timings
->   API in the video input driver and a propper open() syscall check/logic in
->   the video output driver.
-> * Fixed all minor issues from v3 review.
-> * 'checkpatch.pl --strict' used for checking the code.
-> 
-> Changes in v3:
-> * Rebased the DMA transfers part to use the new XDMA driver from Xilinx/AMD
-> 
-> Changes in v2:
-> * Completely rewritten the original Xilinx's XDMA driver to meet kernel code
->   standards.
-> * Added all required "to" and "cc" mail addresses.
-> 
-> 
-> ===== v4l2-compliance results - input =====
-> 
-> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
-> 
-> Compliance test for mgb4 device /dev/video0:
-> 
-> Driver Info:
->         Driver name      : mgb4
->         Card type        : MGB4 PCIe Card
->         Bus info         : PCI:0000:01:00.0
->         Driver version   : 6.4.0
->         Capabilities     : 0x85200001
->                 Video Capture
->                 Read/Write
->                 Streaming
->                 Extended Pix Format
->                 Device Capabilities
->         Device Caps      : 0x05200001
->                 Video Capture
->                 Read/Write
->                 Streaming
->                 Extended Pix Format
-> 
-> Required ioctls:
->         test VIDIOC_QUERYCAP: OK
->         test invalid ioctls: OK
-> 
-> Allow for multiple opens:
->         test second /dev/video0 open: OK
->         test VIDIOC_QUERYCAP: OK
->         test VIDIOC_G/S_PRIORITY: OK
->         test for unlimited opens: OK
-> 
-> Debug ioctls:
->         test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
->         test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
->         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
->         test VIDIOC_ENUMAUDIO: OK (Not Supported)
->         test VIDIOC_G/S/ENUMINPUT: OK
->         test VIDIOC_G/S_AUDIO: OK (Not Supported)
->         Inputs: 1 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
->         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
->         test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
->         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
->         Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
->         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
->         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK
->         test VIDIOC_DV_TIMINGS_CAP: OK
->         test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls (Input 0):
->         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
->         test VIDIOC_QUERYCTRL: OK (Not Supported)
->         test VIDIOC_G/S_CTRL: OK (Not Supported)
->         test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
->                 warn: v4l2-test-controls.cpp(1139): V4L2_CID_DV_RX_POWER_PRESENT not found for input 0
->         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
->         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
->         Standard Controls: 0 Private Controls: 0
-> 
-> Format ioctls (Input 0):
->         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
->         test VIDIOC_G/S_PARM: OK
->         test VIDIOC_G_FBUF: OK (Not Supported)
->         test VIDIOC_G_FMT: OK
->         test VIDIOC_TRY_FMT: OK
->         test VIDIOC_S_FMT: OK
->         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
->         test Cropping: OK (Not Supported)
->         test Composing: OK (Not Supported)
->         test Scaling: OK (Not Supported)
-> 
-> Codec ioctls (Input 0):
->         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
->         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
->         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
-> 
-> Buffer ioctls (Input 0):
->         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
->         test VIDIOC_EXPBUF: OK
->         test Requests: OK (Not Supported)
-> 
-> Total for mgb4 device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 1
-> 
-> ===== v4l2-compliance results - output =====
-> 
-> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
-> 
-> Compliance test for mgb4 device /dev/video2:
-> 
-> Driver Info:
->         Driver name      : mgb4
->         Card type        : MGB4 PCIe Card
->         Bus info         : PCI:0000:01:00.0
->         Driver version   : 6.4.0
->         Capabilities     : 0x85200002
->                 Video Output
->                 Read/Write
->                 Streaming
->                 Extended Pix Format
->                 Device Capabilities
->         Device Caps      : 0x05200002
->                 Video Output
->                 Read/Write
->                 Streaming
->                 Extended Pix Format
-> 
-> Required ioctls:
->         test VIDIOC_QUERYCAP: OK
->         test invalid ioctls: OK
-> 
-> Allow for multiple opens:
->         test second /dev/video2 open: OK
->         test VIDIOC_QUERYCAP: OK
->         test VIDIOC_G/S_PRIORITY: OK
->         test for unlimited opens: OK
-> 
-> Debug ioctls:
->         test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
->         test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
->         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
->         test VIDIOC_ENUMAUDIO: OK (Not Supported)
->         test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
->         test VIDIOC_G/S_AUDIO: OK (Not Supported)
->         Inputs: 0 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
->         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
->         test VIDIOC_G/S/ENUMOUTPUT: OK
->         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
->         Outputs: 1 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
->         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
->         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
->         test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
->         test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls (Output 0):
->         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
->         test VIDIOC_QUERYCTRL: OK (Not Supported)
->         test VIDIOC_G/S_CTRL: OK (Not Supported)
->         test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
->         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
->         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
->         Standard Controls: 0 Private Controls: 0
-> 
-> Format ioctls (Output 0):
->         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
->         test VIDIOC_G/S_PARM: OK (Not Supported)
->         test VIDIOC_G_FBUF: OK (Not Supported)
->         test VIDIOC_G_FMT: OK
->         test VIDIOC_TRY_FMT: OK
->         test VIDIOC_S_FMT: OK
->         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
->         test Cropping: OK (Not Supported)
->         test Composing: OK (Not Supported)
->         test Scaling: OK (Not Supported)
-> 
-> Codec ioctls (Output 0):
->         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
->         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
->         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
-> 
-> Buffer ioctls (Output 0):
->         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
->         test VIDIOC_EXPBUF: OK
->         test Requests: OK (Not Supported)
-> 
-> Total for mgb4 device /dev/video2: 45, Succeeded: 45, Failed: 0, Warnings: 0
-> 
-> Martin Tůma (2):
->   Added Digiteq Automotive MGB4 driver
->   Added Digiteq Automotive MGB4 driver documentation
-> 
->  Documentation/admin-guide/media/mgb4.rst      | 374 +++++++
->  .../admin-guide/media/pci-cardlist.rst        |   1 +
->  .../admin-guide/media/v4l-drivers.rst         |   1 +
->  MAINTAINERS                                   |   7 +
->  drivers/media/pci/Kconfig                     |   1 +
->  drivers/media/pci/Makefile                    |   1 +
->  drivers/media/pci/mgb4/Kconfig                |  17 +
->  drivers/media/pci/mgb4/Makefile               |   6 +
->  drivers/media/pci/mgb4/mgb4_cmt.c             | 244 +++++
->  drivers/media/pci/mgb4/mgb4_cmt.h             |  17 +
->  drivers/media/pci/mgb4/mgb4_core.c            | 686 +++++++++++++
->  drivers/media/pci/mgb4/mgb4_core.h            |  74 ++
->  drivers/media/pci/mgb4/mgb4_dma.c             | 123 +++
->  drivers/media/pci/mgb4/mgb4_dma.h             |  18 +
->  drivers/media/pci/mgb4/mgb4_i2c.c             | 140 +++
->  drivers/media/pci/mgb4/mgb4_i2c.h             |  35 +
->  drivers/media/pci/mgb4/mgb4_io.h              |  33 +
->  drivers/media/pci/mgb4/mgb4_regs.c            |  30 +
->  drivers/media/pci/mgb4/mgb4_regs.h            |  35 +
->  drivers/media/pci/mgb4/mgb4_sysfs.h           |  18 +
->  drivers/media/pci/mgb4/mgb4_sysfs_in.c        | 772 ++++++++++++++
->  drivers/media/pci/mgb4/mgb4_sysfs_out.c       | 737 ++++++++++++++
->  drivers/media/pci/mgb4/mgb4_sysfs_pci.c       |  71 ++
->  drivers/media/pci/mgb4/mgb4_trigger.c         | 208 ++++
->  drivers/media/pci/mgb4/mgb4_trigger.h         |   8 +
->  drivers/media/pci/mgb4/mgb4_vin.c             | 939 ++++++++++++++++++
->  drivers/media/pci/mgb4/mgb4_vin.h             |  69 ++
->  drivers/media/pci/mgb4/mgb4_vout.c            | 602 +++++++++++
->  drivers/media/pci/mgb4/mgb4_vout.h            |  65 ++
->  29 files changed, 5332 insertions(+)
->  create mode 100644 Documentation/admin-guide/media/mgb4.rst
->  create mode 100644 drivers/media/pci/mgb4/Kconfig
->  create mode 100644 drivers/media/pci/mgb4/Makefile
->  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
->  create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
-> 
-> 
-> base-commit: 27bbf45eae9ca98877a2d52a92a188147cd61b07
+> Moreover, you are using them in patch #3 on 64-bit bitmaps, which
+> would benefit from small_const_nbits() optimization.
+
+I can move them into header.
+
+...
+
+> > +	DECLARE_BITMAP(bmap, 1024);
+
+> Can you make it 1000? That way we'll test non-aligned case.
+
+Sure. But it's not related to the patch. It will test bitmap_weight() and not
+the new APIs, so, whatever is bigger 64 will suffice the purpose and won't
+anyhow affect the newly added APIs.
+
+...
+
+> Would be interesting to compare bitmap scatter/gather performance
+> against bitmap_remap.
+
+Do you have a code in mind? I can incorporate it.
+
+Again, you should understand that it's only applicable to the certain cases,
+otherwise it makes no sense (it's like comparing performance of ffs() on
+a single word against find_first_bit() on the arbitrary amount of words).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
