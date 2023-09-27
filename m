@@ -2,113 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996537AFF05
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98337AFF06
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjI0Iyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S230198AbjI0Iyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjI0Iyd (ORCPT
+        with ESMTP id S230004AbjI0Iyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:54:33 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D47A95;
-        Wed, 27 Sep 2023 01:54:31 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qlQJG-0001vm-2R; Wed, 27 Sep 2023 10:54:18 +0200
-Message-ID: <ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info>
-Date:   Wed, 27 Sep 2023 10:54:17 +0200
+        Wed, 27 Sep 2023 04:54:35 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C081A95;
+        Wed, 27 Sep 2023 01:54:33 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38R8sMXc116464;
+        Wed, 27 Sep 2023 03:54:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695804862;
+        bh=VmA/PS4HPt0PCjWjuQfAuuwpiPkKOA4BYC6vRd0Kyls=;
+        h=Date:Subject:To:References:From:In-Reply-To;
+        b=ktxxWZQuH2cHsBPIVsKdppo4ZWAf3ZQNTD06Vf/u6ourk8NpVADOrOn6LZHQjVD7r
+         vgSasogBM+7hM7ZsTOSAhLCr8hkCLYP1v13Qe2vehBif0qbcXFblxS7hKnl0/K8q9T
+         qu6MB4T0BrHFGm75t/Zl/+98/+aEfwDGganMfnJU=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38R8sMj3039172
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 27 Sep 2023 03:54:22 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 27
+ Sep 2023 03:54:21 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 27 Sep 2023 03:54:21 -0500
+Received: from [172.24.20.156] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38R8sHVQ015924;
+        Wed, 27 Sep 2023 03:54:18 -0500
+Message-ID: <ff0fabf8-8f55-4d91-04ee-7581efc465d6@ti.com>
+Date:   Wed, 27 Sep 2023 14:24:17 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: [regression] Resume broken on T14s Gen1 (AMD) due to "Input: psmouse
- - add delay when deactivating for SMBus mode"
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-To:     Jeffery Miller <jefferymiller@google.com>
-Cc:     Andrew Duggan <aduggan@synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 0/9] Add R5F and C7x DSP node for K3 J721S2, AM68 and
+ AM69 SoCs
+Content-Language: en-US
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>
+References: <20230906112422.2846151-1-a-nandan@ti.com>
+From:   "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20230906112422.2846151-1-a-nandan@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1695804871;f0f34a9f;
-X-HE-SMSGID: 1qlQJG-0001vm-2R
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FOUND_YOU,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeffery! Your change 92e24e0e57f72e ("Input: psmouse - add delay when
-deactivating for SMBus mode") [merged for v6.6-rc1] broke resume on my
-T14s Gen1 (AMD): the system didn't really resume again at all (the
-display almost always didn't re-initialize) and there was nothing in the
-logs. I found your commit to be the culprit using a bisection and
-confirmed that reverting it on top of Linux 6.6-rc3 makes thing work
-again for me.
 
-My dmesg from a kernel with the revert:
-https://www.leemhuis.info/files/misc/dmesg
+On 9/6/2023 4:54 PM, Apurva Nandan wrote:
+> This series adds the R5F processor nodes and C7x DSP nodes for
+> J721S2, AM68 and AM69 SoCs to align these nodes with other K3 SOC's node.
+>
+> The first three patches adds the remote proc nodes to the SoC device
+> tree, remaining patches reserves the memory for remote proc IPCs
+> on K3 J721S2 EVM, AM68 SK, AM69 boards.
+>
+> Note, K3 AM69 SoC derives from K3 J784S4 SoC, but is included in this
+> series as it was originally missed in the K3 J784S4 EVM rproc series.
+> (https://lore.kernel.org/all/20230502231527.25879-4-hnagalla@ti.com/).
+>
+> kpv log: https://gist.githubusercontent.com/apurvanandan1997/57fcf127c118a48bd174ce36d8840329/raw/
+> Test log: https://gist.githubusercontent.com/apurvanandan1997/556b4148651ae74b50dda993ad07f1e5/raw/
 
-My config:
-https://www.leemhuis.info/files/misc/config
+You need to rebase the series
 
-Funny detail: this is the full-blown Fedora rawhide config, apart from
-disabling UCSI (it caused another problem that was fixed after -rc1); I
-first had tried to use localmodconfig to strip down the config, but then
-the problem did not happen for some reason (or I did something stupid).
+For patches 6/9, 7/9, 8/9 and 9/9
 
-Ciao, Thorsten
+Reviewed by: Udit Kumar <u-kumar1@ti.com>
 
-#regzbot introduced 92e24e0e57f72e
-#regzbot title Input: psmouse - Resume broken on T14s Gen1 (AMD) due to
-a new delay when deactivating for SMBus mode
+>
+> v4: Changelog:
+> 1) Added R5F and C7x nodes for K3 AM68 and AM69 SoCs
+>
+> Link to v3:
+> https://lore.kernel.org/linux-arm-kernel/20230811202252.3586926-1-a-nandan@ti.com/
+>
+> v3: Changelog:
+> 1) Disabled c7x in k3-j721s2-main.dtsi and enabled in k3-j721s2-som-p0.dtsi
+>     which fixes the following dtbs_check for k3-am69-sk.dts
+>     - dsp@64800000: 'mboxes' is a required property
+>     - dsp@64800000: 'memory-region' is a required property
+> 2) Split into separate patches for C7x and R5F
+>
+> Link to v2:
+> https://lore.kernel.org/lkml/20230808201842.292911-1-a-nandan@ti.com/
+>
+> v2:Changelog:
+> 1) Added status = "disabled"; in soc dtsi files, and removed it from som dts
+> 2) Fixed mboxes property in for all cores in som dts
+>
+> Link to v1:
+> https://lore.kernel.org/all/20230529220941.10801-1-hnagalla@ti.com/
+>
+>
+> Apurva Nandan (9):
+>    arm64: dts: ti: k3-j721s2-mcu: Add MCU R5F cluster nodes
+>    arm64: dts: ti: k3-j721s2-main: Add MAIN R5F remote processsor nodes
+>    arm64: dts: ti: k3-j721s2-main: Add C7x remote processsor nodes
+>    arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+>      R5F
+>    arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+>      C71x DSPs
+>    arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for R5F
+>    arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for
+>      C71x DSP
+>    arm64: dts : ti: k3-am69-sk: Add DDR carveout memory nodes for R5F
+>    arm64: dts : ti: k3-am69-sk: Add DDR carveout memory nodes for C71x
+>      DSP
+>
+>   arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi    | 208 ++++++++++++
+>   arch/arm64/boot/dts/ti/k3-am69-sk.dts         | 304 ++++++++++++++++++
+>   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 106 ++++++
+>   .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  40 +++
+>   arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 208 ++++++++++++
+>   5 files changed, 866 insertions(+)
+>
