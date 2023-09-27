@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E217B07CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FCD7B07CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjI0PLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        id S232345AbjI0PL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbjI0PLX (ORCPT
+        with ESMTP id S232340AbjI0PL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:11:23 -0400
+        Wed, 27 Sep 2023 11:11:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AB6192
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:11:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28366C433C7;
-        Wed, 27 Sep 2023 15:11:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C011912A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:11:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3A5C433C7;
+        Wed, 27 Sep 2023 15:11:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695827481;
-        bh=3c17RM3lgss6ciS2nZym/NDvTUzWMd7ldR5Bhl0Pnn0=;
+        s=k20201202; t=1695827516;
+        bh=G606I1kZ1AHBVrCZFavAu4e2HWTmXZXEIS63VWTx2Tc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UCtoaY5dOvUFWXEvXcQE6AzMVS/487g8GFk4HQIkU9T0cUOtw9japE08eYhcOs6iQ
-         DC6UbfiX6bZsiN4LMODaY9SUWHR4hv5FkMo4q/cthzcUa5rlWTpvxWrvLR92pInpxJ
-         7EMdR7Sbni79BA2fVza7VhFEikrQPf7aaQppeCMsbYnOIqw80RzNqxPsHpOXvoSLc9
-         EgbHFHcTUhLwCom07jeccyq2d37/FImwHtj3hwi3ifEeduYpWhpYlk7iPmmnidwTgR
-         VQlxTrqx4Wloa7ldTgYQGm07oEBd0V2lusHe1bZNVO+slmHooQd4wyo1YvrfIg57Q9
-         X9fNB+BGRrl8A==
-Date:   Wed, 27 Sep 2023 16:11:17 +0100
+        b=lJJ83QwunOB4di5rQ/a7cD8ug3+iKjYHy4JuQC0Umtgk/2m08BIbRsmVOoJ5NJ5+y
+         lA/xaL/LiaY+pbAnkKHQyGNtENAAzMUBsk5apuw1PEiFCDCyWQb1XfPqJO2xm0IcYN
+         JJAE7Lt9VpntXDll//UNwkr1HNyOdWuwWIoPa2xQ2cpjIqGa7A+Fc5Pdmt6ciYBLXD
+         I/6NllSp1DdAJFnHrVlH9s2DXFRtLEGgXb/OHnbA2Lnb/XIuV45fv1GSs4wxF8X7VZ
+         jA+ZOgeaNwYunq0k4OM8yKuDTPbQu/UcuC/3EFRec5EposXrpnYhn7wrYunsy5qG8F
+         K8DRNGXB6Su8Q==
+Date:   Wed, 27 Sep 2023 16:11:52 +0100
 From:   Conor Dooley <conor@kernel.org>
 To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: arm,psci: Add missing unevaluatedProperties
- on child node schemas
-Message-ID: <20230927-dynasty-luckless-ca6fba85873e@spud>
-References: <20230926164553.102914-1-robh@kernel.org>
+Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: nvmem: u-boot,env: Add missing
+ additionalProperties on child node schemas
+Message-ID: <20230927-junkie-custodian-04fddfb252ce@spud>
+References: <20230926164529.102427-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LEwIwqrbHBA5X0WB"
+        protocol="application/pgp-signature"; boundary="APJsmRLFDDhA8HqH"
 Content-Disposition: inline
-In-Reply-To: <20230926164553.102914-1-robh@kernel.org>
+In-Reply-To: <20230926164529.102427-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,21 +55,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---LEwIwqrbHBA5X0WB
+--APJsmRLFDDhA8HqH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Sep 26, 2023 at 11:45:25AM -0500, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
---LEwIwqrbHBA5X0WB
+Thanks,
+Conor.
+
+--APJsmRLFDDhA8HqH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRGFQAKCRB4tDGHoIJi
-0mWdAQDn6WnFg9Y3/EaZYDN8m/l8n6cxpfzQ2aPmody64MUMxAEA8HmmiDqgcX4o
-lHhz9Xqx71N+nYeXvzHVQaM5r+pfrw0=
-=/wis
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRGOAAKCRB4tDGHoIJi
+0hlJAQD+0BuNHiymSKAtlRbK1Is6k2KoM8IDxYLmBkoH04ajVAEA2Nx86fg+IoA6
++7rYdyEkrFJEnG8y8DuFNoG2IJ9MmwA=
+=klf7
 -----END PGP SIGNATURE-----
 
---LEwIwqrbHBA5X0WB--
+--APJsmRLFDDhA8HqH--
