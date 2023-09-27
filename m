@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7B47B0ADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A85B7B0ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjI0RKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 13:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
+        id S229590AbjI0RKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 13:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjI0RKo (ORCPT
+        with ESMTP id S229517AbjI0RKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 13:10:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F495F5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB002E6;
         Wed, 27 Sep 2023 10:10:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89CA5C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 629C1C433C7;
         Wed, 27 Sep 2023 17:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1695834643;
-        bh=DrV4cbHfS4bkdLAFnjPWF3LXhNWRjDb00qevr476PgY=;
+        bh=nPZBefKAPIx5448kBvSo7bUV1E3ig2aK3HaJC7w60jI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=U9Zi+kViS4hxWHGJaswEjnWSFfVAQSYQPUB1EuwseWEXeZnGy6wxYz3ggEfpveitn
-         kgPvLhJXXqXTi641yW14QZXXWF4ts8sHRPte5qY7GeHU1IJEGF/3WtEGEzKD6kLvuf
-         +mG0AW/5ky21KVKiZUF25+xiEqrKu8rl3SdMo1WJkhX06cD8zGhr+s9D5vFo/OBeV8
-         ca7JFJ2Tv/YIdB+dH5ODy47wXKaSjn9lEjwo+fd9u1DoXEhwWfO2ftPwvom/OA+Ib7
-         XKhQFtiv4gQt0INCZPhwecLBtYjJl8x7lpZ9/Mc6mTiiCYWEy0GYPPwXBhLKDq4o6z
-         Ubk4x3YhN7+aw==
+        b=oDhTH20tGczeMhoaFD1jJq6pCG8cITZjt+Sbc+CmYUkogMCWkJyXCdso30snZC7XQ
+         tWXSMp3cJbk1Nixfq3qxSIxE6Tni2ycHgtvw+UK6bw23RUrToXSgMss/jjZ5klfnfo
+         rLWGptiNAHiq0PU58x8okDGAU0xEfOmmz5EImVltNfgIUBEqE+IAmqnq0xa5/uLQCx
+         /UWBCuvx0YRcNQ8CG6U9GOAu+MPoqW1NlmTHyUfMFoDYUOQmyaFmtW8Xi0IXSZc/pu
+         EMrAOTCz3CqQ6lbS+qHmaAyjef8TGWFZYjrTsFKrkbMCwUrB5D337b5YiFNLVvW5SI
+         5LkCiH7LBPxbQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7241AC395C5;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51397C43158;
         Wed, 27 Sep 2023 17:10:43 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 6.6-rc3
+Subject: Re: [GIT PULL] VFIO fix for v6.6-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <003149d84048d4fbf26eac75237bc67e188c5f84.camel@HansenPartnership.com>
-References: <003149d84048d4fbf26eac75237bc67e188c5f84.camel@HansenPartnership.com>
+In-Reply-To: <20230926154538.20a5b2c4.alex.williamson@redhat.com>
+References: <20230926154538.20a5b2c4.alex.williamson@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <003149d84048d4fbf26eac75237bc67e188c5f84.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 2132df16f53b4f01ab25f5d404f36a22244ae342
+X-PR-Tracked-Message-Id: <20230926154538.20a5b2c4.alex.williamson@redhat.com>
+X-PR-Tracked-Remote: https://github.com/awilliam/linux-vfio.git tags/vfio-v6.6-rc4
+X-PR-Tracked-Commit-Id: c777b11d34e0f47dbbc4b018ef65ad030f2b283a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
-Message-Id: <169583464346.26255.3508586959480348034.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b6cd17050bc0817c79924f23716198b2e935556e
+Message-Id: <169583464332.26255.17167261992407004635.pr-tracker-bot@kernel.org>
 Date:   Wed, 27 Sep 2023 17:10:43 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,12 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 27 Sep 2023 08:42:35 -0400:
+The pull request you sent on Tue, 26 Sep 2023 15:45:38 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> https://github.com/awilliam/linux-vfio.git tags/vfio-v6.6-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+https://git.kernel.org/torvalds/c/b6cd17050bc0817c79924f23716198b2e935556e
 
 Thank you!
 
