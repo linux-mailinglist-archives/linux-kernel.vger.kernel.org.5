@@ -2,142 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5798D7AFC19
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9E37AFC1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjI0Ha6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        id S229986AbjI0HdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjI0Haz (ORCPT
+        with ESMTP id S229499AbjI0HdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:30:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE953BF;
-        Wed, 27 Sep 2023 00:30:54 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38R4D74d028176;
-        Wed, 27 Sep 2023 07:30:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=3uH8tkNO63y+IIorgBzPxHyBrMidEpZshNsVgVuQAgs=;
- b=cO8gEkETKZaDNBXKinaCowNAa+dpyB/HzIZu1dnoOXuE/yOQEKnp5aePjQG/WTMyW8GY
- hrmYviWGtabEuxkSL77wUzQtKb97asvxSuGp8dPLtB7KlkZlIMI+zYQpTjW0zvBKAM2S
- LOAEcJ3J9OgokuvCqCAhl/R+oVweAqeLyd6YL6IWIx1y1/gK/0i9vdfp+v7VrlI2jhKB
- HZ52o1s1yzJCxEYUmTQC9P39aVq0IpKWCneH6/XE+I+3wASaMWZ1M45LEPRdhiVzrM7J
- WLwAV8qhfzuRtvrAXH1MsaSTi4l9wiBbyR+gV/oPEKUTsFg9ZvC4JDnK+B0Bo6YvMfYZ 6Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tc179hv2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 07:30:46 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38R7UjoB024716
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 07:30:45 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 27 Sep 2023 00:30:41 -0700
-From:   Krishna Kurapati <quic_kriskura@quicinc.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Ivan Orlov <ivan.orlov0322@gmail.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v5] usb: gadget: udc: Handle gadget_connect failure during bind operation
-Date:   Wed, 27 Sep 2023 13:00:27 +0530
-Message-ID: <20230927073027.27952-1-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 27 Sep 2023 03:33:02 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00E2126
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:33:00 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5331059360fso2361340a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695799979; x=1696404779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N6pnQ/nkWf6SlVjQP06zaUKvsstL6MZ5VotIaFF9d2I=;
+        b=uRt/ZFptGMXXYi70mRQrFk8G/hEjGXSLfR2cj4d8jUrNA2tYDlwMTHKC2bpR49wzdC
+         mrHNZWYwsfiaDEwlIuZDRmxtHIlKrhEJ4ZVConR5WXAwT9aAtRhLeibWbUZD3yOy7+kC
+         O8HkrmdJQm2r4oU/uahfC/O+pe9dnMp+CONofJjZunsDW/v8b6yE50NAxgHtVahGrYXU
+         UZ3OVEnXNsEIdS6bsJve2EGmjWGAJYNyxmNcWn0X8i3oAhNj0MwYIwq7DN2Il/aV7gWw
+         9h08d2oIVZbWNZ4IW2GR3KbtfR8JYk/HXzWQ/ZV+NLle5O265a7t9ASuqEpl7wDIkfVn
+         DS1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695799979; x=1696404779;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N6pnQ/nkWf6SlVjQP06zaUKvsstL6MZ5VotIaFF9d2I=;
+        b=nszAR47U/v0qNXH8xWqJN3K10ewVm/Xb0mWf+HhOFmw49jJRWVW/YP/h/lAYjTainJ
+         mPajwnUH/QhvNjmIUXyUaKPWpx3KQSb7euVFO31dD5QyIvfRZfMI9CeoYWMFcX+Hmkqg
+         YVGeqfa4nhzNvrGTuUeKZx431F/kFPJZ16xWrnwXso5y28TwkU3zU6dT9Ta1CT1vUsuV
+         0GI2dv+t6PZ0K1TyJUsxTLi8n/Mk5B0ThaJCl2T+eDrW3rb3oDGzncMlW2HDde1RzmL+
+         wl4tl/feKWHR31x9t2Gl5WLLeT9nXKa8rUo61O7PmLEHE3CvVtpYhG/vb20l8BTwApSG
+         N2Ng==
+X-Gm-Message-State: AOJu0YzPDAwlbzyA1Whmuvlb25o6xJwn86h/vsaAVmGN0AIE+Cp8+zcx
+        ix6QVLT4qfWNoxp8uxmGdXRQMw==
+X-Google-Smtp-Source: AGHT+IGl72HpxcGf5R00MKAx7plEYQqRg+QmVRuv6Lb/FKmepMGYWsDUH1yEvJs+hzYAD7rsBF42tA==
+X-Received: by 2002:a05:6402:4409:b0:523:4069:182c with SMTP id y9-20020a056402440900b005234069182cmr1224456eda.2.1695799978682;
+        Wed, 27 Sep 2023 00:32:58 -0700 (PDT)
+Received: from [172.20.13.88] ([45.147.210.162])
+        by smtp.gmail.com with ESMTPSA id w22-20020a056402071600b0052e1783ab25sm7692376edx.70.2023.09.27.00.32.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 00:32:57 -0700 (PDT)
+Message-ID: <ff95e764-9e61-4204-8024-42f15c34f084@kernel.dk>
+Date:   Wed, 27 Sep 2023 01:32:56 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 9VRe691i13mLZFHa-NumTPlkrc7PHs9Y
-X-Proofpoint-ORIG-GUID: 9VRe691i13mLZFHa-NumTPlkrc7PHs9Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-27_03,2023-09-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=996
- clxscore=1015 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309270060
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] eventfd: move 'eventfd-count' printing out of spinlock
+Content-Language: en-US
+To:     wenyang.linux@foxmail.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Dylan Yudaken <dylany@fb.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <tencent_6E80209FC9C7F45EE61E3FB3E7952A226A07@qq.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <tencent_6E80209FC9C7F45EE61E3FB3E7952A226A07@qq.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the event gadget_connect call (which invokes pullup) fails,
-propagate the error to udc bind operation which in turn sends the
-error to configfs. The userspace can then retry enumeration if
-it chooses to.
+On 9/26/23 8:05 AM, wenyang.linux@foxmail.com wrote:
+> From: Wen Yang <wenyang.linux@foxmail.com>
+> 
+> It is better to print debug messages outside of the wqh.lock
+> spinlock where possible.
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
-Changes in v5: Addressed proper unlocking of control_lock mutex
+Does it really matter for fdinfo? Your commit message is a bit
+light, so I'm having to guess whether this is fixing a real issue
+for you, or if it's just a drive-by observation.
 
- drivers/usb/gadget/udc/core.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
-index 7d49d8a0b00c..824fe64e078a 100644
---- a/drivers/usb/gadget/udc/core.c
-+++ b/drivers/usb/gadget/udc/core.c
-@@ -1125,12 +1125,12 @@ EXPORT_SYMBOL_GPL(usb_gadget_set_state);
- /* ------------------------------------------------------------------------- */
- 
- /* Acquire connect_lock before calling this function. */
--static void usb_udc_connect_control_locked(struct usb_udc *udc) __must_hold(&udc->connect_lock)
-+static int usb_udc_connect_control_locked(struct usb_udc *udc) __must_hold(&udc->connect_lock)
- {
- 	if (udc->vbus)
--		usb_gadget_connect_locked(udc->gadget);
-+		return usb_gadget_connect_locked(udc->gadget);
- 	else
--		usb_gadget_disconnect_locked(udc->gadget);
-+		return usb_gadget_disconnect_locked(udc->gadget);
- }
- 
- static void vbus_event_work(struct work_struct *work)
-@@ -1604,12 +1604,23 @@ static int gadget_bind_driver(struct device *dev)
- 	}
- 	usb_gadget_enable_async_callbacks(udc);
- 	udc->allow_connect = true;
--	usb_udc_connect_control_locked(udc);
-+	ret = usb_udc_connect_control_locked(udc);
-+	if (ret)
-+		goto err_connect_control;
-+
- 	mutex_unlock(&udc->connect_lock);
- 
- 	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
- 	return 0;
- 
-+ err_connect_control:
-+	udc->allow_connect = false;
-+	usb_gadget_disable_async_callbacks(udc);
-+	if (gadget->irq)
-+		synchronize_irq(gadget->irq);
-+	usb_gadget_udc_stop_locked(udc);
-+	mutex_unlock(&udc->connect_lock);
-+
-  err_start:
- 	driver->unbind(udc->gadget);
- 
 -- 
-2.42.0
+Jens Axboe
+
 
