@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B67B0793
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546E97B0798
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbjI0PDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        id S232291AbjI0PEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbjI0PDf (ORCPT
+        with ESMTP id S232294AbjI0PEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:03:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE24F4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695827015; x=1727363015;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=zpA9BsJHnzyjv+JuH8/rW2BPpXWgxhz5pbTusREsI6A=;
-  b=jCY5JYFViCL9e0JbdysXvgQPIRzs/aXbw25dEmX5aLWUcIVQGbp8d1dX
-   5bx8Zy2p/XaIGXrO0reQnAdOd7P1mkTzvATyu1Oivhrv/sVnswj4Gr1JV
-   x9hHfiQPDDPBNMSh/cOma7Ht9L3G+ztYJ3kLGFFgUcFxprqUWEQssjem+
-   wykes+rP8c1+i1NzmEADhzVTJUeHXRmxEefgX48q/N1/ChTNbN88dLEXV
-   LYSZfnTiaMUyDBX3bajSkoOxGCbgCdypzBMdUJrAU6tQqIC9gT/30Rx7v
-   8VA6Pp0LN6cxSfAORhoEHRDJ7gEjh89ItmRuyKsSO32aYfOJKMSU7B9jA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="379120326"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="379120326"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 08:03:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="784349612"
-X-IronPort-AV: E=Sophos;i="6.03,181,1694761200"; 
-   d="scan'208";a="784349612"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 08:03:19 -0700
-Date:   Wed, 27 Sep 2023 08:03:18 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Maciej =?iso-8859-1?Q?Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-Cc:     Peter Newman <peternewman@google.com>, bp@alien8.de,
-        dave.hansen@linux.intel.com, fenghua.yu@intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        reinette.chatre@intel.com, tglx@linutronix.de, eranian@google.com,
-        x86@kernel.org
-Subject: Re: [PATCH v2 1/4] x86/resctrl: Enable non-contiguous bits in Intel
- CAT
-Message-ID: <ZRRENutFOc6n/rlg@agluck-desk3>
-References: <918e147601697b1d4b8f8589f5751e05d6ceccdf.1695371055.git.maciej.wieczor-retman@intel.com>
- <20230922141441.3353077-1-peternewman@google.com>
- <xnjmmsj5pjskbqeynor2ztha5dmkhxa44j764ohtjhtywy7idb@soobjiql4liy>
- <CALPaoCgm8ed0p3Nw53d=Hgs0WnunkRUwAriyuKqu6+5Ty-QVTw@mail.gmail.com>
- <xn63zx7zfjszkp2nvpiemrxnva54dse3wed7apvadgibr23fqq@jodz2loxarsu>
+        Wed, 27 Sep 2023 11:04:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D52139;
+        Wed, 27 Sep 2023 08:04:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E849EC433C8;
+        Wed, 27 Sep 2023 15:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695827049;
+        bh=Fh7uxefVzjYj+SNOl9+w47xMZ9VhHXNUi7h48gwdBh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OoYRbQhnlWD7NYoeVEzx8sS/nAb65g+FNCHqp+ywdfIprHlT/QzZGQLSbeOj7Y2LM
+         IMGOdlwjm+7kasFVsfUSiKLPFEGhvQSNyQz535K21nFdaeX6KScBgAfsM3ilqdExTv
+         Xxb1qhd6S/mCRgalO1Zlr6moHX6/MvF/IR7666OrBxaPa51LTQ5gj8Pqxa6/R2RQc6
+         CDP7DlmODJfbNNsbXhtMnWpjmVVdkAubl1QVR7BAKhUA9VuxLgSobU9cxLpXbVht2H
+         IbhZTwUbCD03D5sTI3lS1AdMFNQiOQCLTJoJBmVmDf2RcFBJdUsAptDJpkNCis2N7R
+         yNgtJHlkl7VLQ==
+Date:   Wed, 27 Sep 2023 17:04:06 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 00/33] Introduce QC USB SND audio offloading support
+Message-ID: <ZRREZl6XLzyY4K95@finisterre.sirena.org.uk>
+References: <20230921214843.18450-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="v5MN6DoLWR8mu6Uc"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xn63zx7zfjszkp2nvpiemrxnva54dse3wed7apvadgibr23fqq@jodz2loxarsu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230921214843.18450-1-quic_wcheng@quicinc.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 12:44:39PM +0200, Maciej Wieczór-Retman wrote:
-> Writing non-contiguous bitmasks is supported starting from the upcoming
-> GNR microarchitecture forward.
-> 
-> That's also why the new CPUID bit meaning is in the ISA pdf and not in
-> the SDM one currently.
 
-New SDM released today has the non-contiguous bit. See vol 3B Figuer
-18-33.
+--v5MN6DoLWR8mu6Uc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--Tony
+On Thu, Sep 21, 2023 at 02:48:10PM -0700, Wesley Cheng wrote:
+> Several Qualcomm based chipsets can support USB audio offloading to a
+> dedicated audio DSP, which can take over issuing transfers to the USB
+> host controller.  The intention is to reduce the load on the main
+> processors in the SoC, and allow them to be placed into lower power modes.
+
+I had a few small comments in reply to some of the patches but overall
+the ASoC sides of this look fine to me.  I didn't really look at the USB
+side at all, I'm not sure I understand it enough to have any useful
+thoughts anyway.
+
+Thanks for taking on this work and pushing it forwards!
+
+--v5MN6DoLWR8mu6Uc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUURGYACgkQJNaLcl1U
+h9Dqbwf+IjGM0SqVY6JygsCSY//2jwGE9TwO7eKPIstE59vTT8nUChjguFf/r4fA
+yntz81LedOC/DpouBDxrsmSo9RE0YK9Dz5G5jQblfdR5ezb6lNsuYImHiDf0rDqF
+59UW9ToO4gBFmb+fejb8P8bBYv0Ujsph0giOCxV43qnV0+sqpJwJ61ljpsp9nsdG
+/8nPW67BrOuCnyVZiB6/nObyEh1hs3yaFJLwTcYePx1/fSBgvpdcnXZeM/XZXKKp
+ePHfKstLMBqYwYjgkKtO/dCYjTyPwAYOSew8XUSkwhzITEd77oxS3Ekk7eTebZEJ
+UZ0RbZmQ9jOt4uNmDAujdrkq4KvcaQ==
+=IXNE
+-----END PGP SIGNATURE-----
+
+--v5MN6DoLWR8mu6Uc--
