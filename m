@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F2A7B0481
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01E07B0485
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjI0Mmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S231782AbjI0Mmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjI0Mm2 (ORCPT
+        with ESMTP id S231776AbjI0Mmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:42:28 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6791AD;
-        Wed, 27 Sep 2023 05:42:23 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38RAr2da014018;
-        Wed, 27 Sep 2023 14:41:53 +0200
+        Wed, 27 Sep 2023 08:42:40 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2AA19A;
+        Wed, 27 Sep 2023 05:42:31 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38RAqvg4007540;
+        Wed, 27 Sep 2023 14:42:15 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=fE1n5RTIzcUozo7IYZhXqyrLMqCuRn0oukoD09IgbtQ=; b=Pm
-        iSEAU8UrYOFF9qGhItY9dpX82y2Yy9B9nTnTPbCEGjZn6Z7dEur3XlYuwkMjGUzZ
-        RabNxIGZWdEKwRyAwn1vDKptt9pf3R7CWqQkI3GrVEykxx1QjM52t2d+tuBxAbeH
-        Uv9bEAr/xOYLkymGTiqlr6x8Te56a2iY7/+MYpVagZugjwbJfugTZu2H3fA0RDrB
-        D7S0RVKt0n9i0e5YgUk2pomKaTjFBX504qjL4r0YmHkJvwVQpKvK/70cP6QmR8qB
-        2h7aT+ZY3m8ruhU6wq/QQK6d9AT6WMfb7t8fS3otf6s2uc/wLo/mt+rstivwUqaG
-        qVtPy4CsK+874lKfC/8A==
+        selector1; bh=11mGKtnf68sv5F45K9ozUTLxzWamUOebDrS0r3G08pY=; b=T6
+        YbKGRsWpt6sTFUH2IvEEahxc9yYMGkBC6xk5hEE1UZVrZtitS08zrQpt/QUMa7Pd
+        NjgqXtPo6s8RZMBvMa5c1rNS2hXqpnr2/8UERgsNlHlq7RfLcje+73INA0b6hew5
+        1AQZvtf9HyqMMlRBeN0oUhOiOXJctnMwEbyywJK1LXxxyV87+P2r/1duYBZHhEBf
+        wnddkMj/md9KJVF75D4yL+ddp172Fbh6QvFJ5dqDaIh7EYtiL8oiyh2o1XGxGoKs
+        0BN0SZGIBxBc11mjq43uHK+K9uu53tWvFxrN9nj3SLux640+7rOurHdryd42cpdF
+        xxWqOP/Icvk2uznREMMg==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9qbx1fu4-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9pwda7kp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Sep 2023 14:41:53 +0200 (MEST)
+        Wed, 27 Sep 2023 14:42:15 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BCA8E100058;
-        Wed, 27 Sep 2023 14:41:52 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AFC5A100058;
+        Wed, 27 Sep 2023 14:42:14 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B439323C6AC;
-        Wed, 27 Sep 2023 14:41:52 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A623023C6AA;
+        Wed, 27 Sep 2023 14:42:14 +0200 (CEST)
 Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
  (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
- 2023 14:41:52 +0200
+ 2023 14:42:14 +0200
 From:   Alain Volmat <alain.volmat@foss.st.com>
 To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
         Alain Volmat <alain.volmat@foss.st.com>,
@@ -60,9 +60,9 @@ CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
-Date:   Wed, 27 Sep 2023 14:38:33 +0200
-Message-ID: <20230927123842.944025-5-alain.volmat@foss.st.com>
+Subject: [PATCH v4 5/5] ARM: multi_v7_defconfig: enable STM32 DCMIPP media support
+Date:   Wed, 27 Sep 2023 14:38:34 +0200
+Message-ID: <20230927123842.944025-6-alain.volmat@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230927123842.944025-1-alain.volmat@foss.st.com>
 References: <20230927123842.944025-1-alain.volmat@foss.st.com>
@@ -86,36 +86,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hugues Fruchet <hugues.fruchet@foss.st.com>
 
-Add dcmipp support to STM32MP135.
+Enables support of STM32 DCMIPP V4L2 media driver.
 
 Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
 Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- arch/arm/boot/dts/st/stm32mp135.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
-index abf2acd37b4e..68d32f9f5314 100644
---- a/arch/arm/boot/dts/st/stm32mp135.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
-@@ -8,5 +8,16 @@
- 
- / {
- 	soc {
-+		dcmipp: dcmipp@5a000000 {
-+			compatible = "st,stm32mp13-dcmipp";
-+			reg = <0x5a000000 0x400>;
-+			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-+			resets = <&rcc DCMIPP_R>;
-+			clocks = <&rcc DCMIPP_K>;
-+			status = "disabled";
-+
-+			port {
-+			};
-+		};
- 	};
- };
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index f08f39a3ed2b..86120e1c1503 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -690,6 +690,7 @@ CONFIG_VIDEO_STI_BDISP=m
+ CONFIG_VIDEO_STI_DELTA=m
+ CONFIG_VIDEO_STI_HVA=m
+ CONFIG_VIDEO_STM32_DCMI=m
++CONFIG_VIDEO_STM32_DCMIPP=m
+ CONFIG_V4L_TEST_DRIVERS=y
+ CONFIG_VIDEO_VIVID=m
+ CONFIG_VIDEO_ADV7180=m
 -- 
 2.25.1
 
