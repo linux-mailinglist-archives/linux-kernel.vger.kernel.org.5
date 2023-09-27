@@ -2,316 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC6F7B0725
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3799F7B0733
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbjI0Oli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
+        id S232229AbjI0Omf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjI0Olg (ORCPT
+        with ESMTP id S232214AbjI0Omc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:41:36 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14DF9;
-        Wed, 27 Sep 2023 07:41:35 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7a52a27fe03so4673484241.0;
-        Wed, 27 Sep 2023 07:41:35 -0700 (PDT)
+        Wed, 27 Sep 2023 10:42:32 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99582F9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:42:30 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso1446104466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 07:42:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695825694; x=1696430494; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7mdoGuuiZTcS/IHtakwNFgzhKSKxWpR+ML4xAmJhbGY=;
-        b=dPuORG3ZqkLDPAV2w6p3u8h9CeLQ9sOA4uEqBVr2eY7pvWGFMeR5nYOgKrpos44l/c
-         7NHfpAXANWa3QnNQ/L4MwHO4TV01JCJekErJ3Im5uS+/N1LzNNbXuo1lb14dKHwSQw2h
-         B2sqUWwybYYVazx6yRgrsdE5IQ9q/QbgT11nYEXbxvpmCvLCUvHLQR+LM9tkf00NrW3H
-         ZbxtQuAnJCcNl2aZX2reXzamx0B8r0Y583Ar17/WBGeePZCb/C69mOAbvD8TVASQLWVc
-         E+2a+vE7plrp0ElOclqfKz44NhSQDA4aNF3UVxVEbyERwEsRxNbKFXKTlmJhmcr6Jnxa
-         ARbw==
+        d=linaro.org; s=google; t=1695825749; x=1696430549; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DQa0uS9ZxVzUEvSIaoDnSyYxM+uNjYjcw68CuBARJN8=;
+        b=zP6Ci+AS0YD9HOVXRL0t943eT6TcafVJ64evKwFlzwPDJHaburIJTQBFBgQgQj5SUO
+         FpEvO1rpAgxIawVFLhITNS8N3NAlNWAlPWe9CHotKdF0qKXonICKaqeIFQ9EOjjLC8Gz
+         nVaWDgr7VYdgpAl2v+awvrnGu/b+60UzHQECVJ2V27D0BR30u2k4vDu745CLYJ3u3cvJ
+         5+Q0Kq7DJzNLesg44T6rabOJ8idrWox6+pmIY6Qof56yTAgIrZj2mHHcbvQeYyi2Gthj
+         xcTPjlz/JGt+k/EemsBBM+aHGfuKxzv3gm8dJLGmj2soDxGqOsdSE3mTszDxAQSkioXL
+         uL7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695825694; x=1696430494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7mdoGuuiZTcS/IHtakwNFgzhKSKxWpR+ML4xAmJhbGY=;
-        b=H11yKzhq2kotmbvpikRrb8czbObYWF27FgoTQ4p6Di5+eSbV42FCukbjrMYIAorNk6
-         Cz2EbTmPN3C91PiBhMJDcBPu2kbNpEpMBKpNQ5aYPcajpDH10fl9OqFvijpBLCD7384+
-         3tMnb+goKc/2ZpudgdVukTNIQi2O9S/17Iy3Z0rSHC9pFwyvbANDRYqC8YJ70NiLhmZN
-         ZPbygpUYARpykeAQfeZhjbgNdeRVlCLPPjE+nOFHbk1YeAGv39KBvwopi7sNAr545jDv
-         UlQX6ZWaczRK4PI7/5Gz+S4wdGVMd3OHPlR06T7hZQh+RaY3ZBIp6ZPCQbj63LVOL07r
-         lNdg==
-X-Gm-Message-State: AOJu0Yz3+TUzdKP71ZOC2aKw/+w2NGfeehna7vNpor+6WhNk7M+EmF/f
-        Cr3BrQEotSDinHuZbggphbS4pkXhO0pwLnbvx28=
-X-Google-Smtp-Source: AGHT+IFJfXcobFCqLnK0J3r7KRILJgC/2Zi+VMchFVx/bwJFdp7B3FaQACAnnV5LiS4+9On22nRC0ibTFDdASAQDsUQ=
-X-Received: by 2002:a67:ec0b:0:b0:44e:89bd:9a5c with SMTP id
- d11-20020a67ec0b000000b0044e89bd9a5cmr2049194vso.10.1695825694175; Wed, 27
- Sep 2023 07:41:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695825749; x=1696430549;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DQa0uS9ZxVzUEvSIaoDnSyYxM+uNjYjcw68CuBARJN8=;
+        b=vFzbV/d74nN6quqIk0/GepbXR59sKd4LAKnbeARB1Fn+leHDqKGTiBgzbyH5Bjsb6P
+         hQMzHO7mb6Gm3llLWCXN05+nbZmzaEnJIp9PEvL3o7hz91/761ihCKiHtRriPWQcTu5q
+         Ja7t8yQqxmrhfEs893Mt85OfqbxItHoMltyP3j5mH/q1XeaLEmdgAvuZoMH0qWHfDycA
+         ebntoFnIFCSI7VlzFiNTmdHT1Dxo+6PkPUECLIvBd+x6vCmepylEYHXn39DDkOL8rAMW
+         RNbIcP3RUyDpjIHK+1eJg3+U8DBagHeD9UzHr7pwYIpVyQkObr46zhpXIEYteZ4m++x+
+         L2mA==
+X-Gm-Message-State: AOJu0YwDwiX2v/8rpwJc3K4SBQLakGr+tsPKze4T9YcYSLm4gC60AYTm
+        rlk1vdMC/7j2i8XYd4ZsfSMvIw==
+X-Google-Smtp-Source: AGHT+IHbkXEUZ2yiICh2bDKC3XoQRoR1GzJCgOavVhuustl4JEpqTa1gx5Cc9UIMgVeGD+zgjr8MaQ==
+X-Received: by 2002:a17:906:5142:b0:9b2:ba65:db21 with SMTP id jr2-20020a170906514200b009b2ba65db21mr368111ejc.45.1695825749077;
+        Wed, 27 Sep 2023 07:42:29 -0700 (PDT)
+Received: from pop-os.localdomain (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
+        by smtp.gmail.com with ESMTPSA id z15-20020a170906944f00b00993928e4d1bsm9374996ejx.24.2023.09.27.07.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 07:42:28 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 16:42:26 +0200
+From:   Joakim Bech <joakim.bech@linaro.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, tjmercier@google.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 4/9] dma-buf: heaps: Initialise MediaTek secure heap
+Message-ID: <20230927144226.pdssel3dwv53g546@pop-os.localdomain>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+ <20230911023038.30649-5-yong.wu@mediatek.com>
 MIME-Version: 1.0
-References: <00000000000021e24406063877ff@google.com>
-In-Reply-To: <00000000000021e24406063877ff@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 27 Sep 2023 17:41:23 +0300
-Message-ID: <CAOQ4uxjssgw1tZrUQvtHHVacSgR9NE0yF8DA3+R5LNFAocCvVQ@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] KASAN: invalid-free in ovl_copy_up_one
-To:     syzbot <syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230911023038.30649-5-yong.wu@mediatek.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 3:50=E2=80=AFAM syzbot
-<syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    940fcc189c51 Add linux-next specific files for 20230921
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D158b942468000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D1f140ae6e669a=
-c24
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D477d8d8901756d1=
-cbba1
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D120e0dba680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12f3767a68000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b8921b235c24/dis=
-k-940fcc18.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/c80a9f6bcdd4/vmlinu=
-x-940fcc18.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/ed10a4df6950/b=
-zImage-940fcc18.xz
->
-> The issue was bisected to:
->
-> commit 44ef23e481b02df2f17599a24f81cf0045dc5256
-> Author: Amir Goldstein <amir73il@gmail.com>
-> Date:   Wed Aug 16 13:47:59 2023 +0000
->
->     ovl: do not encode lower fh with upper sb_writers held
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1364cda668=
-0000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D10e4cda668=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1764cda668000=
-0
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+477d8d8901756d1cbba1@syzkaller.appspotmail.com
-> Fixes: 44ef23e481b0 ("ovl: do not encode lower fh with upper sb_writers h=
-eld")
->
-> RAX: ffffffffffffffda RBX: 00007ffd8d25ca30 RCX: 00007f15a9d353e9
-> RDX: 00007f15a9d344b0 RSI: 00007ffd8d25ca30 RDI: 0000000020000200
-> RBP: 0000000000000002 R08: 00007ffd8d25c7a6 R09: 00007ffd8d2d51a0
-> R10: 0000000000000002 R11: 0000000000000246 R12: 00007ffd8d25ca2c
-> R13: 00007ffd8d25ca70 R14: 00007ffd8d25ca50 R15: 0000000000000002
->  </TASK>
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: invalid-free in slab_free mm/slub.c:3809 [inline]
-> BUG: KASAN: invalid-free in __kmem_cache_free+0xb8/0x2d0 mm/slub.c:3822
-> Free of addr ffff888078b14650 by task syz-executor360/5060
->
-> CPU: 0 PID: 5060 Comm: syz-executor360 Not tainted 6.6.0-rc2-next-2023092=
-1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 08/04/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:364 [inline]
->  print_report+0xc4/0x620 mm/kasan/report.c:475
->  kasan_report_invalid_free+0xab/0xd0 mm/kasan/report.c:550
->  ____kasan_slab_free+0x1a0/0x1b0 mm/kasan/common.c:216
->  kasan_slab_free include/linux/kasan.h:164 [inline]
->  slab_free_hook mm/slub.c:1800 [inline]
->  slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
->  slab_free mm/slub.c:3809 [inline]
->  __kmem_cache_free+0xb8/0x2d0 mm/slub.c:3822
->  ovl_do_copy_up fs/overlayfs/copy_up.c:973 [inline]
->  ovl_copy_up_one+0x15ac/0x3250 fs/overlayfs/copy_up.c:1137
->  ovl_copy_up_flags+0x189/0x200 fs/overlayfs/copy_up.c:1192
->  ovl_nlink_start+0x391/0x470 fs/overlayfs/util.c:1144
->  ovl_do_remove+0x16d/0xd50 fs/overlayfs/dir.c:893
->  vfs_unlink+0x2f1/0x900 fs/namei.c:4313
->  do_unlinkat+0x3da/0x6d0 fs/namei.c:4379
->  __do_sys_unlink fs/namei.c:4427 [inline]
->  __se_sys_unlink fs/namei.c:4425 [inline]
->  __x64_sys_unlink+0xc8/0x110 fs/namei.c:4425
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f15a9d353e9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffd8d25ca08 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-> RAX: ffffffffffffffda RBX: 00007ffd8d25ca30 RCX: 00007f15a9d353e9
-> RDX: 00007f15a9d344b0 RSI: 00007ffd8d25ca30 RDI: 0000000020000200
-> RBP: 0000000000000002 R08: 00007ffd8d25c7a6 R09: 00007ffd8d2d51a0
-> R10: 0000000000000002 R11: 0000000000000246 R12: 00007ffd8d25ca2c
-> R13: 00007ffd8d25ca70 R14: 00007ffd8d25ca50 R15: 0000000000000002
->  </TASK>
->
-> Allocated by task 5060:
->  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
->  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
->  __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
->  kasan_slab_alloc include/linux/kasan.h:188 [inline]
->  slab_post_alloc_hook mm/slab.h:762 [inline]
->  slab_alloc_node mm/slub.c:3478 [inline]
->  slab_alloc mm/slub.c:3486 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
->  kmem_cache_alloc_lru+0x215/0x670 mm/slub.c:3509
->  __d_alloc+0x32/0xac0 fs/dcache.c:1768
->  d_alloc+0x4e/0x220 fs/dcache.c:1848
->  lookup_one_qstr_excl+0xc7/0x180 fs/namei.c:1604
->  do_unlinkat+0x294/0x6d0 fs/namei.c:4365
->  __do_sys_unlink fs/namei.c:4427 [inline]
->  __se_sys_unlink fs/namei.c:4425 [inline]
->  __x64_sys_unlink+0xc8/0x110 fs/namei.c:4425
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> Last potentially related work creation:
->  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
->  __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
->  __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
->  dentry_free+0xc2/0x160 fs/dcache.c:377
->  __dentry_kill+0x4c1/0x640 fs/dcache.c:621
->  dentry_kill fs/dcache.c:745 [inline]
->  dput+0x6de/0xf80 fs/dcache.c:913
->  handle_mounts fs/namei.c:1554 [inline]
->  step_into+0x1192/0x2230 fs/namei.c:1839
->  walk_component+0xfc/0x5a0 fs/namei.c:2007
->  lookup_last fs/namei.c:2458 [inline]
->  path_lookupat+0x17f/0x770 fs/namei.c:2482
->  filename_lookup+0x1e7/0x5b0 fs/namei.c:2511
->  vfs_statx+0x160/0x430 fs/stat.c:240
->  vfs_fstatat+0xb3/0x140 fs/stat.c:295
->  __do_sys_newfstatat+0x98/0x110 fs/stat.c:459
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->
-> The buggy address belongs to the object at ffff888078b145e0
->  which belongs to the cache dentry of size 312
-> The buggy address is located 112 bytes inside of
->  312-byte region [ffff888078b145e0, ffff888078b14718)
->
-> The buggy address belongs to the physical page:
-> page:ffffea0001e2c500 refcount:1 mapcount:0 mapping:0000000000000000 inde=
-x:0x0 pfn:0x78b14
-> head:ffffea0001e2c500 order:1 entire_mapcount:0 nr_pages_mapped:0 pincoun=
-t:0
-> ksm flags: 0xfff00000000840(slab|head|node=3D0|zone=3D1|lastcpupid=3D0x7f=
-f)
-> page_type: 0xffffffff()
-> raw: 00fff00000000840 ffff88814000a8c0 ffffea0001e2d080 dead000000000003
-> raw: 0000000000000000 0000000000150015 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 1, migratetype Reclaimable, gfp_mask 0xd20d=
-0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|=
-__GFP_RECLAIMABLE), pid 4515, tgid 4515 (udevd), ts 47959600386, free_ts 28=
-011797989
->  set_page_owner include/linux/page_owner.h:31 [inline]
->  post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1530
->  prep_new_page mm/page_alloc.c:1537 [inline]
->  get_page_from_freelist+0xf17/0x2e50 mm/page_alloc.c:3200
->  __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4456
->  alloc_pages+0x1a9/0x270 mm/mempolicy.c:2305
->  alloc_slab_page mm/slub.c:1870 [inline]
->  allocate_slab+0x251/0x380 mm/slub.c:2017
->  new_slab mm/slub.c:2070 [inline]
->  ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
->  __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
->  __slab_alloc_node mm/slub.c:3375 [inline]
->  slab_alloc_node mm/slub.c:3468 [inline]
->  slab_alloc mm/slub.c:3486 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
->  kmem_cache_alloc_lru+0x4e1/0x670 mm/slub.c:3509
->  __d_alloc+0x32/0xac0 fs/dcache.c:1768
->  d_alloc+0x4e/0x220 fs/dcache.c:1848
->  d_alloc_parallel+0xe9/0x12d0 fs/dcache.c:2637
->  lookup_open.isra.0+0xaa4/0x13b0 fs/namei.c:3401
->  open_last_lookups fs/namei.c:3544 [inline]
->  path_openat+0x931/0x29c0 fs/namei.c:3774
->  do_filp_open+0x1de/0x430 fs/namei.c:3804
->  do_sys_openat2+0x176/0x1e0 fs/open.c:1422
->  do_sys_open fs/open.c:1437 [inline]
->  __do_sys_openat fs/open.c:1453 [inline]
->  __se_sys_openat fs/open.c:1448 [inline]
->  __x64_sys_openat+0x175/0x210 fs/open.c:1448
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1130 [inline]
->  free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2342
->  free_unref_page+0x33/0x3b0 mm/page_alloc.c:2435
->  free_contig_range+0xb6/0x190 mm/page_alloc.c:6372
->  destroy_args+0x7c9/0xa10 mm/debug_vm_pgtable.c:1028
->  debug_vm_pgtable+0x1d79/0x3e00 mm/debug_vm_pgtable.c:1408
->  do_one_initcall+0x11c/0x640 init/main.c:1232
->  do_initcall_level init/main.c:1294 [inline]
->  do_initcalls init/main.c:1310 [inline]
->  do_basic_setup init/main.c:1329 [inline]
->  kernel_init_freeable+0x5c2/0x8f0 init/main.c:1547
->  kernel_init+0x1c/0x2a0 init/main.c:1437
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->
-> Memory state around the buggy address:
->  ffff888078b14500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff888078b14580: 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00 00
-> >ffff888078b14600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->                                                  ^
->  ffff888078b14680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff888078b14700: 00 00 00 fc fc fc fc fc fc fc fc 00 00 00 00 00
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->
+On Mon, Sep 11, 2023 at 10:30:33AM +0800, Yong Wu wrote:
+> Initialise a mtk_svp heap. Currently just add a null heap, Prepare for
+> the later patches.
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
+>  drivers/dma-buf/heaps/Kconfig           |  8 ++
+>  drivers/dma-buf/heaps/Makefile          |  1 +
+>  drivers/dma-buf/heaps/mtk_secure_heap.c | 99 +++++++++++++++++++++++++
+>  3 files changed, 108 insertions(+)
+>  create mode 100644 drivers/dma-buf/heaps/mtk_secure_heap.c
+> 
+> diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
+> index a5eef06c4226..729c0cf3eb7c 100644
+> --- a/drivers/dma-buf/heaps/Kconfig
+> +++ b/drivers/dma-buf/heaps/Kconfig
+> @@ -12,3 +12,11 @@ config DMABUF_HEAPS_CMA
+>  	  Choose this option to enable dma-buf CMA heap. This heap is backed
+>  	  by the Contiguous Memory Allocator (CMA). If your system has these
+>  	  regions, you should say Y here.
+> +
+> +config DMABUF_HEAPS_MTK_SECURE
+> +	bool "DMA-BUF MediaTek Secure Heap"
+> +	depends on DMABUF_HEAPS && TEE
+> +	help
+> +	  Choose this option to enable dma-buf MediaTek secure heap for Secure
+> +	  Video Path. This heap is backed by TEE client interfaces. If in
+Although this is intended for SVP right now, this is something that very
+well could work for other use cases. So, I think I'd not mention "Secure
+Video Path" and just mention "secure heap".
 
-#syz test: https://github.com/amir73il/linux.git ovl_want_write
+> +	  doubt, say N.
+> diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makefile
+> index 974467791032..df559dbe33fe 100644
+> --- a/drivers/dma-buf/heaps/Makefile
+> +++ b/drivers/dma-buf/heaps/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)	+= system_heap.o
+>  obj-$(CONFIG_DMABUF_HEAPS_CMA)		+= cma_heap.o
+> +obj-$(CONFIG_DMABUF_HEAPS_MTK_SECURE)	+= mtk_secure_heap.o
+> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c b/drivers/dma-buf/heaps/mtk_secure_heap.c
+> new file mode 100644
+> index 000000000000..bbf1c8dce23e
+> --- /dev/null
+> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * DMABUF mtk_secure_heap exporter
+> + *
+> + * Copyright (C) 2023 MediaTek Inc.
+> + */
+> +
+> +#include <linux/dma-buf.h>
+> +#include <linux/dma-heap.h>
+> +#include <linux/err.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +
+> +/*
+> + * MediaTek secure (chunk) memory type
+> + *
+> + * @KREE_MEM_SEC_CM_TZ: static chunk memory carved out for trustzone.
+nit: s/trustzone/TrustZone/
+
+-- 
+// Regards
+Joakim
+
+> + */
+> +enum kree_mem_type {
+> +	KREE_MEM_SEC_CM_TZ = 1,
+> +};
+> +
+> +struct mtk_secure_heap_buffer {
+> +	struct dma_heap		*heap;
+> +	size_t			size;
+> +};
+> +
+> +struct mtk_secure_heap {
+> +	const char		*name;
+> +	const enum kree_mem_type mem_type;
+> +};
+> +
+> +static struct dma_buf *
+> +mtk_sec_heap_allocate(struct dma_heap *heap, size_t size,
+> +		      unsigned long fd_flags, unsigned long heap_flags)
+> +{
+> +	struct mtk_secure_heap_buffer *sec_buf;
+> +	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
+> +	struct dma_buf *dmabuf;
+> +	int ret;
+> +
+> +	sec_buf = kzalloc(sizeof(*sec_buf), GFP_KERNEL);
+> +	if (!sec_buf)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	sec_buf->size = size;
+> +	sec_buf->heap = heap;
+> +
+> +	exp_info.exp_name = dma_heap_get_name(heap);
+> +	exp_info.size = sec_buf->size;
+> +	exp_info.flags = fd_flags;
+> +	exp_info.priv = sec_buf;
+> +
+> +	dmabuf = dma_buf_export(&exp_info);
+> +	if (IS_ERR(dmabuf)) {
+> +		ret = PTR_ERR(dmabuf);
+> +		goto err_free_buf;
+> +	}
+> +
+> +	return dmabuf;
+> +
+> +err_free_buf:
+> +	kfree(sec_buf);
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +static const struct dma_heap_ops mtk_sec_heap_ops = {
+> +	.allocate	= mtk_sec_heap_allocate,
+> +};
+> +
+> +static struct mtk_secure_heap mtk_sec_heap[] = {
+> +	{
+> +		.name		= "mtk_svp",
+> +		.mem_type	= KREE_MEM_SEC_CM_TZ,
+> +	},
+> +};
+> +
+> +static int mtk_sec_heap_init(void)
+> +{
+> +	struct mtk_secure_heap *sec_heap = mtk_sec_heap;
+> +	struct dma_heap_export_info exp_info;
+> +	struct dma_heap *heap;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(mtk_sec_heap); i++, sec_heap++) {
+> +		exp_info.name = sec_heap->name;
+> +		exp_info.ops = &mtk_sec_heap_ops;
+> +		exp_info.priv = (void *)sec_heap;
+> +
+> +		heap = dma_heap_add(&exp_info);
+> +		if (IS_ERR(heap))
+> +			return PTR_ERR(heap);
+> +	}
+> +	return 0;
+> +}
+> +
+> +module_init(mtk_sec_heap_init);
+> +MODULE_DESCRIPTION("MediaTek Secure Heap Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
