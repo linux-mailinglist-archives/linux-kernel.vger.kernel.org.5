@@ -2,193 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C87E7B01B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C235E7B0197
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbjI0KVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 06:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S230149AbjI0KRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 06:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjI0KUz (ORCPT
+        with ESMTP id S229478AbjI0KRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 06:20:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0666D59CD;
-        Wed, 27 Sep 2023 03:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695809730; x=1727345730;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=QyykobWy8hhu10HtRDNj5hhSGyt6lb7pi4yabtQJzMw=;
-  b=Qtwg5nlttQFx7CpcYpb18TpMujigVmP5S5F5kFxJjacCkvF+L/Bq3Vj0
-   oc+BEQaYMzqGjL76/5r64vnisitjU1LkKRMqQVfRU+Jy26IOukgIO4GHs
-   8VTlG7Cf2s9YPTCxi2/aIADFzmcSgMrLNATEMeMmWwYGXfjh4hr2R2GN1
-   v0zH1WMxJlUSWBw6OeQ7KveOX0DdzMCXrQ9aIlkPCnI3OPvmnrQEFjvyP
-   Mm+sIOt9u6veQpQ/ClsHnY21TpvjrVBaDVxxzu5lVmqRdOe7JsvoJ8wOF
-   LZS3xRXiTJwa34tHRQ/+teuMHq50ut1tT+UOJeT/ajt9SGfk2DNR0kmDl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="380661887"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="380661887"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 03:14:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784268219"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784268219"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 03:14:50 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 03:14:49 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d4NH4UYYR+my6uOhSN4JSEnR+AoEXqyzECDpH/YQUp0yz9Tv3sJlfqKhNKFImivjEwxscQL06N+xW0i6QX0vXwWSDR4zT6bnZoDPCly0wrTx99dO9xF6L3OYpn3oVyoDKXXIT7fAzStbOLihhfehMZ+RkX7+DmsPFZaeX1f/Upk+Lcbqq3dGQ4Rc8SRC2CsRF9ND7p7ct5tpkApzL+3k9ceG9TJIzLqLQUkhbYAm7D0dkRLFR0kUXPznI10yDmuzBBr0J+Yx7Y3opmh0jbklaAgL/hP5nHnb2SOk0CxKI+XSkCY0yxeiKVsN0QAA0gZvupAhM2XuNAb1at45WXfS0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QyykobWy8hhu10HtRDNj5hhSGyt6lb7pi4yabtQJzMw=;
- b=e0s+f9cHmC0s3mGSzynU8kWSLlLq4f+CHCvQXFa0KP2jjRIkO458BJaGI5xDHZgnbvNQxPZtUSl0frQHnTLE/5HTVuLI+tkWc1qQtAyjcIP5b//3gWtL38DNgtveq4hL1d5LfB9Vq8EUztxqQIFcXn5piZYO+21Dc9+yzDpmIeI9hq92XTt9b77KVhUF2zmK+eLQJZjOl7B6LkW/IX7JLqzx8I5QDZoRM7043bMnTGPKamNrztvx4cXUZpiCH8qUryChRmbkV3I83HlEBC98HPwZxUNE9EU+LcCmrZod/rQHyK7NvtEsaPj2DcBNG47eBlQWt4juAwjCAm+tfj9pDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CO1PR11MB4978.namprd11.prod.outlook.com (2603:10b6:303:91::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Wed, 27 Sep
- 2023 10:14:41 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::31a9:b803:fe81:5236]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::31a9:b803:fe81:5236%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 10:14:41 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>
-CC:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 05/18] x86/sgx: Store reclaimable EPC pages in
- sgx_epc_lru_lists
-Thread-Topic: [PATCH v5 05/18] x86/sgx: Store reclaimable EPC pages in
- sgx_epc_lru_lists
-Thread-Index: AQHZ7csRtGAfUkK4dUedWW3EqxZKFbAue0EA
-Date:   Wed, 27 Sep 2023 10:14:41 +0000
-Message-ID: <0f6d88414ad6609575bfdd21b93fbf8ba92c3a14.camel@intel.com>
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
-         <20230923030657.16148-6-haitao.huang@linux.intel.com>
-In-Reply-To: <20230923030657.16148-6-haitao.huang@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CO1PR11MB4978:EE_
-x-ms-office365-filtering-correlation-id: 5c4847aa-75a6-490c-7321-08dbbf42907b
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: K1xHeO7Cw3sDph8EuFmFtxvJxZXF5Ass4KCNVLMIhOvmDi4TPz+zujEKfPjOAPJN1heRYU7Sm/bWGWclYxy3aRW/NwcUURFLdeZP0ljtvAs84I77ulMBEhPn/LHIRVBXK7hTU0hNONJVz8Ls4kXte5IJEdIHHaqSsWioCCcRneYmZEdVmJbUsPFq2F8TjJdw4lokq5qDsbJdF5BLSJpX5XfOHPSeHZugRsDuBjfp0DkaexOXRBDoIYZ8+eTRjxollZakv+BPUJrBYpNpl3WTo1x7ahliG8vngkJXU/nTKM1Gawk0QIkIBEh63F7rWNJ/3e9tCGQYbF1KbjGzX9OlzyctrUuH/+6zjvtBBcDIc4YI3/BYYlZ7vFGdNhGOs6dx/tmTu4W47qQBQdf9UKN8sXN3qPggMz47aR24SNlZrAFKavvO4kvbf4cRjeAOTUnj5zSElYiNlx3aaSzRv0W4IHLOmtBtxozxSAp1UItaZopKHbFxn0FjTtrICzt9IgoNzx9kHWV+C0ozRvbbGbOuMw4dy0F2G8K3AeRrP9RyeySx4wdwf7yCgUa6pmf9tZ649ntcdxElrb4yCx0H7O3FxhvumM9X/cbtYQa81MhggWwz0b5ssGWpuFZu9F9DcgX+5rZziiMSGQu+q4KdS+7DaA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(136003)(396003)(230922051799003)(451199024)(186009)(1800799009)(38070700005)(86362001)(4326008)(2616005)(6512007)(6506007)(316002)(66946007)(110136005)(122000001)(76116006)(91956017)(478600001)(38100700002)(26005)(921005)(66476007)(66446008)(66556008)(71200400001)(8676002)(82960400001)(8936002)(2906002)(5660300002)(4744005)(36756003)(64756008)(6486002)(7416002)(54906003)(41300700001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SmJMaXNaTEVHTHFuMUFQWDI5dGx0eURWcGtCWCtDTlh0NkthSm9QUXZTU3hP?=
- =?utf-8?B?RnlVUmw4dmtjQWJkSUZmc211YmxuNDJPZlFlWklrS3Y2U3VEY3BLQ1NqQW9t?=
- =?utf-8?B?TVhybld6eDFvVU5PRGxSZmF1bFdBTnBnL0wzTFZQelE0aXJPQU0xZ0U2Y3Nh?=
- =?utf-8?B?RTZvSUszNkVlSE5xaWswMWxSZ1VQaTBCMkN1SG9RaEc1WHlJR2tQazJpa0ox?=
- =?utf-8?B?dFVON0NsSE0xUkpjbUd6dWV3RzF3eWxYN0pOWUVUS2Z4K0ROOGExNXhrMXlo?=
- =?utf-8?B?c2E3UU9kYXFGMVUyMFF0ZmxIbVI0eXJPOEJIV1pmakZ4RVc0Z1JjTjBoTU15?=
- =?utf-8?B?M05oamdMUVNCb3R2T1NuUm9OM2o1NS93U2Rzcm1SZXNGZWF0dGZFZUNGbWhM?=
- =?utf-8?B?S1dlU0U3YlhIZENLQWhHM1lPYmhuemVqOE81S1R0cjZkWExtSUd4MDUzNklV?=
- =?utf-8?B?c1ljd3U4SGhyV2MraDlZNW5OTmE5MERDVUlMYWJJRnVXTkNZQXkxVTAreGwr?=
- =?utf-8?B?aFZLbVdxNXhKa1lIZkUxUkx1c3ZHV2FvMjIwenBpOXhpTjc5Um9QSU9ZUjBG?=
- =?utf-8?B?NURKakhUWTJtNzV3OWZsc2s4RUxZcEVHSzFXK2ZWNkIvYnVWd0xVTVg5RWt2?=
- =?utf-8?B?ck9rSlFlRVcxTkFDaC9VSnowTENtZ0RiSDhXUXcyc3pmaFUzckQrWmFyeGFI?=
- =?utf-8?B?allFOFloMXNqYWpURTl5QWNZdGVBUmIrNFhzVXQ1R1U4eHkxWEpTbml5eDRO?=
- =?utf-8?B?SEh3Y2o4aUFHcnU1M2szTEYvTUdPQzZIZWlub2VkMURuMk9uR1kvUjNUei9k?=
- =?utf-8?B?YUNFOHJyUUFzRURFVy9TQVpXNmdvTmswSEFTRWhOT1F3RDRscUhvdEpjZ2s0?=
- =?utf-8?B?eHNFT1NaZGdaY1lPSUFqeXJRT1hnYmRQeWVBUG5RY2hkZUtJbEZvaDVOSWpo?=
- =?utf-8?B?U21QWmVnYlo5ZEM4ci9lZURJVVpHTHZScDFPQ3RTNUZaMGIxbWFtOFhqaVdi?=
- =?utf-8?B?ZXl2WGw3OEtneGZDZzhkZWlpWE4yRTlBRldBaFFlRmpCOTZjaXVTbzlSRDMx?=
- =?utf-8?B?cEdac25nYUlseVd5eDN2ZEg1NHRzY3A2Z2ZoZzVxRVpUMW1nVzZkYzU5RmhK?=
- =?utf-8?B?S1IzU1UyVnF6NGtXemdaeDJjZ2RSUU9BQmdocEkzWEJOTWNYdDF6a3ZoejhB?=
- =?utf-8?B?RkVwUUs4NEc4bTFIK0YxQXVldll1T1JxODRDWkVMMW9IMGdTMk9UM1BsVk1F?=
- =?utf-8?B?d3BWUHk5d285NGZDMnVHNURSSW9hbkxUYXNyVU5UTkdseDFLaGtiZVFmWVB0?=
- =?utf-8?B?ajZJM0JrdEg3aFF2Q2g3TWVzWEUvNDlEcTFiNWtaYWdzaENnYmI0QXRjU1p1?=
- =?utf-8?B?NGR3MHNKeE9vZytSVTFWM2syeUwzL0cvbm9HR3VqT29xMWJLUzNUc21wQkMz?=
- =?utf-8?B?bjBKeHZhV2NNK2JZRlI1TEF6L0xjUnUxWjlTcWJhQjU1OUJxcGlJRnB2T2dX?=
- =?utf-8?B?c2xrbGxjMzlWQzhQN0ZtTmgxbGxVT2ErdGp0QmlOLzZySk9QT2tzY2FhMUlT?=
- =?utf-8?B?TFQrZXBKM3k2TEhWM3d2YU95cDA4TFk0N0JqT1RmWDBEcEVOVDhzb3hTME5D?=
- =?utf-8?B?dVQvNy8rZ05LYzBMMVVMdUYrQW9Remc3M3JqeWJ1Rldrb1Q4SGlnRUl6MkpL?=
- =?utf-8?B?U0tOWTVMR0RmYXhTUjI4dzRLMk0vOTdENk4vQXE3S0FYODJhTml4M0JFY1ZE?=
- =?utf-8?B?bWdXSEVYK3BybytWRkl2eEdENHJQZEp1WHNqdDdETWJnN0I3OVRYWmlmU2JQ?=
- =?utf-8?B?STRteVhaM0tuSWJ6dmpaTjIrekpHT0RTOHZQbVFEZHhaQTRMQWRPRmlRRjhj?=
- =?utf-8?B?eHZFMUFNMmsvcDhqdFh6bzdvUkdCYUtzeW9kbmU0MS9GM1puTnB5eVJPdVUv?=
- =?utf-8?B?Q1BKcnQxRG5ULzZJSXJXMGZzMFI5L3p3Yzd5SzhEUVlXYlZKVlY1WGd5WTNF?=
- =?utf-8?B?WE15eHpYMHFETlBmM2R5MjJoQ0NHaHU3azBTbGtkUGNiZWFtQTArMFh1YXlN?=
- =?utf-8?B?ZFdOalYzdDM1WHAxMlkwWDI2TC9CTDBsekFNVnNzNHFxUWJiVzRRL0xHSFNY?=
- =?utf-8?B?c1lMN3BvcnVpODVPdFhVQmE0T0puczIwTUN0N1BlOTJYVlpkSVpTaGFlakdX?=
- =?utf-8?B?S0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AE6341413654C54699EE86A93C53A1E5@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 27 Sep 2023 06:17:03 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68776210C
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:17:01 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690bd59322dso8137568b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1695809821; x=1696414621; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VYa/zLWhaWlLbyEdQHtV25GBy6ERU5sz2cDVOjL/pMw=;
+        b=GaseYJ1EQfoqiCJUEROuqNeR9TItOOn1+6WG85O1hkdtbm7+5ADy3SWWfvVsQtxMRD
+         8zQdMn7tiMZVxUOf1Ukl2dZqx+KWEy8uPdAbdT6XTIIFE30n+V7EhhisOvCgz/jmbnPd
+         gEjoRLlGnDNTnmWC2FODtAxcgZ9JLh8garnU7807OogVZxiXGuMT1Lb0qC4RuGbp6+c+
+         vO1Bugbvl37ZFLIsFdxgfSSnqYd/EWObLSGuZANxSNw74iq3ejvAdYoq1qZYX3XJFDlb
+         hbDgwIyEFSrJVocrwB+XpIF6CbM/YQlg4iaYU9OaasYIjWGNDAurfcXdNEouu7nvqiR8
+         dUCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695809821; x=1696414621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=VYa/zLWhaWlLbyEdQHtV25GBy6ERU5sz2cDVOjL/pMw=;
+        b=ir4RaCMR2fICl3Zyl3ut2lsl/HrNchpyBbKs2SUmrFZpl6GhGaZ6C18F15ykaBajza
+         XaZ8THDNJwEi+7rDOEt4k1Zkw8eTp6tVVBpoggpIsNNS5F61xZWC1aQcKZO15WsASO0u
+         qNujVr2xQs0TRLKe657Ice3L4lpeA0/xM3gvIOiyu2T2Y6+uWW0jm0fATBTqhCDQdu4q
+         xgtp0QeLAImD0oNrIY6auiHDSP58Yoqxf+EbzvogrZCk3sIEt1VJPn15wycdpfdz5A/c
+         Rrl+lVhnkIXqQF7aBLHU1XPpqSCxbxDhkDHRowbBPAvKYZdAvESglV68cq7H45tyJZca
+         hTqw==
+X-Gm-Message-State: AOJu0YyeCzAL4/Q681JNG3bu1Hqq0CQiscZtbZ1/hpvS10CI7Si7qDR2
+        UOV89CRBTMWrtQUCdRBf4Z/xLg==
+X-Google-Smtp-Source: AGHT+IG0FtIdKo4pE/Mc/4f7lWF8kAzb8tGrmno1c4Zlw+TyOskgF9G2Q1o33B/OdPikAYHuwXuP1Q==
+X-Received: by 2002:a05:6a00:22cd:b0:68f:c057:b567 with SMTP id f13-20020a056a0022cd00b0068fc057b567mr1654534pfj.26.1695809820656;
+        Wed, 27 Sep 2023 03:17:00 -0700 (PDT)
+Received: from [10.84.145.144] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id f15-20020aa78b0f000000b0068fe7c4148fsm11327222pfd.57.2023.09.27.03.16.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 03:17:00 -0700 (PDT)
+Message-ID: <8c758106-c0a1-5eb2-83c9-ab019039cec7@bytedance.com>
+Date:   Wed, 27 Sep 2023 18:16:54 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c4847aa-75a6-490c-7321-08dbbf42907b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 10:14:41.5255
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Owjrt/htLr1AM4NADTxkDAWPaKp0CK13e5x4g8dBzRmtisugPezhcEZEm63xN6NTwRIgdHogBb4OJ78KaB69Hg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4978
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH bpf-next v3 5/7] bpf: teach the verifier to enforce
+ css_iter and task_iter in RCU CS
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
+ <20230925105552.817513-6-zhouchuyi@bytedance.com>
+ <CALOAHbBrSasWs1=15TB0O+DnKohVKQrRWTM6x9zP-VR1G9zehQ@mail.gmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CALOAHbBrSasWs1=15TB0O+DnKohVKQrRWTM6x9zP-VR1G9zehQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTA5LTIyIGF0IDIwOjA2IC0wNzAwLCBIYWl0YW8gSHVhbmcgd3JvdGU6DQo+
-IC0tLSBhL2FyY2gveDg2L2tlcm5lbC9jcHUvc2d4L21haW4uYw0KPiArKysgYi9hcmNoL3g4Ni9r
-ZXJuZWwvY3B1L3NneC9tYWluLmMNCj4gQEAgLTI2OCw3ICsyNjgsNiBAQCBzdGF0aWMgdm9pZCBz
-Z3hfcmVjbGFpbWVyX3dyaXRlKHN0cnVjdCBzZ3hfZXBjX3BhZ2UgKmVwY19wYWdlLA0KPiDCoAkJ
-CWdvdG8gb3V0Ow0KPiDCoA0KPiDCoAkJc2d4X2VuY2xfZXdiKGVuY2wtPnNlY3MuZXBjX3BhZ2Us
-ICZzZWNzX2JhY2tpbmcpOw0KPiAtDQo+IMKgCQlzZ3hfZW5jbF9mcmVlX2VwY19wYWdlKGVuY2wt
-PnNlY3MuZXBjX3BhZ2UpOw0KPiDCoAkJZW5jbC0+c2Vjcy5lcGNfcGFnZSA9IE5VTEw7DQo+IMKg
-DQoNCk5pdDogcGVyaGFwcyB1bmludGVuZGVkIGNoYW5nZS4NCg==
+
+
+在 2023/9/27 18:00, Yafang Shao 写道:
+> On Mon, Sep 25, 2023 at 6:56 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>
+>> css_iter and task_iter should be used in rcu section. Specifically, in
+>> sleepable progs explicit bpf_rcu_read_lock() is needed before use these
+>> iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
+>> use them directly.
+>>
+>> This patch adds a new a KF flag KF_RCU_PROTECTED for bpf_iter_task_new and
+>> bpf_iter_css_new. It means the kfunc should be used in RCU CS. We check
+>> whether we are in rcu cs before we want to invoke this kfunc. If the rcu
+>> protection is guaranteed, we would let st->type = PTR_TO_STACK | MEM_RCU.
+>> Once user do rcu_unlock during the iteration, state MEM_RCU of regs would
+>> be cleared. is_iter_reg_valid_init() will reject if reg->type is UNTRUSTED.
+>>
+>> It is worth noting that currently, bpf_rcu_read_unlock does not
+>> clear the state of the STACK_ITER reg, since bpf_for_each_spilled_reg
+>> only considers STACK_SPILL. This patch also let bpf_for_each_spilled_reg
+>> search STACK_ITER.
+>>
+>> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> 
+> This patch should be ahead of patch #2 and you introduce
+> KF_RCU_PROTECTED in it then use this flag in later patches.
+> BTW, I can't apply your series on bpf-next. I think you should rebase
+> it on the latest bpf-next, otherwise the BPF CI can't be triggered.
+> 
+
+Sorry for the mistake, will rebase in v4.
+
+>> ---
+>>   include/linux/bpf_verifier.h | 19 ++++++++------
+>>   include/linux/btf.h          |  1 +
+>>   kernel/bpf/helpers.c         |  4 +--
+>>   kernel/bpf/verifier.c        | 48 +++++++++++++++++++++++++++---------
+>>   4 files changed, 50 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+>> index a3236651ec64..b5cdcc332b0a 100644
+>> --- a/include/linux/bpf_verifier.h
+>> +++ b/include/linux/bpf_verifier.h
+>> @@ -385,19 +385,18 @@ struct bpf_verifier_state {
+>>          u32 jmp_history_cnt;
+>>   };
+>>
+>> -#define bpf_get_spilled_reg(slot, frame)                               \
+>> +#define bpf_get_spilled_reg(slot, frame, mask)                         \
+>>          (((slot < frame->allocated_stack / BPF_REG_SIZE) &&             \
+>> -         (frame->stack[slot].slot_type[0] == STACK_SPILL))             \
+>> +         ((1 << frame->stack[slot].slot_type[0]) & (mask))) \
+>>           ? &frame->stack[slot].spilled_ptr : NULL)
+>>
+>>   /* Iterate over 'frame', setting 'reg' to either NULL or a spilled register. */
+>> -#define bpf_for_each_spilled_reg(iter, frame, reg)                     \
+>> -       for (iter = 0, reg = bpf_get_spilled_reg(iter, frame);          \
+>> +#define bpf_for_each_spilled_reg(iter, frame, reg, mask)                       \
+>> +       for (iter = 0, reg = bpf_get_spilled_reg(iter, frame, mask);            \
+>>               iter < frame->allocated_stack / BPF_REG_SIZE;              \
+>> -            iter++, reg = bpf_get_spilled_reg(iter, frame))
+>> +            iter++, reg = bpf_get_spilled_reg(iter, frame, mask))
+>>
+>> -/* Invoke __expr over regsiters in __vst, setting __state and __reg */
+>> -#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr)   \
+>> +#define bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, __mask, __expr)   \
+>>          ({                                                               \
+>>                  struct bpf_verifier_state *___vstate = __vst;            \
+>>                  int ___i, ___j;                                          \
+>> @@ -409,7 +408,7 @@ struct bpf_verifier_state {
+>>                                  __reg = &___regs[___j];                  \
+>>                                  (void)(__expr);                          \
+>>                          }                                                \
+>> -                       bpf_for_each_spilled_reg(___j, __state, __reg) { \
+>> +                       bpf_for_each_spilled_reg(___j, __state, __reg, __mask) { \
+>>                                  if (!__reg)                              \
+>>                                          continue;                        \
+>>                                  (void)(__expr);                          \
+>> @@ -417,6 +416,10 @@ struct bpf_verifier_state {
+>>                  }                                                        \
+>>          })
+>>
+>> +/* Invoke __expr over regsiters in __vst, setting __state and __reg */
+>> +#define bpf_for_each_reg_in_vstate(__vst, __state, __reg, __expr) \
+>> +       bpf_for_each_reg_in_vstate_mask(__vst, __state, __reg, 1 << STACK_SPILL, __expr)
+>> +
+>>   /* linked list of verifier states used to prune search */
+>>   struct bpf_verifier_state_list {
+>>          struct bpf_verifier_state state;
+>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>> index 928113a80a95..c2231c64d60b 100644
+>> --- a/include/linux/btf.h
+>> +++ b/include/linux/btf.h
+>> @@ -74,6 +74,7 @@
+>>   #define KF_ITER_NEW     (1 << 8) /* kfunc implements BPF iter constructor */
+>>   #define KF_ITER_NEXT    (1 << 9) /* kfunc implements BPF iter next method */
+>>   #define KF_ITER_DESTROY (1 << 10) /* kfunc implements BPF iter destructor */
+>> +#define KF_RCU_PROTECTED (1 << 11) /* kfunc should be protected by rcu cs when they are invoked */
+>>
+>>   /*
+>>    * Tag marking a kernel function as a kfunc. This is meant to minimize the
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 9c3af36249a2..aa9e03fbfe1a 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -2507,10 +2507,10 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+>> -BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+>> +BTF_ID_FLAGS(func, bpf_iter_task_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
+>>   BTF_ID_FLAGS(func, bpf_iter_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_iter_task_destroy, KF_ITER_DESTROY)
+>> -BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS)
+>> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW | KF_TRUSTED_ARGS | KF_RCU_PROTECTED)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
+>>   BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
+>>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 2367483bf4c2..a065e18a0b3a 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -1172,7 +1172,12 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
+>>
+>>   static void __mark_reg_known_zero(struct bpf_reg_state *reg);
+>>
+>> +static bool in_rcu_cs(struct bpf_verifier_env *env);
+>> +
+>> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta);
+>> +
+>>   static int mark_stack_slots_iter(struct bpf_verifier_env *env,
+>> +                                struct bpf_kfunc_call_arg_meta *meta,
+>>                                   struct bpf_reg_state *reg, int insn_idx,
+>>                                   struct btf *btf, u32 btf_id, int nr_slots)
+>>   {
+>> @@ -1193,6 +1198,12 @@ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
+>>
+>>                  __mark_reg_known_zero(st);
+>>                  st->type = PTR_TO_STACK; /* we don't have dedicated reg type */
+>> +               if (is_kfunc_rcu_protected(meta)) {
+>> +                       if (in_rcu_cs(env))
+>> +                               st->type |= MEM_RCU;
+> 
+> I think this change is incorrect.  The type of st->type is enum
+> bpf_reg_type, but MEM_RCU is enum bpf_type_flag.
+> Or am I missing something?
+Looking at is_rcu_reg(), It seems OK to add MEM_RCU flag to st->type.
+
+static bool is_rcu_reg(const struct bpf_reg_state *reg)
+{
+	return reg->type & MEM_RCU;
+}
+
+Here is the previous discussion link:
+https://lore.kernel.org/lkml/CAADnVQKu+a6MKKfJy8NVmwtpEw1ae-_8opsGjdvvfoUjwE1sog@mail.gmail.com/
+
+Thanks.
+
+> 
+>> +                       else
+>> +                               st->type |= PTR_UNTRUSTED;
+>> +               }
+>>                  st->live |= REG_LIVE_WRITTEN;
+>>                  st->ref_obj_id = i == 0 ? id : 0;
+>>                  st->iter.btf = btf;
+>> @@ -1267,7 +1278,7 @@ static bool is_iter_reg_valid_uninit(struct bpf_verifier_env *env,
+>>          return true;
+>>   }
+>>
+>> -static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+>> +static int is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+>>                                     struct btf *btf, u32 btf_id, int nr_slots)
+>>   {
+>>          struct bpf_func_state *state = func(env, reg);
+>> @@ -1275,26 +1286,28 @@ static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_
+>>
+>>          spi = iter_get_spi(env, reg, nr_slots);
+>>          if (spi < 0)
+>> -               return false;
+>> +               return -EINVAL;
+>>
+>>          for (i = 0; i < nr_slots; i++) {
+>>                  struct bpf_stack_state *slot = &state->stack[spi - i];
+>>                  struct bpf_reg_state *st = &slot->spilled_ptr;
+>>
+>> +               if (st->type & PTR_UNTRUSTED)
+>> +                       return -EPERM;
+>>                  /* only main (first) slot has ref_obj_id set */
+>>                  if (i == 0 && !st->ref_obj_id)
+>> -                       return false;
+>> +                       return -EINVAL;
+>>                  if (i != 0 && st->ref_obj_id)
+>> -                       return false;
+>> +                       return -EINVAL;
+>>                  if (st->iter.btf != btf || st->iter.btf_id != btf_id)
+>> -                       return false;
+>> +                       return -EINVAL;
+>>
+>>                  for (j = 0; j < BPF_REG_SIZE; j++)
+>>                          if (slot->slot_type[j] != STACK_ITER)
+>> -                               return false;
+>> +                               return -EINVAL;
+>>          }
+>>
+>> -       return true;
+>> +       return 0;
+>>   }
+>>
+>>   /* Check if given stack slot is "special":
+>> @@ -7503,15 +7516,20 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
+>>                                  return err;
+>>                  }
+>>
+>> -               err = mark_stack_slots_iter(env, reg, insn_idx, meta->btf, btf_id, nr_slots);
+>> +               err = mark_stack_slots_iter(env, meta, reg, insn_idx, meta->btf, btf_id, nr_slots);
+>>                  if (err)
+>>                          return err;
+>>          } else {
+>>                  /* iter_next() or iter_destroy() expect initialized iter state*/
+>> -               if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots)) {
+>> -                       verbose(env, "expected an initialized iter_%s as arg #%d\n",
+>> +               err = is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots);
+>> +               switch (err) {
+>> +               case -EINVAL:
+>> +                       verbose(env, "expected an initialized iter_%s as arg #%d or without bpf_rcu_read_lock()\n",
+>>                                  iter_type_str(meta->btf, btf_id), regno);
+>> -                       return -EINVAL;
+>> +                       return err;
+>> +               case -EPERM:
+>> +                       verbose(env, "expected an RCU CS when using %s\n", meta->func_name);
+>> +                       return err;
+>>                  }
+>>
+>>                  spi = iter_get_spi(env, reg, nr_slots);
+>> @@ -10092,6 +10110,11 @@ static bool is_kfunc_rcu(struct bpf_kfunc_call_arg_meta *meta)
+>>          return meta->kfunc_flags & KF_RCU;
+>>   }
+>>
+>> +static bool is_kfunc_rcu_protected(struct bpf_kfunc_call_arg_meta *meta)
+>> +{
+>> +       return meta->kfunc_flags & KF_RCU_PROTECTED;
+>> +}
+>> +
+>>   static bool __kfunc_param_match_suffix(const struct btf *btf,
+>>                                         const struct btf_param *arg,
+>>                                         const char *suffix)
+>> @@ -11428,6 +11451,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>          if (env->cur_state->active_rcu_lock) {
+>>                  struct bpf_func_state *state;
+>>                  struct bpf_reg_state *reg;
+>> +               u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
+>>
+>>                  if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
+>>                          verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
+>> @@ -11438,7 +11462,7 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>                          verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
+>>                          return -EINVAL;
+>>                  } else if (rcu_unlock) {
+>> -                       bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
+>> +                       bpf_for_each_reg_in_vstate_mask(env->cur_state, state, reg, clear_mask, ({
+>>                                  if (reg->type & MEM_RCU) {
+>>                                          reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
+>>                                          reg->type |= PTR_UNTRUSTED;
+>> --
+>> 2.20.1
+>>
+>>
+> 
+> 
