@@ -2,57 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F977AFF31
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ED77AFF32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 10:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbjI0I6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 04:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        id S230325AbjI0I6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 04:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbjI0I6R (ORCPT
+        with ESMTP id S230127AbjI0I6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 04:58:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC8B2191;
-        Wed, 27 Sep 2023 01:58:15 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2B321FB;
-        Wed, 27 Sep 2023 01:58:53 -0700 (PDT)
-Received: from [10.57.1.56] (unknown [10.57.1.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E04A63F59C;
-        Wed, 27 Sep 2023 01:58:12 -0700 (PDT)
-Message-ID: <01a4ad7a-8031-558f-de87-a3ffc5d6c43c@arm.com>
-Date:   Wed, 27 Sep 2023 09:58:11 +0100
+        Wed, 27 Sep 2023 04:58:24 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8A1193;
+        Wed, 27 Sep 2023 01:58:21 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1dd54aca17cso2559845fac.3;
+        Wed, 27 Sep 2023 01:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695805101; x=1696409901; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZTi49m1tRqik4s4OIHpvu+DZ0pGT5ycjrh8hjwTA/U=;
+        b=aDF7+gdCEH4nyH72m9/EVkkUlDwJY/EfZuQun+GC4CkZFlEkg1y/zFiSBoiZzQuN/e
+         x7aty8NEOpxPUyPUnYsKiE4etNEmOr2Bdx3SZ3drKvv9WRc/mU9qseDcFwddTfjfXf0D
+         XWIhhIoAUydQcw90a/GC1YG0RCC8AIwSLh0AjUBb97lCF1s0U7P+xWvMzMEn9hLPxgs5
+         iJ0SMoCwfjsFdJaLqKvZtp69YAVQS1TLZhP57QxYQq1xfq9dYoOkN7ntMK8nw3zAqTzL
+         gbzG9mh+RiSuptTWpGISE9WLnvvXM9mLShH3Oa7LZ0RKnlSj4tNiAFkQbkZDnWUYsSeR
+         Ikww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695805101; x=1696409901;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YZTi49m1tRqik4s4OIHpvu+DZ0pGT5ycjrh8hjwTA/U=;
+        b=YVYSm2LsOrdjqhX8mz/bLaBXHJ5aKaYKjhV0s3zzxtvHBD3w126U0WEUxNu2/MWWcO
+         JaLiHSsUvXrRdCnmO26r9eOz+YKfTva9Y0kMbFhXX/8ia//uI/cNpyzb8l2YfAiQhumA
+         qrUKEdM+hb2+Bu+5zmUvg9q33HrQGRM0FCJ7gAlpWf6GeBoNjRDiPtKk7a0VwvGTbgZY
+         DLjvQ/6DChx895aoyXfdMLDchPisAnH5fUNQIc5UI0AJ+wJz2akIHFgmdEKTP5cCpy1j
+         pe9vyHoGBQGdQU/U+Of9Icb0MB+TaXydZDec+X2nydsB1B49hB791IbwTGhmi7XDUvMd
+         teyA==
+X-Gm-Message-State: AOJu0YxplEZEJSNZLKcNpKZcPaebWsrw1p+JbKQwyWQW6aVYI7hTSgXQ
+        vS50h+Ns8mXVbbg7s4mBXxY=
+X-Google-Smtp-Source: AGHT+IFNIFoEp/iqGlH0vzf3/98sK4WLJfvo5ZvA9UZ3xKUBz6DBslOPOxQslranSCHUMX3oMfyKhQ==
+X-Received: by 2002:a05:6870:46a5:b0:1dd:651a:7398 with SMTP id a37-20020a05687046a500b001dd651a7398mr1767181oap.2.1695805100614;
+        Wed, 27 Sep 2023 01:58:20 -0700 (PDT)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id v3-20020a056870e28300b001dcde628a6fsm1962325oad.42.2023.09.27.01.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 01:58:20 -0700 (PDT)
+From:   Chen Wang <unicornxw@gmail.com>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
+Cc:     Chen Wang <unicornxw@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>
+Subject: [PATCH v3 01/11] riscv: Add SOPHGO SOC family Kconfig support
+Date:   Wed, 27 Sep 2023 16:58:12 +0800
+Message-Id: <bfa07dce9eb268b312bd64059773acf055727f17.1695804418.git.unicornxw@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1695804418.git.unicornxw@gmail.com>
+References: <cover.1695804418.git.unicornxw@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v9 00/13] Add support to configure TPDM DSB subunit
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1694670204-11515-1-git-send-email-quic_taozha@quicinc.com>
- <2fe54425-70b5-95e8-1e9e-337424827adb@arm.com>
- <b31e427e-071f-1ded-eeb0-eb9a0f5dc075@quicinc.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <b31e427e-071f-1ded-eeb0-eb9a0f5dc075@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,73 +78,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2023 07:37, Tao Zhang wrote:
-> 
-> On 9/26/2023 9:12 PM, Suzuki K Poulose wrote:
->> On 14/09/2023 06:43, Tao Zhang wrote:
->>> Introduction of TPDM DSB subunit
->>> DSB subunit is responsible for creating a dataset element, and is also
->>> optionally responsible for packing it to fit multiple elements on a
->>> single ATB transfer if possible in the configuration. The TPDM Core
->>> Datapath requests timestamps be stored by the TPDA and then delivering
->>> ATB sized data (depending on ATB width and element size, this could
->>> be smaller or larger than a dataset element) to the ATB Mast FSM.
->>>
->>> The DSB subunit must be configured prior to enablement. This series
->>> adds support for TPDM to configure the configure DSB subunit.
->>>
->>> Once this series patches are applied properly, the new tpdm nodes for
->>> should be observed at the tpdm path /sys/bus/coresight/devices/tpdm*
->>> which supports DSB subunit.
->>> e.g.
->>> root@qemuarm64:/sys/devices/platform/soc@0/6c08000.tpdm/tpdm1# ls -l
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 connections
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_edge
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_mode
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_msr
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_patt
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_patt_ts
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_patt_type
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_trig_patt
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_trig_ts
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:00 dsb_trig_type
->>> -rw-r--r--    1 root     root          4096 Jan  1 00:02 enable_source
->>> --w-------    1 root     root          4096 Jan  1 00:00 
->>> integration_test
->>> drwxr-xr-x    2 root     root             0 Jan  1 00:00 power
->>> --w-------    1 root     root          4096 Jan  1 00:02 reset_dataset
->>> lrwxrwxrwx    1 root     root             0 Apr  5  2021 subsystem -> 
->>> ../../../../../bus/coresight
->>> -rw-r--r--    1 root     root          4096 Apr  5  2021 uevent
->>> -r--r--r--    1 root     root          4096 Jan  1 00:00 
->>> waiting_for_supplier
->>>
->>> We can use the commands are similar to the below to configure the
->>> TPDMs which support DSB subunit. Enable coresight sink first.
->>> echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
->>> echo 1 > /sys/bus/coresight/devices/tpdm1/reset_dataset
->>> echo 0x3 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_idx
->>> echo 0x1 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_mask
->>> echo 0x0 > /sys/bus/coresight/devices/tpdm1/dsb_edge/ctrl_val
->>> echo 1 > /sys/bus/coresight/devices/tpdm1/dsb_patt/enable_ts
->>> echo 1 > /sys/bus/coresight/devices/tpdm1/dsb_patt/set_type
->>> echo 0 > /sys/bus/coresight/devices/tpdm1/dsb_trig_ts
->>> echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm1/dsb_patt/tpmr5
->>> echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm1/dsb_trig_patt/xpr2
->>> echo 1 > /sys/bus/coresight/devices/tpdm1/enable_source
->>>
->>
->> I have reviewed this set, except for the last patch, rest looks fine.
->> If you could resend the series with the comments addressed, we could
->> queue this.
-> 
-> That's great. Thanks for your review.
-> 
-> I also want to make a minor change.
-> 
-> Can I rename "tpdm_dsb_attrs_grp" to "tpdm_dsb_attr_grp" in the next 
+The first SoC in the SOPHGO series is SG2042, which contains 64 RISC-V
+cores.
 
-Sure, that is fine. The proposed changes to the other patch look good
-too.
+Reviewed-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Chao Wei <chao.wei@sophgo.com>
+Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
+Signed-off-by: Chen Wang <unicornxw@gmail.com>
+---
+ arch/riscv/Kconfig.socs | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Suzuki
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index 6833d01e2e70..d4df7b5d0f16 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -22,6 +22,11 @@ config SOC_SIFIVE
+ 	help
+ 	  This enables support for SiFive SoC platform hardware.
+ 
++config ARCH_SOPHGO
++	bool "Sophgo SoCs"
++	help
++	  This enables support for Sophgo SoC platform hardware.
++
+ config ARCH_STARFIVE
+ 	def_bool SOC_STARFIVE
+ 
+-- 
+2.25.1
+
