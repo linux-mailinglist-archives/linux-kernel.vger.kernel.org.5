@@ -2,204 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36AF7AFA54
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF32A7AFA15
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjI0FuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        id S229499AbjI0F3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjI0FtV (ORCPT
+        with ESMTP id S229458AbjI0F3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:49:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0820A4EE9;
-        Tue, 26 Sep 2023 22:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695792438; x=1727328438;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=rbaeVQvS8VzjwHD1AiYh+hU41+yovYXlnMi0O89HkiM=;
-  b=Ds7X7hGdLBvZjTj/EIQ9fjbCNcUl3G7No2dq0UbBw+CfW92ABlAQdDf5
-   WC9P0lR622plC4wi1e3QTFjZ0dG2vO+4sutt2QNj5/GJZgPUMQ2DmuCde
-   i1hEoHjjpPRNSWQKDve0ssd5yNlDlIvi1FRyqDhD0fE2IRCFywpMdPZoS
-   PGb1q3iXcCVm1sSXkfNTWhOJyZDEXerd685HWTe8+ix3LNlZgdlbeSYym
-   kHnePjhM4N/qJdsMDFkTk2kgP/Qk4dNdAiQ+LsJYUXPfl041I+zd0VGEh
-   txOkAg3guZxpoNPKs/9LICcc2NJwNe3VsykZtJi+68b2o6pjrZOkL/tUM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="366796148"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="366796148"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 22:27:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784202600"
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="scan'208";a="784202600"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2023 22:27:17 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 26 Sep 2023 22:27:16 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 26 Sep 2023 22:27:16 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 26 Sep 2023 22:27:15 -0700
+        Wed, 27 Sep 2023 01:29:10 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2049.outbound.protection.outlook.com [40.107.243.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6228895;
+        Tue, 26 Sep 2023 22:29:08 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NTxG4d0C0kiPR+IChx5R2aeYwshpgMhmI2NJuw6THH/OMN1ng4sfLo+qdZQQ0qgE5J6mcQJvAZN8nNgw+pGnslBSxzM7EqvoGJbBaqZ1O3pBxchbo1qwD81ba7VGHhX7UjAM3STHiWsZ8TSkWsFXUljFYgLEdpF6DNKMRVTWCRTAfiLnZpCGlPUzQiTAsBlVOuYFwgTZYawwV8g3KKnuEf1+Mdh9RIpV1GdNK83TQKH1BJXoWrairdJKbjgxwCIZmqo/S3+OgJylsV0KLtypUdrauUzMCXbkAHL9voYP/OohL6TW8qj5tm4WgnMJFujg4r/rszQRjuZhKdrumNa7vQ==
+ b=IHf0l+7MGug6lSSmarCDJsXM/14Q7sQmQki5zomdgFWA8gIlJn16YyCkQ8n6St5jTxPLK6ca+fHD9VIPIg4lQxRbxu0kMNuaDDvrraZK+j3SwwxzhkEacbge0enb/LmmqzJ5FnPEtLpemuMx+j4JkUhrcV4dSBBynG4ulRic7+UO5FFSPoDKMcbX+s3j1gAREtSH31jtp7nDQRfZi5ZqsgE7iEmB0oaTRvZlA/KicRe12Tqcl/Gy/4UcAFvNCONZMwb50iY7Ju/lTysp9otXrQe4vFfKsawO72fKS17+2Ktx4zdNnLhNnvm7Ib11fI0bslha8oPkW86cMvExqWkATQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mGrTjt/kTx3wwF001kTTt3muCvFO0ymgHtxZW9CtZic=;
- b=EYYpsULO9FbPDvv40lnx+hHOGgpK6LH8QzTC9VFNnls9N2an2xSMivlcj8Py2iYn53s4UcARXDBhM0VZDrk/Xao+l/sdEGb4NrsDqutWCLI1ClWvsWqCLCMpBwNJK+PCqqDdI44/P/xzKLagFSf7Lh/u6ZoIDm4gBd3qNd+UQU5DJlgJo5NlkqPSLrStEqXkWDj83veI7HAFQ8hjzQ56nUE2eLKSzrWeGrGiqtde+nLULDfXt64DAiq3TxxtAHP6VCECRD2ispFHl9c6T3HtwNKlrK9lt7orrQalwAJ0XT2KKhZsw/oTRSHyWNt4V2G0ppzgbdCKlxojuMbl4CyPdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by MW4PR11MB8267.namprd11.prod.outlook.com (2603:10b6:303:1e2::13) with
+ bh=K9QXXFI/IR7A0H/qHr/ppVt/dv/3Q4R0YRp8RUp9/lY=;
+ b=cngX7rHJMM0p8xrCVllw6+Aga3Ss8G92k4OXJXfdMTJwIbfvAFmMw/LzfpsQaeP0SGW+Cz3/ArrPxJGcGI4Fs5W9GbL8aDZa8JRRxf/Iqvd0uEEXWfceDHvrbM2UUBkmiaDXRksNCNYkaFqBOpT4+F9n/0dp1Xxoyurfx92wx+3CnwOFgZs4+aJAMtd6KCn6UYW8VxaMv23w08mNUqeDWyESg2RRuEwAC1B7jdYqYauoSbl7DOqiiwBxwQQo6cOqv9bzlF3be/kYxIt5m+kSveApvIUI9LWrdF0uU1VdlUPQp1/ZOGRwU37VnZ19JXquC7/5QsHDw6UzV6OBowrWxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux.alibaba.com smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K9QXXFI/IR7A0H/qHr/ppVt/dv/3Q4R0YRp8RUp9/lY=;
+ b=NTbyUkjdPeVZGEadGZuxDdni/n88AjmUHYheFS9yKw3Fhzv63M+teDYymppzcXLV7bVTokKZpJ5NRy3nBSIaRtjUYL86oJKbgtoUYjujEMI3JxvnUBQoQvBShxwgy/ZGThAXaJbpS/dxt4b1m7vSoL4e7UrquVlgnQKfi1swazs=
+Received: from MW2PR16CA0066.namprd16.prod.outlook.com (2603:10b6:907:1::43)
+ by DM4PR12MB6208.namprd12.prod.outlook.com (2603:10b6:8:a5::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Wed, 27 Sep
- 2023 05:27:08 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
- 05:26:48 +0000
-Date:   Wed, 27 Sep 2023 13:26:36 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     KP Singh <kpsingh@kernel.org>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Kees Cook <keescook@chromium.org>, Song Liu <song@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <paul@paul-moore.com>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <kpsingh@kernel.org>, <renauld@google.com>, <oliver.sang@intel.com>
-Subject: Re: [PATCH v4 3/5] security: Replace indirect LSM hook calls with
- static calls
-Message-ID: <202309271206.d7fb60f9-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230922145505.4044003-4-kpsingh@kernel.org>
-X-ClientProxiedBy: SG2PR04CA0214.apcprd04.prod.outlook.com
- (2603:1096:4:187::17) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Wed, 27 Sep
+ 2023 05:29:06 +0000
+Received: from MWH0EPF000989E9.namprd02.prod.outlook.com
+ (2603:10b6:907:1:cafe::f7) by MW2PR16CA0066.outlook.office365.com
+ (2603:10b6:907:1::43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21 via Frontend
+ Transport; Wed, 27 Sep 2023 05:29:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000989E9.mail.protection.outlook.com (10.167.241.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Wed, 27 Sep 2023 05:29:05 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
+ 2023 00:29:03 -0500
+Date:   Wed, 27 Sep 2023 00:28:23 -0500
+From:   Michael Roth <michael.roth@amd.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eperezma@redhat.com>, <jasowang@redhat.com>,
+        <shannon.nelson@amd.com>, <yuanyaogoog@chromium.org>,
+        <yuehaibing@huawei.com>, Thomas Lendacky <thomas.lendacky@amd.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [GIT PULL] virtio: features
+Message-ID: <20230927052823.d46gc7wjbpfnykpr@amd.com>
+References: <20230903181338-mutt-send-email-mst@kernel.org>
+ <20230926130451.axgodaa6tvwqs3ut@amd.com>
+ <1695779259.7440922-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1695779259.7440922-1-xuanzhuo@linux.alibaba.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|MW4PR11MB8267:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb114b48-409e-46df-353b-08dbbf1a58d8
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989E9:EE_|DM4PR12MB6208:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc0c937f-cdef-40c8-c742-08dbbf1aaad9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HbL0IjB1nuIvIe57SESjWDqq68945vjLUfKpeR/9ksghyx04+wlrF/7IzrYU+v3N4quMaPGl2dbzPpqkquf07p5YtTSvJsMgO2FcaOHupgKviE0cdRQIqoCC54EUr/cSt57Jvc0qtt8gxbtU7JwWD3njOyoBe5xUljQMz1vRGlw6zxxL0ZcHYLnxuwTqddCzkp5YZlLmAdO4IFd2WG7SFP4sy2RZWB2BaKXGhPWkb6A5hEZZNPGyYn7Z5XLOMFC9gtFh9XrDmhx0swf14EumYrihTV5y/GCw6Wm4HY4/wfVFBZyOS1KDSTkv8X4QyOEf9hVcq0SP5YmaKEo2i8nJjxwRTKikcU8QEbJFOl0dHr7nrqAhrKmMLDwlWu5MKqBE20rMZFEUAIWEAD2MlVsJxU08S8f0RRHzfc+aQf0CDna8qM2eYlN1L+S+twOW7M9E34dQ4yqmwwACtxJ3LuuyUh4go4RqWMXxPXHKxPJVsmJMzD/juX9qDuPaRkLEtJf8LYpPVpOwXuAWRdkIMypx/GLMY0LhvdZiqeWszyhJNQ6ansaoaCmdY6h9d4oGSQ313TdExFNYoptfF6F6TtlAzg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(136003)(396003)(230922051799003)(451199024)(1800799009)(186009)(38100700002)(2906002)(6506007)(107886003)(1076003)(6486002)(6666004)(86362001)(2616005)(6512007)(478600001)(966005)(26005)(5660300002)(41300700001)(7416002)(4326008)(8676002)(8936002)(36756003)(83380400001)(15650500001)(82960400001)(316002)(66476007)(66556008)(66946007)(54906003)(6916009);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VbXHyE04iQ2rsD4BoI6m2/3XiQFbXPpAyV8BolIMye8LR58STqoOUj18LoKb?=
- =?us-ascii?Q?vfoCzNCj4ON5yR54dHKJCCr85O4rMxqnpdh+9M2bhrfbhpN8z3rw4a2fMw/x?=
- =?us-ascii?Q?yszsuVKoefriEdYqdo3mulAxQa4UxFfCPkxMNfn/IEnL1jqkLTWUp6vpTZR5?=
- =?us-ascii?Q?952hecq42u1rb+AqxIwLnCgFJSvimRIe4zIHiU1UZPsLUAV/6XOX9JtJ2X62?=
- =?us-ascii?Q?RR9tMbIi63Jekccm1INXnNjr4YmupkBBvoIh4tU4dDFU5Tu5uduiecS67KwJ?=
- =?us-ascii?Q?nqNCho3SwMb/0FvQrCqBkVrp1NNaUKdrog23k+MMjeG6Y4/EPx2nlH/th6TE?=
- =?us-ascii?Q?yOMW6bwuBENHrHas6D6tRgvqK3y8GXG7bBEk8k4VuZ5SdGIt1x1aJ2RNuFWs?=
- =?us-ascii?Q?x4p5EiKHwrFv1+h5cxuxpEDrifkzYa1HniowTWqLSd289PvJkqdhcW6Qq8RL?=
- =?us-ascii?Q?udFirNXv8mDg0YHcv8+Gq3qYdwPs2LpUpy3zTe6CtBMYbTMTR+IHlsB4vGxM?=
- =?us-ascii?Q?MfbFbum5q3y5z7PJRyPJZUt3EohFfr5ZyO6SxZwCSSd7dm2OhDWW7sulmazh?=
- =?us-ascii?Q?ssgtVXCTF5fc5N0h/oEBwn4fvv6fFELbmz2IhGkVaxbK40wFwYfLsJYQ1Ut/?=
- =?us-ascii?Q?iPYRmifjJRiHFoOWZYtrYQE54bZxC//1/sb966qBqa+ur8yfMvuNFNIlKbm1?=
- =?us-ascii?Q?YUCaP23gW1uIuyMo3JDBaSksKYbP5Awj3pbsn57b2CsToERAQ7VkxpYQwC6P?=
- =?us-ascii?Q?a1knu4TrkKc1P61LnVi7CPYelddoFXqGX7Ewb72+BBMsMZ9RDDPvbv07Skh1?=
- =?us-ascii?Q?ZH7lmzjoHG2dOFG8prPN4SU7fJlOepDM5CiPWELvStLEFHRmjGBGE3Jf4aFV?=
- =?us-ascii?Q?il3GG3IxcRem5RGT5C1EDDMZoBzV+qNLKg3VjIA4dLv2u0HJ7/HmeGXfFqMp?=
- =?us-ascii?Q?DNR19MS3Q/IVf4hO/W2YqS75glMlPUMhrdgQGrjoycMK0+Fp81NzmrOXo5eu?=
- =?us-ascii?Q?TDMxilsBafqUIdlS/b0On1H5huVVogg/q9IXqgBR39UrWXQc3beCdI9PIjEX?=
- =?us-ascii?Q?5AVXfnh1/u4aD35DmyXPv4qLN3h47RPw4bTEBnrXYMwq46w/FJuYERJXQen8?=
- =?us-ascii?Q?FP7n14sDkMWrP6AKSsJk1oBsl8QImZgjCmBbrijT9oggHvtKhEarYk0tTSl0?=
- =?us-ascii?Q?UFaCa6jgPuzP7Ul2NGy5CusFUJO4sua0gkQBuuy6TTp2UamOsqtQ5VTYDFUY?=
- =?us-ascii?Q?+IsG1pQK0tiSOusoghH0fxyZoymHIAPnvSNQ7GQN3cIEpDON1XiUYHE22ilp?=
- =?us-ascii?Q?Y52P75ELpm78Hfij8AeIhrEwlYlZMxCrVsPSmaovlt0nxr+Kjkj5ukl37m8l?=
- =?us-ascii?Q?mAgJM0VauRuZIGEFGECKMPwmpCsAJmCPNprHs/rjgN1o+2J0459JO/460wRA?=
- =?us-ascii?Q?zOAqRA2vZfcYMeNUs6PPN3AbxWKYOAYglm6DvBJEjbtBfv5pVWkMBC2uP4tf?=
- =?us-ascii?Q?2xcjj5zdV5N6wJcOgJmDezZsmUJLf/B/XwzUEhPckT+KcnGypKxxj0NNTKuj?=
- =?us-ascii?Q?KxQULc2yUs8c+6QuG9QUDn1W3z4WhG4IGf8sfwwYKiBGAkv9j0I4TX5XOrLi?=
- =?us-ascii?Q?NQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb114b48-409e-46df-353b-08dbbf1a58d8
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 05:26:48.5160
+X-Microsoft-Antispam-Message-Info: uJWtBsTLEWT37Zi5s+S2DOMyA18DcL5CNj0RFTXjYokCQgoMPTwtBdhyQBXJ/yuHNlAV1LIIW8hkXhQ/UQ3LkyU796GS3v1lX6c/i5O8Pk3QOKlITrB23t7ZrUzvADcQlO65wRR4hcIoJESYoH/zf1A++m1zkiGJpbGrD21z/ht43HTBenmDEEZ+HU70KyW2IvRyuf94/qjI78Qi5AXnpN2q3jfZ4ACyASFMqCWazxn6hGDNGYyPtcpJaSdXSfw4CXA7NU5qcb8UVCAIfvIharcpyokk80sbj1IlpOqwL1IadgZ3ydvTuhQhNZx+Ej6MiAMiku8a1NhbJ6nhBUqwcNzkkl2FqDhwhrZW04I8KW/5dd4pUTno5H23SMmkxhMnfo3hR5xpWQ7G/Pgmeg5CtZwpbYM77IdULq+EQ1GGD4Z0W7XHGJAAMsbhrIZfbkllHeOVst+vuf3OGI7cFUAUrVJTtnDKRU9I7Sv2b0ZtODc/xepzRlTObF2hLhZ4isC3NoGp3NfdYLwdqSeFmSTwIHOu7H3F45oVvZzOc/H1LgM6hFDJwANShLFh4hbvmUTvDvUeFE8EHBrU0nUbnT11yPXILsjCYsptnt3aW3CdYYBpjKAePHYzNmEjqkxnCA9ghRyNvG7g/pxL/vwXW8SIsgR9Ij7iPXZQYPk6N47TNw8HWPLS11wpynwmDJks5zjSBD6IgZCg7awClY6kfoJ+xLhmuUwzmsyxpeC7lcbSQ6VX9txfznmFVjBKPaWnyIFQ
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(82310400011)(46966006)(40470700004)(36840700001)(5660300002)(81166007)(36860700001)(44832011)(47076005)(8676002)(4326008)(8936002)(356005)(82740400003)(83380400001)(41300700001)(54906003)(70206006)(70586007)(7416002)(26005)(316002)(16526019)(1076003)(66574015)(426003)(6916009)(336012)(2906002)(86362001)(40460700003)(66899024)(478600001)(6666004)(36756003)(40480700001)(966005)(2616005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 05:29:05.7948
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R+VnflOzyQqj5ZT1GoQoW1KCSYNwFvbrvbrhO+OOEbIIYKgsVtt4FzYDQjN8ma//nkhijXgAsW3cX7C0sxSERA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB8267
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc0c937f-cdef-40c8-c742-08dbbf1aaad9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E9.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6208
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
+On Wed, Sep 27, 2023 at 09:47:39AM +0800, Xuan Zhuo wrote:
+> On Tue, 26 Sep 2023 08:04:51 -0500, Michael Roth <michael.roth@amd.com> wrote:
+> > On Sun, Sep 03, 2023 at 06:13:38PM -0400, Michael S. Tsirkin wrote:
+> > > The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
+> > >
+> > >   Linux 6.5 (2023-08-27 14:49:51 -0700)
+> > >
+> > > are available in the Git repository at:
+> > >
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> > >
+> > > for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+> > >
+> > >   virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
+> > >
+> > > ----------------------------------------------------------------
+> > > virtio: features
+> > >
+> > > a small pull request this time around, mostly because the
+> > > vduse network got postponed to next relase so we can be sure
+> > > we got the security store right.
+> > >
+> > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > >
+> > > ----------------------------------------------------------------
+> > > Eugenio P閞ez (4):
+> > >       vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
+> > >       vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
+> > >       vdpa: add get_backend_features vdpa operation
+> > >       vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+> > >
+> > > Jason Wang (1):
+> > >       virtio_vdpa: build affinity masks conditionally
+> > >
+> > > Xuan Zhuo (12):
+> > >       virtio_ring: check use_dma_api before unmap desc for indirect
+> > >       virtio_ring: put mapping error check in vring_map_one_sg
+> > >       virtio_ring: introduce virtqueue_set_dma_premapped()
+> > >       virtio_ring: support add premapped buf
+> > >       virtio_ring: introduce virtqueue_dma_dev()
+> > >       virtio_ring: skip unmap for premapped
+> > >       virtio_ring: correct the expression of the description of virtqueue_resize()
+> > >       virtio_ring: separate the logic of reset/enable from virtqueue_resize
+> > >       virtio_ring: introduce virtqueue_reset()
+> > >       virtio_ring: introduce dma map api for virtqueue
+> > >       virtio_ring: introduce dma sync api for virtqueue
+> > >       virtio_net: merge dma operations when filling mergeable buffers
+> >
+> > This ^ patch (upstream commit 295525e29a) seems to cause a
+> > network-related regression when using SWIOTLB in the guest. I noticed
+> > this initially testing SEV guests, which use SWIOTLB by default, but
+> > it can also be seen with normal guests when forcing SWIOTLB via
+> > swiotlb=force kernel cmdline option. I see it with both 6.6-rc1 and
+> > 6.6-rc2 (haven't tried rc3 yet, but don't see any related changes
+> > there), and reverting 714073495f seems to avoid the issue.
+> >
+> > Steps to reproduce:
+> >
+> > 1) Boot QEMU/KVM guest with 6.6-rc2 with swiotlb=force via something like the following cmdline:
+> >
+> >    qemu-system-x86_64 \
+> >    -machine q35 -smp 4,maxcpus=255 -cpu EPYC-Milan-v2 \
+> >    -enable-kvm -m 16G,slots=5,maxmem=256G -vga none \
+> >    -device virtio-scsi-pci,id=scsi0,disable-legacy=on,iommu_platform=true \
+> >    -drive file=/home/mroth/storage/ubuntu-18.04-seves2.qcow2,if=none,id=drive0,snapshot=off \
+> >    -device scsi-hd,id=hd0,drive=drive0,bus=scsi0.0 \
+> >    -device virtio-net-pci,netdev=netdev0,id=net0,disable-legacy=on,iommu_platform=true,romfile= \
+> >    -netdev tap,script=/home/mroth/qemu-ifup,id=netdev0 \
+> >    -L /home/mroth/storage/AMDSEV2/snp-release-2023-09-23/usr/local/share/qemu \
+> >    -drive if=pflash,format=raw,unit=0,file=/home/mroth/storage/AMDSEV2/snp-release-2023-09-23/usr/local/share/qemu/OVMF_CODE.fd,readonly \
+> >    -drive if=pflash,format=raw,unit=1,file=/home/mroth/storage/AMDSEV2/snp-release-2023-09-23/usr/local/share/qemu/OVMF_VARS.fd \
+> >    -debugcon file:debug.log -global isa-debugcon.iobase=0x402 -msg timestamp=on \
+> >    -kernel /boot/vmlinuz-6.6.0-rc2-vanilla0+ \
+> >    -initrd /boot/initrd.img-6.6.0-rc2-vanilla0+ \
+> >    -append "root=UUID=d72a6d1c-06cf-4b79-af43-f1bac4f620f9 ro console=ttyS0,115200n8 earlyprintk=serial,ttyS0,115200 debug=1 sev=debug page_poison=0 spec_rstack_overflow=off swiotlb=force"
+> >
+> > 2) scp a small file from the host to the guest IP via its virtio-net device.
+> >    Smaller file sizes succeed, but the larger the file the more likely
+> >    it will fail. e.g.:
+> >
+> >    mroth@host:~$ dd if=/dev/zero of=test bs=1K count=19
+> >    19+0 records in
+> >    19+0 records out
+> >    19456 bytes (19 kB, 19 KiB) copied, 0.000940134 s, 20.7 MB/s
+> >    mroth@host:~$ scp test vm0:
+> >    test                                                                    100%   19KB  10.1MB/s   00:00
+> >    mroth@host:~$ dd if=/dev/zero of=test bs=1K count=20
+> >    20+0 records in
+> >    20+0 records out
+> >    20480 bytes (20 kB, 20 KiB) copied, 0.00093774 s, 21.8 MB/s
+> >    mroth@host:~$ scp test vm0:
+> >    test                                                                      0%    0     0.0KB/s   --:-- ETA
+> >    client_loop: send disconnect: Broken pipe
+> >    lost connection
+> >    mroth@host:~$
+> 
+> 
+> Hi Michael,
+> 
+> Thanks for the report.
+> 
+> Cloud you try this fix?  I reproduce this issue, and that works for me.
 
 Hello,
 
-kernel test robot noticed "Kernel_panic-not_syncing:lsm_static_call_init-Ran_out_of_static_slots" on:
+This seems to resolve the issue for me.
 
-commit: e75df0d5718c3d39cd53e2459b04806ed8789253 ("[PATCH v4 3/5] security: Replace indirect LSM hook calls with static calls")
-url: https://github.com/intel-lab-lkp/linux/commits/KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20230922-225925
-base: https://git.kernel.org/cgit/linux/kernel/git/bpf/bpf-next.git master
-patch link: https://lore.kernel.org/all/20230922145505.4044003-4-kpsingh@kernel.org/
-patch subject: [PATCH v4 3/5] security: Replace indirect LSM hook calls with static calls
+Thanks for the quick fix.
 
-in testcase: boot
+-Mike
 
-compiler: gcc-12
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202309271206.d7fb60f9-oliver.sang@intel.com
-
-
-[    1.002757][    T0] MDS: Vulnerable: Clear CPU buffers attempted, no microcode
-[    1.006940][    T0] MMIO Stale Data: Unknown: No mitigations
-[    1.010166][    T0] x86/fpu: x87 FPU will use FXSAVE
-[    1.012429][    T0] pid_max: default: 32768 minimum: 301
-[    1.014553][    T0] LSM: initializing lsm=capability,integrity
-[    1.016244][    T0] Kernel panic - not syncing: lsm_static_call_init - Ran out of static slots.
-[    1.018151][    T0] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc2-00661-ge75df0d5718c-dirty #1
-[    1.018151][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[    1.018151][    T0] Call Trace:
-[ 1.018151][ T0] dump_stack_lvl (??:?) 
-[ 1.018151][ T0] dump_stack (??:?) 
-[ 1.018151][ T0] panic (??:?) 
-[ 1.018151][ T0] security_add_hooks (??:?) 
-[ 1.018151][ T0] capability_init (commoncap.c:?) 
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20230927/202309271206.d7fb60f9-oliver.sang@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> Thanks.
+> 
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 98dc9b49d56b..9ece27dc5144 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -589,16 +589,16 @@ static void virtnet_rq_unmap(struct receive_queue *rq, void *buf, u32 len)
+> 
+>         --dma->ref;
+> 
+> -       if (dma->ref) {
+> -               if (dma->need_sync && len) {
+> -                       offset = buf - (head + sizeof(*dma));
+> +       if (dma->need_sync && len) {
+> +               offset = buf - (head + sizeof(*dma));
+> 
+> -                       virtqueue_dma_sync_single_range_for_cpu(rq->vq, dma->addr, offset,
+> -                                                               len, DMA_FROM_DEVICE);
+> -               }
+> +               virtqueue_dma_sync_single_range_for_cpu(rq->vq, dma->addr,
+> +                                                       offset, len,
+> +                                                       DMA_FROM_DEVICE);
+> +       }
+> 
+> +       if (dma->ref)
+>                 return;
+> -       }
+> 
+>         virtqueue_dma_unmap_single_attrs(rq->vq, dma->addr, dma->len,
+>                                          DMA_FROM_DEVICE, DMA_ATTR_SKIP_CPU_SYNC);
+> 
+> 
+> >
+> > Thanks,
+> >
+> > Mike
+> >
+> > >
+> > > Yuan Yao (1):
+> > >       virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+> > >
+> > > Yue Haibing (1):
+> > >       vdpa/mlx5: Remove unused function declarations
+> > >
+> > >  drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
+> > >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
+> > >  drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
+> > >  drivers/vhost/vdpa.c               |  15 +-
+> > >  drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
+> > >  drivers/virtio/virtio_vdpa.c       |  17 +-
+> > >  include/linux/vdpa.h               |   4 +
+> > >  include/linux/virtio.h             |  22 ++
+> > >  include/uapi/linux/vhost_types.h   |   4 +
+> > >  9 files changed, 625 insertions(+), 90 deletions(-)
+> > >
