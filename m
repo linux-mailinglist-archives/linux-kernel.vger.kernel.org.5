@@ -2,187 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57447B0252
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A371C7B0258
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 13:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjI0LDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 07:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S231247AbjI0LEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 07:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0LDL (ORCPT
+        with ESMTP id S229648AbjI0LEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:03:11 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2034F3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:03:09 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1dd8cf47849so972945fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 04:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1695812589; x=1696417389; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bOPrKJWAl/9/IN/C/sVh2aNItIVXrI/b8dgIww0vJHY=;
-        b=iwS7v1TmMSzVKKXPj+ct1z8u+hq2fJG6O/fBv6wPe5qZomSUup8dLVXkJQ6HkDJVXh
-         wrN3tf1/Z3u3gIgEiuCmo03/aRRv3R2M03bs55c6kD770LyXJ5mpr+GzHz/qR30IejTV
-         mC3COfQLRicNPdyAbwfsjtIPkWGjDuxeVALnbYcyHjxvWgCaVYo+V2gx7FoX4MPJFRzo
-         7QO9kIi7ijmeRMStM5e28h3NkGHzw+4WZ69lWTokxXkI5XsFKMueRtD2TjfhIbcUildS
-         tXmP70aP+D2c75sWkAYLu7frZNh/QnDcc1q3r5PAHUeHGXl25b+F0kaA44kIci2iyn5E
-         1vjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695812589; x=1696417389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bOPrKJWAl/9/IN/C/sVh2aNItIVXrI/b8dgIww0vJHY=;
-        b=D6LfEEcJ96E/slZylJKBqA8ZKBva5HDI0d+NDvDdk1vZJfjT4AqvNvxGmmRaijzroV
-         tKkqz1h4PKPXllYxLSSe2eJ+mqJ4IMky7BlnlppR6S1+vHxsuZO3+Ch4iKXjPYTQVzXj
-         13oe9kmY0PQTOrZ4RCaLl7awDMPNr7MZh/bQwbI3LinjRVdVfp+Uwly0wKt9HYX3D/3X
-         I0Lo9oOw1QT1Wl94JXcx16kX6zuFIf9tVxV8gjQ/2a7Cqk5fcfNqplxrkPTqeVSwGeuT
-         ItPgyYstguV8ZW0K+vro0m1rkcpQE/lY3RMcxrHHBUfAgqUhVmHAIcTzh6jic3D5K81Q
-         IYWw==
-X-Gm-Message-State: AOJu0YwhCBdneYXdJLWUWv1GKTMSgKxGO6td6m9K7nGWKfVMIifLdRJQ
-        Ie1/XN7ooXIrXhFHNEDPOhPEnhchBRcZGx4jve/H0xYqa8KiKV3c
-X-Google-Smtp-Source: AGHT+IGdNvwTRHJQglaiviK7YYaztAN7D83/OmQPe0exs6oprKSd5lHX+OCZR4TRSaNrwIIhf9ZOf7kAX6DOkmJV0uo=
-X-Received: by 2002:a05:6870:b30e:b0:1ad:2e18:7090 with SMTP id
- a14-20020a056870b30e00b001ad2e187090mr2122393oao.32.1695812589020; Wed, 27
- Sep 2023 04:03:09 -0700 (PDT)
+        Wed, 27 Sep 2023 07:04:02 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA471FC;
+        Wed, 27 Sep 2023 04:04:00 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38RAqtcH007388;
+        Wed, 27 Sep 2023 13:03:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=7yB8NpWtK7dweb2CR9jUC
+        ltaouL0nwx9ysquf7k9XsU=; b=6MqffwuzRrn1OHJG57ZKwmRGL7DSWZNV0eqiA
+        RW5LVYc4K10Avm+4T0WRZ266snMYvpY29q3RyyisXXHugzrt5z3834lRld5qNTqb
+        vD1BcP4hWKj3A9aNo9JuT3MPsRzb2DpOO7kgSFxxD6zd+6A4k8g3fSdrUxBGoEdo
+        n3OKi7kXLuBSSMWAOLJIGMzlmYMQhuYWPVO2aDFDbdtj/hEed1djI67C7QjPXe1E
+        YLHDkM+7lM69cmYKd5E0BgP33kyDy8fMgmfo62xvfVja1yYetDAh20ncaA8x2WZm
+        xBJfD8USXkIe90IRKzDWBsWaJfADp2qFdwtlOMFpzjUFLhYKQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9pwd9thf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 13:03:21 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E8259100058;
+        Wed, 27 Sep 2023 13:03:19 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D736C217B6C;
+        Wed, 27 Sep 2023 13:03:19 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 27 Sep
+ 2023 13:03:19 +0200
+Date:   Wed, 27 Sep 2023 13:03:11 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] ARM: dts: stm32: add dcmipp support to stm32mp135
+Message-ID: <20230927110311.GA834168@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230901155732.252436-1-alain.volmat@foss.st.com>
+ <20230901155732.252436-5-alain.volmat@foss.st.com>
+ <20230905090258.GC31594@pendragon.ideasonboard.com>
+ <20230922160227.GA608616@gnbcxd0016.gnb.st.com>
+ <20230922160818.GJ19112@pendragon.ideasonboard.com>
+ <20230925113542.GA646870@gnbcxd0016.gnb.st.com>
+ <20230925114332.GC8583@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <20230922085701.3164-1-yongxuan.wang@sifive.com>
- <20230922085701.3164-2-yongxuan.wang@sifive.com> <20230927-62fbd3d63f4c6ffada90b7ee@orel>
-In-Reply-To: <20230927-62fbd3d63f4c6ffada90b7ee@orel>
-From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Date:   Wed, 27 Sep 2023 19:02:58 +0800
-Message-ID: <CAMWQL2jUPNag5v7hiHqMnemAu6eStd2L9Fh9dCfS9gqi6xK1cw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] RISC-V: Detect and Enable Svadu Extension Support
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
-        alex@ghiti.fr, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Charlie Jenkins <charlie@rivosinc.com>,
-        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
-        David Hildenbrand <david@redhat.com>,
-        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230925114332.GC8583@pendragon.ideasonboard.com>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_06,2023-09-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi drew,
-
-On Wed, Sep 27, 2023 at 3:03=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Fri, Sep 22, 2023 at 08:56:47AM +0000, Yong-Xuan Wang wrote:
-> > We detect Svadu extension support from DTB and add arch_has_hw_pte_youn=
-g()
-> > to enable optimization in MGLRU and __wp_page_copy_user() if Svadu
-> > extension is available.
-> >
-> > Co-developed-by: Jinyu Tang <tjytimi@163.com>
-> > Signed-off-by: Jinyu Tang <tjytimi@163.com>
-> > Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-> > ---
-> >  arch/riscv/include/asm/csr.h     | 1 +
-> >  arch/riscv/include/asm/hwcap.h   | 1 +
-> >  arch/riscv/include/asm/pgtable.h | 6 ++++++
-> >  arch/riscv/kernel/cpufeature.c   | 1 +
-> >  4 files changed, 9 insertions(+)
-> >
-> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.=
-h
-> > index 777cb8299551..10648b372a2a 100644
-> > --- a/arch/riscv/include/asm/csr.h
-> > +++ b/arch/riscv/include/asm/csr.h
-> > @@ -194,6 +194,7 @@
-> >  /* xENVCFG flags */
-> >  #define ENVCFG_STCE                  (_AC(1, ULL) << 63)
-> >  #define ENVCFG_PBMTE                 (_AC(1, ULL) << 62)
-> > +#define ENVCFG_HADE                  (_AC(1, ULL) << 61)
->
-> This bit is named 'ADUE' in the spec. Why are we calling it HADE?
-
-This bit was called HADE in v0.1 spec. I will update it to ADUE in
-patch v3. Thank you!
-
-Regards,
-Yong-Xuan
+Hi Laurent,
 
 
->
-> >  #define ENVCFG_CBZE                  (_AC(1, UL) << 7)
-> >  #define ENVCFG_CBCFE                 (_AC(1, UL) << 6)
-> >  #define ENVCFG_CBIE_SHIFT            4
-> > diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hw=
-cap.h
-> > index b7b58258f6c7..1013661d6516 100644
-> > --- a/arch/riscv/include/asm/hwcap.h
-> > +++ b/arch/riscv/include/asm/hwcap.h
-> > @@ -58,6 +58,7 @@
-> >  #define RISCV_ISA_EXT_ZICSR          40
-> >  #define RISCV_ISA_EXT_ZIFENCEI               41
-> >  #define RISCV_ISA_EXT_ZIHPM          42
-> > +#define RISCV_ISA_EXT_SVADU          43
-> >
-> >  #define RISCV_ISA_EXT_MAX            64
-> >
-> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/=
-pgtable.h
-> > index b2ba3f79cfe9..028b700cd27b 100644
-> > --- a/arch/riscv/include/asm/pgtable.h
-> > +++ b/arch/riscv/include/asm/pgtable.h
-> > @@ -629,6 +629,12 @@ static inline pgprot_t pgprot_writecombine(pgprot_=
-t _prot)
-> >       return __pgprot(prot);
-> >  }
-> >
-> > +#define arch_has_hw_pte_young arch_has_hw_pte_young
-> > +static inline bool arch_has_hw_pte_young(void)
-> > +{
-> > +     return riscv_has_extension_unlikely(RISCV_ISA_EXT_SVADU);
-> > +}
-> > +
-> >  /*
-> >   * THP functions
-> >   */
-> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
-ure.c
-> > index 1cfbba65d11a..ead378c04991 100644
-> > --- a/arch/riscv/kernel/cpufeature.c
-> > +++ b/arch/riscv/kernel/cpufeature.c
-> > @@ -178,6 +178,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D=
- {
-> >       __RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
-> >       __RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
-> >       __RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
-> > +     __RISCV_ISA_EXT_DATA(svadu, RISCV_ISA_EXT_SVADU),
-> >       __RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
-> >       __RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
-> >       __RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> > --
-> > 2.17.1
-> >
->
-> Thanks,
-> drew
+On Mon, Sep 25, 2023 at 02:43:32PM +0300, Laurent Pinchart wrote:
+> On Mon, Sep 25, 2023 at 01:35:42PM +0200, Alain Volmat wrote:
+> > On Fri, Sep 22, 2023 at 07:08:18PM +0300, Laurent Pinchart wrote:
+> > > On Fri, Sep 22, 2023 at 06:02:27PM +0200, Alain Volmat wrote:
+> > > > On Tue, Sep 05, 2023 at 12:02:58PM +0300, Laurent Pinchart wrote:
+> > > > > On Fri, Sep 01, 2023 at 05:57:23PM +0200, Alain Volmat wrote:
+> > > > > > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > > > > 
+> > > > > > Add dcmipp support to STM32MP135.
+> > > > > > 
+> > > > > > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > > > > > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > > > > > ---
+> > > > > >  arch/arm/boot/dts/st/stm32mp135.dtsi | 8 ++++++++
+> > > > > >  1 file changed, 8 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/arch/arm/boot/dts/st/stm32mp135.dtsi b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > > index abf2acd37b4e..beee9ec7ed0d 100644
+> > > > > > --- a/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > > +++ b/arch/arm/boot/dts/st/stm32mp135.dtsi
+> > > > > > @@ -8,5 +8,13 @@
+> > > > > >  
+> > > > > >  / {
+> > > > > >  	soc {
+> > > > > > +		dcmipp: dcmipp@5a000000 {
+> > > > > > +			compatible = "st,stm32mp13-dcmipp";
+> > > > > > +			reg = <0x5a000000 0x400>;
+> > > > > > +			interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+> > > > > > +			resets = <&rcc DCMIPP_R>;
+> > > > > > +			clocks = <&rcc DCMIPP_K>;
+> > > > > > +			status = "disabled";
+> > > > > 
+> > > > > This needs a port, as it's marked as required in the bindings. You can
+> > > > > leave the endpoint out.
+> > > > 
+> > > > I first agreed with your comment but, having done the check (make
+> > > > CHECK_DTBS=y  ...) this doesn't seem to be required because the dcmipp
+> > > > node is kept disabled within our dtsi.
+> > > 
+> > > Interesting.
+> > > 
+> > > > (it is later on only enabled in dts file which as well have the port
+> > > > property).
+> > > > Indeed, to check this I changed it to okay and DTC_CHK complained about
+> > > > missing port property.
+> > > > 
+> > > > Hence, I'd think that port doesn't have to be added in this dtsi file.
+> > > > Would you agree with that ?
+> > > 
+> > > I still think the port belongs here, as it's an intrinsic property of
+> > > the dcmipp, not a property of the board. Does it cause any issue to add
+> > > a port in the .dtsi ?
+> > 
+> > I agree that the port refers more to the SoC (hence dtsi) rather than
+> > the board (hence dts), however I am wondering if this is really
+> > something usually done.  I had a look at other dtsi with node related
+> > to similar kind of devices and it seems to me that there is no such case
+> > of a dtsi with a port having nothing in it.  Did I missed something ?
+> 
+> Look at the csi@32e4000 and csi@32e5000 nodes in
+> arch/arm64/boot/dts/freescale/imx8mp.dtsi for instance. There are quite
+> a few other examples.
+
+Ok, thanks for pointer.  Understood, I add an empty port child within
+the node.  I've also covered the points of your review of the v3 and
+post now the v4.
+
+> 
+> > > > > With this fixed,
+> > > > > 
+> > > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > > > > 
+> > > > > > +		};
+> > > > > >  	};
+> > > > > >  };
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
