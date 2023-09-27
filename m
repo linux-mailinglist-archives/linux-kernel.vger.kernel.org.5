@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9A77AF84D
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905047AF878
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235241AbjI0CuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 22:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
+        id S233116AbjI0DKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 23:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjI0CsJ (ORCPT
+        with ESMTP id S230381AbjI0DIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 22:48:09 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D0F5FD1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 19:15:56 -0700 (PDT)
-X-UUID: 999c3971b0eb4d75a43b87d6a16689f0-20230927
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:1416603b-0ac3-4db7-bb60-931020906e72,IP:5,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-10
-X-CID-INFO: VERSION:1.1.31,REQID:1416603b-0ac3-4db7-bb60-931020906e72,IP:5,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:-10
-X-CID-META: VersionHash:0ad78a4,CLOUDID:112450bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:23092621101442OWP2A1,BulkQuantity:3,Recheck:0,SF:24|17|19|44|64|38|8
-        17|102,TC:nil,Content:0|-5,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:
-        nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 1,FCT|NGT
-X-CID-BAS: 1,FCT|NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 999c3971b0eb4d75a43b87d6a16689f0-20230927
-X-User: liucong2@kylinos.cn
-Received: from [172.20.119.219] [(116.128.244.169)] by mailgw
-        (envelope-from <liucong2@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-        with ESMTP id 817738456; Wed, 27 Sep 2023 10:15:42 +0800
-Message-ID: <3b71215d-3ad5-e8c8-20eb-a48610403359@kylinos.cn>
-Date:   Wed, 27 Sep 2023 10:15:35 +0800
+        Tue, 26 Sep 2023 23:08:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEA9170D;
+        Tue, 26 Sep 2023 19:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695781251; x=1727317251;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=AydsJicsTjhS4lwN66GX3GcPaMOacXh1JO4dOr+xExI=;
+  b=W3gDhIvHsEzweWYkj3DoIY2+dNDSyxmJjuheHxS4cPaxY+8e1fVP39fv
+   KAv92EQhnspZWdqc8Kqypwu5EDgUU1q+fZAbECKrrhJ/eML10zpuvxraN
+   NcBBQETnzyrXDfq7i1z5cwF49HmB335vyOForKmoqn5Za7nR8HTDkJzN3
+   TMnO0I88eZU+e9tK6ymzp3Gunb65598orEFlLqtOBOtXopZjRa2HZZXIj
+   XbzH52cjCrdyXf3SBdNbRRHZEQARorR1maDMvIvMQ2BBQYlOZkmpwCh5n
+   niyspcWJTOOZoX3A5blyyOw3ef7FGWWNlF5e9DZ4qCtmHKvCkF1XmLWkG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="381611481"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="381611481"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 19:20:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="864616370"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="864616370"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Sep 2023 19:20:45 -0700
+Message-ID: <e73f3a0e-5c1b-674e-7ef1-53d963a540d3@linux.intel.com>
+Date:   Wed, 27 Sep 2023 10:17:31 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-From:   Cong Liu <liucong2@kylinos.cn>
-Subject: Re: [PATCH 2/2] drm/amd/display: Fix null pointer dereference in
- error message
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Tom Chung <chiahsuan.chung@amd.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230926055618.119195-1-liucong2@kylinos.cn>
- <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
+Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [RFC 2/8] iommufd: replace attach_fn with a structure
 Content-Language: en-US
-In-Reply-To: <a71a61fb-2330-4fba-85a7-9ba2a3642dc7@amd.com>
+To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
+        robin.murphy@arm.com
+References: <20230926092651.17041-1-yi.l.liu@intel.com>
+ <20230926092651.17041-3-yi.l.liu@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230926092651.17041-3-yi.l.liu@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,51 +73,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/26/23 5:26 PM, Yi Liu wrote:
+> Most of the core logic before conducting the actual device attach/
+> replace operation can be shared with pasid attach/replace. Create
+> a new structure so more information (e.g. pasid) can be later added
+> along with the attach_fn.
+> 
+> Signed-off-by: Kevin Tian<kevin.tian@intel.com>
+> Signed-off-by: Yi Liu<yi.l.liu@intel.com>
+> ---
+>   drivers/iommu/iommufd/device.c          | 35 ++++++++++++++++---------
+>   drivers/iommu/iommufd/iommufd_private.h |  8 ++++++
+>   2 files changed, 30 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+> index 645ab5d290fe..4fa4153c5df7 100644
+> --- a/drivers/iommu/iommufd/device.c
+> +++ b/drivers/iommu/iommufd/device.c
+> @@ -597,8 +597,11 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+>   	return ERR_PTR(rc);
+>   }
+>   
+> -typedef struct iommufd_hw_pagetable *(*attach_fn)(
+> -	struct iommufd_device *idev, struct iommufd_hw_pagetable *hwpt);
+> +static struct iommufd_hw_pagetable *do_attach(struct iommufd_device *idev,
+> +		struct iommufd_hw_pagetable *hwpt, struct attach_data *data)
+> +{
+> +	return data->attach_fn(idev, hwpt);
+> +}
 
-> 
-> 
-> On 2023-09-26 01:56, Cong Liu wrote:
->> This patch fixes a null pointer dereference in the error message that is
->> printed when the Display Core (DC) fails to initialize. The original
->> message includes the DC version number, which is undefined if the DC is
->> not initialized.
->>
->> Fixes: 9788d087caff ("drm/amd/display: improve the message printed when loading DC")
->> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
->> ---
->>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index 8e98dda1e084..bf52a909f558 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -1703,8 +1703,7 @@ static int amdgpu_dm_init(struct amdgpu_device *adev)
->>   		DRM_INFO("Display Core v%s initialized on %s\n", DC_VER,
->>   			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
->>   	} else {
->> -		DRM_INFO("Display Core v%s failed to initialize on %s\n", DC_VER,
->> -			 dce_version_to_string(adev->dm.dc->ctx->dce_version));
->> +		DRM_INFO("Display Core failed to initialize with v%s!\n", DC_VER);
-> 
-> There is value in printing the version number. Let's not remove it.
-> 
-> Instead you can probably fix it by doing a NULL check on adev->dm.dc->ctx.
+I assume that this change was made because we need to pass the pasid
+value to the attach_fn() callback.
 
-Hi Harry
+If so, how about passing it directly to attach_fn() function?
 
-I don't understand what you mean. Are you saying that I need to add a 
-NULL check in the if statement (i.e. if(adev->dm.dc && 
-adev->dm.dc->ctx)), because adev->dm.dc is NULL in the else statement 
-and there is no way to print adev->dm.dc->ctx->dce_version.
+typedef struct iommufd_hw_pagetable *(*attach_fn)(
+		struct iommufd_device *idev,
+		struct iommufd_hw_pagetable *hwpt,
+		ioasid_t pasid);
 
-Regards
-Cong
+In no pasid case, use IOMMU_NO_PASID.
 
-> 
-> Harry
-> 
->>   		goto error;
->>   	}
->>   
-> 
+Best regards,
+baolu
