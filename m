@@ -2,169 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B297B00E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8AC7B00E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjI0Jt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S231150AbjI0Js6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjI0JtK (ORCPT
+        with ESMTP id S230415AbjI0Jsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:49:10 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9480CCA;
-        Wed, 27 Sep 2023 02:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695808139; x=1727344139;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oj/BIJaPlLOZ5a4Bm+3wRDEKMjmwS+415AzmToQmxko=;
-  b=GjxvRm8fpvmHDF2G23csv+Moo5B6jaBJSrMFVUlYOQWb69dMLmU8lJ0O
-   B6ldDfwrq9m7tO1Kmaz/MaytdEl4UnvU/wag03Vvghm0D8b+lDThTAQzm
-   XbpJ9eyqoTh9FNyu2egBRbX5faiWeP0Og+A7Giq/22n2Hz9BbIRGzxDlX
-   J269/0Zuosr3FtmhfGZchrWmkYu84aD4KY/3T4cEQUkrnHispEmkJ9FVX
-   UQPxDw5r6ePtRWKEkPqrqS6VwrDsWbX2Vtz2T13Tjbq7X0mqffU/bdrIT
-   dYlZqnLB3nTeTygE+DuIcl2d0tCl2eziMJadYn6dKPeDZEO7QBVj7HKkl
-   w==;
-X-CSE-ConnectionGUID: +8y/5vKTQAWpUgUoFVJWOw==
-X-CSE-MsgGUID: FCeDeZE/SGCJlrPGv/SrHA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
-   d="asc'?scan'208";a="173847249"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Sep 2023 02:48:49 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 27 Sep 2023 02:48:03 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 27 Sep 2023 02:48:00 -0700
-Date:   Wed, 27 Sep 2023 10:47:42 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Moudy Ho =?utf-8?B?KOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
-CC:     "conor@kernel.org" <conor@kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v6 12/16] dt-bindings: display: mediatek: color: add
- compatible for MT8195
-Message-ID: <20230927-crunching-prancing-36fe3eb79607@wendy>
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
- <20230922072116.11009-13-moudy.ho@mediatek.com>
- <20230922-zebra-modify-87ff23c70bb3@spud>
- <20230922-overhung-deception-e9b461ba0372@spud>
- <7c445195e17e15d5af5fcb30ae53f76c713e958b.camel@mediatek.com>
+        Wed, 27 Sep 2023 05:48:50 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7204CCC0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:48:42 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so12707811a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695808121; x=1696412921; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MeLDEtHk1VETK7POHub9wpgkckkjlOPVvFzZdvXKp5E=;
+        b=TSi7VVh8HXG1zbtPEoVloqwrKAFAskcbCYUqIVc4tcvuzd2IHzVlojk9/0mifw7Xoy
+         CPgohLIYoMxkzyHHPg//OBylwh0GvV9ehZ+mYuBAHW+GDd6c1KRFGwonfzjYSrNBQe4L
+         wH33Is+DKFpDvS8PprJaAPaYCuEUJuAccJvU+XB6sXe+xHjkgEmaTMRyQUwjcswcbYDv
+         9zDXuxw/cYXJjVh1Y4lRePCaLDB/soyktl/9OZLyhYB6pPEIPCvSnFvYGVJvWjkhAkkM
+         mGndnFgaapDMNESsmWC39y1WKw1kaHVzfdv/2htjXKcxR9fkkLfU0k/xLGxJsq/7RZzx
+         +fbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695808121; x=1696412921;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MeLDEtHk1VETK7POHub9wpgkckkjlOPVvFzZdvXKp5E=;
+        b=J641t189myz5OXxf3VYfVR+ladfHcgqnryw76j2kcykQhhBdOG7oB92I/WYjWO2+6c
+         bO5AWxK/FMk8T9fxRUw9v1LsOhbJ9WouKL7kmju7+OD9u8WZ9xeFiDL/xJMSEslNTDeP
+         DxNxoZD+nZEE4Osd+YNQafB7UZBEHODng9Y4fqz+v7+nlqlF3+cWI55JKvCXljTltjiw
+         mmj6ph8dpiIk5szV4oWkZvtMbkRmzKaBQgDomqWemdtx/+j/pGiOFpVB/a/yexoUVGOS
+         GRH7MxptxhDDrSyunZ17rLSUtJC4Ywzn1UQA9WymM1RMRFMT8vTR0UUYtsSPKCAsCW0O
+         KeuQ==
+X-Gm-Message-State: AOJu0YwKGqO85MFk3dLCpfLJifc/Ef76U+9ZXdQ9cRr1GoYNrGtPBd4V
+        PufVi407zqd7rId2PJKssQY=
+X-Google-Smtp-Source: AGHT+IE6lnGPCQJOoXTaG1Nx32iClR7Y3h0foihyIyGm5y9uMhdR/9xyL0ptrsm22CwKfif3lIIPvA==
+X-Received: by 2002:a05:6402:1a21:b0:530:9bea:ed5e with SMTP id be1-20020a0564021a2100b005309beaed5emr1580387edb.14.1695808120574;
+        Wed, 27 Sep 2023 02:48:40 -0700 (PDT)
+Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05640207c700b005311e934765sm7965157edy.27.2023.09.27.02.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 02:48:35 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 27 Sep 2023 11:48:33 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Alexey Kardashevskiy <aik@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH kernel v2] x86/compressed/64: reduce #VC nesting for
+ intercepted CPUID for SEV-SNP guest
+Message-ID: <ZRP6cd6rEymUaiL+@gmail.com>
+References: <20230926040526.957240-1-aik@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="T9lGne2QQapOBRac"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7c445195e17e15d5af5fcb30ae53f76c713e958b.camel@mediatek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230926040526.957240-1-aik@amd.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---T9lGne2QQapOBRac
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 27, 2023 at 07:19:28AM +0000, Moudy Ho (=E4=BD=95=E5=AE=97=E5=
-=8E=9F) wrote:
-> On Fri, 2023-09-22 at 16:51 +0100, Conor Dooley wrote:
-> > On Fri, Sep 22, 2023 at 04:49:14PM +0100, Conor Dooley wrote:
-> > > On Fri, Sep 22, 2023 at 03:21:12PM +0800, Moudy Ho wrote:
-> > > > Add a compatible string for the COLOR block in MediaTek MT8195
-> > > > that
-> > > > is controlled by MDP3.
-> > > >=20
-> > > > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> > > > ---
-> > > >  .../devicetree/bindings/display/mediatek/mediatek,color.yaml   =20
-> > > >  | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >=20
-> > > > diff --git
-> > > > a/Documentation/devicetree/bindings/display/mediatek/mediatek,col
-> > > > or.yaml
-> > > > b/Documentation/devicetree/bindings/display/mediatek/mediatek,col
-> > > > or.yaml
-> > > > index f21e44092043..b886ca0d89ea 100644
-> > > > ---
-> > > > a/Documentation/devicetree/bindings/display/mediatek/mediatek,col
-> > > > or.yaml
-> > > > +++
-> > > > b/Documentation/devicetree/bindings/display/mediatek/mediatek,col
-> > > > or.yaml
-> > > > @@ -26,6 +26,7 @@ properties:
-> > > >            - mediatek,mt2701-disp-color
-> > > >            - mediatek,mt8167-disp-color
-> > > >            - mediatek,mt8173-disp-color
-> > > > +          - mediatek,mt8195-mdp3-color
-> > >=20
-> > > How come this one is a "mdp3" not a "disp"?
-> >=20
-> > I don't know what mdp3 means & googling gives me no answers. What's
-> > the
-> > "disp" one controlled by, since it isn't controlled by mdp3?
-> >=20
->=20
-> Hi Conor,
->=20
-> Mediatek's Media Data Path ver.3 (MDP3) is associated with MMSYS and
-> acts as an independent driver that operates between VDEC and DISP.
-> By controlling multiple components, it carries out tasks like
-> converting color formats, resizing, and applying specific Picture
-> Quality (PQ) effects.
-> The driver can be found at "driver/media/platform/mediatek/mdp3".
-> Since the same hardware components are configured in both MDP3 and
-> DISP, considering previous discussions, I attemped to integrate into a
-> single binding, named after the controlling user.
+* Alexey Kardashevskiy <aik@amd.com> wrote:
 
-I'm still kinda struggling to understand this. Do you mean that the
-hardware can be controlled by either of the disp and mdp3 drivers, and
-a compatible containing "disp" would use one driver, and one containing
-"mdp3" would use another?
+>  arch/x86/include/asm/svm.h   | 14 ++++++++++++++
+>  arch/x86/kernel/sev-shared.c |  5 +++--
 
+Doesn't build on x86-64 allmodconfig:
 
---T9lGne2QQapOBRac
-Content-Type: application/pgp-signature; name="signature.asc"
+  arch/x86/kernel/sev-shared.c:442:75: error: ‘ghcb’ undeclared (first use in this function)
+  arch/x86/kernel/sev-shared.c:442:81: error: ‘ctxt’ undeclared (first use in this function)
 
------BEGIN PGP SIGNATURE-----
+Not sure how this was supposed to work - there's no 'ghcb' passed in to
+snp_cpuid_postprocess(). Does this patch have a dependency perhaps, that
+I missed?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRP6PgAKCRB4tDGHoIJi
-0kh7AP9O7MKYjrnar798S6fbop9AWuqH31/FShl/0JtdCf2N/wD/R/G17q/VHosy
-cmzXFHme+vk2cMO0cR0geJwglqggtQo=
-=5FSm
------END PGP SIGNATURE-----
+For the next version please also pick up the edited changelog I've done,
+see below.
 
---T9lGne2QQapOBRac--
+Thanks,
+
+	Ingo
+
+====================>
+From: Alexey Kardashevskiy <aik@amd.com>
+Subject: [PATCH] x86/sev: Reduce #VC nesting for intercepted CPUID for SEV-SNP guest, to fix nesting crash
+
+For certain intercepts an SNP guest uses the GHCB protocol to talk to
+the hypervisor from the #VC handler. The protocol requires a shared page so
+there is one per vCPU. In case NMI arrives in a middle of #VC or the NMI
+handler triggers a #VC, there is another "backup" GHCB page which stores
+the content of the first one while SVM_VMGEXIT_NMI_COMPLETE is sent.
+The vc_raw_handle_exception() handler manages main and backup GHCB pages
+via __sev_get_ghcb/__sev_put_ghcb.
+
+This works fine for #VC and occasional NMIs. This does not work so fine if
+the #VC handler causes intercept + another #VC, if NMI arrives during
+the second #VC, there are no more pages for SVM_VMGEXIT_NMI_COMPLETE.
+The problem place is the #VC CPUID handler. Running perf in the SNP guest
+crashes with:
+
+  Kernel panic - not syncing: Unable to handle #VC exception! GHCB and Backup GHCB are already in use
+
+  vc_raw_handle_exception #1: exit_code 72 (CPUID) eax d ecx 1
+
+We lock the main GHCB and while it is locked we get to
+snp_cpuid_postprocess() which executes "rdmsr" of MSR_IA32_XSS==0xda0 which
+triggers:
+
+  vc_raw_handle_exception #2: exit_code 7c (MSR) ecx da0
+
+Here we lock the backup ghcb.
+
+And then PMC NMI comes which cannot complete as there is no GHCB page left
+to use:
+
+  CPU: 5 PID: 566 Comm: touch Not tainted 6.5.0-rc2-aik-ad9c-g7413e71d3dcf-dirty #27
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown unknown
+  Call Trace:
+   <NMI>
+   dump_stack_lvl+0x44/0x60
+   panic+0x222/0x310
+   ____sev_get_ghcb+0x21e/0x220
+   __sev_es_nmi_complete+0x28/0xf0
+   exc_nmi+0x1ac/0x1c0
+   end_repeat_nmi+0x16/0x67
+  ...
+   </NMI>
+   <TASK>
+   vc_raw_handle_exception+0x9e/0x2c0
+   kernel_exc_vmm_communication+0x4d/0xa0
+   asm_exc_vmm_communication+0x31/0x60
+  RIP: 0010:snp_cpuid+0x2ad/0x420
+
+Add a helper similar to rdmsr_safe() for making a direct hypercall in the SEV-ES
+environment. Use the new helper instead of the raw "rdmsr" to avoid the extra #VC event.
+
+Fixes: ee0bfa08a345 ("x86/compressed/64: Add support for SEV-SNP CPUID table in #VC handlers")
+Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Link: https://lore.kernel.org/r/20230926040526.957240-1-aik@amd.com
