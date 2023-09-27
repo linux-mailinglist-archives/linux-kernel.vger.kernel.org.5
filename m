@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCA47B012A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D387B012B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjI0J6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33388 "EHLO
+        id S231151AbjI0J7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjI0J6m (ORCPT
+        with ESMTP id S230513AbjI0J7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:58:42 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A191A7;
-        Wed, 27 Sep 2023 02:58:40 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c4bf619b57so5293875a34.1;
-        Wed, 27 Sep 2023 02:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695808719; x=1696413519; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3hPVi5a4oOzuPKosm3U0zhfS96+9QHisSYbM2I9FqZU=;
-        b=nA6p4KXjIDpL6M/ke3LTf7wLwrXVYrsOMWT4W787KGHcsJ16dBvNXxSK9dMwJinms5
-         LRqWej37w8DLzsqlPTAoRSBoyHjpSbAyVDe6u0wkoyrJ8zPa5pSpqJpOrllM/xK5cR5k
-         bPhm3NrH8I5xjvCijaBV3cuCJ4GpymI5iaiZiIymsgN0oLDkmNlQTjr0sye39Atz+dZC
-         Zi3hsTHHz9xXJR8rcGsWJ1GkKAGmdmQK7SwgwuyD81mbMmEMf2ioV/z8N5N+NTwvt6gW
-         j+nvCLsztb/FQBAvBb05zhE74c4SMis7lYKwREQyHrp3usF8ZRPwXNAkd4xxCH1C2T8b
-         a8WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695808719; x=1696413519;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3hPVi5a4oOzuPKosm3U0zhfS96+9QHisSYbM2I9FqZU=;
-        b=KU6QtYHMeQOMRN4IChWW0skQFzsmNgW0DLFnuM2F13BCL4J4vABvJtxhkc0UAia+J6
-         4yEgti1NctwhhwQZvdi0F/4AglDiWtMwRKS9VlcWAsWfeX8g3KPQ36GNqZ7itkOgDhpZ
-         R4E3Q+fmdUqNTxxiohofNvkZg8J3zowsoUFVZ8Yj8/Pu9mQbH8UVT9J0HXPoPJbaKxbN
-         O0GeRXbFFdhRFELPFs8hbDPBPnTg3xVw1m722U0pfyZhpr58dQD4cxBJ4pN+AaIV0oGn
-         2kDufGPbfd3RFkiTodSnroItgxqSAUmaw1HSVJal8sEdqhvx9LNmOGrQB6EkSOA+yanS
-         ueHQ==
-X-Gm-Message-State: AOJu0YzVsi3RKHBUGhzphxAwziBqC5u6kUnFp1yV+L/asOf8A4diYe4m
-        DQEnIyLa6ZvclRNIX7fIyhBomCSNSQk=
-X-Google-Smtp-Source: AGHT+IGH7RCJJOQp1ERidIU9DFRTE1anMUQoFX2bQG6o/4lQXQIqj9SKcdF5xLSoba4UeYuC1yAAsA==
-X-Received: by 2002:a9d:734b:0:b0:6c4:e80d:5d8d with SMTP id l11-20020a9d734b000000b006c4e80d5d8dmr1649986otk.32.1695808718929;
-        Wed, 27 Sep 2023 02:58:38 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id t14-20020a056a0021ce00b0068bc461b68fsm11134465pfj.204.2023.09.27.02.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 02:58:38 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 15:28:34 +0530
-Message-Id: <87r0mkey45.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
+        Wed, 27 Sep 2023 05:59:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512C5F3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:59:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A611C433C8;
+        Wed, 27 Sep 2023 09:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695808773;
+        bh=RUppI/q0xfwba/lP191K+gantdfVkA9gA7y81Dm/SuI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g2K2mtAIP7TYZS/yWD0wou+N4oeF1NVEgJUM0Q0Yv8xBypafLM/C7MJBo272AxFcn
+         oVkeNn+UatZIGSygr8FuaQF0hCdLH+q4iYxwyLPY8We/sFR+QaqO/K/330BRQ8YcFe
+         5usW4rivyCmCOtxuHpbjG4nYi8hWK++8JyR+Pb71ag9vZUXs/+GF9gVBjd48hCpRMd
+         WsiWREWelBvOefp29sZ4Xz17m41vyvsArgVVwiu86gzGoP7S4DMZhtModATcyg3n8u
+         uTlMJ2cOcn9XsebmVqV21ZIHaAIEP6LnK1I0QIdQ+NmW07ykO4uJOkXsbmHThU2k4w
+         AAYQbvX++2dGQ==
+Date:   Wed, 27 Sep 2023 11:59:31 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     ChiYuan Huang <cy_huang@richtek.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 05/12] ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used
-In-Reply-To: <20230919201532.310085-6-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Subject: Re: [PATCH] ASoC: codecs: rtq9128: Add TDM data source selection
+Message-ID: <ZRP9Aw904ynL5Se/@finisterre.sirena.org.uk>
+References: <1695780376-32301-1-git-send-email-cy_huang@richtek.com>
+ <ZRPyMolOIjLBWXPC@finisterre.sirena.org.uk>
+ <20230927094637.GA25905@linuxcarl2.richtek.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1C4mWfMNaZDyDOFk"
+Content-Disposition: inline
+In-Reply-To: <20230927094637.GA25905@linuxcarl2.richtek.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,34 +54,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> call ext4_mb_mark_context in ext4_mb_mark_diskspace_used to:
-> 1. remove repeat code to normally update bitmap and group descriptor
-> on disk.
-> 2. call ext4_mb_mark_context instead of only setting bits in block bitmap
-> to fix the bitmap. Function ext4_mb_mark_context will also update
-> checksum of bitmap and other counter along with the bit change to keep
-> the cosistent with bit change or block bitmap will be marked corrupted as
-> checksum of bitmap is in inconsistent state.
->
+--1C4mWfMNaZDyDOFk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Rewording point 2 to... 
-Now that we have a common API for marking blocks inuse/free in block
-bitmap, use that instead of open coding it in function
-ext4_mb_mark_diskspace_used(). The current code was not updating
-checksum and other counters. ext4_mb_mark_context() should fix these
-consistency problems.
+On Wed, Sep 27, 2023 at 05:46:37PM +0800, ChiYuan Huang wrote:
+> On Wed, Sep 27, 2023 at 11:13:22AM +0200, Mark Brown wrote:
 
+> > Is this something that's going to be changing dynamically at runtime or
+> > should this be a device property that's set either by firmware or when
+> > we're doing the TDM setup?  This sounds like something I'd expect to be
+> > fixed by the board design.
 
-Also I now see why you have used "int" (ext4_grpblk_t) for len in
-ext4_mb_mark_context(). The reason is because this is "cluster len" which
-is defined as ext4_grpblk_t in "struct ext4_free_extent"
+> I may think one case if ASoC platform support multiple data source outputs
+> that share the same bck/lcrk on different data pin. If it can be dynamically
+> adjusted for the scenarios, this will keep the flexibility for the differet
+> platform design.
 
-I think by default we anyway have 8192 blocks per block group. So it
-should be ok for now. I anyway think the usage of blocks and cluster (&
-their data type) is confusing at different places which needs an auditing/cleanup.
+Sure, but is that actually a practical design - or if someone is doing
+this shouldn't it be joined up with the TDM configuration since with
+just the control it'd only be possible to switch the pins but not change
+the TDM layout?  I'm not sure that this control works as a standalone
+thing.
 
-This patch looks good to me. Feel free to add - 
+--1C4mWfMNaZDyDOFk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUT/P8ACgkQJNaLcl1U
+h9A3nAf9H92yVuO7k/UTjTIXfx3suPYVPOICJ5sKklHL8Vd2+uL3ks7E9EbmnCzR
+Me3Esxfs9EdVnBVgIpoOBUOmtrZTzrlm9Y7DG6q0y4gV/6ShctHIqKgXhGlPftUY
+7iUgF1GPTeHjpqg+PmlWh/C7zqtjrcauyxzrGclpBbilg/1CKRwaSyJNwblLXLDZ
+c4kBua84DXvkBEUYRyr+S1HNzwo1bd2R3FF9Q39kgunTl+PAcEVs8AqzsnZx7Tgg
+EABemg1WEyrRVjvVyfyZP7BmdjGcFzCllD96yJsIQf0W25a9ne3PxVftFbsiATVH
+hic094EtySRJ8jr+PI+QWbqRCwYPYw==
+=uBaT
+-----END PGP SIGNATURE-----
+
+--1C4mWfMNaZDyDOFk--
