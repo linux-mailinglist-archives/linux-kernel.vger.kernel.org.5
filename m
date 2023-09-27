@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224C07B0758
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5117B0753
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 16:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjI0Ow6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 10:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
+        id S232241AbjI0Oww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 10:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbjI0Owy (ORCPT
+        with ESMTP id S232046AbjI0Owu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 10:52:54 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F7BF5;
-        Wed, 27 Sep 2023 07:52:52 -0700 (PDT)
-Received: from [127.0.0.1] ([98.35.210.218])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 38REpsBI2813248
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Wed, 27 Sep 2023 07:51:55 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 38REpsBI2813248
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1695826316;
-        bh=MhJAHO9v2jzk2PvwqyNGETAyG1UpCoLntbh2yXQZUBo=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=aMHkj4DOv6DVKNQ2jE/JqTDv2qBKCKxAShqmzZ7y7C+Zw/OitN+OuLKpupSaDjwJz
-         vTeT5e4dp5j+0WoGrSNvIE+EYfKhq/Gbny4pLZzhEX0Z9E48d2Uo8zrv3W/biN0xWK
-         3nyBImm5pKOvKWPV+Qe000I/N5m43n7LNsOG2JUPA3iYHFO+sLliz82f5g/4SakiEz
-         OQR2CAx3IaHTxan5Pu6I1KGdyw27lHWo8cyikgm37DNdsPcruVzwRsapJKcnsJk9JW
-         I+g+vN1DXdpNzgIPOIV7Eu/zalBGDTREa5xWlPpQbACtoARZonM7Lecng3qmQMWZzr
-         eWmUR/REs6aOg==
-Date:   Wed, 27 Sep 2023 07:51:52 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Nikolay Borisov <nik.borisov@suse.com>, Xin Li <xin3.li@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-CC:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        andrew.cooper3@citrix.com, jiangshanlai@gmail.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v11_05/37=5D_x86/trapnr=3A_Ad?= =?US-ASCII?Q?d_event_type_macros_to_=3Casm/trapnr=2Eh=3E?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <7acd7bb3-0406-4fd9-8396-835bfd951d87@suse.com>
-References: <20230923094212.26520-1-xin3.li@intel.com> <20230923094212.26520-6-xin3.li@intel.com> <7acd7bb3-0406-4fd9-8396-835bfd951d87@suse.com>
-Message-ID: <22A5EA90-8B57-4376-BAE2-0FE982DF4E90@zytor.com>
+        Wed, 27 Sep 2023 10:52:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3D1F4;
+        Wed, 27 Sep 2023 07:52:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E010C433C7;
+        Wed, 27 Sep 2023 14:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695826369;
+        bh=KYsU6F1OWipGJBjQhqhwLEtZLYFO0yCsHTzUzpd2p2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fEOIaLTaSOlMEI3zbHLgX2Rq9MOxZ1qYbwvuGcXFaqKZjXlwVan4cwG+d++ZTI0fQ
+         Robf6HffovF7TGOQUcNoyUDCaTGEc10MKc7xIa+6490fZIs9X//C+CjtJRJTssI4Ej
+         Kuc6FMUa2t2Lh8GSL2SztyGeA3f6kmn9wLKwi6jym+xediWk3qdAPNGh0m3GAdx4kg
+         MgBx5VXxwCFouYEJBKN+VaXuMx3UcYO+n4wsKFpa55CJe8irhp8yaPQDMv90JS3v99
+         mftCUrnL9SyfWQ957hKBmEaneaXlJcBraOKHYaYLLXWYCyvXkWmRCMA1zIuJcUHBR1
+         haUDsiQaqrmgw==
+Date:   Wed, 27 Sep 2023 15:52:44 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Hal Feng <hal.feng@starfivetech.com>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [-next v1 1/2] dt-bindings: power: Update prefixes for AON power
+ domain
+Message-ID: <20230927-coma-flashback-07d2e7b34f96@spud>
+References: <20230927130734.9921-1-changhuang.liang@starfivetech.com>
+ <20230927130734.9921-2-changhuang.liang@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xGOf7ag5cN9+/+jq"
+Content-Disposition: inline
+In-Reply-To: <20230927130734.9921-2-changhuang.liang@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On September 26, 2023 1:10:51 AM PDT, Nikolay Borisov <nik=2Eborisov@suse=
-=2Ecom> wrote:
->
->
->On 23=2E09=2E23 =D0=B3=2E 12:41 =D1=87=2E, Xin Li wrote:
->> Intel VT-x classifies events into eight different types, which is
->> inherited by FRED for event identification=2E As such, event type
->> becomes a common x86 concept, and should be defined in a common x86
->> header=2E
->>=20
->> Add event type macros to <asm/trapnr=2Eh>, and use it in <asm/vmx=2Eh>=
-=2E
->>=20
->> Suggested-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
->> Tested-by: Shan Kang <shan=2Ekang@intel=2Ecom>
->> Signed-off-by: Xin Li <xin3=2Eli@intel=2Ecom>
->> ---
->>=20
->> Changes since v10:
->> * A few comment fixes and improvements (Andrew Cooper)=2E
->> ---
->>   arch/x86/include/asm/trapnr=2Eh | 12 ++++++++++++
->>   arch/x86/include/asm/vmx=2Eh    | 17 +++++++++--------
->>   2 files changed, 21 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/arch/x86/include/asm/trapnr=2Eh b/arch/x86/include/asm/tra=
-pnr=2Eh
->> index f5d2325aa0b7=2E=2E8d1154cdf787 100644
->> --- a/arch/x86/include/asm/trapnr=2Eh
->> +++ b/arch/x86/include/asm/trapnr=2Eh
->> @@ -2,6 +2,18 @@
->>   #ifndef _ASM_X86_TRAPNR_H
->>   #define _ASM_X86_TRAPNR_H
->>   +/*
->> + * Event type codes used by FRED, Intel VT-x and AMD SVM
->> + */
->> +#define EVENT_TYPE_EXTINT	0	// External interrupt
->> +#define EVENT_TYPE_RESERVED	1
->> +#define EVENT_TYPE_NMI		2	// NMI
->> +#define EVENT_TYPE_HWEXC	3	// Hardware originated traps, exceptions
->> +#define EVENT_TYPE_SWINT	4	// INT n
->> +#define EVENT_TYPE_PRIV_SWEXC	5	// INT1
->> +#define EVENT_TYPE_SWEXC	6	// INTO, INT3
->
->nit: This turned into INTO (Oh) rather than INT0( zero) in v11
->
-><nit>
 
-INTO (letter) is correct=2E
+--xGOf7ag5cN9+/+jq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 27, 2023 at 06:07:33AM -0700, Changhuang Liang wrote:
+> Use "JH7110_AON_PD_" prefix for AON power doamin for JH7110 SoC.
+>=20
+> Reviewed-by: Walker Chen <walker.chen@starfivetech.com>
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+>  include/dt-bindings/power/starfive,jh7110-pmu.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/dt-bindings/power/starfive,jh7110-pmu.h b/include/dt=
+-bindings/power/starfive,jh7110-pmu.h
+> index 341e2a0676ba..7b4f24927dee 100644
+> --- a/include/dt-bindings/power/starfive,jh7110-pmu.h
+> +++ b/include/dt-bindings/power/starfive,jh7110-pmu.h
+> @@ -14,7 +14,8 @@
+>  #define JH7110_PD_ISP		5
+>  #define JH7110_PD_VENC		6
+> =20
+> -#define JH7110_PD_DPHY_TX	0
+> -#define JH7110_PD_DPHY_RX	1
+> +/* AON Power Domain */
+> +#define JH7110_AON_PD_DPHY_TX	0
+> +#define JH7110_AON_PD_DPHY_RX	1
+> =20
+>  #endif
+> --=20
+> 2.25.1
+>=20
+
+--xGOf7ag5cN9+/+jq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRRBvAAKCRB4tDGHoIJi
+0gecAQD3KIdJsVdpHOt1Z0tStNB+PSX9XCQVNaOTNXm6DboR5AEAxVgdVcUs49EP
+rivtCK7ZZmaldoxIUnLYA+jEPrzFqQM=
+=5LyB
+-----END PGP SIGNATURE-----
+
+--xGOf7ag5cN9+/+jq--
