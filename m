@@ -2,183 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 853937AF9A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C17C7AF9A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjI0Epm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S229834AbjI0EqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjI0Eoi (ORCPT
+        with ESMTP id S229807AbjI0EpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:44:38 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F361A8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:06:24 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59e78032ef9so212072327b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:06:24 -0700 (PDT)
+        Wed, 27 Sep 2023 00:45:17 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350E21BB84
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:07:09 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41958410e5cso227951cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 21:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695787583; x=1696392383; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=muQRz7J2lzpUyBnJLzYwr4LEEEw5RWh2QZi+e4QQ9Ck=;
-        b=0XzGvJa1L+yZh4aZHanhTfTUEnsEt27cRpli89EBL0zcaXPqvll0mmqDOnRPV6e+8i
-         7/0Zwa3xX8xy/xuFQiQESpcmJe7o8iYldMbYe6IKDJXpz3lEvIG3+C8Xc4G7G5OFrS6m
-         V2ZrrR+/q6ye6xKeNOjEynx/wvAGdjIK4WUlIBthOCKZBr78jQzbEPODyM56D+u2hjGn
-         G0Iju5uho8/jtuMCy5xnQgKIOK1BAc18DWL4rSKFdRNP0xxv/vjxmii8gKMaMvwGeRlj
-         DII6zuOWUjS9qUfFK9jzI8LenEnCDqOoqQh/KMagyXC0ZKYmBUBpghB/+czd/69x+X7L
-         RcFw==
+        d=google.com; s=20230601; t=1695787628; x=1696392428; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O0nMoCs35unZfclTu3DKp3uZsoT22xTXBwaLiGdkdWQ=;
+        b=GmrGZwQOhEVqm+OG9/SbQUKxe/HC3FGo0BMMHGQDUJUicFFi6E7LLg49haja2g7jR0
+         GH7AIzWgxZgaKiCgEqcbMpiIuteR2fXKdx5V7a6vl7u5V7wRkBoD81BQhUdAI1SBSHFW
+         E9BvHRjDotaAohAfYpaDEj0a1BAdFP3qNyy8msx5pdwMBUw0t+zy/NiRCh0NQCXFVuND
+         Ff4R6Eee2C3F+EGpBjkSBgLYHFeoKrT0pXeLO8eVUFrZ2JsblxTpiF0jvBSG1LLw3RWN
+         ldmY3324yh5Zfbn+h6AU39p3QYDWBn1VmVY5ByHmmZ8sHWcdE/6DR2fkCnGjRh1Dip3C
+         bHyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695787583; x=1696392383;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=muQRz7J2lzpUyBnJLzYwr4LEEEw5RWh2QZi+e4QQ9Ck=;
-        b=p34kdwllEiKxxgMKgZW9DFgHtiI7vMKBkcD+YZSQ1xcT5yJKwV8uoBUk9P+1zBiE/I
-         +4odGrSSP22kneIpuWeLt4bfHTWzICyty750u85EHaicf8tlJirR+YwPZyIvhsHG6T9S
-         /7Z/zfabIMBPWPkF7xV6eJDUaYSA2V6afrB5ZvZ2s2uxr8K7CiAVj/NyGepdytXnBBpL
-         L86W9tDX5yRD4nJpwHPjJvHm91wy9J955z5Ve1mTfpcyFCQ8CdH6NbHteto/f5UqqhWB
-         lAaKqjEaqGEqw9U7yCe9lP8a4gdEgyy3wK5fVNi/bwuADPf2mspK7sXkaHX8DalaNXrz
-         e+Ng==
-X-Gm-Message-State: AOJu0Yxr8jWw8VE1hhr5S95ubkTYT1ULw9TEr3Qq6pMY0uCW9edyf3+Y
-        8XawcfRJqv07hEkwQHcCI0ZewCS+5QRaGn80UQ==
-X-Google-Smtp-Source: AGHT+IGsXNoWWYJOPzCYKtauH719o/KetAshJi2wOaDvi+H+P1j+pOhifslLD+fTpHe+INzB6DLUTvY3yrJWyDOwWg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:e308:0:b0:59f:2323:acb5 with SMTP
- id q8-20020a81e308000000b0059f2323acb5mr12644ywl.3.1695787583729; Tue, 26 Sep
- 2023 21:06:23 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 04:06:09 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADCqE2UC/x2N0QrCMAxFf2Xk2cDsKHP+ivhQ00wDrpakG8rYv
- 9vt8cA996xgrMIG12YF5UVMPqnC+dQAvUJ6MkqsDK51XTu4Hq1oovzDqLKwGk5sFupsnHcVp1y ovJHQc+/9heLQhQfUt6w8yvco3e7b9gcnFoW+eQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695787582; l=4204;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=QWt5IYuPT1K3lDjtegiynEZCkUucvHzztTM0T9agtnc=; b=ZCWCZUT8EBoFkt5LsljAQshOVImItYimTU2LI5U7jKMuSeL2a2rUgBRthWA0DILUqU9Q4gtrl
- GBz5dkv7YDvDJrqmtxK8mN5zTIdRo5Im4nuTxY5F8Kh4Vm6KQRy8MCY
-X-Mailer: b4 0.12.3
-Message-ID: <20230927-strncpy-drivers-message-fusion-mptctl-c-v1-1-bb2eddc1743c@google.com>
-Subject: [PATCH] scsi: message: fusion: replace deprecated strncpy with strscpy_pad
-From:   Justin Stitt <justinstitt@google.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695787628; x=1696392428;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O0nMoCs35unZfclTu3DKp3uZsoT22xTXBwaLiGdkdWQ=;
+        b=f1JsYBhcUqn2dz1qWDQxVlLEauXMc+xu9gtoWx3ZFBAMOm2pU4plnWb2KM9EgiSbFJ
+         Q2jH76V9pyFKTobUhOHYMJ/cVlj2Mr+mzHBbWxwZXkIk8E/FZV3E5mopPsELN8KPsxGp
+         axheFZywy6cRc0xjfyczO9ZDYEQKNszNY2bVwKNvpue9oI0S86V7/JuhoefTWr3nv3Tn
+         3YVOyQtb3ixsaN6zvK3q0wCg3fqWUkFe7kddP3WqPEwUgGiHLdQuMD68Orc+gSmNx5IY
+         4Hm9UCsvosY05Ke98OVAyzkUeSQ5LrhrffUyONxnJQPyYP21AyolQb+uuENOAUGGSBpE
+         b8nw==
+X-Gm-Message-State: AOJu0YzoYsHe0FAUMKAlS7C4G5t9MbCy0MPlN9TSRc8B0UdGSzupbz/s
+        QGShJUF/uCFBjyZX6nleOAXblgNw6OW2LdnuIJvRGw==
+X-Google-Smtp-Source: AGHT+IFCXgdLLs1mW7I4BlBzVeMEB6FdpuzGm3k488f4N7W5WLbOWSAiS2RMjWpKOJAXI6lI/9CZr5elbMW47291M04=
+X-Received: by 2002:a05:622a:188c:b0:410:9855:acd with SMTP id
+ v12-20020a05622a188c00b0041098550acdmr483377qtc.14.1695787627958; Tue, 26 Sep
+ 2023 21:07:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230920122349.418673-1-wyes.karny@amd.com> <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
+ <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com>
+In-Reply-To: <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 26 Sep 2023 21:06:56 -0700
+Message-ID: <CAP-5=fW7dsMw0i7N-oQ7dcz9sFx1hAtZCpsxuH=NqMz+h+i3ZQ@mail.gmail.com>
+Subject: Re: [PATCH] perf pmu: Fix perf stat output with correct scale and unit
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Wyes Karny <wyes.karny@amd.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
+        ravi.bangoria@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Sep 26, 2023 at 3:51=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Wed, Sep 20, 2023 at 9:02=E2=80=AFAM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > On Wed, Sep 20, 2023 at 5:24=E2=80=AFAM Wyes Karny <wyes.karny@amd.com>=
+ wrote:
+> > >
+> > > The perf_pmu__parse_* functions for the sysfs files of pmu event=E2=
+=80=99s
+> > > scale, unit, per-pkg and snapshot were updated in commit 7b723dbb96e8
+> > > ("perf pmu: Be lazy about loading event info files from sysfs").
+> > > However, the paths for these sysfs files were incorrect. This resulte=
+d
+> > > in perf stat reporting values with wrong scaling and missing units. T=
+his
+> > > is fixed by correcting the paths for these sysfs files.
+> > >
+> > > Before this fix:
+> > >
+> > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
+> > >
+> > >  Performance counter stats for 'system wide':
+> > >
+> > >    351,217,188,864      power/energy-pkg/
+> > >
+> > >           2.004127961 seconds time elapsed
+> > >
+> > > After this fix:
+> > >
+> > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
+> > >
+> > >  Performance counter stats for 'system wide':
+> > >
+> > >              80.58 Joules power/energy-pkg/
+> > >
+> > >              2.004009749 seconds time elapsed
+> > >
+> > > Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info file=
+s from sysfs")
+> > > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
+> >
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+>
+> Applied to perf-tools-next, thanks!
 
-Since all these structs are copied out to userspace let's keep them
-NUL-padded by using `strscpy_pad` which guarantees NUL-termination of
-the destination buffer while also providing the NUL-padding behavior
-that strncpy has.
+Thanks Namhyung, I think this should be a candidate for perf-tools so
+that 6.6 doesn't regress for sysfs events.
 
-Let's also opt to use the more idiomatic strscpy usage of:
-`dest, src, sizeof(dest)` in cases where the compiler can determine the
-size of the destination buffer. Do this for all cases of strscpy...() in
-this file.
-
-To be abundantly sure we don't leak stack data out to user space let's
-also change a strscpy to strscpy_pad. This strscpy was introduced in
-Commit dbe37c71d1246ec2 ("scsi: message: fusion: Replace all
-non-returning strlcpy() with strscpy()")
-
-Note that since we are creating these structs with a copy_from_user()
-and modifying fields and then copying back out to the user it is
-probably OK not to explicitly NUL-pad everything as any data leak is
-probably just data from the user themselves. If this is too eager, let's
-opt for `strscpy` which is still in the spirit of removing deprecated
-strncpy usage treewide.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/message/fusion/mptctl.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/message/fusion/mptctl.c b/drivers/message/fusion/mptctl.c
-index dd028df4b283..9f3999750c23 100644
---- a/drivers/message/fusion/mptctl.c
-+++ b/drivers/message/fusion/mptctl.c
-@@ -1328,8 +1328,8 @@ mptctl_getiocinfo (MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 
- 	/* Set the Version Strings.
- 	 */
--	strncpy (karg->driverVersion, MPT_LINUX_PACKAGE_NAME, MPT_IOCTL_VERSION_LENGTH);
--	karg->driverVersion[MPT_IOCTL_VERSION_LENGTH-1]='\0';
-+	strscpy_pad(karg->driverVersion, MPT_LINUX_PACKAGE_NAME,
-+		    sizeof(karg->driverVersion));
- 
- 	karg->busChangeEvent = 0;
- 	karg->hostId = ioc->pfacts[port].PortSCSIID;
-@@ -1493,10 +1493,8 @@ mptctl_readtest (MPT_ADAPTER *ioc, unsigned long arg)
- #else
- 	karg.chip_type = ioc->pcidev->device;
- #endif
--	strncpy (karg.name, ioc->name, MPT_MAX_NAME);
--	karg.name[MPT_MAX_NAME-1]='\0';
--	strncpy (karg.product, ioc->prod_name, MPT_PRODUCT_LENGTH);
--	karg.product[MPT_PRODUCT_LENGTH-1]='\0';
-+	strscpy_pad(karg.name, ioc->name, sizeof(karg.name));
-+	strscpy_pad(karg.product, ioc->prod_name, sizeof(karg.product));
- 
- 	/* Copy the data from kernel memory to user memory
- 	 */
-@@ -2394,7 +2392,7 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 	cfg.dir = 0;	/* read */
- 	cfg.timeout = 10;
- 
--	strncpy(karg.serial_number, " ", 24);
-+	strscpy_pad(karg.serial_number, " ", sizeof(karg.serial_number));
- 	if (mpt_config(ioc, &cfg) == 0) {
- 		if (cfg.cfghdr.hdr->PageLength > 0) {
- 			/* Issue the second config page request */
-@@ -2408,8 +2406,9 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 				if (mpt_config(ioc, &cfg) == 0) {
- 					ManufacturingPage0_t *pdata = (ManufacturingPage0_t *) pbuf;
- 					if (strlen(pdata->BoardTracerNumber) > 1) {
--						strscpy(karg.serial_number,
--							pdata->BoardTracerNumber, 24);
-+						strscpy_pad(karg.serial_number,
-+							pdata->BoardTracerNumber,
-+							sizeof(karg.serial_number));
- 					}
- 				}
- 				dma_free_coherent(&ioc->pcidev->dev,
-@@ -2456,7 +2455,7 @@ mptctl_hp_hostinfo(MPT_ADAPTER *ioc, unsigned long arg, unsigned int data_size)
- 		}
- 	}
- 
--	/* 
-+	/*
- 	 * Gather ISTWI(Industry Standard Two Wire Interface) Data
- 	 */
- 	if ((mf = mpt_get_msg_frame(mptctl_id, ioc)) == NULL) {
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230927-strncpy-drivers-message-fusion-mptctl-c-5e7558cd93ab
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Ian
