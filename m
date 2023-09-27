@@ -2,164 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FA47AF8A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 05:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5177AF821
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 04:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjI0D2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 23:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S232167AbjI0Cam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 22:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjI0D0P (ORCPT
+        with ESMTP id S235972AbjI0CWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 23:26:15 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947639005;
-        Tue, 26 Sep 2023 18:47:53 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40594a6d1ecso11520805e9.1;
-        Tue, 26 Sep 2023 18:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695779272; x=1696384072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eP9N2gfeiWYXcjxAcn/cQZzNl5uPlV6uaT56umiTjo8=;
-        b=mdZBYtkbGXhEIASl9MXbPlNQ4Fh56XGfHyTUP0QwiLyXtvoLaWDMWxHh8VcZJpdy1A
-         tmg3iEPLb7Y/NarmpFuCsqo+B34sWqLs/PyDeKub7ZWqFEfTxC9qQOtM+ZLkm485qHZ8
-         8Vk2ckW1hM9XJZ4f81NeZV2+YMP0XdbhO5kAAJ8UdYQgwGjjKQgASE7MXTWlAyQFc099
-         Mv1PGfBEr3BqkiR5W9dO8Qa6tNwd4fBHfKrgLuJNyJC7CtlfBxQD7qK6T2QAMKhjrr2Z
-         j21Ziah7ETDY+EDfNzh1xQfAfuz+YcYGeGRkmQc6JtbD3lTfr5TT7Th0JDz/zZLycdv9
-         G2JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695779272; x=1696384072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eP9N2gfeiWYXcjxAcn/cQZzNl5uPlV6uaT56umiTjo8=;
-        b=lCDZEd4+kiIfHUzAgWpF2OzdWi9ktf8lFvn4C18J/iVF2oyWUcqWoyaz4Am2NzktbP
-         DWUz4DSlvRCmbeh8hU0ONOqyvt4mgxx/Kg7r0jfQsRSbz05C76LZMHjy/edXoK+3jIVj
-         Eg+l24lymIUu5pykLNrhPIkOyHBNpZ/Ip6hjHnFK8+J7JVuHCEvVlcu2lsmGTX9q/X/w
-         TcfOIXkDxDrALNVXkKfMLMf4gKrDmbhEUGh060Dhoxk9UtmJhRjuColgT3ZS85CPPfps
-         pq1Galr098ruUVoG/Yj+Kfw/VJpVOzFdBhi82+7ANkykY0gDP2b4uFktoDK97rcpzSlL
-         i3gg==
-X-Gm-Message-State: AOJu0YxqZW/KWqpheJSyiqv3odn45yjfss9t9qxrWHBwKLGs+l4RTpMd
-        7/rUOTSCsxdoyunDgkSRZOjW/h9l/mj5mmPNdjDHrrIEgSo=
-X-Google-Smtp-Source: AGHT+IEAaKAlOkvmR0LD66XKj8QWzk4M3h/3mWe27gg1G+gi8Qs8/Sv8nOxQdC0XyT/2gKyWkvIM/59GaOUJCyYn1EU=
-X-Received: by 2002:adf:e5cf:0:b0:323:2e5d:b7c6 with SMTP id
- a15-20020adfe5cf000000b003232e5db7c6mr329201wrn.0.1695779271781; Tue, 26 Sep
- 2023 18:47:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230925214046.1051350-1-anarsoul@gmail.com> <b0786bf5571050397b5075bac7c1e9023bfa5aec.camel@intel.com>
-In-Reply-To: <b0786bf5571050397b5075bac7c1e9023bfa5aec.camel@intel.com>
-From:   Vasily Khoruzhick <anarsoul@gmail.com>
-Date:   Tue, 26 Sep 2023 18:47:24 -0700
-Message-ID: <CA+E=qVc424VJsqGRR+SZbDmDdtdVmx+Ag6vt_brhZsNv1JTCRw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: FPDT: break out of the loop if record length is zero
-To:     "Zhang, Rui" <rui.zhang@intel.com>
-Cc:     "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
+        Tue, 26 Sep 2023 22:22:45 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71AE4EDC;
+        Tue, 26 Sep 2023 18:50:01 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VsyF-Ei_1695779398;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VsyF-Ei_1695779398)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Sep 2023 09:49:58 +0800
+Message-ID: <1695779259.7440922-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [GIT PULL] virtio: features
+Date:   Wed, 27 Sep 2023 09:47:39 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eperezma@redhat.com>, <jasowang@redhat.com>,
+        <shannon.nelson@amd.com>, <xuanzhuo@linux.alibaba.com>,
+        <yuanyaogoog@chromium.org>, <yuehaibing@huawei.com>,
+        Thomas Lendacky <thomas.lendacky@amd.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20230903181338-mutt-send-email-mst@kernel.org>
+ <20230926130451.axgodaa6tvwqs3ut@amd.com>
+In-Reply-To: <20230926130451.axgodaa6tvwqs3ut@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:03=E2=80=AFPM Zhang, Rui <rui.zhang@intel.com> w=
-rote:
->
-> On Mon, 2023-09-25 at 14:40 -0700, Vasily Khoruzhick wrote:
-> > Buggy BIOSes may have zero-length records in FPDT, table, as a result
-> s/FPDT, table/FPDT table
->
->
-> > fpdt_process_subtable() spins in eternal loop.
+On Tue, 26 Sep 2023 08:04:51 -0500, Michael Roth <michael.roth@amd.com> wro=
+te:
+> On Sun, Sep 03, 2023 at 06:13:38PM -0400, Michael S. Tsirkin wrote:
+> > The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0=
+bc2c:
 > >
-> > Break out of the loop if record length is zero.
+> >   Linux 6.5 (2023-08-27 14:49:51 -0700)
 > >
+> > are available in the Git repository at:
 > >
-> > Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT
-> > table")
-> > Cc: stable@vger.kernel.org
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/fo=
+r_linus
 > >
-> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> > for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+> >
+> >   virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-=
+03 18:10:24 -0400)
+> >
+> > ----------------------------------------------------------------
+> > virtio: features
+> >
+> > a small pull request this time around, mostly because the
+> > vduse network got postponed to next relase so we can be sure
+> > we got the security store right.
+> >
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> >
+> > ----------------------------------------------------------------
+> > Eugenio P=E9=96=9Eez (4):
+> >       vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
+> >       vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend featu=
+re
+> >       vdpa: add get_backend_features vdpa operation
+> >       vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+> >
+> > Jason Wang (1):
+> >       virtio_vdpa: build affinity masks conditionally
+> >
+> > Xuan Zhuo (12):
+> >       virtio_ring: check use_dma_api before unmap desc for indirect
+> >       virtio_ring: put mapping error check in vring_map_one_sg
+> >       virtio_ring: introduce virtqueue_set_dma_premapped()
+> >       virtio_ring: support add premapped buf
+> >       virtio_ring: introduce virtqueue_dma_dev()
+> >       virtio_ring: skip unmap for premapped
+> >       virtio_ring: correct the expression of the description of virtque=
+ue_resize()
+> >       virtio_ring: separate the logic of reset/enable from virtqueue_re=
+size
+> >       virtio_ring: introduce virtqueue_reset()
+> >       virtio_ring: introduce dma map api for virtqueue
+> >       virtio_ring: introduce dma sync api for virtqueue
+> >       virtio_net: merge dma operations when filling mergeable buffers
 >
-> Is there a bugzilla or something where such a buggy BIOS is reported?
-
-I'm not aware of a bug filed a kernel bugzilla, however I found
-mentions of the issue online:
-https://forum.proxmox.com/threads/acpi-fpdt-duplicate-resume-performance-re=
-cord-found.114530/
-
-> > ---
-> >  drivers/acpi/acpi_fpdt.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
-> > index a2056c4c8cb7..53d8f9601a55 100644
-> > --- a/drivers/acpi/acpi_fpdt.c
-> > +++ b/drivers/acpi/acpi_fpdt.c
-> > @@ -194,6 +194,11 @@ static int fpdt_process_subtable(u64 address,
-> > u32 subtable_type)
-> >                 record_header =3D (void *)subtable_header + offset;
-> >                 offset +=3D record_header->length;
-> >
-> > +               if (!record_header->length) {
-> > +                       pr_info(FW_BUG "Zero-length record
-> > found.\n");
-> > +                       break;
+> This ^ patch (upstream commit 295525e29a) seems to cause a
+> network-related regression when using SWIOTLB in the guest. I noticed
+> this initially testing SEV guests, which use SWIOTLB by default, but
+> it can also be seen with normal guests when forcing SWIOTLB via
+> swiotlb=3Dforce kernel cmdline option. I see it with both 6.6-rc1 and
+> 6.6-rc2 (haven't tried rc3 yet, but don't see any related changes
+> there), and reverting 714073495f seems to avoid the issue.
 >
-> For cases like this, it implies the FPDT table is far from usable and
-> we should stop processing on such platforms.
-
-Here's FPDT dump:
-
-00000000: 4650 4454 4400 0000 018c 414c 4153 4b41  FPDTD.....ALASKA
-00000010: 4120 4d20 4920 0000 0920 0701 414d 4920  A M I ... ..AMI
-00000020: 1300 0100 0100 1001 0000 0000 30fe 207f  ............0. .
-00000030: 0000 0000 0000 1001 0000 0000 54fe 207f  ............T. .
-00000040: 0000 0000                                ....
-
-S3PT at 0x7f20fe30:
-
-7F20FE30: 53 33 50 54 24 00 00 00-00 00 00 00 00 00 18 01  *S3PT$..........=
-.*
-7F20FE40: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  *...............=
-.*
-7F20FE50: 00 00 00 00
-
-FBPT at 0x7f20fe54:
-
-7F20FE50: xx xx xx xx 46 42 50 54-3C 00 00 00 46 42 50 54  *....FBPT<...FBP=
-T*
-7F20FE60: 02 00 30 02 00 00 00 00-00 00 00 00 00 00 00 00  *..0............=
-.*
-7F20FE70: 2A A6 BC 6E 0B 00 00 00-1A 44 41 70 0B 00 00 00  **..n.....DAp...=
-.*
-7F20FE80: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  *...............=
-.*
-
-It looks like subtables are not usable. S3PT subtable has the first
-record with zero len, and FBPT has its signature again instead of the
-first record header.
-
-So yeah, I agree that FPDT is not usabled in this case, and it
-shouldn't be processed further.
-
-> So, IMO, it is better to
-> 1. return an error here rather than break and return 0.
-> 2. add the error handling for fpdt_process_subtable() failures.
+> Steps to reproduce:
 >
-> what do you think?
+> 1) Boot QEMU/KVM guest with 6.6-rc2 with swiotlb=3Dforce via something li=
+ke the following cmdline:
+>
+>    qemu-system-x86_64 \
+>    -machine q35 -smp 4,maxcpus=3D255 -cpu EPYC-Milan-v2 \
+>    -enable-kvm -m 16G,slots=3D5,maxmem=3D256G -vga none \
+>    -device virtio-scsi-pci,id=3Dscsi0,disable-legacy=3Don,iommu_platform=
+=3Dtrue \
+>    -drive file=3D/home/mroth/storage/ubuntu-18.04-seves2.qcow2,if=3Dnone,=
+id=3Ddrive0,snapshot=3Doff \
+>    -device scsi-hd,id=3Dhd0,drive=3Ddrive0,bus=3Dscsi0.0 \
+>    -device virtio-net-pci,netdev=3Dnetdev0,id=3Dnet0,disable-legacy=3Don,=
+iommu_platform=3Dtrue,romfile=3D \
+>    -netdev tap,script=3D/home/mroth/qemu-ifup,id=3Dnetdev0 \
+>    -L /home/mroth/storage/AMDSEV2/snp-release-2023-09-23/usr/local/share/=
+qemu \
+>    -drive if=3Dpflash,format=3Draw,unit=3D0,file=3D/home/mroth/storage/AM=
+DSEV2/snp-release-2023-09-23/usr/local/share/qemu/OVMF_CODE.fd,readonly \
+>    -drive if=3Dpflash,format=3Draw,unit=3D1,file=3D/home/mroth/storage/AM=
+DSEV2/snp-release-2023-09-23/usr/local/share/qemu/OVMF_VARS.fd \
+>    -debugcon file:debug.log -global isa-debugcon.iobase=3D0x402 -msg time=
+stamp=3Don \
+>    -kernel /boot/vmlinuz-6.6.0-rc2-vanilla0+ \
+>    -initrd /boot/initrd.img-6.6.0-rc2-vanilla0+ \
+>    -append "root=3DUUID=3Dd72a6d1c-06cf-4b79-af43-f1bac4f620f9 ro console=
+=3DttyS0,115200n8 earlyprintk=3Dserial,ttyS0,115200 debug=3D1 sev=3Ddebug p=
+age_poison=3D0 spec_rstack_overflow=3Doff swiotlb=3Dforce"
+>
+> 2) scp a small file from the host to the guest IP via its virtio-net devi=
+ce.
+>    Smaller file sizes succeed, but the larger the file the more likely
+>    it will fail. e.g.:
+>
+>    mroth@host:~$ dd if=3D/dev/zero of=3Dtest bs=3D1K count=3D19
+>    19+0 records in
+>    19+0 records out
+>    19456 bytes (19 kB, 19 KiB) copied, 0.000940134 s, 20.7 MB/s
+>    mroth@host:~$ scp test vm0:
+>    test                                                                  =
+  100%   19KB  10.1MB/s   00:00
+>    mroth@host:~$ dd if=3D/dev/zero of=3Dtest bs=3D1K count=3D20
+>    20+0 records in
+>    20+0 records out
+>    20480 bytes (20 kB, 20 KiB) copied, 0.00093774 s, 21.8 MB/s
+>    mroth@host:~$ scp test vm0:
+>    test                                                                  =
+    0%    0     0.0KB/s   --:-- ETA
+>    client_loop: send disconnect: Broken pipe
+>    lost connection
+>    mroth@host:~$
 
-Agree, I'll implement it in v2.
 
-Regards,
-Vasily
+Hi Michael,
+
+Thanks for the report.
+
+Cloud you try this fix?  I reproduce this issue, and that works for me.
+
+Thanks.
+
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 98dc9b49d56b..9ece27dc5144 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -589,16 +589,16 @@ static void virtnet_rq_unmap(struct receive_queue *rq=
+, void *buf, u32 len)
+
+        --dma->ref;
+
+-       if (dma->ref) {
+-               if (dma->need_sync && len) {
+-                       offset =3D buf - (head + sizeof(*dma));
++       if (dma->need_sync && len) {
++               offset =3D buf - (head + sizeof(*dma));
+
+-                       virtqueue_dma_sync_single_range_for_cpu(rq->vq, dma=
+->addr, offset,
+-                                                               len, DMA_FR=
+OM_DEVICE);
+-               }
++               virtqueue_dma_sync_single_range_for_cpu(rq->vq, dma->addr,
++                                                       offset, len,
++                                                       DMA_FROM_DEVICE);
++       }
+
++       if (dma->ref)
+                return;
+-       }
+
+        virtqueue_dma_unmap_single_attrs(rq->vq, dma->addr, dma->len,
+                                         DMA_FROM_DEVICE, DMA_ATTR_SKIP_CPU=
+_SYNC);
+
+
+>
+> Thanks,
+>
+> Mike
+>
+> >
+> > Yuan Yao (1):
+> >       virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+> >
+> > Yue Haibing (1):
+> >       vdpa/mlx5: Remove unused function declarations
+> >
+> >  drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
+> >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
+> >  drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
+> >  drivers/vhost/vdpa.c               |  15 +-
+> >  drivers/virtio/virtio_ring.c       | 412 +++++++++++++++++++++++++++++=
++++-----
+> >  drivers/virtio/virtio_vdpa.c       |  17 +-
+> >  include/linux/vdpa.h               |   4 +
+> >  include/linux/virtio.h             |  22 ++
+> >  include/uapi/linux/vhost_types.h   |   4 +
+> >  9 files changed, 625 insertions(+), 90 deletions(-)
+> >
