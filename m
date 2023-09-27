@@ -2,183 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7657AFBF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAB97AFBF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjI0HYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
+        id S229966AbjI0HZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjI0HY2 (ORCPT
+        with ESMTP id S229458AbjI0HZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:24:28 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3584BF;
-        Wed, 27 Sep 2023 00:24:26 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D1DB71C0005;
-        Wed, 27 Sep 2023 07:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695799465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y7lheL/fPD30+qWF6kotkKYQgHBfzDpYHPBkU7rqwKc=;
-        b=CUxDSg3duEvh2iFUudjI4nwvl79l+61/0VAmFQSu2LRxhgpcqiWvVArxluGLfvz8i5H50g
-        /1E6SCgjLvpCudreDT7YjSUJNoddPGTSsaP4qgW8mWZk1r2YQFIKYrFJ/YEM0vSjcRIouF
-        jAG7C/ETkfGIPjGdzUf59swSIoGJQUGcVuuayMkzk8au+5Sk7KAiVV36+GbS/U8eAaBUBo
-        Pb/APoI1htl9U6jlR0NLt4TNlSJhGv0qMJmsS+9RrcsdPKtRdRr7gPHjPd+Eba7D0t9cHn
-        BMVN9LDMWuIFiKvBLMP4Ihx4uyZvHi66OO4LFFFAfTsgo3N8lhrCfO7XudhEyQ==
-Date:   Wed, 27 Sep 2023 09:24:18 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v6 08/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add support for QMC HDLC
-Message-ID: <20230927092418.6a5326ce@bootlin.com>
-In-Reply-To: <e8ee6529-b194-4588-96c0-1459f214d005@linaro.org>
-References: <20230922075913.422435-1-herve.codina@bootlin.com>
-        <20230922075913.422435-9-herve.codina@bootlin.com>
-        <5efae150-3d92-81b8-5c25-68846d27132e@linaro.org>
-        <20230925101703.1bf083f1@bootlin.com>
-        <5b804a1a-6bfd-429d-ad84-696b7ecef72d@linaro.org>
-        <20230925122758.43963736@bootlin.com>
-        <e02ebde7-f208-40a4-bb10-aa5962ee9864@linaro.org>
-        <20230925154929.2b6a9cab@bootlin.com>
-        <e8ee6529-b194-4588-96c0-1459f214d005@linaro.org>
-Organization: Bootlin
+        Wed, 27 Sep 2023 03:25:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966D3BF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:25:19 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 783D06607324;
+        Wed, 27 Sep 2023 08:25:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695799517;
+        bh=2yW5Hh7PnukuPb/3yAYGBd0QgjRVoSWYzB4eyF4arlo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dtnSozCkldqRQ+SvdSFv4Ja9BUl8AzVNPbUYw3FDmAIM6GH/NOmSzjRoERLeYdcCH
+         ZvKPQ2Dz+xbVdg5IF7P/DtkxhGGE4WvvYiIGRLQ2sWR2R2BYVzYaZaP4LlOrcByX/T
+         OVr2fPdm/yskSQHObmlG86z/l9u3j7ukS/JHnGpdz5xRtrtfz892UYlZByNOrHgsoq
+         bNyXuc7YJucxebTITcAeQLin9hp56gRpj1Qq3qRZLA6pEc4IO9xnVXnHefO0swxmK7
+         t37F+s1jraTmOFvtzlRfqNXfxpnK8ZPRf4U/jb01pDxRUBmBsyiCWi8w8rfbUNxiKX
+         Wc/NiKkM+u1yA==
+Date:   Wed, 27 Sep 2023 09:25:14 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     Luben Tuikov <luben.tuikov@amd.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
+ control
+Message-ID: <20230927092514.04776822@collabora.com>
+In-Reply-To: <12f19494-7fd0-055f-4135-e17581398eb5@redhat.com>
+References: <20230924224555.15595-1-dakr@redhat.com>
+        <312983ee-ba4c-477e-8846-072c815df862@amd.com>
+        <12f19494-7fd0-055f-4135-e17581398eb5@redhat.com>
+Organization: Collabora
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Wed, 27 Sep 2023 02:13:59 +0200
+Danilo Krummrich <dakr@redhat.com> wrote:
 
-On Tue, 26 Sep 2023 22:59:14 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-
-> On 25/09/2023 15:50, Herve Codina wrote:
-> >>>>> With these details, do you still think I need to change the child (channel)
-> >>>>> compatible ?      
-> >>>>
-> >>>> From OS point of view, you have a driver binding to this child-level
-> >>>> compatible. How do you enforce Linux driver binding based on parent
-> >>>> compatible? I looked at your next patch and I did not see it.    
-> >>>
-> >>> We do not need to have the child driver binding based on parent.    
-> >>
-> >> Exactly, that's what I said.
-> >>  
-> >>> We have to ensure that the child handles a QMC channel and the parent provides
-> >>> a QMC channel.
-> >>>
-> >>> A QMC controller (parent) has to implement the QMC API (include/soc/fsl/qe/qmc.h)
-> >>> and a QMC channel driver (child) has to use the QMC API.    
-> >>
-> >> How does this solve my concerns? Sorry, I do not understand. Your driver
-> >> is a platform driver and binds to the generic compatible. How do you
-> >> solve regular compatibility issues (need for quirks) if parent
-> >> compatible is not used?
-> >>
-> >> How does being QMC compliant affects driver binding and
-> >> compatibility/quirks?
-> >>
-> >> We are back to my original question and I don't think you answered to
-> >> any of the concerns.  
+> On 9/26/23 22:43, Luben Tuikov wrote:
+> > Hi,
 > > 
-> > Well, to be sure that I understand correctly, do you mean that I should
-> > provide a compatible for the child (HDLC) with something like this:
-> > --- 8< ---
-> >   compatible:
-> >     items:
-> >       - enum:
-> >           - fsl,mpc885-qmc-hdlc
-> >           - fsl,mpc866-qmc-hdlc
-> >       - const: fsl,cpm1-qmc-hdlc
-> >       - const: fsl,qmc-hdlc
-> > --- 8< ---  
-> 
-> Yes, more or less, depending on actual compatibility and SoC-family.
-> Maybe "fsl,cpm1-qmc-hdlc" item in the middle is not needed.
-
-Ok,
-I will keep "fsl,cpm1-qmc-hdlc". The CPM1 is the co-processor present in these
-SoCs and it handles the QMC controller. So, it makes sense to have it in this
-binding.
-
-I plan to add support for other SoCs in the future and for these SoCs, the
-co-processor is not the CPM1. So, it makes sense to keep "fsl,cpm1-qmc-hdlc"
-to identify the co-processor.
-
-> 
+> > On 2023-09-24 18:43, Danilo Krummrich wrote:  
+> >> Currently, job flow control is implemented simply by limiting the amount
+> >> of jobs in flight. Therefore, a scheduler is initialized with a
+> >> submission limit that corresponds to a certain amount of jobs.  
 > > 
-> > If so, I didn't do that because a QMC channel consumer (driver matching
-> > fsl,qmc-hdlc) doesn't contains any SoC specific part.  
+> > "certain"? How about this instead:
+> > " ... that corresponds to the number of jobs which can be sent
+> >    to the hardware."?
+> >   
+> >>
+> >> This implies that for each job drivers need to account for the maximum  
+> >                                  ^,
+> > Please add a comma after "job".
+> >   
+> >> job size possible in order to not overflow the ring buffer.  
+> > 
+> > Well, different hardware designs would implement this differently.
+> > Ideally, you only want pointers into the ring buffer, and then
+> > the hardware consumes as much as it can. But this is a moot point
+> > and it's always a good idea to have a "job size" hint from the client.
+> > So this is a good patch.
+> > 
+> > Ideally, you want to say that the hardware needs to be able to
+> > accommodate the number of jobs which can fit in the hardware
+> > queue times the largest job. This is a waste of resources
+> > however, and it is better to give a hint as to the size of a job,
+> > by the client. If the hardware can peek and understand dependencies,
+> > on top of knowing the "size of the job", it can be an extremely
+> > efficient scheduler.
+> >   
+> >>
+> >> However, there are drivers, such as Nouveau, where the job size has a
+> >> rather large range. For such drivers it can easily happen that job
+> >> submissions not even filling the ring by 1% can block subsequent
+> >> submissions, which, in the worst case, can lead to the ring run dry.
+> >>
+> >> In order to overcome this issue, allow for tracking the actual job size
+> >> instead of the amount job jobs. Therefore, add a field to track a job's  
+> > 
+> > "the amount job jobs." --> "the number of jobs."  
 > 
-> Just like hundreds of other drivers. :)
+> Yeah, I somehow manage to always get this wrong, which I guess you noticed
+> below already.
 > 
-> There is a paragraph about specific compatibles here:
-> https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html
+> That's all good points below - gonna address them.
 > 
+> Did you see Boris' response regarding a separate callback in order to fetch
+> the job's submission units dynamically? Since this is needed by PowerVR, I'd
+> like to include this in V2. What's your take on that?
 > 
-> > It uses the channel as a communication channel to send/receive HDLC frames
-> > to/from this communication channel.
-> > All the specific SoC part is handled by the QMC controller (parent) itself and
-> > not by any consumer (child).  
+> My only concern with that would be that if I got what Boris was saying
+> correctly calling
 > 
-> OK, so you guarantee in 100% for this hardware and all future (including
-> designs unknown currently), that they will be 100% compatible with
-> existing QMC channel consumer (child, matching fsl,qmc-hdlc) driver,
-> thus there will be no need for any quirk. Specifically, there will be no
-> chances that it would be reasonable to re-use the same driver for child
-> (currently fsl,qmc-hdlc) in different parent.
+> WARN_ON(s_job->submission_units > sched->submission_limit);
+> 
+> from drm_sched_can_queue() wouldn't work anymore, since this could indeed happen
+> temporarily. I think this was also Christian's concern.
 
-Right,
-compatible strings with SoC and co-processor will be added in the next iteration.
-
-Thanks for your feedback.
-
-Best regards,
-Hervé
-
-> 
-> P.S. If you received this email twice, apologies, I have here troubles
-> with internet.
-> 
-> Best regards,
-> Krzysztof
-> 
+Actually, I think that's fine to account for the max job size in the
+first check, we're unlikely to have so many native fence waits that our
+job can't fit in an empty ring buffer.
