@@ -2,77 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3AC7AFC2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AC77AFC33
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbjI0HhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S230015AbjI0Hio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0HhL (ORCPT
+        with ESMTP id S230007AbjI0Hil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:37:11 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E62B10E;
-        Wed, 27 Sep 2023 00:37:08 -0700 (PDT)
-Received: from chenguohua$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Wed, 27 Sep 2023 15:35:50
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Wed, 27 Sep 2023 15:35:50 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   chenguohua@jari.cn
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: Clean up errors in aic7xxx.h
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 03:38:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33467BF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695800273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzmdkgJVacl611f+REy0nRFcZdf1f4FGc4mWf9kNvKg=;
+        b=bOP9XgI+m2HXexDHDrJTYYvdPMv1rVsNTTKhX7yYlx7Kg2xORj6wZFR72csW+khcgkmhRQ
+        z0VgKBrm+Kb6vo0hX72rDoUoPFyL+FN1siKDsU1lvFznELZgRddhunHZmla2elWqp47WC4
+        iRulFBdPpQSJXWEM2xC1LbOLSS+bLro=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-7LnBs-UrMqadSqTU288DVQ-1; Wed, 27 Sep 2023 03:37:51 -0400
+X-MC-Unique: 7LnBs-UrMqadSqTU288DVQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-405629826ccso72896035e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:37:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695800271; x=1696405071;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tzmdkgJVacl611f+REy0nRFcZdf1f4FGc4mWf9kNvKg=;
+        b=IEr6gzI17udo+BrhXhHDpKwvQHsOZ+jQG48d07JgRrKNPkuXkmSN9T5EpYUA9uUf35
+         IlLEAw7zdplBrwSf1or7zKLhMNRl22bMMDfrupLbhnS7gia0nUu+vlopTep6M/l71MMj
+         dT5e/z1hybcv11PYN9LPCBa0eHJnGL9GnRhqkh9SIr4+CENUSU2+L+nkkN38w/h6zdVQ
+         DVsYT7mgwx9lKEKCYIvmw/qtPA0P4tnDmxvEMb5yYppC51z1o5cFWVwo5xovpccO0e0L
+         wYb/pNuoVCszWi8fywLHmnJe07THSqDAbSAlxDLwTxTgagapL02tBDIdcEnN5QzRcEBx
+         xavg==
+X-Gm-Message-State: AOJu0Yxen+pnfkouu2mXSWSbXZ0cqVrXaA22+/A+7q9ABRPJay4WMPKL
+        8wY83p0dNOp92tbTd/knaWqAMxG21oXRxnen+qqmDY3Kd7TGxQosJBsNIyLtLsB3zjLX/316cNG
+        O/FAFjymnZNzwJkZyYdzbYqK8
+X-Received: by 2002:a05:600c:214:b0:401:bcb4:f133 with SMTP id 20-20020a05600c021400b00401bcb4f133mr1317737wmi.22.1695800270782;
+        Wed, 27 Sep 2023 00:37:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF6GTWPyjdRalcEyKRa4+1Afbjfckld/pyknV9vE0PjXAKdAdSloWwE+dhutPySlcYVRFQJ4w==
+X-Received: by 2002:a05:600c:214:b0:401:bcb4:f133 with SMTP id 20-20020a05600c021400b00401bcb4f133mr1317712wmi.22.1695800270393;
+        Wed, 27 Sep 2023 00:37:50 -0700 (PDT)
+Received: from sgarzare-redhat ([46.222.19.70])
+        by smtp.gmail.com with ESMTPSA id e9-20020adfe7c9000000b003197efd1e7bsm2530401wrn.114.2023.09.27.00.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 00:37:49 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 09:37:46 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v1 12/12] test/vsock: io_uring rx/tx tests
+Message-ID: <46h5yyg62ize2woqu6rp5ebffuhrivo4y7fw3iknicozcaxiz5@ojfvm6qeqzam>
+References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
+ <20230922052428.4005676-13-avkrasnov@salutedevices.com>
+ <kfuzqzhrgdk5f5arbq4n3vd6vro6533aeysqhdgqevcqxrdm6e@57ylpkc2t4q4>
+ <708be048-862f-76ee-6671-16b54e72e5a8@salutedevices.com>
 MIME-Version: 1.0
-Message-ID: <3d665d21.883.18ad590c856.Coremail.chenguohua@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDHZD9W2xNl8fG9AA--.626W
-X-CM-SenderInfo: xfkh0w5xrk3tw6md2xgofq/1tbiAQAHEWUSpy8AOwATsA
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <708be048-862f-76ee-6671-16b54e72e5a8@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyBfX21heWJlX3VudXNlZAkgYmFyIiBzaG91bGQgYmUgImZvbyBfX21heWJlX3VudXNlZCBi
-YXIiCkVSUk9SOiAiZm9vKgliYXIiIHNob3VsZCBiZSAiZm9vICpiYXIiCgpTaWduZWQtb2ZmLWJ5
-OiBHdW9IdWEgQ2hlbmcgPGNoZW5ndW9odWFAamFyaS5jbj4KLS0tCiBkcml2ZXJzL3Njc2kvYWlj
-N3h4eC9haWM3eHh4LmggfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3
-eHh4LmggYi9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3eHh4LmgKaW5kZXggOWJjNzU1YTBhMmQz
-Li4zM2YxYTlhYzQ2ODIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvc2NzaS9haWM3eHh4L2FpYzd4eHgu
-aAorKysgYi9kcml2ZXJzL3Njc2kvYWljN3h4eC9haWM3eHh4LmgKQEAgLTUxMiw3ICs1MTIsNyBA
-QCBzdHJ1Y3QgYWhjX2RtYV9zZWcgewogc3RydWN0IHNnX21hcF9ub2RlIHsKIAlidXNfZG1hbWFw
-X3QJCSBzZ19kbWFtYXA7CiAJZG1hX2FkZHJfdAkJIHNnX3BoeXNhZGRyOwotCXN0cnVjdCBhaGNf
-ZG1hX3NlZyoJIHNnX3ZhZGRyOworCXN0cnVjdCBhaGNfZG1hX3NlZyAqc2dfdmFkZHI7CiAJU0xJ
-U1RfRU5UUlkoc2dfbWFwX25vZGUpIGxpbmtzOwogfTsKIApAQCAtNzExLDcgKzcxMSw3IEBAIHN0
-cnVjdCBhaGNfaW5pdGlhdG9yX3RpbmZvIHsKICAqIG5lZ290aWF0aW9uIGlzIHRoZSBzYW1lIHJl
-Z2FyZGxlc3Mgb2Ygcm9sZS4KICAqLwogc3RydWN0IGFoY190bW9kZV90c3RhdGUgewotCXN0cnVj
-dCBhaGNfdG1vZGVfbHN0YXRlKgllbmFibGVkX2x1bnNbQUhDX05VTV9MVU5TXTsKKwlzdHJ1Y3Qg
-YWhjX3Rtb2RlX2xzdGF0ZSAqZW5hYmxlZF9sdW5zW0FIQ19OVU1fTFVOU107CiAJc3RydWN0IGFo
-Y19pbml0aWF0b3JfdGluZm8JdHJhbnNpbmZvW0FIQ19OVU1fVEFSR0VUU107CiAKIAkvKgpAQCAt
-MTEzMiw3ICsxMTMyLDcgQEAgY29uc3Qgc3RydWN0IGFoY19wY2lfaWRlbnRpdHkJKmFoY19maW5k
-X3BjaV9kZXZpY2UoYWhjX2Rldl9zb2Z0Y190KTsKIGludAkJCSBhaGNfcGNpX2NvbmZpZyhzdHJ1
-Y3QgYWhjX3NvZnRjICosCiAJCQkJCWNvbnN0IHN0cnVjdCBhaGNfcGNpX2lkZW50aXR5ICopOwog
-aW50CQkJIGFoY19wY2lfdGVzdF9yZWdpc3Rlcl9hY2Nlc3Moc3RydWN0IGFoY19zb2Z0YyAqKTsK
-LXZvaWQgX19tYXliZV91bnVzZWQJIGFoY19wY2lfcmVzdW1lKHN0cnVjdCBhaGNfc29mdGMgKmFo
-Yyk7Cit2b2lkIF9fbWF5YmVfdW51c2VkIGFoY19wY2lfcmVzdW1lKHN0cnVjdCBhaGNfc29mdGMg
-KmFoYyk7CiAKIC8qKioqKioqKioqKioqKioqKioqKioqKioqKiogRUlTQS9WTCBGcm9udCBFbmQg
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiBzdHJ1Y3QgYWljNzc3MF9pZGVudGl0
-eSAqYWljNzc3MF9maW5kX2RldmljZSh1aW50MzJfdCk7Ci0tIAoyLjE3LjEK
+On Tue, Sep 26, 2023 at 11:00:19PM +0300, Arseniy Krasnov wrote:
+>
+>
+>On 26.09.2023 16:04, Stefano Garzarella wrote:
+>> On Fri, Sep 22, 2023 at 08:24:28AM +0300, Arseniy Krasnov wrote:
+>>> This adds set of tests which use io_uring for rx/tx. This test suite is
+>>> implemented as separated util like 'vsock_test' and has the same set of
+>>> input arguments as 'vsock_test'. These tests only cover cases of data
+>>> transmission (no connect/bind/accept etc).
+>>>
+>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>> ---
+>>> Changelog:
+>>> v5(big patchset) -> v1:
+>>>  * Use LDLIBS instead of LDFLAGS.
+>>>
+>>> tools/testing/vsock/Makefile           |   7 +-
+>>> tools/testing/vsock/vsock_uring_test.c | 321 +++++++++++++++++++++++++
+>>> 2 files changed, 327 insertions(+), 1 deletion(-)
+>>> create mode 100644 tools/testing/vsock/vsock_uring_test.c
+>>>
+>>> diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
+>>> index 1a26f60a596c..c84380bfc18d 100644
+>>> --- a/tools/testing/vsock/Makefile
+>>> +++ b/tools/testing/vsock/Makefile
+>>> @@ -1,12 +1,17 @@
+>>> # SPDX-License-Identifier: GPL-2.0-only
+>>> +ifeq ($(MAKECMDGOALS),vsock_uring_test)
+>>> +LDLIBS = -luring
+>>> +endif
+>>> +
+>>
+>> This will fails if for example we call make with more targets,
+>> e.g. `make vsock_test vsock_uring_test`.
+>>
+>> I'd suggest to use something like this:
+>>
+>> --- a/tools/testing/vsock/Makefile
+>> +++ b/tools/testing/vsock/Makefile
+>> @@ -1,13 +1,11 @@
+>>  # SPDX-License-Identifier: GPL-2.0-only
+>> -ifeq ($(MAKECMDGOALS),vsock_uring_test)
+>> -LDLIBS = -luring
+>> -endif
+>> -
+>>  all: test vsock_perf
+>>  test: vsock_test vsock_diag_test
+>>  vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
+>>  vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+>>  vsock_perf: vsock_perf.o
+>> +
+>> +vsock_uring_test: LDLIBS = -luring
+>>  vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
+>>
+>>  CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
+>>
+>>> all: test vsock_perf
+>>> test: vsock_test vsock_diag_test
+>>> vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
+>>> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+>>> vsock_perf: vsock_perf.o
+>>> +vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
+>>
+>> Shoud we add this new test to the "test" target as well?
+>
+>Ok, but in this case, this target will always depend on liburing.
+
+I think it's fine.
+
+If they want to run all the tests, they need liburing. If they don't
+want to build io_uring tests, they can just do `make vsock_test`.
+
+Stefano
+
