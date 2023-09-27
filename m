@@ -2,47 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFFC7B001A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A957B001B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjI0J2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 05:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        id S230417AbjI0J3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjI0J2o (ORCPT
+        with ESMTP id S229650AbjI0J3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:28:44 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A44ECC;
-        Wed, 27 Sep 2023 02:28:41 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vszxseh_1695806919;
-Received: from 30.97.48.70(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vszxseh_1695806919)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Sep 2023 17:28:39 +0800
-Message-ID: <89009348-9580-433a-05b5-1290116e7633@linux.alibaba.com>
-Date:   Wed, 27 Sep 2023 17:28:46 +0800
+        Wed, 27 Sep 2023 05:29:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFC0CC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 02:29:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49BF5C433C7;
+        Wed, 27 Sep 2023 09:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695806981;
+        bh=PoynAhC42Ct+N5LxHx/oBa8Zl3onSqNPhKu1yqqfuCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I46iMBznA20yjD8uhY5Qh9Ki6oMk1pBVm3P7nWXi/Mt6g5XG/sSBgeI+alGlhDjyv
+         Rp+wcfJ+1yNmiLkI99DrGrHYZ57KbA+kccDiooBhQPHxymj/oL5MCv0lxJAVPnAn0c
+         y9Ds7V8pNS/a4vQqy/nJD5Jo19U6zjcNoNokZKHlMZLpNbPHtCZeCDEbJDpQ5STvGa
+         tV0DK2K8ZhNPWhyjn2iIrCcc5mUAHbMHsupiyOzBrUjFuJEznhfEXWM8puzd8oxvMX
+         Kk2fxTFBxUct64Pg2DCGj4ceXwRsSe0W1gsCVHN/P3jRUPsls15U3mfVG7+Dn1TxKa
+         A+sG9yBWlHU5Q==
+Date:   Wed, 27 Sep 2023 11:29:39 +0200
+From:   Mark Brown <broonie@kernel.org>
+To:     Chancel Liu <chancel.liu@nxp.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
+        "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Re: [PATCH v2 1/2] ASoC: dt-bindings: fsl_rpmsg: List DAPM
+ endpoints ignoring system suspend
+Message-ID: <ZRP2A1hvuB8ZymBK@finisterre.sirena.org.uk>
+References: <20230925110946.3156100-1-chancel.liu@nxp.com>
+ <ZRF8KI11IVf6NzpL@finisterre.sirena.org.uk>
+ <DB9PR04MB94987AC750B4AB02DCBC44C8E3C2A@DB9PR04MB9498.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 4/4] gpio: sprd: Support 8 banks EIC controller
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230921090027.11136-1-Wenhua.Lin@unisoc.com>
- <20230921090027.11136-5-Wenhua.Lin@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230921090027.11136-5-Wenhua.Lin@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="M0KDERL2YfXElnfx"
+Content-Disposition: inline
+In-Reply-To: <DB9PR04MB94987AC750B4AB02DCBC44C8E3C2A@DB9PR04MB9498.eurprd04.prod.outlook.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,45 +73,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--M0KDERL2YfXElnfx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/21/2023 5:00 PM, Wenhua Lin wrote:
-> In order to solve the problem of insufficient eic,
-> it supports 8 banks of eic controller, each bank contains 8 eic.
-> 
-> Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> ---
->   drivers/gpio/gpio-eic-sprd.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index e85addbdf8aa..6bb002060c3e 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -51,10 +51,10 @@
->   #define SPRD_EIC_SYNC_DATA		0x1c
->   
->   /*
-> - * The digital-chip EIC controller can support maximum 3 banks, and each bank
-> + * The digital-chip EIC controller can support maximum 8 banks, and each bank
->    * contains 8 EICs.
->    */
-> -#define SPRD_EIC_MAX_BANK		3
-> +#define SPRD_EIC_MAX_BANK		8
->   #define SPRD_EIC_PER_BANK_NR		8
->   #define SPRD_EIC_DATA_MASK		GENMASK(7, 0)
->   #define SPRD_EIC_BIT(x)			((x) & (SPRD_EIC_PER_BANK_NR - 1))
-> @@ -615,9 +615,9 @@ static int sprd_eic_probe(struct platform_device *pdev)
->   
->   	for (i = 0; i < SPRD_EIC_MAX_BANK; i++) {
->   		/*
-> -		 * We can have maximum 3 banks EICs, and each EIC has
-> +		 * We can have maximum 8 banks EICs, and each EIC has
->   		 * its own base address. But some platform maybe only
-> -		 * have one bank EIC, thus base[1] and base[2] can be
-> +		 * have one bank EIC, thus base[1] and base[7] can be
+On Wed, Sep 27, 2023 at 03:07:49AM +0000, Chancel Liu wrote:
 
-Should be "base[1] to base[7]"
+> > This is a fairly standard DSP playback case as far as I can see so it
+> > should work with DAPM without needing this obviously use case specific
+> > stuff peering into the Linux implementation.  Generally this is done by
+> > tagging endpoint widgets and DAIs as ignore_suspend, DAPM will then
+> > figure out the rest of the widgets in the path.
 
->   		 * optional.
->   		 */
->   		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+> Yes, indeed I meant to let driver get DAPM endpoints from the "fsl,lpa-widgets"
+> property and then set these endpoints as ignore_suspend if the sound card is
+> running in this use case. Do you think the description for the use case can be
+> simplified since it's a common use case?
+
+This is a card problem - the driver for rpmsg shouldn't need to worry
+about it.  Any bindings extensions should be at the card level rather
+than in a specific driver, we could probably use something in the
+generic properties that they're all using.
+
+--M0KDERL2YfXElnfx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUT9gIACgkQJNaLcl1U
+h9Co/gf/YdAlws18Znc1Leg2ZPsdDGFeaWbgTuNgdJBfXu7DkM5EBpJwJitNdYBH
+ee4d/A5s4cPYEwNBF6APc8Kuoo6ZLSzUUVTIoEVo3hx90x3VMkYHMG4ZrmbGHM1j
+Q2Nb8wflfskYqPjLus1P4DcBWKulBIM1xfQGN3G4XZefa653qnNWGAoJLrIJr0BT
+z5wh8S+9QtDJosvub7my40MWeV9d4i3yNywRESPCV7oFQd6c0WwDPrW6XxUClSEt
+sKPmpp8TyP7AfzZoFiHYh3/97Qhm04LSjlNAybae7/XqRS6zFJGYi1rCSaT5Oaol
+AklEsC5VrCYgCthrJITSvQd79yOuyg==
+=w/+0
+-----END PGP SIGNATURE-----
+
+--M0KDERL2YfXElnfx--
