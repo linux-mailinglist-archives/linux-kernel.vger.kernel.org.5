@@ -2,586 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2648A7B01B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C87E7B01B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 12:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbjI0KXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 06:23:03 -0400
+        id S231324AbjI0KVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 06:21:04 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbjI0KWi (ORCPT
+        with ESMTP id S231309AbjI0KUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 06:22:38 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA16558A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:13:48 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c1886777d9so2388771fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 03:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695809626; x=1696414426; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/u3Zrh4RI0xKeh+3e3TWulmTeI9dbJqmlyHM38HtCjc=;
-        b=kPjw/pnTY56mbYe8FV+CIj5xckiD4pSs/Zw6slGXSzNb8XpMJMiVojFSaqmQFKIgN9
-         VWcWav70Fk/azaaMEM+Elf36kjDpc7JmUvzUa35eSB+5Ddy9pXFp656hmtjbsRyOyi2a
-         lxQHGpUocJqW+C7wWebLuNHHcidekTK2fMP6ATmRsiMO2D7ONXXNd9Io9t3dTTmpg7u5
-         b60Pnb46tO3qvfMxTJN0qZraTCyGWMIf7Rtfz427HS1ByMynRUG4NqDuY5DEyoeWA0yV
-         Lrf3lv5EHANBARpyY92+lMzU8bWvhb2P40C500Xg3nwaGwdpGzhKPrbeRYkm4WFmRD/4
-         DP2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695809626; x=1696414426;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/u3Zrh4RI0xKeh+3e3TWulmTeI9dbJqmlyHM38HtCjc=;
-        b=MV3TrHAkPaxVTcsALJP9oJ7WDIDKt9EK7vb24v8x366tisXeBEu6dbbKCYNnT5sQj7
-         V2b1VPoJ5H/U87VsfaDyI/0t083IxWXP39ZyJ4kDrGc0Z0ghJJkZMT0Q6a+NVhsaZhpp
-         Z25Hm/36igSeOP9Q9eY+9L9cB2g8bzMSsldTC7Jkb8qG4CgdM/dtlWwGbc3vjft5uOoD
-         7AvepvGeEW1ojfGmyW1edoswhMEKpYpnWVVxHeYOWWY3+Kl2wo50jWQFU5XASfPOPf3j
-         Oxe9GUllG32VSae8vxF1ORldYOkP8R0EahYDffSclZg+c5cCFN5YzHMp9/x92Gy+RMKS
-         iPNQ==
-X-Gm-Message-State: AOJu0YyBqDDpQhnG+ZUv/gBlxcRO9hwE9Gnz00momQ0Vmd6UDXBoxd0V
-        OQvZoCrb84RM2pU5gLoJSHH68sRxI89L/kU11jWlVvWtZmKoNQ==
-X-Google-Smtp-Source: AGHT+IHILvSLGRtgwWIbcfrZcmzkZ10z86Tmb9SB5Q/gh0TIdFywG+f85tsGn3w51GJjpWgQqmYmIt0bCNVGqRwfC+Y=
-X-Received: by 2002:a05:651c:c1:b0:2bf:b133:dd65 with SMTP id
- 1-20020a05651c00c100b002bfb133dd65mr1570766ljr.38.1695809626199; Wed, 27 Sep
- 2023 03:13:46 -0700 (PDT)
+        Wed, 27 Sep 2023 06:20:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0666D59CD;
+        Wed, 27 Sep 2023 03:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695809730; x=1727345730;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=QyykobWy8hhu10HtRDNj5hhSGyt6lb7pi4yabtQJzMw=;
+  b=Qtwg5nlttQFx7CpcYpb18TpMujigVmP5S5F5kFxJjacCkvF+L/Bq3Vj0
+   oc+BEQaYMzqGjL76/5r64vnisitjU1LkKRMqQVfRU+Jy26IOukgIO4GHs
+   8VTlG7Cf2s9YPTCxi2/aIADFzmcSgMrLNATEMeMmWwYGXfjh4hr2R2GN1
+   v0zH1WMxJlUSWBw6OeQ7KveOX0DdzMCXrQ9aIlkPCnI3OPvmnrQEFjvyP
+   Mm+sIOt9u6veQpQ/ClsHnY21TpvjrVBaDVxxzu5lVmqRdOe7JsvoJ8wOF
+   LZS3xRXiTJwa34tHRQ/+teuMHq50ut1tT+UOJeT/ajt9SGfk2DNR0kmDl
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="380661887"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="380661887"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 03:14:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="784268219"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="784268219"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 03:14:50 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 03:14:49 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 27 Sep 2023 03:14:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d4NH4UYYR+my6uOhSN4JSEnR+AoEXqyzECDpH/YQUp0yz9Tv3sJlfqKhNKFImivjEwxscQL06N+xW0i6QX0vXwWSDR4zT6bnZoDPCly0wrTx99dO9xF6L3OYpn3oVyoDKXXIT7fAzStbOLihhfehMZ+RkX7+DmsPFZaeX1f/Upk+Lcbqq3dGQ4Rc8SRC2CsRF9ND7p7ct5tpkApzL+3k9ceG9TJIzLqLQUkhbYAm7D0dkRLFR0kUXPznI10yDmuzBBr0J+Yx7Y3opmh0jbklaAgL/hP5nHnb2SOk0CxKI+XSkCY0yxeiKVsN0QAA0gZvupAhM2XuNAb1at45WXfS0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QyykobWy8hhu10HtRDNj5hhSGyt6lb7pi4yabtQJzMw=;
+ b=e0s+f9cHmC0s3mGSzynU8kWSLlLq4f+CHCvQXFa0KP2jjRIkO458BJaGI5xDHZgnbvNQxPZtUSl0frQHnTLE/5HTVuLI+tkWc1qQtAyjcIP5b//3gWtL38DNgtveq4hL1d5LfB9Vq8EUztxqQIFcXn5piZYO+21Dc9+yzDpmIeI9hq92XTt9b77KVhUF2zmK+eLQJZjOl7B6LkW/IX7JLqzx8I5QDZoRM7043bMnTGPKamNrztvx4cXUZpiCH8qUryChRmbkV3I83HlEBC98HPwZxUNE9EU+LcCmrZod/rQHyK7NvtEsaPj2DcBNG47eBlQWt4juAwjCAm+tfj9pDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CO1PR11MB4978.namprd11.prod.outlook.com (2603:10b6:303:91::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Wed, 27 Sep
+ 2023 10:14:41 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236%4]) with mapi id 15.20.6813.017; Wed, 27 Sep 2023
+ 10:14:41 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>
+CC:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 05/18] x86/sgx: Store reclaimable EPC pages in
+ sgx_epc_lru_lists
+Thread-Topic: [PATCH v5 05/18] x86/sgx: Store reclaimable EPC pages in
+ sgx_epc_lru_lists
+Thread-Index: AQHZ7csRtGAfUkK4dUedWW3EqxZKFbAue0EA
+Date:   Wed, 27 Sep 2023 10:14:41 +0000
+Message-ID: <0f6d88414ad6609575bfdd21b93fbf8ba92c3a14.camel@intel.com>
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+         <20230923030657.16148-6-haitao.huang@linux.intel.com>
+In-Reply-To: <20230923030657.16148-6-haitao.huang@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CO1PR11MB4978:EE_
+x-ms-office365-filtering-correlation-id: 5c4847aa-75a6-490c-7321-08dbbf42907b
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K1xHeO7Cw3sDph8EuFmFtxvJxZXF5Ass4KCNVLMIhOvmDi4TPz+zujEKfPjOAPJN1heRYU7Sm/bWGWclYxy3aRW/NwcUURFLdeZP0ljtvAs84I77ulMBEhPn/LHIRVBXK7hTU0hNONJVz8Ls4kXte5IJEdIHHaqSsWioCCcRneYmZEdVmJbUsPFq2F8TjJdw4lokq5qDsbJdF5BLSJpX5XfOHPSeHZugRsDuBjfp0DkaexOXRBDoIYZ8+eTRjxollZakv+BPUJrBYpNpl3WTo1x7ahliG8vngkJXU/nTKM1Gawk0QIkIBEh63F7rWNJ/3e9tCGQYbF1KbjGzX9OlzyctrUuH/+6zjvtBBcDIc4YI3/BYYlZ7vFGdNhGOs6dx/tmTu4W47qQBQdf9UKN8sXN3qPggMz47aR24SNlZrAFKavvO4kvbf4cRjeAOTUnj5zSElYiNlx3aaSzRv0W4IHLOmtBtxozxSAp1UItaZopKHbFxn0FjTtrICzt9IgoNzx9kHWV+C0ozRvbbGbOuMw4dy0F2G8K3AeRrP9RyeySx4wdwf7yCgUa6pmf9tZ649ntcdxElrb4yCx0H7O3FxhvumM9X/cbtYQa81MhggWwz0b5ssGWpuFZu9F9DcgX+5rZziiMSGQu+q4KdS+7DaA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(136003)(396003)(230922051799003)(451199024)(186009)(1800799009)(38070700005)(86362001)(4326008)(2616005)(6512007)(6506007)(316002)(66946007)(110136005)(122000001)(76116006)(91956017)(478600001)(38100700002)(26005)(921005)(66476007)(66446008)(66556008)(71200400001)(8676002)(82960400001)(8936002)(2906002)(5660300002)(4744005)(36756003)(64756008)(6486002)(7416002)(54906003)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SmJMaXNaTEVHTHFuMUFQWDI5dGx0eURWcGtCWCtDTlh0NkthSm9QUXZTU3hP?=
+ =?utf-8?B?RnlVUmw4dmtjQWJkSUZmc211YmxuNDJPZlFlWklrS3Y2U3VEY3BLQ1NqQW9t?=
+ =?utf-8?B?TVhybld6eDFvVU5PRGxSZmF1bFdBTnBnL0wzTFZQelE0aXJPQU0xZ0U2Y3Nh?=
+ =?utf-8?B?RTZvSUszNkVlSE5xaWswMWxSZ1VQaTBCMkN1SG9RaEc1WHlJR2tQazJpa0ox?=
+ =?utf-8?B?dFVON0NsSE0xUkpjbUd6dWV3RzF3eWxYN0pOWUVUS2Z4K0ROOGExNXhrMXlo?=
+ =?utf-8?B?c2E3UU9kYXFGMVUyMFF0ZmxIbVI0eXJPOEJIV1pmakZ4RVc0Z1JjTjBoTU15?=
+ =?utf-8?B?M05oamdMUVNCb3R2T1NuUm9OM2o1NS93U2Rzcm1SZXNGZWF0dGZFZUNGbWhM?=
+ =?utf-8?B?S1dlU0U3YlhIZENLQWhHM1lPYmhuemVqOE81S1R0cjZkWExtSUd4MDUzNklV?=
+ =?utf-8?B?c1ljd3U4SGhyV2MraDlZNW5OTmE5MERDVUlMYWJJRnVXTkNZQXkxVTAreGwr?=
+ =?utf-8?B?aFZLbVdxNXhKa1lIZkUxUkx1c3ZHV2FvMjIwenBpOXhpTjc5Um9QSU9ZUjBG?=
+ =?utf-8?B?NURKakhUWTJtNzV3OWZsc2s4RUxZcEVHSzFXK2ZWNkIvYnVWd0xVTVg5RWt2?=
+ =?utf-8?B?ck9rSlFlRVcxTkFDaC9VSnowTENtZ0RiSDhXUXcyc3pmaFUzckQrWmFyeGFI?=
+ =?utf-8?B?allFOFloMXNqYWpURTl5QWNZdGVBUmIrNFhzVXQ1R1U4eHkxWEpTbml5eDRO?=
+ =?utf-8?B?SEh3Y2o4aUFHcnU1M2szTEYvTUdPQzZIZWlub2VkMURuMk9uR1kvUjNUei9k?=
+ =?utf-8?B?YUNFOHJyUUFzRURFVy9TQVpXNmdvTmswSEFTRWhOT1F3RDRscUhvdEpjZ2s0?=
+ =?utf-8?B?eHNFT1NaZGdaY1lPSUFqeXJRT1hnYmRQeWVBUG5RY2hkZUtJbEZvaDVOSWpo?=
+ =?utf-8?B?U21QWmVnYlo5ZEM4ci9lZURJVVpHTHZScDFPQ3RTNUZaMGIxbWFtOFhqaVdi?=
+ =?utf-8?B?ZXl2WGw3OEtneGZDZzhkZWlpWE4yRTlBRldBaFFlRmpCOTZjaXVTbzlSRDMx?=
+ =?utf-8?B?cEdac25nYUlseVd5eDN2ZEg1NHRzY3A2Z2ZoZzVxRVpUMW1nVzZkYzU5RmhK?=
+ =?utf-8?B?S1IzU1UyVnF6NGtXemdaeDJjZ2RSUU9BQmdocEkzWEJOTWNYdDF6a3ZoejhB?=
+ =?utf-8?B?RkVwUUs4NEc4bTFIK0YxQXVldll1T1JxODRDWkVMMW9IMGdTMk9UM1BsVk1F?=
+ =?utf-8?B?d3BWUHk5d285NGZDMnVHNURSSW9hbkxUYXNyVU5UTkdseDFLaGtiZVFmWVB0?=
+ =?utf-8?B?ajZJM0JrdEg3aFF2Q2g3TWVzWEUvNDlEcTFiNWtaYWdzaENnYmI0QXRjU1p1?=
+ =?utf-8?B?NGR3MHNKeE9vZytSVTFWM2syeUwzL0cvbm9HR3VqT29xMWJLUzNUc21wQkMz?=
+ =?utf-8?B?bjBKeHZhV2NNK2JZRlI1TEF6L0xjUnUxWjlTcWJhQjU1OUJxcGlJRnB2T2dX?=
+ =?utf-8?B?c2xrbGxjMzlWQzhQN0ZtTmgxbGxVT2ErdGp0QmlOLzZySk9QT2tzY2FhMUlT?=
+ =?utf-8?B?TFQrZXBKM3k2TEhWM3d2YU95cDA4TFk0N0JqT1RmWDBEcEVOVDhzb3hTME5D?=
+ =?utf-8?B?dVQvNy8rZ05LYzBMMVVMdUYrQW9Remc3M3JqeWJ1Rldrb1Q4SGlnRUl6MkpL?=
+ =?utf-8?B?U0tOWTVMR0RmYXhTUjI4dzRLMk0vOTdENk4vQXE3S0FYODJhTml4M0JFY1ZE?=
+ =?utf-8?B?bWdXSEVYK3BybytWRkl2eEdENHJQZEp1WHNqdDdETWJnN0I3OVRYWmlmU2JQ?=
+ =?utf-8?B?STRteVhaM0tuSWJ6dmpaTjIrekpHT0RTOHZQbVFEZHhaQTRMQWRPRmlRRjhj?=
+ =?utf-8?B?eHZFMUFNMmsvcDhqdFh6bzdvUkdCYUtzeW9kbmU0MS9GM1puTnB5eVJPdVUv?=
+ =?utf-8?B?Q1BKcnQxRG5ULzZJSXJXMGZzMFI5L3p3Yzd5SzhEUVlXYlZKVlY1WGd5WTNF?=
+ =?utf-8?B?WE15eHpYMHFETlBmM2R5MjJoQ0NHaHU3azBTbGtkUGNiZWFtQTArMFh1YXlN?=
+ =?utf-8?B?ZFdOalYzdDM1WHAxMlkwWDI2TC9CTDBsekFNVnNzNHFxUWJiVzRRL0xHSFNY?=
+ =?utf-8?B?c1lMN3BvcnVpODVPdFhVQmE0T0puczIwTUN0N1BlOTJYVlpkSVpTaGFlakdX?=
+ =?utf-8?B?S0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AE6341413654C54699EE86A93C53A1E5@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CAPDJoNtU9Vuh87PxDkxo+7M_Kg_K4PPNGksPuW_guFbChYu-jA@mail.gmail.com>
- <20220601155702.176588-1-ariel.miculas@gmail.com> <CAPDJoNvZmeeU+T94rp8BJ0+bH5pDXQCEKPHiQF0Kcu=JrRRfrg@mail.gmail.com>
- <CAPDJoNsb-HtfOQhD6ntZ8Hqx3fv3WAh1U5Jd3GzyN5EwO8znWA@mail.gmail.com>
-In-Reply-To: <CAPDJoNsb-HtfOQhD6ntZ8Hqx3fv3WAh1U5Jd3GzyN5EwO8znWA@mail.gmail.com>
-From:   Ariel Miculas <ariel.miculas@gmail.com>
-Date:   Wed, 27 Sep 2023 13:13:34 +0300
-Message-ID: <CAPDJoNuR8pNa+rp-PG_eeS14EvpMBLAmjNf9JvL=+0QTpwww-w@mail.gmail.com>
-Subject: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
- PTRACE_PEEKUSER and PTRACE_POKEUSER
-To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c4847aa-75a6-490c-7321-08dbbf42907b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2023 10:14:41.5255
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Owjrt/htLr1AM4NADTxkDAWPaKp0CK13e5x4g8dBzRmtisugPezhcEZEm63xN6NTwRIgdHogBb4OJ78KaB69Hg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4978
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----------- Forwarded message ---------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Thu, Jun 9, 2022 at 1:31=E2=80=AFPM
-Subject: Fwd: [PATCH] powerpc/ptrace: Fix buffer overflow when
-handling PTRACE_PEEKUSER and PTRACE_POKEUSER
-To: <christophe.leroy@csgroup.eu>
-
-
-
-Forwarded Conversation
-Subject: [PATCH] powerpc/ptrace: Fix buffer overflow when handling
-PTRACE_PEEKUSER and PTRACE_POKEUSER
-------------------------
-
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Wed, Jun 1, 2022 at 12:36 PM
-To: <security@kernel.org>
-Cc: Ariel Miculas <ariel.miculas@gmail.com>
-
-
-This fixes the gdbserver issue on PPC32 described here:
-Link: https://linuxppc-dev.ozlabs.narkive.com/C46DRek4/debug-problems-on-pp=
-c-83xx-target-due-to-changed-struct-task-struct
-
-On PPC32, the user space code considers the floating point to be an
-array of unsigned int (32 bits) - the index passed in is based on
-this assumption.
-
-fp_state is a matrix consisting of 32 lines
-/* FP and VSX 0-31 register set /
-struct thread_fp_state {
-u64 fpr[32][TS_FPRWIDTH] attribute((aligned(16)));
-u64 fpscr; / Floating point status */
-};
-
-On PPC32, PT_FPSCR is defined as: (PT_FPR0 + 2*32 + 1)
-
-This means the fpr index validation allows a range from 0 to 65, leading
-to out-of-bounds array access. This ends up corrupting
-threads_struct->state, which holds the state of the task. Thus, threads
-incorrectly transition from a running state to a traced state and get
-stuck in that state.
-
-On PPC32 it's ok to assume that TS_FPRWIDTH is 1 because CONFIG_VSX is
-PPC64 specific. TS_FPROFFSET can be safely ignored, thus the assumption
-that fpr is an array of 32 elements of type u64 holds true.
-
-Solution taken from arch/powerpc/kernel/ptrace32.c
----
- arch/powerpc/kernel/ptrace/ptrace-fpu.c | 31 +++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-index 5dca19361316..4351f2bcd12d 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-@@ -6,9 +6,16 @@
-
- #include "ptrace-decl.h"
-
-+#ifdef CONFIG_PPC32
-+/* Macros to workout the correct index for the FPR in the thread struct */
-+#define FPRNUMBER(i) (((i) - PT_FPR0) >> 1)
-+#define FPRHALF(i) (((i) - PT_FPR0) & 1)
-+#define FPRINDEX(i) TS_FPRWIDTH * FPRNUMBER(i) * 2 + FPRHALF(i)
-+#endif
-+
- int ptrace_get_fpr(struct task_struct *child, int index, unsigned long *da=
-ta)
- {
--#ifdef CONFIG_PPC_FPU_REGS
-+#if defined(CONFIG_PPC_FPU_REGS) && !defined(CONFIG_PPC32)
-        unsigned int fpidx =3D index - PT_FPR0;
- #endif
-
-@@ -16,11 +23,21 @@ int ptrace_get_fpr(struct task_struct *child, int
-index, unsigned long *data)
-                return -EIO;
-
- #ifdef CONFIG_PPC_FPU_REGS
-+#ifdef CONFIG_PPC32
-+       /*
-+        * the user space code considers the floating point
-+        * to be an array of unsigned int (32 bits) - the
-+        * index passed in is based on this assumption.
-+        */
-+       *data =3D ((unsigned int *)child->thread.fp_state.fpr)
-+               [FPRINDEX(index)];
-+#else
-        flush_fp_to_thread(child);
-        if (fpidx < (PT_FPSCR - PT_FPR0))
-                memcpy(data, &child->thread.TS_FPR(fpidx), sizeof(long));
-        else
-                *data =3D child->thread.fp_state.fpscr;
-+#endif
- #else
-        *data =3D 0;
- #endif
-@@ -30,7 +47,7 @@ int ptrace_get_fpr(struct task_struct *child, int
-index, unsigned long *data)
-
- int ptrace_put_fpr(struct task_struct *child, int index, unsigned long dat=
-a)
- {
--#ifdef CONFIG_PPC_FPU_REGS
-+#if defined(CONFIG_PPC_FPU_REGS) && !defined(CONFIG_PPC32)
-        unsigned int fpidx =3D index - PT_FPR0;
- #endif
-
-@@ -38,11 +55,21 @@ int ptrace_put_fpr(struct task_struct *child, int
-index, unsigned long data)
-                return -EIO;
-
- #ifdef CONFIG_PPC_FPU_REGS
-+#ifdef CONFIG_PPC32
-+       /*
-+        * the user space code considers the floating point
-+        * to be an array of unsigned int (32 bits) - the
-+        * index passed in is based on this assumption.
-+        */
-+       ((unsigned int *)child->thread.fp_state.fpr)
-+               [FPRINDEX(index)] =3D data;
-+#else
-        flush_fp_to_thread(child);
-        if (fpidx < (PT_FPSCR - PT_FPR0))
-                memcpy(&child->thread.TS_FPR(fpidx), &data, sizeof(long));
-        else
-                child->thread.fp_state.fpscr =3D data;
-+#endif
- #endif
-
-        return 0;
---
-2.36.1
-
-
-
-----------
-From: Greg KH <gregkh@linuxfoundation.org>
-Date: Wed, Jun 1, 2022 at 12:44 PM
-To: Ariel Miculas <ariel.miculas@gmail.com>
-Cc: <security@kernel.org>
-
-
-On Wed, Jun 01, 2022 at 12:35:09PM +0300, Ariel Miculas wrote:
-> This fixes the gdbserver issue on PPC32 described here:
-> Link: https://linuxppc-dev.ozlabs.narkive.com/C46DRek4/debug-problems-on-=
-ppc-83xx-target-due-to-changed-struct-task-struct
-
-If this is a public issue, just post to the public mailing list for the
-subsystem and the developers and maintainers there can help you get this
-merged properly.
-
->
-> On PPC32, the user space code considers the floating point to be an
-> array of unsigned int (32 bits) - the index passed in is based on
-> this assumption.
->
-> fp_state is a matrix consisting of 32 lines
-> /* FP and VSX 0-31 register set /
-> struct thread_fp_state {
-> u64 fpr[32][TS_FPRWIDTH] attribute((aligned(16)));
-> u64 fpscr; / Floating point status */
-> };
->
-> On PPC32, PT_FPSCR is defined as: (PT_FPR0 + 2*32 + 1)
->
-> This means the fpr index validation allows a range from 0 to 65, leading
-> to out-of-bounds array access. This ends up corrupting
-> threads_struct->state, which holds the state of the task. Thus, threads
-> incorrectly transition from a running state to a traced state and get
-> stuck in that state.
->
-> On PPC32 it's ok to assume that TS_FPRWIDTH is 1 because CONFIG_VSX is
-> PPC64 specific. TS_FPROFFSET can be safely ignored, thus the assumption
-> that fpr is an array of 32 elements of type u64 holds true.
->
-> Solution taken from arch/powerpc/kernel/ptrace32.c
-
-Note, you did not properly sign-off on this commit, so it couldn't be
-applied anyway :(
-
-thanks,
-
-greg k-h
-
-
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Wed, Jun 1, 2022 at 12:47 PM
-To: Greg KH <gregkh@linuxfoundation.org>
-
-
-I wasn't sure about the security impact of this issue, that's why I
-sent it to this list.
-I will go ahead and send it to public lists if it's not a security
-sensitive issue.
-
-
-----------
-From: Greg KH <gregkh@linuxfoundation.org>
-Date: Wed, Jun 1, 2022 at 1:00 PM
-To: Ariel Miculas <ariel.miculas@gmail.com>
-Cc: <security@kernel.org>
-
-
-Please do not drop the list, that's a bit harsh for everyone else on
-it, now added back.
-
-On Wed, Jun 01, 2022 at 12:47:34PM +0300, Ariel Miculas wrote:
-> I wasn't sure about the security impact of this issue, that's why I sent =
-it
-> to this list.
-> I will go ahead and send it to public lists if it's not a security
-> sensitive issue.
-
-I do not know if this is a security issue, sorry, that wasn't very
-obvious from your patch submission.  And you were pointing at a very
-very old email thread, so are you sure nothing has happened there since
-then?
-
-thanks,
-
-greg k-h
-
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Wed, Jun 1, 2022 at 2:40 PM
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: <security@kernel.org>
-
-
-Sorry for dropping the list.
-To give a bit of context: I was working on the gdbserver issue (the
-one described in the link) on PPC32.
-I was able to find the root cause: a buffer overflow in thread_struct,
-more specifically in the field fpr in the structure thread_fp_state.
-I've validated this fix, but for an older kernel version: 4.14. I did
-not reproduce nor test the issue on the latest kernel version.
-However, by looking at the code and also the git logs, I've noticed
-that this is still an issue in the latest kernel version.
-To be on the safe side, I've emailed this list first because this
-might also be a security issue, unfortunately I do not have enough
-expertise to say for sure whether or not it is a security issue.
-Why I suspected it might be a security issue: this buffer overflow
-overwrites fields in the task_struct of other threads/processes.
-In the issue I was facing, a field that was overwritten was the state
-field, leading to a neighboring thread transitioning from the 'S'
-state to the 't' state, leading to that specific thread to no longer
-be scheduled.
-Maybe this could lead to a DOS since you could stop another process
-from being scheduled.
-Overwriting other fields may lead to some privilege escalation issue,
-but this is just a wild guess.
-So I need some help on this matter.
-
-Thanks,
-Ariel
-
-
-----------
-From: Eric W. Biederman <ebiederm@xmission.com>
-Date: Wed, Jun 1, 2022 at 6:04 PM
-To: Ariel Miculas <ariel.miculas@gmail.com>
-Cc: <security@kernel.org>
-
-
-Ariel Miculas <ariel.miculas@gmail.com> writes:
-
-> This fixes the gdbserver issue on PPC32 described here:
-> Link: https://linuxppc-dev.ozlabs.narkive.com/C46DRek4/debug-problems-on-=
-ppc-83xx-target-due-to-changed-struct-task-struct
->
-> On PPC32, the user space code considers the floating point to be an
-> array of unsigned int (32 bits) - the index passed in is based on
-> this assumption.
->
-> fp_state is a matrix consisting of 32 lines
-> /* FP and VSX 0-31 register set /
-> struct thread_fp_state {
-> u64 fpr[32][TS_FPRWIDTH] attribute((aligned(16)));
-> u64 fpscr; / Floating point status */
-> };
->
-> On PPC32, PT_FPSCR is defined as: (PT_FPR0 + 2*32 + 1)
->
-> This means the fpr index validation allows a range from 0 to 65, leading
-> to out-of-bounds array access. This ends up corrupting
-> threads_struct->state, which holds the state of the task. Thus, threads
-> incorrectly transition from a running state to a traced state and get
-> stuck in that state.
->
-> On PPC32 it's ok to assume that TS_FPRWIDTH is 1 because CONFIG_VSX is
-> PPC64 specific. TS_FPROFFSET can be safely ignored, thus the assumption
-> that fpr is an array of 32 elements of type u64 holds true.
->
-> Solution taken from arch/powerpc/kernel/ptrace32.c
-
-I have a little familiarity with ptrace, so I took a quick look,
-and I am confused.
-
-Doesn't sizeof(long) =3D=3D sizeof(int) =3D=3D 4  on 32bit power pc?
-I don't understand why you need a big comment about how
-the index is computed when that isn't changing.
-
-Doesn't the 32bit code need flush_fp_to_thread(child)?
-
-Don't the overflow checks for an index out of bounds need to be
-preserved?
-
-I am a bit lost about what makes the TS_FPR calculation wrong on 32bit?
-
-Eric
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Wed, Jun 1, 2022 at 6:48 PM
-To: Eric W. Biederman <ebiederm@xmission.com>
-Cc: <security@kernel.org>
-
-
-> Doesn't sizeof(long) =3D=3D sizeof(int) =3D=3D 4  on 32bit power pc?
-> I don't understand why you need a big comment about how
-> the index is computed when that isn't changing.
-I copied the comment from arch/powerpc/kernel/ptrace/ptrace32.c
-
-> Doesn't the 32bit code need flush_fp_to_thread(child)?
-Yes, you are right, this is my mistake.
-
-> Don't the overflow checks for an index out of bounds need to be
-> preserved?
-There is already a check at the beginning of the function:
-if (index > PT_FPSCR)
-   return -EIO;
-
-The other check was confusing for me also, but basically what happens is th=
-is:
-for the last valid index, the field fpscr in the structure
-thread_fp_state is returned/updated.
-
-On PPC32 bit, this check is not needed because the code is
-functionally equivalent:
-accessing fpr[32] will lead to accessing the next field in the
-structure, i.e. the field fpscr (the same thing that if/else condition
-is accomplishing).
-This happens because TS_FPRWIDTH is 1 on PPC32.
-
-> I am a bit lost about what makes the TS_FPR calculation wrong on 32bit?
-TS_FPR(i) uses i for indexing fp_state.fpr[i][TS_FPROFFSET]
-But fpr is defined as follows:
- u64 fpr[32][TS_FPRWIDTH] __attribute__((aligned(16)));
-
-It is an array of size 32.
-However, fpidx is validated like this:
-if (fpidx < (PT_FPSCR - PT_FPR0))
-
-And PT_FPSCR is defined as:
-#define PT_FPSCR (PT_FPR0 + 2*32 + 1)
-
-So PT_FPSCR - PT_FPR0 is 2*32+1 =3D 65
-Meaning fpidx has a maximum value of 64.
-fp_state.fpr[64][TS_FPROFFSET] is an out-of-range memory access.
-
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Wed, Jun 1, 2022 at 6:57 PM
-To: <security@kernel.org>
-Cc: Ariel Miculas <ariel.miculas@gmail.com>
-
-
-This fixes the gdbserver issue on PPC32 described here:
-Link: https://linuxppc-dev.ozlabs.narkive.com/C46DRek4/debug-problems-on-pp=
-c-83xx-target-due-to-changed-struct-task-struct
-
-On PPC32, the user space code considers the floating point to be an
-array of unsigned int (32 bits) - the index passed in is based on
-this assumption.
-
-fp_state is a matrix consisting of 32 lines
-/* FP and VSX 0-31 register set /
-struct thread_fp_state {
-u64 fpr[32][TS_FPRWIDTH] attribute((aligned(16)));
-u64 fpscr; / Floating point status */
-};
-
-On PPC32, PT_FPSCR is defined as: (PT_FPR0 + 2*32 + 1)
-
-This means the fpr index validation allows a range from 0 to 65, leading
-to out-of-bounds array access. This ends up corrupting
-threads_struct->state, which holds the state of the task. Thus, threads
-incorrectly transition from a running state to a traced state and get
-stuck in that state.
-
-On PPC32 it's ok to assume that TS_FPRWIDTH is 1 because CONFIG_VSX is
-PPC64 specific. TS_FPROFFSET can be safely ignored, thus the assumption
-that fpr is an array of 32 elements of type u64 holds true.
-
-Solution taken from arch/powerpc/kernel/ptrace32.c
-
-Signed-off-by: Ariel Miculas <ariel.miculas@gmail.com>
----
- arch/powerpc/kernel/ptrace/ptrace-fpu.c | 31 +++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-index 5dca19361316..93695abbbdfb 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-fpu.c
-@@ -6,9 +6,16 @@
-
- #include "ptrace-decl.h"
-
-+#ifdef CONFIG_PPC32
-+/* Macros to workout the correct index for the FPR in the thread struct */
-+#define FPRNUMBER(i) (((i) - PT_FPR0) >> 1)
-+#define FPRHALF(i) (((i) - PT_FPR0) & 1)
-+#define FPRINDEX(i) TS_FPRWIDTH * FPRNUMBER(i) * 2 + FPRHALF(i)
-+#endif
-+
- int ptrace_get_fpr(struct task_struct *child, int index, unsigned long *da=
-ta)
- {
--#ifdef CONFIG_PPC_FPU_REGS
-+#if defined(CONFIG_PPC_FPU_REGS) && !defined(CONFIG_PPC32)
-        unsigned int fpidx =3D index - PT_FPR0;
- #endif
-
-@@ -17,10 +24,20 @@ int ptrace_get_fpr(struct task_struct *child, int
-index, unsigned long *data)
-
- #ifdef CONFIG_PPC_FPU_REGS
-        flush_fp_to_thread(child);
-+#ifdef CONFIG_PPC32
-+       /*
-+        * the user space code considers the floating point
-+        * to be an array of unsigned int (32 bits) - the
-+        * index passed in is based on this assumption.
-+        */
-+       *data =3D ((unsigned int *)child->thread.fp_state.fpr)
-+               [FPRINDEX(index)];
-+#else
-        if (fpidx < (PT_FPSCR - PT_FPR0))
-                memcpy(data, &child->thread.TS_FPR(fpidx), sizeof(long));
-        else
-                *data =3D child->thread.fp_state.fpscr;
-+#endif
- #else
-        *data =3D 0;
- #endif
-@@ -30,7 +47,7 @@ int ptrace_get_fpr(struct task_struct *child, int
-index, unsigned long *data)
-
- int ptrace_put_fpr(struct task_struct *child, int index, unsigned long dat=
-a)
- {
--#ifdef CONFIG_PPC_FPU_REGS
-+#if defined(CONFIG_PPC_FPU_REGS) && !defined(CONFIG_PPC32)
-        unsigned int fpidx =3D index - PT_FPR0;
- #endif
-
-@@ -39,10 +56,20 @@ int ptrace_put_fpr(struct task_struct *child, int
-index, unsigned long data)
-
- #ifdef CONFIG_PPC_FPU_REGS
-        flush_fp_to_thread(child);
-+#ifdef CONFIG_PPC32
-+       /*
-+        * the user space code considers the floating point
-+        * to be an array of unsigned int (32 bits) - the
-+        * index passed in is based on this assumption.
-+        */
-+       ((unsigned int *)child->thread.fp_state.fpr)
-+               [FPRINDEX(index)] =3D data;
-+#else
---
-2.36.1
-
-
-
-----------
-From: Greg KH <gregkh@linuxfoundation.org>
-Date: Thu, Jun 2, 2022 at 9:27 AM
-To: Ariel Miculas <ariel.miculas@gmail.com>
-Cc: <security@kernel.org>
-
-
-THis type of #ifdef in .c code is unmaintainable over time.  Can you put
-it properly in a .h file somehow to make it simpler and easier to
-understand and support?
-
-thanks,
-
-greg k-h
-
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Thu, Jun 2, 2022 at 12:24 PM
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: <security@kernel.org>
-
-
-I will send it to you shortly, but I will switch to my corporate email addr=
-ess.
-
-
-----------
-From: Ariel Miculas <ariel.miculas@gmail.com>
-Date: Mon, Jun 6, 2022 at 7:45 PM
-To: <ariel.miculas@belden.com>, <mpe@ellerman.id.au>
+T24gRnJpLCAyMDIzLTA5LTIyIGF0IDIwOjA2IC0wNzAwLCBIYWl0YW8gSHVhbmcgd3JvdGU6DQo+
+IC0tLSBhL2FyY2gveDg2L2tlcm5lbC9jcHUvc2d4L21haW4uYw0KPiArKysgYi9hcmNoL3g4Ni9r
+ZXJuZWwvY3B1L3NneC9tYWluLmMNCj4gQEAgLTI2OCw3ICsyNjgsNiBAQCBzdGF0aWMgdm9pZCBz
+Z3hfcmVjbGFpbWVyX3dyaXRlKHN0cnVjdCBzZ3hfZXBjX3BhZ2UgKmVwY19wYWdlLA0KPiDCoAkJ
+CWdvdG8gb3V0Ow0KPiDCoA0KPiDCoAkJc2d4X2VuY2xfZXdiKGVuY2wtPnNlY3MuZXBjX3BhZ2Us
+ICZzZWNzX2JhY2tpbmcpOw0KPiAtDQo+IMKgCQlzZ3hfZW5jbF9mcmVlX2VwY19wYWdlKGVuY2wt
+PnNlY3MuZXBjX3BhZ2UpOw0KPiDCoAkJZW5jbC0+c2Vjcy5lcGNfcGFnZSA9IE5VTEw7DQo+IMKg
+DQoNCk5pdDogcGVyaGFwcyB1bmludGVuZGVkIGNoYW5nZS4NCg==
