@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 646257AFA4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCC67AFA4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbjI0Fr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S229765AbjI0Fre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjI0Fqx (ORCPT
+        with ESMTP id S229794AbjI0Fqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 01:46:53 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC37FCFB;
-        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c328b53aeaso92557875ad.2;
-        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAE6CFF
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:37:07 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a1df5b7830so64124877b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:37:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695793018; x=1696397818; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C5K+YRG5hEOKPK/kmH64oQd5ruJEAzi5Tg3xBRrxYzk=;
-        b=B0K7lAp1JwVX/J0r3BdSJrcoFedWjtfaWNKJzid9PR34woY9v4ezw0mAHT2AB4+7P8
-         62vL5ue4nmE9mwsugbR9QTv/PL6AhRxVILcRmhqqE0T0WP7pSWZJlG/3WOftiAQgCoJn
-         6++cBrymicbP1lJOZ4ILf6D9h5gz64lkAmrTUMQuaXMz6YGDwoNL1NqlIC66MnR3h16/
-         7MFcP7pvbo2u8jMOvQPwTTq4YxU6zEYDSSlhE9MjgMVEoH0ZMt3I3te6gkl8BKdkivqc
-         r58DDkbj28f+JhESGxWP+GtVv7w9bVZfOXJLqRGUR6PaqHDrEj5DqaBA1HeahtQaidm1
-         8eEw==
+        d=google.com; s=20230601; t=1695793027; x=1696397827; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hQjpvsz8B6fWGFRS892bByH0/TfLx87GHgF3C9zLecE=;
+        b=r8u2u8aUVw4N37UsmIXh1E9gbopc+mFYZC5VAqhp7WzGbub79chi3JA5deBD0vC/+u
+         nqCkF4PSOEQKBvpkkFgVp0EBZEmp/2J2BV5Mnz0S/pluU7CAurBKUVhhhukCp73xFiik
+         TExlJYTBlK9dGnBsnCOvkkuY9CB7YMTHmbs3gtrbN/rsbu/SHlskKKJZGT0/qB82dIIz
+         rZ7TucWHpvCeXgLyi+BafsfLYqQi19dFI2HEZdcrEHN0u2vjsX9h3280/iUlBsxcNQ8J
+         cIHcplL0NJpgirBgYC3LalFGcu6pCAwvB4R7W/mRdUL8v2VM1wr0NQ8zLrQzgLnkkprT
+         phmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695793018; x=1696397818;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C5K+YRG5hEOKPK/kmH64oQd5ruJEAzi5Tg3xBRrxYzk=;
-        b=WhDcjHwswPgkZhdLUEe79jxZG9Az3Reh/hpVHv+olc+lz++iX1VA+OcIuYSwBb14mA
-         tLdG9t9NGzMMXMPcslxMayraj/IkQYB6pNwmZlNt2Q0JquNLR741WVuXuyEAAVTTNzw9
-         iDAWbwhXmCKJvp9Tb7SV5Tk9irnAeAev73c3TbguKxxSFlmzm0mz3MQJNi4ybJF2Ol3v
-         5BBzJMl6ogRKs0IjI23v+Mm1xWTtta/ORzptCAVCMegjQ28Hbq2n2FdZHKYwbrlaHNef
-         cJxvtQ1ZYevnK+jhlY2GLSccPRRZWOvt5cNMrLY2CYiNFNx1x6vH1V7KPKjjRYeUUGI2
-         ikrA==
-X-Gm-Message-State: AOJu0YxAlnD7/XYvATR0VO0pikeJRmxSNYQfo1LTFN7A1hoX/6qEfc6t
-        Ld6vA32AcEtduoFu/TwzJD4=
-X-Google-Smtp-Source: AGHT+IFN4heEvUer+8gFJIklOaZkFFkAm1hR3qOkt+vqDOUafnU5Y4o6XGI+3Aqa5UhYIYKD317NGA==
-X-Received: by 2002:a17:902:e549:b0:1bf:2e5c:7367 with SMTP id n9-20020a170902e54900b001bf2e5c7367mr1042791plf.42.1695793018271;
-        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
-Received: from ?IPV6:ddf2:f99b:21f4::3? ([2401:5a0:1000:1e::a])
-        by smtp.gmail.com with ESMTPSA id jh1-20020a170903328100b001c60635c13esm7558557plb.115.2023.09.26.22.36.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Sep 2023 22:36:57 -0700 (PDT)
-Message-ID: <b290c417-de1b-4af8-9f5e-133abb79580d@gmail.com>
-Date:   Wed, 27 Sep 2023 13:36:52 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   dianlujitao@gmail.com
-Subject: Re: Fwd: kernel bug when performing heavy IO operations
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
-References: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
- <ZOrG5698LPKTp5xM@casper.infradead.org>
- <7d8b4679-5cd5-4ba1-9996-1a239f7cb1c5@gmail.com>
- <ZOs5j93aAmZhrA/G@casper.infradead.org>
-Content-Language: en-US
-In-Reply-To: <ZOs5j93aAmZhrA/G@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1695793027; x=1696397827;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hQjpvsz8B6fWGFRS892bByH0/TfLx87GHgF3C9zLecE=;
+        b=M1gNRiSiy+J2BXN8QJxEMj3yRGEXReaHZp/sX/nPrMGPqnYjujxfbhPI8TOqJktbAN
+         r+aFswIcLmjJW1xAnuVwQbb6OmsWvJOULhIMnXhorWxsEOs48eTEXFUJ25D5OadpFu2F
+         eUAhKHNqj2x/j8/HQvKeS8GxBt7nuU7Hb2Efw5SU0ZUSP9frzAa29EifiEtlLhGZkQ5w
+         HeP21B68VoDVvSL0Q9VYC4foBszsnRAo8u9JVwg4o8xikB+HNps9/S8R4ILAjS8ljvgR
+         rXVowggyRrKfku7NTVHv1PB2myx895XgJrCesvhNUbAdPUlReoQshNG5btx0FbO9ZZBR
+         YXEg==
+X-Gm-Message-State: AOJu0YwH/qSWOq7MP/YEY1QkV4sGQ4IJRQoA2cqlJlJADm1mU7wBUJ0o
+        a39qNVB/lf8hsvCWt5YtrSfHU42ih5yzpdfJwQ==
+X-Google-Smtp-Source: AGHT+IF2eTEQrA0AUAFSM3JAhkULrL3njtW9SQSuwZCDD1tPWpemdoG+Uf54B2wD+F5KHhTY4D/ysfwkHPl6cGxMCg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:4293:0:b0:d81:7617:a397 with SMTP
+ id p141-20020a254293000000b00d817617a397mr10857yba.9.1695793027117; Tue, 26
+ Sep 2023 22:37:07 -0700 (PDT)
+Date:   Wed, 27 Sep 2023 05:37:06 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAIG/E2UC/x2NwQrCMBAFf6Xs2YUYKTH+iojY5Gn30DTsllIp/
+ XeDx4FhZieDCoxu3U6KVUzm0uB86iiNr/IBS25M3vmLiz6wLVpS/XJWWaHGk1hioOo8NXV5XuN YYRsnHlxE7nsXhpCp9ariLdv/dX8cxw+rCT1JewAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695793026; l=2217;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=YmUsybfVQe5zWGf5jAxBKfMLPjPHkISPd1MoaRXDQM0=; b=NnPpHhicfwRq3aw0g0ffOiYeu9GpDcJMkqekY6y7VMB3EAjMVg8b06HE/BZGpYy5L/gyLcJUP
+ aMjUtWcfbOrCSXGxoVEFAkSnAjny2kZpdesatoBbkprjuWZXvxOIMzT
+X-Mailer: b4 0.12.3
+Message-ID: <20230927-strncpy-drivers-misc-eeprom-idt_89hpesx-c-v1-1-08e3d45b8c05@google.com>
+Subject: [PATCH] eeprom: idt_89hpesx: replace open-coded kmemdup_nul
+From:   Justin Stitt <justinstitt@google.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,113 +75,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I got some logs with 6.5.4 kernel from the official linux package 
-of Arch, no zen patches this time. Full dmesg is uploaded to 
-https://fars.ee/F1yM and below is a small snippet for your convenience, 
-from which PG_offline is no longer set:
+A malloc + strncpy + manual NUL_termination is just kmemdup_nul. Let's use
+this interface as it is less error-prone and more readable.
 
-[177850.039441] BUG: Bad page map in process ld.lld pte:8000000edacc4025 
-pmd:147f96067
-[177850.039454] page:000000007415dd6c refcount:22 mapcount:-237 
-mapping:00000000b0c37ca6 index:0x1075 pfn:0xedacc4
-[177850.039460] memcg:ffff9289345d4000
-[177850.039463] aops:btrfs_aops [btrfs] ino:fb2b838 dentry name:"lld"
-[177850.039592] flags: 
-0xaffff9800002056(referenced|uptodate|lru|workingset|private|node=1|zone=2|lastcpupid=0xffff)
-[177850.039597] page_type: 0xffffff12(buddy|0x6d)
-[177850.039602] raw: 0affff9800002056 ffffe7623b6b3148 ffffe7623b6b3088 
-ffff928202a9fc10
-[177850.039605] raw: 0000000000001075 0000000000000001 00000016ffffff12 
-ffff9289345d4000
-[177850.039607] page dumped because: bad pte
-[177850.039608] addr:0000000001275000 vm_flags:08000071 
-anon_vma:0000000000000000 mapping:ffff928202a9fc10 index:1075
-[177850.039612] file:lld fault:filemap_fault mmap:btrfs_file_mmap 
-[btrfs] read_folio:btrfs_read_folio [btrfs]
-[177850.039846] CPU: 40 PID: 2060138 Comm: ld.lld Tainted: G           
-OE      6.5.4-arch2-1 #1 a30a3b4701899b64bf6025fd97642e50bf2dcad4
-[177850.039851] Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G 
-Server, BIOS 5.11 06/30/2022
-[177850.039853] Call Trace:
-[177850.039857]  <TASK>
-[177850.039864]  dump_stack_lvl+0x47/0x60
-[177850.039871]  print_bad_pte+0x1bc/0x280
-[177850.039879]  ? page_remove_rmap+0x8d/0x260
-[177850.039885]  unmap_page_range+0xa96/0x1150
-[177850.039894]  unmap_vmas+0xf8/0x190
-[177850.039900]  exit_mmap+0xe4/0x310
-[177850.039909]  __mmput+0x3e/0x130
-[177850.039916]  do_exit+0x31c/0xb20
-[177850.039920]  ? futex_wait_queue+0x63/0x90
-[177850.039927]  do_group_exit+0x31/0x80
-[177850.039932]  get_signal+0x9a5/0x9e0
-[177850.039941]  arch_do_signal_or_restart+0x3e/0x270
-[177850.039947]  exit_to_user_mode_prepare+0x185/0x1e0
-[177850.039955]  syscall_exit_to_user_mode+0x1b/0x40
-[177850.039962]  do_syscall_64+0x6c/0x90
-[177850.039969]  ? do_futex+0x128/0x190
-[177850.039973]  ? __x64_sys_futex+0x129/0x1e0
-[177850.039977]  ? switch_fpu_return+0x50/0xe0
-[177850.039986]  ? syscall_exit_to_user_mode+0x2b/0x40
-[177850.039991]  ? do_syscall_64+0x6c/0x90
-[177850.039996]  ? exc_page_fault+0x7f/0x180
-[177850.040002]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[177850.040009] RIP: 0033:0x7f1851e164ae
-[177850.040056] Code: Unable to access opcode bytes at 0x7f1851e16484.
-[177850.040058] RSP: 002b:00007f18227fbd30 EFLAGS: 00000246 ORIG_RAX: 
-00000000000000ca
-[177850.040063] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
-00007f1851e164ae
-[177850.040066] RDX: 0000000000000000 RSI: 0000000000000189 RDI: 
-0000000005818134
-[177850.040068] RBP: 0000000000000000 R08: 0000000000000000 R09: 
-00000000ffffffff
-[177850.040070] R10: 0000000000000000 R11: 0000000000000246 R12: 
-0000000000000000
-[177850.040072] R13: 00000000058180e0 R14: 0000000000000000 R15: 
-0000000005818134
-[177850.040078]  </TASK>
-[177850.040112] Disabling lock debugging due to kernel taint
+Also drop `csraddr_len` as it is just used in a single place and we can
+just do the arithmetic in-line.
 
-在 2023/8/27 19:54, Matthew Wilcox 写道:
-> On Sun, Aug 27, 2023 at 12:34:54PM +0800, dianlujitao wrote:
->> 在 2023/8/27 11:45, Matthew Wilcox 写道:
->>> On Sun, Aug 27, 2023 at 10:20:51AM +0700, Bagas Sanjaya wrote:
->>>>> When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
->>>>>
->>>>> 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
->>>>> 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
->>>>> 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
->>>>> 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
->>>>> 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
->>>>> 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
->>> This is interesting.  PG_offline is set.
->>>
->>> $ git grep SetPageOffline
->>> arch/powerpc/platforms/powernv/memtrace.c:              __SetPageOffline(pfn_to_page(pfn));
->>> drivers/hv/hv_balloon.c:                        __SetPageOffline(pg);
->>> drivers/hv/hv_balloon.c:                        __SetPageOffline(pg + j);
->>> drivers/misc/vmw_balloon.c:             __SetPageOffline(page + i);
->>> drivers/virtio/virtio_mem.c:            __SetPageOffline(page);
->>> drivers/xen/balloon.c:  __SetPageOffline(page);
->>> include/linux/balloon_compaction.h:     __SetPageOffline(page);
->>> include/linux/balloon_compaction.h:     __SetPageOffline(page);
->>>
->>> But there's no indication that this kernel is running under a
->>> hypervisor:
->>>
->>>>> 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
->> Yes, I'm running on bare metal hardware.
->>> So I'd agree with Artem, this looks like bad RAM.
->>>
->> I ran memtest86+ 6.20 for a cycle and it passed. However, could an OOM
->> trigger the bug? e.g., kernel bug fired before the OOM killer has a
->> chance to start? Just a guess because the last log entry in journalctl
->> before "BUG" is an hour earlier.
-> The problem is that OOM doesn't SetPageOffline.  The only things that
-> do are hypervisor guest drivers.  So we've got a random bit being
-> cleared, and either that's a stray write which happens to land in
-> the struct page in question, or it's bad hardware.  Since it's a
-> single bit that's being cleared, bad hardware is the most likely
-> explanation, but it's not impossible for there to be a bug that's
-> doing this.  The problem is that it could be almost anything ...
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/misc/eeprom/idt_89hpesx.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
+index 1d1f30b5c426..d807d08e2614 100644
+--- a/drivers/misc/eeprom/idt_89hpesx.c
++++ b/drivers/misc/eeprom/idt_89hpesx.c
+@@ -905,7 +905,7 @@ static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
+ {
+ 	struct idt_89hpesx_dev *pdev = filep->private_data;
+ 	char *colon_ch, *csraddr_str, *csrval_str;
+-	int ret, csraddr_len;
++	int ret;
+ 	u32 csraddr, csrval;
+ 	char *buf;
+ 
+@@ -927,21 +927,16 @@ static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
+ 	 * no new CSR value
+ 	 */
+ 	if (colon_ch != NULL) {
+-		csraddr_len = colon_ch - buf;
+-		csraddr_str =
+-			kmalloc(csraddr_len + 1, GFP_KERNEL);
++		/* Copy the register address to the substring buffer */
++		csraddr_str = kmemdup_nul(buf, colon_ch - buf, GFP_KERNEL);
+ 		if (csraddr_str == NULL) {
+ 			ret = -ENOMEM;
+ 			goto free_buf;
+ 		}
+-		/* Copy the register address to the substring buffer */
+-		strncpy(csraddr_str, buf, csraddr_len);
+-		csraddr_str[csraddr_len] = '\0';
+ 		/* Register value must follow the colon */
+ 		csrval_str = colon_ch + 1;
+ 	} else /* if (str_colon == NULL) */ {
+ 		csraddr_str = (char *)buf; /* Just to shut warning up */
+-		csraddr_len = strnlen(csraddr_str, count);
+ 		csrval_str = NULL;
+ 	}
+ 
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230927-strncpy-drivers-misc-eeprom-idt_89hpesx-c-b09ed5507b7d
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
