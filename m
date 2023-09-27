@@ -2,120 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D497AFF8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334A67AFF8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 11:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjI0JLW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 05:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
+        id S229536AbjI0JMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 05:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjI0JLQ (ORCPT
+        with ESMTP id S229534AbjI0JMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 05:11:16 -0400
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F86BF;
-        Wed, 27 Sep 2023 02:11:13 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-59c0d329a8bso131600407b3.1;
-        Wed, 27 Sep 2023 02:11:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695805872; x=1696410672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kT5xQELVLk7uusSSsznnnd5tIH8qDLjO1UEAzy07OsA=;
-        b=Yuo+bPsfxjO0oPNDawp8TCWQLa85WrM80BTN0oAutD1V3p0Osszngb0DyEtD2+n7r7
-         0AgXQRBfOF6JkDknZQV2r+SJwJkbdhDtjviDQPjMib2p/wvWkXOkr4a39fpArHTH8tWb
-         f21MPgznaoIZDNjxQCxbyRvHBOMW2emxqYtIkbzb30itOVv0WmQjwCT0It5OLyO2Yzda
-         768qZAYKAxqqgoqsU3vKLIKpnOCi5JZgqNdMgn/PMUlb4aco/qAK7EQwaHjuHWp9lyip
-         68qooiqSefN9R5N10HDQ5EYhL7gq+5u8D6FFqb39avt0bS7PnzwUe4XCLmhx5jMzhoNP
-         EF7w==
-X-Gm-Message-State: AOJu0Yw/RWvtbj6Zy9xIHwyR+qola6TqgimVK80q8U0w6FmwT1sjSaEE
-        2EU3sKl+uTgpBBTeewUh7k0Fj/84UJ6LHg==
-X-Google-Smtp-Source: AGHT+IFJ74w9GvEdlwxKPeVi2H1pLKC9BHDPLx0a2JuDv/hhfQKppSj6zXfXnv9pu61WI/PN78QHKA==
-X-Received: by 2002:a0d:d415:0:b0:569:479f:6d7f with SMTP id w21-20020a0dd415000000b00569479f6d7fmr1702501ywd.43.1695805872377;
-        Wed, 27 Sep 2023 02:11:12 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id gq10-20020a05690c444a00b0059f5828346csm2374946ywb.3.2023.09.27.02.11.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 02:11:11 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59bc956b029so131375657b3.2;
-        Wed, 27 Sep 2023 02:11:11 -0700 (PDT)
-X-Received: by 2002:a0d:c946:0:b0:59b:fb69:1639 with SMTP id
- l67-20020a0dc946000000b0059bfb691639mr1846689ywd.32.1695805871578; Wed, 27
- Sep 2023 02:11:11 -0700 (PDT)
+        Wed, 27 Sep 2023 05:12:34 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F8E92;
+        Wed, 27 Sep 2023 02:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695805951; x=1727341951;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wPhgzEHO2NaRyB1WCgPNeiw3UuWNC+N8/u1LEawKUZY=;
+  b=MraGSZxWy2e+uksJlp2eMCNinTBBduOiLUVWUoXZkaq6kQ8GnujT7pSK
+   1+WoCPWBB2a6Tde4hgjK5/D7hRvfcMEzxIDA+68ju6bd7xCyANFJnIDa1
+   TIvKojVgDP7T9w+wOvCFDDteeFDl55k11EQxP1OhmRuSGZ/6P4FgWaMVz
+   nzmn89QBeiyP0maPK/WJ4SV1mSKB8tmi0aZqomefUZGmrq8kPQ6GcgJI6
+   NbSPU/L8fmoQ2lt+o6OFFxmcKZVWsJnLeIvDdtL5Wp9Oyp+SHsKJbqGwB
+   wkuFaF6fTyjyeiHFz32uPiU2pKnM2pKO7gFKn9bp2b1aoJiuovqO1CnLF
+   w==;
+X-CSE-ConnectionGUID: QipB8j7QTkSlnvEe88bcxg==
+X-CSE-MsgGUID: hEHH/xoXRLmujSkIgqtwVA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="asc'?scan'208";a="6836511"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Sep 2023 02:12:30 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 27 Sep 2023 02:12:04 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 27 Sep 2023 02:12:00 -0700
+Date:   Wed, 27 Sep 2023 10:11:42 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Ming Qian <ming.qian@nxp.com>, Conor Dooley <conor@kernel.org>,
+        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
+        Tao Jiang <tao.jiang_2@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Message-ID: <20230927-dismantle-retinal-2f5dc8c6c235@wendy>
+References: <20230926101000.13392-1-ming.qian@nxp.com>
+ <20230926101000.13392-2-ming.qian@nxp.com>
+ <20230926-slackness-target-b74e33ab1031@spud>
+ <AM6PR04MB6341B0D9EC8146149CF8ADB0E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <54c87219-de9f-4c5b-9c70-11de22c7c612@linaro.org>
 MIME-Version: 1.0
-References: <20230926210818.197356-1-fabrizio.castro.jz@renesas.com>
- <20230926210818.197356-2-fabrizio.castro.jz@renesas.com> <CAMuHMdUibHxPBCLbeWdNrEk_szm+o4cOcskEMZAqUufNTzQKMQ@mail.gmail.com>
- <ZRPvHJXbuZ9Db2Go@finisterre.sirena.org.uk>
-In-Reply-To: <ZRPvHJXbuZ9Db2Go@finisterre.sirena.org.uk>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Sep 2023 11:10:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUv8FFwkde8K3Ta8FEWrkkJ=9ZqbTi1EO8sRxVOhGtvzQ@mail.gmail.com>
-Message-ID: <CAMuHMdUv8FFwkde8K3Ta8FEWrkkJ=9ZqbTi1EO8sRxVOhGtvzQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: renesas,rzv2m-csi: Add SPI Slave related properties
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r5M0Lyh3zCCR/Z6Y"
+Content-Disposition: inline
+In-Reply-To: <54c87219-de9f-4c5b-9c70-11de22c7c612@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+--r5M0Lyh3zCCR/Z6Y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 27, 2023 at 11:00 AM Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Sep 27, 2023 at 09:59:05AM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Sep 26, 2023 at 11:08 PM Fabrizio Castro
-> > > +    type: boolean
-> > > +    description:
-> > > +      Use CSI Slave Selection (SS) pin to enable transmission and reception when
-> > > +      in slave mode.
->
-> > Can't this be done in a more generic way? I had expected that the
-> > existing SPI_NO_CS flag can be set using a property in the "slave" subnode,
-> > but apparently there is no "spi-no-cs" property defined yet.
->
-> The description is clearly saying there is a chip select, _NO_CS seems
-> entirely inappropriate.  It's not specified in the device tree because
-> when there's no chip select for a device it's a fundamental property of
-> how the device is controlled and we don't need any information beyond
-> the compatible.
+On Wed, Sep 27, 2023 at 10:10:40AM +0200, Krzysztof Kozlowski wrote:
+> On 27/09/2023 04:10, Ming Qian wrote:
+> >> From: Conor Dooley <conor@kernel.org>
+> >> Sent: 2023=E5=B9=B49=E6=9C=8826=E6=97=A5 21:26
+> >> To: Ming Qian <ming.qian@nxp.com>
+> >> Cc: Mirela Rabulea (OSS) <mirela.rabulea@oss.nxp.com>;
+> >> robh+dt@kernel.org; shawnguo@kernel.org;
+> >> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+> >> mchehab@kernel.org; hverkuil-cisco@xs4all.nl; s.hauer@pengutronix.de;
+> >> kernel@pengutronix.de; festevam@gmail.com; X.H. Bao
+> >> <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>; Tao Jiang
+> >> <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
+> >> devicetree@vger.kernel.org; linux-media@vger.kernel.org; linux-
+> >> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> >> Subject: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign=
+ slot for
+> >> imx jpeg encoder/decoder
+> >>
+> >> Hi,
+> >>
+> >> On Tue, Sep 26, 2023 at 06:10:00PM +0800, Ming Qian wrote:
+> >>> There are total 4 slots available in the IP, and we only need to use
+> >>> one slot in one os, assign a single slot, configure interrupt and
+> >>> power domain only for 1 slot, not for the all 4 slots.
+> >>>
+> >>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> >>> ---
+> >>> v4
+> >>> - improve commit message
+> >>
+> >>> - don't make an ABI break
+> >>
+> >> What does this mean? Can you please try to explain things a bit more c=
+learly
+> >> in your changelogs?
+> >>
+> >> Also, where is the code that actually makes use of these properties?
+> >=20
+> > In v3 patch, I make this property required, make it an ABI break, so in=
+ v4, I remove it from required, and default to the previous behavior if it =
+is missing.
+>=20
+> So say that you dropped line making the property required.
+>=20
+> >=20
+> > The code patch is sent before, but the dts change is not applicable, so=
+ I send it separately. The code patch link is as below:
+> > https://patchwork.linuxtv.org/project/linux-media/patch/cdadb4a23697fdc=
+97def958c69b12cd00f547212.1685430841.git.ming.qian@nxp.com/
+> >=20
+> > But in the patch, the property name is "slot", not "nxp,slot", I will m=
+ake another patch to fix the property name after this patch is reviewed.
+>=20
+> Format your emails properly. It's difficult to read it.
+>=20
+> I already NAKed it, I will be NAKing still. Don't embed OS specific into
+> the bindings nor into the DTS.
 
-In host mode, it indeed doesn't matter, as you can have only a single
-device connected with SPI_NO_CS.
-In device mode, the device needs to know if it must monitor the chip
-select line or not.
+Additionally, sending the binding and dts patch split out from the
+proposed driver change is very unhelpful, as often (as is the case here)
+binding patches are not very well explained and it is required to read
+the driver to reverse-engineer the binding patch author's real intent.
 
-In hindsight, I should have kept the question I had written initially,
-but deleted after having read the documentation for the corresponding
-RZ/V2M register bits:
+Particularly when you mention an ABI break it is important to do so, so
+that we can check the code changes to make sure that the ABI is upheld.
 
-    What does it mean if this is false? That there is no chip select?
+Thanks,
+Conor.
 
-So "spi-no-cs" would be the inverse of "renesas,csi-ss".
+--r5M0Lyh3zCCR/Z6Y
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Gr{oetje,eeting}s,
+-----BEGIN PGP SIGNATURE-----
 
-                        Geert
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRPxzgAKCRB4tDGHoIJi
+0h0jAQDcf7pZAIW8G1ToRYnSYO3mxmidd0e/I9L42Z53F8f5JAD/ehUJW2iFLrkg
+VgrFdEdyFM0qD6Dh9w2r1cgc8kGm/Q8=
+=HsvG
+-----END PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--r5M0Lyh3zCCR/Z6Y--
