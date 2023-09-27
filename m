@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA517B0A8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6667B0A93
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 18:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjI0Qog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 12:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S229506AbjI0Qr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 12:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjI0Qod (ORCPT
+        with ESMTP id S229485AbjI0Qr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 12:44:33 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6186C91
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:44:32 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-419628fb297so6375191cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:44:32 -0700 (PDT)
+        Wed, 27 Sep 2023 12:47:28 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7853DD
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:47:26 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3512efed950so27403805ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 09:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1695833071; x=1696437871; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nKbDRjvApMpYPGbWz9dHVkdjA8N/B9idfwIaFL32H1A=;
-        b=PLpfPktJshumcXOWHyoTo6M0aFeAwzlVkr5SuKiV0KghhAg26VkKAK+zFLS7X1A6bE
-         pGrwsWVcX8zKx5fKEcfONutJt/gl4yHNsFgr2uWCvCWpP7msv+NxOpFk2lY7TCg8SB4z
-         j8yERiDn+imz7Y4xc4i+q7l3wGXYiHCGpa9Cvdqtg4J2SUJNPwzYhVEQ8ses7Ft15WCz
-         TSrLWou+eqfDqkUjeTX6/4vMkE6X1mxGv5sFOCyw2CGTsqk17aWJiiJEXZ4MWnsd53KH
-         5oWFv8rU2J+VB4TsA9QBQReh6q5Gdllrfa99djY0uZybZu5PXGm81Nlyq9OvaruMbyUk
-         P6oQ==
+        d=chromium.org; s=google; t=1695833246; x=1696438046; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xi0NPAXOKB2g4KhPtyHEVHOc+BFF5U0uejfT8FKn0j4=;
+        b=ANev2KbLmjb0e3xXYqld5zgaRI70VN7XQUK2fw4yoVdiTpStIFJOWFiDu5iAG0/TlR
+         QzKwtdNwFhFVSdaRLUTGMwhGfGJ8IYpK2yeVwHpmq0ZbbHLse2Xs20C6sdbE2lUFROrg
+         RzTogpyfS5f+LKAQlCXyASltpGj5d2dHUbVPo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695833071; x=1696437871;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nKbDRjvApMpYPGbWz9dHVkdjA8N/B9idfwIaFL32H1A=;
-        b=Zp5+kEJNz7SLMV7QpdKDizDeiVljOD0NM4zL7m5YvX6Uiv/djbXuKX2IcfoWP46lWx
-         bSR0+FKBLU+cARle2zYrFZhA3Jsj7UeBZnvZP3z85rZWp/e6F+sTlMaUmgQQqTcd7H2U
-         Q//jeJeYBnizMNJUCZiFgrGD7VLBSSJ2//jRMbrbeKFCtqrzQNQwR9b4tSmDD+0VRwL3
-         6ZPACeQpN8HHmWyo6DA8HerIRrmn4Jpdc6eUT0XTV71yT7MUflr04bGizf4Kd/Dc531V
-         jwMoTZqwgVs2YYdnwoCXSC1+7xQdzNkpy2R90PMZcORNZoKewaQZCjjlVWbAga5A/9j5
-         ezLg==
-X-Gm-Message-State: AOJu0YzoJ/skKFBa8zxK8huI58L7WBKOb1EH7wBAm6Arf9ju1ScC4sF9
-        HgF90v/sB4IuVbRAd7w/AF3BVg==
-X-Google-Smtp-Source: AGHT+IFOHIz2rG+1dO7b6kU+thPNTv0XP5gZ8Xowyl8cMwksCfd/KzkFVs+MMn71Ytt40M5tC7xwcQ==
-X-Received: by 2002:a05:622a:15c4:b0:40f:cf7c:5e7c with SMTP id d4-20020a05622a15c400b0040fcf7c5e7cmr2914810qty.24.1695833071521;
-        Wed, 27 Sep 2023 09:44:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:ba06])
-        by smtp.gmail.com with ESMTPSA id h11-20020a37c44b000000b00767b0c35c15sm5604683qkm.91.2023.09.27.09.44.30
+        d=1e100.net; s=20230601; t=1695833246; x=1696438046;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xi0NPAXOKB2g4KhPtyHEVHOc+BFF5U0uejfT8FKn0j4=;
+        b=sjjzTHtTV1KipmmMIpgwx9CI7UpYVwNBneUalaooYwIZW3NbJZkd42b3D0SZWVKeSQ
+         LozcIu/Rui77fKIzCfey2FfZuTdrd5+2e6X3DBcZ4vmTwTps5d3W9vJorBVaqBnE0P/m
+         5M7RQPK1cjyAhZHnfpGWwTbzp2KUPMxf5fd8SdcU4Ye/qjFvzQHRz8RXM0SJPe6oZPsv
+         if+KhQ26zJkLrjCoDaCu5wto3Z1E5H4vj1g3sP8725l/BdazCaOiVVCZDE63f4mZDsav
+         849SixP7/hptVsmIuBr0pN8rVDAhdY+B2ffwsVb1bNt404hNzZPp9kF6+Wo7noZFhI66
+         4ghQ==
+X-Gm-Message-State: AOJu0YygjmXvCJLy3rkjHwcuIdINJhqW3DKkrjKaAPTuiEgnkK76mM+u
+        XG+LKmSqnhl4Q9hD7Z3yecNIaEi3DsJbWQtu8nQ=
+X-Google-Smtp-Source: AGHT+IH+JcaNhVNz7FfFGoWF8iw2OSTtskunRegjjj1eGuC9QOYwU8eTORJoA1lvodxfPDArPEpPZw==
+X-Received: by 2002:a05:6e02:12c5:b0:34c:ecc8:98e7 with SMTP id i5-20020a056e0212c500b0034cecc898e7mr3216823ilm.9.1695833246163;
+        Wed, 27 Sep 2023 09:47:26 -0700 (PDT)
+Received: from kea.bld.corp.google.com ([2620:15c:183:200:5d4f:fe51:5575:6f76])
+        by smtp.gmail.com with ESMTPSA id ei25-20020a05663829b900b00439eda8c1c1sm3980500jab.111.2023.09.27.09.47.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 09:44:31 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 12:44:30 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Frank van der Linden <fvdl@google.com>,
-        Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 0/2] hugetlb memcg accounting
-Message-ID: <20230927164430.GB365513@cmpxchg.org>
-References: <20230926194949.2637078-1-nphamcs@gmail.com>
- <CAPTztWY8eDSa1qKx35hTm5ef+e13SDnRHDrevc-1V1v7-pEP3w@mail.gmail.com>
- <20230926221414.GD348484@cmpxchg.org>
- <ZRQlAgDs5W/Lct4k@dhcp22.suse.cz>
+        Wed, 27 Sep 2023 09:47:25 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     devicetree@vger.kernel.org
+Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>, Rob Herring <robh@kernel.org>,
+        linux-mtd@lists.infradead.org, Simon Glass <sjg@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nick Terrell <terrelln@fb.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] dt-bindings: mtd: fixed-partitions: Add compression property
+Date:   Wed, 27 Sep 2023 10:46:51 -0600
+Message-ID: <20230927164654.3397353-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.515.g380fc7ccd1-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRQlAgDs5W/Lct4k@dhcp22.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,80 +76,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 02:50:10PM +0200, Michal Hocko wrote:
-> On Tue 26-09-23 18:14:14, Johannes Weiner wrote:
-> [...]
-> > The fact that memory consumed by hugetlb is currently not considered
-> > inside memcg (host memory accounting and control) is inconsistent. It
-> > has been quite confusing to our service owners and complicating things
-> > for our containers team.
-> 
-> I do understand how that is confusing and inconsistent as well. Hugetlb
-> is bringing throughout its existence I am afraid.
-> 
-> As noted in other reply though I am not sure hugeltb pool can be
-> reasonably incorporated with a sane semantic. Neither of the regular
-> allocation nor the hugetlb reservation/actual use can fallback to the
-> pool of the other. This makes them 2 different things each hitting their
-> own failure cases that require a dedicated handling.
-> 
-> Just from top of my head these are cases I do not see easy way out from:
-> 	- hugetlb charge failure has two failure modes - pool empty
-> 	  or memcg limit reached. The former is not recoverable and
-> 	  should fail without any further intervention the latter might
-> 	  benefit from reclaiming.
-> 	- !hugetlb memory charge failure cannot consider any hugetlb
-> 	  pages - they are implicit memory.min protection so it is
->           impossible to manage reclaim protection without having a
->           knowledge of the hugetlb use.
-> 	- there is no way to control the hugetlb pool distribution by
-> 	  memcg limits. How do we distinguish reservations from actual
-> 	  use?
-> 	- pre-allocated pool is consuming memory without any actual
-> 	  owner until it is actually used and even that has two stages
-> 	  (reserved and really used). This makes it really hard to
-> 	  manage memory as whole when there is a considerable amount of
-> 	  hugetlb memore preallocated.
+Sometimes the contents of a partition are compressed. Add a property to
+express this and define the algorithm used.
 
-It's important to distinguish hugetlb access policy from memory use
-policy. This patch isn't about hugetlb access, it's about general
-memory use.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-Hugetlb access policy is a separate domain with separate
-answers. Preallocating is a privileged operation, for access control
-there is the hugetlb cgroup controller etc.
+Changes in v3:
+- Just add a compression property for now
 
-What's missing is that once you get past the access restrictions and
-legitimately get your hands on huge pages, that memory use gets
-reflected in memory.current and exerts pressure on *other* memory
-inside the group, such as anon or optimistic cache allocations.
+Changes in v2:
+- Use "binman" for compatible instead of "u-boot,binman"
+- Significantly rework the patch
+- Use make dt_binding_check DT_SCHEMA_FILES=Documentation/../partitions
 
-Note that hugetlb *can* be allocated on demand. It's unexpected that
-when an application optimistically allocates a couple of 2M hugetlb
-pages those aren't reflected in its memory.current. The same is true
-for hugetlb_cma. If the gigantic pages aren't currently allocated to a
-cgroup, that CMA memory can be used for movable memory elsewhere.
+ .../mtd/partitions/fixed-partitions.yaml       | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-The points you and Frank raise are reasons and scenarios where
-additional hugetlb access control is necessary - preallocation,
-limited availability of 1G pages etc. But they're not reasons against
-charging faulted in hugetlb to the memcg *as well*.
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index 331e564f29dc..13ff313cabda 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -29,6 +29,24 @@ properties:
+ 
+   "#size-cells": true
+ 
++  compression:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: |
++      Compression algorithm used to store the data in this partition, chosen
++      from a list of well-known algorithms.
++
++      The contents are compressed using this algorithm.
++
++    enum:
++      - none
++      - bzip2
++      - gzip
++      - lzop
++      - lz4
++      - lzma
++      - xz
++      - zstd
++
+ patternProperties:
+   "@[0-9a-f]+$":
+     $ref: partition.yaml#
+-- 
+2.42.0.515.g380fc7ccd1-goog
 
-My point is we need both. One to manage competition over hugetlb,
-because it has unique limitations. The other to manage competition
-over host memory which hugetlb is a part of.
-
-Here is a usecase from our fleet.
-
-Imagine a configuration with two 32G containers. The machine is booted
-with hugetlb_cma=6G, and each container may or may not use up to 3
-gigantic page, depending on the workload within it. The rest is anon,
-cache, slab, etc. You set the hugetlb cgroup limit of each cgroup to
-3G to enforce hugetlb fairness. But how do you configure memory.max to
-keep *overall* consumption, including anon, cache, slab etc. fair?
-
-If used hugetlb is charged, you can just set memory.max=32G regardless
-of the workload inside.
-
-Without it, you'd have to constantly poll hugetlb usage and readjust
-memory.max!
