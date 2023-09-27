@@ -2,93 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9E37AFC1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101277AFC3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 09:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjI0HdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 03:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        id S230041AbjI0Hl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 03:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjI0HdC (ORCPT
+        with ESMTP id S230020AbjI0HlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 03:33:02 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00E2126
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:33:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5331059360fso2361340a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 00:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695799979; x=1696404779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N6pnQ/nkWf6SlVjQP06zaUKvsstL6MZ5VotIaFF9d2I=;
-        b=uRt/ZFptGMXXYi70mRQrFk8G/hEjGXSLfR2cj4d8jUrNA2tYDlwMTHKC2bpR49wzdC
-         mrHNZWYwsfiaDEwlIuZDRmxtHIlKrhEJ4ZVConR5WXAwT9aAtRhLeibWbUZD3yOy7+kC
-         O8HkrmdJQm2r4oU/uahfC/O+pe9dnMp+CONofJjZunsDW/v8b6yE50NAxgHtVahGrYXU
-         UZ3OVEnXNsEIdS6bsJve2EGmjWGAJYNyxmNcWn0X8i3oAhNj0MwYIwq7DN2Il/aV7gWw
-         9h08d2oIVZbWNZ4IW2GR3KbtfR8JYk/HXzWQ/ZV+NLle5O265a7t9ASuqEpl7wDIkfVn
-         DS1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695799979; x=1696404779;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6pnQ/nkWf6SlVjQP06zaUKvsstL6MZ5VotIaFF9d2I=;
-        b=nszAR47U/v0qNXH8xWqJN3K10ewVm/Xb0mWf+HhOFmw49jJRWVW/YP/h/lAYjTainJ
-         mPajwnUH/QhvNjmIUXyUaKPWpx3KQSb7euVFO31dD5QyIvfRZfMI9CeoYWMFcX+Hmkqg
-         YVGeqfa4nhzNvrGTuUeKZx431F/kFPJZ16xWrnwXso5y28TwkU3zU6dT9Ta1CT1vUsuV
-         0GI2dv+t6PZ0K1TyJUsxTLi8n/Mk5B0ThaJCl2T+eDrW3rb3oDGzncMlW2HDde1RzmL+
-         wl4tl/feKWHR31x9t2Gl5WLLeT9nXKa8rUo61O7PmLEHE3CvVtpYhG/vb20l8BTwApSG
-         N2Ng==
-X-Gm-Message-State: AOJu0YzPDAwlbzyA1Whmuvlb25o6xJwn86h/vsaAVmGN0AIE+Cp8+zcx
-        ix6QVLT4qfWNoxp8uxmGdXRQMw==
-X-Google-Smtp-Source: AGHT+IGl72HpxcGf5R00MKAx7plEYQqRg+QmVRuv6Lb/FKmepMGYWsDUH1yEvJs+hzYAD7rsBF42tA==
-X-Received: by 2002:a05:6402:4409:b0:523:4069:182c with SMTP id y9-20020a056402440900b005234069182cmr1224456eda.2.1695799978682;
-        Wed, 27 Sep 2023 00:32:58 -0700 (PDT)
-Received: from [172.20.13.88] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id w22-20020a056402071600b0052e1783ab25sm7692376edx.70.2023.09.27.00.32.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 00:32:57 -0700 (PDT)
-Message-ID: <ff95e764-9e61-4204-8024-42f15c34f084@kernel.dk>
-Date:   Wed, 27 Sep 2023 01:32:56 -0600
+        Wed, 27 Sep 2023 03:41:23 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969D911D;
+        Wed, 27 Sep 2023 00:41:20 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 7E736100007;
+        Wed, 27 Sep 2023 10:41:17 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7E736100007
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1695800477;
+        bh=Za3rP9C9xGzI8+6GmtBw4W+jfaaaUYjD9zH0XW5gO14=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=u7WJT9mKPLXTeU4AxM51IMjFJcGPEIULzhy4BiiiMWETAcmBCHZzy+mCK0mgIzTrI
+         6jZPD9CqRFPIN2oWsp05jDilZFcvpbiSBS14IDjTnFsFb9RPcytrDLkcB/XNSI0wYE
+         0I4DsJju4wblRlSR6IaiiKllBonFIajU6BPZZayebNPk0uF3C7RQcAhVuuSFDJPl7Y
+         AInP1+40Vhmf8cWwWR+6VNhWtIbLQ8oxW1636InWzOQ6OwBsSb0KMPg0cKZRoG9pbx
+         K1PzIFwsfjqmt4TotuR0RPJdFAPRbnexWNMWWJHq8XFxXqktqMx0FxxSqLO0pj8h+l
+         3L+Epx46sHBMQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 27 Sep 2023 10:41:17 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 27 Sep 2023 10:41:16 +0300
+Message-ID: <83498975-8947-4863-be11-a889b15a25a7@salutedevices.com>
+Date:   Wed, 27 Sep 2023 10:34:15 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] eventfd: move 'eventfd-count' printing out of spinlock
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v1 02/12] vsock: read from socket's error queue
 Content-Language: en-US
-To:     wenyang.linux@foxmail.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Dylan Yudaken <dylany@fb.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_6E80209FC9C7F45EE61E3FB3E7952A226A07@qq.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <tencent_6E80209FC9C7F45EE61E3FB3E7952A226A07@qq.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230922052428.4005676-1-avkrasnov@salutedevices.com>
+ <20230922052428.4005676-3-avkrasnov@salutedevices.com>
+ <3oys2ouhlkitsjx7q7utp7wkitnnl4kisl2r54wwa2addd644p@jzyu7ubfrcog>
+ <ed26b2b7-bafc-a964-00e2-70da66640e46@salutedevices.com>
+ <j7e5az5xrrqvvs64dhwaboi5d4ls5aueu3gyeyyasdqmzbsozu@fni6x6mliw3t>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <j7e5az5xrrqvvs64dhwaboi5d4ls5aueu3gyeyyasdqmzbsozu@fni6x6mliw3t>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180155 [Sep 27 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 534 534 808c2ea49f7195c68d40844e073217da4fa0d1e3, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/27 04:23:00 #21991401
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/23 8:05 AM, wenyang.linux@foxmail.com wrote:
-> From: Wen Yang <wenyang.linux@foxmail.com>
+
+
+On 27.09.2023 10:34, Stefano Garzarella wrote:
+> On Tue, Sep 26, 2023 at 10:36:58PM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 26.09.2023 15:55, Stefano Garzarella wrote:
+>>> On Fri, Sep 22, 2023 at 08:24:18AM +0300, Arseniy Krasnov wrote:
+>>>> This adds handling of MSG_ERRQUEUE input flag in receive call. This flag
+>>>> is used to read socket's error queue instead of data queue. Possible
+>>>> scenario of error queue usage is receiving completions for transmission
+>>>> with MSG_ZEROCOPY flag. This patch also adds new defines: 'SOL_VSOCK'
+>>>> and 'VSOCK_RECVERR'.
+>>>>
+>>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>>> ---
+>>>> Changelog:
+>>>> v5(big patchset) -> v1:
+>>>>  * R-b tag removed, due to added defines to 'include/uapi/linux/vsock.h'.
+>>>>    Both 'SOL_VSOCK' and 'VSOCK_RECVERR' are needed by userspace, so
+>>>>    they were placed to 'include/uapi/linux/vsock.h'. At the same time,
+>>>>    the same define for 'SOL_VSOCK' was placed to 'include/linux/socket.h'.
+>>>>    This is needed because this file contains SOL_XXX defines for different
+>>>>    types of socket, so it prevents situation when another new SOL_XXX
+>>>>    will use constant 287.
+>>>>
+>>>> include/linux/socket.h     | 1 +
+>>>> include/uapi/linux/vsock.h | 9 +++++++++
+>>>> net/vmw_vsock/af_vsock.c   | 6 ++++++
+>>>> 3 files changed, 16 insertions(+)
+>>>> create mode 100644 include/uapi/linux/vsock.h
+>>>>
+>>>> diff --git a/include/linux/socket.h b/include/linux/socket.h
+>>>> index 39b74d83c7c4..cfcb7e2c3813 100644
+>>>> --- a/include/linux/socket.h
+>>>> +++ b/include/linux/socket.h
+>>>> @@ -383,6 +383,7 @@ struct ucred {
+>>>> #define SOL_MPTCP    284
+>>>> #define SOL_MCTP    285
+>>>> #define SOL_SMC        286
+>>>> +#define SOL_VSOCK    287
+>>>>
+>>>> /* IPX options */
+>>>> #define IPX_TYPE    1
+>>>> diff --git a/include/uapi/linux/vsock.h b/include/uapi/linux/vsock.h
+>>>> new file mode 100644
+>>>> index 000000000000..b25c1347a3b8
+>>>> --- /dev/null
+>>>> +++ b/include/uapi/linux/vsock.h
+>>>
+>>> We already have include/uapi/linux/vm_sockets.h
+>>>
+>>> Should we include these changes there instead of creating a new header?
+>>>
+>>>> @@ -0,0 +1,9 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>>>> +#ifndef _UAPI_LINUX_VSOCK_H
+>>>> +#define _UAPI_LINUX_VSOCK_H
+>>>> +
+>>>> +#define SOL_VSOCK    287
+>>>
+>>> Why we need to re-define this also here?
+>>
+>> Reason of this re-define is that SOL_VSOCK must be exported to userspace, so
+>> i place it to include/uapi/XXX. At the same time include/linux/socket.h contains
+>> constants for SOL_XXX and they goes sequentially in this file (e.g. one by one,
+>> each new value is +1 to the previous). So if I add SOL_VSOCK to include/uapi/XXX
+>> only, it is possible that someone will add new SOL_VERY_NEW_SOCKET == 287 to
+>> include/linux/socket.h in future. I think it is not good that two SOL_XXX will
+>> have same value.
+>>
+>> For example SOL_RDS and SOL_TIPS uses the same approach - there are two same defines:
+>> one in include/uapi/ and another is in include/linux/socket.h
 > 
-> It is better to print debug messages outside of the wqh.lock
-> spinlock where possible.
+> Okay, I was confused, I though socket.h was the uapi one.
+> If others do the same, it's fine.
+> 
+> But why adding a new vsock.h instead of reusing vm_sockets.h?
 
-Does it really matter for fdinfo? Your commit message is a bit
-light, so I'm having to guess whether this is fixing a real issue
-for you, or if it's just a drive-by observation.
+Yes, that's my mistake, I'll use vm_sockets.h. Seems I just forget about
+vm_sockets.h...
 
--- 
-Jens Axboe
+> 
+>>
+>>>
+>>> In that case, should we protect with some guards to avoid double
+>>> defines?
+>>
+>> May be:
+>>
+>> in include/linux/socket.h
+>>
+>> #ifndef SOL_VSOCK
+>> #define SOL_VSOCK 287
+>> #endif
+>>
+>> But not sure...
+> 
+> Nope, let's follow others definition.
+> 
+> Sorry for the confusion ;-)
 
+No problem!
 
+Thanks, Arseniy
+
+> 
+>>
+>>>
+>>>> +
+>>>> +#define VSOCK_RECVERR    1
+>>>> +
+>>>> +#endif /* _UAPI_LINUX_VSOCK_H */
+>>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>>>> index d841f4de33b0..4fd11bf34bc7 100644
+>>>> --- a/net/vmw_vsock/af_vsock.c
+>>>> +++ b/net/vmw_vsock/af_vsock.c
+>>>> @@ -110,6 +110,8 @@
+>>>> #include <linux/workqueue.h>
+>>>> #include <net/sock.h>
+>>>> #include <net/af_vsock.h>
+>>>> +#include <linux/errqueue.h>
+>>>> +#include <uapi/linux/vsock.h>
+>>>>
+>>>> static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr);
+>>>> static void vsock_sk_destruct(struct sock *sk);
+>>>> @@ -2137,6 +2139,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>>>>     int err;
+>>>>
+>>>>     sk = sock->sk;
+>>>> +
+>>>> +    if (unlikely(flags & MSG_ERRQUEUE))
+>>>> +        return sock_recv_errqueue(sk, msg, len, SOL_VSOCK, VSOCK_RECVERR);
+>>>> +
+>>>>     vsk = vsock_sk(sk);
+>>>>     err = 0;
+>>>>
+>>>> -- 
+>>>> 2.25.1
+>>>>
+>>>
+>>
+> 
