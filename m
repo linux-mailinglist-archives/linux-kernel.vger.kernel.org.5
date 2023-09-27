@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EE37AF7DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878907AF7C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 03:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbjI0B4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Sep 2023 21:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
+        id S234127AbjI0BtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Sep 2023 21:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235362AbjI0ByD (ORCPT
+        with ESMTP id S234484AbjI0BrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Sep 2023 21:54:03 -0400
-X-Greylist: delayed 392 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Sep 2023 18:00:44 PDT
-Received: from o-chul.darkrain42.org (o-chul.darkrain42.org [74.207.241.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83E616E81;
-        Tue, 26 Sep 2023 18:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=darkrain42.org; i=@darkrain42.org; q=dns/txt; s=ed25519-2022-03;
- t=1695776052; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : content-transfer-encoding :
- in-reply-to : from; bh=bVtmHHpgJCvGOFI6j4m1G3ZAqun1acSnHjfkUYd7U/I=;
- b=9CNMYB3TlWXem1lRqknxmOBYkF+aJVQ/zUy4wfeS5FtjpV50zJv4hKs6uPjnk+l7o7TFY
- vRQhlrEG+oguS1pBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=darkrain42.org;
- i=@darkrain42.org; q=dns/txt; s=rsa-2022-03; t=1695776052; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : content-transfer-encoding : in-reply-to : from;
- bh=bVtmHHpgJCvGOFI6j4m1G3ZAqun1acSnHjfkUYd7U/I=;
- b=W9a9iBrXr2byHDgqBLXaHtOItJyJQ/wrXhNEfrls49oh93nGVDFbCnwo18KdU1lhyYgeR
- wE4syUf8u6MD7hQmm2Qtix/rsrqGJ2/TPqohtkz2HSH6si6f50Ml96bvcjdtum8NuvYcCgY
- sFKj1GQUW+CcEyGqwo7ZOx/xghZzrz62LyghWF7vZeQc8W4v4kumfB9qwU6mkaIciIU4Sij
- dAhherZwqLUtl3DuxF+yWF4YZ0bcGHLV6KBwI6G0oRYItqMrXROxfVC3l7k8Vd4t1x2bRgI
- RnvW6EpERdjYfnSMPXTzxKfqTbtSceFm1jGa9SMx/1LevQ2WwjBpQytF9g0Q==
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature ED25519)
-        (Client CN "otters", Issuer "otters" (not verified))
-        by o-chul.darkrain42.org (Postfix) with ESMTPS id 049828162;
-        Tue, 26 Sep 2023 17:54:12 -0700 (PDT)
-Received: by vaarsuvius.localdomain (Postfix, from userid 1000)
-        id 96EC58C247B; Tue, 26 Sep 2023 17:54:10 -0700 (PDT)
-Date:   Tue, 26 Sep 2023 17:54:10 -0700
-From:   Paul Aurich <paul@darkrain42.org>
-To:     Steve French <smfrench@gmail.com>, Tom Talpey <tom@talpey.com>
-Cc:     Brian Pardy <brian.pardy@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux CIFS <linux-cifs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Paulo Alcantara <pc@manguebit.com>,
-        ronnie sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Bharath S M <bharathsm@microsoft.com>
-Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS
- share is mounted (cifsd-cfid-laundromat in"D" state)
-Message-ID: <ZRN9MtBqYnT6oX60@vaarsuvius>
-Mail-Followup-To: Steve French <smfrench@gmail.com>,
-        Tom Talpey <tom@talpey.com>, Brian Pardy <brian.pardy@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux CIFS <linux-cifs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Paulo Alcantara <pc@manguebit.com>,
-        ronnie sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Bharath S M <bharathsm@microsoft.com>
-References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
- <ZPfPfyIoVxw5L6El@debian.me>
- <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
- <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
- <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
- <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
- <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
- <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
- <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
- <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
+        Tue, 26 Sep 2023 21:47:08 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC6ACF7;
+        Tue, 26 Sep 2023 17:54:59 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RwJ6l5pMzz4f3k6X;
+        Wed, 27 Sep 2023 08:54:55 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHXd1ffRNlJNruBQ--.41325S3;
+        Wed, 27 Sep 2023 08:54:56 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] md: factor out a new helper to put mddev
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     mariusz.tkaczyk@linux.intel.com, xni@redhat.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230926025827.671407-1-yukuai1@huaweicloud.com>
+ <20230926025827.671407-2-yukuai1@huaweicloud.com>
+ <CAPhsuW4dXrwt7VTifcdbdwH6Uz3b4m4Z54fBfD3LDjXy89PTkQ@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <94ef3ef4-0580-416b-f672-250a91b39e10@huaweicloud.com>
+Date:   Wed, 27 Sep 2023 08:54:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <CAPhsuW4dXrwt7VTifcdbdwH6Uz3b4m4Z54fBfD3LDjXy89PTkQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgDHXd1ffRNlJNruBQ--.41325S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArWxWF48Kw1rXFy5GF17Jrb_yoW8Zr1Dpa
+        ySqa90kr4DXFy3W39rZanru3WYqws2grWktryfKwn8ZFy5Wr1DWw1Fgws5Wr1DAw1fJFs0
+        v3WUK3y7Cr1UtrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
+        UU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-19 13:23:44 -0500, Steve French wrote:
->On Tue, Sep 19, 2023 at 1:07 PM Tom Talpey <tom@talpey.com> wrote:
->> These changes are good, but I'm skeptical they will reduce the load
->> when the laundromat thread is actually running. All these do is avoid
->> creating it when not necessary, right?
->
->It does create half as many laundromat threads (we don't need
->laundromat on connection to IPC$) even for the Windows server target
->example, but helps more for cases where server doesn't support
->directory leases.
+Hi,
 
-Perhaps the laundromat thread should be using msleep_interruptible()?
+在 2023/09/27 8:15, Song Liu 写道:
+> On Mon, Sep 25, 2023 at 8:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> There are no functional changes, the new helper will still hold
+>> 'all_mddevs_lock' after putting mddev, and it will be used to simplify
+>> md_seq_ops.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/md.c | 18 +++++++++++++++---
+>>   1 file changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 10cb4dfbf4ae..a5ef6f7da8ec 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -616,10 +616,15 @@ static inline struct mddev *mddev_get(struct mddev *mddev)
+>>
+>>   static void mddev_delayed_delete(struct work_struct *ws);
+>>
+>> -void mddev_put(struct mddev *mddev)
+>> +static void __mddev_put(struct mddev *mddev, bool locked)
+>>   {
+>> -       if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+>> +       if (locked) {
+>> +               spin_lock(&all_mddevs_lock);
+>> +               if (!atomic_dec_and_test(&mddev->active))
+>> +                       return;
+>> +       } else if (!atomic_dec_and_lock(&mddev->active, &all_mddevs_lock))
+>>                  return;
+>> +
+> 
+> This condition is indeed very confusing. No matter whether we call the
+> flag "locked" or "do_lock", it is not really accurate.
+> 
+> How about we factor out a helper with the following logic:
+> 
+>          if (!mddev->raid_disks && list_empty(&mddev->disks) &&
+>              mddev->ctime == 0 && !mddev->hold_active) {
+>                  /* Array is not configured at all, and not held active,
+>                   * so destroy it */
+>                  set_bit(MD_DELETED, &mddev->flags);
+> 
+>                  /*
+>                   * Call queue_work inside the spinlock so that
+>                   * flush_workqueue() after mddev_find will succeed in waiting
+>                   * for the work to be done.
+>                   */
+>                  queue_work(md_misc_wq, &mddev->del_work);
+>          }
+> 
+> and then use it at the two callers?
+> 
+> Does this make sense?
 
-Using an interruptible sleep appears to prevent the thread from contributing 
-to the load average, and has the happy side-effect of removing the up-to-1s delay 
-when tearing down the tcon (since a7c01fa93ae, kthread_stop() will return 
-early triggered by kthread_stop).
+Yes, that sounds great. I'll do this in v3.
 
-~Paul
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Song
+> .
+> 
 
