@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0D07AFA30
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C487AF9D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjI0FlG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 27 Sep 2023 01:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
+        id S229810AbjI0FMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjI0Fk0 (ORCPT
+        with ESMTP id S229543AbjI0FLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:40:26 -0400
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2433C1FFC;
-        Tue, 26 Sep 2023 21:39:24 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-79fa891b645so283373939f.0;
-        Tue, 26 Sep 2023 21:39:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695789563; x=1696394363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=45TovMKJ+2sZ/qf9Tf9B5Lm13NVNzRdDeG0tap29jvY=;
-        b=b1kPI8ib0kqNQUNsS+v/08wbeeuQsdzrscg9u0QdL0SWNyheTzlAEfqeJh3pXcXW6S
-         w67oOio8RwzkyuqLRIgKGfnRNGg5L00FKEfu2hI8Mczi22hzJIorCTMa2UWc2969bd7s
-         0xujBc0vLRTx2a3nBmMiN/+K6Ch/VpbIO2xyxByEJE9XC9T2HC9/xMmgadHwwid8x07v
-         0XSUOS17oF5v9Qcptkqm5Lt9mtTk/cPlexBo502vf8u4W+2O6BoM5ibh6Q+Vxd7I8c+S
-         c7vB+q6dv6Fg+pWxyGRs79bbbU3U5u+P/+XSnaJyAMKDpTPSm+0PZXcQrYZWPFQEi1f7
-         OV6Q==
-X-Gm-Message-State: AOJu0Yxn9nvbrLp8Cz64IlRqJf9R0UBjrHV5H+64++d4l52f5KAOty/P
-        Q+Xs3M3nOOzAmKxpW1r8DpwSMCw8wmmvLx83LLu7eScP
-X-Google-Smtp-Source: AGHT+IESJPGH4c1MijpOR3/7FVfPcaAnzWVHrEYn2jQP1Nka5jrAX0XhSMO48c92F3PxAh7AYyWYzLAVdeBfasNA688=
-X-Received: by 2002:a05:6602:39a:b0:791:1b1c:b758 with SMTP id
- f26-20020a056602039a00b007911b1cb758mr1142220iov.19.1695789563357; Tue, 26
- Sep 2023 21:39:23 -0700 (PDT)
+        Wed, 27 Sep 2023 01:11:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35237A81;
+        Tue, 26 Sep 2023 21:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=o2C3IMNn5E8olqASjx2/ZYFEnSXvq023rbPKyXfiuOE=; b=KaXxIKBMPN4ABhM72wnGNNhU52
+        hI70FbrVB2UTn/yOyXmB2Ots396y8XUoYtwzsJe0vCEXLhxQSjFgoJyBZp9SNt5/puDpOqx7Nrf51
+        x6aiBs9CcLp4vCXb/7XgrIDBbb1H+RwFaNTPuR7MyGylNEKb+TbBb2f/RsV5RpHrTe2omMIB7Reeu
+        f8F4XOQdFU2Ts//kdC3YA9gtigbnfrGC70thb0uG43eofwMkJXCJ3t0XMF509BS+3Luo8xEdYobLb
+        z6Lvfc+Gb7zafT4EqmYailKBzbDX8CMj14Vtnp7q5TKLwuSWGxE266ZZl7Zte0eBt4e3l6y0NgjSm
+        esiSnEwg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qlMMa-00HXig-2t;
+        Wed, 27 Sep 2023 04:41:28 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH -next] serial: core: fix kernel-doc for uart_port_unlock_irqrestore()
+Date:   Tue, 26 Sep 2023 21:41:28 -0700
+Message-ID: <20230927044128.4748-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20230920122349.418673-1-wyes.karny@amd.com> <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
- <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com> <CAP-5=fW7dsMw0i7N-oQ7dcz9sFx1hAtZCpsxuH=NqMz+h+i3ZQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fW7dsMw0i7N-oQ7dcz9sFx1hAtZCpsxuH=NqMz+h+i3ZQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 26 Sep 2023 21:39:11 -0700
-Message-ID: <CAM9d7cgC8qZ=rN-0qAg0mNOV-XKCLzgJ1E530aexUnsytmrjfw@mail.gmail.com>
-Subject: Re: [PATCH] perf pmu: Fix perf stat output with correct scale and unit
-To:     Ian Rogers <irogers@google.com>
-Cc:     Wyes Karny <wyes.karny@amd.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        adrian.hunter@intel.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
-        ravi.bangoria@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+Fix the function name to avoid a kernel-doc warning:
 
-On Tue, Sep 26, 2023 at 9:07 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Tue, Sep 26, 2023 at 3:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Wed, Sep 20, 2023 at 9:02 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Wed, Sep 20, 2023 at 5:24 AM Wyes Karny <wyes.karny@amd.com> wrote:
-> > > >
-> > > > The perf_pmu__parse_* functions for the sysfs files of pmu event’s
-> > > > scale, unit, per-pkg and snapshot were updated in commit 7b723dbb96e8
-> > > > ("perf pmu: Be lazy about loading event info files from sysfs").
-> > > > However, the paths for these sysfs files were incorrect. This resulted
-> > > > in perf stat reporting values with wrong scaling and missing units. This
-> > > > is fixed by correcting the paths for these sysfs files.
-> > > >
-> > > > Before this fix:
-> > > >
-> > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> > > >
-> > > >  Performance counter stats for 'system wide':
-> > > >
-> > > >    351,217,188,864      power/energy-pkg/
-> > > >
-> > > >           2.004127961 seconds time elapsed
-> > > >
-> > > > After this fix:
-> > > >
-> > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> > > >
-> > > >  Performance counter stats for 'system wide':
-> > > >
-> > > >              80.58 Joules power/energy-pkg/
-> > > >
-> > > >              2.004009749 seconds time elapsed
-> > > >
-> > > > Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files from sysfs")
-> > > > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
-> > >
-> > > Reviewed-by: Ian Rogers <irogers@google.com>
-> >
-> > Applied to perf-tools-next, thanks!
->
-> Thanks Namhyung, I think this should be a candidate for perf-tools so
-> that 6.6 doesn't regress for sysfs events.
+include/linux/serial_core.h:666: warning: expecting prototype for uart_port_lock_irqrestore(). Prototype was for uart_port_unlock_irqrestore() instead
 
-I see, I overlooked that it's for the current cycle.
-I'll move it to perf-tools.
+Fixes: b0af4bcb4946 ("serial: core: Provide port lock wrappers")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>
+Cc: linux-serial@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+---
+ include/linux/serial_core.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Namhyung
+diff -- a/include/linux/serial_core.h b/include/linux/serial_core.h
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -658,7 +658,7 @@ static inline void uart_port_unlock_irq(
+ }
+ 
+ /**
+- * uart_port_lock_irqrestore - Unlock the UART port, restore interrupts
++ * uart_port_unlock_irqrestore - Unlock the UART port, restore interrupts
+  * @up:		Pointer to UART port structure
+  * @flags:	The saved interrupt flags for restore
+  */
