@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CEB7AFA59
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6502F7AFA60
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbjI0Ful (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
+        id S229612AbjI0Fw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 01:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjI0FuA (ORCPT
+        with ESMTP id S229579AbjI0Fvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:50:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A232D71
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 22:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695793487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FXF3ES7XN1Pl7q/U2YCy77+dCD8e5lolOS847DdNDAY=;
-        b=b28uX/QNMriL7kpXaUPejsDFLM7IlbuYgHGViyjYu41dOFbLNE1YeEwcbwC9iUG6iDvTqQ
-        UlGGF9AYSpebcm0bKLdX8OIj7wCcZUHxWGrYLNzZkjLdWZsedSWxpccszf2IzyqarGBQCm
-        ykltSFZ0+jy4iXeFGmECHjy8JRsmPHo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-294-O_z9u9y5N2y72j6BNqnfEQ-1; Wed, 27 Sep 2023 01:44:44 -0400
-X-MC-Unique: O_z9u9y5N2y72j6BNqnfEQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 992B085A5BE;
-        Wed, 27 Sep 2023 05:44:42 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76FA12026D4B;
-        Wed, 27 Sep 2023 05:44:41 +0000 (UTC)
-Date:   Wed, 27 Sep 2023 13:44:38 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        ebiederm@xmission.com, akpm@linux-foundation.org,
-        stanislav.kinsburskii@gmail.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-mm@kvack.org, kys@microsoft.com, jgowans@amazon.com,
-        wei.liu@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        graf@amazon.de, pbonzini@redhat.com
-Subject: Re: [RFC PATCH v2 0/7] Introduce persistent memory pool
-Message-ID: <ZRPBRkXrYvbw8+Lt@MiWiFi-R3L-srv>
-References: <01828.123092517290700465@us-mta-156.us.mimecast.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01828.123092517290700465@us-mta-156.us.mimecast.lan>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 01:51:49 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63645170E;
+        Tue, 26 Sep 2023 22:49:53 -0700 (PDT)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AE48620B74C0;
+        Tue, 26 Sep 2023 22:49:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE48620B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1695793792;
+        bh=zYLgfwVrqDBS5frwkU8WzeM8Y0joHuphXzHL6ORt8IQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Pp/754cU2V+m654v727QrXirT71pL8pHi7Htgxvk49n2VPSfi6SwI3wBlvLBbpSCN
+         3ZZB1cSIoEW/kYqMfBTKoZKuQxBYc0jh6YwEuTmwktm9ATqCp5kw0OBa9pDTlNgGmq
+         zcU46rYDR40PJ5T4AHo3KS2YJKRi6g2rRNqEndTs=
+From:   Sonia Sharma <sosha@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        sosha@microsoft.com, kys@microsoft.com, mikelley@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        longli@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Subject: [PATCH v5 net-next] net: hv_netvsc: fix netvsc_send_completion to avoid multiple message length checks
+Date:   Tue, 26 Sep 2023 22:49:47 -0700
+Message-Id: <1695793787-21107-1-git-send-email-sosha@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanislav,
+From: Sonia Sharma <sonia.sharma@linux.microsoft.com>
 
-On 09/25/23 at 02:27pm, Stanislav Kinsburskii wrote:
-> This patch introduces a memory allocator specifically tailored for
-> persistent memory within the kernel. The allocator maintains
-> kernel-specific states like DMA passthrough device states, IOMMU state, and
-> more across kexec.
+The switch statement in netvsc_send_completion() is incorrectly validating
+the length of incoming network packets by falling through to the next case.
+Avoid the fallthrough. Instead break after a case match and then process
+the complete() call.
+The current code has not caused any known failures. But nonetheless, the
+code should be corrected as a different ordering of the switch cases might
+cause a length check to fail when it should not.
 
-Can you give more details about how this persistent memory pool will be
-utilized in a actual scenario? I mean, what problem have you met so that
-you have to introduce persistent memory pool to solve it?
+Signed-off-by: Sonia Sharma <sonia.sharma@linux.microsoft.com>
 
-Thanks
-Baoquan
+---
+Changes in v3:
+* added return statement in default case as pointed by Michael Kelley.
+Changes in v4:
+* added fixes tag
+* modified commit message to explain the issue fixed by patch.
+Changes in v5:
+* Dropped fixes tag as suggested by Simon Horman.
+* fixed indentation
+---
+ drivers/net/hyperv/netvsc.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-> 
-> The current implementation provides a foundation for custom solutions that
-> may be developed in the future. Although the design is kept concise and
-> straightforward to encourage discussion and feedback, it remains fully
-> functional.
-> 
-> The persistent memory pool builds upon the continuous memory allocator
-> (CMA) and ensures CMA state persistency across kexec by incorporating the
-> CMA bitmap into the memory region instead of allocation it from kernel
-> memory.
-> 
-> Persistent memory pool metadata is passed across kexec by using Flattened
-> Device Tree, which is added as another kexec segment for x86 architecture.
-> 
-> Potential applications include:
-> 
->   1. Enabling various in-kernel entities to allocate persistent pages from
->      a unified memory pool, obviating the need for reserving multiple
->      regions.
-> 
->   2. For in-kernel components that need the allocation address to be
->      retained on kernel kexec, this address can be exposed to user space
->      and subsequently passed through the command line.
-> 
->   3. Distinct subsystems or drivers can set aside their region, allocating
->      a segment for their persistent memory pool, suitable for uses such as
->      file systems, key-value stores, and other applications.
-> 
-> Notes:
-> 
->   1. The last patch of the series represents a use case for the feature.
->      However, the patch won't compile and is for illustrative purposes only
->      as the code being patched hasn't been merged yet.
-> 
->   2. The code being patched is currently under review by the community. The
->      series is named "Introduce /dev/mshv drivers":
-> 
->          https://lkml.org/lkml/2023/9/22/1117
-> 
-> 
-> Changes since v1:
-> 
->   1. Persistent memory pool is now a wrapper on top of CMA instead of being a
->      new allocator.
-> 
->   2. Persistent memory pool metadata doesn't belong to the pool anymore and
->      is now passed via Flattened Device Tree instead over kexec to the new
->      kernel.
-> 
-> The following series implements...
-> 
-> ---
-> 
-> Stanislav Kinsburskii (7):
->       kexec_file: Add fdt modification callback support
->       x86: kexec: Transfer existing fdt to the new kernel
->       x86: kexec: Enable fdt modification in callbacks
->       pmpool: Introduce persistent memory pool
->       pmpool: Update device tree on kexec
->       pmpool: Restore state from device tree post-kexec
->       Drivers: hv: Allocate persistent pages for root partition
-> 
-> 
->  arch/x86/Kconfig                  |   16 +++
->  arch/x86/kernel/kexec-bzimage64.c |   97 +++++++++++++++++
->  drivers/hv/hv_common.c            |   13 ++
->  include/linux/kexec.h             |    7 +
->  include/linux/pmpool.h            |   22 ++++
->  kernel/kexec_file.c               |   24 ++++
->  mm/Kconfig                        |    9 ++
->  mm/Makefile                       |    1 
->  mm/pmpool.c                       |  208 +++++++++++++++++++++++++++++++++++++
->  9 files changed, 394 insertions(+), 3 deletions(-)
->  create mode 100644 include/linux/pmpool.h
->  create mode 100644 mm/pmpool.c
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
+diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+index 82e9796c8f5e..0f7e4d377776 100644
+--- a/drivers/net/hyperv/netvsc.c
++++ b/drivers/net/hyperv/netvsc.c
+@@ -851,7 +851,7 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 				   msglen);
+ 			return;
+ 		}
+-		fallthrough;
++		break;
+ 
+ 	case NVSP_MSG1_TYPE_SEND_RECV_BUF_COMPLETE:
+ 		if (msglen < sizeof(struct nvsp_message_header) +
+@@ -860,7 +860,7 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 				   msglen);
+ 			return;
+ 		}
+-		fallthrough;
++		break;
+ 
+ 	case NVSP_MSG1_TYPE_SEND_SEND_BUF_COMPLETE:
+ 		if (msglen < sizeof(struct nvsp_message_header) +
+@@ -869,7 +869,7 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 				   msglen);
+ 			return;
+ 		}
+-		fallthrough;
++		break;
+ 
+ 	case NVSP_MSG5_TYPE_SUBCHANNEL:
+ 		if (msglen < sizeof(struct nvsp_message_header) +
+@@ -878,10 +878,6 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 				   msglen);
+ 			return;
+ 		}
+-		/* Copy the response back */
+-		memcpy(&net_device->channel_init_pkt, nvsp_packet,
+-		       sizeof(struct nvsp_message));
+-		complete(&net_device->channel_init_wait);
+ 		break;
+ 
+ 	case NVSP_MSG1_TYPE_SEND_RNDIS_PKT_COMPLETE:
+@@ -904,13 +900,19 @@ static void netvsc_send_completion(struct net_device *ndev,
+ 
+ 		netvsc_send_tx_complete(ndev, net_device, incoming_channel,
+ 					desc, budget);
+-		break;
++		return;
+ 
+ 	default:
+ 		netdev_err(ndev,
+ 			   "Unknown send completion type %d received!!\n",
+ 			   nvsp_packet->hdr.msg_type);
++		return;
+ 	}
++
++	/* Copy the response back */
++	memcpy(&net_device->channel_init_pkt, nvsp_packet,
++	   sizeof(struct nvsp_message));
++	complete(&net_device->channel_init_wait);
+ }
+ 
+ static u32 netvsc_get_next_send_section(struct netvsc_device *net_device)
+-- 
+2.25.1
 
