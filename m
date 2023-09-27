@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69AD7AFA1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 07:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AC17AF96C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjI0Fcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 01:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        id S229702AbjI0Eca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjI0Fbx (ORCPT
+        with ESMTP id S229686AbjI0Ebk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:31:53 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EFD16627;
-        Tue, 26 Sep 2023 16:03:50 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-530bc7c5bc3so11908501a12.1;
-        Tue, 26 Sep 2023 16:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695769429; x=1696374229; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=EwQWLVmf1ooAJ5jlKTNlvd+gS1fha7ZhTlSXaw/z40w=;
-        b=CxGaMYfhoebj3qNtBq/2tB/9g40QDxmcMb3Cg+LOVdTK7xGSqBvycfMOtYQF+MQ2b2
-         XDLT5ax5LBHBqLBjovk+ZOK7tdNokh2gru4AhcI2rUuBMuh2Y4yEuDlOljj2jpb7ke4c
-         lfQLyRrYJNutCOub9wzkWk66fnN0I9PWDJoSazpWF75HrfKteRezQLccVK+NvHNBTDxe
-         0zEOH9ulP5DzaXIG+F7ODMmrA1Vi6E1d8DVpqUrBJgChkBZIiKx00k0JFZttYZRyrW7Q
-         i7YR3vSAAFeSaSxGQs8fc9aAFKoDsRj3tGFk0S3P4Pl97KeH+Y/zh3bazsdScBHrI/8F
-         fbrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695769429; x=1696374229;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EwQWLVmf1ooAJ5jlKTNlvd+gS1fha7ZhTlSXaw/z40w=;
-        b=BfvVND+4EVJTx6kZTk1ey1+O0EP5HA5qdDY/kfFnXuRGEGRTLYhiOJWGug/N+TNVJp
-         VjGVlueCvrXjXoj4dj+ZTRXhCUqp1PP8GBTbNZMHgOjdTeOm4WPXfwDCiWMYF8GrH44U
-         MeuH1vkcX06KGVLOpeqTe9oGq4kjuhqsill+uq3P+LlwlfKskwtlD5RxqnZbWcPoq4N1
-         RBJelsrQd8AwozP+owGwT6KZkVBF4f9ivUMwE9KLSfudG4ezlaS77tGcAe5IrbjBMatE
-         EjP7RrhECOFrIo8O5WJ8OHBa4fzrDpJJnYHNBwYICGCSHKHVoGuSxHUFNmzwdQrMcrcy
-         0pfw==
-X-Gm-Message-State: AOJu0Yw5aLamuEJ5i2yGA8NKyECIxdVf/HstlaT9AtSrfrvSG6yFDUdz
-        OLEjUsQKTQfxbf+Yjy27ORE=
-X-Google-Smtp-Source: AGHT+IEeFtF26Ih0iBnW5RZFc9NAgshFdUwRK2WoSgNeMG8CWPe0AwywGGaeZkg3VJ+9xzSPl6I6gg==
-X-Received: by 2002:a17:906:ce:b0:9ad:ae3a:ed01 with SMTP id 14-20020a17090600ce00b009adae3aed01mr99651eji.2.1695769428900;
-        Tue, 26 Sep 2023 16:03:48 -0700 (PDT)
-Received: from skbuf ([188.25.161.12])
-        by smtp.gmail.com with ESMTPSA id gu20-20020a170906f29400b009ad8796a6aesm8312608ejb.56.2023.09.26.16.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 16:03:48 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 02:03:46 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Pawel Dembicki <paweldembicki@gmail.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/8] net: dsa: vsc73xx: convert to PHYLINK
-Message-ID: <20230926230346.xgdsifdnka2iawiz@skbuf>
-References: <20230912122201.3752918-1-paweldembicki@gmail.com>
- <20230912122201.3752918-3-paweldembicki@gmail.com>
- <ZQCWoIjvAJZ1Qyii@shell.armlinux.org.uk>
+        Wed, 27 Sep 2023 00:31:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F24C37;
+        Tue, 26 Sep 2023 17:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695773784; x=1727309784;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=t9Af1Zi6usLZRsDxAutl6VclVJK9TAWeZLdJbGkOdSY=;
+  b=ddI1+awat/W5A+673tyAzsi/r9qGsGRkwxR+RmDrNK9oSYqBcTouz8G7
+   x5GfEDqmVH8gvtR2A5eEn7QVA8gjjJyWwlW3yQJkmeHotorof3oOypJU7
+   lGOa+YmOUTNQfyeGud48kWs3E39tceJAzCFPUIBxv4t0dN5YA5JVp/BYA
+   4ECMd1h3wIbG7ce55Ll49fNagBi75X187r47fAZ5rtG5lInCP6pPIpnib
+   CiZqrF6P4J5YC7Uezb8DXiit+0jMoykOWpdjPXmBXyuDrJ+03LbVr+QEb
+   pHUrOhPgwqXtB4CcmAAKEmDXUnJEuyfyB1Xerwc/owc+LtJZDM/z7RS59
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="361077295"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="361077295"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 17:16:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10845"; a="748993259"
+X-IronPort-AV: E=Sophos;i="6.03,179,1694761200"; 
+   d="scan'208";a="748993259"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2023 17:16:14 -0700
+Received: from rabakare-mobl3.amr.corp.intel.com (unknown [10.212.145.15])
+        by linux.intel.com (Postfix) with ESMTP id BF699580BBE;
+        Tue, 26 Sep 2023 17:16:14 -0700 (PDT)
+Message-ID: <850d1c1b6ef41cd039cec2fe0e67437d80856f14.camel@linux.intel.com>
+Subject: Re: [PATCH 05/11] platform/x86:intel/pmc: Move get_low_power_modes
+ function
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Date:   Tue, 26 Sep 2023 17:16:14 -0700
+In-Reply-To: <a790e9e7-2748-5d2f-a035-20ef42ca87a2@linux.intel.com>
+References: <20230922213032.1770590-1-david.e.box@linux.intel.com>
+         <20230922213032.1770590-6-david.e.box@linux.intel.com>
+         <a790e9e7-2748-5d2f-a035-20ef42ca87a2@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQCWoIjvAJZ1Qyii@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:49:36PM +0100, Russell King (Oracle) wrote:
-> On Tue, Sep 12, 2023 at 02:21:56PM +0200, Pawel Dembicki wrote:
-> > +static void vsc73xx_phylink_mac_link_up(struct dsa_switch *ds, int port,
-> > +					unsigned int mode,
-> > +					phy_interface_t interface,
-> > +					struct phy_device *phydev,
-> > +					int speed, int duplex,
-> > +					bool tx_pause, bool rx_pause)
-> > +{
-> > +	struct vsc73xx *vsc = ds->priv;
-> > +	u32 val;
-> > +
-> > +	if (speed == SPEED_1000)
-> > +		val = VSC73XX_MAC_CFG_GIGA_MODE | VSC73XX_MAC_CFG_TX_IPG_1000M;
-> > +	else
-> > +		val = VSC73XX_MAC_CFG_TX_IPG_100_10M;
-> > +
-> > +	if (interface == PHY_INTERFACE_MODE_RGMII)
-> > +		val |= VSC73XX_MAC_CFG_CLK_SEL_1000M;
-> > +	else
-> > +		val |= VSC73XX_MAC_CFG_CLK_SEL_EXT;
-> 
-> I know the original code tested against PHY_INTERFACE_MODE_RGMII, but
-> is this correct, or should it be:
-> 
-> 	if (phy_interface_is_rgmii(interface))
-> 
-> since the various RGMII* modes are used to determine the delay on the
-> PHY side.
-> 
-> Even so, I don't think that is a matter for this patch, but a future
-> (or maybe a preceeding patch) to address.
-> 
-> Other than that, I think it looks okay.
-> 
-> Thanks.
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+On Tue, 2023-09-26 at 18:56 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Fri, 22 Sep 2023, David E. Box wrote:
+>=20
+> > From: Xi Pardee <xi.pardee@intel.com>
+> >=20
+> > Some platforms will have a need to retrieve the low power modes as part=
+ of
+> > their driver initialization. As such, make the function global and call=
+ it
+> > from the platform specific init code.
+>=20
+> What is the real justification for this change, I don't think it's clearl=
+y=20
+> stated above?
 
-I also agree with adding one more patch to this which converts to
-phy_interface_is_rgmii(). Paweł: there was a recent discussion about
-the (ir)relevance of the specific rgmii phy-mode in fixed-link here.
-https://lore.kernel.org/netdev/ZNpEaMJjmDqhK1dW@shell.armlinux.org.uk/
+It needs to be moved from core code to platform init code so that (in patch=
+ 9)
+we can get the entry requirement list for the enabled modes, which won't be
+known before this function is ran. I'll update the changelog.
