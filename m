@@ -2,256 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8803D7AF92B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D4C7AF918
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 06:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjI0EUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 00:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
+        id S229772AbjI0EN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 00:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjI0ETM (ORCPT
+        with ESMTP id S229632AbjI0EMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 00:19:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3713C00;
-        Tue, 26 Sep 2023 18:32:20 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c61bde0b4bso46946025ad.3;
-        Tue, 26 Sep 2023 18:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695778340; x=1696383140; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hP+g2Zhox+Th+oVPcl2goCX8vInD7cvVYSsX0s/QkpE=;
-        b=Emoy4TuHKxJUmeFm14CrKuP4VC2roWtmNmIIEn6Wz5LLjHp6bGvaMILURLj64ptdEK
-         hXsRAVkYkPEARguujKvZvu9Ro9V9coU6gmbw8fnUB7DERGuoDU6aR6qND6qGaTamT+H8
-         FwD0D1oZMT9+B/Z1hz9Wy5/Xvmk0aFPJvzOZ4yrbiFZ+jA+VSzWNZv/FnuuRHRn6LjlY
-         TkKwjNAtlUq48kn8hCz5Q29YCiwcz0Svq4xSbvDx3i8Yy6x+2yXYv6FyX3Bde4B0mkVP
-         CVsaVHsDjmvHCtn6o9y3lGacWSIO0hXZG+A5JwvUZXBoghmdyraALaQNE7KUJDrytw9i
-         9mNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695778340; x=1696383140;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hP+g2Zhox+Th+oVPcl2goCX8vInD7cvVYSsX0s/QkpE=;
-        b=jDNje+G5N16WqGw0Dn4lv/tpGsJOKHMB1rymxHvkOv+3ItIbjVhVao/VfMRsHp9j/3
-         odtbGiYF9oFJN/nLzLl99ams8LZefdIilCus8i315hjIqtSroyLwwESikUK9QypKskup
-         b7NM6I1hMSO0cNsG3JgPSzFrGCpbOzdqO/+UgRaBSsWxFzzJr4TnNb/jAuwBLCa14nND
-         +kWMhH4CcMWP7RM2yhj8wajD1niXP8JGEBKFgBx1NJiDxu/uKT1PDQViAMhRNFZnOseF
-         3rpqVnQgeFvcN27YFlclw12XR9K+/QxUX/rpNNvoihza+fklp5Zn9fae5/aKLEgD9HiR
-         1UVg==
-X-Gm-Message-State: AOJu0YwZOa/QAlr4Qk/eagWb5oXQBcVAYiYlw8oq4WjD95fQV7YSdZ7R
-        nXeuS5XGjH7LIf5FxUuPc3o=
-X-Google-Smtp-Source: AGHT+IGPiO2n9poA5FBFxwbSW7wzdgA+aBNcevYeCBgsoPmyd4ftTzGq/klGeCdciA9mUzGWIBP/GQ==
-X-Received: by 2002:a17:90a:6046:b0:25c:8b5e:814 with SMTP id h6-20020a17090a604600b0025c8b5e0814mr377145pjm.44.1695778339932;
-        Tue, 26 Sep 2023 18:32:19 -0700 (PDT)
-Received: from sol (60-242-83-31.tpgi.com.au. [60.242.83.31])
-        by smtp.gmail.com with ESMTPSA id 14-20020a17090a004e00b0025dc5749b4csm13516723pjb.21.2023.09.26.18.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 18:32:19 -0700 (PDT)
-Date:   Wed, 27 Sep 2023 09:32:11 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 5/5] gpiolib: cdev: Utilize more bitmap APIs
-Message-ID: <ZROGG44v5kfktdVs@sol>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
+        Wed, 27 Sep 2023 00:12:41 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2073.outbound.protection.outlook.com [40.107.244.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F6130DE
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Sep 2023 18:55:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m4AmyNnXVTw5n0WPLROV9CBNbsvPAQrbTVJv37sCfTSx77vb5FrLJyUIOukaUK0LZYDBHWZKAnnFZrjTxDd5dw664522sNcn4Tn9gk5q11IazwB0sdME6wGhUR2S3tEy4lOCHwMlE5LB63xMEFeaf0+zlO4T6EXqMERN8Q058fNOzrEPYt8NTJv6Bn8rKBQPzBrHq6nmjzDMyYWkuISZIzBqlZnkl1mzn9dvbj9pkIZemBJtOL5tODaVSQM5f9MhjU5jKbDt2CGTitjECkSOSVVBxJ7nuCGJ/hIm5hQKkm7GIpmOveOdBrmujtbPd41kNlyQoLsMah35+v2QsdPX6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=59StD5zN2ASZwvtB/WbPHQzJgiWADu7ZHr9mGkcCfmE=;
+ b=Fyq+tP/dpRP/Sdr/Ir9NiAHqtIrVHF54e5rxyGsVmgVPceZflUkifSZoA33Oa+FK6Fy6yXTm4Kn7bVViIjvcGS73mPdj90fbehnjICBwxUit9wY/Wf3w8P5V7NDVrdblPgmAAr3rijBZxv8uZqr0xAgl6mBIjH/yrMaRz192YVmxd+F96GnuZyTDH4sRZFIOgKTVXrPpO4nFnqmKLukBD7skHYuv+braM5hCpYm2QN/NOS45Uz7/iOGsyh8NX6pbePmnMTR1PuJs8z2FVxmjPUZfw1WcchQ3n3FfF0ouYUWAcGl0XWgG6hWrnYwiIXnDoCJUfrBiX0CjsUwlcUNuzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=59StD5zN2ASZwvtB/WbPHQzJgiWADu7ZHr9mGkcCfmE=;
+ b=vGpTqhs4xu7sea5u0RH+kcrzSwGCJruK/WiQYgCM2WxqK3wwLJWqEUcIoiH4Su5djbK0wwWuBjFWcVv4WGncKjAivQOzrvgV0srgUUsxQg8tZz729/SthT7UGfu0Zl+q4mFwbQnqdk7cBH+06kJoc5Yu+C6JxmvBNCuW+y7gU1g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) by
+ DM3PR12MB9391.namprd12.prod.outlook.com (2603:10b6:0:3d::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.21; Wed, 27 Sep 2023 01:55:23 +0000
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::8a67:3bbe:8309:4f87]) by DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::8a67:3bbe:8309:4f87%3]) with mapi id 15.20.6768.029; Wed, 27 Sep 2023
+ 01:55:22 +0000
+Message-ID: <13310d31-9173-4529-946d-62ac8841659b@amd.com>
+Date:   Tue, 26 Sep 2023 21:55:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.3.0
+Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
+ control
+Content-Language: en-CA, en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        boris.brezillon@collabora.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230924224555.15595-1-dakr@redhat.com>
+ <312983ee-ba4c-477e-8846-072c815df862@amd.com>
+ <12f19494-7fd0-055f-4135-e17581398eb5@redhat.com>
+From:   Luben Tuikov <luben.tuikov@amd.com>
+Autocrypt: addr=luben.tuikov@amd.com; keydata=
+ xjMEY1i6jxYJKwYBBAHaRw8BAQdAhfD+Cc+P5t/fiF08Vw25EMLiwUuxULYRiDQAP6H50MTN
+ I0x1YmVuIFR1aWtvdiA8bHViZW4udHVpa292QGFtZC5jb20+wpkEExYKAEEWIQQyyR05VSHw
+ x45E/SoppxulNG8HhgUCY1i6jwIbAwUJCWYBgAULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIX
+ gAAKCRAppxulNG8Hhk53AP4k4UY5xfcje0c5OF1k22pNv8tErxtVpgKKZgvfetA4xwD+OoAh
+ vesLIYumBDxP0BoLiLN84udxdT15HwPFUGiDmwDOOARjWLqPEgorBgEEAZdVAQUBAQdAzSxY
+ a2EtvvIwd09NckBLSTarSLNDkUthmqPnwolwiDYDAQgHwn4EGBYKACYWIQQyyR05VSHwx45E
+ /SoppxulNG8HhgUCY1i6jwIbDAUJCWYBgAAKCRAppxulNG8HhnBLAP4yjSGpK6PE1mapKhrq
+ 8bSl9reo+F6EqdhE8X2TTHPycAEAt8EkTEstSiaOpM66gneU7r+xxzOYULo1b1XjXayGvwM=
+In-Reply-To: <12f19494-7fd0-055f-4135-e17581398eb5@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQXPR0101CA0048.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:14::25) To DM6PR12MB3370.namprd12.prod.outlook.com
+ (2603:10b6:5:38::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:EE_|DM3PR12MB9391:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4184df50-a3da-4132-d534-08dbbefccf4f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6eqhfF4R7iKL1q5w7qa5DsYez0zPII3WnydGQP3DreYM7H+u5v5P4hNy/hBvcxmr/AW9BU5f5pm1gasDQ98GiYeWqRSagy9Vpvy019SCBjWLFgNIhRExjx3eU+/Z82Y5aRC2okOdDaggaY312dnFNGFpML8svZeRybivf19vuoV5iZ2ICgVzvJ2En3JWi3ljfYOY9RTei43s/ivKJJBv0ihodkDk0N3YCuV9qqhUbkKJJWgeuDtqRY49IRM95vciRNPdvNDFr9KBI59uct/kjmPtewhmItsiKTXb9nR/OBOI62ll1nesB57+jR5/0noIspyU+ArCTxXVQ0QKH8DD9kPEXkyW/U6H0p+5HJJGOEjsHzQ9OInsQpzsz6NKdKx/QdWdnn5JBk1jN8j0raWtnd97YqnlPdyGPl3Geiau66Aq5vtbh8+xajK9MHYal185C3f8XzE892cum9rDU3SfbetMbJhLvSNoe7qwYl5+KJrHgY3de3vWU/IiyFKVurl2KglVOYuiH0y9acXfMa35TilCNj6PK4ZGK+CvGbs7+Jjjcd39YH2jAkQY+XJg9T2pAv6BpaKeuHZV+2EvUU+1o0Feb/d/yZBN20I8sLDO331Q8Ez3YnuNiWQfmN7xkD3Qm+eksbHxesca0t3LDt2hiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3370.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(366004)(396003)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(5660300002)(44832011)(8676002)(4326008)(8936002)(83380400001)(38100700002)(41300700001)(66946007)(66556008)(66476007)(26005)(316002)(31686004)(2906002)(31696002)(86362001)(6486002)(6506007)(6512007)(66899024)(53546011)(478600001)(6666004)(36756003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?THlHR2c5d2hSM2xUUTVuR2pOakRzMFlZczF5aHRkV2dSY0RoaXNpTysxTS9m?=
+ =?utf-8?B?N0R0VVJXSkh4bTNTOFFENkd5bkpld3lLU2F5cTA2YlhpdEdFZmtRMHg4UGNn?=
+ =?utf-8?B?YXJ2WEplbjFTYVN3c2pyS2FMMEROSWdJbEp0S3RQUHIzZEI5RWFJV1ArZmRM?=
+ =?utf-8?B?c1BOaGFqd0VaaE9SNGhpTDV6b2FFNGUzTTZWeUd1aExJMmxEQnZObDN4cVBJ?=
+ =?utf-8?B?T3BIMWdiUmE4NEdZQmt5QkxvYmNKVnRlYXFkZkZlWEx0eitSLzZEcWhQVWNz?=
+ =?utf-8?B?YnpCQmZwRTBnbms4MW9WaTZQUXZUSmNjZlRMdzQxTlg1Vnd0M2pkV3gyME9P?=
+ =?utf-8?B?SzI2dngxOFhJZnQ5Y3NRbXNHenAxSFdrMFNRRWtvNHBpNVZmSlhyZkpRc0c0?=
+ =?utf-8?B?SkZDWGV5cGxpWlAzS1hjVmVMQWhBNklyTFR6dFUwRHNtbjAvalNHc0k5dE5k?=
+ =?utf-8?B?ZTBmTmR3Y0E1RUxHajkzdlZuYkpna1dqWUtNZFMwZ01EM2owejJPTGk4ZU9w?=
+ =?utf-8?B?RXZRc09yMFlyVXJKTEsxdmpEMTRTd0xhME4vcTRmdEpIUTgreVJzK0pOY0tB?=
+ =?utf-8?B?WFgxU3BYWnlmZXRMbmt1d1R0N3NrMjJ3aDA1dzVldWlxazB6RmgrWi8yTlhP?=
+ =?utf-8?B?aSs1YlU0V2VHOFFtVENjNjMwa3NDcnJIR25zSEloNUJ2bGd3Sk8wRXZsZFdT?=
+ =?utf-8?B?WE80Qnd1Y3UzTHRYQmN0SmhYSzY0VW9RZDdoemw4THlNZWRKVkNyRE9mTTJi?=
+ =?utf-8?B?UlNWSzFTT20xZ3UwNEhyb0VPZjBZK2dqTUNJRXZrcnpBWnRPVWh3ME9BclBk?=
+ =?utf-8?B?dksxbXhNaHZRcVVqaGFFQVZXdG9INDIvc3p6ZWR3ZXNQUm1vTUlMTVV3M2h4?=
+ =?utf-8?B?MmsrZW9tSDRyU1JYeEVadS9FNFhySG9IeitaVENHQnZ4cStnK3NqZUR4M0VK?=
+ =?utf-8?B?OUJuTW05SGFETit4OWFjdHpJSGsxZVVDNGxBREZIcDkzQXlsY3hJaTVhZVFn?=
+ =?utf-8?B?OVhFSU9iOC9wNEU1QzcvOFdpbTNDdlZCYW81dmR3YXBFRkpkTnNyZENVK0Yr?=
+ =?utf-8?B?Q2hiL3NsaWxOMDFmVnlleWN5R3Bka0dnN2w3L1lqVkY1Z3pnUDVXZ083WE4x?=
+ =?utf-8?B?RHprMk9VK1NNTytTZEdVaEpkV0w2d0xMTVpZZ2MvUmRaZVlFcHNNSjVXdEhv?=
+ =?utf-8?B?RzFyTXJYL25pZURTYTRlUFIybk1MYWk1dW90eVZmWlZGQ0x2RGNmZEtsV2p4?=
+ =?utf-8?B?ZmEzWlhKRGkvWWlqSVVISXFPSjUvemxSbnI3OGlUdlRxRW5SRkRKQ0hBa0Nl?=
+ =?utf-8?B?cGxpS1l6aEZJSUFNRXRvWlpldC9qNVZHNHRvajFFT0RibnhOd0tibmhSRG81?=
+ =?utf-8?B?RG5BUWRBWWhOMThBNld5cjVIbklrVjZmdWpIM2pEMjZDSU40VW5PMiszNlFj?=
+ =?utf-8?B?OHA3cW5YUDdCVG83d2RQZmhQeWo3dWt2cWlNUGlVSFBFU0NTZFBuVWk5dEtr?=
+ =?utf-8?B?OEczcVlpSVkxTVJSNW9jRXNlWHpGcHNmbWNkY0oyYWtwMWVFTmlRWGg0cEFo?=
+ =?utf-8?B?WURmTUJRZWRUUkFhamJ5Z21yaHZYYldCRU94MU1PaVpYbkFramhVNGVmSzBB?=
+ =?utf-8?B?VXREa3lNczY1YzVYbW8yN2V4bllCbFd1TzBwR0VRUmZCK3p5RnFmbjFmWFRI?=
+ =?utf-8?B?WkFscnVEcmxuNExYQ0d2aG9JZ2gzNHZOUVZWZTlqRWREbTNjeVJuWEZwbUN2?=
+ =?utf-8?B?bVB5WGV5bUU3dCtYOHFmL0xrM3RaK2xTc2h1QlZWQTRwbGRnbkN0S2JXbVQv?=
+ =?utf-8?B?ZXdVT0pzOUF2Q0JTemtyNkZVOEtUU0xMQ0RSQVZFNDE0L3VuNDdlMUhSb2Zk?=
+ =?utf-8?B?M3FUZCt5VFFWb2tGaDBlM1p0TWtkYjRkOWFUdm4zeHAyMllNRzVaMTlJcFpR?=
+ =?utf-8?B?Tmp1LzFqSTloNVRaOHhyWjAxTE9tdTYvMi9CYlBKT056c1IwQjNMdFpHQVpn?=
+ =?utf-8?B?RG82MWRiSVlRZzM1ZTYyZlZaczlOdW9IZENuTWhIV0NmT0luZU1xUEZIOTJZ?=
+ =?utf-8?B?Z3FYczc4Tkd0OHFCZWNrZWY3c2Rmdk1GOWNnWklsZUlKSDlMMDg2L0NySEp3?=
+ =?utf-8?Q?pEQUTFfJ2KCfJTNUbN5WPxVzO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4184df50-a3da-4132-d534-08dbbefccf4f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3370.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2023 01:55:22.4017
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LFwelwEVclpewo6LDOKJ/EC2YXB6eKM2vg30OJB2tu0paUICT4PZTLt4BC4qgiGi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9391
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 08:20:07AM +0300, Andy Shevchenko wrote:
-> Currently we have a few bitmap calls that are open coded in the library
-> module. Let's convert them to use generic bitmap APIs instead.
+Hi,
+
+On 2023-09-26 20:13, Danilo Krummrich wrote:
+> On 9/26/23 22:43, Luben Tuikov wrote:
+>> Hi,
+>>
+>> On 2023-09-24 18:43, Danilo Krummrich wrote:
+>>> Currently, job flow control is implemented simply by limiting the amount
+>>> of jobs in flight. Therefore, a scheduler is initialized with a
+>>> submission limit that corresponds to a certain amount of jobs.
+>>
+>> "certain"? How about this instead:
+>> " ... that corresponds to the number of jobs which can be sent
+>>    to the hardware."?
+>>
+>>>
+>>> This implies that for each job drivers need to account for the maximum
+>>                                  ^,
+>> Please add a comma after "job".
+>>
+>>> job size possible in order to not overflow the ring buffer.
+>>
+>> Well, different hardware designs would implement this differently.
+>> Ideally, you only want pointers into the ring buffer, and then
+>> the hardware consumes as much as it can. But this is a moot point
+>> and it's always a good idea to have a "job size" hint from the client.
+>> So this is a good patch.
+>>
+>> Ideally, you want to say that the hardware needs to be able to
+>> accommodate the number of jobs which can fit in the hardware
+>> queue times the largest job. This is a waste of resources
+>> however, and it is better to give a hint as to the size of a job,
+>> by the client. If the hardware can peek and understand dependencies,
+>> on top of knowing the "size of the job", it can be an extremely
+>> efficient scheduler.
+>>
+>>>
+>>> However, there are drivers, such as Nouveau, where the job size has a
+>>> rather large range. For such drivers it can easily happen that job
+>>> submissions not even filling the ring by 1% can block subsequent
+>>> submissions, which, in the worst case, can lead to the ring run dry.
+>>>
+>>> In order to overcome this issue, allow for tracking the actual job size
+>>> instead of the amount job jobs. Therefore, add a field to track a job's
+>>
+>> "the amount job jobs." --> "the number of jobs."
 > 
-
-Firstly, I didn't consider using the bitmap module here as, in my mind at
-least, that is intended for bitmaps wider than 64 bits, or with variable
-width. In this case the bitmap is fixed at 64 bits, so bitops seemed more
-appropriate.
-
-And I would argue that they aren't "open coded" - they are parallelized
-to reduce the number of passes over the bitmap.
-This change serialises them, e.g. the get used to require 2 passes over
-the bitmap, it now requires 3 or 4.  The set used to require 1 and now
-requires 2.
-And there are additional copies that the original doesn't require.
-So your change looks less efficient to me - unless there is direct
-hardware support for bitmap ops??
-
-Wrt the argument that the serialized form is clearer and more
-maintainable, optimised code is frequently more cryptic - as noted in
-bitmap.c itself, and this code has remained unchanged since it was merged
-3 years ago, so the only maintenance it has required is to be more
-maintainable??  Ok then.
-
-Your patch is functionally equivalent and pass my uAPI tests, so 
-
-Tested-by: Kent Gibson <warthog618@gmail.com>
-
-but my preference is to leave it as is.
-
-Cheers,
-Kent.
-
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 79 +++++++++++++++++--------------------
->  1 file changed, 36 insertions(+), 43 deletions(-)
+> Yeah, I somehow manage to always get this wrong, which I guess you noticed
+> below already.
 > 
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index e39d344feb28..a5bbbd44531f 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -1263,35 +1263,32 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
->  {
->  	struct gpio_v2_line_values lv;
->  	DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> +	DECLARE_BITMAP(mask, GPIO_V2_LINES_MAX);
-> +	DECLARE_BITMAP(bits, GPIO_V2_LINES_MAX);
->  	struct gpio_desc **descs;
->  	unsigned int i, didx, num_get;
-> -	bool val;
->  	int ret;
->  
->  	/* NOTE: It's ok to read values of output lines. */
->  	if (copy_from_user(&lv, ip, sizeof(lv)))
->  		return -EFAULT;
->  
-> -	for (num_get = 0, i = 0; i < lr->num_lines; i++) {
-> -		if (lv.mask & BIT_ULL(i)) {
-> -			num_get++;
-> -			descs = &lr->lines[i].desc;
-> -		}
-> -	}
-> +	bitmap_from_arr64(mask, &lv.mask, GPIO_V2_LINES_MAX);
->  
-> +	num_get = bitmap_weight(mask, lr->num_lines);
->  	if (num_get == 0)
->  		return -EINVAL;
->  
-> -	if (num_get != 1) {
-> +	if (num_get == 1) {
-> +		descs = &lr->lines[find_first_bit(mask, lr->num_lines)].desc;
-> +	} else {
->  		descs = kmalloc_array(num_get, sizeof(*descs), GFP_KERNEL);
->  		if (!descs)
->  			return -ENOMEM;
-> -		for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> -			if (lv.mask & BIT_ULL(i)) {
-> -				descs[didx] = lr->lines[i].desc;
-> -				didx++;
-> -			}
-> -		}
-> +
-> +		didx = 0;
-> +		for_each_set_bit(i, mask, lr->num_lines)
-> +			descs[didx++] = lr->lines[i].desc;
->  	}
->  	ret = gpiod_get_array_value_complex(false, true, num_get,
->  					    descs, NULL, vals);
-> @@ -1301,19 +1298,15 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
->  	if (ret)
->  		return ret;
->  
-> -	lv.bits = 0;
-> -	for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> -		if (lv.mask & BIT_ULL(i)) {
-> -			if (lr->lines[i].sw_debounced)
-> -				val = debounced_value(&lr->lines[i]);
-> -			else
-> -				val = test_bit(didx, vals);
-> -			if (val)
-> -				lv.bits |= BIT_ULL(i);
-> -			didx++;
-> -		}
-> +	bitmap_scatter(bits, vals, mask, lr->num_lines);
-> +
-> +	for_each_set_bit(i, mask, lr->num_lines) {
-> +		if (lr->lines[i].sw_debounced)
-> +			__assign_bit(i, bits, debounced_value(&lr->lines[i]));
->  	}
->  
-> +	bitmap_to_arr64(&lv.bits, bits, GPIO_V2_LINES_MAX);
-> +
->  	if (copy_to_user(ip, &lv, sizeof(lv)))
->  		return -EFAULT;
->  
-> @@ -1324,35 +1317,35 @@ static long linereq_set_values_unlocked(struct linereq *lr,
->  					struct gpio_v2_line_values *lv)
->  {
->  	DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> +	DECLARE_BITMAP(mask, GPIO_V2_LINES_MAX);
-> +	DECLARE_BITMAP(bits, GPIO_V2_LINES_MAX);
->  	struct gpio_desc **descs;
->  	unsigned int i, didx, num_set;
->  	int ret;
->  
-> -	bitmap_zero(vals, GPIO_V2_LINES_MAX);
-> -	for (num_set = 0, i = 0; i < lr->num_lines; i++) {
-> -		if (lv->mask & BIT_ULL(i)) {
-> -			if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
-> -				return -EPERM;
-> -			if (lv->bits & BIT_ULL(i))
-> -				__set_bit(num_set, vals);
-> -			num_set++;
-> -			descs = &lr->lines[i].desc;
-> -		}
-> -	}
-> +	bitmap_from_arr64(mask, &lv->mask, GPIO_V2_LINES_MAX);
-> +	bitmap_from_arr64(bits, &lv->bits, GPIO_V2_LINES_MAX);
-> +
-> +	num_set = bitmap_gather(vals, bits, mask, lr->num_lines);
->  	if (num_set == 0)
->  		return -EINVAL;
->  
-> -	if (num_set != 1) {
-> +	for_each_set_bit(i, mask, lr->num_lines) {
-> +		if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
-> +			return -EPERM;
-> +	}
-> +
-> +	if (num_set == 1) {
-> +		descs = &lr->lines[find_first_bit(mask, lr->num_lines)].desc;
-> +	} else {
->  		/* build compacted desc array and values */
->  		descs = kmalloc_array(num_set, sizeof(*descs), GFP_KERNEL);
->  		if (!descs)
->  			return -ENOMEM;
-> -		for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> -			if (lv->mask & BIT_ULL(i)) {
-> -				descs[didx] = lr->lines[i].desc;
-> -				didx++;
-> -			}
-> -		}
-> +
-> +		didx = 0;
-> +		for_each_set_bit(i, mask, lr->num_lines)
-> +			descs[didx++] = lr->lines[i].desc;
->  	}
->  	ret = gpiod_set_array_value_complex(false, true, num_set,
->  					    descs, NULL, vals);
-> -- 
-> 2.40.0.1.gaa8946217a0b
+> That's all good points below - gonna address them.
+
+Forgot to mention, title tweak,
+ "implement dynamic job flow control" --> "implement dynamic flow job control"
+would perhaps be better? Unless that was meant to be "job-flow control"?
+
+> Did you see Boris' response regarding a separate callback in order to fetch
+> the job's submission units dynamically? Since this is needed by PowerVR, I'd
+> like to include this in V2. What's your take on that?
+
+Both of them have good valid points. The whole point is to guarantee forward
+progress, and to be able to easily debug a stuck driver. Using a fence
+in prepare-job would be easy to see that the fence never triggered, but
+if we replace this with dynamic job credits, then debugging would be hard,
+as Christian pointed out.
+
+> My only concern with that would be that if I got what Boris was saying
+> correctly calling
 > 
+> WARN_ON(s_job->submission_units > sched->submission_limit);
+> 
+> from drm_sched_can_queue() wouldn't work anymore, since this could indeed happen
+> temporarily. I think this was also Christian's concern.
+
+Indeed. We don't want hardware/drivers to game the scheduler, but want to
+guarantee forward progress, e.g. a job with N number of credits completes,
+and those credits are added to the available credits, and then a new,
+smaller or bigger job is accepted for execution (prepare-job, run-job, etc.).
+
+Feel free to rename "units" to "credits" as this is what is used in
+hardware and link protocols, and naturally this is what I'm used to
+calling such mechanisms.
+
+I say, implement it, post the patch, and we'll take a look. It's a good thing
+and we should definitely develop it.
+
+Thanks!
+-- 
+Regards,
+Luben
+
