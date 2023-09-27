@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCA97B0494
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BAE7B0496
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 14:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbjI0Mph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 08:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S231721AbjI0Mqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 08:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjI0Mpf (ORCPT
+        with ESMTP id S230109AbjI0Mq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 08:45:35 -0400
+        Wed, 27 Sep 2023 08:46:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BC7C0;
-        Wed, 27 Sep 2023 05:45:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7078C433C8;
-        Wed, 27 Sep 2023 12:45:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3616C0;
+        Wed, 27 Sep 2023 05:46:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B9FAC433C8;
+        Wed, 27 Sep 2023 12:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695818734;
-        bh=3hrngeipW8QYxZDrT1J17sJTEycYuyG8C4Hf6g4f9mk=;
+        s=k20201202; t=1695818788;
+        bh=yur1lIib+MwlO3G13u5slhNv5izV70kTNuXNh85akv0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hz53PaQiWaKZ/1Zs1EME4EwCfBwffMjO/IjsKksewWqoLHutiYc6XcRIj9MYLYPOJ
-         JE46L46NLZjr3fVz3pnh6cB6RzGHdJzrZJJVyUeTKig7geGpJ/2x2pVINuZ+5dNXmA
-         zMNSdGYiOLJHin3kXKixuL8pvLjIQExHt9swOF7zRbdolSven+ki/OY4thj3Ne5zl0
-         HDrzzPayoA8zjQDIbDX9QSg7wAMsHWT1E734sJ+bBpR1N7eHSMC+6nBFGSjpbKFDaq
-         61/7XqBk6zMhSEhC0Ui6U67zSYEUhIIud16gGZcFYmengkt68rRH1ueSYjdErCQZD+
-         ioRDU3XLX/6FA==
-Date:   Wed, 27 Sep 2023 14:45:31 +0200
-From:   Mark Brown <broonie@kernel.org>
-To:     Saravanan Sekar <saravanan@linumiz.com>
-Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, jdelvare@suse.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] regulator: dt-bindings: Add mps,mpq2286
- power-management IC
-Message-ID: <ZRQj63bNWE5/rPHj@finisterre.sirena.org.uk>
-References: <20230927033953.1503440-1-saravanan@linumiz.com>
- <20230927033953.1503440-3-saravanan@linumiz.com>
+        b=OCKu0Q83mtA+/cOefVFb4tQpEBvyJOqtu9iQ6NQiatNAdI4ptP52X2BoZwD6ToknT
+         H1LzC/biabj/L2oKT3gPEC3fNlrLY5sCnYelvnyItmu3MW+e9tHaD/iIvGM9jq74Su
+         cjhozkVVEkuCbqNcZsmRdwjCou8lxdFd1/dyvo481oLo+kF+Y9XMsMgIAZ4CuomM+U
+         dEcsdT2z2qQArfP7MJbs0bpQgg9vp3FSpPsG5jcME63VN4IlM1FUTUbhAP5lTa/mVt
+         KMIB960gL8I2Nm9GxoR9CXm7FevWBgwfuCRk1k5Uc0gRrWGsNOA+xURidh1tUE7GAx
+         gEnrE4Mah85AA==
+Date:   Wed, 27 Sep 2023 14:46:21 +0200
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     hch@infradead.org, bhelgaas@google.com,
+        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Message-ID: <20230927124621.GD18050@thinkpad>
+References: <20230926140445.3855365-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="T0rU25F2o9sf0/UW"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230927033953.1503440-3-saravanan@linumiz.com>
-X-Cookie: Save energy:  Drive a smaller shell.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230926140445.3855365-1-Frank.Li@nxp.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,29 +53,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 26, 2023 at 10:04:45AM -0400, Frank Li wrote:
+> From: Guanhua Gao <guanhua.gao@nxp.com>
+> 
+> Set DMA mask and coherent DMA mask to enable 64-bit addressing.
+> 
+> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
---T0rU25F2o9sf0/UW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-On Wed, Sep 27, 2023 at 09:09:52AM +0530, Saravanan Sekar wrote:
-> Document mpq2286 power-management IC
+- Mani
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> ---
+> 
+> Notes:
+>     change from v2 to v3
+>     - remove check return value of dma_set_mask_and_coherent. 64bit mask always
+>     return success.
+>     - remove redundate comments
+>     change from v1 to v2
+>     - Remove 32bit DMA mask set.
+> 
+>  drivers/pci/controller/dwc/pci-layerscape-ep.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> index de4c1758a6c3..2c2c9aaa8700 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> @@ -249,6 +249,8 @@ static int __init ls_pcie_ep_probe(struct platform_device *pdev)
+>  
+>  	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+>  
+> +	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+> +
+>  	platform_set_drvdata(pdev, pcie);
+>  
+>  	ret = dw_pcie_ep_init(&pci->ep);
+> -- 
+> 2.34.1
+> 
 
---T0rU25F2o9sf0/UW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUUI+oACgkQJNaLcl1U
-h9DEfwf+JvfaFxh8GiR0Yh5rN8HjOavY+Bhl3rnfzmUzMBYk4XbIQgKzKIMv5KQq
-llUScvj8FvQGBT2tKE2Iv/bG/wcD0TIG8qbqFb8e+uaB8ef3bmJpglWCGVtwxXQn
-v+SqFAlVKa9IAWZbXqH4N07UBffJEmwu1vK3boVoNPokkPVab8i2rQQcE922v0q9
-J6DMYxCUUcmNV+igGkp1r4k6dP93nL3lcvueCnYjsj3CYbOVQdc71hAiBRCLl+sT
-ZsdlFdehyQYbuGrFzQ1fYdxDaoEX+29ZWHlJFETtODULMuPmZm8JtpcZWqelsTUe
-0V6DwtqFZLm5tG10HhZ979T9yzS3Xw==
-=aDqW
------END PGP SIGNATURE-----
-
---T0rU25F2o9sf0/UW--
+-- 
+மணிவண்ணன் சதாசிவம்
