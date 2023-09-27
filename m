@@ -2,50 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5037B094E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1D47B094C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Sep 2023 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbjI0Pu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 11:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S232598AbjI0PuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 11:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjI0PuJ (ORCPT
+        with ESMTP id S232901AbjI0PuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 11:50:09 -0400
-Received: from mail-4318.protonmail.ch (mail-4318.protonmail.ch [185.70.43.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFB37EFB
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1695829215; x=1696088415;
-        bh=Sf8EpJ/Ze06akGLTx+VzhLG9yK6e28N13HnngGDh80A=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=pPUCUrQ5ejL/9UgTfvM5uw+azq3xRdeFhiOSe0238hTBG0AjFbgBKH4TzFRjWkclM
-         7KX4H162PJUXoS43vYHKOAO4HIS5Wr2KXTy8W7aPnsFSbpy5N2vF4avExT6eoovrSd
-         Zsv5pTBUAA3Zqvjmj0t62G8PyRy8b0bv/ahn8smv2RgR71iTBDPD8f9/w5BF60UBCd
-         xLxyAog6LhnpDZzKa8FQ6HfBl/EYK+1RDxfpzzQV1y4Mxg6EOieU0ID2foNSvf3f2D
-         nahOKaIUdKzjAYFgu+0NII72V9ufJp5t24fntLXYwM7HOy4sn7S89FsWIcSuHEP5GQ
-         RB9Z/olpJZrpA==
-Date:   Wed, 27 Sep 2023 15:40:09 +0000
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-From:   Turritopsis Dohrnii Teo En Ming <tdtem@protonmail.com>
-Cc:     Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ceo@teo-en-ming-corp.com
-Subject: Re: My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+
-Message-ID: <BeZs4jBxhofIdjWavbuANlZ5zUrV2Wtdf9QMX5CPx_X_KT4PvKvD8c4Qc0LP_LPjKyvIy3SOjTMFgkq4xlrSKSubWZrzJLuudmSCo1Q9wLE=@protonmail.com>
-In-Reply-To: <ZQzlFgJTZzTVkKeN@debian.me>
-References: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com> <ZQzlFgJTZzTVkKeN@debian.me>
-Feedback-ID: 80245632:user:proton
+        Wed, 27 Sep 2023 11:50:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A906EB8
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 08:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=72jRNynXt3ukIvLR0wRaL2GdkMONebQKaLu0YQx+HHA=; b=TZ6RcMnJXB0WwuxNc4UqBd8nCR
+        BERiU1jAYOI/WacKBIQ4nVqT0hp29LqKGyWr+mJa3ey9ZGy/KIqHxNZCJ7Of/I+Yby3E7bVZibwqI
+        cwEuhspNiDSRxLMjYaCoyzwXejBL5LZosrUiQI7i7pOL2CjpWWiOu249PsPiiVjTmZzATM7mzDWHx
+        0Y0ibVnMb76rTYa6x2v3GjkTfVz6I8vj+eCaWeJRF9GQUWJYYtVpvZlyuEcsz9e8pkgh93AAjDvco
+        RKSoCZ9i2ACQkMFk2PXsbgClLkNPXBS523Wo1GQGtHNDFtThnIZyAGSyy8OgF1mLD6e+8rt6XUfHj
+        tvE/Wyiw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qlWe9-001KOT-0C;
+        Wed, 27 Sep 2023 15:40:17 +0000
+Message-ID: <7afa193e-6bf1-4792-89e1-ca72bc4588e9@infradead.org>
+Date:   Wed, 27 Sep 2023 08:40:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Ryzen 9 7950x sound module does not not build
+Content-Language: en-US
+To:     sboyce@blueyonder.co.uk, Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ALSA <alsa-devel@alsa-project.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <213f93b5-bffe-479f-a111-f8a7e44cd293@blueyonder.co.uk>
+ <61821f15-78e2-4594-8f39-545ecaa97000@infradead.org>
+ <5903832d-7d27-4847-b161-48b9f7e92ee6@blueyonder.co.uk>
+ <ZRLWIkyngsasQbQ7@debian.me>
+ <6a6d7683-78f2-4511-976d-eb42d3b59c89@blueyonder.co.uk>
+ <40672e60-3913-4794-b84a-742b7c16d361@infradead.org>
+ <4b2c3b4e-9b21-4f80-95e1-58aa7f58131e@blueyonder.co.uk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <4b2c3b4e-9b21-4f80-95e1-58aa7f58131e@blueyonder.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -54,77 +63,113 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
+On 9/27/23 04:27, Sid Boyce wrote:
+> On 26/09/2023 23:13, Randy Dunlap wrote:
 
+|| The snd-rpl-pci-acp6x driver only supports
+|| vendor=0x1022, device=0x15e2, and PCI revision=0x62.
 
+>> lspci -vv
+> 
+> 
+> 01:00.1 Audiodevice: NVIDIA Corporation Device 10fa (rev a1)
+>        Subsystem: NVIDIA Corporation Device 1f82
+>        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+>        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>        Latency: 0, Cache Line Size: 64 bytes
+>        Interrupt: pin B routed to IRQ 80
+>        IOMMU group: 11
+>        Region 0: Memory at fc080000 (32-bit, non-prefetchable) [size=16K]
+>        Capabilities: [60] Power Management version 3
+>                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+>                Status: D3 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
+>        Capabilities: [68] MSI: Enable- Count=1/1 Maskable- 64bit+
+>                Address: 0000000000000000  Data: 0000
+>        Capabilities: [78] Express (v2) Endpoint, MSI 00
+>                DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 <64us
+>                        ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 75W
+>                DevCtl: CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
+>                        RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+>                        MaxPayload 256 bytes, MaxReadReq 512 bytes
+>                DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq+ AuxPwr- TransPend-
+>                LnkCap: Port #0, Speed 8GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+>                        ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+>                LnkCtl: ASPM L0s L1 Enabled; RCB 64 bytes, Disabled- CommClk+
+>                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>                LnkSta: Speed 2.5GT/s (downgraded), Width x16
+>                        TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+>                DevCap2: Completion Timeout: Range AB, TimeoutDis+ NROPrPrP- LTR+
+>                         10BitTagComp- 10BitTagReq- OBFF Via message, ExtFmt- EETLPPrefix-
+>                         EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
+>                         FRS- TPHComp- ExtTPHComp-
+>                         AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+>                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
+>                         AtomicOpsCtl: ReqEn-
+>                LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
+>                         EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+>                         Retimer- 2Retimers- CrosslinkRes: unsupported
+>        Capabilities: [100 v2] Advanced Error Reporting
+>                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+>                CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+>                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
+>                AERCap: First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
+>                        MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+>                HeaderLog: 00000000 00000000 00000000 00000000
+>        Kernel driver in use: snd_hda_intel
+>        Kernel modules: snd_hda_intel
+> 
+> 0b:00.6 Audiodevice: Advanced Micro Devices, Inc. [AMD] Family 17h/19h HD AudioController
+>        DeviceName: Realtek ALC897 Audio
+>        Subsystem: ASUSTeK Computer Inc. Device 87fb
+>        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+>        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>        Latency: 0, Cache Line Size: 64 bytes
+>        Interrupt: pin C routed to IRQ 81
+>        IOMMU group: 24
+>        Region 0: Memory at fc500000 (32-bit, non-prefetchable) [size=32K]
+>        Capabilities: [48] Vendor Specific Information: Len=08 <?>
+>        Capabilities: [50] Power Management version 3
+>                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+>                Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
+>        Capabilities: [64] Express (v2) Endpoint, MSI 00
+>                DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s <4us, L1 unlimited
+>                        ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0W
+>                DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+>                        RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+>                        MaxPayload 256 bytes, MaxReadReq 512 bytes
+>                DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+>                LnkCap: Port #0, Speed 16GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <64ns, L1 <1us
+>                        ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp+
+>                LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+>                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>                LnkSta: Speed 16GT/s, Width x16
+>                        TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+>                DevCap2: Completion Timeout: Range ABCD, TimeoutDis+ NROPrPrP- LTR-
+>                         10BitTagComp+ 10BitTagReq- OBFF Not Supported, ExtFmt+ EETLPPrefix+, MaxEETLPPrefixes 1
+>                         EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
+>                         FRS- TPHComp- ExtTPHComp-
+>                         AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+>                DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
+>                         AtomicOpsCtl: ReqEn-
+>                LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
+>                         EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+>                         Retimer- 2Retimers- CrosslinkRes: unsupported
+>        Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>                Address: 00000000fee00000  Data: 0000
+>        Capabilities: [100 v1] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+>        Capabilities: [2a0 v1] Access Control Services
+>                ACSCap: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
+>                ACSCtl: SrcValid- TransBlk- ReqRedir- CmpltRedir- UpstreamFwd- EgressCtrl- DirectTrans-
+>        Kernel driver in use: snd_hda_intel
+>        Kernel modules: snd_hda_intel
+> 
 
-Sent with Proton Mail secure email.
+Sid, do you have some reason to believe that one of these devices should use the
+snd-rpl-pci-acp6x driver?  I don't see that either one of them is the correct
+vendor/device ID pair for that driver, but I would prefer that someone who is
+familiar with the driver & device jump in here...
 
-------- Original Message -------
-On Friday, September 22nd, 2023 at 8:51 AM, Bagas Sanjaya <bagasdotme@gmail=
-.com> wrote:
-
-
-> [trimming personal and obvious political info]
->=20
-> On Thu, Sep 21, 2023 at 04:20:06PM +0000, Turritopsis Dohrnii Teo En Ming=
- wrote:
->=20
-> > My brand new vivo V25 Pro 5G Android mobile phone is running on Linux k=
-ernel 4.19.191+. Are there any severe/critical security vulnerabilities in =
-Linux kernel 4.19.191+ that will allow government-sponsored or state-backed=
- hackers or Advanced Persistent Threats (APTs) to take over absolute contro=
-l of my brand new vivo mobile phone? Can I download, compile and install th=
-e latest Linux kernel 6.5.4 from sources on my brand new vivo mobile phone =
-by myself? I would like to know how I can do it.
->=20
->=20
-> There are Android Security Bulletin listings on [1], with vivo-specific
-> bulletins can be found at [2].
->=20
-> For building kernels, you can follow official Android guide [3]. Or
-> you can also visit XDA forums [4] where people posted their own custom
-> kernels. But usually your vendor (vivo) takes care of kernel updates
-> anyway.
-
-So if I want to build the latest Linux kernel 6.5.4 for my vivo V25 Pro 5G =
-mobile phone, I can follow the guides at link [3] and link [4].
-
->=20
-> > I have decided to buy this vivo mobile phone because my Samsung Galaxy =
-A32 5G mobile phone has now become extremely slow in performance and lags l=
-ike hell. Maybe too many apps were installed.
->=20
->=20
-> What are these apps besides built-in ones?
-
-Besides the built-in apps, all the other apps come from Google Play Store. =
-There is one exception though. The Douyin app was installed through an APK =
-file and it does not come from Google Play Store.
-
->=20
-> > Opening and using apps is now a slow and painful experience. The phone =
-camera is even worse. Taking a photo or selfie takes 2-3 seconds. If you mo=
-ve the phone by a bit before the 3 seconds is up, your photo or selfie will=
- turn out very blur. So you need to set a timer of 2 seconds when you take =
-a selfie or photo. Taking videos with the phone camera is also very laggy a=
-nd choppy. The recorded video will turn out to be choppy.
->=20
->=20
-> What is your Samsung phone specification then?
-
-My Samsung phone is the Samsung Galaxy A32 5G. The specs can be found on gs=
-marena.com.
-
->=20
-> Thanks.
->=20
-> [1]: https://source.android.com/docs/security/bulletin/asb-overview
-> [2]: https://www.vivo.com/en/security
-> [3]: https://source.android.com/docs/setup/build/building-kernels
-> [4]: https://forum.xda-developers.com
->
-=20
-Regards,
-
-Mr. Turritopsis Dohrnii Teo En Ming
-Targeted Individual in Singapore
+-- 
+~Randy
