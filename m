@@ -2,66 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E2B7B16C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D69B7B16C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjI1I60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S231481AbjI1JAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjI1I6Y (ORCPT
+        with ESMTP id S231377AbjI1JAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:58:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A09B1BC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695891451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1w2p4pUjtxxoV1R5cJrguGHA5IKS39OopmDiYZUaHe4=;
-        b=dfugy67Wr7G6apNcRYVnYcRzKrrhNMYpV5tTRYWHOlyvP1lxj6veRAlOzlAG/uNDS2PB8J
-        fSa8opcenMXPWSiMRk//mbY2MEPuoAYKbmQ2bS7gCEo+apRZfzfFes/88lEvRyEqUnTROU
-        h/Cn7s1fHBA/Jg2yTopL9gKrrwgeOw4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-196-tFs_Zc5kPXmsCExnX1VLSg-1; Thu, 28 Sep 2023 04:57:28 -0400
-X-MC-Unique: tFs_Zc5kPXmsCExnX1VLSg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7E42811E8D;
-        Thu, 28 Sep 2023 08:57:27 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F27028FE;
-        Thu, 28 Sep 2023 08:57:20 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 16:57:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linan666@huaweicloud.com, josef@toxicpanda.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, linan122@huawei.com,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
-Message-ID: <ZRU/7Bx1ZJSX3Qg3@fedora>
-References: <20230911023308.3467802-1-linan666@huaweicloud.com>
- <ZRT7cVFcE6QMHfie@fedora>
- <47669fb6-3700-e327-11af-93a92b0984a0@huaweicloud.com>
- <ZRUt/vAQNGNp6Ugx@fedora>
- <41161d21-299c-3657-6020-0a3a9cf109ec@huaweicloud.com>
+        Thu, 28 Sep 2023 05:00:51 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5589EB7;
+        Thu, 28 Sep 2023 02:00:48 -0700 (PDT)
+Received: from kwepemm000005.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rx6nC5hJWzVlB5;
+        Thu, 28 Sep 2023 16:57:35 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by kwepemm000005.china.huawei.com
+ (7.193.23.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 28 Sep
+ 2023 17:00:45 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/qm - fix PF queue parameter issue
+Date:   Thu, 28 Sep 2023 16:57:22 +0800
+Message-ID: <20230928085722.39087-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <41161d21-299c-3657-6020-0a3a9cf109ec@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,84 +46,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 04:55:03PM +0800, Yu Kuai wrote:
-> Hi,
-> 
-> 在 2023/09/28 15:40, Ming Lei 写道:
-> > On Thu, Sep 28, 2023 at 02:03:28PM +0800, Yu Kuai wrote:
-> > > Hi,
-> > > 
-> > > 在 2023/09/28 12:05, Ming Lei 写道:
-> > > > On Mon, Sep 11, 2023 at 10:33:08AM +0800, linan666@huaweicloud.com wrote:
-> > > > > From: Li Nan <linan122@huawei.com>
-> > > > > 
-> > > > > If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
-> > > > > krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
-> > > > > may occurs.
-> > > > > 
-> > > > >     T1
-> > > > >     nbd_ioctl
-> > > > >      __nbd_ioctl
-> > > > >       nbd_add_socket
-> > > > >        blk_mq_freeze_queue
-> > > > > 				T2
-> > > > >     				recv_work
-> > > > >     				 nbd_read_reply
-> > > > >     				  sock_xmit
-> > > > >        krealloc config->socks
-> > > > > 				   def config->socks
-> > > > > 
-> > > > > Pass nbd_sock to nbd_read_reply(). And introduce a new function
-> > > > > sock_xmit_recv(), which differs from sock_xmit only in the way it get
-> > > > > socket.
-> > > > > 
-> > > > 
-> > > > I am wondering why not grab queue usage counter before calling nbd_read_reply()
-> > > > for avoiding such issue, something like the following change:
-> > > > 
-> > > > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > > > index df1cd0f718b8..09215b605b12 100644
-> > > > --- a/drivers/block/nbd.c
-> > > > +++ b/drivers/block/nbd.c
-> > > > @@ -837,9 +837,6 @@ static void recv_work(struct work_struct *work)
-> > > >    	while (1) {
-> > > >    		struct nbd_reply reply;
-> > > > -		if (nbd_read_reply(nbd, args->index, &reply))
-> > > > -			break;
-> > > > -
-> > > >    		/*
-> > > >    		 * Grab .q_usage_counter so request pool won't go away, then no
-> > > >    		 * request use-after-free is possible during nbd_handle_reply().
-> > > > @@ -852,6 +849,9 @@ static void recv_work(struct work_struct *work)
-> > > >    			break;
-> > > >    		}
-> > > 
-> > > This break how nbd works, if there is no reply yet, recv_work() will
-> > > wait for reply in:
-> > > 
-> > > nbd_read_reply
-> > >   sock_xmit
-> > >    sock_recvmsg
-> > > 
-> > > After this change, recv_work() will just return if there is no io.
-> > 
-> > OK, got it, thanks for the input.
-> > 
-> > But I feel it isn't necessary & fragile to store one extra reference of nsock in
-> > `recv_thread_args`.
-> > 
-> > Just run a quick look, the only potential UAF on config->socks should be recv_work(),
-> > so you can retrieve the `nsock` reference at the entry of recv_work(),
-> 
-> I don't understand what you mean retrieve the 'nsock', is following what
-> you expected?
-> 
-> blk_queue_enter() -> prevent concurrent with nbd_add_socket
-> nsock = config->socks[args->index]
-> blk_queue_exit()
+If the queue isolation feature is enabled, the number of queues
+supported by the device changes. When PF is enabled using the
+current default number of queues, the default number of queues may
+be greater than the number supported by the device. As a result,
+the PF fails to be bound to the driver.
 
-Yeah, turns out you do understand, :-)
+After modification, if queue isolation feature is enabled, when
+the default queue parameter is greater than the number supported
+by the device, the number of enabled queues will be changed to
+the number supported by the device, so that the PF and driver
+can be properly bound.
 
-Thanks,
-Ming
+Fixes: 8bbecfb402f7 ("crypto: hisilicon/qm - add queue isolation support for Kunpeng930")
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  5 +++++
+ drivers/crypto/hisilicon/qm.c             | 18 ++++++++++++------
+ drivers/crypto/hisilicon/qm_common.h      |  1 -
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  5 +++++
+ drivers/crypto/hisilicon/zip/zip_main.c   |  5 +++++
+ include/linux/hisi_acc_qm.h               |  7 +++++++
+ 6 files changed, 34 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+index db44d889438a..3dce35debf63 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_main.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+@@ -433,8 +433,11 @@ static u32 uacce_mode = UACCE_MODE_NOUACCE;
+ module_param_cb(uacce_mode, &hpre_uacce_mode_ops, &uacce_mode, 0444);
+ MODULE_PARM_DESC(uacce_mode, UACCE_MODE_DESC);
+ 
++static bool pf_q_num_flag;
+ static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+ {
++	pf_q_num_flag = true;
++
+ 	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_HPRE_PF);
+ }
+ 
+@@ -1157,6 +1160,8 @@ static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+ 		qm->qp_num = pf_q_num;
+ 		qm->debug.curr_qm_qp_num = pf_q_num;
+ 		qm->qm_list = &hpre_devices;
++		if (pf_q_num_flag)
++			set_bit(QM_MODULE_PARAM, &qm->misc_ctl);
+ 	}
+ 
+ 	ret = hisi_qm_init(qm);
+diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
+index a99fd589445c..1638c0a7df31 100644
+--- a/drivers/crypto/hisilicon/qm.c
++++ b/drivers/crypto/hisilicon/qm.c
+@@ -206,8 +206,6 @@
+ #define WAIT_PERIOD			20
+ #define REMOVE_WAIT_DELAY		10
+ 
+-#define QM_DRIVER_REMOVING		0
+-#define QM_RST_SCHED			1
+ #define QM_QOS_PARAM_NUM		2
+ #define QM_QOS_MAX_VAL			1000
+ #define QM_QOS_RATE			100
+@@ -2824,7 +2822,6 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
+ 	mutex_init(&qm->mailbox_lock);
+ 	init_rwsem(&qm->qps_lock);
+ 	qm->qp_in_used = 0;
+-	qm->misc_ctl = false;
+ 	if (test_bit(QM_SUPPORT_RPM, &qm->caps)) {
+ 		if (!acpi_device_power_manageable(ACPI_COMPANION(&pdev->dev)))
+ 			dev_info(&pdev->dev, "_PS0 and _PR0 are not defined");
+@@ -5093,6 +5090,7 @@ static int qm_irqs_register(struct hisi_qm *qm)
+ 
+ static int qm_get_qp_num(struct hisi_qm *qm)
+ {
++	struct device *dev = &qm->pdev->dev;
+ 	bool is_db_isolation;
+ 
+ 	/* VF's qp_num assigned by PF in v2, and VF can get qp_num by vft. */
+@@ -5109,13 +5107,21 @@ static int qm_get_qp_num(struct hisi_qm *qm)
+ 	qm->max_qp_num = hisi_qm_get_hw_info(qm, qm_basic_info,
+ 					     QM_FUNC_MAX_QP_CAP, is_db_isolation);
+ 
+-	/* check if qp number is valid */
+-	if (qm->qp_num > qm->max_qp_num) {
+-		dev_err(&qm->pdev->dev, "qp num(%u) is more than max qp num(%u)!\n",
++	if (qm->qp_num <= qm->max_qp_num)
++		return 0;
++
++	if (test_bit(QM_MODULE_PARAM, &qm->misc_ctl)) {
++		/* Check whether the set qp number is valid */
++		dev_err(dev, "qp num(%u) is more than max qp num(%u)!\n",
+ 			qm->qp_num, qm->max_qp_num);
+ 		return -EINVAL;
+ 	}
+ 
++	dev_info(dev, "Default qp num(%u) is too big, reset it to Function's max qp num(%u)!\n",
++		 qm->qp_num, qm->max_qp_num);
++	qm->qp_num = qm->max_qp_num;
++	qm->debug.curr_qm_qp_num = qm->qp_num;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/crypto/hisilicon/qm_common.h b/drivers/crypto/hisilicon/qm_common.h
+index 1406a422d455..8e36aa9c681b 100644
+--- a/drivers/crypto/hisilicon/qm_common.h
++++ b/drivers/crypto/hisilicon/qm_common.h
+@@ -4,7 +4,6 @@
+ #define QM_COMMON_H
+ 
+ #define QM_DBG_READ_LEN		256
+-#define QM_RESETTING		2
+ 
+ struct qm_cqe {
+ 	__le32 rsvd0;
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index 77f9f131b850..62bd8936a915 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -311,8 +311,11 @@ static int sec_diff_regs_show(struct seq_file *s, void *unused)
+ }
+ DEFINE_SHOW_ATTRIBUTE(sec_diff_regs);
+ 
++static bool pf_q_num_flag;
+ static int sec_pf_q_num_set(const char *val, const struct kernel_param *kp)
+ {
++	pf_q_num_flag = true;
++
+ 	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_SEC_PF);
+ }
+ 
+@@ -1120,6 +1123,8 @@ static int sec_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+ 		qm->qp_num = pf_q_num;
+ 		qm->debug.curr_qm_qp_num = pf_q_num;
+ 		qm->qm_list = &sec_devices;
++		if (pf_q_num_flag)
++			set_bit(QM_MODULE_PARAM, &qm->misc_ctl);
+ 	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V1) {
+ 		/*
+ 		 * have no way to get qm configure in VM in v1 hardware,
+diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+index 0d5d1ee363e4..945ab3648a87 100644
+--- a/drivers/crypto/hisilicon/zip/zip_main.c
++++ b/drivers/crypto/hisilicon/zip/zip_main.c
+@@ -364,8 +364,11 @@ static u32 uacce_mode = UACCE_MODE_NOUACCE;
+ module_param_cb(uacce_mode, &zip_uacce_mode_ops, &uacce_mode, 0444);
+ MODULE_PARM_DESC(uacce_mode, UACCE_MODE_DESC);
+ 
++static bool pf_q_num_flag;
+ static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+ {
++	pf_q_num_flag = true;
++
+ 	return q_num_set(val, kp, PCI_DEVICE_ID_HUAWEI_ZIP_PF);
+ }
+ 
+@@ -1139,6 +1142,8 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+ 		qm->qp_num = pf_q_num;
+ 		qm->debug.curr_qm_qp_num = pf_q_num;
+ 		qm->qm_list = &zip_devices;
++		if (pf_q_num_flag)
++			set_bit(QM_MODULE_PARAM, &qm->misc_ctl);
+ 	} else if (qm->fun_type == QM_HW_VF && qm->ver == QM_HW_V1) {
+ 		/*
+ 		 * have no way to get qm configure in VM in v1 hardware,
+diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
+index 39fbfb4be944..9da4f3f1e6d6 100644
+--- a/include/linux/hisi_acc_qm.h
++++ b/include/linux/hisi_acc_qm.h
+@@ -144,6 +144,13 @@ enum qm_vf_state {
+ 	QM_NOT_READY,
+ };
+ 
++enum qm_misc_ctl_bits {
++	QM_DRIVER_REMOVING = 0x0,
++	QM_RST_SCHED,
++	QM_RESETTING,
++	QM_MODULE_PARAM,
++};
++
+ enum qm_cap_bits {
+ 	QM_SUPPORT_DB_ISOLATION = 0x0,
+ 	QM_SUPPORT_FUNC_QOS,
+-- 
+2.33.0
 
