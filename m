@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2DF7B12B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75AC7B12B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjI1GWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        id S230526AbjI1GW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1GWG (ORCPT
+        with ESMTP id S230337AbjI1GWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:22:06 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF919C;
+        Thu, 28 Sep 2023 02:22:08 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A80BF;
         Wed, 27 Sep 2023 23:22:05 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kf0CK9z4f3jsT;
-        Thu, 28 Sep 2023 14:21:58 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S18;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kk0ZRlz4f3k6k;
         Thu, 28 Sep 2023 14:22:02 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S19;
+        Thu, 28 Sep 2023 14:22:03 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
         dm-devel@redhat.com, song@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v3 14/25] md/raid5: use new apis to suspend array for raid5_store_skip_copy()
-Date:   Thu, 28 Sep 2023 14:15:32 +0800
-Message-Id: <20230928061543.1845742-15-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v3 15/25] md/raid5: use new apis to suspend array for raid5_store_group_thread_cnt()
+Date:   Thu, 28 Sep 2023 14:15:33 +0800
+Message-Id: <20230928061543.1845742-16-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S18
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFWUZF4ftFWrKr45Kr1rZwb_yoWkurc_K3
-        Z3uFW3trySgry5Xw15K3WfZr18t3WkWwn7Xa4Yyayjvr45XF1rKr95Xr4rJrs2vFyjgrW8
-        Kry0vw4UZr4jgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S19
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFWUZF4ftFyxGw1fuF4DJwb_yoWkuwbEka
+        s7ZrW3GrySqryaqw12gwn3ZF4UtF4kWwn7XFs8ta1jyFWUXF1rKr95Xr1fXr42vFyUKryU
+        KryFvrW7AF4DWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
         IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -72,39 +72,41 @@ This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/md/raid5.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index f1c32b4d190f..c937716fed01 100644
+index c937716fed01..8060d29e99d2 100644
 --- a/drivers/md/raid5.c
 +++ b/drivers/md/raid5.c
-@@ -7151,7 +7151,7 @@ raid5_store_skip_copy(struct mddev *mddev, const char *page, size_t len)
+@@ -7221,15 +7221,13 @@ raid5_store_group_thread_cnt(struct mddev *mddev, const char *page, size_t len)
+ 	if (new > 8192)
  		return -EINVAL;
- 	new = !!new;
  
 -	err = mddev_lock(mddev);
 +	err = mddev_suspend_and_lock(mddev);
  	if (err)
  		return err;
  	conf = mddev->private;
-@@ -7160,15 +7160,13 @@ raid5_store_skip_copy(struct mddev *mddev, const char *page, size_t len)
- 	else if (new != conf->skip_copy) {
- 		struct request_queue *q = mddev->queue;
- 
+ 	if (!conf)
+ 		err = -ENODEV;
+ 	else if (new != conf->worker_cnt_per_group) {
 -		mddev_suspend(mddev);
- 		conf->skip_copy = new;
- 		if (new)
- 			blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, q);
- 		else
- 			blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, q);
+-
+ 		old_groups = conf->worker_groups;
+ 		if (old_groups)
+ 			flush_workqueue(raid5_wq);
+@@ -7246,9 +7244,8 @@ raid5_store_group_thread_cnt(struct mddev *mddev, const char *page, size_t len)
+ 				kfree(old_groups[0].workers);
+ 			kfree(old_groups);
+ 		}
 -		mddev_resume(mddev);
  	}
 -	mddev_unlock(mddev);
 +	mddev_unlock_and_resume(mddev);
+ 
  	return err ?: len;
  }
- 
 -- 
 2.39.2
 
