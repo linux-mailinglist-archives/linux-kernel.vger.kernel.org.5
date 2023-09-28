@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93A67B1031
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF1B7B1035
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjI1A6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        id S229880AbjI1BAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 21:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjI1A6s (ORCPT
+        with ESMTP id S229593AbjI1BAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:58:48 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B46BF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:58:46 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405524e6769so64665715e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:58:46 -0700 (PDT)
+        Wed, 27 Sep 2023 21:00:45 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDB6BF;
+        Wed, 27 Sep 2023 18:00:43 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fe87cd74eso130877339f.3;
+        Wed, 27 Sep 2023 18:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695862725; x=1696467525; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1695862843; x=1696467643; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6jBieT6zUjTCyWMNhIJcWnE9xtuerzKjzThbkTJLWlo=;
-        b=HkobCTq6/HD91PNS1jjnXl0+aO0CPzLkFUWJxDQQtUZ/P/3PaGyEFOGeinRY4x9IW1
-         n3PVSschWd5+r1CmtOtwAkrNiMRoiTa2ddbnsKy/zqS4dgc4kHzqSXYW9SMoVQP946V6
-         UpIXm6omO1jfdGVNBzavCaotsc743YSap1DGYRXB9u9cf0DJBA06KECIBliEBzkVbOwP
-         GpKFu7Hs1dgOIqXVbO1m4wL7bqzArlWu6g6T4ozO4JMSiX5zt3HV3zsHRM31DDBO6Fe5
-         zzsTzwhkgWodlQYnGtvj9PmFUjNgo0njzVtzPRhCuc78ibpuXqxXHY4gWjNZizlBZTgu
-         UASg==
+        bh=KbmQXiIb/6ha3RbpQiPYuun60PQSJ8nGNO0HCRh4zk8=;
+        b=HWAriZ+5MDXJAtj8hgfCKsjlPcGz5oeqLoykvHA/LOIBF+1osXCCtRUhVpe11QxPqz
+         eOFwMulLf1+KxceCZoTdiV0aM58hqvpGsxymlKhWslFvYvro07UuQDl9RR5G2iz+z+Aa
+         RVvZrDMGh1p4QyDtPWaXPNWuCSTpWVtcjCfHoLGR2GZTU8eRmxCaiTaftYorSzf5j/z4
+         9SNSWbeKV6lRfpZ51E/6zWaV8A14yoKMJW0AzXilZuAdNBqRBVeuFZj/UQTN2SxP/Xs2
+         hdCheLdg8Vh0BnAJHsoouUaCXl2naFSNufIPVLqmuoPc53mwqF+8Zt+fHB+QDgosU2A5
+         38yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695862725; x=1696467525;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695862843; x=1696467643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6jBieT6zUjTCyWMNhIJcWnE9xtuerzKjzThbkTJLWlo=;
-        b=KQ3/g9gXkBgargTomfVVVWi2DOk1BxzekCDRxq+trdf6MznuDLkSlVyP+x53qnN5Wq
-         N+bPxW7RDdDVFq2GA/BB/Ucv/5UHg9r3iV5p2Bj+VBJ0PwaC1IWCLNnUmB/qYIhfjRfT
-         4M31qptLezIv3aRjJczAWDeS7M1MAarsvHY9QLgggTH9VWVqjzOtsntIL5IB8M3Wv8m0
-         8uVQW/Eg4aRZTwac5NrqBEP16gtECUc42V7OwGIIt/wNak5RB5DbdglEHnphIW597Ldg
-         NRiIulXbwVkhsdje3Q8IZWIV/i/pLXFKvRy3ft1k+EWUHiH5ePN1FHh54FemlxuZMr+Y
-         KDDw==
-X-Gm-Message-State: AOJu0YwoTMTcCj9mzMM/tbk9eT60Dv+rRKf+U/UTd6cpaSsI0+6sECmL
-        0LSlC26p5Lsvi8MKhMpKL/2K6A==
-X-Google-Smtp-Source: AGHT+IFf7HbuKg7N4zjJPv/HPvYk0iORYNOH9jloqd/iaBSWnoqm2l8JhsOfvCB2XB4pIyGbucEvrQ==
-X-Received: by 2002:a05:600c:6012:b0:406:51a0:17ea with SMTP id az18-20020a05600c601200b0040651a017eamr54217wmb.10.1695862725175;
-        Wed, 27 Sep 2023 17:58:45 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id v21-20020a7bcb55000000b00404719b05b5sm18789086wmj.27.2023.09.27.17.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 17:58:44 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: [PATCH v6.1] media: qcom: camss: Comment CSID dt_id field
-Date:   Thu, 28 Sep 2023 01:58:25 +0100
-Message-ID: <20230928005825.1626251-1-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <314cee42-c235-4d2a-b4a6-4da92d2c1548@xs4all.nl>
-References: <314cee42-c235-4d2a-b4a6-4da92d2c1548@xs4all.nl>
+        bh=KbmQXiIb/6ha3RbpQiPYuun60PQSJ8nGNO0HCRh4zk8=;
+        b=UN6hrjamlUtJh6lhfe4rksz/22fv6qtTWjSZptgAWiES5+KbX2mEICfDibJjqSfrOM
+         Ibz6whti0U9+zNsJibgLOMeZKILJ40id1+ZOqFRV4kFHqZBnLf3OwXdWbRe1YTfkYtIb
+         /O+JMSvOO8J1pzfQUAvDNtCvqz7oYyr9nMapeADOEmlyeFoV8/KWglvElZ2h6m3FexSH
+         /kM4QO/zSEHmgc5Drsp9skK8IXh7p7/zNiVU92tXyFTzMlkWMejzY1W20yFp1A0eNk7B
+         g8IafxFLKtPoO4202vOX8acuJ3mGAijb0l0ObIvkfIG47tCNUTb9JcvTMpQiJiz3mFh7
+         aIOQ==
+X-Gm-Message-State: AOJu0YxBR37FG9EqDg+QHXXsZLp7dprtNP4UIcUk81Gql2CwVtM65aLE
+        4Y42oznlkA/2Vto/bF8L2IVZT6g2CYo30vrJT4U=
+X-Google-Smtp-Source: AGHT+IGraQVaz++c0TuIHxnjgvrQNR+F7cLgT1kxcj79/8QWJdAqqUOQh0mJXoYanAp5mx/cjWaneXaDjvBz6BRx8go=
+X-Received: by 2002:a5e:8706:0:b0:798:134a:44b with SMTP id
+ y6-20020a5e8706000000b00798134a044bmr3574638ioj.21.1695862843166; Wed, 27 Sep
+ 2023 18:00:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230926194949.2637078-1-nphamcs@gmail.com>
+In-Reply-To: <20230926194949.2637078-1-nphamcs@gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 27 Sep 2023 18:00:32 -0700
+Message-ID: <CAKEwX=MieJze0Gro5-ubgeQaTYn2+8pQZ2C+vbppwqh8s8XT3g@mail.gmail.com>
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Digging into the documentation we find that the DT_ID bitfield is used to
-map the six bit DT to a two bit ID code. This value is concatenated to the
-VC bitfield to create a CID value. DT_ID is the two least significant bits
-of CID and VC the most significant bits.
+On Tue, Sep 26, 2023 at 12:49=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> Currently, hugetlb memory usage is not acounted for in the memory
+> controller, which could lead to memory overprotection for cgroups with
+> hugetlb-backed memory. This has been observed in our production system.
+>
+> This patch series rectifies this issue by charging the memcg when the
+> hugetlb folio is allocated, and uncharging when the folio is freed. In
+> addition, a new selftest is added to demonstrate and verify this new
+> behavior.
+>
+> Nhat Pham (2):
+>   hugetlb: memcg: account hugetlb-backed memory in memory controller
+>   selftests: add a selftest to verify hugetlb usage in memcg
+>
+>  MAINTAINERS                                   |   2 +
+>  fs/hugetlbfs/inode.c                          |   2 +-
+>  include/linux/hugetlb.h                       |   6 +-
+>  include/linux/memcontrol.h                    |   8 +
+>  mm/hugetlb.c                                  |  23 +-
+>  mm/memcontrol.c                               |  40 ++++
+>  tools/testing/selftests/cgroup/.gitignore     |   1 +
+>  tools/testing/selftests/cgroup/Makefile       |   2 +
+>  .../selftests/cgroup/test_hugetlb_memcg.c     | 222 ++++++++++++++++++
+>  9 files changed, 297 insertions(+), 9 deletions(-)
+>  create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+>
+> --
+> 2.34.1
 
-Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+Thanks for all the comments and suggestions everyone!
+FYI, I have sent out a second version of the patch series with the new
+mount flag:
 
-commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
-silently fixed the multiplication by four which would give a better
-value for the generated CID without mentioning what was being done or why.
+https://lore.kernel.org/lkml/20230928005723.1709119-1-nphamcs@gmail.com/T/#=
+t
 
-Next up I haplessly changed the value back to "dt_id = vc * 4" since there
-didn't appear to be any logic behind it.
-
-Hans asked what the change was for and I honestly couldn't remember the
-provenance of it, so I dug in.
-
-Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
-
-Add a comment so the next hapless programmer doesn't make this same
-mistake.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- .../media/platform/qcom/camss/camss-csid-gen2.c    | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index 6ba2b10326444..05ff5fa8095a8 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -352,7 +352,19 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- 		phy_sel = csid->phy.csiphy_id;
- 
- 	if (enable) {
--		u8 dt_id = vc;
-+		/*
-+		 * DT_ID is a two bit bitfield that is concatenated with
-+		 * the four least significant bits of the five bit VC
-+		 * bitfield to generate an internal CID value.
-+		 *
-+		 * CSID_RDI_CFG0(vc)
-+		 * DT_ID : 28:27
-+		 * VC    : 26:22
-+		 * DT    : 21:16
-+		 *
-+		 * CID   : VC 3:0 << 2 | DT_ID 1:0
-+		 */
-+		u8 dt_id = vc & 0x03;
- 
- 		if (tg->enabled) {
- 			/* configure one DT, infinite frames */
--- 
-2.42.0
-
+Feel free to check it out and discuss it over there too!
