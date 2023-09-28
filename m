@@ -2,58 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9B57B161F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660E37B1620
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjI1IfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        id S231331AbjI1If3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjI1IfW (ORCPT
+        with ESMTP id S231273AbjI1IfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:35:22 -0400
+        Thu, 28 Sep 2023 04:35:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AD5B7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:35:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C9ACC433C7;
-        Thu, 28 Sep 2023 08:35:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54663191
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:35:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB85C433C8;
+        Thu, 28 Sep 2023 08:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695890120;
-        bh=FSwConUjZIxe3YIjZXjdGETHRwEytleBmz3Wk6V8jsM=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=tG6gu8nmBr//c+0sxeGNAKgiqhPzAheOubFfmZHix/2WQKZ40yLhBzw93ow720DUa
-         pOqwYaAn4OG0t/EoWve7+iUQpy0ZsDNkdL4o+fiwVUDEsbkOAmHKmuwZQ7pjLa0EFl
-         YlhJLK222o1MVevD6Bg1NOddV+u13e79/mAusHqz7yI19sQHjH0b7F5qQsXW3bNwGt
-         1kfoUuJSBTQLl09IRPgW5Irfn30ENJMDshFkJDUqTyvvPx8p99TFAQuyIhV3cHCi7+
-         1mntMPVJz6GugJ6OzG0UN1DBgu5BEIXuDBwN7mGE+E0wunvUufvAgN+p848DLR4z5/
-         xDV7tGIPPDfjA==
+        s=k20201202; t=1695890122;
+        bh=FgZxXfPfyj1K8RRAJj0ZMzaJYR0HOOqlp8GRmy2xQT4=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=CEsnPddtanxIZnCQ8nfB2ejYlQskavisMzmV84O/5C8e5WrCC0F0D5w8PzslZIyad
+         KgZE9IeFzvCjaosAMjQjIw4i+6oT2LyusGIis7lPDsw84t/eF2F+jI+xBDtG9C5XDM
+         jJ5qLlWjn0Z+uwOG/C308Kwli+8F3L5q0ASCIs5lA7e5FRI9S5TMt00gJRZ0D80TGO
+         wnGuek+GM1igKooKx/yhJJ6RT64SEpkh1IxjRiQJcb34Cwh1qnDZTx5HYYRcRrXpyQ
+         NwQ3N4vXDRnQ99JvrDPYaJzqIvtIa8cEPF2Ba9GobJjgSb1R7l1yHy9a7K+IV0kFTs
+         albymVdGQ1wJw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com,
-        coolstar <coolstarorganization@gmail.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rander Wang <rander.wang@intel.com>,
-        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
-        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
-        <sound-open-firmware@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230927071412.2416250-1-Vijendar.Mukunda@amd.com>
-References: <20230927071412.2416250-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: SOF: amd: fix for firmware reload failure after
- playback
-Message-Id: <169589011676.2716296.8639160633859429574.b4-ty@kernel.org>
-Date:   Thu, 28 Sep 2023 10:35:16 +0200
+To:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20230920153621.711373-1-chancel.liu@nxp.com>
+References: <20230920153621.711373-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH v2 0/1] ASoC: soc-pcm.c: Make sure DAI parameters
+ cleared if the DAI becomes inactive
+Message-Id: <169589012063.2716296.14624171490779605949.b4-ty@kernel.org>
+Date:   Thu, 28 Sep 2023 10:35:20 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -68,15 +51,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 12:44:10 +0530, Vijendar Mukunda wrote:
-> Setting ACP ACLK as clock source when ACP enters D0 state causing
-> firmware load failure as mentioned in below scenario.
+On Wed, 20 Sep 2023 23:36:20 +0800, Chancel Liu wrote:
+> It's reasonable that DAI parameters should be cleared if current DAI becomes
+> inactive.
 > 
-> - Load snd_sof_amd_rembrandt
-> - Play or Record audio
-> - Stop audio
-> - Unload snd_sof_amd_rembrandt
-> - Reload snd_sof_amd_rembrandt
+> Only check DAI active status in soc_pcm_hw_free() is not enough since there's
+> the risk that DAI parameters never be cleared if there're more than one stream
+> [see A]. Only check DAI active status in soc_pcm_close() is also not enough
+> since it will cause the cleanup just happening in soc_pcm_close() [see B].
 > 
 > [...]
 
@@ -86,8 +68,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: amd: fix for firmware reload failure after playback
-      commit: 7e1fe5d9e7eae67e218f878195d1d348d01f9af7
+[1/1] ASoC: soc-pcm.c: Make sure DAI parameters cleared if the DAI becomes inactive
+      commit: 3efcb471f871cc095841d411f98c593228ecbac6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
