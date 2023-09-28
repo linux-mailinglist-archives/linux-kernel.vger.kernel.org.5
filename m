@@ -2,227 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631E67B1134
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD007B1136
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjI1Dbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 23:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
+        id S230123AbjI1DdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 23:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjI1Dbc (ORCPT
+        with ESMTP id S229920AbjI1DdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 23:31:32 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E6399;
-        Wed, 27 Sep 2023 20:31:29 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RwzXn1ZZHz4f3jJH;
-        Thu, 28 Sep 2023 11:31:21 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgCHjQKJ8xRlsnY+Bg--.12055S2;
-        Thu, 28 Sep 2023 11:31:22 +0800 (CST)
-Subject: Re: [PATCH v7 02/12] ext4: factor out codes to update block bitmap
- and group descriptor on disk from ext4_mb_mark_bb
-To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <87zg18f1bm.fsf@doe.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <309d082f-45b9-9dac-9921-6c3d44de17a7@huaweicloud.com>
-Date:   Thu, 28 Sep 2023 11:31:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Wed, 27 Sep 2023 23:33:07 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D4D94
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:33:05 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 0E6E43200313;
+        Wed, 27 Sep 2023 23:33:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 27 Sep 2023 23:33:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1695871982; x=1695958382; bh=wvlA+NEgSa
+        40iZ8+dJx4biD+TYvPBRSKNWyvMlefuac=; b=X5w3FtffG3bQvaKagBeOs9cWaG
+        3CtMrRGv7la0MAB2ZDODApjMNy/cHGZfCfdNSIvZM/djh+UTNpqh1y9jbtsisEe6
+        XlJUaKukkRdN5MG3rpGMSJJ00PjZDhGxWzBmQMbXCmT2noAbNqlX77ZXczyyulkk
+        8d/M8aqB40RxB8arqQcdtBIYl2UtueSlMdR46cuZCH3PU5wtSlYBHlKBmNTp/a+m
+        k+4ibR8QqYkmLN36/jDEmQYg77Vwmh+ZnX4yPtGiDxT7aFsgaY8deHf0udWlTdJK
+        TAJu4NOxPkH1BeEAStbNehbGQN0j5jIbT+o3Od3/mKDbkLBOYoiem5+V2vfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695871982; x=1695958382; bh=wvlA+NEgSa40i
+        Z8+dJx4biD+TYvPBRSKNWyvMlefuac=; b=g3sY91I7aFuWCuhdFvz4XHc2CUMlY
+        AmajZ0rshe/lcc9V4NsyxGlrj9u/ynE502bqGWJWmwJwXqu457nAmmml3pez1NsJ
+        a0oEYih/VF4IiZ9tkjGdW7W2vCN9VCDOChtXZUvmSSPZ8L2jXvaxpEWWXbVHZEHa
+        bpbjiQ4KTF9lrC7TVtEuCjwCZ5k+m+ZxEgUmEa67rEthUuL1PMOaYzA8aMmB5Ubo
+        7Hu4rZ9Thc7nwXormjT7NcGLy+zfnSWbhp6uozcDjtjotTE2g5Oi5jEpjKuGas93
+        Q07igr2hD2Db1Y/io0HPmme5EMoOwip4a195GhYq25TjP4lvfv4Xey3Sg==
+X-ME-Sender: <xms:7vMUZRpg2uxVKJF6MhcNw5JIE5bu0zSwGfkVG9XpdCV5foQyRw7TzQ>
+    <xme:7vMUZTpjQHf7PrhuX-Pgx8SHMb4nne9XnOzQGUTAFki9GufTKD-gJHmXXc7T29a25
+    OdU_Oo7uwd0csRBVYM>
+X-ME-Received: <xmr:7vMUZeOzaFymYV4LQBPBzF19tOQfaMO-Fuje0TXmKKPbcNwhHIOtgZego6n4mjRUEqKT9hvdWA7eWSrx5negfen8JNAVrSAEgk3K6LtV-yk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
+    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
+    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
+    hmrghilhdrohhrgh
+X-ME-Proxy: <xmx:7vMUZc71WV4fk0eOas8G5JKZ-Lf85dQ-AQSTHdw6e4TY3Kqta6wGyw>
+    <xmx:7vMUZQ6BUHlK9e8NoVJIOJGT_AMJaLVxKeOA-lbNqEAWTM55jjjh7A>
+    <xmx:7vMUZUgjCJlOf0HUrGevUbVpnesjtzaEckykyrtzryX_sOuIwvl8XA>
+    <xmx:7vMUZQFiWbkQifx3Hq5tmK-bwm-AsYlLhlrH5rpi7dkzG5TYeRCrhA>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Sep 2023 23:33:02 -0400 (EDT)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH v2] staging: rtl8192u: ieee80211: renamed duplicate variable
+Date:   Wed, 27 Sep 2023 23:32:20 -0400
+Message-ID: <20230928033220.31783-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <87zg18f1bm.fsf@doe.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgCHjQKJ8xRlsnY+Bg--.12055S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ary8KF1ktF1fKF4xuF1ftFb_yoW7WFyrpr
-        nIyF1DGF13Jrnrur47Zw1UX3WfJw409F18GryfW34rWFZFyr95JFn7GFyFkas0kFsrXFnF
-        vF45Zrs7ur48GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch renames a duplicate variable found in both rtl8192e and
+rtl8192u causing the preprocesser/compiler to compile without error
+when in fact it should throw an error/break the build.
 
+Prototype in files:
+rtl8192e/rtllib.h      remaining as ht_update_default_setting
+rtl8192u/ieee80211/ieee80211.h   changed to __ht_update_default_setting
 
-on 9/27/2023 4:49 PM, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
-> 
->> There are several reasons to add a general function ext4_mb_mark_context
->> to update block bitmap and group descriptor on disk:
->> 1. pair behavior of alloc/free bits. For example,
->> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
->> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
->> 2. remove repeat code to read from disk, update and write back to disk.
->> 3. reduce future unit test mocks to catch real IO to update structure
->> on disk.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/mballoc.c | 147 ++++++++++++++++++++++++----------------------
->>  1 file changed, 77 insertions(+), 70 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index cf09adfbaf11..e1320eea46e9 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -3953,6 +3953,80 @@ void ext4_exit_mballoc(void)
->>  	ext4_groupinfo_destroy_slabs();
->>  }
->>  
->> +static int
->> +ext4_mb_mark_context(struct super_block *sb, bool state, ext4_group_t group,
->> +		     ext4_grpblk_t blkoff, ext4_grpblk_t len)
-> 
-> 
-> ext4_grpblk_t is defined as int.
->     /* data type for block offset of block group */
->     typedef int ext4_grpblk_t;
-> 
-> I think len should be unsigned int (u32) here. 
-> 
-Hi Ritesh, thanks for reply and a lot suggestions to this patch and other
-patches in this series.
-I define len as ext4_grpblk_t as I think ext4_grpblk_t is supposed to fit
-block or cluster number of single group.
+Function in files:
+rtl8192e/rtl819x_HTProc.c remaining as ht_update_default_setting
+rtl8192u/ieee80211/rtl819x_HTProc.c  changed to __ht_update_default_setting
 
-Here are some examples save block number of group to ext4_grpblk_t:
-static ext4_fsblk_t ext4_valid_block_bitmap(...)
-{
-        ...
-        ext4_grpblk_t max_bit = EXT4_CLUSTERS_PER_GROUP(sb);
-        ...
-}
+Referenced in files:
+staging/rtl8192e/rtllib_module.c  remaining as ht_update_default_setting
+staging/rtl8192u/ieee80211_module.c changed to __ht_update_default_setting
 
-static ext4_fsblk_t ext4_mb_new_blocks_simple(...)
-{
-        ...
-        ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
-        ...
-}
+Linux Kernel Coding Style "cleanup", no change in runtime,
+staging/rtl8192e and rtl8192u compile/build before and after.
 
-/* len could be group block number if group has only one fragment */
-static int mb_avg_fragment_size_order(..., ext4_grpblk_t len)
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+---
+ drivers/staging/rtl8192u/ieee80211/ieee80211.h        | 2 +-
+ drivers/staging/rtl8192u/ieee80211/ieee80211_module.c | 2 +-
+ drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-As ext4_grpblk_t is data type for block offset of block group, so
-ext4_grpblk_t fits "block number of group" - 1. If we support block
-number of group > INT_MAX + 1, ext4_grpblk_t should be unsigned int anyway.
-IMO, it's more simple just make ext4_grpblk_t data type for block number
-in a single group and make it unsigned int if block number of group is
-possible to >= INT_MAX + 1. Does this makes to you.
-
->> +{
->> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> +	struct buffer_head *bitmap_bh = NULL;
->> +	struct ext4_group_desc *gdp;
->> +	struct buffer_head *gdp_bh;
->> +	int err;
->> +	unsigned int i, already, changed;
->> +
->> +	bitmap_bh = ext4_read_block_bitmap(sb, group);
->> +	if (IS_ERR(bitmap_bh))
->> +		return PTR_ERR(bitmap_bh);
->> +
->> +	err = -EIO;
->> +	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
->> +	if (!gdp)
->> +		goto out_err;
->> +
->> +	ext4_lock_group(sb, group);
->> +	if (ext4_has_group_desc_csum(sb) &&
->> +	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
->> +		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
->> +		ext4_free_group_clusters_set(sb, gdp,
->> +			ext4_free_clusters_after_init(sb, group, gdp));
->> +	}
->> +
->> +	already = 0;
->> +	for (i = 0; i < len; i++)
->> +		if (mb_test_bit(blkoff + i, bitmap_bh->b_data) ==
->> +				state)
->> +			already++;
->> +	changed = len - already;
->> +
->> +	if (state) {
->> +		mb_set_bits(bitmap_bh->b_data, blkoff, len);
->> +		ext4_free_group_clusters_set(sb, gdp,
->> +			ext4_free_group_clusters(sb, gdp) - changed);
->> +	} else {
->> +		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
->> +		ext4_free_group_clusters_set(sb, gdp,
->> +			ext4_free_group_clusters(sb, gdp) + changed);
->> +	}
->> +
->> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
->> +	ext4_group_desc_csum_set(sb, group, gdp);
->> +	ext4_unlock_group(sb, group);
->> +
->> +	if (sbi->s_log_groups_per_flex) {
->> +		ext4_group_t flex_group = ext4_flex_group(sbi, group);
->> +		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
->> +					   s_flex_groups, flex_group);
->> +
->> +		if (state)
->> +			atomic64_sub(changed, &fg->free_clusters);
->> +		else
->> +			atomic64_add(changed, &fg->free_clusters);
->> +	}
->> +
->> +	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
->> +	if (err)
->> +		goto out_err;
->> +	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
->> +	if (err)
->> +		goto out_err;
->> +
->> +	sync_dirty_buffer(bitmap_bh);
->> +	sync_dirty_buffer(gdp_bh);
->> +
->> +out_err:
->> +	brelse(bitmap_bh);
->> +	return err;
->> +}
->>  
->>  /*
->>   * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
->> @@ -4079,15 +4153,11 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
->>  void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
->>  		     int len, bool state)
-> 
-> Even ext4_mb_mark_bb should take len as unsigned int IMO.
-> For e.g. ext4_fc_replay_add_range() passes map.m_len which is also
-> unsigned int.
-If we agree ext4_grpblk_t to be data type for block number in group,
-I think it's more reasonable to take len as ext4_grpblk_t too.
-
-Look forward to you reply. Thanks!
-> 
-> 
-> Otherwise the patch looks good to me. Feel free to add - 
-> 
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> 
-> -ritesh
-> 
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+index 4e598c7f0d31..ae2fb249eaa1 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+@@ -2293,7 +2293,7 @@ void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString);
+ 
+ void HTSetConnectBwMode(struct ieee80211_device *ieee,
+ 			enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
+-void ht_update_default_setting(struct ieee80211_device *ieee);
++void __ht_update_default_setting(struct ieee80211_device *ieee);
+ void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap,
+ 				  u8 *len, u8 isEncrypt);
+ void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo,
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+index 6f6813899e31..f35765167e1b 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+@@ -146,7 +146,7 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
+ 		ieee80211_networks_free(ieee);
+ 		goto failed;
+ 	}
+-	ht_update_default_setting(ieee);
++	__ht_update_default_setting(ieee);
+ 	HTInitializeHTInfo(ieee); /* may move to other place. */
+ 	TSInitialize(ieee);
+ 
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+index cf9400859700..d5354147e7ae 100644
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+@@ -56,7 +56,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
+  *  return:  none
+  *  notice:  These value need be modified if any changes.
+  */
+-void ht_update_default_setting(struct ieee80211_device *ieee)
++void __ht_update_default_setting(struct ieee80211_device *ieee)
+ {
+ 	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+ 	//const typeof( ((struct ieee80211_device *)0)->pHTInfo ) *__mptr = &pHTInfo;
+-- 
+2.41.0
 
