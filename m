@@ -2,291 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 286D77B1666
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755C97B1673
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbjI1Isf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
+        id S231393AbjI1Iwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjI1IsS (ORCPT
+        with ESMTP id S231359AbjI1Iwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:48:18 -0400
-Received: from out-191.mta1.migadu.com (out-191.mta1.migadu.com [95.215.58.191])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD371AB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:48:07 -0700 (PDT)
-Message-ID: <3ee9c8e4-870c-4ab0-906a-7d214031d1a6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695890885;
+        Thu, 28 Sep 2023 04:52:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EFFAC
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695891111;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+EEA0IoyLM9MJW6bKO28aRoeqNlmd1duJHWiiZqz/yg=;
-        b=YAMhQ45Bj/uy05JBo0RQYm/3kZjaQm4hC3Rdj6SkYN9dRTWltdHRrVqCwk04/pSOat/oEL
-        Xuoejak/dmkC/X98pRIf97no+3bWXf1RN7OmHMM+Yy2SkZqrjMUIfBURA8tCta/8aOEbxP
-        MWnIFotEFxWSMfoihPDTZWadkJ1aIE0=
-Date:   Thu, 28 Sep 2023 16:47:59 +0800
+        bh=NkWcflk7o2IhAoW5ugdA3P4TxFldRrvEEsOTDIfjw5E=;
+        b=LlGrtTweUgG0Mw1ZuDKwRx8D7xFVIg6oVj3O+e95APmwxe6xcv1w9hg214uuzQL5SQdVBN
+        zRicWYE675AhbXkHfWzwNFX9YBFwBSdpHeEPGD7hjqhZYN/vqlhPalvfm+Enadsjzci+2A
+        3XvrpccJqYtfjFlLVg3i6HWHZCNmMe4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-135-DVnNAnAyNjWsMZ0yidM2EQ-1; Thu, 28 Sep 2023 04:51:49 -0400
+X-MC-Unique: DVnNAnAyNjWsMZ0yidM2EQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-418225fb5d6so113969841cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:51:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695891109; x=1696495909;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NkWcflk7o2IhAoW5ugdA3P4TxFldRrvEEsOTDIfjw5E=;
+        b=Dj2H67SbKMmjXNrISt6xz7v2IBgDnT2JN/SnpZ2EZA+4LwIHw7n+5sgbkS+doq8iLp
+         8fgcgaH7UJjqyZAeVpOg9Xt+wRMMFGkcsg2+LDi0NwgakD1HfmLEF6GU6JMZ62OcyAtM
+         5kCKHx6FkfKLNBmK5hs5GcGOF9lVMKVTipztbsHA2wABgLWWis7ASHJPYomYrSiTwPPD
+         tqV4yiejDX5cNh2ZkyXkbtrcGPfjlXyy1rdK99agqgzYpSt/HAYcJbMh28//jvsq88Gu
+         uPR7PFXsJmBcvNDTYueKReJoYv5HCI3eXKNH5cVl5Yc8pVNKU3cyuLvQ7sqGkwfw31ua
+         o9nA==
+X-Gm-Message-State: AOJu0Yzv6H78ncB6wgNLQmMwCVw+c5bKz1KQqzL6Sb+cqQgxkruaXWz6
+        y4gN/lBgw2fRG+ctkKeUbBlsOhQOUAnf/YVbZ7MPYhUhe5EQXY21T+kRksTwOU6BwTtuiy38znW
+        8tkBSON9J3iRKPUWqcT9f328l
+X-Received: by 2002:a05:622a:138b:b0:412:191c:ffa with SMTP id o11-20020a05622a138b00b00412191c0ffamr637754qtk.26.1695891109113;
+        Thu, 28 Sep 2023 01:51:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+H2XpyC6g5cXAzUKMgVxYhAIA1uZrXD5jkN2vZZOVsLgR0f4SYCEkiNop7wfk3UqIpQAm2g==
+X-Received: by 2002:a05:622a:138b:b0:412:191c:ffa with SMTP id o11-20020a05622a138b00b00412191c0ffamr637746qtk.26.1695891108882;
+        Thu, 28 Sep 2023 01:51:48 -0700 (PDT)
+Received: from vschneid.remote.csb ([80.215.217.124])
+        by smtp.gmail.com with ESMTPSA id ig8-20020a05622a6a4800b004181127a230sm3614173qtb.76.2023.09.28.01.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 01:51:48 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, akpm@linux-foundation.org,
+        eric.devolder@oracle.com, sourabhjain@linux.ibm.com,
+        Baoquan He <bhe@redhat.com>
+Subject: Re: [PATCH v3] Crash: add lock to serialize crash hotplug handling
+In-Reply-To: <20230926120905.392903-1-bhe@redhat.com>
+References: <20230926120905.392903-1-bhe@redhat.com>
+Date:   Thu, 28 Sep 2023 10:51:45 +0200
+Message-ID: <xhsmhy1gqu1cu.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Subject: Re: [PATCH] memblock: don't run loop in memblock_add_range() twice
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230927013752.2515238-1-yajun.deng@linux.dev>
- <20230928061619.GS3303@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20230928061619.GS3303@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26/09/23 20:09, Baoquan He wrote:
+> Eric reported that handling corresponding crash hotplug event can be
+> failed easily when many memory hotplug event are notified in a short
+> period. They failed because failing to take __kexec_lock.
+>
+> =======
+> [   78.714569] Fallback order for Node 0: 0
+> [   78.714575] Built 1 zonelists, mobility grouping on.  Total pages: 1817886
+> [   78.717133] Policy zone: Normal
+> [   78.724423] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
+> [   78.727207] crash hp: kexec_trylock() failed, elfcorehdr may be inaccurate
+> [   80.056643] PEFILE: Unsigned PE binary
+> =======
+>
+> The memory hotplug events are notified very quickly and very many,
+> while the handling of crash hotplug is much slower relatively. So the
+> atomic variable __kexec_lock and kexec_trylock() can't guarantee the
+> serialization of crash hotplug handling.
+>
+> Here, add a new mutex lock __crash_hotplug_lock to serialize crash
+> hotplug handling specifically. This doesn't impact the usage of
+> __kexec_lock.
+>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
 
-On 2023/9/28 14:16, Mike Rapoport wrote:
-> On Wed, Sep 27, 2023 at 09:37:52AM +0800, Yajun Deng wrote:
->> There is round twice in memblock_add_range(). The first counts the number
->> of regions needed to accommodate the new area. The second actually inserts
->> them. But the first round isn't really needed, we just need to check the
->> counts before inserting them.
->>
->> Check the count before calling memblock_insert_region(). If the count is
->> equal to the maximum value, it needs to resize the array. Otherwise,
->> insert it directly.
->>
->> To avoid nested calls to memblock_add_range(), we need to call
->> memblock_reserve() out of memblock_double_array().
-> memblock_add_range() does an extra loop once in a while, but I don't think
-> removing it will have any actual effect on the boot time.
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-
-Yes, it has no obvious actual effect on the boot time,  but it does 
-reduce the number of unnecessary loop.
-
-The actual effect on the boot time should not be the only criterion for 
-whether a patch is accepted or not.
-
-Since the comment in the previous code, it tells the user that it would 
-be executed twice, this can be
-
-misleading to users.
-
-So the new code will be simpler and clearer. It not just change the 
-code, but also remove the comment
-
-about "executed twice",  it obviously tells the user only resize the 
-array if it is equal to the maximum value
-
-and doesn't need to be executed twice.
-
->   
->> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->> ---
->>   mm/memblock.c | 117 ++++++++++++++++++++++++--------------------------
->>   1 file changed, 57 insertions(+), 60 deletions(-)
->>
->> diff --git a/mm/memblock.c b/mm/memblock.c
->> index 5a88d6d24d79..3f44c84f5d0b 100644
->> --- a/mm/memblock.c
->> +++ b/mm/memblock.c
->> @@ -400,6 +400,8 @@ void __init memblock_discard(void)
->>    * @type: memblock type of the regions array being doubled
->>    * @new_area_start: starting address of memory range to avoid overlap with
->>    * @new_area_size: size of memory range to avoid overlap with
->> + * @new_reserve_base: starting address of new array
->> + * @new_reserve_size: size of new array
->>    *
->>    * Double the size of the @type regions array. If memblock is being used to
->>    * allocate memory for a new reserved regions array and there is a previously
->> @@ -412,7 +414,9 @@ void __init memblock_discard(void)
->>    */
->>   static int __init_memblock memblock_double_array(struct memblock_type *type,
->>   						phys_addr_t new_area_start,
->> -						phys_addr_t new_area_size)
->> +						phys_addr_t new_area_size,
->> +						phys_addr_t *new_reserve_base,
->> +						phys_addr_t *new_reserve_size)
->>   {
->>   	struct memblock_region *new_array, *old_array;
->>   	phys_addr_t old_alloc_size, new_alloc_size;
->> @@ -490,11 +494,13 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
->>   		memblock_free(old_array, old_alloc_size);
->>   
->>   	/*
->> -	 * Reserve the new array if that comes from the memblock.  Otherwise, we
->> -	 * needn't do it
->> +	 * Keep the address and size if that comes from the memblock. Otherwise,
->> +	 * we needn't do it.
->>   	 */
->> -	if (!use_slab)
->> -		BUG_ON(memblock_reserve(addr, new_alloc_size));
->> +	if (!use_slab) {
->> +		*new_reserve_base = addr;
->> +		*new_reserve_size = new_alloc_size;
->> +	}
->>   
->>   	/* Update slab flag */
->>   	*in_slab = use_slab;
->> @@ -588,11 +594,12 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
->>   				phys_addr_t base, phys_addr_t size,
->>   				int nid, enum memblock_flags flags)
->>   {
->> -	bool insert = false;
->>   	phys_addr_t obase = base;
->>   	phys_addr_t end = base + memblock_cap_size(base, &size);
->> -	int idx, nr_new, start_rgn = -1, end_rgn;
->> +	phys_addr_t new_base = 0, new_size;
->> +	int idx, start_rgn = -1, end_rgn;
->>   	struct memblock_region *rgn;
->> +	unsigned long ocnt = type->cnt;
->>   
->>   	if (!size)
->>   		return 0;
->> @@ -608,25 +615,6 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
->>   		return 0;
->>   	}
->>   
->> -	/*
->> -	 * The worst case is when new range overlaps all existing regions,
->> -	 * then we'll need type->cnt + 1 empty regions in @type. So if
->> -	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
->> -	 * that there is enough empty regions in @type, and we can insert
->> -	 * regions directly.
->> -	 */
->> -	if (type->cnt * 2 + 1 <= type->max)
->> -		insert = true;
->> -
->> -repeat:
->> -	/*
->> -	 * The following is executed twice.  Once with %false @insert and
->> -	 * then with %true.  The first counts the number of regions needed
->> -	 * to accommodate the new area.  The second actually inserts them.
->> -	 */
->> -	base = obase;
->> -	nr_new = 0;
->> -
->>   	for_each_memblock_type(idx, type, rgn) {
->>   		phys_addr_t rbase = rgn->base;
->>   		phys_addr_t rend = rbase + rgn->size;
->> @@ -644,15 +632,23 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
->>   			WARN_ON(nid != memblock_get_region_node(rgn));
->>   #endif
->>   			WARN_ON(flags != rgn->flags);
->> -			nr_new++;
->> -			if (insert) {
->> -				if (start_rgn == -1)
->> -					start_rgn = idx;
->> -				end_rgn = idx + 1;
->> -				memblock_insert_region(type, idx++, base,
->> -						       rbase - base, nid,
->> -						       flags);
->> -			}
->> +
->> +			/*
->> +			 * If type->cnt is equal to type->max, it means there's
->> +			 * not enough empty region and the array needs to be
->> +			 * resized. Otherwise, insert it directly.
->> +			 */
->> +			if ((type->cnt == type->max) &&
->> +			    memblock_double_array(type, obase, size,
->> +						  &new_base, &new_size))
->> +				return -ENOMEM;
->> +
->> +			if (start_rgn == -1)
->> +				start_rgn = idx;
->> +			end_rgn = idx + 1;
->> +			memblock_insert_region(type, idx++, base,
->> +					       rbase - base, nid,
->> +					       flags);
->>   		}
->>   		/* area below @rend is dealt with, forget about it */
->>   		base = min(rend, end);
->> @@ -660,33 +656,28 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
->>   
->>   	/* insert the remaining portion */
->>   	if (base < end) {
->> -		nr_new++;
->> -		if (insert) {
->> -			if (start_rgn == -1)
->> -				start_rgn = idx;
->> -			end_rgn = idx + 1;
->> -			memblock_insert_region(type, idx, base, end - base,
->> -					       nid, flags);
->> -		}
->> +		if ((type->cnt == type->max) &&
->> +		    memblock_double_array(type, obase, size,
->> +					  &new_base, &new_size))
->> +			return -ENOMEM;
->> +
->> +		if (start_rgn == -1)
->> +			start_rgn = idx;
->> +		end_rgn = idx + 1;
->> +		memblock_insert_region(type, idx, base, end - base,
->> +				       nid, flags);
->>   	}
->>   
->> -	if (!nr_new)
->> +	if (ocnt == type->cnt)
->>   		return 0;
->>   
->> -	/*
->> -	 * If this was the first round, resize array and repeat for actual
->> -	 * insertions; otherwise, merge and return.
->> -	 */
->> -	if (!insert) {
->> -		while (type->cnt + nr_new > type->max)
->> -			if (memblock_double_array(type, obase, size) < 0)
->> -				return -ENOMEM;
->> -		insert = true;
->> -		goto repeat;
->> -	} else {
->> -		memblock_merge_regions(type, start_rgn, end_rgn);
->> -		return 0;
->> -	}
->> +	memblock_merge_regions(type, start_rgn, end_rgn);
->> +
->> +	/* Reserve the new array */
->> +	if (new_base)
->> +		memblock_reserve(new_base, new_size);
->> +
->> +	return 0;
->>   }
->>   
->>   /**
->> @@ -755,6 +746,7 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
->>   					int *start_rgn, int *end_rgn)
->>   {
->>   	phys_addr_t end = base + memblock_cap_size(base, &size);
->> +	phys_addr_t new_base = 0, new_size;
->>   	int idx;
->>   	struct memblock_region *rgn;
->>   
->> @@ -764,10 +756,15 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
->>   		return 0;
->>   
->>   	/* we'll create at most two more regions */
->> -	while (type->cnt + 2 > type->max)
->> -		if (memblock_double_array(type, base, size) < 0)
->> +	if (type->cnt + 2 > type->max) {
->> +		if (memblock_double_array(type, base, size,
->> +					  &new_base, &new_size))
->>   			return -ENOMEM;
->>   
->> +		if (new_base)
->> +			memblock_reserve(new_base, new_size);
->> +	}
->> +
->>   	for_each_memblock_type(idx, type, rgn) {
->>   		phys_addr_t rbase = rgn->base;
->>   		phys_addr_t rend = rbase + rgn->size;
->> -- 
->> 2.25.1
->>
