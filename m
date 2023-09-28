@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EF77B144C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38827B1464
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjI1HNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        id S231339AbjI1HPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjI1HMs (ORCPT
+        with ESMTP id S231477AbjI1HOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:12:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD3455AA
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:11:15 -0700 (PDT)
-Received: from verdu-eth.calcurco.cat.235.168.192.in-addr.arpa (unknown [93.176.144.0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sergi)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3E0DC6607327;
-        Thu, 28 Sep 2023 08:11:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695885074;
-        bh=32T81fKvUycfKAhnCTiHsDbfmXmo2fIN4PHbMCuJ0bs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HuS2RykrdK0vM5nrbTCy64Xc2ZB6qNUhKxlqtqFcqXi8x3JpQb6FIfbQ0H9vhZkyU
-         cJJq2Lr8PSlC2GDs3B4TPSVCz0FZhgEn8wMU1PlUBd9MpQ0mLcDShZIdg392kv0Gk6
-         Lp0XceWupnpVs8OwCkKW8UNCEpAtA4swFiH16gr4CWm1TpV6/pQZav7gAfocw/ZY5k
-         Lz27QcV/QIPjtJdRhaNyOaYC8asYLqMCWcEyFgJ0YvVw1vGAdHaRTWzn0iHP/qhEl5
-         pb1S+7809Y8Ug6AFS3OYgXolpJpjoxtsayVRf6G6q9vpv00halZBmXLlyQWI6Ql72k
-         Y+sr/Y2h2o9XA==
-Message-ID: <c25165891e0628b3a3a50cc528a86b2b2a65b7ae.camel@collabora.com>
-Subject: Re: [RFC PATCH] drm/ci: add helper script update-xfails.py
-From:   Sergi Blanch Torne <sergi.blanch.torne@collabora.com>
-To:     Helen Koike <helen.koike@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     airlied@gmail.com, daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        robdclark@gmail.com, daniel@fooishbar.org,
-        vignesh.raman@collabora.com, jani.nikula@linux.intel.com,
-        mripard@kernel.org, michel.daenzer@mailbox.org,
-        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
-        david.heidelberg@collabora.com, guilherme.gallo@collabora.com
-Date:   Thu, 28 Sep 2023 09:10:58 +0200
-In-Reply-To: <785cbfee-f4d3-3d53-a3e6-2f9af8fa05fb@collabora.com>
-References: <20230925195556.106090-1-helen.koike@collabora.com>
-         <8f946d0a5632d580b593cf731091126d59feb77f.camel@collabora.com>
-         <785cbfee-f4d3-3d53-a3e6-2f9af8fa05fb@collabora.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.46.4-2 
+        Thu, 28 Sep 2023 03:14:54 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418AFCEE
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:14:01 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-691c05bc5aaso11066004b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695885240; x=1696490040; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VtAQFshoixr4PLMOGpQ5x3E+4JvwXvrJVP5lWSHmXcs=;
+        b=GI3+uX4Fm/RDCPJZ2JY+NH3noeb5l18RbVYWJcjXV2Mercx3uMRgOH5JKxzvGLElV8
+         e5ibjR3IE05dHJcokZ2YZDrx75MYFyAltNX08b7rbKuFwlD4k8mGEf9HEmPvA5cdyhPU
+         7UKFTcs5N+HJe8isGPwlpAmZury+YPBf35zw+9ZA7NA6GyqUV6y+CA9VDL2rMflqNRGB
+         4pjrHJ40M5qmBTjjJdKZFdMcofWVSz9jcI2OT31vxvB6hkbW02Yb+nDp5hLvUOLWUJlO
+         +4URWUN2fAwf7vOW+0mUMMygHnwBWRtcuCcUuROVntXrQIOqUuyfsew2pN5NhvSPUlKK
+         tY5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695885240; x=1696490040;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VtAQFshoixr4PLMOGpQ5x3E+4JvwXvrJVP5lWSHmXcs=;
+        b=AWBjk9qM4eHkJLNd2coVoLTidHPa/uNJniZSdYOj8jSSffNjjIKzff/7sVZgzTdqIo
+         8J2azTK+56EeD1cNBlb0Iot1qZ9xJp3ptGq+66RPPO84ro0X5Q7tYqDWiH0M9ePluypy
+         bUb3gX05x1AcYOxQf/HFRdr9ls/PMxI6oT8mIVlvQ8bmW/BB+ff5W3dHOsB0ahrNd3CP
+         E8L0Lx4GNhDSwYPZ/k4ucq6sexaTKzo741U8aFEdOfnq83qS+RnYGIiimhQNDgoXjcSi
+         bIDZAoAnwKaEbGywQzNlVEqhLGwpJUmD7hDlkl+zYRoNnfSR9V+KWx0LWeB6GZ9y8Izd
+         H5zw==
+X-Gm-Message-State: AOJu0Yxq1nMmMNJPD1BfbDUhuglhTNDOapq4hXW5NuB4WH/1/eqzptkL
+        uOktCeUmTCnJ/5JPVN6VRrtDgA==
+X-Google-Smtp-Source: AGHT+IF+ebHc4PI7RDBAqlxE+M8CNQuYhiPegz6Bi2F6ZoLnTZtxR5vgvmHJEfj4gXpYMG0OC++96g==
+X-Received: by 2002:a05:6a20:914f:b0:160:83e1:712f with SMTP id x15-20020a056a20914f00b0016083e1712fmr396378pzc.23.1695885240687;
+        Thu, 28 Sep 2023 00:14:00 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id a12-20020a170902b58c00b001bc5dc0cd75sm3726200pls.180.2023.09.28.00.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 00:14:00 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 12:43:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: [PATCH] dt-bindings: opp: opp-v2-kryo-cpu: Allow opp-peak-kBps
+Message-ID: <20230928071358.nwhy7lpsrawlrkf6@vireshk-i7>
+References: <20230920-opp-kbps-binding-cleanup-v1-1-65b059bb4afc@quicinc.com>
+ <169532249877.800354.7360993815442441183.robh@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169532249877.800354.7360993815442441183.robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On 21-09-23, 13:55, Rob Herring wrote:
+> 
+> On Wed, 20 Sep 2023 16:03:57 -0700, Bjorn Andersson wrote:
+> > Many of the users of operating-points-v2-kryo-cpu scales interconnect
+> > bandwidth based on the selected opp. Extend the binding to allow the
+> > opp-peak-kBps property, inherited from opp-v2-base.yaml, to be used to
+> > specify the requested bandwidth.
+> > 
+> > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> > ---
+> >  Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Hi Helen,
+Applied. Thanks.
 
-On Wed, 2023-09-27 at 19:28 -0300, Helen Koike wrote:
-> > > +def get_unit_test_name_and_results(unit_test):
-> > > +=C2=A0=C2=A0=C2=A0 if "Artifact results/failures.csv not found" in u=
-nit_test:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return None, None
-> > > +=C2=A0=C2=A0=C2=A0 unit_test_name, unit_test_result =3D
-> > > unit_test.strip().split(",")
-> > > +=C2=A0=C2=A0=C2=A0 return unit_test_name, unit_test_result
-> >=20
-> > Suggestion: it is not managing empty lines or comments. By now,
-> > there
-> > aren't, but they could be found.
->=20
-> Indeed.
-
-Just add a new if statement to discard if the strings start with # or
-strip the line and check the length. Perhaps we can think of other
-assertions to sanitise the string.
-
-> > Suggestion: Sometimes tests fails with different status ("Fail" to
-> > "Crash" for example) and the expectations should be updated with
-> > the
-> > newer status.
->=20
-> The status is only present in the fails and not in the flakes list,
-> so I=20
-> update it with add_unit_test_or_update_result_to_fails_if_present()=20
-> function below, make sense?
-
-Absolutely, sorry that I didn't see this was a process included in the
-last if statement. If it is present in the fails' file (that includes
-the test name and its state) you do exactly what's necessary: add if
-not present, update if it was already in the file.
-
->=20
-Regards,
-
-
-- --=20
-Sergi Blanch Torn=C3=A9
-Senior Software Engineer
-
-Collabora Ltd.
-Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
-Registered in England & Wales, no. 5513718
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQQwWRK68l+taJfhwqAto5bHyTm9RwUCZRUnAgAKCRAto5bHyTm9
-R53NAP9T2OCiwbnEjv+H0CQg/eK1xGe7yS/3cqjaPFRvvZPp1wD/V1H9NuhpRR6M
-8+QZgbsS/swSPdwYABtcz+75CKpuJwo=3D
-=3DXRRO
------END PGP SIGNATURE-----
+-- 
+viresh
