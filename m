@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA05B7B271F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6713D7B26F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbjI1VHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S232107AbjI1VDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1VHf (ORCPT
+        with ESMTP id S230251AbjI1VDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:07:35 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E84B7;
-        Thu, 28 Sep 2023 14:07:34 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3ae0135c4deso7715463b6e.3;
-        Thu, 28 Sep 2023 14:07:34 -0700 (PDT)
+        Thu, 28 Sep 2023 17:03:23 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CB819D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:03:21 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b275afb6abso2049183366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695935253; x=1696540053; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qIlKEJnw0fFoB8aDGwN3C/vOYWFmYPRhpPxSRX2qmyg=;
-        b=mrVe/8GS0+AGXo7bS4iO83gLxZFHgUceu6SGPlv3+TYdxLtcJXgmgG0hZFRVqgWuei
-         hFwj86nOxFyI1Ce21kFa24SHoHXrWyaOFn6xPYN+sewkxjeNUT4PV02UZFw1Wy2IlBGd
-         JaS2nElVhJA48t1IaMyfm7pIe+Flvp1v9XIXb/KBPDeCx1iQet8SdndPfGPiiF+x2KpF
-         2iI6k49ZpJYMsnKpllK5ijZBruXPzByyk9XLCFFn2B3T+Mf/GKRDHmykBQshUpEnYZLi
-         3l7Rb9RBATxyKkFkVLUz3zJBnwtnLE6op9TpaT2PSotsKIHYLBP8wexJNmaZbqxizUU0
-         B0uQ==
+        d=gmail.com; s=20230601; t=1695935000; x=1696539800; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=68u9ZfEQDYxbKIVdn90enoX7Bta9ioMeZd73BugfMBs=;
+        b=HFbGCvKjtiLG+udXZTd6YVJtBz0QqZ2I2R6BIEKS6ExrqQmIMKNe6P+v4oR/2YQIwZ
+         zr4SYbiHp7QKQ1y44iGdffk9mWcVIqeKDhiOMTL/3pQVKfzhAiHpV07oJ/Zln/0wqzk7
+         gYbn9T0rSy8kxQY7VoTfpMlWe6du3nlqEs4CDBHseDRizn8UXl0M/scBih7a0jQkKoZE
+         nfndaj8C/cMPTwCXFXIgh+oNDmDKpjfFnTy8UVpbxFOgqigLGJa98xb/FvPgV+e7rxdI
+         YKshPaosj/ULf3jm4eml3vrItA2Iki+mgkSx8lo/unNQ1pW3o0exPKs6JlhXKyay3Iiw
+         1udg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695935253; x=1696540053;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qIlKEJnw0fFoB8aDGwN3C/vOYWFmYPRhpPxSRX2qmyg=;
-        b=hhEZ8z5tqEsdc1hVOQk1NqoRiHvuh/uP+3wj0TKJFMVtGhstYWXOuVq5D0d6vpdeb/
-         v8UycFjVAsJq0MOdpqeXHoNEiKK1gF71m3B1gyuOcYwlhCD9l4WwlLHFbqFbJ+MOPOus
-         icCz01mGKPkCn9BT0rqq6NIi8Of6lJz9mtXms8PN8F50gbC28plFKUytGhioy+5ZILvK
-         FE/f+4pL2/nZdeDFyU8lwgDDK1ZNOmwYBh/tgnZkTlA4zZBqsZya8C8wgB+1LUdeqm8v
-         lv2KJnKKE4uhc8QB17E9VhMfuJ9/cCN/xuDvNU0ZSHNLH/CEKBhoqkf70tikqUuDuVTk
-         b+eA==
-X-Gm-Message-State: AOJu0Yz4RVEsrIo7Py1WVzo+punqVDobK+FmKCsH8mscb85n4RVLLxYs
-        QcZ6jW64m76ICFl3r5tgITs=
-X-Google-Smtp-Source: AGHT+IG/wdC9TA1MZk6fSBU2RRw1BACeiIsuv/wTqo+LvBSGWzHVlF55AtGJGT7QdWxF+oHCueXdoQ==
-X-Received: by 2002:a05:6808:1450:b0:3a7:5309:f1f with SMTP id x16-20020a056808145000b003a753090f1fmr2846373oiv.45.1695935253446;
-        Thu, 28 Sep 2023 14:07:33 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id k12-20020aa7820c000000b0068fda1db80bsm13766692pfi.75.2023.09.28.14.07.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:07:32 -0700 (PDT)
-Message-ID: <91c25e18-ff97-46a2-a50a-493c00bbc156@gmail.com>
-Date:   Thu, 28 Sep 2023 18:02:59 -0300
+        d=1e100.net; s=20230601; t=1695935000; x=1696539800;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=68u9ZfEQDYxbKIVdn90enoX7Bta9ioMeZd73BugfMBs=;
+        b=DbYXqAxt0gVH6RqLKvQKcFEDrNRwx/KGVySWsfX4O/E7LfH6pmyCNT6CyPuKhFaGkq
+         tXzyvG5otswDbgBhDLhroVql/neTuWuZtbfqXGxRP4GPMGbh7tScNwm+dZnVSd8Bjfhr
+         TOaqH+YLdnxbRAWOUwIwdv8p1xlxZbxIgRvFWW+ubRp5NIIPTHnjbcl/NBqiqX7qfgoI
+         q9hFNumCuVzDqydZLzc2v4fh+LfhZEcBMq3yBKauxvyAv7GjN8LPmBOxViVDhGvNG2uw
+         14v4O9KvewUMxVN/s5FNmCKg612mTIsVxmeYpaadslncVBG8BvxhUSQZKWDHRbIN5Cd/
+         2WwQ==
+X-Gm-Message-State: AOJu0YwWsVxMoglaeSkyDHRMr895gLJ1eotebrrkYL09g3PFMOsdMbUQ
+        BsmzStTtb4AiGrFWgsCK/ao=
+X-Google-Smtp-Source: AGHT+IEPxa0tA65IrPh8kZ2UQM2M+h7INzcrrW16DhQ5wAs2PxAAXnC6VNAH4JDPcA9X/0zn90t+DA==
+X-Received: by 2002:a17:907:2cd1:b0:9ae:5866:9745 with SMTP id hg17-20020a1709072cd100b009ae58669745mr2178225ejc.21.1695935000018;
+        Thu, 28 Sep 2023 14:03:20 -0700 (PDT)
+Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009ad829ed144sm11372461ejd.130.2023.09.28.14.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 14:03:19 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 28 Sep 2023 23:03:17 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: Filter root_task_group at the beginning
+Message-ID: <ZRXqFScg/vORHoqw@gmail.com>
+References: <20230922094336.394865-1-haifeng.xu@shopee.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
-References: <20230928194801.2278999-1-mmaurer@google.com>
-Content-Language: en-US
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230928194801.2278999-1-mmaurer@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922094336.394865-1-haifeng.xu@shopee.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 16:48, Matthew Maurer wrote:
-> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-> resulting in build failures in hermetic environments where `cc` does not
-> exist. This includes both hostprogs and proc-macros.
+
+* Haifeng Xu <haifeng.xu@shopee.com> wrote:
+
+> We can't change the weight of the root cgroup. Let's handle
+> root_task_group before doing any real work including acquiring
+> the shares_mutex.
 > 
-> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-> `gcc` explicitly. The linker-flavor selects both which linker to search
-> for if the linker is unset, and which kind of linker flags to pass.
-> Without this flag, `rustc` would attempt to determine which flags to
-> pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
-> name of the linker-flavor used by `rustc` for all C compilers, including
-> both `gcc` and `clang`.
-> 
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
 > ---
+>  kernel/sched/fair.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a80a73909dc2..1ac2df87e070 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -12594,6 +12594,9 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
+>  {
+>  	int ret;
+>  
+> +	if (tg == &root_task_group)
+> +		return -EINVAL;
+> +
+>  	mutex_lock(&shares_mutex);
+>  	if (tg_is_idle(tg))
+>  		ret = -EINVAL;
 
-Psst, next time I'd recommend putting patch version to version changes
-here. Still, LGTM.
+So what's the motivation, how common is this case? 
 
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Normally this should be a -EINVAL error code path, which sane user-space
+presumably never conscisously tries to call in that fashion, right?
+
+It's not worth optimizing pathological cases, especially
+since we check for the root CG inside __sched_group_set_shares()
+already:
+
+        /*
+         * We can't change the weight of the root cgroup.
+         */
+        if (!tg->se[0])
+                return -EINVAL;
+
+
+Thanks,
+
+	Ingo
