@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810F77B2378
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319F37B2383
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbjI1ROV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S231324AbjI1RPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjI1ROU (ORCPT
+        with ESMTP id S231389AbjI1RPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:14:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E104C0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:14:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AF6C433CA;
-        Thu, 28 Sep 2023 17:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695921258;
-        bh=tXrtMWlwOkfqKNhjWq3vR9L4n6dBzGkeLZc+XQRiVK4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QWpDdv3+ksAvGEbNOJjqpj7q/5jMHatTKJ6it5aZ7nm2U87e6YhGkdg2q43rVdojX
-         syggjiJg5ofTPT4ATJLWCuz47QSHmXFDJDhLEGRk1OuahUyYkwlVZi6lmjC5+Dh1mQ
-         67LUx4MmVrgVgHKK8ylOt8LjMq3shKSUja7kpoc6Df4kVVvr21dYUAtqmYmkdVuWva
-         PS5yDmUx+0w9nPgivh0w+5vaSp9XfsdcRFb9kkRDhAaXoRi5lrJGPcHoHr9wvVGf+U
-         Cu04xLMuPz3yw7g2+EXxkqrrZPbxHdkL2HkUsDfA/NW+0lEIMECd0ohKE5Jo1WD+pR
-         KmRdxOVEncZsA==
-Date:   Thu, 28 Sep 2023 18:14:11 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Christophe Roullier <christophe.roullier@foss.st.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/12] dt-bindings: net: add phy-supply property for
- stm32
-Message-ID: <20230928-pelvis-outhouse-28bb691bd790@spud>
-References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
- <20230928151512.322016-4-christophe.roullier@foss.st.com>
+        Thu, 28 Sep 2023 13:15:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5991A7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695921279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IoOMdWsqx13KyfLDmhd8kwn+FZuK3U7Zd1iwFOjjXP0=;
+        b=IqJxie0C2PYnojl6KJqT/K1pUvAykASHFbzvV17yMBYfbc8ZAVvT43wTSaqpgyFOV7G7hL
+        AvhfTfGZN/D0nYZ7ApiF5LERMhHniObphVC/6XDeAzwNV4XQ6oABbRC6yKOEXUk4NSts2w
+        YZ2GrBh10eihKdn/Mb2KbK4rF/QsJ30=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-205-jat8FW8XO5mtTgxvQOb2OQ-1; Thu, 28 Sep 2023 13:14:38 -0400
+X-MC-Unique: jat8FW8XO5mtTgxvQOb2OQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso9828804f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:14:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695921277; x=1696526077;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IoOMdWsqx13KyfLDmhd8kwn+FZuK3U7Zd1iwFOjjXP0=;
+        b=dOFixol+Sa3ZKYxm5WISzHEEy0bRsdFW6uREV6yjPmNGyvHRGukNO1Rxt5nWtMXhYO
+         U+Ub0+4XRpICBy+QkqVumHCCWzwdtYCXuZThhHTK8urCb2uX4WUHX0HSzKcsvRllO/0G
+         TdnCGMQlC1SCXIf+Kf0mJYcT4yx9/wY96YeU9xzanmjGFj3qLlpF2xzzLO2h1oAPLJi9
+         zZfND+Lzkym4onoTvJsvUnFOnL2qnNKdQ8RLCt0xQ1Qyif+hUZzKV3JH+a1AbM0NEOhb
+         hhY6PGY2MZB/lE7mz16yy1zw89MB4N8sgb6C62panP2KWkJ020DGf58O61gQufxg0IK1
+         l+Ug==
+X-Gm-Message-State: AOJu0YxMvTT7Me49Szi1XKzdCgj1A7Jco025zDJYV+mOUS6ahMqTqN1z
+        ki/sbSQdsmGeKEDn7LAWfWbvlnkY6xPlGleGXeu7R0ZqKjcOfX3lYw8mhiNQOVeaQc4q5zXvwyu
+        cOl6d2RGOxWbXcaHEonO6Ru0OwD57hhX3
+X-Received: by 2002:a5d:4d45:0:b0:31f:fcee:afcf with SMTP id a5-20020a5d4d45000000b0031ffceeafcfmr1675100wru.71.1695921276844;
+        Thu, 28 Sep 2023 10:14:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGaHAI0Jl7BgDloLvOXP39Cbg4Q6f6RcYSSUyl32ffjmWzsxBgubexMfj/vYKlBpyoT2n5HAQ==
+X-Received: by 2002:a5d:4d45:0:b0:31f:fcee:afcf with SMTP id a5-20020a5d4d45000000b0031ffceeafcfmr1675065wru.71.1695921276488;
+        Thu, 28 Sep 2023 10:14:36 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id e21-20020a056402149500b005256d80cdaesm9954826edv.65.2023.09.28.10.14.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 10:14:35 -0700 (PDT)
+Message-ID: <fd764cff-f4bc-a13d-96dc-a7eaab8434f2@redhat.com>
+Date:   Thu, 28 Sep 2023 19:14:29 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="z+Q9ArmXRwc2oCyE"
-Content-Disposition: inline
-In-Reply-To: <20230928151512.322016-4-christophe.roullier@foss.st.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Michael Roth <michael.roth@amd.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+References: <cover.1695327124.git.isaku.yamahata@intel.com>
+ <ZQynx5DyP56/HAxV@google.com>
+ <20230922194029.GA1206715@ls.amr.corp.intel.com>
+ <ZQ3573rbNQpbNf09@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC PATCH v2 0/6] KVM: gmem: Implement test cases for
+ error_remove_page
+In-Reply-To: <ZQ3573rbNQpbNf09@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/22/23 22:32, Sean Christopherson wrote:
+> Unless we can't extend fadvise() for some reason, I think we should pursue
+> FADV_HWPOISION.  The enabling should be downright trivial, e.g. just implement
+> file_operations.fadvise() for guest_memfd, have it handle FADV_HWPOISON, and pass
+> everything else to generic_fadvise().
+> 
+> It'll basically be your ioctl() just without a dedicated ioctl().
+> 
+> At the very least, we should run the idea past the fs maintainers.
 
---z+Q9ArmXRwc2oCyE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+fadvise() is different from madvise() though and not necessarily a great 
+match.  Looking at the list of flags in advise(), something like 
+FADV_POPULATE_READ, FADV_PAGEOUT or FADV_COLD would make sense, but I 
+can't really think of any other flag that would be useful in a general 
+case for fadvise.  Everything else would have to be very spcific to 
+memfd or guest_memfd.
 
-On Thu, Sep 28, 2023 at 05:15:03PM +0200, Christophe Roullier wrote:
-> Phandle to a regulator that provides power to the PHY. This
-> regulator will be managed during the PHY power on/off sequence.
->=20
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+In particular FADV_HWPOISON would not make sense for anything that is 
+not backend by memory.  There are some flags that could be useful on 
+gmem file descriptors, such as hypothetically {WIPE,KEEP}ONFORK or 
+SOFT_OFFLINE, but again they're not something that can be applied to 
+fadvise().
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+So a ioctl implementation does have some advantages after all.  I 
+suggest that we reuse MADV_* flags in the ioctl arguments, to leave the 
+door open for future extensions and avoid ioctl proliferation.  The 
+ioctl could be implemented by memfd, too, and perhaps even by /dev/zero.
 
-Tjanks,
-Conor.
+Paolo
 
-> ---
->  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Doc=
-umentation/devicetree/bindings/net/stm32-dwmac.yaml
-> index 67840cab02d2d..8114c325a4eed 100644
-> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> @@ -78,6 +78,9 @@ properties:
->        encompases the glue register, the offset of the control register a=
-nd
->        the mask to set bitfield in control register
-> =20
-> +  phy-supply:
-> +    description: PHY regulator
-> +
->    st,ext-phyclk:
->      description:
->        set this property in RMII mode when you have PHY without crystal 5=
-0MHz and want to
-> --=20
-> 2.25.1
->=20
-
---z+Q9ArmXRwc2oCyE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRW0YwAKCRB4tDGHoIJi
-0p4/AP9+zFrcdUG4lft9L0yl+zWXuhbkd/AOM7N86NFMT57JlgEAh0jws3IZ/Vty
-dGXkDN6EFYwVjejcIawKvNSaWv29VQI=
-=2LGR
------END PGP SIGNATURE-----
-
---z+Q9ArmXRwc2oCyE--
