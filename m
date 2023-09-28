@@ -2,220 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0337B10AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808C17B10B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbjI1CM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 22:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        id S229770AbjI1COp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 22:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjI1CMy (ORCPT
+        with ESMTP id S229437AbjI1COo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 22:12:54 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA8DAC
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 19:12:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bb9cdso126038595e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 19:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695867171; x=1696471971; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kKZRe/GZV/iQCUofnVyQt/z8LYx3Pf2DFuz6RSVBq38=;
-        b=0lJGkrLPMaXMlFY8g89vfWf9ueJD03EhIiiqQRAqSk9/ji4vvY1XqKrMWjnXTX8xy7
-         5DSWnXXz6X9WqEymrnCZsWWiJwBeAXlQtECAHm3Y62G90YkCRVOtWclYU6/YYRmrkpnm
-         eLrMTPjCEpAeutbJc1lMImAUBt3HkIsnLqjrXYSwUagz9EDz25LytGJObVCr7feaNqHj
-         h4SfbYwPH3TEkOHqGuxrxxc3Jxjflzd8MDxV3/VIshzszDE3/0oV8eYjdqAZgruwiwzA
-         LuX3NpgnzRX/hGJ6kvDWnapEWgWqBjz78VQK40MsEY4NENvGXwAgjLkF7a/2ruqS1eqf
-         HpXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695867171; x=1696471971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kKZRe/GZV/iQCUofnVyQt/z8LYx3Pf2DFuz6RSVBq38=;
-        b=H0EpuABT8fxmihs4WtN9GGbDeEFGg9XdYQ2Dwv04hF+GmZAN5aJy2/w8J4xHLqJnZD
-         KCJ4mhQ6jLhqMqwSUzg2lOlxPAZ3vj1aPEqr8Q/uLqPG9/5XToDDNwqcr20TgYt5qmzb
-         0JjnA+ydhZ/WEijoAbS51YKTE4M7OWZBu3EK9UWB6e+lLiZg9PY/Nkrr2NfiW5UXDK+U
-         RG+QnhEUe6SXXGEIYzWMp6oYfOmT6vhU75utBSSS+PpCXfkYIhMfhuDQgWvVi1XfQVdj
-         VIccFvTbGoM6BZLQI58Gz6jLWPIDxDqpKPxYUcnCMy/bSn0OeINq7ZreAXjcKJ5diLqN
-         kUbQ==
-X-Gm-Message-State: AOJu0YxQJtalXD//BQPdMZUfu7EAVJMabcQ4Lzq6NAbngtAsZPKEMbub
-        Cdg3n1tdBunUXh57S3DBebrIoq4WAZ345zbm5M8Au8DM+oGkoQBa
-X-Google-Smtp-Source: AGHT+IEMv+Xy4MV7QczSeD1RKvQAMX8lQaX7KPMiwGeyLFZkBRuoVIs5f9huGJCKsgim33SeJFTH6rjd9PQnuyh8rbo=
-X-Received: by 2002:adf:e60b:0:b0:314:3e77:f210 with SMTP id
- p11-20020adfe60b000000b003143e77f210mr3284677wrm.59.1695867171521; Wed, 27
- Sep 2023 19:12:51 -0700 (PDT)
+        Wed, 27 Sep 2023 22:14:44 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39B5CAC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 19:14:42 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.5.213])
+        by gateway (Coremail) with SMTP id _____8BxY_CQ4RRlWaItAA--.21847S3;
+        Thu, 28 Sep 2023 10:14:40 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axzy+Q4RRlNecUAA--.43050S2;
+        Thu, 28 Sep 2023 10:14:40 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Share the same pmd between vDSO space and stack
+Date:   Thu, 28 Sep 2023 10:14:40 +0800
+Message-Id: <20230928021440.698982-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20230919-cc4646dbfb953bd34e05658c@fedora> <CAGD2q_bkTpvXiomWb_yerNjQfMVKOctYgBqF_RBSo_jYqyyyxw@mail.gmail.com>
- <20230922-unclothed-bottom-5531329f9724@spud> <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
- <20230922-removable-footwork-f1d4d96d38dd@spud> <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
- <20230925-cod-vacancy-08dc8d88f90e@wendy> <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
- <20230926-action-sludge-ec8e51fdd6d4@spud> <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
- <20230926-reverence-unlit-d0027225cc43@spud>
-In-Reply-To: <20230926-reverence-unlit-d0027225cc43@spud>
-From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
-Date:   Thu, 28 Sep 2023 10:12:41 +0800
-Message-ID: <CAGD2q_ZzNPOL+Mhg7aWFTQd+UJJYVLz1ZE9hbNb0roS2M6y34g@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>,
-        wuxy23@lenovo.com, luolm1@lenovo.com,
-        hung poyu <poyu_hung@himax.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Axzy+Q4RRlNecUAA--.43050S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxCw48KrW5JF43AFWkXw13trc_yoWrZw4kpF
+        ZrCFs7XrWUGr97Kry7tw1kWr15Jas7Kw42ga12y393AF1YqF13Zw1kAryDZF4UtanY9a10
+        gFyfKrZ09a15XwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j8yCJUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 8:53=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Tue, Sep 26, 2023 at 05:52:39PM +0800, yang tylor wrote:
-> > On Tue, Sep 26, 2023 at 5:02=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > >
-> > > On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrote:
-> > > > On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor.dooley@=
-microchip.com> wrote:
-> > > > >
-> > > > > On Mon, Sep 25, 2023 at 09:44:21AM +0800, yang tylor wrote:
-> > > > > > On Fri, Sep 22, 2023 at 11:31=E2=80=AFPM Conor Dooley <conor@ke=
-rnel.org> wrote:
-> > > > > > >
-> > > > > > > On Fri, Sep 22, 2023 at 05:43:54PM +0800, yang tylor wrote:
-> > > > > > > > On Fri, Sep 22, 2023 at 5:22=E2=80=AFPM Conor Dooley <conor=
-@kernel.org> wrote:
-> > > > > > > > >
-> > > > > > > > > On Fri, Sep 22, 2023 at 03:56:25PM +0800, yang tylor wrot=
-e:
-> > > > > > > > > > On Tue, Sep 19, 2023 at 7:09=E2=80=AFPM Conor Dooley <c=
-onor@kernel.org> wrote:
-> > > > > > > > > > > On Tue, Sep 19, 2023 at 05:31:29PM +0800, yang tylor =
-wrote:
-> > > > > > > > >
-> > > > > > > > > > > > The behavior of "himax,boot_time_fw_upgrade" seems =
-not stable and
-> > > > > > > > > > > > should be removed. "himax,fw_in_flash", I use the k=
-ernel config for
-> > > > > > > > > > > > user to select.
-> > > > > > > > > > >
-> > > > > > > > > > > That seems like a bad idea, we want to be able to bui=
-ld one kernel that
-> > > > > > > > > > > works for all hardware at the same time.
-> > > > > > > > > > >
-> > > > > > > > > > I see, so I should take that back?
-> > > > > > > > > > I'll explain more about it.
-> > > > > > > > >
-> > > > > > > > > Are there particular ICs where the firmware would always =
-be in flash and
-> > > > > > > > > others where it would never be? Or is this a choice made =
-by the board or
-> > > > > > > > > system designer?
-> > > > > > > > >
-> > > > > > > > Most cases it's about the system designer's decision. But s=
-ome ICs may be forced
-> > > > > > > > to use flash because of its architecture(multiple IC inside=
-, need to
-> > > > > > > > load firmware to
-> > > > > > > > multiple IC's sram by master IC). But if there is no limita=
-tion on
-> > > > > > > > this part, most system
-> > > > > > > > designers will prefer flashless.
-> > > > > > >
-> > > > > > > Forgive me if I am not understanding correctly, there are som=
-e ICs that
-> > > > > > > will need to load the firmware from flash and there are some =
-where it
-> > > > > > > will be a decision made by the designer of the board. Is the =
-flash part
-> > > > > > > of the IC or is it an external flash chip?
-> > > > > > >
-> > > > > >
-> > > > > > Both are possible, it depends on the IC type. For TDDI, the IC =
-is long
-> > > > > > and thin, placed on panel PCB, flash will be located at the ext=
-ernal
-> > > > > > flash chip. For the OLED TP, IC is usually placed at FPC and it=
-s flash
-> > > > > > is embedded, thus the IC size is large compared to TDDI. But fr=
-om the
-> > > > > > driver's perspective either external flash or embedded flash, t=
-he IC
-> > > > > > itself will load firmware from flash automatically when reset p=
-in is
-> > > > > > released. Only if firmware is loading from the host storage sys=
-tem,
-> > > > > > the driver needs to operate the IC in detail.
-> > > > >
-> > > > >
-> > > > > Since there are ICs that can use the external flash or have it lo=
-aded
-> > > > > from the host, it sounds like you do need a property to different=
-iate
-> > > > > between those cases.
-> > > > Yep.
-> > > >
-> > > > > Is it sufficient to just set the firmware-name property for these=
- cases?
-> > > > > If the property exists, then you know you need to load firmware &=
- what
-> > > > > its name is. If it doesn't, then the firmware either isn't needed=
- or
-> > > > > will be automatically loaded from the external flash.
-> > >
-> > > > We have a default prefix firmware name(like himax_xxxx.bin) in the =
-driver code.
-> > >
-> > > How do you intend generating the name of the firmware file? I assume =
-the
-> > > same firmware doesn't work on every IC, so you'll need to pick a
-> > > different one depending on the compatible?
-> > >
-> > If considering a firmware library line-up for all the incoming panels
-> > of this driver.
-> > We would use PID as part of the file name. Because all the support pane=
-ls would
-> > have a unique PID associated. Which will make the firmware name like
-> > himax_xxx_{$PID}.bin. The problem is, we need to know PID before firmwa=
-re load
-> > at no flash condition. Thus PID information is required in dts when
-> > no-flash-flag
-> > is specified.
->
-> Firstly, where does the "xxx" come from?
-> And you're making it sound more like having firmware-name is suitable
-> for this use case, given you need to determine the name of the file to
-> use based on something that is hardware specific but is not
-> dynamically detectable.
-Current driver patch uses a prefix name "himax_i2chid" which comes
-from the previous project
- and seems not suitable for this condition, so I use "xxx" and plan to
-replace it in the next version.
-For finding firmware, I think both solutions are reasonable.
-- provide firmware name directly: implies no-flash and use user
-specified firmware, no PID info.
-- provide no-flash-flag and PID info: loading firmware from organized
-names with PID info.
-I prefer the 2nd solution, but it needs more properties in dts. 1st
-has less properties and more
-intuitive.
+Currently vDSO virtual address space is randomed within range 64M
+below TASK_SIZE, and the next is stack space randomed within generic
+range 8M. so vDSO space uses different pmd entry with stack.
 
-I don't know which one is more acceptable by the community, as you
-know I'm a newbie here.
+With idea from x86, vDSO space can share the same pmd entry with
+stack, only that randomed range is smaller than before. This will
+save one PTE page for every thread.
 
-Thanks,
-Tylor
+Also this patch removes ____cacheline_aligned_in_smp property for
+vdso_pcpu_data structure, cache line aligned property for small size
+is generally used for frequently modified data like lock to avoid
+cache-thrashing on smp system. The struct element node is almost constant
+in struct vdso_pcpu_data, so cache line aligned property is not
+necessary, and it will use more memory.
+
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ arch/loongarch/include/asm/processor.h |  2 --
+ arch/loongarch/include/asm/vdso/vdso.h |  2 +-
+ arch/loongarch/kernel/process.c        |  4 ---
+ arch/loongarch/kernel/vdso.c           | 44 +++++++++++++++++++++-----
+ 4 files changed, 37 insertions(+), 15 deletions(-)
+
+diff --git a/arch/loongarch/include/asm/processor.h b/arch/loongarch/include/asm/processor.h
+index c3bc44b5f5b3..5870b2785968 100644
+--- a/arch/loongarch/include/asm/processor.h
++++ b/arch/loongarch/include/asm/processor.h
+@@ -43,8 +43,6 @@
+ 
+ #endif
+ 
+-#define VDSO_RANDOMIZE_SIZE	(TASK_IS_32BIT_ADDR ? SZ_1M : SZ_64M)
+-
+ unsigned long stack_top(void);
+ #define STACK_TOP stack_top()
+ 
+diff --git a/arch/loongarch/include/asm/vdso/vdso.h b/arch/loongarch/include/asm/vdso/vdso.h
+index 5a12309d9fb5..d57de1887bb2 100644
+--- a/arch/loongarch/include/asm/vdso/vdso.h
++++ b/arch/loongarch/include/asm/vdso/vdso.h
+@@ -12,7 +12,7 @@
+ 
+ struct vdso_pcpu_data {
+ 	u32 node;
+-} ____cacheline_aligned_in_smp;
++};
+ 
+ struct loongarch_vdso_data {
+ 	struct vdso_pcpu_data pdata[NR_CPUS];
+diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
+index 767d94cce0de..059e52d59297 100644
+--- a/arch/loongarch/kernel/process.c
++++ b/arch/loongarch/kernel/process.c
+@@ -296,10 +296,6 @@ unsigned long stack_top(void)
+ 	top -= PAGE_ALIGN(current->thread.vdso->size);
+ 	top -= VVAR_SIZE;
+ 
+-	/* Space to randomize the VDSO base */
+-	if (current->flags & PF_RANDOMIZE)
+-		top -= VDSO_RANDOMIZE_SIZE;
+-
+ 	return top;
+ }
+ 
+diff --git a/arch/loongarch/kernel/vdso.c b/arch/loongarch/kernel/vdso.c
+index 14941e4be66d..5cc27c12dce1 100644
+--- a/arch/loongarch/kernel/vdso.c
++++ b/arch/loongarch/kernel/vdso.c
+@@ -148,16 +148,44 @@ int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
+ }
+ #endif
+ 
+-static unsigned long vdso_base(void)
++/*
++ * Put the vdso above the (randomized) stack with another randomized
++ * offset.  This way there is no hole in the middle of address space.
++ * To save memory make sure it is still in the same PTE as the stack
++ * top.  This doesn't give that many random bits.
++ *
++ * Note that this algorithm is imperfect: the distribution of the vdso
++ * start address within a PMD is biased toward the end.
++ */
++static unsigned long vdso_addr(unsigned long start, unsigned int len)
+ {
+-	unsigned long base = STACK_TOP;
++	unsigned long addr, end;
++	unsigned long offset;
+ 
+-	if (current->flags & PF_RANDOMIZE) {
+-		base += get_random_u32_below(VDSO_RANDOMIZE_SIZE);
+-		base = PAGE_ALIGN(base);
+-	}
++	/*
++	 * Round up the start address.  It can start out unaligned as a result
++	 * of stack start randomization.
++	 */
++	start = PAGE_ALIGN(start);
+ 
+-	return base;
++	/* Round the lowest possible end address up to a PMD boundary. */
++	end = (start + len + PMD_SIZE - 1) & PMD_MASK;
++	if (end >= TASK_SIZE)
++		end = TASK_SIZE;
++	end -= len;
++
++	if (end > start) {
++		offset = get_random_u32_below((end - start) >> PAGE_SHIFT);
++		addr = start + (offset << PAGE_SHIFT);
++	} else
++		addr = start;
++
++	return addr;
++}
++
++static inline unsigned long vdso_base(unsigned int len)
++{
++	return vdso_addr(current->mm->start_stack, len);
+ }
+ 
+ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+@@ -177,7 +205,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 	 */
+ 	size = VVAR_SIZE + info->size;
+ 
+-	data_addr = get_unmapped_area(NULL, vdso_base(), size, 0, 0);
++	data_addr = get_unmapped_area(NULL, vdso_base(size), size, 0, 0);
+ 	if (IS_ERR_VALUE(data_addr)) {
+ 		ret = data_addr;
+ 		goto out;
+-- 
+2.39.3
+
