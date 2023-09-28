@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F2B7B1070
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C89C7B106B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjI1Bjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 21:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S229848AbjI1Bi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 21:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjI1Bjb (ORCPT
+        with ESMTP id S229437AbjI1Bi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 21:39:31 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D33E8B3;
-        Wed, 27 Sep 2023 18:39:29 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 28 Sep 2023 09:38:09
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Thu, 28 Sep 2023 09:38:09 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     linux@highpoint-tech.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: hptiop: Clean up errors in hptiop.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 21:38:57 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003E6AC;
+        Wed, 27 Sep 2023 18:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695865133;
+        bh=4W+f+ovUwsLwYCoWqlzJUOaeyo1Y7RbHKZd/nFecJsc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sHmfRKop1SLfuyaNmOCUBOr/Mug2foMiXa+vzAgnDhUN0pOmP4H13lamzM4dC5E9a
+         aYRrJ7pk0b1WLs+DosPpvcWAeuD9o0qNF1LxCbOqxgTfnQ7/QISrafJ5m4VadB+mLG
+         PxNa9DgYLNvbJHdUIEdlQCQ9s7HfxObz9bjU4pfwX4HFNr905qI0aIWoDt7wT1WhBh
+         ijyoJuCrWrCNw+HRSfJrNrpJUJ/Wu7T64WCpXDwCZCyG/EaoqHgfGfd3Jua48UbvRn
+         476pdDYYhMerxmbEQIfy2LlehWBzISBs/vdanNL06i4XFpPdU/oFhmDw0obN0yDBiT
+         Rbkj5PL/bGSiQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rwx306MN2z4xQg;
+        Thu, 28 Sep 2023 11:38:52 +1000 (AEST)
+Date:   Thu, 28 Sep 2023 11:38:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: linux-next: manual merge of the rdma tree with the rdma-fixes tree
+Message-ID: <20230928113851.5197a1ec@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <79a31286.896.18ad96fae37.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDXaD4B2RRlinW+AA--.579W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQAJB2T8PZMAAQALsz
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: multipart/signed; boundary="Sig_/=fDGhJ7S8ak69Dru.Q2TNgK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKRVJST1I6IGVsc2Ugc2hvdWxkIGZvbGxv
-dyBjbG9zZSBicmFjZSAnfScKRVJST1I6IHNwYWNlcyByZXF1aXJlZCBhcm91bmQgdGhhdCAnPycg
-KGN0eDpWeFcpCkVSUk9SOiBuZWVkIGNvbnNpc3RlbnQgc3BhY2luZyBhcm91bmQgJyYnIChjdHg6
-VnhXKQoKU2lnbmVkLW9mZi1ieTogR3VvSHVhIENoZW5nIDxjaGVuZ3VvaHVhQGphcmkuY24+Ci0t
-LQogZHJpdmVycy9zY3NpL2hwdGlvcC5jIHwgMTkgKysrKysrKystLS0tLS0tLS0tLQogMSBmaWxl
-IGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9zY3NpL2hwdGlvcC5jIGIvZHJpdmVycy9zY3NpL2hwdGlvcC5jCmluZGV4IGY1MzM0
-Y2NiZjJjYS4uNTdmMjhmNWI1ZGExIDEwMDY0NAotLS0gYS9kcml2ZXJzL3Njc2kvaHB0aW9wLmMK
-KysrIGIvZHJpdmVycy9zY3NpL2hwdGlvcC5jCkBAIC05Myw3ICs5Myw3IEBAIHN0YXRpYyB2b2lk
-IGhwdGlvcF9kcmFpbl9vdXRib3VuZF9xdWV1ZV9pdGwoc3RydWN0IGhwdGlvcF9oYmEgKmhiYSkK
-IAkJaWYgKHJlcSAmIElPUE1VX1FVRVVFX01BU0tfSE9TVF9CSVRTKQogCQkJaHB0aW9wX3JlcXVl
-c3RfY2FsbGJhY2tfaXRsKGhiYSwgcmVxKTsKIAkJZWxzZSB7Ci0JCQlzdHJ1Y3QgaHB0X2lvcF9y
-ZXF1ZXN0X2hlYWRlciBfX2lvbWVtICogcDsKKwkJCXN0cnVjdCBocHRfaW9wX3JlcXVlc3RfaGVh
-ZGVyIF9faW9tZW0gKnA7CiAKIAkJCXAgPSAoc3RydWN0IGhwdF9pb3BfcmVxdWVzdF9oZWFkZXIg
-X19pb21lbSAqKQogCQkJCSgoY2hhciBfX2lvbWVtICopaGJhLT51Lml0bC5pb3AgKyByZXEpOwpA
-QCAtMTAzLDggKzEwMyw3IEBAIHN0YXRpYyB2b2lkIGhwdGlvcF9kcmFpbl9vdXRib3VuZF9xdWV1
-ZV9pdGwoc3RydWN0IGhwdGlvcF9oYmEgKmhiYSkKIAkJCQkJaHB0aW9wX3JlcXVlc3RfY2FsbGJh
-Y2tfaXRsKGhiYSwgcmVxKTsKIAkJCQllbHNlCiAJCQkJCXdyaXRlbCgxLCAmcC0+Y29udGV4dCk7
-Ci0JCQl9Ci0JCQllbHNlCisJCQl9IGVsc2UKIAkJCQlocHRpb3BfcmVxdWVzdF9jYWxsYmFja19p
-dGwoaGJhLCByZXEpOwogCQl9CiAJfQpAQCAtMzk0LDcgKzM5Myw3IEBAIHN0YXRpYyBpbnQgaW9w
-X3NlbmRfc3luY19tc2coc3RydWN0IGhwdGlvcF9oYmEgKmhiYSwgdTMyIG1zZywgdTMyIG1pbGxp
-c2VjKQogCX0KIAogCWhiYS0+b3BzLT5lbmFibGVfaW50cihoYmEpOwotCXJldHVybiBoYmEtPm1z
-Z19kb25lPyAwIDogLTE7CisJcmV0dXJuIGhiYS0+bXNnX2RvbmUgPyAwIDogLTE7CiB9CiAKIHN0
-YXRpYyBpbnQgaW9wX2dldF9jb25maWdfaXRsKHN0cnVjdCBocHRpb3BfaGJhICpoYmEsCkBAIC02
-ODgsOCArNjg3LDcgQEAgc3RhdGljIHZvaWQgaHB0aW9wX21lc3NhZ2VfY2FsbGJhY2soc3RydWN0
-IGhwdGlvcF9oYmEgKmhiYSwgdTMyIG1zZykKIAlpZiAobXNnID09IElPUE1VX0lOQk9VTkRfTVNH
-MF9SRVNFVCkgewogCQlhdG9taWNfc2V0KCZoYmEtPnJlc2V0dGluZywgMCk7CiAJCXdha2VfdXAo
-JmhiYS0+cmVzZXRfd3EpOwotCX0KLQllbHNlIGlmIChtc2cgPD0gSU9QTVVfSU5CT1VORF9NU0cw
-X01BWCkKKwl9IGVsc2UgaWYgKG1zZyA8PSBJT1BNVV9JTkJPVU5EX01TRzBfTUFYKQogCQloYmEt
-Pm1zZ19kb25lID0gMTsKIH0KIApAQCAtODE3LDEzICs4MTUsMTIgQEAgc3RhdGljIHZvaWQgaHB0
-aW9wX2lvcF9yZXF1ZXN0X2NhbGxiYWNrX2l0bChzdHJ1Y3QgaHB0aW9wX2hiYSAqaGJhLCB1MzIg
-dGFnKQogCiAJCWlmIChhcmctPm91dGJ1Zl9zaXplKQogCQkJbWVtY3B5X2Zyb21pbyhhcmctPm91
-dGJ1ZiwKLQkJCQkmcC0+YnVmWyhyZWFkbCgmcC0+aW5idWZfc2l6ZSkgKyAzKSYgfjNdLAorCQkJ
-CSZwLT5idWZbKHJlYWRsKCZwLT5pbmJ1Zl9zaXplKSArIDMpICYgfjNdLAogCQkJCWFyZy0+b3V0
-YnVmX3NpemUpOwogCiAJCWlmIChhcmctPmJ5dGVzX3JldHVybmVkKQogCQkJKmFyZy0+Ynl0ZXNf
-cmV0dXJuZWQgPSBhcmctPm91dGJ1Zl9zaXplOwotCX0KLQllbHNlCisJfSBlbHNlCiAJCWFyZy0+
-cmVzdWx0ID0gSFBUX0lPQ1RMX1JFU1VMVF9GQUlMRUQ7CiAKIAlhcmctPmRvbmUoYXJnKTsKQEAg
-LTEwOTAsMTIgKzEwODcsMTIgQEAgc3RhdGljIGludCBocHRpb3BfcmVzZXRfaGJhKHN0cnVjdCBo
-cHRpb3BfaGJhICpoYmEpCiAKIHN0YXRpYyBpbnQgaHB0aW9wX3Jlc2V0KHN0cnVjdCBzY3NpX2Nt
-bmQgKnNjcCkKIHsKLQlzdHJ1Y3QgaHB0aW9wX2hiYSAqIGhiYSA9IChzdHJ1Y3QgaHB0aW9wX2hi
-YSAqKXNjcC0+ZGV2aWNlLT5ob3N0LT5ob3N0ZGF0YTsKKwlzdHJ1Y3QgaHB0aW9wX2hiYSAqaGJh
-ID0gKHN0cnVjdCBocHRpb3BfaGJhICopc2NwLT5kZXZpY2UtPmhvc3QtPmhvc3RkYXRhOwogCiAJ
-cHJpbnRrKEtFUk5fV0FSTklORyAiaHB0aW9wX3Jlc2V0KCVkLyVkLyVkKVxuIiwKIAkgICAgICAg
-c2NwLT5kZXZpY2UtPmhvc3QtPmhvc3Rfbm8sIC0xLCAtMSk7CiAKLQlyZXR1cm4gaHB0aW9wX3Jl
-c2V0X2hiYShoYmEpPyBGQUlMRUQgOiBTVUNDRVNTOworCXJldHVybiBocHRpb3BfcmVzZXRfaGJh
-KGhiYSkgPyBGQUlMRUQgOiBTVUNDRVNTOwogfQogCiBzdGF0aWMgaW50IGhwdGlvcF9hZGp1c3Rf
-ZGlza19xdWV1ZV9kZXB0aChzdHJ1Y3Qgc2NzaV9kZXZpY2UgKnNkZXYsCi0tIAoyLjE3LjEK
+--Sig_/=fDGhJ7S8ak69Dru.Q2TNgK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the rdma tree got a conflict in:
+
+  drivers/infiniband/hw/mlx5/mr.c
+
+between commit:
+
+  374012b00457 ("RDMA/mlx5: Fix mkey cache possible deadlock on cleanup")
+
+from the rdma-fixes tree and commit:
+
+  57e7071683ef ("RDMA/mlx5: Implement mkeys management via LIFO queue")
+
+from the rdma tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/infiniband/hw/mlx5/mr.c
+index 433f96459246,b0fa2d644973..000000000000
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@@ -1025,21 -998,15 +999,21 @@@ void mlx5_mkey_cache_cleanup(struct mlx
+  	if (!dev->cache.wq)
+  		return;
+ =20
+ -	cancel_delayed_work_sync(&dev->cache.remove_ent_dwork);
+  	mutex_lock(&dev->cache.rb_lock);
+ +	dev->cache.disable =3D true;
+  	for (node =3D rb_first(root); node; node =3D rb_next(node)) {
+  		ent =3D rb_entry(node, struct mlx5_cache_ent, node);
+- 		xa_lock_irq(&ent->mkeys);
++ 		spin_lock_irq(&ent->mkeys_queue.lock);
+  		ent->disabled =3D true;
+- 		xa_unlock_irq(&ent->mkeys);
++ 		spin_unlock_irq(&ent->mkeys_queue.lock);
+ -		cancel_delayed_work_sync(&ent->dwork);
+  	}
+ +	mutex_unlock(&dev->cache.rb_lock);
+ +
+ +	/*
+ +	 * After all entries are disabled and will not reschedule on WQ,
+ +	 * flush it and all async commands.
+ +	 */
+ +	flush_workqueue(dev->cache.wq);
+ =20
+  	mlx5_mkey_cache_debugfs_cleanup(dev);
+  	mlx5_cmd_cleanup_async_ctx(&dev->async_ctx);
+
+--Sig_/=fDGhJ7S8ak69Dru.Q2TNgK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUU2SsACgkQAVBC80lX
+0GxlKwf9GOM0/j7jLDM6oRP7xmR/7OTwq3Wqe0DCfc7my605pzw8TcAzxKmWECeG
+3GQJ4+1DZ+ynWMONgTwLdJFdPadtlGzKkZK1augN6YunUtgddawRUUXNy/JTW70z
+LwUTGrPbsLZGJC33UjehR4OymRspKENPisxT6klEgZ+ZWdZSNO7NTqCm3uhx5uiv
+0pzVof94F44jxorl8ED0K8T3Gmui9y16vWQHDJo1/JiX+jpKl7WQERe7s+mMH89I
+kaTQz/gR8Vmr2GfGCMFDhFdVdWK2ZtbZSkFYRyDCFQT2gUghzGAT2lpgEr+M7qTb
+UKO+WbEwo1YkiuAYqrp/3Wc//OAWVA==
+=7EBH
+-----END PGP SIGNATURE-----
+
+--Sig_/=fDGhJ7S8ak69Dru.Q2TNgK--
