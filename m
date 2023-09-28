@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5867B1F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5E37B1F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbjI1OJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
+        id S232594AbjI1OKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbjI1OJz (ORCPT
+        with ESMTP id S232558AbjI1OK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:09:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2A011F;
-        Thu, 28 Sep 2023 07:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695910194; x=1727446194;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=rWPUuNNdKXgrAPoDqjutOvUZaBIRMfIRRc8S+g1NzQo=;
-  b=GFONEdUMERB3qHISMNyvF3/crvK2eLR+bKH6XHzoOQiTkkhiHwBjgWVb
-   dUgBtslOjGSWhoc/A9/jkZHpQlc7//KeJUlESxr2E1t+0k5quTVW+2r1x
-   C0CQDI/KdBv9KoN7XaIHuRcKdNhRfI6GDuNeLgvpaj8ZUHYeCQDNtd5M8
-   c24VXqwZj0PN9mmQPcFsweKqx+rKVXP4Wq9mGlhmPKRNYMHeFBfcrn4hQ
-   EOCvKvQtTruPf/yzZ2YXloEMlWCd6p/HOgL5BMqm/ZSj3u7YF7IJVtPDs
-   AoOitApO8NbCVAAXxzVszfizsfbHRkCl11tsX7tzPcznwHWHjJZVJIsGN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="468356756"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="468356756"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 07:09:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="815243277"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="815243277"
-Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 07:09:52 -0700
-Message-ID: <b22a3863-cf11-14b7-23f3-4b8971f44580@intel.com>
-Date:   Thu, 28 Sep 2023 07:09:52 -0700
+        Thu, 28 Sep 2023 10:10:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32FB19E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:10:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 52164C433C9;
+        Thu, 28 Sep 2023 14:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695910223;
+        bh=ot+W6g9nu+I+9KjrXdlfhebhpZ6XR/Na3+FNvDuEvVM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GUnut2cGRtpD+l6MY8hzKgOhML5DluE8DR4HQh6jQLIOLidkEACFZAszNDPIPoSdq
+         NPeV+n8vcdqYY+H8hRu7Cssgbw37KiG/zMhCf3fZyXHwztXsRmDydZWvxcwQHehWi5
+         MeQe2Crr5IrgVicRRJn3KN+o7ah5RiPI+ZDH31BqhiUos9dnkt0mimeMtgnaYRlYl6
+         6ejfdKbv2RX2Kpcc6F1iw9TKVeMlOCQMVE/tFXdvOu65iAQ9Y+aK8/Lzo7aEtOcMjL
+         sHnZt34gIxd34xexgDuJ650jvs93LmewAtT+ohhNXEUVzIjJVR/Q1GIziIsTGRsdXM
+         aHp0jFKABFAOA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 358D6E29B00;
+        Thu, 28 Sep 2023 14:10:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/5] KVM: x86: Constrain guest-supported xfeatures only at
- KVM_GET_XSAVE{2}
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Tyler Stachecki <stachecki.tyler@gmail.com>,
-        Leonardo Bras <leobras@redhat.com>
-References: <20230928001956.924301-1-seanjc@google.com>
- <20230928001956.924301-3-seanjc@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230928001956.924301-3-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] MAINTAINERS: Add an obsolete entry for LL TEMAC
+ driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169591022321.7456.1928532972585403523.git-patchwork-notify@kernel.org>
+Date:   Thu, 28 Sep 2023 14:10:23 +0000
+References: <20230920115047.31345-1-harini.katakam@amd.com>
+In-Reply-To: <20230920115047.31345-1-harini.katakam@amd.com>
+To:     Katakam@ci.codeaurora.org, Harini <harini.katakam@amd.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, esben@geanix.com, jsc@umbraculum.org,
+        christophe.jaillet@wanadoo.fr, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        harinikatakamlinux@gmail.com, michal.simek@amd.com,
+        radhey.shyam.pandey@amd.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23 17:19, Sean Christopherson wrote:
-> Mask off xfeatures that aren't exposed to the guest only when saving guest
-> state via KVM_GET_XSAVE{2} instead of modifying user_xfeatures directly.
-> Preserving the maximal set of xfeatures in user_xfeatures restores KVM's
-> ABI for KVM_SET_XSAVE, which prior to commit ad856280ddea ("x86/kvm/fpu:
-> Limit guest user_xfeatures to supported bits of XCR0") allowed userspace
-> to load xfeatures that are supported by the host, irrespective of what
-> xfeatures are exposed to the guest.
-> 
-> There is no known use case where userspace *intentionally* loads xfeatures
-> that aren't exposed to the guest, but the bug fixed by commit ad856280ddea
-> was specifically that KVM_GET_SAVE{2} would save xfeatures that weren't
-> exposed to the guest, e.g. would lead to userspace unintentionally loading
-> guest-unsupported xfeatures when live migrating a VM.
-> 
-> Restricting KVM_SET_XSAVE to guest-supported xfeatures is especially
-> problematic for QEMU-based setups, as QEMU has a bug where instead of
-> terminating the VM if KVM_SET_XSAVE fails, QEMU instead simply stops
-> loading guest state, i.e. resumes the guest after live migration with
-> incomplete guest state, and ultimately results in guest data corruption.
-> 
-> Note, letting userspace restore all host-supported xfeatures does not fix
-> setups where a VM is migrated from a host *without* commit ad856280ddea,
-> to a target with a subset of host-supported xfeatures.  However there is
-> no way to safely address that scenario, e.g. KVM could silently drop the
-> unsupported features, but that would be a clear violation of KVM's ABI and
-> so would require userspace to opt-in, at which point userspace could
-> simply be updated to sanitize the to-be-loaded XSAVE state.
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Hello:
 
-It's surprising (and nice) that this takes eliminates the !guest check
-in fpstate_realloc().
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Wed, 20 Sep 2023 17:20:47 +0530 you wrote:
+> LL TEMAC IP is no longer supported. Hence add an entry marking the
+> driver as obsolete.
+> 
+> Signed-off-by: Harini Katakam <harini.katakam@amd.com>
+> ---
+> This is an old driver with no bindings doc and hence the maintainers
+> entry does not contain a link to documentation.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] MAINTAINERS: Add an obsolete entry for LL TEMAC driver
+    https://git.kernel.org/netdev/net-next/c/19f5eef8bf73
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
