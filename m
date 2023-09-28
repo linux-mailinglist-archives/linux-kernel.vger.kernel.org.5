@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E33B57B26E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6098D7B26E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbjI1UyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S232079AbjI1U4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjI1UyQ (ORCPT
+        with ESMTP id S229478AbjI1U4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:54:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE3B19F;
-        Thu, 28 Sep 2023 13:54:14 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695934452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A3j/9wejDQ+NDD78GYTcXX46SNesqLsHCj3tL/KaE0E=;
-        b=EYTkJuHdjoZvurePgf/yWXyZ5oPJpCiNFgdwobRZRwPPDC9jJvS4JUEu5GPc/r9WVD6ayB
-        j9kps0A221SwDIAw4jQqym2t+toR7V42FeNbUsU275ZGkZiSzR1Ph5LtoX/dH4F8SZHsgn
-        mUFkrGjar4DUxJvMaMzQ5ENgWkITP5KJ83C4nSRuiLInP6v0adyn1oI7rX76kSytJm6bw3
-        dZZf5c2/+mttVTw1IhGBnJK29WEZhpGOjf2SIhvVdqZF2CNk/+FaDohilJWZY67rcki0VH
-        PpODGR1zxEl9iCZ7ao0iZY7xrP6ThQmq3d/a6IL3/xN9Spn3PLJ8+Vta+npwLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695934452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A3j/9wejDQ+NDD78GYTcXX46SNesqLsHCj3tL/KaE0E=;
-        b=HqXj5SW6T6+YgMfTewJs8NsuI03Yde52sXYrIUGj2g+KaVQIGqZqTQ3R7wVLpOsTdJepHy
-        Ge7EkPDHdCvgSwCg==
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>, David.Laight@ACULAB.COM,
-        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?utf-8?Q?An?= =?utf-8?Q?dr=C3=A9?= Almeida 
-        <andrealmeid@igalia.com>, libc-alpha@sourceware.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>, longman@redhat.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-In-Reply-To: <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
- <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-Date:   Thu, 28 Sep 2023 22:54:12 +0200
-Message-ID: <87o7hmdnnv.ffs@tglx>
+        Thu, 28 Sep 2023 16:56:02 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2198D180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:56:01 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b275afb6abso2047835266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695934559; x=1696539359; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qzrMT21Lus3/G6BZGlxmK1SYMsq60jCjSw2jYNMrSgk=;
+        b=KZ0SlWAHQOn5p0ZCCacFbaETgsOIvsBqpA/FwbiRxp64f+ozocT7sBSn13VJJFUc0B
+         As+fmnNspNmH1ClmKv0/idP1cuqrRtqmcArE3j31/k9e23wUXcy3V3hosvqfJsrA3MVf
+         k4BFuUlb+X/sA5pVaSmQPiqy6MIsivyK5GS5KhO1MPKcAbWMFbbRvA7gdRD/0X1H+9fi
+         gn8t5l1/IkDxQehh05fQ15jtbeDlAFfLy1ByvFiyYTBGBvmuQMjtcAf1uqkWigjrEDR8
+         9DggogP/aCQhu7aB8yv/E5LStdVy/kJvNK9loQ1vCSNxkYq+K6ul/KkkcOEZix5sYfw+
+         RhEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695934559; x=1696539359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qzrMT21Lus3/G6BZGlxmK1SYMsq60jCjSw2jYNMrSgk=;
+        b=D9FHQNVczR0T6vkOdavT9n9cgxgloZ//KxSp75HyXqYKNJOppiKmybPy2azQGGlyDz
+         WVB0+UhWTgGlCszQDKUr3cKMbA5TTF9ikCQNGXZu6AnBIPehFQ6oYbwXQ8qCM2K7nMHI
+         B29V1wRlFM/pipA+l/2gtiD3onRMS0L2f8Kghjajc0fxPMA+3G/7vpuNdZyj96dCUzJG
+         YqvfdfxAOYynWMkJ+w0xnhNrcIkz0va2ITG7pFbzx2slCjJCs2AsdFJLoyl69cD9F9a2
+         7fDoroBgx5ClMq0sLYl9ICnQvkWewdjBG8xCepmTUojzDAX/B0cW87jugVC5EdM+jhPq
+         4FTA==
+X-Gm-Message-State: AOJu0YxmrpKK31m4cP67dLr0qW7E+Zg0BtNwh2c4YwD2E+qG8/TQFrRV
+        ehQFqMB8xBcQYla0VkkOtQk=
+X-Google-Smtp-Source: AGHT+IEr4Df+wMio8A44Vuxyl++s1bL5qFIQ/Sc/hyRv6tvIhKBOvhXB5yh8jy7cr/bFbng5qrYhYA==
+X-Received: by 2002:a17:907:7b8f:b0:9ae:5a56:be32 with SMTP id ne15-20020a1709077b8f00b009ae5a56be32mr2427241ejc.38.1695934559266;
+        Thu, 28 Sep 2023 13:55:59 -0700 (PDT)
+Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
+        by smtp.gmail.com with ESMTPSA id qq23-20020a17090720d700b00993664a9987sm11324311ejb.103.2023.09.28.13.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 13:55:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 28 Sep 2023 22:55:56 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 2/2] x86/cpu/intel: Clean-up TME code
+Message-ID: <ZRXoXLV69TQ7Wvkr@gmail.com>
+References: <87h6nhu7k6.fsf@jcompost-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h6nhu7k6.fsf@jcompost-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 29 2023 at 15:14, Mathieu Desnoyers wrote:
-> +/*
-> + * rseq_sched_state should be aligned on the cache line size.
-> + */
-> +struct rseq_sched_state {
-> +	/*
-> +	 * Version of this structure. Populated by the kernel, read by
-> +	 * user-space.
-> +	 */
-> +	__u32 version;
-> +	/*
-> +	 * The state is updated by the kernel. Read by user-space with
-> +	 * single-copy atomicity semantics. This field can be read by any
-> +	 * userspace thread. Aligned on 32-bit. Contains a bitmask of enum
-> +	 * rseq_sched_state_flags. This field is provided as a hint by the
-> +	 * scheduler, and requires that the page holding this state is
-> +	 * faulted-in for the state update to be performed by the scheduler.
-> +	 */
-> +	__u32 state;
-> +	/*
-> +	 * Thread ID associated with the thread registering this structure.
-> +	 * Initialized by user-space before registration.
-> +	 */
-> +	__u32 tid;
-> +};
-> +
->  /*
->   * struct rseq is aligned on 4 * 8 bytes to ensure it is always
->   * contained within a single cache-line.
-> @@ -148,6 +180,15 @@ struct rseq {
->  	 */
->  	__u32 mm_cid;
->  
-> +	__u32 padding1;
-> +
-> +	/*
-> +	 * Restartable sequences sched_state_ptr field. Initialized by
-> +	 * userspace to the address at which the struct rseq_sched_state is
-> +	 * located. Read by the kernel on rseq registration.
-> +	 */
-> +	__u64 sched_state_ptr;
-> +
 
-Why is this a separate entity instead of being simply embedded into
-struct rseq?
+* Compostella, Jeremy <jeremy.compostella@intel.com> wrote:
 
-Neither the code comment nor the changelog tells anything about that.
+> -/* Values for mktme_status (SW only construct) */
+> -#define MKTME_ENABLED			0
+> -#define MKTME_DISABLED			1
+> -#define MKTME_UNINITIALIZED		2
+> -static int mktme_status = MKTME_UNINITIALIZED;
+> -
+>  static void detect_tme(struct cpuinfo_x86 *c)
+>  {
+>  	u64 tme_activate, tme_policy, tme_crypto_algs;
+>  	int keyid_bits = 0, nr_keyids = 0;
+>  	static u64 tme_activate_cpu0 = 0;
+> +	static enum {
+> +		MKTME_ENABLED,
+> +		MKTME_DISABLED,
+> +		MKTME_UNINITIALIZED
+> +	} mktme_status = MKTME_UNINITIALIZED;
 
-If your intention was to provide a solution for process shared futexes
-then you completely failed to understand how process shared futexes
-work. If not, then please explain why you need a pointer and the
-associated hackery to deal with it.
+Please don't move the new enum inside the function, even if
+that's the only place it's used.
+
+We almost always keep constant definitions outside function scope.
+
+We also try to avoid static variables inside functions.
 
 Thanks,
 
-        tglx
-
-
+	Ingo
