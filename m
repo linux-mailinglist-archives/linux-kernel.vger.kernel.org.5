@@ -2,54 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB027B0FBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 01:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6218D7B0FC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjI0X6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 19:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        id S229595AbjI1ADP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI0X6d (ORCPT
+        with ESMTP id S229469AbjI1ADN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:58:33 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A2BF5;
-        Wed, 27 Sep 2023 16:58:32 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qleQB-0004AP-2S;
-        Wed, 27 Sep 2023 23:58:23 +0000
-Date:   Thu, 28 Sep 2023 00:56:04 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 4/4] thermal/drivers/mediatek/lvts_thermal: add mt7988
- support
-Message-ID: <ZRTBFJPL3NwWpMSP@pidgin.makrotopia.org>
-References: <20230922055020.6436-1-linux@fw-web.de>
- <20230922055020.6436-5-linux@fw-web.de>
+        Wed, 27 Sep 2023 20:03:13 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34CCF9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:03:09 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id B7C1E320091D;
+        Wed, 27 Sep 2023 20:03:08 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 27 Sep 2023 20:03:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1695859388; x=1695945788; bh=cIxox338FB
+        bGAustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=Zo2LDJui9X8/wmnLWnsopqD1Q+
+        tAITJoPihxtC5ZBSGfEV5joX8BHkHSDveMe9fc3JdhIDawAMAi7m8TAiFxGkvxPX
+        FZHlMnl+CGzgBtsgcO5oV3sWJmCyu5Hc9xQisnWovSWD483PKNm9RpWxVZX5QoQf
+        j5sABIqJWBovCCx/I5NGC5Py8rh5wxKw+fzQorKHHG1middt8FUtd2IPl4nhcmya
+        IC5Fddfr4+56Ky0y3EpSXv1mtADEVHAV0xLc0RAE4qQmnx7BLOT2MyfcwBFho9c7
+        tE/fpYUbtGrwNGJH+ZUJSim61/C36w4dYIixDtLNQhOyyvXUQmWcp4a3GzZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695859388; x=1695945788; bh=cIxox338FBbGA
+        ustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=lwAkvMCffDQHejs0AhnHkvo3QIaag
+        CE8YeagR8BPF9pK75DDgBU88Q/S6Ze0k84MTE8w90JhpBwPhVLtdwx8DVpGUz8pq
+        BSmfNOViKQ9cMQLLFZq8Mw5yig3xVqGa90eQ/kcyMRuiVvjofKScPxQqqkqslJ/d
+        PT6W1piaQf0Hc01BZMvJlh1YuFDx3EJHRBWpEZ0+pOc0fh4xKI2ETMmcy5OJ6EIt
+        k7Rs5VArfUy3MB64pTDE3Pjfv17H9PqVEbcjWNRP2Bxqbhi7k/8ag9ZCHW5ssatR
+        ZfGIHIPcup/3zD/ud8CiWfsYbze8cB49uHoOKqI4HnZHu07wqORWy8E9w==
+X-ME-Sender: <xms:vMIUZb9xV3olyoDa6JXm7bRrdvTB_k6Ot24HLLB7ezg9iEY8EUt0_Q>
+    <xme:vMIUZXskd20-Qtbax_XlTXq9p-n6PvxSo-Xh6cUsYPZhWOX1qazG5CPSAsrIgElBp
+    BMlgQQwjv9IsZekIDE>
+X-ME-Received: <xmr:vMIUZZBiRekGQ1CmMKpyNr9H8EjS16qD9Jlzlmp1yJ3e-t8a_ssbivc3YSlPag3LgGKCzf4BRmTIvNa4relqfXHAXnmBANy94da0JMPjXMM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddvlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
+    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
+    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
+    hmrghilhdrohhrgh
+X-ME-Proxy: <xmx:vMIUZXfDu6p3UtW9eO6R02dyujcixgV3GW05goRaI04ZgW27QGUS0g>
+    <xmx:vMIUZQPohgPfBUaSCYYDS7poLHMVfNBTRuWeNd0T8bL1zHdHvgdwUg>
+    <xmx:vMIUZZkXjrIcQxaupIiR3ddHKN2SjHBZByxIEkMjXYLd5QfrzbAQ6A>
+    <xmx:vMIUZZbSt2CIALL9FNIFtfPyArRtWTTtg9Tj-mJpGx6L8Igwdjly6g>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Sep 2023 20:03:07 -0400 (EDT)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH v4] staging: rtl8192e: renamed (3) variables
+Date:   Wed, 27 Sep 2023 20:02:25 -0400
+Message-ID: <20230928000225.27912-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230922055020.6436-5-linux@fw-web.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,107 +81,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 07:50:20AM +0200, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Add Support for Mediatek Filogic 880/MT7988 LVTS.
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+This patch renames the vaiable in staging/rtl8192e
+HTUpdateDefaultSetting -> ht_update_default_setting
+in (3) files of rtl8192e:
+1) rtl819x_HTProc.c
+2) rtllib.h
+3) rtllib_module.c
 
-Tested-by: Daniel Golle <daniel@makrotopia.org>
+Linux Kernel Coding Style "cleanup", no change in runtime,
+staging/rtl8192e builds before and after.
 
-> ---
-> v3:
-> - drop comments
-> 
-> v2:
-> - use 105°C for hw shutdown
-> - move constants to binding file
-> - change coeff.a to temp_factor and coeff.b to temp_offset
-> - change to lvts to lvts-ap (Application Processor)
-> - drop comments about efuse offsets
-> - change comment of mt8195 to be similar to mt7988
-> ---
->  drivers/thermal/mediatek/lvts_thermal.c | 38 +++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-> index c2669f405a94..23b4e0b3195c 100644
-> --- a/drivers/thermal/mediatek/lvts_thermal.c
-> +++ b/drivers/thermal/mediatek/lvts_thermal.c
-> @@ -82,6 +82,8 @@
->  #define LVTS_GOLDEN_TEMP_DEFAULT	50
->  #define LVTS_COEFF_A_MT8195			-250460
->  #define LVTS_COEFF_B_MT8195			250460
-> +#define LVTS_COEFF_A_MT7988			-204650
-> +#define LVTS_COEFF_B_MT7988			204650
->  
->  #define LVTS_MSR_IMMEDIATE_MODE		0
->  #define LVTS_MSR_FILTERED_MODE		1
-> @@ -89,6 +91,7 @@
->  #define LVTS_MSR_READ_TIMEOUT_US	400
->  #define LVTS_MSR_READ_WAIT_US		(LVTS_MSR_READ_TIMEOUT_US / 2)
->  
-> +#define LVTS_HW_SHUTDOWN_MT7988		105000
->  #define LVTS_HW_SHUTDOWN_MT8195		105000
->  
->  #define LVTS_MINIMUM_THRESHOLD		20000
-> @@ -1269,6 +1272,33 @@ static int lvts_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +static const struct lvts_ctrl_data mt7988_lvts_ap_data_ctrl[] = {
-> +	{
-> +		.cal_offset = { 0x00, 0x04, 0x08, 0x0c },
-> +		.lvts_sensor = {
-> +			{ .dt_id = MT7988_CPU_0 },
-> +			{ .dt_id = MT7988_CPU_1 },
-> +			{ .dt_id = MT7988_ETH2P5G_0 },
-> +			{ .dt_id = MT7988_ETH2P5G_1 }
-> +		},
-> +		.num_lvts_sensor = 4,
-> +		.offset = 0x0,
-> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
-> +	},
-> +	{
-> +		.cal_offset = { 0x14, 0x18, 0x1c, 0x20 },
-> +		.lvts_sensor = {
-> +			{ .dt_id = MT7988_TOPS_0},
-> +			{ .dt_id = MT7988_TOPS_1},
-> +			{ .dt_id = MT7988_ETHWARP_0},
-> +			{ .dt_id = MT7988_ETHWARP_1}
-> +		},
-> +		.num_lvts_sensor = 4,
-> +		.offset = 0x100,
-> +		.hw_tshut_temp = LVTS_HW_SHUTDOWN_MT7988,
-> +	}
-> +};
-> +
->  static const struct lvts_ctrl_data mt8195_lvts_mcu_data_ctrl[] = {
->  	{
->  		.cal_offset = { 0x04, 0x07 },
-> @@ -1348,6 +1378,13 @@ static const struct lvts_ctrl_data mt8195_lvts_ap_data_ctrl[] = {
->  	}
->  };
->  
-> +static const struct lvts_data mt7988_lvts_ap_data = {
-> +	.lvts_ctrl	= mt7988_lvts_ap_data_ctrl,
-> +	.num_lvts_ctrl	= ARRAY_SIZE(mt7988_lvts_ap_data_ctrl),
-> +	.temp_factor	= LVTS_COEFF_A_MT7988,
-> +	.temp_offset	= LVTS_COEFF_B_MT7988,
-> +};
-> +
->  static const struct lvts_data mt8195_lvts_mcu_data = {
->  	.lvts_ctrl	= mt8195_lvts_mcu_data_ctrl,
->  	.num_lvts_ctrl	= ARRAY_SIZE(mt8195_lvts_mcu_data_ctrl),
-> @@ -1363,6 +1400,7 @@ static const struct lvts_data mt8195_lvts_ap_data = {
->  };
->  
->  static const struct of_device_id lvts_of_match[] = {
-> +	{ .compatible = "mediatek,mt7988-lvts-ap", .data = &mt7988_lvts_ap_data },
->  	{ .compatible = "mediatek,mt8195-lvts-mcu", .data = &mt8195_lvts_mcu_data },
->  	{ .compatible = "mediatek,mt8195-lvts-ap", .data = &mt8195_lvts_ap_data },
->  	{},
-> -- 
-> 2.34.1
-> 
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
+ drivers/staging/rtl8192e/rtllib.h         | 2 +-
+ drivers/staging/rtl8192e/rtllib_module.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index a7e356e90d0e..832f595d36c2 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -67,7 +67,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
+ 
+ static u8 LINKSYS_MARVELL_4400N[3] = {0x00, 0x14, 0xa4};
+ 
+-void HTUpdateDefaultSetting(struct rtllib_device *ieee)
++void ht_update_default_setting(struct rtllib_device *ieee)
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+ 
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index bdbd27e382b9..ec1eef7486a2 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1785,7 +1785,7 @@ int rtllib_wx_get_rts(struct rtllib_device *ieee, struct iw_request_info *info,
+ void HTSetConnectBwMode(struct rtllib_device *ieee,
+ 			enum ht_channel_width bandwidth,
+ 			enum ht_extchnl_offset Offset);
+-void HTUpdateDefaultSetting(struct rtllib_device *ieee);
++void ht_update_default_setting(struct rtllib_device *ieee);
+ void HTConstructCapabilityElement(struct rtllib_device *ieee,
+ 				  u8 *posHTCap, u8 *len,
+ 				  u8 isEncrypt, bool bAssoc);
+diff --git a/drivers/staging/rtl8192e/rtllib_module.c b/drivers/staging/rtl8192e/rtllib_module.c
+index abd6bfd4dfa3..859241af617c 100644
+--- a/drivers/staging/rtl8192e/rtllib_module.c
++++ b/drivers/staging/rtl8192e/rtllib_module.c
+@@ -126,7 +126,7 @@ struct net_device *alloc_rtllib(int sizeof_priv)
+ 	if (!ieee->ht_info)
+ 		goto free_softmac;
+ 
+-	HTUpdateDefaultSetting(ieee);
++	ht_update_default_setting(ieee);
+ 	HTInitializeHTInfo(ieee);
+ 	rtllib_ts_init(ieee);
+ 	for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
+-- 
+2.41.0
+
