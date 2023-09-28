@@ -2,135 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF9F7B1AF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FCD7B1AF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjI1LZm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 07:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
+        id S231883AbjI1L0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjI1LZZ (ORCPT
+        with ESMTP id S232566AbjI1L01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:25:25 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2D3359B
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:23:04 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-94-16gep9MhMWCHUX4uA_UWOw-1; Thu, 28 Sep 2023 12:22:56 +0100
-X-MC-Unique: 16gep9MhMWCHUX4uA_UWOw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 28 Sep
- 2023 12:22:55 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 28 Sep 2023 12:22:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, "Paul Turner" <pjt@google.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "Florian Weimer" <fw@deneb.enyo.de>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        "Peter Oskolkov" <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9_Almeida?= <andrealmeid@igalia.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        "longman@redhat.com" <longman@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: RE: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Topic: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Index: AQHZ8fgZ0Ykvpvbq8USYUjzds++7brAwFQDg
-Date:   Thu, 28 Sep 2023 11:22:55 +0000
-Message-ID: <ef39143ad24743008a896d2a09da1066@AcuMS.aculab.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
- <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
- <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-In-Reply-To: <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 28 Sep 2023 07:26:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44B01719;
+        Thu, 28 Sep 2023 04:24:51 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 37EE76607336;
+        Thu, 28 Sep 2023 12:24:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695900290;
+        bh=W/205ZyIxCbiuSv0AgUlUg37VTFSi/1Fl14e/tpAOfY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gl3T4VSuuRiG/ynLxxA6IrAqaxfor42cWWcEVcvxZ3Yzu8t8onfQBM9hCu3VUp7Yc
+         jWnPguYyzroEvrqkt/W2hgdw9lO+z7BqAeO4CPrxXIdo1y+oWrrpLPtyZI65Qs8yry
+         hWzhdGK0SItMY1QvUk74lxc/SNu3NtrLy2TLZtJHfpM64iqxMlAHP6J9I6dHfRsq3U
+         8+HnL51zlcvYJGjBatZLZK/QaQlwEeUMFNMQTTnThN1nOagYM2W92XNBL41yk835Kf
+         zmzAaGSLuFu+bh7lje0KVVpREbFQar+xPs0h6ClDtYTfWfzRaNujx5LHnlH7lM82jw
+         hn7kLc+HQ9yXQ==
+Message-ID: <64367e0c-6ec9-8dfa-ab9c-51b530247f74@collabora.com>
+Date:   Thu, 28 Sep 2023 13:24:46 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v7 5/5] drm/panfrost: Implement generic DRM object RSS
+ reporting function
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        tvrtko.ursulin@linux.intel.com, boris.brezillon@collabora.com
+References: <20230927213133.1651169-1-adrian.larumbe@collabora.com>
+ <20230927213133.1651169-6-adrian.larumbe@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230927213133.1651169-6-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 28 September 2023 11:39
+Il 27/09/23 23:29, Adrián Larumbe ha scritto:
+> BO's RSS is updated every time new pages are allocated on demand and mapped
+> for the object at GPU page fault's IRQ handler, but only for heap buffers.
+> The reason this is unnecessary for non-heap buffers is that they are mapped
+> onto the GPU's VA space and backed by physical memory in their entirety at
+> BO creation time.
 > 
-> On Mon, May 29, 2023 at 03:14:13PM -0400, Mathieu Desnoyers wrote:
-> > Expose the "on-cpu" state for each thread through struct rseq to allow
-> > adaptative mutexes to decide more accurately between busy-waiting and
-> > calling sys_futex() to release the CPU, based on the on-cpu state of the
-> > mutex owner.
-
-Are you trying to avoid spinning when the owning process is sleeping?
-Or trying to avoid the system call when it will find that the futex
-is no longer held?
-
-The latter is really horribly detremental.
-
-> >
-> > It is only provided as an optimization hint, because there is no
-> > guarantee that the page containing this field is in the page cache, and
-> > therefore the scheduler may very well fail to clear the on-cpu state on
-> > preemption. This is expected to be rare though, and is resolved as soon
-> > as the task returns to user-space.
-> >
-> > The goal is to improve use-cases where the duration of the critical
-> > sections for a given lock follows a multi-modal distribution, preventing
-> > statistical guesses from doing a good job at choosing between busy-wait
-> > and futex wait behavior.
+> This calculation is unnecessary for imported PRIME objects, since heap
+> buffers cannot be exported by our driver, and the actual BO RSS size is the
+> one reported in its attached dmabuf structure.
 > 
-> As always, are syscalls really *that* expensive? Why can't we busy wait
-> in the kernel instead?
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> ---
+>   drivers/gpu/drm/panfrost/panfrost_gem.c | 15 +++++++++++++++
+>   drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
+>   drivers/gpu/drm/panfrost/panfrost_mmu.c |  1 +
+>   3 files changed, 21 insertions(+)
 > 
-> I mean, sure, meltdown sucked, but most people should now be running
-> chips that are not affected by that particular horror show, no?
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> index 7d8f83d20539..4365434b48db 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -208,6 +208,20 @@ static enum drm_gem_object_status panfrost_gem_status(struct drm_gem_object *obj
+>   	return res;
+>   }
+>   
+> +static size_t panfrost_gem_rss(struct drm_gem_object *obj)
+> +{
+> +	struct panfrost_gem_object *bo = to_panfrost_bo(obj);
+> +
+> +	if (bo->is_heap) {
+> +		return bo->heap_rss_size;
+> +	} else if (bo->base.pages) {
+> +		WARN_ON(bo->heap_rss_size);
+> +		return bo->base.base.size;
+> +	} else {
+> +		return 0;
+> +	}
 
-IIRC 'page table separation' which is what makes system calls expensive
-is only a compile-time option. So is likely to be enabled on any 'distro'
-kernel.
-But a lot of other mitigations (eg RSB stuffing) are also pretty detrimental.
+I would do, instead...
 
-OTOH if you have a 'hot' userspace mutex you are going to lose whatever.
-All that needs to happen is for a ethernet interrupt to decide to discard
-completed transmits and refill the rx ring, and then for the softint code
-to free a load of stuff deferred by rcu while you've grabbed the mutex
-and no matter how short the user-space code path the mutex won't be
-released for absolutely ages.
+......
+	if (bo->is_heap) {
+		return bo->heap_rss_size;
+	} else if (bo->base.pages) {
+		WARN_ON(bo->heap_rss_size);
+		return bo->base.base.size;
+	}
 
-I had to change a load of code to use arrays and atomic increments
-to avoid delays acquiring mutex.
+	return 0;
+}
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Apart from that,
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
