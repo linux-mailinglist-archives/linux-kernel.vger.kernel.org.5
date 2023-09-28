@@ -2,333 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82597B1800
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F377B1803
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjI1KAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        id S230392AbjI1KD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjI1KAj (ORCPT
+        with ESMTP id S230291AbjI1KDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:00:39 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCA419C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:00:34 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 317C966072EC;
-        Thu, 28 Sep 2023 11:00:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695895232;
-        bh=IOt9+rGgYzpIVn9RzySH66oZB/5PUk0iIHrQnBjbmzY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JIGL0fdE9UtWJmr1uWbygEYpt3o+4EnArL7XJeSgBUPejcOFFJVirdQd3ldexweqv
-         cKVL2jiX7yT548vDFMPobCMjvKUesNR3YMQYj2bJYA6mBLkA9X6YxNiN79VESu1GOF
-         Qzu1aX0hGbtOyTFD2/tJMjMaVvrTLWnI1ZFsQMSsxCl451E18oLprQCebD42awVotj
-         Zm7i8Y9c7BzY/xZxfGAYfLQ4JSrSn3E6EFdaU1g9ASd0Y1D4e1nAYGFSlkK5ZWNNTT
-         zhhIL2rTmvg550GGqeOwKct3lt21DAZJNTyNadqTyotYS9YyDfW+gUseoV8VcOaMGf
-         IEpYGSWSK7F8g==
-Message-ID: <891fe60a-cee9-29ab-3214-848b1161a0a7@collabora.com>
-Date:   Thu, 28 Sep 2023 12:00:30 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v10 5/9] drm/mediatek: Add connector dynamic selection
- capability
+        Thu, 28 Sep 2023 06:03:24 -0400
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2045.outbound.protection.outlook.com [40.107.14.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D9122;
+        Thu, 28 Sep 2023 03:03:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oFcE/9CVypPqIYa1c2jcWzZxdz8k0C2g1WWN+K3JLWixrDTTDZLelJQ9gXbCoGla92qdGgESEJD4VND9nq+sNzZMGExKDJH25FmclohjxaPU5uqhC9KLBo8Kw58gfsqJpHgzwKcsm9VjGnTpZu561kv4tjXvKAgyB5GLCDIaqOkkLpk0cbTzPJFdppMgKErXnQ6UobMu4rhtFPg2g2MDgr+4xHe1P0H8PfUtItg6XBuhm3TMXyHE9rgsMkLaLwHxLJUhxJiJaZTMoHbZBbvzE/bfidXrU8NWfZmlnwwYn85BKG/jfUJr8Pd6FfbH4uxx4fLWOZ1ZLJdcqfgTpaYhHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UZjfZ/a9cqFS3LLi5VK+FhLGsscnJHxKITZKV8Lkk88=;
+ b=Ixg0QQUoEzaPGe1QDoBlhiyfYLg/aG4ZA6Q+6jG3ytZ99iPio2eHKOxO6ecQSdnCxKOh6xCYj3pXY+2E7JG3M7s2I+9y3kDMh8om9PYPrDVX30difprkh5RIQFNYAAo/F3R5GAsQGJne7VtqTisgwR/ebgfC5J/Jf0peoL7s8gv/Z6CDYuUzex5OKjwhrX7zfukl6dgOBGKS4xx0p6PDAHB8itj3sMFC0ENAg5zebgwI2pZrs9VBxr7VVWEbZLWFnw+emRlaQCHKjWgd4+CKwoZaDU3SZIncO6cqRsFtE8pWnzuLX2cvIOQDKdM8tT5cW3K07pwYglopsj5kMMjXxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UZjfZ/a9cqFS3LLi5VK+FhLGsscnJHxKITZKV8Lkk88=;
+ b=WJWFppg38m79/vkcEfhBAj1s1FAv7UiY7wjXzzyUBXvF6edlDzhV7pyQu6QnuJ1gsHfwtr9eeyULfl3ERsFTaYhmYOLE4aOhTN2umgjrAwcN1AKtRLrzVKWGMAChoSbexcvcTR0J4ZyFGNA4dvqD9kyM3ayHyFgwpeBEL5mshzE=
+Received: from AM6PR04MB6341.eurprd04.prod.outlook.com (2603:10a6:20b:d8::14)
+ by AS8PR04MB7511.eurprd04.prod.outlook.com (2603:10a6:20b:23f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Thu, 28 Sep
+ 2023 10:03:19 +0000
+Received: from AM6PR04MB6341.eurprd04.prod.outlook.com
+ ([fe80::71e6:21de:ecb2:560f]) by AM6PR04MB6341.eurprd04.prod.outlook.com
+ ([fe80::71e6:21de:ecb2:560f%4]) with mapi id 15.20.6813.027; Thu, 28 Sep 2023
+ 10:03:19 +0000
+From:   Ming Qian <ming.qian@nxp.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor@kernel.org>
+CC:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
+        Tao Jiang <tao.jiang_2@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Thread-Topic: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Thread-Index: AQHZ8GGrmZBLZQgREEat4sCPmu/sQrAtGSWAgADFGZCAAHUzAIAAE0xAgAFQggCAAErnYA==
+Date:   Thu, 28 Sep 2023 10:03:19 +0000
+Message-ID: <AM6PR04MB6341532C5DAC970C862EEE6DE7C1A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+References: <20230926101000.13392-1-ming.qian@nxp.com>
+ <20230926101000.13392-2-ming.qian@nxp.com>
+ <20230926-slackness-target-b74e33ab1031@spud>
+ <AM6PR04MB6341B0D9EC8146149CF8ADB0E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <54c87219-de9f-4c5b-9c70-11de22c7c612@linaro.org>
+ <AM6PR04MB6341B76B30FBF12A58B77AE1E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <9fbe078e-615c-473a-b0ae-f4a53336432a@linaro.org>
+In-Reply-To: <9fbe078e-615c-473a-b0ae-f4a53336432a@linaro.org>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Nathan Lu <nathan.lu@mediatek.com>
-References: <20230927153833.23583-1-jason-jh.lin@mediatek.com>
- <20230927153833.23583-6-jason-jh.lin@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230927153833.23583-6-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM6PR04MB6341:EE_|AS8PR04MB7511:EE_
+x-ms-office365-filtering-correlation-id: 03bba45a-8dee-453a-f3fe-08dbc00a2446
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Sfa84hjjZgHt+LO9/AY8yh7JGkeHLMsMI42AgcZ3BYrSYpmk0ZPMt3MvfUdma64dTwwmY7pG4BYy8G6S849v8WoSLDyiTLqKkOYYQSpT4af15hGrzvWVVMt7upiBKpZOvclVQUIzrvEqhU8RYvrrrC/ty0yp2DzaEcqrO1FtaxF62AYaZ0Qad7loBFc4QOhJq1ri3Zv53J8/G3NKgndeRFYOsb/tXN29U9fHFP+7Ykrh3kOPgmBlVziAa6qBihAP5sgnIR3cTGYNUoCd3OFiMLupI8J8+8cYDh2PE7qpH5/fmyBJK+NLIXJ0ZWMxdayXDiadXdlWkAzAa2z9gXkplyLnbH+CzrT7ijo2p0wi1WoQWZVPr8YeLRbcQAGkCTCBeQ5w5eLJ54KOWLJt9zAvaqJoANF7/8hXw/7CdmPOwnpDBoAAKAApt9d3UR2R4sDjS4z7vSsOIFgK5aAHsGe4b7lqiXrh9F/DoDdfDAejNKnymkkWFaBDwZpycgv9HSj5GG5bSp9roorGOblgXbxDn0C0qcqVJ95ArACsoC37dDiuwUC3ycZ4jSIS7o80hKgOK4cyKmKhK6scmROE3Yij7gbhulvXPRWk/vYZhlQhKRkAKlJiiZor/AHndTC1pOGU
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6341.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(346002)(396003)(136003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(478600001)(110136005)(76116006)(45080400002)(66556008)(66946007)(122000001)(2906002)(64756008)(83380400001)(66476007)(66446008)(38070700005)(38100700002)(7416002)(54906003)(52536014)(316002)(6506007)(41300700001)(71200400001)(55016003)(5660300002)(8676002)(8936002)(33656002)(86362001)(7696005)(9686003)(44832011)(4326008)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TWQ1QUExWFlQZlRXdGVCNi9qSFhCdmtqdE4xa3NzcUF4LzhyRld6U2N6czRV?=
+ =?utf-8?B?clF6eFFYL2xML2hTTnlXKy9xVHNnVUZYR3dpTDhTYnUveWdOQzh3NlRBdXNW?=
+ =?utf-8?B?TVIySzFHMjVqY3BNbWhmaDQrZFV1dk9UT3k2QXVxcXhmdEkvcUNoVW1ONkdO?=
+ =?utf-8?B?WmIrMkVZSGozZ2VuT05kSnZhWElZcEJWUnBaNkZYc3p3OHkyaWxkbTVQcWhh?=
+ =?utf-8?B?b1cwQjNFS1NCcDBKNlAvaTloekFoZ0ZVTWlYYzczeXB0UzAydW1oeUYyRkh6?=
+ =?utf-8?B?bmN5Uko1QjY2SUFQUytadFhSOUM4UDNTSkFFUnA2eHhDVXduVWZyNE0yRDRO?=
+ =?utf-8?B?VXl5US9JRUg3MmFzZ2NKdnliMnk5NGp2SlpHWlRXU1JOMGRDVkhZYWhyOXkw?=
+ =?utf-8?B?cmhjbllEWktsOVI3VTVGS2NOaEx3STV4Z2Jvd1J1MlJKdmtSWlVqdkRZMXdw?=
+ =?utf-8?B?L1hvb21EbHhBbVo3bW0zZ1lvbTB4UEcxWXdHWi9JeHAxNXpQKzI0N2pFNjNY?=
+ =?utf-8?B?R3ZhL1B3MGlDZU1IS0lSRjJhSVowWTFXa1RndmFzRFN0TG4zYWlIMzlDem1C?=
+ =?utf-8?B?QnNkR05TZXdpeXRuVEZzSUdWVWVweVdxSWszWXlQc3RLQUZJZjhMNjFXcFZB?=
+ =?utf-8?B?RnlRVTZiRGIrUUlqSFFqcnlqQk9IV0hFclhpd0tCL2txVGdUVTllR1pWcUZU?=
+ =?utf-8?B?MXpuY1JyTHM0YlBjdjBUVi9raDNSdjhIVmthTUY1SmtLNW15eVU3UERHZVFy?=
+ =?utf-8?B?VVIzNXExMDBaKytkeXg0aWhSYy9oU09weG1Ma3NBZEFQY1lzV2dHTlRObU9F?=
+ =?utf-8?B?ekdVS0hXd0hONXljVFYxaTF0bUVQNW1sb3Z6YnUyVzNhSHg5cVRxMmt4eCtZ?=
+ =?utf-8?B?ZS9zak5ZZ01hZUVMTEh3WVdlUkErSzMydjFxTThZRVhZeDJVRThYL3Jaa1VF?=
+ =?utf-8?B?Y3N5T29YTXhIeUNGOTE0NTIvWkxrYnNtZkFrcmhtcG5zc1MrdWY1ZnRqV3lY?=
+ =?utf-8?B?ZytmeWRQaWNQdlU2SEtrbW1JZWFOenNHcHhHemVmZHlKWmdVQ2ZXb09FRWR4?=
+ =?utf-8?B?M1ZWR2lRdVVjR1Z3V2dKanFyakEveWx2SytxQzRlaFI3NXVlc3N3SS82bTNy?=
+ =?utf-8?B?d0FTTEV6U09wYTZVTDRHVUpISjlXUlBlbW5sQXRvSUxpcTJ0WFJDWmtRc0dZ?=
+ =?utf-8?B?TUdhSmtMSHZQMXJrZS9yMFlRRW9RREpiRmJKeWRDZDdWZGt1aUcxZU5kSWRP?=
+ =?utf-8?B?VjNubGJvVFZOakFWY3BzRjlScys4cVpaQ0lJdktUNWVrVkRQN1paYUtoWnVk?=
+ =?utf-8?B?V1VaSXN6M2lrT2hsczloeGt4a3QvY1MxbS9sWTJFb0IwMFBTRmZZcSsrRnl6?=
+ =?utf-8?B?Yk44ZFhMYzNENkJZRExoRE5tZ0xaeVNLT2l6cTQ0ZkZ2QnowbFAvZmF2eFBp?=
+ =?utf-8?B?YXNMRHRMRTJhNll6LzRzK0FLTjBSSDIrdFdGNzJ5MWZQZVVFLzFHa0JJc0d6?=
+ =?utf-8?B?VGZDb2VUUitZTWIyTG9FVVp6akR4MXVvclg1L1UydFJuUEI4bXl3VjZSOGt2?=
+ =?utf-8?B?SU51ZTliNjE5NzQ5WVlzU0dtYnNxK2FyN2xqYjZtMzk0NnB3NmhIOVVzdFln?=
+ =?utf-8?B?M2J3SysyMUtBWnF6VEI4N3laMTRFb1Ntb2VzOGRuNHNPZGxVbmczQ0p4ZGVt?=
+ =?utf-8?B?aGlVZitjS2dDcmM5dDNTV3pIdTZ6THhubG5ReFJPcWYvYitDN0pHRU1vWTNR?=
+ =?utf-8?B?V0VaUGtvTzFlRUJoY3doVnVUa2RZS3lsTXh3NzdjWVRmbDZXT0ROcVZsSG53?=
+ =?utf-8?B?c0Fzb2RzSTRTTW1qZlhQOXRGdEpnRngvT3Bpc0dvTkgzbS8yVkVOckYwTjhn?=
+ =?utf-8?B?eWppbW5EMmI3ZDZsQThMckNjRWdaYUhnczVzUjFtNFBJcGh1OXlEL28wRTBp?=
+ =?utf-8?B?eEtMMll3elV1aTdKR1JtM2VQclBRT2lxU1hhUzltQ21wZGZVMVluS3lkMEdB?=
+ =?utf-8?B?bGJ3Z1pnY3ZTbThJUk9uczF4YUcyamtIZXZrWU1QUXpFNHV0NG1wT0REZzdK?=
+ =?utf-8?B?VmFDdE1uREVrZWZqbW9qdzY4NVdPbzJhWGxCNFprdytvZnArYWZ5YXBEeXNE?=
+ =?utf-8?Q?491s=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6341.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03bba45a-8dee-453a-f3fe-08dbc00a2446
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 10:03:19.3803
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vJVnTBr6L8j04kuMrY/iOHu6DnGeXuVzM6lWcVV9INgesmCWX1BHIgByMIrkrV2K2q5eDTefon15gH4hEYl6JQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7511
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 27/09/23 17:38, Jason-JH.Lin ha scritto:
-> Add dynamic select available connector flow in mtk_drm_crtc_create()
-> and mtk_drm_crtc_atomic_enable().
-> 
-> In mtk_drm_crtc_create(), if there is a connector routes array in drm
-> driver data, all components definded in the connector routes array will
-> be checked and their encoder_index will be set.
-> 
-> In mtk_drm_crtc_atomic_enable(), crtc will check its encoder_index to
-> identify which componet in the connector routes array should append.
-> 
-> Signed-off-by: Nancy Lin <nancy.lin@mediatek.com>
-> Signed-off-by: Nathan Lu <nathan.lu@mediatek.com>
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> Tested-by: Fei Shao <fshao@chromium.org>
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 78 ++++++++++++++++++++-
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  5 +-
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 27 ++++++-
->   drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 13 +++-
->   drivers/gpu/drm/mediatek/mtk_drm_drv.h      |  7 ++
->   5 files changed, 123 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index b6fa4ad2f94d..8eb4d2646a76 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -63,6 +63,8 @@ struct mtk_drm_crtc {
->   	struct mtk_mutex		*mutex;
->   	unsigned int			ddp_comp_nr;
->   	struct mtk_ddp_comp		**ddp_comp;
-> +	unsigned int			num_conn_routes;
-> +	const struct mtk_drm_route	*conn_routes;
->   
->   	/* lock for display hardware access */
->   	struct mutex			hw_lock;
-> @@ -647,6 +649,45 @@ static void mtk_drm_crtc_disable_vblank(struct drm_crtc *crtc)
->   	mtk_ddp_comp_disable_vblank(comp);
->   }
->   
-> +static void mtk_drm_crtc_update_output(struct drm_crtc *crtc,
-> +				       struct drm_atomic_state *state)
-> +{
-> +	int crtc_index = drm_crtc_index(crtc);
-> +	int i;
-> +	struct device *dev;
-> +	struct drm_crtc_state *crtc_state = state->crtcs[crtc_index].new_state;
-> +	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-> +	struct mtk_drm_private *priv = crtc->dev->dev_private;
-> +	unsigned int comp_id;
-
-You're not using comp_id globally in this function....
-
-> +	unsigned int encoder_mask = crtc_state->encoder_mask;
-> +
-> +	if (!crtc_state->connectors_changed)
-> +		return;
-> +
-> +	if (!mtk_crtc->num_conn_routes)
-> +		return;
-> +
-> +	priv = priv->all_drm_private[crtc_index];
-
-This is a bit confusing. You're reassigning priv: please avoid that.
-I would prefer directly seeing the final assignment, or otherwise two pointers.
-
-	struct mtk_drm_private *priv;
-
-	if ....
-	...........
-
-	priv = crtc->dev->dev_private->all_drm_private[crtc_index];
-
-> +	dev = priv->dev;
-> +
-> +	dev_dbg(dev, "connector change:%d, encoder mask:0x%x for crtc:%d\n",
-> +		crtc_state->connectors_changed, encoder_mask, crtc_index);
-> +
-> +	for (i = 0; i < mtk_crtc->num_conn_routes; i++) {
-> +		struct mtk_ddp_comp *comp;
-
-...so you can move it here...
-
-		unsigned int comp_id = mtk_crtc->conn_routes[i].route_ddp;
-		struct mtk_ddp_comp *comp = &priv->ddp_comp[comp_id];
-
-> +
-> +		comp_id = mtk_crtc->conn_routes[i].route_ddp;
-> +		comp = &priv->ddp_comp[comp_id];
-> +		if (comp->encoder_index >= 0 &&
-> +		    encoder_mask & BIT(comp->encoder_index)) {
-
-For readability, I would prefer to see
-
-		if (comp->encoder_index >= 0 &&
-		    (encoder_mask & BIT(comp->encoder_index))) {
-
-...but I don't have strong opinions on that.
-
-> +			mtk_crtc->ddp_comp[mtk_crtc->ddp_comp_nr - 1] = comp;
-> +			dev_dbg(dev, "Add comp_id: %d at path index %d\n",
-> +				comp->id, mtk_crtc->ddp_comp_nr - 1);
-> +			break;
-> +		}
-> +	}
-> +}
-> +
->   int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct drm_plane *plane,
->   			     struct mtk_plane_state *state)
->   {
-> @@ -679,6 +720,8 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
->   
->   	DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
->   
-> +	mtk_drm_crtc_update_output(crtc, state);
-> +
-
-What's the point of updating the output before pm_runtime_resume_and_get()?
-If PM resume fails we're not enabling the CRTC so the update is actually useless.
-
-Please move this after PM resume: that will also possibly come handy in the future.
-
-
->   	ret = pm_runtime_resume_and_get(comp->dev);
->   	if (ret < 0) {
->   		DRM_DEV_ERROR(comp->dev, "Failed to enable power domain: %d\n", ret);
-> @@ -884,7 +927,8 @@ struct device *mtk_drm_crtc_dma_dev_get(struct drm_crtc *crtc)
->   
->   int mtk_drm_crtc_create(struct drm_device *drm_dev,
->   			const unsigned int *path, unsigned int path_len,
-> -			int priv_data_index)
-> +			int priv_data_index, const struct mtk_drm_route *conn_routes,
-> +			unsigned int num_conn_routes)
->   {
->   	struct mtk_drm_private *priv = drm_dev->dev_private;
->   	struct device *dev = drm_dev->dev;
-> @@ -935,7 +979,8 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->   
->   	mtk_crtc->mmsys_dev = priv->mmsys_dev;
->   	mtk_crtc->ddp_comp_nr = path_len;
-> -	mtk_crtc->ddp_comp = devm_kmalloc_array(dev, mtk_crtc->ddp_comp_nr,
-> +	mtk_crtc->ddp_comp = devm_kmalloc_array(dev,
-> +						mtk_crtc->ddp_comp_nr + (conn_routes ? 1 : 0),
->   						sizeof(*mtk_crtc->ddp_comp),
->   						GFP_KERNEL);
->   	if (!mtk_crtc->ddp_comp)
-> @@ -1038,5 +1083,34 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
->   		init_waitqueue_head(&mtk_crtc->cb_blocking_queue);
->   	}
->   #endif
-> +
-> +	if (conn_routes) {
-> +		struct device_node *node;
-> +		struct mtk_ddp_comp *comp;
-> +		unsigned int comp_id;
-> +
-> +		for (i = 0; i < num_conn_routes; i++) {
-
-Same here, you're locally using comp_id, node and comp *only* in the for loop....
-
-			unsigned int comp_id = conn_routes[i].route_ddp;
-			struct device_node *node = priv->comp_node[comp_id];
-			struct mtk_ddp_comp *comp = &priv->ddp_comp[comp_id];
-
-> +			comp_id = conn_routes[i].route_ddp;
-> +			node = priv->comp_node[comp_id];
-> +			comp = &priv->ddp_comp[comp_id];
-> +
-> +			if (!comp->dev) {
-> +				dev_dbg(dev, "comp_id:%d, Component %pOF not initialized\n",
-> +					comp_id, node);
-> +				/* mark encoder_index to -1, if route comp device is not enabled */
-> +				comp->encoder_index = -1;
-> +				continue;
-> +			}
-> +
-> +			mtk_ddp_comp_encoder_index_set(&priv->ddp_comp[comp_id]);
-> +		}
-> +
-> +		mtk_crtc->num_conn_routes = num_conn_routes;
-> +		mtk_crtc->conn_routes = conn_routes;
-> +
-> +		/* increase ddp_comp_nr at the end of mtk_drm_crtc_create */
-> +		mtk_crtc->ddp_comp_nr++;
-> +	}
-> +
->   	return 0;
->   }
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
-> index 3e9046993d09..3c224595fa71 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
-> @@ -8,6 +8,7 @@
->   
->   #include <drm/drm_crtc.h>
->   #include "mtk_drm_ddp_comp.h"
-> +#include "mtk_drm_drv.h"
->   #include "mtk_drm_plane.h"
->   
->   #define MTK_LUT_SIZE	512
-> @@ -18,7 +19,9 @@ void mtk_drm_crtc_commit(struct drm_crtc *crtc);
->   int mtk_drm_crtc_create(struct drm_device *drm_dev,
->   			const unsigned int *path,
->   			unsigned int path_len,
-> -			int priv_data_index);
-> +			int priv_data_index,
-> +			const struct mtk_drm_route *conn_routes,
-> +			unsigned int num_conn_routes);
->   int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct drm_plane *plane,
->   			     struct mtk_plane_state *state);
->   void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct drm_plane *plane,
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> index 771f4e173353..4ddb5e561116 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -507,6 +507,23 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
->   	return false;
->   }
->   
-> +static int mtk_drm_find_comp_in_ddp_conn_path(struct device *dev,
-> +					      const struct mtk_drm_route *routes,
-> +					      unsigned int num_routes,
-> +					      struct mtk_ddp_comp *ddp_comp)
-> +{
-> +	unsigned int i;
-> +
-> +	if (!routes)
-> +		return -EINVAL;
-> +
-> +	for (i = 0; i < num_routes; i++)
-> +		if (dev == ddp_comp[routes[i].route_ddp].dev)
-> +			return BIT(routes[i].crtc_id);
-> +
-> +	return -ENODEV;
-> +}
-> +
->   int mtk_ddp_comp_get_id(struct device_node *node,
->   			enum mtk_ddp_comp_type comp_type)
->   {
-> @@ -538,7 +555,15 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
->   					  private->data->third_len, private->ddp_comp))
->   		ret = BIT(2);
->   	else
-> -		DRM_INFO("Failed to find comp in ddp table\n");
-> +		ret = mtk_drm_find_comp_in_ddp_conn_path(dev,
-> +							 private->data->conn_routes,
-> +							 private->data->num_conn_routes,
-> +							 private->ddp_comp);
-> +
-> +	if (ret <= 0) {
-> +		DRM_INFO("Failed to find comp in ddp table, ret =%d\n", ret);
-> +		ret = 0;
-
-Why are you returning 0 for error here?!
-
-> +	}
->   
->   	return ret;
->   }
-
-Regards,
-Angelo
-
+PkZyb206IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9y
+Zz4NCj5TZW50OiAyMDIz5bm0OeaciDI45pelIDEzOjI0DQo+VG86IE1pbmcgUWlhbiA8bWluZy5x
+aWFuQG54cC5jb20+OyBDb25vciBEb29sZXkgPGNvbm9yQGtlcm5lbC5vcmc+DQo+Q2M6IE1pcmVs
+YSBSYWJ1bGVhIChPU1MpIDxtaXJlbGEucmFidWxlYUBvc3MubnhwLmNvbT47DQo+cm9iaCtkdEBr
+ZXJuZWwub3JnOyBzaGF3bmd1b0BrZXJuZWwub3JnOw0KPmtyenlzenRvZi5rb3psb3dza2krZHRA
+bGluYXJvLm9yZzsgY29ub3IrZHRAa2VybmVsLm9yZzsNCj5tY2hlaGFiQGtlcm5lbC5vcmc7IGh2
+ZXJrdWlsLWNpc2NvQHhzNGFsbC5ubDsgcy5oYXVlckBwZW5ndXRyb25peC5kZTsNCj5rZXJuZWxA
+cGVuZ3V0cm9uaXguZGU7IGZlc3RldmFtQGdtYWlsLmNvbTsgWC5ILiBCYW8NCj48eGlhaG9uZy5i
+YW9AbnhwLmNvbT47IEVhZ2xlIFpob3UgPGVhZ2xlLnpob3VAbnhwLmNvbT47IFRhbyBKaWFuZw0K
+Pjx0YW8uamlhbmdfMkBueHAuY29tPjsgZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47
+DQo+ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW1lZGlhQHZnZXIua2VybmVsLm9y
+ZzsgbGludXgtDQo+a2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0
+cy5pbmZyYWRlYWQub3JnDQo+U3ViamVjdDogUmU6IFtFWFRdIFJlOiBbUEFUQ0ggdjQgMi8yXSBk
+dC1iaW5kaW5nczogbWVkaWE6IGlteC1qcGVnOiBBc3NpZ24gc2xvdA0KPmZvciBpbXgganBlZyBl
+bmNvZGVyL2RlY29kZXINCj4NCj5DYXV0aW9uOiBUaGlzIGlzIGFuIGV4dGVybmFsIGVtYWlsLiBQ
+bGVhc2UgdGFrZSBjYXJlIHdoZW4gY2xpY2tpbmcgbGlua3Mgb3INCj5vcGVuaW5nIGF0dGFjaG1l
+bnRzLiBXaGVuIGluIGRvdWJ0LCByZXBvcnQgdGhlIG1lc3NhZ2UgdXNpbmcgdGhlICdSZXBvcnQN
+Cj50aGlzIGVtYWlsJyBidXR0b24NCj4NCj4NCj5PbiAyNy8wOS8yMDIzIDExOjI1LCBNaW5nIFFp
+YW4gd3JvdGU6DQo+Pj4gRm9ybWF0IHlvdXIgZW1haWxzIHByb3Blcmx5LiBJdCdzIGRpZmZpY3Vs
+dCB0byByZWFkIGl0Lg0KPj4+DQo+Pj4gSSBhbHJlYWR5IE5BS2VkIGl0LCBJIHdpbGwgYmUgTkFL
+aW5nIHN0aWxsLiBEb24ndCBlbWJlZCBPUyBzcGVjaWZpYw0KPj4+IGludG8gdGhlIGJpbmRpbmdz
+IG5vciBpbnRvIHRoZSBEVFMuDQo+Pj4NCj4+Pg0KPj4+IEJlc3QgcmVnYXJkcywNCj4+PiBLcnp5
+c3p0b2YNCj4+DQo+PiBIaSBLcnp5c3p0b2YsDQo+PiAgICAgRG8geW91IG1lYW4gdGhlIGxpbmsg
+aXMgaW5hcHByb3ByaWF0ZSBvciBzb21ldGhpbmcgZWxzZT8gSSB3aWxsIGF2b2lkIGxpbmtzDQo+
+aW4gbXkgZW1haWxzIGluIHRoZSBmdXR1cmUuIEknbSBzb3JyeSB0byBib3RoZXIgeW91Lg0KPg0K
+PllvdXIgZW1haWxzIGFyZSBub3Qgd3JhcHBlZCBhY2NvcmRpbmcgdG8gZW1haWwgZ3VpZGVsaW5l
+cy4gWW91IGhhdmUgc2ltcGx5DQo+bWlzY29uZmlndXJlZCBlbWFpbCBhcHAuDQo+DQo+QmVzdCBy
+ZWdhcmRzLA0KPktyenlzenRvZg0KDQpIaSBLcnp5c3p0b2YsDQoNCkkgaGF2ZSBtYWRlIG15IG91
+dGxvb2sgY29udGVudC10eXBlIHRleHQvcGxhaW4sIGFuZCBJIGNoZWNrZWQgRG9jdW1lbnRhdGlv
+bi9wcm9jZXNzL2VtYWlsLWNsaWVudHMucnN0LCBpdCBqdXN0IHNheSBUaHVuZGVyYmlyZCBpcyBh
+biBPdXRsb29rIGNsb25lIHRoYXQgbGlrZXMgdG8gbWFuZ2xlIHRleHQsIHRoZW4gZ2l2ZSBzb21l
+IHRodW5kZXJiaXJkIGV4dGVuc2lvbnMgdG8gdXNlIG9mIGFuIGV4dGVybmFsIGVkaXRvci4gTm8g
+bW9yZSBhZHZpY2Ugb24gb3V0bG9vaywgbWF5YmUgb3V0bG9vayBpcyB1bnN1aXRlZC4gQnV0IEkg
+b25seSBoYXZlIG91dGxvb2sgZW1haWwuIFNvIEkgd2lsbCBvbmx5IHVzZSBwbGFpbiB0ZXh0IGFu
+ZCBhdm9pZCB0aGluZ3MgbGlrZSBsaW5rcy4NCg0KQmVzdCByZWdhcmRzLA0KTWluZw0KDQo=
