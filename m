@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C42317B15D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902037B15DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjI1IQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S231215AbjI1IRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjI1IQr (ORCPT
+        with ESMTP id S229539AbjI1IRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:16:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44B198;
-        Thu, 28 Sep 2023 01:16:45 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 08:16:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695889004;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0StuuUvChvgWlQD+lOagXYdDLAMj9WWMQTI2JI1PDU=;
-        b=k7aCSQ0kZYZwseKsFYAPIrCEqhKdcNc8rW8/JgL/b3rPwoWkE3U8/LFEO3D/So2qyYlpMp
-        DxvnBYV5gsxG+1P2JDrdmrDF6br+Sdcnvr03fDs1MS8zZSiI1ka9YPBFcqRMfdSAV50B9g
-        Q9U6O5qLSdsbemXXQ3poKFg0Qeb+P/9twyd4LfvTw+iYjyo4MUmaP3TAXdQBPBgGjfF6cy
-        1tleD2T/QM+R0FoRF8us4W/fLs8uKw6A6Jd3aLR7/C8X/yQHQOYa55rn8QLQI+5Tbtuu4w
-        drt0u8W7RIox0KogKkXFPex1EZsWiSSvLngVJZ7OK2LBVIUJe2WSxtUxYIxS3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695889004;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0StuuUvChvgWlQD+lOagXYdDLAMj9WWMQTI2JI1PDU=;
-        b=aQEFGGI1rVM3Aey3RhTzUeQxdWuoF0t/ZU347KwSwkC9yMCdL3xfCL7Upo0U4P3VQSCtfr
-        ZV9j1PSCXzDMfVBA==
-From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Compile boot code with -std=gnu11 too
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin (Intel)" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <2058761e-12a4-4b2f-9690-3c3c1c9902a5@p183>
-References: <2058761e-12a4-4b2f-9690-3c3c1c9902a5@p183>
+        Thu, 28 Sep 2023 04:17:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE6BAC;
+        Thu, 28 Sep 2023 01:17:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06C89C433C9;
+        Thu, 28 Sep 2023 08:17:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695889065;
+        bh=f0Py5KsQnV1kllOtBgaMRjOqXMqsVEKHE9P7jkmTxLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mdKT26sKpwvKyVxjrAM3SwSFoLqZQ3Ap9kIl3LPvUuGJri7B/UskSlNUv3pTUlydj
+         +cKEq+FCaDatZOay9enVHnlVG0SmJU+tjbwN50C51rL/jz5Bn9ZRZiqPTS+5QBN0F+
+         U5KdvwyZuPYLoyKpkGLGxI7c0lpnWRHDl84zjW4w=
+Date:   Thu, 28 Sep 2023 10:17:40 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: Re: [PATCH v2 1/5] serial: core: tidy invalid baudrate handling in
+ uart_get_baud_rate
+Message-ID: <2023092835-applied-shakable-f5dc@gregkh>
+References: <20230920022644.2712651-1-jcmvbkbc@gmail.com>
+ <20230920022644.2712651-2-jcmvbkbc@gmail.com>
 MIME-Version: 1.0
-Message-ID: <169588900363.27769.15241050401538537889.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230920022644.2712651-2-jcmvbkbc@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/boot branch of tip:
+On Tue, Sep 19, 2023 at 07:26:40PM -0700, Max Filippov wrote:
+> uart_get_baud_rate has input parameters 'min' and 'max' limiting the
+> range of acceptable baud rates from the caller's perspective. If neither
+> current or old termios structures have acceptable baud rate setting and
+> 9600 is not in the min/max range either the function returns 0 and
+> issues a warning.
+> However for a UART that does not support speed of 9600 baud this is
+> expected behavior.
+> Clarify that 0 can be (and always could be) returned from the
+> uart_get_baud_rate. Don't issue a warning in that case.
+> Move the warinng to the uart_get_divisor instead, which is often called
+> with the uart_get_baud_rate return value.
+> 
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> ---
+>  drivers/tty/serial/serial_core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index 7bdc21d5e13b..a8e2915832e8 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -431,7 +431,7 @@ EXPORT_SYMBOL(uart_update_timeout);
+>   * baud.
+>   *
+>   * If the new baud rate is invalid, try the @old termios setting. If it's still
+> - * invalid, we try 9600 baud.
+> + * invalid, we try 9600 baud. If that is also invalid 0 is returned.
+>   *
+>   * The @termios structure is updated to reflect the baud rate we're actually
+>   * going to be using. Don't do this for the case where B0 is requested ("hang
+> @@ -515,8 +515,6 @@ uart_get_baud_rate(struct uart_port *port, struct ktermios *termios,
+>  							max - 1, max - 1);
+>  		}
+>  	}
+> -	/* Should never happen */
+> -	WARN_ON(1);
 
-Commit-ID:     b3bee1e7c3f2b1b77182302c7b2131c804175870
-Gitweb:        https://git.kernel.org/tip/b3bee1e7c3f2b1b77182302c7b2131c804175870
-Author:        Alexey Dobriyan <adobriyan@gmail.com>
-AuthorDate:    Wed, 27 Sep 2023 18:42:11 +03:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 28 Sep 2023 10:11:27 +02:00
+I'm ok with this removal, but:
 
-x86/boot: Compile boot code with -std=gnu11 too
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(uart_get_baud_rate);
+> @@ -539,6 +537,7 @@ uart_get_divisor(struct uart_port *port, unsigned int baud)
+>  {
+>  	unsigned int quot;
+>  
+> +	WARN_ON(baud == 0);
 
-Use -std=gnu11 for consistency with main kernel code.
+Why is this needed?  If this isn't happening today, then there's no need
+to check for this here.  Or if it can happen, we should return an error,
+not cause a possible reboot of the system if panic-on-warn is enabled.
 
-It doesn't seem to change anything in vmlinux.
+thanks,
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Link: https://lore.kernel.org/r/2058761e-12a4-4b2f-9690-3c3c1c9902a5@p183
----
- arch/x86/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 5bfe5ca..776331f 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -43,7 +43,7 @@ endif
- 
- # How to compile the 16-bit code.  Note we always compile for -march=i386;
- # that way we can complain to the user if the CPU is insufficient.
--REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
-+REALMODE_CFLAGS	:= -std=gnu11 -m16 -g -Os -DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
- 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
- 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
- 		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
+greg k-h
