@@ -2,211 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F707B1CD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA147B1CCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbjI1Mpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S232543AbjI1Mpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbjI1Mpv (ORCPT
+        with ESMTP id S232490AbjI1Mpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:45:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41BA191
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695905103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ZJst60DtOTAcHM/+YWWARhoXyKu+0XsCA0kzc+cFAY=;
-        b=La8hgH+wm8PNysOZie+g+sSzH/3WkhUSQd7cvjUdVBDyy/3hhMx4ib7bP2tALPh0U3B6bN
-        fDJDNMbiyDSS4fMZ+RIOtnTIGOmFknmkzmNCLL7e3y8nUExm0aWXy8eqI+fDRrJVoLQDjF
-        Sq4uHyl/YyjgBoyf9NNzGNjNOu+Ww3E=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-663-8-3pv7yzPmyhiVK7Qqxhmg-1; Thu, 28 Sep 2023 08:45:01 -0400
-X-MC-Unique: 8-3pv7yzPmyhiVK7Qqxhmg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-993d7ca4607so1104811866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:45:01 -0700 (PDT)
+        Thu, 28 Sep 2023 08:45:39 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D8E139
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:45:36 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99c1c66876aso1675869966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:45:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695905100; x=1696509900;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZJst60DtOTAcHM/+YWWARhoXyKu+0XsCA0kzc+cFAY=;
-        b=pyvXCTkjve2/0IH7zWepbYQFMWZ52aqSdv9s9R/7m+TUVdVs7lqpqiPgRVYIEN8ZDK
-         CCP9D5zgawAsyxdOcBDdXTOJnDY38qGCx5Xc3MCwxi7GaV1TeP+Jtz785HEvJqwXbVk0
-         zQBvi3/aNdYZiphVvnlkvlruvM+sW+zfUNjbuHEcV16FwFXxJlJUD/9bCbUMAiJiCN99
-         Ma96cTxSXzH3hvYBPYbbnoFUSdaixxNO1kld7MUvpW0TiGCE2Ck05KBLxR9NKDpkKD8c
-         UyiSz3FwHlmx4LipUSkttjMGm/2vlQ8LS7faE5f1Xah/QKdeMDE2Q+zikQAs1Dn/iCho
-         K6mw==
-X-Gm-Message-State: AOJu0Yw9YdXE8qFveXMAGRoxabjXwC5wXTvzi4+U7INFt299iuvrlgtt
-        C79DPdMiLUi5R/rVpcBp8iqGXIKaLPOvAhQojHs/W+Kz8jlKGY/c37zKBQXhZx/lkOmAHXT5eka
-        nzGj3UgS53OtbVK4um4IWPwEZ
-X-Received: by 2002:a17:906:cc53:b0:9b2:8df4:c692 with SMTP id mm19-20020a170906cc5300b009b28df4c692mr1366418ejb.27.1695905100591;
-        Thu, 28 Sep 2023 05:45:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHBWHwp7nkBmFn/W7pmHIIzcfB55rotTWDT0eMe3PWuqOnoH9kN78RUdFR8Q28Hzep+vmDFMw==
-X-Received: by 2002:a17:906:cc53:b0:9b2:8df4:c692 with SMTP id mm19-20020a170906cc5300b009b28df4c692mr1366399ejb.27.1695905100238;
-        Thu, 28 Sep 2023 05:45:00 -0700 (PDT)
-Received: from [192.168.1.217] ([109.36.138.103])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm10849655ejc.153.2023.09.28.05.44.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 05:44:59 -0700 (PDT)
-Message-ID: <d65e65c1-3a20-6aef-f25a-a261420e8a3d@redhat.com>
-Date:   Thu, 28 Sep 2023 14:44:57 +0200
+        d=1e100.net; s=20230601; t=1695905135; x=1696509935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LqyFyejgRJ3HVV9uFW0VQLQllqmaovz7EFt7peLUQxg=;
+        b=F2eqsSSE0IrfEpD63jHxFNhhL1+z3ZvFivzXB5xsSfcyrjuuH2T2zoVFcQjClt9ZPA
+         aeHo7Zjyhh1XdzswATfEyHmisAshQIuKAKXfnSWPvMd3grpqn3/l1LCgB/l3CrrgCKdm
+         7m6Bk5yshMCt0J+M2onFlYcwM3ZA7FAfYYScPoskU5v/VYX5ffbc4TC5+TwOR8xzxzyb
+         45sbN7luB6xPwfHz8Ut081Wbj5kHJTXURYIN6GudU8zGenYrzU7FEpWugM3nn98wxU9M
+         ajzheo6EBSyIu4j+TU2NqbIWG5hylS8WoV+pVZfJYibiCH/MuWhsqsfRe4GkTer8lUrT
+         dfAA==
+X-Gm-Message-State: AOJu0Yy9m+/rfhyX7Oqb/lbLt6RLg9tZB9qTe98RlnJ0EJ21ATqDFYjT
+        LcgrEVIfM/2oEhJNh+O4OSc=
+X-Google-Smtp-Source: AGHT+IFahYdwNSWZ1JvEfMoP8D3MCuubWHljnogWtiGQHizQCLCy8rKsNclkyyGvGL393mXD8fpBuA==
+X-Received: by 2002:a17:907:1dcb:b0:9ae:5367:fe90 with SMTP id og11-20020a1709071dcb00b009ae5367fe90mr1203899ejc.32.1695905134918;
+        Thu, 28 Sep 2023 05:45:34 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-022.fbsv.net. [2a03:2880:31ff:16::face:b00c])
+        by smtp.gmail.com with ESMTPSA id l25-20020a1709066b9900b0099cc36c4681sm10778878ejr.157.2023.09.28.05.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 05:45:34 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 05:45:32 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
+Message-ID: <ZRV1bIuSXjZ+uPKB@gmail.com>
+References: <20230628142129.2468174-1-leitao@debian.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: [PATCH v2 4/5] platform/x86: int3472: Switch to devm_get_gpiod()
-Content-Language: en-US
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230926145943.42814-1-brgl@bgdev.pl>
- <e6817d30-b443-1a73-efae-84415604b19f@redhat.com>
-In-Reply-To: <e6817d30-b443-1a73-efae-84415604b19f@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628142129.2468174-1-leitao@debian.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to devm_get_gpiod() for discrete GPIOs for clks / regulators / LEDs
-and let devm do the cleanup for us.
+On Wed, Jun 28, 2023 at 07:21:28AM -0700, leitao@debian.org wrote:
+> From: Breno Leitao <leitao@debian.org>
+> 
+> Create an entry for each CPU mitigation under
+> CONFIG_SPECULATION_MITIGATIONS. This allow users to enable or disable
+> them at compilation time.
+> 
+> If a mitigation is disabled at compilation time, it could be enabled at
+> runtime using kernel command line arguments.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- .../x86/intel/int3472/clk_and_regulator.c     | 23 ++++---------------
- drivers/platform/x86/intel/int3472/discrete.c |  2 +-
- drivers/platform/x86/intel/int3472/led.c      |  7 +-----
- 3 files changed, 6 insertions(+), 26 deletions(-)
+I had a chat about this topic with Boris and Thomas at Kernel Recipes,
+and I would like to summarize the current state, and get it moving
+forward.
 
-diff --git a/drivers/platform/x86/intel/int3472/clk_and_regulator.c b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-index 459f96c04ca1..16e36ac0a7b4 100644
---- a/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-+++ b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
-@@ -177,10 +177,8 @@ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
- 
- 	init.name = kasprintf(GFP_KERNEL, "%s-clk",
- 			      acpi_dev_name(int3472->adev));
--	if (!init.name) {
--		ret = -ENOMEM;
--		goto out_put_gpio;
--	}
-+	if (!init.name)
-+		return -ENOMEM;
- 
- 	int3472->clock.frequency = skl_int3472_get_clk_frequency(int3472);
- 
-@@ -206,8 +204,6 @@ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
- 	clk_unregister(int3472->clock.clk);
- out_free_init_name:
- 	kfree(init.name);
--out_put_gpio:
--	gpiod_put(int3472->clock.ena_gpio);
- 
- 	return ret;
- }
-@@ -219,7 +215,6 @@ void skl_int3472_unregister_clock(struct int3472_discrete_device *int3472)
- 
- 	clkdev_drop(int3472->clock.cl);
- 	clk_unregister(int3472->clock.clk);
--	gpiod_put(int3472->clock.ena_gpio);
- }
- 
- /*
-@@ -266,7 +261,7 @@ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
- 	struct regulator_config cfg = { };
- 	const char *second_sensor = NULL;
- 	const struct dmi_system_id *id;
--	int i, j, ret;
-+	int i, j;
- 
- 	id = dmi_first_match(skl_int3472_regulator_second_sensor);
- 	if (id)
-@@ -309,21 +304,11 @@ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
- 	int3472->regulator.rdev = regulator_register(int3472->dev,
- 						     &int3472->regulator.rdesc,
- 						     &cfg);
--	if (IS_ERR(int3472->regulator.rdev)) {
--		ret = PTR_ERR(int3472->regulator.rdev);
--		goto err_free_gpio;
--	}
- 
--	return 0;
--
--err_free_gpio:
--	gpiod_put(int3472->regulator.gpio);
--
--	return ret;
-+	return PTR_ERR_OR_ZERO(int3472->regulator.rdev);
- }
- 
- void skl_int3472_unregister_regulator(struct int3472_discrete_device *int3472)
- {
- 	regulator_unregister(int3472->regulator.rdev);
--	gpiod_put(int3472->regulator.gpio);
- }
-diff --git a/drivers/platform/x86/intel/int3472/discrete.c b/drivers/platform/x86/intel/int3472/discrete.c
-index eb0cded5b92a..8171b16882b7 100644
---- a/drivers/platform/x86/intel/int3472/discrete.c
-+++ b/drivers/platform/x86/intel/int3472/discrete.c
-@@ -119,7 +119,7 @@ skl_int3472_gpiod_get_from_temp_lookup(struct int3472_discrete_device *int3472,
- 		return ERR_PTR(ret);
- 
- 	gpiod_add_lookup_table(lookup);
--	desc = gpiod_get(int3472->dev, func, GPIOD_OUT_LOW);
-+	desc = devm_gpiod_get(int3472->dev, func, GPIOD_OUT_LOW);
- 	gpiod_remove_lookup_table(lookup);
- 
- 	return desc;
-diff --git a/drivers/platform/x86/intel/int3472/led.c b/drivers/platform/x86/intel/int3472/led.c
-index 476cd637fc51..9cbed694e2ca 100644
---- a/drivers/platform/x86/intel/int3472/led.c
-+++ b/drivers/platform/x86/intel/int3472/led.c
-@@ -39,7 +39,7 @@ int skl_int3472_register_pled(struct int3472_discrete_device *int3472, struct gp
- 
- 	ret = led_classdev_register(int3472->dev, &int3472->pled.classdev);
- 	if (ret)
--		goto err_free_gpio;
-+		return ret;
- 
- 	int3472->pled.lookup.provider = int3472->pled.name;
- 	int3472->pled.lookup.dev_id = int3472->sensor_name;
-@@ -47,10 +47,6 @@ int skl_int3472_register_pled(struct int3472_discrete_device *int3472, struct gp
- 	led_add_lookup(&int3472->pled.lookup);
- 
- 	return 0;
--
--err_free_gpio:
--	gpiod_put(int3472->pled.gpio);
--	return ret;
- }
- 
- void skl_int3472_unregister_pled(struct int3472_discrete_device *int3472)
-@@ -60,5 +56,4 @@ void skl_int3472_unregister_pled(struct int3472_discrete_device *int3472)
- 
- 	led_remove_lookup(&int3472->pled.lookup);
- 	led_classdev_unregister(&int3472->pled.classdev);
--	gpiod_put(int3472->pled.gpio);
- }
--- 
-2.41.0
+1) The hardware mitigations are half-way added to KCONFIG. I.e., half of
+the hardware mitigations are specified under SPECULATION_MITIGATIONS,
+but not all of them.
+	* You can enabled/disabled just half of them at build time.
 
+2) It is impossible to build a kernel with speculative mitigations
+disabled.
+	* The only way to disable the mitigations is at boot time,
+	  using the "mitigations=off" boot parameter.
+
+
+So, disabling SPECULATION_MITIGATIONS, will only disable the mitigations
+that are under SPECULATION_MITIGATIONS. Other mitigations will continue
+to be enabled by default. This is is misleading for the user.
+
+Here are a few options moving forward:
+
+1) Create one Kconfig entry per mitigation, so, the user can pick and
+choose what to enable and disable. (Version 3 of this patch. May need a
+re-spin due to the new mitigations being added.)
+
+2) Keep the Kconfig entries as-is. Create a new Kconfig entry
+(CPU_MITIGATIONS_DEFAULT_OFF?) to disable the mitigations by default,
+similarly to the `mitigations=off` boot parameter (v1 of this patch)
+
+3) Same as 2, but, reusing SPECULATION_MITIGATIONS instead of
+creating a new Kconfig entry.
+
+4) Remove the current entries in SPECULATION_MITIGATIONS and the fine
+control on what to enable/disable?!
+
+What is the preferred way?
