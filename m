@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B11E7B18C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4BE7B18C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjI1K7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S231859AbjI1K7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjI1K7B (ORCPT
+        with ESMTP id S231767AbjI1K7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:59:01 -0400
-Received: from out28-148.mail.aliyun.com (out28-148.mail.aliyun.com [115.124.28.148])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA40193;
-        Thu, 28 Sep 2023 03:58:51 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09813568|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.00100706-9.29909e-05-0.9989;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH9DX_1695898719;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH9DX_1695898719)
+        Thu, 28 Sep 2023 06:59:04 -0400
+Received: from out28-50.mail.aliyun.com (out28-50.mail.aliyun.com [115.124.28.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27931CCD;
+        Thu, 28 Sep 2023 03:58:59 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06718685|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00748265-0.000710643-0.991807;FP=10256080768311561946|1|1|20|0|-1|-1|-1;HT=ay29a033018047188;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH9MG_1695898727;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH9MG_1695898727)
           by smtp.aliyun-inc.com;
-          Thu, 28 Sep 2023 18:58:47 +0800
+          Thu, 28 Sep 2023 18:58:55 +0800
 From:   wangweidong.a@awinic.com
 To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -34,16 +34,16 @@ To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         dan.carpenter@linaro.org, colin.i.king@gmail.com,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V6 08/10] ASoC: codecs: Rename "sync-flag" to "awinic,sync-flag"
-Date:   Thu, 28 Sep 2023 18:57:25 +0800
-Message-ID: <20230928105727.47273-9-wangweidong.a@awinic.com>
+Subject: [PATCH V6 09/10] ASoC: codecs: Modify the transmission mode of function parameters
+Date:   Thu, 28 Sep 2023 18:57:26 +0800
+Message-ID: <20230928105727.47273-10-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928105727.47273-1-wangweidong.a@awinic.com>
 References: <20230928105727.47273-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,47 +53,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Rename "sync-flag" to "awinic,sync-flag", this is to be
-consistent with the "awinic,aw88395.yaml" file
+Change the transmission mode of the "aw88261_dev_get_prof_name"
+function parameter
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88261.c | 4 +---
- sound/soc/codecs/aw88261.h | 2 +-
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/aw88261.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
-index 7df641592330..61179e235fbf 100644
+index 61179e235fbf..45eaf931a69c 100644
 --- a/sound/soc/codecs/aw88261.c
 +++ b/sound/soc/codecs/aw88261.c
-@@ -1187,13 +1187,11 @@ static void aw88261_parse_channel_dt(struct aw88261 *aw88261)
- 	struct aw_device *aw_dev = aw88261->aw_pa;
- 	struct device_node *np = aw_dev->dev->of_node;
- 	u32 channel_value = AW88261_DEV_DEFAULT_CH;
--	u32 sync_enable = false;
- 
- 	of_property_read_u32(np, "awinic,audio-channel", &channel_value);
--	of_property_read_u32(np, "sync-flag", &sync_enable);
-+	aw88261->phase_sync = of_property_read_bool(np, "awinic,sync-flag");
- 
- 	aw_dev->channel = channel_value;
--	aw88261->phase_sync = sync_enable;
+@@ -477,7 +477,7 @@ static int aw88261_dev_reg_update(struct aw88261 *aw88261,
+ 	return ret;
  }
  
- static int aw88261_init(struct aw88261 **aw88261, struct i2c_client *i2c, struct regmap *regmap)
-diff --git a/sound/soc/codecs/aw88261.h b/sound/soc/codecs/aw88261.h
-index bd0841fa9b77..734d0f93ced9 100644
---- a/sound/soc/codecs/aw88261.h
-+++ b/sound/soc/codecs/aw88261.h
-@@ -453,7 +453,7 @@ struct aw88261 {
- 	unsigned int mute_st;
- 	unsigned int amppd_st;
+-static char *aw88261_dev_get_prof_name(struct aw_device *aw_dev, int index)
++static int aw88261_dev_get_prof_name(struct aw_device *aw_dev, int index, char **prof_name)
+ {
+ 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
+ 	struct aw_prof_desc *prof_desc;
+@@ -485,12 +485,14 @@ static char *aw88261_dev_get_prof_name(struct aw_device *aw_dev, int index)
+ 	if ((index >= aw_dev->prof_info.count) || (index < 0)) {
+ 		dev_err(aw_dev->dev, "index[%d] overflow count[%d]",
+ 			index, aw_dev->prof_info.count);
+-		return NULL;
++		return -EINVAL;
+ 	}
  
--	unsigned char phase_sync;
-+	bool phase_sync;
- };
+ 	prof_desc = &aw_dev->prof_info.prof_desc[index];
  
- #endif
+-	return prof_info->prof_name_list[prof_desc->id];
++	*prof_name = prof_info->prof_name_list[prof_desc->id];
++
++	return 0;
+ }
+ 
+ static int aw88261_dev_get_prof_data(struct aw_device *aw_dev, int index,
+@@ -515,8 +517,8 @@ static int aw88261_dev_fw_update(struct aw88261 *aw88261)
+ 	char *prof_name;
+ 	int ret;
+ 
+-	prof_name = aw88261_dev_get_prof_name(aw_dev, aw_dev->prof_index);
+-	if (!prof_name) {
++	ret = aw88261_dev_get_prof_name(aw_dev, aw_dev->prof_index, &prof_name);
++	if (ret) {
+ 		dev_err(aw_dev->dev, "get prof name failed");
+ 		return -EINVAL;
+ 	}
+@@ -818,9 +820,8 @@ static int aw88261_profile_info(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct aw88261 *aw88261 = snd_soc_component_get_drvdata(codec);
+-	const char *prof_name;
+-	char *name;
+-	int count;
++	char *prof_name, *name;
++	int count, ret;
+ 
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -839,8 +840,8 @@ static int aw88261_profile_info(struct snd_kcontrol *kcontrol,
+ 	name = uinfo->value.enumerated.name;
+ 	count = uinfo->value.enumerated.item;
+ 
+-	prof_name = aw88261_dev_get_prof_name(aw88261->aw_pa, count);
+-	if (!prof_name) {
++	ret = aw88261_dev_get_prof_name(aw88261->aw_pa, count, &prof_name);
++	if (ret) {
+ 		strscpy(uinfo->value.enumerated.name, "null",
+ 						strlen("null") + 1);
+ 		return 0;
 -- 
 2.41.0
 
