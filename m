@@ -2,95 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5A57B0FD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40907B0FD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjI1ASA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
+        id S229800AbjI1AUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjI1AR6 (ORCPT
+        with ESMTP id S229445AbjI1AUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:17:58 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D4C41114;
-        Wed, 27 Sep 2023 17:17:56 -0700 (PDT)
-Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C798520B74C0;
-        Wed, 27 Sep 2023 17:17:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C798520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1695860276;
-        bh=apiqyVomDl3eH58Vs8mK0hqcp1k7lISOy2zAU3jCyNU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=V8yNq7vak/Kr3K00IoP6fpQzGDvLsvy4Ezk9uAHfe4/mS3eMbtM8AOjTFUAcUd+m8
-         Uy7bPwEC59miyqW9bO1K2C0BHSiD0UJAdT4igjnaL80svRDmpqu5ZuDj+DfThLWX/d
-         EzQskjEpeqCkesXIudWToBYAWfoOBMOwhSz/l9+M=
-Message-ID: <fda2a3dd-b325-4780-bd02-d1fedcaec260@linux.microsoft.com>
-Date:   Wed, 27 Sep 2023 17:17:54 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>, Wei Liu <wei.liu@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-References: <2023092342-staunch-chafe-1598@gregkh>
- <e235025e-abfa-4b31-8b83-416ec8ec4f72@linux.microsoft.com>
- <2023092630-masculine-clinic-19b6@gregkh>
- <ZRJyGrm4ufNZvN04@liuwe-devbox-debian-v2>
- <2023092614-tummy-dwelling-7063@gregkh>
- <ZRKBo5Nbw+exPkAj@liuwe-devbox-debian-v2>
- <2023092646-version-series-a7b5@gregkh>
- <05119cbc-155d-47c5-ab21-e6a08eba5dc4@linux.microsoft.com>
- <2023092737-daily-humility-f01c@gregkh>
- <ZRPiGk9M3aQr99Y5@liuwe-devbox-debian-v2>
- <2023092757-cupbearer-cancel-b314@gregkh>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <2023092757-cupbearer-cancel-b314@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 20:20:01 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CB8F5
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:19:59 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27763c2c27dso8903143a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695860399; x=1696465199; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JIhlczPTAFSXJtuz0kr4uNehhoedtrBaBEaYSQ3/D3w=;
+        b=mdqi3CV6ogd+sLjUE0adY1tjTK8dTH8aEdvxS0QxhkeHAFu0CEAbbBC4MFijtqP1Ly
+         sjZTGe4VhUUb/M9MK4TbEOatIHvLNoIhsPHiP350mptcWfo4FF6STM6mL/vMFyLsSZyT
+         X7mnnqlnhUEEmmE4L+2M7AdtXBciHMTjvxlqNP2WFYUccCbdj2AnNTB2KQ+x1ujJZcnr
+         njQZL90vUj2nrWJOTZk4TWrwQ3bo5KBupnlCZ83mzkdvD6qdy+qZcubw71mooKyD+WTp
+         KimIF/iFxfNWmiysn9zEBCwU46D+J9XKcW+HSFh4ADA1egulhRU8BSKJv9NvKUv5n9Gu
+         T7hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695860399; x=1696465199;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JIhlczPTAFSXJtuz0kr4uNehhoedtrBaBEaYSQ3/D3w=;
+        b=YhVPYa1IiTz8pkdR/tEePv7u4s2LVIPzLNP7ekqYDdhCLNxbCXBuM0fbN/9v0OetOv
+         BDkpMUo3r3BywFcy4c/TCKkRZStALCRbUjEGH5DcLlZCsMO2yqW7NzRRDF5EEfzMN9HS
+         BscIl8IhqlI6NNLHE52gNuMNLpmtAaj8fK1GhulHuS5q81LA6/9q/YUHblsnLfjje8t5
+         9x34aqEUmYAlwcZUE17MHjqweeFjmQlnkjo1eA+HS9mP/lBEtJCWqt2zkgf0HAYzbSOG
+         JQYbEop/GlJmGduTmnsUv+MMqgfnqoyynVRKnltpNS/+3joVexxbvVyrT5HSX5IyxuIf
+         CNvg==
+X-Gm-Message-State: AOJu0YxFaWz7LCWb1iVec/CLoTpWq1Tbrs7mYBR/R8SXjggD9nkB8Dqm
+        yVTsEl89zvu0M6vP+7RcUTNIOCK0Qlo=
+X-Google-Smtp-Source: AGHT+IGCbuN35ynl7FnkIb26JwfUSQivcI5ht12Lhq63ANf0P98cgnGB/yAMFxzlpCJU6VRv0zB+soGU8eE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:604:b0:1c0:d418:8806 with SMTP id
+ kg4-20020a170903060400b001c0d4188806mr44172plb.12.1695860399477; Wed, 27 Sep
+ 2023 17:19:59 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 27 Sep 2023 17:19:51 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20230928001956.924301-1-seanjc@google.com>
+Subject: [PATCH 0/5] KVM: x86: Fix breakage in KVM_SET_XSAVE's ABI
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Tyler Stachecki <stachecki.tyler@gmail.com>,
+        Leonardo Bras <leobras@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/2023 1:33 AM, Greg KH wrote:
-> On Wed, Sep 27, 2023 at 08:04:42AM +0000, Wei Liu wrote:
->> So, the driver is supposed to stash a pointer to struct device in
->> private_data. That's what I alluded to in my previous reply. The core
->> driver framework or the VFS doesn't give us a reference to struct
->> device. We have to do it ourselves.
-> 
-> Please read Linux Device Drivers, 3rd edition, chapter 3, for how to do
-> this properly.  The book is free online.
-> 
+Rework how KVM limits guest-unsupported xfeatures to effectively hide
+only when saving state for userspace (KVM_GET_XSAVE), i.e. to let userspace
+load all host-supported xfeatures (via KVM_SET_XSAVE) irrespective of
+what features have been exposed to the guest.
 
-Thanks, the issue that confused us was how to get the miscdevice.
-I eventually found the answer in the misc_register() documentation:
+The effect on KVM_SET_XSAVE was knowingly done by commit ad856280ddea
+("x86/kvm/fpu: Limit guest user_xfeatures to supported bits of XCR0"):
 
-"By default, an open() syscall to the device sets file->private_data to
-point to the structure."
+    As a bonus, it will also fail if userspace tries to set fpu features
+    (with the KVM_SET_XSAVE ioctl) that are not compatible to the guest
+    configuration.  Such features will never be returned by KVM_GET_XSAVE
+    or KVM_GET_XSAVE2.
 
-That's good - when we create a guest, we will have the miscdevice
-in private_data already. Then we can just put it in our per-guest data
-structure. That will let us retrieve the device in the other ioctls so 
-we can call dev_*().
+Peventing userspace from doing stupid things is usually a good idea, but in
+this case restricting KVM_SET_XSAVE actually exacerbated the problem that
+commit ad856280ddea was fixing.  As reported by Tyler, rejecting KVM_SET_XSAVE
+for guest-unsupported xfeatures breaks live migration from a kernel without
+commit ad856280ddea, to a kernel with ad856280ddea.  I.e. from a kernel that
+saves guest-unsupported xfeatures to a kernel that doesn't allow loading
+guest-unuspported xfeatures.
 
-Thanks,
-Nuno
+To make matters even worse, QEMU doesn't terminate if KVM_SET_XSAVE fails,
+and so the end result is that the live migration results (possibly silent)
+guest data corruption instead of a failed migration.
+
+Patch 1 refactors the FPU code to let KVM pass in a mask of which xfeatures
+to save, patch 2 fixes KVM by passing in guest_supported_xcr0 instead of
+modifying user_xfeatures directly.
+
+Patches 3-5 are regression tests.
+
+I have no objection if anyone wants patches 1 and 2 squashed together, I
+split them purely to make review easier.
+
+Note, this doesn't fix the scenario where a guest is migrated from a "bad"
+to a "good" kernel and the target host doesn't support the over-saved set
+of xfeatures.  I don't see a way to safely handle that in the kernel without
+an opt-in, which more or less defeats the purpose of handling it in KVM.
+
+Sean Christopherson (5):
+  x86/fpu: Allow caller to constrain xfeatures when copying to uabi
+    buffer
+  KVM: x86: Constrain guest-supported xfeatures only at KVM_GET_XSAVE{2}
+  KVM: selftests: Touch relevant XSAVE state in guest for state test
+  KVM: selftests: Load XSAVE state into untouched vCPU during state test
+  KVM: selftests: Force load all supported XSAVE state in state test
+
+ arch/x86/include/asm/fpu/api.h                |   3 +-
+ arch/x86/kernel/fpu/core.c                    |   5 +-
+ arch/x86/kernel/fpu/xstate.c                  |  12 +-
+ arch/x86/kernel/fpu/xstate.h                  |   3 +-
+ arch/x86/kvm/cpuid.c                          |   8 --
+ arch/x86/kvm/x86.c                            |  37 +++---
+ .../selftests/kvm/include/x86_64/processor.h  |  23 ++++
+ .../testing/selftests/kvm/x86_64/state_test.c | 110 +++++++++++++++++-
+ 8 files changed, 168 insertions(+), 33 deletions(-)
+
+
+base-commit: 5804c19b80bf625c6a9925317f845e497434d6d3
+-- 
+2.42.0.582.g8ccd20d70d-goog
+
