@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165697B14BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E6C7B151F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjI1HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S230396AbjI1HjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjI1HYY (ORCPT
+        with ESMTP id S230295AbjI1HjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:24:24 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2149499
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:24:22 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405361bba99so123804605e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695885860; x=1696490660; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+UA9uHWWeYBOdu4MsloFMHQ1l07sPdcS1vaYRXSvUR8=;
-        b=HcKSu2ffDMyf2m/+ZhRD5BKwWRMUnWt3xkFekzABD2LT9XhxMBDlg2E35GXOtsD1mq
-         lR/zYCnbMIeVczvaAz9U2bqgQh+HFyP6z64V3oULZTC2BPjou/pFILeE6cPp/yAnnjnT
-         rcDuXLnSqgOVJOubhK4oC84xKZcImgpZiuzYdJwBsRGIFGED1AUKHiYgLwMpEDveYzMm
-         eocladxAXfHAcHhJzUbN28tUmofGJjOM3hKfqMy978uCsy2RnZFaBvecYH2T/d4H4MXB
-         kKOZ9Ga5XBLGXv7eTOR+O+sytiL0HifPLVWebo0uspYuTSCD8UAuIKC0KANTd03ibWg+
-         Te5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695885860; x=1696490660;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+UA9uHWWeYBOdu4MsloFMHQ1l07sPdcS1vaYRXSvUR8=;
-        b=cJkuKGepOnMmc1DxTj7k8PpYEXaddFz/tXzucFfjpztiQuGWBoDJ1byM+ckCEcUJHx
-         LqIr5/Vnb3wIqgpB3xYreAR1QU+9W07K9rDPU0pCg3AkXZ2zS8DvkmTv0xJNr4zib2DW
-         xAC5iodPCt3HKHFTiG3bNMse/k50CWvn42/Y9BggknxkchUnpuGBLOsbLONMjfwfRfJP
-         H5veDT9TEclVvjiCeX6clWvSvwLWB6R8Kyzspc+NcTNSQXFMt+w0fVPjw7dpTkog6rm2
-         3f4Hj01r4TicbBxOgoIn48GD+iUG9FZme+vXZGej2HXuwhxRSx2sbTmSZr83lbjdy8nq
-         EReA==
-X-Gm-Message-State: AOJu0Yxv5w721UodLPyrrsHea68HdJh70j4jZcWPpPEYkNJt832b3YO0
-        Km0rIUHzKz9ULAx7Vjd7JnnI9Ehi3DADp7gYa8U=
-X-Google-Smtp-Source: AGHT+IEcIlXAmdvv9WcCA53AfD+QpBf5eGEwdf+8z26e7iBPCWPvls3jal7oS+TqSFQzP2rJYRmDnQ==
-X-Received: by 2002:a1c:6a09:0:b0:401:b76d:3b8b with SMTP id f9-20020a1c6a09000000b00401b76d3b8bmr406862wmc.16.1695885860422;
-        Thu, 28 Sep 2023 00:24:20 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id u17-20020a05600c00d100b00405935b417asm9400467wmm.2.2023.09.28.00.24.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 00:24:20 -0700 (PDT)
-Message-ID: <87dd2af9-ea1f-7995-2b3b-eaed356c659e@linaro.org>
-Date:   Thu, 28 Sep 2023 09:24:19 +0200
+        Thu, 28 Sep 2023 03:39:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B413AC;
+        Thu, 28 Sep 2023 00:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695886739; x=1727422739;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=40nXyAPgocdeKIF3kA25jghB0Z6YVlYWl0z9fcbH7IA=;
+  b=J1a9FlampS2PPq+hvytNIZ96u+ToAmAyTNZTQG6c9F6Qw1ejwR/eCrbQ
+   Rx0GSZdG8zPHUixnh8D99G1Up4OlDHOYP+8/1WBg9//ix18J0jQfxvhcI
+   qc2O1hPVVbTJCbCi5JQKGpaH7WjZRqI7athbWNgwrAxPkuIW1B0Z3/v1s
+   FKhnZ5z2Z5w5Dn+MvuwZ2IpXegWi2l4DRQ5CiSmVUzLWZ/oe++VgO3Bn3
+   Aucj3LeKkmvJJIuhMCPVNG3PdCvdwsL6CLXuRiTRyPqbqIJ4iH3/hNfx1
+   boaom9OTITLCJm3KageGpMnDtkMQoS4X3iLkT1TZ0OGG3hLB5aJTxFnHQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="367064857"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="367064857"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 00:38:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="742990418"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="742990418"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.173])
+  by orsmga007.jf.intel.com with ESMTP; 28 Sep 2023 00:38:57 -0700
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@kernel.org, x86@kernel.org, chang.seok.bae@intel.com
+Subject: [PATCH v2 0/3] crypto: x86/aesni - Improve XTS data type
+Date:   Thu, 28 Sep 2023 00:25:05 -0700
+Message-Id: <20230928072508.218368-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925151752.162449-1-chang.seok.bae@intel.com>
+References: <20230925151752.162449-1-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 11/13] ACPI: thermal: Do not use trip indices for
- cooling device binding
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <113039009.nniJfEyVGO@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <113039009.nniJfEyVGO@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 20:02, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Rearrange the ACPI thermal driver's callback functions used for cooling
-> device binding and unbinding, acpi_thermal_bind_cooling_device() and
-> acpi_thermal_unbind_cooling_device(), respectively, so that they use trip
-> pointers instead of trip indices which is more straightforward and allows
-> the driver to become independent of the ordering of trips in the thermal
-> zone structure.
-> 
-> The general functionality is not expected to be changed.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+V1->V2:
+* Drop the unnecessary casts (Eric).
+* Put the 'Link:' tag right after 'Suggested-by' (Eric).
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
 
+The field within the struct aesni_xts_ctx is currently defined as a
+byte array, sized to match the struct crypto_aes_ctx. However, it
+actually represents the struct data type.
+
+To accurately redefine the data type, some adjustments have to be made
+to the address alignment code. It involved refactoring the common
+alignment code initially, followed by updating the structure's
+definition. Finally, the XTS alignment is now performed early in the
+process, rather than at every access point.
+
+This change was suggested during Eric's review of another series
+intended to enable an alternative AES implementation [1][2]. I viewed
+it as an enhancement to the mainline, independent of the series.
+
+I have divided these changes into incremental pieces, making them
+considerably more reviewable and maintainable.
+
+The series is based on the cryptodev's master branch:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+
+Thanks,
+Chang
+
+[1] https://lore.kernel.org/all/ZFWQ4sZEVu%2FLHq+Q@gmail.com/
+[2] https://lore.kernel.org/all/20230526065414.GB875@sol.localdomain/
+
+Chang S. Bae (3):
+  crypto: x86/aesni - Refactor the common address alignment code
+  crypto: x86/aesni - Correct the data type in struct aesni_xts_ctx
+  crypto: x86/aesni - Perform address alignment early for XTS mode
+
+ arch/x86/crypto/aesni-intel_glue.c | 52 ++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 27 deletions(-)
+
+
+base-commit: 1c43c0f1f84aa59dfc98ce66f0a67b2922aa7f9d
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.34.1
 
