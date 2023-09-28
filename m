@@ -2,233 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E677B1013
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD47B1017
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjI1Aex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
+        id S229763AbjI1AiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1Aew (ORCPT
+        with ESMTP id S229437AbjI1AiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:34:52 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2091.outbound.protection.outlook.com [40.92.40.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F468BF;
-        Wed, 27 Sep 2023 17:34:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fqphrEeZMHuXCBFSmZvapu2TyO/I6ivzbc0C2nZDYLm3UxiAbzRqzG4h2kreQmFlu6cPJWFS4hEdtyYgARjTCL50WHE+aa8296NE6dxQH43ZReMVAUS/p3GPqndjGvfYZ4zEtYTOSvnw5RQHAwGZAkgM7sMAsD1Hua7DliQfi++NlPlP4Z6haJfmi+yN+Qf43XIX+tio7LeRRlYykLt487jM/RkqXT7EBH/yLncyzOoADiqagi3nwZY7uqk4ohd1XLl77xfTlNwi9tc4c9EtZ1iqE3a4+sSHtVLh3gHu8SKSWqQUAFi9KKQAsvSnuFcigTfqqXN3bTr07Alh0h0v0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rk6uotVC+CFzBXiqmhSXjzvTEAkppreayMTjAU2iE7c=;
- b=hj+fiVPWz7YOolFD+0viMg77wlfMUsEpTplfbumA4XjXNKadKcJTZR/bIiDF4DULar4RCkQ2veFHPHYp6xInj13i+iEmbY6CarsmPhW1ywHH3uun5/9gTEggMpRqy4kgzU+io30YSs9TH9BxX9gtBrBwI26r1jaO2vkK4vEXkBUOQLNks5mObHyx95zRWG3m3lxQ63XfvUDGwL6ElH0YE3H7z3Qz7ZTwN6DEtoBMG37N1mjrkl8XM0B6RY62bKXlHk66NATlbt0qqpDzRrDm1sIT1URflfWurWkvaMfUBXHQqulF8r6wINbWc8PuWDMGvVUxKZV5mB29NAyLwsJrZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rk6uotVC+CFzBXiqmhSXjzvTEAkppreayMTjAU2iE7c=;
- b=AUmfe0zwjmBEWPRO5bg9YLBJWP9GaJY014vDMswufUyF+GW1tnF03uontvSlTByC1Dq04tdb+Th93T4O9nXkUlKLD4G78kn3U04909vPaP59QcSHpnWhFQdUMN1drvmxDCpxpuqSoc7tRkHrybFi70nuSYP8b0xE/7zZTDnWm0YUcIDLJNs3Yhp24lP21ZsMOsW+pP4x6enzixKC/uEhsGUdDCIZnhrnZ8pb/2Ny9Nfb20IbgvMX6W6V32y+0AucQ5Z0lC3r4cse9T4YHz+vWkTCTesgfWPIB8nTnTXcaO2eVxJkJa0YQZeI0cK3iuqaDofbCPvB+U6j024ygXCTFA==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SN7PR20MB5139.namprd20.prod.outlook.com (2603:10b6:806:271::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.27; Thu, 28 Sep
- 2023 00:34:47 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
- 00:34:47 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Anup Patel <apatel@ventanamicro.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>,
-        Inochi Amaoto <inochiama@outlook.com>
-Subject: Re: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT timer
-Date:   Thu, 28 Sep 2023 08:34:42 +0800
-Message-ID: <IA1PR20MB49534EDF586FCC784C81C5ABBBC1A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230927-uncorrupt-bronco-72e35232b1cc@spud>
-References: <20230927-uncorrupt-bronco-72e35232b1cc@spud>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [s4GznsRWndDRLMihdOhiXh6eCWukxJnHkqftgG7LaDM=]
-X-ClientProxiedBy: TYAPR01CA0164.jpnprd01.prod.outlook.com
- (2603:1096:404:7e::32) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230928003442.56637-1-inochiama@outlook.com>
+        Wed, 27 Sep 2023 20:38:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCB4BF;
+        Wed, 27 Sep 2023 17:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695861478; x=1727397478;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uV5QaqpuKb5uDxr1hW2u8bXPE4XZPSR/+dsQ8TrfyRM=;
+  b=lO463FprBN0X7jUOmepopMnX+Wt+MK145CtwsmLbAa56XpwrjbQsXRRT
+   +18/JJvlmqjTenxYMsTUPX98YotXxZXl+zDotjETkAzSKUgBq0fmkdmal
+   TwC+U2H6LerANEnF0cl0tkWNB0O/Vyn5pAydeMNEZuKbXCNjKRpV0alJ7
+   kXUHRVAtDxbsn/7Wj5PkU0qvulB5K3vqM7zRD1GM14dRBNJ9kwJgn+amD
+   Ufw1bA75rxYx30DS4fVLjFJtLDHeZ3hTwIDhvMayATPOkWg59izYFm+HZ
+   yGU+8LOiqULwNynabeejNX9quZLosfEM3NLQI33DntQLWT2R0LSuEBhTl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="565337"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="565337"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 17:37:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="784518923"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="784518923"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 27 Sep 2023 17:37:53 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlf2M-0000vF-3C;
+        Thu, 28 Sep 2023 00:37:50 +0000
+Date:   Thu, 28 Sep 2023 08:37:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     liuchang_125125@163.com, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, shaper.liu@bayhubtech.com,
+        chevron.li@bayhubtech.com, thomas.hu@bayhubtech.com,
+        charl.liu@bayhubtech.com, Charl Liu <liuchang_125125@163.com>
+Subject: Re: [PATCH V1 1/1] mmc: sdhci-pci-o2micro: Fix Bayhub SD host
+ hardware tuning compatibility issue for BanQ card
+Message-ID: <202309280818.XQbiYALu-lkp@intel.com>
+References: <20230927122652.4969-1-liuchang_125125@163.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SN7PR20MB5139:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b09f5ab-f577-4287-d8fb-08dbbfbab777
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1vFQ8Ruo73HfDyl6FpeOxYMv7cbLOFKrsuryXzUnFR14t1PMRwpM95aW/IsdIMHRzcjY9MXpb6VSt0Gczl7xs4G3Kzl+70ruSUhjGJFzTPoxa/LyTx7VGN9Tr4t8Q/YR56nKWXRxmVbLtWlFSARDfbQhD35cQ7mfulnJ41fxV2IEUFyhaE6x2scI452UmOueAsioDgN/2MqpTKqMy5Ikd1FhvHmEpaRA9LYaQ/yso6VmPqTDv6B3erpcyUn0+s6THDpA79JiZ9mOVOkCY1kNhVwNNBbVdJ+GI7zJpEu3QdQm8iWqWO9SJ1u7GnO+mCHBtihnXcXBlNqHVS87JL4WICR+DClAVbVwxowTBl9GUc0wvBoy1w/zb1oyXyNFgiVdNSSgUtRqc82hXlOrMC0Fwp4QnPhxV13tRg7KpPlqi3CuFsMB1UXPFKPhROjnMCC41MLHBs44bI2CUS3FM15mk5Ardx31XnppYceOw/ejL3Xi/Z80tOV6hmLMZX4lzvaNbyhLMiVmU0g5pZFq1T5NzpWEc5VNCGCUTsuUo6pvFWCv58CUi47L6mF3BnsoBjP4uGQMW4yCaVlr9RQGfbTUwrN5Fdq7JJ0r/FAq3vT2nAIm0KmXQyscNMIIqxHz4HWQ
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lzjoF62WZuH/iHu9tKWXtFSL86SzES0qFuokWyEd8NDohr0OH3YGhHF7/eQW?=
- =?us-ascii?Q?HzuBky+skxgE+xDki9Aj58D80g4Ngoh63KJYu7963f7UPv0W2/3kuMTpjpAq?=
- =?us-ascii?Q?JCdr/XZ7i0GMV24C1fHH37l+uO5Crx5sR5abXypP50qJ2VzYLo1Uxdd2KfDe?=
- =?us-ascii?Q?DPE2OqlaY0gClu/2KPI+TJKEvugAE9VwHAqWvf3jyhwyph0JXrZylW8QnE/i?=
- =?us-ascii?Q?kIRRuA3h76PJ3rNnn+0C2XdaU0FwVlTZTuibM7UfSNK4zGcp5aVdGIJGKJYf?=
- =?us-ascii?Q?DjkIBAHW4i3+IT+jVu0LrIzDTR9dHlKAX66E25UaFjypnsfMpH7Gt5WsEAqz?=
- =?us-ascii?Q?jP54XPRuV+hokXVuwY1jEbTlnCyoKUyv7SXT+o8nooe9eiyEkiqAcCKY6EIq?=
- =?us-ascii?Q?V/ZNoSNu2mbKLEBOjo5lmuyhJJOdr/d5bIaLQq+ASiA1oTkyDbeFxMIQTGbB?=
- =?us-ascii?Q?S17nrmDVSoEEyLZwePlzL3pTGAIwTfgWtYtUH9d+ols97gFyzHtMWfujVIzw?=
- =?us-ascii?Q?sLFoTmEMdp40cN4eKoeGIuWWywFuHkcHwsm9bJz7jsNl4UDTXEky9SHoLVV4?=
- =?us-ascii?Q?xjypsKceDCamBojvj3wxNN+KH2e4cTCjUq2yfSqhFM34N87txm0zHPM1VWY3?=
- =?us-ascii?Q?lelkgcxElTw1jxzO1+aYGxxOwwIiteDIxRNGS5H1Zy0MOVFLrBhfyZzVhSQH?=
- =?us-ascii?Q?R+wYed7XRhPyh+0IOaRMMmSmdln65WeMdB7CYJdqATSBsXd0lOGV5hbX333V?=
- =?us-ascii?Q?GCL/EaGYa06kQOJDiFTOTUQ48VDcBSVo1B+RzBClwmM7Mrbq2xdShMoJSfQ9?=
- =?us-ascii?Q?egyrgyq1XWndeXAbwjohar0HNNGmQ0N92/9SpjbkVbsQN97IckyKme9I2wHs?=
- =?us-ascii?Q?G2iRROVz1gLLqcAHoDSE4/ogw/9sLDXmxW9Vgf5nKG1MwUThZF4DPiy2/rKx?=
- =?us-ascii?Q?WuQOo4GDbsVRUVtC9XGNrVjMKMVr1gSPRBLyL9li3ZE7/47J4x3feAyZ0z9d?=
- =?us-ascii?Q?li5GujxQlyvgn+pHA/EiGV1q8L5RPcLdzpNIjplFLFdULNdxZ+uw6jcc5JPU?=
- =?us-ascii?Q?e3AgMBg+dHADqmiUGtkGwqOY5JOpvH/jr7rkL1cxvCmokFGun6YkUJSBqQ57?=
- =?us-ascii?Q?s0Muobn9vBd+mXqlcyqiTSjRP0RHc5QCRJXxLQMHpaiIE2glhlcH+zxG+YyZ?=
- =?us-ascii?Q?IONPnZ6Nwn8pObhHm6yhJ9WI6V5t11N4YMIbuT/irX7G6nFu7wbtDyf1t0A?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b09f5ab-f577-4287-d8fb-08dbbfbab777
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 00:34:46.9762
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR20MB5139
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927122652.4969-1-liuchang_125125@163.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Hey,
->
->On Wed, Sep 27, 2023 at 05:01:37PM +0800, Chen Wang wrote:
->> From: Inochi Amaoto <inochiama@outlook.com>
->>
->> The clint of Sophgo sg2042 is incompatible with the standard sifive
->> clint, as the timer and ipi device on the different address, and can
->> not be handled by the sifive,clint DT.
->>
->> In addition, the timers of sg2042 are mapped by per cluster, which is
->> hard to merge with its ipi device.
->
->I think the description here is kinda poor, it needs to be explained
->that this is an implementation of the not frozen & likely abandoned
->aclint spec.
->
+Hi,
 
-Thanks, I will explain this.
+kernel test robot noticed the following build warnings:
 
->> To avoid conficts caused by using the same clint compatible string when
->> this device is parsed by SBI, add a new vendor specific compatible string
->> to identify the timer of sg2042 soc.
->
->And this whole section about avoiding conflicts is not relevant, since
->the binding is specifically for the timer. It'd be better to mention why
->a single compatible cannot work for all elements, than bring up a
->situation that does not exist and would be a misuse of the binding in
->the first place.
->
+[auto build test WARNING on 0e945134b680040b8613e962f586d91b6d40292d]
 
-Thanks
+url:    https://github.com/intel-lab-lkp/linux/commits/liuchang_125125-163-com/mmc-sdhci-pci-o2micro-Fix-Bayhub-SD-host-hardware-tuning-compatibility-issue-for-BanQ-card/20230927-203005
+base:   0e945134b680040b8613e962f586d91b6d40292d
+patch link:    https://lore.kernel.org/r/20230927122652.4969-1-liuchang_125125%40163.com
+patch subject: [PATCH V1 1/1] mmc: sdhci-pci-o2micro: Fix Bayhub SD host hardware tuning compatibility issue for BanQ card
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230928/202309280818.XQbiYALu-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309280818.XQbiYALu-lkp@intel.com/reproduce)
 
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> Signed-off-by: Chen Wang <wangchen20@iscas.ac.cn>
->> Signed-off-by: Chen Wang <unicornxw@gmail.com>
->
->You only need to sign this off once. The iscas one looks like it
->probably is the relevant signoff?
->
->> ---
->>  .../timer/sophgo,sg2042-clint-mtimer.yaml     | 42 +++++++++++++++++++
->>  1 file changed, 42 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
->> new file mode 100644
->> index 000000000000..5da0947d048a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/timer/sophgo,sg2042-clint-mtimer.yaml
->> @@ -0,0 +1,42 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/timer/sophgo,sg2042-clint-mtimer.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Sophgo CLINT Timer
->> +
->> +maintainers:
->> +  - Inochi Amaoto <inochiama@outlook.com>
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - const: sophgo,sg2042-clint-mtimer
->
->There's only one of these, so you don't need the oneOf.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309280818.XQbiYALu-lkp@intel.com/
 
-Thanks
+All warnings (new ones prefixed by >>):
 
->Also, is the clint here not a thead IP? In which case, you need to add a
+   drivers/mmc/host/sdhci-pci-o2micro.c: In function 'sdhci_o2_tuning_setting':
+>> drivers/mmc/host/sdhci-pci-o2micro.c:343:25: warning: unused variable 'o2_host' [-Wunused-variable]
+     343 |         struct o2_host *o2_host = sdhci_pci_priv(slot);
+         |                         ^~~~~~~
+   drivers/mmc/host/sdhci-pci-o2micro.c: In function 'sdhci_o2_configure_banq_best_input_phase':
+>> drivers/mmc/host/sdhci-pci-o2micro.c:370:13: warning: unused variable 'response' [-Wunused-variable]
+     370 |         u32 response = 0;
+         |             ^~~~~~~~
+   drivers/mmc/host/sdhci-pci-o2micro.c: In function 'sdhci_o2_execute_tuning':
+>> drivers/mmc/host/sdhci-pci-o2micro.c:407:26: warning: unused variable 'card' [-Wunused-variable]
+     407 |         struct mmc_card *card = mmc->card;
+         |                          ^~~~
 
-Yes, The clint is a thead IP, like that of th1520 and allwinner D1.
 
->second compatible IMO. That second compatible then would be the one that
->appears in opensbi etc.
->
+vim +/o2_host +343 drivers/mmc/host/sdhci-pci-o2micro.c
 
-As this is a thead IP, maybe use thead,c900-clint-mtimer is fine?
-If so, whether we should replace the "thead,c900-clint" with these separate
-DT to describe the thead clint? The DT binding said the thead clint is not
-compatible with the sifive clint, so maybe this is a chance to just move
-them out.
+   337	
+   338	static void sdhci_o2_tuning_setting(struct mmc_host *mmc, bool isbanq, u8 phase_num)
+   339	{
+   340		struct sdhci_host *host = mmc_priv(mmc);
+   341		struct sdhci_pci_slot *slot = sdhci_priv(host);
+   342		struct sdhci_pci_chip *chip = slot->chip;
+ > 343		struct o2_host *o2_host = sdhci_pci_priv(slot);
+   344		u32 reg_val;
+   345	
+   346		if (isbanq) {
+   347			/* update tuning command times for BanQ card */
+   348			pci_read_config_dword(chip->pdev, O2_SD_TUNING_CTRL, &reg_val);
+   349			reg_val &= 0x00FFFFFF;
+   350			reg_val |= 0x02000000;
+   351			pci_write_config_dword(chip->pdev, O2_SD_TUNING_CTRL, reg_val);
+   352		} else {
+   353			reg_val = sdhci_readl(host, O2_SD_DLL_CTRL);
+   354			reg_val &= ~BIT(28);
+   355			sdhci_writel(host, reg_val, O2_SD_DLL_CTRL);
+   356	
+   357			/* Update tuning command times for normal card */
+   358			pci_read_config_dword(chip->pdev, O2_SD_TUNING_CTRL, &reg_val);
+   359			reg_val &= 0x00FFFFFF;
+   360			reg_val |= (phase_num * 3) << 24;
+   361			pci_write_config_dword(chip->pdev, O2_SD_TUNING_CTRL, reg_val);
+   362		}
+   363	}
+   364	
+   365	static void sdhci_o2_configure_banq_best_input_phase(struct sdhci_host *host)
+   366	{
+   367		struct sdhci_pci_slot *slot = sdhci_priv(host);
+   368		struct sdhci_pci_chip *chip = slot->chip;
+   369	
+ > 370		u32 response = 0;
+   371		u16 dll_phase_configure = 0;
+   372		u16 best_input_phase = 0;
+   373	
+   374		switch (chip->pdev->device) {
+   375		case PCI_DEVICE_ID_O2_FUJIN2:
+   376			best_input_phase = 0x0;
+   377			break;
+   378	
+   379		case PCI_DEVICE_ID_O2_SEABIRD0:
+   380		case PCI_DEVICE_ID_O2_SEABIRD1:
+   381			best_input_phase = 0x0;
+   382			break;
+   383	
+   384		case PCI_DEVICE_ID_O2_GG8_9860:
+   385		case PCI_DEVICE_ID_O2_GG8_9861:
+   386		case PCI_DEVICE_ID_O2_GG8_9862:
+   387		case PCI_DEVICE_ID_O2_GG8_9863:
+   388			best_input_phase = 0xB;
+   389			break;
+   390	
+   391		default:
+   392			break;
+   393		}
+   394	
+   395		/* configure the best input phase (0xB) for BanQ card */
+   396		dll_phase_configure = sdhci_readw(host, 0x1B2);
+   397		dll_phase_configure = (dll_phase_configure & (u16)0xF0FF) |
+   398			(best_input_phase << 8) | BIT(12);
+   399		sdhci_writew(host, dll_phase_configure, 0x1B2);
+   400	}
+   401	
+   402	static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
+   403	{
+   404		struct sdhci_host *host = mmc_priv(mmc);
+   405		struct sdhci_pci_slot *slot = sdhci_priv(host);
+   406		struct sdhci_pci_chip *chip = slot->chip;
+ > 407		struct mmc_card *card = mmc->card;
+   408		struct o2_host *o2_host = sdhci_pci_priv(slot);
+   409		int current_bus_width = 0;
+   410		u32 scratch32 = 0;
+   411		u16 data_timeout_counter_value = 0;
+   412		u16 scratch = 0;
+   413		u8 phase_num = 0;
+   414		u8  scratch_8 = 0;
+   415		u32 reg_val;
+   416	
+   417		/*
+   418		 * This handler implements the hardware tuning that is specific to
+   419		 * this controller.  Fall back to the standard method for other TIMING.
+   420		 */
+   421		if ((host->timing != MMC_TIMING_MMC_HS200) &&
+   422			(host->timing != MMC_TIMING_UHS_SDR104) &&
+   423			(host->timing != MMC_TIMING_UHS_SDR50))
+   424			return sdhci_execute_tuning(mmc, opcode);
+   425	
+   426		if (WARN_ON(!mmc_op_tuning(opcode)))
+   427			return -EINVAL;
+   428	
+   429		if ((chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9860) ||
+   430			(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9861) ||
+   431			(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9862) ||
+   432			(chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9863)) {
+   433			phase_num = 14;
+   434		} else {
+   435			phase_num = 11;
+   436		}
+   437	
+   438		/* UnLock WP */
+   439		pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+   440		scratch_8 &= 0x7f;
+   441		pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+   442	
+   443		sdhci_o2_tuning_setting(mmc, (bool)o2_host->banq_card_setting, phase_num);
+   444	
+   445		if (o2_host->banq_card_setting) {
+   446			/*
+   447			 * set data timeout counter value to 0 to ensure that
+   448			 * the tuning process can be completed
+   449			 */
+   450			data_timeout_counter_value = sdhci_readw(host, SDHCI_TIMEOUT_CONTROL);
+   451			sdhci_writew(host, data_timeout_counter_value & (u16)0xFFF0, SDHCI_TIMEOUT_CONTROL);
+   452		}
+   453	
+   454		/* Force power mode enter L0 */
+   455		scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
+   456		scratch |= O2_SD_PWR_FORCE_L0;
+   457		sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
+   458	
+   459		/* Update output phase */
+   460		switch (chip->pdev->device) {
+   461		case PCI_DEVICE_ID_O2_SDS0:
+   462		case PCI_DEVICE_ID_O2_SEABIRD0:
+   463		case PCI_DEVICE_ID_O2_SEABIRD1:
+   464		case PCI_DEVICE_ID_O2_SDS1:
+   465		case PCI_DEVICE_ID_O2_FUJIN2:
+   466			/* Stop clk */
+   467			reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+   468			reg_val &= ~SDHCI_CLOCK_CARD_EN;
+   469			sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
+   470	
+   471			if ((host->timing == MMC_TIMING_MMC_HS200) ||
+   472				(host->timing == MMC_TIMING_UHS_SDR104)) {
+   473				/* Set pcr 0x354[16] to choose dll clock, and set the default phase */
+   474				pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &reg_val);
+   475				reg_val &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
+   476				reg_val |= (O2_SD_SEL_DLL | O2_SD_FIX_PHASE);
+   477				pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, reg_val);
+   478			}
+   479	
+   480			/* Start clk */
+   481			reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+   482			reg_val |= SDHCI_CLOCK_CARD_EN;
+   483			sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
+   484			break;
+   485		case PCI_DEVICE_ID_O2_GG8_9860:
+   486		case PCI_DEVICE_ID_O2_GG8_9861:
+   487		case PCI_DEVICE_ID_O2_GG8_9862:
+   488		case PCI_DEVICE_ID_O2_GG8_9863:
+   489		default:
+   490			break;
+   491		}
+   492	
+   493		/* Lock WP */
+   494		pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+   495		scratch_8 |= 0x80;
+   496		pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+   497	
+   498		/* wait DLL lock, timeout value 5ms */
+   499		if (readx_poll_timeout(sdhci_o2_pll_dll_wdt_control, host,
+   500			scratch32, (scratch32 & O2_DLL_LOCK_STATUS), 1, 5000))
+   501			pr_warn("%s: DLL can't lock in 5ms after force L0 during tuning.\n",
+   502					mmc_hostname(host->mmc));
+   503		/*
+   504		 * Judge the tuning reason, whether caused by dll shift
+   505		 * If cause by dll shift, should call sdhci_o2_dll_recovery
+   506		 */
+   507		if (!sdhci_o2_wait_dll_detect_lock(host))
+   508			if (!sdhci_o2_dll_recovery(host)) {
+   509				pr_err("%s: o2 dll recovery failed\n",
+   510					mmc_hostname(host->mmc));
+   511				return -EINVAL;
+   512			}
+   513		/*
+   514		 * o2 sdhci host didn't support 8bit emmc tuning
+   515		 */
+   516		if (mmc->ios.bus_width == MMC_BUS_WIDTH_8) {
+   517			current_bus_width = mmc->ios.bus_width;
+   518			mmc->ios.bus_width = MMC_BUS_WIDTH_4;
+   519			sdhci_set_bus_width(host, MMC_BUS_WIDTH_4);
+   520		}
+   521	
+   522		sdhci_o2_set_tuning_mode(host);
+   523	
+   524		sdhci_start_tuning(host);
+   525	
+   526		__sdhci_o2_execute_tuning(host, opcode);
+   527	
+   528		sdhci_end_tuning(host);
+   529	
+   530		if (current_bus_width == MMC_BUS_WIDTH_8) {
+   531			mmc->ios.bus_width = MMC_BUS_WIDTH_8;
+   532			sdhci_set_bus_width(host, current_bus_width);
+   533		}
+   534	
+   535		/* update input phase for BanQ card */
+   536		if (o2_host->banq_card_setting) {
+   537			/* recover the data timeout counter value */
+   538			sdhci_writew(host, data_timeout_counter_value, SDHCI_TIMEOUT_CONTROL);
+   539	
+   540			/*
+   541			 * Stop transfer for CMD19 after tuning done is set to
+   542			 * avoid data line inhibit
+   543			 */
+   544			sdhci_o2_send_stop_transmission(host);
+   545	
+   546			sdhci_o2_configure_banq_best_input_phase(host);
+   547		}
+   548	
+   549		/* Cancel force power mode enter L0 */
+   550		scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
+   551		scratch &= ~(O2_SD_PWR_FORCE_L0);
+   552		sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
+   553	
+   554		sdhci_reset(host, SDHCI_RESET_CMD);
+   555		sdhci_reset(host, SDHCI_RESET_DATA);
+   556	
+   557		host->flags &= ~SDHCI_HS400_TUNING;
+   558		return 0;
+   559	}
+   560	
 
->Otherwise, this looks fine.
->
->Thanks,
->Conor.
->
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts-extended:
->> +    minItems: 1
->> +    maxItems: 4095
->> +
->> +additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts-extended
->> +
->> +examples:
->> +  - |
->> +    timer@ac000000 {
->> +      compatible = "sophgo,sg2042-clint-mtimer";
->> +      interrupts-extended = <&cpu1intc 7>,
->> +                            <&cpu2intc 7>,
->> +                            <&cpu3intc 7>,
->> +                            <&cpu4intc 7>;
->> +      reg = <0xac000000 0x00010000>;
->> +    };
->> +...
->> --
->> 2.25.1
->>
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
