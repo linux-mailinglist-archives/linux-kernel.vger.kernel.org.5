@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182397B123B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA1E7B123E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjI1Fw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S230155AbjI1FzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjI1Fwz (ORCPT
+        with ESMTP id S229453AbjI1FzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:52:55 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CE4F9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:52:52 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b2b53e17feso326348566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:52:52 -0700 (PDT)
+        Thu, 28 Sep 2023 01:55:03 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B2FBF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:55:01 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b29186e20aso896260466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:55:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695880371; x=1696485171; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695880500; x=1696485300; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yiermC2FyF18zETaEZYprIWZt0kw0ddRV7cxIGTZIGU=;
-        b=ZT5dpyvHSQ5AuXMQyZk4/XuYSFtGVDD/UnZCmJsugKBQ0Wr1j+Y0BW+TpQB957l+sz
-         K8EOahnpOSA3X7WQefoWXNzvt4hA8L3e8LqpoY0PKko4QMLyHMbN6q3IOeW+KQWc8icG
-         k9DzJo9it56jcde5l4mY+IvIl2Mgwn2puO3/feAfJK/rXFQTysrpzSZiAtTosmI4s4rl
-         mYc8PCCyXCF2bMiPkpmLN41OT76oVl5jG+5mtnTx7rw44o/T50t7pS2Ylpv1mxToUklr
-         cj6M3eULbjHm7dumb/lIWIthZo6aQsAeZH2xVTGvbwvTR7KlS73gwDqbIjHmSw7igNs+
-         zbmg==
+        bh=54qiU08t2GpO/MWMIDTzBVyjApX/CcNuywPfrqlHKm4=;
+        b=dJJZ4Guq+CFyIZwye+WyoJz8yQA22E8NlyN7hLBGCCtKxxhthNm843CeRamKazmdlb
+         pKlwy6K6kRaw4TkqO3W66slIQgoVI8khOQGNLxCgnC7K17JVgy9rbJCNJhzUfmOJGVVa
+         koPzX/scSfQf0RNyrkG87kL8/TTI5Hf9fm4/nJb89c080ZfZB3eSfFoUNDCRSq+oMytH
+         KqQteGlx70HTxuQFtF7kecnrRcHCbk+RLxQsYHvkSuvaMdtsGsNx8ZnqQj8QWz+TF74/
+         e7DbmPr0vY2UGPmkhz+RAcrSdBEyO7TI3m9vTHQ3cKiVhqMhcK/m1Zu3FSm+HCCGBS7C
+         LiDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695880371; x=1696485171;
+        d=1e100.net; s=20230601; t=1695880500; x=1696485300;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yiermC2FyF18zETaEZYprIWZt0kw0ddRV7cxIGTZIGU=;
-        b=CB5C8EZQVmgBx6XX8XUHz94AdocUlx87/ya6fe/0GcVpFjUDQILFAb62ARdikugzEa
-         hqUQkTpGubKZ2kdf5vPhfpKBjntO5oFipsFIetrDWcj7pFMn+gJwE/o1adPaSOFHVGPb
-         yfwF0IVjrCC5DOhS/tpcNvNxBHS1PdvRV3F5oDHaG9CAHtY6qyri0flspB48g4ZD4cy1
-         nyJCmVcPQbXFB8H89qTm8ShSRb57Vn6oS8XsuCGAdptZyhmIvypQcHy2HNXexhuMsVRN
-         BOR88A6gXnopYANHA0Qk5ARR7GtCHj+qtK3GNbkjgBdSOSUGHmsBR/sAnSdi8S+aLtmr
-         gxwg==
-X-Gm-Message-State: AOJu0YzxQIv6W2qAKIF2Brb0yaoTDjkxBKH8Nl/fWztwGTS+v9X2m+vk
-        xErhLfVm/oj2wYmOuM/pQ+zq5A==
-X-Google-Smtp-Source: AGHT+IECXd2SHWusjF1ZvJH6wJsyg8mQKDkU8guO8NQ037K/NGiIVih0u3a06H3//Q6E4sdYH4h/lw==
-X-Received: by 2002:a17:906:1d2:b0:9b2:7657:87c0 with SMTP id 18-20020a17090601d200b009b2765787c0mr228675ejj.51.1695880371406;
-        Wed, 27 Sep 2023 22:52:51 -0700 (PDT)
+        bh=54qiU08t2GpO/MWMIDTzBVyjApX/CcNuywPfrqlHKm4=;
+        b=wbY8Vh4MDAoTO91N22Sr5R8+MxZh5uygYYgZHkVjGOt0a+WR8Ta0naM/vgkMczkZvp
+         2wkcxDMIe24KzzlcNsdmbP+rMnXbVQhcg5T1xVpSZrq3qKgKOGlSzUpS7+V3ZpEzL67B
+         v5uWbquqk3iEUqiHV/Ip23nthVhgbVkDUD+aNEaKoFuTvvdvjfEtnKnKsG4YaXxYagzc
+         5TcyDu4O28b/ZuNkoy/cKD1k0pDGqbYosv5ndh4vNIS1GzVZiFPGtulkjXLfU7nW4FwA
+         L1d89EwPSDs4/vojk+UEa/Vu6VYEGst06wevwbbRtntBb2dwsKBJDM2JcsgaH/9kryP6
+         90+g==
+X-Gm-Message-State: AOJu0YwVgoeZf5NgjvBIvOr9DKGjosWYb7YW1m8KEs+jMzp7SQAOfOae
+        0r1Eb6MhlbO9YQalf6V6KRD0sQ==
+X-Google-Smtp-Source: AGHT+IEzM4GVvXhhGjAdh17D1G62ZiQP9XY8Q28w1XdHkASHmuCPrX5v/hiOPIopi46147BEe3T8Hg==
+X-Received: by 2002:a17:906:769a:b0:9b2:982e:339a with SMTP id o26-20020a170906769a00b009b2982e339amr259099ejm.22.1695880499957;
+        Wed, 27 Sep 2023 22:54:59 -0700 (PDT)
 Received: from krzk-bin.homenet.telecomitalia.it (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b009ad75d318ffsm10394942ejb.17.2023.09.27.22.52.50
+        by smtp.gmail.com with ESMTPSA id k17-20020a170906681100b00992b50fbbe9sm10355749ejr.90.2023.09.27.22.54.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 22:52:50 -0700 (PDT)
+        Wed, 27 Sep 2023 22:54:59 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Rob Herring <robh@kernel.org>
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: (subset) [PATCH 31/40] soc/samsung: exynos-chipid: Convert to platform remove callback returning void
-Date:   Thu, 28 Sep 2023 07:52:48 +0200
-Message-Id: <169588036457.9866.18271301259272655918.b4-ty@linaro.org>
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: memory-controllers: Make "additionalProperties: true" explicit
+Date:   Thu, 28 Sep 2023 07:54:53 +0200
+Message-Id: <169588049053.10364.12898939958860054639.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230925095532.1984344-32-u.kleine-koenig@pengutronix.de>
-References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de> <20230925095532.1984344-32-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230925212626.1974676-1-robh@kernel.org>
+References: <20230925212626.1974676-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -77,22 +81,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 25 Sep 2023 11:55:22 +0200, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new() which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
+On Mon, 25 Sep 2023 16:26:21 -0500, Rob Herring wrote:
+> Make it explicit that child nodes have additional properties and the
+> child node schema is not complete. The complete schemas are applied
+> separately based the compatible strings.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[31/40] soc/samsung: exynos-chipid: Convert to platform remove callback returning void
-        https://git.kernel.org/krzk/linux/c/0da7c05d232dc015ab421771bb71cdbfb46e0d67
+[1/1] dt-bindings: memory-controllers: Make "additionalProperties: true" explicit
+      https://git.kernel.org/krzk/linux-mem-ctrl/c/387bb6fdd0af1f853deeb1cdd8331c07b6a66b32
 
 Best regards,
 -- 
