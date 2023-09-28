@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659E87B1BDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524D67B1BE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbjI1MPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
+        id S232339AbjI1MQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjI1MPt (ORCPT
+        with ESMTP id S232303AbjI1MQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:15:49 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0848D136
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:15:48 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7742da399a2so563485185a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1695903347; x=1696508147; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1KoGFF3gG67f7HtS8wXtabehMpcb0H20FLcT60YySvc=;
-        b=HMqOo1Gc8Xtb3EMUKCTRx8xi7WmT1jcdK0Uc2hXomlsQzOhsWcpmgy4FR3FVMajjv/
-         nOTO5Ve/J99rUy50CG43s3WBmNVOPZXhbkgGMCWgV7Z7CpTGoOECvLNoIaT+Fbfh/J21
-         k8ZsDfY+Id2gSmRQm5FzbKjdhtT1T0b4ULvWpEWh9MDeZZDQMlN94yRem/dKTSKYP9c0
-         Foop5S8N7zJFmS3TLeDcHcltYOqX11kBtRnPDcQjPVO6uynjxtlpFV5UAfNiGPzLwVhS
-         /AJ0u0Mm+onLAMq1NjHeiqECa60DNcfkpPpkFo3+jdhHV35W3tZAA1WadvV867Rm2ps7
-         7Oag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695903347; x=1696508147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1KoGFF3gG67f7HtS8wXtabehMpcb0H20FLcT60YySvc=;
-        b=Q89PwjhihETAnheOkCTdfY1Ko1xsXHCGCth/EHDLMzsEGlwP3dAoRN1m7OS0Tso6iS
-         uB+1AsROTwx9yDTSgKQ1DKg56j0OnnsfVO6uGsvW/dbddbugtC5YjJy1mPYh/uxA84kE
-         pq5/zssbw2gkCfWbj494UKLN6F8RBQQgkBWEfSMcZuszRJytFp4kqgRHRTk+euTt3Qsp
-         ZEsM+zkwiy2Eda5gJBSwgsE69yAGSLezh3U9h1KV45hiuYgHYINii4XyiMukLA0dfUv2
-         yxtT4BLGlWQRF13Oq7MgAoB5ekAGDSjK6LPTWJQjn07xYE7MhGNXUan824opmeGAr6Tp
-         Tj5Q==
-X-Gm-Message-State: AOJu0YzMMuQNynFiyT2yXDYa3o4BvqRp6yKWQ6TU+9SglpGtkA/Tpvzs
-        +bou3F0HvV80ASUDxjsv+nib3Q==
-X-Google-Smtp-Source: AGHT+IFO/ToWCbCZ46SVTe0ZeYuahYfaS+aix1nnBVV8zB6sSjGr7UUq6XnTTgGkxgad33ZGaOimBA==
-X-Received: by 2002:a0c:ab06:0:b0:65b:fa3:4a01 with SMTP id h6-20020a0cab06000000b0065b0fa34a01mr819278qvb.62.1695903347119;
-        Thu, 28 Sep 2023 05:15:47 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id h19-20020a0cab13000000b0065b121d6251sm3213778qvb.146.2023.09.28.05.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 05:15:46 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qlpvl-001fTg-Uy;
-        Thu, 28 Sep 2023 09:15:45 -0300
-Date:   Thu, 28 Sep 2023 09:15:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v6 0/5] RDMA/mana_ib
-Message-ID: <20230928121545.GP13795@ziepe.ca>
-References: <1694802270-17452-1-git-send-email-sharmaajay@linuxonhyperv.com>
+        Thu, 28 Sep 2023 08:16:27 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30D7136
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:16:25 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e207:8adb:af22:7f1e])
+        by laurent.telenet-ops.be with bizsmtp
+        id rQGH2A00P3w8i7m01QGHJn; Thu, 28 Sep 2023 14:16:22 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qlpvt-004mR5-5A;
+        Thu, 28 Sep 2023 14:16:17 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qlpwH-001OAd-JO;
+        Thu, 28 Sep 2023 14:16:17 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/3] drm: Split drm_modeset_helper_vtables.h
+Date:   Thu, 28 Sep 2023 14:16:10 +0200
+Message-Id: <cover.1695903065.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1694802270-17452-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 11:24:25AM -0700, sharmaajay@linuxonhyperv.com wrote:
-> From: Ajay Sharma <sharmaajay@microsoft.com>
-> 
-> Change from v5:
-> Use xarray for qp lookup.
+	Hi all,
 
-this series is malformed somehow, it does not appear in patchworks
+<drm/drm_modeset_helper_vtables.h> is the second largest header file in
+the DRM subsystem, and declares helpers vtables for various DRM
+components.  Several vtables contain methods with the same name, and all
+but one vtable do not fit on the screen, making it hard to navigate to
+the actual method one is interested in.
 
-Jason
+Hence this patch series splits <drm/drm_modeset_helper_vtables.h> in
+multiple header files, one per DRM component, preceded by a few spelling
+fix this to avoid checkpatch warnings.  A future patch could replace
+inclusion of <drm/drm_modeset_helper_vtables.h> by inclusion of one or
+more of the new files, to reduce compilation time.
+
+I marked the last patch RFC, the first two patches can be applied
+immediately.
+
+Thanks for your comments!
+
+Geert Uytterhoeven (3):
+  drm: Spelling s/hardward/hardware/g
+  drm: Spelling s/preceeding/preceding/g
+  [RFC] drm: Split drm_modeset_helper_vtables.h
+
+ drivers/gpu/drm/drm_atomic_helper.c         |    4 +-
+ include/drm/drm_bridge.h                    |    2 +-
+ include/drm/drm_connector_helper_vtable.h   |  364 +++++
+ include/drm/drm_crtc_helper_vtable.h        |  483 ++++++
+ include/drm/drm_encoder_helper_vtable.h     |  381 +++++
+ include/drm/drm_mode_config_helper_vtable.h |   97 ++
+ include/drm/drm_modeset_helper_vtables.h    | 1466 +------------------
+ include/drm/drm_plane_helper_vtable.h       |  297 ++++
+ 8 files changed, 1630 insertions(+), 1464 deletions(-)
+ create mode 100644 include/drm/drm_connector_helper_vtable.h
+ create mode 100644 include/drm/drm_crtc_helper_vtable.h
+ create mode 100644 include/drm/drm_encoder_helper_vtable.h
+ create mode 100644 include/drm/drm_mode_config_helper_vtable.h
+ create mode 100644 include/drm/drm_plane_helper_vtable.h
+
+-- 
+2.34.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
