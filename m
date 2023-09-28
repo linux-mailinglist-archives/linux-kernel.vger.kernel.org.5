@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1C97B21C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE2E7B21C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbjI1PwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S232116AbjI1Pwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjI1PwD (ORCPT
+        with ESMTP id S232045AbjI1Pwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:52:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F497EB;
-        Thu, 28 Sep 2023 08:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=hPdcYpQxen4e8NFhKYxy/N6WYUJPUeudEMjsy2z2FAk=; b=xJblSmwhfFiZwjwjM8gAPI32nK
-        oaUlR6BGSVk8o6MC4wcNckcbpC4UmpOHFKiLF+zvGOW2MXofxJ5UeiwyKTj8RwneEo1Wg1fo21eVF
-        dAPiFOoCrn4Q0N9uwcGM2pgi2lhJlW8uai0OtWXlQFrpy184lci0/HNAe9dY3R8IQlmO6Su9RxXg6
-        SleSDay8zy8xKVwQQvXSF3/6DXuZWYzff1YJkzFDiLwyjtWk7wCWqrURaCbRPqVjDmYfdEw1QwPDE
-        EN5JtPtPM/Z1JrEwzs0gSIwbkKYvitLoiwPv796eTcDxry0sxIuQmHoBy22Rxc8sUKYAoBGUoYsUl
-        Mij7O5fA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qltIz-005fIC-06;
-        Thu, 28 Sep 2023 15:51:57 +0000
-Message-ID: <b3d4f630-9725-4ed0-a844-2d370cd67af5@infradead.org>
-Date:   Thu, 28 Sep 2023 08:51:54 -0700
+        Thu, 28 Sep 2023 11:52:30 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774F11A7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:52:28 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so135087615e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695916346; x=1696521146; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=foVf5TV1MmYsP7PedGF8V/NHFqHve2xNubfmQ3LV2g4=;
+        b=tvWQEmqFxsVIS/BF4LzTeA7treVv5t5yHUyTzUkEeOrM3tFnq/GkYbgB+CX2NYjSik
+         bO2hjgim4OaZ2hxJZFWReBkqr2pixgFlSYjpZrnm6rUodBXPrBulAgLWAImCe3+vxTCM
+         CFHrhtW+UnncxkFXBa6QBkaaLvk92fVf1mIWYJAp3Wik/cRJeFSlwWqRPJOQ6jv+9qou
+         btpfiyvf5NlXvlca+kOQHG4vnrGHUGuVWnOAtydmqpyaI+jWY0numxgAjW7YDM6+hgbd
+         mRqTWtdY/hoc6Mbo/J1QN/FyL4LKcgW6eT9QPVRvibXWcfqKjo+aQkur9n6g53z0vPsp
+         3WhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695916346; x=1696521146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=foVf5TV1MmYsP7PedGF8V/NHFqHve2xNubfmQ3LV2g4=;
+        b=tQo1Jycz6UrG4RfCZxRNoIsxqyl2T2AXm9kp7jdBiJLQypS0c/FkkB2Abl6BALbHjs
+         f+rjIVb+QMiSD03SA4GgQ//qsQjWU0OCDJcmBW6VI5gc2WZfIWHVssslILgL32L9EnTr
+         KkmcR12tvYjVYiWPDxH4PDaFey4RM8qZ74gzBQvkKTBMlby4XKNKLXwL0WXMEUqBPCEr
+         zdO7/yRV5/PTZD6IEYPTJYtPEqQT0Y1XYuyiVtPwqAbgTQMVi1xWqsKbZAopOkGKL6Uf
+         dpQCaZfIzSrBp/C8+kkhq2N4g5cKmIxjJer/DvmiN1RAoqL+kJgzl2RE/7ZmCuMiG0Z9
+         8Ofw==
+X-Gm-Message-State: AOJu0YwNSFUPEKJV0zUb5uKrET11wEWgUib5M0KrQkleVAAmEyOGIC9I
+        5qUy/oG/REjDW1JqmsaenWCPCLIbCm3aIpFGr45JVA==
+X-Google-Smtp-Source: AGHT+IFZjhxkEjiaXp2zigCJ7tc2I6455jijXEKgoD9JgTP2Y0UEY5UScbCjY5Sj4DCn07iZsNn312ihcg5GHjZeZXE=
+X-Received: by 2002:adf:f108:0:b0:313:f783:262b with SMTP id
+ r8-20020adff108000000b00313f783262bmr1652155wro.26.1695916346402; Thu, 28 Sep
+ 2023 08:52:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] rpmsg: virtio: Make buffer size and number
- configurable
-Content-Language: en-US
-To:     Divin Raj <divin.raj@arm.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Peter Hoyes <Peter.Hoyes@arm.com>
-References: <20230928153825.151948-1-divin.raj@arm.com>
- <20230928153825.151948-2-divin.raj@arm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230928153825.151948-2-divin.raj@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
+ <5707f3bef3ecd8220a8bf7c8b72c72c53e65b666.camel@perches.com>
+ <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com> <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com>
+In-Reply-To: <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 28 Sep 2023 08:52:15 -0700
+Message-ID: <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
+To:     Joe Perches <joe@perches.com>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org,
+        workflows@vger.kernel.org, mario.limonciello@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Sep 27, 2023 at 11:09=E2=80=AFPM Joe Perches <joe@perches.com> wrot=
+e:
+>
+> On Thu, 2023-09-28 at 14:31 +0900, Justin Stitt wrote:
+> > On Thu, Sep 28, 2023 at 2:01=E2=80=AFPM Joe Perches <joe@perches.com> w=
+rote:
+> > >
+> > > On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
+> > > > Changes in v2:
+> > > > - remove formatting pass (thanks Joe) (but seriously the formatting=
+ is
+> > > >   bad, is there opportunity to get a formatting pass in here at som=
+e
+> > > >   point?)
+> > >
+> > > Why?  What is it that makes you believe the formatting is bad?
+> > >
+> >
+> > Investigating further, it looked especially bad in my editor. There is
+> > a mixture of
+> > tabs and spaces and my vim tabstop is set to 4 for pl files. Setting th=
+is to
+> > 8 is a whole lot better. But I still see some weird spacing
+> >
+>
+> Yes, it's a bit odd indentation.
+> It's emacs default perl format.
+> 4 space indent with 8 space tabs, maximal tab fill.
+>
 
-On 9/28/23 08:38, Divin Raj wrote:
-> From: Peter Hoyes <Peter.Hoyes@arm.com>
-> 
-> Replace the MAX_RPMSG_BUF_SIZE and MAX_RPMSG_NUM_BUFS #define in
-> virtio_rpmsg_bus.c with the Kconfig parameters CONFIG_RPMSG_VIRTIO_BUF_SIZE
-> and CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS, allowing user-provided customization.
-> 
-> Making both the number of buffers and size configurable facilitates aligning
-> memory requirements between vdev-buffer and vdev-vrings for client drivers
-> that require larger buffer sizes, for example.
-> 
-> Signed-off-by: Peter Hoyes <Peter.Hoyes@arm.com>
-> Signed-off-by: Divin Raj <divin.raj@arm.com>
-> ---
->  drivers/rpmsg/Kconfig            | 23 +++++++++++++++++++++++
->  drivers/rpmsg/virtio_rpmsg_bus.c | 27 +++------------------------
->  2 files changed, 26 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> index d3795860f5c0..677f4a1ac8bb 100644
-> --- a/drivers/rpmsg/Kconfig
-> +++ b/drivers/rpmsg/Kconfig
-> @@ -81,4 +81,27 @@ config RPMSG_VIRTIO
->  	select RPMSG_NS
->  	select VIRTIO
->  
-> +config RPMSG_VIRTIO_MAX_BUF_SIZE
-> +	int "Virtio RPMSG max buffer size (in bytes)"
-> +	default 512
+Oh! What?! That's the most surprising convention I've ever heard of
+(after the GNU C coding style).  Yet another thing to hold against
+perl I guess. :P
 
-Looks to me like you need to:
+I have my editor setup to highlight tabs vs spaces via visual cues, so
+that I don't mess up kernel coding style. (`git clang-format HEAD~`
+after a commit helps).  scripts/get_maintainer.pl has some serious
+inconsistencies to the point where I'm not sure what it should or was
+meant to be.  Now that you mention it, I see it, and it does seem
+consistent in that regard.
 
-(a) use the "range" kconfig keyword (Documentation/kbuild/kconfig-language.rst)
-and/or
-(b) change the source code (driver) to check that both of these new config
-variables' values make sense.
-
-As is (in this patch), I could enter a value of 1 for each of them
-and see what happens.
-
-> +	depends on RPMSG_VIRTIO
-> +	help
-> +	  This option allows you to configure the maximum buffer size (in bytes)
-> +	  for Virtio RPMSG communications. The number of buffers will be computed
-> +	  based on the number of buffers (CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS)
-> +	  supported by the vring. By default, it supports up to a maximum of 512
-> +	  buffers (256 in each direction). Each buffer consists of 16 bytes for the
-> +	  message header and the remaining bytes for the payload.The default values
-
-	                                                 payload. The
-
-> +	  will utilize a maximum total space of 256KB for the buffers.
-> +
-> +config RPMSG_VIRTIO_MAX_NUM_BUFS
-> +	int "Virtio RPMSG max buffer count (even number for TX and Rx)"
-
-	                                                    Tx and Rx)"
-
-> +	default 512
-> +	depends on RPMSG_VIRTIO
-> +	help
-> +	  This option allows you to configure the maximum number of buffers used
-> +	  for Virtio RPMSG communication. By default, it supports up to a maximum
-> +	  of 512 buffers (256 in each direction). Please note that this value
-> +	  should be an even number, as it accounts for both transmit (TX) and
-> +	  receive (Rx) buffers.
->  endmenu
-
-
--- 
-~Randy
+Justin, is your formatter configurable to match that convention?
+Maybe it's still useful, as long as you configure it to stick to the
+pre-existing convention.
+--=20
+Thanks,
+~Nick Desaulniers
