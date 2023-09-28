@@ -2,124 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA65C7B28F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872A77B290A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjI1Xns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 19:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S230503AbjI1XuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 19:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjI1Xnr (ORCPT
+        with ESMTP id S229541AbjI1XuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:43:47 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0A219C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:43:45 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso102285895ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:43:45 -0700 (PDT)
+        Thu, 28 Sep 2023 19:50:24 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688E195;
+        Thu, 28 Sep 2023 16:50:23 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-69101022969so12171605b3a.3;
+        Thu, 28 Sep 2023 16:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695944625; x=1696549425; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695945022; x=1696549822; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MNHH+1qhuM2be0FNxraZa2k964UVjBr3da8cdiKRngw=;
-        b=Sy1qrqyWxjWf+WyGsozkx32322B0DYBkvwFZER87pdVzcNV/cugNLl7M2HVu3Id8wy
-         ERRRlCOX2YAY3RHcV+ZcuTACBHNDMra7WDiN2NDRA6MVpbkl2R45j5Qrq3lx/wwbbfmL
-         dI6/sb5rjwNXMlDbeoUO46Q6SL6U/J8Ldl814=
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMt+zIF+jw6oNrS3fj8y+UDRx1fAa1Xaxe11egraIX0=;
+        b=F/L+H3te0DOa1zgkD/6EoFeFcmW+jPQoU8wsdBX6a05Yiv3ptIk+595w4ay+fqx65c
+         AssjbP2gtw0v7ltH96He38aEqCuvm2Oz8LJnHlgxP7BIThxOsMxclGnj4RCICXFpMVdD
+         niB10JeLnM6577xagb/uDcxKsc8JThM3SE0ggFmdPQ3xrnDrNaghKeRR6rBxYRJdBiQ+
+         1pp6WT9AfN40+X5jYVcBNaVhTqXE2HN1NHpJHuLomvI6lv5ZjmPUt9y1cmkuTtJ9bwZp
+         CGaDPX8TpR62q7NWJRJo6O2j3LZvoDi2HUSzWlliOdJjOofG6Tj1PEmYL9NKA1p1y0zW
+         YCVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695944625; x=1696549425;
+        d=1e100.net; s=20230601; t=1695945022; x=1696549822;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MNHH+1qhuM2be0FNxraZa2k964UVjBr3da8cdiKRngw=;
-        b=tI/yeCkGB0gmPlkdl+Qq4iLRFES4UsHfXlsY45Z/Fo/zWaWzh4Qn6+kL1wjgU5DFCf
-         UIJdQGzH/tyJsYUXWpf5Qo6czELGS7ZS04bApBVXP5gOt/6K9rkll5H2WkqEr7u5N0yo
-         V8+OLHqWpcrvcTQHh1EErZRis/CC/j/pVPiS69yWOCx62qQeyLR4iW2lbZnJWNTyXRtk
-         L4wG+Qe++iUaQD0SRlWjvYRv63kosAr7SDLme9N56FeMpZGutwKr3cBh9R2F+ssHolCc
-         15FO5CenEYkNLTWTx381DQy9qKqwErWOrBLsRWKl7seIDbBRgALxoYWlGvsKizU8dIaY
-         cU0w==
-X-Gm-Message-State: AOJu0YwJJcRuSLV5EYdZ04aIJFFQNoFM8qfBCla2axOu2Lu4q1//si8k
-        QaI+Kpofy8pgkGcCwQvstUXE2w==
-X-Google-Smtp-Source: AGHT+IE3aB3bki1h2nzKeq4Hvu7L23o/LNCvJSwxc21wrOMfa6r6KlHZeiE4hugYWpH4RLmgxSLGuA==
-X-Received: by 2002:a17:903:1c1:b0:1c4:638:fff4 with SMTP id e1-20020a17090301c100b001c40638fff4mr2370744plh.17.1695944624781;
-        Thu, 28 Sep 2023 16:43:44 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s10-20020a170902ea0a00b001b895336435sm4068006plg.21.2023.09.28.16.43.44
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZMt+zIF+jw6oNrS3fj8y+UDRx1fAa1Xaxe11egraIX0=;
+        b=lHTD89W859J/SbUXi/XK0J8LTnpe0ePBKux5B3Bk+gUVvkWNPsDzHX1Kc2x7U2GAJT
+         8PtaAbJ++5IVtZ5YJ/RgMOpTwKUKVJ6FW6Z45w/qpiTtilyBV+nLxgUSsIwoahwviVTE
+         FNRdyDp/I+rCoydg2NT7Axk71hb7F5alJO93aGIA9j4g0F7JHrBLWnsR3rSTPeYnsijK
+         QnBw3q3dKvKcjHWdPdYLf6XyDIL/6XhA6dUs81zmxolDbmWf11xIi0097YA7U1DeJbpN
+         Pa2k/oNoRj4MLPZDTscKalgsIDPTx3FLlS79JVBZjaQj5hoHrnThgbMg5WpIqR3sArYE
+         KrVA==
+X-Gm-Message-State: AOJu0YwIKa9/5gMWSXkpEzEXEy+BRKTC7REd+HD//pFfWTHImCcro1mU
+        IKHKASreyYuTZcb91Q9QF9g=
+X-Google-Smtp-Source: AGHT+IGRDnRwQiG9v//BKw6nb7aCS4Jw4ppLdPdWJMf6lz4GXoevHprt6clbVpV4VVbMAoD4XT0Q9g==
+X-Received: by 2002:a05:6a00:c92:b0:68c:3f2:5ff7 with SMTP id a18-20020a056a000c9200b0068c03f25ff7mr2821852pfv.1.1695945022550;
+        Thu, 28 Sep 2023 16:50:22 -0700 (PDT)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:819e:1876:98c3:2f15])
+        by smtp.gmail.com with ESMTPSA id q9-20020a639809000000b00573f82bb00esm13383482pgd.2.2023.09.28.16.50.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 16:43:44 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, dmaengine@vger.kernel.org,
-        llvm@lists.linux.dev,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] dmaengine: ep93xx_dma: Annotate struct ep93xx_dma_engine with __counted_by
-Date:   Thu, 28 Sep 2023 16:43:42 -0700
-Message-Id: <20230928234334.work.391-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 28 Sep 2023 16:50:22 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: [PATCH] perf lock contention: Clear lock addr after use
+Date:   Thu, 28 Sep 2023 16:50:18 -0700
+Message-ID: <20230928235018.2136-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1305; i=keescook@chromium.org;
- h=from:subject:message-id; bh=THP69OmSOtOGZgovd3irCbWFIq76IMb1Eo9RFIZ3FIQ=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFg+uQsbjWwI6QLDwpDQxEemOjDuINJD24mwrU
- /jndnL6pPuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRYPrgAKCRCJcvTf3G3A
- JjzbD/9786EPnb+KEovN2A394u+CjRE5feFbV0OH2nJ+hoicNA0BmpvVK6QsaJqscUhY5SzZnIh
- bJD/VopZIUjwI4FITPqd3Yd03UZG5en7eTcobbpl13XYpOvvHfGmu5sAK7daO4UvRki9YbY/N58
- m+5TiNXLb8SwuOLA1TcJ67oPCf1N+kRUMewPGQzE3BrzjsrmC4nzBzItDiBFJaSmSUv/QI5TA5h
- A+RxcOH11WeE7S4GGhN0EMcTv+w0/K04pncSa6lEdKHKZUL6I94j5oiRsDNdUNih71JGsyM4sp3
- Xfg1nHufCoyp/18ig9FZ12Qg4gulxu5dRUqfzDV3HA6QoazyJInWvQizQKTT5hnVX3cTSo2pjN5
- aeKyS51Yt2Ie3NIsUgexXgNaU70uD3yqBTWTdK8aPYOBW9/0zJF6Oa3c29hUAB6fqhV6a72H3P+
- M8Hm9ZD9HyYzV49KpOi1i8kzL+d/EqbRdTlSnRkyr4rdGzCk16Bvh02vXWZ56G9V09qWS0cJHXn
- fk74+F+zDDMUPD74z66DuOExRi9n5LzWvhnNfjql7GYDcnKJFwTM9oyTgNnpqvleA22e68tC3eQ
- oiGIO/BQrniVpKwWJG6melsLUr2tQIeN+Pj4Gh8KP1Myz/9WxSxu7Sqyn502tYFCrQq2lxwXbwm
- NkdSZdM Y4Zio4YA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+It checks the current lock to calculated the delta of contention time.
+The address is saved in the tstamp map which is allocated at begining of
+contention and released at end of contention.
 
-As found with Coccinelle[1], add __counted_by for struct ep93xx_dma_engine.
+But it's possible for bpf_map_delete_elem() to fail.  In that case, the
+element in the tstamp map kept for the current lock and it makes the
+next contention for the same lock tracked incorrectly.  Specificially
+the next contention begin will see the existing element for the task and
+it'd just return.  Then the next contention end will see the element and
+calculate the time using the timestamp for the previous begin.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+This can result in a large value for two small contentions happened from
+time to time.  Let's clear the lock address so that it can be updated
+next time even if the bpf_map_delete_elem() failed.
 
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Tom Rix <trix@redhat.com>
-Cc: dmaengine@vger.kernel.org
-Cc: llvm@lists.linux.dev
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- drivers/dma/ep93xx_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/bpf_skel/lock_contention.bpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/dma/ep93xx_dma.c b/drivers/dma/ep93xx_dma.c
-index 5c4a448a1254..d6c60635e90d 100644
---- a/drivers/dma/ep93xx_dma.c
-+++ b/drivers/dma/ep93xx_dma.c
-@@ -213,7 +213,7 @@ struct ep93xx_dma_engine {
- #define INTERRUPT_NEXT_BUFFER	2
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 4900a5dfb4a4..b11179452e19 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -389,6 +389,7 @@ int contention_end(u64 *ctx)
  
- 	size_t			num_channels;
--	struct ep93xx_dma_chan	channels[];
-+	struct ep93xx_dma_chan	channels[] __counted_by(num_channels);
- };
+ 	duration = bpf_ktime_get_ns() - pelem->timestamp;
+ 	if ((__s64)duration < 0) {
++		pelem->lock = 0;
+ 		bpf_map_delete_elem(&tstamp, &pid);
+ 		__sync_fetch_and_add(&time_fail, 1);
+ 		return 0;
+@@ -422,6 +423,7 @@ int contention_end(u64 *ctx)
+ 	data = bpf_map_lookup_elem(&lock_stat, &key);
+ 	if (!data) {
+ 		if (data_map_full) {
++			pelem->lock = 0;
+ 			bpf_map_delete_elem(&tstamp, &pid);
+ 			__sync_fetch_and_add(&data_fail, 1);
+ 			return 0;
+@@ -445,6 +447,7 @@ int contention_end(u64 *ctx)
+ 				data_map_full = 1;
+ 			__sync_fetch_and_add(&data_fail, 1);
+ 		}
++		pelem->lock = 0;
+ 		bpf_map_delete_elem(&tstamp, &pid);
+ 		return 0;
+ 	}
+@@ -458,6 +461,7 @@ int contention_end(u64 *ctx)
+ 	if (data->min_time > duration)
+ 		data->min_time = duration;
  
- static inline struct device *chan2dev(struct ep93xx_dma_chan *edmac)
++	pelem->lock = 0;
+ 	bpf_map_delete_elem(&tstamp, &pid);
+ 	return 0;
+ }
 -- 
-2.34.1
+2.42.0.582.g8ccd20d70d-goog
 
