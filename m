@@ -2,102 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962197B2143
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21857B2156
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbjI1PaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S231879AbjI1Pak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjI1P37 (ORCPT
+        with ESMTP id S231874AbjI1PaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:29:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D27B7;
-        Thu, 28 Sep 2023 08:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jd8dYp7Pt8k7CilbcSNgX/vhKFjZi5YS/kaYrGpcaOg=; b=Tho9mKtJbnXYlt4hSYEACcM56G
-        q45VTY9HK9+1l97sJufYzPbUu6F26LTsmKIlv02ZgfCOTqDNynlWvidyGUafGQfqxp3OIhR61LmWx
-        9tbndOmSa2gdFN5XG8O01QNBbVRo68zOUf98BfbZxLCZHCz4t3pHsOpZxgtDKyWAV0p6YZBdvfN/q
-        QSAvWJENsjxFyojQAK1eobn6RjO+jkz0eb3KQe/lGS0e+/9EDiHcxiSNoJxoEiO/KbZ6ogx3JKneS
-        QeSQZ9xW0tj5fZNxSh0/7TxWKUvYkdn5KxPNckXqmJ2KDMGAXmEyODk9iE2vlUVmC14OV3PAGHCJM
-        kRGDIkLQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlsxR-0058br-2J;
-        Thu, 28 Sep 2023 15:29:43 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CEEC63002E3; Thu, 28 Sep 2023 17:29:42 +0200 (CEST)
-Date:   Thu, 28 Sep 2023 17:29:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <20230928152942.GE27245@noisy.programming.kicks-ass.net>
-References: <20230927160231.XRCDDSK4@linutronix.de>
- <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
- <20230928080900.GF9829@noisy.programming.kicks-ass.net>
- <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
+        Thu, 28 Sep 2023 11:30:22 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283431A4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:30:20 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c6052422acso166535ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695915019; x=1696519819; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gW3bQkxv5ZlVvPDaRZ7GOUnQxOQtKH5unki4YKmOzgQ=;
+        b=pBn+H+ni9EOJ4jKn6TpZfhqkcqfY9Z3xCfaTO2FkB9Rr47Z3RVSxDst6po7Ai6tsZ0
+         OjxwbRaWaDzGUsiEcJzZn+NeDek3XxVqGI3wY7yXK/fwBCyLE0vriydhOpPUUL+3sFCN
+         PheLGrNP2ShN0JP5IMyXM2mL1HB7PpeE8epZJKr0YnmY6ezexGUiuhAw3HyZngrK2tbY
+         oRRsizqyE7PvQvOdqiKojUT0LSaASlXpV3hg6E5QH08Y/9Yp47+HfAkA+vNRPQ4c3N20
+         OMrVGTo8mV145JYxvRBnesRPr2Qzh9pLZZWvLu8djV3+OVOIBM8jXi6i1EApMS/rR5sI
+         GdPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695915019; x=1696519819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gW3bQkxv5ZlVvPDaRZ7GOUnQxOQtKH5unki4YKmOzgQ=;
+        b=YA+6L9JO2E0JJpOIPVPbUi87pXTNhgg/6rqDF1QZdiFixmbu7kbg2GY4zmkwjcK7O7
+         1w/Og+pCudeyGyC7ZnalppBvl067du2I3ku4Z8m7Y8ysHpJhEerEsYVPnL23CdkP7MVT
+         mJPNRcRFkUWHoyRVdoBKmXJ1IrKBnMRBtd+lQGhupWfZqythpQACh10ghkgL0VnB51EM
+         lNBus1nHEJ0xcWijWuTU4chPxOheicoYnG1wgESuiMAPGFooJP5G24n3aHXBxAbUB/Az
+         FfO2SFxWwxf7+nkStSBrcIzQJdFh2VrUaN57gmm2oabCH/L69LY0kg0vw0nvUCJCjjkb
+         6pIA==
+X-Gm-Message-State: AOJu0Yyr2E7oB2PTLqGM5lx+rgj3Ox2m4JGEYxsKnfvXp/q6ioaklp65
+        FImZpEgMQa6Kecy91jSsI/hnCSyQ3tOvEa2yHSAxQA==
+X-Google-Smtp-Source: AGHT+IHHyfIM/7h2yPICm3uZHEnv53ZDC4+2b2+nBKsf/B6JPSxSiNPVillmryDthljWo4bey1UqJpEOBpTCWBBBy5E=
+X-Received: by 2002:a17:902:9a85:b0:1c4:1392:e4b5 with SMTP id
+ w5-20020a1709029a8500b001c41392e4b5mr686821plp.21.1695915019275; Thu, 28 Sep
+ 2023 08:30:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez11FdESrYYDLmtZEgZ7osDi-QDYpk+Z0p=qjpCks++7rg@mail.gmail.com> <CAJuCfpG1sjJdEoxtYFk9-r_5kutss_C3breJVFz99efsKKXzqg@mail.gmail.com>
+In-Reply-To: <CAJuCfpG1sjJdEoxtYFk9-r_5kutss_C3breJVFz99efsKKXzqg@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 28 Sep 2023 17:29:43 +0200
+Message-ID: <CAG48ez2uMXLigojbF3HD20Q5jL4ZMSZf6GS-5Y7P=jiB7gibpQ@mail.gmail.com>
+Subject: Re: potential new userfaultfd vs khugepaged conflict [was: Re: [PATCH
+ v2 2/3] userfaultfd: UFFDIO_REMAP uABI]
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, brauner@kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Rapoport <rppt@kernel.org>, willy@infradead.org,
+        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
+        Brian Geffon <bgeffon@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Nicolas Geoffray <ngeoffray@google.com>,
+        Jared Duke <jdduke@google.com>, Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 07:54:10AM -0700, Boqun Feng wrote:
-> On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
-> > On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
-> > 
-> > > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
-> > > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
-> > > the checking for NMI lock usages, the logic is that
-> > 
-> > I think I'm having a problem with this commit -- that is, by adding
-> > lockdep you're adding tracepoint, which rely on RCU being active.
-> > 
-> > The result is that SRCU is now no longer usable from !RCU regions.
-> > 
-> 
-> Interesting
-> 
-> > Was this considered and intended?
-> > 
-> 
-> No, I don't think I have considered this before, I think I may still
-> miss something here, maybe you or Paul can provide an example for such
-> a case?
+On Wed, Sep 27, 2023 at 7:12=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Wed, Sep 27, 2023 at 3:07=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
+e:
+> >
+> > [moving Hugh into "To:" recipients as FYI for khugepaged interaction]
+> >
+> > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> > > From: Andrea Arcangeli <aarcange@redhat.com>
+> > >
+> > > This implements the uABI of UFFDIO_REMAP.
+> > >
+> > > Notably one mode bitflag is also forwarded (and in turn known) by the
+> > > lowlevel remap_pages method.
+> > >
+> > > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > [...]
+> > > +/*
+> > > + * The mmap_lock for reading is held by the caller. Just move the pa=
+ge
+> > > + * from src_pmd to dst_pmd if possible, and return true if succeeded
+> > > + * in moving the page.
+> > > + */
+> > > +static int remap_pages_pte(struct mm_struct *dst_mm,
+> > > +                          struct mm_struct *src_mm,
+> > > +                          pmd_t *dst_pmd,
+> > > +                          pmd_t *src_pmd,
+> > > +                          struct vm_area_struct *dst_vma,
+> > > +                          struct vm_area_struct *src_vma,
+> > > +                          unsigned long dst_addr,
+> > > +                          unsigned long src_addr,
+> > > +                          __u64 mode)
+> > > +{
+> > > +       swp_entry_t entry;
+> > > +       pte_t orig_src_pte, orig_dst_pte;
+> > > +       spinlock_t *src_ptl, *dst_ptl;
+> > > +       pte_t *src_pte =3D NULL;
+> > > +       pte_t *dst_pte =3D NULL;
+> > > +
+> > > +       struct folio *src_folio =3D NULL;
+> > > +       struct anon_vma *src_anon_vma =3D NULL;
+> > > +       struct mmu_notifier_range range;
+> > > +       int err =3D 0;
+> > > +
+> > > +       mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, src_mm,
+> > > +                               src_addr, src_addr + PAGE_SIZE);
+> > > +       mmu_notifier_invalidate_range_start(&range);
+> > > +retry:
+> > > +       dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, =
+&dst_ptl);
+> > > +
+> > > +       /* If an huge pmd materialized from under us fail */
+> > > +       if (unlikely(!dst_pte)) {
+> > > +               err =3D -EFAULT;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > > +       src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, src_addr, =
+&src_ptl);
+> > > +
+> > > +       /*
+> > > +        * We held the mmap_lock for reading so MADV_DONTNEED
+> > > +        * can zap transparent huge pages under us, or the
+> > > +        * transparent huge page fault can establish new
+> > > +        * transparent huge pages under us.
+> > > +        */
+> > > +       if (unlikely(!src_pte)) {
+> > > +               err =3D -EFAULT;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > > +       BUG_ON(pmd_none(*dst_pmd));
+> > > +       BUG_ON(pmd_none(*src_pmd));
+> > > +       BUG_ON(pmd_trans_huge(*dst_pmd));
+> > > +       BUG_ON(pmd_trans_huge(*src_pmd));
+> >
+> > This works for now, but note that Hugh Dickins has recently been
+> > reworking khugepaged such that PTE-based mappings can be collapsed
+> > into transhuge mappings under the mmap lock held in *read mode*;
+> > holders of the mmap lock in read mode can only synchronize against
+> > this by taking the right page table spinlock and rechecking the pmd
+> > value. This is only the case for file-based mappings so far, not for
+> > anonymous private VMAs; and this code only operates on anonymous
+> > private VMAs so far, so it works out.
+> >
+> > But if either Hugh further reworks khugepaged such that anonymous VMAs
+> > can be collapsed under the mmap lock in read mode, or you expand this
+> > code to work on file-backed VMAs, then it will become possible to hit
+> > these BUG_ON() calls. I'm not sure what the plans for khugepaged going
+> > forward are, but the number of edgecases everyone has to keep in mind
+> > would go down if you changed this function to deal gracefully with
+> > page tables disappearing under you.
+> >
+> > In the newest version of mm/pgtable-generic.c, above
+> > __pte_offset_map_lock(), there is a big comment block explaining the
+> > current rules for page table access; in particular, regarding the
+> > helper pte_offset_map_nolock() that you're using:
+> >
+> >  * pte_offset_map_nolock(mm, pmd, addr, ptlp), above, is like pte_offse=
+t_map();
+> >  * but when successful, it also outputs a pointer to the spinlock in pt=
+lp - as
+> >  * pte_offset_map_lock() does, but in this case without locking it.  Th=
+is helps
+> >  * the caller to avoid a later pte_lockptr(mm, *pmd), which might by th=
+at time
+> >  * act on a changed *pmd: pte_offset_map_nolock() provides the correct =
+spinlock
+> >  * pointer for the page table that it returns.  In principle, the calle=
+r should
+> >  * recheck *pmd once the lock is taken; in practice, no callsite needs =
+that -
+> >  * either the mmap_lock for write, or pte_same() check on contents, is =
+enough.
+> >
+> > If this becomes hittable in the future, I think you will need to
+> > recheck *pmd, at least for dst_pte, to avoid copying PTEs into a
+> > detached page table.
+>
+> Thanks for the warning, Jann. It sounds to me it would be better to
+> add this pmd check now even though it's not hittable. Does that sound
+> good to everyone?
 
-The whole trace_.*_rcuidle() machinery. Which I thought I had fully
-eradicated, but apparently still exists (with *one* user) :-/
-
-Search for rcuidle in include/linux/tracepoint.h
-
-Also, git grep trace_.*_rcuidle
-
-
+Sounds good to me.
