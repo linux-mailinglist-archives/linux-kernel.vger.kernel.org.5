@@ -2,70 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124DE7B1568
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D62D7B1563
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjI1HxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S230260AbjI1HxF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 03:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbjI1HxM (ORCPT
+        with ESMTP id S230044AbjI1HxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:53:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417FC99;
-        Thu, 28 Sep 2023 00:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695887590; x=1727423590;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9jG+EMn0dA/h2sKAgTnFKUyQyUD0iwBJtT86r8rPMQE=;
-  b=OxZWjb9ceDvaNJ8hmObMVDgMoL5O13yij79BUGC8k7B+M/YUAVIk8pht
-   CVzpS0LJD6ooEhJZVK58dOLsUYeTvdizFddsrOyO5uYK0OHiZhUL5fEO6
-   R7qeYByOyR9WVkTcm21lGAajkmipsx215k3Rwpcu6RlIBlNdNCQroCmUq
-   dIPqI5YzVCDSSk3npcl1Te7Q/sSr/2DR5Cc0Y3Q8uy4w/Px42+IVHPjXN
-   Z6r8R/LuOl7XafeS5xCEQcOmn/NFpw3i/JArTWg3WXDMe/N/G4my2GDav
-   qf23Qk95Txb5vbM+X+qzUn8grPVO+bP0iYmCHKf0oY2tC0T3LN+db7QXw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="381909551"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="381909551"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 00:53:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="784611843"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="784611843"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 28 Sep 2023 00:53:03 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qllpV-0001FR-1c;
-        Thu, 28 Sep 2023 07:53:01 +0000
-Date:   Thu, 28 Sep 2023 15:52:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Xiaobing Li <xiaobing.li@samsung.com>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        axboe@kernel.dk, asml.silence@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com, Xiaobing Li <xiaobing.li@samsung.com>
-Subject: Re: [PATCH 1/3] SCHEDULER: Add an interface for counting real
- utilization.
-Message-ID: <202309281554.CwGBQGhe-lkp@intel.com>
-References: <20230928022228.15770-2-xiaobing.li@samsung.com>
+        Thu, 28 Sep 2023 03:53:03 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540ACD6;
+        Thu, 28 Sep 2023 00:53:01 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 469977F98;
+        Thu, 28 Sep 2023 15:52:51 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
+ 2023 15:52:51 +0800
+Received: from ubuntu.localdomain (113.72.144.128) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
+ 2023 15:52:50 +0800
+From:   Hal Feng <hal.feng@starfivetech.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Conor Dooley <conor@kernel.org>,
+        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
+        Hal Feng <hal.feng@starfivetech.com>
+CC:     <linux-hwmon@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] MAINTAINERS: Add Hal as one of the maintainers of SFCTEMP HWMON DRIVER
+Date:   Thu, 28 Sep 2023 15:52:49 +0800
+Message-ID: <20230928075249.109459-1-hal.feng@starfivetech.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928022228.15770-2-xiaobing.li@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [113.72.144.128]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,92 +53,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaobing,
+As he is the submitter of this driver, add his mail so he can
+maintain the driver and easily reply in the mailing list.
 
-kernel test robot noticed the following build warnings:
+Acked-by: Emil Renner Berthing <kernel@esmil.dk>
+Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+---
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linus/master v6.6-rc3 next-20230928]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+History:
+v1: https://lore.kernel.org/all/20230718034937.92999-4-hal.feng@starfivetech.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xiaobing-Li/SCHEDULER-Add-an-interface-for-counting-real-utilization/20230928-103219
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20230928022228.15770-2-xiaobing.li%40samsung.com
-patch subject: [PATCH 1/3] SCHEDULER: Add an interface for counting real utilization.
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230928/202309281554.CwGBQGhe-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309281554.CwGBQGhe-lkp@intel.com/reproduce)
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309281554.CwGBQGhe-lkp@intel.com/
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b19995690904..2376272bbe20 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19402,6 +19402,7 @@ F:	drivers/net/ethernet/sfc/
+ 
+ SFCTEMP HWMON DRIVER
+ M:	Emil Renner Berthing <kernel@esmil.dk>
++M:	Hal Feng <hal.feng@starfivetech.com>
+ L:	linux-hwmon@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
 
-All warnings (new ones prefixed by >>):
-
-   In file included from kernel/sched/build_policy.c:52:
->> kernel/sched/cputime.c:482:6: warning: no previous prototype for 'get_sqthread_util' [-Wmissing-prototypes]
-     482 | void get_sqthread_util(struct task_struct *p)
-         |      ^~~~~~~~~~~~~~~~~
-   kernel/sched/cputime.c: In function 'get_sqthread_util':
-   kernel/sched/cputime.c:484:56: error: 'struct kernel_cpustat' has no member named 'sq_util'
-     484 |         struct task_struct **sqstat = kcpustat_this_cpu->sq_util;
-         |                                                        ^~
-   kernel/sched/cputime.c:486:29: error: 'MAX_SQ_NUM' undeclared (first use in this function)
-     486 |         for (int i = 0; i < MAX_SQ_NUM; i++) {
-         |                             ^~~~~~~~~~
-   kernel/sched/cputime.c:486:29: note: each undeclared identifier is reported only once for each function it appears in
-   kernel/sched/cputime.c:495:31: error: 'struct kernel_cpustat' has no member named 'flag'
-     495 |         if (!kcpustat_this_cpu->flag) {
-         |                               ^~
-   kernel/sched/cputime.c:497:42: error: 'struct kernel_cpustat' has no member named 'sq_util'
-     497 |                         kcpustat_this_cpu->sq_util[j] = NULL;
-         |                                          ^~
-   kernel/sched/cputime.c:498:34: error: 'struct kernel_cpustat' has no member named 'flag'
-     498 |                 kcpustat_this_cpu->flag = true;
-         |                                  ^~
-
-
-vim +/get_sqthread_util +482 kernel/sched/cputime.c
-
-   481	
- > 482	void get_sqthread_util(struct task_struct *p)
-   483	{
-   484		struct task_struct **sqstat = kcpustat_this_cpu->sq_util;
-   485	
-   486		for (int i = 0; i < MAX_SQ_NUM; i++) {
-   487			if (sqstat[i] && (task_cpu(sqstat[i]) != task_cpu(p)
-   488			|| sqstat[i]->__state == TASK_DEAD))
-   489				sqstat[i] = NULL;
-   490		}
-   491	
-   492		if (strncmp(p->comm, "iou-sqp", 7))
-   493			return;
-   494	
-   495		if (!kcpustat_this_cpu->flag) {
-   496			for (int j = 0; j < MAX_SQ_NUM; j++)
-   497				kcpustat_this_cpu->sq_util[j] = NULL;
-   498			kcpustat_this_cpu->flag = true;
-   499		}
-   500		int index = MAX_SQ_NUM;
-   501		bool flag = true;
-   502	
-   503		for (int i = 0; i < MAX_SQ_NUM; i++) {
-   504			if (sqstat[i] == p)
-   505				flag = false;
-   506			if (!sqstat[i] || task_cpu(sqstat[i]) != task_cpu(p)) {
-   507				sqstat[i] = NULL;
-   508				if (i < index)
-   509					index = i;
-   510			}
-   511		}
-   512		if (flag && index < MAX_SQ_NUM)
-   513			sqstat[index] = p;
-   514	}
-   515	
-
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.38.1
+
