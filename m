@@ -2,128 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A8F7B130A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521E77B130F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjI1GcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S231210AbjI1Gcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjI1Gbq (ORCPT
+        with ESMTP id S231509AbjI1Gbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:31:46 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9431B2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:31:39 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-573c62b3cd2so7896889a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695882699; x=1696487499; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnNgEhksy6JyUenvntvdDf8qNAXSTU1fGqU1YXMs6HY=;
-        b=p6JyfmZW/E9b9JbqL4n/LHekaMK96HWSHN03sBbyPbL7Ft9ezDwL9Ug19gOB+TQJRB
-         KwJnHvBsAs1JGNQRgAVpvP10diFKM/PiKyg8d1vfUcEC/fwWhqgURFacyVih4GV1FL/7
-         0l8dtQ2jZ0W3ZbwMgehh4Syw11Dq33lB3J6k22grU5f0166V7VK0UPBAM0NjKVOEOfrW
-         rvFDkYWITkGLeqnYTzgw1SQHNGWm0u5Sy2UOv7MUWwrhVsSRDMFyhBWUUNaNGyMgPg8j
-         e1XokMLG4SquJQSGU1NVNW5vLFqkFiRiqlt9S4PfUTGsggarA8kAlfpDpq8wAVRtX0jJ
-         MNFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695882699; x=1696487499;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CnNgEhksy6JyUenvntvdDf8qNAXSTU1fGqU1YXMs6HY=;
-        b=lho+qKMIWj85Dm6xo0HB7PXiVpEcRRk+DPmEZ/6hUxuVTLjQr4GA884A2hZv6Vzp1c
-         4OHMUtZY1vBzVCO+e0b9oMYbjUk+0+x4GaBfN9sDAgEDFIjhnaPw7F8BNnCKjcAFfk4n
-         D+j2Em42m642PqspbYb8Bcrs2YZQcmKRDAhzCext5dnZLxX4GfQpIFLuIxR4OSRJXD1F
-         i6FJTYoaIenNBD+JaKfUcZU3Xsqj8LWv8tq8BfQHzrGA8n+Yiw4fp2sACP17ix+s/nCW
-         iMzFZU3d/URrC/tPRfzDz7gT9ifx/Wbug9CqyhPnoaComQ7aRqKBRtG8uB/z43ZEI8TV
-         FEFQ==
-X-Gm-Message-State: AOJu0YyJLEZqHs37cfYWPq9bXb0eqnFh21N4tFMOwtcz5U6shf8zNEK4
-        YTIpsuZfgdR1DwvM7ogu2kscgw==
-X-Google-Smtp-Source: AGHT+IEJ7meKS5fzKsPZ6iXjhY0FikUwRdddU3+yeil6gcKA0lmFE1CtLXV39iamYXCS0rt+INPbqg==
-X-Received: by 2002:a05:6a21:3288:b0:15e:986:d92b with SMTP id yt8-20020a056a21328800b0015e0986d92bmr406063pzb.16.1695882699233;
-        Wed, 27 Sep 2023 23:31:39 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id iz7-20020a170902ef8700b001b9f7bc3e77sm4481817plb.189.2023.09.27.23.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 23:31:38 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 12:01:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH v5 5/5] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20230928063136.3u47bw2lis6yvksn@vireshk-i7>
-References: <1694066433-8677-1-git-send-email-quic_krichai@quicinc.com>
- <1694066433-8677-6-git-send-email-quic_krichai@quicinc.com>
- <20230927065324.w73ae326vs5ftlfo@vireshk-i7>
- <f7a5ac7f-2857-8d30-e29c-f64c2c5f1330@quicinc.com>
+        Thu, 28 Sep 2023 02:31:47 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8811ACC0;
+        Wed, 27 Sep 2023 23:31:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Xs5QTgz4f3jYr;
+        Thu, 28 Sep 2023 14:31:41 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgB3BdXNHRVlBY9XBg--.905S3;
+        Thu, 28 Sep 2023 14:31:42 +0800 (CST)
+Subject: Re: [PATCH] md: use interruptible apis in idle/frozen_sync_thread
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Li Nan <linan122@huawei.com>, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230906084401.1027358-1-linan122@huawei.com>
+ <e2befbc6-dfc4-f469-78f0-b648d0ad205d@huaweicloud.com>
+ <CAPhsuW4FjWohGYzWGocF+zxMcLRk7N3J8T45=QXzAmdqFFuNTA@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <382b6c81-598b-52be-c09a-2f5b293b8d69@huaweicloud.com>
+Date:   Thu, 28 Sep 2023 14:31:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7a5ac7f-2857-8d30-e29c-f64c2c5f1330@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAPhsuW4FjWohGYzWGocF+zxMcLRk7N3J8T45=QXzAmdqFFuNTA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgB3BdXNHRVlBY9XBg--.905S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1UAr45KF4DJw1rAw1kXwb_yoW8trWDpa
+        y8JFs8Ar45JrWDWw47t3Wqva4Fvw109FWDtrW3G3WfXrn3Kr9rtF1UuF1UCFyv9rWxCr4j
+        ya4rKFW3ZFyrKw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_
+        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding everyone back, reply to you only by mistake earlier :(
+Hi,
 
-On 28-09-23, 08:53, Krishna Chaitanya Chundru wrote:
+在 2023/09/09 4:29, Song Liu 写道:
+> On Wed, Sep 6, 2023 at 11:31 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> 在 2023/09/06 16:44, Li Nan 写道:
+>>> Before refactoring idle and frozen from action_store, interruptible apis
+>>> is used so that hungtask warning won't be triggered if it takes too long
+>>> to finish indle/frozen sync_thread. So change to use interruptible apis.
+>>>
+>> LGTM
+>>
+>> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+>>
+>>> Signed-off-by: Li Nan <linan122@huawei.com>
 > 
-> On 9/27/2023 12:23 PM, Viresh Kumar wrote:
-> > On 07-09-23, 11:30, Krishna chaitanya chundru wrote:
-> > > While scaling the interconnect clocks based on PCIe link speed, it is also
-> > > mandatory to scale the power domain performance state so that the SoC can
-> > > run under optimum power conditions.
-> > Why aren't you scaling interconnect bw via OPP core too ?
+> I think we will need a fix tag and send this via md-fixes branch (to 6.6)?
 > 
-> The power domain performance state varies from PCIe instance to instance and
-> from target to target,
+
+I agree, Nan, please resend this patch.
+
+Thanks,
+Kuai
+
+> Thanks,
+> Song
 > 
-> whereas interconnect BW remains same and changes only based upon PCIe GEN
-> speed. So in the driver code itself
 > 
-> based upon GEN speed we are calculating the BW and voting for it.
 > 
-> That is the reason we are not scaling interconnect BW through OPP as no dt
-> entries required for this.
+>>> ---
+>>>    drivers/md/md.c | 13 +++++++++----
+>>>    1 file changed, 9 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 46badd13a687..52689adfa37f 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -4834,11 +4834,14 @@ static void idle_sync_thread(struct mddev *mddev)
+>>>    {
+>>>        int sync_seq = atomic_read(&mddev->sync_seq);
+>>>
+>>> -     mutex_lock(&mddev->sync_mutex);
+>>> +     if (mutex_lock_interruptible(&mddev->sync_mutex))
+>>> +             return;
+>>> +
+>>>        clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>        stop_sync_thread(mddev);
+>>>
+>>> -     wait_event(resync_wait, sync_seq != atomic_read(&mddev->sync_seq) ||
+>>> +     wait_event_interruptible(resync_wait,
+>>> +                     sync_seq != atomic_read(&mddev->sync_seq) ||
+>>>                        !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
+>>>
+>>>        mutex_unlock(&mddev->sync_mutex);
+>>> @@ -4846,11 +4849,13 @@ static void idle_sync_thread(struct mddev *mddev)
+>>>
+>>>    static void frozen_sync_thread(struct mddev *mddev)
+>>>    {
+>>> -     mutex_lock(&mddev->sync_mutex);
+>>> +     if (mutex_lock_interruptible(&mddev->sync_mutex))
+>>> +             return;
+>>> +
+>>>        set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>        stop_sync_thread(mddev);
+>>>
+>>> -     wait_event(resync_wait, mddev->sync_thread == NULL &&
+>>> +     wait_event_interruptible(resync_wait, mddev->sync_thread == NULL &&
+>>>                        !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
+>>>
+>>>        mutex_unlock(&mddev->sync_mutex);
+>>>
+>>
+> .
+> 
 
-Not sure I understand it fully yet. I tried looking at code and this is what I
-see:
-
-At probe initialization, you just configure bw.
-
-Later on, towards end of probe and resume, you set both bw and performance
-state.
-
-Also your DT changes add virtual level numbers to PCIe OPP table like this:
-+                               opp-1 {
-+                                       opp-level = <1>;
-+                                       required-opps = <&rpmhpd_opp_low_svs>;
-+                               };
-
-Instead what you can do here is, add bw values and remove level completely (as
-it is not serving any meaningful purpose) and use the OPP core to set both bw
-and performance state (via required OPPs).
-
-What won't work if you do this ?
-
--- 
-viresh
