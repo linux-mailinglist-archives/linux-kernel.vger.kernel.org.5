@@ -2,140 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0077B7B1065
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2CB7B1066
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjI1Bcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 21:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S229593AbjI1Bg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 21:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjI1Bco (ORCPT
+        with ESMTP id S229445AbjI1Bgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 21:32:44 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2C1AC;
-        Wed, 27 Sep 2023 18:32:43 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id D07D6901E34;
-        Thu, 28 Sep 2023 01:32:42 +0000 (UTC)
-Received: from pdx1-sub0-mail-a245.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 39D709012B1;
-        Thu, 28 Sep 2023 01:32:42 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1695864762; a=rsa-sha256;
-        cv=none;
-        b=EObbCsYePKJdFgdQ3aR0jhf1Zc4+RwEWqb306qQ3SJnbf3RoLMDeUpxLX8JfIGucJoD039
-        cJfxx3zyqqHg2XSVIk2hvR00yIQkJQQDoptSpS2AEW2c5iwI5Zapsf06MGMFVoZSEvaNiL
-        RWnn5gubEI5QZXMCRp6f9IfesyoIdSe+z59rxmeKzGqMpq7IjRmziQt7rfRmVcy3fhCaGe
-        n8ILrBgi9Yg4ooVizOsQhAiRaLczhJSc0seLbqT2wuz7AvvcRZQ3lgTiop53MPvVrc6Z/q
-        CqPWbLWcHPw1dYp31uBjTp2yKla4UKeoe6ltROyUEgWCkIdAQWCvVl1KPanS1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1695864762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=aoMM+ecrUHruHy0xNndpz4cJ9IdeHiZqtMr+bAYPNcU=;
-        b=I93n44Le0NvDjV/gK4LuHWJv9vBwlF0EySyeNaYcXyQv3fv8P7iIvGMrga9/nEtv7AUaul
-        0FI5a7waegx/YykAyOOfoRnWQQSPrksDRMTkyDXoOtFL6hM+06Avc181wxwu8blxZB4sp9
-        QKIO6xEoLOIRbt2VgGqO2RaAVYYBrpvO2ue/O4An3cGEyJyxj5EJFwIT/G0j3jx8TdqQNM
-        VRMwBv24Oc5zk0Mxpr/vq9zoxZcCjfywZcyGYgv/iDL6aTDuFbUsf0iyTmCvYwDfRF2XER
-        2KkAdE81YVtbIZw/NDB9c0MeIYQUFPmleUf8r49sz0gzh567UCTmGfvjPeSQEg==
-ARC-Authentication-Results: i=1;
-        rspamd-7d5dc8fd68-qxxm7;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Little-Minister: 7ca387024b77a229_1695864762639_230044770
-X-MC-Loop-Signature: 1695864762638:2213682086
-X-MC-Ingress-Time: 1695864762638
-Received: from pdx1-sub0-mail-a245.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.101.166.200 (trex/6.9.1);
-        Thu, 28 Sep 2023 01:32:42 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dave@stgolabs.net)
-        by pdx1-sub0-mail-a245.dreamhost.com (Postfix) with ESMTPSA id 4Rwwvs0kwhz2l;
-        Wed, 27 Sep 2023 18:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-        s=dreamhost; t=1695864762;
-        bh=aoMM+ecrUHruHy0xNndpz4cJ9IdeHiZqtMr+bAYPNcU=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=Z/DLACN/18M6imAt+EFXbYxWWkjAVBX3GqQ1aysyAb0TuEAqTRo0pFQ5AV1DWCRfr
-         DK7GamF+cAUz/9bJmpeFLmnPuNYcFKq9qWrnFkingF2mteWFDlCKmuFbzrh3z9jXzS
-         nKeR2XAWN/vB2SglKKWys89DC1HrRZ+lU1jQiLfrTjDOoup8vKTeRR0qYC+pzfCEJf
-         I/Q1iLvY0IeP9KmFgglu0sIMeFnd0SdU8v1ashvIZTC3h2X+VUdsg8cYsKrZgkKpcV
-         0iapjx5KDk4+DYlBxS4cZW7WwgWu3m1KXyFPQS/glFjDmle9kjwtk8BaBqXkBBp+gA
-         hXer2q7C4czSQ==
-Date:   Wed, 27 Sep 2023 18:32:38 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Jeongtae Park <jtp.park@samsung.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyungsan Kim <ks0204.kim@samsung.com>,
-        Wonjae Lee <wj28.lee@samsung.com>,
-        Hojin Nam <hj96.nam@samsung.com>,
-        Junhyeok Im <junhyeok.im@samsung.com>,
-        Jehoon Park <jehoon.park@samsung.com>,
-        Jeongtae Park <jeongtae.park@gmail.com>
-Subject: Re: [PATCH v2 4/7] cxl: Fix a checkpatch error
-Message-ID: <cuhdyshfzw6mt64ohfbuxmoic5fvaayn73gx6be2vvjtezzwgm@lwqe2dyfmw57>
-References: <CGME20230922113317epcas2p4f6b9ee86aeead4ce8b19473379ecf4bb@epcas2p4.samsung.com>
- <20230922113604.3300468-1-jtp.park@samsung.com>
+        Wed, 27 Sep 2023 21:36:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0647BB
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 18:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695865012; x=1727401012;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=k2IBvK6ZA6AxFCZCz+4sX+cJsNm9cNzhfSFcC+S7MHU=;
+  b=BSvzKdzmkvFosb1uGAfg8ntSqZ/i0HvNP+Uz5A9hWsJwlP91IC8aH2Am
+   qBYV2QCEtfWTYxqvuCEkGqwSyc3sHv41F2Da0zkQFVo7NKv5euaCXus/5
+   zfCvwGN4QmHva3pIMgKyFlL5/i1xw3AAxunn37MjMxVXJIImdDPiNJCKD
+   Alwks1FzrRVYtbwrsS+R0vnnmqRtSbHbbUC4eX8FM6xMl11gusPBuvjQs
+   VLObHmlgBgZtIT2sY11MTKkKzJ8v9KkXrrZrXArdRgZA2mqL/mpDS74wh
+   iHG63pkjMTcn1hx7dc2bZ4Kl3PPG0YkoT60s1pG1ZWusyG/rjRh04phJe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="379240974"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="379240974"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 18:36:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="778746235"
+X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
+   d="scan'208";a="778746235"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga008.jf.intel.com with ESMTP; 27 Sep 2023 18:36:44 -0700
+Message-ID: <7c7b8981-022c-2fa8-7ee5-9c97d8e17862@linux.intel.com>
+Date:   Thu, 28 Sep 2023 09:33:29 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230922113604.3300468-1-jtp.park@samsung.com>
-User-Agent: NeoMutt/20230517
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, robin.murphy@arm.com, jgg@nvidia.com,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu: Sanity check on param list for
+ iommu_get_resv_regions
+Content-Language: en-US
+To:     Dawei Li <set_pte_at@outlook.com>, joro@8bytes.org, will@kernel.org
+References: <TYTP286MB35645FDEF45FDFC91D35CE1ECAC2A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <TYTP286MB35645FDEF45FDFC91D35CE1ECAC2A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023, Jeongtae Park wrote:
+On 9/27/23 10:25 PM, Dawei Li wrote:
+> In iommu_get_resv_regions(), param list is an argument supplied by caller,
+> into which callee is supposed to insert resv regions.
+> 
+> In other words, this 'list' argument is expected to be an empty list,
+> so make an explicit annotation on it.
+> 
+> Signed-off-by: Dawei Li <set_pte_at@outlook.com>
+> ---
+>   drivers/iommu/iommu.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 1ecac2b5c54f..a01c4a7a9d19 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -813,7 +813,7 @@ int iommu_get_group_resv_regions(struct iommu_group *group,
+>   
+>   	mutex_lock(&group->mutex);
+>   	for_each_group_device(group, device) {
+> -		struct list_head dev_resv_regions;
+> +		LIST_HEAD(dev_resv_regions);
+>   
+>   		/*
+>   		 * Non-API groups still expose reserved_regions in sysfs,
+> @@ -822,7 +822,6 @@ int iommu_get_group_resv_regions(struct iommu_group *group,
+>   		if (!device->dev->iommu)
+>   			break;
+>   
+> -		INIT_LIST_HEAD(&dev_resv_regions);
+>   		iommu_get_resv_regions(device->dev, &dev_resv_regions);
+>   		ret = iommu_insert_device_resv_regions(&dev_resv_regions, head);
+>   		iommu_put_resv_regions(device->dev, &dev_resv_regions);
+> @@ -1061,12 +1060,11 @@ static int iommu_create_device_direct_mappings(struct iommu_domain *domain,
+>   					       struct device *dev)
+>   {
+>   	struct iommu_resv_region *entry;
+> -	struct list_head mappings;
+>   	unsigned long pg_size;
+> +	LIST_HEAD(mappings);
+>   	int ret = 0;
+>   
+>   	pg_size = domain->pgsize_bitmap ? 1UL << __ffs(domain->pgsize_bitmap) : 0;
+> -	INIT_LIST_HEAD(&mappings);
+>   
+>   	if (WARN_ON_ONCE(iommu_is_dma_domain(domain) && !pg_size))
+>   		return -EINVAL;
+> @@ -2813,6 +2811,9 @@ void iommu_get_resv_regions(struct device *dev, struct list_head *list)
+>   {
+>   	const struct iommu_ops *ops = dev_iommu_ops(dev);
+>   
+> +	if (WARN_ON(!list_empty(list)))
+> +		return;
 
->ERROR: Macros with complex values should be enclosed in parentheses
->
->Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
->Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+I don't understand why the input list *must* be empty. This interface
+has already been exported, so please update the comment to explain this
+new requirement.
 
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+> +
+>   	if (ops->get_resv_regions)
+>   		ops->get_resv_regions(dev, list);
+>   }
 
->---
-> drivers/cxl/cxl.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
->index 76d92561af29..545381355efb 100644
->--- a/drivers/cxl/cxl.h
->+++ b/drivers/cxl/cxl.h
->@@ -142,7 +142,7 @@ static inline int ways_to_eiw(unsigned int ways, u8 *eiw)
-> #define CXL_RAS_HEADER_LOG_OFFSET 0x18
-> #define CXL_RAS_CAPABILITY_LENGTH 0x58
-> #define CXL_HEADERLOG_SIZE SZ_512
->-#define CXL_HEADERLOG_SIZE_U32 SZ_512 / sizeof(u32)
->+#define CXL_HEADERLOG_SIZE_U32 (SZ_512 / sizeof(u32))
->
-> /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
-> #define CXLDEV_CAP_ARRAY_OFFSET 0x0
->--
->2.34.1
->
+Best regards,
+baolu
