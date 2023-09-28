@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F7A7B2240
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8127B223D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjI1QZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
+        id S231400AbjI1QZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbjI1QZt (ORCPT
+        with ESMTP id S231263AbjI1QZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:25:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29EDB1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695918300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ndiSQPUClBTrz4CKUdDdf3vxdcFaBznOakZY24ftqF0=;
-        b=FCMxENEGxglT6ftwEJ/kZ57h+dED+OFVDkGNb3T0K6wuZK89DLJZXq8E4RbZ4CUWoOwnRu
-        zHHdY5oLJgvOjjB/fk9WW4VSgWnOHVVPMGiDQ97ZcxmalWgwWibuUKlAgJO741eyruJnSj
-        hd9mJtnZT0C91J7RX/lD+ZumdmNCCFE=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-398-84LkYUHhMXOfCVsJci29gA-1; Thu, 28 Sep 2023 12:24:57 -0400
-X-MC-Unique: 84LkYUHhMXOfCVsJci29gA-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-41810d0d8c2so36997991cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:24:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695918296; x=1696523096;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ndiSQPUClBTrz4CKUdDdf3vxdcFaBznOakZY24ftqF0=;
-        b=GrpsFG6Sc4/ftja7uQRPyIpw6qs/7UMgKtkIh9hh0VCZYRBFzyMIApMJLqOsImO3E5
-         IgJ5OcLLC/cQ2y1kQmpMDoIS12ccZKelHbHDlle4vIri6c8PvNFXAv/vxfL8kZOHIkai
-         qk7OBmDtrcre2zZ34LAWZycucMbiCpFLPUJYq/FfryNXgoZrAuA6wL76ziREPgOjhBLG
-         tKCYw6/HOg18zXtDgb3ebi56CQ4LKugepfsoSOfvUw8RYgk8axwL2Z5f1zinDwsGtFUp
-         /AXrZGThm+4sSU03QwYPXqiUu6b8GvQl2huNzQh9GtLlkdKvIinCmcSmAJQ+0LkqBk0C
-         Jd2g==
-X-Gm-Message-State: AOJu0YwkMxR0ezlocBNjzGF5umBd4g9Yp7KMoyACTOyt+q70326ZNz8O
-        pT/wxZXVYyQ1ya8wtbO9DdjUw6/nHM53OecmjEJ8G5Lk6O6MVL1BLvgC0eDb8G1UVUWcUFF54Ko
-        /EogIXnCP91nQ8v2Wc2mj13ql
-X-Received: by 2002:a05:622a:1a27:b0:418:f2a:c223 with SMTP id f39-20020a05622a1a2700b004180f2ac223mr1920012qtb.1.1695918296714;
-        Thu, 28 Sep 2023 09:24:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE2f1QIwKluc2EwyGnzKjSpJAlIkFFpuh6Qbcc40o5jjLqmHgZGD4ZV3pjpnz+FWlEbN4/rtA==
-X-Received: by 2002:a05:622a:1a27:b0:418:f2a:c223 with SMTP id f39-20020a05622a1a2700b004180f2ac223mr1919998qtb.1.1695918296376;
-        Thu, 28 Sep 2023 09:24:56 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id c25-20020ac86619000000b004195faf1e2csm1154119qtp.97.2023.09.28.09.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 09:24:56 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 12:24:53 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-Message-ID: <ZRWo1daWBnwNz0/O@x1n>
-References: <20230923013148.1390521-1-surenb@google.com>
- <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+        Thu, 28 Sep 2023 12:25:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0AAEB;
+        Thu, 28 Sep 2023 09:25:41 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SFfLq1015805;
+        Thu, 28 Sep 2023 16:25:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dvWWXdVXiGWDkgySuet7W6R6F3UF6xZSLY4i8jRlvQw=;
+ b=JgCKJs7XQcEwcC8ZZ0h3BYHmwikscgfyeQDjb4kRQWlFzdVFmoOWBlmfbMsT23MWgJKd
+ yoUSx5quzHOBGJHVA/bFSYYTZnhUz5EBuqcka9xq3oSafWH7sP7t59miUmnSXqz94C45
+ i74iRjN14i3kYHtCre4mAICsJg/C+GHMMJSURVcayygqOky9tx+W6ODAs/SrxxsGSjYR
+ sby8+7f0PEiRUqy6gD/m6dwWcYJ4H4/fyIvQb5v+W8NuDPoMUFrPm1NsnubSbJyotboE
+ iYL7jQLMDl/GgVetwvlfFkgBKsJgDjr5lp2FBhSV0KccEDR3yUsCPmKt32Zh0dZuFpGY DA== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td8wdrp6x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 16:25:00 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38SGOxeI002522
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 16:24:59 GMT
+Received: from [10.110.102.158] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 28 Sep
+ 2023 09:24:56 -0700
+Message-ID: <a0456690-1917-4d82-877a-f23d871049b5@quicinc.com>
+Date:   Thu, 28 Sep 2023 09:24:55 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] Avoid spurious freezer wakeups
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        "Prakash Viswalingam" <quic_prakashv@quicinc.com>
+References: <20230908-avoid-spurious-freezer-wakeups-v4-0-6155aa3dafae@quicinc.com>
+ <ZRMEHb3_0Ku1UuK_@google.com>
+ <20230926200238.GB13828@noisy.programming.kicks-ass.net>
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <20230926200238.GB13828@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: voW2hM9_I6oH-E1B9Ahh6aw547ZEEFqW
+X-Proofpoint-GUID: voW2hM9_I6oH-E1B9Ahh6aw547ZEEFqW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_16,2023-09-28_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=784 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 mlxscore=0 clxscore=1015 suspectscore=0 bulkscore=0
+ adultscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280142
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 03:29:35PM +0200, David Hildenbrand wrote:
-> > > +       if (!pte_same(*src_pte, orig_src_pte) ||
-> > > +           !pte_same(*dst_pte, orig_dst_pte) ||
-> > > +           folio_test_large(src_folio) ||
-> > > +           folio_estimated_sharers(src_folio) != 1) {
+Hi Peter,
+
+On 9/26/2023 1:02 PM, Peter Zijlstra wrote:
+> On Tue, Sep 26, 2023 at 04:17:33PM +0000, Carlos Llamas wrote:
+>> On Fri, Sep 08, 2023 at 03:49:14PM -0700, Elliot Berman wrote:
+>>> After commit f5d39b020809 ("freezer,sched: Rewrite core freezer logic"),
+>>> tasks that transition directly from TASK_FREEZABLE to TASK_FROZEN  are
+>>> always woken up on the thaw path. Prior to that commit, tasks could ask
+>>> freezer to consider them "frozen enough" via freezer_do_not_count(). The
+>>> commit replaced freezer_do_not_count() with a TASK_FREEZABLE state which
+>>> allows freezer to immediately mark the task as TASK_FROZEN without
+>>> waking up the task.  This is efficient for the suspend path, but on the
+>>> thaw path, the task is always woken up even if the task didn't need to
+>>> wake up and goes back to its TASK_(UN)INTERRUPTIBLE state. Although
+>>> these tasks are capable of handling of the wakeup, we can observe a
+>>> power/perf impact from the extra wakeup.
+>>
+>> This issue is hurting the performance of our stable 6.1 releases. Does
+>> it make sense to backport these patches into stable branches once they
+>> land in mainline? I would assume we want to fix the perf regression
+>> there too?
 > 
-> ^ here you should check PageAnonExclusive. Please get rid of any implicit
-> explicit/implcit mapcount checks.
+> Note that these patches are in tip/sched/core, slated for the next merge
+> window.
 
-David, is PageAnon 100% accurate now in the current tree?
-
-IOW, can it be possible that the page has total_mapcount==1 but missing
-AnonExclusive bit in any possible way?
+Can the changes be scheduled for the next 6.6-rc? I'd like to get the
+changes backported to stable sooner since we observed the regression on
+real systems.
 
 Thanks,
-
--- 
-Peter Xu
-
+Elliot
