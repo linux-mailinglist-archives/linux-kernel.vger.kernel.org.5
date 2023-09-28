@@ -2,58 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 703577B22C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93A37B22C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbjI1QsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        id S231601AbjI1Qs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjI1QsS (ORCPT
+        with ESMTP id S230050AbjI1Qs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:48:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A16D1B5;
-        Thu, 28 Sep 2023 09:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695919695; x=1727455695;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rqXFJQ3cmV4se0ZtA61R0LZgTz5dEDuPK5aPKg+fNgw=;
-  b=ClRTaLX/LopAXahD9z1XcFK29uOextfloJHlpA+M7UeS4C5fcC1f7iEq
-   1SHn3fyKBFN5EOwmRXGQrbIXntxrqAibBuxphZt8DCR/h+M+QPFH5w5nD
-   y+W0Mp3xK0LnlEvG0iKVb9cGvU6utrtAWlI/bwqMZqeiQ7FwssyJTUCOW
-   umqAPS38tap9I6pJMOb5JfUYHPBHJYED/ligbdve37+gip1KXFgF2/fcb
-   oEzO2TdxRnyZtHzxHH7CXsOLoheRouBGsxFJnH9l0TxXbAukZsV4qV8k0
-   GiVunAMAdqyCplI3c3SDHCVoKusxRcI0O6/RVozt8apeUm5OPRx4upc4t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="380995922"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="380995922"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 09:47:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="819926662"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="819926662"
-Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.209.8.12])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 09:47:56 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com,
-        trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     matthew.gerlach@linux.intel.com, peter.colberg@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH 2/3] fpga: m10bmc-sec: Change contact for secure update driver
-Date:   Thu, 28 Sep 2023 09:47:53 -0700
-Message-Id: <20230928164753.278684-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 28 Sep 2023 12:48:57 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A2299
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:48:54 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bffdf50212so211539021fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695919732; x=1696524532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=44e7JjlG+WtSY93eeg23R+ddrkmidvGwWHPd503fikU=;
+        b=zy/2a7EibPFFvegWza5ZRBitbNt0pqqw7uLf2UBMMW9p+sCzbI1qkKbDhQXl3AgrmK
+         09hbUWxqFC1ss52tnhILbS7GCP7wS5jHNX5tyHUkcSUBg3gV6xupjaV3tlgkLNYQllzn
+         j4zd8z0oGS/UE7I8wZuYQSK3S+d9GUYecuf+LAIby2XofsZrjd9VAxVCRXasl5ntSTzB
+         HcA2Q2ADyrrUf1BbpQ6v1hkr46Cr0WMSo9TeOPu+BpXaeLMeWysY+n3LPWwK4eZ0O0nE
+         S71RfRTwXNq8KaXYQmyYFkMCWsDZyf9GPVu4mUinDgDBLhz7wibbp1q4MgV48zutf+Dg
+         O3Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695919732; x=1696524532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=44e7JjlG+WtSY93eeg23R+ddrkmidvGwWHPd503fikU=;
+        b=r6PZZMWH37SHv0GHBENN7m6lwZAhbusBkd7AS7BOV4QbEBKtslhwxuNUHi69OXOVo3
+         2UwnoVm7517kXD/08rysUvXKIYoHfFB76PyBDwbO1HFYzQtg4Zmb0ntHsjZknIvqR19c
+         r8M1Xqo8mzDd3JOvkqiyy9YV6UZz9+vq4y6ncT57au84Jn+PgXFTp6AiUdMhoaP1ozMR
+         38L1TXCY1Or1bFVEi4YUy/qZu2/tJgPsuNURnkx7kSMCI2wqYkfOJPxYec807ooFpnXX
+         D2vbNb6zxDFc2cHBMvscD5JDd1wVeAavygdmOXlFcRpsEuP0UNp5FqwXD7Yo5jB/n7rC
+         5Nrw==
+X-Gm-Message-State: AOJu0Yw5i50HhAjlODm1PkMqlFL30zRAVkSucXPKwXzeFI1V8GojJYcE
+        9LVsbE1eFDvYmL1t5twnkyaTWS2wFWbuR3Mj17GtrQ==
+X-Google-Smtp-Source: AGHT+IEbRkCHOMBJe/ei0e9obPh+BFrfZpzCUXl6IIFyZN3ZHbEtYGUXGWXMnvH1SMQHZBjXtN75+lOrtiDzacUgCcA=
+X-Received: by 2002:a2e:b00e:0:b0:2c0:32d7:8962 with SMTP id
+ y14-20020a2eb00e000000b002c032d78962mr1673135ljk.1.1695919732494; Thu, 28 Sep
+ 2023 09:48:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230926150316.1129648-1-cleger@rivosinc.com> <CALs-Hss+OK-vJy_ZKjVbGh7rTBZA+GditWcdM1XjDDskGF76Dw@mail.gmail.com>
+ <10997d30-e6b7-4a24-a43e-e22679e8d450@rivosinc.com>
+In-Reply-To: <10997d30-e6b7-4a24-a43e-e22679e8d450@rivosinc.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Thu, 28 Sep 2023 09:48:16 -0700
+Message-ID: <CALs-HssAAgbdUuoCyPEdjs+8yH+a8Gzz7jCpMre-6k21aE_sdQ@mail.gmail.com>
+Subject: Re: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
+To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?UTF-8?B?QmrDtnJuIFRvcGVs?= <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ron Minnich <rminnich@gmail.com>,
+        Daniel Maslowski <cyrevolt@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,96 +76,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the maintainer for the Intel MAX10 BMC Secure Update driver from
-Russ Weight to Peter Colberg. Update the ABI documentation contact
-information as well.
+On Thu, Sep 28, 2023 at 12:49=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@ri=
+vosinc.com> wrote:
+>
+>
+>
+> On 26/09/2023 23:43, Evan Green wrote:
+> > On Tue, Sep 26, 2023 at 8:03=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger=
+@rivosinc.com> wrote:
+> >>
+> >> Since commit 61cadb9 ("Provide new description of misaligned load/stor=
+e
+> >> behavior compatible with privileged architecture.") in the RISC-V ISA
+> >> manual, it is stated that misaligned load/store might not be supported=
+.
+> >> However, the RISC-V kernel uABI describes that misaligned accesses are
+> >> supported. In order to support that, this series adds support for S-mo=
+de
+> >> handling of misaligned accesses as well support for prctl(PR_UNALIGN).
+> >>
+> >> Handling misaligned access in kernel allows for a finer grain control
+> >> of the misaligned accesses behavior, and thanks to the prctl call, can
+> >> allow disabling misaligned access emulation to generate SIGBUS. User
+> >> space can then optimize its software by removing such access based on
+> >> SIGBUS generation.
+> >>
+> >> Currently, this series is useful for people that uses a SBI that does
+> >> not handled misaligned traps. In a near future, this series will make
+> >> use a SBI extension [1] allowing to request delegation of the
+> >> misaligned load/store traps to the S-mode software. This extension has
+> >> been submitted for review to the riscv tech-prs group. An OpenSBI
+> >> implementation for this spec is available at [2].
+> >
+> > For my own education, how does the new SBI call behave with respect to
+> > multiple harts? Does a call to change a feature perform that change
+> > across all harts, or just the hart the SBI call was made on? If the
+> > answer is "all harts", what if not all harts are exactly the same, and
+> > some can enable the feature switch while others cannot? Also if the
+> > answer is "all harts", does it also apply to hotplugged cpus, which
+> > may not have even existed at boot time?
+>
+> Depending on the feature, they can be either global (all harts) or
+> local (calling hart). The medeleg register is per hart and thus
+> misaligned load/store delegation for S-mode is also per hart.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- .../testing/sysfs-driver-intel-m10-bmc-sec-update  | 14 +++++++-------
- MAINTAINERS                                        |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+We should probably state this in the spec update then, both generally
+and for each specific feature added. Otherwise firmware writers are
+left not knowing if they're supposed to spread a feature across to all
+cores or not.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-index 0a41afe0ab4c..9051695d2211 100644
---- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-+++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-@@ -1,7 +1,7 @@
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/sr_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the static
- 		region if one is programmed, else it returns the
- 		string: "hash not programmed".  This file is only
-@@ -11,7 +11,7 @@ Description:	Read only. Returns the root entry hash for the static
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/pr_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the partial
- 		reconfiguration region if one is programmed, else it
- 		returns the string: "hash not programmed".  This file
-@@ -21,7 +21,7 @@ Description:	Read only. Returns the root entry hash for the partial
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/bmc_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the BMC image
- 		if one is programmed, else it returns the string:
- 		"hash not programmed".  This file is only visible if the
-@@ -31,7 +31,7 @@ Description:	Read only. Returns the root entry hash for the BMC image
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/sr_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the static region. The standard bitmap
- 		list format is used (e.g. "1,2-6,9").
-@@ -39,7 +39,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/pr_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the partial reconfiguration region. The
- 		standard bitmap list format is used (e.g. "1,2-6,9").
-@@ -47,7 +47,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/bmc_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the BMC.  The standard bitmap list format
- 		is used (e.g. "1,2-6,9").
-@@ -55,7 +55,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/flash_count
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns number of times the secure update
- 		staging area has been flashed.
- 		Format: "%u".
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b97ee6f50679..8006c35956bb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10755,7 +10755,7 @@ F:	drivers/mfd/intel-m10-bmc*
- F:	include/linux/mfd/intel-m10-bmc.h
- 
- INTEL MAX10 BMC SECURE UPDATES
--M:	Russ Weight <russell.h.weight@intel.com>
-+M:	Peter Colberg <peter.colberg@intel.com>
- L:	linux-fpga@vger.kernel.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
--- 
-2.25.1
+>
+>
+> >
+> > What happens if a hart goes through a context loss event, like
+> > suspend/resume? Is the setting expected to be sticky, or is the kernel
+> > expected to replay these calls?
+>
+> That is a good question that we did not actually clarified yet. Thanks
+> for raising it !
 
+No problem! This may also need to be specified per-feature in the
+spec. I have a vague hunch that it's better to ask the kernel to do it
+on resume, though ideally we'd have the terminology (and I don't think
+we do?) to specify exactly which points constitute a context loss.
+Mostly I'm remembering the x86 and ARM transition from S3, where lots
+of firmware code ran at resume, to S0ix-like power states, where
+things resumed directly into the OS and they had to figure out how to
+do it without firmware. The vague hunch is that keeping the laundry
+list of things firmware must do on resume low might keep us from
+getting in S0ix's way, but it's all so speculative it's hard to know
+if it's really a useful hunch or not.
+
+-Evan
