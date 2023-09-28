@@ -2,191 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 808C17B10B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632817B10B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjI1COp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 22:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S229719AbjI1CSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 22:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1COo (ORCPT
+        with ESMTP id S229437AbjI1CS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 22:14:44 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39B5CAC
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 19:14:42 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.5.213])
-        by gateway (Coremail) with SMTP id _____8BxY_CQ4RRlWaItAA--.21847S3;
-        Thu, 28 Sep 2023 10:14:40 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axzy+Q4RRlNecUAA--.43050S2;
-        Thu, 28 Sep 2023 10:14:40 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] LoongArch: Share the same pmd between vDSO space and stack
-Date:   Thu, 28 Sep 2023 10:14:40 +0800
-Message-Id: <20230928021440.698982-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+        Wed, 27 Sep 2023 22:18:29 -0400
+Received: from jari.cn (unknown [218.92.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A213EB3;
+        Wed, 27 Sep 2023 19:18:27 -0700 (PDT)
+Received: from wangkailong$jari.cn ( [182.148.12.64] ) by
+ ajax-webmail-localhost.localdomain (Coremail) ; Thu, 28 Sep 2023 10:17:08
+ +0800 (GMT+08:00)
+X-Originating-IP: [182.148.12.64]
+Date:   Thu, 28 Sep 2023 10:17:08 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "KaiLong Wang" <wangkailong@jari.cn>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: lpfc: Clean up errors in lpfc_sli.c
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
+ 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Axzy+Q4RRlNecUAA--.43050S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxCw48KrW5JF43AFWkXw13trc_yoWrZw4kpF
-        ZrCFs7XrWUGr97Kry7tw1kWr15Jas7Kw42ga12y393AF1YqF13Zw1kAryDZF4UtanY9a10
-        gFyfKrZ09a15XwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j8yCJUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <28c39c5b.8a1.18ad9935f63.Coremail.wangkailong@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwDXaD4k4hRliXq+AA--.584W
+X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQAJB2T8PZMAAQAbsj
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR,XPRIO
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently vDSO virtual address space is randomed within range 64M
-below TASK_SIZE, and the next is stack space randomed within generic
-range 8M. so vDSO space uses different pmd entry with stack.
-
-With idea from x86, vDSO space can share the same pmd entry with
-stack, only that randomed range is smaller than before. This will
-save one PTE page for every thread.
-
-Also this patch removes ____cacheline_aligned_in_smp property for
-vdso_pcpu_data structure, cache line aligned property for small size
-is generally used for frequently modified data like lock to avoid
-cache-thrashing on smp system. The struct element node is almost constant
-in struct vdso_pcpu_data, so cache line aligned property is not
-necessary, and it will use more memory.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/processor.h |  2 --
- arch/loongarch/include/asm/vdso/vdso.h |  2 +-
- arch/loongarch/kernel/process.c        |  4 ---
- arch/loongarch/kernel/vdso.c           | 44 +++++++++++++++++++++-----
- 4 files changed, 37 insertions(+), 15 deletions(-)
-
-diff --git a/arch/loongarch/include/asm/processor.h b/arch/loongarch/include/asm/processor.h
-index c3bc44b5f5b3..5870b2785968 100644
---- a/arch/loongarch/include/asm/processor.h
-+++ b/arch/loongarch/include/asm/processor.h
-@@ -43,8 +43,6 @@
- 
- #endif
- 
--#define VDSO_RANDOMIZE_SIZE	(TASK_IS_32BIT_ADDR ? SZ_1M : SZ_64M)
--
- unsigned long stack_top(void);
- #define STACK_TOP stack_top()
- 
-diff --git a/arch/loongarch/include/asm/vdso/vdso.h b/arch/loongarch/include/asm/vdso/vdso.h
-index 5a12309d9fb5..d57de1887bb2 100644
---- a/arch/loongarch/include/asm/vdso/vdso.h
-+++ b/arch/loongarch/include/asm/vdso/vdso.h
-@@ -12,7 +12,7 @@
- 
- struct vdso_pcpu_data {
- 	u32 node;
--} ____cacheline_aligned_in_smp;
-+};
- 
- struct loongarch_vdso_data {
- 	struct vdso_pcpu_data pdata[NR_CPUS];
-diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
-index 767d94cce0de..059e52d59297 100644
---- a/arch/loongarch/kernel/process.c
-+++ b/arch/loongarch/kernel/process.c
-@@ -296,10 +296,6 @@ unsigned long stack_top(void)
- 	top -= PAGE_ALIGN(current->thread.vdso->size);
- 	top -= VVAR_SIZE;
- 
--	/* Space to randomize the VDSO base */
--	if (current->flags & PF_RANDOMIZE)
--		top -= VDSO_RANDOMIZE_SIZE;
--
- 	return top;
- }
- 
-diff --git a/arch/loongarch/kernel/vdso.c b/arch/loongarch/kernel/vdso.c
-index 14941e4be66d..5cc27c12dce1 100644
---- a/arch/loongarch/kernel/vdso.c
-+++ b/arch/loongarch/kernel/vdso.c
-@@ -148,16 +148,44 @@ int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
- }
- #endif
- 
--static unsigned long vdso_base(void)
-+/*
-+ * Put the vdso above the (randomized) stack with another randomized
-+ * offset.  This way there is no hole in the middle of address space.
-+ * To save memory make sure it is still in the same PTE as the stack
-+ * top.  This doesn't give that many random bits.
-+ *
-+ * Note that this algorithm is imperfect: the distribution of the vdso
-+ * start address within a PMD is biased toward the end.
-+ */
-+static unsigned long vdso_addr(unsigned long start, unsigned int len)
- {
--	unsigned long base = STACK_TOP;
-+	unsigned long addr, end;
-+	unsigned long offset;
- 
--	if (current->flags & PF_RANDOMIZE) {
--		base += get_random_u32_below(VDSO_RANDOMIZE_SIZE);
--		base = PAGE_ALIGN(base);
--	}
-+	/*
-+	 * Round up the start address.  It can start out unaligned as a result
-+	 * of stack start randomization.
-+	 */
-+	start = PAGE_ALIGN(start);
- 
--	return base;
-+	/* Round the lowest possible end address up to a PMD boundary. */
-+	end = (start + len + PMD_SIZE - 1) & PMD_MASK;
-+	if (end >= TASK_SIZE)
-+		end = TASK_SIZE;
-+	end -= len;
-+
-+	if (end > start) {
-+		offset = get_random_u32_below((end - start) >> PAGE_SHIFT);
-+		addr = start + (offset << PAGE_SHIFT);
-+	} else
-+		addr = start;
-+
-+	return addr;
-+}
-+
-+static inline unsigned long vdso_base(unsigned int len)
-+{
-+	return vdso_addr(current->mm->start_stack, len);
- }
- 
- int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-@@ -177,7 +205,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	 */
- 	size = VVAR_SIZE + info->size;
- 
--	data_addr = get_unmapped_area(NULL, vdso_base(), size, 0, 0);
-+	data_addr = get_unmapped_area(NULL, vdso_base(size), size, 0, 0);
- 	if (IS_ERR_VALUE(data_addr)) {
- 		ret = data_addr;
- 		goto out;
--- 
-2.39.3
-
+Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
+ImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKRVJST1I6IHNwYWNlIHJlcXVpcmVkIGJl
+Zm9yZSB0aGUgb3BlbiBwYXJlbnRoZXNpcyAnKCcKRVJST1I6IGVsc2Ugc2hvdWxkIGZvbGxvdyBj
+bG9zZSBicmFjZSAnfScKRVJST1I6IHNwYWNlIHJlcXVpcmVkIGFmdGVyIHRoYXQgJywnIChjdHg6
+VnhWKQpFUlJPUjogImZvbyAqIGJhciIgc2hvdWxkIGJlICJmb28gKmJhciIKRVJST1I6IHNwYWNl
+IHByb2hpYml0ZWQgYWZ0ZXIgdGhhdCAnJicgKGN0eDpXeFcpCgpTaWduZWQtb2ZmLWJ5OiBLYWlM
+b25nIFdhbmcgPHdhbmdrYWlsb25nQGphcmkuY24+Ci0tLQogZHJpdmVycy9zY3NpL2xwZmMvbHBm
+Y19zbGkuYyB8IDQ0ICsrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBmaWxl
+IGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDI1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvc2NzaS9scGZjL2xwZmNfc2xpLmMgYi9kcml2ZXJzL3Njc2kvbHBmYy9scGZjX3Ns
+aS5jCmluZGV4IDRkZmFkZjI1NGE3Mi4uNjhjOTIyNTUxZmM4IDEwMDY0NAotLS0gYS9kcml2ZXJz
+L3Njc2kvbHBmYy9scGZjX3NsaS5jCisrKyBiL2RyaXZlcnMvc2NzaS9scGZjL2xwZmNfc2xpLmMK
+QEAgLTkxNiw3ICs5MTYsNyBAQCBzdHJ1Y3QgbHBmY19pb2NicSAqCiBfX2xwZmNfc2xpX2dldF9p
+b2NicShzdHJ1Y3QgbHBmY19oYmEgKnBoYmEpCiB7CiAJc3RydWN0IGxpc3RfaGVhZCAqbHBmY19p
+b2NiX2xpc3QgPSAmcGhiYS0+bHBmY19pb2NiX2xpc3Q7Ci0Jc3RydWN0IGxwZmNfaW9jYnEgKiBp
+b2NicSA9IE5VTEw7CisJc3RydWN0IGxwZmNfaW9jYnEgKmlvY2JxID0gTlVMTDsKIAogCWxvY2tk
+ZXBfYXNzZXJ0X2hlbGQoJnBoYmEtPmhiYWxvY2spOwogCkBAIC0xMzQxLDcgKzEzNDEsNyBAQCBf
+X2xwZmNfc2xpX2dldF9udm1ldF9zZ2xxKHN0cnVjdCBscGZjX2hiYSAqcGhiYSwgc3RydWN0IGxw
+ZmNfaW9jYnEgKnBpb2NicSkKIHN0cnVjdCBscGZjX2lvY2JxICoKIGxwZmNfc2xpX2dldF9pb2Ni
+cShzdHJ1Y3QgbHBmY19oYmEgKnBoYmEpCiB7Ci0Jc3RydWN0IGxwZmNfaW9jYnEgKiBpb2NicSA9
+IE5VTEw7CisJc3RydWN0IGxwZmNfaW9jYnEgKmlvY2JxID0gTlVMTDsKIAl1bnNpZ25lZCBsb25n
+IGlmbGFnczsKIAogCXNwaW5fbG9ja19pcnFzYXZlKCZwaGJhLT5oYmFsb2NrLCBpZmxhZ3MpOwpA
+QCAtMjExOCw3ICsyMTE4LDcgQEAgbHBmY19zbGlfbmV4dF9pb3RhZyhzdHJ1Y3QgbHBmY19oYmEg
+KnBoYmEsIHN0cnVjdCBscGZjX2lvY2JxICppb2NicSkKIAogCXNwaW5fbG9ja19pcnEoJnBoYmEt
+PmhiYWxvY2spOwogCWlvdGFnID0gcHNsaS0+bGFzdF9pb3RhZzsKLQlpZigrK2lvdGFnIDwgcHNs
+aS0+aW9jYnFfbG9va3VwX2xlbikgeworCWlmICgrK2lvdGFnIDwgcHNsaS0+aW9jYnFfbG9va3Vw
+X2xlbikgewogCQlwc2xpLT5sYXN0X2lvdGFnID0gaW90YWc7CiAJCXBzbGktPmlvY2JxX2xvb2t1
+cFtpb3RhZ10gPSBpb2NicTsKIAkJc3Bpbl91bmxvY2tfaXJxKCZwaGJhLT5oYmFsb2NrKTsKQEAg
+LTIxMzcsNyArMjEzNyw3IEBAIGxwZmNfc2xpX25leHRfaW90YWcoc3RydWN0IGxwZmNfaGJhICpw
+aGJhLCBzdHJ1Y3QgbHBmY19pb2NicSAqaW9jYnEpCiAJCQkJLyogaGlnaGx5IHVucHJvYmFibGUg
+Y2FzZSAqLwogCQkJCWtmcmVlKG5ld19hcnIpOwogCQkJCWlvdGFnID0gcHNsaS0+bGFzdF9pb3Rh
+ZzsKLQkJCQlpZigrK2lvdGFnIDwgcHNsaS0+aW9jYnFfbG9va3VwX2xlbikgeworCQkJCWlmICgr
+K2lvdGFnIDwgcHNsaS0+aW9jYnFfbG9va3VwX2xlbikgewogCQkJCQlwc2xpLT5sYXN0X2lvdGFn
+ID0gaW90YWc7CiAJCQkJCXBzbGktPmlvY2JxX2xvb2t1cFtpb3RhZ10gPSBpb2NicTsKIAkJCQkJ
+c3Bpbl91bmxvY2tfaXJxKCZwaGJhLT5oYmFsb2NrKTsKQEAgLTMwNzgsOCArMzA3OCw3IEBAIGxw
+ZmNfc2xpX2hhbmRsZV9tYl9ldmVudChzdHJ1Y3QgbHBmY19oYmEgKnBoYmEpCiAJCQkJCSh1aW50
+MzJfdClwbWJveC0+bWJ4Q29tbWFuZCwKIAkJCQkJcG1ib3gtPnVuLnZhcldvcmRzWzBdLAogCQkJ
+CQlwbWJveC0+dW4udmFyV29yZHNbMV0pOwotCQkJfQotCQkJZWxzZSB7CisJCQl9IGVsc2Ugewog
+CQkJCWxwZmNfZGVidWdmc19kaXNjX3RyYyhwaGJhLT5wcG9ydCwKIAkJCQkJTFBGQ19ESVNDX1RS
+Q19NQk9YLAogCQkJCQkiTUJPWCBjbXBsOiAgICAgICBjbWQ6eCV4IG1iOngleCB4JXgiLApAQCAt
+MzE2Myw3ICszMTYyLDcgQEAgbHBmY19zbGlfaGFuZGxlX21iX2V2ZW50KHN0cnVjdCBscGZjX2hi
+YSAqcGhiYSkKIAkJCQlwbWJveC0+dW4udmFyV29yZHNbMTBdKTsKIAogCQlpZiAocG1iLT5tYm94
+X2NtcGwpCi0JCQlwbWItPm1ib3hfY21wbChwaGJhLHBtYik7CisJCQlwbWItPm1ib3hfY21wbChw
+aGJhLCBwbWIpOwogCX0gd2hpbGUgKDEpOwogCXJldHVybiAwOwogfQpAQCAtMzQ0OSw4ICszNDQ4
+LDggQEAgc3RhdGljIGludAogbHBmY19zbGlfcHJvY2Vzc191bnNvbF9pb2NiKHN0cnVjdCBscGZj
+X2hiYSAqcGhiYSwgc3RydWN0IGxwZmNfc2xpX3JpbmcgKnByaW5nLAogCQkJICAgIHN0cnVjdCBs
+cGZjX2lvY2JxICpzYXZlcSkKIHsKLQlJT0NCX3QgICAgICAgICAgICogaXJzcDsKLQlXT1JENSAg
+ICAgICAgICAgICogdzVwOworCUlPQ0JfdCAgICAgICAgICAgKmlyc3A7CisJV09SRDUgICAgICAg
+ICAgICAqdzVwOwogCWRtYV9hZGRyX3QJIHBhZGRyOwogCXVpbnQzMl90ICAgICAgICAgICBSY3Rs
+LCBUeXBlOwogCXN0cnVjdCBscGZjX2lvY2JxICppb2NicTsKQEAgLTkzNjIsNyArOTM2MSw3IEBA
+IGxwZmNfc2xpX2lzc3VlX21ib3hfczMoc3RydWN0IGxwZmNfaGJhICpwaGJhLCBMUEZDX01CT1hR
+X3QgKnBtYm94LAogCiAJaWYgKHBtYm94LT5tYm94X2NtcGwgJiYgcG1ib3gtPm1ib3hfY21wbCAh
+PSBscGZjX3NsaV9kZWZfbWJveF9jbXBsICYmCiAJCXBtYm94LT5tYm94X2NtcGwgIT0gbHBmY19z
+bGlfd2FrZV9tYm94X3dhaXQpIHsKLQkJaWYoIXBtYm94LT52cG9ydCkgeworCQlpZiAoIXBtYm94
+LT52cG9ydCkgewogCQkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcGhiYS0+aGJhbG9jaywgZHJ2
+cl9mbGFnKTsKIAkJCWxwZmNfcHJpbnRmX2xvZyhwaGJhLCBLRVJOX0VSUiwKIAkJCQkJTE9HX01C
+T1ggfCBMT0dfVlBPUlQsCkBAIC05NDY5LDggKzk0NjgsNyBAQCBscGZjX3NsaV9pc3N1ZV9tYm94
+X3MzKHN0cnVjdCBscGZjX2hiYSAqcGhiYSwgTFBGQ19NQk9YUV90ICpwbWJveCwKIAkJCQkiTUJP
+WCBCc3kgdnBvcnQ6ICBjbWQ6eCV4IG1iOngleCB4JXgiLAogCQkJCSh1aW50MzJfdCltYngtPm1i
+eENvbW1hbmQsCiAJCQkJbWJ4LT51bi52YXJXb3Jkc1swXSwgbWJ4LT51bi52YXJXb3Jkc1sxXSk7
+Ci0JCX0KLQkJZWxzZSB7CisJCX0gZWxzZSB7CiAJCQlscGZjX2RlYnVnZnNfZGlzY190cmMocGhi
+YS0+cHBvcnQsCiAJCQkJTFBGQ19ESVNDX1RSQ19NQk9YLAogCQkJCSJNQk9YIEJzeTogICAgICAg
+IGNtZDp4JXggbWI6eCV4IHgleCIsCkBAIC05NTIwLDggKzk1MTgsNyBAQCBscGZjX3NsaV9pc3N1
+ZV9tYm94X3MzKHN0cnVjdCBscGZjX2hiYSAqcGhiYSwgTFBGQ19NQk9YUV90ICpwbWJveCwKIAkJ
+CQkiTUJPWCBTZW5kIHZwb3J0OiBjbWQ6eCV4IG1iOngleCB4JXgiLAogCQkJCSh1aW50MzJfdClt
+YngtPm1ieENvbW1hbmQsCiAJCQkJbWJ4LT51bi52YXJXb3Jkc1swXSwgbWJ4LT51bi52YXJXb3Jk
+c1sxXSk7Ci0JCX0KLQkJZWxzZSB7CisJCX0gZWxzZSB7CiAJCQlscGZjX2RlYnVnZnNfZGlzY190
+cmMocGhiYS0+cHBvcnQsCiAJCQkJTFBGQ19ESVNDX1RSQ19NQk9YLAogCQkJCSJNQk9YIFNlbmQ6
+ICAgICAgIGNtZDp4JXggbWI6eCV4IHgleCIsCkBAIC05NjYwLDcgKzk2NTcsNyBAQCBscGZjX3Ns
+aV9pc3N1ZV9tYm94X3MzKHN0cnVjdCBscGZjX2hiYSAqcGhiYSwgTFBGQ19NQk9YUV90ICpwbWJv
+eCwKIAkJCQkJdWludDMyX3Qgc2xpbXdvcmQwOwogCQkJCQkvKiBDaGVjayByZWFsIFNMSU0gZm9y
+IGFueSBlcnJvcnMgKi8KIAkJCQkJc2xpbXdvcmQwID0gcmVhZGwocGhiYS0+TUJzbGltYWRkcik7
+Ci0JCQkJCXNsaW1tYiA9IChNQUlMQk9YX3QgKikgJiBzbGltd29yZDA7CisJCQkJCXNsaW1tYiA9
+IChNQUlMQk9YX3QgKikgJnNsaW13b3JkMDsKIAkJCQkJaWYgKCgoc2xpbXdvcmQwICYgT1dOX0NI
+SVApICE9IE9XTl9DSElQKQogCQkJCQkgICAgJiYgc2xpbW1iLT5tYnhTdGF0dXMpIHsKIAkJCQkJ
+CXBzbGktPnNsaV9mbGFnICY9CkBAIC0xMDM4Miw3ICsxMDM3OSw3IEBAIHN0YXRpYyBzdHJ1Y3Qg
+bHBmY19pb2NicSAqCiBscGZjX3NsaV9uZXh0X2lvY2Ioc3RydWN0IGxwZmNfaGJhICpwaGJhLCBz
+dHJ1Y3QgbHBmY19zbGlfcmluZyAqcHJpbmcsCiAJCSAgIHN0cnVjdCBscGZjX2lvY2JxICoqcGlv
+Y2IpCiB7Ci0Jc3RydWN0IGxwZmNfaW9jYnEgKiBuZXh0aW9jYjsKKwlzdHJ1Y3QgbHBmY19pb2Ni
+cSAqbmV4dGlvY2I7CiAKIAlsb2NrZGVwX2Fzc2VydF9oZWxkKCZwaGJhLT5oYmFsb2NrKTsKIApA
+QCAtMTA2ODUsOCArMTA2ODIsNyBAQCBfX2xwZmNfc2xpX2lzc3VlX2lvY2JfczQoc3RydWN0IGxw
+ZmNfaGJhICpwaGJhLCB1aW50MzJfdCByaW5nX251bWJlciwKIAl9IGVsc2UgaWYgKHBpb2NiLT5j
+bWRfZmxhZyAmICBMUEZDX0lPX0ZDUCkgewogCQkvKiBUaGVzZSBJTydzIGFscmVhZHkgaGF2ZSBh
+biBYUkkgYW5kIGEgbWFwcGVkIHNnbC4gKi8KIAkJc2dscSA9IE5VTEw7Ci0JfQotCWVsc2Ugewor
+CX0gZWxzZSB7CiAJCS8qCiAJCSAqIFRoaXMgaXMgYSBjb250aW51YXRpb24gb2YgYSBjb21tYW5k
+aSwoQ1gpIHNvIHRoaXMKIAkJICogc2dscSBpcyBvbiB0aGUgYWN0aXZlIGxpc3QKQEAgLTExMzI4
+LDcgKzExMzI0LDcgQEAgbHBmY19zbGlfaXNzdWVfaW9jYihzdHJ1Y3QgbHBmY19oYmEgKnBoYmEs
+IHVpbnQzMl90IHJpbmdfbnVtYmVyLAogICogVGhpcyBmdW5jdGlvbiBpcyBjYWxsZWQgd2l0aCBu
+byBsb2NrIGhlbGQuIFNMSTMgb25seS4KICAqKi8KIHN0YXRpYyBpbnQKLWxwZmNfZXh0cmFfcmlu
+Z19zZXR1cCggc3RydWN0IGxwZmNfaGJhICpwaGJhKQorbHBmY19leHRyYV9yaW5nX3NldHVwKHN0
+cnVjdCBscGZjX2hiYSAqcGhiYSkKIHsKIAlzdHJ1Y3QgbHBmY19zbGkgKnBzbGk7CiAJc3RydWN0
+IGxwZmNfc2xpX3JpbmcgKnByaW5nOwpAQCAtMTE0OTMsOCArMTE0ODksOCBAQCBscGZjX3NsaTRf
+YWJ0c19lcnJfaGFuZGxlcihzdHJ1Y3QgbHBmY19oYmEgKnBoYmEsCiAgKiBldmVudCBtZXNzYWdl
+IGFuZCBwb3N0cyBldmVudHMgZm9yIHRoZSBtYW5hZ2VtZW50IGFwcGxpY2F0aW9ucy4KICAqKi8K
+IHN0YXRpYyB2b2lkCi1scGZjX3NsaV9hc3luY19ldmVudF9oYW5kbGVyKHN0cnVjdCBscGZjX2hi
+YSAqIHBoYmEsCi0Jc3RydWN0IGxwZmNfc2xpX3JpbmcgKiBwcmluZywgc3RydWN0IGxwZmNfaW9j
+YnEgKiBpb2NicSkKK2xwZmNfc2xpX2FzeW5jX2V2ZW50X2hhbmRsZXIoc3RydWN0IGxwZmNfaGJh
+ICpwaGJhLAorCXN0cnVjdCBscGZjX3NsaV9yaW5nICpwcmluZywgc3RydWN0IGxwZmNfaW9jYnEg
+KmlvY2JxKQogewogCUlPQ0JfdCAqaWNtZDsKIAl1aW50MTZfdCBldnRfY29kZTsKQEAgLTEzNzEx
+LDggKzEzNzA3LDcgQEAgbHBmY19zbGlfc3BfaW50cl9oYW5kbGVyKGludCBpcnEsIHZvaWQgKmRl
+dl9pZCkKIAkJCQl3cml0ZWwoY29udHJvbCwgcGhiYS0+SENyZWdhZGRyKTsKIAkJCQlyZWFkbChw
+aGJhLT5IQ3JlZ2FkZHIpOyAvKiBmbHVzaCAqLwogCQkJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUo
+JnBoYmEtPmhiYWxvY2ssIGlmbGFnKTsKLQkJCX0KLQkJCWVsc2UKKwkJCX0gZWxzZQogCQkJCXdv
+cmtfaGFfY29weSAmPSB+SEFfTEFUVDsKIAkJfQogCkBAIC0xMzc0Niw4ICsxMzc0MSw3IEBAIGxw
+ZmNfc2xpX3NwX2ludHJfaGFuZGxlcihpbnQgaXJxLCB2b2lkICpkZXZfaWQpCiAJCQkJCSAgICB+
+KEhDX1IwSU5UX0VOQSA8PCBMUEZDX0VMU19SSU5HKTsKIAkJCQkJd3JpdGVsKGNvbnRyb2wsIHBo
+YmEtPkhDcmVnYWRkcik7CiAJCQkJCXJlYWRsKHBoYmEtPkhDcmVnYWRkcik7IC8qIGZsdXNoICov
+Ci0JCQkJfQotCQkJCWVsc2UgeworCQkJCX0gZWxzZSB7CiAJCQkJCWxwZmNfZGVidWdmc19zbG93
+X3JpbmdfdHJjKHBoYmEsCiAJCQkJCQkiSVNSIHNsb3cgcmluZzogICBwd29yazoiCiAJCQkJCQki
+eCV4IGhhd29yazp4JXggd2FpdDp4JXgiLAotLSAKMi4xNy4xCg==
