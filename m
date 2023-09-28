@@ -2,150 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56427B1758
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97CB7B1763
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjI1J1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S231573AbjI1JcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbjI1J1h (ORCPT
+        with ESMTP id S229445AbjI1JcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:27:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDD75193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:27:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F32F51FB;
-        Thu, 28 Sep 2023 02:28:13 -0700 (PDT)
-Received: from [10.57.0.224] (unknown [10.57.0.224])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AFD13F59C;
-        Thu, 28 Sep 2023 02:27:34 -0700 (PDT)
-Message-ID: <abdc07fb-f558-ae44-0226-a4c03909a3f4@arm.com>
-Date:   Thu, 28 Sep 2023 10:27:23 +0100
+        Thu, 28 Sep 2023 05:32:21 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D379C122;
+        Thu, 28 Sep 2023 02:32:19 -0700 (PDT)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38S88Fsi027951;
+        Thu, 28 Sep 2023 05:32:03 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tck4q7973-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 05:32:03 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 38S9W2OI057121
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 Sep 2023 05:32:02 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 28 Sep 2023 05:32:01 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 28 Sep 2023 05:32:01 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 28 Sep 2023 05:32:01 -0400
+Received: from ubuntu20.04.ad.analog.com (HYB-d0iOFy9ma8q.ad.analog.com [10.48.65.139])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 38S9Vjfa028736;
+        Thu, 28 Sep 2023 05:31:48 -0400
+From:   Eliza Balas <eliza.balas@analog.com>
+CC:     Eliza Balas <eliza.balas@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v2 0/2] Add support for ADI TDD Engine
+Date:   Thu, 28 Sep 2023 12:28:02 +0300
+Message-ID: <20230928092804.22612-1-eliza.balas@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] iommu: Sanity check on param list for
- iommu_get_resv_regions
-Content-Language: en-GB
-To:     Dawei Li <set_pte_at@outlook.com>,
-        Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     joro@8bytes.org, will@kernel.org, jgg@nvidia.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <TYTP286MB35645FDEF45FDFC91D35CE1ECAC2A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
- <7c7b8981-022c-2fa8-7ee5-9c97d8e17862@linux.intel.com>
- <TYTP286MB3564BA78F5ED7E8FE4DEEE93CAC1A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <TYTP286MB3564BA78F5ED7E8FE4DEEE93CAC1A@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: xZgqBPDDrrSLANtmYsTBwJBiRqmlcMXK
+X-Proofpoint-ORIG-GUID: xZgqBPDDrrSLANtmYsTBwJBiRqmlcMXK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_07,2023-09-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 clxscore=1011 lowpriorityscore=0 malwarescore=0
+ spamscore=0 impostorscore=0 mlxlogscore=799 bulkscore=0 phishscore=0
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2309180000 definitions=main-2309280081
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-28 09:57, Dawei Li wrote:
-> Hi,
-> Thanks for reviewing,
-> 
-> On Thu, Sep 28, 2023 at 09:33:29AM +0800, Baolu Lu wrote:
->> On 9/27/23 10:25 PM, Dawei Li wrote:
->>> In iommu_get_resv_regions(), param list is an argument supplied by caller,
->>> into which callee is supposed to insert resv regions.
->>>
->>> In other words, this 'list' argument is expected to be an empty list,
->>> so make an explicit annotation on it.
->>>
->>> Signed-off-by: Dawei Li <set_pte_at@outlook.com>
->>> ---
->>>    drivers/iommu/iommu.c | 9 +++++----
->>>    1 file changed, 5 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index 1ecac2b5c54f..a01c4a7a9d19 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -813,7 +813,7 @@ int iommu_get_group_resv_regions(struct iommu_group *group,
->>>    	mutex_lock(&group->mutex);
->>>    	for_each_group_device(group, device) {
->>> -		struct list_head dev_resv_regions;
->>> +		LIST_HEAD(dev_resv_regions);
->>>    		/*
->>>    		 * Non-API groups still expose reserved_regions in sysfs,
->>> @@ -822,7 +822,6 @@ int iommu_get_group_resv_regions(struct iommu_group *group,
->>>    		if (!device->dev->iommu)
->>>    			break;
->>> -		INIT_LIST_HEAD(&dev_resv_regions);
->>>    		iommu_get_resv_regions(device->dev, &dev_resv_regions);
->>>    		ret = iommu_insert_device_resv_regions(&dev_resv_regions, head);
->>>    		iommu_put_resv_regions(device->dev, &dev_resv_regions);
->>> @@ -1061,12 +1060,11 @@ static int iommu_create_device_direct_mappings(struct iommu_domain *domain,
->>>    					       struct device *dev)
->>>    {
->>>    	struct iommu_resv_region *entry;
->>> -	struct list_head mappings;
->>>    	unsigned long pg_size;
->>> +	LIST_HEAD(mappings);
->>>    	int ret = 0;
->>>    	pg_size = domain->pgsize_bitmap ? 1UL << __ffs(domain->pgsize_bitmap) : 0;
->>> -	INIT_LIST_HEAD(&mappings);
->>>    	if (WARN_ON_ONCE(iommu_is_dma_domain(domain) && !pg_size))
->>>    		return -EINVAL;
->>> @@ -2813,6 +2811,9 @@ void iommu_get_resv_regions(struct device *dev, struct list_head *list)
->>>    {
->>>    	const struct iommu_ops *ops = dev_iommu_ops(dev);
->>> +	if (WARN_ON(!list_empty(list)))
->>> +		return;
->>
->> I don't understand why the input list *must* be empty. This interface
+V1 -> V2:
+ * remove label in examples in bindings file
+ * add detailed description of the hardware in bindings file
+ * remove adi_axi_tdd_clk_disable function
+ * remove devm_add_action_or_reset, devm_clk_get, clk_prepare_enable
+   and use instead devm_clk_get_enabled
 
-Yeah, the commit message really doesn't make much sense :(
+Eliza Balas (2):
+  dt-bindings: misc: adi,axi-tdd: Add device-tree binding for TDD engine
+  drivers: misc: adi-axi-tdd: Add TDD engine
 
-> Because @list is an output-only argument, which is supposed to be filled
-> by caller(inserting elements into it). If it's not empty, it's an inputing
-> argument, in which case caller will take existing node (in @list) into account,
-> and insert new nodes before/after them.
-> Please lemme put it another way, if list argment is not empty:
-> 
-> Before calling:
-> list: head->A
-> 
-> After calling
-> list: head->A->B->C
-> 
-> It will confuse caller cuz it can't tell whether A is a valid returned
-> by callee.
+ .../sysfs-bus-platform-drivers-adi-axi-tdd    | 158 ++++
+ .../devicetree/bindings/misc/adi,axi-tdd.yaml |  65 ++
+ MAINTAINERS                                   |   9 +
+ drivers/misc/Kconfig                          |  10 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/adi-axi-tdd.c                    | 780 ++++++++++++++++++
+ 6 files changed, 1023 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-platform-drivers-adi-axi-tdd
+ create mode 100644 Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+ create mode 100644 drivers/misc/adi-axi-tdd.c
 
-If a caller would be confused by appending to a non-empty list then that 
-caller should avoid passing a non-empty list. But that's not the API's 
-problem; in general, appending to non-empty lists is absolutely a valid 
-thing to do, it's kind of the point of using a list rather than, say, 
-returning an array. It seems entirely reasonable that a caller might 
-want to collect the reserved regions for multiple groups into a single 
-list for its own convenience, and we have absolutely no reason to 
-disallow that.
+-- 
+2.25.1
 
-Note also that your arbitrary input vs. output argument rule 
-fundamentally couldn't work for this API, since actual implementations 
-of ops->get_resv_regions already *do* build up the list by passing it 
-around multiple different helper APIs internally (look at the call path 
-through arm_smmu_get_resv_regions(), for instance).
-
-Thanks,
-Robin.
-
->> has already been exported, so please update the comment to explain this
->> new requirement.
->>
->>> +
->>>    	if (ops->get_resv_regions)
->>>    		ops->get_resv_regions(dev, list);
->>>    }
->>
->> Best regards,
->> baolu
