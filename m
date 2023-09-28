@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3882E7B1A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CB47B1A70
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjI1LQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S231947AbjI1LRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbjI1LQK (ORCPT
+        with ESMTP id S232786AbjI1LQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:16:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260172A2F3;
-        Thu, 28 Sep 2023 04:12:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293FDC433C7;
-        Thu, 28 Sep 2023 11:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695899496;
-        bh=Z72NaU1k+yn8VH2KLYdJDMnZnUKhBkDyH6n6KvVEpYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ou0HLEYeDRVJuqY0rrG0SmdACv18zyLqyFfvqTO08uOxosewXkrdnUsKZDt4by03d
-         HoyzUC8RESyHsElFy2zn11j09IfZUt6WzHuA2oqO21Ha42SO+KKjXgm6IjLM41ZaXH
-         ZwhiFHQ85UyL+kbBBWakHtQDlKvxSMcDdKQpxgpwCi9X21uHcAKc3G/bOFNdpEQoHk
-         WsdW7mwVvcDmZgiZTnsgMjtrxUa+KpRrLwckKsmw0eTY9s/J352bE6VAvbfbcH27CW
-         a0Gd96itZ8C/fo/0yF0lAtKeo0IL63XfzQLgdegH0q4vvzaFAgyWcriGEs8NCPla5Q
-         foBo5T0e+9G9w==
-Date:   Thu, 28 Sep 2023 16:41:31 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Green Wan <green.wan@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 00/21] dmaengine: Annotate with __counted_by
-Message-ID: <ZRVfYzrdAOrXJUcI@matsya>
-References: <20230817235428.never.111-kees@kernel.org>
- <202309151307.F3341BD5A@keescook>
- <202309221015.AB63726@keescook>
+        Thu, 28 Sep 2023 07:16:50 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CA742B9C3;
+        Thu, 28 Sep 2023 04:12:21 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C9D51FB;
+        Thu, 28 Sep 2023 04:12:34 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BFE93F5A1;
+        Thu, 28 Sep 2023 04:11:54 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 12:11:52 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "lihuisong (C)" <lihuisong@huawei.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 1/3] ACPI: PCC: Add PCC shared memory region command and
+ status bitfields
+Message-ID: <20230928111152.cctl3m5rwtopyg2g@bogus>
+References: <20230926-pcc_defines-v1-0-0f925a1658fd@arm.com>
+ <20230926-pcc_defines-v1-1-0f925a1658fd@arm.com>
+ <a89bdd10-9388-01f5-6a7c-894af793e1c1@huawei.com>
+ <20230927135909.6rssuywmj4k3odex@bogus>
+ <fbc038e3-9719-3f90-0c09-f26318e21f38@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202309221015.AB63726@keescook>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fbc038e3-9719-3f90-0c09-f26318e21f38@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-09-23, 10:16, Kees Cook wrote:
-> On Fri, Sep 15, 2023 at 01:08:30PM -0700, Kees Cook wrote:
-> > Just a ping on the series... how do these look to you, Vinod?
-> > 
-> > If you want I can carry them in my tree. Please let me know.
+On Thu, Sep 28, 2023 at 11:49:25AM +0800, lihuisong (C) wrote:
 > 
-> I'm now carrying this in my for-next/hardening tree. Let me know if
-> you'd prefer I drop it.
+> 在 2023/9/27 21:59, Sudeep Holla 写道:
+> > On Wed, Sep 27, 2023 at 10:07:15AM +0800, lihuisong (C) wrote:
 
-Sorry was busy in travel etc, it should be in dmaengine/next tomorrow.
-You can drop it
+[...]
 
-Thanks
+> > > > +/* Generic Communications Channel Shared Memory Region */
+> > > > +#define PCC_SIGNATURE			0x50424300
+> > > Why is this signature 0x50424300?
+> > It is as per the specification.
+> > 
+> > > In ACPI spec, this signature is all 0x50434303.
+> > No, not exactly. It is just an example.
+> > The PCC signature - The signature of a subspace is computed by a bitwise-or
+> > of the value 0x50434300 with the subspace ID. For example, subspace 3 has
+> > signature 0x50434303
+> Sorry for my mistake. I know this.
+> I mean, why doesn't the following macro follow spec and define this
+> signature as 0x504*3*430.
+> "#define PCC_SIGNATURE **0x504*2*4300*"*
+> Because it seems that all version of ACPI spec is 0x5043430.
+
+Sorry my mistake. Stupidly the existing drivers have it wrong and I just
+copied them without paying much attention. I will fix it up. It must be
+0x50434300 instead of 0x50424300. If you have no other comments, can you
+please ack v2 patch 4/4 changing soc kunpeng_hccs driver. I will fixup
+the PCC_SIGNATURE and send it as part of my PR to Rafael.
+
+Refer [1] for the change in PCC_SIGNATURE, sorry for missing the point. I
+was confident that the existing code is correct :), but I am wrong.
+
 -- 
-~Vinod
+Regards,
+Sudeep
+
+[1] https://git.kernel.org/sudeep.holla/l/pcc_defines
