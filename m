@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9347B254B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D22B7B254F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjI1Sb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        id S232032AbjI1ScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1Sbz (ORCPT
+        with ESMTP id S231952AbjI1ScQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:31:55 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF599
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:31:53 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f6902dc8bso192224907b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695925913; x=1696530713; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/8BgKxt0pmpt8+0WGKUzTJnRK7udqyBpxUOUSK21ys=;
-        b=o20930i+RwRtL68BBLJtpsotwQ2PZanntrJ3mjCBY5betS3AucdmMZPHk13K/IhZ6R
-         iKRCOoZNZe9kH285ZB1gCgu8cmqflIeTPnApeBk3UmHdnW+e4JHfZN5+kdu93tCt9k4T
-         ZXDMItK/a+gWSaDgO4bg4fOj05aH4pzF45L6D4pGlpbfdRfDw4lZez9at/aMPDQopipJ
-         QgZjtZ7T4MP6QfYHJERYDOMPwMdo7+iPPxUcPPBjtQ5gwlhnWEUlj/8Wpln74Szw4DlV
-         B121neJ7UJqVaKR77SqCwgTr/CdkBH3FW+HrrsE9fAS22/LLWeFxwDj1CuSMbYlcJxKq
-         H3eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695925913; x=1696530713;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/8BgKxt0pmpt8+0WGKUzTJnRK7udqyBpxUOUSK21ys=;
-        b=sJr1sCPArec/ZUUAMzoSIZOvT4ia/INod0IjzjJMlBi5/3wQ9E4pGw0pZkP54OFAhu
-         Ig6IKFQvXJEg/0PlfTbgO/Hmk336udEqgvcgkRzvNbqv+Vb/wbUA/KuzXehNkud0e9ZJ
-         P5BXl6WkTywfrxop4ZdkV7F7L4zlBAImD/aqtLahm5NdYYwAPmG3lCTbSmtC7NtCVUYk
-         CaejkP2MrWkj0PntVtt9gLlMI73HjVHEq5c2QjZl1H8O4zBUespRoPah5rk4uMbbNPoo
-         qp8zVJ40PcIVLlIrPhgvJ9Rf1cNsYfArqQb2llXNAZhB/inG43K8M1/B9anO/WMtqwQ3
-         eA8g==
-X-Gm-Message-State: AOJu0YxtPbYeeRiHuk+XiDNpCCoem41UR7su/0fvSp32k9tEMGciuoVH
-        LcXOl12Qd9GHy33uqXgsSoxrbgXspEQ=
-X-Google-Smtp-Source: AGHT+IGfVEgupQd2XwnlnnpG5qLgubn7xydVSelYD5RWBn46P+oeWmA6LKQrcSiItH4E8llJ5yjqZ7x6btE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:3412:b0:579:f832:74b with SMTP id
- fn18-20020a05690c341200b00579f832074bmr32603ywb.10.1695925913160; Thu, 28 Sep
- 2023 11:31:53 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 11:31:51 -0700
-In-Reply-To: <20230922224210.6klwbphnsk5j2wft@amd.com>
-Mime-Version: 1.0
-References: <20230921203331.3746712-1-seanjc@google.com> <20230921203331.3746712-7-seanjc@google.com>
- <20230922224210.6klwbphnsk5j2wft@amd.com>
-Message-ID: <ZRXGl44g8oD-FtNy@google.com>
-Subject: Re: [PATCH 06/13] KVM: Disallow hugepages for incompatible gmem
- bindings, but let 'em succeed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Binbin Wu <binbin.wu@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 28 Sep 2023 14:32:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6E419D;
+        Thu, 28 Sep 2023 11:32:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 522B0C433C7;
+        Thu, 28 Sep 2023 18:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695925934;
+        bh=JCe7blWVCnsLe70OwN/f81hGjMC1UJQ2rXeecgnmwzs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YhJS0frvyLcMcO5ihEp2dgsrmmkIfNmL/P36g3iMjXQowr0ubha3wu2dHXdDPA2rE
+         ZA1qZFZNSJEAgaASGYSqtAClTsnzS/fyCF2tUDMwNtnF6iWJt7RlA6mJH0xpj5JkKR
+         NVedECdLU98YaFvx8vM2uyNVvWWbWL+cbHtFp48YA1bfcVFLZ+pLu3TMMnzS2r+35d
+         mn8SRbolpQC6fVFLO06KMrfGtzTaYpLbwKAah/JXTPY0iYlePaK4RxDYpJHmPUPkNG
+         CiSLJFchpQ7TuVTbZkM/4Gd9+vg1w88ztbZR1DYp3nogOwM7dk8VVL/eWiQTvA5e4s
+         9zif/GWp/lqfw==
+Received: (nullmailer pid 1030969 invoked by uid 1000);
+        Thu, 28 Sep 2023 18:32:12 -0000
+Date:   Thu, 28 Sep 2023 13:32:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Biju Das <biju.das@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>
+Subject: Re: [PATCH v2 1/2] spi: renesas,rzv2m-csi: Add CSI (SPI) target
+ related property
+Message-ID: <169592593187.1030914.2646161997489930237.robh@kernel.org>
+References: <20230927162508.328736-1-fabrizio.castro.jz@renesas.com>
+ <20230927162508.328736-2-fabrizio.castro.jz@renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927162508.328736-2-fabrizio.castro.jz@renesas.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023, Michael Roth wrote:
-> On Thu, Sep 21, 2023 at 01:33:23PM -0700, Sean Christopherson wrote:
-> > +	/*
-> > +	 * For simplicity, allow mapping a hugepage if and only if the entire
-> > +	 * binding is compatible, i.e. don't bother supporting mapping interior
-> > +	 * sub-ranges with hugepages (unless userspace comes up with a *really*
-> > +	 * strong use case for needing hugepages within unaligned bindings).
-> > +	 */
-> > +	if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
-> > +	    !IS_ALIGNED(slot->npages, 1ull << *max_order))
-> > +		*max_order = 0;
+
+On Wed, 27 Sep 2023 17:25:07 +0100, Fabrizio Castro wrote:
+> The CSI IP found inside the Renesas RZ/V2M SoC can also work
+> in SPI target mode.
+> When working in target mode, the IP will make use of the SS
+> (Slave Selection) pin, with "low" as default active level.
+> The active level of SS can be changed to "high" upon setting
+> property "spi-cs-high" to true.
+> By default, the SS will be used in target mode, unless property
+> "renesas,csi-no-ss" is set to true, in which case data will be
+> shifted in and out purely based on clock activity, and the
+> logic level of the SS pin will be completely ignored.
 > 
-> Thanks for working this in. Unfortunately on x86 the bulk of guest memory
-> ends up getting slotted directly above legacy regions at GFN 0x100, 
-
-Can you provide an example?  I'm struggling to understand what the layout actually
-is.  I don't think it changes the story for the kernel, but it sounds like there
-might be room for optimization in QEMU?  Or more likely, I just don't understand
-what you're saying :-)
-
-> so the associated slot still ends failing these alignment checks if it tries
-> to match the gmemfd offsets up with the shared RAM/memfd offsets.
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+> v1->v2: I have dropped properties renesas,csi-ss and
+>         renesas,csi-ss-high. I have added property
+> 	renesas,csi-no-ss, and to configure SS as active
+> 	high one now needs to use property spi-cs-high.
+> 	I have also reworded the changelog to use a more
+> 	modern terminology (host and target as opposed to
+> 	master and slave).
 > 
-> I tried to work around it in userspace by padding the gmemfd offset of
-> each slot to the next 2M boundary, but that also requires dynamically
-> growing the gmemfd inode to account for the padding of each new slot and
-> it gets ugly enough that I'm not sure it's any better than your
-> suggested alternative of using a unique gmemfd for each slot.
+>  .../devicetree/bindings/spi/renesas,rzv2m-csi.yaml       | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> But what if we relax the check to simply make sure that any large folio
-> must is fully-contained by the range of the slot is bound to? It *seems*
-> like that would still avoid stuff like mapping 2M pages in the NPT (or
-> setting up 2M RMP table entries) that aren't fully contained by a slot
-> while still allowing the bulk of guest memory to get mapped as 2M. Are
-> there other edge cases to consider?
-> 
-> The following seems to work for a basic 16GB SNP guest at least:
-> 
-> diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
-> index 9109bf5751ee..e73128d4ebc2 100644
-> --- a/virt/kvm/guest_mem.c
-> +++ b/virt/kvm/guest_mem.c
-> @@ -618,6 +618,7 @@ int __kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->                        gfn_t gfn, kvm_pfn_t *pfn, int *max_order, bool prep)
->  {
->         pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
-> +       pgoff_t huge_index;
->         struct kvm_gmem *gmem;
->         struct folio *folio;
->         struct page *page;
-> @@ -662,9 +663,12 @@ int __kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->          * sub-ranges with hugepages (unless userspace comes up with a *really*
->          * strong use case for needing hugepages within unaligned bindings).
->          */
-> -       if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
-> -           !IS_ALIGNED(slot->npages, 1ull << *max_order))
-> +       huge_index = round_down(index, 1ull << *max_order);
 
-Why not use ALIGN() here?  The size is obviously a power-of-2.  Or is my math
-even worse than I thought?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-> +       if (huge_index < ALIGN(slot->gmem.pgoff, 1ull << *max_order) ||
-> +           huge_index + (1ull << *max_order) > slot->gmem.pgoff + slot->npages) {
-
-Argh, I keep forgetting that the MMU is responsible for handling misaligned gfns.
-Yeah, this looks right.
-
-Can you post this as a proper patch, on top of my fixes?  And without the pr_debug().
-That'll be the easiest for me to apply+squash when the time comes.
-
-Thanks much!
