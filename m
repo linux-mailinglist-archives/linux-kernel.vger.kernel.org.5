@@ -2,160 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 785A67B1687
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9A47B1692
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjI1IzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
+        id S231420AbjI1Izm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbjI1IzK (ORCPT
+        with ESMTP id S231406AbjI1Izj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:55:10 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE853AC;
-        Thu, 28 Sep 2023 01:55:08 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx6kJ5PGTz4f3kkN;
-        Thu, 28 Sep 2023 16:55:04 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAnt9ZnPxVlpvdfBg--.53473S3;
-        Thu, 28 Sep 2023 16:55:05 +0800 (CST)
-Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
-To:     Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     linan666@huaweicloud.com, josef@toxicpanda.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, linan122@huawei.com,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230911023308.3467802-1-linan666@huaweicloud.com>
- <ZRT7cVFcE6QMHfie@fedora>
- <47669fb6-3700-e327-11af-93a92b0984a0@huaweicloud.com>
- <ZRUt/vAQNGNp6Ugx@fedora>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <41161d21-299c-3657-6020-0a3a9cf109ec@huaweicloud.com>
-Date:   Thu, 28 Sep 2023 16:55:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 28 Sep 2023 04:55:39 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6394AC
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:55:37 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-218-icZ6iOlVPO2szhBa61zbSw-1; Thu, 28 Sep 2023 09:55:18 +0100
+X-MC-Unique: icZ6iOlVPO2szhBa61zbSw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 28 Sep
+ 2023 09:55:17 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 28 Sep 2023 09:55:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alexey Dobriyan' <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "Jason@zx2c4.com" <Jason@zx2c4.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: RE: + minmax-add-umina-b-and-umaxa-b.patch added to mm-nonmm-unstable
+ branch
+Thread-Topic: + minmax-add-umina-b-and-umaxa-b.patch added to
+ mm-nonmm-unstable branch
+Thread-Index: AQHZ8ec1aUNi4FjMMkSWNfrfKdrokrAv65tw
+Date:   Thu, 28 Sep 2023 08:55:17 +0000
+Message-ID: <decc112eaf2b4edca53b9a8f2d70ddf9@AcuMS.aculab.com>
+References: <20230927173033.AF86DC433C7@smtp.kernel.org>
+ <d74a3644-1d03-42c7-b258-4d5d63416ee0@p183>
+ <ZRSJ5QMNGV7ObfrL@casper.infradead.org>
+ <b1198988-b60e-41e2-99bf-6af145e1d201@p183>
+In-Reply-To: <b1198988-b60e-41e2-99bf-6af145e1d201@p183>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <ZRUt/vAQNGNp6Ugx@fedora>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnt9ZnPxVlpvdfBg--.53473S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFWUGw4xZF15tF4fCFW8tFb_yoW5Gr13pF
-        WFyF1xCF4UJFySvwsYqw47WryFq34xK3yfu3yrA342yr909FZakr4xtFyFgF90vr17Xw40
-        vr4YgFyfAa48JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
-        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-在 2023/09/28 15:40, Ming Lei 写道:
-> On Thu, Sep 28, 2023 at 02:03:28PM +0800, Yu Kuai wrote:
->> Hi,
->>
->> 在 2023/09/28 12:05, Ming Lei 写道:
->>> On Mon, Sep 11, 2023 at 10:33:08AM +0800, linan666@huaweicloud.com wrote:
->>>> From: Li Nan <linan122@huawei.com>
->>>>
->>>> If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
->>>> krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
->>>> may occurs.
->>>>
->>>>     T1
->>>>     nbd_ioctl
->>>>      __nbd_ioctl
->>>>       nbd_add_socket
->>>>        blk_mq_freeze_queue
->>>> 				T2
->>>>     				recv_work
->>>>     				 nbd_read_reply
->>>>     				  sock_xmit
->>>>        krealloc config->socks
->>>> 				   def config->socks
->>>>
->>>> Pass nbd_sock to nbd_read_reply(). And introduce a new function
->>>> sock_xmit_recv(), which differs from sock_xmit only in the way it get
->>>> socket.
->>>>
->>>
->>> I am wondering why not grab queue usage counter before calling nbd_read_reply()
->>> for avoiding such issue, something like the following change:
->>>
->>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
->>> index df1cd0f718b8..09215b605b12 100644
->>> --- a/drivers/block/nbd.c
->>> +++ b/drivers/block/nbd.c
->>> @@ -837,9 +837,6 @@ static void recv_work(struct work_struct *work)
->>>    	while (1) {
->>>    		struct nbd_reply reply;
->>> -		if (nbd_read_reply(nbd, args->index, &reply))
->>> -			break;
->>> -
->>>    		/*
->>>    		 * Grab .q_usage_counter so request pool won't go away, then no
->>>    		 * request use-after-free is possible during nbd_handle_reply().
->>> @@ -852,6 +849,9 @@ static void recv_work(struct work_struct *work)
->>>    			break;
->>>    		}
->>
->> This break how nbd works, if there is no reply yet, recv_work() will
->> wait for reply in:
->>
->> nbd_read_reply
->>   sock_xmit
->>    sock_recvmsg
->>
->> After this change, recv_work() will just return if there is no io.
-> 
-> OK, got it, thanks for the input.
-> 
-> But I feel it isn't necessary & fragile to store one extra reference of nsock in
-> `recv_thread_args`.
-> 
-> Just run a quick look, the only potential UAF on config->socks should be recv_work(),
-> so you can retrieve the `nsock` reference at the entry of recv_work(),
-
-I don't understand what you mean retrieve the 'nsock', is following what
-you expected?
-
-blk_queue_enter() -> prevent concurrent with nbd_add_socket
-nsock = config->socks[args->index]
-blk_queue_exit()
-
-while (1) {
-	...
-	// pass nsock to nbd_read_reply() and nbd_handle_reply()
-}
-
-> and just pass it(local variable) to nbd_read_reply() and nbd_handle_reply()
-> since `nsock` won't be freed.
-> 
-> 
-> Thanks,
-> Ming
-> 
-> .
-> 
+RnJvbTogQWxleGV5IERvYnJpeWFuDQo+IFNlbnQ6IDI4IFNlcHRlbWJlciAyMDIzIDA5OjM5DQo+
+IA0KPiBPbiBXZWQsIFNlcCAyNywgMjAyMyBhdCAwOTowMDozN1BNICswMTAwLCBNYXR0aGV3IFdp
+bGNveCB3cm90ZToNCj4gPiBPbiBXZWQsIFNlcCAyNywgMjAyMyBhdCAxMDoyMTo0MVBNICswMzAw
+LCBBbGV4ZXkgRG9icml5YW4gd3JvdGU6DQo+ID4gPiBPbiBXZWQsIFNlcCAyNywgMjAyMyBhdCAx
+MDozMDozM0FNIC0wNzAwLCBBbmRyZXcgTW9ydG9uIHdyb3RlOg0KPiA+ID4gPiArI2RlZmluZSB1
+bWluKHgsIHkpCVwNCj4gPiA+ID4gKwlfX2NhcmVmdWxfY21wKCh4KSArIDB1ICsgMHVsICsgMHVs
+bCwgKHkpICsgMHUgKyAwdWwgKyAwdWxsLCA8KQ0KPiA+ID4NCj4gPiA+IGttaW4oKSBhbmQga21h
+eCgpIGFyZSAob2YgY291cnNlISkgbXVjaCBiZXR0ZXIgbmFtZXMuDQo+ID4NCj4gPiBpdCdzIHVu
+c2lnbmVkLCBub3QgdXNlci4NCg0KTGludXMgc3VnZ2VzdGVkIHVtaW4oKSBhcyBiZWluZyBtdWNo
+IHNob3J0ZXIgdGhhbiB0aGUgbWluX3Vuc2lnbmVkKCkNCkknZCBvcmlnaW5hbGx5IHVzZWQuDQoN
+Cj4gWWVzLCBidXQgdGhlIHNhbWUgaWRlYSBhcHBsaWVzIHRvIHNpZ25lZCB0eXBlczoNCg0KVGhl
+IGtlcm5lbCBwcmV0dHkgbXVjaCBuZXZlciB3YW50cyBhIGNhc3QgdG8gY29udmVydCBhIGxhcmdl
+DQp1bnNpZ25lZCB2YWx1ZSB0byBhIG5lZ2F0aXZlIHNpZ25lZCBvbmUuDQpJZiB0aGUgdHlwZXMg
+bWlzbWF0Y2ggYm90aCB2YWx1ZXMgYXJlIG5vcm1hbGx5IG5vbi1uZWdhdGl2ZQ0Kc28gZG9pbmcg
+YW4gdW5zaWduZWQgY29tcGFyZSBpcyByaWdodC4NCklmIHlvdSBkbyBuZWVkIHRvIHRyZWF0IDB1
+IC0gMSBhcyBhIHNpZ25lZCB2YWx1ZSB0aGVuIGFkZGluZw0KYW4gZXhwbGljaXQgY2FzdCBpcyBw
+cm9iYWJseSBhIGdvb2QgaWRlYSENCg0KPiBtaW4sIG1heCByZXF1aXJlIGlkZW50aWNhbCB0eXBl
+cw0KPiBtaW5fdCBmb3JjZSB0eXBlDQo+IGttaW4sIGttYXggYXJlIHJlbGF4ZWQgbWluL21heCB2
+ZXJzaW9ucyBpZiBzaWduZWRuZXNzZXMgbWF0Y2guDQoNClRoZSAnaWRlbnRpY2FsIHR5cGVzJyBj
+YXNlIGlzIHBvaW50bGVzcywgYW5kIHRoZSAnZm9yY2UgdHlwZScNCm9mdGVuIGJ1Z2d5Lg0KDQpU
+aGUgb25seSByZWFzb24gZm9yIGFueSB0eXBlLWNoZWNrIGlzIHRvIHN0b3AgJ2ludGVnZXIgcHJv
+bW90aW9uJw0KY29udmVydGluZyBhIG5lZ2F0aXZlIHZhbHVlIHRvIGEgdmVyeSBsYXJnZSB1bnNp
+Z25lZCBvbmUuDQpBbmQgZXZlbiB0aGF0IGlzbid0IHdoeSB0aGUgdHlwZWNoZWNrIHdhcyBhZGRl
+ZCB0byBtaW4oKS4NCihUaGF0IGlzLCB0aGVyZSBpcyBubyBpbmRpY2F0aW9uIHRoYXQgaXQgZXZl
+ciBjYXVzZWQgYSBidWcuKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2Vz
+aWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVL
+DQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
