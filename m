@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 397A77B21EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE1F7B21ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbjI1QD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        id S231875AbjI1QDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjI1QDZ (ORCPT
+        with ESMTP id S232180AbjI1QDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:03:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F40D6;
-        Thu, 28 Sep 2023 09:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695917004; x=1727453004;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2WJ2JHUZMGgvXYHvfCZXwdKMPR5M8xkDsvfLanYSBWw=;
-  b=iHGXLIic3ZYAiRcya92TSOTrrxI3muWNJzpiDhR3aj+CeYt6j1AWhqXT
-   JlOpnevWAOkDq8ICCcWal+3OqB02+sRqlGb9Q97lv2gnIXkdR0aNaXxMy
-   BtKesaZO5EwycwxE7XiE4vTjk3hfKZG73YBVPcUiOWkxQ8FmQOQKwXLs4
-   cB8YA/9xqGwFiaplN0zzo8alJymL/lkemhbiOLfz5HM4uzyydpO8zbv1r
-   s532ooi1uXiCDw1LEFHBJ582SzG+yYiLDsXRD+jQV1oqA/Y0dgDAGJNp5
-   HzAQEjKCQCEjosmM9JTbtmYPcD1kgSRK5GLKaBBf8Bg2UkyZHZX8VkY6D
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="382008973"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="382008973"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 09:02:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="699329280"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="699329280"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2023 09:02:03 -0700
-Date:   Fri, 29 Sep 2023 00:01:26 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Marco Pagani <marpagan@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org
-Subject: Re: [PATCH 1/4] fpga: add helpers for the FPGA KUnit test suites.
-Message-ID: <ZRWjVkMYNosNvlt3@yilunxu-OptiPlex-7050>
-References: <20230926163911.66114-1-marpagan@redhat.com>
- <20230926163911.66114-2-marpagan@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926163911.66114-2-marpagan@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 28 Sep 2023 12:03:34 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E651AA
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:03:32 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c6187b44b1so99164285ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695917012; x=1696521812; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MFUmYNpX6rTwdApxep2QFE0XCc25ZJa3cg6mPE92sAo=;
+        b=ne5ac2d9XhOSetla4lMicK663QBj/eBPFpXZbXBBfyMNcYrDIecMO8r/a/YApklWWE
+         eAkYaCLCYIFsvGrUEdIZQpdFvARP/jEPpEMttsI4dptKzj0A4l9HjC6696ifIqkpK/U+
+         /QzEZTH1DddU6gOQZ2/4o2G6dBdF8Y//lbDM8qK6hZWy+J9ZgVCC7+r97pijyBBqjZxh
+         sRQLWgLFWppabJA/2+ly7rmSVhyosWk+baUmMfNS8V2rBSsdnBMiULwBwbj0nANdTuGY
+         oyvLDfsKpd3JmnY+j3DSRfanqbjj4H3MXmQwogpdo5g18KskYDgUhqB0UgObqnRMOexZ
+         TfOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695917012; x=1696521812;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MFUmYNpX6rTwdApxep2QFE0XCc25ZJa3cg6mPE92sAo=;
+        b=QjtZ67DkK97cUNBfSN6ypIboOR2YS/bTUMwoFlwVCzVpuXJXjKrQoH3qs95fVUdRO5
+         VMs8Dx5ZOJ7fk0bwBO2j/PTtyGNmZZlhnRDHN9bvV3P4UW+lah7VFqgiFBiNIvGds/uu
+         YNVqr1KV2LturuxZ5piDEw2KDh/C5moi2/7yWGG5iUkeC1kavTvpU5BG/2bTYvw8u1Tm
+         Xtuv8jBnizqT2yRE8atKCLipUfZjaX0u1Azi7CMIzLqgx/ceUr22eZzz2/qC1z/zGyaw
+         LNw98SJZkPExNgQJwHhki876XuAKPxi6jqSzHBY/wcKMnL9nl8jzF8MdIBTgQSo/eah2
+         T3Ig==
+X-Gm-Message-State: AOJu0YyJY2jtYSsh5CbTiVMjQ3Mb8omFAXPa4Oo48JQaNvx3hdl4siS8
+        9PTGfXE9ctgLPZiojqbqVS95YXAq/Nw=
+X-Google-Smtp-Source: AGHT+IFNYZN6ptDJkMmwLSNuZPQjEWOAcWQREE8N0qlp/jqzMy/uAdJQYt5rwc8mhcDZlWu1erWrGHWMPok=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e5c7:b0:1bb:c7c6:3462 with SMTP id
+ u7-20020a170902e5c700b001bbc7c63462mr21438plf.8.1695917012352; Thu, 28 Sep
+ 2023 09:03:32 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 09:03:31 -0700
+In-Reply-To: <20230928150428.199929-4-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928150428.199929-1-mlevitsk@redhat.com> <20230928150428.199929-4-mlevitsk@redhat.com>
+Message-ID: <ZRWj0_VGvrg148He@google.com>
+Subject: Re: [PATCH 3/5] x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-26 at 18:39:08 +0200, Marco Pagani wrote:
-> Add helpers to facilitate the registration of minimal platform drivers
-> to support the parent platform devices used for testing.
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> svm_leave_nested() similar to a nested VM exit, get the vCPU out of nested
+> mode and thus should end the local inhibition of AVIC on this vCPU.
 > 
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> Failure to do so, can lead to hangs on guest reboot.
+> 
+> Raise the KVM_REQ_APICV_UPDATE request to refresh the AVIC state of the
+> current vCPU in this case.
+> 
+> Cc: stable@vger.kernel.org
+
+Unnecessary newline.
+
+Fixes: f44509f849fe ("KVM: x86: SVM: allow AVIC to co-exist with a nested guest running")
+
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->  drivers/fpga/tests/fpga-test-helpers.h | 29 ++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->  create mode 100644 drivers/fpga/tests/fpga-test-helpers.h
+>  arch/x86/kvm/svm/nested.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/fpga/tests/fpga-test-helpers.h b/drivers/fpga/tests/fpga-test-helpers.h
-> new file mode 100644
-> index 000000000000..fcad3249be68
-> --- /dev/null
-> +++ b/drivers/fpga/tests/fpga-test-helpers.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * KUnit test for the FPGA Manager
-> + *
-> + * Copyright (C) 2023 Red Hat, Inc.
-> + *
-> + * Author: Marco Pagani <marpagan@redhat.com>
-> + */
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index dd496c9e5f91f28..3fea8c47679e689 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -1253,6 +1253,9 @@ void svm_leave_nested(struct kvm_vcpu *vcpu)
+>  
+>  		nested_svm_uninit_mmu_context(vcpu);
+>  		vmcb_mark_all_dirty(svm->vmcb);
 > +
-> +#ifndef FPGA_KUNIT_HELPERS_
-> +#define FPGA_KUNIT_HELPERS_
-
-How about _FPGA_KUNIT_HELPERS_H
-
-Others LGTM for this series.
-
-Thanks,
-Yilun
-
-> +
-> +#define TEST_PDEV_NAME	"fpga-test-pdev"
-> +
-> +#define TEST_PLATFORM_DRIVER(__drv_name)			\
-> +	__TEST_PLATFORM_DRIVER(__drv_name, TEST_PDEV_NAME)
-> +/*
-> + * Helper macro for defining a minimal platform driver that can
-> + * be registered to support the parent platform devices used for
-> + * testing.
-> + */
-> +#define __TEST_PLATFORM_DRIVER(__drv_name, __dev_name)		\
-> +static struct platform_driver __drv_name = {			\
-> +	.driver = {						\
-> +		.name = __dev_name,				\
-> +	},							\
-> +}
-> +
-> +#endif	/* FPGA_KUNIT_HELPERS_ */
+> +		if (kvm_apicv_activated(vcpu->kvm))
+> +			kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
+>  	}
+>  
+>  	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
 > -- 
-> 2.41.0
+> 2.26.3
 > 
