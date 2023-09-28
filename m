@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03557B161B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9B57B161F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbjI1IeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
+        id S231320AbjI1IfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjI1IeQ (ORCPT
+        with ESMTP id S229639AbjI1IfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:34:16 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FA5B7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:34:13 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6c4e17f37acso20037534a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:34:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695890053; x=1696494853;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5gnCChu3OPSULseuxsND/OC3A1/+wMaTTBp9NGU091g=;
-        b=nyj3nQ+BuxOG75Uj82dHP1yEKPuPqPJOkoPIS+MM+1pyWgJqM6x/3zUShoHiO6z6/I
-         yuw13oC8p6pNWoX29gJw4pj5huK9AqlapD+dTgWPP66jYBK/5YQedl/InETeYZ3Ig3zs
-         fIXGF9uXWv/bUUXAylmXQsFTaw0Hf0ztMDtKxlq5Gr7+v+etIK72vOhQJ3iTUTdGtZTB
-         eutmADYN/+AQLMk12EpykyTKh//L/FXdfq09maPkpFMSL//BgZK3O+OjOOvvE0QPK5Hk
-         v5Ilq25YrhEazhPWy/cTMNQKZ6E+KMUjva5NVQRdnJ64cjrsIK3C7Y9nrQoYeM3LrXsg
-         m7Nw==
-X-Gm-Message-State: AOJu0YzulUKHNWNQLaUu9iHWF+CfQcDuTcZbY69rMSRx8to8yyxi6vov
-        dkjfzjZYet8JV3NJ93/7AXxBW9pzTaeQlp1+WhRaiTJZn0WP
-X-Google-Smtp-Source: AGHT+IF9KchoAbdBn8cAF3kwm11v8WwkvIJGdTzNT7wPWDxuCnjFJvdAMeVTMBnzh5aDQ1IM6YlCQX0DcmnNmkK7BVifFzdxX4Sb
+        Thu, 28 Sep 2023 04:35:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AD5B7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:35:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C9ACC433C7;
+        Thu, 28 Sep 2023 08:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695890120;
+        bh=FSwConUjZIxe3YIjZXjdGETHRwEytleBmz3Wk6V8jsM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=tG6gu8nmBr//c+0sxeGNAKgiqhPzAheOubFfmZHix/2WQKZ40yLhBzw93ow720DUa
+         pOqwYaAn4OG0t/EoWve7+iUQpy0ZsDNkdL4o+fiwVUDEsbkOAmHKmuwZQ7pjLa0EFl
+         YlhJLK222o1MVevD6Bg1NOddV+u13e79/mAusHqz7yI19sQHjH0b7F5qQsXW3bNwGt
+         1kfoUuJSBTQLl09IRPgW5Irfn30ENJMDshFkJDUqTyvvPx8p99TFAQuyIhV3cHCi7+
+         1mntMPVJz6GugJ6OzG0UN1DBgu5BEIXuDBwN7mGE+E0wunvUufvAgN+p848DLR4z5/
+         xDV7tGIPPDfjA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com,
+        coolstar <coolstarorganization@gmail.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rander Wang <rander.wang@intel.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230927071412.2416250-1-Vijendar.Mukunda@amd.com>
+References: <20230927071412.2416250-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: SOF: amd: fix for firmware reload failure after
+ playback
+Message-Id: <169589011676.2716296.8639160633859429574.b4-ty@kernel.org>
+Date:   Thu, 28 Sep 2023 10:35:16 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:22d2:b0:6bd:b74:2dab with SMTP id
- q18-20020a05683022d200b006bd0b742dabmr137988otc.2.1695890053216; Thu, 28 Sep
- 2023 01:34:13 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 01:34:13 -0700
-In-Reply-To: <0000000000003dcc9306031affdd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003341ba0606672c7a@google.com>
-Subject: Re: [syzbot] [kernel?] INFO: rcu detected stall in
- sys_clock_nanosleep (5)
-From:   syzbot <syzbot+43cc00d616820666f675@syzkaller.appspotmail.com>
-To:     edumazet@google.com, hdanton@sina.com, jhs@mojatatu.com,
-        linux-kernel@vger.kernel.org, michal.kubiak@intel.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, 27 Sep 2023 12:44:10 +0530, Vijendar Mukunda wrote:
+> Setting ACP ACLK as clock source when ACP enters D0 state causing
+> firmware load failure as mentioned in below scenario.
+> 
+> - Load snd_sof_amd_rembrandt
+> - Play or Record audio
+> - Stop audio
+> - Unload snd_sof_amd_rembrandt
+> - Reload snd_sof_amd_rembrandt
+> 
+> [...]
 
-commit 8c21ab1bae945686c602c5bfa4e3f3352c2452c5
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Tue Aug 29 12:35:41 2023 +0000
+Applied to
 
-    net/sched: fq_pie: avoid stalls in fq_pie_timer()
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12958976680000
-start commit:   6709d4b7bc2e net: nfc: Fix use-after-free caused by nfc_ll..
-git tree:       net
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-dashboard link: https://syzkaller.appspot.com/bug?extid=43cc00d616820666f675
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10858fc0a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14781270a80000
+Thanks!
 
-If the result looks correct, please mark the issue as fixed by replying with:
+[1/1] ASoC: SOF: amd: fix for firmware reload failure after playback
+      commit: 7e1fe5d9e7eae67e218f878195d1d348d01f9af7
 
-#syz fix: net/sched: fq_pie: avoid stalls in fq_pie_timer()
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
