@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D03337B172B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7AC7B172C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjI1JVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S231728AbjI1JV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjI1JVU (ORCPT
+        with ESMTP id S231652AbjI1JVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Sep 2023 05:21:20 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73E2193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:21:11 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so93031395e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:21:11 -0700 (PDT)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2530194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:21:12 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32003aae100so9290847f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695892870; x=1696497670; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695892871; x=1696497671; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SVQfW/DeQMI23e+YZyvWhEKH7q5MhV/xZYEf73p8CUQ=;
-        b=mOnMowzHxOVocJapqlph1HxIsiyxYNQNB8lK7eAHon55nk0uLBATrSiVGY452MsUh+
-         6agFX9OJx4UdV4f4drO+0LPr+a9I7WeoEUWYUoUUmzrt/IVP40xUyyr26Z4/Lq4e6Yxe
-         BaHemXivf27EXHZwf4rzjLJfvp1OhJxCWU4w9ggNFt0vMKoHdjFAE2VwGuAGkxT+2t5Q
-         oiPMINTLglzLl2b9Od1ZV5q+5BewrOh+huB30PPcDm7gB6CABeDc1kMgvDLcOmFuobvV
-         L+pMC1jXHxSB9TlY+P4yxLvZ3aXqa72lKOoqG3F7sB88bgueiyNbZYR1xFCH6hbPEdDs
-         1qZQ==
+        bh=bwhz75YMPOq4qEC9+ip9OVp9daQY2HSr3vN/IaeFnqw=;
+        b=ZdFDth24YL6VP5Sf68aAW8r37uMQJFqqSeWLlHNT60ZZwMRLJLmztpN2sC5ES1hr22
+         YLrnccYBdJoTe/3xD4rLP4gK9jYfIQwhSDPkcTsEz42Fsf/mA9zxww0I99nHpu9ibuGX
+         gmVaEC8Qze5sMMlGLvWeUx7l7CGW914AZaNpoqhsTDtMbJ1ueW8WQco9+IO3xpoxEM+Q
+         CGiwaZCzSPUR4curXfdiGNWm79c0MfqFEVfTrwzlmXErt6rBk4dxW3dO2d41B/VOQ7Hj
+         T7/uLsj9JHSV/LlZjGlKZklaBqtNUptZV7v7IgN48pSlW9qmtgmyB7xHOuY7hF86xNNY
+         9QYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695892870; x=1696497670;
+        d=1e100.net; s=20230601; t=1695892871; x=1696497671;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SVQfW/DeQMI23e+YZyvWhEKH7q5MhV/xZYEf73p8CUQ=;
-        b=wjIV9A7A1K3s8UE+LlAPZ0KRqzGzpmaAJzcTGxSsBqMuXtIWun7KENq2x1zI13R+2T
-         tsL3pQyqIGw9HJKt+DHPrE2JQv5+P/uaZowqWYfUHemvsTZW4ZfAtDY4DBUooOjsDdTd
-         djfqYlC2GKyjw47mRGRraqFMzF10Sodo5SRJihYjC/QoYGPv7LwjeW24dfrlIzHIFxe3
-         49wvLJ97F8DC8Wvmc3wLlm/xMXMd/Y2AKrgR8DvhF2ZiuLE9IhajkAHLN50FoaDqyLdj
-         mNIqrmXPrWjtxCnUI11tfuduk32h1NVtb0IT1dhefDL4D14AhWxQeLMVmHyhtLAWr8Kl
-         lZgQ==
-X-Gm-Message-State: AOJu0YzM1596/yBI4YEPoL1u65FpO2kI4FvcXFfCjhqIupxRFhGT3CQC
-        nslV8YpfYI1ZEC61TY78qnkJ5Q==
-X-Google-Smtp-Source: AGHT+IGnIdQ7yRyr+P4vm1MevwoFHAaWWIkJWJQ3V2SUXU7ZGOwJ4AfaOd/+nsR9l3kYJBUO/oO4hQ==
-X-Received: by 2002:a05:6000:10c4:b0:319:77dd:61f9 with SMTP id b4-20020a05600010c400b0031977dd61f9mr632629wrx.35.1695892870380;
-        Thu, 28 Sep 2023 02:21:10 -0700 (PDT)
+        bh=bwhz75YMPOq4qEC9+ip9OVp9daQY2HSr3vN/IaeFnqw=;
+        b=M8NPUdPtsR2hpScfZaMcL9ZR1AiBEPIMv150m/Y+xumN7dSRdBoK1PgZbBn0LYlldJ
+         fGQnvPnCvSRJoxW8to5u6wnuAd6vcgfgmz7IOWz95HTqxd++eox4g3S48ts4nuQcbbSH
+         fdgNGBxBhvVOWcGVtL9l0mwmmcCZuLgQEoGHAy4rnhl4N1Xt1KZ5LlXbcy5ca32af4dq
+         EmewuwgJKeGfHTEwOQ0rij5xfom/62pf3ZdwEWYKfhXJKanIZdcFc6zh0EEy7zuZwBgM
+         9+BkCuORaPLgB/Z0FAEaofFnJKX1Uv8xgnA1y9SB4Zv7JymO+vY5u5/wc1987KUVzvfq
+         kE3A==
+X-Gm-Message-State: AOJu0YytPUajvGCduchwc/vtXce99oVi+p/S50pF0V0agoixIaCTKlnr
+        ZzOqgqL3RMxcg63lbDTTlPyyuQ==
+X-Google-Smtp-Source: AGHT+IE3GsANY81UVfUlFWZkTjFrKFj1hDWRsy6MTw6h1c+EJ5jbfuVPbu8WWRLFLFkKE7PwmPfr8w==
+X-Received: by 2002:a5d:574f:0:b0:319:6997:9432 with SMTP id q15-20020a5d574f000000b0031969979432mr783332wrw.1.1695892871336;
+        Thu, 28 Sep 2023 02:21:11 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:6e4c:e3c1:5cb8:b60e])
-        by smtp.gmail.com with ESMTPSA id e9-20020adfe7c9000000b003197efd1e7bsm5009156wrn.114.2023.09.28.02.21.09
+        by smtp.gmail.com with ESMTPSA id e9-20020adfe7c9000000b003197efd1e7bsm5009156wrn.114.2023.09.28.02.21.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 02:21:09 -0700 (PDT)
+        Thu, 28 Sep 2023 02:21:10 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -59,9 +59,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         kernel@quicinc.com,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 10/11] firmware: qcom-scm: add support for SHM bridge operations
-Date:   Thu, 28 Sep 2023 11:20:39 +0200
-Message-Id: <20230928092040.9420-11-brgl@bgdev.pl>
+Subject: [PATCH v2 11/11] firmware: qcom: scm: enable SHM bridge
+Date:   Thu, 28 Sep 2023 11:20:40 +0200
+Message-Id: <20230928092040.9420-12-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230928092040.9420-1-brgl@bgdev.pl>
 References: <20230928092040.9420-1-brgl@bgdev.pl>
@@ -78,109 +78,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Add low-level primitives for enabling SHM bridge support, creating SHM
-bridge pools and testing the availability of SHM bridges to qcom-scm. We
-don't yet provide a way to destroy the bridges as the first user will
-not require it.
+Extens the SCM memory allocator with using the SHM Bridge feature if
+available on the platform. This makes the trustzone only use dedicated
+buffers for SCM calls. We map the entire SCM genpool as a bridge.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/firmware/qcom/qcom_scm.c       | 43 ++++++++++++++++++++++++++
- drivers/firmware/qcom/qcom_scm.h       |  2 ++
- include/linux/firmware/qcom/qcom_scm.h |  6 ++++
- 3 files changed, 51 insertions(+)
+ drivers/firmware/qcom/qcom_scm-mem.c | 42 ++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 1fa27c44f472..5969ff0c0beb 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -1296,6 +1296,49 @@ bool qcom_scm_lmh_dcvsh_available(void)
- }
- EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh_available);
+diff --git a/drivers/firmware/qcom/qcom_scm-mem.c b/drivers/firmware/qcom/qcom_scm-mem.c
+index eafecbe23770..12b12b15f46f 100644
+--- a/drivers/firmware/qcom/qcom_scm-mem.c
++++ b/drivers/firmware/qcom/qcom_scm-mem.c
+@@ -16,6 +16,8 @@
  
-+int qcom_scm_enable_shm_bridge(void)
+ #include "qcom_scm.h"
+ 
++#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
++
+ static size_t qcom_scm_mem_pool_size = SZ_2M;
+ module_param_named(qcom_scm_mem_pool_size, qcom_scm_mem_pool_size,
+ 		   ulong, 0400);
+@@ -108,8 +110,24 @@ phys_addr_t qcom_scm_mem_to_phys(void *vaddr)
+ 	return chunk->paddr;
+ }
+ 
++static int qcom_scm_mem_shm_bridge_create(void)
 +{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_MP,
-+		.cmd = QCOM_SCM_MP_SHM_BRIDGE_ENABLE,
-+		.owner = ARM_SMCCC_OWNER_SIP
-+	};
++	uint64_t pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_perms;
 +
-+	struct qcom_scm_res res;
++	ns_perms = (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
++	pfn_and_ns_perm = (u64)qcom_scm_mem.pbase | ns_perms;
++	ipfn_and_s_perm = (u64)qcom_scm_mem.pbase | ns_perms;
++	size_and_flags = qcom_scm_mem.size | (1 << QCOM_SHM_BRIDGE_NUM_VM_SHIFT);
 +
-+	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_MP,
-+					  QCOM_SCM_MP_SHM_BRIDGE_ENABLE))
-+		return -EOPNOTSUPP;
-+
-+	return qcom_scm_call(__scm->dev, &desc, &res) ?: res.result[0];
++	return qcom_scm_create_shm_bridge(qcom_scm_mem.dev, pfn_and_ns_perm,
++					  ipfn_and_s_perm, size_and_flags,
++					  QCOM_SCM_VMID_HLOS);
 +}
-+EXPORT_SYMBOL_GPL(qcom_scm_enable_shm_bridge);
 +
-+int qcom_scm_create_shm_bridge(struct device *dev, u64 pfn_and_ns_perm_flags,
-+			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-+			       u64 ns_vmids)
-+{
-+	struct qcom_scm_desc desc = {
-+		.svc = QCOM_SCM_SVC_MP,
-+		.cmd = QCOM_SCM_MP_SHM_BRDIGE_CREATE,
-+		.owner = ARM_SMCCC_OWNER_SIP,
-+		.args[0] = pfn_and_ns_perm_flags,
-+		.args[1] = ipfn_and_s_perm_flags,
-+		.args[2] = size_and_flags,
-+		.args[3] = ns_vmids,
-+		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
-+					 QCOM_SCM_VAL, QCOM_SCM_VAL),
-+	};
-+
-+	struct qcom_scm_res res;
+ int qcom_scm_mem_enable(struct device *dev)
+ {
 +	int ret;
 +
-+	ret = qcom_scm_call(__scm->dev, &desc, &res);
+ 	INIT_RADIX_TREE(&qcom_scm_mem.chunks, GFP_ATOMIC);
+ 	spin_lock_init(&qcom_scm_mem.lock);
+ 	qcom_scm_mem.dev = dev;
+@@ -128,7 +146,25 @@ int qcom_scm_mem_enable(struct device *dev)
+ 
+ 	gen_pool_set_algo(qcom_scm_mem.pool, gen_pool_best_fit, NULL);
+ 
+-	return gen_pool_add_virt(qcom_scm_mem.pool,
+-				 (unsigned long)qcom_scm_mem.vbase,
+-				 qcom_scm_mem.pbase, qcom_scm_mem.size, -1);
++	ret = gen_pool_add_virt(qcom_scm_mem.pool,
++				(unsigned long)qcom_scm_mem.vbase,
++				qcom_scm_mem.pbase, qcom_scm_mem.size, -1);
++	if (ret)
++		return ret;
 +
-+	return ret ?: res.result[0];
-+}
-+EXPORT_SYMBOL_GPL(qcom_scm_create_shm_bridge);
++	ret = qcom_scm_enable_shm_bridge();
++	if (ret) {
++		if (ret == EOPNOTSUPP)
++			dev_info(dev, "SHM Bridge not supported\n");
++		else
++			return ret;
++	} else {
++		ret = qcom_scm_mem_shm_bridge_create();
++		if (ret)
++			return ret;
 +
- int qcom_scm_lmh_profile_change(u32 profile_id)
- {
- 	struct qcom_scm_desc desc = {
-diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index 8c97e3906afa..f5a29bc0f549 100644
---- a/drivers/firmware/qcom/qcom_scm.h
-+++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -116,6 +116,8 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- #define QCOM_SCM_MP_IOMMU_SET_CP_POOL_SIZE	0x05
- #define QCOM_SCM_MP_VIDEO_VAR			0x08
- #define QCOM_SCM_MP_ASSIGN			0x16
-+#define QCOM_SCM_MP_SHM_BRIDGE_ENABLE		0x1c
-+#define QCOM_SCM_MP_SHM_BRDIGE_CREATE		0x1e
- 
- #define QCOM_SCM_SVC_OCMEM		0x0f
- #define QCOM_SCM_OCMEM_LOCK_CMD		0x01
-diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-index 291ef8fd21b0..dc26cfd6d011 100644
---- a/include/linux/firmware/qcom/qcom_scm.h
-+++ b/include/linux/firmware/qcom/qcom_scm.h
-@@ -6,6 +6,7 @@
- #define __QCOM_SCM_H
- 
- #include <linux/cleanup.h>
-+#include <linux/device.h>
- #include <linux/err.h>
- #include <linux/gfp.h>
- #include <linux/types.h>
-@@ -122,6 +123,11 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- int qcom_scm_lmh_profile_change(u32 profile_id);
- bool qcom_scm_lmh_dcvsh_available(void);
- 
-+int qcom_scm_enable_shm_bridge(void);
-+int qcom_scm_create_shm_bridge(struct device *dev, u64 pfn_and_ns_perm_flags,
-+			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-+			       u64 ns_vmids);
++		dev_info(dev, "SHM Bridge enabled\n");
++	}
 +
- #ifdef CONFIG_QCOM_QSEECOM
- 
- int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
++	return 0;
+ }
 -- 
 2.39.2
 
