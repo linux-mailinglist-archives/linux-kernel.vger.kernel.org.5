@@ -2,112 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC68F7B1638
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF917B164F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbjI1Ilc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        id S231341AbjI1IqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjI1Il2 (ORCPT
+        with ESMTP id S231376AbjI1Ip7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:41:28 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B67AC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:41:24 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b27f99a356so203593466b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695890482; x=1696495282; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=epK406pCE7G22GM7XcjJWrCLpMcnL+S7vFi36SuHG2w=;
-        b=JdnlsHjeM84fyU7LBVo1hrrEENLtQRb1iESeqysPZzyZDxIN8vqMxeEwK2QvI8Wwmf
-         9RMwTOsBCxUgrWGCgXIRcuCJCFwXZMnyTjL6SRwHRgRpbvOZd2V29OMyhqq8GMV8410B
-         YTGPfI6nmhAu6Fu8id9CZ4mNqJ02Am7GvlVCLLeXiuNWzEgTqRkFmzIdIEwJ+QmWD7fp
-         nX0PWB1Z7tslUCj1eri9ioY+s7k8awAfv7Blsr2Hl+rwlobRnwrsNoPIkDRQGbv/dvDR
-         vXey8Qo4a48rQq4j2RQjMnUpMrAtIRdtB7XEZiYY4dLN0UOrBsiodt4P/8wU59xc5/W9
-         eaPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695890482; x=1696495282;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=epK406pCE7G22GM7XcjJWrCLpMcnL+S7vFi36SuHG2w=;
-        b=bi2lkFcELIUdz6t/Mm+u9C1YfGgs13ijsm7ZOqqJtIxzVBuPgqRq82LxIINHDBypct
-         wkqKKO6iGCl+tJ50Kh2ei+qFmwmRDM0Z38aU/42lSv8BtkR2piAwr6++szvXo6E1Ctym
-         HXZcy9gcSpiEt29Oi143lykkzdL54l8Dnya47vFtKVhjK1Xiy3az21HIBpG6nhvhh18+
-         TfwNf/9SZw2mcBhhX/wf3Ozs9IAywuKTzqsDMkHYdZNwUgsJHo16gzqrbnyscM45QA6L
-         32VDzLTKkBPmQYht6Yj11m7JFfw1KWyghYbuLvwifsXAKYwGbq/SkDsC4kBY+vPzKc3P
-         GRQA==
-X-Gm-Message-State: AOJu0Yzgqr/gP8YdV0AcATQcBmIPr+oBhP5J29eSafB8nRK4eJN4s0rw
-        W6mk+82nzt0dgOIomXQmS/gTEA==
-X-Google-Smtp-Source: AGHT+IG2CPVzi/hevvWe+gav8pUakFxzkQgjT8vFSXc9eeUNFsBTMc4KEjzCpLfsY3OQwjCwiD1KfQ==
-X-Received: by 2002:a17:906:105d:b0:9ae:5868:c8c9 with SMTP id j29-20020a170906105d00b009ae5868c8c9mr543149ejj.0.1695890482606;
-        Thu, 28 Sep 2023 01:41:22 -0700 (PDT)
-Received: from [172.20.13.88] ([45.147.210.162])
-        by smtp.gmail.com with ESMTPSA id y16-20020a1709064b1000b0099b7276235esm10595662eju.93.2023.09.28.01.41.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 01:41:21 -0700 (PDT)
-Message-ID: <29553ecc-3e5e-4c03-8dd0-0ea6fe88c32f@kernel.dk>
-Date:   Thu, 28 Sep 2023 02:41:20 -0600
+        Thu, 28 Sep 2023 04:45:59 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2070.outbound.protection.outlook.com [40.107.7.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9074FAC;
+        Thu, 28 Sep 2023 01:45:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TCJqvPlh+uNz+NDeO8tXtR/jhqlJEFhSR755JVzqxVJUKuqoQeunGvyWVHBAG5HydAWqUhW1X4U/odJyDXx3Me4vEjWb4NbLc4Pvebtxdbu+DDG/OC8wuV54PEKoW9kGjv0/VbRcjsSfyPfYQQHcOfCw1p2xbyFebEXujxlIBDFoBe5/ZDWd9J8X9u5r2rOsgrkTCgP4Ax5A7kBf4Ywuv/XJ0DkFieL3KqaTCqwwps+YIVuSbqAGPytrpqTg6s2/y7I/Bqge2QOwVNiR1Q01eAsNHOyNXO0Xa4zCxoegvGkPtLDTgu1v5PDDXlt46hjScc0uJJ2a4XU4CKmCOiV/VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zp8eok+lsZyvgMj3X6hwPEcODvBl699lU4fDp4q4bVw=;
+ b=CMGCu+sUF57J96t1Lf36ope/dQyoBDfBuQftE88QM6W9vUJmifq/cCbHSSus7XfbRDZ466OH2Zek9zPcLenUSC4NZ51CT5pe7DjzWXqGQwwXD7VoBe2X4S/OPMGU58cIm/XKgLoO+USd+H7c6kcZkxLjqUSx/6F5DK1Ml/diEPUleqDHsfnHaRvAk7oHo++a7Q8Yuisrz2jF4Gn4T58djP63b0uxv3GUWG9AMiJp0CzvjaRvYz3E/+foHfpJDDdr55+B3PaQmp42JyXMptLbQaDmFTBOqYyVgruImal9ZNdELNQOm1rs3jBn7pNWuS9gwq3ETKc88opA2UO8Vcjm/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zp8eok+lsZyvgMj3X6hwPEcODvBl699lU4fDp4q4bVw=;
+ b=bdKdvqAgZcpCyok/zW5SDscGqZNOSQRCTSpb75BwJTzzI63OLDX/LRQUVzMbyHoo2yihOSDrTnxRWOzUr0lsvHFg+KSjZ8M1q9cOSYqbupJ07UF2hmsm3oMmFd1bInPVIhL9Ef6dE9tV6YBMHhH03ZPy0TgI75iI0nCunB6un80=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by PAXPR04MB8475.eurprd04.prod.outlook.com (2603:10a6:102:1de::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Thu, 28 Sep
+ 2023 08:45:54 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6813.027; Thu, 28 Sep 2023
+ 08:45:54 +0000
+From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+To:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, sd@queasysnail.net,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net-next v6 00/10] Add MACsec support for TJA11XX C45 PHYs
+Date:   Thu, 28 Sep 2023 11:44:20 +0300
+Message-Id: <20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1P190CA0018.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:2b::31) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] IO_URING: Statistics of the true utilization of sq
- threads.
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Xiaobing Li <xiaobing.li@samsung.com>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com
-References: <20230928022228.15770-1-xiaobing.li@samsung.com>
- <CGME20230928023015epcas5p273b3eaebf3759790c278b03c7f0341c8@epcas5p2.samsung.com>
- <20230928022228.15770-4-xiaobing.li@samsung.com>
- <20230928080114.GC9829@noisy.programming.kicks-ass.net>
- <ZRU7UzMlx6lpuEHG@casper.infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZRU7UzMlx6lpuEHG@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|PAXPR04MB8475:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a1423a0-62e9-42c3-b9eb-08dbbfff5364
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kl69+43urnH+YPJ5Hzg+r3/qvMOgKzDwzVMIA52TihFt0RPzPGCiWdHbEdbtXNiSdyt9LjnUH83JY98dWFGEZ5tzh7hBd+EKxeek1hSCep3K1Yrk9veIExXrU2pi4/rhjDJE+6o7qWoY6FArMUPPhmF0pFKlqiiIMB/Xk4Fu9TuXvHBv55/y2/bRKvLgP1ZGAupoFsyIBpavPUqz8thZW3gdcb6xwokxCY0qHSFRFdXJjuuPNsAHyZM/1NolzPszIp44zQY9TGILtOSfPENskOzYC9oi2XOk/KqM7/8JJCcHMkhgnt6SaIP8nldJgtGSeq5npPOCyb125OI2ZLnw0MnMdScAiBcdJDcN0kLj0rvH36HPKF8QQ7Ly0g54jGbiwIiToXRBBRu3q2ZxAZHyDRMch0vLCY7OFDQDhTaZn+gax230Zjz20Udgb/zD3QuDRYFHgi8d+DE9va45swaQQjzvE9qHzsOb1ua69wvMqG7urflNgVLIPOgy4CsEDjFeILPKGXGb4xIToDap2vQQjIGJY9hExXPc908bOkHM+UUWgrxOJs1TQvPFrHYJTZBZxYpMAloMFGYsTWwCVdKawn+8N3336p9mQJ5xrhvGuQwrfBMR+YHKvzZZ+bhlhog1z24x980AOTke2qRjqox4Pg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6636002)(52116002)(6666004)(6512007)(26005)(41300700001)(921005)(38350700002)(478600001)(38100700002)(316002)(2616005)(1076003)(83380400001)(5660300002)(66476007)(6486002)(6506007)(66556008)(8936002)(8676002)(4326008)(66946007)(2906002)(7416002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kQSp386tl6gTAtnwIiVOPS99Yh1q5fr5K7aiXiscimNK8i/t7LJCVCtlLRG0?=
+ =?us-ascii?Q?tCOCyD3KOcfP5KMvdd0oRDwrLO7qy3AMjUUmtBVzQzuC1BuLzYkGvfsDwSAu?=
+ =?us-ascii?Q?DZBw5SzI3zKX6/hVxGXhoh713FIqXJoqXsjqKwo3A7ojJ+1Pu8PFtva+LH8A?=
+ =?us-ascii?Q?fsndhBxDU+Ofr90soUm9Y2ALOxqWUwvhemRNNOmQRgaQRSD0NYgbQRTBuet0?=
+ =?us-ascii?Q?e7tKBK3QawzWCAD6EyX+V2VVX2WRP5lOHAB4Yqmc+E0M9hrCF22Uqc28xBXd?=
+ =?us-ascii?Q?PzzYe9s41aL8witYU9CUBe9nI5+85Pol7dNH0pabHRoUhNOq4H0PjL5KXUud?=
+ =?us-ascii?Q?CaaVRWUvofZUIN6aqDC6GFk+HbVwEJrXUcAVb5Jv9N9K93BRvLVa1iLMta0b?=
+ =?us-ascii?Q?AqXxvwivdAEGWw7gI4o2ql4hmOKxyGxvGGCtBD3Vuy3VvHuXTZtBt+mHGKvl?=
+ =?us-ascii?Q?pybkBzT+nWaiS747yfp2sUHGSnzcFBVu0J/ZxLXbjt+rM+4eItD8RJQjxr1P?=
+ =?us-ascii?Q?Im0yiWlPTjVw1LiZuE1eitVy4ubJIeAd6Q+ms0I9CGI7GHC69NzMa1lRVN/T?=
+ =?us-ascii?Q?y8rJBaWMMTCY0Em/Crmd7rq3aOaT6h92soDORFe3yXb5ZiF5GAvyAemmiXCM?=
+ =?us-ascii?Q?zjhYOe46Wyk9HsvAo+le/yg1STHF0R3xfNiE9bNMsOZwx8GFnTmr8kKyUmXD?=
+ =?us-ascii?Q?CTYv5KErKMphJ6OrYb0Cal7fX29/gva5uNsNRxguTwCMKYK03AGdAUnzxaoA?=
+ =?us-ascii?Q?6LbG4QkQmdZnuYA2VxtMOF/E3+4lj7s2iQQA0uuwhbb9OzKgNpHenX8GQY+d?=
+ =?us-ascii?Q?dvXP3Q93ONQ3cY5WMMJHgRZa5nvvL2kIJmhEYnU9j/KwwMJu8FwBX6402VBK?=
+ =?us-ascii?Q?hEoHQUxrEVux7HYF+DtrW/tGWzJgu269xxV7wi/02iT3Zxk9KCHeQueboLBb?=
+ =?us-ascii?Q?36Bgk43BGGB74pcYUoC/6PzxfO181hy10vTl7o5AmGuC2sQWbQdMOUda1TYY?=
+ =?us-ascii?Q?sc7ZvsJE5MKBo9d0KNE0ncVfnLQIDPZ0nwNf4hLbeih3fYCpdE+mrqd24uBa?=
+ =?us-ascii?Q?sO7cW+i2THTA+hwQ9No5/xQaK0JOO82U1wMx9R/wOpn7HNtM1B93ei2X7R9E?=
+ =?us-ascii?Q?av8HF6ZIbPfbmaJBccltzqGbiQcSuaAvIEvvff2b9lwGteBGr+8QBF4j+VFd?=
+ =?us-ascii?Q?pLipuYFqiEasgF1aJN03XyAG3m1so/tKnweHHqsETmg8+2mbeyhI0k+jG2Pw?=
+ =?us-ascii?Q?DeLrAb38+GY1ELZJGRd34iSc0jcIcvTM3ZzP2THmpyGHn6sdygTDpl5mpAgy?=
+ =?us-ascii?Q?HcUrfp4m70+j9ZeZFmb34k1wfcUV2gC5o25BV2bzU7BFX30nsExRreT3ke1/?=
+ =?us-ascii?Q?MYXKLheQ8XkpNUh5+hvwCGTqMEBUL1iaxfsu6F4Bq9NUQ0l7xGI25W6VdLM5?=
+ =?us-ascii?Q?FDzdrWoR2DpZfAgE4kAC5wMcyrPClaKWX4EBozDN4NWTXSWqXLBvyWxgwPqG?=
+ =?us-ascii?Q?S0m4G9xn4dud5vDUQ8GWqog0SOBECM1nqQJ6oJF1Y8TQFqEsftDjyDpZyRfg?=
+ =?us-ascii?Q?iwv9c5wzP9z6/fpaJCfqLHz8n6GA6Qhh+xq7VlJ1pFyiO9uQHcCzTjvk/dLL?=
+ =?us-ascii?Q?MA=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a1423a0-62e9-42c3-b9eb-08dbbfff5364
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 08:45:54.3055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lDmRvmmbAPu5Uau1QUDCR+Fu36sco5hz5mqMKqH+jpe89dq3FYT4TPQ+GINKnEOpt7Qzlb0YSG+6wMgtBdyihRQK1AHEuQQmMTc185R8Spc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8475
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 2:37 AM, Matthew Wilcox wrote:
-> On Thu, Sep 28, 2023 at 10:01:14AM +0200, Peter Zijlstra wrote:
->> Now, I see what you're trying to do, but who actually uses this data?
-> 
-> I ... don't.  There seems to be the notion that since we're polling, that
-> shouldn't count against the runtime of the thread.  But the thread has
-> chosen to poll!  It is doing something!  For one thing, it's preventing
-> the CPU from entering an idle state.  It seems absolutely fair to
-> accuont this poll time to the runtime of the thread.  Clearly i'm
-> missing something.
+This is the MACsec support for TJA11XX PHYs. The MACsec block encrypts
+the ethernet frames on the fly and has no buffering. This operation will
+grow the frames by 32 bytes. If the frames are sent back to back, the
+MACsec block will not have enough room to insert the SecTAG and the ICV
+and the frames will be dropped.
 
-For sure, it should be accounted as CPU time, as it is exactly that. You
-could argue that if we needed to preempt this task for something else we
-would do that (and the code does check that on every loop), but it's
-still using CPU.
+To mitigate this, the PHY can parse a specific ethertype with some
+padding bytes and replace them with the SecTAG and ICV. These padding
+bytes might be dummy or might contain information about TX SC that must
+be used to encrypt the frame.
 
-I can see maybe wanting to know how much of the total time the thread
-spent doing ACTUAL work rather than just polling for new work, but
-that's not really something the scheduler should be involved in and
-should be purely an io_uring sqpoll stat of some sort if that is truly
-interesting for an application.
+Radu P.
+
+Radu Pirea (NXP OSS) (10):
+  net: macsec: move sci_to_cpu to macsec header
+  net: macsec: documentation for macsec_context and macsec_ops
+  net: macsec: indicate next pn update when offloading
+  net: macsec: introduce mdo_insert_tx_tag
+  octeontx2-pf: mcs: update PN only when update_pn is true
+  net: phy: mscc: macsec: reject PN update requests
+  net/mlx5e: macsec: use update_pn flag instead of PN comparation
+  net: phy: nxp-c45-tja11xx: add MACsec support
+  net: phy: nxp-c45-tja11xx: add MACsec statistics
+  net: phy: nxp-c45-tja11xx: implement mdo_insert_tx_tag
+
+ MAINTAINERS                                   |    2 +-
+ .../marvell/octeontx2/nic/cn10k_macsec.c      |    6 +
+ .../mellanox/mlx5/core/en_accel/macsec.c      |    4 +-
+ drivers/net/macsec.c                          |   94 +-
+ drivers/net/netdevsim/macsec.c                |    5 -
+ drivers/net/phy/Kconfig                       |    2 +-
+ drivers/net/phy/Makefile                      |    6 +-
+ drivers/net/phy/mscc/mscc_macsec.c            |    6 +
+ drivers/net/phy/nxp-c45-tja11xx-macsec.c      | 1724 +++++++++++++++++
+ drivers/net/phy/nxp-c45-tja11xx.c             |   77 +-
+ drivers/net/phy/nxp-c45-tja11xx.h             |   62 +
+ include/net/macsec.h                          |   55 +
+ 12 files changed, 2002 insertions(+), 41 deletions(-)
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx-macsec.c
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx.h
 
 -- 
-Jens Axboe
+2.34.1
 
