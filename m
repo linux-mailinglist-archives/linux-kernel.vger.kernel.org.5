@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EECF57B11DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856F07B11DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjI1E5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        id S230190AbjI1E6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1E5J (ORCPT
+        with ESMTP id S229445AbjI1E6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:57:09 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C926D8F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:57:06 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9a1bcc540c0so322304666b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:57:06 -0700 (PDT)
+        Thu, 28 Sep 2023 00:58:33 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887B48F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:58:31 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso93671115e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695877025; x=1696481825; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IjnVhTmViUFUS8jPDfsX5EBBj4w0ohMdGnL+g6iEKxk=;
-        b=NDhldVO0cYL9BAv6Emb2a34CrQoZlwtOxJw4FBe3wxOm4p1lzLrG2VTWDqKzfgBBvh
-         HfVKoS5IUKnaqUB2Z+HN3lvLQg0AVEhoi65BXVONJdY1O7y02Jy+FEfh6IM7WzviNxdv
-         a6qga1pLPSrrEY899VoH1WsPpxjA8Dy1Y1jTzQQpcEF2PP9QwRJMfLPC4rAbwaWUCK4X
-         oHnyXPX4CQfLw1lSz2sU3m5Lh08zUD4zsAQVv2u50289j/6dcAsN1qBoxB6za7pYvhRL
-         kQUs1h9G1QjUxBy1xL+AqAMiZhezZLpmCc5fP8ZBaEv+ESA3QRFyoie7grAFfxH7TbmT
-         x5mg==
+        d=linaro.org; s=google; t=1695877110; x=1696481910; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xGs/aA9aOh5XsFAEpc2ofFBAtNcAT8wgme2oNok1KUc=;
+        b=QOOKyWC3dh/7siPX5DKwnDATYdX9lZjUFXqHQu6TTNNWoNzTegSWBsXHn43jT2Q82r
+         qUerBoh/bbBL1qO9a3zEe1mZUndKCy5nHZFTtt6P+HWMgFPVn9E8yA3wiN/ivEpzfPpV
+         U/LL/e8lprxOxgNxwLT1DF1rx4JPziHs9UKaS8aLVNvvbcr9Ietjwol+kjFNiw4xR30P
+         x35lyJk3yIc3aJdIl8i8BKRXC+R6wBNjhjTQfmXdyc7mLmqL6a06bhDGZU2YSRXXxI0Z
+         DwJc9xh8fwTsipn5GvE1W7hRsnbSOlTEUrqWZ9GfqS438ZoyKzkLy39OgAf86l3gPmFb
+         vswg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695877025; x=1696481825;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjnVhTmViUFUS8jPDfsX5EBBj4w0ohMdGnL+g6iEKxk=;
-        b=QtAw3VqkydQ6+0PWI0YADIqz3KLFx/ISPotHj3rGZvXCvUBwBHV7ILUIpSqWvqXlOr
-         tD26+fR9B1z2n0SmmWIefxF7BlsNwGjWQvXM98lPMwfQV6PtSy8a3fJfLFqV2Jelx4a3
-         l9ZxnBbE25h++5j+jqtv3m5S1OwGulYydcV4HP4ETk3wTNd7E18D6UuG5NhM0n+mn8Qp
-         ivCS9oQxOTj0knyxbvCi3PFv1jQwaxCpjARKaAp3x7MZlA+Ds0/Tg4Gy9eiLCs0ePjBc
-         XkpJM4vw8PEHt6zQj5JgWqKWMx4fqQqcoYGgcEow6uzLh6pwie4aU/SqkrqoPX/OAstP
-         lp4A==
-X-Gm-Message-State: AOJu0YxNRditYxz/nqhuhFZV3KZsIL+PmeyBFWDVLeKF1i+Gxmau3afX
-        OCpZLIZHUFxBI8O4LyKmy1w=
-X-Google-Smtp-Source: AGHT+IFl8dxrPg/Ls8y0D5pASvHo2j7uZbw0BIxs5Owu8m9CsYgTEmSYxkVAb08p94lWyCyEKvdRYQ==
-X-Received: by 2002:a17:906:74c1:b0:9ae:3ee2:6feb with SMTP id z1-20020a17090674c100b009ae3ee26febmr122922ejl.2.1695877025015;
-        Wed, 27 Sep 2023 21:57:05 -0700 (PDT)
-Received: from [192.168.0.104] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id s12-20020a170906168c00b009737b8d47b6sm10161717ejd.203.2023.09.27.21.57.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 21:57:04 -0700 (PDT)
-Message-ID: <b3317aa5-e26a-227b-e0f4-9c98d10aad4e@gmail.com>
-Date:   Thu, 28 Sep 2023 06:57:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
+        d=1e100.net; s=20230601; t=1695877110; x=1696481910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xGs/aA9aOh5XsFAEpc2ofFBAtNcAT8wgme2oNok1KUc=;
+        b=UIN8wWnzI/ZMrE4wQcMR6Tqj+yjpSh8/B4yUTZGJBzTrQ0gUrMQYNaL4cMMTU4WDlY
+         zkYbyDnsSQNU0AYmLj6zSKvaRVUu+ffuCWHtQEPpmLwDVqeYo9gLarbWSbxO8R3ZDy2T
+         sFZ4pb3xgDSj0Kisz+Qz5tZ0kOx0NX2IFuqFz/OxAnqCXGt7jHaZ9Bg6GulpH51ZAyzf
+         KLyFSRXf8B3doP1VvD6+PbIeXWEknP3op226u9iLvDBXdld4lIrhbCvmBTkDycwl69Yl
+         0B0ztG/l6VpnN0QK2BWYuHw5RY073Mmd25VybelK2jjI2jWrKEod/pnVQrbyE53nNliZ
+         jbRQ==
+X-Gm-Message-State: AOJu0Yzoex9bEBF9OoMcQ+xzj1CqjodNrl/Or+u9MpoS/oiEH6pkwtYJ
+        AMofOQMihieEoaABfluS/Jq3vfJF+K85A2onXSI=
+X-Google-Smtp-Source: AGHT+IG0Cv1pjWH7ZQwQVEN+3+R9m7dfeHRMc2ejLD4pjtTlo4Pni2aZ7HIRQilezMRQ3XpTvgYUpA==
+X-Received: by 2002:a7b:c858:0:b0:405:40c6:2ba4 with SMTP id c24-20020a7bc858000000b0040540c62ba4mr159135wml.5.1695877109938;
+        Wed, 27 Sep 2023 21:58:29 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id 14-20020a05600c230e00b00402f7b50517sm19278473wmo.40.2023.09.27.21.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 21:58:29 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 07:58:27 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Gary Rookard <garyrookard@fastmail.org>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2] staging: rtl8192u: ieee80211: renamed duplicate
  variable
-Content-Language: en-US
-To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Message-ID: <469feda7-80db-4f22-8396-1eb10d07567b@kadam.mountain>
 References: <20230928033220.31783-1-garyrookard@fastmail.org>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20230928033220.31783-1-garyrookard@fastmail.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 05:32, Gary Rookard wrote:
+On Wed, Sep 27, 2023 at 11:32:20PM -0400, Gary Rookard wrote:
 > This patch renames a duplicate variable found in both rtl8192e and
 > rtl8192u causing the preprocesser/compiler to compile without error
 > when in fact it should throw an error/break the build.
@@ -98,55 +94,9 @@ On 9/28/23 05:32, Gary Rookard wrote:
 > Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 > ---
 
-Hi Gary,
+This doesn't apply, and there is no Fixes tag to suggest when these bugs
+were introduced.
 
-this patch cannot be applied. I cannot find the variable 
-ht_update_default_setting in this driver.
-
-Bye Philipp
-
->   drivers/staging/rtl8192u/ieee80211/ieee80211.h        | 2 +-
->   drivers/staging/rtl8192u/ieee80211/ieee80211_module.c | 2 +-
->   drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c   | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-> index 4e598c7f0d31..ae2fb249eaa1 100644
-> --- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-> +++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-> @@ -2293,7 +2293,7 @@ void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString);
->   
->   void HTSetConnectBwMode(struct ieee80211_device *ieee,
->   			enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
-> -void ht_update_default_setting(struct ieee80211_device *ieee);
-> +void __ht_update_default_setting(struct ieee80211_device *ieee);
->   void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap,
->   				  u8 *len, u8 isEncrypt);
->   void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo,
-> diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-> index 6f6813899e31..f35765167e1b 100644
-> --- a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-> +++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-> @@ -146,7 +146,7 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
->   		ieee80211_networks_free(ieee);
->   		goto failed;
->   	}
-> -	ht_update_default_setting(ieee);
-> +	__ht_update_default_setting(ieee);
->   	HTInitializeHTInfo(ieee); /* may move to other place. */
->   	TSInitialize(ieee);
->   
-> diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-> index cf9400859700..d5354147e7ae 100644
-> --- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-> +++ b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-> @@ -56,7 +56,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
->    *  return:  none
->    *  notice:  These value need be modified if any changes.
->    */
-> -void ht_update_default_setting(struct ieee80211_device *ieee)
-> +void __ht_update_default_setting(struct ieee80211_device *ieee)
->   {
->   	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
->   	//const typeof( ((struct ieee80211_device *)0)->pHTInfo ) *__mptr = &pHTInfo;
+regards,
+dan carpenter
 
