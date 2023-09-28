@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 972717B2021
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239B37B2024
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbjI1Ova (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        id S230511AbjI1Ovf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjI1OvZ (ORCPT
+        with ESMTP id S231313AbjI1Ov3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:51:25 -0400
+        Thu, 28 Sep 2023 10:51:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ADC1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:51:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F26C433CD;
-        Thu, 28 Sep 2023 14:51:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA7A1AA
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:51:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36AC9C433A9;
+        Thu, 28 Sep 2023 14:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695912683;
-        bh=StfEneqPnMXWDqQdDqylaWm7UVtDGEIMdVg0t3atZ0Q=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=bgiOSo+n1ZlOzg1fdq+N77rfK+/KqBoOiNPq5OiJKBIBqO98ZnNZRzf7kb32d2PVQ
-         lB55ahJVx53g7eFv6yYNPNIAG1nJ5J/G0bJZyDCzkQ4KA2DGFfNfVMt2X+dskZYt3F
-         0PicXLtYQyqZV6BEtbOCTV6iWiYzLwQmQJpyxvCugcPZpiKBsjpl0HK83Jie6BP4DS
-         MIsYPlghzipIGM2T3jKXqfGe8Hjg9dNXstIaRa93Q2UshQ8InG3aluEoyU0Epvg8Kv
-         uFUZokN9X0Vy39MXTXACBvle+zMI3ahdE11hWY+3e0LgUWFTeyfISfn+ZSmWpYRTnq
-         8bJrP9YHoSoRA==
+        s=k20201202; t=1695912686;
+        bh=JRSsDtLzeKIy9n8963zFa9jQq53Jmt6jQUGB+nO+3dY=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=KhbGXl685KDuzQMQKK4KmHyr+//v0EOw1ynKd8tpIaQUTBt/FLsLUQGAF3wnuO7F4
+         clilN7rRVCPqJszpWblnzRFq3F9LMannjpSmvgnruw/ALzEryN07eD0z+iTKKOSmok
+         jllSTmFRvrf3mpKFg7BMoC49YxjKfsL8TjZB/5WPfGTO5+2zvPVLsnVmmXiAjAuIPW
+         L/AvAFrrn+Mb0QCMWEXIOQcaJqRjMfMU+3Kzdcc6WReBBkU4IqPM7sHR3zKAM7FEM+
+         VeFnUMrVHX/JmS6NyJOgQG+Io0DyJ/lZYurUd/Z6jiXQZkORLvd7+Fzvmno++kSaSK
+         0qZ0NHK/9JORw==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        perex@perex.cz, tiwai@suse.com, shumingf@realtek.com,
-        rf@opensource.cirrus.com, herve.codina@bootlin.com, arnd@arndb.de,
-        13916275206@139.com, ryans.lee@analog.com,
-        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
-        doug@schmorgal.com, fido_max@inbox.ru,
-        harshit.m.mogalapalli@oracle.com, liweilei@awinic.com,
-        yang.lee@linux.alibaba.com, u.kleine-koenig@pengutronix.de,
-        yijiangtao@awinic.com, dan.carpenter@linaro.org,
-        colin.i.king@gmail.com, trix@redhat.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangweidong.a@awinic.com
-In-Reply-To: <20230927121634.94822-1-wangweidong.a@awinic.com>
-References: <20230927121634.94822-1-wangweidong.a@awinic.com>
-Subject: Re: [PATCH V5 0/8] ASoC: codecs: Add aw87390 amplifier driver
-Message-Id: <169591268017.2776105.16111377066038628.b4-ty@kernel.org>
-Date:   Thu, 28 Sep 2023 16:51:20 +0200
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        cy_huang@richtek.com
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Allen Lin <allen_lin@richtek.com>, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1695872468-24433-1-git-send-email-cy_huang@richtek.com>
+References: <1695872468-24433-1-git-send-email-cy_huang@richtek.com>
+Subject: Re: [PATCH 0/2] ASoC: codecs: rtq9128: Add TDM input source select
+Message-Id: <169591268524.2776105.13245316160946357436.b4-ty@kernel.org>
+Date:   Thu, 28 Sep 2023 16:51:25 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,14 +55,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 20:16:26 +0800, wangweidong.a@awinic.com wrote:
-> The awinic aw87390 is a new high efficiency, low noise,
-> constant large volume, 6th Smart K audio amplifier.
+On Thu, 28 Sep 2023 11:41:06 +0800, cy_huang@richtek.com wrote:
+> This patch series create a TDM source select property and use it to
+> decide which TDM data source is connected.
 > 
-> Add a DT schema for describing awinic aw87390 audio amplifiers.
-> They are controlled using I2C.
-> 
-> v4 -> v5: Adjust the order and context of the patch
+> Following by the below patch disccuion
+> https://lore.kernel.org/lkml/1695780376-32301-1-git-send-email-cy_huang@richtek.com/#t
+> It may not be a good choice to add the user controlable mixer control
+> item. Since it follows the board design, make it as a device property.
 > 
 > [...]
 
@@ -76,22 +72,10 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: dt-bindings: awinic,aw88395: Add properties for multiple PA support
-      commit: b99d8d8adfda1f9220dd2ee9bdb96ba02dc62bd7
-[2/8] ASoC: dt-bindings: Add schema for "awinic,aw87390"
-      commit: 457b6587c112e162d3bec871c7b93359168d5c0a
-[3/8] ASoC: codecs: Modify the code related to the property
-      (no commit info)
-[4/8] ASoC: codecs: Modify the transmission method of parameters
-      commit: e83219c94abb4ad977f6b2b8be7d466ef0c2248f
-[5/8] ASoC: codecs: Add code for bin parsing compatible with aw87390
-      commit: b116c832c9e84843c64eed087271e29b3bc6c1b8
-[6/8] ASoC: codecs: Modify the code related to the property
-      (no commit info)
-[7/8] ASoC: codecs: Modify the transmission mode of function parameters
-      commit: f83287a72551833a6fe2fc96f334b26e6eba77e8
-[8/8] ASoC: codecs: Add aw87390 amplifier driver
-      commit: 37b4346ed8681660ae60de4facc3d499d8e5cf2a
+[1/2] ASoC: dt-bindings: rtq9128: Add TDM input source slect property
+      commit: bf38a0be7c57e43303600b5afc9b740882b3ed87
+[2/2] ASoC: codecs: rtq9128: Add TDM input source select
+      commit: 54ac512048c98b720a8fbf5899308788dff8def0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
