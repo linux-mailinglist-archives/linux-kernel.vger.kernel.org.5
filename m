@@ -2,170 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8737B15E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ED57B15F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbjI1ITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S231240AbjI1IXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjI1ITT (ORCPT
+        with ESMTP id S229639AbjI1IW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:19:19 -0400
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 01:19:17 PDT
-Received: from esa15.fujitsucc.c3s2.iphmx.com (esa15.fujitsucc.c3s2.iphmx.com [68.232.156.107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE67D98;
-        Thu, 28 Sep 2023 01:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1695889158; x=1727425158;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=0Abt06A5VOFvLNKiV7yEgFJOCqfgvT82NMMR3huRj1o=;
-  b=RboykihhqFkIUSD3rtX+V7rVrA0uuG8mga/mtjo7G2gyuLLip2JNpZGB
-   pWOmKo6ZB++mWOxbmYJpQW7JABWj4MGS3waSLI6y3FpINU1y39pz80SAd
-   bgCxY5S5jK4it2Zu74QU/IiYvBd8DtPb9e4NtTqDps3THV/uBF7UUkscj
-   VpMYXxiqm/madsoE9isbY4RKgJCorT8ZR8NhoRg9W08aclBYN+gs+AnMN
-   WsWesnxjuPdne9WwT+OSOBcN1hmha+EnGl6I/RWj5CUkkt8Zduz/IXhNt
-   yg3V7PCE5yi4H0POQ7yiMG12lS3rM7z2f8cfEEhM+Rji5Y3EnrZgbWKFX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="97095721"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694703600"; 
-   d="scan'208";a="97095721"
-Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 17:18:10 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X0iCEVXFb5cKjWNuvPlbgBjxPFOKyKayornHWq9NW9Mp5TadOsZfD8ywW2wPFnFfpK9/HhXrBAur1a/0P+cCiJGr2L/imZ1AnlfIxhvHNWWI9om3D8Ch4aVPy6YXCNeUXVviNfpWpaOexLNUiakqv820AiGVLTM+cQbxpecT8TeD28fCHKV6Bgh5dMfpeY0YsRhXgHt70K620q95pMpIcJxFFaHuByIwoYzqbZZpEGgT8iq4MGKAl7bRqLdLLZME5eNFpoNoOmQEpmh4bjRlYLuVv+gshGRJoEH+J7k7jmH3OJ+9br6ozDvdAuasIP761/hN/lTa/xsvuqAccpuing==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Abt06A5VOFvLNKiV7yEgFJOCqfgvT82NMMR3huRj1o=;
- b=oVbsmDvNUX4waeLhZhwmVMnDBS2T8iLmot8DuV7UykLLTIdQ5JxhEiRkQZ0VtVUUcQcuqsC1Y9zscDje0km9/r40ZwdnS/3k3w/gr4eLK6K6FX4sLP6/Lv2bom0MOvHk3VvdpZ7KHTES6zXvxQEeccUbYYKtbOf/0QVvZ8zBfzEFhqLSHJHFaTWMSoSQbTWya/Fyh5MtlL60q85fAE9skMlw7Yc80VSxprvverUIdGnhvl3nj/o/MZqWMndeTEU6T6VDVnivYTGfr4e0K6Bmks4XD6XIIecF9b4o+0DnT5Gnzu/O888+GxeYTNQgaLj/Op15RWJ8aaI+SiUBtYCELA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com (2603:1096:402:3e::12)
- by TYCPR01MB9684.jpnprd01.prod.outlook.com (2603:1096:400:220::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Thu, 28 Sep
- 2023 08:18:06 +0000
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::59bd:366a:131b:3f26]) by TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::59bd:366a:131b:3f26%3]) with mapi id 15.20.6838.023; Thu, 28 Sep 2023
- 08:18:06 +0000
-From:   "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-To:     =?utf-8?B?J0lscG8gSsOkcnZpbmVuJw==?= 
-        <ilpo.jarvinen@linux.intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        =?utf-8?B?TWFjaWVqIFdpZWN6w7NyLVJldG1hbg==?= 
-        <maciej.wieczor-retman@intel.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 0/6] selftests/resctrl: Fixes to failing tests
-Thread-Topic: [PATCH v2 0/6] selftests/resctrl: Fixes to failing tests
-Thread-Index: AQHZ5+uUEkmiC6yUykqIxZhWW+NGabAv9zRQ
-Date:   Thu, 28 Sep 2023 08:18:06 +0000
-Message-ID: <TYAPR01MB6330C7644273743C888DE7E98BC1A@TYAPR01MB6330.jpnprd01.prod.outlook.com>
-References: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
-In-Reply-To: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?utf-8?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2Uw?=
- =?utf-8?B?NTBfQWN0aW9uSWQ9NjQ5NzRjNTEtOTMwYi00YTdlLWEwNWMtM2MwNjY3MjJj?=
- =?utf-8?B?NjNiO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5?=
- =?utf-8?B?LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxlZD10cnVlO01TSVBfTGFi?=
- =?utf-8?B?ZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX01ldGhv?=
- =?utf-8?B?ZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3Mjk1Y2MxLWQyNzktNDJhYy1hYjRk?=
- =?utf-8?B?LTNiMGY0ZmVjZTA1MF9OYW1lPUZVSklUU1UtUkVTVFJJQ1RFRO+/ou++gA==?=
- =?utf-8?B?776LO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQtM2IwZjRm?=
- =?utf-8?B?ZWNlMDUwX1NldERhdGU9MjAyMy0wOS0yOFQwODoxMjoyOVo7TVNJUF9MYWJl?=
- =?utf-8?B?bF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfU2l0ZUlk?=
- =?utf-8?Q?=3Da19f121d-81e1-4858-a9d8-736e267fd4c7;?=
-x-shieldmailcheckerpolicyversion: FJ-ISEC-20181130-VDI-enc
-x-shieldmailcheckermailid: 179b7dee35274234b850c7367a11da2a
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYAPR01MB6330:EE_|TYCPR01MB9684:EE_
-x-ms-office365-filtering-correlation-id: 57719242-4045-495a-4674-08dbbffb7184
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wyWi1ZXaTmTYv3rt/3NBD25oM0+90QV7iBKj3uwbX+xlxXfDwrroW7GysFzrgelQ3sjhF5vtccqytG2zz+EiGn2Nlv+7XH5+rKMBP2UZ4sgrhzI9Cny9bPkNG9as0uiAsm13lcukFX6SxhRCKl9c4TVdjS8LIB8dV0T/5Ep7YQFWo3P2qzDuJ3oqMj8/YxwTKbP/HBx0+TAOMmjvXAuZG3/58nBkMJ4TWTc2wHTX/hrz4ioypVrkCYk0TLJ9I80DagGZ+0KuQ1gj3rI8PXOFIskbZJHW+1+qPGNsb6dgvwAyqhZsr02mhWl73t9GypyVCObGXjOd8Y8BkUtcmBSWG/k8HJsOgfU861xB4tlmAHUpR7TgjMsek0/0O9PmzgLBaNu/oea4fHkSkMMyqy4KWljRsZfH+vYNdpTKwaWPsH3PMStcwi32l/MDcrp59OBadaeOw5cRyXz0yU0Er6ddW0lybck4GNl28jKGwmq+7Qu3ym/uGdsXXibTIsNBaGE6Az/3IfiqNDpDY2tw/ZQkx5TM1dZMKjD/oIweHQDMPpCrgqMaez/Xio+wnKB73s1prQvta1q37Wpo+w3ffK/piy5fFMA6vKHGWgvKmNJ7mNd+rCA2sQNGn0uEIY57hzoPm0S8QKUjelPzDlKYB9+w4w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB6330.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(64100799003)(1590799021)(186009)(1800799009)(451199024)(82960400001)(38100700002)(85182001)(33656002)(558084003)(38070700005)(86362001)(1580799018)(66946007)(55016003)(2906002)(122000001)(41300700001)(64756008)(110136005)(66556008)(66446008)(5660300002)(54906003)(478600001)(66476007)(52536014)(71200400001)(7696005)(6506007)(9686003)(8936002)(76116006)(4326008)(8676002)(316002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?c2l4SUJPcWt5REFDdUZxdUg0dHd2cVUxYVViOGFJQVhta3lpMjlzQTNKNTJv?=
- =?utf-8?B?U1JuTnRRMXNadk96NS9LRXo0SmdzSjNZV3ozODFpbkd5SnRuY1NueVh6NFU5?=
- =?utf-8?B?R3VKWDU0MjNHaUFzNDQzUWFhNTVKdWp5VHBwN1o2WWhpTmRrMmRFVjZiUmM1?=
- =?utf-8?B?N1k5TnVoOUxyMzZjK3ZIbUR4aUVyRm9OcWt1YVlSS1BHZnd1TUZwQW8vSWN1?=
- =?utf-8?B?dkV1R0V3Y0dMek1FUDVmMmZrdzFXdFRhaEpzdnJGM1R2TmdPVkZKQ1FWL2Yz?=
- =?utf-8?B?UTZ2dGRGQVlQMmM3RENFUG00TlZpUDl5cG5aM0c0QnM0ajBRQ0dTRlhMSUxo?=
- =?utf-8?B?RVFFUVprUmZjdUp6NGU1ckJjZDVYRlpEZ2x4UXVtcEFteFBDaUFQNnRCLzhi?=
- =?utf-8?B?MVNObS82MitBa3lkdWJSWTlCWDNsWDlmVGw1b0VienZsaGlmSDEvb1BFQkVY?=
- =?utf-8?B?blZ2alBIcit3bEIwZUVBNjlkbGpmMW9FenMxTS9oaUp2OXdsUkk4bzUxNHBJ?=
- =?utf-8?B?OC83TkwvSHZmbjZGSVQxYnRXaUdTbHdiN0QvZi9HUldocG1yQWdBN0M0VkYv?=
- =?utf-8?B?ZVM3akVSdWQ3cHZRSEpOYnFBOFNoUG0vN090cWFwRHBPRXJLcnhRellJQkJL?=
- =?utf-8?B?T0RzQWc0OVJDdTFMcTg4NlNlWVdhSjQ0T0JvOHJXYURJWWlqQ2YvWTNhemRP?=
- =?utf-8?B?WGZLNlJYQ0NtcDVkQlZlTWJHam5qMkNVeWxVNjBuT3JvWkV6RStycVZVRkQ5?=
- =?utf-8?B?QmdxRE9hZDlZc2dNdjFlR2ovYjJ4SXRDVGthTjcrQS9NdG5uRVZVMUh4dDhl?=
- =?utf-8?B?ZEhWeUNRNVpQMzZyamNDMGdMTzFEMlByRVZPLzhxY1R1RldKWDVCWVV0LzQ2?=
- =?utf-8?B?Ym1lcFZzTmpSVDE4SHJGSk5mUG9Cend0WUVLZ2VFYkVTWldWMlFCWWdkeVFa?=
- =?utf-8?B?d2lNcGF6a054SjREbWttZ0duMFVGUENTQzRIYWUvUGJBMzVGbG1tek9sZHNr?=
- =?utf-8?B?L2hUNTB3ZGJUZXJyaVVIc2JIUkNtbHBocnp3NzhlKzdxaGJScmF6MUpoRnVE?=
- =?utf-8?B?Nyt5MHhGSG5iS0VPdzdvYlhHSGNUNnpGTWVtNUQ0QjBPOGFXR3cyVGowM0VK?=
- =?utf-8?B?MGNuWXI0UXQyaDBwQkQ0VkkvY2MrazVUVGhHc2VSL3lwbVdRUUowdkM3NEln?=
- =?utf-8?B?VUM2MDcwWWVFckpXWVhaQVpFdVRKbVlJWUVXMWtZc2hBeC9aVnczY3gxenVq?=
- =?utf-8?B?ODByUjlVOHViN2FvcEtYZEx0OG83d0NYZXRHeEFsaUFWazNTN3dsQTExNDhB?=
- =?utf-8?B?NWJrZUhMTXB6Qmd0a3pEZkhhZGlQblkvUTh0bmtHSHhiUUJWVHZpMzZPZzNY?=
- =?utf-8?B?VVhGRldpQkVKSmQ3SjdaUkF6YWN0UHJIem5GNWFta0hlbmlxaWZma0k2SmY0?=
- =?utf-8?B?VjVoY3NnMjU2cmlZZnBEazV1UjVSQm5aT1U5UXNsQTAxOWhEamZKTStGMmpM?=
- =?utf-8?B?SzJJM3J2amhjT2FaK3ZFelQ4Ujh2WWVHQlBDdmtscDRDckNid3lPL21Rd2R5?=
- =?utf-8?B?VlAwWGZTa2VvUTVFZ0I2ZExueEx2Q2lGYVQzazhVSGN3VEdGZFFoQ3dyVlBD?=
- =?utf-8?B?UVZzNDFQa3dLRnovejlHVkpzZHlOM0NXc2kyd2JQMC9pakM1WTR4dzhkMHl4?=
- =?utf-8?B?SHlMOVVrOHE3NHJ6YnQ2dWJRS0UxVS9JRDJ2MFA3K2o0VTduNWN2VHlpamc5?=
- =?utf-8?B?dXdkK0tUYUphNW01QUlTKzgwczVvZ1pTWm5Oc1FvMHlWM3BqeGU5ZnFSdDJR?=
- =?utf-8?B?MmJoN1o3OVJLN2tlRjBKNlArWEYyMWxieUo2V3gxTzN1MUZJZHNHNXpjeFN3?=
- =?utf-8?B?TEtPaGw5dXk4aVVUSlJwcWRzOVA5ckZ4S1N0U0lDcTJnTUZSemNwWWZ6anBX?=
- =?utf-8?B?WHpuNVZqbTNGMHFwMEd2NURtUkdyVEhURW5IcTI5VS9yOE5WVXFNS0luZ0lT?=
- =?utf-8?B?N3NtNVJoVEhDZ3l2blJkeW9DRlFkMnpkWFhkQW92anNDLy9rd2pHbDlrczd3?=
- =?utf-8?B?U0hMWmRDK1lPRXg1QnhMeVlVS1Z4NERGc0xPOWk2ajhzODJrbVc1RzlFTWp4?=
- =?utf-8?B?dWwvd3dUc1NQOHNFRnRlVEI2c2toNy9URWNFVGxrVUNkYXVVdC9za05uUUlm?=
- =?utf-8?B?UUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 28 Sep 2023 04:22:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817F995;
+        Thu, 28 Sep 2023 01:22:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D590C433C7;
+        Thu, 28 Sep 2023 08:22:54 +0000 (UTC)
+Message-ID: <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
+Date:   Thu, 28 Sep 2023 10:22:52 +0200
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 0NVqLqWKZdsvuIoc/UM0fSW4FeAqOchPvA7NPOgGrusVgU6aC+5qtVmb1cUw8g5/8AhECxixGubuBwZUkrCWE1cA/5uCQ+yDLn1Yl3qZvUS6lpaHrQNJVAQ30FQHiMQi074KE/HkXQVg8/lAwcvjSuGLK0a45x0QYET53w7VVu6nQYDoiTOsuk5nFkpvbEuKrrW72ZOcdfwkY/CY8ywihhl/HVGFRxN1GEr/q7BCmeArHfJOsbuTZA7LtMF6gyecv8k4I/1GmjHt2N5InAyHSTSak8seZvkK0j0oIjIOvbvwrhFsvljPtbMZJB2ifLvZWPW9fcOCk1jRSEeUsF4uICfMVk6kVtATn/QgVrOeZlnCLIH09unyjQaGZr45wA2lEYKxZs3jXB0U42DkI5pD6NWA2Sba0zwYtr0ZXIpC7mhN9H4NFwLcnab8iCruwRp/+EGqmI9tsEZjxEXnQnPJuTgIAOMDlO14a6cqLj3d1cepEoEAabeQePB0RRbkPYSMX50cWng3JtSlZYA3RVHNWhw6EYmg4SpwEbSE/vMOZOXxC6Q8akUVOgtnkQl5O5EGwzxtJGey7OsKXy5ep3KMdC0QXNACv4vmkMcwotwOelNcobfYrC73TIzQGU+O9tVHSzvi4oaNwt1DgLDLLNQ+h/G1esckJ66omGD2H1jJfzJ+lkWVphKTx3R4vPEenDb46o1C76nauK12YEDmof7q0Yclkdu5h4DCEnGlZCHcdloUzn1YadyEA1pkrYh9zYhea90btJBMn6xoCO5/15kHkuAkPL3rsgOOhLsO9so7Ct4uwlpIhRI4NBeue/ojZa9+94r6+Y4eFVuWCvVI05nV1EEQy2wTGadfhvu2cmFX/HlQvPSrFPO+G8wHvOzfX9nxAe90Q/L8qiH+1x9L/iu1ymKymr1GlPmoaSRF/l3JYEk=
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB6330.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57719242-4045-495a-4674-08dbbffb7184
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 08:18:06.5019
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: e8W35+OAtivbBqFnOm1Q71tc2ZJF0a0SOFZaBdX2OTln2hkyHW/B9TV2xymFhljT6OD5cqD8mx4fv3G4aOjA3G2Ww2kbByf732R1cbhyYMM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB9684
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US, nl
+To:     Jack Zhu <jack.zhu@starfivetech.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        "bryan.odonoghue@linaro.org" <bryan.odonoghue@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
+ <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
+ <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSWxwbywNCg0KSSBydW4gdGhlIGZvbGxvd2luZyBjb21tYW5kIG9uIEludGVsKFIpIFhlb24o
-UikgR29sZCA2MjU0IENQVS4NCiAtICQgc3VkbyBtYWtlIC1DIHRvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL3Jlc2N0cmwgcnVuX3Rlc3RzDQogLSB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9yZXNjdHJs
-JCBzdWRvIC4vcmVzY3RybF90ZXN0cw0KVGhlcmUgaXMgbm8gcHJvYmxlbS4NCg0KPFJldmlld2Vk
-LWJ5OnRhbi5zaGFvcGVuZ0BqcC5mdWppdHN1LmNvbT4NCjxUZXN0ZWQtYnk6dGFuLnNoYW9wZW5n
-QGpwLmZ1aml0c3UuY29tPg0KDQpCZXN0IHJlZ2FyZHMsDQpTaGFvcGVuZyBUQU4NCg==
+On 28/09/2023 10:12, Jack Zhu wrote:
+> 
+> 
+> On 2023/9/15 17:26, Hans Verkuil wrote:
+>> On 14/09/2023 05:15, Jack Zhu wrote:
+>>> Hi,
+>>>
+>>> This series is the v9 series that attempts to support the Camera Subsystem
+>>> found on StarFive JH7110 SoC.
+>>>
+>>> This series is based on top of the master branch of media_stage repository.
+>>>
+>>> The following are the media graph for the device and the v4l2-compliance
+>>> output.
+>>>
+>>> ===========================================================================
+>>> [the media graph]:
+>>>
+>>> digraph board {
+>>> 	rankdir=TB
+>>> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
+>>> 	n00000001:port1 -> n00000008 [style=dashed]
+>>> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
+>>> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
+>>> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
+>>> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
+>>> 	n0000000e:port1 -> n00000004 [style=dashed]
+>>> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+>>> 	n00000018:port0 -> n0000000e:port0 [style=bold]
+>>> }
+>>>
+>>> [the device topology]:
+>>>
+>>> Media controller API version 6.5.0
+>>>
+>>> Media device information
+>>> ------------------------
+>>> driver          starfive-camss
+>>> model           Starfive Camera Subsystem
+>>> serial          
+>>> bus info        platform:19840000.camss
+>>> hw revision     0x0
+>>> driver version  6.5.0
+>>>
+>>> Device topology
+>>> - entity 1: stf_isp (2 pads, 2 links)
+>>>             type V4L2 subdev subtype Unknown flags 0
+>>>             device node name /dev/v4l-subdev0
+>>> 	pad0: Sink
+>>> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
+>>> 		 crop.bounds:(0,0)/1920x1080
+>>> 		 crop:(0,0)/1920x1080]
+>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+>>> 	pad1: Source
+>>> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
+>>> 		 crop.bounds:(0,0)/1920x1080
+>>> 		 crop:(0,0)/1920x1080]
+>>> 		-> "capture_yuv":0 []
+>>>
+>>> - entity 4: capture_raw (1 pad, 1 link)
+>>>             type Node subtype V4L flags 0
+>>>             device node name /dev/video0
+>>> 	pad0: Sink
+>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+>>>
+>>> - entity 8: capture_yuv (1 pad, 1 link)
+>>>             type Node subtype V4L flags 0
+>>>             device node name /dev/video1
+>>> 	pad0: Sink
+>>> 		<- "stf_isp":1 []
+>>>
+>>> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
+>>>              type V4L2 subdev subtype Unknown flags 0
+>>> 	pad0: Sink
+>>> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
+>>> 	pad1: Source
+>>> 		-> "stf_isp":0 []
+>>> 		-> "capture_raw":0 []
+>>> 	pad2: Source
+>>> 	pad3: Source
+>>> 	pad4: Source
+>>>
+>>> - entity 24: imx219 6-0010 (1 pad, 1 link)
+>>>              type V4L2 subdev subtype Sensor flags 0
+>>>              device node name /dev/v4l-subdev1
+>>> 	pad0: Source
+>>> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
+>>> 		 crop.bounds:(8,8)/3280x2464
+>>> 		 crop:(8,8)/3280x2464]
+>>> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
+>>>
+>>> ===========================================================================
+>>> [the v4l2-compliance output]:
+>>>
+>>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+>>
+>> This v4l2-compliance version is from a distro. For driver acceptance you
+>> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
+>>
+>> Also, since this driver uses the media controller, you must run v4l2-compliance
+>> with the -m /dev/mediaX option. This will test the compliance of all devices
+>> reported by the media controller.
+>>
+>>>
+>>> Compliance test for stf camss device /dev/video1:
+>>>
+>>> Driver Info:
+>>> 	Driver name      : stf camss
+>>
+>> The module is called starfive-camss, so shouldn't the driver name reported here
+>> be the same?
+>>
+>>> 	Card type        : Starfive Camera Subsystem
+>>> 	Bus info         : platform:19840000.camss
+>>> 	Driver version   : 6.5.0
+>>> 	Capabilities     : 0x84200001
+>>> 		Video Capture
+>>> 		Streaming
+>>> 		Extended Pix Format
+>>> 		Device Capabilities
+>>> 	Device Caps      : 0x04200001
+>>> 		Video Capture
+>>> 		Streaming
+>>> 		Extended Pix Format
+>>> Media Driver Info:
+>>> 	Driver name      : starfive-camss
+>>
+>> It's correct in the media controller information.
+>>
+>>> 	Model            : Starfive Camera Subsystem
+>>> 	Serial           : 
+>>> 	Bus info         : platform:19840000.camss
+>>> 	Media version    : 6.5.0
+>>> 	Hardware revision: 0x00000000 (0)
+>>> 	Driver version   : 6.5.0
+>>> Interface Info:
+>>> 	ID               : 0x0300000a
+>>> 	Type             : V4L Video
+>>> Entity Info:
+>>> 	ID               : 0x00000008 (8)
+>>> 	Name             : capture_yuv
+>>> 	Function         : V4L2 I/O
+>>> 	Pad 0x01000009   : 0: Sink
+>>> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
+>>
+>> Hmm, this reports "Unknown Function". I bet that when you run v4l2-compliance
+>> with the -m option it will fail on this. If not, then that's likely a bug in
+>> the compliance test, please let me know if that's the case.
+>>
+> 
+> Hi Hans,
+> 
+> The following is the latest test log, which does not report a failure, but
+> also reports "Unknown Function".
+> 
+> I make the following settings in the stf-isp.c file:
+> v4l2_subdev.entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
+> 
+
+Can you post the output of:
+
+v4l2-compliance --verbose -M /dev/media0
+
+I am beginning to suspect that utils/common/media-info.cpp is out-of-date:
+it is missing MEDIA_ENT_F_PROC_VIDEO_ISP.
+
+But I don't understand why v4l2-compliance didn't fail on this.
+
+Regards,
+
+	Hans
