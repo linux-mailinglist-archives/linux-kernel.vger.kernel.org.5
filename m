@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 009107B22F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A6D7B22F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjI1QvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        id S232286AbjI1QvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjI1Quk (ORCPT
+        with ESMTP id S232078AbjI1Quu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:50:40 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2066.outbound.protection.outlook.com [40.107.92.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF9E1B5;
-        Thu, 28 Sep 2023 09:50:22 -0700 (PDT)
+        Thu, 28 Sep 2023 12:50:50 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2050.outbound.protection.outlook.com [40.107.220.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD63BBF
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:50:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LRq5k5CBUYYtCUyl8jazo45SZfs2jRFLaOnqnJB2kCEp5/yXFDM9ek9wT5SMv3OjtcQ+eAoF46DPblGazyrF9FUS2a3NsXnYf5UbMevRJbRYT1SKsPAZYY/06SaBCZUBnaIboqF6mCdG7UluW/jR3bi6zv6T5ZLB04QR1rS43Rzp+/DBhBMMSgYQx6HvbTZCNkNbzlLM/tUep0S6qcxmKOXmCSYFVzrp1F29vfWQqnhn0VVDgn6E+glFhKHojx/gyZYwxQAWebCEzhyoEiFZS+YVYVeQC3uevpI3H920DwSFtajLUuTJiHE1LP5uVp1X9oZelGSlgWsPG9okfCvJBQ==
+ b=SgWpIvUBTyxteUWy+VA6NKTDWCYwwp1creD3HKqStyUiVGfPj6e1DAq2VV8zncZ9+7KcpDnY0QRAdq0zTfmg1mgNWqabyqX3s0qkFA04JHzDX+SFRnv3aTmXTwsx554q9HmSzFHtGkOBKyrVe+GsMhJ7AXBjie+nOvloNHT5bZP3z0DsePvyhqwLx4cx+v8f+oMYFxmj9xZl5IdiOfjp0tt5hBL0rXv/PfsiEuY/AGwcFtpY80v5TPpJE+ryf9BxhG734AghEYCekMDrKFDusOtl81li/fjdJutEkR3vdyrQ/mjpFNLvQi/eUVZiH4UPtXsUYMJLjPXKtSu8oOpMbg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T7XjABeOssKQEWLk+sMbqrIPh+wZaqt2PP7FPEk1w5k=;
- b=OKTjMX5MqF5uC7EVDFt2zferi2ZuImmxb8kYEglC+veFaAf0AhMWJ/cVh7Ys6KG/jhbhL4EtR4cuFYGd8hf1H9+U3YThocFXZ4yTQsrrrLAbkZ1HLrfer6LOfxTGI0dbEaQq0uJWapPUF9H+6O3cA2NTIoPOekx+NXSf6rNjXuWt4uZvYEE3fK5tsdha+jm9FEoV+HSwukykfE/JTowW39Bh8RBJcrv3RNSH09hE5jJ/4uXrBJt9FAobgqWo3fSCImJcznm7dagnUJo0MtLa0gqreTH9SQb+XOSFxWNC/iOegcI18BOCjyh3vUTd6ZuZCu6xh+l4fkpoZ/GjdFZ9Qw==
+ bh=KNPxs3nbrHeoqWz3cXqfucMTiEexjBAyJD5k6GXMPaE=;
+ b=IDLlrPndrfpZWlM5ieyWukfYrmymyW8hSgfwBqrdf18c4t9wbGBACFmQi3j/xU3Jt/3Xe2112g2SGl2wxpJ9qAQtwit5Fe+/tgAemxFgqa9Qe9u9YZmgb8KncV9Gz48Fv2wY1ZJ1fRmzOXv5k+bp7OqGemmrequ8ooHcLpGUNhUkyHpkiDuNfNoLJyxIjfPgm3eEln0YiT8rNaJb9gRyWZkRRc8O4e4kfTdFppsm9lOgpKDczDTJskAC864izPNv0XYcNcJIDTBcz7GXPgZ/lf24Ulzn9C1Ls68lGYPA0qBwHQ1NOX4kCXae04FhiOr/KPcB3cPQOOUAZ49WWSk6Jw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T7XjABeOssKQEWLk+sMbqrIPh+wZaqt2PP7FPEk1w5k=;
- b=G0wJWeiBIREas4vW7f/0t739y9vgwYUGJgU8DysCXhDBY3R4EqdsNpDgDm1nBS7m+wpu78joVY0xykDXpZ4wfTALLRECJFr7dhDMnjtJg5xoYq1Ocu4DwjbJbkZVPLjPY+dav83Lp33ahSsAKhVX2kO9luKWc/lOv7BFfxNbFlWsE6G7ZUkdzI11YZZpBzT3ZAhhqDE6LVn0bWd8AIcvz3ir1bV6JNm2o6HAvVWPrvSaYj4MWMR4/p+IE7P0U+oAP2hza4AUeN6Ta3lCOcXS7x9tyuYcCyaclXStgPxyX9ZkNgyztMsedkhQ5pQuOKdTZ11JHsIW9QxprsiSEhQtXA==
-Received: from MW4PR03CA0047.namprd03.prod.outlook.com (2603:10b6:303:8e::22)
- by CH2PR12MB4279.namprd12.prod.outlook.com (2603:10b6:610:af::24) with
+ bh=KNPxs3nbrHeoqWz3cXqfucMTiEexjBAyJD5k6GXMPaE=;
+ b=KNfQt0I+larDqjbytSvXdMSl695UqZ/MKkVlETQQnHB0lA/OG7hK6/c9notNVIFePvdh6dKdEQHEfsX/sq7r+4GACybwa6kQ0qy1NQCFa7XfpXkwOyXlJjh1IpEJxAaGhIr1mM/povfzT5yZnCI9iJUcnhD0loDg0nIPIg8XUfcpgQdR4VbDZW7NsKATZC+obitNI5NVM7H5QmpkdS8h4N30vsVZFaH19JPrEYAHXwVPtrsOAbYYc3aRA/dP+3aY2DNXDP988vxGeUN/QqV+goClIKbK8pBFgVYd04FOiImmYLiAO0HtPNyXUq7suwsc6gAPMb0j3qJJXFyGSUy1AQ==
+Received: from CY5PR17CA0056.namprd17.prod.outlook.com (2603:10b6:930:12::10)
+ by SN7PR12MB7323.namprd12.prod.outlook.com (2603:10b6:806:29a::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Thu, 28 Sep
- 2023 16:50:18 +0000
-Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:303:8e:cafe::7e) by MW4PR03CA0047.outlook.office365.com
- (2603:10b6:303:8e::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22 via Frontend
- Transport; Thu, 28 Sep 2023 16:50:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Thu, 28 Sep
+ 2023 16:50:26 +0000
+Received: from CY4PEPF0000E9CF.namprd03.prod.outlook.com
+ (2603:10b6:930:12:cafe::6) by CY5PR17CA0056.outlook.office365.com
+ (2603:10b6:930:12::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25 via Frontend
+ Transport; Thu, 28 Sep 2023 16:50:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000E9CF.mail.protection.outlook.com (10.167.241.142) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.9 via Frontend Transport; Thu, 28 Sep 2023 16:50:18 +0000
+ 15.20.6838.19 via Frontend Transport; Thu, 28 Sep 2023 16:50:25 +0000
 Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 28 Sep
- 2023 09:50:08 -0700
+ 2023 09:50:11 -0700
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
  drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Thu, 28 Sep 2023 09:50:08 -0700
+ 15.2.986.41; Thu, 28 Sep 2023 09:50:11 -0700
 Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
  mail.nvidia.com (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41
- via Frontend Transport; Thu, 28 Sep 2023 09:50:05 -0700
+ via Frontend Transport; Thu, 28 Sep 2023 09:50:09 -0700
 From:   Dragos Tatulea <dtatulea@nvidia.com>
 To:     <eperezma@redhat.com>, <gal@nvidia.com>,
         "Michael S . Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Saeed Mahameed" <saeedm@nvidia.com>
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 CC:     <virtualization@lists.linux-foundation.org>,
         Dragos Tatulea <dtatulea@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH vhost 14/16] vdpa/mlx5: Enable hw support for vq descriptor mapping
-Date:   Thu, 28 Sep 2023 19:45:25 +0300
-Message-ID: <20230928164550.980832-16-dtatulea@nvidia.com>
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH vhost 15/16] vdpa/mlx5: Make iotlb helper functions more generic
+Date:   Thu, 28 Sep 2023 19:45:26 +0300
+Message-ID: <20230928164550.980832-17-dtatulea@nvidia.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928164550.980832-2-dtatulea@nvidia.com>
 References: <20230928164550.980832-2-dtatulea@nvidia.com>
@@ -85,23 +82,23 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|CH2PR12MB4279:EE_
-X-MS-Office365-Filtering-Correlation-Id: 87dc1fef-c389-46c2-ca05-08dbc042ff11
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CF:EE_|SN7PR12MB7323:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16e316bc-4671-4347-5a6d-08dbc04303b7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yhotgiu8Gcj++CnZr5z6D/r06CpAS7Hm4nyOHG+FODr0/RHwZhkQ8BH8L+aqJoYQcCqmfxr7RJ+0e/nkHt5P30avZkAlmxUZs8UhzEoojnCLL0hmVf61KsnIk7Tl6m7a9n+bzF7YOsWzsMCiA6ZChhtgGBX3Fbe8NO5kqT2Yy28uaGDQVUDxij11ZUsqy7D8QzmcrcZ0cWAvrlYpiTIGtOLZkLsGSrdhDmLRQ5m6DLsoVgFd9aCawJv+RjvlVxG5pj/XCc1gDsXGJpEd4lJhPRtkgKw6aI7smMHA4XUYP4icCjyf48efhHmHoM5Qf4y40Stm0vp9+0EGwC0EJhY6K1G1LvV9ij+EVkerZsxklNIjPZqoRdHHTY0SMzOtSxyL8MSg1+u0HcaV2PG5OXyE2GY61rY/yQ5QdXaacY/P2L8nt/oHKRtnnvHsO4M0TJhiG9yIywzEA4094ltPjzrPJ3OFpQVHntbOJzgDMyNMbMo5YdPTTsaUHMzHcUPY2Nv+wgVPcdQRBiw9myhFfF/dZIVp0nLuMSbZssFJ33Ea7I84dbtneAcIp0YtpdJHWJRxAilPRDm1fGPXUkQ9W/ECZISsZ7vjb5MbBjUG1MNacZcNQZzcFxdKlxIbxSTh8hhpLGSfuAyXAm6nGEN2dTx19mqpBIS1Qt27wBohn93X7uyFfe17GCmGACiZmdHiUpqyqMnBrEBzmfWfQKkQsfPpVRs3U5ieUfmIyPCfofO0qJ6MWnW9hE1iZwvQwk11nXDV
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(82310400011)(186009)(40470700004)(46966006)(36840700001)(36860700001)(2906002)(336012)(426003)(36756003)(83380400001)(47076005)(86362001)(82740400003)(26005)(2616005)(1076003)(356005)(7636003)(6666004)(40460700003)(478600001)(5660300002)(6636002)(316002)(8676002)(8936002)(4326008)(40480700001)(54906003)(70206006)(110136005)(70586007)(41300700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: l4xhs/AtuERVwoWpggppHkpw4U5o0dBF9K2N0Lwmi55OPZygque8UMt4HNKILQDIbhhbHu/4FvsXqkCXtIhlPkzrjjZGhI1e7PgFX6PrJ+daycqKdmVcQY8rkvXHNr/d5Vxv7twmRyVXjPO0jNvtXjmvTD1iPcfGVL3I9e7JE6vwF/VxQMhqGXIyqhLI6QcNBSRhX5q6VfV8Rf8Vkrw1MWqIWGkSCrc2ZY5u/4IwkeahrN1QAErhMk96274qKPA3nAO+f0uoRzGaqms/5G9bb44tXZ1ayKpImEjFJDTTfcWIM4KbsxLqq9OQXSYNi1wCBu5a4HdMTMuu/U6XZEiudkhI8QyBV/7BOoDZ4R+vtOs8MLwrbF0HQPGHsN/NlYDjK40Khnhc/gow43V3GkyG2ISrrvQDIyUXhsPaOPX95CBz5lqRzWlNZk/tFd1RFQ/jPfQMrDCU713bscVb+VfR8vU7bGBZYp+35JJo03U8WCuWCWYcCXWBFEFd1MMY6U7EYGzz4yknWukmAyWjwpe+Kxv/ctsFnzAc6WruBGVu3T96zGesbdBEJpkKu+DchSLKetEkbEleCX89sBfotzA89DYhRv4gd9GuJvkFX4T+nimIFJGg0FwcrN+z9Wen4LGDWG5rf7rEavGv0ciEGiacVy7ejzZpGicHfOQtPA4xDWDMDlKgNMomXiNtRinSUriJuTFSFvWsVA6zCGJBsJ0k8TrpuT5t9ypsvnziay9M3LalhQOPlq3jhw5nnN0HfiO0WSkjt+oxK1Dn7hFdfWkQBw==
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(2906002)(110136005)(5660300002)(54906003)(6666004)(70586007)(478600001)(70206006)(1076003)(2616005)(336012)(426003)(26005)(316002)(8676002)(8936002)(40460700003)(4326008)(83380400001)(41300700001)(82740400003)(356005)(7636003)(36756003)(86362001)(40480700001)(36860700001)(47076005)(41533002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 16:50:18.1850
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 16:50:25.9809
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87dc1fef-c389-46c2-ca05-08dbc042ff11
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16e316bc-4671-4347-5a6d-08dbc04303b7
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FA.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CF.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4279
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7323
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -112,135 +109,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vq descriptor mappings are supported in hardware by filling in an
-additional mkey which contains the descriptor mappings to the hw vq.
-
-A previous patch in this series added support for hw mkey (mr) creation
-for ASID 1.
-
-This patch fills in both the vq data and vq descriptor mkeys based on
-group ASID mapping.
-
-The feature is signaled to the vdpa core through the presence of the
-.get_vq_desc_group op.
+They will be used in a followup patch.
 
 Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c  | 26 ++++++++++++++++++++++++--
- include/linux/mlx5/mlx5_ifc_vdpa.h |  7 ++++++-
- 2 files changed, 30 insertions(+), 3 deletions(-)
+ drivers/vdpa/mlx5/core/mr.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 25bd2c324f5b..46441e41892c 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -823,6 +823,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
- 	u32 out[MLX5_ST_SZ_DW(create_virtio_net_q_out)] = {};
- 	struct mlx5_vdpa_dev *mvdev = &ndev->mvdev;
- 	struct mlx5_vdpa_mr *vq_mr;
-+	struct mlx5_vdpa_mr *vq_desc_mr;
- 	void *obj_context;
- 	u16 mlx_features;
- 	void *cmd_hdr;
-@@ -878,6 +879,11 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
- 	vq_mr = mvdev->mr[mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP]];
- 	if (vq_mr)
- 		MLX5_SET(virtio_q, vq_ctx, virtio_q_mkey, vq_mr->mkey);
-+
-+	vq_desc_mr = mvdev->mr[mvdev->group2asid[MLX5_VDPA_DATAVQ_DESC_GROUP]];
-+	if (vq_desc_mr)
-+		MLX5_SET(virtio_q, vq_ctx, desc_group_mkey, vq_desc_mr->mkey);
-+
- 	MLX5_SET(virtio_q, vq_ctx, umem_1_id, mvq->umem1.id);
- 	MLX5_SET(virtio_q, vq_ctx, umem_1_size, mvq->umem1.size);
- 	MLX5_SET(virtio_q, vq_ctx, umem_2_id, mvq->umem2.id);
-@@ -2265,6 +2271,16 @@ static u32 mlx5_vdpa_get_vq_group(struct vdpa_device *vdev, u16 idx)
- 	return MLX5_VDPA_DATAVQ_GROUP;
+diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+index 3dee6d9bed6b..a4135c16b5bf 100644
+--- a/drivers/vdpa/mlx5/core/mr.c
++++ b/drivers/vdpa/mlx5/core/mr.c
+@@ -454,20 +454,20 @@ static void destroy_dma_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+ 	mlx5_vdpa_destroy_mkey(mvdev, mr->mkey);
  }
  
-+static u32 mlx5_vdpa_get_vq_desc_group(struct vdpa_device *vdev, u16 idx)
-+{
-+	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-+
-+	if (is_ctrl_vq_idx(mvdev, idx))
-+		return MLX5_VDPA_CVQ_GROUP;
-+
-+	return MLX5_VDPA_DATAVQ_DESC_GROUP;
-+}
-+
- static u64 mlx_to_vritio_features(u16 dev_features)
+-static int dup_iotlb(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *src)
++static int dup_iotlb(struct vhost_iotlb *iotlb, struct vhost_iotlb *src)
  {
- 	u64 result = 0;
-@@ -3139,7 +3155,7 @@ static int mlx5_set_group_asid(struct vdpa_device *vdev, u32 group,
- {
- 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+ 	struct vhost_iotlb_map *map;
+ 	u64 start = 0, last = ULLONG_MAX;
+ 	int err;
  
--	if (group >= MLX5_VDPA_NUMVQ_GROUPS)
-+	if (group >= MLX5_VDPA_NUMVQ_GROUPS || asid >= MLX5_VDPA_NUM_AS)
- 		return -EINVAL;
- 
- 	mvdev->group2asid[group] = asid;
-@@ -3160,6 +3176,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops = {
- 	.get_vq_irq = mlx5_get_vq_irq,
- 	.get_vq_align = mlx5_vdpa_get_vq_align,
- 	.get_vq_group = mlx5_vdpa_get_vq_group,
-+	.get_vq_desc_group = mlx5_vdpa_get_vq_desc_group, /* Op disabled if not supported. */
- 	.get_device_features = mlx5_vdpa_get_device_features,
- 	.set_driver_features = mlx5_vdpa_set_driver_features,
- 	.get_driver_features = mlx5_vdpa_get_driver_features,
-@@ -3258,6 +3275,7 @@ struct mlx5_vdpa_mgmtdev {
- 	struct vdpa_mgmt_dev mgtdev;
- 	struct mlx5_adev *madev;
- 	struct mlx5_vdpa_net *ndev;
-+	struct vdpa_config_ops vdpa_ops;
- };
- 
- static int config_func_mtu(struct mlx5_core_dev *mdev, u16 mtu)
-@@ -3371,7 +3389,7 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name,
- 		max_vqs = 2;
+ 	if (!src) {
+-		err = vhost_iotlb_add_range(mvdev->cvq.iotlb, start, last, start, VHOST_ACCESS_RW);
++		err = vhost_iotlb_add_range(iotlb, start, last, start, VHOST_ACCESS_RW);
+ 		return err;
  	}
  
--	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
-+	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mgtdev->vdpa_ops,
- 				 MLX5_VDPA_NUMVQ_GROUPS, MLX5_VDPA_NUM_AS, name, false);
- 	if (IS_ERR(ndev))
- 		return PTR_ERR(ndev);
-@@ -3546,6 +3564,10 @@ static int mlx5v_probe(struct auxiliary_device *adev,
- 		MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues) + 1;
- 	mgtdev->mgtdev.supported_features = get_supported_features(mdev);
- 	mgtdev->madev = madev;
-+	mgtdev->vdpa_ops = mlx5_vdpa_ops;
-+
-+	if (!MLX5_CAP_DEV_VDPA_EMULATION(mdev, desc_group_mkey_supported))
-+		mgtdev->vdpa_ops.get_vq_desc_group = NULL;
+ 	for (map = vhost_iotlb_itree_first(src, start, last); map;
+ 		map = vhost_iotlb_itree_next(map, start, last)) {
+-		err = vhost_iotlb_add_range(mvdev->cvq.iotlb, map->start, map->last,
++		err = vhost_iotlb_add_range(iotlb, map->start, map->last,
+ 					    map->addr, map->perm);
+ 		if (err)
+ 			return err;
+@@ -475,9 +475,9 @@ static int dup_iotlb(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *src)
+ 	return 0;
+ }
  
- 	err = vdpa_mgmtdev_register(&mgtdev->mgtdev);
- 	if (err)
-diff --git a/include/linux/mlx5/mlx5_ifc_vdpa.h b/include/linux/mlx5/mlx5_ifc_vdpa.h
-index 9becdc3fa503..b86d51a855f6 100644
---- a/include/linux/mlx5/mlx5_ifc_vdpa.h
-+++ b/include/linux/mlx5/mlx5_ifc_vdpa.h
-@@ -74,7 +74,11 @@ struct mlx5_ifc_virtio_q_bits {
- 	u8    reserved_at_320[0x8];
- 	u8    pd[0x18];
+-static void prune_iotlb(struct mlx5_vdpa_dev *mvdev)
++static void prune_iotlb(struct vhost_iotlb *iotlb)
+ {
+-	vhost_iotlb_del_range(mvdev->cvq.iotlb, 0, ULLONG_MAX);
++	vhost_iotlb_del_range(iotlb, 0, ULLONG_MAX);
+ }
  
--	u8    reserved_at_340[0xc0];
-+	u8    reserved_at_340[0x20];
-+
-+	u8    desc_group_mkey[0x20];
-+
-+	u8    reserved_at_380[0x80];
- };
+ static void destroy_user_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_mr *mr)
+@@ -544,7 +544,7 @@ void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
+ 	for (int i = 0; i < MLX5_VDPA_NUM_AS; i++)
+ 		mlx5_vdpa_destroy_mr(mvdev, mvdev->mr[i]);
  
- struct mlx5_ifc_virtio_net_q_object_bits {
-@@ -141,6 +145,7 @@ enum {
- 	MLX5_VIRTQ_MODIFY_MASK_STATE                    = (u64)1 << 0,
- 	MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_PARAMS      = (u64)1 << 3,
- 	MLX5_VIRTQ_MODIFY_MASK_DIRTY_BITMAP_DUMP_ENABLE = (u64)1 << 4,
-+	MLX5_VIRTQ_MODIFY_MASK_DESC_GROUP_MKEY          = (u64)1 << 14,
- };
+-	prune_iotlb(mvdev);
++	prune_iotlb(mvdev->cvq.iotlb);
+ }
  
- enum {
+ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
+@@ -596,8 +596,8 @@ int mlx5_vdpa_update_cvq_iotlb(struct mlx5_vdpa_dev *mvdev,
+ 
+ 	spin_lock(&mvdev->cvq.iommu_lock);
+ 
+-	prune_iotlb(mvdev);
+-	err = dup_iotlb(mvdev, iotlb);
++	prune_iotlb(mvdev->cvq.iotlb);
++	err = dup_iotlb(mvdev->cvq.iotlb, iotlb);
+ 
+ 	spin_unlock(&mvdev->cvq.iommu_lock);
+ 
 -- 
 2.41.0
 
