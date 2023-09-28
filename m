@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B237B1D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40367B1D6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbjI1NKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 09:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S232347AbjI1NLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 09:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbjI1NKF (ORCPT
+        with ESMTP id S231925AbjI1NLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 09:10:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F46F199;
-        Thu, 28 Sep 2023 06:10:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4134BC433C8;
-        Thu, 28 Sep 2023 13:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695906603;
-        bh=GLVG9ldXyJU6qewPVL4UMRgmAme+5Qm869GRWAEEMoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bJXtpu6sUggzT2YIoRwqecDse1Tdkpvkb8C1qJ0i1WD9bIhbeHqT22lmudzlCxgCV
-         hrJ7qzQzHh7ibpP8bLWIYz6nh+5IxVsmMN9oiVakOWYG4CgdXUQ6aA7jZdMst1Vimd
-         LFP60ebWQ23Pkx8nZcyUr9BlTOvi0LAjtPfZFCyDHt41nOcEY9yFbEDchfXUFSYpzR
-         t3aXo6vGnWmz+nPHJk5VztLwmq1J89XTcQG2ZD4+JRzq06lMqrF9JHQCy8dFwA9nZw
-         vrn57oB6EbSwjzzCKCsrzccz3PL1K933E2Ed4qGQuIoOBVkWoKKvrrXvdKxexoVuCx
-         0SkLYf7cQPGNg==
-Date:   Thu, 28 Sep 2023 14:09:58 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Pavel Machek <pavel@ucw.cz>, Bryan Wu <bryan.wu@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jamie Iles <jamie@jamieiles.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: ledtrig-cpu:: Fix a warning when
- compiling with W=1
-Message-ID: <20230928130958.GH9999@google.com>
-References: <3f4be7a99933cf8566e630da54f6ab913caac432.1695453322.git.christophe.jaillet@wanadoo.fr>
+        Thu, 28 Sep 2023 09:11:36 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936DB180;
+        Thu, 28 Sep 2023 06:11:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4D59421902;
+        Thu, 28 Sep 2023 13:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695906692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sQse0ToDMpwewQdDE7yKhrAOT7WYcaPTU5OIWsPVcgM=;
+        b=OK+lbIcjxBjHWwc61nh64vp9qLYNn8N2SPJO+Ljopy4iTIK7mKgtx745/r7gVy2fTnSy+w
+        Cw5OHq+2UBwxYEDbu6AuetVyc4+0YGN3YXRHG6BQ7zstm+YHoXoIh1b0fFwlBrdK9bF0oy
+        Lwv7fi58Dd5iRz0qJZ9ShzP08QhSktk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695906692;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sQse0ToDMpwewQdDE7yKhrAOT7WYcaPTU5OIWsPVcgM=;
+        b=GYulgtrzvdxvHTDJB7S8xKObEa1aO3wVm0XUj87rLNIekZVmjmpgy1T7euQnoqUlioP3Yq
+        ggOVLLarlNLwIBCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D612A138E9;
+        Thu, 28 Sep 2023 13:11:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wNI3MYN7FWW5ZgAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 28 Sep 2023 13:11:31 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id cc60902a;
+        Thu, 28 Sep 2023 13:11:31 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH] fs: fix possible extra iput() in do_unlinkat()
+Date:   Thu, 28 Sep 2023 14:11:29 +0100
+Message-Id: <20230928131129.14961-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3f4be7a99933cf8566e630da54f6ab913caac432.1695453322.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Sep 2023, Christophe JAILLET wrote:
+Because inode is being initialised before checking if dentry is negative,
+and the ihold() is only done if the dentry is *not* negative, the cleanup
+code may end-up doing an extra iput() on that inode.
 
-> In order to teach the compiler that 'trig->name' will never be truncated,
-> we need to tell it that 'cpu' is not negative.
-> 
-> When building with W=1, this fixes the following warnings:
-> 
->   drivers/leds/trigger/ledtrig-cpu.c: In function ‘ledtrig_cpu_init’:
->   drivers/leds/trigger/ledtrig-cpu.c:155:56: error: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 5 [-Werror=format-truncation=]
->     155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
->         |                                                        ^~
->   drivers/leds/trigger/ledtrig-cpu.c:155:52: note: directive argument in the range [-2147483648, 7]
->     155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
->         |                                                    ^~~~~~~
->   drivers/leds/trigger/ledtrig-cpu.c:155:17: note: ‘snprintf’ output between 5 and 15 bytes into a destination of size 8
->     155 |                 snprintf(trig->name, MAX_NAME_LEN, "cpu%d", cpu);
->         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Fixes: 8f88731d052d ("led-triggers: create a trigger for CPU activity")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/leds/trigger/ledtrig-cpu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Fixes: b18825a7c8e3 ("VFS: Put a small type field into struct dentry::d_flags")
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
+Hi!
 
-I made the subject line less generic and applied it, thanks.
+I was going to also remove the 'if (inode)' before the 'iput(inode)',
+because 'iput()' already checks for NULL anyway.  But since I probably
+wouldn't have caught this bug if it wasn't for that 'if', I decided to
+keep it there.  But I can send v2 with that change too if you prefer.
 
--- 
-Lee Jones [李琼斯]
+Cheers,
+--
+Luís
+
+ fs/namei.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 567ee547492b..156a570d7831 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -4386,11 +4386,9 @@ int do_unlinkat(int dfd, struct filename *name)
+ 	if (!IS_ERR(dentry)) {
+ 
+ 		/* Why not before? Because we want correct error value */
+-		if (last.name[last.len])
++		if (last.name[last.len] || d_is_negative(dentry))
+ 			goto slashes;
+ 		inode = dentry->d_inode;
+-		if (d_is_negative(dentry))
+-			goto slashes;
+ 		ihold(inode);
+ 		error = security_path_unlink(&path, dentry);
+ 		if (error)
