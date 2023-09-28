@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EAF7B175F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A71B7B1766
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjI1JaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S231624AbjI1Jcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1JaG (ORCPT
+        with ESMTP id S229445AbjI1Jcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:30:06 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6587B94;
-        Thu, 28 Sep 2023 02:30:05 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38S9TfQg119815;
-        Thu, 28 Sep 2023 04:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695893381;
-        bh=g+Okr5QpQDgpPh2snfByuM6vFuk+PcZyuirCEPx3X6I=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=axMTn5C+we8O2X+PBwJ72/Y4ROFypb8WMOgjsAlwGunpnBRFHs1V1RGLNLYjP6bCW
-         EsvCd5GVNxAAzq2nyJzJVCAAwbOKMQT+oHlz7BuSppTAAFekTpVPCoxRvStUnNlL/H
-         62JSbodfpyHW2dnK/juyahOTihvVH6ZJQd0sW2rE=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38S9TfDQ015673
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Sep 2023 04:29:41 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
- Sep 2023 04:29:41 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 28 Sep 2023 04:29:41 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38S9TeCA093668;
-        Thu, 28 Sep 2023 04:29:40 -0500
-Date:   Thu, 28 Sep 2023 14:59:39 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Muhammed Efe Cetin <efectn@6tel.net>
-CC:     <linux-rockchip@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <heiko@sntech.de>, <sebastian.reichel@collabora.com>,
-        <jonas@kwiboo.se>, <megi@xff.cz>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: arm: rockchip: Add Orange Pi 5 board
-Message-ID: <20230928092939.lfvfqqiii43hrmyg@dhruva>
-References: <cover.1692632346.git.efectn@6tel.net>
- <0281d757b4cbcf2092167bdcf3d112e330fe6b92.1692632346.git.efectn@6tel.net>
+        Thu, 28 Sep 2023 05:32:50 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4502126;
+        Thu, 28 Sep 2023 02:32:48 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38S5eNJc014947;
+        Thu, 28 Sep 2023 04:32:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=GMIOHLA+1cwj2SUxHf/5rdlhotu8odxf5qrGWEkUgS0=; b=
+        XAhqokCGpY59R7SgHNGNlLx9ZmsWtNVUUgHPxHaIekl2d2Cs5sLOVVAwbPvAeTIj
+        m3/Ylhg/GrXpC8tkUCTljqDwJHZFN6gtQ78Q/9ndvmcoYZtdBmQbYAinNoyb0+x0
+        RVvyORUYqRqBPpCqD3bSg9rLGGlqcHt0J1kzpWp/mmSwoAZuXv1+TUIfKmOt6rmG
+        5N73Ez3+nBU2/GotEoka9JSdekA7aabSgHs5UFHlOC//Zg5G4qc/VpGVIzDHJCs7
+        7i2ZT30Fftfvp6e4wJaUuKn26Gu5jnrTZVSc7eGjH0sXR4y+BuNN1PtheHs8IBRp
+        +4GAGifeLoyQtbSE7sqwtg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t9vejdvgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 04:32:37 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 28 Sep
+ 2023 10:32:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 28 Sep 2023 10:32:36 +0100
+Received: from [198.90.251.13] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.13])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 435D911AB;
+        Thu, 28 Sep 2023 09:32:36 +0000 (UTC)
+Message-ID: <8fec7a59-5fc0-a543-8b87-f4b2a9232aa9@opensource.cirrus.com>
+Date:   Thu, 28 Sep 2023 10:32:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0281d757b4cbcf2092167bdcf3d112e330fe6b92.1692632346.git.efectn@6tel.net>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] kunit: debugfs: Handle errors from alloc_string_stream()
+To:     <brendan.higgins@linux.dev>, <davidgow@google.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+References: <20230927165058.29484-1-rf@opensource.cirrus.com>
+Content-Language: en-US
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230927165058.29484-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: uT0Cs6wX9Q8nbE_5sRkJmBgUpgh9Tp0F
+X-Proofpoint-ORIG-GUID: uT0Cs6wX9Q8nbE_5sRkJmBgUpgh9Tp0F
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 21, 2023 at 18:47:57 +0300, Muhammed Efe Cetin wrote:
-> Add Orange Pi 5 SBC from Xunlong.
+On 27/09/2023 17:50, Richard Fitzgerald wrote:
+> In kunit_debugfs_create_suite() give up and skip creating the debugfs
+> file if any of the alloc_string_stream() calls return an error or NULL.
+> Only put a value in the log pointer of kunit_suite and kunit_test if it
+> is a valid pointer to a log.
 > 
-> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> This prevents the potential invalid dereference reported by smatch:
+> 
+>   lib/kunit/debugfs.c:115 kunit_debugfs_create_suite() error: 'suite->log'
+> 	dereferencing possible ERR_PTR()
+>   lib/kunit/debugfs.c:119 kunit_debugfs_create_suite() error: 'test_case->log'
+> 	dereferencing possible ERR_PTR()
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: 05e2006ce493 ("kunit: Use string_stream for test log")
 > ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+>   lib/kunit/debugfs.c | 29 ++++++++++++++++++++++++-----
+>   1 file changed, 24 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> index ca5389862887..b9649e27bc82 100644
-> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> @@ -877,6 +877,11 @@ properties:
->                - xunlong,orangepi-r1-plus-lts
->            - const: rockchip,rk3328
->  
-> +      - description: Xunlong Orange Pi 5
-> +        items:
-> +          - const: xunlong,orangepi-5
-> +          - const: rockchip,rk3588s
+> diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+> index 270d185737e6..73075ca6e88c 100644
+> --- a/lib/kunit/debugfs.c
+> +++ b/lib/kunit/debugfs.c
+> @@ -109,14 +109,27 @@ static const struct file_operations debugfs_results_fops = {
+>   void kunit_debugfs_create_suite(struct kunit_suite *suite)
+>   {
+>   	struct kunit_case *test_case;
+> +	struct string_stream *stream;
+>   
+> -	/* Allocate logs before creating debugfs representation. */
+> -	suite->log = alloc_string_stream(GFP_KERNEL);
+> -	string_stream_set_append_newlines(suite->log, true);
+> +	/*
+> +	 * Allocate logs before creating debugfs representation.
+> +	 * The log pointer must be NULL if there isn't a log so only
+> +	 * set it if the log stream was created successfully.
+> +	 */
+> +	stream = alloc_string_stream(GFP_KERNEL);
+> +	if (IS_ERR_OR_NULL(stream))
+> +		goto err;
+
+This can be a return. Nothing has been created at this point so
+there is nothing to clean up.
+I'll send a V2.
+
 > +
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
->        - description: Zkmagic A95X Z2
->          items:
->            - const: zkmagic,a95x-z2
-> -- 
-> 2.41.0
-> 
-> 
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+> +	string_stream_set_append_newlines(stream, true);
+> +	suite->log = stream;
+>   
+>   	kunit_suite_for_each_test_case(suite, test_case) {
+> -		test_case->log = alloc_string_stream(GFP_KERNEL);
+> -		string_stream_set_append_newlines(test_case->log, true);
+> +		stream = alloc_string_stream(GFP_KERNEL);
+> +		if (IS_ERR_OR_NULL(stream))
+> +			goto err;
+> +
+> +		string_stream_set_append_newlines(stream, true);
+> +		test_case->log = stream;
+>   	}
+>   
+>   	suite->debugfs = debugfs_create_dir(suite->name, debugfs_rootdir);
+> @@ -124,6 +137,12 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+>   	debugfs_create_file(KUNIT_DEBUGFS_RESULTS, S_IFREG | 0444,
+>   			    suite->debugfs,
+>   			    suite, &debugfs_results_fops);
+> +	return;
+> +
+> +err:
+> +	string_stream_destroy(suite->log);
+> +	kunit_suite_for_each_test_case(suite, test_case)
+> +		string_stream_destroy(test_case->log);
+>   }
+>   
+>   void kunit_debugfs_destroy_suite(struct kunit_suite *suite)
