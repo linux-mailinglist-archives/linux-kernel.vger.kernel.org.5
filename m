@@ -2,143 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A7D7B17EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874D07B17E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjI1Jzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        id S230303AbjI1JzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjI1Jzq (ORCPT
+        with ESMTP id S229713AbjI1JzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:55:46 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3C0122
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:55:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QHujYAuLqXemt5Xh9HgfOLuxXnNv0V6b2uV4eeHeTkN0GXrp6AtQ9994N0yOnIx0/YGb71j/g6STERRL/x0BrKjK7yrCk0JGRfMuGOh9BpLz0U0HsV2S4AtLypOAQlyucePTx4o9SFFq/kf/V24K2Vbq5QL1e+/Kh8yzR+FtYh8v0GeR9JFeZ68cAnVAdTrzn519olG+BJt2HnvxQH7muPURx1QeeyhZREeARGIgT4FLHDlfPw43Ra0tbBhIxLgSzNS/li+NO8eEjoyZMCyPiE9PtkSZNHYSQ6jdR+ClL9u/59TBmuHEyt48MF9iWUU7zlfryHqK+PKsBquHs5oApw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=coL7RUfS8sMy70WefR4M5Sy2YIbfcNEYcGImBuWMpS8=;
- b=KC+mIgoiWYmJvjnO8MiW2NQmfyeZdPCmnjToAt28osNbOqB4eA8BuQJR0kMp0zww8Ntgs/BTiS/n7upWA8LCEVq/CKXDkQkTGDyvKbGvkU1Nl64gl3bVHsttocnGNrt6LgPvT/bxLjRgLmuMhFtiENSRKzhDHuFF2a6NO0ZX1wJxzUv0yBz8ja1UhVgDUYqV0oPXY3wXHNTBPYEAO7Lr2p3j3ynTqFgwLPoh8637B1QtqmHqxQjBV7ChBQYe9RfWMqyU1NX67HpBDa5gr0mTexZOVgaIKb7vOJs3LiVfzlAxc7BiMrh4zVCIiKM834HNzvA4bFE3Slql4LjXNup1cQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=coL7RUfS8sMy70WefR4M5Sy2YIbfcNEYcGImBuWMpS8=;
- b=HKvsOdmLfswh/cbqUU+J79/5w3Pr5ETmZFgGXBRZeslcK/IB+GqtOdDzoRGR6rkSHuh8WOAMeSKaQPrHBFiJPoFvw39RyalITcFi0alh0h/O9JJmj8DZFgKUccl3gCKpal3Tui3D8GCqQqvSoI3n/q48Oe3oRAm4QdnyxLNDWro=
-Received: from SJ0PR05CA0030.namprd05.prod.outlook.com (2603:10b6:a03:33b::35)
- by MW5PR12MB5621.namprd12.prod.outlook.com (2603:10b6:303:193::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Thu, 28 Sep
- 2023 09:55:38 +0000
-Received: from CO1PEPF000044F2.namprd05.prod.outlook.com
- (2603:10b6:a03:33b:cafe::bd) by SJ0PR05CA0030.outlook.office365.com
- (2603:10b6:a03:33b::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.12 via Frontend
- Transport; Thu, 28 Sep 2023 09:55:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F2.mail.protection.outlook.com (10.167.241.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 28 Sep 2023 09:55:37 +0000
-Received: from rtg-Artic.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 28 Sep
- 2023 04:55:07 -0500
-From:   Arvind Yadav <Arvind.Yadav@amd.com>
-To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
-        <shashank.sharma@amd.com>, <Felix.Kuehling@amd.com>,
-        <Mukul.Joshi@amd.com>, <Xinhui.Pan@amd.com>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        Arvind Yadav <Arvind.Yadav@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset for gfx8
-Date:   Thu, 28 Sep 2023 15:24:27 +0530
-Message-ID: <20230928095427.4337-2-Arvind.Yadav@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230928095427.4337-1-Arvind.Yadav@amd.com>
-References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
+        Thu, 28 Sep 2023 05:55:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E4D3126
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:55:03 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C978F1FB;
+        Thu, 28 Sep 2023 02:55:41 -0700 (PDT)
+Received: from [10.34.100.121] (e126645.nice.arm.com [10.34.100.121])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59F913F59C;
+        Thu, 28 Sep 2023 02:55:01 -0700 (PDT)
+Message-ID: <4534b7b5-7127-27d9-8264-6703497dcb81@arm.com>
+Date:   Thu, 28 Sep 2023 11:54:57 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F2:EE_|MW5PR12MB5621:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8be95dfb-3f69-4a60-8698-08dbc0091147
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mOhFXgFIE97bwJHTjFM5cc1ZYZ3NXoLmvpVODqIItJMHbdDEDNC9Wp6IqDnMwoXYszX8Vy5POXIM5FZCofFiONdIeZK3+PR/AKN+zELSDqEsCgliQiXBsWqoiK3yGcnBIavMWqJKzMzOEyMbDp0kUuEFyF7DCJljAdnzJowTw6SygIw8V/S4szZAkWTxKxqb/Bhee2cPv5NofdH41u2SfTRR1FieRwkHdIyjsW3ucXR23UQejDj3xtfjk7kA+ytds7vR/X+Oy1ZaRXHuZO5R6cw0fVDMoTWM3BaSytpbYlhzHj4UIgZgScgmU5k9cN+EOAyvBzUG5rGkPjT0pY8pofazjHSJZFxsZN7xnrk5jSEg78WtJf0D5C9zsuUVq6H3Jv8dyB+bM54oNxIsQhYrcRso52dKNftsZcE7V+1haZopsPFrS1/buFmH2YxvWQbaRu6vJV/XjwLV14JIQDBHlbcKSaTWRaoEWzvACt9C9EB5VvO0OO2c35O4d2aDnBSAboiMcik+d/XtI72Ul/e/H0UmJsUHHntTfMyj0vrQMoWe+n48z/I8F21li6yU5X9tn0LF0ZSbtmY0/DiMc6PIcWoY8bsb7UKw2uiKHh4lyn1vkwM6ze+r9KUEMpvsL5/bf1KHh6wniaBu2pblVdOvuD+fAgQV1ePkXVZgymtg1+p4xHp1tCtPPGZ7JLBkfxsDysoW1g7whsn5DzDkgCrhQOsGC7sytj0MP3WtkGTlVVc9ucFEOkp//FSN0bnAgQ9D6KsuaOX6qq6owcb74r7wWg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(7696005)(478600001)(5660300002)(86362001)(40480700001)(70586007)(316002)(41300700001)(6666004)(54906003)(110136005)(70206006)(356005)(2616005)(82740400003)(8936002)(26005)(81166007)(16526019)(426003)(36756003)(36860700001)(336012)(47076005)(83380400001)(8676002)(1076003)(2906002)(4326008)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 09:55:37.8633
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8be95dfb-3f69-4a60-8698-08dbc0091147
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F2.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR12MB5621
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] sched/topology: change behaviour of sysctl
+ sched_energy_aware based on the platform
+Content-Language: en-US
+From:   Pierre Gondois <pierre.gondois@arm.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        pauld@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org, vschneid@redhat.com, qperret@google.com
+References: <20230926100046.405188-1-sshegde@linux.vnet.ibm.com>
+ <caab4d10-3ed6-faa7-5435-3086f3878537@arm.com>
+ <d054e362-4a11-ee36-ddb6-870d88278e78@linux.vnet.ibm.com>
+ <8ac1576c-909b-ec6b-930d-0683ca288bf9@arm.com>
+ <46353945-fced-9b69-b334-3b7ae50c957c@linux.vnet.ibm.com>
+ <a226058c-5a14-fc57-c371-7db3d96f9b20@arm.com>
+In-Reply-To: <a226058c-5a14-fc57-c371-7db3d96f9b20@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to adjust the absolute doorbell offset
-against the doorbell id considering the doorbell
-size of 32/64 bit.
 
-v2:
-- Addressed the review comment from Felix.
 
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+On 9/28/23 11:25, Pierre Gondois wrote:
+> Hello Shrikanth, Dietmar,
+> 
+> On 9/27/23 19:08, Shrikanth Hegde wrote:
+>>
+>>
+>> On 9/27/23 6:44 PM, Dietmar Eggemann wrote:
+>>> Ah, BTW s/quentin.perret@arm.com/qperret@google.com
+>>>
+>>> On 27/09/2023 10:14, Shrikanth Hegde wrote:
+>>>>
+>>>>
+>>>> On 9/27/23 2:59 AM, Dietmar Eggemann wrote:
+>>>>> On 26/09/2023 12:00, Shrikanth Hegde wrote:
+>>>
+>>> [...]
+>>>
+>>>>>> At present, though platform doesn't support EAS, this sysctl returns 1
+>>>>>> and it ends up calling rebuild of sched domain on write to 1 and
+>>>>>
+>>>>> sched domains are not rebuild in this case, i.e.
+>>>>> partition_sched_domains_locked() does not call detach_destroy_domains()
+>>>>> or build_sched_domains(). Only build_perf_domains() is called which
+>>>>> bails out if !sysctl_sched_energy_aware or one of the EAS conditions is
+>>>>> not true.
+>>>>>
+>>>>
+>>>> ok. that's because it goes to match1 and match2 right?
+>>>
+>>> yes.
+>>>
+>>> [...]
+>>>
+>>>>>> @@ -231,6 +289,14 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>>>>>>    		return -EPERM;
+>>>>>>
+>>>>>>    	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>>>>>> +	if (!sched_is_eas_possible(cpu_active_mask)) {
+>>>>>
+>>>>> This is using `cpu_active_mask` so EAS can only be disabled system-wide.
+>>>>>
+>>>>> So I experimented with an exclusive cpuset setup creating a symmetric
+>>>>> (cs1) and an asymmetric (cs2) island on my Juno with its cpumask = [l B
+>>>>> B l l l] (l - little CPU, B - Big CPU).
+>>>>>
+>>>>> root@juno:~# cd /sys/fs/cgroup/cpuset
+>>>>> root@juno:/sys/fs/cgroup/cpuset# mkdir cs1
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs1/cpuset.cpu_exclusive
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs1/cpuset.mems
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 4,5 > cs1/cpuset.cpus
+>>>>> root@juno:/sys/fs/cgroup/cpuset# mkdir cs2
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs2/cpuset.cpu_exclusive
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs2/cpuset.mems
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0-3 > cs2/cpuset.cpus
+>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cpuset.sched_load_balance
+>>>>>
+>>>>> [ 3021.761278] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
+>>>>> cpus=0,3-5 nr_pstate=5 }
+>>>>>
+>>>>> root@juno:~# echo 0 > /proc/sys/kernel/sched_energy_aware
+>>>>>
+>>>>> log messages:
+>>>>> ...
+>>>>> [ 3143.538583] rd 4-5: Disabling EAS
+>>>>> [ 3143.549569] rd 0-3: Disabling EAS
+>>>>> [ 3143.560681] sched_energy_set: stopping EAS
+>>>>> ...
+>>>>>
+>>>>> root@juno:~# echo 1 > /proc/sys/kernel/sched_energy_aware
+>>>>>
+>>>>> log messages:
+>>>>> ...
+>>>>> [ 3223.277521] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
+>>>>> cpus=0,3-5 nr_pstate=5 }
+>>>>> [ 3223.293409] sched_energy_set: starting EAS
+>>>>>
+>>>>> Seems still to work correctly.
+>>>>
+>>>> I see that can be a issue. using first cpu here check to asymmetric cpu capacity.
+>>>> It would have worked here, since the first group had asymmetry. ( l B B l ).
+>>>> It wouldn't have worked if the first group had like ( l l ) and second group has ( l B B l )
+>>>
+>>> Yeah, that's true.
+>>>
+>>>     sched_is_eas_possible(const struct cpumask *cpu_mask)
+>>>
+>>>       !per_cpu(sd_asym_cpucapacity, cpumask_first(cpu_mask));
+>>>
+>>> cpusets cs1=[0,5] and cs2=[1-4] as such an example.
+>>>
+>>
+>> right.
+>>
+>>>
+>>>> Instead of cpu_active_mask, I can make use of ndoms_cur and doms_cur[i] logic to
+>>>> traverse through possible doms, and if none of the domains have asymmetric cpu capacity
+>>>> return false.  Does that look right?
+>>>
+>>>     rebuild_sched_domains()
+>>>
+>>>       rebuild_sched_domains_locked()
+>>>
+>>>         ndoms = generate_sched_domains(&doms, &attr)
+>>>
+>>> You would need generate_sched_domains() in sched_energy_aware_handler()?
+>>>
+>>
+>> clearly I didnt think through this. ndoms_cur and doms_cur are updated at the end.
+>> So If EAS is possible at boot, this would fail.
+>>
+>>
+>> What  sched_is_eas_possible needs is if there is asymmetric cpu topology.
+>> Simpler loop of all CPU's and checking if there any of them have sd_asym_cpucapacity might do,
+>> though it goes through all CPU's, Since these functions are not in hot path
+>> So it should not affect any performance. Something like below would work?
+>>
+>> 	bool any_asym_capacity = false;
+>>
+>>           /* EAS is enabled for asymmetric CPU capacity topologies. */
+>>           for_each_cpu(i, cpu_mask) {
+>>                   if (per_cpu(sd_asym_cpucapacity, i)) {
+>>                           any_asym_capacity = true;
+>>                           break;
+>>                   }
+>>           }
+>>           if (!any_asym_capacity) {
+>>                   if (sched_debug()) {
+>>                           pr_info("rd %*pbl: Checking EAS, CPUs do not have asymmetric capacities\n",
+>>                                   cpumask_pr_args(cpu_mask));
+>>                   }
+>>                   return false;
+>>           }
+>>
+> 
+> FYIW I could reproduce the issue mentioned above, and the suggested bit
+> seems to solve it.
+> 
+>>
+>>
+>>>>> [...]
+>>>>>
+>>>>>> @@ -458,6 +487,8 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
+>>>>>>    	return !!pd;
+>>>>>>
+>>>>>>    free:
+>>>>>> +	if (sched_debug())
+>>>>>> +		pr_warn("rd %*pbl: Disabling EAS", cpumask_pr_args(cpu_map));
+>>>>>
+>>>>> Shouldn't this be used in condition `if (!sysctl_sched_energy_aware)`?
+>>>>> Otherwise we have 2 warnings when the other conditions which leads to
+>>>>> `goto free` aren't met.
+>>>> Since sched_energy_set has the info messages about start and stop of EAS, maybe
+>>>> this debug is not needed. Will remove it. Doing it only `if (!sysctl_sched_energy_aware)`
+>>>
+>>> OK.
+>>>
+>>>> also doesn't seem correct, as calling free in this function would free the perf_domains.
+>>>
+>>> But !sched_is_eas_possible() also does `goto free` and in there we we
+>>> emit pr_info's indicating why EAS isn't possible right now.
+>>>
+>>> When issuing a:
+>>>
+>>> # echo 0 > /proc/sys/kernel/sched_energy_aware
+>>>
+>>> we would see in the logs:
+>>>
+>>> ...
+>>> [  416.325324] rd 0-5: sysctl_sched_energy_aware is N   <-- (*)
+>>> [  416.337844] sched_energy_set: stopping EAS
+>>> ...
+>>>
+>>> but maybe (*) is not necessary ...
+> 
+> I m not sure I understand 100% the point, but it seems to me that when
+> changing sysctl_sched_energy_aware's value, either:
+> - EAS is not possible, and sched_is_eas_possible() will output the reason why
+>     (i.e. "Checking EAS, [...]")
+> - EAS was deactivated by the user, and it is possible to check the value of
+>     sysctl_sched_energy_aware. So there would be no need to have an additional
+>     message "Checking EAS, sysclt sched_energy_aware set to N"
+> 
+> When build_perf_domains() is called while rebuilding the sched domains, it is also
+> possible to check sched_energy_aware's value and understand why EAS is not enabled.
+> 
+>>
+>> ok. I think we can add similar info message in if(!sysctl_sched_energy_aware) like below?
+>> Would that be enough?
+>>
+>>           if (!sysctl_sched_energy_aware) {
+>>                   if (sched_debug()) {
+>>                           pr_info("rd %*pbl: Checking EAS, sysclt sched_energy_aware set to N\n",
+>>                                   cpumask_pr_args(cpu_map));
+>>                   }
+> 
+> (No need for brackets here, just in case)
+> 
+>>                   goto free;
+>>           }
+>>
+>> and remove the below one.
+>>           if (sched_debug())
+>>                   pr_warn("rd %*pbl: Disabling EAS", cpumask_pr_args(cpu_map));
+>>
+>>
+>> So there will be these "Checking EAS" and if possible, "starting EAS" or "stopping EAS" message.
+> 
+> 
+> I will rebase the patch removing the EM complexity and check it/resend it,
+> like this the 2 patches could go together:
+> https://lore.kernel.org/lkml/20221121094336.3250917-1-pierre.gondois@arm.com/
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-index 0d3d538b64eb..c54c4392d26e 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-@@ -407,7 +407,14 @@ static int allocate_doorbell(struct qcm_process_device *qpd,
- 
- 	q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev->adev,
- 								  qpd->proc_doorbells,
--								  q->doorbell_id);
-+								  0);
-+
-+	/* Adjust the absolute doorbell offset against the doorbell id considering
-+	 * the doorbell size of 32/64 bit.
-+	 */
-+	q->properties.doorbell_off += q->doorbell_id *
-+				      dev->kfd->device_info.doorbell_size / 4;
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+The patch actually seems to apply cleanly on v6.6-rc3, and the complexity of
+find_energy_efficient_cpu() seems to be the same as what it was when the patch
+was sent, so I believe you can:
+- Rebase your patch on top of it
+- Provide a pointer to it in the changelog to mention the dependency
+- Remove this bit in the commit message of your patch:
+"It takes most of the cases into account except one where EM complexity is
+too high as the code was bit tricky to separate that."
 
+Regards,
+Pierre
