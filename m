@@ -2,38 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B6A7B1E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC3B7B1E33
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbjI1NZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 09:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S231852AbjI1N0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 09:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbjI1NZk (ORCPT
+        with ESMTP id S230420AbjI1N0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 09:25:40 -0400
+        Thu, 28 Sep 2023 09:26:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723B7180;
-        Thu, 28 Sep 2023 06:25:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFCDDC433C8;
-        Thu, 28 Sep 2023 13:25:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB60319B;
+        Thu, 28 Sep 2023 06:26:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B9FDC433C8;
+        Thu, 28 Sep 2023 13:25:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695907538;
-        bh=wxQRHNLGhumqDazMRCvmQJ6shznHq3312W4lUsKa1xw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XbOLqBmc3RLPa8hgZ6KFTJ3vbdcs7n2cCkgP/Zq9Lyb6ztw3f4l9tOg4j2lcqscnG
-         1IYJxBpSsHwDvM4URSVLeWWeWMpaqnMDu72vOBeNde3gLOpRfoqFmknEtZbxACUwyI
-         ULcWh7YE+650OhKmKU7KQLMSpA0I6ll/tLssGW2O1Ao7Kyc+6wLqBK4fdf2BHEg7qS
-         Sy9JCQOScgWOQq0rLaizKKLVsBF9S0kgp5opw/zj3ex7JpZdv6t61Kjx7YIL0ILIyk
-         L1LpEBlpowlbvzQncYcLMEyueXT1h0pzW/Wz0wsuoF3ixdZ5OSGln7jFxLgrs7kokP
-         YvYxrvwUgf6aQ==
-Message-ID: <eec4dc5364587e55e6564d1cb3b3c40e.broonie@kernel.org>
-From:   Mark Brown <broonie@kernel.org>
+        s=k20201202; t=1695907560;
+        bh=Hw1kdCJHTUKyVQI8cwPwgA89Zea2YP/j5S8sNYlfyaA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dblYqe+yhoU6HknPuT1Li7tqtIHqkPT31Fqgr9cM035dTtSl+V/SnVA2/hLqrVpL0
+         1A+90K64uvNwVjYEMnbgsKqZvysTvJsMZq95Qqd+f7F9/M5forItau/PMFJBSv3qfe
+         /s51Fc3utpAfHRRTkZ6XQ/3eKy812zBXIRMg3FKmJBF6BvHf9SCxbynp/nnUaUxYXV
+         PS8WG1Yh3AheIdqxO06HfN+24LUrexjlE4J2EnsrgZ2r8ZS3tvsZFfH18tw3pLak3H
+         ed2WmB/sYUtWYJEMozJ5EfQvBUl/NhVMpMoWTUtBixZG1uNcaumlL0hcPsFfxDi1XX
+         OetJ6nyiXiqnA==
+Date:   Thu, 28 Sep 2023 15:25:56 +0200
+From:   Christian Brauner <brauner@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v6.6-rc3
-Date:   Thu, 28 Sep 2023 15:25:29 +0200
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+Message-ID: <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner>
+References: <20230926162228.68666-1-mjguzik@gmail.com>
+ <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+ <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
+ <20230927-kosmetik-babypuppen-75bee530b9f0@brauner>
+ <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
+ <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+ <ZRR1Kc/dvhya7ME4@f>
+ <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -43,36 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 4221a2bec2189275f3f49492a73221498ae6d131:
+> Which all seems to be the case already, so with the put_cred() not
+> needing the RCU delay, I thing we really could do this patch (note:
 
-  spi: Merge up old fix (2023-09-19 13:17:52 +0100)
+So I spent a good chunk of time going through this patch.
 
-are available in the Git repository at:
+Before file->f_cred was introduced file->f_{g,u}id would have been
+accessible just under rcu protection. And file->f_cred->f_fs{g,u}id
+replaced that access. So I think the intention was that file->f_cred
+would function the same way, i.e., it would be possible to go from file
+to cred under rcu without requiring a reference.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.6-rc3
+But basically, file->f_cred is the only field that would give this
+guarantee. Other pointers such as file->f_security
+(security_file_free()) don't and are freed outside of the rcu delay
+already as well.
 
-for you to fetch changes up to 1a8196a93e493c0a50b800cb09cef60b124eee15:
+This patch means that if someone wants to access file->f_cred under rcu
+they now need to call get_file_rcu() first.
 
-  spi: spi-gxp: BUG: Correct spi write return value (2023-09-27 17:06:36 +0200)
+Nothing has relied on this rcu-only file->f_cred quirk/feature until now
+so I think it's fine to change it.
 
-----------------------------------------------------------------
-spi: Fixes for v6.6
+Does that make sense?
 
-A small set of device specific fixes, the most major one is for the GXP
-driver which would probably have been confusing some callers with
-returning the length rather than 0 on successful writes.
-
-----------------------------------------------------------------
-Charles Kearney (1):
-      spi: spi-gxp: BUG: Correct spi write return value
-
-Charles Keepax (1):
-      spi: cs42l43: Remove spurious pm_runtime_disable
-
-Fabio Estevam (1):
-      dt-bindings: spi: fsl-imx-cspi: Document missing entries
-
- Documentation/devicetree/bindings/spi/fsl-imx-cspi.yaml | 7 +++++++
- drivers/spi/spi-cs42l43.c                               | 1 -
- drivers/spi/spi-gxp.c                                   | 2 +-
- 3 files changed, 8 insertions(+), 2 deletions(-)
+Please take a look at:
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs.misc&id=e3f15ee79197fc8b17d3496b6fa4fa0fc20f5406
+for testing.
