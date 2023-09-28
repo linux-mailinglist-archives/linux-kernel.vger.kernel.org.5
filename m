@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CE77B2654
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A61E7B2656
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjI1UNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
+        id S232031AbjI1UOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1UNh (ORCPT
+        with ESMTP id S230246AbjI1UOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:13:37 -0400
+        Thu, 28 Sep 2023 16:14:03 -0400
 Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4DD180;
-        Thu, 28 Sep 2023 13:13:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC63194;
+        Thu, 28 Sep 2023 13:14:01 -0700 (PDT)
 Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
         by finn.localdomain with esmtp (Exim 4.93)
         (envelope-from <tharvey@gateworks.com>)
-        id 1qlxO6-009HeF-EL; Thu, 28 Sep 2023 20:13:30 +0000
+        id 1qlxOW-009Hee-Iu; Thu, 28 Sep 2023 20:13:56 +0000
 From:   Tim Harvey <tharvey@gateworks.com>
 To:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -30,9 +30,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v2] arm64: dts: imx8mm-venice-gw73xx: add TPM device
-Date:   Thu, 28 Sep 2023 13:13:28 -0700
-Message-Id: <20230928201328.1945960-1-tharvey@gateworks.com>
+Subject: [PATCH v2] arm64: dts: imx8mp-venice-gw73xx: add TPM device
+Date:   Thu, 28 Sep 2023 13:13:54 -0700
+Message-Id: <20230928201354.1946035-1-tharvey@gateworks.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -51,14 +51,14 @@ Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
 v2: removed uncessary properties
 ---
- .../arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-index 4f859d0fec69..d79fe9f62b95 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-@@ -104,8 +104,15 @@ reg_wifi_en: regulator-wifi-en {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
+index 48a284478468..b0d42b18c5ce 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
+@@ -95,8 +95,15 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
  &ecspi2 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_spi2>;
@@ -74,15 +74,7 @@ index 4f859d0fec69..d79fe9f62b95 100644
 +	};
  };
  
- &gpio1 {
-@@ -361,6 +368,7 @@ MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0xd6
- 			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0xd6
- 			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0xd6
- 			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0xd6
-+			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0xd6
- 		>;
- 	};
- 
+ &gpio4 {
 -- 
 2.25.1
 
