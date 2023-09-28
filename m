@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD7D7B25B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB84F7B25B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjI1TMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S231919AbjI1TOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbjI1TMf (ORCPT
+        with ESMTP id S229478AbjI1TOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:12:35 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E4C1B2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:12:30 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59bf1dde73fso170704557b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1695928350; x=1696533150; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aPa0ErQF3fDxXQHa7m7tWTHEw6Kx2LmY0ex/FSA/iQs=;
-        b=E6sdIGReA0N/tSvIeLtLw5A76OAsGnJ5wgdJLkKmPgq9D4sma5A0dmDG275I3SNmCd
-         pfEP61X8QpfV5QSj0EFZ1UX2tl3gvISyWuI4cFoe/oTtOlRBjRTat/SLTF5F4kdog07o
-         fTRkcvDefdVzpPKwnGMpsUtD0ddfMD4R6Qv/Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695928350; x=1696533150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aPa0ErQF3fDxXQHa7m7tWTHEw6Kx2LmY0ex/FSA/iQs=;
-        b=gXY0+Z7N9bHxjFsODDlqLqbJOfcUkXr2ShBHStOV9yQw83aiBz5sv6JEGEKF2NlV9h
-         0uPrr1o2uFx6F7TmUFalXr12fbO778tM6ihFFBa4fYqTeED6kvsvlqzXuR8JbgbsLM9K
-         MiryAgClzF3JNpGdx2H8MSAJFEkslcADmJVX7KuSw0fJAxByOVCQprgtMv1bEEMdSSwi
-         1DvHdN/17DrATDa59+Su9Yzr2MU6ZKmI/r+c2QqyuczHYYWNRMsnEtiRK8adW2wVvLHn
-         YQWnoe/5hcZQ2mQqC1bwqVpNaCUEtggXdgA/mhpUyLlOh+fnLkK6feM8U1h5qYDOOe1F
-         JpwQ==
-X-Gm-Message-State: AOJu0YyOMaTZV37O9mGy0pWoQ0XU71vTDeiad7ApZAX+PCPD412jIK47
-        5Kr/xqiNwajZVxtThKr9GSFUfw==
-X-Google-Smtp-Source: AGHT+IGPwgEvuDu4xj7ASqQ85LZ8y5lOYw28uselEYoiklqGHmZmYw1o958hUhSVlQbLtGGSIMTwbg==
-X-Received: by 2002:a25:4255:0:b0:d85:e0d3:b491 with SMTP id p82-20020a254255000000b00d85e0d3b491mr1995811yba.32.1695928349874;
-        Thu, 28 Sep 2023 12:12:29 -0700 (PDT)
-Received: from meerkat.local ([209.226.106.110])
-        by smtp.gmail.com with ESMTPSA id p9-20020a0cf549000000b0065b11053445sm3589952qvm.54.2023.09.28.12.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 12:12:29 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 15:12:20 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Subject: Re: [PATCH v2 1/2] get_maintainer: add patch-only keyword-matching
-Message-ID: <20230928-revisable-custard-bd7d72@meerkat>
-References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
- <20230928-get_maintainer_add_d-v2-1-8acb3f394571@google.com>
- <bf9200e2fc9c55187f2b7661a3b5043f56b0deff.camel@perches.com>
- <CAFhGd8o8ihYeML6WpiE1-=eeXC+k1yzSEdA-WJXjwB-f9VcHoA@mail.gmail.com>
- <a3959ab9a9d44444c06ffd0f390cf95dc6bc7f6e.camel@perches.com>
+        Thu, 28 Sep 2023 15:14:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9301A7;
+        Thu, 28 Sep 2023 12:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695928441; x=1727464441;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=10vGzZXf8lhncYI1MROfTO1wzd14J2xXaiWn996fOio=;
+  b=W4h3AV1V7Rmq1pOSOAYyDIUB/acTFrnMgFaA4I39UfYBjJWSN1uUFsNC
+   7vnGrB4NPUzn/hur0akhq6ZcBHD063v++Y+mfMN7XeKr39ZWIM6LyG/K4
+   gcSnZSHZZou7A7SZxuFYYKXJrUFPO1wfiTLsTsmXg3Jj7CAZZl/Ll/iXB
+   pCaIpHHQUuGIM3emo/wiJYUtqmqUgA4joyYCwodFr8mDqY7NCe2jsbpYy
+   99YbU/A/hHm+iKRE+ARP4rayzc2k5Q2zoLPv8vQ6Kg/WDpJ+UOwDRizxp
+   Pcq36m1VDb+m+MicwZoXFf+TXgjop8vJi9VJC8R69QuZ4x6lx/3pcoCLg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="367213859"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="367213859"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:13:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="779020016"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="779020016"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:13:57 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v6 0/8] Add support for Sub-NUMA cluster (SNC) systems
+Date:   Thu, 28 Sep 2023 12:13:41 -0700
+Message-ID: <20230928191350.205703-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230829234426.64421-1-tony.luck@intel.com>
+References: <20230829234426.64421-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a3959ab9a9d44444c06ffd0f390cf95dc6bc7f6e.camel@perches.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:08:33PM -0700, Joe Perches wrote:
-> > This could all be a moot point, though, as I believe Konstantin
-> > is trying to separate out the whole idea of a patch-sender needing
-> > to specify the recipients of a patch.
-> 
-> As I understand it, by using get_maintainer.
+The Sub-NUMA cluster feature on some Intel processors partitions
+the CPUs that share an L3 cache into two or more sets. This plays
+havoc with the Resource Director Technology (RDT) monitoring features.
+Prior to this patch Intel has advised that SNC and RDT are incompatible.
 
-Correct, we will ultimately still defer to get_maintainer to figure out who
-needs to be added.
+Some of these CPU support an MSR that can partition the RMID
+counters in the same way. This allows for monitoring features
+to be used (with the caveat that memory accesses between different
+SNC NUMA nodes may still not be counted accuratlely.
 
--K
+Note that this patch series improves resctrl reporting considerably
+on systems with SNC enabled, but there will still be some anomalies
+for processes accessing memory from other sub-NUMA nodes.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+
+---
+
+Summary of changes since v5 - see each patch commit for more specifics
+
+Rebased to v6.6-rc3
+
+0001	Define "scope" enum with values 2, 3 for caches to simplify some
+	code (but sanity check before each such usage).
+	Better warning messages when scope lookup fails
+
+0002	New patch so that some code can be shared between looking up
+	control and monitor domains
+
+0003	Spell "mondomains" as "mon_domains" and be consistent with all
+	the other "mon" identifiers also having similar "_".
+	Don't leave control stuff with old names, change those too
+	so now have ctrl_scope, ctrl_domains, etc.
+
+0004	Use infrastructure from 0002 to have a common rdt_find_domain()
+	function for both types of domain structure.
+	0003 was using same "rdt_domain" structure for both control
+	and monitor domains. Divide it into rdt_ctrl_domain and
+	rdt_mon_domain structures with just the fields they need.
+	Ditto for rdt_hw_domain. Also split and rename many support
+	functions and macros.
+	Lots of "fir tree local declaration order" changes because
+	lengths of typenames changed.
+
+0005	Better commit description
+
+0006	Better commit and code comments
+
+0007	More explanations in commit and code comments.
+	Use consistent naming for "snc_*()" functions.
+
+Patch to update selftests dropped from this series. Someone else
+has taken over that work.
+
+Tony Luck (8):
+  x86/resctrl: Prepare for new domain scope
+  x86/resctrl: Prepare to split rdt_domain structure
+  x86/resctrl: Prepare for different scope for control/monitor
+    operations
+  x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
+  x86/resctrl: Add node-scope to the options for feature scope
+  x86/resctrl: Introduce snc_nodes_per_l3_cache
+  x86/resctrl: Sub NUMA Cluster detection and enable
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+
+ Documentation/arch/x86/resctrl.rst        |  34 +-
+ include/linux/resctrl.h                   |  78 +++--
+ arch/x86/include/asm/msr-index.h          |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h    |  66 ++--
+ arch/x86/kernel/cpu/resctrl/core.c        | 380 +++++++++++++++++-----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  52 +--
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  58 ++--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  14 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 131 ++++----
+ 9 files changed, 567 insertions(+), 247 deletions(-)
+
+
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+-- 
+2.41.0
+
