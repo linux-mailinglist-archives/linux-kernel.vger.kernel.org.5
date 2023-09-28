@@ -2,246 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B4C7B2196
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331177B2199
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjI1Pow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        id S231979AbjI1Pp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjI1Pos (ORCPT
+        with ESMTP id S231933AbjI1PpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:44:48 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FACEB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:44:45 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so20836a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:44:45 -0700 (PDT)
+        Thu, 28 Sep 2023 11:45:24 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B2319E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:45:21 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4135f3d1213so74840621cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695915883; x=1696520683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MT/1Amukgs3JeGbxJIEjYG1p+SrMmDMHsig3NMgTn+k=;
-        b=glPqnoh5+rErVQl0pVimRemNNOYpJVuT2FfVcp891EyPQg/NFTPOU+s/9rvZfXBada
-         LK6+tbikVqimsvHFcDj5PuTGwyd42DMlP4gE/GpZKzKM+tHgQuNTju3pe4eCSyGvQudS
-         jfa8w1YzIZIBL5Y3iDQlh5TQXeo+eHs7dk3Q5PUzCN6GFrU74Rxnldjl/XLchA0L3tes
-         5WarNii/7fgxM+bplbfb/KYkp6h2WllXALjQCSttbTM2ssp8ixO6HPBNPyhX5SGqcwz+
-         fcH1uBp3JGmz+ByfKbiFWGF4IPlZpaMGcG3JwVhdiUWuJfS8MKmu6wIMwqD2hq1xzu6Z
-         zNHA==
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1695915921; x=1696520721; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zjyiO2aerenB+L5bFFtdZmRzY+MpNJymXfUVpkxGKO4=;
+        b=dwO6EE243/koFMbKulZmcycWPxT1PjywGL+koaDrv4hLiEowCLzyPBedMp7ugDDcvy
+         lfRIFfgO5vf2UjKAb6LuEPisgGOMSAgfgQCvu+0B99aCduaYmaXuWCbgamV47RJnyJft
+         Ppg2YcDOO3eDJ+ZV9afprcLZS5suzxQyJ8Uphz0wrt+OPrd5OuyMecgPXViEMIbvd5PM
+         lADYLmx+K2DHxZtro2NtQOSZVKEsFWNQAaTiMLjohZ/4o8bFWrlf7gkG/o/ji5KwTt9s
+         8DGyugOpBuvbIc6mV02fEcUmwe4nabTJyRXbL4c3bE2i63JGI1Tid5W1pe/pYalst377
+         CxkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695915883; x=1696520683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MT/1Amukgs3JeGbxJIEjYG1p+SrMmDMHsig3NMgTn+k=;
-        b=UB5rxtqzJgXsZ68PkUtAp+HeIwE3MPFhm0nc0QZRDhpTFSCaq9/Ri8lNch8Ywii8Y0
-         ZpKBUECq+4yVxNexRA1U8zfWVuKVPpnQ3pLJyrE1DAgSsj8M+r9Eg7S16WmDg1K2Qygc
-         njncKl/QLbXLMwOP04Q7sOgqWqLoXlbHOHQQW7sqWtbUR2ZKYNmdAPB3wIiVIGG7czGb
-         ae4XurbCHVeDhyQQg9dkZBzPvZJ3FYGoLa+Rc1TDbmQM2DUG8m3hSqeiytAsWDfM/w3M
-         VPZVX8ezpCCpC4QFJnBan6HrO+duviXtMOrXzBNcv0gmYIKMXZHoA2plY8JVBTQXGR+6
-         X1iw==
-X-Gm-Message-State: AOJu0Yy1hwjzwsw0rM6PpSwi9wp/t51qDu/oUK/uBiXgO25noY5UqN7G
-        m5gkyKPH8s+VWnThMCbTWKnY8++JRnxyW9CPGX0wUA==
-X-Google-Smtp-Source: AGHT+IEQ/+PQtN2SXQjBnQyt6NhuCGlbT5bM97sqPHsLFWkbuhpIh9m5iaLQBsAxLtNMsXL0fuJmh4gUlXJQQpBy6WM=
-X-Received: by 2002:a50:d0d9:0:b0:530:4f4b:d9ee with SMTP id
- g25-20020a50d0d9000000b005304f4bd9eemr437436edf.5.1695915883155; Thu, 28 Sep
- 2023 08:44:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695915921; x=1696520721;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zjyiO2aerenB+L5bFFtdZmRzY+MpNJymXfUVpkxGKO4=;
+        b=L9mfW7sn89XJNyv9iyxwNj1b/iae6naol+BDwTngUeS7Ds2a+N1aH5iEAeL0uLnVD8
+         yC1Eu0ShdW2bDFcCa+rBWts3Qq+AmZJVUN0TfHYEj/7PjVC5d9q7jcAfRtN+VdkEYJa1
+         uvld2EZcH+PASo9jtQWgbgmn8f1mDXrLjXLgej3LZ9Ga/llm1Qe3mWk8DbQz1sN/akBK
+         ewmt1v5exQP9srprbtoAtvLigrLUfuAJHqRYPw8mAcPZMQwi+OPfcFiZDBBtVF3vBkX9
+         0XAbf91nOo1j9sSOIil0B/zPLiUXiVuk7b072wUj6yqGFTSJiR7y50uxqY4YXqZ4vOHv
+         YTig==
+X-Gm-Message-State: AOJu0YzOPydCWH0/kRKB4trvh7VjmPNSbSBYM0Av5bfZ8x1mUmLejYE+
+        EaT4w2qcSvX6MXhvgQWOLmzu9g==
+X-Google-Smtp-Source: AGHT+IFKFYsPa5h8pLMtcKIq+MzAXP0NgUcgCjLytQEnC2TxzCHGxJpa5mBsW/GglWjJvBke4oO7bg==
+X-Received: by 2002:ac8:5885:0:b0:418:12c6:467f with SMTP id t5-20020ac85885000000b0041812c6467fmr1513741qta.3.1695915921011;
+        Thu, 28 Sep 2023 08:45:21 -0700 (PDT)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id r15-20020ac87eef000000b004181a3eeff4sm3076750qtc.5.2023.09.28.08.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 08:45:20 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 11:45:10 -0400
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     Christophe Roullier <christophe.roullier@foss.st.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 08/12] net: ethernet: stmmac: stm32: support the
+ phy-supply regulator binding
+Message-ID: <ZRWfhk0aEDwytGv5@dell-precision-5540>
+References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
+ <20230928151512.322016-9-christophe.roullier@foss.st.com>
 MIME-Version: 1.0
-References: <20230928100418.521594-1-yajun.deng@linux.dev> <CANn89iL9uy58ZrZRPEtrvQ7ckv5hVTq8shx3OesQA6SWoUOP=g@mail.gmail.com>
- <c43a3dde-fa4d-4a87-6f96-397813db5bd6@linux.dev>
-In-Reply-To: <c43a3dde-fa4d-4a87-6f96-397813db5bd6@linux.dev>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 28 Sep 2023 17:44:29 +0200
-Message-ID: <CANn89i+iT11qzCidTrHHRMQiYR-nXtbPNAUJGaEg0NQMCq_8CA@mail.gmail.com>
-Subject: Re: [PATCH v6] net/core: Introduce netdev_core_stats_inc()
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928151512.322016-9-christophe.roullier@foss.st.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 5:40=E2=80=AFPM Yajun Deng <yajun.deng@linux.dev> w=
-rote:
->
->
-> On 2023/9/28 22:18, Eric Dumazet wrote:
-> > On Thu, Sep 28, 2023 at 12:04=E2=80=AFPM Yajun Deng <yajun.deng@linux.d=
-ev> wrote:
-> >> Although there is a kfree_skb_reason() helper function that can be use=
-d to
-> >> find the reason why this skb is dropped, but most callers didn't incre=
-ase
-> >> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
-> >>
-> >> For the users, people are more concerned about why the dropped in ip
-> >> is increasing.
-> >>
-> >> Introduce netdev_core_stats_inc() for trace the caller of the dropped
-> >> skb. Also, add __code to netdev_core_stats_alloc(), as it's called
-> >> unlinkly.
-> >>
-> >> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> >> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> >> ---
-> >> v6: merge netdev_core_stats and netdev_core_stats_inc together
-> >> v5: Access the per cpu pointer before reach the relevant offset.
-> >> v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats=
-_*_inc()
-> >> v3: __cold should be added to the netdev_core_stats_alloc().
-> >> v2: use __cold instead of inline in dev_core_stats().
-> >> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng=
-@linux.dev/
-> >> ---
-> >>   include/linux/netdevice.h | 21 ++++-----------------
-> >>   net/core/dev.c            | 17 +++++++++++++++--
-> >>   2 files changed, 19 insertions(+), 19 deletions(-)
-> >>
-> >> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >> index 7e520c14eb8c..eb1fa04fbccc 100644
-> >> --- a/include/linux/netdevice.h
-> >> +++ b/include/linux/netdevice.h
-> >> @@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forwardab=
-le(const struct net_device *dev,
-> >>          return false;
-> >>   }
-> >>
-> >> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct=
- net_device *dev);
-> >> -
-> >> -static inline struct net_device_core_stats __percpu *dev_core_stats(s=
-truct net_device *dev)
-> >> -{
-> >> -       /* This READ_ONCE() pairs with the write in netdev_core_stats_=
-alloc() */
-> >> -       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->co=
-re_stats);
-> >> -
-> >> -       if (likely(p))
-> >> -               return p;
-> >> -
-> >> -       return netdev_core_stats_alloc(dev);
-> >> -}
-> >> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
-> >>
-> >>   #define DEV_CORE_STATS_INC(FIELD)                                   =
-           \
-> >>   static inline void dev_core_stats_##FIELD##_inc(struct net_device *d=
-ev)                \
-> >>   {                                                                   =
-           \
-> >> -       struct net_device_core_stats __percpu *p;                     =
-          \
-> >> -                                                                     =
-          \
-> >> -       p =3D dev_core_stats(dev);                                    =
-            \
-> >> -       if (p)                                                        =
-          \
-> >> -               this_cpu_inc(p->FIELD);                               =
-          \
-> > Note that we were using this_cpu_inc() which implied :
-> > - IRQ safety, and
-> > - a barrier paired with :
-> >
-> > net/core/dev.c:10548:                   storage->rx_dropped +=3D
-> > READ_ONCE(core_stats->rx_dropped);
-> > net/core/dev.c:10549:                   storage->tx_dropped +=3D
-> > READ_ONCE(core_stats->tx_dropped);
-> > net/core/dev.c:10550:                   storage->rx_nohandler +=3D
-> > READ_ONCE(core_stats->rx_nohandler);
-> > net/core/dev.c:10551:                   storage->rx_otherhost_dropped
-> > +=3D READ_ONCE(core_stats->rx_otherhost_dropped);
-> >
-> >
-> >> +       netdev_core_stats_inc(dev,                                    =
-          \
-> >> +                       offsetof(struct net_device_core_stats, FIELD))=
-;         \
-> >>   }
-> >>   DEV_CORE_STATS_INC(rx_dropped)
-> >>   DEV_CORE_STATS_INC(tx_dropped)
-> >>   DEV_CORE_STATS_INC(rx_nohandler)
-> >>   DEV_CORE_STATS_INC(rx_otherhost_dropped)
-> >> +#undef DEV_CORE_STATS_INC
-> >>
-> >>   static __always_inline int ____dev_forward_skb(struct net_device *de=
-v,
-> >>                                                 struct sk_buff *skb,
-> >> diff --git a/net/core/dev.c b/net/core/dev.c
-> >> index 606a366cc209..88a32c392c1d 100644
-> >> --- a/net/core/dev.c
-> >> +++ b/net/core/dev.c
-> >> @@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_=
-stats64 *stats64,
-> >>   }
-> >>   EXPORT_SYMBOL(netdev_stats_to_stats64);
-> >>
-> >> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct=
- net_device *dev)
-> >> +static __cold struct net_device_core_stats __percpu *netdev_core_stat=
-s_alloc(
-> >> +               struct net_device *dev)
-> >>   {
-> >>          struct net_device_core_stats __percpu *p;
-> >>
-> >> @@ -10510,7 +10511,19 @@ struct net_device_core_stats __percpu *netdev=
-_core_stats_alloc(struct net_device
-> >>          /* This READ_ONCE() pairs with the cmpxchg() above */
-> >>          return READ_ONCE(dev->core_stats);
-> >>   }
-> >> -EXPORT_SYMBOL(netdev_core_stats_alloc);
-> >> +
-> >> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
-> >> +{
-> >> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_=
-alloc() */
-> >> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->co=
-re_stats);
-> >> +
-> >> +       if (unlikely(!p))
-> >> +               p =3D netdev_core_stats_alloc(dev);
-> >> +
-> >> +       if (p)
-> >> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))=
-++;
-> > While here you are using a ++ operation that :
-> >
-> > - is not irq safe
-> > - might cause store-tearing.
-> >
-> > I would suggest a preliminary patch converting the "unsigned long" fiel=
-ds in
-> > struct net_device_core_stats to local_t
->
-> Do you mean it needs to revert the commit 6510ea973d8d ("net: Use
-> this_cpu_inc() to increment
->
-> net->core_stats") first? But it would allocate memory which breaks on
-> PREEMPT_RT.
+Hello,
 
-I think I provided an (untested) alternative.
+On Thu, Sep 28, 2023 at 05:15:08PM +0200, Christophe Roullier wrote:
+> From: Christophe Roullier <christophe.roullier@st.com>
+> 
+> Configure the phy regulator if defined by the "phy-supply" DT phandle.
+> 
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+> ---
+>  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 51 ++++++++++++++++++-
+>  1 file changed, 50 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+> index 72dda71850d75..31e3abd2caeaa 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+... snip ...
+>  static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
+> @@ -455,12 +496,20 @@ static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
+>  	if (dwmac->enable_eth_ck)
+>  		clk_disable_unprepare(dwmac->clk_eth_ck);
+>  
+> +	/* Keep the PHY up if we use Wake-on-Lan. */
+> +	if (!device_may_wakeup(dwmac->dev))
+> +		phy_power_on(dwmac, false);
+> +
+>  	return ret;
+>  }
+>  
+>  static void stm32mp1_resume(struct stm32_dwmac *dwmac)
+>  {
+>  	clk_disable_unprepare(dwmac->clk_ethstp);
+> +
+> +	/* The PHY was up for Wake-on-Lan. */
+> +	if (!device_may_wakeup(dwmac->dev))
+> +		phy_power_on(dwmac, true);
+>  }
+>  
+>  static int stm32mcu_suspend(struct stm32_dwmac *dwmac)
 
-unsigned long __percpu *field =3D (__force unsigned long __percpu *)
-((__force u8 *)p + offset);
-this_cpu_inc(field);
+Why only turn off the regulator in suspend on the STM32MP1 and not STM32
+MCUs? It seems like this could just go in stm32_dwmac_suspend/resume().
 
+Selfishly, I have a use case for this on an STM32F746 platform, so I
+would like to see support for it and would test an updated version.
 
->
-> >
-> > You might be able tweak this to
-> >
-> > unsigned long __percpu *field =3D (unsigned long __percpu) ((u8 *)p + o=
-ffset);
-> > this_cpu_inc(field);
+> -- 
+> 2.25.1
+> 
+
+Thanks, Ben
