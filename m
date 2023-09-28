@@ -2,244 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5587B17FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82597B1800
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjI1KAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S230266AbjI1KAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjI1KAU (ORCPT
+        with ESMTP id S230358AbjI1KAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:00:20 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D09C122
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:00:16 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38S8q84J030713;
-        Thu, 28 Sep 2023 09:59:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=x7ReHe3AHT4kiEatJ9iZkW12kDZ78/mzMm50sBAnJtU=;
- b=aY3dK3jnV8kqSa1/pVJ4PM2wPqxUVHDf7yOhjpe3t7H8Eoniq4EEHZPD9qNc5UfTPlOa
- jqLm+s5oFgfWQyy3NAdXYu6VjLD72v7WYZkUiGPL+8rIEhTM5YkaA2hqlDtC5SSEeQ6N
- X1sQ/1L7gIVudGaA/2zzttGAHjQg12a+xvAedwdceZX7Wixypsne0TAvVDYFrOyv1CWy
- BXBKGKmU8eUI2V6COKH9doZ4ygows88DjCaidg0k9/N5zvISsEFoPqxsGnd95ri7qnX4
- dT10qva8NUdFXbzRPeEp8QrsFtMYGn7pIBdoTD9kMbdmmpy4x6EM8w8Z9Sdm8L2lyV3t +Q== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9pt3v12b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Sep 2023 09:59:30 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38S8s83x032806;
-        Thu, 28 Sep 2023 09:59:29 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf9fcap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Sep 2023 09:59:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T4qOkpuMrQtIqzrlXoHZe4d8iq0zlTb96cMvEBmEnXOndJhGxCu/ZMx1vfJtrQcuNIKsXH42YdNoWHYDE1E8nOXcr8nRlhDCB7pMzBP1NvYF7RYwCDKHagkS50kBobz96rygLnyEBT4l6C8piSDstley+1W1St+1NM1ee943QvpHOkK1zHCpqtCjjKwyXSUoL23pI+PNkm1afcRL7hlp1+faQV7I3tqdJm5z6rS0JheGytNrf5twSi/OlheFGP5asJJvIvRf9EJwNDo81K6pQmWgvdS8VACJM7oz2JRvkQbchi8e4BCZv5musPzb19HAg3XxUEmMh+lcTyNoRPY3Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x7ReHe3AHT4kiEatJ9iZkW12kDZ78/mzMm50sBAnJtU=;
- b=PVmZorUu5KsJriB01o6YbU/dLSUnbol/85lfKXMJOTUsqwCW+jq4iw/M1xkrGuLfxuKzWgnAOPgwdRihETizKnUincntxvakRdcwFZjlbN81zitdynrOznsRME8MsDQYXpui4VKtVsXu2Bi7q6Ej1DVzSWc4uUhtk2PXyjaqADJmQj5vw2INHfkQjD7DgcqjNqpZxx9SbNohzdXrOcLKkTw9D48+89k9mabDlBEcrogHuAQwNI+Yj4nxBvvVMyloaRk2jvqgRxFfsMJcdj9ZZwX2bDq1JaN86PZe5bC6SmFAx+UitQMRcFdCd4qIZgd5VmBpv4NxMILph93SkEtGvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x7ReHe3AHT4kiEatJ9iZkW12kDZ78/mzMm50sBAnJtU=;
- b=B3OX79LKM+S3h2OoVA1q8aEHrKyEQ1Jz1NpwLGUkRWxO3bmgJcTnf/W4KDVSankNnh7eIdjS6Lw3+4MGgGMbvlfMlsoL2NuOfpiDTbfxMNF7+Ausr7CUnWsSnVNH4oGerIGTXr1QHVip0x7X/G6ZF7+tlS0iutWp8QpSpT1CkU8=
-Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
- by BL3PR10MB6235.namprd10.prod.outlook.com (2603:10b6:208:38e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Thu, 28 Sep
- 2023 09:59:26 +0000
-Received: from PH0PR10MB5433.namprd10.prod.outlook.com
- ([fe80::9e2f:88c3:ca28:45a3]) by PH0PR10MB5433.namprd10.prod.outlook.com
- ([fe80::9e2f:88c3:ca28:45a3%3]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
- 09:59:26 +0000
-From:   Miguel Luis <miguel.luis@oracle.com>
-To:     Eric Auger <eauger@redhat.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
-Subject: Re: [PATCH v2 1/2] arm64: Add missing _EL12 encodings
-Thread-Topic: [PATCH v2 1/2] arm64: Add missing _EL12 encodings
-Thread-Index: AQHZ78xt+tLPd3gYu0Syfj92EogrWbAv/7sAgAAFjIA=
-Date:   Thu, 28 Sep 2023 09:59:25 +0000
-Message-ID: <4B5AB721-959C-4AAF-BB2B-41638700FA0E@oracle.com>
-References: <20230925162057.27548-1-miguel.luis@oracle.com>
- <20230925162057.27548-2-miguel.luis@oracle.com>
- <ec8ffc8f-1f53-61ca-8268-f13616a658d7@redhat.com>
-In-Reply-To: <ec8ffc8f-1f53-61ca-8268-f13616a658d7@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR10MB5433:EE_|BL3PR10MB6235:EE_
-x-ms-office365-filtering-correlation-id: f8ae379c-41ae-4601-323c-08dbc0099927
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Xt035QBd23XxyOz5xLzRWuJJPvWnkFPgBjTFX357AgTQued5H/PdGucgks1UVOYawWiWlKsFeThPcDw/zyChOtnwj2LF7jRIzjfpou4oUSWyFuGdsPTl/eJTJMxWHEuGDH4J/X/2zSMpMm9mwDRBS+uIQSPPpZsu/Dvn9tQXQ1VQhw8efUvYL7q3DvySGqfotIYKVLrXjguQ9rtWe2k0h8g/yOZk7nLY0t0j0+3FB1VUIH0pL0Ac3NMg1vcry0FA6lu0sTn8LUjx88nGcwUc7MCN+icvaedl8nSKxtfW7qjIPkueO9JVe77QAmpCRvArqm3iQcftbbfeuQdp2IcCDV7suir/CiPocLzr/IfODt3f61Sha6vMX0/XRCvpqkrGigvyODhcjaKNMarDByNtP/qNo59/+oLcrzsOTqyU0YM5B5LNztXLGNu2nVhY4l8PMqB5gOCNO8njYQP7fF7nJaV5cGDxy0DrFmBjaHZoojJgLUckktX899Qej4AZPwljfQlkWWhwE5DSKkxKsAfqIobZ46PnILEPwsGm89+1UyXF3j+7bFwcspORxNTK3WU7DVlF8yLnF6LDV2iMBmN3wjH81sJcbROD8zAvs+M4uTNzB11N5+nb4up2eS3iUFaKU+XoO2u7/oBkppuu7pj6MA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(39860400002)(346002)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(6512007)(6486002)(6506007)(122000001)(53546011)(26005)(2616005)(44832011)(8676002)(8936002)(5660300002)(4326008)(7416002)(86362001)(38100700002)(33656002)(2906002)(36756003)(316002)(41300700001)(6916009)(66556008)(66446008)(91956017)(54906003)(64756008)(66476007)(66946007)(76116006)(38070700005)(71200400001)(478600001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tlrmRvR/2dMw4YH4pRSfAgpO2egiEw0/kX/a5IZ1M10TRIK6lmST08s4v6CC?=
- =?us-ascii?Q?+8BTSALa34CpRTGQbgWbSaUo5AqRMYSusE60hLAm9sm+HCO0C/K8lKfBnR2u?=
- =?us-ascii?Q?MqHzHCKHtI8pozWSTRyB3BbOm1A09k4wBW1VZgbUbn8L44348PTkAw6wTn6o?=
- =?us-ascii?Q?FKcaqUiFqSg7yMCyC1t5yvu29KyPA/G8St35NLKrika4B8DEgyIMQ7Vl8tmq?=
- =?us-ascii?Q?HMlGlaSz/olw2k7dECNhs2MQRvNgBE9eBdgKGCNI9Np9eNKHjYT3llN376sS?=
- =?us-ascii?Q?IcGLVGeIWIjNEW79d6RvOsEeSya57QKNobNuZbT/HMRmAIV/82DqCOu9H60r?=
- =?us-ascii?Q?/E2nUzB8VjmCOJLYkG6jsDsODHDUJpNRxYkS0unD8uLg/pbdZKus8vPTb8dO?=
- =?us-ascii?Q?N7yA2I+wttpIRYBQ37sNYTiH//kGTS+QLPWm9Jp5eeCDbvZjKpXW3Fpv7+8N?=
- =?us-ascii?Q?Q/kQ3MHSpzQ1MzAC3kn8KQB+CIqiKTDBfxYWz5MCbqFXg3u2RU550zoUo/e1?=
- =?us-ascii?Q?6FcOaPQU40RqNPWxUI6FrlSaNOt2f6K26HrymonS8vBweUp1bDZD8/o76Q9Q?=
- =?us-ascii?Q?VTWiGjMuhxoe+eY3M32OY+Qiq+CEP+nOrP+aWbtHlkWNPUR8FOizOtX3mAIo?=
- =?us-ascii?Q?nt/B5VUAuyt2gW7EaXPg7jVupZNpdLMAuCuJhKUvX5bFjjspxMenv6SNGEmS?=
- =?us-ascii?Q?svm8r9AG7CwWExrH+r5lRhCUKsLxHg7zjrD4iLzRudRn7OSPtL+gd4k/L/fg?=
- =?us-ascii?Q?D4pgcfJAImj2z2NuZAfrwzkaK8qIJsmSR+pS/QfBHMS8rXV5iNSw6JgR8OmP?=
- =?us-ascii?Q?PVAbok1+F0zrlDNynmP3XaZFxCTibgF8dBJxFgvHeo6tROQ8lVrsbtqmbbNU?=
- =?us-ascii?Q?1mMMq8Yp9lDWGr96ZM8Q9jXxYY+2bXEi9nB2dbh3P/1pp+Vi8zA+MT4P1GoQ?=
- =?us-ascii?Q?F77EPzDhQPoMr6xBXsQcN2y/jLLRGAFuPgBAoAPFZVOcjst8HJlh062sYSMc?=
- =?us-ascii?Q?w4fsvIBqHjXMWqUNesZg4tQF7dnQFIqk4yeMjWj/U7PHjx5qZML+H1eVy518?=
- =?us-ascii?Q?0Zhnzf3Jqqs+m2SeOQiRqzMBPwruIu6AeRCyn0Rsh7bLMFdcslFUEFUUpDBe?=
- =?us-ascii?Q?VZOriavRtds4ePhe+0OyWXGJ+sbCz/8V3231VTI86SPj2W+G+e2SZ7farbKr?=
- =?us-ascii?Q?Y5crvuO8ShDfToDMHCaqfGfllI7lyCoYMRkJHX8Jhzo07X5RxgIyT3jGXXiW?=
- =?us-ascii?Q?audnz0q8GILXbHqjf2kLXMq5ADdE2BaKZCRIARYkS7Fui9waCfBmxnGwbnPl?=
- =?us-ascii?Q?2gxOLo8dEl6azHyYj3Qmkd8P6k6D7+flPXE06Y9kgB5WAJBWYkHd+/q2Pi9s?=
- =?us-ascii?Q?FQkxyP4QiAu3sQzi8nTBQ9tyXSHziDtNKt6ZU1Dz6NLkfTDd4wmj4RXmljFr?=
- =?us-ascii?Q?hff3MlINoOJDru141a9fjrr6Vxfdbwrm+j7pMMsFFVnD5jN65K6zDbdyT3qx?=
- =?us-ascii?Q?IeenaZZI76KGqdz0+Z60CJ8iqfDCO/Ngg5Yac3vqmOZc63fhWrSbLnRDcDLS?=
- =?us-ascii?Q?efa3nIqtxETsor6F+Do6tpls//X7M9CqHJeu48XQfKnPho7INMUccp07V4fs?=
- =?us-ascii?Q?Iw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B6D5D63A868FC246B9BEA00D97F2F23A@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 28 Sep 2023 06:00:39 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCA419C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:00:34 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 317C966072EC;
+        Thu, 28 Sep 2023 11:00:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695895232;
+        bh=IOt9+rGgYzpIVn9RzySH66oZB/5PUk0iIHrQnBjbmzY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JIGL0fdE9UtWJmr1uWbygEYpt3o+4EnArL7XJeSgBUPejcOFFJVirdQd3ldexweqv
+         cKVL2jiX7yT548vDFMPobCMjvKUesNR3YMQYj2bJYA6mBLkA9X6YxNiN79VESu1GOF
+         Qzu1aX0hGbtOyTFD2/tJMjMaVvrTLWnI1ZFsQMSsxCl451E18oLprQCebD42awVotj
+         Zm7i8Y9c7BzY/xZxfGAYfLQ4JSrSn3E6EFdaU1g9ASd0Y1D4e1nAYGFSlkK5ZWNNTT
+         zhhIL2rTmvg550GGqeOwKct3lt21DAZJNTyNadqTyotYS9YyDfW+gUseoV8VcOaMGf
+         IEpYGSWSK7F8g==
+Message-ID: <891fe60a-cee9-29ab-3214-848b1161a0a7@collabora.com>
+Date:   Thu, 28 Sep 2023 12:00:30 +0200
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?5t8ygYEETBH1keq/AXzban3xBhpt/0ckB6udneZrFvWLpHtW9KeFwIRfqyig?=
- =?us-ascii?Q?GsvDD+WB5xvQAh9hW4XieVzotICAlLDzaMOaMNRis1+vmeq0ysOGByTyAnUM?=
- =?us-ascii?Q?o1d9w5efoPfNBU+PT19qbjaKHL4SpWaf6TkIr0Ss6oCpNpVyVzGwJAqBqak3?=
- =?us-ascii?Q?uHO7TqM5aU76QoZErD6SWtEyth9Sa0+o7Epuj1vfU1NdKXMTokxhd1qBeRhi?=
- =?us-ascii?Q?IJHzcSmEvznPiMLULmVkGNAUdKCMl9SY6c9YSNn1DnEIjkFjLnlJpXonPnJN?=
- =?us-ascii?Q?1ZcP5zS5bBf99dMyeuZ7QQu6WTfB3y23rTdHA79elWRb2axf0qDgtVltytNa?=
- =?us-ascii?Q?MdehS92waLXaKac25tWKeL8rQquUFPD1INxrAWXyUW9UD298kMd2t+/EfSaj?=
- =?us-ascii?Q?ry8jfa5Wjz29ipFMbUR9sYP7FKlfg4i9nQtUdY3OR89XtUiFEbLk9S4DUWX1?=
- =?us-ascii?Q?z4ZDQm6TAnlId+chyE72me/CjsWDjMJneuGewFIgXAb+KwrudZdkw84DpJqy?=
- =?us-ascii?Q?Lzdz+6512OywAtdtetF0dZFVsTHIh9AnknYqCXDNmJmmaNdqMMdsVX/PuLyd?=
- =?us-ascii?Q?LafXBUZWxNs/+6GIt6v69bFAVIZ45SzexcS36oyY3gdA8ik60qwqVHYze3PR?=
- =?us-ascii?Q?pwEAovRoL5KHXlNLxigMXkjga16pLtDjzrEIxAWWJsmhfHh898VPig2fZWTV?=
- =?us-ascii?Q?UwZVyBKKfSCRuK8HINZgqz7Ny0Be6pX3QaIL0IeagCOxgs46LqtksNGWjSq5?=
- =?us-ascii?Q?MR5QdOk8tXUdRaQjLOsNk6++S99fO3c/RdAXzSJRJLhQXEBYu9+55jUdBFUr?=
- =?us-ascii?Q?YjPNW6wkX4aQYGKQSk6p1rjneFZKx7BrdyMDzojzduIidudNxHOjV7wELabW?=
- =?us-ascii?Q?Xmgir7nOvvySYtZq98rNyJhtxC+A1GSob6XZmSJ8cHi8fVKNTicnifPLmilc?=
- =?us-ascii?Q?JN5bsAtl1muFjB07bGKoTOireR6IfNytV4VoQbr43kaPS840LVSfQJ7UKVTr?=
- =?us-ascii?Q?NDJP?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8ae379c-41ae-4601-323c-08dbc0099927
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 09:59:25.9777
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bw3OXfpNwAzTwT1fVlRNgTHNX61TuH9yukGLbPT+eS/gp58O+daM3w32IYhTTDhlPbG6zOQmS7j4OSaP5aIEsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6235
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-28_07,2023-09-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309280084
-X-Proofpoint-ORIG-GUID: ZZQmtU5UAyTssMAFzgU_05a1Il50tW_x
-X-Proofpoint-GUID: ZZQmtU5UAyTssMAFzgU_05a1Il50tW_x
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v10 5/9] drm/mediatek: Add connector dynamic selection
+ capability
+Content-Language: en-US
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Nathan Lu <nathan.lu@mediatek.com>
+References: <20230927153833.23583-1-jason-jh.lin@mediatek.com>
+ <20230927153833.23583-6-jason-jh.lin@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230927153833.23583-6-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+Il 27/09/23 17:38, Jason-JH.Lin ha scritto:
+> Add dynamic select available connector flow in mtk_drm_crtc_create()
+> and mtk_drm_crtc_atomic_enable().
+> 
+> In mtk_drm_crtc_create(), if there is a connector routes array in drm
+> driver data, all components definded in the connector routes array will
+> be checked and their encoder_index will be set.
+> 
+> In mtk_drm_crtc_atomic_enable(), crtc will check its encoder_index to
+> identify which componet in the connector routes array should append.
+> 
+> Signed-off-by: Nancy Lin <nancy.lin@mediatek.com>
+> Signed-off-by: Nathan Lu <nathan.lu@mediatek.com>
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> Tested-by: Fei Shao <fshao@chromium.org>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 78 ++++++++++++++++++++-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  5 +-
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 27 ++++++-
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 13 +++-
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.h      |  7 ++
+>   5 files changed, 123 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> index b6fa4ad2f94d..8eb4d2646a76 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -63,6 +63,8 @@ struct mtk_drm_crtc {
+>   	struct mtk_mutex		*mutex;
+>   	unsigned int			ddp_comp_nr;
+>   	struct mtk_ddp_comp		**ddp_comp;
+> +	unsigned int			num_conn_routes;
+> +	const struct mtk_drm_route	*conn_routes;
+>   
+>   	/* lock for display hardware access */
+>   	struct mutex			hw_lock;
+> @@ -647,6 +649,45 @@ static void mtk_drm_crtc_disable_vblank(struct drm_crtc *crtc)
+>   	mtk_ddp_comp_disable_vblank(comp);
+>   }
+>   
+> +static void mtk_drm_crtc_update_output(struct drm_crtc *crtc,
+> +				       struct drm_atomic_state *state)
+> +{
+> +	int crtc_index = drm_crtc_index(crtc);
+> +	int i;
+> +	struct device *dev;
+> +	struct drm_crtc_state *crtc_state = state->crtcs[crtc_index].new_state;
+> +	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+> +	struct mtk_drm_private *priv = crtc->dev->dev_private;
+> +	unsigned int comp_id;
 
-> On 28 Sep 2023, at 09:39, Eric Auger <eauger@redhat.com> wrote:
->=20
-> Hi Miguel,
-> On 9/25/23 18:20, Miguel Luis wrote:
->> Some _EL12 encodings are missing. Add them.
->>=20
->> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
->> ---
->> arch/arm64/include/asm/sysreg.h | 11 +++++++++++
->> 1 file changed, 11 insertions(+)
->>=20
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sy=
-sreg.h
->> index 38296579a4fd..6e167bbf44ff 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -568,18 +568,29 @@
->>=20
->> /* VHE encodings for architectural EL0/1 system registers */
->> #define SYS_SCTLR_EL12 sys_reg(3, 5, 1, 0, 0)
->> +#define SYS_CPACR_EL12 sys_reg(3, 5, 1, 0, 2)
->> +#define SYS_SCTLR2_EL12 sys_reg(3, 5, 1, 0, 3)
->> +#define SYS_ZCR_EL12 sys_reg(3, 5, 1, 2, 0)
->> +#define SYS_TRFCR_EL12 sys_reg(3, 5, 1, 2, 1)
->> +#define SYS_SMCR_EL12 sys_reg(3, 5, 1, 2, 6)
->> #define SYS_TTBR0_EL12 sys_reg(3, 5, 2, 0, 0)
->> #define SYS_TTBR1_EL12 sys_reg(3, 5, 2, 0, 1)
->> #define SYS_TCR_EL12 sys_reg(3, 5, 2, 0, 2)
->> +#define SYS_TCR2_EL12 sys_reg(3, 5, 2, 0, 3)
->> #define SYS_SPSR_EL12 sys_reg(3, 5, 4, 0, 0)
->> #define SYS_ELR_EL12 sys_reg(3, 5, 4, 0, 1)
->> #define SYS_AFSR0_EL12 sys_reg(3, 5, 5, 1, 0)
->> #define SYS_AFSR1_EL12 sys_reg(3, 5, 5, 1, 1)
->> #define SYS_ESR_EL12 sys_reg(3, 5, 5, 2, 0)
->> #define SYS_TFSR_EL12 sys_reg(3, 5, 5, 6, 0)
->> +#define SYS_FAR_EL12 sys_reg(3, 5, 6, 0, 0)
->> +#define SYS_BRBCR_EL12 sys_reg(3, 5, 9, 0, 0)
-> isn't it sys_reg(2, 5, 9, 0, 0)?
->=20
+You're not using comp_id globally in this function....
 
-Oops. It is indeed.
+> +	unsigned int encoder_mask = crtc_state->encoder_mask;
+> +
+> +	if (!crtc_state->connectors_changed)
+> +		return;
+> +
+> +	if (!mtk_crtc->num_conn_routes)
+> +		return;
+> +
+> +	priv = priv->all_drm_private[crtc_index];
 
->> +#define SYS_PMSCR_EL12 sys_reg(3, 5, 9, 9, 0)
->=20
->> #define SYS_MAIR_EL12 sys_reg(3, 5, 10, 2, 0)
->> #define SYS_AMAIR_EL12 sys_reg(3, 5, 10, 3, 0)
->> #define SYS_VBAR_EL12 sys_reg(3, 5, 12, 0, 0)
->> +#define SYS_CONTEXTIDR_EL12 sys_reg(3, 5, 13, 0, 1)
->> +#define SYS_SCXTNUM_EL12 sys_reg(3, 5, 13, 0, 7)
->> #define SYS_CNTKCTL_EL12 sys_reg(3, 5, 14, 1, 0)
->> #define SYS_CNTP_TVAL_EL02 sys_reg(3, 5, 14, 2, 0)
->> #define SYS_CNTP_CTL_EL02 sys_reg(3, 5, 14, 2, 1)
-> Besides
-> Reviewed-by: Eric Auger <eric.auger@redhat.com>
->=20
+This is a bit confusing. You're reassigning priv: please avoid that.
+I would prefer directly seeing the final assignment, or otherwise two pointers.
 
-Thanks
+	struct mtk_drm_private *priv;
 
-Miguel
+	if ....
+	...........
 
-> Eric
->=20
->=20
+	priv = crtc->dev->dev_private->all_drm_private[crtc_index];
+
+> +	dev = priv->dev;
+> +
+> +	dev_dbg(dev, "connector change:%d, encoder mask:0x%x for crtc:%d\n",
+> +		crtc_state->connectors_changed, encoder_mask, crtc_index);
+> +
+> +	for (i = 0; i < mtk_crtc->num_conn_routes; i++) {
+> +		struct mtk_ddp_comp *comp;
+
+...so you can move it here...
+
+		unsigned int comp_id = mtk_crtc->conn_routes[i].route_ddp;
+		struct mtk_ddp_comp *comp = &priv->ddp_comp[comp_id];
+
+> +
+> +		comp_id = mtk_crtc->conn_routes[i].route_ddp;
+> +		comp = &priv->ddp_comp[comp_id];
+> +		if (comp->encoder_index >= 0 &&
+> +		    encoder_mask & BIT(comp->encoder_index)) {
+
+For readability, I would prefer to see
+
+		if (comp->encoder_index >= 0 &&
+		    (encoder_mask & BIT(comp->encoder_index))) {
+
+...but I don't have strong opinions on that.
+
+> +			mtk_crtc->ddp_comp[mtk_crtc->ddp_comp_nr - 1] = comp;
+> +			dev_dbg(dev, "Add comp_id: %d at path index %d\n",
+> +				comp->id, mtk_crtc->ddp_comp_nr - 1);
+> +			break;
+> +		}
+> +	}
+> +}
+> +
+>   int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct drm_plane *plane,
+>   			     struct mtk_plane_state *state)
+>   {
+> @@ -679,6 +720,8 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crtc *crtc,
+>   
+>   	DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
+>   
+> +	mtk_drm_crtc_update_output(crtc, state);
+> +
+
+What's the point of updating the output before pm_runtime_resume_and_get()?
+If PM resume fails we're not enabling the CRTC so the update is actually useless.
+
+Please move this after PM resume: that will also possibly come handy in the future.
+
+
+>   	ret = pm_runtime_resume_and_get(comp->dev);
+>   	if (ret < 0) {
+>   		DRM_DEV_ERROR(comp->dev, "Failed to enable power domain: %d\n", ret);
+> @@ -884,7 +927,8 @@ struct device *mtk_drm_crtc_dma_dev_get(struct drm_crtc *crtc)
+>   
+>   int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>   			const unsigned int *path, unsigned int path_len,
+> -			int priv_data_index)
+> +			int priv_data_index, const struct mtk_drm_route *conn_routes,
+> +			unsigned int num_conn_routes)
+>   {
+>   	struct mtk_drm_private *priv = drm_dev->dev_private;
+>   	struct device *dev = drm_dev->dev;
+> @@ -935,7 +979,8 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>   
+>   	mtk_crtc->mmsys_dev = priv->mmsys_dev;
+>   	mtk_crtc->ddp_comp_nr = path_len;
+> -	mtk_crtc->ddp_comp = devm_kmalloc_array(dev, mtk_crtc->ddp_comp_nr,
+> +	mtk_crtc->ddp_comp = devm_kmalloc_array(dev,
+> +						mtk_crtc->ddp_comp_nr + (conn_routes ? 1 : 0),
+>   						sizeof(*mtk_crtc->ddp_comp),
+>   						GFP_KERNEL);
+>   	if (!mtk_crtc->ddp_comp)
+> @@ -1038,5 +1083,34 @@ int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>   		init_waitqueue_head(&mtk_crtc->cb_blocking_queue);
+>   	}
+>   #endif
+> +
+> +	if (conn_routes) {
+> +		struct device_node *node;
+> +		struct mtk_ddp_comp *comp;
+> +		unsigned int comp_id;
+> +
+> +		for (i = 0; i < num_conn_routes; i++) {
+
+Same here, you're locally using comp_id, node and comp *only* in the for loop....
+
+			unsigned int comp_id = conn_routes[i].route_ddp;
+			struct device_node *node = priv->comp_node[comp_id];
+			struct mtk_ddp_comp *comp = &priv->ddp_comp[comp_id];
+
+> +			comp_id = conn_routes[i].route_ddp;
+> +			node = priv->comp_node[comp_id];
+> +			comp = &priv->ddp_comp[comp_id];
+> +
+> +			if (!comp->dev) {
+> +				dev_dbg(dev, "comp_id:%d, Component %pOF not initialized\n",
+> +					comp_id, node);
+> +				/* mark encoder_index to -1, if route comp device is not enabled */
+> +				comp->encoder_index = -1;
+> +				continue;
+> +			}
+> +
+> +			mtk_ddp_comp_encoder_index_set(&priv->ddp_comp[comp_id]);
+> +		}
+> +
+> +		mtk_crtc->num_conn_routes = num_conn_routes;
+> +		mtk_crtc->conn_routes = conn_routes;
+> +
+> +		/* increase ddp_comp_nr at the end of mtk_drm_crtc_create */
+> +		mtk_crtc->ddp_comp_nr++;
+> +	}
+> +
+>   	return 0;
+>   }
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
+> index 3e9046993d09..3c224595fa71 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
+> @@ -8,6 +8,7 @@
+>   
+>   #include <drm/drm_crtc.h>
+>   #include "mtk_drm_ddp_comp.h"
+> +#include "mtk_drm_drv.h"
+>   #include "mtk_drm_plane.h"
+>   
+>   #define MTK_LUT_SIZE	512
+> @@ -18,7 +19,9 @@ void mtk_drm_crtc_commit(struct drm_crtc *crtc);
+>   int mtk_drm_crtc_create(struct drm_device *drm_dev,
+>   			const unsigned int *path,
+>   			unsigned int path_len,
+> -			int priv_data_index);
+> +			int priv_data_index,
+> +			const struct mtk_drm_route *conn_routes,
+> +			unsigned int num_conn_routes);
+>   int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct drm_plane *plane,
+>   			     struct mtk_plane_state *state);
+>   void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct drm_plane *plane,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> index 771f4e173353..4ddb5e561116 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -507,6 +507,23 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
+>   	return false;
+>   }
+>   
+> +static int mtk_drm_find_comp_in_ddp_conn_path(struct device *dev,
+> +					      const struct mtk_drm_route *routes,
+> +					      unsigned int num_routes,
+> +					      struct mtk_ddp_comp *ddp_comp)
+> +{
+> +	unsigned int i;
+> +
+> +	if (!routes)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < num_routes; i++)
+> +		if (dev == ddp_comp[routes[i].route_ddp].dev)
+> +			return BIT(routes[i].crtc_id);
+> +
+> +	return -ENODEV;
+> +}
+> +
+>   int mtk_ddp_comp_get_id(struct device_node *node,
+>   			enum mtk_ddp_comp_type comp_type)
+>   {
+> @@ -538,7 +555,15 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+>   					  private->data->third_len, private->ddp_comp))
+>   		ret = BIT(2);
+>   	else
+> -		DRM_INFO("Failed to find comp in ddp table\n");
+> +		ret = mtk_drm_find_comp_in_ddp_conn_path(dev,
+> +							 private->data->conn_routes,
+> +							 private->data->num_conn_routes,
+> +							 private->ddp_comp);
+> +
+> +	if (ret <= 0) {
+> +		DRM_INFO("Failed to find comp in ddp table, ret =%d\n", ret);
+> +		ret = 0;
+
+Why are you returning 0 for error here?!
+
+> +	}
+>   
+>   	return ret;
+>   }
+
+Regards,
+Angelo
 
