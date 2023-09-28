@@ -2,31 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A300E7B1C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7172A7B1CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjI1Mhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S232532AbjI1Mhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231967AbjI1Mhg (ORCPT
+        with ESMTP id S232093AbjI1Mhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:37:36 -0400
-X-Greylist: delayed 283 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 05:37:34 PDT
+        Thu, 28 Sep 2023 08:37:37 -0400
+X-Greylist: delayed 284 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 05:37:35 PDT
 Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD60180;
-        Thu, 28 Sep 2023 05:37:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA84191;
+        Thu, 28 Sep 2023 05:37:35 -0700 (PDT)
 Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 003B0211EF;
-        Thu, 28 Sep 2023 14:37:32 +0200 (CEST)
+        by mail11.truemail.it (Postfix) with ESMTPA id 5A9F1211DA;
+        Thu, 28 Sep 2023 14:37:33 +0200 (CEST)
 From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Sebastian Reichel <sre@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Cc:     Stefan Eichenberger <stefan.eichenberger@toradex.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v1 2/4] power: reset: gpio-poweroff: use sys-off handler API
-Date:   Thu, 28 Sep 2023 14:37:26 +0200
-Message-Id: <20230928123728.21901-2-francesco@dolcini.it>
+Subject: [PATCH v1 3/4] dt-bindings: power: reset: gpio-poweroff: Add priority property
+Date:   Thu, 28 Sep 2023 14:37:27 +0200
+Message-Id: <20230928123728.21901-3-francesco@dolcini.it>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230928123728.21901-1-francesco@dolcini.it>
 References: <20230928123204.20345-1-francesco@dolcini.it>
@@ -44,98 +48,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-Use the new sys-off handler API for gpio-poweroff. This allows us to
-have more than one poweroff handler and prioritise them.
+Add the priority property to the gpio-poweroff bindings description.
 
 Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- drivers/power/reset/gpio-poweroff.c | 37 ++++++++++-------------------
- 1 file changed, 12 insertions(+), 25 deletions(-)
+ .../devicetree/bindings/power/reset/gpio-poweroff.yaml        | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
-index dea550e422f3..0deb293eb2d6 100644
---- a/drivers/power/reset/gpio-poweroff.c
-+++ b/drivers/power/reset/gpio-poweroff.c
-@@ -15,6 +15,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-+#include <linux/reboot.h>
+diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+index b54ec003a1e0..c6404841bcd7 100644
+--- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
++++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+@@ -40,6 +40,10 @@ properties:
+     default: 100
+     description: Delay to wait after driving gpio inactive
  
- #define DEFAULT_TIMEOUT_MS 3000
- 
-@@ -25,15 +26,9 @@ struct gpio_poweroff {
- 	u32 inactive_delay_ms;
- };
- 
--/*
-- * Hold configuration here, cannot be more than one instance of the driver
-- * since pm_power_off itself is global.
-- */
--static struct gpio_poweroff *gpio_poweroff;
--
--static void gpio_poweroff_do_poweroff(void)
-+static int gpio_poweroff_do_poweroff(struct sys_off_data *data)
- {
--	BUG_ON(!gpio_poweroff);
-+	struct gpio_poweroff *gpio_poweroff = data->cb_data;
- 
- 	/* drive it active, also inactive->active edge */
- 	gpiod_direction_output(gpio_poweroff->reset_gpio, 1);
-@@ -50,20 +45,16 @@ static void gpio_poweroff_do_poweroff(void)
- 	mdelay(gpio_poweroff->timeout_ms);
- 
- 	WARN_ON(1);
++  priority:
++    default: 0
++    description: Priority of the power off handler
 +
-+	return NOTIFY_DONE;
- }
- 
- static int gpio_poweroff_probe(struct platform_device *pdev)
- {
-+	struct gpio_poweroff *gpio_poweroff;
- 	bool input = false;
- 	enum gpiod_flags flags;
--
--	/* If a pm_power_off function has already been added, leave it alone */
--	if (pm_power_off != NULL) {
--		dev_err(&pdev->dev,
--			"%s: pm_power_off function already registered\n",
--		       __func__);
--		return -EBUSY;
--	}
-+	int ret;
- 
- 	gpio_poweroff = devm_kzalloc(&pdev->dev, sizeof(*gpio_poweroff), GFP_KERNEL);
- 	if (!gpio_poweroff)
-@@ -89,14 +80,11 @@ static int gpio_poweroff_probe(struct platform_device *pdev)
- 	if (IS_ERR(gpio_poweroff->reset_gpio))
- 		return PTR_ERR(gpio_poweroff->reset_gpio);
- 
--	pm_power_off = &gpio_poweroff_do_poweroff;
--	return 0;
--}
--
--static int gpio_poweroff_remove(struct platform_device *pdev)
--{
--	if (pm_power_off == &gpio_poweroff_do_poweroff)
--		pm_power_off = NULL;
-+	ret = devm_register_sys_off_handler(&pdev->dev, SYS_OFF_MODE_POWER_OFF,
-+					    SYS_OFF_PRIO_DEFAULT, gpio_poweroff_do_poweroff,
-+					    gpio_poweroff);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "Cannot register poweroff handler\n");
- 
- 	return 0;
- }
-@@ -109,7 +97,6 @@ MODULE_DEVICE_TABLE(of, of_gpio_poweroff_match);
- 
- static struct platform_driver gpio_poweroff_driver = {
- 	.probe = gpio_poweroff_probe,
--	.remove = gpio_poweroff_remove,
- 	.driver = {
- 		.name = "poweroff-gpio",
- 		.of_match_table = of_gpio_poweroff_match,
+   timeout-ms:
+     default: 3000
+     description: Time to wait before assuming the power off sequence failed.
 -- 
 2.25.1
 
