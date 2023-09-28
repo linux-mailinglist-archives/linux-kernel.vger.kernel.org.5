@@ -2,153 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720237B120A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794797B120B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjI1F0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S230176AbjI1F0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjI1F0A (ORCPT
+        with ESMTP id S230158AbjI1F0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:26:00 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82DC122
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:25:55 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-532c3b4b55eso15148522a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:25:55 -0700 (PDT)
+        Thu, 28 Sep 2023 01:26:09 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A263C18F
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:26:06 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d84f18e908aso13719424276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:26:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695878754; x=1696483554; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iYQSq7QHiuiyS0dR9XMV5Ksd5EKV/hFTK+3dgExQusQ=;
-        b=bNwNO/EYBK8s6FDhLgM5qdUp/Vksj8q3jbaCWL1j/6Bey4WRgApk5OFvUf0o54xk/1
-         BF71ItDmJreFBUkV6SID+UB4tpB5DLFIfob7IWVBLSg95L3uGWjjL7sQ/u4VseYVP3P1
-         ehpD08kOoDPiZjzqlRbzzgznrBJp+BK5Diy8hLRr2ruU4+tIHm9ENL6MQCIBIlm+NCIa
-         Zr+sEo6Iz1acM2rFX34//S2TW/TV1BosOhRp6IfEgzdWHhQru8LPYW760Uzxvi8qIJVI
-         wWVTp3SOc00vf8hTZsbZWfcMuXTCv+23xf2nCQ1Q3iKMXyx7ZGfBigbOq/AxYoNbwN+E
-         knUg==
+        d=google.com; s=20230601; t=1695878766; x=1696483566; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7jUcNRKitwfZeZzDUwjkycYSF032UWMQ4DC1PKmCGsM=;
+        b=Tihdztbf5FzidbrWEp1VE3+y1TL9rrOdgk5e0A5pN6xx2r2DxC/zlWKgniGA1DeS3l
+         IXFXL3VqmRFHHyXiLQktcGLNif1bkKsUVHgXgB+VHJmeaFN2YLferHf5O8bexV2XyKtq
+         qPoWI4pwpIQdjDn5Hu0ff4ziUkgg9lAn9Vs8Tdw+uNynqhgU2DLG/g2cRmJPwtM593y6
+         YvBglsZZMSCfy/fhwMgj19Km+yEtJ+/bR9LXJA2fRoegAB/ufc9lBGq8236QfJLdD2/8
+         2GmS7uxCSjbXa4CyU7lM+NTdeMaAbH4v55AtqHWwLX9kDs1RiwbncphfaAGW4KM8M7Iz
+         Em0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695878754; x=1696483554;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iYQSq7QHiuiyS0dR9XMV5Ksd5EKV/hFTK+3dgExQusQ=;
-        b=euQABHFbuN7j5d3idv2zECcHGPqRbtVC6W590hr6ntJEw/OXa3kIvfamLXwZtGACd1
-         zzpSAZNnwi8jWwXXdlKSYs4PmsNKahojtULXONH5csN8WnjbI9D+pK5MLQiLHc2JOLD/
-         S82JGQPfP1fgut7akrsHJnGJrKOahUiQChUTZdW1am3zrptXKQyKaTSpsjYwDJHZEQ+b
-         /lKEtfspHp50UbVRHI/4awWSeIkOKl3RVvQNPIc1HxlayL2fhpxuxLTLTiB4B98tAOZi
-         2EYUv5bNldxE3fbx04lkPWaqSV+hB2KjWU1KDIKx1Ux6S2kGmtnNQQ5GRfe5ecoJSsnz
-         EBUA==
-X-Gm-Message-State: AOJu0YwPvdHE/cY8z16ve/eMHQVCdQrqJMT45qBADVdjlVI89swZ5Lmr
-        C40xIIQcxmBS2gXSs9Ys6ojhsA==
-X-Google-Smtp-Source: AGHT+IGW1VkTStCt19APrmMZsGsw0+8KtuYXvcE12wx5vqA80PvWt7Cx4LMvCf5RkksuDRuY4SxmvQ==
-X-Received: by 2002:a17:907:778d:b0:9ae:3ee3:1f59 with SMTP id ky13-20020a170907778d00b009ae3ee31f59mr227125ejc.13.1695878754001;
-        Wed, 27 Sep 2023 22:25:54 -0700 (PDT)
-Received: from [192.168.1.235] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id lz1-20020a170906fb0100b0099297782aa9sm10230778ejb.49.2023.09.27.22.25.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 22:25:53 -0700 (PDT)
-Message-ID: <3d15a1a1-d47e-49ad-9491-1ac95f68bc64@linaro.org>
-Date:   Thu, 28 Sep 2023 07:25:51 +0200
+        d=1e100.net; s=20230601; t=1695878766; x=1696483566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7jUcNRKitwfZeZzDUwjkycYSF032UWMQ4DC1PKmCGsM=;
+        b=T7EAlWea36WoTT12AfE7xQ+6aslgNiU2l4q/QIT8He65NNx5dlhx9z0iWy6RdtFGI1
+         VIBf9y3KiQH0OE0+dHCezhCZP7n/tdGdAFxjPS0Wh4O2Wnj/jU6JNwprgIUI8gNZkaD/
+         cmNq21yyeY8rAS5l/+OUBUfCXbRdb/ugOmPy1vls4edLSbCa1HPAMBpLg0H5EeN17Ztw
+         Ms66idHZV3PtIVOEWO9+HL33vs7o3B3hxsvQ6H11E9XScsl+N11/HkfzcW9++RtgJ1mT
+         yHuDhE7Tsk2xKNS8EdrL+Mp30aasJqox39a1mMepuQCNcsgLinZcHhDMODVuGHrQgqQv
+         Ko9A==
+X-Gm-Message-State: AOJu0YwyKbC5QCtWRBtX2v2nY00JzSktY1VPNTp+Qp/leJ/e6xJcBN9c
+        m1+tRMgvcxQ6rWHmJhs1ST7w2kApzC/jY9hhurTTuQ==
+X-Google-Smtp-Source: AGHT+IF89Wjz0txe77zXKboWBgQ0CWnIokkCJcdokbLP4Hi9a9DBk/9KCIQ1qBNaRRGMr6yPXEj4PFNnQ5FCi+NDnts=
+X-Received: by 2002:a25:b10f:0:b0:d7e:dd21:9b16 with SMTP id
+ g15-20020a25b10f000000b00d7edd219b16mr228934ybj.8.1695878765555; Wed, 27 Sep
+ 2023 22:26:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] input: Imagis: add support for the IST3032C
- touchscreen
-Content-Language: en-US
-To:     Karel Balej <balejk@matfyz.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Markuss Broks <markuss.broks@gmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20230926173531.18715-1-balejk@matfyz.cz>
- <20230926173531.18715-3-balejk@matfyz.cz>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230926173531.18715-3-balejk@matfyz.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230915172818.761-1-shiju.jose@huawei.com> <20230915172818.761-3-shiju.jose@huawei.com>
+ <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com> <20230922111740.000046d7@huawei.com>
+In-Reply-To: <20230922111740.000046d7@huawei.com>
+From:   Jiaqi Yan <jiaqiyan@google.com>
+Date:   Wed, 27 Sep 2023 22:25:52 -0700
+Message-ID: <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Luck, Tony" <tony.luck@intel.com>, dave.hansen@linux.intel.com,
+        jon.grimm@amd.com, vilas.sridharan@amd.com
+Cc:     linuxarm@huawei.com, shiju.jose@huawei.com,
+        David Rientjes <rientjes@google.com>,
+        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
+        naoya.horiguchi@nec.com, james.morse@arm.com, david@redhat.com,
+        jthoughton@google.com, somasundaram.a@hpe.com,
+        erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
+        mike.malvestuto@intel.com, gthelen@google.com,
+        tanxiaofei@huawei.com, prime.zeng@hisilicon.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/09/2023 19:35, Karel Balej wrote:
-> The downstream driver sets the regulator voltage to 3.1 V. Without this,
-> the touchscreen generates random touches even after it is no longer
-> being touched. It is unknown whether the same problem appears with other
-> chips of the IST30**C series.
-> 
-> Co-developed-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
->  .../bindings/input/touchscreen/imagis,ist30xxc.yaml |  1 +
+On Fri, Sep 22, 2023 at 3:20=E2=80=AFAM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 21 Sep 2023 17:07:04 -0700
+> Jiaqi Yan <jiaqiyan@google.com> wrote:
+>
+> > On Fri, Sep 15, 2023 at 10:29=E2=80=AFAM <shiju.jose@huawei.com> wrote:
+> > >
+> > > From: Shiju Jose <shiju.jose@huawei.com>
+> > >
+> > > Add sysfs documentation entries for the set of attributes those are
+> > > exposed in /sys/class/scrub/ by the scrub driver. These attributes
+> > > support configuring parameters of a scrub device.
+> > >
+> > > Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> > > ---
+> > >  .../ABI/testing/sysfs-class-scrub-configure   | 82 +++++++++++++++++=
+++
+> > >  1 file changed, 82 insertions(+)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-confi=
+gure
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/=
+Documentation/ABI/testing/sysfs-class-scrub-configure
+> > > new file mode 100644
+> > > index 000000000000..347e2167dc62
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
+> > > @@ -0,0 +1,82 @@
+> > > +What:          /sys/class/scrub/
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               The scrub/ class subdirectory belongs to the
+> > > +               scrubber subsystem.
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               The /sys/class/scrub/scrub{0,1,2,3,...} directories
+> >
+> > This API (sysfs interface) is very specific to the ACPI interface
+> > defined for hardware patrol scrubber. I wonder can we have some
+> > interface that is more generic, for a couple of reasons:
+>
+> Agreed that it makes sense to define a broad interface.  We have
+> some hardware focused drivers we can't share yet (IP rules until
+> a release date in the near future) where this is a reasonable fit
+> - but indeed there are others such as mapping this to DDR ECS
+> where it isn't a great mapping.
+>
+> I'd love to come up with an interface that has the right blend
+> of generality and flexibility.  That is easiest done before we have
+> any implementation merged.
+>
+> >
+> > 1. I am not aware of any chip/platform hardware that implemented the
+> > hw ps part defined in ACPI RASF/RAS2 spec. So I am curious what the
+> > RAS experts from different hardware vendors think about this. For
+> > example, Tony and Dave from Intel, Jon and Vilas from AMD. Is there
+> > any hardware platform (if allowed to disclose) that implemented ACPI
+> > RASF/RAS2? If so, will vendors continue to support the control of
+> > patrol scrubber using the ACPI spec? If not (as Tony said in [1], will
+> > the vendor consider starting some future platform?
+> >
+> > If we are unlikely to get the vendor support, creating this ACPI
+> > specific sysfs API (and the driver implementations) in Linux seems to
+> > have limited meaning.
+>
+> There is a bit of a chicken and egg problem here. Until there is
+> reasonable support in kernel (or it looks like there will be),
+> BIOS teams push back on a requirement to add the tables.
+> I'd encourage no one to bother with RASF - RAS2 is much less
+> ambiguous.
 
-Bindings are always separate patches. Always.
+Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD (Jon
+and Vilas) for your opinion on RAS2.
 
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
+>
+> >
+> > > +               correspond to each scrub device.
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/name
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (RO) name of the memory scrub device
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/
+> >
+> > 2. I believe the concept of "region" here is probably from
+> > PATROL_SCRUB defined in =E2=80=9CAPCI section 5.2.20.5. Parameter Block=
+". It
+> > is indeed powerful: if a process's physical memory spans over multiple
+> > memory controllers, OS can in theory scrub chunks of the memory
+> > belonging to the process. However, from a previous discussion [1],
+> > "From a h/w perspective it might always be complex". IIUC, the address
+> > translation from physical address to channel address is hard to
+> > achieve, and probably that's one of the tech reasons the patrol scrub
+> > ACPI spec is not in practice implemented?
+>
+> Next bit is kind of an aside as I mostly agree with your conclusions ;)
+>
+> This obviously depends on your memory interleave. You want to present
+> physical address ranges as single controllable regions - probably
+> most interesting being stuff that maps to NUMA nodes.  The short
+> answer is that any firmware control will end up writing to all the
+> memory controllers involved in a given PA range - firmware can easily
+> establish which those are.
+>
+> A memory controller can support multiple scrub regions
+> which map from a PA range to a particular set of RAM addresses
+> - that's implementation specific. The memory controller is getting
+> the host PA and can carry out appropriate hashing if it wants to.
+> Many scrub solutions won't do this - in which case it's max one
+> region per memory controller (mapped by firmware to one region per
+> interleave set - assuming interleave sets take in whole memory
+> controllers - which they normally do).
+>
+> I would expect existing systems (not design with this differentiated
+> scrub in mind) to only support scrub control by PA range at the
+> granularity of interleave sets.
+>
+> Note that this general question of PA based controls also
+> maps to things like resource control (resctl) where it's only interesting
+> to partition memory bandwidth such that the partition applies to the
+> whole interleave set - that's done for ARM systems anyway by having
+> the userspace interface pretend there is only one control, but
+> write the settings to all actual controllers involved. Not sure what
+> x86 does.
+>
+> Taking a few examples that I know of.  All 4 socket server - with
+> control of these as bios options ;).
+> Assuming individual memory controllers don't allow scrub to be
+> configured by PA range.
+>
+> 1. Full system memory interleave (people do this form of crazy)
+>    In that case, there is only one set of firmware controls
+>    that write to the interfaces of every memory controller.  Depending
+>    on the interleave design that may still allow multiple regions.
+>
+> 2. Socket wide memory interleave.  In that case, firmware controls
+>    need to effect all memory controllers in that socket if the
+>    requested 'region' maps to them.  So 4 PA regions.
+>
+> 3. Die wide memory interleave.  Finer granularity of control
+>    so perhaps 8 PA rgiones.
+>
+> 4. Finer granularity (there are reasons to do this for above mentioned
+>    bandwidth resource control which you can only do if not interleaving
+>    across multiple controllers).
+>
+>
+>
+> >
+> > So my take is, control at the granularity of the memory controller is
+> > probably a nice compromise.
+> > Both OS and userspace can get a pretty
+> > decent amount of flexibility, start/stop/adjust speed of the scrubbing
+> > on a memory controller; meanwhile it doesn't impose too much pain to
+> > hardware vendors when they provide these features in hardware. In
+> > terms of how these controls/features will be implemented, I imagine it
+> > could be implemented:
+> > * via hardware registers that directly or indirectly control on memory
+> > controllers
+> > * via ACPI if the situation changes in 10 years (and the RASF/RAS2/PCC
+> > drivers implemented in this patchset can be directly plugged into)
+> > * a kernel-thread that uses cpu read to detect memory errors, if
+> > hardware support is unavailable or not good enough
+> >
+>
+> I more or less agree, but would tweak a little.
+>
+> 1) Allow for multiple regions per memory controller - that's needed
+>    for RASF etc anyway - because as far as they are concerned there
+>    is only one interface presented.
+> 2) Tie the interface to interleave sets, not memory controllers.
+>    NUMA nodes often being a good stand in for those.
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+Does you mean /sys/devices/system/node/nodeX/scrub, where scrub is a
+virtual concept of scrubbing device that mapps to 1 or several
+physical scrubber backends.
 
-Best regards,
-Krzysztof
+For example, starting/stopping the virtual device means issuing
+START/STOP cmd to all backends. And...
 
+>    Controlling memory controllers separately for parts of an interleave
+>    isn't something I'd think was very useful.  This will probably get
+>    messy in the future though and the complexity could be pushed to
+>    a userspace tool - as long as enough info is available elsewhere
+>    in sysfs.  So need those memory controller directories you propose
+>    to include info on the PA ranges that they are involved in backing
+
+is it acceptable if we don't provide PA range or region in the
+interface *for now* if it complicates things a lot? I could be wrong,
+but the user of scrubber seems would be ok with not being able to
+scrub an arbitrary physical address range. In contrast, not knowing
+the scrub results seems to be more annoying to users. So simply giving
+some progress indicator like how many bytes a scrubber has scrubbed.
+
+When we really need to support PA range or region, under the
+/sys/devices/system/node/nodeX/scrub interface, it basically uses NUMA
+node X's PA range. Then to scrub node memory in range [PA1, PA2), some
+driver that understand all backends (or can talk to all backends'
+drivers) needs to translate the PA into the address in backend's
+address space, for example, [PA1, PA2) is mapped to 2 device ranges
+[DA11, DA12) on backend_1 and [DA21, DA22) on backend_2.
+
+>    (which to keep things horrible, can change at runtime via memory
+>     hotplug and remapping of host physical address ranges on CXL etc)
+
+CXL memory locally attached to the host is probably more or less the
+same as normal physical memory. I wonder what it would be like for CXL
+memory remotely attached through a memory pool. Does it make sense
+that the controller/owner of the memory pool takes the responsibility
+of controlling the CXL memory controller to control scrubbing? Does
+the owner need to provide/mediate scrubbing support for other clients
+using the memory pool?
+
+Thanks,
+Jiaqi
+
+>
+> > Given these possible backends of scrubbing, I think a more generic
+> > sysfs API that covers and abstracts these backends will be more
+> > valuable right now. I haven=E2=80=99t thought thoroughly, but how about
+> > defining the top-level interface as something like
+> > =E2=80=9C/sys/devices/system/memory_controller_scrubX/=E2=80=9D, or
+> > =E2=80=9C/sys/class/memory_controllerX/scrub=E2=80=9D?
+>
+> No particular harm in the rename of the directory I guess.
+> Though some of those 'memory_controllers' would be virtual as they
+> wouldn't correspond to actual memory controllers but rather to
+> sets of them.
+>
+> Jonathan
+>
+> >
+> > [1] https://lore.kernel.org/linux-mm/SJ1PR11MB6083BF93E9A88E659CED5EC4F=
+C3F9@SJ1PR11MB6083.namprd11.prod.outlook.com/T/#m13516ee35caa05b506080ae805=
+bee14f9f958d43
+>
+> >
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               The /sys/class/scrub/scrubX/region{0,1,2,3,...}
+> > > +               directories correspond to each scrub region under a s=
+crub device.
+> > > +               Scrub region is a physical address range for which sc=
+rub may be
+> > > +               separately controlled. Regions may overlap in which c=
+ase the
+> > > +               scrubbing rate of the overlapped memory will be at le=
+ast that
+> > > +               expected due to each overlapping region.
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/addr_base
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (RW) The base of the address range of the memory regi=
+on
+> > > +               to be patrol scrubbed.
+> > > +               On reading, returns the base of the memory region for
+> > > +               the actual address range(The platform calculates
+> > > +               the nearest patrol scrub boundary address from where
+> > > +               it can start scrubbing).
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/addr_size
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (RW) The size of the address range to be patrol scrub=
+bed.
+> > > +               On reading, returns the size of the memory region for
+> > > +               the actual address range.
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/enable
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (WO) Start/Stop scrubbing the memory region.
+> > > +               1 - enable the memory scrubbing.
+> > > +               0 - disable the memory scrubbing..
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/speed_available
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (RO) Supported range for the partol speed(scrub rate)
+> > > +               by the scrubber for a memory region.
+> > > +               The unit of the scrub rate vary depends on the scrubb=
+er.
+> > > +
+> > > +What:          /sys/class/scrub/scrubX/regionY/speed
+> > > +Date:          September 2023
+> > > +KernelVersion: 6.7
+> > > +Contact:       linux-kernel@vger.kernel.org
+> > > +Description:
+> > > +               (RW) The partol speed(scrub rate) on the memory regio=
+n specified and
+> > > +               it must be with in the supported range by the scrubbe=
+r.
+> > > +               The unit of the scrub rate vary depends on the scrubb=
+er.
+> > > --
+> > > 2.34.1
+> > >
+> > >
+> >
+>
+>
