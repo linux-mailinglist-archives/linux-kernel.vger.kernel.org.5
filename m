@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F077B261A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D017B2626
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjI1TsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S232046AbjI1Tus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjI1TsM (ORCPT
+        with ESMTP id S230251AbjI1Tuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:48:12 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA1E1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:48:10 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59bdb9fe821so261506637b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:48:10 -0700 (PDT)
+        Thu, 28 Sep 2023 15:50:46 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AE0194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:50:45 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59c0d002081so164335437b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:50:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695930489; x=1696535289; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8iFw0tvjrP+bKthnM1Ar6RitIykCJfydYWlbU6QKJSo=;
-        b=d/ucrjuXJ2acKPT9XyrckOG9VoH40jdz8VyKFE7DQXm2BED4MRhVmA2So4637mpIeb
-         xkrOHP2k0Cl1rBg8EO6FsWtuNo8jp/D0f8/dUuvdQACV7IRF2yCgsslE3aAmjPnVwqnC
-         5F5RhgoQT3hBr4pPQpPudmqNfnY3xCgUYPo2f7zK6tvfLKxQaDcqYwtQh/CUmq+vke4F
-         V4KY7H5Xh7kCf2LpE3ANnCpTDdEAEQBHsrKlE+L8X4NXYt4kOr2iGy54wxX9oEwftqtt
-         s8RqlnxQqt4lHkirnVXAtmo+iok4JQqf84L4UITpyK3RJukCQZd7GDIYdJHmCHMibs6I
-         rlxg==
+        d=google.com; s=20230601; t=1695930644; x=1696535444; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gP4BbdJTdcgYDV7Qx/mEWw5rQtFKtKyVqI/O28O5mPs=;
+        b=qCklHZGThcv0o4pW/DfbuF4e+E+zbDeZaAzVTwed5XuQQr1BNvp8X16nQWZ80TySrl
+         V/djSMyFV2glY2wrBUNkffcxNWtBK46APiVCHGwHMH7KayBXCV42sBIoKs9ozxDbnG72
+         Sp2Jhgyl/iKdt5+WtBUBmdJarcdn8p2XTuO6ItVcOrR3jCX3ElW6n/cwgXN2MXswGEFx
+         8AEASsrbEftrrnrzqB/EKVcxOc8JEE1wMVYqRrvhP3KgjzHtDiIs9k/oWqS+jO99FqNk
+         D/Ak/sMmrh4Qj/QRqO/zvFXOvNmr4nATY5HPl45FVt+/38RUeuGohbAC2L22+bDSBBwo
+         GAWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695930489; x=1696535289;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8iFw0tvjrP+bKthnM1Ar6RitIykCJfydYWlbU6QKJSo=;
-        b=kDAGo1G+sJV7ZTUgIpzzWhsuBYgULyMencpfzE8nKQK2h9FwxYX6gw98QkoyGqaNUd
-         jeguvMyL83VBm17VkS03/S3HT0x4+8qG0uFNyvWMnfyX8QmmUok/tMq6C+8/ufY2PtYj
-         nl0Y34uZ5puD/GtgVLp2eC09Y5vBt+ynWFwuVi9U+VB4nz60lXaABV6q4BTKtQfLhpCi
-         mGeOMvTLuFwdj6wE75u8W4rTnyeQx38Ej74inMzz9GbnLbWnKQZV2hmJdhKvhfDvny/l
-         hyKJgXqrWcaPMiGAloENWDMuoS+WFApnaFCR3KxAJKTQahQu120ikHQxp+mKC1IPWb5+
-         gaoQ==
-X-Gm-Message-State: AOJu0YxzEFb4y9gGFuB6M2V7KLzotb2x/OTmYQHPJPgnfEZK812lDfFc
-        RfYocsyK7T4D3ofPR6FcZv7flei5T4WK
-X-Google-Smtp-Source: AGHT+IHmbhxmxw0u7t9poI7VDoNjrSv2+5OQoPENUEo3sqSzgMufa0dh2YWPxi+AEsKixH41b4COj6rIWJJN
-X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
- (user=mmaurer job=sendgmr) by 2002:a81:440d:0:b0:59b:ebe0:9fd3 with SMTP id
- r13-20020a81440d000000b0059bebe09fd3mr29132ywa.7.1695930489339; Thu, 28 Sep
- 2023 12:48:09 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 19:48:01 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230928194801.2278999-1-mmaurer@google.com>
-Subject: [PATCH v3] rust: Respect HOSTCC when linking for host
-From:   Matthew Maurer <mmaurer@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+        d=1e100.net; s=20230601; t=1695930644; x=1696535444;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gP4BbdJTdcgYDV7Qx/mEWw5rQtFKtKyVqI/O28O5mPs=;
+        b=DDXr6RFw6Z7oVZWQsYsFLro0NrDToOKxDaVv48LS0sEct05uZAD16tEHGYDB1ygcrb
+         mEOptmg/U+IpgRR0trTUINHoNaFkA36M4S36X5qAsw/d88abRTOgCo2o8iKzQAcQn4K5
+         oL+RYvpQPAKyhpo9XwS+XTr0TJBR4OSVPKo+hYdtcYm2tRfE7fNOv11UX1yovOJj7NxE
+         J/5ewMxE0x3bsnecs7jPunjl1a3PJykPvSnuAW4fCjIdpxqzzD4l3/jeSFA3u10WnwtD
+         E+lI9mfcD10IObUmOpM9n0zRnq5fiNhW7Lvf6Cx/4ZN8/o0pjKDpvGUC8jYT+bIhSEco
+         OL3g==
+X-Gm-Message-State: AOJu0YwyrOLNZ8Idb/FUzQBW7nHtSaA+p9GVXOsU8j2Jrz8nU+4K5qQS
+        ldw8XL1vPSQ8uhdmYUy7Y3Z+XJorXWIdxR1vSdYxKA==
+X-Google-Smtp-Source: AGHT+IG3Rb7Z0h/ROaA3hCrSRrRuw/6HH5fqObICNocBlKuL+ih7nn5iO35GIC3JuJEF8FbPK8kIVC0dF9VSiIqv+Jo=
+X-Received: by 2002:a81:848f:0:b0:584:61df:45e8 with SMTP id
+ u137-20020a81848f000000b0058461df45e8mr2449845ywf.13.1695930644215; Thu, 28
+ Sep 2023 12:50:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <ZRXJZyPMdVsQNt4h@x1n>
+In-Reply-To: <ZRXJZyPMdVsQNt4h@x1n>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 28 Sep 2023 12:50:33 -0700
+Message-ID: <CAJuCfpFttknDCAOaiR25Nw4_MS=YSpQNqzFPeEh41gtCVgCs0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-resulting in build failures in hermetic environments where `cc` does not
-exist. This includes both hostprogs and proc-macros.
+On Thu, Sep 28, 2023 at 11:43=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote=
+:
+>
+> One more thing..
+>
+> On Fri, Sep 22, 2023 at 06:31:45PM -0700, Suren Baghdasaryan wrote:
+> > +static int remap_pages_pte(struct mm_struct *dst_mm,
+>
+> [...]
+>
+> > +retry:
+> > +     dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, &dst=
+_ptl);
+> > +
+> > +     /* If an huge pmd materialized from under us fail */
+> > +     if (unlikely(!dst_pte)) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, src_addr, &src=
+_ptl);
+> > +
+> > +     /*
+> > +      * We held the mmap_lock for reading so MADV_DONTNEED
+> > +      * can zap transparent huge pages under us, or the
+> > +      * transparent huge page fault can establish new
+> > +      * transparent huge pages under us.
+> > +      */
+> > +     if (unlikely(!src_pte)) {
+> > +             err =3D -EFAULT;
+> > +             goto out;
+> > +     }
+>
+> For these two places: I know that thp collapse with mmap read lock hasn't
+> yet spread to anon (so I assume none of above could trigger yet on the
+> failure paths), but shall we constantly return -EAGAIN here just in case =
+we
+> forget that in the future?
+>
+> For example, for UFFDIO_COPY over shmem which we can already hit similar
+> case, mfill_atomic_install_pte() has:
+>
+>         ret =3D -EAGAIN;
+>         dst_pte =3D pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+>         if (!dst_pte)
+>                 goto out;
+>
+> Thanks,
 
-Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-`gcc` explicitly. The linker-flavor selects both which linker to search
-for if the linker is unset, and which kind of linker flags to pass.
-Without this flag, `rustc` would attempt to determine which flags to
-pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
-name of the linker-flavor used by `rustc` for all C compilers, including
-both `gcc` and `clang`.
+Retrying in this case makes sense to me. Will change.
 
-Signed-off-by: Matthew Maurer <mmaurer@google.com>
----
- rust/Makefile         | 2 ++
- scripts/Makefile.host | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/rust/Makefile b/rust/Makefile
-index 87958e864be0..da664d7aed51 100644
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@ -383,6 +383,8 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FORCE
- quiet_cmd_rustc_procmacro = $(RUSTC_OR_CLIPPY_QUIET) P $@
-       cmd_rustc_procmacro = \
- 	$(RUSTC_OR_CLIPPY) $(rust_common_flags) \
-+		-Clinker-flavor=gcc -Clinker=$(HOSTCC) \
-+		-Clink-args='$(subst ','\'',$(KBUILD_HOSTLDFLAGS))' \
- 		--emit=dep-info=$(depfile) --emit=link=$@ --extern proc_macro \
- 		--crate-type proc-macro \
- 		--crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
-diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-index 8f7f842b54f9..08d83d9db31a 100644
---- a/scripts/Makefile.host
-+++ b/scripts/Makefile.host
-@@ -91,6 +91,8 @@ hostcxx_flags  = -Wp,-MMD,$(depfile) \
- # current working directory, which may be not accessible in the out-of-tree
- # modules case.
- hostrust_flags = --out-dir $(dir $@) --emit=dep-info=$(depfile) \
-+		 -Clinker-flavor=gcc -Clinker=$(HOSTCC) \
-+		 -Clink-args='$(call escsq,$(KBUILD_HOSTLDFLAGS))' \
-                  $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-                  $(HOSTRUSTFLAGS_$(target-stem))
- 
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+>
+> --
+> Peter Xu
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
