@@ -2,99 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E17F7B1EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3127B1EB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbjI1NkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 09:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S232196AbjI1NlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 09:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbjI1NkV (ORCPT
+        with ESMTP id S231966AbjI1NlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 09:40:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44165136
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 06:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695908419; x=1727444419;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oPKqTqDJMkCV23vGa5LNVnNbgdlafADxMIVcynlp6Lo=;
-  b=Dp+ZTjtmnrWHRvsg+m67Sy+xLNNfSuqqhLnSqzMuTX1YcFdHNV/dtHA0
-   xkbqep/PvoiWLv5eJHNgq295w5gl/8W2NCACX0hMpWt9oNc49NWQ72o0A
-   CniXWvi4Yc7WDtrq09Hl4Jef/QBeq48uJIrcesb7qPmsGNWuPcoBUAEox
-   69WXHDl6lT1u0ctHaULuo7Ed8enz0M0oKZgWYqB0CQYVUaJm/vK8sHZIq
-   lrxd6JoETL2oj7A7WZWHCMLuYzVmuIMEAsuCXa5psLzr2MWl1ApJR4BFL
-   E2gggyW2VLZhQv6An2FJBN6QgUaKJqvT53YaNOXxtLUlxof0fpzYsqKly
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="3627000"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="3627000"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 06:40:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="749601019"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="749601019"
-Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 06:40:18 -0700
-Message-ID: <a5fbcf09-2445-28f1-4113-0de4f72b7f90@intel.com>
-Date:   Thu, 28 Sep 2023 06:40:18 -0700
+        Thu, 28 Sep 2023 09:41:07 -0400
+Received: from crane.ash.relay.mailchannels.net (crane.ash.relay.mailchannels.net [23.83.222.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21C618F;
+        Thu, 28 Sep 2023 06:41:02 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id E2EA16C13E9;
+        Thu, 28 Sep 2023 13:40:57 +0000 (UTC)
+Received: from pdx1-sub0-mail-a312.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 4657C6C10E9;
+        Thu, 28 Sep 2023 13:40:57 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1695908457; a=rsa-sha256;
+        cv=none;
+        b=g9ApNVDpXUw8NbiVPB91whx+A98KefOUdvwQ3MYgplXW6DoYam+sUPQAu91KxM6lXmAxXG
+        4+lVY54zLzyyeGEiSaAH0MBOT3EuV9QBCa0z35Pjcv+ka5OdYgrOTPawDQ8X/6Hog0PECj
+        +VCYPSQUjhUvfaQFeKTuTziLY1PYZ7zN0W2keRSHnvhhkZRSqGTT7nDSy/vr6QmB7kG2zE
+        aKNFEeYHzAdw4/CP9pzCP/D5KIHZM+kN6o0Doinn8IGGWCCyXnD4WUM7GoCEAEmTdubvyH
+        YNCN9PZ81xsNuE4W7RAYFXtAiT4RMIC4CXIiuJJCIv6I1MUs9hAY1OAbljCfwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1695908457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=fV4Zxk0FhT7C3XEli4MGvFTPX5hp1XlfXjZMP4aD39E=;
+        b=HoJv0cmylHUZA6FoIjPfBtY0ro3gzvVAMtGpG62BbF4JZKhTFuAeXbbMMWrMRmmHLMWbC1
+        Su1yYVFJnEg6+imcOYpfqRFBMKak44KKYR7GGJC1Y23rdaeyTn8Z1YRVOvAY8jdOJGmth6
+        ki1bCHAvCi1kba0drAKEAC254cmoOeUVO95JQzn7aFe1bnyaEsN4EX9DQLOFMWoci1n9Fq
+        KgwUoMt97N7Npdr93dzqm0EXiacL/gvbC8ECImymDcwm4f2YFI3iSlGTyH5WvxP5xNjV4m
+        qBqAkSJSA/OCTfaTx6sj6Uvr+90EujW3AM732SSUMEeK1om25hJK4lnP9RI4jA==
+ARC-Authentication-Results: i=1;
+        rspamd-7d5dc8fd68-ftkct;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Plucky-Illegal: 128ccf8d5bc7bb01_1695908457686_874718514
+X-MC-Loop-Signature: 1695908457686:2815361285
+X-MC-Ingress-Time: 1695908457686
+Received: from pdx1-sub0-mail-a312.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.109.140.241 (trex/6.9.1);
+        Thu, 28 Sep 2023 13:40:57 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dave@stgolabs.net)
+        by pdx1-sub0-mail-a312.dreamhost.com (Postfix) with ESMTPSA id 4RxF481GpZzLJ;
+        Thu, 28 Sep 2023 06:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+        s=dreamhost; t=1695908457;
+        bh=fV4Zxk0FhT7C3XEli4MGvFTPX5hp1XlfXjZMP4aD39E=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=YX3pGd+sUWu1zeeF2pqWBMRrJZeNQkOmmn70Mqq6Iw782HyjKK/rQbp90x0CM28MQ
+         ORUsj1thJvkFcftFmXRFJgwcTgcZAUIZnM8TWQkBbOnsfu3mrIjHTt1mt7DmYtaeo+
+         YA/JI9YuN/kkMCRAeJLVbjheB8a558IPuxjyzgYK1d4QDcG4sNAI3j9bKO3NwAPGWw
+         xjMHvl+rpIZEnI4KMbpxd8720EKSNF/OzV/vX425Rpme0SB+CUYaGU/7bSv2i+dXCK
+         9ho7aXqOGPZPB7rqpNc5GGz+/Yg4v0H+teJQiEal+h5fLIp3hcmE3uZhGbuxwl2OWx
+         hgJkWw+wEHVfg==
+Date:   Thu, 28 Sep 2023 06:40:53 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, dvhart@infradead.org, andrealmeid@igalia.com,
+        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
+        hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de, steve.shaw@intel.com,
+        marko.makela@mariadb.com, andrei.artemev@intel.com
+Subject: Re: futex2 numa stuff
+Message-ID: <zhd6njnv63lithg5yetvyniwt34wcltxa5huk4ustp7j7pf2na@6v6qehyb3w3g>
+Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>, 
+        tglx@linutronix.de, axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com, 
+        dvhart@infradead.org, andrealmeid@igalia.com, 
+        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com, 
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org, linux-mm@kvack.org, 
+        linux-arch@vger.kernel.org, malteskarupke@web.de, steve.shaw@intel.com, 
+        marko.makela@mariadb.com, andrei.artemev@intel.com
+References: <20230921104505.717750284@noisy.programming.kicks-ass.net>
+ <20230921104505.717750284@noisy.programming.kicks-ass.net>
+ <20230922200120.011184118@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3] x86/bugs: Add a separate config for each mitigation
-Content-Language: en-US
-To:     Breno Leitao <leitao@debian.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-References: <20230628142129.2468174-1-leitao@debian.org>
- <ZRV1bIuSXjZ+uPKB@gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <ZRV1bIuSXjZ+uPKB@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230922200120.011184118@infradead.org>
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 05:45, Breno Leitao wrote:
-> 1) Create one Kconfig entry per mitigation, so, the user can pick and
-> choose what to enable and disable. (Version 3 of this patch. May need a
-> re-spin due to the new mitigations being added.)
+On Fri, 22 Sep 2023, Peter Zijlstra wrote:
 
-This means, what, roughly 18 today?
+>Hi!
+>
+>Updated version of patch 15/15 and a few extra patches for testing the
+>FUTEX2_NUMA bits. The last patch (17/15) should never be applied for anything
+>you care about and exists purely because I'm too lazy to generate actual
+>hash-bucket contention.
+>
+>On my 2 node IVB-EP:
+>
+> $ echo FUTEX_SQUASH > /debug/sched/features
+>
+>Effectively reducing each node to 1 bucket.
+>
+> $ numactl -m0 -N0 ./futex_numa -c10 -t2 -n0 -N0 &
+>   numactl -m1 -N1 ./futex_numa -c10 -t2 -n0 -N0
+>
+> ...
+> contenders: 16154935
+> contenders: 16202472
+>
+> $ numactl -m0 -N0 ./futex_numa -c10 -t2 -n0 -N0 &
+>   numactl -m1 -N1 ./futex_numa -c10 -t2 -n0 -N1
+>
+> contenders: 48584991
+> contenders: 48680560
+>
+>(loop counts, higher is better)
+>
+>Clearly showing how separating the hashes works.
+>
+>The first one runs 10 contenders on each node but forces the (numa) futex to
+>hash to node 0 for both. This ensures all 20 contenders hash to the same
+>bucket and *ouch*.
+>
+>The second one does the same, except now fully separates the nodes. Performance
+>is much improved.
+>
+>Proving the per-node hashing actually works as advertised.
 
-#define X86_BUG_CPU_MELTDOWN		X86_BUG(14)
-...
-#define X86_BUG_GDS                     X86_BUG(30)
-
-Plus two bonus ones:
-
-#define X86_BUG_SRSO                    X86_BUG(1*32 + 0)
-#define X86_BUG_DIV0                    X86_BUG(1*32 + 1)
-
-... and we've slowed down the rate at which we're adding these, but
-we're still seeing a couple a year.
-
-Perhaps Pawan and the others actually _doing_ the patches for these can
-speak up, but I don't think adding a Kconfig option will be too much
-additional work for each new X86_BUG.
-
-I still think it's highly unlikely that someone will come through and
-pick and choose among a few dozen vulnerabilities.
+Very nice.
