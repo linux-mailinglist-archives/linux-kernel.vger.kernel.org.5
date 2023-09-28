@@ -2,178 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7867A7B28E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88717B28ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbjI1XiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 19:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S232123AbjI1XmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 19:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI1XiU (ORCPT
+        with ESMTP id S229653AbjI1XmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:38:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF22195;
-        Thu, 28 Sep 2023 16:38:18 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 23:38:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695944296;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=8CmroMhSfWyOMfTzhtju1lshDiYJj149VGMIuDkgZ5o=;
-        b=kNrvUWMfxPrZZHUDBxt6XnyuP8wSYOvBWORu5yUGfVdwlKSomdhFLRX4VoKCBqnN6cMlkJ
-        w9WtUhOuP7MvBARKsMcuaFvd102RI16a6ePVBCzZ2DNbNzi9ekjxSmkzHg4Aj6As6enfdu
-        P+GUONCf0fhiVxrzhKfLnz0EDlUidrRAO7sjKlFgdbPKWrUMW2Gm0tQi/q2FiplW0cm6TC
-        7G7Zuvm3Z5gMZ4/BfV5KeRcddCapCqI05wvoBPkrNpig7vATJFCCyZNGpjq48HfLTKaghk
-        JV5k2zrgdRbVQP01PdqP+RaryqAq4knD+bmhOeRzNr51RekeGR0VtHyuc8piVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695944296;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=8CmroMhSfWyOMfTzhtju1lshDiYJj149VGMIuDkgZ5o=;
-        b=8/RiImtIhpcTEQ7NvznRc3ZMrnIvYqF4VMN3Y2vW/EKXVTEy3zkyhC8Vavn0pbGtv9IPkr
-        KtfoSwnz4hi5S9Cg==
-From:   "tip-bot2 for Haitao Huang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/sgx: Resolves SECS reclaim vs. page fault for EAUG race
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Kai Huang <kai.huang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Thu, 28 Sep 2023 19:42:13 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7790E19C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:42:12 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b574c6374so5771966eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1695944532; x=1696549332; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3RV2WVrYFvmUIy/kF4sgLaI/igSwAmnqnqr5+CNVDt8=;
+        b=eIm0Tr3UrWUjzJ4jN6/2IK7vGtk83w/aM+dkwIMq+AwB2ci1Gu09xf9F9GMwaILj70
+         n4QvEnSrxRKunYK7/hD7XS4qnfKHiKUaPe20ZtTX7CsoKDMIVZZO8CFpNReTVXNSUq67
+         RXlmxi/OVy4WJv6gtNUzW8faa2GmV5dV2N214=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695944532; x=1696549332;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3RV2WVrYFvmUIy/kF4sgLaI/igSwAmnqnqr5+CNVDt8=;
+        b=UfAa8wSwVjaGMbVveL1tx47dOeDSqiBO0b7lBrl1+ZmdRlwSlPvBZujoMAcBlndTcF
+         8hpxZ59tT+vuldyHtfVwO8g5GpGrEM58YmyyeTo/Zrc5SDdxByQWU+pD63pA6ldO5+Ax
+         Q+reuX+bf6aY1Ic6i20Y69R93ny6JaLXQ115iArBWgFu723gxqef7tmEUpEHVy7vp/AM
+         yTOa0q7LBoZ6U+rbkpPG8rjPWOSyHhQqhS+GOmZDO7nIpI5UM/+rUQ2CB5/xnBEyBpKK
+         rHM6sDFk9tQoqrVzYweW3GBYzd7gUEOifTygfQhxtoCvFYmlJSz8w0fxJPu0iKOVgD0Q
+         NEwA==
+X-Gm-Message-State: AOJu0Yw5XZhkmqv5WjcTufNMzdXHS/1NivtHM68Myehp5ulBPKqkTRNZ
+        HrNMqCVYDgx2CPVl0VoJmL5ksw==
+X-Google-Smtp-Source: AGHT+IHBsCldxysDZTajanQY+g4dIkq4a5ohe3XveIhxwgWt0zJyzNyJaoBdNbO8ZXRuiDiGJefhMw==
+X-Received: by 2002:a05:6358:2808:b0:13e:ea2a:40aa with SMTP id k8-20020a056358280800b0013eea2a40aamr1895209rwb.8.1695944531707;
+        Thu, 28 Sep 2023 16:42:11 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t6-20020a639546000000b0057a868900a9sm13316234pgn.67.2023.09.28.16.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 16:42:10 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 16:42:09 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Green Wan <green.wan@sifive.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        dmaengine@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 00/21] dmaengine: Annotate with __counted_by
+Message-ID: <202309281641.47911CC@keescook>
+References: <20230817235428.never.111-kees@kernel.org>
+ <169590216841.152265.1942803099201042070.b4-ty@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169594429559.27769.15062614937556087965.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169590216841.152265.1942803099201042070.b4-ty@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Thu, Sep 28, 2023 at 05:26:08PM +0530, Vinod Koul wrote:
+> 
+> On Thu, 17 Aug 2023 16:58:37 -0700, Kees Cook wrote:
+> > This annotates several structures with the coming __counted_by attribute
+> > for bounds checking of flexible arrays at run-time. For more details, see
+> > commit dd06e72e68bc ("Compiler Attributes: Add __counted_by macro").
+> > 
+> > Thanks!
+> > 
+> > -Kees
+> > 
+> > [...]
+> 
+> Applied, thanks!
 
-Commit-ID:     c6c2adcba50c2622ed25ba5d5e7f05f584711358
-Gitweb:        https://git.kernel.org/tip/c6c2adcba50c2622ed25ba5d5e7f05f584711358
-Author:        Haitao Huang <haitao.huang@linux.intel.com>
-AuthorDate:    Thu, 27 Jul 2023 22:10:24 -07:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Thu, 28 Sep 2023 16:16:40 -07:00
+Thanks! I've dropped them from my tree. :)
 
-x86/sgx: Resolves SECS reclaim vs. page fault for EAUG race
+Also, I found 1 more, which I'll send separately.
 
-The SGX EPC reclaimer (ksgxd) may reclaim the SECS EPC page for an
-enclave and set secs.epc_page to NULL. The SECS page is used for EAUG
-and ELDU in the SGX page fault handler. However, the NULL check for
-secs.epc_page is only done for ELDU, not EAUG before being used.
+-Kees
 
-Fix this by doing the same NULL check and reloading of the SECS page as
-needed for both EAUG and ELDU.
-
-The SECS page holds global enclave metadata. It can only be reclaimed
-when there are no other enclave pages remaining. At that point,
-virtually nothing can be done with the enclave until the SECS page is
-paged back in.
-
-An enclave can not run nor generate page faults without a resident SECS
-page. But it is still possible for a #PF for a non-SECS page to race
-with paging out the SECS page: when the last resident non-SECS page A
-triggers a #PF in a non-resident page B, and then page A and the SECS
-both are paged out before the #PF on B is handled.
-
-Hitting this bug requires that race triggered with a #PF for EAUG.
-Following is a trace when it happens.
-
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-RIP: 0010:sgx_encl_eaug_page+0xc7/0x210
-Call Trace:
- ? __kmem_cache_alloc_node+0x16a/0x440
- ? xa_load+0x6e/0xa0
- sgx_vma_fault+0x119/0x230
- __do_fault+0x36/0x140
- do_fault+0x12f/0x400
- __handle_mm_fault+0x728/0x1110
- handle_mm_fault+0x105/0x310
- do_user_addr_fault+0x1ee/0x750
- ? __this_cpu_preempt_check+0x13/0x20
- exc_page_fault+0x76/0x180
- asm_exc_page_fault+0x27/0x30
-
-Fixes: 5a90d2c3f5ef ("x86/sgx: Support adding of pages to an initialized enclave")
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc:stable@vger.kernel.org
-Link: https://lore.kernel.org/all/20230728051024.33063-1-haitao.huang%40linux.intel.com
----
- arch/x86/kernel/cpu/sgx/encl.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 91fa70e..279148e 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -235,6 +235,21 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 	return epc_page;
- }
- 
-+/*
-+ * Ensure the SECS page is not swapped out.  Must be called with encl->lock
-+ * to protect the enclave states including SECS and ensure the SECS page is
-+ * not swapped out again while being used.
-+ */
-+static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
-+{
-+	struct sgx_epc_page *epc_page = encl->secs.epc_page;
-+
-+	if (!epc_page)
-+		epc_page = sgx_encl_eldu(&encl->secs, NULL);
-+
-+	return epc_page;
-+}
-+
- static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 						  struct sgx_encl_page *entry)
- {
-@@ -248,11 +263,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 		return entry;
- 	}
- 
--	if (!(encl->secs.epc_page)) {
--		epc_page = sgx_encl_eldu(&encl->secs, NULL);
--		if (IS_ERR(epc_page))
--			return ERR_CAST(epc_page);
--	}
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page))
-+		return ERR_CAST(epc_page);
- 
- 	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
- 	if (IS_ERR(epc_page))
-@@ -339,6 +352,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 
- 	mutex_lock(&encl->lock);
- 
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page)) {
-+		if (PTR_ERR(epc_page) == -EBUSY)
-+			vmret = VM_FAULT_NOPAGE;
-+		goto err_out_unlock;
-+	}
-+
- 	epc_page = sgx_alloc_epc_page(encl_page, false);
- 	if (IS_ERR(epc_page)) {
- 		if (PTR_ERR(epc_page) == -EBUSY)
+-- 
+Kees Cook
