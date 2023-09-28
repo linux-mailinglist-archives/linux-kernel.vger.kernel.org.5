@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D62D7B1563
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DABA7B156F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjI1HxF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 03:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S230435AbjI1Hyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjI1HxD (ORCPT
+        with ESMTP id S229648AbjI1Hyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:53:03 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540ACD6;
-        Thu, 28 Sep 2023 00:53:01 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 469977F98;
-        Thu, 28 Sep 2023 15:52:51 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
- 2023 15:52:51 +0800
-Received: from ubuntu.localdomain (113.72.144.128) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
- 2023 15:52:50 +0800
-From:   Hal Feng <hal.feng@starfivetech.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Conor Dooley <conor@kernel.org>,
-        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
-        Hal Feng <hal.feng@starfivetech.com>
-CC:     <linux-hwmon@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] MAINTAINERS: Add Hal as one of the maintainers of SFCTEMP HWMON DRIVER
-Date:   Thu, 28 Sep 2023 15:52:49 +0800
-Message-ID: <20230928075249.109459-1-hal.feng@starfivetech.com>
-X-Mailer: git-send-email 2.38.1
+        Thu, 28 Sep 2023 03:54:44 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916A392;
+        Thu, 28 Sep 2023 00:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695887682; x=1727423682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5GpWFegTBp5yM6JLEFMqHTeSyrLm5zh8808vJewdHfc=;
+  b=yQEq1idp9y+oahrMJ+veUf6vEKAxoOP+JfR3c846FM/yEnenaQHy+uuh
+   CXWiUYhDoejOWmYjyOABQWVimZKgc48LUR/7P5WixPiT7FUt1W6UNk3FL
+   letKwz3ROPl7TYXhhKpZLbhdHuBj+o2s7X/etS1fmqG9Av7DO4ej9d7Ql
+   l1vyoJjsxzOXeRdm1c2NxSmEPt0Kqn6aUK/GS/xTV2WDzl0QzRhva5Jx4
+   mWCc0/mcF/H/I2jv4OFR6jI0c3ZWur/4HPOc2R/lOsHSgx2Km7q2b9VXP
+   SA5DICiG+z37rQg/OZTM91t2WKGjU5zO1jIVptWYDgeNxt/s51yJ26rMC
+   g==;
+X-CSE-ConnectionGUID: NCgEknYGQJG6l7MApLDYcw==
+X-CSE-MsgGUID: AmcurO+sTECrDbDybSnNWQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="asc'?scan'208";a="7033221"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Sep 2023 00:54:36 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 28 Sep 2023 00:54:35 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 28 Sep 2023 00:54:33 -0700
+Date:   Thu, 28 Sep 2023 08:54:14 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Chen Wang <unicornxw@gmail.com>
+CC:     Conor Dooley <conor@kernel.org>, <aou@eecs.berkeley.edu>,
+        <chao.wei@sophgo.com>, <devicetree@vger.kernel.org>,
+        <guoren@kernel.org>, <jszhang@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
+        <robh+dt@kernel.org>, <xiaoguang.xing@sophgo.com>,
+        <apatel@ventanamicro.com>
+Subject: Re: [PATCH v3 00/11] Add Milk-V Pioneer RISC-V board support
+Message-ID: <20230928-character-shelve-f772d9a1b493@wendy>
+References: <cover.1695804418.git.unicornxw@gmail.com>
+ <20230927-ebony-duress-44ff45d3d253@spud>
+ <CAHAQgRC2xeqUu4mDZRJd3brcPNT4KovX65rNE7YXm+ku0+eERg@mail.gmail.com>
+ <CAHAQgRDz=Gp45ZkyW1fZiZW7+EyxDzbqKkc56XOpCpZ7x1rJeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.144.128]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5m1Bn1GZfbMYs4+k"
+Content-Disposition: inline
+In-Reply-To: <CAHAQgRDz=Gp45ZkyW1fZiZW7+EyxDzbqKkc56XOpCpZ7x1rJeQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As he is the submitter of this driver, add his mail so he can
-maintain the driver and easily reply in the mailing list.
+--5m1Bn1GZfbMYs4+k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Emil Renner Berthing <kernel@esmil.dk>
-Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
----
+On Thu, Sep 28, 2023 at 03:48:24PM +0800, Chen Wang wrote:
 
-History:
-v1: https://lore.kernel.org/all/20230718034937.92999-4-hal.feng@starfivetech.com/
+> hi, Conor, one more question, what base should I take for next v4? I'm
+> still using 6.6-rc1 and I see 6.6-rc3 has been released out.
 
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+-rc1 is fine :)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b19995690904..2376272bbe20 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19402,6 +19402,7 @@ F:	drivers/net/ethernet/sfc/
- 
- SFCTEMP HWMON DRIVER
- M:	Emil Renner Berthing <kernel@esmil.dk>
-+M:	Hal Feng <hal.feng@starfivetech.com>
- L:	linux-hwmon@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
+--5m1Bn1GZfbMYs4+k
+Content-Type: application/pgp-signature; name="signature.asc"
 
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
--- 
-2.38.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRUxHAAKCRB4tDGHoIJi
+0oD/AP0Sg9cSFzJ4QG75QErZq87bCwS0txflO7nbtQ3XXqmgDAD7BSNsq/j/huEa
+GV3lZI3TpSoBOy8Hd1I0DnhdXqTPWQA=
+=z7qG
+-----END PGP SIGNATURE-----
+
+--5m1Bn1GZfbMYs4+k--
