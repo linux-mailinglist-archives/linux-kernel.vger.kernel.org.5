@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 359B27B1D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4F27B1D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbjI1NH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 09:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbjI1NHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232645AbjI1NHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Sep 2023 09:07:21 -0400
-Received: from sonic314-19.consmr.mail.gq1.yahoo.com (sonic314-19.consmr.mail.gq1.yahoo.com [98.137.69.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA69198
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 06:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1695906439; bh=e2KtUh0oKNAe6oDI0AVOcxukZgaoJiw9ioLVuekfuIY=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=LuA/rzrpRTbXCHz34/Vz2AW0tN1TR2xTs2F+TZRCj7zbNvATZsWrrdjCFvX6XT+lK8pDLpxLgZmEp/UgG2QgGBTkNS8fdovwX2G710TebURTXzYQzZuNgxRa5IjrGzd5dY5goFo7h3oUvlf1W+sUge/eIwDXvNcxkXqUNugFKa2Xb2EmKj4Pe9TaM4JAgZRTLai0ZZB5ept6p8I4EEKQ6d9FfymRzHh9N5WP+cMJ3E5+0ZTy9bwELWpeFqKwv/H0SX+vUJOwNLG/idbQ9AgbaUSuwehwM51dVHsgvdNMgqgBE+neL7U6U94EBlPhFIvGQsCPHjR5lS3pUSNGxe0mGw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695906439; bh=18wWcx4DpHbDYKD0rxIEyXdOtORzeDGAJkqj1ELdoR2=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=IanO4OtK8W7Z+z3kYqelO8BFZ3zo9sbl0Cr7q4iCnVzL+xBaurTYN/B2SnOBclehAWAKAfXA+Cb7BgBemEmBLta11F66NynmvFwPL7oD3YAPJsTXB06wPpY1nK1YHekFrHfXdDPTQhQpbqlAXn7J2AmIZdOcuXRKTU5F4DdRZmePiP2aJaNXrPYTZ/nzrJIlmmNpsHW5ckLgajwzu7NHeRxMPpv1Xdr8CeXfUaEH2dTuTAQ1hvgD4oBblNsjK8/hgZNUzTK2MddLb/ZTPVz0WasL8AhCaVxNe+/LFwlM7OiwNmNWcUVNPdLak82KTBjUsdxSAdRTo41NkY0GnrpmyQ==
-X-YMail-OSG: ECoKszUVM1nQr3scqsgy_QSZqT.dag4M3p23TuP3Rxncn3EnCBpzAlF5MegMAYI
- fZqU3HVZ9kwD7ZKJXEfNxRZOwczKZDczxzXGRVbmrK7fKOGxY6iMbPLRC9QqekP5nszhzBXUjcHA
- IEBEPsImVLkq2_wCB14rzaaCgpIuZVl6xghSNSB8NlfSKw06VgCajJJB39ic6PIrd45hvayBjoST
- AIFS2aDZT_CaTJJUcDrJMSgzITzVaE.uqB_tl62wDUW_7n_OcRv4xFaG9mA0a.5ahs3g6FJ104oZ
- SGCi653zOpFQnziriH.6jQ4lIZZvHLMWgJx5RS3FhRXbCdndAErrTUyRzauH2UL.EWXSXjNh052l
- pg__6QibpPk16U1wpLhBFYMEiEAmwArIC8_C8IgeaR1d1IDj63OOJ1Fuc22PzN_FeE9tJuVwYqvQ
- Z7k_t8cxW.QIT5HEugpMCk2P1J3xx9UKeNASaYnKvSnVTL5GTj_I1Tc9vkW2oESNnHsfMtK5xCLt
- TlPsoS.VRyy4HLH.aMb.7WmSQhz64fAjGaLWI53_zrVPPytL6o5iHcdeoYSGsqR9x2GUsndTJk_O
- Y.2LgThAjGg7KD2_CfZV.RMmdHk4ADrDRRSdQhl5KYaHJ1SfO8tgm_We71WdN.2M_UIbpSuWP4Te
- YXse9Nz6fU81uNuDR3BTc6Nmydqmp4aE08l1fPyAQafcsBrVnY6Gsxeq75k8MygIrBZTU91uw4up
- 5NQhJfsfJ63W5oSbYSUBLUxVCOcdZQi8jq3MIbjLgS.BpwflQexI5OpHIOgnaLpt_qT1nqH_Ziwh
- H2jdvk7b538f6az08m4UgopEhOhIEEG8_xJyzVT7C8UHcxLwSQM_s9Dik2glA0z44mqUw5MUHX9B
- JRr0r_j8tAi1nbs8lHPr5QSJF4oimg8TPNBAVi4VWsZJL5B5coFbUHZZpVQBP1PT0CRP9tHcjPe1
- 9v1YwqVzAuvbWk4HBpaOO7bf8NQdP87A49X49BTEkInF4a5UM8Ivz2l6GB2RXaGA2ACo0tXeC63r
- y6xhxvvpzOkUkUTqQJDKnkrJC2VVXv9GHFx.iH2qGKs9Rv5HU_kCUgRX0EOERJXWBeJgPXheyl8r
- XvVOInsldqKuJ689LrEz1M6IINsiHM3PaOwW2XgNguQ85neek_8Fr7dJUbv1ziX7C7vt_5ASSbpM
- bVcPnuLWqC_fQlqhzhSLongU36vBM49pXGdihxhIVr0HcYGSr0byiSZBX_Y5QeKvjR81Samqud8L
- ayt5R2VRjYU_cFtzMe26rfwxYNrD7qLSu2T3p62WYVKci5vh4vLoDmh7puljNFto1qDCXNrqjcsG
- xOAJ3Xmd74snXnwOpwdQJq_9q80tG.IXSLmN6ehT9J0DX8nJCR2gOLZ2.33Qc2NZ4m1YECRgdHqu
- QccxSwCltEfSQ4KdLW5JUIXRg7.lamqMTLyb7uC1ON_le1eONoUXBnMI2zdau6GYHxrFQJ0uoSBo
- huyNKAfuey5ttJ9awfUHNsAHqmTW0hmTAxtYioUPcWLfxIMCBF0uix96398ShXCeCm11dQ8Pf7th
- 9Hyx5t66ZWnyBQg5OUaZHIw1c4PwCjhDcuO6f1vTHfl8X1_zZthlJ2yQRz54ym4aNZ.T482Lwer7
- tKXRwxfgPvYKHbPggs.0bZQIu8PSRD9vmcq_qCzS78HOLY14TVXRVq5pMMVQHJjlZzYEl1_zZG9W
- KTMgXdrAqN3IlkaPhlgRVtaSqDEBEW8XdIv5H_Xq.Zq_TrK23V6YJ2NNatwjTuZJZG25SkwbyTFN
- ADT9On62F5RpxASXVhQWDqZtxBVDsAflQKLt_vHukDQkYl.crNFFml4UX.jJZa_wTe8VbG6JZXIx
- IfpHMz46CZgUYDkxAo51cHmiGgLR9Y00cSp6TRZNeoNZ11IIARowQBJqdUyTUcnBgHwvciMj1m6C
- Ed.VoT_BpfbBWQtljHmgdFO_B6QTm8DAA52ShqvHO_1Izh_003jQfkgU9KmTPuWdZaIj6z2pJFIf
- tODxzVOvi38YXMAAzUMcy5VzirJ2ObNWVadaa_X89fju8DOdCJ_bKIdG_R29V6BVKFe.oJQ1Hr_U
- 9I9Y7UWs4nvB9zWB4oJN5XOgNhZEPif9xhRTVDmm8rB9DFwbGanmOvwXlEi_ifWwVoFT1eC1IACJ
- d.FDmrB22y1X6j8qiWgVumOgBtUCQYsyeEPqRi24qheypwnhWefj94IksbQFnW12hrjBXKMb33xW
- Q7tyLbiThO7nKirfUFXf3wA4IIbPsDXsuCcrrabTsFdKvAaovQR33Gkguf0e7R93jCoV8zYmZoVK
- c
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232126AbjI1NHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Sep 2023 09:07:19 -0400
+Received: from sonic305-20.consmr.mail.gq1.yahoo.com (sonic305-20.consmr.mail.gq1.yahoo.com [98.137.64.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FE4198
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 06:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1695906436; bh=0uYxSCUmeN1rwvUTUZ2yOlvAsifAJYV7MUA5++fq0fk=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=glWhCkaVxtt6JEK20DzC7F/6zvd6intLm2j/3iVWr4HDG9y+CJ79G2+3vgb/opXLwiXIiJlxJ29oTRHRLCIYBBTIWsLWi+sc1A0xBtiOpkjc3xkVyJZLl0KOcPVSUP6Co2lFOJAny3AWWZ8Z+DiW4GYUo61dZmwpnEb4vClxajjysKd8GAA100LoiL66kY4hvAWKqjrA/ahL/FnOvKiszhnJbDOaYt4DpVTuAVncXFAEed8x/7yv3VnA0hQEdGY/QiYlvHyZOA16KbiCufM7YrS63hiAJw4gyjt0btSuH/Im7pDMiSGqXUY9qunhMtrsHgpkr+PARcRdO2zSDWyXzw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1695906436; bh=+eh19m8DJjetJ3idHXwuUz/nHNN3iXgy/uIkqOrDkc2=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=DqBXGbHyAQiOb8fhgfZ4HN0Ak3ioIIh04h8bIeJ6EghF/02UHV0EKzdEDzYCviD5hOo7VSJFpA7dyIjDxvaDehq7F8ajVZZaqJ6kxQ0lnwcne1I4b8P4Fni5445xIuWYZemZQFUoEDwxHv/XXJjTJTE8pYRK48chIKEsbiMUjI3967B0Y59878E/XYJygad0lMSYjR3jOmroZ4OjFvD3cyI8971fUS0JaciyahOZqVMft10GuwpqazTnU1GBzKBE7cbtuFM3zvISoG3KJodumdOp3HhGwLGwJpXheATZrxYkfcDCTsBSeOIpc9BHz285u+2VxACSHu03l87G9ovvKQ==
+X-YMail-OSG: wkbDK3oVM1khKDOzLee.9_GQO5PD3jUvyfcmBWVO2BDYi.gPzrIIpRzywAwPg.k
+ p6cyK5aZ1CJbMXSWY.lmjclhvwyCX4g1_6QLpIm8ix956jprO5EJKrySKFNj2niEqbWQjr2KKLFT
+ 6UKfncSsNX5eODzCOxYfpMX6M27zmPB_KrJWWVPN8yCewhNOV2yxF.EC0uGwQDezUFrtVH4yiCH0
+ EtI7oD88d3Y7c6gXSbzD4y1GawmKBQjaPgW_Zg92qahooQlMKbDejAoSbtYoDWodgLvdCwzLTOiu
+ sNLtTEtH0O.Ew7iNOGDaXvbfQRO1qXCi37.OhMT42Fhul9a0bhek9ByW3X2fkOZvnbXYboaLNIY5
+ LHScV7RFLLd9EINQAomK9DIGs4VtVyZ0Rj1eoOHax.K1vzwShgtyb_DoptL5ZaDmdL2az_VWA15c
+ JcW23h8aSa_y28cHhJuHnv1BXlDn5RKQDmCJ1ir5muX6iqgLTMHV.MuoqXNoBqebx4_YZVg0NyUY
+ fIMw_uRMCzcZ9Pd.MUY3BlXO.doZzdbp0BKwfsn3yiJUvePHvDwqnTW28xj7uY8h1DjyqNxzqJC1
+ YI4svJCMuxEREAYmVEZC5hENF9undjgTIcRYBomiwsVxwn7CFrjRrDMoeU_PBrMgFX32LH5bU.S2
+ YOgDICRSs13v_wKgWXNSlpI84kjjt1xFxpfySbpwM9mn39hzUjG_qQMTGIDByQsRRPtP9N5L1CVW
+ vryJBMJGQpZvQl0FLcMl_Uf9droJv1nq52wVc4B7E6gUKtjQ.0fRU8N9XHPSryp2b1NEjG_VEyVK
+ SWpZSBhjk.5BkqkYPbo0urgO0ni4g08uGiTC03iItplGXDBBWWKPH9Ktb8MYouozLU_Sy0V9iMkl
+ Z47WJmJsNIB5rlvnO1uKM3lePu9F1Hz8fxkESCguMrSVXx6SnviVqon7y1jEnszezmzzVhP0AVMd
+ D82KqWpsMhWxbNMX4ojfd6KDzdO1r1C6uWOLPZvBae1vvPkHR7VtpfqxxeUwnfPWX.v5UsLaOSCj
+ T6T1la8HfR_JK.KI8OBB8CHMCJc6_JviINX4HisRvjkFlGo0WMSZFNs.Eqgcj31_b5V9l82kOy90
+ x4IhaWqwNMLuk9rGtJckbP9ymnx7_io2SFp7KVpe8B5X9W4ZYr2Jt.Bx3m7NGjaZr2L8YP7Q0MXI
+ tH21JwHZtts3f1F3N.H28uqAKMi5mrR55qUarRd6Ppvplz_VedwndIVISvCR1aJNB_K3VLOGplh0
+ JehTsoxzFQ0ZlsnNMY6XnP3Nhlv5EpGLiol5SkdEX8NW6KU4iOmZvxSHUQtemAdrS_J7pYGcJv3s
+ sNMQhshUAau30GNbCUAGpS82FBAuU5JLgh6hTHm0_Wl1z1MWBgBC1zOOpSZaQCrsCHkXIOgdyC3u
+ ULDQqEXMwHhfbppJZx2ssnnS3RY2wBT9zl6x.xOsaWA7GQbausqGmcqXXZx._w06hYcyygQop6wL
+ 3FfRTThBiYNspwvdqr4jjGElEZ4fXt_aJMA0HtNsT_fmgAE7q4GwTaGGCy5.01A7yHO1ArZxPvXQ
+ N9hK_Sy.IRP3DhUWMlUi.atCzojQR1ewnch.zu10O8X0bXjJYIeJe7g2kgVLYbW2KHRMTBlXeFnZ
+ Iex8INk_Ysqe0M_H9EtL4UVTFa0qLgQWE7f1anQy626TLZ.GMqEyVBFEDbikrwv3b_tr0E0XDRBc
+ GJGi7HQyzaI4hIGp9cpmisl9njAF43YRgnO3yv2Bx56WvcMorK3Buc3WWHPOMJ_KUD3Itcz5apll
+ o4yofQdRo4ldesYT5_Yq6DOtFJ_Po04sBU1ka91svGk_6XzM7qw_VBygZK4XopHxmGtzFSRZdLiX
+ Xr35GrX_c2hEoGnowpjlz5XJ7VhbCE9qCh4mOmx94E90rupLnRD8qhPm1tsAPI2HCh.GXLOUaYl2
+ bz5NSguvG4ef1ns8SmGUyDSMFxiY2OmuIBQivIchN57fFtHGe_QmN9Nh6aZsUgJ.nnnSY1aBKUo2
+ xO0YEhS3kLtbd14j4ZXryQlY6CQ8KQtm3pZfo6axY6H3Whu2qMzA90gkX_ejg3ZESfDvX6ptyqL3
+ bxNkfY8DO1Aw6VIwWzxiuEW0N1XjIoQhWBaBZjv02djv1GrU77RwxE6OK3FHU32py__SSTvy6Wdd
+ Tdnx7yLMCOWzBtGVfYrXQKDAgcjBXV0xDGBMMTFXb1jIueccbxe9vndRYT_wRKM5H_LboZRAyiCG
+ i1DiirsJ6RZrb4j_KGQeVyunxLkHEbZBmBko8Q.xJrX8nAfp1EjT.WqJvb3MLVxV3ys3hd0jYkML
+ 4k5C.
 X-Sonic-MF: <earl.chew@yahoo.ca>
-X-Sonic-ID: bc7e95aa-3df0-4daf-b352-57edcb1227d7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.gq1.yahoo.com with HTTP; Thu, 28 Sep 2023 13:07:19 +0000
-Received: by hermes--production-gq1-56dd58fbdb-b8g5x (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 0b8ff48338d2226adb5aa11552cc6b57;
-          Thu, 28 Sep 2023 13:07:14 +0000 (UTC)
+X-Sonic-ID: 55d4a9ad-4c71-4bad-8a26-6fddd571f55c
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Thu, 28 Sep 2023 13:07:16 +0000
+Received: by hermes--production-ne1-5b56858476-lphgp (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 82903ebb22bd0c45e3c9b96810013fb9;
+          Thu, 28 Sep 2023 13:07:15 +0000 (UTC)
 Received: from localhost.lan ([127.0.0.1]:52224 helo=localhost.localdomain)
         by postbox.timberdragon.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.95.0)
         (envelope-from <earl.chew@yahoo.ca>)
-        id 1qlqjY-000fEn-Nd;
-        Thu, 28 Sep 2023 06:07:12 -0700
+        id 1qlqjZ-000fEn-4T;
+        Thu, 28 Sep 2023 06:07:13 -0700
 From:   Earl Chew <earl.chew@yahoo.ca>
 To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
         jirislaby@kernel.org
-Cc:     peter@hurleysoftware.com, earl.chew@yahoo.ca,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 2/3] tty: Serialise racing tiocspgrp() callers
-Date:   Thu, 28 Sep 2023 06:06:58 -0700
-Message-Id: <20230928130658.4045344-3-earl.chew@yahoo.ca>
+Cc:     peter@hurleysoftware.com, earl.chew@yahoo.ca
+Subject: [PATCH v2 3/3] tty: Move task_pgrp() after tty->ctrl.lock for consistency
+Date:   Thu, 28 Sep 2023 06:06:59 -0700
+Message-Id: <20230928130658.4045344-4-earl.chew@yahoo.ca>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230901015030.2469062-1-earl.chew@yahoo.ca>
 References: <20230901015030.2469062-1-earl.chew@yahoo.ca>
@@ -83,128 +82,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only lock tty->ctrl.lock once when processing requests
-in tiocspgrp() to serialise concurrent changes. Since
-the introduction of tty->ctrl.lock in commit 47f86834bbd4
-("redo locking of tty->pgrp"), tiocspgrp() has acquired the
-lock twice: first to check the process group, and next to
-change the process group. In the rare case of multiple
-callers, all can pass the process group check before each
-taking turns to update the process group.
+Refactor __tty_check_change_locked() for consistency
+with __proc_set_tty() which calls task_pgrp() after
+tty->ctrl.lock is acquired.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309012304.un7EAdgl-lkp@intel.com/
-Closes: https://lore.kernel.org/r/202309011252.ItlD27Mg-lkp@intel.com/
+In addition, spin_lock_irqsave() can block, while
+task_pgrp() cannot block. Fetching the process
+group immediately before it is used reduces the
+window for inconsistency, and improves clarity.
 
 Signed-off-by: Earl Chew <earl.chew@yahoo.ca>
 ---
- drivers/tty/tty_jobctrl.c | 43 +++++++++++++++++++++++++++++----------
- 1 file changed, 32 insertions(+), 11 deletions(-)
+ drivers/tty/tty_jobctrl.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
-index aba721a3c..da028aadf 100644
+index da028aadf..e82ffd875 100644
 --- a/drivers/tty/tty_jobctrl.c
 +++ b/drivers/tty/tty_jobctrl.c
-@@ -20,9 +20,10 @@ static int is_ignored(int sig)
- }
- 
- /**
-- *	__tty_check_change	-	check for POSIX terminal changes
-+ *	__tty_check_change_locked	-	check for POSIX terminal changes
-  *	@tty: tty to check
-  *	@sig: signal to send
-+ *	@ctrl_lock: &ctrl.lock if already acquired
-  *
-  *	If we try to write to, or set the state of, a terminal and we're
-  *	not in the foreground, send a SIGTTOU.  If the signal is blocked or
-@@ -30,19 +31,24 @@ static int is_ignored(int sig)
-  *
-  *	Locking: ctrl.lock
-  */
--int __tty_check_change(struct tty_struct *tty, int sig)
-+static int __tty_check_change_locked(struct tty_struct *tty, int sig,
-+				     spinlock_t *ctrl_lock)
- {
- 	unsigned long flags;
- 	struct pid *pgrp, *tty_pgrp;
- 	int ret = 0;
- 
-+	BUG_ON(ctrl_lock && (
-+	       ctrl_lock != &tty->ctrl.lock || !spin_is_locked(ctrl_lock)));
-+
+@@ -44,13 +44,13 @@ static int __tty_check_change_locked(struct tty_struct *tty, int sig,
  	if (current->signal->tty != tty)
  		return 0;
  
- 	rcu_read_lock();
- 	pgrp = task_pgrp(current);
- 
--	spin_lock_irqsave(&tty->ctrl.lock, flags);
-+	if (!ctrl_lock)
-+		spin_lock_irqsave(&tty->ctrl.lock, flags);
+-	rcu_read_lock();
+-	pgrp = task_pgrp(current);
+-
+ 	if (!ctrl_lock)
+ 		spin_lock_irqsave(&tty->ctrl.lock, flags);
  	tty_pgrp = tty->ctrl.pgrp;
  
++	rcu_read_lock();
++	pgrp = task_pgrp(current);
++
  	if (tty_pgrp && pgrp != tty_pgrp) {
-@@ -57,7 +63,8 @@ int __tty_check_change(struct tty_struct *tty, int sig)
+ 		if (is_ignored(sig)) {
+ 			if (sig == SIGTTIN)
+@@ -63,9 +63,9 @@ static int __tty_check_change_locked(struct tty_struct *tty, int sig,
  			ret = -ERESTARTSYS;
  		}
  	}
--	spin_unlock_irqrestore(&tty->ctrl.lock, flags);
-+	if (!ctrl_lock)
-+		spin_unlock_irqrestore(&tty->ctrl.lock, flags);
- 	rcu_read_unlock();
++	rcu_read_unlock();
+ 	if (!ctrl_lock)
+ 		spin_unlock_irqrestore(&tty->ctrl.lock, flags);
+-	rcu_read_unlock();
  
  	if (!tty_pgrp)
-@@ -66,9 +73,19 @@ int __tty_check_change(struct tty_struct *tty, int sig)
- 	return ret;
- }
- 
-+static int tty_check_change_locked(struct tty_struct *tty, spinlock_t *locked)
-+{
-+	return __tty_check_change_locked(tty, SIGTTOU, locked);
-+}
-+
-+int __tty_check_change(struct tty_struct *tty, int sig)
-+{
-+	return __tty_check_change_locked(tty, sig, 0);
-+}
-+
- int tty_check_change(struct tty_struct *tty)
- {
--	return __tty_check_change(tty, SIGTTOU);
-+	return tty_check_change_locked(tty, 0);
- }
- EXPORT_SYMBOL(tty_check_change);
- 
-@@ -489,12 +506,7 @@ static int tiocspgrp(struct tty_struct *tty, struct tty_struct *real_tty, pid_t
- {
- 	struct pid *pgrp;
- 	pid_t pgrp_nr;
--	int retval = tty_check_change(real_tty);
--
--	if (retval == -EIO)
--		return -ENOTTY;
--	if (retval)
--		return retval;
-+	int retval;
- 
- 	if (get_user(pgrp_nr, p))
- 		return -EFAULT;
-@@ -502,6 +514,15 @@ static int tiocspgrp(struct tty_struct *tty, struct tty_struct *real_tty, pid_t
- 		return -EINVAL;
- 
- 	spin_lock_irq(&real_tty->ctrl.lock);
-+	retval = tty_check_change_locked(real_tty, &real_tty->ctrl.lock);
-+
-+	if (retval == -EIO) {
-+		retval = -ENOTTY;
-+		goto out_unlock_ctrl;
-+	}
-+	if (retval)
-+		goto out_unlock_ctrl;
-+
- 	if (!current->signal->tty ||
- 	    (current->signal->tty != real_tty) ||
- 	    (real_tty->ctrl.session != task_session(current))) {
+ 		tty_warn(tty, "sig=%d, tty->pgrp == NULL!\n", sig);
 -- 
 2.39.1
 
