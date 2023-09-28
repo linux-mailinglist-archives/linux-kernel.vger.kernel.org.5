@@ -2,146 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577D27B23E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379287B23ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjI1R3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S232071AbjI1R37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbjI1R3g (ORCPT
+        with ESMTP id S229870AbjI1R3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:29:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62735CC2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695922174; x=1727458174;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+i5DZweb1DmFnq+1NXhKYb+RqfLnbbybywHY7SzT/fw=;
-  b=Rkr6Wfgr533nqJfLWabab+QzWnq5P+vCXd7l84zQwWxvjd2unvfqW1ay
-   IF/0qEQeb0w+Ola8LGcLTNq9TV0xPrBfny2Re5z/qB0v0U315Zw7nMRTq
-   I554QHHRBpAVKLM4P3osY0LZqSdWWBDPfv88gEVRYvUfR9aA+uRDofSVO
-   RW9rXoL6MfxvpF3TJMCs/OnZQqG5VphnYfOKZpHHZWXb9IMrVYl7Np4gV
-   wz9e55o2HON/HFyrZ0C44nvIM2BGGgQ2cHTWeM1pSaUqTbYiBnEEXbYkk
-   a7nxxLvFzTfe1CxbJhluyOTazL0lXSFVcIx+GbiexwWEqO8ERIkfJbNEp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="384939693"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="384939693"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:29:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="743149449"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="743149449"
-Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:29:33 -0700
-Message-ID: <b684d339-991d-be85-692c-75f21679ca69@intel.com>
-Date:   Thu, 28 Sep 2023 10:29:32 -0700
+        Thu, 28 Sep 2023 13:29:53 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAF9CE4;
+        Thu, 28 Sep 2023 10:29:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vt2A-OU_1695922185;
+Received: from 30.39.212.64(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vt2A-OU_1695922185)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Sep 2023 01:29:47 +0800
+Message-ID: <4bac8bcf-5507-0982-fed2-c507fc3264c2@linux.alibaba.com>
+Date:   Fri, 29 Sep 2023 01:29:43 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v2 0/7] Introduce persistent memory pool
-Content-Language: en-US
-To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
-Cc:     Baoquan He <bhe@redhat.com>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, ebiederm@xmission.com, akpm@linux-foundation.org,
-        stanislav.kinsburskii@gmail.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-mm@kvack.org, kys@microsoft.com, jgowans@amazon.com,
-        wei.liu@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        graf@amazon.de, pbonzini@redhat.com
-References: <01828.123092517290700465@us-mta-156.us.mimecast.lan>
- <ZRPBRkXrYvbw8+Lt@MiWiFi-R3L-srv> <20230927161319.GA19976@skinsburskii.>
- <ee1907a1-2f04-cfa3-9f09-75b94994e88b@intel.com>
- <20230927232548.GA20221@skinsburskii.>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230927232548.GA20221@skinsburskii.>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v4 00/18] net/smc: implement virtual ISM
+ extension and loopback-ism
+To:     Alexandra Winter <wintera@linux.ibm.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     schnelle@linux.ibm.com, gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+ <2e4bb42a-1a6c-476e-c982-c4d6cfdac63b@linux.ibm.com>
+ <1fc9a6aa-019d-f3f5-7cac-3b78388c2730@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <1fc9a6aa-019d-f3f5-7cac-3b78388c2730@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23 16:25, Stanislav Kinsburskii wrote:
-> On Thu, Sep 28, 2023 at 06:22:54AM -0700, Dave Hansen wrote:
->> On 9/27/23 09:13, Stanislav Kinsburskii wrote:
->>> Once deposited, these pages can't be accessed by Linux anymore and thus
->>> must be preserved in "used" state across kexec, as hypervisor state is
->>> unware of kexec.
+
+
+On 2023/9/28 16:56, Alexandra Winter wrote:
+> 
+> 
+> On 27.09.23 17:16, Alexandra Winter wrote:
+>> Hello Wen Gu,
 >>
->> If Linux can't access them, they're not RAM any more.  I'd much rather
->> remove them from the memory map and move on with life rather than
->> implement a bunch of new ABI that's got to be handed across kernels.
+>> I applied and built your patches and noticed some things that you may want to consider in the next version:
 > 
-> Could you elaborate more on the new ABIs? FDT is handled by x86 already,
-> and passing it over kexec looks like a natural extension.
-> Also, adding more state to it also doens't look like a new ABI.
-> Or does it?
-
-FDT makes it easier to pass arbitrary data around, but you're still
-creating a new "default_pmpool" device tree node on one end and
-consuming it on the other.  That's a new ABI in my book.
-
-> Let me also comment on removing this regions from the memory map. The
-> major peculiarity here is that hypervisor distinguish between the pages,
-> deposited for guests to rnu and the pages deposited for the Linux root
-> partition to keep the guest-related portion of hypervisor state in the
-> root partition. And the latter is the matter in question.
 > 
-> We can indeed isolate and deposit a excessive amount of memory upfront
-> in hope that hypervisor will never get into the situation, when it needs
-> more memory.
-> However, it's not reliable, as the amount of memory will always be an
-> estimation, depending on the number of expected guests, guest-attached
-> devices, etc. And this becomes even a bigger problem when most of the
-> memory is already removed from the memory map to host guest partitions.
-> It's also not efficient as the amount of memory required by hypervisor
-> can grow or shrink depending on the use case or host configuration, and
-> deposting excessive amount of memory will be a waste.
+> FYI, patchwork basically complains about many the same issues:
+> https://patchwork.kernel.org/project/netdevbpf/list/?series=787037&state=*
 > 
-> But, actually, the idea of removing the pages from memory map was
-> reflected to some extent in the first version of this proposal,
-> so let me elaborate on it a bit.
-> 
-> Effectively, instead of reserving and depositing a lot of memory to
-> hypervisor upfront, the memory can be allocated from kernel memory when
-> needed and then returned back when unused.
-> This would still require pages removal from the memory map upon kexec,
-> but that's another problem.
-
-Let's distill this down a bit.
-
-I agree that it's a waste to reserve an obscene amount of memory up
-front for all guests for rare cases.  Having the amount of consumed
-memory grow is a nice feature.
-
-You can also quite easily *shrink* the amount of memory on a given
-kernel without new code.  Right?
-
-The problem comes when you've grown the footprint of hypervisor-donated
-memory, kexec, and *THEN* want to shrink it.  That's what needs new
-metadata to be communicated over to the new kernel.
-
-1. Boot some kernel
-2. Grow the deposited memory a bunch
-3. Kexec
-4. Shrink the deposited memory
-
-Right?
-
-That's where you lose me.
-
-Can't the deposited memory just be shrunk before kexec?  Surely there
-aren't a bunch of pathological things consuming that memory right before
-kexec, which is basically a reboot.
+> In general you should run those check BEFORE you send the patches and not rely on patchwork.
+Thank you Sandy. I seem to have not seen the specific content of these checks. May I ask how to
+run those patchwork check locally? So that I can make sure everything is ok before send them.
