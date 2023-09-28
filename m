@@ -2,77 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BA07B2059
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799567B2060
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjI1PEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
+        id S231443AbjI1PFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjI1PE2 (ORCPT
+        with ESMTP id S230523AbjI1PFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:04:28 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031AD1B5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:04:25 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-277564f049dso6430363a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695913464; x=1696518264; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
-         :references:mime-version:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hy+mCITxqUKHaf6v9YLMzBge8DV4xA0bJDOMHOLkflo=;
-        b=YIZqZylNoOOKp2ilggVieH/kQo3Yv3Lak4IBKNCKTQaWliGoKgoSEKYbKLhHdTfq89
-         ckiZd1SPUqXikVgjDqcaenz8jK3oOreXiblrKqw1KeN0mQtWbRLEPtaHfMw9UuYAQupP
-         pZj5ZAKAQ6j5I1qoxz3lFLaP7YQu1k6EnGD80b8e7rMhvtTkHWxSMAfpDB5SpCOv8IhY
-         hTj5f8vUuLsdXQlK8mqgrU/APIjBBiMe3EeCwVP5Bvnw3SAS00vsQKBm49Tb+oAHpi9B
-         omaTUtSj9R1yaKFm3Ht6CW0r0WDJxYpmAsoPr346nTW5XRXRL5z7wF6hWKhND0j6LU+f
-         IEgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695913464; x=1696518264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:in-reply-to
-         :references:mime-version:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hy+mCITxqUKHaf6v9YLMzBge8DV4xA0bJDOMHOLkflo=;
-        b=Hlo0bHQhjJgBfNO/k1PLgV2t/D/4fkPOL52EE0XX84YmMptY8sKJMyYDrVaX7rly2G
-         bnkDNAwztyYOCzslB71Dxy0ZkR0r9YqJ8SgibG9MFlS5RPNKwTshDSME+ahWKLsD9oZG
-         a0dsgVCac4Wpcut/bwOvAMuguKlNAK/66XGEWG+4zWXIXFASMuR7NTw4GkVJNeFF3khU
-         v1K0vXv0K/kWbsP02bCX3ew5DJ9AuLZiVMWBqr7OJVcCstUEjlyuJiK/LvUyrwkXxxkb
-         5WB5yJa4X4E1QnfvrP3PKLg7G4Dt9jy/q/NpFsdfqqsIPD7zTcZOhyizr6Ta5fD5ILoA
-         IbKg==
-X-Gm-Message-State: AOJu0YwiX8ldVNxWJzTkj6sj+7Tysfr+Nm4qJYqFkThYgCVFyg1hH0d4
-        RqUI2y88h6u6BRwJfw6sFi+JRTAIybrN/gakFfME5SzcJlMI9+ViFyw=
-X-Google-Smtp-Source: AGHT+IGHZkvDaSolxNVreDEYNnlm23eWGgLmXan2kef32Ucxd9qRSqygmSfVuYx7BSqrMRHdwnd8QSHBn0FnGfA1Tg4=
-X-Received: by 2002:a17:90a:b28b:b0:273:ed60:ad52 with SMTP id
- c11-20020a17090ab28b00b00273ed60ad52mr1367512pjr.37.1695913464408; Thu, 28
- Sep 2023 08:04:24 -0700 (PDT)
-Received: from 44278815321 named unknown by gmailapi.google.com with HTTPREST;
- Thu, 28 Sep 2023 11:04:23 -0400
-From:   Jian Zhang <zhangjian.3032@bytedance.com>
-Mime-Version: 1.0
-References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com> <20230928145128.tjflbgvena4apivs@zenone.zhora.eu>
-In-Reply-To: <20230928145128.tjflbgvena4apivs@zenone.zhora.eu>
-Date:   Thu, 28 Sep 2023 11:04:23 -0400
-Message-ID: <CA+J-oUsgZuFmKor_thfehf2T8Y9T4NHcDp713YHyZC=fQvvZgA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
-        joel@jms.id.au, andrew@aj.id.au, zhangjian3032@gmail.com,
-        yulei.sh@bytedance.com, xiexinnan@bytedance.com,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 28 Sep 2023 11:05:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C102919D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695913477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=loADJkQmm3NMp2euPIHq0njfjxsbikdzpGiKHJE7uMw=;
+        b=G5Hbts2SVmBopDiTAaGz0gH8fFJ3F5tCzVQqEgHpGBLyPdupJ3+bWnMKneVVzthRdMID51
+        WdydKqcBkHpLSZgcxLPX+adcq38L++rMuxZi3PrHpDoVKIcOiXaUhaDIH3Cu71u0WXD2nm
+        deilmEDw9ko5OqhXyNKdcg3f77N8pyU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-362-4mc4vLxuPUmwvAq12kDf1A-1; Thu, 28 Sep 2023 11:04:33 -0400
+X-MC-Unique: 4mc4vLxuPUmwvAq12kDf1A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AE131811E7E;
+        Thu, 28 Sep 2023 15:04:32 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.45.226.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2726240C6E76;
+        Thu, 28 Sep 2023 15:04:28 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/5] AVIC bugfixes and workarounds
+Date:   Thu, 28 Sep 2023 18:04:23 +0300
+Message-Id: <20230928150428.199929-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,45 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: "Andi Shyti"<andi.shyti@kernel.org>
-> Date:=C2=A0 Thu, Sep 28, 2023, 22:51
-> Subject:=C2=A0 [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in=
- slave read
-> To: "Jian Zhang"<zhangjian.3032@bytedance.com>
-> Cc: <brendan.higgins@linux.dev>, <benh@kernel.crashing.org>, <joel@jms.id=
-.au>, <andrew@aj.id.au>, <zhangjian3032@gmail.com>, <yulei.sh@bytedance.com=
->, <xiexinnan@bytedance.com>, "Tommy Huang"<tommy_huang@aspeedtech.com>, "W=
-olfram Sang"<wsa@kernel.org>, "open list:ARM/ASPEED I2C DRIVER"<linux-i2c@v=
-ger.kernel.org>, "moderated list:ARM/ASPEED I2C DRIVER"<openbmc@lists.ozlab=
-s.org>, "moderated list:ARM/ASPEED MACHINE SUPPORT"<linux-arm-kernel@lists.=
-infradead.org>, "moderated list:ARM/ASPEED MACHINE SUPPORT"<linux-aspeed@li=
-sts.ozlabs.org>, "open list"<linux-kernel@vger.kernel.org>
-> Hi Jian,
->
-> On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
-> > When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
-> > as a slave, a situation arises where the master sends a START signal
-> > without the accompanying STOP signal. This action results in a
-> > persistent I2C bus timeout. The core issue stems from the fact that
-> > the i2c controller remains in a slave read state without a timeout
-> > mechanism. As a consequence, the bus perpetually experiences timeouts.
-> >
-> > In this case, the i2c bus will be reset, but the slave_state reset is
-> > missing.
-> >
-> > Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeou=
-t occurs")
-> > Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
->
-> Why I'm failing to find your v1 patch? And where is the
-> changelog?
-Sorry, something was missing,
-v2:
-* remove the i2c slave reset and only move the `bus->slave_state =3D
-ASPEED_I2C_SLAVE_INACTIVE` to the aspeed_i2c_init
+Hi!=0D
+=0D
+This patch series includes several fixes to AVIC I found while working=0D
+on a new version of nested AVIC code.=0D
+=0D
+Also while developing it I realized that a very simple workaround for=0D
+AVIC's errata #1235 exists and included it in this patch series as well.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (5):=0D
+  x86: KVM: SVM: fix for x2avic CVE-2023-5090=0D
+  x86: KVM: SVM: add support for Invalid IPI Vector interception=0D
+  x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()=0D
+  iommu/amd: skip updating the IRTE entry when is_run is already false=0D
+  x86: KVM: SVM: workaround for AVIC's errata #1235=0D
+=0D
+ arch/x86/include/asm/svm.h |  1 +=0D
+ arch/x86/kvm/svm/avic.c    | 55 +++++++++++++++++++++++++++-----------=0D
+ arch/x86/kvm/svm/nested.c  |  3 +++=0D
+ arch/x86/kvm/svm/svm.c     |  3 +--=0D
+ drivers/iommu/amd/iommu.c  |  9 +++++++=0D
+ 5 files changed, 54 insertions(+), 17 deletions(-)=0D
+=0D
+-- =0D
+2.26.3=0D
+=0D
 
-[0]: https://lore.kernel.org/linux-arm-kernel/20230810072155.3726352-1-zhan=
-gjian.3032@bytedance.com/T/
-Jian
->
-> Andi
