@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 319F37B2383
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5357B2385
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbjI1RPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
+        id S231445AbjI1RQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjI1RPb (ORCPT
+        with ESMTP id S231389AbjI1RQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:15:31 -0400
+        Thu, 28 Sep 2023 13:16:02 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5991A7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:14:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F01019E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695921279;
+        s=mimecast20190719; t=1695921318;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IoOMdWsqx13KyfLDmhd8kwn+FZuK3U7Zd1iwFOjjXP0=;
-        b=IqJxie0C2PYnojl6KJqT/K1pUvAykASHFbzvV17yMBYfbc8ZAVvT43wTSaqpgyFOV7G7hL
-        AvhfTfGZN/D0nYZ7ApiF5LERMhHniObphVC/6XDeAzwNV4XQ6oABbRC6yKOEXUk4NSts2w
-        YZ2GrBh10eihKdn/Mb2KbK4rF/QsJ30=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=iB4+ZJehBJyV1CWWY+MqwDYHFJ2vxRDvHuETyOblfLU=;
+        b=XnWLuWkBydHiIPJw4ieqIvLC1MYeopHr9yTY0jSOA0J+HgK2+pwePga7TrDusllb0Ky/kK
+        vh0fQjoTcUPecPdF5xLxdp+yN5pZnYQGIS+0EhTgbEm1b4iazzPg0naAm905dCYJ4fAzMp
+        uA3oM3L2UhwGgVt98wVvRIfzTD7N+KA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-205-jat8FW8XO5mtTgxvQOb2OQ-1; Thu, 28 Sep 2023 13:14:38 -0400
-X-MC-Unique: jat8FW8XO5mtTgxvQOb2OQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso9828804f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:14:38 -0700 (PDT)
+ us-mta-47-4uPOCmYsMpyhFoH_G5Ax3g-1; Thu, 28 Sep 2023 13:15:17 -0400
+X-MC-Unique: 4uPOCmYsMpyhFoH_G5Ax3g-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso9830126f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:15:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695921277; x=1696526077;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IoOMdWsqx13KyfLDmhd8kwn+FZuK3U7Zd1iwFOjjXP0=;
-        b=dOFixol+Sa3ZKYxm5WISzHEEy0bRsdFW6uREV6yjPmNGyvHRGukNO1Rxt5nWtMXhYO
-         U+Ub0+4XRpICBy+QkqVumHCCWzwdtYCXuZThhHTK8urCb2uX4WUHX0HSzKcsvRllO/0G
-         TdnCGMQlC1SCXIf+Kf0mJYcT4yx9/wY96YeU9xzanmjGFj3qLlpF2xzzLO2h1oAPLJi9
-         zZfND+Lzkym4onoTvJsvUnFOnL2qnNKdQ8RLCt0xQ1Qyif+hUZzKV3JH+a1AbM0NEOhb
-         hhY6PGY2MZB/lE7mz16yy1zw89MB4N8sgb6C62panP2KWkJ020DGf58O61gQufxg0IK1
-         l+Ug==
-X-Gm-Message-State: AOJu0YxMvTT7Me49Szi1XKzdCgj1A7Jco025zDJYV+mOUS6ahMqTqN1z
-        ki/sbSQdsmGeKEDn7LAWfWbvlnkY6xPlGleGXeu7R0ZqKjcOfX3lYw8mhiNQOVeaQc4q5zXvwyu
-        cOl6d2RGOxWbXcaHEonO6Ru0OwD57hhX3
-X-Received: by 2002:a5d:4d45:0:b0:31f:fcee:afcf with SMTP id a5-20020a5d4d45000000b0031ffceeafcfmr1675100wru.71.1695921276844;
-        Thu, 28 Sep 2023 10:14:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGaHAI0Jl7BgDloLvOXP39Cbg4Q6f6RcYSSUyl32ffjmWzsxBgubexMfj/vYKlBpyoT2n5HAQ==
-X-Received: by 2002:a5d:4d45:0:b0:31f:fcee:afcf with SMTP id a5-20020a5d4d45000000b0031ffceeafcfmr1675065wru.71.1695921276488;
-        Thu, 28 Sep 2023 10:14:36 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id e21-20020a056402149500b005256d80cdaesm9954826edv.65.2023.09.28.10.14.30
+        d=1e100.net; s=20230601; t=1695921316; x=1696526116;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iB4+ZJehBJyV1CWWY+MqwDYHFJ2vxRDvHuETyOblfLU=;
+        b=lUKfp3vyivl9Sd3GuTXUXRDZ/3ssVlVoiUAGR012LLv4JCUjN8N6erZBugMfM8pbS2
+         AXAObSrSdnyWqkVy8lc45hmKybFkgh1B0iCFHHiFTO7M/fCszLpplHxDvL4fSdvXiG2X
+         F0KcpUOmC2sr3W75Fm4KqLVQZfD2QxjPsA7ma5VpJT5VZYnCDYLN1IG3ZzMId1jN4M8H
+         tC2igYby/elt7SswyJxZKbDk9HaIjLGYwr9g/z1IssT6ZtI64BGw9TsPczlDxRYg/pwh
+         3SUt/9eEe5dfqedzxbwkZswJ9NFilwX4rVD5E1sWuwqHhwFgRD31WXKtiZxAcgyqsz4x
+         FDTg==
+X-Gm-Message-State: AOJu0YyqNtyPr2DRzW7ck3vLXpjpv2/iFNCGuaNUz/PK6OjN416zvJFs
+        roT5/fqx56fgB2ZgrZfbP7wMU00qtWGsV+HU9JeCkEHa1Pbv0lBMSKIldO6EMBSaah2Pu2KTgCR
+        a3C/kpqLclBeTJuV92N6pyDqh
+X-Received: by 2002:adf:fac9:0:b0:319:785a:fce0 with SMTP id a9-20020adffac9000000b00319785afce0mr1778239wrs.26.1695921315864;
+        Thu, 28 Sep 2023 10:15:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFMHySBXVM8IbvGir7YCqj8UNThTOXlUJ574EKr5MYsPao0vC5cge2y9Ks7isIE+CxQe6gk5w==
+X-Received: by 2002:adf:fac9:0:b0:319:785a:fce0 with SMTP id a9-20020adffac9000000b00319785afce0mr1778223wrs.26.1695921315344;
+        Thu, 28 Sep 2023 10:15:15 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c718:f00:b37d:4253:cd0d:d213? (p200300cbc7180f00b37d4253cd0dd213.dip0.t-ipconnect.de. [2003:cb:c718:f00:b37d:4253:cd0d:d213])
+        by smtp.gmail.com with ESMTPSA id q16-20020adf9dd0000000b0031912c0ffebsm7770278wre.23.2023.09.28.10.15.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 10:14:35 -0700 (PDT)
-Message-ID: <fd764cff-f4bc-a13d-96dc-a7eaab8434f2@redhat.com>
-Date:   Thu, 28 Sep 2023 19:14:29 +0200
+        Thu, 28 Sep 2023 10:15:14 -0700 (PDT)
+Message-ID: <9101f70c-0c0a-845b-4ab7-82edf71c7bac@redhat.com>
+Date:   Thu, 28 Sep 2023 19:15:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+ Thunderbird/102.15.1
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Isaku Yamahata <isaku.yamahata@linux.intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-References: <cover.1695327124.git.isaku.yamahata@intel.com>
- <ZQynx5DyP56/HAxV@google.com>
- <20230922194029.GA1206715@ls.amr.corp.intel.com>
- <ZQ3573rbNQpbNf09@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC PATCH v2 0/6] KVM: gmem: Implement test cases for
- error_remove_page
-In-Reply-To: <ZQ3573rbNQpbNf09@google.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+ <CAJuCfpHf6BWaf_k5dBx7mAz49kF5BwBhW_mUxu4E_p2iAy9-iA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+In-Reply-To: <CAJuCfpHf6BWaf_k5dBx7mAz49kF5BwBhW_mUxu4E_p2iAy9-iA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -100,33 +95,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/23 22:32, Sean Christopherson wrote:
-> Unless we can't extend fadvise() for some reason, I think we should pursue
-> FADV_HWPOISION.  The enabling should be downright trivial, e.g. just implement
-> file_operations.fadvise() for guest_memfd, have it handle FADV_HWPOISON, and pass
-> everything else to generic_fadvise().
+On 27.09.23 20:25, Suren Baghdasaryan wrote:
+>>
+>> I have some cleanups pending for page_move_anon_rmap(), that moves the
+>> SetPageAnonExclusive hunk out. Here we should be using
+>> page_move_anon_rmap() [or rather, folio_move_anon_rmap() after my cleanups]
+>>
+>> I'll send them out soonish.
 > 
-> It'll basically be your ioctl() just without a dedicated ioctl().
+> Should I keep this as is in my next version until you post the
+> cleanups? I can add a TODO comment to convert it to
+> folio_move_anon_rmap() once it's ready.
+
+You should just be able to use page_move_anon_rmap() and whatever gets 
+in first cleans it up :)
+
 > 
-> At the very least, we should run the idea past the fs maintainers.
+>>
+>>>> +       WRITE_ONCE(src_folio->index, linear_page_index(dst_vma,
+>>>> +                                                     dst_addr)); >> +
+>>>> +       orig_src_pte = ptep_clear_flush(src_vma, src_addr, src_pte);
+>>>> +       orig_dst_pte = mk_pte(&src_folio->page, dst_vma->vm_page_prot);
+>>>> +       orig_dst_pte = maybe_mkwrite(pte_mkdirty(orig_dst_pte),
+>>>> +                                    dst_vma);
+>>>
+>>> I think there's still a theoretical issue here that you could fix by
+>>> checking for the AnonExclusive flag, similar to the huge page case.
+>>>
+>>> Consider the following scenario:
+>>>
+>>> 1. process P1 does a write fault in a private anonymous VMA, creating
+>>> and mapping a new anonymous page A1
+>>> 2. process P1 forks and creates two children P2 and P3. afterwards, A1
+>>> is mapped in P1, P2 and P3 as a COW page, with mapcount 3.
+>>> 3. process P1 removes its mapping of A1, dropping its mapcount to 2.
+>>> 4. process P2 uses vmsplice() to grab a reference to A1 with get_user_pages()
+>>> 5. process P2 removes its mapping of A1, dropping its mapcount to 1.
+>>>
+>>> If at this point P3 does a write fault on its mapping of A1, it will
+>>> still trigger copy-on-write thanks to the AnonExclusive mechanism; and
+>>> this is necessary to avoid P3 mapping A1 as writable and writing data
+>>> into it that will become visible to P2, if P2 and P3 are in different
+>>> security contexts.
+>>>
+>>> But if P3 instead moves its mapping of A1 to another address with
+>>> remap_anon_pte() which only does a page mapcount check, the
+>>> maybe_mkwrite() will directly make the mapping writable, circumventing
+>>> the AnonExclusive mechanism.
+>>>
+>>
+>> Yes, can_change_pte_writable() contains the exact logic when we can turn
+>> something easily writable even if it wasn't writable before. which
+>> includes that PageAnonExclusive is set. (but with uffd-wp or softdirty
+>> tracking, there is more to consider)
+> 
+> For uffd_remap can_change_pte_writable() would fail it VM_WRITE is not
+> set, but we want remapping to work for RO memory as well. Are you
 
-fadvise() is different from madvise() though and not necessarily a great 
-match.  Looking at the list of flags in advise(), something like 
-FADV_POPULATE_READ, FADV_PAGEOUT or FADV_COLD would make sense, but I 
-can't really think of any other flag that would be useful in a general 
-case for fadvise.  Everything else would have to be very spcific to 
-memfd or guest_memfd.
+In a VMA without VM_WRITE you certainly wouldn't want to make PTEs 
+writable :) That's why that function just does a sanity check that it is 
+not called in strange context. So one would only call it if VM_WRITE is set.
 
-In particular FADV_HWPOISON would not make sense for anything that is 
-not backend by memory.  There are some flags that could be useful on 
-gmem file descriptors, such as hypothetically {WIPE,KEEP}ONFORK or 
-SOFT_OFFLINE, but again they're not something that can be applied to 
-fadvise().
+> saying that a PageAnonExclusive() check alone would not be enough
+> here?
 
-So a ioctl implementation does have some advantages after all.  I 
-suggest that we reuse MADV_* flags in the ioctl arguments, to leave the 
-door open for future extensions and avoid ioctl proliferation.  The 
-ioctl could be implemented by memfd, too, and perhaps even by /dev/zero.
+There are some interesting questions to ask here:
 
-Paolo
+1) What happens if the old VMA has VM_SOFTDIRTY set but the new one not? 
+You most probably have to mark the PTE softdirty and not make it writable.
+
+2) VM_UFFD_WP requires similar care I assume? Peter might know.
+
+-- 
+Cheers,
+
+David / dhildenb
 
