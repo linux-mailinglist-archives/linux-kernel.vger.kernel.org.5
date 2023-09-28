@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F28F7B2367
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294177B2365
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjI1RKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S231923AbjI1RKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjI1RKF (ORCPT
+        with ESMTP id S232057AbjI1RJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:10:05 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E11B3;
-        Thu, 28 Sep 2023 10:10:02 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SFfWsP004752;
-        Thu, 28 Sep 2023 17:09:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3tON1gLIqp/tPlDuSOu5ArpoTQRgcHQEUzTqf6Wzfz0=;
- b=jYfUeaC76/EwCEtukk2drHBKFjsGPP/w5dZKTRyynti71Wki++zlQGv+v8Bn8Q9LgTqp
- 40hELgcx8LsDktUfpYyUY40AvTg8tGKvwauooarl9dyqevyKO2E18iLkWrd+VONQgJcn
- xNhOBFPehC9o1J6eb6jA9aToa0tzDNwH12UxRKiIVkDpnYX4d1ZVaDZ228YHWGAhHuSP
- HuRG2IqU1aRSJZpu3RNYolC27t/dTlsc0SKY63k8azJ3Gz0ZqflhwEdQ2IKkccYV7Crp
- boymnAkqHJLkT6RYVdo8sgUZaRtgibCZEtkbniFepnPQ0QHb4ppKJg1McMVSdA7InkLm rg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcra22xry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 17:09:48 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38SH9mZ4008722
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 17:09:48 GMT
-Received: from [10.110.102.158] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 28 Sep
- 2023 10:09:43 -0700
-Message-ID: <4c7a0ba9-754a-4feb-b078-4b14a96b4a23@quicinc.com>
-Date:   Thu, 28 Sep 2023 10:09:43 -0700
+        Thu, 28 Sep 2023 13:09:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE1ECCD
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:09:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7E21C433C7;
+        Thu, 28 Sep 2023 17:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695920993;
+        bh=ydLyUU8Ad9owlqxOzjjrCFGwsyc+eW/bHK9V17qJcvE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=apM9jJiv0RiA6hfFKLaOPhe1Cr+NmHSxPw3gYMSz9f77o9G3WxZL3QUdyjoSzwzWY
+         yCgOwZJUzUPsdL02+UDjWvkuM76UG3WhZWL7iVBHYRygTAjxlp+/IScNjWmYg9baIU
+         JyhEhX1SQq/+NuR8vSzJ0XZ+eWhWK1l/msF9a3FlK6BXoA9+4cx4S9iUv7sX088mPY
+         5Y40Nubt0BXt2WFQCJBrnP/ivAWmPOfgsMYU8oVQDClNfS8QEoeHFgH1YUBTJyOBH+
+         scS5sBuZwh5x/UQk9hA8G7nebn7adDbR1fTMmCwPeGWaHKeZOp/p5nqJhaP0mo5oPX
+         jPCr+rv4aQwIA==
+Date:   Thu, 28 Sep 2023 18:09:48 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: display: panel: Add Raydium RM692E5
+Message-ID: <20230928-tightrope-other-c460f227577c@spud>
+References: <20230927-topic-fp5_disp-v1-0-a6aabd68199f@linaro.org>
+ <20230927-topic-fp5_disp-v1-1-a6aabd68199f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/11] firmware: qcom-scm: add support for SHM bridge
- operations
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <kernel@quicinc.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230928092040.9420-1-brgl@bgdev.pl>
- <20230928092040.9420-11-brgl@bgdev.pl>
-From:   Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <20230928092040.9420-11-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: UVpfw5UZLruojDcAOEqrKOGuquEM0OdD
-X-Proofpoint-GUID: UVpfw5UZLruojDcAOEqrKOGuquEM0OdD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-28_16,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- malwarescore=0 priorityscore=1501 adultscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309280150
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="x8vw0k6xdit4k0oj"
+Content-Disposition: inline
+In-Reply-To: <20230927-topic-fp5_disp-v1-1-a6aabd68199f@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,120 +61,133 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/28/2023 2:20 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add low-level primitives for enabling SHM bridge support, creating SHM
-> bridge pools and testing the availability of SHM bridges to qcom-scm. We
-> don't yet provide a way to destroy the bridges as the first user will
-> not require it.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+--x8vw0k6xdit4k0oj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-After fixing the typo:
-
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
-
+On Wed, Sep 27, 2023 at 03:19:01PM +0200, Konrad Dybcio wrote:
+> Raydium RM692E5 is a display driver IC used to drive AMOLED DSI panels.
+> Describe it.
+>=20
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->  drivers/firmware/qcom/qcom_scm.c       | 43 ++++++++++++++++++++++++++
->  drivers/firmware/qcom/qcom_scm.h       |  2 ++
->  include/linux/firmware/qcom/qcom_scm.h |  6 ++++
->  3 files changed, 51 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 1fa27c44f472..5969ff0c0beb 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -1296,6 +1296,49 @@ bool qcom_scm_lmh_dcvsh_available(void)
->  }
->  EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh_available);
->  
-> +int qcom_scm_enable_shm_bridge(void)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_MP,
-> +		.cmd = QCOM_SCM_MP_SHM_BRIDGE_ENABLE,
-> +		.owner = ARM_SMCCC_OWNER_SIP
-> +	};
+>  .../bindings/display/panel/raydium,rm692e5.yaml    | 73 ++++++++++++++++=
+++++++
+>  1 file changed, 73 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm69=
+2e5.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm692e5.=
+yaml
+> new file mode 100644
+> index 000000000000..423a85616c1c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/raydium,rm692e5.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/raydium,rm692e5.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	struct qcom_scm_res res;
-> +
-> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_MP,
-> +					  QCOM_SCM_MP_SHM_BRIDGE_ENABLE))
-> +		return -EOPNOTSUPP;
-> +
-> +	return qcom_scm_call(__scm->dev, &desc, &res) ?: res.result[0];
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_scm_enable_shm_bridge);
-> +
-> +int qcom_scm_create_shm_bridge(struct device *dev, u64 pfn_and_ns_perm_flags,
-> +			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-> +			       u64 ns_vmids)
-> +{
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_MP,
-> +		.cmd = QCOM_SCM_MP_SHM_BRDIGE_CREATE,
+> +title: Raydium RM692E5 based DSI display Panels
 
-s/BRDIGE/BRIDGE/g
+The capitalisation here drives me crazy, but I can live with it...
 
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +		.args[0] = pfn_and_ns_perm_flags,
-> +		.args[1] = ipfn_and_s_perm_flags,
-> +		.args[2] = size_and_flags,
-> +		.args[3] = ns_vmids,
-> +		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
-> +					 QCOM_SCM_VAL, QCOM_SCM_VAL),
-> +	};
 > +
-> +	struct qcom_scm_res res;
-> +	int ret;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
-> +
-> +	return ret ?: res.result[0];
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_scm_create_shm_bridge);
-> +
->  int qcom_scm_lmh_profile_change(u32 profile_id)
->  {
->  	struct qcom_scm_desc desc = {
-> diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-> index 8c97e3906afa..f5a29bc0f549 100644
-> --- a/drivers/firmware/qcom/qcom_scm.h
-> +++ b/drivers/firmware/qcom/qcom_scm.h
-> @@ -116,6 +116,8 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
->  #define QCOM_SCM_MP_IOMMU_SET_CP_POOL_SIZE	0x05
->  #define QCOM_SCM_MP_VIDEO_VAR			0x08
->  #define QCOM_SCM_MP_ASSIGN			0x16
-> +#define QCOM_SCM_MP_SHM_BRIDGE_ENABLE		0x1c
-> +#define QCOM_SCM_MP_SHM_BRDIGE_CREATE		0x1e
+> +maintainers:
+> +  - Konrad Dybcio <konradybcio@kernel.org>
 
-s/BRDIGE/BRIDGE/g
+In case it's a typo, you sharing the d between first and surnames in
+your email addr?
 
->  
->  #define QCOM_SCM_SVC_OCMEM		0x0f
->  #define QCOM_SCM_OCMEM_LOCK_CMD		0x01
-> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-> index 291ef8fd21b0..dc26cfd6d011 100644
-> --- a/include/linux/firmware/qcom/qcom_scm.h
-> +++ b/include/linux/firmware/qcom/qcom_scm.h
-> @@ -6,6 +6,7 @@
->  #define __QCOM_SCM_H
->  
->  #include <linux/cleanup.h>
-> +#include <linux/device.h>
->  #include <linux/err.h>
->  #include <linux/gfp.h>
->  #include <linux/types.h>
-> @@ -122,6 +123,11 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
->  int qcom_scm_lmh_profile_change(u32 profile_id);
->  bool qcom_scm_lmh_dcvsh_available(void);
->  
-> +int qcom_scm_enable_shm_bridge(void);
-> +int qcom_scm_create_shm_bridge(struct device *dev, u64 pfn_and_ns_perm_flags,
-> +			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
-> +			       u64 ns_vmids);
 > +
->  #ifdef CONFIG_QCOM_QSEECOM
->  
->  int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
+> +description: |
+
+This | should not be needed.
+
+Otherwise, this seems fine to me.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> +  The Raydium RM692E5 is a generic DSI Panel IC used to control
+> +  AMOLED panels.
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: fairphone,fp5-rm692e5-boe
+> +      - const: raydium,rm692e5
+> +
+> +  dvdd-supply:
+> +    description: Digital voltage rail
+> +
+> +  vci-supply:
+> +    description: Analog voltage rail
+> +
+> +  vddio-supply:
+> +    description: I/O voltage rail
+> +
+> +  reg: true
+> +  port: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reset-gpios
+> +  - dvdd-supply
+> +  - vci-supply
+> +  - vddio-supply
+> +  - port
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    dsi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        panel@0 {
+> +            compatible =3D "fairphone,fp5-rm692e5-boe", "raydium,rm692e5=
+";
+> +            reg =3D <0>;
+> +
+> +            reset-gpios =3D <&tlmm 44 GPIO_ACTIVE_LOW>;
+> +            dvdd-supply =3D <&vreg_oled_vci>;
+> +            vci-supply =3D <&vreg_l12c>;
+> +            vddio-supply =3D <&vreg_oled_dvdd>;
+> +
+> +            port {
+> +                panel_in_0: endpoint {
+> +                    remote-endpoint =3D <&dsi0_out>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+>=20
+> --=20
+> 2.42.0
+>=20
+
+--x8vw0k6xdit4k0oj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRWzXAAKCRB4tDGHoIJi
+0gfHAP92uHEkXiotDFaxtJYkpYkhLdDdDSZHnpPsnxRV8NHysQEAsDLjKC5cltxo
+1vk1mrxxusjcbNNeK2OtqNZdrBXXwQA=
+=TvCd
+-----END PGP SIGNATURE-----
+
+--x8vw0k6xdit4k0oj--
