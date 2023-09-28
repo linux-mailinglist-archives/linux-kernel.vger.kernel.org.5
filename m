@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DEF7B2038
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108F87B2037
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjI1OyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S231327AbjI1OyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjI1OyS (ORCPT
+        with ESMTP id S230246AbjI1OyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:54:18 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37211180;
-        Thu, 28 Sep 2023 07:54:17 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso11747996b3a.1;
-        Thu, 28 Sep 2023 07:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695912856; x=1696517656; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hkWxYDd3S5D6wQFdmPFmF36P9AFy13Nc4la9Zv9FLvQ=;
-        b=TdUGxaELeqNr2hfrvvWqGwupPErkAVMQRCS8PfbuSCqA4xg3/apSSG32UsUx/saT7N
-         9B+GTE9Lttul5hGbQViyT/iiJ7nZPjVN+3+TwnlRI4RbPUauS6KAfXotky8S0t82e+Dq
-         2pX2XWQjndpRtCZ9VSictr++472K1NIxoUWNaeXbM09rioP92uPIe59X77pR98FrPOwq
-         VXvRiAUyAFx4a/KYvVAVUh9SoXFDXGCfQ1uYNZbMiDj2X3EOGEdon+of8Iaenil2UJb1
-         NB29wzetq+0ICvcDGks37/XoWK5/FC5+x91bpJ6HV1Cjb9HP+RSoAqXjVQAQtHVBg5fV
-         dDRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695912856; x=1696517656;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hkWxYDd3S5D6wQFdmPFmF36P9AFy13Nc4la9Zv9FLvQ=;
-        b=GqA+9fNnDvvO7dm1PM53ZYWTJe7RxPdM6HV4MYAueYTCnLLb4QP5dsPWPZQBwhFyk7
-         4qkkErJb3+sVHPIw4j9WEuJMzuhMgrhofnsLsYWi/eE/wgSWoCZzo38OXu954IaOztp6
-         4WQDmDzTbHJgQxcIYd7OZoUVLiqmlpqjOqnQEULgHCHESDIZuuqtZeE9pyZIHjkmxeBp
-         TooCpWq+T4lrNJP9xKABzdyaKcKwMg5JkdZvYo0bvTO+R7iPxu0pmhb2MHsLA4v/zbGO
-         MmgxRsiVvNUTBoKhUvpgMphPZ/F054ECXuvWWnoPN3AOaexUPtKpINZZR9FT4+UIstE5
-         mQhQ==
-X-Gm-Message-State: AOJu0YwnRBB+MtSC+rcNxRrmcbg05irjswv9Df6b3Cu+zDpWPPFzDXDz
-        I3d3Gg7ZVYU0S0HiKLp0lYZhDaXLR748MA==
-X-Google-Smtp-Source: AGHT+IGJORolZKwgk2hGuKJ8rqV7+FP9Ss/peFl2G6BnkK4li8z738A/NKKXjR5hjdLcSusDzSEq5w==
-X-Received: by 2002:a05:6a00:b81:b0:691:fd26:f54a with SMTP id g1-20020a056a000b8100b00691fd26f54amr1552608pfj.20.1695912856538;
-        Thu, 28 Sep 2023 07:54:16 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id s26-20020aa78d5a000000b00672ea40b8a9sm13828554pfe.170.2023.09.28.07.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 10:54:17 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46EAF9;
         Thu, 28 Sep 2023 07:54:15 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     njavali@marvell.com, mrangankar@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, lduncan@suse.com, cleech@redhat.com,
-        michael.christie@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] scsi: qla4xxx: fix potential deadlock on frwd/back lock
-Date:   Thu, 28 Sep 2023 14:54:01 +0000
-Message-Id: <20230928145401.32918-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6c4d625da40so6149467a34.1;
+        Thu, 28 Sep 2023 07:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695912855; x=1696517655; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iS2kv7BAsbZD2ZX4Mq9AGaJQ8pugaCatVESsia7nc7Y=;
+        b=YMCGR7mYwOutvi2Yd1kt3q+EPOP8wKBI69x//NgW+97jiM9o3d1hJYxxHx50BeB8nW
+         yyJ2CCZoehpxik8qCSNKWepojzyBmnGZXKWrk3HmNdbjizD/95Z2+7NuhRVX0XfRbQa9
+         F8Ola2VDsddKsdXd9Qjdvm2Cq691Jr/bkk8XPIg+Bu+l+Sgnf8s+aF5lHpqMTIZ29OTP
+         Q/tQ60rubSr5buGuQRuV+ciRg2ugk8fyaX+GHjmqBCFSbwXlX6b2IxmqaUX2pXfKFMgh
+         L4pmNtHUPWavWU/RfCDihuwtG3pEJuEL74no90d6FX0PbnzZ0/RpELcP4LSN3RRD8MQe
+         rkQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695912855; x=1696517655;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iS2kv7BAsbZD2ZX4Mq9AGaJQ8pugaCatVESsia7nc7Y=;
+        b=mLmdrr0idkb1D6kd5jyLp0RdhDaLeTDgtpHA0HvPmSlseB4EVOluwpHcVI4tWYW4nl
+         +wxpWdj0CEEpHDrL6ao+tM3C1M9qmq/LCN5UNC+77iCkr5Hv4GArPvR4Qr2i4e+R6q97
+         fTsKdutuKaqudWkK6hL4zUhTnXRFk64i9qflAUgxfT1v/CFiZ8Q/z+ZDLkGese9ULvAo
+         Xnpat0JAHE1RJQrnlzjj1H6jvAss9Klpogo7x087BCJbGfyJ8UqzLM6bFG/+C274WKQB
+         UR6YfAhghFn0GQYufZi5wslUbWT4VWQbk+5uKymDsU/DZyIE63dp9+jcivsviejvoPdd
+         g9aw==
+X-Gm-Message-State: AOJu0Yw5/XLeMrl8y4rPKfOREaHa9SaLYKUMVUSwrkPuce6zcOp2PfNj
+        q0Pn7Xja6vRWSl/5Is3IJI8=
+X-Google-Smtp-Source: AGHT+IE4NpmFgaCPOKloaywslGsTuQr+IyiBNAZyGEiFubiz0BvLChalGbhx7FMi2wIiHiW+J6Bc8Q==
+X-Received: by 2002:a9d:7b57:0:b0:6bd:7252:9db1 with SMTP id f23-20020a9d7b57000000b006bd72529db1mr1562554oto.11.1695912854903;
+        Thu, 28 Sep 2023 07:54:14 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id az3-20020a056830458300b006b89596bc61sm2287880otb.61.2023.09.28.07.54.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 07:54:14 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id AA2BB27C005C;
+        Thu, 28 Sep 2023 10:54:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 28 Sep 2023 10:54:12 -0400
+X-ME-Sender: <xms:lJMVZdBv4otvSsWMZUpfUuE116qjXNKPuoxsuevbMqYUD0zLjkHtoA>
+    <xme:lJMVZbiXlLsFKM2pjGTNbDtE7zoFFMR8cTUZDvd_O8hs0698PWNdOzJr2cZlX0_PW
+    v9rpyYvhXVQcl_PTw>
+X-ME-Received: <xmr:lJMVZYlBlMO5bopXvTMT1y0umYhSj3roXmID_MyJZFVUQSS6rwunq1Dnvm0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdehfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:lJMVZXxpMPaxolvqzQm1MILdMsQZ0szCDwYRYBclKf_okRw5ZyhLRA>
+    <xmx:lJMVZSQW9lOU5ZKvIJJr4FFyi4llzH3EqIpWVYpyLfy0R2jzyJ2rkQ>
+    <xmx:lJMVZaZhwvll23vS9yKNtI8YEdZD2_jhvRi229J7Zo47j4kk7i-0fQ>
+    <xmx:lJMVZcGF0g0u-zEYprLpwTxUowGc1fh2m37-gsTeiZPCsHVf_Zbt8Q>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 28 Sep 2023 10:54:11 -0400 (EDT)
+Date:   Thu, 28 Sep 2023 07:54:10 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <ZRWTktRdej5OW53q@Boquns-Mac-mini.home>
+References: <20230927160231.XRCDDSK4@linutronix.de>
+ <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
+ <20230928080900.GF9829@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928080900.GF9829@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iscsi_complete_pdu() is called by several rx callback, under
-softirq context. Thus the callsite of it inside qla4xxx_task_work()
-should better disable bottom half, as work queue is executed under
-process context, it needs to protect race with softirq context
-locking to avoid deadlock.
+On Thu, Sep 28, 2023 at 10:09:00AM +0200, Peter Zijlstra wrote:
+> On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+> 
+> > I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
+> > SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
+> > the checking for NMI lock usages, the logic is that
+> 
+> I think I'm having a problem with this commit -- that is, by adding
+> lockdep you're adding tracepoint, which rely on RCU being active.
+> 
+> The result is that SRCU is now no longer usable from !RCU regions.
+> 
 
-<potential deadlock #1>
-qla4xxx_task_work()
---> iscsi_complete_pdu()
---> spin_lock(&conn->session->back_lock);
-<interrupt>
-   --> iscsi_tcp_data_recv_done()
-   --> iscsi_complete_pdu()
-   --> spin_lock(&conn->session->back_lock) (deadlock)
+Interesting
 
-<potential deadlock #2>
-qla4xxx_task_work()
---> iscsi_complete_pdu()
---> __iscsi_complete_pdu()
---> spin_lock(&conn->session->frwd_lock)
-<interrupt>
-   --> iscsi_tcp_data_recv_done()
-   --> iscsi_complete_pdu()
-   --> __iscsi_complete_pdu()
-   --> spin_lock(&conn->session->frwd_lock) (deadlock)
+> Was this considered and intended?
+> 
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+No, I don't think I have considered this before, I think I may still
+miss something here, maybe you or Paul can provide an example for such
+a case?
 
-To avoid the problem, disable bh inside qla4xxx_task_work() before
-calling iscsi_complete_pdu().
+One thing though, before the commit, srcu_read_lock() already has an
+rcu_lock_acquire() annotation which eventually calls lock_acquire()
+which has a tracepoint in it.
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/scsi/qla4xxx/ql4_os.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 675332e49a7b..c60781148e6c 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -3382,7 +3382,9 @@ static void qla4xxx_task_work(struct work_struct *wdata)
- 		hdr->itt = itt;
- 		data = task_data->resp_buffer + hdr_len;
- 		data_len = task_data->resp_len - hdr_len;
-+		local_bh_disable();
- 		iscsi_complete_pdu(conn, hdr, data, data_len);
-+		local_bh_enable();
- 		break;
- 	default:
- 		ql4_printk(KERN_ERR, ha, "Passthru failed status = 0x%x\n",
--- 
-2.17.1
-
+Regards,
+Boqun
