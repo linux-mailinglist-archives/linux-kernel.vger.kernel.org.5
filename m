@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448107B181A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77F47B1824
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbjI1KM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        id S231218AbjI1KQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjI1KMW (ORCPT
+        with ESMTP id S230171AbjI1KQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:12:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0724126
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:12:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B81821854;
-        Thu, 28 Sep 2023 10:12:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695895939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ngZmuXVMIJumoo5UQfITL7xAzm5EwAlIH18PHZinZyI=;
-        b=I6VHgxPS5Qc1hS695pAxPWn55GxmIOTFveDFSpexfLM+K1CPqUgBlXwmMsTt9pq4AzvB3D
-        zJc4+6/fItR/c6NmGGmFuYBPK/4LODnmlbxk/3UiN3TDMozz7O0cpVHCheU7NfGRIrItGs
-        lNjenHO/Zutp+pYnHrwrqzCUWvuGi90=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695895939;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ngZmuXVMIJumoo5UQfITL7xAzm5EwAlIH18PHZinZyI=;
-        b=VOx91Edrx+i7zfKSMk/jT2lE3yXfxyDgfDrEaNUeM26ChK/cnloCc9F5KLhKxAg7XJvno+
-        nf2oP3h4bOT37sAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5AF3513581;
-        Thu, 28 Sep 2023 10:12:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id jYzME4NRFWWjBwAAMHmgww
-        (envelope-from <aherrmann@suse.de>); Thu, 28 Sep 2023 10:12:19 +0000
-Date:   Thu, 28 Sep 2023 12:13:54 +0200
-From:   Andreas Herrmann <aherrmann@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     liming.wu@jaguarmicro.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] genirq/debugfs: Fix a typo of irq debugfs
-Message-ID: <20230928101354.GA10436@alberich>
-References: <20230927022925.751-1-liming.wu@jaguarmicro.com>
- <875y3ufxa2.ffs@tglx>
- <20230928094831.GD7895@alberich>
+        Thu, 28 Sep 2023 06:16:23 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D2C122;
+        Thu, 28 Sep 2023 03:16:21 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38SAG7dm118169;
+        Thu, 28 Sep 2023 05:16:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1695896167;
+        bh=oXfJqYkBnSRsMgAuu0wHSkWa8/uJ4JIwbOSV//aCu9g=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Cu0feTflp8Drj3oJXROZjWP1584/TVeydkttB1NgXtHsTjldVgp+MQZ4nc/O5Mryw
+         a7DsNwMf/JwoZGfC/Eg7q8uE1Q5piu7/ULbBKp68+DnpjWEmi3BqctFwcxR6vsYqWo
+         jqkjAVzfBdEn201kvKKIMC0v/zOm2fII9mhRKGa0=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38SAG76f042215
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 28 Sep 2023 05:16:07 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
+ Sep 2023 05:16:07 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 28 Sep 2023 05:16:06 -0500
+Received: from [10.24.69.199] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38SAG1nT065174;
+        Thu, 28 Sep 2023 05:16:02 -0500
+Message-ID: <5d27cf14-3df6-1771-9323-c54ede6db587@ti.com>
+Date:   Thu, 28 Sep 2023 15:46:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v2] net: ti: icssg_prueth: add TAPRIO offload
+ support
+Content-Language: en-US
+To:     Roger Quadros <rogerq@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
+        Simon Horman <horms@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <srk@ti.com>, <r-gunasekaran@ti.com>, Roger Quadros <rogerq@ti.com>
+References: <20230921070031.795788-1-danishanwar@ti.com>
+ <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+From:   MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <b3248b40-38a1-47b0-a61d-e81a451fa0a7@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230928094831.GD7895@alberich>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:48:32AM +0200, Andreas Herrmann wrote:
-> On Thu, Sep 28, 2023 at 11:43:33AM +0200, Thomas Gleixner wrote:
-> > On Wed, Sep 27 2023 at 10:29, liming wu wrote:
-> > > From: Liming Wu <liming.wu@jaguarmicro.com>
-> > >
-> > > Correct the spelling of effective.
-> > 
-> > That spelling is on purpose to have tabular output, which you break with
-> > that change.
+On 21/09/23 16:12, Roger Quadros wrote:
+> Hi Danish,
 > 
-> Hi Thomas,
+> On 21/09/2023 10:00, MD Danish Anwar wrote:
 > 
-> I've received this email twice.
+> Can you please retain patch authorhsip?
 > 
-> There seem to be many duplicate emails today (LKML, maybe other vger
-> lists as well).
-> Not sure what is causing this.
+>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>> configuration. EST allows express queue traffic to be scheduled
+>> (placed) on the wire at specific repeatable time intervals. In
+>> Linux kernel, EST configuration is done through tc command and
+>> the taprio scheduler in the net core implements a software only
+>> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+>> user indicate "flag 2" in the command which is then parsed by
+>> taprio scheduler in net core and indicate that the command is to
+>> be offloaded to h/w. taprio then offloads the command to the
+>> driver by calling ndo_setup_tc() ndo ops. This patch implements
+>> ndo_setup_tc() to offload EST configuration to ICSSG.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+
+[ ... ]
+
+>> +	if (!netif_running(ndev)) {
+>> +		netdev_err(ndev, "interface is down, link speed unknown\n");
+>> +		return -ENETDOWN;
+>> +	}
 > 
-> Do others observe this as well?
+> Do we really need this?
 
-Never mind. It seems to be on my end -- somehow.
-Don't care at the moment.
-
-Examples:
-
-fetchmail:
-2023-09-28T12:02:34: reading message aherrmann@mutt@imap.suse.de:1 of 2 (15900 header octets) (2222 body octets) flushed
-2023-09-28T12:02:34: reading message aherrmann@mutt@imap.suse.de:1 of 2 (15900 header octets) (2222 body octets) flushed
-mutt:
-23339     Sep 28 Miguel Luis     (2.1K) │   └─>
-23340     Sep 28 Miguel Luis     (2.1K) │     └=>
-
-fetchmail:
-2023-09-28T12:02:35: reading message aherrmann@mutt@imap.suse.de:2 of 2 (6029 header octets) (9197 body octets) flushed
-2023-09-28T12:02:35: reading message aherrmann@mutt@imap.suse.de:2 of 2 (6029 header octets) (0 body octets) flushed
-mutt:
-25751 N ! Sep 28 AngeloGioacchin (8.7K) └─>Re: [PATCH v10 5/9] drm/mediatek: Add connector dynamic selection capability
-25752 N ! Sep 28 AngeloGioacchin (  0K)   └=>
-{the 2nd mail has empty body}
-
-The first duplicate email from LKML seems to be
-Sep 11 Casey Schaufler (8.4K) &─&=>Re: [PATCH v14 04/11] LSM: syscalls for current process attributes
-Date: Mon, 11 Sep 2023 15:08:48 -0700
-
-Odd.
+I don't think this is needed. I will drop this and spin next revision.
 
 -- 
-Regards,
-Andreas
-
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nürnberg, Germany
-GF: Ivo Totev, Andrew McDonald, Werner Knoblich
-(HRB 36809, AG Nürnberg)
+Thanks and Regards,
+Danish
