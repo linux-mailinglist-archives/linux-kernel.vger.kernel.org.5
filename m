@@ -2,378 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146347B102E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93A67B1031
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbjI1A5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        id S229938AbjI1A6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjI1A52 (ORCPT
+        with ESMTP id S229770AbjI1A6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:57:28 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DE0BF;
-        Wed, 27 Sep 2023 17:57:26 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf6ea270b2so95215595ad.0;
-        Wed, 27 Sep 2023 17:57:26 -0700 (PDT)
+        Wed, 27 Sep 2023 20:58:48 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B46BF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:58:46 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405524e6769so64665715e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:58:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695862646; x=1696467446; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695862725; x=1696467525; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vY+Soyh4ezPzEsiTwAjxm3PLfRjJVUJ94CEs1TUSu9g=;
-        b=E5LlVTbcfuqQp2Y8DKA4rnuwgLeHjzNovD0CqJC+xQ4cvNWbGXCzMgNHD4MHFmShXC
-         j7sgx1PyfPRKRlchiIQBt2ZTYsHVMsJjyzEOO9crtCUCrtGy8qDy90/7MhehRjdVva77
-         H15vY1RUQfmNFZ4GNNujcJ35EPbn416iG3SIbAUuGo3+MU3GZ9u7n9j0LEA4NVJKv6WU
-         jPfQmLG5Ti9MO8tAJV0JlR6oMxZWS62BRIw3VQPqoOnsCnkOvBNRITMhACCAEvU7AF8I
-         4RljHYJvlWnLGOdj2CrVKp0c8ZTuacKLPZrGvVyDjZ7oDZoJS1wkKQqQX9+HbRAimZNw
-         d+AA==
+        bh=6jBieT6zUjTCyWMNhIJcWnE9xtuerzKjzThbkTJLWlo=;
+        b=HkobCTq6/HD91PNS1jjnXl0+aO0CPzLkFUWJxDQQtUZ/P/3PaGyEFOGeinRY4x9IW1
+         n3PVSschWd5+r1CmtOtwAkrNiMRoiTa2ddbnsKy/zqS4dgc4kHzqSXYW9SMoVQP946V6
+         UpIXm6omO1jfdGVNBzavCaotsc743YSap1DGYRXB9u9cf0DJBA06KECIBliEBzkVbOwP
+         GpKFu7Hs1dgOIqXVbO1m4wL7bqzArlWu6g6T4ozO4JMSiX5zt3HV3zsHRM31DDBO6Fe5
+         zzsTzwhkgWodlQYnGtvj9PmFUjNgo0njzVtzPRhCuc78ibpuXqxXHY4gWjNZizlBZTgu
+         UASg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695862646; x=1696467446;
+        d=1e100.net; s=20230601; t=1695862725; x=1696467525;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vY+Soyh4ezPzEsiTwAjxm3PLfRjJVUJ94CEs1TUSu9g=;
-        b=gbCQDtu11fiFS32h2C8WDM5psAs0v0goSpPZanLtDL4UfM6OkAjT8YQwLazOj5sX9c
-         DywyHxTkKy3CfWJo5M6pBHVMjCFr7PPsG51oUEUTgNzAnagPOqvpF3ZrqhQauip/I+A6
-         WbBY1i4HUAftjxwxiNaQlfLKKwabV8AIVGDKke5FZAj+72fC6nIMwLj4poscrkjKHI9C
-         3iALN2+AZjmgYOqgy+Ctp5BzlCI2AavAO8a71GoPReSeovfQevy6hSiolJk6W+IsLQAS
-         ZP7DWZccb6dyPT3E1WWGMqRSXLiTP5Ku5wMIuGxaT1gwdtLeV57G7vH7NY/AXg5+bf08
-         nx6Q==
-X-Gm-Message-State: AOJu0YwqiiRgVE67GTeXt2bTnqHKSMdDBihypeqfT3RhpFEf32BfO619
-        hDwTH++MKJH3yegcssY0AKs=
-X-Google-Smtp-Source: AGHT+IFRZZ4kr16bceFBPEJY6aoAH1hHQNJwKsnZQGk/U7syFO2CQBXtRIX2rfEbcGsKUbPNwDLQoQ==
-X-Received: by 2002:a17:902:a40c:b0:1c4:1b27:1cd6 with SMTP id p12-20020a170902a40c00b001c41b271cd6mr2964348plq.26.1695862646017;
-        Wed, 27 Sep 2023 17:57:26 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-018.fbsv.net. [2a03:2880:ff:12::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jh1-20020a170903328100b001c60635c13esm9274548plb.115.2023.09.27.17.57.25
+        bh=6jBieT6zUjTCyWMNhIJcWnE9xtuerzKjzThbkTJLWlo=;
+        b=KQ3/g9gXkBgargTomfVVVWi2DOk1BxzekCDRxq+trdf6MznuDLkSlVyP+x53qnN5Wq
+         N+bPxW7RDdDVFq2GA/BB/Ucv/5UHg9r3iV5p2Bj+VBJ0PwaC1IWCLNnUmB/qYIhfjRfT
+         4M31qptLezIv3aRjJczAWDeS7M1MAarsvHY9QLgggTH9VWVqjzOtsntIL5IB8M3Wv8m0
+         8uVQW/Eg4aRZTwac5NrqBEP16gtECUc42V7OwGIIt/wNak5RB5DbdglEHnphIW597Ldg
+         NRiIulXbwVkhsdje3Q8IZWIV/i/pLXFKvRy3ft1k+EWUHiH5ePN1FHh54FemlxuZMr+Y
+         KDDw==
+X-Gm-Message-State: AOJu0YwoTMTcCj9mzMM/tbk9eT60Dv+rRKf+U/UTd6cpaSsI0+6sECmL
+        0LSlC26p5Lsvi8MKhMpKL/2K6A==
+X-Google-Smtp-Source: AGHT+IFf7HbuKg7N4zjJPv/HPvYk0iORYNOH9jloqd/iaBSWnoqm2l8JhsOfvCB2XB4pIyGbucEvrQ==
+X-Received: by 2002:a05:600c:6012:b0:406:51a0:17ea with SMTP id az18-20020a05600c601200b0040651a017eamr54217wmb.10.1695862725175;
+        Wed, 27 Sep 2023 17:58:45 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id v21-20020a7bcb55000000b00404719b05b5sm18789086wmj.27.2023.09.27.17.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 17:57:25 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH v2 2/2] selftests: add a selftest to verify hugetlb usage in memcg
-Date:   Wed, 27 Sep 2023 17:57:23 -0700
-Message-Id: <20230928005723.1709119-3-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230928005723.1709119-1-nphamcs@gmail.com>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
+        Wed, 27 Sep 2023 17:58:44 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v6.1] media: qcom: camss: Comment CSID dt_id field
+Date:   Thu, 28 Sep 2023 01:58:25 +0100
+Message-ID: <20230928005825.1626251-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <314cee42-c235-4d2a-b4a6-4da92d2c1548@xs4all.nl>
+References: <314cee42-c235-4d2a-b4a6-4da92d2c1548@xs4all.nl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a new kselftest to demonstrate and verify the new
-hugetlb memcg accounting behavior.
+Digging into the documentation we find that the DT_ID bitfield is used to
+map the six bit DT to a two bit ID code. This value is concatenated to the
+VC bitfield to create a CID value. DT_ID is the two least significant bits
+of CID and VC the most significant bits.
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+Originally we set dt_id = vc * 4 in and then subsequently set dt_id = vc.
+
+commit 3c4ed72a16bc ("media: camss: sm8250: Virtual channels for CSID")
+silently fixed the multiplication by four which would give a better
+value for the generated CID without mentioning what was being done or why.
+
+Next up I haplessly changed the value back to "dt_id = vc * 4" since there
+didn't appear to be any logic behind it.
+
+Hans asked what the change was for and I honestly couldn't remember the
+provenance of it, so I dug in.
+
+Link: https://lore.kernel.org/linux-arm-msm/edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl/
+
+Add a comment so the next hapless programmer doesn't make this same
+mistake.
+
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- MAINTAINERS                                   |   2 +
- tools/testing/selftests/cgroup/.gitignore     |   1 +
- tools/testing/selftests/cgroup/Makefile       |   2 +
- .../selftests/cgroup/test_hugetlb_memcg.c     | 234 ++++++++++++++++++
- 4 files changed, 239 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+ .../media/platform/qcom/camss/camss-csid-gen2.c    | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bf0f54c24f81..ce9f40bcc2ba 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5269,6 +5269,7 @@ S:	Maintained
- F:	mm/memcontrol.c
- F:	mm/swap_cgroup.c
- F:	tools/testing/selftests/cgroup/memcg_protection.m
-+F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
- F:	tools/testing/selftests/cgroup/test_kmem.c
- F:	tools/testing/selftests/cgroup/test_memcontrol.c
+diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+index 6ba2b10326444..05ff5fa8095a8 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
++++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
+@@ -352,7 +352,19 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
+ 		phy_sel = csid->phy.csiphy_id;
  
-@@ -9652,6 +9653,7 @@ F:	include/linux/hugetlb.h
- F:	mm/hugetlb.c
- F:	mm/hugetlb_vmemmap.c
- F:	mm/hugetlb_vmemmap.h
-+F:	tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+ 	if (enable) {
+-		u8 dt_id = vc;
++		/*
++		 * DT_ID is a two bit bitfield that is concatenated with
++		 * the four least significant bits of the five bit VC
++		 * bitfield to generate an internal CID value.
++		 *
++		 * CSID_RDI_CFG0(vc)
++		 * DT_ID : 28:27
++		 * VC    : 26:22
++		 * DT    : 21:16
++		 *
++		 * CID   : VC 3:0 << 2 | DT_ID 1:0
++		 */
++		u8 dt_id = vc & 0x03;
  
- HVA ST MEDIA DRIVER
- M:	Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
-index af8c3f30b9c1..2732e0b29271 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -7,4 +7,5 @@ test_kill
- test_cpu
- test_cpuset
- test_zswap
-+test_hugetlb_memcg
- wait_inotify
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index c27f05f6ce9b..00b441928909 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -14,6 +14,7 @@ TEST_GEN_PROGS += test_kill
- TEST_GEN_PROGS += test_cpu
- TEST_GEN_PROGS += test_cpuset
- TEST_GEN_PROGS += test_zswap
-+TEST_GEN_PROGS += test_hugetlb_memcg
- 
- LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
- 
-@@ -27,3 +28,4 @@ $(OUTPUT)/test_kill: cgroup_util.c
- $(OUTPUT)/test_cpu: cgroup_util.c
- $(OUTPUT)/test_cpuset: cgroup_util.c
- $(OUTPUT)/test_zswap: cgroup_util.c
-+$(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-new file mode 100644
-index 000000000000..f0fefeb4cc24
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -0,0 +1,234 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <linux/limits.h>
-+#include <sys/mman.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+#define ADDR ((void *)(0x0UL))
-+#define FLAGS (MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB)
-+/* mapping 8 MBs == 4 hugepages */
-+#define LENGTH (8UL*1024*1024)
-+#define PROTECTION (PROT_READ | PROT_WRITE)
-+
-+/* borrowed from mm/hmm-tests.c */
-+static long get_hugepage_size(void)
-+{
-+	int fd;
-+	char buf[2048];
-+	int len;
-+	char *p, *q, *path = "/proc/meminfo", *tag = "Hugepagesize:";
-+	long val;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0) {
-+		/* Error opening the file */
-+		return -1;
-+	}
-+
-+	len = read(fd, buf, sizeof(buf));
-+	close(fd);
-+	if (len < 0) {
-+		/* Error in reading the file */
-+		return -1;
-+	}
-+	if (len == sizeof(buf)) {
-+		/* Error file is too large */
-+		return -1;
-+	}
-+	buf[len] = '\0';
-+
-+	/* Search for a tag if provided */
-+	if (tag) {
-+		p = strstr(buf, tag);
-+		if (!p)
-+			return -1; /* looks like the line we want isn't there */
-+		p += strlen(tag);
-+	} else
-+		p = buf;
-+
-+	val = strtol(p, &q, 0);
-+	if (*q != ' ') {
-+		/* Error parsing the file */
-+		return -1;
-+	}
-+
-+	return val;
-+}
-+
-+static int set_file(const char *path, long value)
-+{
-+	FILE *file;
-+	int ret;
-+
-+	file = fopen(path, "w");
-+	if (!file)
-+		return -1;
-+	ret = fprintf(file, "%ld\n", value);
-+	fclose(file);
-+	return ret;
-+}
-+
-+static int set_nr_hugepages(long value)
-+{
-+	return set_file("/proc/sys/vm/nr_hugepages", value);
-+}
-+
-+static unsigned int check_first(char *addr)
-+{
-+	return *(unsigned int *)addr;
-+}
-+
-+static void write_data(char *addr)
-+{
-+	unsigned long i;
-+
-+	for (i = 0; i < LENGTH; i++)
-+		*(addr + i) = (char)i;
-+}
-+
-+static int hugetlb_test_program(const char *cgroup, void *arg)
-+{
-+	char *test_group = (char *)arg;
-+	void *addr;
-+	long old_current, expected_current, current;
-+	int ret = EXIT_FAILURE;
-+
-+	old_current = cg_read_long(test_group, "memory.current");
-+	set_nr_hugepages(20);
-+	current = cg_read_long(test_group, "memory.current");
-+	if (current - old_current >= MB(2)) {
-+		ksft_print_msg(
-+			"setting nr_hugepages should not increase hugepage usage.\n");
-+		ksft_print_msg("before: %ld, after: %ld\n", old_current, current);
-+		return EXIT_FAILURE;
-+	}
-+
-+	addr = mmap(ADDR, LENGTH, PROTECTION, FLAGS, 0, 0);
-+	if (addr == MAP_FAILED) {
-+		ksft_print_msg("fail to mmap.\n");
-+		return EXIT_FAILURE;
-+	}
-+	current = cg_read_long(test_group, "memory.current");
-+	if (current - old_current >= MB(2)) {
-+		ksft_print_msg("mmap should not increase hugepage usage.\n");
-+		ksft_print_msg("before: %ld, after: %ld\n", old_current, current);
-+		goto out_failed_munmap;
-+	}
-+	old_current = current;
-+
-+	/* read the first page */
-+	check_first(addr);
-+	expected_current = old_current + MB(2);
-+	current = cg_read_long(test_group, "memory.current");
-+	if (!values_close(expected_current, current, 5)) {
-+		ksft_print_msg("memory usage should increase by around 2MB.\n");
-+		ksft_print_msg(
-+			"expected memory: %ld, actual memory: %ld\n",
-+			expected_current, current);
-+		goto out_failed_munmap;
-+	}
-+
-+	/* write to the whole range */
-+	write_data(addr);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current + MB(8);
-+	if (!values_close(expected_current, current, 5)) {
-+		ksft_print_msg("memory usage should increase by around 8MB.\n");
-+		ksft_print_msg(
-+			"expected memory: %ld, actual memory: %ld\n",
-+			expected_current, current);
-+		goto out_failed_munmap;
-+	}
-+
-+	/* unmap the whole range */
-+	munmap(addr, LENGTH);
-+	current = cg_read_long(test_group, "memory.current");
-+	expected_current = old_current;
-+	if (!values_close(expected_current, current, 5)) {
-+		ksft_print_msg("memory usage should go back down.\n");
-+		ksft_print_msg(
-+			"expected memory: %ld, actual memory: %ld\n",
-+			expected_current, current);
-+		return ret;
-+	}
-+
-+	ret = EXIT_SUCCESS;
-+	return ret;
-+
-+out_failed_munmap:
-+	munmap(addr, LENGTH);
-+	return ret;
-+}
-+
-+static int test_hugetlb_memcg(char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+
-+	test_group = cg_name(root, "hugetlb_memcg_test");
-+	if (!test_group || cg_create(test_group)) {
-+		ksft_print_msg("fail to create cgroup.\n");
-+		goto out;
-+	}
-+
-+	if (cg_write(test_group, "memory.max", "100M")) {
-+		ksft_print_msg("fail to set cgroup memory limit.\n");
-+		goto out;
-+	}
-+
-+	/* disable swap */
-+	if (cg_write(test_group, "memory.swap.max", "0")) {
-+		ksft_print_msg("fail to disable swap.\n");
-+		goto out;
-+	}
-+
-+	if (!cg_run(test_group, hugetlb_test_program, (void *)test_group))
-+		ret = KSFT_PASS;
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int ret = EXIT_SUCCESS, has_memory_hugetlb_acc;
-+
-+	has_memory_hugetlb_acc = proc_mount_contains("memory_hugetlb_accounting");
-+	if (has_memory_hugetlb_acc < 0)
-+		ksft_exit_skip("Failed to query cgroup mount option\n");
-+	else if (!has_memory_hugetlb_acc)
-+		ksft_exit_skip("memory hugetlb accounting is disabled\n");
-+
-+	/* Unit is kB! */
-+	if (get_hugepage_size() != 2048) {
-+		ksft_print_msg("test_hugetlb_memcg requires 2MB hugepages\n");
-+		ksft_test_result_skip("test_hugetlb_memcg\n");
-+		return ret;
-+	}
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	switch (test_hugetlb_memcg(root)) {
-+	case KSFT_PASS:
-+		ksft_test_result_pass("test_hugetlb_memcg\n");
-+		break;
-+	case KSFT_SKIP:
-+		ksft_test_result_skip("test_hugetlb_memcg\n");
-+		break;
-+	default:
-+		ret = EXIT_FAILURE;
-+		ksft_test_result_fail("test_hugetlb_memcg\n");
-+		break;
-+	}
-+
-+	return ret;
-+}
+ 		if (tg->enabled) {
+ 			/* configure one DT, infinite frames */
 -- 
-2.34.1
+2.42.0
+
