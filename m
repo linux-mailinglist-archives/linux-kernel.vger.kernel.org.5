@@ -2,433 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5671F7B14B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84347B13BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjI1HWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
+        id S231278AbjI1HHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjI1HVw (ORCPT
+        with ESMTP id S231166AbjI1HHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:21:52 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20653C32;
-        Thu, 28 Sep 2023 00:08:54 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 6887920018;
-        Thu, 28 Sep 2023 07:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695884932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SPPKnsxPiGLFIPufukLsHFF+zm3ucje7cBgO9mGwdEo=;
-        b=Xym9sQfqrMcIef0utC3yE/5EwgJ07wVFmcZ8xbnYZBM1lax/NErHKnfnxgtNYMlPbWOhSl
-        yr0opG3OA2pjkolLRZM3vPGSmDikhA+8eQuo2FxymUB6/9n0L3YUPpe7xLdjZ/nO/9dLn1
-        Hvd0wFZamJbyms9IPWDZRVNSkxq6Af4+osonBtxc0/ThZ0X+ItgRe0NkeYzDWnBlNRKpah
-        rtviiBNQIft6R7BexzBPjWz6zF0alpgUhJrIuOuATlo1gNp8ddsOK7NbinI6RDnNgD5QCQ
-        SP90L+giNQZgaKuxyE4ybsQ1Z4TPos7sRkFoerl1s4ZVrtALd0WLOEBwPflegA==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v7 30/30] net: wan: fsl_qmc_hdlc: Add framer support
+        Thu, 28 Sep 2023 03:07:19 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58361B2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:07:14 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qll77-0002Ov-QA; Thu, 28 Sep 2023 09:07:09 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qll77-009WBa-DB; Thu, 28 Sep 2023 09:07:09 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qll77-005ZXB-3v; Thu, 28 Sep 2023 09:07:09 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 05/23] gpio: dln2: Convert to platform remove callback returning void
 Date:   Thu, 28 Sep 2023 09:06:48 +0200
-Message-ID: <20230928070652.330429-31-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928070652.330429-1-herve.codina@bootlin.com>
-References: <20230928070652.330429-1-herve.codina@bootlin.com>
+Message-Id: <20230928070706.2290137-6-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
+References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1569; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=biqDfI9M7d3E1sFhGRzLi5Y0K0g1VMmj7HWgBhC3W9A=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlFSRkLzXqHoQJjWHt1lfdVX0FRrTmSSk1IIHRw IuKg+Yszm6JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRUkZAAKCRCPgPtYfRL+ TktVB/sFfvb39bvdNhkC1dp4L71giJ5S/rWTMATly8q6Tn0Uog8MdoXTgAqbtPtlJeOCGZvDlj6 cYxsjm9nu4n74vlPVCABpp6kSKdz5sec4BMudfu8v1W7/NYpV3vU+mZgO/AzER34BxBrSbT0bf4 j6HwRaRAk5QeVyJexTupnY5EPgs/ZOLUJLjsS5YXWY4zBI8ldHmqj3+pGkkBUFOThAA4dhMt5EB 1d+rbQICjy0FTyILgIps0q/wkhJzuqoQvd32DvAJ71+nxpTWqmUrcWwfphDlb+aXj+SLZHN9igb QCjSd7+CdO0u6hPNhaOV95bpAVP38zsrEv5kq23cWyl/AZlA
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add framer support in the fsl_qmc_hdlc driver in order to be able to
-signal carrier changes to the network stack based on the framer status
-Also use this framer to provide information related to the E1/T1 line
-interface on IF_GET_IFACE and configure the line interface according to
-IF_IFACE_{E1,T1} information.
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
+
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/net/wan/fsl_qmc_hdlc.c | 239 ++++++++++++++++++++++++++++++++-
- 1 file changed, 235 insertions(+), 4 deletions(-)
+ drivers/gpio/gpio-dln2.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index 24f466fa48b1..e5982766ff71 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/dma-mapping.h>
-+#include <linux/framer/framer.h>
- #include <linux/hdlc.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -27,6 +28,9 @@ struct qmc_hdlc {
- 	struct device *dev;
- 	struct qmc_chan *qmc_chan;
- 	struct net_device *netdev;
-+	struct framer *framer;
-+	spinlock_t carrier_lock; /* Protect carrier detection */
-+	struct notifier_block nb;
- 	bool is_crc32;
- 	spinlock_t tx_lock; /* Protect tx descriptors */
- 	struct qmc_hdlc_desc tx_descs[8];
-@@ -40,6 +44,195 @@ static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
- 	return dev_to_hdlc(netdev)->priv;
- }
- 
-+static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);
-+
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto end;
-+	}
-+	if (framer_status.link_is_on)
-+		netif_carrier_on(qmc_hdlc->netdev);
-+	else
-+		netif_carrier_off(qmc_hdlc->netdev);
-+
-+end:
-+	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
-+	return ret;
-+}
-+
-+static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
-+	int ret;
-+
-+	if (action != FRAMER_EVENT_STATUS)
-+		return NOTIFY_DONE;
-+
-+	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+	return ret ? NOTIFY_DONE : NOTIFY_OK;
-+}
-+
-+static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_power_on(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	/* Be sure that get_status is supported */
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
-+	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	return 0;
-+
-+framer_power_off:
-+	framer_power_off(qmc_hdlc->framer);
-+	return ret;
-+}
-+
-+static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	framer_power_off(qmc_hdlc->framer);
-+}
-+
-+static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
-+				     const te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (if_iface) {
-+	case IF_IFACE_E1:
-+		config.iface = FRAMER_IFACE_E1;
-+		break;
-+	case IF_IFACE_T1:
-+		config.iface = FRAMER_IFACE_T1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (te1->clock_type) {
-+	case CLOCK_DEFAULT:
-+		/* Keep current value */
-+		break;
-+	case CLOCK_EXT:
-+		config.clock_type = FRAMER_CLOCK_EXT;
-+		break;
-+	case CLOCK_INT:
-+		config.clock_type = FRAMER_CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	config.line_clock_rate = te1->clock_rate;
-+
-+	return framer_set_config(qmc_hdlc->framer, &config);
-+}
-+
-+static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer) {
-+		*if_iface = IF_IFACE_E1;
-+		return 0;
-+	}
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (config.iface) {
-+	case FRAMER_IFACE_E1:
-+		*if_iface = IF_IFACE_E1;
-+		break;
-+	case FRAMER_IFACE_T1:
-+		*if_iface = IF_IFACE_T1;
-+		break;
-+	}
-+
-+	if (!te1)
-+		return 0; /* Only iface type requested */
-+
-+	switch (config.clock_type) {
-+	case FRAMER_CLOCK_EXT:
-+		te1->clock_type = CLOCK_EXT;
-+		break;
-+	case FRAMER_CLOCK_INT:
-+		te1->clock_type = CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	te1->clock_rate = config.line_clock_rate;
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
-+{
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_init(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_exit(qmc_hdlc->framer);
-+}
-+
- static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
- 
- #define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
-@@ -313,6 +506,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
- 
- 	qmc_hdlc->slot_map = te1->slot_map;
- 
-+	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
-+		return ret;
-+	}
-+
+diff --git a/drivers/gpio/gpio-dln2.c b/drivers/gpio/gpio-dln2.c
+index 71fa437b491f..7ead1f51128a 100644
+--- a/drivers/gpio/gpio-dln2.c
++++ b/drivers/gpio/gpio-dln2.c
+@@ -504,17 +504,15 @@ static int dln2_gpio_probe(struct platform_device *pdev)
  	return 0;
  }
  
-@@ -320,11 +519,16 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
+-static int dln2_gpio_remove(struct platform_device *pdev)
++static void dln2_gpio_remove(struct platform_device *pdev)
  {
- 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
- 	te1_settings te1;
-+	int ret;
- 
- 	switch (ifs->type) {
- 	case IF_GET_IFACE:
--		ifs->type = IF_IFACE_E1;
- 		if (ifs->size < sizeof(te1)) {
-+			/* Retrieve type only */
-+			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
-+			if (ret)
-+				return ret;
-+
- 			if (!ifs->size)
- 				return 0; /* only type requested */
- 
-@@ -334,6 +538,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 		memset(&te1, 0, sizeof(te1));
- 
-+		/* Retrieve info from framer */
-+		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
-+		if (ret)
-+			return ret;
-+
- 		/* Update slot_map */
- 		te1.slot_map = qmc_hdlc->slot_map;
- 
-@@ -367,10 +576,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	int ret;
- 	int i;
- 
--	ret = hdlc_open(netdev);
-+	ret = qmc_hdlc_framer_start(qmc_hdlc);
- 	if (ret)
- 		return ret;
- 
-+	ret = hdlc_open(netdev);
-+	if (ret)
-+		goto framer_stop;
-+
-+	/* Update carrier */
-+	qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+
- 	chan_param.mode = QMC_HDLC;
- 	/* HDLC_MAX_MRU + 4 for the CRC
- 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
-@@ -420,6 +636,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	}
- hdlc_close:
- 	hdlc_close(netdev);
-+framer_stop:
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -455,6 +673,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
- 	}
- 
- 	hdlc_close(netdev);
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return 0;
- }
- 
-@@ -503,6 +722,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 
- 	qmc_hdlc->dev = &pdev->dev;
- 	spin_lock_init(&qmc_hdlc->tx_lock);
-+	spin_lock_init(&qmc_hdlc->carrier_lock);
- 
- 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(qmc_hdlc->dev, np);
- 	if (IS_ERR(qmc_hdlc->qmc_chan)) {
-@@ -531,10 +751,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	qmc_hdlc->framer = devm_framer_optional_get(qmc_hdlc->dev, "fsl,framer");
-+	if (IS_ERR(qmc_hdlc->framer))
-+		return PTR_ERR(qmc_hdlc->framer);
-+
-+	ret = qmc_hdlc_framer_init(qmc_hdlc);
-+	if (ret)
-+		return ret;
-+
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
- 	if (!qmc_hdlc->netdev) {
- 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto framer_exit;
- 	}
- 
- 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
-@@ -550,11 +779,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, qmc_hdlc);
+ 	dln2_unregister_event_cb(pdev, DLN2_GPIO_CONDITION_MET_EV);
 -
- 	return 0;
- 
- free_netdev:
- 	free_netdev(qmc_hdlc->netdev);
-+framer_exit:
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 	return ret;
+-	return 0;
  }
  
-@@ -564,6 +794,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
+ static struct platform_driver dln2_gpio_driver = {
+ 	.driver.name	= "dln2-gpio",
+ 	.probe		= dln2_gpio_probe,
+-	.remove		= dln2_gpio_remove,
++	.remove_new	= dln2_gpio_remove,
+ };
  
- 	unregister_hdlc_device(qmc_hdlc->netdev);
- 	free_netdev(qmc_hdlc->netdev);
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 
- 	return 0;
- }
+ module_platform_driver(dln2_gpio_driver);
 -- 
-2.41.0
+2.40.1
 
