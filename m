@@ -2,180 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185E67B11D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2A57B11DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjI1Ez5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
+        id S230206AbjI1E4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjI1Ezx (ORCPT
+        with ESMTP id S229920AbjI1E4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:55:53 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5686812A
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:55:49 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bdcade7fbso1540373366b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:55:49 -0700 (PDT)
+        Thu, 28 Sep 2023 00:56:33 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FD7122
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:56:31 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso1287379866b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1695876948; x=1696481748; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1695876989; x=1696481789; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GRoZ9U8WPN+Qr3fM7UT4CjFDZZqBDxWZDvc7yR6K5h0=;
-        b=d0oyf8m3qm5rklWiT/R30kvt4WfzwTKMe6jjY5/Iwv/Y8XlJpH8MjUFNrn3+zwNpvY
-         Bya/r3q8L0EvaBav+sxt0WaBF1HjhRuSbmrMO/gub6qLNV3WqAZyRbRaDb051QluCaji
-         c8/4niu+xDJABda20M8xnCOeerIZuV5lECuP/zcXDkrc3XLdQVpCAZi2UPi5SrfVYHu6
-         2+TPUCGktlSDTL1pZUPfFPu0oMB3ePVnGfS3koNuv5X2exSS5DNlItwO+8iaxjRtxqJV
-         Lziyr3kNdaVx31nzizJfYdIhMiSd5mS0ywNlvFl2k2uBHim28zuFOBp/x7EoGQ2OZ7yr
-         hEeg==
+        bh=C4iB1nWfdkplR5rehtoms0dHBmNKDO/VCIkn0MwaJ4k=;
+        b=LqNEXjBeyF4lV5C5u0CEZGWHHhX1G/fGTcULMw0WV6fnaTo3yckC5WrmrKyD9S7izR
+         dv9l/QuFR1V1AtmyPPM7FocK1pKnY5hZhsKWD9RAF+4tfyyEDRGUFbpfG92hvBijaHPD
+         kalIGw/gaj05/85kV6R5e3mousfc+8cvVNk77KHpl2S5vfWXzz/7+oYX2VvqCjlKUgVI
+         2QBpdhd80/GHkEvJnLeemumtfXaFXvKDMP/OHv9AVY4BHe3N/0/WKp9LEO3YgysHP+bF
+         0nwkz2HQVD26s4edy9si44DGqX74zH79LtgEuW/QWcPDrPVD6Qn5MRSIU5VSnZfJu/Vz
+         U/7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695876948; x=1696481748;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1695876989; x=1696481789;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GRoZ9U8WPN+Qr3fM7UT4CjFDZZqBDxWZDvc7yR6K5h0=;
-        b=qjG/34JCIMTrOKA3iecpj3JlQvYdtggFL4M/EYKlU1eOlbNrKlt165bLK56vjC8Oyy
-         rsslZV+NchF4H5x/hB63eMM20vDRJq4AhYwZ1RsuDWx9Fx+dK8lclFM3v9PC3z2v1m22
-         BE7DUJ+5Jgc9EJ53MZ6zGGgqJs3ggWWceS7CHJfrcTNiM59Pl+bHL2CrdPcTlA/7x0e7
-         BiVpyaNgxRJOuLD7VtJVGSTm+/nuz+Q0V0ybtENX56aMoVAo8t6Wh+zyb+ax31gp7IUo
-         Ijm2pmO7QyIk62v7mZIm1em/C66rh8V9sxrvTuBLfFe8b7noo8jUFLwRFxyOA2XgL8wT
-         oX3Q==
-X-Gm-Message-State: AOJu0Yw0PJzLMhLmrDsKsjTxfWZoQuTQUv8KVUy5k7c0dZopUAP0CoEw
-        U/DIxzRef36GzyxkgyRtrFQxsw==
-X-Google-Smtp-Source: AGHT+IE3pAEjLgDO8zlyhmBRQp2g+CFl8YUn7EwT8APbyBoysQf9t3e6/pskUqprJEO69PoIDitB5w==
-X-Received: by 2002:a17:907:78d5:b0:9ae:6ab9:af90 with SMTP id kv21-20020a17090778d500b009ae6ab9af90mr142567ejc.47.1695876947632;
-        Wed, 27 Sep 2023 21:55:47 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.177])
-        by smtp.gmail.com with ESMTPSA id jt24-20020a170906ca1800b009929d998abcsm10195585ejb.209.2023.09.27.21.55.44
+        bh=C4iB1nWfdkplR5rehtoms0dHBmNKDO/VCIkn0MwaJ4k=;
+        b=n74mKhXkrjAKR8+dOzciewMHK9BQR8UIp1oFSFpuPO3OFr16q+lQXd+vwgraLSrBKN
+         bQ5Ajk78mIRCHH7lXU/Fw7LK3zMZxid5cNtqbNqjjECb+wnS30TYG5qzdsrZbAWNCoQM
+         3RMlSljfB42KB2QJaAUQBwVvuqgaDTUAIWrXh6xEYYTGTpFEaBQYjG6WeJYTKPHmno/C
+         GbFcxkKwzUxoFg9DIh7CdNlEbLY/uHDGqk2o/TVKW6TWwl0NlKQ1nGEDBf8IamsPu8Y8
+         OvkTSDP4X9GY765BjQtEYsWaCXmYWH84AK6Cg3LHG18otZQ1NvrVV9xyG26/lTWFK1D1
+         0eCg==
+X-Gm-Message-State: AOJu0YxXbk3YbHsyTB1v9hhVVafP0WLt3AzHikAsXkflKkImS5o+yj4L
+        29AwT785rJQZjOivPAVYheHuRA==
+X-Google-Smtp-Source: AGHT+IGBNcWBnssmUYK1CVxXXzPy5SGtc5layIFYw2T+7vdDrI0iDtAYykd2rupwlwEhj3HMCFjZeA==
+X-Received: by 2002:a17:906:cc14:b0:9ad:cf30:10c with SMTP id ml20-20020a170906cc1400b009adcf30010cmr162908ejb.46.1695876989019;
+        Wed, 27 Sep 2023 21:56:29 -0700 (PDT)
+Received: from [192.168.1.231] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
+        by smtp.gmail.com with ESMTPSA id y22-20020a170906449600b009adc77fe165sm10082708ejo.118.2023.09.27.21.56.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 21:55:47 -0700 (PDT)
-Message-ID: <25ba20db-6dca-7179-a892-9d9f87442313@tuxon.dev>
-Date:   Thu, 28 Sep 2023 07:55:43 +0300
+        Wed, 27 Sep 2023 21:56:28 -0700 (PDT)
+Message-ID: <3c2a0e56-7e94-4497-9577-eb24922ff8c6@linaro.org>
+Date:   Thu, 28 Sep 2023 06:56:26 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 09/37] clk: renesas: rzg2l: fix computation formula
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 1/3] dt-bindings: pinctrl: Add support for Amlogic T7
+ SoCs
 Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-10-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdVNzgHqURohOgpFEaGn+6+rQTqsDomoS1u_-jn=GgmHXw@mail.gmail.com>
- <dfe64c7c-2f90-65a2-05fc-e96ec5113a60@tuxon.dev>
- <CAMuHMdXJ_gp5cdGpcK-kGk16YGDX8d9MEjQQkSobOGLphbJ5dQ@mail.gmail.com>
- <CAMuHMdV=r9704bNemDHWvjMJKbsBQJKqTxkKCeGUNp4iBNBoew@mail.gmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdV=r9704bNemDHWvjMJKbsBQJKqTxkKCeGUNp4iBNBoew@mail.gmail.com>
+To:     tanure@linux.com
+Cc:     Huqiang Qin <huqiang.qin@amlogic.com>, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20230922094342.637251-1-huqiang.qin@amlogic.com>
+ <20230922094342.637251-2-huqiang.qin@amlogic.com>
+ <ff2c6d41-7c9a-4633-8343-eb94404de6e8@linux.com>
+ <2d7eac30-480c-49a4-903c-d4f2b3cdfc8d@linaro.org>
+ <CAJX_Q+2vpMM78DA_Q1YLddwogW_vHLDLQbO_mnBk_zMNg7V8KA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAJX_Q+2vpMM78DA_Q1YLddwogW_vHLDLQbO_mnBk_zMNg7V8KA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+On 27/09/2023 12:54, Lucas Tanure wrote:
+> On Wed, Sep 27, 2023 at 8:48 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 27/09/2023 08:08, Lucas Tanure wrote:
+>>> On 22-09-2023 10:43, Huqiang Qin wrote:
+>>>> Add a new compatible name for Amlogic T7 pin controller, and add
+>>>> a new dt-binding header file which document the detail pin names.
+>>>>
+>>>> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+>>>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>>>> ---
+>>>>
+>>>> V1 -> V2: Rename amlogic-t7-gpio.h to amlogic,t7-periphs-pinctrl.h
+>>>>            Corrected indentation format.
+>>>> V2 -> V3: Updated subject.
+>>>>
+>>>>   .../pinctrl/amlogic,meson-pinctrl-a1.yaml     |   1 +
+>>>>   .../gpio/amlogic,t7-periphs-pinctrl.h         | 179 ++++++++++++++++++
+>>
+>> ...
+>>
+>>>> +#define GPIOH_0             148
+>>>> +#define GPIOH_1             149
+>>>> +#define GPIOH_2             150
+>>>> +#define GPIOH_3             151
+>>>> +#define GPIOH_4             152
+>>>> +#define GPIOH_5             153
+>>>> +#define GPIOH_6             154
+>>>> +#define GPIOH_7             155
+>>>> +
+>>>> +#define GPIO_TEST_N 156
+>>>> +
+>>>> +#endif /* _DT_BINDINGS_AMLOGIC_T7_GPIO_H */
+>>> Tested-by: Lucas Tanure <tanure@linux.com>
+>>
+>> How can you test bindings?
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> Sure!
+> make dt_binding_check  dtbs_check don't flag any issues with T7 bindings.
 
-On 27.09.2023 11:00, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Tue, Sep 26, 2023 at 4:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Tue, Sep 26, 2023 at 1:47 PM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
->>> On 14.09.2023 15:55, Geert Uytterhoeven wrote:
->>>> On Tue, Sep 12, 2023 at 6:52 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>
->>>>> According to hardware manual of RZ/G2L (r01uh0914ej0130-rzg2l-rzg2lc.pdf)
->>>>> the computation formula for PLL rate is as follows:
->>>>>
->>>>> Fout = ((m + k/65536) * Fin) / (p * 2^s)
->>>>>
->>>>> and k has values in range [-32768, 32767]. Dividing k by 65536 with
->>>>> integer variables leads all the time to zero. Thus we may have slight
->>>>> differences b/w what has been set vs. what is displayed. Thus,
->>>>> get rid of this and decompose the formula before dividing k by 65536.
->>>>>
->>>>> Fixes: ef3c613ccd68a ("clk: renesas: Add CPG core wrapper for RZ/G2L SoC")
->>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> Thanks for your patch!
->>>>
->>>>> --- a/drivers/clk/renesas/rzg2l-cpg.c
->>>>> +++ b/drivers/clk/renesas/rzg2l-cpg.c
->>>>> @@ -696,18 +696,22 @@ static unsigned long rzg2l_cpg_pll_clk_recalc_rate(struct clk_hw *hw,
->>>>>         struct pll_clk *pll_clk = to_pll(hw);
->>>>>         struct rzg2l_cpg_priv *priv = pll_clk->priv;
->>>>>         unsigned int val1, val2;
->>>>> -       unsigned int mult = 1;
->>>>> -       unsigned int div = 1;
->>>>> +       unsigned int div;
->>>>> +       u64 rate;
->>>>> +       s16 kdiv;
->>>>>
->>>>>         if (pll_clk->type != CLK_TYPE_SAM_PLL)
->>>>>                 return parent_rate;
->>>>>
->>>>>         val1 = readl(priv->base + GET_REG_SAMPLL_CLK1(pll_clk->conf));
->>>>>         val2 = readl(priv->base + GET_REG_SAMPLL_CLK2(pll_clk->conf));
->>>>> -       mult = MDIV(val1) + KDIV(val1) / 65536;
->>>>> +       kdiv = KDIV(val1);
->>>>>         div = PDIV(val1) << SDIV(val2);
->>>>>
->>>>> -       return DIV_ROUND_CLOSEST_ULL((u64)parent_rate * mult, div);
->>>>> +       rate = (u64)MDIV(val1) * parent_rate;
->>>>> +       rate += ((long long)parent_rate * kdiv) / 65536;
->>>>
->>>> As the division is a binary shift, you can use the mul_u64_u32_shr() helper,
->>>> and incorporate the sdiv shift at the same time:
->>>>
->>>>     rate += mul_u64_u32_shr(parent_rate, KDIV(val1), 16 + SDIV(val2));
->>
->>  [1]^
->>
->>>>
->>>> You can save a multiplication by premultiplying mdiv by 65536:
->>>>
->>>>     rate = mul_u64_u32_shr(parent_rate, (MDIV(val1) << 16)) + KDIV(val1),
->>>>                            16 + SDIV(val2));
->>
->> [2]^
->>
->>>
->>> Looking again at this: KDIV (aka DIV_K) could have negative values thus
->>> mul_u64_u32_shr() cannot be used here.
->>
->> That means you can indeed not use [1].
+Rob's bot does it... anyway this is ehich is equivalent to compile
+testing of C. This is not testing and we do no credit compile tests with
+"Tested-by". Otherwise dozens of build-bots would had to receive it.
 
-You're right. Thanks for the input!
+Best regards,
+Krzysztof
 
->>
->> But you can still use [2], as MDIV() must be in the range 64..533[3],
->> so "(MDIV(val1) << 16)) + (s16)KDIV(val1)" is always positive.
->> Note that you do need the cast to s16 (which I had missed before), or
->> the intermediate variable kdiv of type s16 (like in your patch).
-> 
-> Or include the cast to a signed type in the definition of KDIV().
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
