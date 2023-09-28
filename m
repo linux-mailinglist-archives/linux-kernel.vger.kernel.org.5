@@ -2,237 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 749FC7B1604
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAC27B1607
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjI1I3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
+        id S231228AbjI1Ia6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjI1I3g (ORCPT
+        with ESMTP id S229605AbjI1Ia4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:29:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD79FAC;
-        Thu, 28 Sep 2023 01:29:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E34FC433C8;
-        Thu, 28 Sep 2023 08:29:31 +0000 (UTC)
-Message-ID: <a0a3d582-ee6f-441b-a5a5-2d7a79ad099c@xs4all.nl>
-Date:   Thu, 28 Sep 2023 10:29:30 +0200
+        Thu, 28 Sep 2023 04:30:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2844AAC;
+        Thu, 28 Sep 2023 01:30:54 -0700 (PDT)
+Received: from [IPV6:2a01:e0a:120:3210:cdc6:9c5d:b170:7a75] (unknown [IPv6:2a01:e0a:120:3210:cdc6:9c5d:b170:7a75])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 254056607334;
+        Thu, 28 Sep 2023 09:30:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695889852;
+        bh=M2yUgu8++KjSMa6YXyi+nFtyh9bccq2mCtfV/AWp02o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=bo6PJkpySA6SGEm7klrzEVnbgtwY3WJ38T/pXu2i2ryTYLBvH0DEfsNxyo8RyyQOK
+         bhDLMFmLrU+UviNFuahZvcsPd7dyBjiBAckgcCSvbw/IgldcLHFHNqtwJ41Wotnhzn
+         tMOBNfQinHFDAU8P6yjRiV712VqJAUn83WfMnw4wj8fhZp2UFWE/f14n2Du3Jw1A0+
+         66EET78hA+0iykW66k64h2G+WwTqSZ4eqM5PmFN/Zb7akEeHCheVeeD7FcJpLCnxRs
+         +jZ9hf7Fzl3CKAjN+mNd+LX8HJMeAkEiZwSuTVKsjogFmo5XjakMZ7JLg3PlevwhYN
+         GUACtNijOgFMg==
+Message-ID: <80695726-1a98-12d4-ad7d-d731f2f3caeb@collabora.com>
+Date:   Thu, 28 Sep 2023 10:30:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
-Content-Language: en-US, nl
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        "bryan.odonoghue@linaro.org" <bryan.odonoghue@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+To:     Jeffrey Kardatzke <jkardatzke@google.com>
+Cc:     Joakim Bech <joakim.bech@linaro.org>,
+        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
         "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
- <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
- <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
- <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
-In-Reply-To: <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+ <20230911023038.30649-6-yong.wu@mediatek.com>
+ <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com>
+ <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
+ <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com>
+ <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
+ <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain>
+ <3aaafe47-3733-a4d5-038d-a7e439309282@collabora.com>
+ <CA+ddPcP4=p37cV5Tbn5zTUbiL4ou+Yqb=5rS+O_ff8ZUw64D3Q@mail.gmail.com>
+Content-Language: en-US
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <CA+ddPcP4=p37cV5Tbn5zTUbiL4ou+Yqb=5rS+O_ff8ZUw64D3Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 10:22, Hans Verkuil wrote:
-> On 28/09/2023 10:12, Jack Zhu wrote:
->>
->>
->> On 2023/9/15 17:26, Hans Verkuil wrote:
->>> On 14/09/2023 05:15, Jack Zhu wrote:
->>>> Hi,
->>>>
->>>> This series is the v9 series that attempts to support the Camera Subsystem
->>>> found on StarFive JH7110 SoC.
->>>>
->>>> This series is based on top of the master branch of media_stage repository.
->>>>
->>>> The following are the media graph for the device and the v4l2-compliance
->>>> output.
->>>>
->>>> ===========================================================================
->>>> [the media graph]:
->>>>
->>>> digraph board {
->>>> 	rankdir=TB
->>>> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n00000001:port1 -> n00000008 [style=dashed]
->>>> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
->>>> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
->>>> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
->>>> 	n0000000e:port1 -> n00000004 [style=dashed]
->>>> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n00000018:port0 -> n0000000e:port0 [style=bold]
->>>> }
->>>>
->>>> [the device topology]:
->>>>
->>>> Media controller API version 6.5.0
->>>>
->>>> Media device information
->>>> ------------------------
->>>> driver          starfive-camss
->>>> model           Starfive Camera Subsystem
->>>> serial          
->>>> bus info        platform:19840000.camss
->>>> hw revision     0x0
->>>> driver version  6.5.0
->>>>
->>>> Device topology
->>>> - entity 1: stf_isp (2 pads, 2 links)
->>>>             type V4L2 subdev subtype Unknown flags 0
->>>>             device node name /dev/v4l-subdev0
->>>> 	pad0: Sink
->>>> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
->>>> 		 crop.bounds:(0,0)/1920x1080
->>>> 		 crop:(0,0)/1920x1080]
->>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>> 	pad1: Source
->>>> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
->>>> 		 crop.bounds:(0,0)/1920x1080
->>>> 		 crop:(0,0)/1920x1080]
->>>> 		-> "capture_yuv":0 []
->>>>
->>>> - entity 4: capture_raw (1 pad, 1 link)
->>>>             type Node subtype V4L flags 0
->>>>             device node name /dev/video0
->>>> 	pad0: Sink
->>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>>
->>>> - entity 8: capture_yuv (1 pad, 1 link)
->>>>             type Node subtype V4L flags 0
->>>>             device node name /dev/video1
->>>> 	pad0: Sink
->>>> 		<- "stf_isp":1 []
->>>>
->>>> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
->>>>              type V4L2 subdev subtype Unknown flags 0
->>>> 	pad0: Sink
->>>> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
->>>> 	pad1: Source
->>>> 		-> "stf_isp":0 []
->>>> 		-> "capture_raw":0 []
->>>> 	pad2: Source
->>>> 	pad3: Source
->>>> 	pad4: Source
->>>>
->>>> - entity 24: imx219 6-0010 (1 pad, 1 link)
->>>>              type V4L2 subdev subtype Sensor flags 0
->>>>              device node name /dev/v4l-subdev1
->>>> 	pad0: Source
->>>> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
->>>> 		 crop.bounds:(8,8)/3280x2464
->>>> 		 crop:(8,8)/3280x2464]
->>>> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
->>>>
->>>> ===========================================================================
->>>> [the v4l2-compliance output]:
->>>>
->>>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
->>>
->>> This v4l2-compliance version is from a distro. For driver acceptance you
->>> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
->>>
->>> Also, since this driver uses the media controller, you must run v4l2-compliance
->>> with the -m /dev/mediaX option. This will test the compliance of all devices
->>> reported by the media controller.
->>>
->>>>
->>>> Compliance test for stf camss device /dev/video1:
->>>>
->>>> Driver Info:
->>>> 	Driver name      : stf camss
->>>
->>> The module is called starfive-camss, so shouldn't the driver name reported here
->>> be the same?
->>>
->>>> 	Card type        : Starfive Camera Subsystem
->>>> 	Bus info         : platform:19840000.camss
->>>> 	Driver version   : 6.5.0
->>>> 	Capabilities     : 0x84200001
->>>> 		Video Capture
->>>> 		Streaming
->>>> 		Extended Pix Format
->>>> 		Device Capabilities
->>>> 	Device Caps      : 0x04200001
->>>> 		Video Capture
->>>> 		Streaming
->>>> 		Extended Pix Format
->>>> Media Driver Info:
->>>> 	Driver name      : starfive-camss
->>>
->>> It's correct in the media controller information.
->>>
->>>> 	Model            : Starfive Camera Subsystem
->>>> 	Serial           : 
->>>> 	Bus info         : platform:19840000.camss
->>>> 	Media version    : 6.5.0
->>>> 	Hardware revision: 0x00000000 (0)
->>>> 	Driver version   : 6.5.0
->>>> Interface Info:
->>>> 	ID               : 0x0300000a
->>>> 	Type             : V4L Video
->>>> Entity Info:
->>>> 	ID               : 0x00000008 (8)
->>>> 	Name             : capture_yuv
->>>> 	Function         : V4L2 I/O
->>>> 	Pad 0x01000009   : 0: Sink
->>>> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
->>>
->>> Hmm, this reports "Unknown Function". I bet that when you run v4l2-compliance
->>> with the -m option it will fail on this. If not, then that's likely a bug in
->>> the compliance test, please let me know if that's the case.
->>>
->>
->> Hi Hans,
->>
->> The following is the latest test log, which does not report a failure, but
->> also reports "Unknown Function".
->>
->> I make the following settings in the stf-isp.c file:
->> v4l2_subdev.entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
->>
-> 
-> Can you post the output of:
-> 
-> v4l2-compliance --verbose -M /dev/media0
-> 
-> I am beginning to suspect that utils/common/media-info.cpp is out-of-date:
-> it is missing MEDIA_ENT_F_PROC_VIDEO_ISP.
 
-Yes, this was missing. I've pushed a fix for this.
+Le 27/09/2023 à 20:56, Jeffrey Kardatzke a écrit :
+> On Wed, Sep 27, 2023 at 8:18 AM Benjamin Gaignard
+> <benjamin.gaignard@collabora.com> wrote:
+>>
+>> Le 27/09/2023 à 15:46, Joakim Bech a écrit :
+>>> On Mon, Sep 25, 2023 at 12:49:50PM +0000, Yong Wu (吴勇) wrote:
+>>>> On Tue, 2023-09-12 at 11:32 +0200, AngeloGioacchino Del Regno wrote:
+>>>>> Il 12/09/23 08:17, Yong Wu (吴勇) ha scritto:
+>>>>>> On Mon, 2023-09-11 at 11:29 +0200, AngeloGioacchino Del Regno
+>>>>>> wrote:
+>>>>>>> Il 11/09/23 04:30, Yong Wu ha scritto:
+>>>>>>>> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't
+>>>>>>>> work
+>>>>>>>> here since this is not a platform driver, therefore initialise
+>>>>>>>> the
+>>>>>>>> TEE
+>>>>>>>> context/session while we allocate the first secure buffer.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+>>>>>>>> ---
+>>>>>>>>      drivers/dma-buf/heaps/mtk_secure_heap.c | 61
+>>>>>>>> +++++++++++++++++++++++++
+>>>>>>>>      1 file changed, 61 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>>>> b/drivers/dma-
+>>>>>>>> buf/heaps/mtk_secure_heap.c
+>>>>>>>> index bbf1c8dce23e..e3da33a3d083 100644
+>>>>>>>> --- a/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
+>>>>>>>> @@ -10,6 +10,12 @@
+>>>>>>>>      #include <linux/err.h>
+>>>>>>>>      #include <linux/module.h>
+>>>>>>>>      #include <linux/slab.h>
+>>>>>>>> +#include <linux/tee_drv.h>
+>>>>>>>> +#include <linux/uuid.h>
+>>>>>>>> +
+>>>>>>>> +#define TZ_TA_MEM_UUID          "4477588a-8476-11e2-ad15-
+>>>>>>>> e41f1390d676"
+>>>>>>>> +
+>>>>>>> Is this UUID the same for all SoCs and all TZ versions?
+>>>>>> Yes. It is the same for all SoCs and all TZ versions currently.
+>>>>>>
+>>>>> That's good news!
+>>>>>
+>>>>> Is this UUID used in any userspace component? (example: Android
+>>>>> HALs?)
+>>>> No. Userspace never use it. If userspace would like to allocate this
+>>>> secure buffer, it can achieve through the existing dmabuf IOCTL via
+>>>> /dev/dma_heap/mtk_svp node.
+>>>>
+>>> In general I think as mentioned elsewhere in comments, that there isn't
+>>> that much here that seems to be unique for MediaTek in this patch
+>>> series, so I think it worth to see whether this whole patch set can be
+>>> made more generic. Having said that, the UUID is always unique for a
+>>> certain Trusted Application. So, it's not entirely true saying that the
+>>> UUID is the same for all SoCs and all TrustZone versions. It might be
+>>> true for a family of MediaTek devices and the TEE in use, but not
+>>> generically.
+>>>
+>>> So, if we need to differentiate between different TA implementations,
+>>> then we need different UUIDs. If it would be possible to make this patch
+>>> set generic, then it sounds like a single UUID would be sufficient, but
+>>> that would imply that all TA's supporting such a generic UUID would be
+>>> implemented the same from an API point of view. Which also means that
+>>> for example Trusted Application function ID's needs to be the same etc.
+>>> Not impossible to achieve, but still not easy (different TEE follows
+>>> different specifications) and it's not typically something we've done in
+>>> the past.
+>>>
+>>> Unfortunately there is no standardized database of TA's describing what
+>>> they implement and support.
+>>>
+>>> As an alternative, we could implement a query call in the TEE answering,
+>>> "What UUID does your TA have that implements secure unmapped heap?".
+>>> I.e., something that reminds of a lookup table. Then we wouldn't have to
+>>> carry this in UAPI, DT or anywhere else.
+>> Joakim does a TA could offer a generic API and hide the hardware specific
+>> details (like kernel uAPI does for drivers) ?
+> It would have to go through another layer (like the tee driver) to be
+> a generic API. The main issue with TAs is that they have UUIDs you
+> need to connect to and specific codes for each function; so we should
+> abstract at a layer above where those exist in the dma-heap code.
+>> Aside that question I wonder what are the needs to perform a 'secure' playback.
+>> I have in mind 2 requirements:
+>> - secure memory regions, which means configure the hardware to ensure that only
+>> dedicated hardware blocks and read or write into it.
+>> - set hardware blocks in secure modes so they access to secure memory.
+>> Do you see something else ?
+> This is more or less what is required, but this is out of scope for
+> the Linux kernel since it can't be trusted to do these things...this
+> is all done in firmware or the TEE itself.
 
-Regards,
+Yes kernel can't be trusted to do these things but know what we need could help
+to define a API for a generic TA.
 
-	Hans
+Just to brainstorm on mailing list:
+What about a TA API like
+TA_secure_memory_region() and TA_unsecure_memory_region() with parameters like:
+- device identifier (an ID or compatible string maybe)
+- memory region (physical address, size, offset)
+- requested access rights (read, write)
 
-> 
-> But I don't understand why v4l2-compliance didn't fail on this.
-> 
-> Regards,
-> 
-> 	Hans
+and on kernel side a IOMMU driver because it basically have all this information already
+(device attachment, kernel map/unmap).
 
+In my mind it sound like a solution to limit the impact (new controls, new memory type)
+inside v4l2. Probably we won't need new heap either.
+All hardware dedicated implementations could live inside the TA which can offer a generic
+API.
+
+>> Regards,
+>> Benjamin
+>>
