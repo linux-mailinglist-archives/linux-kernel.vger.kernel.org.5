@@ -2,175 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBACF7B20C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23D77B20CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjI1PQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
+        id S231694AbjI1PQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbjI1PQk (ORCPT
+        with ESMTP id S231428AbjI1PQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:16:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EFB1A7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:16:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=1aMZSHFJ00QdHHcRXWNmjtWw9D0/fDe8zQRO1jC0Y6c=; b=ksh//XmFWudVXcwZB/50DEfC2b
-        S71MVheqbnADXAn7PH/N3RCcPF5sbzGGR2lQ3Qm1i66oCNNvF8KKBQMmL37ZX3hcmQbVI30NxsNVG
-        TPvPdA8T6HHf08D/1X0JHIKJzW6h9x8OninTY8z+y9mZ30mVQy+nRoUy4jQrG3gICpcdTZl1qnife
-        VgGcxFjLIWhmikV2TaSyYQhUGvRo+etPZlac8lh+KVNSU2VXjNk7C1HNbCjg9HjV5ZD39kw3HYa7P
-        e/JPfxnUOIL0blFRQqQ7aEZvqmF9w+Sd+OLEO994Fic7j6yTH64hnaq9KO5VM54GjU7Ho3io5IEqY
-        1PlJZOsQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qlskS-003CWF-JS; Thu, 28 Sep 2023 15:16:16 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4669A3002E3; Thu, 28 Sep 2023 17:16:16 +0200 (CEST)
-Date:   Thu, 28 Sep 2023 17:16:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kuyo Chang =?utf-8?B?KOW8teW7uuaWhyk=?= <Kuyo.Chang@mediatek.com>
-Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH 1/1] sched/core: Fix stuck on completion for
- affine_move_task() when stopper disable
-Message-ID: <20230928151616.GD27245@noisy.programming.kicks-ass.net>
-References: <20230927033431.12406-1-kuyo.chang@mediatek.com>
- <20230927080850.GB21824@noisy.programming.kicks-ass.net>
- <b9def8f3d9426bc158b302f4474b6e643b46d206.camel@mediatek.com>
+        Thu, 28 Sep 2023 11:16:51 -0400
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [84.16.66.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41A41B1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:16:42 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RxHBc2LNBzMqlhq;
+        Thu, 28 Sep 2023 15:16:40 +0000 (UTC)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RxHBY1ysMz3b;
+        Thu, 28 Sep 2023 17:16:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1695914200;
+        bh=ty+Igy5Z/FBAQVOTtSC3W8YKuuYo88dx2jkpPtYf+zU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=akyX00moNZoUYSxVDpJ6Hqr7CJADdBA3JZZ8ZEpdVGyNM81jVH3rf91R/I74k1y0J
+         5pvZ+Djjc3+U0BRx3MIq4zdKFw3Yb1aTvRca4QZNUo2cjID8PYIZBfWRPP7jr4C1gK
+         AYVjurC0hmyiDXSnU8lSsDr4SQ6ZeMfvVxEQlZco=
+Date:   Thu, 28 Sep 2023 17:16:22 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Jeff Xu <jeffxu@google.com>
+Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Ben Scarlato <akhna@google.com>,
+        =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH v1 5/7] landlock: Log file-related requests
+Message-ID: <20230928.Haewoh8Aishe@digikod.net>
+References: <20230921061641.273654-1-mic@digikod.net>
+ <20230921061641.273654-6-mic@digikod.net>
+ <CALmYWFubLv+yd9NWMMwt4FUdYnbghMC=GHeZm4oaSOctqnwbVA@mail.gmail.com>
+ <20230926.di9Esee2xahi@digikod.net>
+ <CALmYWFuerqvZ3HoUnc9xXYhR8vBgg9qAyA-ncHai4ksN-c-gGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9def8f3d9426bc158b302f4474b6e643b46d206.camel@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CALmYWFuerqvZ3HoUnc9xXYhR8vBgg9qAyA-ncHai4ksN-c-gGQ@mail.gmail.com>
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 03:57:35PM +0000, Kuyo Chang (張建文) wrote:
-> On Wed, 2023-09-27 at 10:08 +0200, Peter Zijlstra wrote:
-> >  	 
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Wed, Sep 27, 2023 at 11:34:28AM +0800, Kuyo Chang wrote:
-> > > From: kuyo chang <kuyo.chang@mediatek.com>
-> > > 
-> > > [Syndrome] hung detect shows below warning msg
-> > > [ 4320.666557] [   T56] khungtaskd: [name:hung_task&]INFO: task
-> > stressapptest:17803 blocked for more than 3600 seconds.
-> > > [ 4320.666589] [   T56] khungtaskd:
-> > [name:core&]task:stressapptest   state:D stack:0     pid:17803
-> > ppid:17579  flags:0x04000008
-> > > [ 4320.666601] [   T56] khungtaskd: Call trace:
-> > > [ 4320.666607] [   T56] khungtaskd:  __switch_to+0x17c/0x338
-> > > [ 4320.666642] [   T56] khungtaskd:  __schedule+0x54c/0x8ec
-> > > [ 4320.666651] [   T56] khungtaskd:  schedule+0x74/0xd4
-> > > [ 4320.666656] [   T56] khungtaskd:  schedule_timeout+0x34/0x108
-> > > [ 4320.666672] [   T56] khungtaskd:  do_wait_for_common+0xe0/0x154
-> > > [ 4320.666678] [   T56] khungtaskd:  wait_for_completion+0x44/0x58
-> > > [ 4320.666681] [   T56]
-> > khungtaskd:  __set_cpus_allowed_ptr_locked+0x344/0x730
-> > > [ 4320.666702] [   T56]
-> > khungtaskd:  __sched_setaffinity+0x118/0x160
-> > > [ 4320.666709] [   T56] khungtaskd:  sched_setaffinity+0x10c/0x248
-> > > [ 4320.666715] [   T56]
-> > khungtaskd:  __arm64_sys_sched_setaffinity+0x15c/0x1c0
-> > > [ 4320.666719] [   T56] khungtaskd:  invoke_syscall+0x3c/0xf8
-> > > [ 4320.666743] [   T56] khungtaskd:  el0_svc_common+0xb0/0xe8
-> > > [ 4320.666749] [   T56] khungtaskd:  do_el0_svc+0x28/0xa8
-> > > [ 4320.666755] [   T56] khungtaskd:  el0_svc+0x28/0x9c
-> > > [ 4320.666761] [   T56] khungtaskd:  el0t_64_sync_handler+0x7c/0xe4
-> > > [ 4320.666766] [   T56] khungtaskd:  el0t_64_sync+0x18c/0x190
-> > > 
-> > > [Analysis]
-> > > 
-> > > After add some debug footprint massage, this issue happened at
-> > stopper
-> > > disable case.
-> > > It cannot exec migration_cpu_stop fun to complete migration.
-> > > This will cause stuck on wait_for_completion.
-> > 
-> > How did you get in this situation?
-> > 
+On Tue, Sep 26, 2023 at 02:19:51PM -0700, Jeff Xu wrote:
+> On Tue, Sep 26, 2023 at 6:35 AM Mickaël Salaün <mic@digikod.net> wrote:
+> >
+> > On Mon, Sep 25, 2023 at 06:26:28PM -0700, Jeff Xu wrote:
+> > > On Wed, Sep 20, 2023 at 11:17 PM Mickaël Salaün <mic@digikod.net> wrote:
+> > > >
+> > > > Add audit support for mkdir, mknod, symlink, unlink, rmdir, truncate,
+> > > > and open requests.
+> > > >
+> > > > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > > > ---
+> > > >  security/landlock/audit.c | 114 ++++++++++++++++++++++++++++++++++++++
+> > > >  security/landlock/audit.h |  32 +++++++++++
+> > > >  security/landlock/fs.c    |  62 ++++++++++++++++++---
+> > > >  3 files changed, 199 insertions(+), 9 deletions(-)
+> > > >
+> >
+> > > > +static void
+> > > > +log_request(const int error, struct landlock_request *const request,
+> > > > +           const struct landlock_ruleset *const domain,
+> > > > +           const access_mask_t access_request,
+> > > > +           const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > > > +{
+> > > > +       struct audit_buffer *ab;
+> > > > +
+> > > > +       if (WARN_ON_ONCE(!error))
+> > > > +               return;
+> > > > +       if (WARN_ON_ONCE(!request))
+> > > > +               return;
+> > > > +       if (WARN_ON_ONCE(!domain || !domain->hierarchy))
+> > > > +               return;
+> > > > +
+> > > > +       /* Uses GFP_ATOMIC to not sleep. */
+> > > > +       ab = audit_log_start(audit_context(), GFP_ATOMIC | __GFP_NOWARN,
+> > > > +                            AUDIT_LANDLOCK);
+> > > > +       if (!ab)
+> > > > +               return;
+> > > > +
+> > > > +       update_request(request, domain, access_request, layer_masks);
+> > > > +
+> > > > +       log_task(ab);
+> > > > +       audit_log_format(ab, " domain=%llu op=%s errno=%d missing-fs-accesses=",
+> > > > +                        request->youngest_domain,
+> > > > +                        op_to_string(request->operation), -error);
+> > > > +       log_accesses(ab, request->missing_access);
+> > > > +       audit_log_lsm_data(ab, &request->audit);
+> > > > +       audit_log_end(ab);
+> > > > +}
+> > > > +
+> > > > +// TODO: Make it generic, not FS-centric.
+> > > > +int landlock_log_request(
+> > > > +       const int error, struct landlock_request *const request,
+> > > > +       const struct landlock_ruleset *const domain,
+> > > > +       const access_mask_t access_request,
+> > > > +       const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > > > +{
+> > > > +       /* No need to log the access request, only the missing accesses. */
+> > > > +       log_request(error, request, domain, access_request, layer_masks);
+> > > > +       return error;
+> > > > +}
+> >
+> > > > @@ -636,7 +638,8 @@ static bool is_access_to_paths_allowed(
+> > > >  }
+> > > >
+> > > >  static int current_check_access_path(const struct path *const path,
+> > > > -                                    access_mask_t access_request)
+> > > > +                                    access_mask_t access_request,
+> > > > +                                    struct landlock_request *const request)
+> > > >  {
+> > > >         const struct landlock_ruleset *const dom =
+> > > >                 landlock_get_current_domain();
+> > > > @@ -650,7 +653,10 @@ static int current_check_access_path(const struct path *const path,
+> > > >                                        NULL, 0, NULL, NULL))
+> > > >                 return 0;
+> > > >
+> > > > -       return -EACCES;
+> > > > +       request->audit.type = LSM_AUDIT_DATA_PATH;
+> > > > +       request->audit.u.path = *path;
+> > > > +       return landlock_log_request(-EACCES, request, dom, access_request,
+> > > > +                                   &layer_masks);
+> > >
+> > > It might be more readable to let landlock_log_request return void.
+> > > Then the code will look like below.
+> > >
+> > > landlock_log_request(-EACCES, request, dom, access_request,  &layer_masks);
+> > > return -EACCES;
+> > >
+> > > The allow/deny logic will be in this function, i.e. reader
+> > > doesn't need to check landlock_log_request's implementation to find
+> > > out it never returns 0.
+> >
+> > I did that in an early version of this patch, but I finally choose to write
+> > 'return lanlock_log_request();` for mainly two reasons:
+> > * to help not forget to call this function at any non-zero return values
+> >   (which can easily be checked with grep),
 > 
-> This issue occurs at CPU hotplug/set_affinity stress test.
-> The reproduce ratio is very low(about once a week).
+> "grep -A 2 landlock_log_request" would serve the same purpose though.
+
+Yes, there is always a way to find a pattern, and the best tool might be
+Coccinelle, but I think it's harder to miss with such tail calls.
+
 > 
-> So I add/record some debug message to snapshot the task status while it
-> stuck on wait_for_completion.
+> > * to do tail calls.
+> >
+> > I guess compiler should be smart enough to do tail calls with a variable
+> > set indirection, but I'd like to check that.
+> >
 > 
-> Below is the snapshot status while issue happened:
+> What are tail calls and what is the benefit of this code pattern ?
+> i.e. pass the return value into landlock_log_request() and make it a
+> single point of setting return value for all landlock hooks.
+
+landlock_log_request() should only be called at the end of LSM hooks.
+Tail calls is basically when you call a function at the end of the
+caller. This enables replacing "call" with "jmp" and save stack space.
+landlock_log_request() can fit with this pattern (if not using the
+caller's stack, which is not currently the case). See this tail call
+optimization example: https://godbolt.org/z/r88ofcW6x
+
+I find it less error prone to not duplicate the error code (once for
+landlock_log_request and another for the caller's returned value). I
+also don't really see the pro of using a variable only to share this
+value. In ptrace.c, an "err" variable is used to check if the error is 0
+or not, but that is handled differently for most hooks.
+
+Makeing landlock_log_request() return a value also encourages us (thanks
+to compiler warnings) to use this value and keep the error handling
+consistent (especially for future code).
+
+Another feature that I'd like to add is to support a "permissive mode",
+that would enable to quickly see the impact of a sandbox without
+applying it for real. This might change some landlock_log_request()
+calls, so we'll see what fits best.
+
 > 
-> cpu_active_mask is 0xFC
-> new_mask is 0x8
-> pending->arg.dest_cpu is 0x3
-> task_on_cpu(rq,p) is 1
-> task_cpu is 0x2
-> p__state = TASK_RUNNING
-> flag is SCA_CHACK|SCA_USER
-> stop_one_cpu_nowait(stopper->enabled) return value is false.
-> 
-> I also record the footprint at migration_cpu_stop.
-> It shows the migration_cpu_stop is not execute.
-
-AFAICT this is migrate_enable(), which acts on current, so how can the
-CPU that current runs on go away?
-
-That is completely unexplained. You've not given a proper description of
-the race scenario. And because you've not, we can't even begin to talk
-about how best to address the issue.
-
-> > struct task_struct *p, struct rq_flag
-> > >  task_rq_unlock(rq, p, rf);
-> > >  
-> > >  if (!stop_pending) {
-> > > -stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-> > > -    &pending->arg, &pending->stop_work);
-> > > +if (!stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-> > > +    &pending->arg, &pending->stop_work))
-> > > +return -ENOENT;
-> > 
-> > And -ENOENT is the right return code for when the target CPU is not
-> > available?
-> > 
-> > I suspect you're missing more than halp the picture and this is a
-> > band-aid solution at best. Please try harder.
-> > 
-> 
-> I think -ENOENT means stopper is not execute? 
-> Perhaps the error code is abused, or could you kindly give me some
-> suggestions?
-
-Well, at this point you're leaving the whole affine_move_task()
-machinery in an undefined state, which is a much bigger problem than the
-weird return value.
-
-Please read through that function and its comments a number of times. If
-you're not a little nervous, you've not understood the thing.
-
-Your patch has at least one very obvious resource leak.
-
+> > To make it easier to read (and to not forget returning the error), the
+> > landlock_log_request() calls a void log_request() helper, and returns
+> > the error itself. It is then easy to review and know what's happening
+> > without reading log_request().
+> >
+> > I'd like the compiler to check itself that every LSM hook returned
+> > values are either 0 or comming from landlock_log_request() but I think
+> > it's not possible right now. Coccinelle might help here though.
+> >
+> > BTW, in a next version, we might have landlock_log_request() called even
+> > for allowed requests (i.e. returned value of 0).
