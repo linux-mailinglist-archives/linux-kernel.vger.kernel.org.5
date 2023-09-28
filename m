@@ -2,81 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEDC7B1E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5CA7B1EA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 15:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjI1NhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 09:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S232165AbjI1NiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 09:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjI1NhD (ORCPT
+        with ESMTP id S231868AbjI1NiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 09:37:03 -0400
+        Thu, 28 Sep 2023 09:38:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5244519B;
-        Thu, 28 Sep 2023 06:37:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30ED8C433C8;
-        Thu, 28 Sep 2023 13:36:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695908220;
-        bh=+wQRUm2msRT1Vv6LzHjx16q1r07oTZukLX6w4Q72cRo=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D00292;
+        Thu, 28 Sep 2023 06:38:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7874BC433C7;
+        Thu, 28 Sep 2023 13:37:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695908281;
+        bh=tNJPrSt0EbpYHgUGMbTFOG600cX1nU2foR/sWCpczbM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fQY4RQBXMdvdqFGAIafv/Phk7Y1oE+EJjzKjC3TRuINAbWxqzcqLPwyX0a9VAn7db
-         lrLv0OwYBTVD2TtgiIEZJRfo0bKqoMi2GBhCLXf4v+k2xekgAHOfI6frhHYfLI3c4k
-         s478XPbm0PhMMeW0NqTPzj3Xl+SvTPCIBgs7SdE0=
-Date:   Thu, 28 Sep 2023 15:36:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 01/15] cdrom: Remove now superfluous sentinel element
- from ctl_table array
-Message-ID: <2023092855-cultivate-earthy-4d25@gregkh>
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
- <20230928-jag-sysctl_remove_empty_elem_drivers-v1-1-e59120fca9f9@samsung.com>
+        b=JmPchohDyoQ6K0w5lf2CBErfA/MK9ZiuDsSClS02RQTKpm36prB0Afz4G9prWxgNa
+         zgGeel0htRoZnDUpGT4kmqcI2+KZRs9cFvwT0ehSaIGNBeAW8Dc0bsBO3BQlkbatOT
+         i4k/EEVwrJYA0nUP309m89dkrCztL/rL0tDyQhPfNkvWsANgU7Fh9lbCD8d/JiXsVW
+         slyMxycwEMCZaz1BypRUfJMMjdsZT9zNTNky6UjK6O6cvdEhNEdjRkpkXAa30ZnQCt
+         SRj1FE2QRYTSonX4Xp3UJTt6QdqRh4+cD3+XMupimFUtT8NVq38xwuDUBdeLE9m6KG
+         IClVlEMWWIgFQ==
+Date:   Thu, 28 Sep 2023 14:37:56 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Chunyan Zhang <chunyan.zhang@unisoc.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] leds: sc27xx: Move mutex_init() to the end of probe
+Message-ID: <20230928133756.GI9999@google.com>
+References: <20230925032453.724518-1-chunyan.zhang@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-1-e59120fca9f9@samsung.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230925032453.724518-1-chunyan.zhang@unisoc.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -86,41 +52,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 03:21:26PM +0200, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
+On Mon, 25 Sep 2023, Chunyan Zhang wrote:
+
+> Move the mutex_init() to avoid redundant mutex_destroy() calls after
+> that for each time the probe fails.
 > 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel element from cdrom_table
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  drivers/cdrom/cdrom.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-> index cc2839805983..451907ade389 100644
-> --- a/drivers/cdrom/cdrom.c
-> +++ b/drivers/cdrom/cdrom.c
-> @@ -3654,8 +3654,7 @@ static struct ctl_table cdrom_table[] = {
->  		.maxlen		= sizeof(int),
->  		.mode		= 0644,
->  		.proc_handler	= cdrom_sysctl_handler
-> -	},
-> -	{ }
-> +	}
+> V2:
+> - Move the mutex_init() to the end of .probe() instead of adding
+> mutex_destroy() according to Lee's comments.
+> ---
+>  drivers/leds/leds-sc27xx-bltc.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-You should have the final entry as "}," so as to make any future
-additions to the list to only contain that entry, that's long been the
-kernel style for lists like this.
+Nice patch, but doesn't apply.
 
-So your patches will just remove one line, not 2 and add 1, making it a
-smaller diff.
+Please rebase (onto linux-next or for-leds-next) and resend.
 
-thanks,
-
-greg k-h
+-- 
+Lee Jones [李琼斯]
