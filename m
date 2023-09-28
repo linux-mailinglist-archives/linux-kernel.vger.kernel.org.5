@@ -2,47 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EA27B231A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D877B231D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbjI1RBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        id S231722AbjI1RCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjI1RBB (ORCPT
+        with ESMTP id S231377AbjI1RCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:01:01 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F2B193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:00:57 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9DEDC1C002E; Thu, 28 Sep 2023 19:00:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-        t=1695920455;
+        Thu, 28 Sep 2023 13:02:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4014199
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695920509;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DrW/r7rpi8+3aJKbme/FUpZFUo9L0b90LEPhZ+57dg8=;
-        b=OzVsBKz8DJwFDidnWpWKBNrNgWOzPFRs18BhJAxj54TWraFMs3jhvs3utxcz1X5uBC4iYB
-        Xz7FlCp5RIl6OYSBkHGDfX8qIlAqLiLMpaTRA4Q8CmD180cDoHuv6jv07JDsddzhRp4bDo
-        cGo/xkICeksrLIeVp4+u6k1J7m7Voe8=
-Date:   Thu, 28 Sep 2023 19:00:55 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
-Subject: Re: My brand new vivo V25 Pro 5G Android mobile phone is running on
- Linux kernel 4.19.191+
-Message-ID: <ZRWxR+pWP3kKeRM4@duo.ucw.cz>
-References: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com>
+        bh=wJ8io9iHoGzKxYz4jGoEUkvynxWv0l6wFHeyVvwW4Xw=;
+        b=cwBoikPg6DKO57iM/2Xc3EDNQkXfz1egyH622EFwMeC8LQgbjRjOGruLTz6e6U6X3Lb4lf
+        hToh0l6eghMxvtAHvFcKBRHcMHysAk1j4KhaCsc5Y79IYO9bTja9qbO1VOj294roCCQyql
+        fNwnYv+5Fw8aTwZ5AUDJ7FUpKArjnmk=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-361-MCMkA_hXNRqYgnqsDbrFsA-1; Thu, 28 Sep 2023 13:01:47 -0400
+X-MC-Unique: MCMkA_hXNRqYgnqsDbrFsA-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6561167f0eeso220682826d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:01:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695920507; x=1696525307;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wJ8io9iHoGzKxYz4jGoEUkvynxWv0l6wFHeyVvwW4Xw=;
+        b=D1Rxkh+Q1+X7HdCvjT/jUH/H/uPuXW1eOgRkFFwrAEVWOmUlfulznT6snSSIPtz5/H
+         PhXSXS4Z6jDmbPCTf7ngCoSTNAhw84V4fjaK07TsxdJDYnG9Zl+pOGV2B9j69kN5mFub
+         qQLgMdPxyb2nNgxM600t+3N0DaPBJ0g8N7sN51u+fafW6AghsN3ytaODznLBoUdIu1hB
+         GrZ9j0KPEM/kfFhWL/P+9yAyTrntE48X6X2bA0499DWh74tBHzQ9f0ERqmMOA0DjwrJI
+         4/gb4bnUTnenfZnHIUkNo/WjphlQIyZv+VJbwh3DC+dvUenqOrUoE9nAABz2LbGBpy8a
+         AKdA==
+X-Gm-Message-State: AOJu0Ywy51Q1ggLUXnUTtRgb8FxY+N4p2jTdyudQSTsnJ2ANge8Jod09
+        PWMpjZUprS+ltgvpwn7mXOq7mSDEkBs3aXvIVkTi1dJix2bjWjAFHCzPDtuspTBhn/YwgAFivfv
+        iIynY0qP8miFFY/EFdKE1HhcbgSrl8+s=
+X-Received: by 2002:a0c:aa5b:0:b0:63c:fa7d:74ee with SMTP id e27-20020a0caa5b000000b0063cfa7d74eemr1743934qvb.50.1695920506986;
+        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsw2oRoFy1oQmAIXh2N4nE+hC646Q49c8ueDG7gmcOgzziSULGO8ra5bgxuXtCOEBTO2n6mQ==
+X-Received: by 2002:a0c:aa5b:0:b0:63c:fa7d:74ee with SMTP id e27-20020a0caa5b000000b0063cfa7d74eemr1743912qvb.50.1695920506746;
+        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
+Received: from [192.168.9.16] (net-2-34-30-58.cust.vodafonedsl.it. [2.34.30.58])
+        by smtp.gmail.com with ESMTPSA id j12-20020a0cf30c000000b0065b0a3ae7c7sm3770646qvl.113.2023.09.28.10.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
+Message-ID: <b12cc469-a885-223b-c16f-2cd346e8d8ba@redhat.com>
+Date:   Thu, 28 Sep 2023 19:01:43 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="cHQiMYPHBBi8nju5"
-Content-Disposition: inline
-In-Reply-To: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/4] fpga: add helpers for the FPGA KUnit test suites.
+Content-Language: en-US
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org
+References: <20230926163911.66114-1-marpagan@redhat.com>
+ <20230926163911.66114-2-marpagan@redhat.com>
+ <ZRWjVkMYNosNvlt3@yilunxu-OptiPlex-7050>
+From:   Marco Pagani <marpagan@redhat.com>
+In-Reply-To: <ZRWjVkMYNosNvlt3@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -50,46 +85,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---cHQiMYPHBBi8nju5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 2023-09-28 18:01, Xu Yilun wrote:
+> On 2023-09-26 at 18:39:08 +0200, Marco Pagani wrote:
+>> Add helpers to facilitate the registration of minimal platform drivers
+>> to support the parent platform devices used for testing.
+>>
+>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>> ---
+>>  drivers/fpga/tests/fpga-test-helpers.h | 29 ++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>  create mode 100644 drivers/fpga/tests/fpga-test-helpers.h
+>>
+>> diff --git a/drivers/fpga/tests/fpga-test-helpers.h b/drivers/fpga/tests/fpga-test-helpers.h
+>> new file mode 100644
+>> index 000000000000..fcad3249be68
+>> --- /dev/null
+>> +++ b/drivers/fpga/tests/fpga-test-helpers.h
+>> @@ -0,0 +1,29 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * KUnit test for the FPGA Manager
+>> + *
+>> + * Copyright (C) 2023 Red Hat, Inc.
+>> + *
+>> + * Author: Marco Pagani <marpagan@redhat.com>
+>> + */
+>> +
+>> +#ifndef FPGA_KUNIT_HELPERS_
+>> +#define FPGA_KUNIT_HELPERS_
+> 
+> How about _FPGA_KUNIT_HELPERS_H
 
-> Subject: My brand new vivo V25 Pro 5G Android mobile phone is running on =
-Linux kernel 4.19.191+
->=20
-> Good day from Singapore,
->=20
-> I have just bought vivo V25 Pro 5G (12 GB + 256 GB) Starlight Black Andro=
-id Mobile Phone for SGD$600 on 15 Sep 2023 Friday.
->=20
-> My brand new vivo V25 Pro 5G Android mobile phone is running on
-> Linux kernel 4.19.191+.
+That's fine with me. I will change it in v2.
 
-And what do you expect?
+> Others LGTM for this series.
+> 
+> Thanks,
+> Yilun
+> 
+>> +
+>> +#define TEST_PDEV_NAME	"fpga-test-pdev"
+>> +
+>> +#define TEST_PLATFORM_DRIVER(__drv_name)			\
+>> +	__TEST_PLATFORM_DRIVER(__drv_name, TEST_PDEV_NAME)
+>> +/*
+>> + * Helper macro for defining a minimal platform driver that can
+>> + * be registered to support the parent platform devices used for
+>> + * testing.
+>> + */
+>> +#define __TEST_PLATFORM_DRIVER(__drv_name, __dev_name)		\
+>> +static struct platform_driver __drv_name = {			\
+>> +	.driver = {						\
+>> +		.name = __dev_name,				\
+>> +	},							\
+>> +}
+>> +
+>> +#endif	/* FPGA_KUNIT_HELPERS_ */
+>> -- 
+>> 2.41.0
+>>
+> 
 
-If you want to run recent mainline kernel, best option is a
-PinePhone. See
+Thanks,
+Marco
 
-https://wiki.postmarketos.org/wiki/Devices
-
-for other options.
-
-Best regards,
-							Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---cHQiMYPHBBi8nju5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZRWxRwAKCRAw5/Bqldv6
-8rJHAJ4leOwpMBd1cpEW5IN2pecFslpJOQCfRV6EYn2FLgU2kEGqBXrwGx9VeP8=
-=v/6S
------END PGP SIGNATURE-----
-
---cHQiMYPHBBi8nju5--
