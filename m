@@ -2,138 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 047227B2584
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D67B258F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbjI1Stf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        id S232235AbjI1SwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbjI1Std (ORCPT
+        with ESMTP id S229864AbjI1SwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:49:33 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39014194
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:49:32 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c3d6d88231so100085845ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695926971; x=1696531771; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJ1Xm03fGvRdWwUPqQq1Cea3T9DyHrKQnz43Fil7hXc=;
-        b=TQbbzG/4ukJaM+4mIoKAlaICg/oiv1Nsr0rq9SzhhEhxwXE+LZ+HRGUUVpf+1pFBOi
-         IhZ6fMIo4bZykStOSQVIincDPKBhYXhY1za8Syd868zRb/7/SVMjaI115XnaroIw/lmM
-         DFaBeTbaLy41oRjwiyRxEhhN4qE9P0qI1evFlwKeeXkqexOvDlsKsLsYiVSnQImcrxbI
-         mBgykFmpw1qkAECZ25lT+qN5n4trvzIyMur9WkXftSeZMHjoSFSE0CEZ6pQxf19upMtI
-         Jh3FmV7+wOyqNzekrk2FNj2v9oLYrALmgyNTR11LOAQ7nHM6u2vLUuLtC7MgZihYyNp9
-         8OLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695926971; x=1696531771;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rJ1Xm03fGvRdWwUPqQq1Cea3T9DyHrKQnz43Fil7hXc=;
-        b=jydLi9HB2cyVq+UYxeCTAf7aAHecfUj99vLUSSrcPGxdCzRzR4xMnOPdr5n8bI24+6
-         Zk/xZEZUn87wwIcc5hrJ1C6dItUFjwWrPtGguqIHJxhXij1XrQYDVFkk617UufZ8gFzc
-         SMnMFOD8Eoh63kqfeMalTfZ/BmWsVhBR39epkYAJe7cVu/XtWniHS7+iVy3PBJO7MOhT
-         jWeaH0k9rNRufkpYeU1po0OeZ3V0CTlieT4Gw3SyJm+AQRsYrSg35m/RrGpp80MaLLjp
-         gSzC+jOneqtugWk9HNLYYuM+GX8qDA9vP2k+tl5FdmYsepGOjXEYeF+87ixMg/ifKRuj
-         xDhQ==
-X-Gm-Message-State: AOJu0Yzx8t2wyd3UABqEneO9/FxFTVn4V9uX7RraXMKj2ZxkaUfxvkIk
-        qHIrXp6lmYgIudX/z6XFwoY=
-X-Google-Smtp-Source: AGHT+IHQ2bhuPXrdqR5cEgy2tha86qCru/kNFTo9NhZctpV4JHUJEwQ06kGOSLeyjG5Zhdq+GQcwsg==
-X-Received: by 2002:a17:903:1109:b0:1b9:e937:9763 with SMTP id n9-20020a170903110900b001b9e9379763mr2259812plh.12.1695926971492;
-        Thu, 28 Sep 2023 11:49:31 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:a19c:f3d0:698d:f7a])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170902b28700b001b9ecee459csm15264713plr.34.2023.09.28.11.49.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 11:49:31 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PULL 00/16] Xtensa fixes for v6.6
-Date:   Thu, 28 Sep 2023 11:49:24 -0700
-Message-Id: <20230928184924.164748-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 28 Sep 2023 14:52:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5810119C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:52:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFFDC433C8;
+        Thu, 28 Sep 2023 18:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695927122;
+        bh=n3aZdNHw4MpEqxnCX4fjYDB+dJUPetWTFBhMgHS1KU8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Flz0tRnVGo4/Y0PD9nmkCdwWh/N9m61Q8xa2FbhfSXDcp9moHABUQSJFXB+c8ynIN
+         Y+zcjCkLKHVqVx1IatT+ZLBDXX8ylvQSqyrcn9nfUfDVh6aMsTWOVQMqUu2syXsnkU
+         aGhlU7a2VXrA9HW6bebOLy8QCRV0pDLJNl8ns8G02VgFMtSv/KFZ1aNY8IG1js3cEG
+         RrT/+bU02sp7OHJlGaKTnhpJG36yFmUgjssgDEHYwHJVydSaF30Ll22knqO64SQFls
+         xa0hMWoptxs6SHtPCDsJzwC1jMM/IeA80EGhJ8baIu+gOSD+M2VBo0+MAgNmF4iFLQ
+         iVLw/CXpBeL5A==
+Received: (nullmailer pid 1052656 invoked by uid 1000);
+        Thu, 28 Sep 2023 18:51:59 -0000
+Date:   Thu, 28 Sep 2023 13:51:59 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        clin@suse.com, conor+dt@kernel.org, pierre.gondois@arm.com,
+        festevam@gmail.com, linux-imx@nxp.com, davem@davemloft.net,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, V.Sethi@nxp.com
+Subject: Re: [PATCH v6 02/11] dt-bindings: arm: fsl: add imx-se-fw binding doc
+Message-ID: <20230928185159.GA1035361-robh@kernel.org>
+References: <20230927175401.1962733-1-pankaj.gupta@nxp.com>
+ <20230927175401.1962733-3-pankaj.gupta@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927175401.1962733-3-pankaj.gupta@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Sep 27, 2023 at 11:23:52PM +0530, Pankaj Gupta wrote:
+> The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+> secure enclave within the SoC boundary to enable features like
+> - HSM
+> - SHE
+> - V2X
+> 
+> Communicates via message unit with linux kernel. This driver
+> is enables communication ensuring well defined message sequence
+> protocol between Application Core and enclave's firmware.
+> 
+> Driver configures multiple misc-device on the MU, for multiple
+> user-space applications can communicate on single MU.
+> 
+> It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
+> 
+> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+> ---
+>  .../bindings/firmware/fsl,imx-se-fw.yaml      | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> new file mode 100644
+> index 000000000000..d250794432b3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/firmware/fsl,imx-se-fw.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/firmware/fsl,imx-se-fw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX EdgeLock Enclave Firmware (ELEFW)
+> +
+> +maintainers:
+> +  - Pankaj Gupta <pankaj.gupta@nxp.com>
+> +
+> +description:
 
-please pull the following fixes for the Xtensa architecture.
+Need '|' to preserve formatting.
 
-The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
+> +  The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+> +  secure enclave within the SoC boundary to enable features like
+> +  - HSM
+> +  - SHE
+> +  - V2X
+> +
+> +  It uses message unit to communicate and coordinate to pass messages
+> +  (e.g., data,  status and control) through its interfaces.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8ulp-se-fw
+> +      - fsl,imx93-se-fw
 
-  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
+The firmware is not compatible across chips?
 
-are available in the Git repository at:
+> +
+> +  mboxes:
+> +    description:
+> +      All MU channels must be within the same MU instance. Cross instances are
+> +      not allowed. Users need to ensure that used MU instance does not conflict
+> +      with other execution environments.
+> +    items:
+> +      - description: TX0 MU channel
+> +      - description: RX0 MU channel
+> +
+> +  mbox-names:
+> +    items:
+> +      - const: tx
+> +      - const: rx
+> +
+> +  fsl,mu-id:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Identifier to the message-unit among the multiple message-unit that exists on SoC.
+> +      Per message-unit, multiple misc-devices are created, that are  used by userspace
 
-  https://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20230928
+Extra space in there.
 
-for you to fetch changes up to f54d02c8f2cc4b46ba2a3bd8252a6750453b6f2b:
+Wrap lines at 80 unless there's a benefit to going to 100.
 
-  xtensa: boot/lib: fix function prototypes (2023-09-20 05:03:30 -0700)
+> +      application as logical-waiter and logical-receiver.
+> +
+> +  memory-region:
+> +    items:
+> +      - description: Reserved memory region that can be accessed by firmware. Used for
+> +          exchanging the buffers between driver and firmware.
+> +
+> +  fsl,sram:
 
-----------------------------------------------------------------
-Xtensa fixes for v6.6:
+Just the common 'sram' property.
 
-- fix build warnings from builds performed with W=1
+> +    description: Phandle to the device SRAM
 
-----------------------------------------------------------------
-Max Filippov (2):
-      xtensa: add default definition for XCHAL_HAVE_DIV32
-      xtensa: boot/lib: fix function prototypes
+Used for what?
 
-Randy Dunlap (14):
-      xtensa: fault: include <asm/traps.h>
-      xtensa: irq: include <asm/traps.h>
-      xtensa: ptrace: add prototypes to <asm/ptrace.h>
-      xtensa: processor.h: add init_arch() prototype
-      xtensa: signal: include headers for function prototypes
-      xtensa: stacktrace: include <asm/ftrace.h> for prototype
-      xtensa: traps: add <linux/cpu.h> for function prototype
-      irqchip: irq-xtensa-mx: include header for missing prototype
-      xtensa: smp: add headers for missing function prototypes
-      xtensa: hw_breakpoint: include header for missing prototype
-      xtensa: tlb: include <asm/tlb.h> for missing prototype
-      xtensa: iss/network: make functions static
-      xtensa: boot: don't add include-dirs
-      xtensa: umulsidi3: fix conditional expression
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +required:
+> +  - compatible
+> +  - mboxes
+> +  - mbox-names
+> +  - fsl,mu-id
 
- arch/xtensa/boot/Makefile               | 3 +--
- arch/xtensa/boot/lib/zmem.c             | 5 +++--
- arch/xtensa/include/asm/core.h          | 4 ++++
- arch/xtensa/include/asm/hw_breakpoint.h | 1 +
- arch/xtensa/include/asm/processor.h     | 5 +++++
- arch/xtensa/include/asm/ptrace.h        | 3 +++
- arch/xtensa/include/asm/smp.h           | 1 +
- arch/xtensa/include/asm/tlb.h           | 2 ++
- arch/xtensa/kernel/hw_breakpoint.c      | 1 +
- arch/xtensa/kernel/irq.c                | 1 +
- arch/xtensa/kernel/ptrace.c             | 1 -
- arch/xtensa/kernel/signal.c             | 2 ++
- arch/xtensa/kernel/smp.c                | 1 +
- arch/xtensa/kernel/stacktrace.c         | 1 +
- arch/xtensa/kernel/traps.c              | 1 +
- arch/xtensa/lib/umulsidi3.S             | 4 +++-
- arch/xtensa/mm/fault.c                  | 1 +
- arch/xtensa/mm/tlb.c                    | 1 +
- arch/xtensa/platforms/iss/network.c     | 4 ++--
- drivers/irqchip/irq-xtensa-mx.c         | 1 +
- 20 files changed, 35 insertions(+), 8 deletions(-)
+How is memory-region optional?
 
--- 
-Thanks.
--- Max
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    ele_fw: se-fw {
+
+Drop unused labels.
+
+> +      compatible = "fsl,imx8ulp-se-fw";
+> +      mbox-names = "tx", "rx";
+> +      mboxes = <&s4muap 0 0>, <&s4muap 1 0>;
+> +      fsl,mu-id = <2>;
+> +    };
+> -- 
+> 2.34.1
+> 
