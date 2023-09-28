@@ -2,261 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25ED7B2405
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B317B2404
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbjI1Rfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        id S232019AbjI1Rfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjI1Rfi (ORCPT
+        with ESMTP id S230503AbjI1Rfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:35:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597921AA
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695922459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bXvR8P30J13RoiFY6oQnabnLblTIM5XWqXhOKK4pnys=;
-        b=fbx2zvWkjYg0AOSjYpulhMrCWZX4Q3pA+YhVb5to5xz4fyrVaTgWlWIH/8EIDGTc7DQmw8
-        ZMNi9zLBHul96yavYJiV8p3F3VT5UTFE+jSaCVGintoC9/9PMbGf/B18a0djFjkRFwM6wT
-        MB7UDZcphOI7U7vXZI8FOl7vWAFxJyc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-527-dV2krgcqMdaXISgjC_sr8Q-1; Thu, 28 Sep 2023 13:34:15 -0400
-X-MC-Unique: dV2krgcqMdaXISgjC_sr8Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B8A308015AB;
-        Thu, 28 Sep 2023 17:34:14 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.45.226.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 710B814171B6;
-        Thu, 28 Sep 2023 17:34:11 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     iommu@lists.linux.dev, "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH v2 4/4] x86: KVM: SVM: workaround for AVIC's errata #1235
-Date:   Thu, 28 Sep 2023 20:33:54 +0300
-Message-Id: <20230928173354.217464-5-mlevitsk@redhat.com>
-In-Reply-To: <20230928173354.217464-1-mlevitsk@redhat.com>
-References: <20230928173354.217464-1-mlevitsk@redhat.com>
+        Thu, 28 Sep 2023 13:35:33 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2101.outbound.protection.outlook.com [40.107.243.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091C4E5;
+        Thu, 28 Sep 2023 10:35:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k1xaaJTaVdWbyoTq0g6xn1Nm849hXpYs83Xktcb8huq4uHphf56kxK7w+pr/+cvc+fDSNPfVIn4nvbROl7TQz3FRMzH38ouRyLINbuz7BluQ3JRqE24LpDRh8VFxr3BVHF3AtQ1Veck0FQEJiolfYNJzasD62LtXesdgxicttb4juuciHNXhxthjPjfMMhnnlmZd3+N2P7Ln1gmdNX+v6Qw2DYeezVwy6cgb+moagTszbCi/CdKCaE4z9y32SNqdzaSPnI8SLPchJzoBpcklJ64s6ur4XDktbdO/KlO2BpXq6bG3Ryo5HIRaKUcZ4j7I6El124nBqE9OqOW5AS1RBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DG5cZneviAYxigkN8R0RE2aUed0AecBs60inoKtF6Ss=;
+ b=T15fTA+YWBsYs3jKBEjVkrLaTY6hGrokSWc8QB0zZS02CwZdmTPjvjHJ/0Dx9AYo2YGrse0ELShve3LJslkTZerkYyeRmFSlSYWJfHeGn+QuuQrTldSaqztRTVtrd984y9gTPnCXjcj++GNGItlyuDmQEuZGr2sQ34mjN/CAytfBUsrYuJiugOTyUafpXGEmRGS2af+vX9I11+GSjgpNuUNsFafzHwRCsnS957JhYP593E74zCHgeqcp0l5u07ssme014U/v/QCutF6z7nUhNI5BnTzqWJbw8FOcsyLX7V9/qg0IEXwPr6KnG8G440Ji7MfU0YBPMO8ihUnmERKIHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DG5cZneviAYxigkN8R0RE2aUed0AecBs60inoKtF6Ss=;
+ b=EUpJ3+mrTA+SFmTHthGEefKYORiiwX0SbU6iEFOYmzubmtwlOPS57XJJXq1/aJYr+Eg+myCYEcTtU++Gjffs1iv48ruQ/OagzleNyQiAqC6LCmHRp472eyO0mDgThDDoR8XhAa3NOfwat0SCiWLXnYGBwyuJgKlLvM5UOubEYaA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB7492.prod.exchangelabs.com (2603:10b6:510:f3::6) by
+ SJ0PR01MB6511.prod.exchangelabs.com (2603:10b6:a03:29f::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.36; Thu, 28 Sep 2023 17:35:23 +0000
+Received: from PH0PR01MB7492.prod.exchangelabs.com
+ ([fe80::db82:aa53:7ce5:618f]) by PH0PR01MB7492.prod.exchangelabs.com
+ ([fe80::db82:aa53:7ce5:618f%5]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
+ 17:35:23 +0000
+Message-ID: <868165e1-64d3-6241-c62e-19f0c91be64d@os.amperecomputing.com>
+Date:   Thu, 28 Sep 2023 10:35:17 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] mm: mempolicy: keep VMA walk if both MPOL_MF_STRICT and
+ MPOL_MF_MOVE are specified
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Cc:     hughd@google.com, willy@infradead.org, mhocko@suse.com,
+        vbabka@suse.cz, osalvador@suse.de, aquini@redhat.com,
+        kirill@shutemov.name, rientjes@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230920223242.3425775-1-yang@os.amperecomputing.com>
+ <20230925084840.af05fefd19a101c71308a8cf@linux-foundation.org>
+ <90fc0e8d-f378-4d6f-5f52-c14583200a2e@os.amperecomputing.com>
+ <CAJuCfpExMWXHfZjgZ=UKf4k=zxrNOLx2R-a_wQdZ3O_+JTOq4w@mail.gmail.com>
+ <20230928093809.75de08561b0fa1af03bf4a89@linux-foundation.org>
+From:   Yang Shi <yang@os.amperecomputing.com>
+In-Reply-To: <20230928093809.75de08561b0fa1af03bf4a89@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH5P223CA0017.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f3::13) To PH0PR01MB7492.prod.exchangelabs.com
+ (2603:10b6:510:f3::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7492:EE_|SJ0PR01MB6511:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d3957e8-e042-417a-171b-08dbc0494b5f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WenD9SORYTMYVcINpkwmRVyWkBAogjrpdPVYrdVz8kPo1N6rHR/TZu56Op4rxrvcPhxVrCuXFGR+IZVnaqPz9fq8e0l2eSnJIeA9ylVAYAttM1+XqxKvqSf/Fo/ioEoDhxHvdwHhv1a2V7bkXjpQXPHbHQG7kizQnmL4HS6Q4Fx66l/EU7Wk7LFaxMRxWcxJ5n6V3+0T4zWJpZcrUtWymwJw9EaRbE8l83TTQ4dp8mm5vhMFOUHNZUhVa8YnKRz941UrJy2yJMKqN+CGb17JkeFZaS0z4ljSljFw5qvSSxGaw/y83XJ85eWhGlryjtkijbBksHPjsMVc58FaGLnxt0AGeMAhUxBrjur84dV6G2W1A59BVk5I9ijsfvj9ibK6bzvhsHs7OnLqYlHztseBiyIwhmiIasVKOp5P+U4qXI5kPPklZKrOaFSj57wamjGRAJT/EKwWGqVj1UbMKrv9zrStyufesogR5XXceCcs5OKu5ctbsWqTj4oQ4Dz2wNZzS8n6I+jT8FNyo9LhYW27f/RY4Sm0oJ3hQfKW1c3qzpSOAMPjMIExhBTB6ow7EPYDARpmh7m4fjtQT8wttY6x2by/oiqsZPT8IGo4K9tq9aqmvb7DdIZvGsb+EkaKZyX++aFoFUW2yTU1ChTG+Du0pg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7492.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(396003)(39850400004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(31686004)(2906002)(7416002)(5660300002)(4326008)(8936002)(8676002)(41300700001)(110136005)(316002)(26005)(66556008)(66476007)(66946007)(966005)(478600001)(6486002)(6506007)(6666004)(52116002)(53546011)(6512007)(2616005)(83380400001)(38100700002)(31696002)(38350700002)(86362001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UGhnMG1GN084SEErR3JWeUtPT2VmaEU2N3ZxcHlEaFh0b084TDBSQVNoOU1V?=
+ =?utf-8?B?Q1JrOS9acVRyN0JKWVdtb2NyZ0JRc3kxcjJtdll5OGhHTVF6eUZMRXI5TmJV?=
+ =?utf-8?B?OHpuampYdnowS0srSHZtajF6dWl5MkJUSFo5UkNPbnFRQWV1bnpKVVBtZXNt?=
+ =?utf-8?B?Nm5ZRVB3Z2tUL2JKRzBVSWc4em0xbDllZTB2alRjdUdJNzRPdWhCNzNkN0d6?=
+ =?utf-8?B?U1k0NGlCam9VV3FpSitSZFhjYkN0VFFEQXpEdmRORFM3YnBFSE5FeDFJT1FD?=
+ =?utf-8?B?UkNGT2xIaDhBZmN1RVdYY3BaUXB0bytrRit4QUtlSkVFcUpLcm9lajZ0TEhq?=
+ =?utf-8?B?ampIWSs2MHNTbFU1dzFock56V08yT3g4aXBzRDAxNStJU2RGVWJxNmV5TXdx?=
+ =?utf-8?B?V2g3Z1FrVmpPcDVIWGZmVFJLZ2ZVSDc4T1NxK1lCdE9RUjVKcXliNTlNZlhm?=
+ =?utf-8?B?Q0g5cTUrekpGd0Z2R3lyeE9MTHpHWGdvbElHbCtPbUZTcE1Sc2FCaThhc21X?=
+ =?utf-8?B?OTRaQnhRa29mUGtCSXJZSGhyb3YwN25tNGtRbFJEZnhkS1hPTFVleHJKTVVm?=
+ =?utf-8?B?ZmxrUE5VMnlZY1Z3d1VMK1E2cXNFVG8yVnNRRUpwN1I2V25KT1pUUXFtUHha?=
+ =?utf-8?B?dVRkcFU3OEZsS0pNalFtRW83V2lKQllFalJoQnN0UVh3Mjc5bEhHVmdKdjRw?=
+ =?utf-8?B?OTBKMGVIVXIwUloxR1hRRmg5TWlUT0dHUGdwVktSQkdGYWZwR1kxRTU4dWcv?=
+ =?utf-8?B?VjkrQ3RNYnNMY1V0YllPeXdTQXV5QVplOStaSFNPekJNeWl5OXY3eHB0Rk9K?=
+ =?utf-8?B?ejE0MDdoUDlaSmkrY0w0R0tZTEVLb090Z2RJczQ2RFFXK1NsV2R6ZzNDZGNs?=
+ =?utf-8?B?OGxFTEpLeGkycGpRbjNEbkxVcTZ6SUc3MVVFSDFvWU93S2ZQazJQQTFWbnhB?=
+ =?utf-8?B?OEF3TEVhOERuK2VSRkVUajN4QXJlSmFtdG5lMXRsQ09nTzdkWHM1ZXVkOGk3?=
+ =?utf-8?B?eWRBNDVDeDE3Z1F3R21Pc1hnOGQ2VFBSM0tHYlZPMGZNRHAzY3B3Umhibm96?=
+ =?utf-8?B?ZDBZd0tFR2lxWis0bEl1cnFiWE1kZll5MzRlZFVQbkZvTHRGeGw2YnV1RFR6?=
+ =?utf-8?B?NzJQVFJrbUVvNllld0thejNPQTFXc2JTZUZzTmdON1dvbU9DOXprVmZVMDdM?=
+ =?utf-8?B?dUZmMHZQc1RicVlGRWx2UTNDektvbE9zeXJhQXhFME4xbjlneUY1TXdXc1hK?=
+ =?utf-8?B?MEk5VUhsNHpTWUJIZmJRempZRUhmV0gyS0lrK0FNNmhWUnlXV29FYmthVWRX?=
+ =?utf-8?B?MFRXemJ0WDgvdkdPNmhVdWRUY29ZZ29YdzZaWFhKNU9UYndwY2t6eFZXSStJ?=
+ =?utf-8?B?ODQyTEkwaW4rNWd2VFRsMVNoMkhrZG43cUdQVW9zbkgzS0JOSm5hSkh6MXZV?=
+ =?utf-8?B?eFd0eHNBc3pzSDBoeHJGR2JOcjlLMVJUZ3ZHKzFHZzFGU1lGNWhKSSsxaGd1?=
+ =?utf-8?B?MWd5MG1oNDQrbDkyaW5NbDg3cktjd2RsOUVxYnMrQVNpTEdFWDJVUE16alZ2?=
+ =?utf-8?B?SytMVm1rakdQSXJETlpDajQycThWald0MzI0THZEWVVYRmNqWVd4ZDdPZHJV?=
+ =?utf-8?B?MjFtZk0vMXFLdHAxU3IvL2JQb1JpU2ozVGM0NVRMbGZNbUhSclRMeHVwM0NB?=
+ =?utf-8?B?WCtOZytjNGc3UkFudnUrb3ZWOVNMUHh5clIvb0luQ3N3TnVTRjZjYzNJSGd6?=
+ =?utf-8?B?QU1jYWZ2S3g4S2FkTVdqS1JUbVpwczVqUTBTeXVyc3JoSk5Id1dmQUVUYzFG?=
+ =?utf-8?B?ckZ3LzUrdlM1VHR3ZUtHN2xNQXdVbkZHcUxPVGZyb1VQdit4dS9tZGI5eERu?=
+ =?utf-8?B?ZEVRR3V5U1dzeTFlM2d4eXVRR0sweHNPdnZnbU5UVFhvOGovWmlWSU41STBw?=
+ =?utf-8?B?dVB3dUxWQnFVUmczYmJKNW9uWGp3QUtqbDQwQ2RDNHh3VXRrNXRXU3ZTZ0M4?=
+ =?utf-8?B?TVN1M1VnbS9DSmlXc01MK3lvQVF1V1c1dVQySXRlS1ZqZ2wxN2hKVWZtdHVl?=
+ =?utf-8?B?bG1LOStDMnhEUXFQQ2ZSMUVaTEM0MkdGMWhUSGppUDd5aGVSZ1RhUTV4dW82?=
+ =?utf-8?B?QVVTOE5KQXo1N3BoNkRUL01iWUdobFZwY2NYcEdsOTV5VnJYZG1SRzkwNXVa?=
+ =?utf-8?Q?i+V6osSxdwqQNMRb5+A7ajE=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3957e8-e042-417a-171b-08dbc0494b5f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7492.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 17:35:23.3951
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aQ/O5NtYHT4vzwsSNR1PsFo4/CNllHd1hGC4DoboVNtuFVzEKa+YJnmfQjei2nSMOmIJaSBYg7MQC+mGeyJN6L3IOm8uzIXgqrQfJq6wei8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB6511
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Zen2 (and likely on Zen1 as well), AVIC doesn't reliably detect a change
-in the 'is_running' bit during ICR write emulation and might skip a
-VM exit, if that bit was recently cleared.
 
-The absence of the VM exit, leads to the KVM not waking up / triggering
-nested vm exit on the target(s) of the IPI which can, in some cases,
-lead to an unbounded delays in the guest execution.
 
-As I recently discovered, a reasonable workaround exists: make the KVM
-never set the is_running bit.
+On 9/28/23 9:38 AM, Andrew Morton wrote:
+> On Wed, 27 Sep 2023 14:39:21 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+>
+>>>>> The code should conceptually do:
+>>>>>
+>>>>>    if (MPOL_MF_MOVE|MOVEALL)
+>>>>>        scan all vmas
+>>>>>        try to migrate the existing pages
+>>>>>        return success
+>>>>>    else if (MPOL_MF_MOVE* | MPOL_MF_STRICT)
+>>>>>        scan all vmas
+>>>>>        try to migrate the existing pages
+>>>>>        return -EIO if unmovable or migration failed
+>>>>>    else /* MPOL_MF_STRICT alone */
+>>>>>        break early if meets unmovable and don't call mbind_range() at all
+>>>>>    else /* none of those flags */
+>>>>>        check the ranges in test_walk, EFAULT without mbind_range() if discontig.
+>> With this change I think my temporary fix at
+>> https://lore.kernel.org/all/20230918211608.3580629-1-surenb@google.com/
+>> can be removed because we either scan all vmas (which means we locked
+>> them all) or we break early and do not call mbind_range() at all (in
+>> which case we don't need vmas to be locked).
 
-This workaround ensures that (*) all ICR writes always cause a VM exit
-and therefore correctly emulated, in expense of never enjoying VM exit-less
-ICR emulation.
+Yes, we could just drop it. Keep the code not depend on the subtle 
+behavior of queue_pages_range() by keeping it is ok to me either. I 
+don't have strong preference.
 
-This workaround does carry a performance penalty but according to my
-benchmarks is still much better than not using AVIC at all,
-because AVIC is still used for the receiving end of the IPIs, and for the
-posted interrupts.
+> Thanks, I dropped "mm: lock VMAs skipped by a failed queue_pages_range()"
 
-If the user is aware of the errata and it doesn't affect his workload,
-the user can disable the workaround with 'avic_zen2_errata_workaround=0'
-
-(*) More correctly all ICR writes except when 'Self' shorthand is used:
-
-In this case AVIC skips reading physid table and just sets bits in IRR
-of local APIC. Thankfully in this case, the errata is not possible,
-therefore an extra workaround for this case is not needed.
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/avic.c | 63 +++++++++++++++++++++++++++++------------
- arch/x86/kvm/svm/svm.h  |  1 +
- 2 files changed, 46 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 4b74ea91f4e6bb6..28bb0e6b321660d 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -62,6 +62,9 @@ static_assert(__AVIC_GATAG(AVIC_VM_ID_MASK, AVIC_VCPU_ID_MASK) == -1u);
- static bool force_avic;
- module_param_unsafe(force_avic, bool, 0444);
- 
-+static int avic_zen2_errata_workaround = -1;
-+module_param(avic_zen2_errata_workaround, int, 0444);
-+
- /* Note:
-  * This hash table is used to map VM_ID to a struct kvm_svm,
-  * when handling AMD IOMMU GALOG notification to schedule in
-@@ -276,7 +279,7 @@ static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
- 
- static int avic_init_backing_page(struct kvm_vcpu *vcpu)
- {
--	u64 *entry, new_entry;
-+	u64 *entry;
- 	int id = vcpu->vcpu_id;
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
-@@ -308,10 +311,10 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
- 	if (!entry)
- 		return -EINVAL;
- 
--	new_entry = __sme_set((page_to_phys(svm->avic_backing_page) &
--			      AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK) |
--			      AVIC_PHYSICAL_ID_ENTRY_VALID_MASK);
--	WRITE_ONCE(*entry, new_entry);
-+	svm->avic_physical_id_entry = __sme_set((page_to_phys(svm->avic_backing_page) &
-+						 AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK) |
-+						 AVIC_PHYSICAL_ID_ENTRY_VALID_MASK);
-+	WRITE_ONCE(*entry, svm->avic_physical_id_entry);
- 
- 	svm->avic_physical_id_cache = entry;
- 
-@@ -835,7 +838,7 @@ static int svm_ir_list_add(struct vcpu_svm *svm, struct amd_iommu_pi_data *pi)
- 	 * will update the pCPU info when the vCPU awkened and/or scheduled in.
- 	 * See also avic_vcpu_load().
- 	 */
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
-+	entry = READ_ONCE(svm->avic_physical_id_entry);
- 	if (entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK)
- 		amd_iommu_update_ga(entry & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK,
- 				    true, pi->ir_data);
-@@ -1027,7 +1030,6 @@ avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- 
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
--	u64 entry;
- 	int h_physical_id = kvm_cpu_get_apicid(cpu);
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
-@@ -1056,14 +1058,23 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	 */
- 	spin_lock_irqsave(&svm->ir_list_lock, flags);
- 
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
--	WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
--	entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
--	entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+	WARN_ON_ONCE(svm->avic_physical_id_entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-+
-+	svm->avic_physical_id_entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
-+	svm->avic_physical_id_entry |=
-+		(h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
-+
-+	svm->avic_physical_id_entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+
-+	/*
-+	 * Do not update the actual physical id table entry if workaround
-+	 * for #1235 - the physical ID entry is_running is never set when
-+	 * the workaround is activated
-+	 */
-+	if (!avic_zen2_errata_workaround)
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), svm->avic_physical_id_entry);
- 
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
- 	avic_update_iommu_vcpu_affinity(vcpu, h_physical_id, true);
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
-@@ -1071,7 +1082,6 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- void avic_vcpu_put(struct kvm_vcpu *vcpu)
- {
--	u64 entry;
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
- 
-@@ -1084,10 +1094,9 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
- 	 * can't be scheduled out and thus avic_vcpu_{put,load}() can't run
- 	 * recursively.
- 	 */
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
- 
- 	/* Nothing to do if IsRunning == '0' due to vCPU blocking. */
--	if (!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
-+	if (!(svm->avic_physical_id_entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
- 		return;
- 
- 	/*
-@@ -1102,8 +1111,14 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
- 
- 	avic_update_iommu_vcpu_affinity(vcpu, -1, 0);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	svm->avic_physical_id_entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+
-+	/*
-+	 * Do not update the actual physical id table entry
-+	 * See explanation in avic_vcpu_load
-+	 */
-+	if (!avic_zen2_errata_workaround)
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), svm->avic_physical_id_entry);
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
- 
-@@ -1217,5 +1232,17 @@ bool avic_hardware_setup(void)
- 
- 	amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
- 
-+	if (avic_zen2_errata_workaround == -1) {
-+
-+		/* Assume that Zen1 and Zen2 have errata #1235 */
-+		if (boot_cpu_data.x86 == 0x17)
-+			avic_zen2_errata_workaround = 1;
-+		else
-+			avic_zen2_errata_workaround = 0;
-+	}
-+
-+	if (avic_zen2_errata_workaround)
-+		pr_info("Workaround for AVIC errata #1235 is enabled\n");
-+
- 	return true;
- }
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index be67ab7fdd104e3..98dc45b9c194d2e 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -265,6 +265,7 @@ struct vcpu_svm {
- 	u32 ldr_reg;
- 	u32 dfr_reg;
- 	struct page *avic_backing_page;
-+	u64 avic_physical_id_entry;
- 	u64 *avic_physical_id_cache;
- 
- 	/*
--- 
-2.26.3
+Thanks, Andrew.
 
