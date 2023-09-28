@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6335D7B2171
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A017B2173
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbjI1Pgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
+        id S231995AbjI1PhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbjI1Pgp (ORCPT
+        with ESMTP id S231722AbjI1PhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:36:45 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D32C0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:36:43 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59bc956b029so160779437b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:36:43 -0700 (PDT)
+        Thu, 28 Sep 2023 11:37:21 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52114D6
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:37:20 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b59e1ac70so263033587b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695915402; x=1696520202; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6e7z54uATHSSGDjwccq5t2JrfgU8sx45IO2zPYWKTu4=;
-        b=y8sNghs5WMsnE7q6gtrMdqawiQAkTO1W5wa6oeNCXaAnuO5coljUYTKHQIIfk2EMz2
-         O25kuKl7THw2USeCRD4TNJVsZHVtZ1giiId7FZ0JqmdU8ZVSd9+kN47fAiKLStgbEb5e
-         usE/N6m4Y0cwIdXKW/u6KHbCvCTczaAfx6pF2X0UF37Pq1+fMjvdpI14KJbH1zDBDIl/
-         juh4k3DFjFMvD9wNeCDGpfw5WWXogmG6cItwx4IfXa2Cfau+P2POuvxTuixFc80Nthod
-         UaUhXr0/TzzolcftVars+LAO0gPugAto8XVIVPAGnG+4SWS5OlQWIBrONT8wGIJMwPGd
-         Q6Ag==
+        d=google.com; s=20230601; t=1695915439; x=1696520239; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESjv6/OZiwDAaibxySOEd24QWBP6h1ze9OpmoOfalec=;
+        b=EUd4pQ9Gws5Pq+aJ4/g113XjGsFTlDnHRJ1q8qlwdDWUfYq5Yh3rHSvMU9TNP3LrDl
+         KzXDEP9hYyzKGl88G7nF9Bg6tQj9HQRDollBxtI8sGEqlRQsgvTQy70SJvn+mYz/ziic
+         AtgSy0/ApcpFfxnQ15VEpUOM3ini/LLR6Msa4lEwe6fmeLf0PwOOZdZ0t5P1rzWlT79o
+         FIuBFf2IDZm4f5DMMDDFsSb3dDlQp++LZC491cnF+8WQ0BkoVJL32Do7zfSGGk6vt64t
+         W6csKWGaRyJkS96zQe6kRYPb/RiXj/jxSFYEnEfAtWPstV9Hgt+pv+HEBO8LhcIOxejw
+         7FiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695915402; x=1696520202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6e7z54uATHSSGDjwccq5t2JrfgU8sx45IO2zPYWKTu4=;
-        b=CTp5JQDQKbap8SIWJqwov6sbTqk+CT8pVzBBoeLjxfw6+H2WjzjenFM+sYBdAZdDwm
-         8FqXP2tz6jftGbKqjzpSLuDsTBUkgcmnGlTdbaTRvru2X8BG4GQudvXMmYZHDmVTYfH8
-         jsMie8qxS/bbkCYOSjiu5nqewX87QmdOX7Q0wajo0A6q3TEXZ95ae3BRnlbKPKA10twZ
-         1svD32oi4ad0FeSAPip8af14WSWgtHQCUEqz43Zg+OZBf7lK/hUPn9hCFWzs890hit4Z
-         6g2sHbq52C070ya6FZH9NQ7aLMdmLGBylvlR1fpMVhR886yqQGpdbhz7SSBhIHoZhD7Y
-         M2Dg==
-X-Gm-Message-State: AOJu0YxE/75PeSteUUN6warCIgaTIMvhtIP9rAjmU5ieiFm0KLNTROr0
-        0djXWeCHWgF2eeZQKXCyS0D8tqCdseniX9+SN8pNJw==
-X-Google-Smtp-Source: AGHT+IFjUIiq8zXa/6i3Gd2mLTZVRJSM762ThmYuOrNiwbXezL93NXanoc8htBlyr6ZC4BGKzu/lDhUW4vJYOzuiSDk=
-X-Received: by 2002:a81:4e85:0:b0:569:479f:6d7f with SMTP id
- c127-20020a814e85000000b00569479f6d7fmr1392570ywb.43.1695915402166; Thu, 28
- Sep 2023 08:36:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <CAJuCfpGb5Amo9Sk0yyruJt9NKaYe9-y+5jmU442NSf3+VT5-dA@mail.gmail.com>
- <CAG48ez2WNOMwPo4OMVUHbS4mirwbqHUY5qUaaZ9DTkXdkzrjiQ@mail.gmail.com>
- <CAJuCfpGcsBE2XqPJSVo1gdE_O96gzS5=ET=u0uSBSX3Lj56CtA@mail.gmail.com>
- <CAJuCfpHY5zhkS0OPxOK-twb6pDJg6OpXZnPquw_9wBmbjFiF9Q@mail.gmail.com> <CAG48ez3w7kbetfhEd7trLhOKJYPw4jSVBeOC+psZZR84d-hJaw@mail.gmail.com>
-In-Reply-To: <CAG48ez3w7kbetfhEd7trLhOKJYPw4jSVBeOC+psZZR84d-hJaw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 28 Sep 2023 08:36:31 -0700
-Message-ID: <CAJuCfpHrmgdoJaN0P4FGzRFbu-o+c5+H6-r=5A=xrVd2GU2QyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Jann Horn <jannh@google.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, david@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695915439; x=1696520239;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESjv6/OZiwDAaibxySOEd24QWBP6h1ze9OpmoOfalec=;
+        b=EDqf8fMNgMOEXmMerhB9dsfK2KyI55xb1ABRk8rrbsjk9GhGD3285uLk1cDbMUB1sy
+         vaIseRL5a1DgGJRsUyEZ8H3+sXyYq50YhNpE0D8+c/wAlQlGma74pQy4KNXsysoz2ks5
+         ImKldJxoAtrRm7HSeFrdsQSMgfyBz6yAqAIEKYlBKkOfjFHMupJHX/rYl9WGH2UzVVtZ
+         nCd0S0gD+FWSoB/dyR9+47/be5iK/bySNPsFE4dDtbh0Y/ExCOXoBBXtOCzN0ZD8xg0s
+         i3CL6DvPnUeqVB6f8xtFldyeJaW4M78jsRGMiBlDTdkCU4kzR+BrT4Ek5bsfQiu+jmTb
+         ig1g==
+X-Gm-Message-State: AOJu0YxGh7FRz/yO0Cu6pRNsICRjfN7dD7h+gS/QLcqy+E29YG3oNinc
+        jXv01tbQWxH1Cdu1enj/mBwnCXy1ZPs=
+X-Google-Smtp-Source: AGHT+IEGP17fNTPrQ4AyY729ngrGoUL/gl5UpyjrVFFDHHoJHMKzXnWTPF8kdaQC3pFKL2kLKxYzCqKL1hQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b709:0:b0:5a1:d329:829c with SMTP id
+ v9-20020a81b709000000b005a1d329829cmr24447ywh.0.1695915439513; Thu, 28 Sep
+ 2023 08:37:19 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 08:37:18 -0700
+In-Reply-To: <20230928150428.199929-6-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928150428.199929-1-mlevitsk@redhat.com> <20230928150428.199929-6-mlevitsk@redhat.com>
+Message-ID: <ZRWdrtHynEbtQnpZ@google.com>
+Subject: Re: [PATCH 5/5] x86: KVM: SVM: workaround for AVIC's errata #1235
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 3:49=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
->
-> On Wed, Sep 27, 2023 at 11:08=E2=80=AFPM Suren Baghdasaryan <surenb@googl=
-e.com> wrote:
-> > On Wed, Sep 27, 2023 at 1:42=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > >
-> > > On Wed, Sep 27, 2023 at 1:04=E2=80=AFPM Jann Horn <jannh@google.com> =
-wrote:
-> > > >
-> > > > On Wed, Sep 27, 2023 at 8:08=E2=80=AFPM Suren Baghdasaryan <surenb@=
-google.com> wrote:
-> > > > > On Wed, Sep 27, 2023 at 5:47=E2=80=AFAM Jann Horn <jannh@google.c=
-om> wrote:
-> > > > > > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <sur=
-enb@google.com> wrote:
-> > > > > > > +               dst_pmdval =3D pmdp_get_lockless(dst_pmd);
-> > > > > > > +               /*
-> > > > > > > +                * If the dst_pmd is mapped as THP don't over=
-ride it and just
-> > > > > > > +                * be strict. If dst_pmd changes into TPH aft=
-er this check, the
-> > > > > > > +                * remap_pages_huge_pmd() will detect the cha=
-nge and retry
-> > > > > > > +                * while remap_pages_pte() will detect the ch=
-ange and fail.
-> > > > > > > +                */
-> > > > > > > +               if (unlikely(pmd_trans_huge(dst_pmdval))) {
-> > > > > > > +                       err =3D -EEXIST;
-> > > > > > > +                       break;
-> > > > > > > +               }
-> > > > > > > +
-> > > > > > > +               ptl =3D pmd_trans_huge_lock(src_pmd, src_vma)=
-;
-> > > > > > > +               if (ptl && !pmd_trans_huge(*src_pmd)) {
-> > > > > > > +                       spin_unlock(ptl);
-> > > > > > > +                       ptl =3D NULL;
-> > > > > > > +               }
-> > > > > >
-> > > > > > This still looks wrong - we do still have to split_huge_pmd()
-> > > > > > somewhere so that remap_pages_pte() works.
-> > > > >
-> > > > > Hmm, I guess this extra check is not even needed...
-> > > >
-> > > > Hm, and instead we'd bail at the pte_offset_map_nolock() in
-> > > > remap_pages_pte()? I guess that's unusual but works...
-> > >
-> > > Yes, that's what I was thinking but I agree, that seems fragile. Mayb=
-e
-> > > just bail out early if (ptl && !pmd_trans_huge())?
-> >
-> > No, actually we can still handle is_swap_pmd() case by splitting it
-> > and remapping the individual ptes. So, I can bail out only in case of
-> > pmd_devmap().
->
-> FWIW I only learned today that "real" swap PMDs don't actually exist -
-> only migration entries, which are encoded as swap PMDs, exist. You can
-> see that when you look through the cases that something like
-> __split_huge_pmd() or zap_pmd_range() actually handles.
+KVM: SVM: for the shortlog scope (applies to all relevant patches in this series)
 
-Ah, good point.
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> On Zen2 (and likely on Zen1 as well), AVIC doesn't reliably detect a change
+> in the 'is_running' bit during ICR write emulation and might skip a
+> VM exit, if that bit was recently cleared.
+> 
+> The absence of the VM exit, leads to the KVM not waking up / triggering
+> nested vm exit on the target(s) of the IPI which can, in some cases,
+> lead to an unbounded delays in the guest execution.
+> 
+> As I recently discovered, a reasonable workaround exists: make the KVM
 
->
-> So I think if you wanted to handle all the PMD types properly here
-> without splitting, you could do that without _too_ much extra code.
-> But idk if it's worth it.
+Nit, please just write "KVM", not "the KVM".  KVM is a proper noun when used in
+this way, e.g. saying "the KVM" is like saying "the Sean" or "the Maxim".
 
-Yeah, I guess I can call pmd_migration_entry_wait() and retry by
-returning EAGAIN, similar to how remap_pages_pte() handles PTE
-migration. Looks simple enough.
+> never set the is_running bit.
+> 
+> This workaround ensures that (*) all ICR writes always cause a VM exit
+> and therefore correctly emulated, in expense of never enjoying VM exit-less
+> ICR emulation.
 
-Thanks for all the pointers! I'll start cooking the next version.
+This breaks svm_ir_list_add(), which relies on the vCPU's entry being up-to-date
+and marked running to detect that IOMMU needs to be immediately pointed at the
+current pCPU.
+
+	/*
+	 * Update the target pCPU for IOMMU doorbells if the vCPU is running.
+	 * If the vCPU is NOT running, i.e. is blocking or scheduled out, KVM
+	 * will update the pCPU info when the vCPU awkened and/or scheduled in.
+	 * See also avic_vcpu_load().
+	 */
+	entry = READ_ONCE(*(svm->avic_physical_id_cache));
+	if (entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK)
+		amd_iommu_update_ga(entry & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK,
+				    true, pi->ir_data);
+
+> This workaround does carry a performance penalty but according to my
+> benchmarks is still much better than not using AVIC at all,
+> because AVIC is still used for the receiving end of the IPIs, and for the
+> posted interrupts.
+
+I really, really don't like the idea of carrying a workaround like this in
+perpetuity.  If there is a customer that is determined to enable AVIC on Zen1/Zen2,
+then *maybe* it's something to consider, but I don't think we should carry this
+if the only anticipated beneficiary is one-off users and KVM developers.  IMO, the
+AVIC code is complex enough as it is.
