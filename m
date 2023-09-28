@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9717B1C08
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7869C7B1C0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbjI1MT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        id S231250AbjI1MUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjI1MTz (ORCPT
+        with ESMTP id S231206AbjI1MUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:19:55 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87536193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:19:50 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 091AA6607258;
-        Thu, 28 Sep 2023 13:19:48 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695903588;
-        bh=FlxWm0KO/95SNT5YlRUVZt9iSvcyPyiN3E49R6C5oI0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nKI1xG+7fRFRRrjVsNsL1PE/UgVNPargbDyDTpeYOhqaQx0gqX9SdykZWHBgp/bmo
-         wTu3SYPUp8sOGb/v6J9FuQNa5MGjgOzDvFawZ7TJi2u6YTI94CFx253rMlMWhYQgZg
-         aQxYLZn+IoMCt3RW3iHMvJcRa7+sAeTCfRPFHf59Lh9vzB6R5i00GO7HnW0VCcmeEg
-         ffuDvXoU6I+oKslkmWXpM7lh16u03wIcGeLMrVcD7IphfBJ1ivCg/Xb8l0c1n4jdFf
-         CcGcOnTkY42oPENN84NdDb8vuHlhshqoa+hkCk94Rl+f7XmhS6oXgoseaQYNuh9UfC
-         iIHF721Nnt/8w==
-Date:   Thu, 28 Sep 2023 14:19:45 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v4 6/8] drm/gpuvm: add drm_gpuvm_flags to
- drm_gpuvm
-Message-ID: <20230928141945.36dd44df@collabora.com>
-In-Reply-To: <810dc476-8ead-19e6-23fc-0f9cf35ba2b2@redhat.com>
-References: <20230920144343.64830-1-dakr@redhat.com>
-        <20230920144343.64830-7-dakr@redhat.com>
-        <20230922135842.242c865d@collabora.com>
-        <810dc476-8ead-19e6-23fc-0f9cf35ba2b2@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 28 Sep 2023 08:20:14 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F28A19C;
+        Thu, 28 Sep 2023 05:20:13 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-690d2441b95so9843033b3a.1;
+        Thu, 28 Sep 2023 05:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695903612; x=1696508412; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g1pjsCLdQyTOGga6KmFwQldd7AdXkYw/Qb2m0NHdZcs=;
+        b=jJ+FB9zP/zUQnALZ5meNM1NyBC+9jHngO6OhUhTBtg1GZvdJI2Kvp7ZPuT+lN58XuB
+         EPV7lbHgMzVWj8SfMvsIdElQPmNQAFapp5orqUU+vrTIbl0Q5mC2UALTQ3EYDq0irDk3
+         L29jbo+CuQGgpixfuzhkruUEMrm/edRub3Inc9lFCyaR1EZ07WaQKD1DnqU6vSTHS0zu
+         ifXHwHKc06EWP53osU1lxxha4ehvanmUT37jiDOiBM3lUEcxAemNF6rsRfaQpufIE0FX
+         pdXCQvq9ub/3RE6UC1rQ8b4VfvqHeuxKQPXXN6sZyMWKeKv/1v+XRhzNZBye+E/Eripy
+         JrAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695903612; x=1696508412;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g1pjsCLdQyTOGga6KmFwQldd7AdXkYw/Qb2m0NHdZcs=;
+        b=pcnm2Nl1Vd7JXILfnlHtJNNzSZwqSR5Heu7+HZctDRk/clFa+aFoHEhKeCe1OM5tLF
+         A9n9ptg2ltA6jEQBIZzcQYjIwohlZYveBMRgotQz2ZGmlnnpZSD295HLZLqloRKeCPTA
+         z5yUTu/tYs2ngs/ulAzkHOM2oVPiVSt7XYDb8edZtGdKP3R+tOkDOlcMNXvQ0QLl86AK
+         BkB7IGSaQbPX636KKm1SSpikHoxz3OZ2Z08iyoF8J6vdkehDsGQYhpP/zWsGTSO4K9O8
+         hCzDwJxc/WmNzyVrgisgrJiMZRbhidLsyhdBgomkaqkEAos9TCRg5nhDIY5oFBnUc+m/
+         CtWA==
+X-Gm-Message-State: AOJu0YwRKXF2lnv6TWVMVqdEDu2Jl0u6BsgHo1PXXGFSwrzi3TTrGC3x
+        z/x+/XAdwkezmPG6GF/ouGZo300sd9/djA==
+X-Google-Smtp-Source: AGHT+IGcG8ick4hM88UeHp0k1vJOsBsFkssnDTZkBiowtzYErHpHB48oNSISMSQzJLX9Ww1Hi7dg7A==
+X-Received: by 2002:a05:6a20:9188:b0:125:3445:8af0 with SMTP id v8-20020a056a20918800b0012534458af0mr1765357pzd.7.1695903612452;
+        Thu, 28 Sep 2023 05:20:12 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
+        by smtp.gmail.com with ESMTPSA id r20-20020aa78b94000000b006933f85bc29sm2183219pfd.111.2023.09.28.05.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 05:20:12 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH v5 0/2] Add Loongson1 dmaengine driver
+Date:   Thu, 28 Sep 2023 20:19:51 +0800
+Message-Id: <20230928121953.524608-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 18:52:55 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+Add DMA driver and dt-binding document for Loongson1 SoCs.
 
-> On 9/22/23 13:58, Boris Brezillon wrote:
-> > On Wed, 20 Sep 2023 16:42:39 +0200
-> > Danilo Krummrich <dakr@redhat.com> wrote:
-> >   
-> >> +/**
-> >> + * enum drm_gpuvm_flags - flags for struct drm_gpuvm
-> >> + */
-> >> +enum drm_gpuvm_flags {
-> >> +	/**
-> >> +	 * @DRM_GPUVM_USERBITS: user defined bits
-> >> +	 */
-> >> +	DRM_GPUVM_USERBITS = (1 << 0),  
-> > 
-> > Nit: I tried declaring driver-specific flags, and I find this
-> > counter-intuitive. You basically end up with something like:
-> > 
-> > enum my_gpuvm_flags {
-> > 	MY_FLAG_X = DRM_GPUVM_USERBITS,
-> > 	MY_FLAG_Y = DRM_GPUVM_USERBITS << 1,
-> > };
-> > 
-> > instead of the usual
-> > 
-> > enum my_gpuvm_flags {
-> > 	MY_FLAG_X = BIT(0),
-> > 	MY_FLAG_Y = BIT(1),
-> > };
-> > 
-> > pattern.  
-> 
-> Right, same as with dma_fence flags.
-> 
-> > 
-> > Another issue I see coming is if we end up adding more core flags and
-> > drivers start falling short of bits for their own flags. This makes me
-> > wonder if we shouldn't kill this notion of USER flags and let drivers
-> > store their flags in some dedicated field, given they're likely to
-> > derive drm_gpuvm and drm_gpuva with their own object anyway.  
-> 
-> The only reason I have this in the code is that Xe asked for this with
-> drm_gpuva_flags. Hence, for consistency reasons I added it for drm_gpuvm_flags
-> too.
+Changelog
+V4 -> V5:
+   Add the dt-binding document
+   Add DT support
+   Use DT information instead of platform data
+   Use chan_id of struct dma_chan instead of own id
+   Use of_dma_xlate_by_chan_id() instead of ls1x_dma_filter()
+   Update the author information to my official name
+V3 -> V4:
+   Use dma_slave_map to find the proper channel.
+   Explicitly call devm_request_irq() and tasklet_kill().
+   Fix namespace issue.
+   Some minor fixes and cleanups.
+V2 -> V3:
+   Rename ls1x_dma_filter_fn to ls1x_dma_filter.
+V1 -> V2:
+   Change the config from 'DMA_LOONGSON1' to 'LOONGSON1_DMA',
+   and rearrange it in alphabetical order in Kconfig and Makefile.
+   Fix comment style.
 
-Yeah, my comment stands for both drm_gpuva_flags and drm_gpuvm_flags
-actually.
+Keguang Zhang (2):
+  dt-bindings: dma: Add Loongson-1 DMA
+  dmaengine: Loongson1: Add Loongson1 dmaengine driver
 
-> 
-> Drivers can still have their own flag fields if needed, otherwise I guess it
-> doesn't really hurt to keep DRM_GPUVM_USERBITS in case someone wants to use it.
+ .../bindings/dma/loongson,ls1x-dma.yaml       |  64 +++
+ drivers/dma/Kconfig                           |   9 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/loongson1-dma.c                   | 492 ++++++++++++++++++
+ 4 files changed, 566 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+ create mode 100644 drivers/dma/loongson1-dma.c
 
-Sure, it doesn't hurt, but given drivers are inheriting from this
-object anyway, I thought it'd be simpler/more future proof to let them
-have their flags in a separate field. It's not like we care about
-saving 4 bytes in such a big object. Might be a bit different for
-drm_gpuva given the amount of live mappings one VM might have, but even
-there, I suspect the current drm_gpuva size is going to hurt if we have
-millions of 4k mappings, so, four more bytes won't make a huge
-difference...
 
-Anyway, I don't think that's a blocker, I just thought I'd mention it,
-that's all.
+base-commit: 719136e5c24768ebdf80b9daa53facebbdd377c3
+-- 
+2.39.2
+
