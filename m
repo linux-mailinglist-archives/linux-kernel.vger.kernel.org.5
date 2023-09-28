@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FE27B23FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052FD7B23F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbjI1RfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S231307AbjI1Ret (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjI1RfA (ORCPT
+        with ESMTP id S229478AbjI1Res (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:35:00 -0400
+        Thu, 28 Sep 2023 13:34:48 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D798DD
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:34:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82351A2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695922449;
+        s=mimecast20190719; t=1695922452;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oOqP2ppbORxupNPRbUHGH6nf4SvE0P2uUesTtFRc8Ik=;
-        b=FRlxGiDpbtnvgCnp7ZehAaJE/ca/4sonYHYpkojVTRNOPVFX3bZsyqtjHbaAI6Le9Gem15
-        a6c5b5AydeIgle8Kku1aSQx5IGLdaWTGs1O2tlcMIrdQp4L6cFS07Ztf9C9fkZZmVDQQpY
-        Qy6d+1l37Vyg05BE5IvCuy7+XU0Bytg=
+        bh=Y+xDOUzJP3Y3bm7S22bgnNGRpZTJ9N7w9x7x0py/CUU=;
+        b=jVpJtlYcgT8tMQ+DRLhKFceALJeYt8IUAHMZ7jnLeQ4C+kQ+j2mg17nsWuaJebiDfxaYsl
+        EMP2is3P/RGgX4U4DBUf6kFM82eqkcN+0Ctv5Q456HTjwClz3b636xUDMTb3m3+8bXqcrH
+        Yei6fGsSVMuSdEnzonLYWrN45ytec10=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-436-Df1GUGMiNMW4qntqZxmpqQ-1; Thu, 28 Sep 2023 13:34:04 -0400
-X-MC-Unique: Df1GUGMiNMW4qntqZxmpqQ-1
+ us-mta-518-HV-dXwYNNUe7OoOnepqTxw-1; Thu, 28 Sep 2023 13:34:10 -0400
+X-MC-Unique: HV-dXwYNNUe7OoOnepqTxw-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6EBE92810D42;
-        Thu, 28 Sep 2023 17:34:03 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 460F429AA386;
+        Thu, 28 Sep 2023 17:34:07 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.45.226.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 723E314171B6;
-        Thu, 28 Sep 2023 17:33:59 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C356214171CA;
+        Thu, 28 Sep 2023 17:34:03 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     iommu@lists.linux.dev, "H. Peter Anvin" <hpa@zytor.com>,
@@ -52,9 +52,9 @@ Cc:     iommu@lists.linux.dev, "H. Peter Anvin" <hpa@zytor.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
         Robin Murphy <robin.murphy@arm.com>, stable@vger.kernel.org
-Subject: [PATCH v2 1/4] x86: KVM: SVM: always update the x2avic msr interception
-Date:   Thu, 28 Sep 2023 20:33:51 +0300
-Message-Id: <20230928173354.217464-2-mlevitsk@redhat.com>
+Subject: [PATCH v2 2/4] x86: KVM: SVM: add support for Invalid IPI Vector interception
+Date:   Thu, 28 Sep 2023 20:33:52 +0300
+Message-Id: <20230928173354.217464-3-mlevitsk@redhat.com>
 In-Reply-To: <20230928173354.217464-1-mlevitsk@redhat.com>
 References: <20230928173354.217464-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
@@ -72,48 +72,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following problem exists since x2avic was enabled in the KVM:
+In later revisions of AMD's APM, there is a new 'incomplete IPI' exit code:
 
-svm_set_x2apic_msr_interception is called to enable the interception of
-the x2apic msrs.
+"Invalid IPI Vector - The vector for the specified IPI was set to an
+illegal value (VEC < 16)"
 
-In particular it is called at the moment the guest resets its apic.
+Note that tests on Zen2 machine show that this VM exit doesn't happen and
+instead AVIC just does nothing.
 
-Assuming that the guest's apic was in x2apic mode, the reset will bring
-it back to the xapic mode.
+Add support for this exit code by doing nothing, instead of filling
+the kernel log with errors.
 
-The svm_set_x2apic_msr_interception however has an erroneous check for
-'!apic_x2apic_mode()' which prevents it from doing anything in this case.
+Also replace an unthrottled 'pr_err()' if another unknown incomplete
+IPI exit happens with vcpu_unimpl()
 
-As a result of this, all x2apic msrs are left unintercepted, and that
-exposes the bare metal x2apic (if enabled) to the guest.
-Oops.
+(e.g in case AMD adds yet another 'Invalid IPI' exit reason)
 
-Remove the erroneous '!apic_x2apic_mode()' check to fix that.
-
-This fixes CVE-2023-5090
-
-Fixes: 4d1d7942e36a ("KVM: SVM: Introduce logic to (de)activate x2AVIC mode")
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- arch/x86/kvm/svm/svm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/include/asm/svm.h | 1 +
+ arch/x86/kvm/svm/avic.c    | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9507df93f410a63..acdd0b89e4715a3 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -913,8 +913,7 @@ void svm_set_x2apic_msr_interception(struct vcpu_svm *svm, bool intercept)
- 	if (intercept == svm->x2avic_msrs_intercepted)
- 		return;
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index 19bf955b67e0da0..3ac0ffc4f3e202b 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -268,6 +268,7 @@ enum avic_ipi_failure_cause {
+ 	AVIC_IPI_FAILURE_TARGET_NOT_RUNNING,
+ 	AVIC_IPI_FAILURE_INVALID_TARGET,
+ 	AVIC_IPI_FAILURE_INVALID_BACKING_PAGE,
++	AVIC_IPI_FAILURE_INVALID_IPI_VECTOR,
+ };
  
--	if (!x2avic_enabled ||
--	    !apic_x2apic_mode(svm->vcpu.arch.apic))
-+	if (!x2avic_enabled)
- 		return;
+ #define AVIC_PHYSICAL_MAX_INDEX_MASK	GENMASK_ULL(8, 0)
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index 2092db892d7d052..4b74ea91f4e6bb6 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -529,8 +529,11 @@ int avic_incomplete_ipi_interception(struct kvm_vcpu *vcpu)
+ 	case AVIC_IPI_FAILURE_INVALID_BACKING_PAGE:
+ 		WARN_ONCE(1, "Invalid backing page\n");
+ 		break;
++	case AVIC_IPI_FAILURE_INVALID_IPI_VECTOR:
++		/* Invalid IPI with vector < 16 */
++		break;
+ 	default:
+-		pr_err("Unknown IPI interception\n");
++		vcpu_unimpl(vcpu, "Unknown avic incomplete IPI interception\n");
+ 	}
  
- 	for (i = 0; i < MAX_DIRECT_ACCESS_MSRS; i++) {
+ 	return 1;
 -- 
 2.26.3
 
