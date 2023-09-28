@@ -2,63 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA8B7B124F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657C87B1250
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjI1GFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        id S230226AbjI1GGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjI1GFw (ORCPT
+        with ESMTP id S230150AbjI1GGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:05:52 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A769C;
-        Wed, 27 Sep 2023 23:05:50 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx2yy4nVMz4f3k67;
-        Thu, 28 Sep 2023 14:05:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgCHHt67FxVlpAxWBg--.8358S3;
-        Thu, 28 Sep 2023 14:05:47 +0800 (CST)
-Subject: Re: [PATCH -next 2/3] nbd: factor out a helper to get nbd_config
- without holding 'config_lock'
-To:     Zhong Jinghua <zhongjinghua@huaweicloud.com>, josef@toxicpanda.com,
-        axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230707031536.666482-1-zhongjinghua@huaweicloud.com>
- <20230707031536.666482-3-zhongjinghua@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <f0849d52-55b8-5771-d99a-341f6af74024@huaweicloud.com>
-Date:   Thu, 28 Sep 2023 14:05:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 28 Sep 2023 02:06:19 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CE199;
+        Wed, 27 Sep 2023 23:06:17 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b2b53e17feso327861466b.3;
+        Wed, 27 Sep 2023 23:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695881176; x=1696485976; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=TGpUFaLfaaSllZ7CWKk+QI4sn9XcFVatmo3TMonjq5c=;
+        b=GV87FQ1W4WeoQEFKSVYqGzCohMid+jS95vtNZYrx3cmTPVU9yQDG/YDwoK+ZrQAI8z
+         McqLoGCnPDyL3VObwbB3vkLz5rkT8giXUiOHF0eRnnNmhYx24zcHStgo6a8b1bsLPpoE
+         41+dEK3tIL0RTd9fRezUyiv24+OU2ToZzBaRP7CQ8xEUuSo4v611YxjF44ITDhEoDyxd
+         JIa/7yMD+Pod09xqJuy+nbSzd4syvPkqdUl4ZlCmjpFSFOsCulEeJE7FVBuqxyvcij2f
+         YrA6E9gSKfIr0TXENMVAVKPBqFGihJ5ak6ws3qb7+HNvyQ+dBNr2FbRkbIsOkiF/dKo3
+         4phg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695881176; x=1696485976;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TGpUFaLfaaSllZ7CWKk+QI4sn9XcFVatmo3TMonjq5c=;
+        b=fRrZOFXtEz0af2DAmmr439WleZDpODvhj7p4SW0ckbCGsG0w+VCBew8aIIEAv8Mtkp
+         ry/dy4ktCRlywj3lk6Qt5m45reCvTierWeUK68SKEdpDbQZmuP7t2grOlsAtRmQNdUSa
+         BttM/1DKamHxWU0EWSQyDIXeS4S+G3OHlbpZfSdPElpxM58LBjGroV+8a+dY7LkO/rhg
+         hnThMtcKA32I88m7doQQAV3CMO8LsCidiNnfdk++aOO0Yuu7hWTmaBgJ3YnU6eQIMtr7
+         O23p0AZxAp05r+YGAnGOFDU8MhbIhJSy9GSi73PAK6i6cdcM4l43frSnD5SwhILXjG/G
+         GvZA==
+X-Gm-Message-State: AOJu0YwpFctLlwmZPhiDMe44rbQx/GitNyvXypLJ9P+WdTmIiQGFCwkB
+        ey7k5mYJ7DrdxN2Oc4wTSxGWJeB8aWE=
+X-Google-Smtp-Source: AGHT+IE3YfH/wn9WpyaNFGWQVilUtmvnlYiuOXCT6kIQyI7K87BGo2x0aO+Y//gkDHBn5VT1maVoPA==
+X-Received: by 2002:a17:906:cc5a:b0:9aa:2c5b:6591 with SMTP id mm26-20020a170906cc5a00b009aa2c5b6591mr291165ejb.9.1695881176195;
+        Wed, 27 Sep 2023 23:06:16 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id zg22-20020a170907249600b009a5f1d15642sm10256169ejb.158.2023.09.27.23.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 23:06:15 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id DB01427C0054;
+        Thu, 28 Sep 2023 02:06:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 28 Sep 2023 02:06:12 -0400
+X-ME-Sender: <xms:1BcVZSmaJ1e_IlmAFDf_4YBqGN5g0Ia7KkbjImd5wrwjWf_NpfCjGw>
+    <xme:1BcVZZ2VH6TutTKog4YPfDixlO1w9ug0iNrZIySfoP1MoBB3X7Dq2g6lezdPdnojQ
+    RFsb3erb0mGgX7ToQ>
+X-ME-Received: <xmr:1BcVZQoa-ktDV5DZLE2nrcYcXUabwE78R9LE6jhdA06D5MHFbDEvNWVxqJw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddutdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
+    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:1BcVZWl-_f5Hv8lRF4rvHtNQ6Hv5hK5UBj7EXQC2Q-79WLubFFN7bg>
+    <xmx:1BcVZQ3tkCQrO8wK96gDhqqXrig2oM7WDX7KSVzdyAP6HNkLDzKY2A>
+    <xmx:1BcVZds4kRVsopHaoGYrvumNkjPtA5zWeGa4fFJv_8cq_xIxi9yvRw>
+    <xmx:1BcVZY7oKvlyM3cq4mdlAOS78a61Bhn7Dbp2eVQ4cM0_diPzFzG8tQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 28 Sep 2023 02:06:11 -0400 (EDT)
+Date:   Wed, 27 Sep 2023 23:06:09 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
+References: <20230927160231.XRCDDSK4@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20230707031536.666482-3-zhongjinghua@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCHHt67FxVlpAxWBg--.8358S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW8Zw43Gry3ZFyDKr4xXrb_yoWrJF1DpF
-        4UAa98KrWUGF15WF4vv397WrnxKwn2gFyxGry7W3WFvr9rAryakF1kKry3Zr1xGr9rJF43
-        JFWrWFZ2ka47trDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrcTmDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <20230927160231.XRCDDSK4@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,116 +115,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/07/07 11:15, Zhong Jinghua Ð´µÀ:
-> From: Zhong Jinghua <zhongjinghua@huawei.com>
+On Wed, Sep 27, 2023 at 06:02:31PM +0200, Sebastian Andrzej Siewior wrote:
+> It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+> triggers a lockdep if used from NMI because lockdep expects a deadlock
+> since nothing disables NMIs while the lock is acquired.
 > 
-> There are no functional changes, just to make code cleaner and prepare
-> to fix null-ptr-dereference while accessing 'nbd->config'.
+> Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+> complains if used from NMI.
 > 
-LGTM
-
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-
-> Signed-off-by: Zhong Jinghua <zhongjinghua@huawei.com>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > ---
->   drivers/block/nbd.c | 27 +++++++++++++++++++--------
->   1 file changed, 19 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index cd6d78914954..7186a9a49445 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -393,6 +393,14 @@ static u32 req_to_nbd_cmd_type(struct request *req)
->   	}
->   }
->   
-> +static struct nbd_config *nbd_get_config_unlocked(struct nbd_device *nbd)
+> The splat:
+> | ================================
+> | WARNING: inconsistent lock state
+> | 6.6.0-rc3-rt5+ #85 Not tainted
+> | --------------------------------
+> | inconsistent {INITIAL USE} -> {IN-NMI} usage.
+> | swapper/0/0 [HC1[1]:SC0[0]:HE0:SE1] takes:
+> | ffffffff828e6c90 (console_srcu){....}-{0:0}, at: console_srcu_read_lock+0x3a/0x50
+> | {INITIAL USE} state was registered at:
+> â€¦
+> |        CPU0
+> |        ----
+> |   lock(console_srcu);
+> |   <Interrupt>
+> |     lock(console_srcu);
+> |
+> |  *** DEADLOCK ***
+> |
+> 
+> My guess is that trylock annotation should not apply to
+> rcu_lock_acquire(). This would distinguish it from from non-NMI safe
+> srcu_read_lock_nmisafe() and NMI check in rcu_read_unlock() is only
+> there to survive if accidentally used in-NMI.
+
+I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
+SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
+the checking for NMI lock usages, the logic is that
+
+1)	read lock usages in NMI conflicts with write lock usage in
+	normal context (i.e. LOCKF_USED)
+
+2)	write lock usage in NMI conflicts with read and write lock usage
+	in normal context (i.e. LOCKF_USED | LOCKF_USED_READ)
+
+before that commit, only read-side of SRCU is annotated, in other words,
+SRCU only has read lock usage from lockdep PoV, but after that commit,
+we annotate synchronize_srcu() as a write lock usage, so that we can
+detect deadlocks between *normal* srcu_read_lock() and
+synchronize_srcu(), however the side effect is now SRCU has a write lock
+usage from lockdep PoV.
+
+Actually in the above commit, I explicitly leave
+srcu_read_lock_nmisafe() alone since its locking rules may be different
+compared to srcu_read_lock(). In lockdep terms, srcu_read_lock_nmisafe()
+is a !check read lock and srcu_read_lock() is a check read lock. Maybe
+instead of using the trylock trick, we change lockdep to igore !check
+locks for NMI context detection? Untested code as below:
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e85b5ad3e206..1af8d44e5eb4 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5727,8 +5727,9 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
+                return;
+
+        if (unlikely(!lockdep_enabled())) {
++               /* Only do NMI context checking if it's a check lock */
+                /* XXX allow trylock from NMI ?!? */
+-               if (lockdep_nmi() && !trylock) {
++               if (check && lockdep_nmi() && !trylock) {
+                        struct held_lock hlock;
+
+                        hlock.acquire_ip = ip;
+
+Peter, thoughts?
+
+Of course, either way, we need
+
+Fixes: f0f44752f5f6 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+
+Regards,
+Boqun
+
+> 
+>  include/linux/rcupdate.h | 6 ++++++
+>  include/linux/srcu.h     | 2 +-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade909..44aab5c0bd2c1 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -303,6 +303,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
+>  	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+>  }
+>  
+> +static inline void rcu_try_lock_acquire(struct lockdep_map *map)
 > +{
-> +	if (refcount_inc_not_zero(&nbd->config_refs))
-> +		return nbd->config;
-> +
-> +	return NULL;
+> +	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
 > +}
 > +
->   static enum blk_eh_timer_return nbd_xmit_timeout(struct request *req)
->   {
->   	struct nbd_cmd *cmd = blk_mq_rq_to_pdu(req);
-> @@ -407,13 +415,13 @@ static enum blk_eh_timer_return nbd_xmit_timeout(struct request *req)
->   		return BLK_EH_DONE;
->   	}
->   
-> -	if (!refcount_inc_not_zero(&nbd->config_refs)) {
-> +	config = nbd_get_config_unlocked(nbd);
-> +	if (!config) {
->   		cmd->status = BLK_STS_TIMEOUT;
->   		__clear_bit(NBD_CMD_INFLIGHT, &cmd->flags);
->   		mutex_unlock(&cmd->lock);
->   		goto done;
->   	}
-> -	config = nbd->config;
->   
->   	if (config->num_connections > 1 ||
->   	    (config->num_connections == 1 && nbd->tag_set.timeout)) {
-> @@ -975,12 +983,12 @@ static int nbd_handle_cmd(struct nbd_cmd *cmd, int index)
->   	struct nbd_sock *nsock;
->   	int ret;
->   
-> -	if (!refcount_inc_not_zero(&nbd->config_refs)) {
-> +	config = nbd_get_config_unlocked(nbd);
-> +	if (!config) {
->   		dev_err_ratelimited(disk_to_dev(nbd->disk),
->   				    "Socks array is empty\n");
->   		return -EINVAL;
->   	}
-> -	config = nbd->config;
->   
->   	if (index >= config->num_connections) {
->   		dev_err_ratelimited(disk_to_dev(nbd->disk),
-> @@ -1556,6 +1564,7 @@ static int nbd_alloc_and_init_config(struct nbd_device *nbd)
->   static int nbd_open(struct block_device *bdev, fmode_t mode)
->   {
->   	struct nbd_device *nbd;
-> +	struct nbd_config *config;
->   	int ret = 0;
->   
->   	mutex_lock(&nbd_index_mutex);
-> @@ -1568,7 +1577,9 @@ static int nbd_open(struct block_device *bdev, fmode_t mode)
->   		ret = -ENXIO;
->   		goto out;
->   	}
-> -	if (!refcount_inc_not_zero(&nbd->config_refs)) {
-> +
-> +	config = nbd_get_config_unlocked(nbd);
-> +	if (!config) {
->   		mutex_lock(&nbd->config_lock);
->   		if (refcount_inc_not_zero(&nbd->config_refs)) {
->   			mutex_unlock(&nbd->config_lock);
-> @@ -1584,7 +1595,7 @@ static int nbd_open(struct block_device *bdev, fmode_t mode)
->   		mutex_unlock(&nbd->config_lock);
->   		if (max_part)
->   			set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
-> -	} else if (nbd_disconnected(nbd->config)) {
-> +	} else if (nbd_disconnected(config)) {
->   		if (max_part)
->   			set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
->   	}
-> @@ -2194,7 +2205,8 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
->   	}
->   	mutex_unlock(&nbd_index_mutex);
->   
-> -	if (!refcount_inc_not_zero(&nbd->config_refs)) {
-> +	config = nbd_get_config_unlocked(nbd);
-> +	if (!config) {
->   		dev_err(nbd_to_dev(nbd),
->   			"not configured, cannot reconfigure\n");
->   		nbd_put(nbd);
-> @@ -2202,7 +2214,6 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
->   	}
->   
->   	mutex_lock(&nbd->config_lock);
-> -	config = nbd->config;
->   	if (!test_bit(NBD_RT_BOUND, &config->runtime_flags) ||
->   	    !nbd->pid) {
->   		dev_err(nbd_to_dev(nbd),
+>  static inline void rcu_lock_release(struct lockdep_map *map)
+>  {
+>  	lock_release(map, _THIS_IP_);
+> @@ -317,6 +322,7 @@ int rcu_read_lock_any_held(void);
+>  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>  
+>  # define rcu_lock_acquire(a)		do { } while (0)
+> +# define rcu_try_lock_acquire(a)	do { } while (0)
+>  # define rcu_lock_release(a)		do { } while (0)
+>  
+>  static inline int rcu_read_lock_held(void)
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 127ef3b2e6073..236610e4a8fa5 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
+>  
+>  	srcu_check_nmi_safety(ssp, true);
+>  	retval = __srcu_read_lock_nmisafe(ssp);
+> -	rcu_lock_acquire(&ssp->dep_map);
+> +	rcu_try_lock_acquire(&ssp->dep_map);
+>  	return retval;
+>  }
+>  
+> -- 
+> 2.40.1
 > 
-
