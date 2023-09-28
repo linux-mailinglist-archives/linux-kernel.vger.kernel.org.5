@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A727B14E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF877B14F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjI1Ha2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
+        id S229835AbjI1Hdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjI1HaY (ORCPT
+        with ESMTP id S229539AbjI1Hdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:30:24 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F9E11F
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:30:19 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EC4FE40E01AD;
-        Thu, 28 Sep 2023 07:30:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id IBMkuN1e-nE3; Thu, 28 Sep 2023 07:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695886213; bh=z4BG31Q1gkVUkJg2uGgLI1FzyDQbxyqhIJweL2kvhrg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eg9bkgdEIrXwjBRPVaUr8phKBDya5ezmFYUAfqMOiOxBw15uQXoXoTF1QyA755K1Y
-         nF00ARrCcYTBD8c4nr7Pv7ls7u+pm9KXKTI20bKtji9HLnQOBWORvFmpALcmYH4fbd
-         MLeE719JLewMfhwqOe9JImG8o12rhwStpw5T/Cl1Ula5NTxO75+BNcc9mypBeMAGFp
-         STFlYox30G+aANS9f86mYNREtM9Vd05INPRajkyy7cogcJSXWpKep1HYbVpKa1bwoK
-         16Ds1Uee2qRN6tjnTmkpazXd+Ht3vF1U8dkPfvJwa1MOF9tl6c8Qazl7W1/n5ujAXv
-         Ef2U/gsFTMx/YLPBv4Y9XcxIvwFTbw/Rhc3t7gEACko/IXM/EMoS8Ba70tn55jvSWD
-         FRqwvxLyT6M4FbklE3AHidaHbGiF9WdD0X8ay5aSG/WUwKW76ghnNtdKJ/qUniGmrs
-         MQ4jqSEyXWYkDWpR9GfveS5xiPEuym0+7+VAqb50lsSTP4wZ8mlyIvPUjbn6mXqofL
-         88QkG9WKUBgorFdJLFljXA0Tszas4Va90F4h3lfC0szFKv7qRo4A9eqdigqIsBZEpK
-         IJEa8mtAAog4Hh/o8O3l5UUJ5OfkbIkFLQy06hGXYf85zR+OGn1rbnO3PiHg2YmkXJ
-         e5Du2TfdXRWPihITiIMSQWCQ=
-Received: from nazgul.tnic (cust-west-par-46-193-35-178.cust.wifirst.net [46.193.35.178])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1185340E014B;
-        Thu, 28 Sep 2023 07:30:03 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 09:30:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Pu Wen <pu_wen@foxmail.com>
-Cc:     mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, peterz@infradead.org, kim.phillips@amd.com,
-        linux-kernel@vger.kernel.org, Pu Wen <puwen@hygon.cn>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] x86/srso: Add SRSO mitigation for Hygon processors
-Message-ID: <20230928073022.GAZRUrjgwn50bkYa6J@fat_crate.local>
-References: <tencent_4A14812842F104E93AA722EC939483CEFF05@qq.com>
+        Thu, 28 Sep 2023 03:33:31 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 00:33:29 PDT
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C3D99
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695886410; x=1727422410;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=J3X5CMCKL1P/23rm+UPIpvvk2cR1JV83hHUHkbtZJvM=;
+  b=Hq8gConN81GIRCZFkYx9X4Wt6e6se8e/rtCL+bVMqZy8s58Pg9qGXojG
+   NZWYaBx9opc1XEUONLAMUB2Xz1kEMCdHiLa18tjZkfpdgkxcEjGlMAok7
+   4gYCjI2UWRR6Y6MhWX7CPi1Lt8Cnuw09SgiDt0P9fD9EPKzAHYmcIJG+o
+   h5dhMD/UKLRQFB/mi+B4GBFNTXNxl2aUvqW+ehYx6NmSZZ3X+tPB347+6
+   fh9PhDZJ4FMLBcNvx4I6enoauJEteb0DFFuQAul2GA3A198hpry+OUuRz
+   tETV+fuWzJYyAm195epelZsdivwsc5+1IiofInXlSKsEO5Iw/zkBaBOun
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="3558763"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="3558763"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 00:32:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="815150330"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="815150330"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Sep 2023 00:32:25 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qllVR-0001En-03;
+        Thu, 28 Sep 2023 07:32:17 +0000
+Date:   Thu, 28 Sep 2023 15:31:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Avraham Stern <avraham.stern@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Johannes Berg <johannes.berg@intel.com>,
+        Gregory Greenman <gregory.greenman@intel.com>
+Subject: drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1126:5-8: Unneeded
+ variable: "ret". Return "  0" on line 1154
+Message-ID: <202309281538.TJc5nQNH-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tencent_4A14812842F104E93AA722EC939483CEFF05@qq.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 02:59:16PM +0800, Pu Wen wrote:
-> From: Pu Wen <puwen@hygon.cn>
-> 
-> Add mitigation for the speculative return stack overflow vulnerability
-> which exists on Hygon processors.
-> 
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> Cc: <stable@vger.kernel.org>
-> ---
->  arch/x86/kernel/cpu/common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 382d4e6b848d..4e5ffc8b0e46 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -1303,7 +1303,7 @@ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
->  	VULNBL_AMD(0x15, RETBLEED),
->  	VULNBL_AMD(0x16, RETBLEED),
->  	VULNBL_AMD(0x17, RETBLEED | SMT_RSB | SRSO),
-> -	VULNBL_HYGON(0x18, RETBLEED | SMT_RSB),
-> +	VULNBL_HYGON(0x18, RETBLEED | SMT_RSB | SRSO),
->  	VULNBL_AMD(0x19, SRSO),
->  	{}
->  };
-> -- 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+commit: 057381ddac0593c6e4ca8f58732830d8542b9c4e wifi: iwlwifi: pcie: avoid a warning in case prepare card failed
+date:   5 weeks ago
+config: x86_64-randconfig-101-20230927 (https://download.01.org/0day-ci/archive/20230928/202309281538.TJc5nQNH-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230928/202309281538.TJc5nQNH-lkp@intel.com/reproduce)
 
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309281538.TJc5nQNH-lkp@intel.com/
+
+cocci warnings: (new ones prefixed by >>)
+>> drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1126:5-8: Unneeded variable: "ret". Return "  0" on line 1154
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
