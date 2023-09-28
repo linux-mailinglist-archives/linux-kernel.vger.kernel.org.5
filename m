@@ -2,68 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E93797B25C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D987B25C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbjI1TO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S232248AbjI1TPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbjI1TON (ORCPT
+        with ESMTP id S232026AbjI1TPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:14:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DD31AB;
-        Thu, 28 Sep 2023 12:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695928446; x=1727464446;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mn6nYHQ+REP1+buEIYzgvASYIMVA5gLIDjoJUxkB0Ok=;
-  b=duWY74iPCS0aoa5n5Gjw2tawpKPLUFeu/NI0PYnZv6O8k4rxd0uWWOX/
-   PK7cKYgAWHc0XCTkgg/J4D0ezok4af01egNJRsDdcCUxNf/MJbWBJ3MyP
-   afgLnuek101P3i38jS9+D+a8XCFtxLIsPCczd6HFrzMkw9+7kUbfZZH0L
-   ZQQB6jq0b8CwfAR1RjeyHNKewWZfLdT4ezf1FOuKCbZUTps6k8gTLeaNi
-   s5fVOX9eJb4qN87kpYXHrL1pWYExBeSH6rnaR7KxyuOT+ieJ8DMbSLWX8
-   8X8n/hQLkF6FlRRhEWZuZ3PJjqwt4dJyGVlDtX7jm3EqE3CA3ACBYA3VY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="367213958"
-X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="367213958"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:14:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="779020047"
-X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="779020047"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:14:01 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v6 8/8] x86/resctrl: Update documentation with Sub-NUMA cluster changes
-Date:   Thu, 28 Sep 2023 12:13:49 -0700
-Message-ID: <20230928191350.205703-9-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928191350.205703-1-tony.luck@intel.com>
-References: <20230829234426.64421-1-tony.luck@intel.com>
- <20230928191350.205703-1-tony.luck@intel.com>
+        Thu, 28 Sep 2023 15:15:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F84519F;
+        Thu, 28 Sep 2023 12:15:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7827C433C9;
+        Thu, 28 Sep 2023 19:15:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695928533;
+        bh=PmSQ/FB4sDVPgHeFaPw6PA6l5YgUDHfxaN1c2oSByZY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BvKdts8kfTlOvNJcvxbEnLGm8Z7iB5UKNZPPVqkGsF0wWQ43r+Od8TNIRDDwqWsDw
+         lTQsUnHirJnIBiOK0sRGnYt6lekGVPbgc+fRsLNPC++IOvzK8rhoWRFvsod6w3ROtF
+         1UQFgr4mzesgWKFlctQvSY/zpRVplItvUpcfB/gnYyTim+rIemrk3sCTP8q+nm2wOY
+         UtG9jun2C0FrJ1iWer/Zw/sb0lcVRkl4m8o2WMlJimeza+JBoLoHEFdoQok9n0Ff3o
+         dQG71oc16g3FZd63HqFx61y4M2w4coBYsiE/2Glffd46gM6mT0EBHy2FiHobRB03Dt
+         PVJ64J/7BWqbA==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so21139127e87.1;
+        Thu, 28 Sep 2023 12:15:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx+dFKJwSy5lCbR+V3Ml0JFr7z9xIf9Z/d2ydiVHgohZu6ZlDYr
+        DOR0ZwgAoGj7vTKQkGmz5sOl6Yb7x0WjrRnimhQ=
+X-Google-Smtp-Source: AGHT+IEO1NmBSmnMxdEBJpHkUAXkaiTeoWOqTDYI2wL3GtNpnOuZ8NDHwQUXWf51YZnh8VhWkg0jh50rQABdPgFYg7Y=
+X-Received: by 2002:a05:6512:1388:b0:500:97e4:587e with SMTP id
+ fc8-20020a056512138800b0050097e4587emr2412880lfb.44.1695928532085; Thu, 28
+ Sep 2023 12:15:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 28 Sep 2023 12:15:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5cUgqy9fqj+Z4nGPQrAok-eQ=NipNxb0TL_kuCFaPMcw@mail.gmail.com>
+Message-ID: <CAPhsuW5cUgqy9fqj+Z4nGPQrAok-eQ=NipNxb0TL_kuCFaPMcw@mail.gmail.com>
+Subject: Re: [PATCH -next v3 00/25] md: synchronize io with array reconfiguration
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
+        dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,77 +60,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With Sub-NUMA Cluster mode enabled the scope of monitoring resources is
-per-NODE instead of per-L3 cache. Suffixes of directories with "L3" in
-their name refer to Sub-NUMA nodes instead of L3 cache ids.
+Hi Kuai,
 
-Users should be aware that SNC mode also affects the amount of L3 cache
-available for allocation within each SNC node.
+Thanks for the patchset!
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+A few high level questions/suggestions:
 
----
+1. This is a big change that needs a lot of explanation. While you managed =
+to
+keep each patch relatively small (great job btw), it is not very clear why =
+we
+need these changes. Specifically, we are adding a new mutex, it is worth
+mentioning why we cannot achieve the same goal without it. Please add
+more information in the cover letter. We will put part of the cover letter =
+in
+the merge commit.
 
-Changes since v5:
+2. In the cover letter, please also highlight that we are removing
+ MD_ALLOW_SB_UPDATE and MD_UPDATING_SB. This is a big improvement.
 
-Added addtional details about challenges tracking tasks when SNC
-mode is enabled.
----
- Documentation/arch/x86/resctrl.rst | 34 +++++++++++++++++++++++++++---
- 1 file changed, 31 insertions(+), 3 deletions(-)
+3. Please rearrange the patch set so that the two "READ_ONCE/WRITE_ONCE"
+patches are at the beginning.
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index cb05d90111b4..d6b6a4cfd967 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -345,9 +345,15 @@ When control is enabled all CTRL_MON groups will also contain:
- When monitoring is enabled all MON groups will also contain:
- 
- "mon_data":
--	This contains a set of files organized by L3 domain and by
--	RDT event. E.g. on a system with two L3 domains there will
--	be subdirectories "mon_L3_00" and "mon_L3_01".	Each of these
-+	This contains a set of files organized by L3 domain or by NUMA
-+	node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
-+	or enabled respectively) and by RDT event. E.g. on a system with
-+	SNC mode disabled with two L3 domains there will be subdirectories
-+	"mon_L3_00" and "mon_L3_01". The numerical suffix refers to the
-+	L3 cache id.  With SNC enabled the directory names are the same,
-+	but the numerical suffix refers to the node id.
-+	Mappings from node ids to CPUs are available in the
-+	/sys/devices/system/node/node*/cpulist files. Each of these
- 	directories have one file per event (e.g. "llc_occupancy",
- 	"mbm_total_bytes", and "mbm_local_bytes"). In a MON group these
- 	files provide a read out of the current value of the event for
-@@ -452,6 +458,28 @@ and 0xA are not.  On a system with a 20-bit mask each bit represents 5%
- of the capacity of the cache. You could partition the cache into four
- equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
- 
-+Notes on Sub-NUMA Cluster mode
-+==============================
-+When SNC mode is enabled the "llc_occupancy", "mbm_total_bytes", and
-+"mbm_local_bytes" will only give meaningful results for well behaved NUMA
-+applications. I.e. those that perform the majority of memory accesses
-+to memory on the local NUMA node to the CPU where the task is executing.
-+Note that Linux may load balance tasks between Sub-NUMA nodes much
-+more readily than between regular NUMA nodes since the CPUs on SNC
-+share the same L3 cache and the system may report the NUMA distance
-+between SNC nodes with a lower value than used for regular NUMA nodes.
-+Tasks that migrate between nodes will have their traffic recorded by the
-+counters in different SNC nodes so a user will need to read mon_data
-+files from each node on which the task executed to get the full
-+view of traffic for which the task was the source.
-+
-+
-+The cache allocation feature still provides the same number of
-+bits in a mask to control allocation into the L3 cache. But each
-+of those ways has its capacity reduced because the cache is divided
-+between the SNC nodes. The values reported in the resctrl
-+"size" files are adjusted accordingly.
-+
- Memory bandwidth Allocation and monitoring
- ==========================================
- 
--- 
-2.41.0
+4. Please consider merging some patches. Current "add-api =3D> use-api =3D>
+remove-old-api" makes it tricky to follow what is being changed. For this s=
+et,
+I found the diff of the whole set easier to follow than some of the big pat=
+ches.
 
+Thanks again for your hard work into this!
+Song
+
+On Wed, Sep 27, 2023 at 11:22=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+[...]
