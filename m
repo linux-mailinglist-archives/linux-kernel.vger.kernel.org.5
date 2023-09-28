@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AA57B272A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBC17B2733
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjI1VKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S232460AbjI1VLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1VKW (ORCPT
+        with ESMTP id S232052AbjI1VLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:10:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DE4F3;
-        Thu, 28 Sep 2023 14:10:19 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 21:10:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695935418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=77afw0i6mpY2aGIKdmNyBfPjlx58NITlKelMTNshHZU=;
-        b=hLhq0xFTs+S6r9aP+UkMTN0NXO8d1/QXIyHoYtHIBHPc+UekifEUpmZti+ohq+8XbsZ0bt
-        lcoVAKsnrghIgLAwc2aZmPFLJzsJXnEL0Ep8Kb4aIb0tGBDb3pEaMmjEA/Z2HxA4ccwUrH
-        j+rbEH6o0lXPaOGcv1Fhcn+aD5z/0sGiEASEbCELjkpKFML3AUytX3DKJH5ku6fwPcttez
-        B1sc5ZRwxH1tsb8JMl5uzS1D95ZzDmLRNwyNMSqbK9QA4OGLmn8keI5yHMI1Tk45w6PAI9
-        UfMXhmBauUDADmcTMvgUllklOWTfw6bieElEMczH0HFszldhzsXgiIM2tUyI8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695935418;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=77afw0i6mpY2aGIKdmNyBfPjlx58NITlKelMTNshHZU=;
-        b=yOHtKbUgwS3lTMkCLB/jsalNKxve0TGZweICn6F/B3nND4a7eqoyR1byK8hx7V1tHwpj9S
-        lToo2iRezzkXwhBw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-6.6-1' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
- irq/urgent
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20230924094105.2361754-1-maz@kernel.org>
-References: <20230924094105.2361754-1-maz@kernel.org>
+        Thu, 28 Sep 2023 17:11:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE491B1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695935493; x=1727471493;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=JZzcF/RE+QQCAwtGUFO42r4634qOfEeUd9jYMeM50JQ=;
+  b=D/JsqoGyCsar3MBURWczUtfbIK+MLP+AGqjx0/BhWjAwz9QRzujw7+pj
+   OV6hva71lyhs/Ua7go1iDe3kK3mGSHcSPzgLRPX1U7fVkqBhMJwqrx33c
+   beBWV9EefOpIi5AgJ/c5u0sCT0Uim/VgkdRb3qqBtnxQtXXTKpYtVl4+W
+   otMMPnc9fQkkXxqgHKARJ5ZD//51dT8ygPxggrz58CoJalYjngIYxh8G0
+   PWLMroiTdZrtpS6g3PY/K8VBWkK60unlfRiwkaIozOlZF2qGPCwOyt289
+   ZTHeX88PHfYpBa9rJGAufXtr8vP/IIcjpqGVxcGmZE/BRHeMs7TnANrQD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="446338037"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="446338037"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 14:11:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="996712650"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="996712650"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 28 Sep 2023 14:11:30 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlyIC-0001yM-2b;
+        Thu, 28 Sep 2023 21:11:28 +0000
+Date:   Fri, 29 Sep 2023 05:10:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Lyude Paul <lyude@redhat.com>
+Subject: drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c:423:31-32: Unneeded
+ semicolon
+Message-ID: <202309290549.7IPOeLw5-lkp@intel.com>
 MIME-Version: 1.0
-Message-ID: <169593541756.27769.14546547060373396545.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ed22ae6be817d7a3f5c15ca22cbc9d3963b481d
+commit: 78a43c7e3b2ff5aed1809f93b4f87a418355789e drm/nouveau/gr/gf100-: make global attrib_cb actually global
+date:   11 months ago
+config: i386-randconfig-053-20230928 (https://download.01.org/0day-ci/archive/20230929/202309290549.7IPOeLw5-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230929/202309290549.7IPOeLw5-lkp@intel.com/reproduce)
 
-Commit-ID:     9cd847ee4d64c10b52f26f18d19eb6462ba7d2fe
-Gitweb:        https://git.kernel.org/tip/9cd847ee4d64c10b52f26f18d19eb6462ba7d2fe
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 28 Sep 2023 23:04:13 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 28 Sep 2023 23:04:13 +02:00
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309290549.7IPOeLw5-lkp@intel.com/
 
-Merge tag 'irqchip-fixes-6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+cocci warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c:423:31-32: Unneeded semicolon
 
-Pull irqchip fixes from Marc Zygnier:
-
-  - Fix QC PDC v3.2 support by working around broken firmware tables
-
-  - Fix rzg2l-irqc missing #interrupt-cells description in the DT binding
-
-  - Fix rzg2l-irqc interrupt masking
-
-Link: https://lore.kernel.org/lkml/20230924094105.2361754-1-maz@kernel.org
----
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
