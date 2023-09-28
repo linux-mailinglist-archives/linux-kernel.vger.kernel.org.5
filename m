@@ -2,202 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767257B2200
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373A17B2219
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjI1QQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        id S231162AbjI1QTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbjI1QQ5 (ORCPT
+        with ESMTP id S230251AbjI1QTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:16:57 -0400
-Received: from out-202.mta1.migadu.com (out-202.mta1.migadu.com [95.215.58.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B97B7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:16:54 -0700 (PDT)
-Message-ID: <5d8e302c-a28d-d4f4-eb91-4b54eb89490b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695917813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mJXzX4YeZuur6vzraw211+ziEWxb7cjFsR3/hk3mgcI=;
-        b=Aery4wKawpKHsf86RLnvjI2U6DiUQ1egN70ecnHn4Fok30Ae1Jm346bsSvZDjXAHEi1IG/
-        eA8trbMotd7g9Sk27y/5hWmFT6IZpJFjJVrNTFAg5NmbGOEOoGIb9BOWn+SHK0T/dprzN9
-        P3SDRXBhsUUEREhqkfZGClQ6CrjiGh4=
-Date:   Fri, 29 Sep 2023 00:16:45 +0800
+        Thu, 28 Sep 2023 12:19:02 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110BC199;
+        Thu, 28 Sep 2023 09:19:00 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-49a319c9e17so3542190e0c.1;
+        Thu, 28 Sep 2023 09:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695917939; x=1696522739; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8mQRi8ZNuvLxfOVIX7Pb/xHqZWWctvdJZZK30/RGLwA=;
+        b=WTwvY5VpW8WBQ5LmfvMNG6v2Mw60Pa3DohzF63fDMiFBCSS7g+5UjHdiRoQEdHGJk8
+         fOS8kKF2SO8IWs+4uMmEyct11CpXKkx4crXUzvUbXnpiQySRzl6fhoUlZRgTZgkvBoIh
+         nHthBEGxfaK1VuVjhTORaXHTLbQxTiZc/Ji8iPe2IBi5UhqkDa629IykTfw19yEGQGrv
+         z7zzt/1DYj0AhwSBp1ed4dzt2+Np9taPLFtNlgpKLfHq1cMHZIBhBX4E/qv2WewgzyMF
+         jVgpBWx/3deOnhn2Tr1PehIJvumZzPcy/vOOXuUp5mcVnIqphsR1RTchFCHscHNEKFgx
+         ZvTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695917939; x=1696522739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8mQRi8ZNuvLxfOVIX7Pb/xHqZWWctvdJZZK30/RGLwA=;
+        b=FjZLV5JNfg93O7Y4/Pl6jG4s5orTDmJjnUtuzqc0gylfyK03KypMlsmxDE9zZt9/St
+         EPvqFnjj9dcIRHsk5mXw9SDmInXsJn5gY6yYnrdVbwPb4aABcveWckAW3ZKOdoaMYZVG
+         MRb7bI++GyBREGm9aPcr98hSSTuKmJI81usLOuM7aqizSw1oRLBHkaVTj0gGkvofUryV
+         G2lB9AWTxUgaQi1nLTaovUcXfi6p4yplsfmKd+ldWlDunKHHf8VHaHDXa7xQhd+XI8Yu
+         dRYnCr/hj7PhkIIqn6fn0a0Sy7K/0OzeKbyb7grZVVA5pC+TDYRvUgxQVD8tDR92dtK9
+         ZKgA==
+X-Gm-Message-State: AOJu0YzpAEWNSuKzG/8cNVJAdDorjN9k/9XVoZl9JKoN2UOClFu6gmJQ
+        AeZXZ3MHxNnsRBJHasVYO+AFYyGKXSJh6UxF/G4=
+X-Google-Smtp-Source: AGHT+IEEQIZo78ZB+LRqd4cG7MAVnesmuoPM3CUNnGVROTnyjl3M5KNHKj7J142QD6g9SdwTyZEoANcgn+R7moVi+/E=
+X-Received: by 2002:a1f:49c5:0:b0:496:b3b7:5d4c with SMTP id
+ w188-20020a1f49c5000000b00496b3b75d4cmr1343220vka.16.1695917939028; Thu, 28
+ Sep 2023 09:18:59 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v6] net/core: Introduce netdev_core_stats_inc()
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-References: <20230928100418.521594-1-yajun.deng@linux.dev>
- <CANn89iL9uy58ZrZRPEtrvQ7ckv5hVTq8shx3OesQA6SWoUOP=g@mail.gmail.com>
- <c43a3dde-fa4d-4a87-6f96-397813db5bd6@linux.dev>
- <CANn89i+iT11qzCidTrHHRMQiYR-nXtbPNAUJGaEg0NQMCq_8CA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <CANn89i+iT11qzCidTrHHRMQiYR-nXtbPNAUJGaEg0NQMCq_8CA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230928104520.24768-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <4e4bf02b-2264-491e-9b71-ae3b5ad7fc39@sifive.com>
+In-Reply-To: <4e4bf02b-2264-491e-9b71-ae3b5ad7fc39@sifive.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 28 Sep 2023 17:18:12 +0100
+Message-ID: <CA+V-a8sSmy-UNwsB3b_yuETTRGS2fBWvS4sTMaVghTWm6oUb+Q@mail.gmail.com>
+Subject: Re: [PATCH] clocksource/drivers/riscv: Increase the clock_event rating
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Samuel Holland <samuel@sholland.org>,
+        Anup Patel <anup@brainfault.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Samuel,
 
-On 2023/9/28 23:44, Eric Dumazet wrote:
-> On Thu, Sep 28, 2023 at 5:40 PM Yajun Deng <yajun.deng@linux.dev> wrote:
->>
->> On 2023/9/28 22:18, Eric Dumazet wrote:
->>> On Thu, Sep 28, 2023 at 12:04 PM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>> Although there is a kfree_skb_reason() helper function that can be used to
->>>> find the reason why this skb is dropped, but most callers didn't increase
->>>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
->>>>
->>>> For the users, people are more concerned about why the dropped in ip
->>>> is increasing.
->>>>
->>>> Introduce netdev_core_stats_inc() for trace the caller of the dropped
->>>> skb. Also, add __code to netdev_core_stats_alloc(), as it's called
->>>> unlinkly.
->>>>
->>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->>>> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
->>>> ---
->>>> v6: merge netdev_core_stats and netdev_core_stats_inc together
->>>> v5: Access the per cpu pointer before reach the relevant offset.
->>>> v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
->>>> v3: __cold should be added to the netdev_core_stats_alloc().
->>>> v2: use __cold instead of inline in dev_core_stats().
->>>> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
->>>> ---
->>>>    include/linux/netdevice.h | 21 ++++-----------------
->>>>    net/core/dev.c            | 17 +++++++++++++++--
->>>>    2 files changed, 19 insertions(+), 19 deletions(-)
->>>>
->>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>> index 7e520c14eb8c..eb1fa04fbccc 100644
->>>> --- a/include/linux/netdevice.h
->>>> +++ b/include/linux/netdevice.h
->>>> @@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
->>>>           return false;
->>>>    }
->>>>
->>>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
->>>> -
->>>> -static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
->>>> -{
->>>> -       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
->>>> -       struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
->>>> -
->>>> -       if (likely(p))
->>>> -               return p;
->>>> -
->>>> -       return netdev_core_stats_alloc(dev);
->>>> -}
->>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
->>>>
->>>>    #define DEV_CORE_STATS_INC(FIELD)                                              \
->>>>    static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)                \
->>>>    {                                                                              \
->>>> -       struct net_device_core_stats __percpu *p;                               \
->>>> -                                                                               \
->>>> -       p = dev_core_stats(dev);                                                \
->>>> -       if (p)                                                                  \
->>>> -               this_cpu_inc(p->FIELD);                                         \
->>> Note that we were using this_cpu_inc() which implied :
->>> - IRQ safety, and
->>> - a barrier paired with :
->>>
->>> net/core/dev.c:10548:                   storage->rx_dropped +=
->>> READ_ONCE(core_stats->rx_dropped);
->>> net/core/dev.c:10549:                   storage->tx_dropped +=
->>> READ_ONCE(core_stats->tx_dropped);
->>> net/core/dev.c:10550:                   storage->rx_nohandler +=
->>> READ_ONCE(core_stats->rx_nohandler);
->>> net/core/dev.c:10551:                   storage->rx_otherhost_dropped
->>> += READ_ONCE(core_stats->rx_otherhost_dropped);
->>>
->>>
->>>> +       netdev_core_stats_inc(dev,                                              \
->>>> +                       offsetof(struct net_device_core_stats, FIELD));         \
->>>>    }
->>>>    DEV_CORE_STATS_INC(rx_dropped)
->>>>    DEV_CORE_STATS_INC(tx_dropped)
->>>>    DEV_CORE_STATS_INC(rx_nohandler)
->>>>    DEV_CORE_STATS_INC(rx_otherhost_dropped)
->>>> +#undef DEV_CORE_STATS_INC
->>>>
->>>>    static __always_inline int ____dev_forward_skb(struct net_device *dev,
->>>>                                                  struct sk_buff *skb,
->>>> diff --git a/net/core/dev.c b/net/core/dev.c
->>>> index 606a366cc209..88a32c392c1d 100644
->>>> --- a/net/core/dev.c
->>>> +++ b/net/core/dev.c
->>>> @@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
->>>>    }
->>>>    EXPORT_SYMBOL(netdev_stats_to_stats64);
->>>>
->>>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
->>>> +static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
->>>> +               struct net_device *dev)
->>>>    {
->>>>           struct net_device_core_stats __percpu *p;
->>>>
->>>> @@ -10510,7 +10511,19 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
->>>>           /* This READ_ONCE() pairs with the cmpxchg() above */
->>>>           return READ_ONCE(dev->core_stats);
->>>>    }
->>>> -EXPORT_SYMBOL(netdev_core_stats_alloc);
->>>> +
->>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
->>>> +{
->>>> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
->>>> +       struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
->>>> +
->>>> +       if (unlikely(!p))
->>>> +               p = netdev_core_stats_alloc(dev);
->>>> +
->>>> +       if (p)
->>>> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
->>> While here you are using a ++ operation that :
->>>
->>> - is not irq safe
->>> - might cause store-tearing.
->>>
->>> I would suggest a preliminary patch converting the "unsigned long" fields in
->>> struct net_device_core_stats to local_t
->> Do you mean it needs to revert the commit 6510ea973d8d ("net: Use
->> this_cpu_inc() to increment
->>
->> net->core_stats") first? But it would allocate memory which breaks on
->> PREEMPT_RT.
-> I think I provided an (untested) alternative.
+On Thu, Sep 28, 2023 at 5:04=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
 >
-> unsigned long __percpu *field = (__force unsigned long __percpu *)
-> ((__force u8 *)p + offset);
-> this_cpu_inc(field);
-
-unsigned long __percpu *field = (__force unsigned long __percpu *)
-((__force u8 *)p + offset);
-this_cpu_inc(*(int *)field);
-
-This would compiler success. But I didn't test it.
-This cold look complex.
-Shoud I base v3? Export dev_core_stats_*_inc() intead of introduce netdev_core_stats_inc().
-That would be easy.
-
+> On 2023-09-28 5:45 AM, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Renesas RZ/Five SoC has OSTM blocks which can be used for clock_event a=
+nd
+> > clocksource [0]. The clock_event rating for the OSTM is set 300 but
+> > whereas the rating for riscv-timer clock_event is set to 100 due to whi=
+ch
+> > the kernel is choosing OSTM for clock_event.
+> >
+> > As riscv-timer is much more efficient than MMIO clock_event, increase t=
+he
+> > rating to 400 so that the kernel prefers riscv-timer over the MMIO base=
+d
+> > clock_event.
 >
->>> You might be able tweak this to
->>>
->>> unsigned long __percpu *field = (unsigned long __percpu) ((u8 *)p + offset);
->>> this_cpu_inc(field);
+> This is only true if you have the Sstc extension and can set stimecmp dir=
+ectly.
+> Otherwise you have the overhead of an SBI call, which is going to be much=
+ higher
+> than an MMIO write. So the rating should depend on Sstc, as in this patch=
+:
+>
+> https://lore.kernel.org/linux-riscv/20230710131902.1459180-3-apatel@venta=
+namicro.com/
+>
+Thank you for the pointer. Do you know any tool/util which I can use
+to make comparisons?
+
+Cheers,
+Prabhakar
