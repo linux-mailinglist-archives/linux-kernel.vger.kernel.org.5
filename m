@@ -2,125 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DA77B2583
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047227B2584
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbjI1SsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S232119AbjI1Stf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232215AbjI1SsO (ORCPT
+        with ESMTP id S231406AbjI1Std (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:48:14 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C604193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:48:11 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32488a22810so843362f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:48:11 -0700 (PDT)
+        Thu, 28 Sep 2023 14:49:33 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39014194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:49:32 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c3d6d88231so100085845ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695926890; x=1696531690; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=n8RPDuko3qlkz+UgK/tpbIH2DJ3LBHkN68qFBLWLsdI=;
-        b=g91zwaHCQWa5wnfENvpWAUFkh1oxEpmGWgViMbhSq8FSGShnU/XOs0hSRUPKzez/iU
-         cVgwH/bzzlNN08OqWVVNNbXAtbvoBBXFNJavetvvDnl7p6pVTeMBh8kNa5DRsH5HzOKw
-         RaiUsBLK5l7hHYejpzBRk3sX/uRmP7YcRMMeFYYsUhExSabyuksQeSDa/caIAmrYZU2j
-         ep6OiuHAV1QUfh0/xi013KNW49eujrVoId953IpJGFCt3Ui2rQaPPKn+ibjewExGnvko
-         nz+sivZEniozRHEMwSe9aemkWuMrzPMgzyBrnof74DATusPMInRvbQOOvSdqHef084fW
-         gd1Q==
+        d=gmail.com; s=20230601; t=1695926971; x=1696531771; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJ1Xm03fGvRdWwUPqQq1Cea3T9DyHrKQnz43Fil7hXc=;
+        b=TQbbzG/4ukJaM+4mIoKAlaICg/oiv1Nsr0rq9SzhhEhxwXE+LZ+HRGUUVpf+1pFBOi
+         IhZ6fMIo4bZykStOSQVIincDPKBhYXhY1za8Syd868zRb/7/SVMjaI115XnaroIw/lmM
+         DFaBeTbaLy41oRjwiyRxEhhN4qE9P0qI1evFlwKeeXkqexOvDlsKsLsYiVSnQImcrxbI
+         mBgykFmpw1qkAECZ25lT+qN5n4trvzIyMur9WkXftSeZMHjoSFSE0CEZ6pQxf19upMtI
+         Jh3FmV7+wOyqNzekrk2FNj2v9oLYrALmgyNTR11LOAQ7nHM6u2vLUuLtC7MgZihYyNp9
+         8OLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695926890; x=1696531690;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n8RPDuko3qlkz+UgK/tpbIH2DJ3LBHkN68qFBLWLsdI=;
-        b=e/rSkv5EU3ESIQ/infulVNRTDEnxldDZ6tOUjc/39BTerKaXQGbWpG7PUUcb5DndO+
-         0H8AKfqvuJzHhKjLjILjWGx+uyTJI/h4ktKG5KHyo3VF1R2mhWbIaLWcQMYhCxhEEzKA
-         v2KgHPF40zgZhCayU7KH1D5OaOcUzembyhwq+1MwQffrvrbqdefU52ce8MDZvmRWaFCm
-         nioQrnuH3riNC7eFIP5pa2xbG/3eJ2TJqqlXQMyGrwEVUfP4sPvtx9ETl1BIvlGukC4E
-         T0Fn+8CykxHEjlFjXcXHpPGsI4XTqpxKbC7U/aNJL0PMuqUERGqZxMf+rQPiTUjiphsw
-         lG5Q==
-X-Gm-Message-State: AOJu0YyhJzNdk78uIYLNb2WM9DpzJzWUxkCnnLe8LCxkDv2nmEFt97NE
-        qMih7JsrC0rOaKbpDeVChUas
-X-Google-Smtp-Source: AGHT+IF2pQVUw8uuszCxhnmXNiHNk7mS/oqdhuHaOnsXDcrhk36stF7X6v13OulEJZwgo2Bj6k5R3A==
-X-Received: by 2002:a5d:538f:0:b0:319:735c:73e1 with SMTP id d15-20020a5d538f000000b00319735c73e1mr2238282wrv.4.1695926889705;
-        Thu, 28 Sep 2023 11:48:09 -0700 (PDT)
-Received: from thinkpad (ip1f11e5ef.dynamic.kabel-deutschland.de. [31.17.229.239])
-        by smtp.gmail.com with ESMTPSA id sd6-20020a170906ce2600b00997e99a662bsm11205205ejb.20.2023.09.28.11.48.08
+        d=1e100.net; s=20230601; t=1695926971; x=1696531771;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rJ1Xm03fGvRdWwUPqQq1Cea3T9DyHrKQnz43Fil7hXc=;
+        b=jydLi9HB2cyVq+UYxeCTAf7aAHecfUj99vLUSSrcPGxdCzRzR4xMnOPdr5n8bI24+6
+         Zk/xZEZUn87wwIcc5hrJ1C6dItUFjwWrPtGguqIHJxhXij1XrQYDVFkk617UufZ8gFzc
+         SMnMFOD8Eoh63kqfeMalTfZ/BmWsVhBR39epkYAJe7cVu/XtWniHS7+iVy3PBJO7MOhT
+         jWeaH0k9rNRufkpYeU1po0OeZ3V0CTlieT4Gw3SyJm+AQRsYrSg35m/RrGpp80MaLLjp
+         gSzC+jOneqtugWk9HNLYYuM+GX8qDA9vP2k+tl5FdmYsepGOjXEYeF+87ixMg/ifKRuj
+         xDhQ==
+X-Gm-Message-State: AOJu0Yzx8t2wyd3UABqEneO9/FxFTVn4V9uX7RraXMKj2ZxkaUfxvkIk
+        qHIrXp6lmYgIudX/z6XFwoY=
+X-Google-Smtp-Source: AGHT+IHQ2bhuPXrdqR5cEgy2tha86qCru/kNFTo9NhZctpV4JHUJEwQ06kGOSLeyjG5Zhdq+GQcwsg==
+X-Received: by 2002:a17:903:1109:b0:1b9:e937:9763 with SMTP id n9-20020a170903110900b001b9e9379763mr2259812plh.12.1695926971492;
+        Thu, 28 Sep 2023 11:49:31 -0700 (PDT)
+Received: from octofox.hsd1.ca.comcast.net ([2601:646:a201:19d0:a19c:f3d0:698d:f7a])
+        by smtp.gmail.com with ESMTPSA id u7-20020a170902b28700b001b9ecee459csm15264713plr.34.2023.09.28.11.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 11:48:09 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 20:48:08 +0200
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, bhelgaas@google.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, abel.vesa@linaro.org
-Subject: Re: [PATCH v3 2/3] PCI: qcom-ep: Make use of PCIE_SPEED2MBS_ENC()
- macro for encoding link speed
-Message-ID: <20230928184808.GA12574@thinkpad>
-References: <20230927154603.172049-2-manivannan.sadhasivam@linaro.org>
- <20230927175542.GA455424@bhelgaas>
+        Thu, 28 Sep 2023 11:49:31 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Subject: [PULL 00/16] Xtensa fixes for v6.6
+Date:   Thu, 28 Sep 2023 11:49:24 -0700
+Message-Id: <20230928184924.164748-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927175542.GA455424@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 12:55:42PM -0500, Bjorn Helgaas wrote:
-> On Wed, Sep 27, 2023 at 05:46:02PM +0200, Manivannan Sadhasivam wrote:
-> > Instead of hardcoding the link speed in MBps, let's make use of the
-> > existing PCIE_SPEED2MBS_ENC() macro that does the encoding of the
-> > link speed for us. Also, let's Wrap it with QCOM_PCIE_LINK_SPEED_TO_BW()
-> > macro to do the conversion to ICC speed.
-> 
-> In subject, /Make use of/Use/ would make better use of the subject
-> line.  Lots of "uses" there :)
-> 
-> Above, s/let's//, and also s/make use of/use/.
-> 
+Hi Linus,
 
-Ok, I will reword accordingly.
+please pull the following fixes for the Xtensa architecture.
 
-> > +#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
-> > +		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
-> 
-> It's a shame to have to duplicate this macro in pcie-qcom.c and in
-> pcie-qcom-ep.c, especially since there's nothing qcom-specific in it.
-> 
-> Would a macro like this fit in interconnect.h?
-> 
+The following changes since commit ce9ecca0238b140b88f43859b211c9fdfd8e5b70:
 
-Unfortunately, no. This macro is neither interconnect specific nor PCI, but a
-kind of both used by the driver. So it makes sense to keep it in the driver
-itself for now.
+  Linux 6.6-rc2 (2023-09-17 14:40:24 -0700)
 
-If we happen to create a common header for host and ep drivers in the future, it
-can be moved to that.
+are available in the Git repository at:
 
-> > -	ret = icc_set_bw(pcie_ep->icc_mem, 0, MBps_to_icc(PCIE_GEN1_BW_MBPS));
-> > +	ret = icc_set_bw(pcie_ep->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
-> 
-> "1" is not very informative here.  Maybe PCIE_SPEED_2_5GT?  (I didn't
-> completely verify that this is equivalent.)
-> 
+  https://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20230928
 
-No. PCIE_SPEED_2_5GT is defined as 0x14 in pci.h. And I do not want to add a
-macro for just "1" here.
+for you to fetch changes up to f54d02c8f2cc4b46ba2a3bd8252a6750453b6f2b:
 
-- Mani
+  xtensa: boot/lib: fix function prototypes (2023-09-20 05:03:30 -0700)
 
-> Bjorn
+----------------------------------------------------------------
+Xtensa fixes for v6.6:
+
+- fix build warnings from builds performed with W=1
+
+----------------------------------------------------------------
+Max Filippov (2):
+      xtensa: add default definition for XCHAL_HAVE_DIV32
+      xtensa: boot/lib: fix function prototypes
+
+Randy Dunlap (14):
+      xtensa: fault: include <asm/traps.h>
+      xtensa: irq: include <asm/traps.h>
+      xtensa: ptrace: add prototypes to <asm/ptrace.h>
+      xtensa: processor.h: add init_arch() prototype
+      xtensa: signal: include headers for function prototypes
+      xtensa: stacktrace: include <asm/ftrace.h> for prototype
+      xtensa: traps: add <linux/cpu.h> for function prototype
+      irqchip: irq-xtensa-mx: include header for missing prototype
+      xtensa: smp: add headers for missing function prototypes
+      xtensa: hw_breakpoint: include header for missing prototype
+      xtensa: tlb: include <asm/tlb.h> for missing prototype
+      xtensa: iss/network: make functions static
+      xtensa: boot: don't add include-dirs
+      xtensa: umulsidi3: fix conditional expression
+
+ arch/xtensa/boot/Makefile               | 3 +--
+ arch/xtensa/boot/lib/zmem.c             | 5 +++--
+ arch/xtensa/include/asm/core.h          | 4 ++++
+ arch/xtensa/include/asm/hw_breakpoint.h | 1 +
+ arch/xtensa/include/asm/processor.h     | 5 +++++
+ arch/xtensa/include/asm/ptrace.h        | 3 +++
+ arch/xtensa/include/asm/smp.h           | 1 +
+ arch/xtensa/include/asm/tlb.h           | 2 ++
+ arch/xtensa/kernel/hw_breakpoint.c      | 1 +
+ arch/xtensa/kernel/irq.c                | 1 +
+ arch/xtensa/kernel/ptrace.c             | 1 -
+ arch/xtensa/kernel/signal.c             | 2 ++
+ arch/xtensa/kernel/smp.c                | 1 +
+ arch/xtensa/kernel/stacktrace.c         | 1 +
+ arch/xtensa/kernel/traps.c              | 1 +
+ arch/xtensa/lib/umulsidi3.S             | 4 +++-
+ arch/xtensa/mm/fault.c                  | 1 +
+ arch/xtensa/mm/tlb.c                    | 1 +
+ arch/xtensa/platforms/iss/network.c     | 4 ++--
+ drivers/irqchip/irq-xtensa-mx.c         | 1 +
+ 20 files changed, 35 insertions(+), 8 deletions(-)
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Thanks.
+-- Max
