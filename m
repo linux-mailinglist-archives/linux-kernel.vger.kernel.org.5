@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1BA7B23E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372737B23E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjI1R3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
+        id S230420AbjI1R3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1R32 (ORCPT
+        with ESMTP id S229478AbjI1R3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:29:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F1D193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:29:24 -0700 (PDT)
+        Thu, 28 Sep 2023 13:29:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD01C0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:29:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695922165; x=1727458165;
+  t=1695922160; x=1727458160;
   h=date:from:to:cc:subject:message-id;
-  bh=r24Oudzd6oUUdKCghmBmGk3ojjF8Y0pjswe4pVcukLs=;
-  b=aY2IMR1EYaalv/DVYyUwNOr37HQXmx2K1BqjWB74m0DZS5V2uSrYMX9i
-   Msrs8UuSGO1XDIqfFNGFaJtKb9F4++xAEITm7NfdknA80RIveX4sYvnxh
-   XqubCs64uIflm2P+IlnO2deVDYrBAtwa2ZE13Ei0KVu7j0SWP8b13bwD+
-   7qY1AYYMl9zOz+WVPfEBaO56cbqboU8gcRR9HirHIxUK29eOg9+bUcMhb
-   M6SrfEHEI4blHol4mn5V3ZmHvb7bH78wivnyV0IZgMDhvwKuCjQ+nqcwv
-   Fe1xSY0J4Mtw7E7Uqi2EK67Ux6geTJcuJmiyPrC1ypZlZKkTX/uZxOp5W
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="384939635"
+  bh=bFM6R44kCvqBNDMUIdT0xXyHoUwrjDmkbrYXa5jMJZM=;
+  b=RPDoeQI6KwME57+YEaM1rdYN9MeJu/+Tcu8lwJXJ181N8HAbRLbrUHog
+   mkYSx3c9dT3Cw1CAIdXFd+M5dhLA78lkdj1zf33g6pJkqrqFC6VDvjI8z
+   OXdJXzwEgWYKDZQV/4gAh/DzlAbvZ7B5zYo80cV08Tn0+IDsEVvQdjaTd
+   CT4yrnhmOhFMehZgP0nl2JAWDUNtqa6XTMLmo8544Tl8TWQxgd0SsI+DQ
+   ZTI2x9CRNw7D+dZK29vQJt6yGGXx3tLzfm1XB0SgLEIyAUu9U5eZgIf1O
+   n/yYLyqCovTTO65SBWYg24D9DLsGfI7DYc3WFO2WFCyU7j8fz9Rv2VtuZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="382029118"
 X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="384939635"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:29:19 -0700
+   d="scan'208";a="382029118"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:29:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="839974097"
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="778982756"
 X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="839974097"
+   d="scan'208";a="778982756"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Sep 2023 10:29:18 -0700
+  by orsmga008.jf.intel.com with ESMTP; 28 Sep 2023 10:29:18 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qlup9-0001kP-3B;
-        Thu, 28 Sep 2023 17:29:15 +0000
-Date:   Fri, 29 Sep 2023 01:28:20 +0800
+        id 1qlupA-0001ka-0M;
+        Thu, 28 Sep 2023 17:29:16 +0000
+Date:   Fri, 29 Sep 2023 01:28:31 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- c02a427f7b64ed5b840a0720a6cee5a17a1e7e07
-Message-ID: <202309290118.o7eHez2r-lkp@intel.com>
+Subject: [tip:timers/urgent] BUILD SUCCESS
+ 1a6a464774947920dcedcf7409be62495c7cedd0
+Message-ID: <202309290128.DhiP51da-lkp@intel.com>
 User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,12 +59,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: c02a427f7b64ed5b840a0720a6cee5a17a1e7e07  tick/nohz: Remove unused tick_nohz_idle_stop_tick_protected()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
+branch HEAD: 1a6a464774947920dcedcf7409be62495c7cedd0  timers: Tag (hr)timer softirq as hotplug safe
 
 elapsed time: 1584m
 
-configs tested: 162
+configs tested: 163
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -127,6 +126,7 @@ loongarch                        allmodconfig   gcc
 loongarch                         allnoconfig   gcc  
 loongarch                        allyesconfig   gcc  
 loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230927   gcc  
 loongarch             randconfig-001-20230928   gcc  
 m68k                             allmodconfig   gcc  
 m68k                              allnoconfig   gcc  
