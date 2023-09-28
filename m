@@ -2,51 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA8F7B11C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F64A7B11CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbjI1ExU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        id S230197AbjI1Eyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1ExS (ORCPT
+        with ESMTP id S229445AbjI1Eyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:53:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F5EF9;
-        Wed, 27 Sep 2023 21:53:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC98C433C8;
-        Thu, 28 Sep 2023 04:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695876793;
-        bh=DyqeGBOHGNaWTSNuZKS3eruzn0IVxu339Um+OpsmcQc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=oJQRurvFgSyAFtD69d8AsZCHW3JzWkQ9SWCp82zAqU5iyGAyNnoaJIGuAAUH/9RR3
-         Mx0tPQQ4YPtw2NQ8Wf8ig+pnebTl3HmwhbclJEEi7O/PNFacLZ+Fv8sFBFT2WiBTMt
-         DkQaOiPSDx8adBuJ7S2W69TTNg3y4sUc8HPQ8oWdizW/xz7CF3z/qaY6vleqVJ9cC3
-         Yz716Egi/FoPoyjWRH3BHhMjSwdbndjk1YDCN5d54AxjJYhQtB3gJzQJvn9YISD6Kq
-         OsO6U0dEVCHAwdYTSRC7GN2lGyQKqhRqe+RJYec8A7O6IyDjXM/5MJNxqPFFTbwNXD
-         b7n42/AsKS2fA==
-Message-ID: <9e4cf2c9-a1a9-43a8-3f72-2824301bbc98@kernel.org>
-Date:   Thu, 28 Sep 2023 14:53:09 +1000
+        Thu, 28 Sep 2023 00:54:52 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D43B136
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:54:49 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b2b53e17feso320674366b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1695876888; x=1696481688; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=olm/D+dJExjfSBWXGE2Uq9vVnEsfwITsdsfFo+MxoTk=;
+        b=Dr1zyC1tiyCEQjBL1uj1JD4h+4CA80qgc0YJRvtD7Fw+xe6WnHNn+uMkxHDV7XJe67
+         A1LEWxgV1Pe5CESNz5cbrPvRDAZHdqRYYeXNMu6xo9etQIurMbGD/bAcmvmpG03pjJTN
+         SeuF3oJAxs7Vyy9w/KlCsKMonoiWdoc0tcaD82qg+oKXI5FQ6SJ1eUAOsRNdehy2p8uj
+         7eKOe8lWUfrUWiSjyndt82MaOSEiPGjeV0oapU+aPlEV5uvnA5Uh88E7R80KjpXlI5Pa
+         V26TlUnUOJW2XT4t2qvf4vNFqpIKZXoeNgw7jQsavdqALhMc05oKE6h7C1VMuAqPRnOZ
+         0ajw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695876888; x=1696481688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=olm/D+dJExjfSBWXGE2Uq9vVnEsfwITsdsfFo+MxoTk=;
+        b=OATm7fxEy2KMnvqJmDlrLTddnjJZ2dij++IIkfbRZBeIZ2tAZv3jaJ9ftpioSD61ZK
+         kdmU7KRTf3bUtQRJHAwf3d7Gr+tCVi8zqs6+kQTw/NImEpILlpROZrqc1hN8LhxB5Zb8
+         JAfrysAdr5f0DS+7y0DSpi8TMH8h426FKfVQaMNE/jCkk3w4RVr1CzQd6L9E3R38D7DE
+         g1qn5qFXJJGZkzunoQgi96HyQM4mW2sDanr1ZPmE6XcFEHnAbboLD/mWSTTzeUTy0GD+
+         iot2MY22RiXHaMUFcf9fQ3zsJwQW3zjPFgsSxsx3xjsk9NueBc+/CANjPq8zEWVwbNdh
+         u6iw==
+X-Gm-Message-State: AOJu0Yz/VV1Xf7xTTKkAagjJuz2+ednrvrmJ8O9I3A6v56RP6VNt5jRi
+        pxL/DIU27dhuBUEZ8QQKtavHjw==
+X-Google-Smtp-Source: AGHT+IEFpdq3a7HATHUTgENVuaEGn2ioT9l2ERfVEJ8IOkiDOT6bn01Sn56ChsWGJMbIjhbJQj2snQ==
+X-Received: by 2002:a17:906:518e:b0:9ae:5fe1:ef03 with SMTP id y14-20020a170906518e00b009ae5fe1ef03mr176773ejk.67.1695876887638;
+        Wed, 27 Sep 2023 21:54:47 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id p26-20020a170906229a00b009ad8338aafasm10387144eja.13.2023.09.27.21.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 21:54:47 -0700 (PDT)
+Message-ID: <154b823e-d532-ede7-5ada-08436ec86804@tuxon.dev>
+Date:   Thu, 28 Sep 2023 07:54:43 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH] binfmt_elf_fdpic: clean up debug warnings
+Subject: Re: [PATCH 21/37] dt-bindings: clock: add r9a08g045 CPG clocks and
+ resets definitions
 Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, palmer@rivosinc.com,
-        ebiederm@xmission.com, brauner@kernel.org, viro@zeniv.linux.org.uk
-References: <20230927132933.3290734-1-gerg@kernel.org>
- <202309270858.680FCD9A85@keescook>
-From:   Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <202309270858.680FCD9A85@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-22-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdWc6yy=oJDo4zMdvB-t8pjCuE1oJ_Y6Ck0aX_hPkfhPug@mail.gmail.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdWc6yy=oJDo4zMdvB-t8pjCuE1oJ_Y6Ck0aX_hPkfhPug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,104 +91,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+Hi, Geert,
 
-On 28/9/23 01:59, Kees Cook wrote:
-> On Wed, Sep 27, 2023 at 11:29:33PM +1000, Greg Ungerer wrote:
->> The binfmt_elf_fdpic loader has some debug trace that can be enabled at
->> build time. The recent 64-bit additions cause some warnings if that
->> debug is enabled, such as:
+On 15.09.2023 14:59, Geert Uytterhoeven wrote:
+> On Tue, Sep 12, 2023 at 6:53 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>
->>      fs/binfmt_elf_fdpic.c: In function ‘elf_fdpic_map_file’:
->>      fs/binfmt_elf_fdpic.c:46:33: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘Elf64_Addr’ {aka ‘long long unsigned int’} [-Wformat=]
->>         46 | #define kdebug(fmt, ...) printk("FDPIC "fmt"\n" ,##__VA_ARGS__ )
->>            |                                 ^~~~~~~~
->>      ./include/linux/printk.h:427:25: note: in definition of macro ‘printk_index_wrap’
->>        427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
->>            |                         ^~~~
+>> Add RZ/G3S (R9A08G045) Clock Pulse Generator (CPG) core clocks, module
+>> clocks and resets.
 >>
->> Cast values to the largest possible type (which is equivilent to unsigned
->> long long in this case) and use appropriate format specifiers to match.
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> It seems like these should all just be "unsigned long", yes?
-
-Some of them yes, but not all.
-For example trying to use unsigned long in the last chunk of this patch:
-
-fs/binfmt_elf_fdpic.c: In function ‘elf_fdpic_map_file_by_direct_mmap’:
-fs/binfmt_elf_fdpic.c:46:33: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘long long unsigned int’ [-Wformat=]
-    46 | #define kdebug(fmt, ...) printk("FDPIC "fmt"\n" ,##__VA_ARGS__ )
-       |                                 ^~~~~~~~
-./include/linux/printk.h:427:25: note: in definition of macro ‘printk_index_wrap’
-   427 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-       |                         ^~~~
-fs/binfmt_elf_fdpic.c:46:26: note: in expansion of macro ‘printk’
-    46 | #define kdebug(fmt, ...) printk("FDPIC "fmt"\n" ,##__VA_ARGS__ )
-       |                          ^~~~~~
-fs/binfmt_elf_fdpic.c:1152:25: note: in expansion of macro ‘kdebug’
-  1152 |                         kdebug("clear[%d] ad=%lx sz=%lx", loop,
-       |                         ^~~~~~
-
-Regards
-Greg
-
-
-> -Kees
+> Thanks for your patch!
 > 
->>
->> Fixes: b922bf04d2c1 ("binfmt_elf_fdpic: support 64-bit systems")
->> Signed-off-by: Greg Ungerer <gerg@kernel.org>
->> ---
->>   fs/binfmt_elf_fdpic.c | 20 ++++++++++++--------
->>   1 file changed, 12 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
->> index 43b2a2851ba3..97c3e8551aac 100644
->> --- a/fs/binfmt_elf_fdpic.c
->> +++ b/fs/binfmt_elf_fdpic.c
->> @@ -900,10 +900,12 @@ static int elf_fdpic_map_file(struct elf_fdpic_params *params,
->>   	kdebug("- DYNAMIC[]: %lx", params->dynamic_addr);
->>   	seg = loadmap->segs;
->>   	for (loop = 0; loop < loadmap->nsegs; loop++, seg++)
->> -		kdebug("- LOAD[%d] : %08x-%08x [va=%x ms=%x]",
->> +		kdebug("- LOAD[%d] : %08llx-%08llx [va=%llx ms=%llx]",
->>   		       loop,
->> -		       seg->addr, seg->addr + seg->p_memsz - 1,
->> -		       seg->p_vaddr, seg->p_memsz);
->> +		       (unsigned long long) seg->addr,
->> +		       (unsigned long long) seg->addr + seg->p_memsz - 1,
->> +		       (unsigned long long) seg->p_vaddr,
->> +		       (unsigned long long) seg->p_memsz);
->>   
->>   	return 0;
->>   
->> @@ -1082,9 +1084,10 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
->>   		maddr = vm_mmap(file, maddr, phdr->p_memsz + disp, prot, flags,
->>   				phdr->p_offset - disp);
->>   
->> -		kdebug("mmap[%d] <file> sz=%lx pr=%x fl=%x of=%lx --> %08lx",
->> -		       loop, phdr->p_memsz + disp, prot, flags,
->> -		       phdr->p_offset - disp, maddr);
->> +		kdebug("mmap[%d] <file> sz=%llx pr=%x fl=%x of=%llx --> %08lx",
->> +		       loop, (unsigned long long) phdr->p_memsz + disp,
->> +		       prot, flags, (unsigned long long) phdr->p_offset - disp,
->> +		       maddr);
->>   
->>   		if (IS_ERR_VALUE(maddr))
->>   			return (int) maddr;
->> @@ -1146,8 +1149,9 @@ static int elf_fdpic_map_file_by_direct_mmap(struct elf_fdpic_params *params,
->>   
->>   #else
->>   		if (excess > 0) {
->> -			kdebug("clear[%d] ad=%lx sz=%lx",
->> -			       loop, maddr + phdr->p_filesz, excess);
->> +			kdebug("clear[%d] ad=%llx sz=%lx", loop,
->> +			       (unsigned long long) maddr + phdr->p_filesz,
->> +			       excess);
->>   			if (clear_user((void *) maddr + phdr->p_filesz, excess))
->>   				return -EFAULT;
->>   		}
->> -- 
->> 2.25.1
->>
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/r9a08g045-cpg.h
 > 
+>> +/* R9A08G045 Module Clocks */
+> 
+>> +#define R9A08G045_USB_U2H0_HCLK                65
+>> +#define R9A08G045_USB_U2H1_HCLK                66
+>> +#define R9A08G045_USB_U2P_EXR_CPUCLK   67
+>> +#define R9A08G045_USB_PCLK             68
+>> +#define R9A08G045_USB_SCLK             69
+> 
+> There is no USB_SCLK bit in CPG_CLKON_USB, so please drop
+> R9A08G045_USB_SCLK.
+> 
+>> +/* R9A08G045 Resets */
+> 
+>> +#define R9A08G045_SRAM_ACPU_ARESETN0   11
+>> +#define R9A08G045_SRAM_ACPU_ARESETN1   12
+>> +#define R9A08G045_SRAM_ACPU_ARESETN2   13
+> 
+> There is no SRAM_ACPU_ARESETN2 bit in CPG_RST_SRAM_MCPU,
+> so please drop R9A08G045_SRAM_ACPU_ARESETN2.
+
+I see there is SRAM_ACPU_ARESETN2 in CPG_RST_SRAM_*A*CPU register. You are
+actually saying that the documentation might be wrong?
+
+Thank you,
+Claudiu Beznea
+
+> 
+> The rest LGTM.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
