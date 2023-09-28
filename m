@@ -2,312 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7957B2891
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 00:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655877B2892
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 00:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjI1WtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 18:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        id S232338AbjI1Wtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 18:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbjI1WtG (ORCPT
+        with ESMTP id S231535AbjI1Wta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 18:49:06 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E47B19D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 15:49:04 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso3742a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 15:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695941343; x=1696546143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aH1OIK0gWyk1N4xaqASo2H5s560h9u2ewBbOcfS8pdg=;
-        b=aCsB1TyKMgElOwsAG1n6V3mDnAEkv9/JZg4agc2c+UQHrdkAJUzQfebGgU7G4y9Wz6
-         i0OzOvDS9peMHt1Ws6kYYh14JJxG7JPIcz3wdyofQBdnEBdcdy6Gm+RyGaVV25/pnPBS
-         iDgAjMX0Nb+XTdV92l9j18AFSZs4Z+xlDWh3AUvuXiVkFNRD+q4bkQroKpv8sp7UjQ9d
-         EB0gns8T0/WnGg5rlHA/IESfO2zpm/wPq8ieIw1b4HaFPjajvkqAiniOAimMRQGIh/qx
-         gpbeIHTmvX/L85gaW+SRoJyrtU/qSvc6rqq+DBCv/1GiElRvAuKRLufSsGxtiG9H8lGP
-         X9Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695941343; x=1696546143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aH1OIK0gWyk1N4xaqASo2H5s560h9u2ewBbOcfS8pdg=;
-        b=fKnSzl34FbrvBjEMeTTOHBfoJfHHa00Ej7R/48BZCAsMk7H11I4QfQo9ofog01oRKo
-         e8C5jszmntorXGCowDkrnZCrQIVi6J9bxWVAsL22rK/uHxW1EPHeNtCLJFRpPZpnFIZC
-         Zfs/M0Sl1qjC8O8ODPrJAZSNJxgcSEgD8jOMoTYuyf50O+k/T1Yr7DXtQcH1Ihb7nsy2
-         yMZD7fvKdpTuWLhEY8XUD8z6zzjwZPfk+nXlIoo5gnXMDrj2GIaEuHZhJaM6CfLVLeGk
-         UZ6YWGotZGJPXapEH47iH8ZBlwQ+ScKGWuOR1pOYLLFiJf/ZEbzDKkFgdB5/8svUInt7
-         6VkA==
-X-Gm-Message-State: AOJu0YzCLuP8UW8QdXXJcp7QVYkKlJ+7xZorn0/cJdqODKPhg3VMdyR3
-        vjKpE3UWH4HEim1VA/fC5LoN5Jio8cFH9k4TKKij+g==
-X-Google-Smtp-Source: AGHT+IEwgqOTiiLagyh/Eid9MJeL9VTSnkiJWAIbQ+ucpeAT1mLUqgG5yAYFQxQuyOWRkehH2swmIuDSqlUFnQMjTg8=
-X-Received: by 2002:a50:9fef:0:b0:523:b133:57fe with SMTP id
- c102-20020a509fef000000b00523b13357femr478875edf.1.1695941342775; Thu, 28 Sep
- 2023 15:49:02 -0700 (PDT)
+        Thu, 28 Sep 2023 18:49:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896B0180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 15:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695941369; x=1727477369;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=kbwGgTUsr+F8XHCXxOpWkq/RYvLp8mRezE0fBOhE29c=;
+  b=cpN0Fv0Yw5lZhjh8pcpFcOirE3M6tRqB6ghks/kax3jvIyM6U9loxvXR
+   0aNowYCi6GhCJQXhRQpzhMK23dryyS/kC2b1OwFH2OaQkIpPI9BDItIph
+   L0GGE6mUybm0xTxJc3P0qhhMLZmVAsPImZck3VPQOdw6xSAqf+9G/rHXz
+   bvQAiuc/ujrpt+7sy3q8ooJrEGmhJ3YsXozYlDXOiVCmoprfjPoHL1mAS
+   1PY8r2iDopzMc/O3Vv5IRbkdJruNoYfDuzOZH4WD1ViUPwnMkJsY7e5md
+   7B+ha/6rdGQf2Hx+8o+w25G0otX5zPQzOVwS30/DtPcnHinMjN59INPbm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="798619"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="798619"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 15:49:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="865468194"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="865468194"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Sep 2023 15:49:27 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 28 Sep 2023 15:49:27 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 28 Sep 2023 15:49:26 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 28 Sep 2023 15:49:26 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 28 Sep 2023 15:49:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WfVWTlDAYXIylhzOpXDNPNUsPmhRqmsXrPuWCnRsD9FompCkiLYhixl1Ocz8+wkPr+5uRz5qYnSgOM+mVsE3sQ7noGuC/6mUElMX0kLv4U+a7f71f5FFp5EqYp8WOKtwFZgkeVwOwy0JILEW3TbmSJwf9T4gGo8jcXic85p6Sqb1XCq5Tbcw6lWMxf/JTBbUcnWtlsaOe4KqwSHpm4IoIsKZKAo3pzF8JSkVU4HpRkj77gPDzw76IOYvKJp8C5E2aeYt36xAAjS3S1+5YQqWrfsIc1KRtwVTz7Ch9B4i06PqdCN/u5StEpQs5KTMoF1EdqAgWygs9iEjjqKLT2WuUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gfxWJtkEGiLfbxhYE8vCiZ+Es2PfzoCr7yVHna8uZUU=;
+ b=eupc/PBhs8hA+5q4XVm/18KZzUh5UeJuWdFfHUfpTUbmONyghxQ0958dOXpTZ6hBDmpUeqZxNHhHF8WI43v/M/0UGz1HSmdJ0dqliQMz4VXFU+YV1DlJOuXz589Y5gxmd0OU1mIYjGbrBmpjUaYpZo5h1Eqc7IyDcT2FJj8TvXpx5cYTKT9UvVoEhwCc0BZoteJqXqZmFqiPICZ2K+Lt/BLP0pzIKKvpdcfgbmKbGmO2zZRAylElaKZm1TqE9crtEhEQv8S6Wm6A9K426f2Bi0TPxFeH+t8A320VW7XkUNzXYKBlzNx95IKsJ6m1TiiYlDcWw1Cj9yk4CFDahlNiMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by LV3PR11MB8578.namprd11.prod.outlook.com (2603:10b6:408:1b3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Thu, 28 Sep
+ 2023 22:49:23 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6792.026; Thu, 28 Sep 2023
+ 22:49:23 +0000
+Date:   Thu, 28 Sep 2023 15:49:00 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Peter Gonda <pgonda@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     <linux-coco@lists.linux.dev>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Erdem Aktas <erdemaktas@google.com>, <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v4 6/6] virt: tdx-guest: Add Quote generation support
+ using TSM_REPORTS
+Message-ID: <651602dc4c6e3_91c1e2947f@dwillia2-xfh.jf.intel.com.notmuch>
+References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
+ <169570185411.596431.3153227201984845022.stgit@dwillia2-xfh.jf.intel.com>
+ <CAMkAt6r2VPPMZ__SQfJse8qWsUyYW3AgYbOUVM0S_Vtk=KvkxQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMkAt6r2VPPMZ__SQfJse8qWsUyYW3AgYbOUVM0S_Vtk=KvkxQ@mail.gmail.com>
+X-ClientProxiedBy: MW4PR03CA0108.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::23) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-References: <4d6c9b19-cdbb-4a00-9a40-5ed5c36332e5@arm.com> <ZRVbV6yJ-zFzRoas@debian.me>
- <54e5accf-1a56-495a-a4f5-d57504bc2fc8@arm.com> <CAAa6QmRbDbEamFgEDbgVhwKOf1GHNa90COuyz29BmduOAjbmyA@mail.gmail.com>
- <20230928210436.GG11456@frogsfrogsfrogs>
-In-Reply-To: <20230928210436.GG11456@frogsfrogsfrogs>
-From:   "Zach O'Keefe" <zokeefe@google.com>
-Date:   Thu, 28 Sep 2023 15:48:25 -0700
-Message-ID: <CAAa6QmTh33HKBdYu9GnXtR4PnVMwc4pDU23eo0mO9t-m-kr7=Q@mail.gmail.com>
-Subject: Re: BUG: MADV_COLLAPSE doesn't work for XFS files]
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|LV3PR11MB8578:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7be1be44-28b6-44c9-053d-08dbc0751ced
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3N8KsbOq33DPsr5xTi9PH9553HUX9M61nBxWDTimJIbgAhALpJTXKZ7LQWI+P7xsVhznu3G+n230knPq/ORZ+rXXYSn+dD7z6eeOokbh9Pz19dkfPUbza/QbxZLT4EuIKw6gZtJbVqgia5xACUu60KERy8sgmW0zF5hD+KbP5SU7bDpSoxP2VIHUF+RuRYJLnaywoyGGwyMjQ+3AFd4220HLt0kKRcnNaPZ+/kvMCVx+l62vyc5HGH3k84rIHwxobr9f7Huys+tVFPKGkABKSxd63JVq2w1sF7IspDb+nS23ocF9CzfNU0U5jkcUC2MIuxJMxi5DrJqStfxBKnCnU2TTMq33NbNv5piSez/83ee1HtMNpyMJupUj/Rh25lAtp9Hal6ysVyjd6lfrIltlEz0EZybKWwea+J6BewtlPWkd3Ctjay9Acappo6gN2xgwyX6tWFBjC727qbDUebJAhe0uIG5zR6tlLW+BKig9WkySLNiZ8W9Ok/iyzuY2KJq4BqH5OokskKnlS3wVEGyos+7dlSaIckliXKnArasowtU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(136003)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(6512007)(9686003)(478600001)(82960400001)(53546011)(110136005)(6486002)(86362001)(6666004)(54906003)(38100700002)(83380400001)(966005)(66556008)(26005)(66946007)(66476007)(41300700001)(5660300002)(8676002)(8936002)(6506007)(316002)(4326008)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YjJHb1E4MkpUTUJrYkJCa2ZmL0RnMGlIN3VocEV2UUxHV1NsNmhHQW5CY25w?=
+ =?utf-8?B?MlJacVZ1MDQvWTlYRHFQMVZ6TFNMM21NWC8rQStEaVoyR29EK1A2czNoa3Rp?=
+ =?utf-8?B?M3RJVUxONVNyWXBGbmpLNjFZSVhlaVFOSlU3bVlmY2lJOE5reXoycE1LcjlI?=
+ =?utf-8?B?T2JEL3ZVTGZwSFZyM3U3TVlDR1dSeEMralVBRldMZUllRmtXZlZORFRkZ2hi?=
+ =?utf-8?B?aDNvb3pWaUNLOHFPa0VJc0pPaDh5aTZSTmh4QlhvVCtVOWxzRDBpSTh1bzQ5?=
+ =?utf-8?B?VVFNQVhZelhST0tvdFNuQkxQUzlibXJzbmJGckxDNjBEWEUrWVVKN0lNSjBt?=
+ =?utf-8?B?UWxkZE5rbTRXVFdDZHdIL1c5ODluU01nOTVuN0RXUG5tNE5ORTVBT1JQSlFx?=
+ =?utf-8?B?SGFKdXNuVjZneW9uTWZiMzZMeWdVVVJGZFJ2R2R6TFBBSG9OWVRTQjdoV3JF?=
+ =?utf-8?B?VUdzTEFnd1VyU0VmVzVnd2ZIem5lUFJ0dHc2dm5YSkVJK3NpYytMSHdYZVZt?=
+ =?utf-8?B?SngxSEhIc3I3a240eFRSNFEzZFUzajF4WURZZ2dWbkNWbjhWbmw2cWluZTMy?=
+ =?utf-8?B?MDd3c3ViSDQ2U2llWlNMRXgreXNhYk9ldnpTdTB6UXVZWGlVUlh0bnkrZTZH?=
+ =?utf-8?B?TFB2TGxka3V0SU5UOFRON3VBaGtPQjJISW41U2RMWkNDYW5wUzBiRWxqcEFa?=
+ =?utf-8?B?c3FZSlVRcnZ4eWVOMk1ldWhXQTAvYWo1MkdHVFZ4eTZTZGJtTnJ3Ynp5SUZL?=
+ =?utf-8?B?OWo5OUZFYzdVZWVQd3RPYW03VFRmUFBrRCtoU2hNdlpZWnJ2bmVRS3U5eVd4?=
+ =?utf-8?B?aXdTUGR3VHB5MjRQM1huaFVVeVp4OGIybzl0bFF2N2E2ajNOQ2MyVkFuc080?=
+ =?utf-8?B?SXpUa3hKMUpCZndoZXNxUGRhSGFlVWc4OGVhOFdHTnRVZWR6QnRWeDlTVW14?=
+ =?utf-8?B?QzdRK09nRm1JcFNweFlRS1hHb1Q2Q3o3Y0lRK2t3THRFVzVudFN1YkNZWkNo?=
+ =?utf-8?B?Zi9aOXNtN2VpRmJNNDViZGtnRDQxUjdqSDhsamNSNTJRTkdyREoyT3krcGhS?=
+ =?utf-8?B?SWJ2RkJuK3g0L1VUVVNpY1lIWkxvWkVkWWE2Q050MHRldVZCZUlwaVYvZ0Yx?=
+ =?utf-8?B?QmFpaU9RWmNYRWlFY3RhaTZMMzNZcHIvRVJVak1Kdmg3cTM2TWcveGgyN2VU?=
+ =?utf-8?B?Rm11WjdzWjNaYzkvMTFNQ2pVRHUyWTFlWElDL2NqVWVKUGxCeDlVNFZEeVNk?=
+ =?utf-8?B?SzhGQlRmVUQ3RHZ2SUJ0Y0R5Nk1LcFBqUVRRaWNQc0pOQmFWcXh3N0p5WXVE?=
+ =?utf-8?B?d3pLWmNYWlVhSStSbHdBTlBRbCs5Y0x5eXNoc1UvNHk3bHdWaG1JQUxoSVdy?=
+ =?utf-8?B?cnZnUTlxZHNGNEUvSFFvZ3BWclJjVkFsWkc4WFRJU1g5ZmRKaHpuRzhlRnl6?=
+ =?utf-8?B?RVZRRHpRNU5oaUpoL3FDWk5jL3JUcks1bzhvbzhLQmFDQ3FxUytmOHl6RFZ3?=
+ =?utf-8?B?Y3FrSVFCVW10NmhKVGUvVDB4WUZSK2hGdFNId1RzdjFieGhwZVVuNVdNUWhR?=
+ =?utf-8?B?MkJ1OGZyQkQ2UFQzanRkRHVEY3psVTZjRkFsSkI1SXNpN0x2UEpYNXJybWVY?=
+ =?utf-8?B?cTl0Unl1Zk1JSWlwMjRDdXFzQnc0bE5QSDB1QTA4VGhmbWo1MVkvam9TY3Nr?=
+ =?utf-8?B?TCtwbk1QeGloY1JidnpaSXNSaEZ2d3B6aWduS2ZVYUluSEJHKzdzdCt6K09C?=
+ =?utf-8?B?VWdSUTA2a2lGYURYeDlaNWVvUUlqYjEwN28vRld4MklXSXZ4TVRPTFZ4bGY2?=
+ =?utf-8?B?MFJHM25ZOTBYMlpXYmhEZ1V5Vkl2K3o3TnFtbnpydDhzcjh0bkpsMEdaQnBl?=
+ =?utf-8?B?TXYwUll4aXplc0s4RmZzOFVxQ2FtdzhLQXhZdU9tUi92TDJnK1RCMEJtUHVx?=
+ =?utf-8?B?cnExdUhwY0IxWGpXaXF6WHV2NmtUV3JabXpUMG1xUGRwcktxZEVCcUduZGYz?=
+ =?utf-8?B?OFFvL3pSZmkyWkNocldKcmVvNlJ5clZKUWxuMGw3VnR0UHl5T3B0WXdSdnRj?=
+ =?utf-8?B?ZjdZRlY1VkNqaWVheVJIb1BqcXNiY3lKTDN1OWF0aGZyMXMvbkxhZ2V0SkdC?=
+ =?utf-8?B?U0RZNUdMekF0bFRvVFJ6aStWa3QrRG45WGx3cyt3Zjh2bDIvejFxUTdvODJm?=
+ =?utf-8?B?b1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7be1be44-28b6-44c9-053d-08dbc0751ced
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 22:49:03.7713
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ivWvIu5zJdn8Vkd/IyqSdleTOY0q/97VLBmIOzAWQfr2cK8KUATGownT4s+hy/33uZYYFBct8mDZRHU4+whsYW37AUHEEkqaLPdgEHTCd6Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8578
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 2:04=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Thu, Sep 28, 2023 at 12:43:57PM -0700, Zach O'Keefe wrote:
-> > Hey Ryan,
+Peter Gonda wrote:
+> On Mon, Sep 25, 2023 at 10:17 PM Dan Williams <dan.j.williams@intel.com> wrote:
 > >
-> > Thanks for bringing this up.
+> > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > >
-> > On Thu, Sep 28, 2023 at 4:59=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> > >
-> > > On 28/09/2023 11:54, Bagas Sanjaya wrote:
-> > > > On Thu, Sep 28, 2023 at 10:55:17AM +0100, Ryan Roberts wrote:
-> > > >> Hi all,
-> > > >>
-> > > >> I've just noticed that when applied to a file mapping for a file o=
-n xfs, MADV_COLLAPSE returns EINVAL. The same test case works fine if the f=
-ile is on ext4.
-> > > >>
-> > > >> I think the root cause is that the implementation bails out if it =
-finds a (non-PMD-sized) large folio in the page cache for any part of the f=
-ile covered by the region. XFS does readahead into large folios so we hit t=
-his issue. See khugepaged.h:collapse_file():
-> > > >>
-> > > >>              if (PageTransCompound(page)) {
-> > > >>                      struct page *head =3D compound_head(page);
-> > > >>
-> > > >>                      result =3D compound_order(head) =3D=3D HPAGE_=
-PMD_ORDER &&
-> > > >>                                      head->index =3D=3D start
-> > > >>                                      /* Maybe PMD-mapped */
-> > > >>                                      ? SCAN_PTE_MAPPED_HUGEPAGE
-> > > >>                                      : SCAN_PAGE_COMPOUND;
-> > > >>                      goto out_unlock;
-> > > >>              }
-> > > >
+> > In TDX guest, the attestation process is used to verify the TDX guest
+> > trustworthiness to other entities before provisioning secrets to the
+> > guest. The first step in the attestation process is TDREPORT
+> > generation, which involves getting the guest measurement data in the
+> > format of TDREPORT, which is further used to validate the authenticity
+> > of the TDX guest. TDREPORT by design is integrity-protected and can
+> > only be verified on the local machine.
 > >
-> > Ya, non-PMD-sized THPs were just barely visible in my peripherals when
-> > writing this, and I'm still woefully behind on your work on them now
-> > (sorry!).
+> > To support remote verification of the TDREPORT in a SGX-based
+> > attestation, the TDREPORT needs to be sent to the SGX Quoting Enclave
+> > (QE) to convert it to a remotely verifiable Quote. SGX QE by design can
+> > only run outside of the TDX guest (i.e. in a host process or in a
+> > normal VM) and guest can use communication channels like vsock or
+> > TCP/IP to send the TDREPORT to the QE. But for security concerns, the
+> > TDX guest may not support these communication channels. To handle such
+> > cases, TDX defines a GetQuote hypercall which can be used by the guest
+> > to request the host VMM to communicate with the SGX QE. More details
+> > about GetQuote hypercall can be found in TDX Guest-Host Communication
+> > Interface (GHCI) for Intel TDX 1.0, section titled
+> > "TDG.VP.VMCALL<GetQuote>".
 > >
-> > I'd like to eventually make collapse (not just MADV_COLLAPSE, but
-> > khugepaged too) support arbitrary-sized large folios in general, but
-> > I'm very pressed for time right now. I think M. Wilcox is also
-> > interested in this, given he left the TODO to support it :P
->
-> Is the point of MADV_COLLAPSE to replace base pages with PMD-sized pages
-> in the pagecache for faster lookups?  Or merely to replace them with
-> something larger, even if it's not PMD sized?
-
-Might depend on who you ask, but IMHO, the principle purpose of
-collapse is saving TLB entries, with TLB coalescing complicating
-things a little in terms of PMD-sized things or not. M. Wilcox's work
-with descriptor-izing folios might make a nice case for memory savings
-as well, down the line.
-
-> As of 6.6, XFS asks for folios of size min(read/readahead/write_len,
-> ondisk_mapping_length), so in theory the folio size should roughly
-> follow the access patterns.  If the goal is merely larger folios, then
-> we are done here and can move on to some other part of the collapse.
->
-> OTOH if the goal is TLB savings, then I suppose you'd actually /want/ to
-> select a large (but not PMD) folio for collapsing into a PMD sized
-> folio, right?
-
-I suppose it might make some operations easier / faster during
-collapse if we have less folios to process.
-
-> e.g.
->
->         if (PageTransCompound(page)) {
->                 struct page *head =3D compound_head(page);
->
->                 if (head->index !=3D start) {
->                         /* not sure what _COMPOUND means here... */
->                         result =3D SCAN_PAGE_COMPOUND;
->                         goto out_unlock;
->                 }
->
->                 if (compound_order(head) =3D=3D HPAGE_PMD_ORDER) {
->                         result =3D SCAN_PTE_MAPPED_HUGEPAGE;
->                         goto out_unlock;
->                 }
->
->                 /* result is still SCAN_SUCCEED, keep going */
->         }
->
-> I /think/ that would work?  If the largefolio is dirty or not fully
-> uptodate then collapse won't touch it; and I think fs/iomap handles this
-> in a compatible way because it won't mark the folio uptodate until all
-> the blocks have been read, and it marks the folio dirty if any of the
-> blocks are dirty.
->
-> (says me, who doesn't really understand this part of the code.)
-
-I think there's a couple issues with this -- for example, the
-head->index !=3D start case is going to be the common-case for
-non-PMD-sized large folios. Regardless, there is some more code in
-hpage_collapse_scan_file() and her in collapse_file() that would need
-to be updated. I'm taking a cursory look, and naively it doesn't look
-too bad -- most things "should just work" in file/shmem collapse path.
-ac492b9c70cac ("mm/khugepaged: skip shmem with userfaultfd" was merged
-since the last I looked carefully at this path, so I would need to
-spend more time understanding some changes there. So, from correctness
-POV, maybe there's not anything drastic to be done for file/shmem.
-Maybe this is a good place to start.
-
-For anon, things are different, as we are coming at the pages from a
-different angle, and are operating over the pmd directly. I'm not
-immediately sure if it makes things easier or harder. Probably harder.
-Can we even get non-PMD-sized large anon folios right now, without
-Ryan's work?
-
-From a khugepaged policy POV, there are some questions to be
-answered.. but I think these mostly boil down to: scale the
-present/swap/none checks by (1 << order).
-
-Anyways, this isn't to be taken with much weight as a thorough audit
-is required to understand any subtleties lurking around.
-
-Thanks,
-Zach
-
-> --D
->
-> > Thank you for the reproducer though! I haven't run it, but I'll
-> > probably come back here to steal it when the time comes.
+> > Trusted Security Module (TSM) [1] exposes a common ABI for Confidential
+> > Computing Guest platforms to get the measurement data via ConfigFS.
+> > Extend the TSM framework and add support to allow an attestation agent
+> > to get the TDX Quote data (included usage example below).
 > >
-> > > > I don't see any hint to -EINVAL above. Am I missing something?
-> > >
-> > > The SCAN_PAGE_COMPOUND result ends up back at madvise_collapse() wher=
-e it
-> > > eventually gets converted to -EINVAL by madvise_collapse_errno().
-> > >
-> > > >
-> > > >>
-> > > >> I'm not sure if this is already a known issue? I don't have time t=
-o work on a fix for this right now, so thought I would highlight it at leas=
-t. I might get around to it at some point in the future if nobody else tack=
-les it.
+> >   report=/sys/kernel/config/tsm/report/report0
+> >   mkdir $report
+> >   dd if=/dev/urandom bs=64 count=1 > $report/inblob
+> >   hexdump -C $report/outblob
+> >   rmdir $report
 > >
-> > My guess is Q1 2024 is when I'd be able to look into this, at the
-> > current level of urgency. It doesn't sound like it's blocking anything
-> > for your work right now -- lmk if that changes though!
+> > GetQuote TDVMCALL requires TD guest pass a 4K aligned shared buffer
+> > with TDREPORT data as input, which is further used by the VMM to copy
+> > the TD Quote result after successful Quote generation. To create the
+> > shared buffer, allocate a large enough memory and mark it shared using
+> > set_memory_decrypted() in tdx_guest_init(). This buffer will be re-used
+> > for GetQuote requests in the TDX TSM handler.
 > >
-> > Thanks,
-> > Zach
+> > Although this method reserves a fixed chunk of memory for GetQuote
+> > requests, such one time allocation can help avoid memory fragmentation
+> > related allocation failures later in the uptime of the guest.
 > >
+> > Since the Quote generation process is not time-critical or frequently
+> > used, the current version uses a polling model for Quote requests and
+> > it also does not support parallel GetQuote requests.
 > >
-> >
-> > > >>
-> > > >> Thanks,
-> > > >> Ryan
-> > > >>
-> > > >>
-> > > >> Test case I've been using:
-> > > >>
-> > > >> -->8--
-> > > >>
-> > > >> #include <stdio.h>
-> > > >> #include <stdlib.h>
-> > > >> #include <sys/mman.h>
-> > > >> #include <sys/types.h>
-> > > >> #include <sys/stat.h>
-> > > >> #include <fcntl.h>
-> > > >> #include <unistd.h>
-> > > >>
-> > > >> #ifndef MADV_COLLAPSE
-> > > >> #define MADV_COLLAPSE                25
-> > > >> #endif
-> > > >>
-> > > >> #define handle_error(msg)    do { perror(msg); exit(EXIT_FAILURE);=
- } while (0)
-> > > >>
-> > > >> #define SZ_1K                        1024
-> > > >> #define SZ_1M                        (SZ_1K * SZ_1K)
-> > > >> #define ALIGN(val, align)    (((val) + ((align) - 1)) & ~((align) =
-- 1))
-> > > >>
-> > > >> #if 1
-> > > >> // ext4
-> > > >> #define DATA_FILE            "/home/ubuntu/data.txt"
-> > > >> #else
-> > > >> // xfs
-> > > >> #define DATA_FILE            "/boot/data.txt"
-> > > >> #endif
-> > > >>
-> > > >> int main(void)
-> > > >> {
-> > > >>      int fd;
-> > > >>      char *mem;
-> > > >>      int ret;
-> > > >>
-> > > >>      fd =3D open(DATA_FILE, O_RDONLY);
-> > > >>      if (fd =3D=3D -1)
-> > > >>              handle_error("open");
-> > > >>
-> > > >>      mem =3D mmap(NULL, SZ_1M * 4, PROT_READ | PROT_EXEC, MAP_PRIV=
-ATE, fd, 0);
-> > > >>      close(fd);
-> > > >>      if (mem =3D=3D MAP_FAILED)
-> > > >>              handle_error("mmap");
-> > > >>
-> > > >>      printf("1: pid=3D%d, mem=3D%p\n", getpid(), mem);
-> > > >>      getchar();
-> > > >>
-> > > >>      mem =3D (char *)ALIGN((unsigned long)mem, SZ_1M * 2);
-> > > >>      ret =3D madvise(mem, SZ_1M * 2, MADV_COLLAPSE);
-> > > >>      if (ret)
-> > > >>              handle_error("madvise");
-> > > >>
-> > > >>      printf("2: pid=3D%d, mem=3D%p\n", getpid(), mem);
-> > > >>      getchar();
-> > > >>
-> > > >>      return 0;
-> > > >> }
-> > > >>
-> > > >> -->8--
-> > > >>
-> > > >
-> > > > Confused...
-> > >
-> > > This is a user space test case that shows the problem; data.txt needs=
- to be at
-> > > least 4MB and on a mounted ext4 and xfs filesystem. By toggling the '=
-#if 1' to
-> > > 0, you can see the different behaviours for ext4 and xfs -
-> > > handle_error("madvise") fires with EINVAL in the xfs case. The getcha=
-r()s are
-> > > leftovers from me looking at the smaps file.
-> > >
+> > Link: https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/ [1]
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > Reviewed-by: Erdem Aktas <erdemaktas@google.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> 
+> Hey Dan,
+> 
+> I tried running your test commands on an SNP enabled guest. To build
+> the kernel I just checked out linus/master and applied your series. I
+> haven't done any debugging yet, so I will update with what I find.
+> 
+> root@Ubuntu2004:~#   hexdump -C $report/outblob
+> [  219.871875] ------------[ cut here ]------------
+> [  219.876642] kernel BUG at include/linux/scatterlist.h:187!
+
+Ok, it does not like virtual address of one of the buffers, but my
+changes "should" not have affected that as get_ext_report() internally
+uses snp_dev->certs_data and snp_dev->response for bounce buffering the
+actual request / response memory. First test I want to try once I can
+get on an SNP system is compare this to the ioctl path just make sure
+that succeeds.
