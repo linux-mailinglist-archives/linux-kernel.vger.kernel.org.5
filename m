@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6218D7B0FC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5937B0FD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjI1ADP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
+        id S229634AbjI1ARp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjI1ADN (ORCPT
+        with ESMTP id S229445AbjI1ARn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:03:13 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34CCF9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:03:09 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id B7C1E320091D;
-        Wed, 27 Sep 2023 20:03:08 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 27 Sep 2023 20:03:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1695859388; x=1695945788; bh=cIxox338FB
-        bGAustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=Zo2LDJui9X8/wmnLWnsopqD1Q+
-        tAITJoPihxtC5ZBSGfEV5joX8BHkHSDveMe9fc3JdhIDawAMAi7m8TAiFxGkvxPX
-        FZHlMnl+CGzgBtsgcO5oV3sWJmCyu5Hc9xQisnWovSWD483PKNm9RpWxVZX5QoQf
-        j5sABIqJWBovCCx/I5NGC5Py8rh5wxKw+fzQorKHHG1middt8FUtd2IPl4nhcmya
-        IC5Fddfr4+56Ky0y3EpSXv1mtADEVHAV0xLc0RAE4qQmnx7BLOT2MyfcwBFho9c7
-        tE/fpYUbtGrwNGJH+ZUJSim61/C36w4dYIixDtLNQhOyyvXUQmWcp4a3GzZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695859388; x=1695945788; bh=cIxox338FBbGA
-        ustO1WcDvxTsjNNrAH/UryFJoEr9uw=; b=lwAkvMCffDQHejs0AhnHkvo3QIaag
-        CE8YeagR8BPF9pK75DDgBU88Q/S6Ze0k84MTE8w90JhpBwPhVLtdwx8DVpGUz8pq
-        BSmfNOViKQ9cMQLLFZq8Mw5yig3xVqGa90eQ/kcyMRuiVvjofKScPxQqqkqslJ/d
-        PT6W1piaQf0Hc01BZMvJlh1YuFDx3EJHRBWpEZ0+pOc0fh4xKI2ETMmcy5OJ6EIt
-        k7Rs5VArfUy3MB64pTDE3Pjfv17H9PqVEbcjWNRP2Bxqbhi7k/8ag9ZCHW5ssatR
-        ZfGIHIPcup/3zD/ud8CiWfsYbze8cB49uHoOKqI4HnZHu07wqORWy8E9w==
-X-ME-Sender: <xms:vMIUZb9xV3olyoDa6JXm7bRrdvTB_k6Ot24HLLB7ezg9iEY8EUt0_Q>
-    <xme:vMIUZXskd20-Qtbax_XlTXq9p-n6PvxSo-Xh6cUsYPZhWOX1qazG5CPSAsrIgElBp
-    BMlgQQwjv9IsZekIDE>
-X-ME-Received: <xmr:vMIUZZBiRekGQ1CmMKpyNr9H8EjS16qD9Jlzlmp1yJ3e-t8a_ssbivc3YSlPag3LgGKCzf4BRmTIvNa4relqfXHAXnmBANy94da0JMPjXMM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddvlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
-    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
-    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
-    hmrghilhdrohhrgh
-X-ME-Proxy: <xmx:vMIUZXfDu6p3UtW9eO6R02dyujcixgV3GW05goRaI04ZgW27QGUS0g>
-    <xmx:vMIUZQPohgPfBUaSCYYDS7poLHMVfNBTRuWeNd0T8bL1zHdHvgdwUg>
-    <xmx:vMIUZZkXjrIcQxaupIiR3ddHKN2SjHBZByxIEkMjXYLd5QfrzbAQ6A>
-    <xmx:vMIUZZbSt2CIALL9FNIFtfPyArRtWTTtg9Tj-mJpGx6L8Igwdjly6g>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 20:03:07 -0400 (EDT)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v4] staging: rtl8192e: renamed (3) variables
-Date:   Wed, 27 Sep 2023 20:02:25 -0400
-Message-ID: <20230928000225.27912-1-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 27 Sep 2023 20:17:43 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C069BF;
+        Wed, 27 Sep 2023 17:17:37 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c1ff5b741cso110949525ad.2;
+        Wed, 27 Sep 2023 17:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695860257; x=1696465057; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qvZYJDFjw6AtaYjYTuzTNmQLcMXi0xxUU7gqtmd/9gc=;
+        b=OXkcPr1YDDHJxxiCkh2yzz/Wtwm7bow5DDBkAtRvRKzmK+53I/MLkvbUmrJ2vYC+8J
+         eW45Zw37QD47t9UuxkVBEjhwtfVzh0tASmopkSk96eWb35ijSphWsbuS+H7v7qZvCaxg
+         f84ENkWqWeM3Y0dcvxrOcYSpQ867GThLVmXAjfS4g484iXyp/iLra0uhRYNTTqaHcPJW
+         QyQlAdj+EAlhzbhbexRCEvJDwSKutyntaagrgK6HOlSXR/naUf9zLxpwZJCJN1sy2fId
+         VqClx7xGhBjDcR2LRIE0VjOWCYkHHGJ0zEyDwtFoaoNc2NLWqCWgNcv31Zctc24vz702
+         B+Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695860257; x=1696465057;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qvZYJDFjw6AtaYjYTuzTNmQLcMXi0xxUU7gqtmd/9gc=;
+        b=DE/CeKoMTZids8gZYE+1wtiFEhUT0MVbPNa3JyWgu8yv6LEQPXh0cnsL0sWDUpSHkP
+         v1vYPDtqlsIuiw2nEgEcOyi6Jl+4JIMwP6YCTUB2pTTPrJXnr/Fo+8KNlLP52iJd6sY1
+         Ig0IlHSBZT6ij02akzEY1ZLwzVe3WM0NnTFedjyda5djcxxXmZT/y7llTKCwwePAbTWr
+         hcSNzhL8Gn2jvCZ18lpPBQUqTBkfUwyzwKOvIorh3x+MH/Hegala6FVyTD5wkcicsnN1
+         YqstQMF7F9k7GkdsexO3usGhzH4ersQBcq2x2ewMGchEHbZgZBVamCSGLZGzjiZHi9BA
+         U8DQ==
+X-Gm-Message-State: AOJu0YwO6JRBwQj42MWCqkI+9pM0030aNfhRHvstiinIA+lZAJyvzzpR
+        ud0IF71+QNQ+ab0NDtUcEMk=
+X-Google-Smtp-Source: AGHT+IHlbfoihbCEKofpMw/0JZU0HYH2cWhIJn6F5hSC1Meu2QrWUcExGMHVTjyVpnTlXGel2ufM8w==
+X-Received: by 2002:a17:902:da84:b0:1c6:183a:f4ec with SMTP id j4-20020a170902da8400b001c6183af4ecmr3632437plx.17.1695860256324;
+        Wed, 27 Sep 2023 17:17:36 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id p11-20020a170902eacb00b001c625d6ffccsm5887624pld.129.2023.09.27.17.17.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 17:17:35 -0700 (PDT)
+Message-ID: <99b9d4d1-f7a9-4b6c-aebf-ef1d2ddee0d7@gmail.com>
+Date:   Thu, 28 Sep 2023 07:17:27 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Todd Brandt <todd.e.brandt@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Hardening <linux-hardening@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Performance regression: resume_console takes 100ms longer in
+ S2idle/S3 resume in v6.6-rc1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch renames the vaiable in staging/rtl8192e
-HTUpdateDefaultSetting -> ht_update_default_setting
-in (3) files of rtl8192e:
-1) rtl819x_HTProc.c
-2) rtllib.h
-3) rtllib_module.c
+Hi,
 
-Linux Kernel Coding Style "cleanup", no change in runtime,
-staging/rtl8192e builds before and after.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h         | 2 +-
- drivers/staging/rtl8192e/rtllib_module.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> Ever since 6.6.0-rc1 we've seen S3 and S2idle resume take 100ms longer because of resume_comsole. resume_console ordinarily takes only a few milliseconds, but now it's consistently 100ms. I've bisected the issue to this commit:
+> 
+> commit 9e70a5e109a4a23367810de09be826c52d27ee2f
+> Author: John Ogness <john.ogness@linutronix.de>
+> Date:   Mon Jul 17 21:52:06 2023 +0206
+> 
+>     printk: Add per-console suspended state
+>     
+>     Currently the global @console_suspended is used to determine if
+>     consoles are in a suspended state. Its primary purpose is to allow
+>     usage of the console_lock when suspended without causing console
+>     printing. It is synchronized by the console_lock.
+>     
+>     Rather than relying on the console_lock to determine suspended
+>     state, make it an official per-console state that is set within
+>     console->flags. This allows the state to be queried via SRCU.
+>     
+>     Remove @console_suspended. Console printing will still be avoided
+>     when suspended because console_is_usable() returns false when
+>     the new suspended flag is set for that console.
+> 
+> We are seeing this on roughly 2/3 of our machines, both on test systems and production systems.
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index a7e356e90d0e..832f595d36c2 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -67,7 +67,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
- 
- static u8 LINKSYS_MARVELL_4400N[3] = {0x00, 0x14, 0xa4};
- 
--void HTUpdateDefaultSetting(struct rtllib_device *ieee)
-+void ht_update_default_setting(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index bdbd27e382b9..ec1eef7486a2 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1785,7 +1785,7 @@ int rtllib_wx_get_rts(struct rtllib_device *ieee, struct iw_request_info *info,
- void HTSetConnectBwMode(struct rtllib_device *ieee,
- 			enum ht_channel_width bandwidth,
- 			enum ht_extchnl_offset Offset);
--void HTUpdateDefaultSetting(struct rtllib_device *ieee);
-+void ht_update_default_setting(struct rtllib_device *ieee);
- void HTConstructCapabilityElement(struct rtllib_device *ieee,
- 				  u8 *posHTCap, u8 *len,
- 				  u8 isEncrypt, bool bAssoc);
-diff --git a/drivers/staging/rtl8192e/rtllib_module.c b/drivers/staging/rtl8192e/rtllib_module.c
-index abd6bfd4dfa3..859241af617c 100644
---- a/drivers/staging/rtl8192e/rtllib_module.c
-+++ b/drivers/staging/rtl8192e/rtllib_module.c
-@@ -126,7 +126,7 @@ struct net_device *alloc_rtllib(int sizeof_priv)
- 	if (!ieee->ht_info)
- 		goto free_softmac;
- 
--	HTUpdateDefaultSetting(ieee);
-+	ht_update_default_setting(ieee);
- 	HTInitializeHTInfo(ieee);
- 	rtllib_ts_init(ieee);
- 	for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
+Then,
+
+> The effect is most pronounced in the GigaByte z170x UD5. It goes from 300ms to 400ms because of an msleep 100 in the resume_console code. This might not seem like much but it's in series with everything else so it will always be there. Our goal is to keep both suspend and resume under 1 second if at all possible, so every bit counts.
+
+See Bugzilla for the full thread and attached sleepgraph timelines
+(in html format).
+
+Anyway, I'm adding this regression to be tracked by regzbot:
+
+#regzbot introduced: 9e70a5e109a4a2 https://bugzilla.kernel.org/show_bug.cgi?id=217955
+#regzbot title: resume_console performance regression due to per-console suspended state
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217955
+
 -- 
-2.41.0
-
+An old man doll... just what I always wanted! - Clara
