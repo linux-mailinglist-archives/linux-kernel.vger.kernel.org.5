@@ -2,143 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EC17B217F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E74B7B2176
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbjI1Pjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        id S231940AbjI1Piy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232071AbjI1Pjo (ORCPT
+        with ESMTP id S231332AbjI1Pix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:39:44 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6ADDD6;
-        Thu, 28 Sep 2023 08:39:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF1551FB;
-        Thu, 28 Sep 2023 08:40:18 -0700 (PDT)
-Received: from e127619.cambridge.arm.com (e127619.arm.com [10.1.36.140])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 498863F59C;
-        Thu, 28 Sep 2023 08:39:39 -0700 (PDT)
-From:   Divin Raj <divin.raj@arm.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Peter Hoyes <Peter.Hoyes@arm.com>
-Subject: [PATCH 1/1] rpmsg: virtio: Make buffer size and number configurable
-Date:   Thu, 28 Sep 2023 16:38:25 +0100
-Message-Id: <20230928153825.151948-2-divin.raj@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230928153825.151948-1-divin.raj@arm.com>
-References: <20230928153825.151948-1-divin.raj@arm.com>
-MIME-Version: 1.0
+        Thu, 28 Sep 2023 11:38:53 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2079.outbound.protection.outlook.com [40.107.237.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A69B7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:38:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iSteXhysSi62zOO8DRRx5bukuwJKyqmYQ2lzrXQz95LO3vN/KSMpwXyJCzFERnLnqJugdyzxCyl9dp90T57qptA3TFA8v1Y0wf2pTBvydAcAG+zmPNBDohzx1U7X6h/b3M65onpyt5TJ2Dz446IqsQrF55mc5NnYz2oNK5GUQnuuLNVhm5wQfdHq2qqyeSY1qX+h0C/1bcaGss+DmpadbT4jRLieGJXUQZb7r4W0nSZtM5llX8Ef2KVl6zI5Xvcp550cLN07nyQd3ccSR6bsA847waKh39yQOviLiFLxeEo1bCtBXrbXPWLc2KUOOzXUgv/44F+Lfa12yxiUo+Uu2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BU36oH8KD8nke11hz4CMuuzBEc1nIHs4Gkf1h/uVV2U=;
+ b=T9oA3CeRKk3dMowqkyCpPIIuBHRj7OD5u1FOF0Goow2Yi0oecvNLwlMy93v0ClnSUWkVZhJ7cQAiKXGt3bQU1NnXtoaOllEMhnYotoxtEdeYm4VsrOt3fGa+6aSJnh6gpJPXEVK+OmG7b5SBdUZFGhs49hafvKLNqi1PvxiW+pPdyNBl+GwzavY5ivgMPlQAALQCf07ztzsI8mwPFe8gD6Ih98wRtmvoLgTyWcXfPVWDw+6FzZGJfaH4zQULFytGKxxsW6Goa79tyI5q80tb3+29vUbw56HN5mga9L6mz1i9QwtoiSgxIxTq2d1cSyr4sQAcagOZ35qj/puL4MH8gA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BU36oH8KD8nke11hz4CMuuzBEc1nIHs4Gkf1h/uVV2U=;
+ b=jk6XOaX8MICLOErG11TJyy290efPTaji1xTzAdDRIbpW5/P299QFp1l9DjcslpDsc2IUGmeU4uTiHKnJP1R5u3rqfGKnkJ3mxkl+Xzwq1XYnxedYyOx4kQyP9o3uQfRQc/SnzeIUHryTes91LTcEjJkyG/Qr3qbcAdk8txl1hdE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ0PR12MB5673.namprd12.prod.outlook.com (2603:10b6:a03:42b::13)
+ by DM4PR12MB5325.namprd12.prod.outlook.com (2603:10b6:5:390::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Thu, 28 Sep
+ 2023 15:38:46 +0000
+Received: from SJ0PR12MB5673.namprd12.prod.outlook.com
+ ([fe80::24b9:2521:84eb:2471]) by SJ0PR12MB5673.namprd12.prod.outlook.com
+ ([fe80::24b9:2521:84eb:2471%6]) with mapi id 15.20.6813.024; Thu, 28 Sep 2023
+ 15:38:46 +0000
+Message-ID: <8c9c3b5b-ba1e-ba07-3001-242eab9ca1a6@amd.com>
+Date:   Thu, 28 Sep 2023 17:38:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
+ for gfx8
+Content-Language: en-US
+To:     Felix Kuehling <felix.kuehling@amd.com>,
+        "Joshi, Mukul" <Mukul.Joshi@amd.com>,
+        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
+ <20230928095427.4337-2-Arvind.Yadav@amd.com>
+ <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
+ <8cd0539d-5d5e-e670-9577-7db72393b784@amd.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <8cd0539d-5d5e-e670-9577-7db72393b784@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BE1P281CA0363.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:82::23) To SJ0PR12MB5673.namprd12.prod.outlook.com
+ (2603:10b6:a03:42b::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB5673:EE_|DM4PR12MB5325:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9fe207ec-ac3f-4c22-996f-08dbc03900df
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cqO0Ag17ujtaD8Pnq4T6lwkEgAHmjdJ9+hj66tRsHeJ13yh2JnEH+claTjZMhHJ1yXI4ZCW9Iz62BV5p+oR6Xh+xKOBCRaFHRuBcfgUbTlefa4MEudWE8V4ZbwqJ916ahUOXplkvtc0m77GEGTOeIKPWLrVPQE7eTNUiloQki5HH83wOu9cZ2yPbWMyJCWBxcPaOKiJAX5QQE+uTrsgQEAlgiANUaVxxdA1YBsnjr5D/plsD48Sd2SJDmINKupc2u6YwrrYL4RXHS3rntM1izBQ0LH1sHmDGfge4dN6XlYU1L/yHvqZdXCbPdUwQuoaNBEJmnQXPrDSLS/Ht9dQWA5Ea6Mz3xlPddLC9qgiUO4ImQlLGZM9yI5QE4xFYF98wsn9JYtqXndAiISQSnsFUONALoNg/6Ei4fNI3P+PHvud0aN+Yma1oCdHjECp1X9bTRj/AjVXIk3/ukiBcyG9Odsm4gCfRh3HHbq3z4juU0GcL2vL7D7nl+OHrr+0qth2sqpNVxyiKG5J7Xp6l5Uz4XWePUc+qVLH/0qlJO46iFQKLYHo3cAUR8JkM7iyGcjFMmyGoXTqaA33Vs0l5qfOaPnp2NRmZr3qcOpxbGS32X5nz2JDIyiBntt80VbOKwSQmJm+n86cI9a9Gp3Q5xnGaOhSLFSbBW1tDzlou/TJM8OM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR12MB5673.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(39860400002)(136003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(921005)(86362001)(31696002)(5660300002)(44832011)(41300700001)(8676002)(4326008)(8936002)(2906002)(38100700002)(6486002)(6666004)(478600001)(6512007)(6506007)(36756003)(53546011)(83380400001)(2616005)(31686004)(26005)(66476007)(66556008)(316002)(54906003)(66946007)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjIzbG5Sd0t6cUNpTW9wbWRJQTJpd2FGc1FtT0Z2RzB4Nm9nMXZJZlpJSTRT?=
+ =?utf-8?B?Z3hqWlN5cmNGUFpkcERVWlo2QzB1MFltNlpLa3hLK29xbi9YRGZBbi81d1FF?=
+ =?utf-8?B?MlZJZXJqZUNwdy94ZjVoeVdUY0xBMjV2UUF1bGVwVlIxVTBWRERLa3dyeG80?=
+ =?utf-8?B?VkRTN2FxOXdLUVdyMG1xUzVGRlBuU04vdzEwSHJPSjNTS2tabmR6eTlrTXZE?=
+ =?utf-8?B?ckRBejZyM1EvM2FNbW5tanlQa3hUZ3FlL2hYN0pBMUhZeFlTN0JiRzhxSGVp?=
+ =?utf-8?B?c2dQZFc5V0w0dk5iQUVKSkkrdjRDYytKT2pEYWxWQTdzQWx1amRoRE5RelhL?=
+ =?utf-8?B?TUFpcEFOSHlER3pobnQzeEVmdVd3SnhzQ1ZQR2VGUXVGTzZmay9WNEZhZ1Fp?=
+ =?utf-8?B?bWJCYVY1d09jWE1udzh4bFhQQjY2NGRBVWFxUVZQc0kvS3VoUEdYN3JPSGVO?=
+ =?utf-8?B?Q3Jpc0MwcS8wUzQzNmcwSnlFYnRLYVQxMzJJalBNZWlpSHRNcTlYKzVXV2Fr?=
+ =?utf-8?B?bWwxVllRdXpjSXNBM2NhMGZlN1htTStNMFVZd2Jrc1ovR1ZHcHpqUGpsUDE2?=
+ =?utf-8?B?ODVsQVcrOUNldlJzektiSTJnb2JDOUFLT0VReHdETU9Gd1hGbmRQU1BPd1hX?=
+ =?utf-8?B?MjFEdCs1WWpQRVR2eGU5MFZ0SmNzT01pbllPNXZlNGQ0TDJrcjZML3AxelBv?=
+ =?utf-8?B?am4xRkh0Vm1ZR2ZWQ3ZISG1aMUlsbFlrR0ZyTjF1SFJuSENnTytvMURUZWk0?=
+ =?utf-8?B?OG4vZnYvczIza3kyclRVV1l5dUgyU2dqS2JyWW01Y2lvN0dRMnRwcGVDVCtU?=
+ =?utf-8?B?L1RVQitCSnNnRFFHZjdWNXFrbVoyeElFM1IrQ3haQklkY3dnM0NWTUdCOXpm?=
+ =?utf-8?B?ZzBPSlhFRjdQYkVHMDdxNUlxR251YWUrcXlEbThYZWZZbjhEQ1VDQ3V6ZDdp?=
+ =?utf-8?B?THk3UmZEVGVkeTlCUmlsdVR6cUQvRVVORm9vb1F1NWNOYmJrTTdDV3kxZE1L?=
+ =?utf-8?B?ZXpnc3Zhd1Y2dUZaWURKd3ZaY0dNTWRCbjZkZWVoUzJseHUvRnk3dFYrakVr?=
+ =?utf-8?B?eXgxdHlmbHdEZy9xdGROc0pLT2EwRi83UzVhd1JkM2dsM0lEOS80RGN0b2lI?=
+ =?utf-8?B?a0tzU1MvN0s0SUdRV1VmOTJWSGNIenp2aUQySWdPK3dYVjFzYWNaQ21iaDM4?=
+ =?utf-8?B?SXF6NXRmV2FBTTZqd0w1WlNlUStxTmREaFJBRnZ2cWs5bWZwcXhQTWhoRXYx?=
+ =?utf-8?B?WjNkN3NWVFFSMS80aWdlY1R6U005bkJiK0ZrVS9PYXU2RUpIVTQySkFIa3lD?=
+ =?utf-8?B?WmovSERvY2MyUUE4MVcxRyttYyt6bDNtdjJvbG8yNUdCRDFmTWYzVXlvS1FO?=
+ =?utf-8?B?OEpUS3RhellObHVRbzBnTW5XTmVVTjNpUnM0Y0FQMEp1QWQ2R2NJUS9OOWhv?=
+ =?utf-8?B?eFY0RnR4N3cvVVBDNzdxK3NTM3hWU3NDZTdyRUhGVVR4U1ZXcVhaQW9RSWVX?=
+ =?utf-8?B?dkRjemVUTW5pMGhQWUVxaWwxTERWQnhlQ0JZazdoVW05MXkzQkNOcnpmcUhu?=
+ =?utf-8?B?ODJrQy92Rzc1MlJaM2RDWEtyT2RQR0JHQnhTVGxaMXhkanFNZFg0QUlqMklC?=
+ =?utf-8?B?TzNIT2h0UytlMW1CdmhpQXFNUWNKVHlqemJsdmZvZ3FHOXEvV0Y5d2dZakFD?=
+ =?utf-8?B?WGJZMG1MaVV2VWRoMUQwRldsYW5FVTd1KzcvdDY5VFVHNEJKSTMxcm85L2Jl?=
+ =?utf-8?B?akwvelhORnRETW1LSVRWd2pvRUhkTWVKa3JLUE5MM3c4cER6V1VRR1RMSFFK?=
+ =?utf-8?B?aEd4dG8vbUgwZVFiRlY0YStDWHpoNkkwZkJHOEphOC96R20zenZUVHdEWTFI?=
+ =?utf-8?B?MUFPeFhJNHBQWGtjVWsrSzZtRzJEckE2dHlWa0luYVVlWjlJRFo4L2FpWnhs?=
+ =?utf-8?B?c1NKYjFrenZndVNETFJUL1Y2dzNIM3FNOXFFTFl0cEd2WkR6TEVPZ3RFTXpi?=
+ =?utf-8?B?UXJ0YmM2bnRPQjl0WjVuSFdjSTBiQ09RZjdobjZLOW9ZTGd3ZUpPeHFZZWRK?=
+ =?utf-8?B?SThjOEJwb21pU0NVWTJpZVB6clp4TTlGbHhNSTZjLzREbXovQXpuME9SM3Nm?=
+ =?utf-8?Q?RKu2tnVjgUjrm6mv7Uq8DG9wB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fe207ec-ac3f-4c22-996f-08dbc03900df
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR12MB5673.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 15:38:46.6834
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: safzMhXVXg0//VM7N9NHuTF3suW7UGf7z5CZnjnDiDC9EeLCC18SYXMVJ8xvcCdwUNDww/4fKM9QiZDBFqsSjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5325
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Hoyes <Peter.Hoyes@arm.com>
+Hello Felix, Mukul,
 
-Replace the MAX_RPMSG_BUF_SIZE and MAX_RPMSG_NUM_BUFS #define in
-virtio_rpmsg_bus.c with the Kconfig parameters CONFIG_RPMSG_VIRTIO_BUF_SIZE
-and CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS, allowing user-provided customization.
+On 28/09/2023 17:30, Felix Kuehling wrote:
+> On 2023-09-28 10:30, Joshi, Mukul wrote:
+>> [AMD Official Use Only - General]
+>>
+>>> -----Original Message-----
+>>> From: Yadav, Arvind <Arvind.Yadav@amd.com>
+>>> Sent: Thursday, September 28, 2023 5:54 AM
+>>> To: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander
+>>> <Alexander.Deucher@amd.com>; Sharma, Shashank
+>>> <Shashank.Sharma@amd.com>; Kuehling, Felix <Felix.Kuehling@amd.com>;
+>>> Joshi, Mukul <Mukul.Joshi@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+>>> airlied@gmail.com; daniel@ffwll.ch
+>>> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; 
+>>> linux-
+>>> kernel@vger.kernel.org; Yadav, Arvind <Arvind.Yadav@amd.com>; Koenig,
+>>> Christian <Christian.Koenig@amd.com>
+>>> Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute 
+>>> offset
+>>> for gfx8
+>>>
+>>> This patch is to adjust the absolute doorbell offset against the 
+>>> doorbell id
+>>> considering the doorbell size of 32/64 bit.
+>>>
+>>> v2:
+>>> - Addressed the review comment from Felix.
+>>>
+>>> Cc: Christian Koenig <christian.koenig@amd.com>
+>>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>>> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
+>>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+>>> ---
+>>>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
+>>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>>> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>>> index 0d3d538b64eb..c54c4392d26e 100644
+>>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>>> @@ -407,7 +407,14 @@ static int allocate_doorbell(struct
+>>> qcm_process_device *qpd,
+>>>
+>>>        q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev-
+>>>> adev,
+>>>                                                                  qpd-
+>>>> proc_doorbells,
+>>> -                                                               q-
+>>>> doorbell_id);
+>>> +                                                               0);
+>>> +
+>> It looks like amdgpu_doorbell_index_on_bar() works only for 64-bit 
+>> doorbells.
+>> Shouldn't it work for both 32-bit and 64-bit doorbells considering 
+>> this is common
+>> doorbell manager code?
 
-Making both the number of buffers and size configurable facilitates aligning
-memory requirements between vdev-buffer and vdev-vrings for client drivers
-that require larger buffer sizes, for example.
 
-Signed-off-by: Peter Hoyes <Peter.Hoyes@arm.com>
-Signed-off-by: Divin Raj <divin.raj@arm.com>
----
- drivers/rpmsg/Kconfig            | 23 +++++++++++++++++++++++
- drivers/rpmsg/virtio_rpmsg_bus.c | 27 +++------------------------
- 2 files changed, 26 insertions(+), 24 deletions(-)
+Yes, You are right that the calculations to find a particular doorbell 
+in the doorbell page considers a doorbell width of 64-bit.
 
-diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-index d3795860f5c0..677f4a1ac8bb 100644
---- a/drivers/rpmsg/Kconfig
-+++ b/drivers/rpmsg/Kconfig
-@@ -81,4 +81,27 @@ config RPMSG_VIRTIO
- 	select RPMSG_NS
- 	select VIRTIO
- 
-+config RPMSG_VIRTIO_MAX_BUF_SIZE
-+	int "Virtio RPMSG max buffer size (in bytes)"
-+	default 512
-+	depends on RPMSG_VIRTIO
-+	help
-+	  This option allows you to configure the maximum buffer size (in bytes)
-+	  for Virtio RPMSG communications. The number of buffers will be computed
-+	  based on the number of buffers (CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS)
-+	  supported by the vring. By default, it supports up to a maximum of 512
-+	  buffers (256 in each direction). Each buffer consists of 16 bytes for the
-+	  message header and the remaining bytes for the payload.The default values
-+	  will utilize a maximum total space of 256KB for the buffers.
-+
-+config RPMSG_VIRTIO_MAX_NUM_BUFS
-+	int "Virtio RPMSG max buffer count (even number for TX and Rx)"
-+	default 512
-+	depends on RPMSG_VIRTIO
-+	help
-+	  This option allows you to configure the maximum number of buffers used
-+	  for Virtio RPMSG communication. By default, it supports up to a maximum
-+	  of 512 buffers (256 in each direction). Please note that this value
-+	  should be an even number, as it accounts for both transmit (TX) and
-+	  receive (Rx) buffers.
- endmenu
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index 905ac7910c98..87a9a4fa30e0 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -109,27 +109,6 @@ struct virtio_rpmsg_channel {
- #define to_virtio_rpmsg_channel(_rpdev) \
- 	container_of(_rpdev, struct virtio_rpmsg_channel, rpdev)
- 
--/*
-- * We're allocating buffers of 512 bytes each for communications. The
-- * number of buffers will be computed from the number of buffers supported
-- * by the vring, upto a maximum of 512 buffers (256 in each direction).
-- *
-- * Each buffer will have 16 bytes for the msg header and 496 bytes for
-- * the payload.
-- *
-- * This will utilize a maximum total space of 256KB for the buffers.
-- *
-- * We might also want to add support for user-provided buffers in time.
-- * This will allow bigger buffer size flexibility, and can also be used
-- * to achieve zero-copy messaging.
-- *
-- * Note that these numbers are purely a decision of this driver - we
-- * can change this without changing anything in the firmware of the remote
-- * processor.
-- */
--#define MAX_RPMSG_NUM_BUFS	(512)
--#define MAX_RPMSG_BUF_SIZE	(512)
--
- /*
-  * Local addresses are dynamically allocated on-demand.
-  * We do not dynamically assign addresses from the low 1024 range,
-@@ -902,12 +881,12 @@ static int rpmsg_probe(struct virtio_device *vdev)
- 		virtqueue_get_vring_size(vrp->svq));
- 
- 	/* we need less buffers if vrings are small */
--	if (virtqueue_get_vring_size(vrp->rvq) < MAX_RPMSG_NUM_BUFS / 2)
-+	if (virtqueue_get_vring_size(vrp->rvq) < CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS / 2)
- 		vrp->num_bufs = virtqueue_get_vring_size(vrp->rvq) * 2;
- 	else
--		vrp->num_bufs = MAX_RPMSG_NUM_BUFS;
-+		vrp->num_bufs = CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS;
- 
--	vrp->buf_size = MAX_RPMSG_BUF_SIZE;
-+	vrp->buf_size = CONFIG_RPMSG_VIRTIO_MAX_BUF_SIZE;
- 
- 	total_buf_space = vrp->num_bufs * vrp->buf_size;
- 
--- 
-2.25.1
+>
+> I could see this argument going either way. KFD is the only one that 
+> cares about managing doorbells for user mode queues on GFXv8 GPUs. 
+> This is not a use case that amdgpu cares about. So I'm OK with KFD 
+> doing its own address calculations to make sure doorbells continue to 
+> work on GFXv8.
+>
+> It may not be worth adding complexity to the common doorbell manager 
+> code to support legacy GPUs with 32-bit doorbells.
 
+
+I was thinking about adding an additional input parameter which will 
+indicate if the doorbell width is 32-bit vs 64-bit (like 
+is_doorbell_64_bit), and doorbell manager can alter the multiplier while 
+calculating the final offset. Please let me know if that will work for 
+both the cases.
+
+- Shashank
+
+>
+>
+> Regards,
+>   Felix
+>
+>
+>>
+>> Thanks,
+>> Mukul
+>>
+>>> +     /* Adjust the absolute doorbell offset against the doorbell id
+>>> considering
+>>> +      * the doorbell size of 32/64 bit.
+>>> +      */
+>>> +     q->properties.doorbell_off += q->doorbell_id *
+>>> + dev->kfd->device_info.doorbell_size / 4;
+>>> +
+>>>        return 0;
+>>>   }
+>>>
+>>> -- 
+>>> 2.34.1
