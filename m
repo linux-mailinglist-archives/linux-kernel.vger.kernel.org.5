@@ -2,192 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B287B1F39
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5867B1F3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjI1OJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        id S232563AbjI1OJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbjI1OJX (ORCPT
+        with ESMTP id S231576AbjI1OJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:09:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5BAF9;
-        Thu, 28 Sep 2023 07:09:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E54E0C433C8;
-        Thu, 28 Sep 2023 14:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695910161;
-        bh=1OHYrgJpZE5GatH7jXt4ovEw8089Axq7qZtFT+kGgxQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=GEE2hqn6D/GeeGUB1nNJiIppgNlMnhn4odSY/su2RN5plTDdf4z2Y6CXd4tBTnvp6
-         LzQJfZya3Mt8QT5KMHwmfFdlwMUY/WYLXGJI5g7XgcEp0c1WzOCJdVRPv7B9a81zEe
-         CV1vdN04Z7PV3O411Xy4gHhSYX3doGJ6ADT/8lFj+MyK/8BFJHyysMgpUsOscNtu6S
-         gMCOzIoCxhy4Vv/bHxZEqbTyGa4Z9NuzAx24r3FoMm4DAVZCrR0BWuW9DZTOIYOm9A
-         U5LW6XxlD84bmldH3jVxsn9v+zry6SUAi1+r7GYMMo1VOfM1H6EF2QJ83Qb1mz0pvP
-         aUQKFE2nLzvCA==
-Message-ID: <c908f4e65777b15e4574f27df97630b3033804a3.camel@kernel.org>
-Subject: Re: [PATCH 51/87] fs/nfsd: convert to new inode {a,m}time accessors
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 28 Sep 2023 10:09:19 -0400
-In-Reply-To: <ZRWGBGqYe3rF5CRY@tissot.1015granger.net>
-References: <20230928110300.32891-1-jlayton@kernel.org>
-         <20230928110413.33032-1-jlayton@kernel.org>
-         <20230928110413.33032-50-jlayton@kernel.org>
-         <ZRWGBGqYe3rF5CRY@tissot.1015granger.net>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 28 Sep 2023 10:09:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2A011F;
+        Thu, 28 Sep 2023 07:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695910194; x=1727446194;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=rWPUuNNdKXgrAPoDqjutOvUZaBIRMfIRRc8S+g1NzQo=;
+  b=GFONEdUMERB3qHISMNyvF3/crvK2eLR+bKH6XHzoOQiTkkhiHwBjgWVb
+   dUgBtslOjGSWhoc/A9/jkZHpQlc7//KeJUlESxr2E1t+0k5quTVW+2r1x
+   C0CQDI/KdBv9KoN7XaIHuRcKdNhRfI6GDuNeLgvpaj8ZUHYeCQDNtd5M8
+   c24VXqwZj0PN9mmQPcFsweKqx+rKVXP4Wq9mGlhmPKRNYMHeFBfcrn4hQ
+   EOCvKvQtTruPf/yzZ2YXloEMlWCd6p/HOgL5BMqm/ZSj3u7YF7IJVtPDs
+   AoOitApO8NbCVAAXxzVszfizsfbHRkCl11tsX7tzPcznwHWHjJZVJIsGN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="468356756"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="468356756"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 07:09:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="815243277"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="815243277"
+Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 07:09:52 -0700
+Message-ID: <b22a3863-cf11-14b7-23f3-4b8971f44580@intel.com>
+Date:   Thu, 28 Sep 2023 07:09:52 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/5] KVM: x86: Constrain guest-supported xfeatures only at
+ KVM_GET_XSAVE{2}
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
+        Tyler Stachecki <stachecki.tyler@gmail.com>,
+        Leonardo Bras <leobras@redhat.com>
+References: <20230928001956.924301-1-seanjc@google.com>
+ <20230928001956.924301-3-seanjc@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230928001956.924301-3-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-28 at 09:56 -0400, Chuck Lever wrote:
-> On Thu, Sep 28, 2023 at 07:03:00AM -0400, Jeff Layton wrote:
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/nfsd/blocklayout.c | 3 ++-
-> >  fs/nfsd/nfs3proc.c    | 4 ++--
-> >  fs/nfsd/nfs4proc.c    | 8 ++++----
-> >  fs/nfsd/nfsctl.c      | 2 +-
-> >  4 files changed, 9 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/fs/nfsd/blocklayout.c b/fs/nfsd/blocklayout.c
-> > index 01d7fd108cf3..bdc582777738 100644
-> > --- a/fs/nfsd/blocklayout.c
-> > +++ b/fs/nfsd/blocklayout.c
-> > @@ -119,10 +119,11 @@ nfsd4_block_commit_blocks(struct inode *inode, st=
-ruct nfsd4_layoutcommit *lcp,
-> >  {
-> >  	loff_t new_size =3D lcp->lc_last_wr + 1;
-> >  	struct iattr iattr =3D { .ia_valid =3D 0 };
-> > +	struct timespec64 mtime =3D inode_get_mtime(inode);
->=20
-> Nit: Please use reverse Christmas tree for new variable declarations.
->=20
+On 9/27/23 17:19, Sean Christopherson wrote:
+> Mask off xfeatures that aren't exposed to the guest only when saving guest
+> state via KVM_GET_XSAVE{2} instead of modifying user_xfeatures directly.
+> Preserving the maximal set of xfeatures in user_xfeatures restores KVM's
+> ABI for KVM_SET_XSAVE, which prior to commit ad856280ddea ("x86/kvm/fpu:
+> Limit guest user_xfeatures to supported bits of XCR0") allowed userspace
+> to load xfeatures that are supported by the host, irrespective of what
+> xfeatures are exposed to the guest.
+> 
+> There is no known use case where userspace *intentionally* loads xfeatures
+> that aren't exposed to the guest, but the bug fixed by commit ad856280ddea
+> was specifically that KVM_GET_SAVE{2} would save xfeatures that weren't
+> exposed to the guest, e.g. would lead to userspace unintentionally loading
+> guest-unsupported xfeatures when live migrating a VM.
+> 
+> Restricting KVM_SET_XSAVE to guest-supported xfeatures is especially
+> problematic for QEMU-based setups, as QEMU has a bug where instead of
+> terminating the VM if KVM_SET_XSAVE fails, QEMU instead simply stops
+> loading guest state, i.e. resumes the guest after live migration with
+> incomplete guest state, and ultimately results in guest data corruption.
+> 
+> Note, letting userspace restore all host-supported xfeatures does not fix
+> setups where a VM is migrated from a host *without* commit ad856280ddea,
+> to a target with a subset of host-supported xfeatures.  However there is
+> no way to safely address that scenario, e.g. KVM could silently drop the
+> unsupported features, but that would be a clear violation of KVM's ABI and
+> so would require userspace to opt-in, at which point userspace could
+> simply be updated to sanitize the to-be-loaded XSAVE state.
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Ok
-
->=20
-> >  	int error;
-> > =20
-> >  	if (lcp->lc_mtime.tv_nsec =3D=3D UTIME_NOW ||
-> > -	    timespec64_compare(&lcp->lc_mtime, &inode->i_mtime) < 0)
-> > +	    timespec64_compare(&lcp->lc_mtime, &mtime) < 0)
-> >  		lcp->lc_mtime =3D current_time(inode);
-> >  	iattr.ia_valid |=3D ATTR_ATIME | ATTR_CTIME | ATTR_MTIME;
-> >  	iattr.ia_atime =3D iattr.ia_ctime =3D iattr.ia_mtime =3D lcp->lc_mtim=
-e;
-> > diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
-> > index 268ef57751c4..b1c90a901d3e 100644
-> > --- a/fs/nfsd/nfs3proc.c
-> > +++ b/fs/nfsd/nfs3proc.c
-> > @@ -294,8 +294,8 @@ nfsd3_create_file(struct svc_rqst *rqstp, struct sv=
-c_fh *fhp,
-> >  			status =3D nfserr_exist;
-> >  			break;
-> >  		case NFS3_CREATE_EXCLUSIVE:
-> > -			if (d_inode(child)->i_mtime.tv_sec =3D=3D v_mtime &&
-> > -			    d_inode(child)->i_atime.tv_sec =3D=3D v_atime &&
-> > +			if (inode_get_mtime(d_inode(child)).tv_sec =3D=3D v_mtime &&
-> > +			    inode_get_atime(d_inode(child)).tv_sec =3D=3D v_atime &&
->=20
-> "inode_get_atime(yada).tv_sec" seems to be a frequently-repeated
-> idiom, at least in this patch. Would it be helpful to have an
-> additional helper that extracted just the seconds field, and one
-> that extracts just the nsec field?
->=20
-
-I don't know that extra helpers will make that any clearer.
-
->=20
-> >  			    d_inode(child)->i_size =3D=3D 0) {
-> >  				break;
-> >  			}
-> > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-> > index 4199ede0583c..b17309aac0d5 100644
-> > --- a/fs/nfsd/nfs4proc.c
-> > +++ b/fs/nfsd/nfs4proc.c
-> > @@ -322,8 +322,8 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct sv=
-c_fh *fhp,
-> >  			status =3D nfserr_exist;
-> >  			break;
-> >  		case NFS4_CREATE_EXCLUSIVE:
-> > -			if (d_inode(child)->i_mtime.tv_sec =3D=3D v_mtime &&
-> > -			    d_inode(child)->i_atime.tv_sec =3D=3D v_atime &&
-> > +			if (inode_get_mtime(d_inode(child)).tv_sec =3D=3D v_mtime &&
-> > +			    inode_get_atime(d_inode(child)).tv_sec =3D=3D v_atime &&
-> >  			    d_inode(child)->i_size =3D=3D 0) {
-> >  				open->op_created =3D true;
-> >  				break;		/* subtle */
-> > @@ -331,8 +331,8 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct sv=
-c_fh *fhp,
-> >  			status =3D nfserr_exist;
-> >  			break;
-> >  		case NFS4_CREATE_EXCLUSIVE4_1:
-> > -			if (d_inode(child)->i_mtime.tv_sec =3D=3D v_mtime &&
-> > -			    d_inode(child)->i_atime.tv_sec =3D=3D v_atime &&
-> > +			if (inode_get_mtime(d_inode(child)).tv_sec =3D=3D v_mtime &&
-> > +			    inode_get_atime(d_inode(child)).tv_sec =3D=3D v_atime &&
-> >  			    d_inode(child)->i_size =3D=3D 0) {
-> >  				open->op_created =3D true;
-> >  				goto set_attr;	/* subtle */
-> > diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> > index 7ed02fb88a36..846559e4769b 100644
-> > --- a/fs/nfsd/nfsctl.c
-> > +++ b/fs/nfsd/nfsctl.c
-> > @@ -1132,7 +1132,7 @@ static struct inode *nfsd_get_inode(struct super_=
-block *sb, umode_t mode)
-> >  	/* Following advice from simple_fill_super documentation: */
-> >  	inode->i_ino =3D iunique(sb, NFSD_MaxReserved);
-> >  	inode->i_mode =3D mode;
-> > -	inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(inode);
-> > +	simple_inode_init_ts(inode);
->=20
-> An observation about the whole series: Should these helpers use the
-> usual naming convention of:
->=20
->   <subsystem>-<subject>-<verb>
->=20
-> So we get:
->=20
->   simple_inode_ts_init(inode);
->=20
->   inode_atime_get(inode)
->=20
-
-This was already bikeshedded during the ctime series, and the near
-universal preference at the time was to go with inode_set_ctime and
-inode_get_ctime. I'm just following suit with the new accessors.
-
->=20
-> >  	switch (mode & S_IFMT) {
-> >  	case S_IFDIR:
-> >  		inode->i_fop =3D &simple_dir_operations;
-> > --=20
-> > 2.41.0
-> >=20
->=20
-> Otherwise, for the patch(es) touching nfsd:
->=20
-> Acked-by: Chuck Lever <chuck.lever@oracle.com>
->=20
-
-Thanks!
---=20
-Jeff Layton <jlayton@kernel.org>
+It's surprising (and nice) that this takes eliminates the !guest check
+in fpstate_realloc().
