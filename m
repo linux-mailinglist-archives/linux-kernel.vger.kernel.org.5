@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE9E7B22BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4247B22B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjI1QsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        id S229903AbjI1Qr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjI1QsG (ORCPT
+        with ESMTP id S231307AbjI1Qr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:48:06 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2045.outbound.protection.outlook.com [40.107.100.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCFC1AC;
-        Thu, 28 Sep 2023 09:48:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NxDNUnTj++l42s8Dq9cPDZVu0+5SPXtr3VsVXeHuAzdeI1FcNKjvJCTTfwTMbHTAi3D2rBxcY6+dUqMhTII1m7wVx8L0nwi8MyAKSEzt0PQQ4o7gW41SQcIDZRRCNXEd0T1BBAthDiVxcnM2bnxcDF6FOZ/e73vzSnYKM+f/ODZ6loxLMvK//+lQmNF3vhci+RfeNvj1Y8EiEKxRrqsD0NxYxND06B3o/tx/gjxbfXIBtMwpjEtFmIEWQHN4tgKttNHgkHA749EFKymP0syjqqdzuw+okP5ed95XaEo5zs/qaBVBHH8VTtWuFfnXJZ0VBVLLJ/NF5rNYF8iE1RNj7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MTKcwFawS1LXaUnHCj41gj17QWmGa5EYrJPB+u+eq7s=;
- b=d6xKmQ5CjHu+/j3/DyDH++eOq7KA9/zZvDGF/AlskWVhcKAPVaz2UeUaeDbdC30Svv2aSg8Egd/vjsdBD18JlNTeUcwK3Yj4UwyzoMfbEhWgAnpSaDsseEKX46s2Kh/6fmVUTwBav6+LhUw0uaqLjz+wO96TG4rEutbAgTo8d+quIk1bnelMBGA9msweX3EHSM1QZMF4uH3iRagcYbQRuCy37ZocBdbBB9KC8mXPEoHr7AB/L+tCh2i2X4x+IcvyRS4zoqtIVuQE/lo+2VFdLkJua00IXgv/K6eXdbXRs/eIRiieJYs6jIB8aM0P365Nmu4uxRChNa7OQLpFxrEUQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MTKcwFawS1LXaUnHCj41gj17QWmGa5EYrJPB+u+eq7s=;
- b=QAF7VLVC9eBaTll1PDaIa9Z67KY1opkGH6CFPyn+lC4B4jjg4yGCgG7U4Islfy0epTQgib3zN3g+10e8HpY7nZKMBsqE8kw8OXSmi9lua3P5ug6h4HyfrUe3jD4WTeEgEvqHJVS7xhje2+C4a4cqJPym/SWNcwDJCGPQ+FnSPC4=
-Received: from BLAPR03CA0120.namprd03.prod.outlook.com (2603:10b6:208:32a::35)
- by PH7PR12MB8777.namprd12.prod.outlook.com (2603:10b6:510:26b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Thu, 28 Sep
- 2023 16:48:03 +0000
-Received: from BL02EPF0001A101.namprd05.prod.outlook.com
- (2603:10b6:208:32a:cafe::7b) by BLAPR03CA0120.outlook.office365.com
- (2603:10b6:208:32a::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25 via Frontend
- Transport; Thu, 28 Sep 2023 16:48:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0001A101.mail.protection.outlook.com (10.167.241.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Thu, 28 Sep 2023 16:48:02 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 28 Sep
- 2023 11:48:02 -0500
-Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Thu, 28 Sep 2023 11:48:01 -0500
-From:   Lizhi Hou <lizhi.hou@amd.com>
-To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <herve.codina@bootlin.com>,
-        <Jonathan.Cameron@Huawei.com>
-CC:     Lizhi Hou <lizhi.hou@amd.com>, <bhelgaas@google.com>,
-        <robh@kernel.org>
-Subject: [PATCH v1 2/2] PCI: of_property: Fix uninitialized variable when of_irq_parse_raw() failed
-Date:   Thu, 28 Sep 2023 09:47:11 -0700
-Message-ID: <1695919631-7661-2-git-send-email-lizhi.hou@amd.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1695919631-7661-1-git-send-email-lizhi.hou@amd.com>
-References: <1695919631-7661-1-git-send-email-lizhi.hou@amd.com>
+        Thu, 28 Sep 2023 12:47:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD3B1A4;
+        Thu, 28 Sep 2023 09:47:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 047F8C433C8;
+        Thu, 28 Sep 2023 16:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695919644;
+        bh=3ULes3SP+nVMDrHJRNu8hN35Zfay9cO72EBXJbs4MP0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FJ1hHcd501bSblfoDC1vqRbgIic8CijJLyrB9WU3GwGIixc/ptBw7AW6exr6EoqYw
+         sp/0EzHtubpTo9CKuKlWwr4EIOP2r3JK/4ERExObJomh1xKu8ijpkfTIsqKOqN8HeL
+         9P/kpYJ4NjjZyRL2X48oD63uH0njQxA63qpHyKiD/1oiQTjBTnErpeVNmj8t+1uOE1
+         ynHoKQ+cjSBMYCXWKzHVL7gzPTBlxnzG1aoXkqJ4gDYv7FKmzB25wf0oj2NBDeToQF
+         q7bEwMBVt4tN5EXZkbXUg4SsuOEoN2Or5NWZnG+iQrudJwaClAIr6QQN2AntjYHJvs
+         NthIpULy3TQAA==
+Received: (nullmailer pid 834795 invoked by uid 1000);
+        Thu, 28 Sep 2023 16:47:20 -0000
+Date:   Thu, 28 Sep 2023 11:47:20 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Ming Qian <ming.qian@nxp.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
+        Tao Jiang <tao.jiang_2@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Message-ID: <20230928164720.GA816352-robh@kernel.org>
+References: <20230926101000.13392-1-ming.qian@nxp.com>
+ <20230926101000.13392-2-ming.qian@nxp.com>
+ <2c351ca0-cee4-4c1b-956b-6134ad101a9a@linaro.org>
+ <AM6PR04MB63415CF2EDCF0AF33F778774E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A101:EE_|PH7PR12MB8777:EE_
-X-MS-Office365-Filtering-Correlation-Id: d13cbf3b-479f-4803-6b80-08dbc042ae57
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XQNnr3KKhg6DkLvseXbDlFOjI2I0+kDe2nYJ4JGkiPNsOLmLqq5RFBPnrqgKR4prBLhrq5F0gYBiDXw4gBBCNJwvxD6yIlNyi8OQ0IGFF84PqD1/97egA0VCL/09VrIPwfOBNwGKd4EaIS2vMjJLL+8GObja5B9y7GXgRuOwoM8tdu2c3h4hpLmtrML+ypvLuBUK1y9trA/TBBlDh+sAZUVnOxWFDgQU9teF0opKNJ6nJ61taNrfyZLQW82r04xQvR8CzbK0xfWUtUKR787X9VX+V09UBWnAmXMBtsD3EhP/E07xGD1FjkYY57Kcn70cfuw2OFVOWemxi3H1iGu+0EUY0yxPpUPxoLn0mML0rYOLCCFdvnLgPfU2BKKee1fb0bJJMyTqBN+gm6lN1tsP5ZbTVx/tfR1e/UBYE0uIam672d3aFwJ2wBa5ZJvFySrPRHyELlB0GZRmnPMqsnMnkXMia/JBlgWfYDPUPaFY+S82PEWbP2i9am2Gvd5VtfCS9J40axA2niEghIDuYEh0nN4IB8PQIXnXaxMALFqFC0g02v8hZnM4z6Q/tehEqWnlPB7UByHVAwjMET+hvQhMwI8+wNgWYzIPl+Tj/AG6SnlBsR69j/sponD5NSTyL3mjNMX6jWUSGUPjIgZ36XbNmg9lf95eH6DJLcI812FxY/7KUYooUqWZSiYfDBWQW+mEWg2QIaOFXBNh8oaH085mf0mQenhK6tKuK/rLHTPQ7HcEqWq9vtTksGSEbn3ijRE0+Nvysf4WWlOa6cqDagN7UA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(376002)(346002)(396003)(230922051799003)(82310400011)(1800799009)(64100799003)(186009)(451199024)(36840700001)(46966006)(40470700004)(40480700001)(6666004)(81166007)(70586007)(2906002)(356005)(83380400001)(36860700001)(82740400003)(70206006)(110136005)(966005)(26005)(5660300002)(336012)(41300700001)(4326008)(44832011)(47076005)(478600001)(8676002)(54906003)(426003)(8936002)(2616005)(316002)(36756003)(86362001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 16:48:02.7927
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d13cbf3b-479f-4803-6b80-08dbc042ae57
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A101.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8777
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB63415CF2EDCF0AF33F778774E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function of_pci_prop_intr_map(), addr_sz[i] will be uninitialized if
-of_irq_parse_raw() returns failure. Add addr_sz array initialization. And
-when parsing irq failed, skip generating interrupt-map pair for the pin.
+On Wed, Sep 27, 2023 at 09:10:52AM +0000, Ming Qian wrote:
+> >From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >
+> >On 26/09/2023 12:10, Ming Qian wrote:
+> >> There are total 4 slots available in the IP, and we only need to use
+> >> one slot in one os, assign a single slot, configure interrupt and
+> >> power domain only for 1 slot, not for the all 4 slots.
+> >>
+> >> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> >> ---
+> >> v4
+> >> - improve commit message
+> >> - don't make an ABI break
+> >> v3
+> >> - add vender prefix, change property slot to nxp,slot
+> >> - add type for property slot
+> >>
+> >>  .../bindings/media/nxp,imx8-jpeg.yaml         | 45 +++++++++----------
+> >>  1 file changed, 21 insertions(+), 24 deletions(-)
+> >>
+> >> diff --git
+> >> a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> >> b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> >> index 3d9d1db37040..4bcfc815c894 100644
+> >> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> >> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+> >> @@ -32,19 +32,26 @@ properties:
+> >>      maxItems: 1
+> >>
+> >>    interrupts:
+> >> -    description: |
+> >> -      There are 4 slots available in the IP, which the driver may use
+> >> -      If a certain slot is used, it should have an associated interrupt
+> >> -      The interrupt with index i is assumed to be for slot i
+> >> -    minItems: 1               # At least one slot is needed by the driver
+> >> -    maxItems: 4               # The IP has 4 slots available for use
+> >> +    description:
+> >> +      Interrupt number for slot
+> >> +    maxItems: 1
+> >>
+> >>    power-domains:
+> >>      description:
+> >>        List of phandle and PM domain specifier as documented in
+> >>        Documentation/devicetree/bindings/power/power_domain.txt
+> >> -    minItems: 2               # Wrapper and 1 slot
+> >> -    maxItems: 5               # Wrapper and 4 slots
+> >> +    minItems: 1               # VPUMIX
+> >> +    maxItems: 2               # Wrapper and 1 slot
+> >> +
+> >> +  nxp,slot:
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    description:
+> >> +      Integer number of slot index used. There are 4 slots available in the IP,
+> >> +      and driver can use a certain slot, it should have an associated interrupt
+> >> +      and power-domain. In theory, it supports 4 os or vm. If not specified, 0
+> >> +      is used by default.
+> >> +    minimum: 0
+> >> +    maximum: 3
+> >
+> >NAK, you still did not answer concerns why this is needed and justified.
+> >I keep asking and you keep ignoring...
+> >
+> >Best regards,
+> >Krzysztof
+> 
+> Hi Krzysztof,
+> 
+> > Nothing explains what is a slot and nothing explains why do you need this property.
+> 
+> I thought I had answered that question, but seems you don't agree with that explanation. 
+> Would the following description be any better?
+> 
+> The slot is the IP used to share the jpeg engine across multiple VMS 
+> and os, there are 4 slots available in the IP. We can use one slot in 
+> linux. The slot index indicates which slot we choose. If not 
+> specified, 0 is used by default.
 
-Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-Reported-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Closes: https://lore.kernel.org/all/20230911154856.000076c3@Huawei.com/
-Reviewed-by: Herve Codina <herve.codina@bootlin.com>
-Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
----
- drivers/pci/of_property.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+If you have to modify the DT to update 'nxp,slot', then you can modify 
+the DT to just expose the parts of the h/w for the assigned slot. For 
+example, only put slot 1's power-domains entry in the DT when slot 1 is 
+assigned.
 
-diff --git a/drivers/pci/of_property.c b/drivers/pci/of_property.c
-index 710ec35ba4a1..c2c7334152bc 100644
---- a/drivers/pci/of_property.c
-+++ b/drivers/pci/of_property.c
-@@ -186,8 +186,8 @@ static int of_pci_prop_interrupts(struct pci_dev *pdev,
- static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
- 				struct device_node *np)
- {
-+	u32 i, addr_sz[OF_PCI_MAX_INT_PIN] = { 0 }, map_sz = 0;
- 	struct of_phandle_args out_irq[OF_PCI_MAX_INT_PIN];
--	u32 i, addr_sz[OF_PCI_MAX_INT_PIN], map_sz = 0;
- 	__be32 laddr[OF_PCI_ADDRESS_CELLS] = { 0 };
- 	u32 int_map_mask[] = { 0xffff00, 0, 0, 7 };
- 	struct device_node *pnode;
-@@ -213,33 +213,44 @@ static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
- 		out_irq[i].args[0] = pin;
- 		ret = of_irq_parse_raw(laddr, &out_irq[i]);
- 		if (ret) {
--			pci_err(pdev, "parse irq %d failed, ret %d", pin, ret);
-+			out_irq[i].np = NULL;
-+			pci_dbg(pdev, "parse irq %d failed, ret %d", pin, ret);
- 			continue;
- 		}
--		ret = of_property_read_u32(out_irq[i].np, "#address-cells",
--					   &addr_sz[i]);
--		if (ret)
--			addr_sz[i] = 0;
-+		of_property_read_u32(out_irq[i].np, "#address-cells",
-+				     &addr_sz[i]);
- 	}
- 
- 	list_for_each_entry(child, &pdev->subordinate->devices, bus_list) {
- 		for (pin = 1; pin <= OF_PCI_MAX_INT_PIN; pin++) {
- 			i = pci_swizzle_interrupt_pin(child, pin) - 1;
-+			if (!out_irq[i].np)
-+				continue;
- 			map_sz += 5 + addr_sz[i] + out_irq[i].args_count;
- 		}
- 	}
- 
-+	/*
-+	 * Parsing interrupt failed for all pins. In this case, it does not
-+	 * need to generate interrupt-map property.
-+	 */
-+	if (!map_sz)
-+		return 0;
-+
- 	int_map = kcalloc(map_sz, sizeof(u32), GFP_KERNEL);
- 	mapp = int_map;
- 
- 	list_for_each_entry(child, &pdev->subordinate->devices, bus_list) {
- 		for (pin = 1; pin <= OF_PCI_MAX_INT_PIN; pin++) {
-+			i = pci_swizzle_interrupt_pin(child, pin) - 1;
-+			if (!out_irq[i].np)
-+				continue;
-+
- 			*mapp = (child->bus->number << 16) |
- 				(child->devfn << 8);
- 			mapp += OF_PCI_ADDRESS_CELLS;
- 			*mapp = pin;
- 			mapp++;
--			i = pci_swizzle_interrupt_pin(child, pin) - 1;
- 			*mapp = out_irq[i].np->phandle;
- 			mapp++;
- 			if (addr_sz[i]) {
--- 
-2.34.1
+As far as formatting your emails, talk to your NXP colleagues. They've 
+figured it out. If you've configured git-send-email successfully, then 
+using mutt should be possible. You can use 'b4' to get the thread mbox, 
+and read it in mutt.
 
+Rob
