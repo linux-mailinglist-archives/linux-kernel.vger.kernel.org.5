@@ -2,214 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8BE7B22B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08207B22BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjI1Qrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S231560AbjI1QsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjI1Qr3 (ORCPT
+        with ESMTP id S231368AbjI1QsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:47:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D4298
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695919600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e1nG43NAk1FHCA+ImOZ9oNANJUjy6sdGqu8LxM+SXvk=;
-        b=CmNq95lNy4RHZ/qLyEDmcKkE9EG++GFjFknslrRZQwp6OW1SN2KUaA7vx441Q4VXIhbHgP
-        Cpkc4GXdWe5GCnfY9kQgJ0YZFyvBukiDqLUPjHc+9g8RVllyox9czAF4DVgY+yKRd1gJih
-        FXZvpcg5JgJP6kuOKdJumTmpVZKZ7a8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-7_w0n77-PQK7_BRBWAzlag-1; Thu, 28 Sep 2023 12:46:39 -0400
-X-MC-Unique: 7_w0n77-PQK7_BRBWAzlag-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-315af0252c2so10571255f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:46:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695919598; x=1696524398;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=e1nG43NAk1FHCA+ImOZ9oNANJUjy6sdGqu8LxM+SXvk=;
-        b=pFz4rFmM9FD3l4RXExHu4IzooFoEjVn24aUMF1ZZgwXgqPFuxDBWWi6tUIEWs6FUsL
-         fM1EAUAj9/5BHM/j43p0qdma1yrV8ypzAmVJ424Pxaukqz+t78MeM2IcbP6u3uq2qDt7
-         xuOVSXaWfcXfg55xOHTnjRlcSui2Vp6WXarmHVukpYV4pgH8OUDaOfUOjDtH8h+eqaZ+
-         /nMyk5Nd7ULudshZLBR6oWg3ioPAinzusMXEQAenEaBePSdYsI5jTMMhKcIQ1NDMxKkY
-         DpzSJr/8Q6MTPy2V0Guge6vBQ5ZkcgFFBEkNDKXKJ63zmUygOQAv+n2If4LwzodU3524
-         +uPg==
-X-Gm-Message-State: AOJu0YzhKUf+5oeNX8qKjkzsEQ30WcJzq2Z6PQEvfPS/MuaP+rzm9u6A
-        zxMbU54tnoIdLIBpxYft2hZbWrte2YhhmKKPzPG9Wi1VTYjnT8TwwZz5sme+95QPHG2gRmEaP4q
-        dwi/+mAS9UPtQA4ODV5IimTwxNjXxjaUC
-X-Received: by 2002:a5d:5151:0:b0:31f:eb88:e3c8 with SMTP id u17-20020a5d5151000000b0031feb88e3c8mr1641085wrt.32.1695919597782;
-        Thu, 28 Sep 2023 09:46:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IECAhLGbnen61UUw8FpaxsVW7uCtdSfU9iZ7QE8TtuL/KJb16ImOsM03QIoWXomHtErupETRg==
-X-Received: by 2002:a5d:5151:0:b0:31f:eb88:e3c8 with SMTP id u17-20020a5d5151000000b0031feb88e3c8mr1641070wrt.32.1695919597459;
-        Thu, 28 Sep 2023 09:46:37 -0700 (PDT)
-Received: from starship ([89.237.96.178])
-        by smtp.gmail.com with ESMTPSA id ba6-20020a0560001c0600b003248a490e3asm1383100wrb.39.2023.09.28.09.46.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 09:46:36 -0700 (PDT)
-Message-ID: <0b5e476cd0a31376fbda4be62fb650a1caf004dd.camel@redhat.com>
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: remove unnecessary "bool shared"
- argument from functions
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Date:   Thu, 28 Sep 2023 19:46:35 +0300
-In-Reply-To: <20230928162959.1514661-2-pbonzini@redhat.com>
-References: <20230928162959.1514661-1-pbonzini@redhat.com>
-         <20230928162959.1514661-2-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 28 Sep 2023 12:48:06 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2043.outbound.protection.outlook.com [40.107.95.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17337193;
+        Thu, 28 Sep 2023 09:48:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G43OJ0orNOHw7cFe03xRnNz10/76U6SMKAwrovrtMK5PobTRYCttc7A0JX7OvNGOCZa3uMantOlBXbgYJwCiZS5QnwVpsLzs1kxI3PbwBuvB7OpWfQ9MiSpsvFgnGWurzpXj1Tno9yI9z8eY8AJnIvlA/02y5L2PKx3zmzRbpiMH6QLQOilu2F4vE8ru1YNdVTUjYo8BaRKN+vRO622gM13HMGBpXc/0bwPrmToiVL3YxMjrIrL9DM/Fad+Z/kdvPelQbMTJ76bi4zcWdFJhA4QsY2D0vJRTzyYl+heVEv+pp9Lim9O9rJpVWNLOO3p88j6yIgJNMEeFxlngon+PvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nnGoVz5eJxpJPMb186PhPfpjO4+zF+4bmmmljn1HHjw=;
+ b=nZna2LwNJKHUnBvgtk0s6qeH68Inj1A6/KiewrXBIxgpKUwHP8SRNmyMDDPoLHItXXbqz2uLrJd9/cuWpaP3xdGNUTiR7+HLM4FO/vZ6zVgech6zzdmq5GNRvRY4jItx+8/chL+9EwzHDSi+hMpCzFiraddU21VvAA4YUMYLTeC6NK33moybM23Fp89Gj0zp6I5ftuBNQ6iiuHf+kJNwQcLamXJ1If5r4lhcBShtiGSS37qR1ePzAanhFk6KUQ1erxI99ZWp6IEj4TTbPxYbaJVt5HsdfXl82yLPxhdje1ru7FylYWlpgemZEcRa9VVr3+OGSQMhp7cL4zcE7YMKdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nnGoVz5eJxpJPMb186PhPfpjO4+zF+4bmmmljn1HHjw=;
+ b=S6RJG1hzLn7gkW73Pf6o4B/FtRnnIzVELLDHG1cQW6i8aT4WbQXNLwNajuzqJeZ3z27/54Nqp4CrkYg35RzLaYB2UeuXBWXZMifDlVUS/5AmvPDSIEQOau6ZBtJpaPSTFtWs3J9pqFvKzKXW8yTPmA7SOHs174nYvmaD6vDkCfo=
+Received: from BL1PR13CA0207.namprd13.prod.outlook.com (2603:10b6:208:2be::32)
+ by MN2PR12MB4126.namprd12.prod.outlook.com (2603:10b6:208:199::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.33; Thu, 28 Sep
+ 2023 16:48:01 +0000
+Received: from BL02EPF0001A108.namprd05.prod.outlook.com
+ (2603:10b6:208:2be:cafe::2c) by BL1PR13CA0207.outlook.office365.com
+ (2603:10b6:208:2be::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.12 via Frontend
+ Transport; Thu, 28 Sep 2023 16:48:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A108.mail.protection.outlook.com (10.167.241.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Thu, 28 Sep 2023 16:48:01 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 28 Sep
+ 2023 11:48:01 -0500
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Thu, 28 Sep 2023 11:48:00 -0500
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <herve.codina@bootlin.com>,
+        <Jonathan.Cameron@Huawei.com>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <bhelgaas@google.com>,
+        <robh@kernel.org>
+Subject: [PATCH v1 1/2] PCI: of: Fix memory leak when of_changeset_create_node() failed
+Date:   Thu, 28 Sep 2023 09:47:10 -0700
+Message-ID: <1695919631-7661-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A108:EE_|MN2PR12MB4126:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c5bf754-4e81-427d-ade8-08dbc042adcf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ko/CuEdl1owr1FSb0xvCjzJB3VJTarVZSKlUR1yJ8wNgVhcSnW69nHCNVot+T6lm5G06qNTEWmPZV4XpMxnchS1+ffnvOKuRxLbHWi2mSI4uKFnnf/epf0Sx5JcZgykrEyaboxW5+MByBdrR6yXt5ETlnv97FY3b8tjRb1XWeABmd/LkZcwTjAUi0kDtqkHzsDbKK/thJecVyduZ0DTvamK2Usx8u98DM+ec/eZ6m06Ak6BZFth9i/WSYQLND3UMEqcU6SedRrDhNksInQR5N45C4DQOSf2q+5VQSFENNg+EkdRhHKlznTgwagPK6V/YSXva/hwyNghCOtzyRfikpx95lIlis5QFojgh/zTHYMwatJAiCQRvEZS11tbhb4xvFv4xvrGbVN7X0yU3LnY8ITQqI8a9EksXJ87B+Kseznzqu/TQ9DaaThYLOCbhLXI3jn/YaejGTXqgXuXf95aTT7/ow0XFeRt3ti9nkgmDhhvcc7sU9GwTKdwUo8MJ2xg6RJSMgKmKsnM2PAKSwoTiWIgMwC0vnyP7IpxrcsrApQKjLTIkEdOqKrGBFkUdjA39imtdsOz6UmhJXMrtayYed4cZsZPX9keEtHrb2lv8IVfnucrH5aJxWOlKm0960z24Ni6Xe1dcXuKcK3mL9I0GNAC8uf00A7kHzJiRk4pQU7Og/o9VOGkSjY6MJqMs2YIyBfkJU5RtBpL4gCxvLAFGyoVlFZ4gbedKlHz1tJJhtgQTFwcJs21XE5t7UY+u2E8LN2WG2Xfym7tMwdV014qREw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(82310400011)(186009)(451199024)(1800799009)(46966006)(40470700004)(36840700001)(336012)(966005)(478600001)(6666004)(54906003)(426003)(83380400001)(2616005)(26005)(110136005)(70586007)(41300700001)(8936002)(44832011)(316002)(4326008)(2906002)(8676002)(5660300002)(70206006)(36860700001)(36756003)(86362001)(47076005)(81166007)(82740400003)(356005)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 16:48:01.9031
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c5bf754-4e81-427d-ade8-08dbc042adcf
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A108.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4126
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У чт, 2023-09-28 у 12:29 -0400, Paolo Bonzini пише:
-> Neither tdp_mmu_next_root nor kvm_tdp_mmu_put_root need to know
-> if the lock is taken for read or write.  Either way, protection
-> is achieved via RCU and tdp_mmu_pages_lock.  Remove the argument
-> and just assert that the lock is taken.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c     |  2 +-
->  arch/x86/kvm/mmu/tdp_mmu.c | 34 +++++++++++++++++++++-------------
->  arch/x86/kvm/mmu/tdp_mmu.h |  3 +--
->  3 files changed, 23 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f7901cb4d2fa..64b1bdba943e 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3548,7 +3548,7 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
->  		return;
->  
->  	if (is_tdp_mmu_page(sp))
-> -		kvm_tdp_mmu_put_root(kvm, sp, false);
-> +		kvm_tdp_mmu_put_root(kvm, sp);
->  	else if (!--sp->root_count && sp->role.invalid)
->  		kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
->  
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 6cd4dd631a2f..ab0876015be7 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -73,10 +73,13 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
->  	tdp_mmu_free_sp(sp);
->  }
->  
-> -void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
-> -			  bool shared)
-> +void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
->  {
-> -	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-> +	/*
-> +	 * Either read or write is okay, but the lock is needed because
-> +	 * writers might not take tdp_mmu_pages_lock.
-> +	 */
-> +	lockdep_assert_held(&kvm->mmu_lock);
+Destroy and free cset when failure happens.
 
-I double checked all callers and indeed at least the read lock is held.
+Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
+Reported-by: Herve Codina <herve.codina@bootlin.com>
+Closes: https://lore.kernel.org/all/20230911171319.495bb837@bootlin.com/
+Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
+---
+ drivers/pci/of.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
->  
->  	if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
->  		return;
-> @@ -106,10 +109,16 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->   */
->  static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->  					      struct kvm_mmu_page *prev_root,
-> -					      bool shared, bool only_valid)
-> +					      bool only_valid)
->  {
->  	struct kvm_mmu_page *next_root;
->  
-> +	/*
-> +	 * While the roots themselves are RCU-protected, fields such as
-> +	 * role.invalid are protected by mmu_lock.
-> +	 */
-> +	lockdep_assert_held(&kvm->mmu_lock);
-> +
->  	rcu_read_lock();
->  
->  	if (prev_root)
-> @@ -132,7 +141,7 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->  	rcu_read_unlock();
->  
->  	if (prev_root)
-> -		kvm_tdp_mmu_put_root(kvm, prev_root, shared);
-> +		kvm_tdp_mmu_put_root(kvm, prev_root);
->  
->  	return next_root;
->  }
-> @@ -144,13 +153,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->   * recent root. (Unless keeping a live reference is desirable.)
->   *
->   * If shared is set, this function is operating under the MMU lock in read
-> - * mode. In the unlikely event that this thread must free a root, the lock
-> - * will be temporarily dropped and reacquired in write mode.
-> + * mode.
->   */
->  #define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, _only_valid)\
-> -	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, _only_valid);	\
-> -	     _root;								\
-> -	     _root = tdp_mmu_next_root(_kvm, _root, _shared, _only_valid))	\
-> +	for (_root = tdp_mmu_next_root(_kvm, NULL, _only_valid);	\
-> +	     _root;							\
-> +	     _root = tdp_mmu_next_root(_kvm, _root, _only_valid))	\
->  		if (kvm_lockdep_assert_mmu_lock_held(_kvm, _shared) &&		\
->  		    kvm_mmu_page_as_id(_root) != _as_id) {			\
->  		} else
-> @@ -159,9 +167,9 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->  	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
->  
->  #define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
-> -	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, false);		\
-> -	     _root;								\
-> -	     _root = tdp_mmu_next_root(_kvm, _root, _shared, false))		\
-> +	for (_root = tdp_mmu_next_root(_kvm, NULL, false);		\
-> +	     _root;							\
-> +	     _root = tdp_mmu_next_root(_kvm, _root, false))
->  		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
->  		} else
->  
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 733a3aef3a96..20d97aa46c49 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -17,8 +17,7 @@ __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
->  	return refcount_inc_not_zero(&root->tdp_mmu_root_count);
->  }
->  
-> -void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
-> -			  bool shared);
-> +void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root);
->  
->  bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush);
->  bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp);
-
-
-I don't know all of the details of the kvm mmu, so I might have missed something,
-but still I need to get back to reviewing....
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-
-Best regards,
-	Maxim Levitsky
+diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+index 2af64bcb7da3..51e3dd0ea5ab 100644
+--- a/drivers/pci/of.c
++++ b/drivers/pci/of.c
+@@ -657,30 +657,33 @@ void of_pci_make_dev_node(struct pci_dev *pdev)
+ 
+ 	cset = kmalloc(sizeof(*cset), GFP_KERNEL);
+ 	if (!cset)
+-		goto failed;
++		goto out_free_name;
+ 	of_changeset_init(cset);
+ 
+ 	np = of_changeset_create_node(cset, ppnode, name);
+ 	if (!np)
+-		goto failed;
+-	np->data = cset;
++		goto out_destroy_cset;
+ 
+ 	ret = of_pci_add_properties(pdev, cset, np);
+ 	if (ret)
+-		goto failed;
++		goto out_free_node;
+ 
+ 	ret = of_changeset_apply(cset);
+ 	if (ret)
+-		goto failed;
++		goto out_free_node;
+ 
++	np->data = cset;
+ 	pdev->dev.of_node = np;
+ 	kfree(name);
+ 
+ 	return;
+ 
+-failed:
+-	if (np)
+-		of_node_put(np);
++out_free_node:
++	of_node_put(np);
++out_destroy_cset:
++	of_changeset_destroy(cset);
++	kfree(cset);
++out_free_name:
+ 	kfree(name);
+ }
+ #endif
+-- 
+2.34.1
 
