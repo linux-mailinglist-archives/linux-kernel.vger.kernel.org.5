@@ -2,199 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0086F7B25AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DFF7B25B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbjI1THF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        id S231451AbjI1TLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1THD (ORCPT
+        with ESMTP id S229478AbjI1TLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:07:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048C1194
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:07:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D88F5C433C7;
-        Thu, 28 Sep 2023 19:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695928021;
-        bh=h2mLoXWXVYbN/GQUNVZLyj+AYwIemw9Pknt/ZTBSAtY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lLGzXOq2aAtYKG/F6iMP7gKCBmkSnjG2JKjrrQ9ac0EPmzbdeR0vAmbZ0z9gLBxwg
-         /y6cWE7fN7+U0ULhn+k4lVPa74I1608uALI4irvkXq1d6wpcaB8jpmlKHy5VxIM1yN
-         AvLTC2cnoOGdbgCTAwDFFvpBIRUoH9fssv7nfzzgx6OOheMdmwoQwM0hoThdXRXbfv
-         Nee1UCyFQtrsdxqrnxEuPtr7h6VZfPea2SOzXynmWppp2FIl+1nAdZWvwpvtWjtawl
-         k/H5S/NDSrEEXannR7tjrevGChbO+tYsTiKDFB+L+ddc6BORcOqk679oLQIWDdSpKw
-         JcWsWUR/30reQ==
-Date:   Thu, 28 Sep 2023 21:06:54 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: Re: [RFC PATCH v2 net-next 14/15] net: pcs: mtip_backplane: add
- driver for MoreThanIP backplane AN/LT core
-Message-ID: <20230928190654.GP24230@kernel.org>
-References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
- <20230923134904.3627402-15-vladimir.oltean@nxp.com>
+        Thu, 28 Sep 2023 15:11:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0357A194;
+        Thu, 28 Sep 2023 12:11:39 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SJ6JhT010121;
+        Thu, 28 Sep 2023 19:11:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=AIHOG+NaEr5BXL8kOCa74F7iEhcke3skrXCjdH4WVB4=;
+ b=MvZfvXvcf8XsVgzMKHANJbIZ6I8W0YRjm5Be1I/KyCx3yM62NQrTb1prWrhI0F3gmDd9
+ rb1CJdeTUGwMD5IvQDI0bwvPulFVtklSjaJxzw7IJIehc/a9GD0Otr6XMk49QrqYFB1s
+ 591A7iHYvwbsbqMR9FP8Nsb/R8KxETUG3+01y10gyXD5ij0n+vvma+2j5ViInIL5TcjY
+ IjKyPe7qjvvqRbwMOKY7ZaI3FmFvKrPnjSBj8KQqai4rmPH8i4EKAABgiSOa8wH0AOtj
+ 8hFSTdv0AWv4Cb0VQomcQWJ418K/liyiHgK/KfUrQ7LFTV4bgeiy7+BD04iqEIIDNBDu rQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdfbrr09f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 19:11:25 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38SJBPbq031225
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 19:11:25 GMT
+Received: from [10.110.102.158] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 28 Sep
+ 2023 12:11:22 -0700
+Message-ID: <6e61ea23-ee52-471a-abab-cf930a969a9e@quicinc.com>
+Date:   Thu, 28 Sep 2023 12:11:21 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230923134904.3627402-15-vladimir.oltean@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/11] firmware: qcom: scm: switch to using the SCM
+ allocator
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <kernel@quicinc.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230928092040.9420-1-brgl@bgdev.pl>
+ <20230928092040.9420-4-brgl@bgdev.pl>
+From:   Elliot Berman <quic_eberman@quicinc.com>
+In-Reply-To: <20230928092040.9420-4-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Nodb_byAa3hBUZ5Z4tu735DhPdM48Pnq
+X-Proofpoint-GUID: Nodb_byAa3hBUZ5Z4tu735DhPdM48Pnq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_18,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=989 adultscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280165
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 04:49:03PM +0300, Vladimir Oltean wrote:
 
-...
 
-> +static int mtip_rx_c72_coef_update(struct mtip_backplane *priv,
-> +				   struct c72_coef_update *upd,
-> +				   bool *rx_ready)
-> +{
-> +	char upd_buf[C72_COEF_UPDATE_BUFSIZ], stat_buf[C72_COEF_STATUS_BUFSIZ];
-> +	struct device *dev = &priv->mdiodev->dev;
-> +	struct c72_coef_status stat = {};
-> +	int err, val;
-> +
-> +	err = read_poll_timeout(mtip_read_lt_lp_coef_if_not_ready,
-> +				val, val < 0 || *rx_ready || LT_COEF_UPD_ANYTHING(val),
-> +				MTIP_COEF_STAT_SLEEP_US, MTIP_COEF_STAT_TIMEOUT_US,
-> +				false, priv, rx_ready);
-> +	if (val < 0)
-> +		return val;
-> +	if (*rx_ready) {
-> +		if (!priv->any_request_received)
-> +			dev_warn(dev,
-> +				 "LP says its RX is ready, but there was no coefficient request (LP_STAT = 0x%x, LD_STAT = 0x%x)\n",
-> +				 mtip_read_lt(priv, LT_LP_STAT),
-> +				 mtip_read_lt(priv, LT_LD_STAT));
-> +		else
-> +			dev_dbg(dev, "LP says its RX is ready\n");
-> +		return 0;
-> +	}
-> +	if (err) {
-> +		dev_err(dev,
-> +			"LP did not request coefficient updates; LP_COEF = 0x%x\n",
-> +			val);
-> +		return err;
-> +	}
-> +
-> +	upd->com1 = LT_COM1_X(val);
-> +	upd->coz = LT_COZ_X(val);
-> +	upd->cop1 = LT_COP1_X(val);
-> +	upd->init = !!(val & LT_COEF_UPD_INIT);
-> +	upd->preset = !!(val & LT_COEF_UPD_PRESET);
-> +	
+On 9/28/2023 2:20 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> We need to allocate, map and pass a buffer to the trustzone if we have
+> more than 4 arguments for a given SCM calls. Let's use the new SCM
+> allocator for that memory and shrink the code in process.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Hi Vladimir,
+Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 
-I'm unsure if this can actually happen.
-But if the while loop runs zero times then err is used uninitialised here.
-
-As flagged by Smatch.
-
-> +		mtip_an_restart_from_lt(priv);
-> +
-> +	kfree(lt_work);
-> +}
-> +
-> +/* Train the link partner TX, so that the local RX quality improves */
-> +static void mtip_remote_tx_lt_work(struct kthread_work *work)
-> +{
-> +	struct mtip_lt_work *lt_work = container_of(work, struct mtip_lt_work,
-> +						    work);
-> +	struct mtip_backplane *priv = lt_work->priv;
-> +	struct device *dev = &priv->mdiodev->dev;
-> +	int err;
-> +
-> +	while (true) {
-> +		struct c72_coef_status status = {};
-> +		union phy_configure_opts opts = {
-> +			.ethernet = {
-> +				.type = C72_REMOTE_TX,
-> +			},
-> +		};
-> +
-> +		if (READ_ONCE(priv->lt_stop_request))
-> +			goto out;
-
-Likewise, I'm unsure if this can happen.
-But if the condition above is met on the first iteration of
-the loop then the out label will use err without it being initialised.
-
-Also flagged by Smatch.
-
-> +
-> +		err = mtip_lt_in_progress(priv);
-> +		if (err) {
-> +			dev_err(dev, "Remote TX LT failed: %pe\n", ERR_PTR(err));
-> +			goto out;
-> +		}
-> +
-> +		err = phy_configure(priv->serdes, &opts);
-> +		if (err) {
-> +			dev_err(dev,
-> +				"Failed to get remote TX training request from SerDes: %pe\n",
-> +				ERR_PTR(err));
-> +			goto out;
-> +		}
-> +
-> +		if (opts.ethernet.remote_tx.rx_ready)
-> +			break;
-> +
-> +		err = mtip_tx_c72_coef_update(priv, &opts.ethernet.remote_tx.update,
-> +					      &status);
-> +		if (opts.ethernet.remote_tx.cb)
-> +			opts.ethernet.remote_tx.cb(opts.ethernet.remote_tx.cb_priv,
-> +						   err, opts.ethernet.remote_tx.update,
-> +						   status);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	/* Let the link partner know we're done */
-> +	err = mtip_modify_lt(priv, LT_LD_STAT, LT_COEF_STAT_RX_READY,
-> +			     LT_COEF_STAT_RX_READY);
-> +	if (err < 0) {
-> +		dev_err(dev, "Failed to update LT_LD_STAT: %pe\n",
-> +			ERR_PTR(err));
-> +		goto out;
-> +	}
-> +
-> +	err = mtip_remote_tx_lt_done(priv);
-> +	if (err) {
-> +		dev_err(dev, "Failed to finalize remote LT: %pe\n",
-> +			ERR_PTR(err));
-> +		goto out;
-> +	}
-> +
-> +out:
-> +	if (err && !READ_ONCE(priv->lt_stop_request))
-> +		mtip_an_restart_from_lt(priv);
-> +
-> +	kfree(lt_work);
-> +}
-
-...
+> ---
+>  drivers/firmware/qcom/qcom_scm-smc.c | 21 ++++-----------------
+>  1 file changed, 4 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
+> index 16cf88acfa8e..0d5554df1321 100644
+> --- a/drivers/firmware/qcom/qcom_scm-smc.c
+> +++ b/drivers/firmware/qcom/qcom_scm-smc.c
+> @@ -2,6 +2,7 @@
+>  /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
+>   */
+>  
+> +#include <linux/cleanup.h>
+>  #include <linux/io.h>
+>  #include <linux/errno.h>
+>  #include <linux/delay.h>
+> @@ -152,8 +153,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  {
+>  	int arglen = desc->arginfo & 0xf;
+>  	int i, ret;
+> -	dma_addr_t args_phys = 0;
+> -	void *args_virt = NULL;
+> +	void *args_virt __free(qcom_scm_mem) = NULL;
+>  	size_t alloc_len;
+>  	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
+>  	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
+> @@ -173,7 +173,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  
+>  	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
+>  		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
+> -		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
+> +		args_virt = qcom_scm_mem_alloc(PAGE_ALIGN(alloc_len), flag);
+>  
+>  		if (!args_virt)
+>  			return -ENOMEM;
+> @@ -192,25 +192,12 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  						      SCM_SMC_FIRST_EXT_IDX]);
+>  		}
+>  
+> -		args_phys = dma_map_single(dev, args_virt, alloc_len,
+> -					   DMA_TO_DEVICE);
+> -
+> -		if (dma_mapping_error(dev, args_phys)) {
+> -			kfree(args_virt);
+> -			return -ENOMEM;
+> -		}
+> -
+> -		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
+> +		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_scm_mem_to_phys(args_virt);
+>  	}
+>  
+>  	/* ret error check follows after args_virt cleanup*/
+>  	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
+>  
+> -	if (args_virt) {
+> -		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
+> -		kfree(args_virt);
+> -	}
+> -
+>  	if (ret)
+>  		return ret;
+>  
