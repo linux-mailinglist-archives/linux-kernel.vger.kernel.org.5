@@ -2,60 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4207B2393
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53FF7B23A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbjI1RRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S231936AbjI1RTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjI1RRe (ORCPT
+        with ESMTP id S231376AbjI1RTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:17:34 -0400
+        Thu, 28 Sep 2023 13:19:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9CCCD2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:17:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C6DCC433C8;
-        Thu, 28 Sep 2023 17:17:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685B4DD;
+        Thu, 28 Sep 2023 10:19:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE2E8C433C8;
+        Thu, 28 Sep 2023 17:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695921449;
-        bh=kp48/6NY2s2Fwy7SPTbkm1Qxejl2zfg3J9xsj/VLKl4=;
+        s=k20201202; t=1695921584;
+        bh=TBXriEELB328eOKqJ6NFSOrKvuSXYJvHz6sohZrQIx0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=frwM8cmwFgXPPt6PQw33IXpDzfdefGVZdi/irC1N2cQJEBvz17+e9WaCpC6UKZCKq
-         S+yHTjowoARHIOm0Gaizj5BqYC/eUFb994s7vYCM/NvFo3hFiyR1flVnlv3AWtZAp2
-         sdyfP3XMlm+nSwtbyXHiqArvrmdFERQpF2CJeVxwt4RCzIFVTj9Cmza/unomjPzsDo
-         t7fwMaJW8dhoh9YZCQjN3GstiXyrkWfTsSd23eSkvxEHnJnNkt7j6lmMt1iKvcM4/B
-         KHUIfbPYBM2nxM1X62LiBWFOOTl9ZiEGW6KR7opg7xwwndszH8Yl2SIyg7NdAabq74
-         ahJxwYu5Iomew==
-Date:   Thu, 28 Sep 2023 18:17:23 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Christophe Roullier <christophe.roullier@foss.st.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
+        b=ryWGGERqf3ypGjqQYm5gVKZvkucKGUk0K4h6YIIWQ/NpKuXJi36HQDWjgdgtJd7wu
+         TP/RvT38TPj/OA2Jk4aeD0DGoa7LAN7jIOlBWE0I1eYn6imAEKifbbeaG59NKi/slD
+         aEVjDaHe+6Tji3j/v0JkIDO2dR6Fo6pHy84G4o5KxjxBslGp0LwydCJH4NJcX4DsY2
+         2+Ki57CRL6p89OjFpqSqXlcve39ZEqPDxD7QZyCHUVk8IqPpmvXHWivOQJXeNPWNjx
+         piSViGDp1oRPgjAY21DvqURTHMn9e50dg1rgKW7SErtrbVvTXl75DArwoAJ6zoDjTa
+         8X72loIt6il5Q==
+Date:   Thu, 28 Sep 2023 10:19:43 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Mattia Dongili <malattia@linux.it>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ian Kent <raven@themaw.net>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Anders Larsen <al@alarsen.net>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/12] dt-bindings: net: add new property
- st,ext-phyclk in documentation for stm32
-Message-ID: <20230928-ruse-parsnip-ce691bd4d0c9@spud>
-References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
- <20230928151512.322016-3-christophe.roullier@foss.st.com>
+        John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete
+ integers
+Message-ID: <20230928171943.GK11439@frogsfrogsfrogs>
+References: <20230928110554.34758-1-jlayton@kernel.org>
+ <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
+ <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GZ6Z6SVMMl7xgZNo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928151512.322016-3-christophe.roullier@foss.st.com>
+In-Reply-To: <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,83 +200,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 28, 2023 at 01:06:03PM -0400, Jeff Layton wrote:
+> On Thu, 2023-09-28 at 11:48 -0400, Arnd Bergmann wrote:
+> > On Thu, Sep 28, 2023, at 07:05, Jeff Layton wrote:
+> > > This shaves 8 bytes off struct inode, according to pahole.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > FWIW, this is similar to the approach that Deepa suggested
+> > back in 2016:
+> > 
+> > https://lore.kernel.org/lkml/1452144972-15802-3-git-send-email-deepa.kernel@gmail.com/
+> > 
+> > It was NaKed at the time because of the added complexity,
+> > though it would have been much easier to do it then,
+> > as we had to touch all the timespec references anyway.
+> > 
+> > The approach still seems ok to me, but I'm not sure it's worth
+> > doing it now if we didn't do it then.
+> > 
+> 
+> I remember seeing those patches go by. I don't remember that change
+> being NaK'ed, but I wasn't paying close attention at the time 
+> 
+> Looking at it objectively now, I think it's worth it to recover 8 bytes
+> per inode and open a 4 byte hole that Amir can use to grow the
+> i_fsnotify_mask. We might even able to shave off another 12 bytes
+> eventually if we can move to a single 64-bit word per timestamp. 
 
---GZ6Z6SVMMl7xgZNo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't think you can, since btrfs timestamps utilize s64 seconds
+counting in both directions from the Unix epoch.  They also support ns
+resolution:
 
-On Thu, Sep 28, 2023 at 05:15:02PM +0200, Christophe Roullier wrote:
-> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
-> This property can be used with RMII phy without cristal 50Mhz and when we
-> want to select RCC clock instead of ETH_REF_CLK
-> Can be used also with RGMII phy with no cristal and we select RCC clock
-> instead of ETH_CLK125
-> This new property replace st,eth-clk-sel and st,eth-ref-clk-sel
+	struct btrfs_timespec {
+		__le64 sec;
+		__le32 nsec;
+	} __attribute__ ((__packed__));
 
-I don't really see a response to Rob's comment on v2, either here or in
-a reply to his email on v2:
-| Certainly 1 property is better than 2 for me, but carrying 3 is not
-| great. I don't understand why the we need a new property. What can't be
-| supported with the existing properties?
+--D
 
-A sentence saying explaining exactly what the old properties do not
-support that this one does, would be very helpful.
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
-> ---
->  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Doc=
-umentation/devicetree/bindings/net/stm32-dwmac.yaml
-> index ca976281bfc22..67840cab02d2d 100644
-> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> @@ -78,12 +78,21 @@ properties:
->        encompases the glue register, the offset of the control register a=
-nd
->        the mask to set bitfield in control register
-> =20
-> +  st,ext-phyclk:
-> +    description:
-> +      set this property in RMII mode when you have PHY without crystal 5=
-0MHz and want to
-> +      select RCC clock instead of ETH_REF_CLK. or in RGMII mode when you=
- want to select
-> +      RCC clock instead of ETH_CLK125.
-> +    type: boolean
-> +
->    st,eth-clk-sel:
-> +    deprecated: true
->      description:
->        set this property in RGMII PHY when you want to select RCC clock i=
-nstead of ETH_CLK125.
->      type: boolean
-> =20
->    st,eth-ref-clk-sel:
-> +    deprecated: true
->      description:
->        set this property in RMII mode when you have PHY without crystal 5=
-0MHz and want to
->        select RCC clock instead of ETH_REF_CLK.
-> --=20
-> 2.25.1
->=20
-
---GZ6Z6SVMMl7xgZNo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRW1IwAKCRB4tDGHoIJi
-0rNRAP9awNrP3aiGsCbGuiS8lMmRYwhVF+LyYev2PPrjoiD9mwD/XczIb1gqXTpN
-dTxeIbKTupCl7S7dTc2C+xJDpScgrA8=
-=YoXR
------END PGP SIGNATURE-----
-
---GZ6Z6SVMMl7xgZNo--
+> It is a lot of churn though.
+> -- 
+> Jeff Layton <jlayton@kernel.org>
