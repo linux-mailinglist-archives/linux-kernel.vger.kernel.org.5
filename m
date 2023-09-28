@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1145D7B21C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1C97B21C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbjI1PwC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 11:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S232097AbjI1PwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjI1PwA (ORCPT
+        with ESMTP id S231676AbjI1PwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:52:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69120C0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:51:57 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-263-t3_o_l23MdiJDZ5ofAWdtA-1; Thu, 28 Sep 2023 16:51:49 +0100
-X-MC-Unique: t3_o_l23MdiJDZ5ofAWdtA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 28 Sep
- 2023 16:51:47 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 28 Sep 2023 16:51:47 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, "Paul Turner" <pjt@google.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        "Florian Weimer" <fw@deneb.enyo.de>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        "Peter Oskolkov" <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9_Almeida?= <andrealmeid@igalia.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        "longman@redhat.com" <longman@redhat.com>,
-        "Florian Weimer" <fweimer@redhat.com>
-Subject: RE: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Topic: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Index: AQHZ8hog0Ykvpvbq8USYUjzds++7brAwU+jQ
-Date:   Thu, 28 Sep 2023 15:51:47 +0000
-Message-ID: <40b76cbd00d640e49f727abbd0c39693@AcuMS.aculab.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
-        <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-        <20230928103926.GI9829@noisy.programming.kicks-ass.net>
- <20230928104321.490782a7@rorschach.local.home>
-In-Reply-To: <20230928104321.490782a7@rorschach.local.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 28 Sep 2023 11:52:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F497EB;
+        Thu, 28 Sep 2023 08:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=hPdcYpQxen4e8NFhKYxy/N6WYUJPUeudEMjsy2z2FAk=; b=xJblSmwhfFiZwjwjM8gAPI32nK
+        oaUlR6BGSVk8o6MC4wcNckcbpC4UmpOHFKiLF+zvGOW2MXofxJ5UeiwyKTj8RwneEo1Wg1fo21eVF
+        dAPiFOoCrn4Q0N9uwcGM2pgi2lhJlW8uai0OtWXlQFrpy184lci0/HNAe9dY3R8IQlmO6Su9RxXg6
+        SleSDay8zy8xKVwQQvXSF3/6DXuZWYzff1YJkzFDiLwyjtWk7wCWqrURaCbRPqVjDmYfdEw1QwPDE
+        EN5JtPtPM/Z1JrEwzs0gSIwbkKYvitLoiwPv796eTcDxry0sxIuQmHoBy22Rxc8sUKYAoBGUoYsUl
+        Mij7O5fA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qltIz-005fIC-06;
+        Thu, 28 Sep 2023 15:51:57 +0000
+Message-ID: <b3d4f630-9725-4ed0-a844-2d370cd67af5@infradead.org>
+Date:   Thu, 28 Sep 2023 08:51:54 -0700
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] rpmsg: virtio: Make buffer size and number
+ configurable
 Content-Language: en-US
+To:     Divin Raj <divin.raj@arm.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Peter Hoyes <Peter.Hoyes@arm.com>
+References: <20230928153825.151948-1-divin.raj@arm.com>
+ <20230928153825.151948-2-divin.raj@arm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230928153825.151948-2-divin.raj@arm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt
-> Sent: 28 September 2023 15:43
+Hi,
+
+On 9/28/23 08:38, Divin Raj wrote:
+> From: Peter Hoyes <Peter.Hoyes@arm.com>
 > 
-> On Thu, 28 Sep 2023 12:39:26 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
+> Replace the MAX_RPMSG_BUF_SIZE and MAX_RPMSG_NUM_BUFS #define in
+> virtio_rpmsg_bus.c with the Kconfig parameters CONFIG_RPMSG_VIRTIO_BUF_SIZE
+> and CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS, allowing user-provided customization.
 > 
-> > As always, are syscalls really *that* expensive? Why can't we busy wait
-> > in the kernel instead?
+> Making both the number of buffers and size configurable facilitates aligning
+> memory requirements between vdev-buffer and vdev-vrings for client drivers
+> that require larger buffer sizes, for example.
 > 
-> Yes syscalls are that expensive. Several years ago I had a good talk
-> with Robert Haas (one of the PostgreSQL maintainers) at Linux Plumbers,
-> and I asked him if they used futexes. His answer was "no". He told me
-> how they did several benchmarks and it was a huge performance hit (and
-> this was before Spectre/Meltdown made things much worse). He explained
-> to me that most locks are taken just to flip a few bits. Going into the
-> kernel and coming back was orders of magnitude longer than the critical
-> sections. By going into the kernel, it caused a ripple effect and lead
-> to even more contention. There answer was to implement their locking
-> completely in user space without any help from the kernel.
+> Signed-off-by: Peter Hoyes <Peter.Hoyes@arm.com>
+> Signed-off-by: Divin Raj <divin.raj@arm.com>
+> ---
+>  drivers/rpmsg/Kconfig            | 23 +++++++++++++++++++++++
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 27 +++------------------------
+>  2 files changed, 26 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> index d3795860f5c0..677f4a1ac8bb 100644
+> --- a/drivers/rpmsg/Kconfig
+> +++ b/drivers/rpmsg/Kconfig
+> @@ -81,4 +81,27 @@ config RPMSG_VIRTIO
+>  	select RPMSG_NS
+>  	select VIRTIO
+>  
+> +config RPMSG_VIRTIO_MAX_BUF_SIZE
+> +	int "Virtio RPMSG max buffer size (in bytes)"
+> +	default 512
 
-That matches what I found with code that was using a mutex to take
-work items off a global list.
-Although the mutex was only held for a few instructions (probably
-several 100 because the list wasn't that well written), what happened
-was that as soon as there was any contention (which might start
-with a hardware interrupt) performance when through the floor.
+Looks to me like you need to:
 
-The fix was to replace the linked list with and array and use
-atomic add to 'grab' blocks of entries.
-(Even the atomic operations slowed things down.)
+(a) use the "range" kconfig keyword (Documentation/kbuild/kconfig-language.rst)
+and/or
+(b) change the source code (driver) to check that both of these new config
+variables' values make sense.
 
-> This is when I thought that having an adaptive spinner that could get
-> hints from the kernel via memory mapping would be extremely useful.
+As is (in this patch), I could enter a value of 1 for each of them
+and see what happens.
 
-Did you consider writing a timestamp into the mutex when it was
-acquired - or even as the 'acquired' value?
-A 'moderately synched TSC' should do.
-Then the waiter should be able to tell how long the mutex
-has been held for - and then not spin if it had been held ages.
+> +	depends on RPMSG_VIRTIO
+> +	help
+> +	  This option allows you to configure the maximum buffer size (in bytes)
+> +	  for Virtio RPMSG communications. The number of buffers will be computed
+> +	  based on the number of buffers (CONFIG_RPMSG_VIRTIO_MAX_NUM_BUFS)
+> +	  supported by the vring. By default, it supports up to a maximum of 512
+> +	  buffers (256 in each direction). Each buffer consists of 16 bytes for the
+> +	  message header and the remaining bytes for the payload.The default values
 
-> The obvious problem with their implementation is that if the owner is
-> sleeping, there's no point in spinning. Worse, the owner may even be
-> waiting for the spinner to get off the CPU before it can run again. But
-> according to Robert, the gain in the general performance greatly
-> outweighed the few times this happened in practice.
+	                                                 payload. The
 
-Unless you can use atomics (ok for bits and linked lists) you
-always have the problem that userspace can't disable interrupts.
-So, unlike the kernel, you can't implement a proper spinlock.
+> +	  will utilize a maximum total space of 256KB for the buffers.
+> +
+> +config RPMSG_VIRTIO_MAX_NUM_BUFS
+> +	int "Virtio RPMSG max buffer count (even number for TX and Rx)"
 
-I've NFI how CONFIG_RT manages to get anything done with all
-the spinlocks replaced by sleep locks.
-Clearly there are a spinlocks that are held for far too long.
-But you really do want to spin most of the time.
-...
+	                                                    Tx and Rx)"
 
-	David
+> +	default 512
+> +	depends on RPMSG_VIRTIO
+> +	help
+> +	  This option allows you to configure the maximum number of buffers used
+> +	  for Virtio RPMSG communication. By default, it supports up to a maximum
+> +	  of 512 buffers (256 in each direction). Please note that this value
+> +	  should be an even number, as it accounts for both transmit (TX) and
+> +	  receive (Rx) buffers.
+>  endmenu
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+-- 
+~Randy
