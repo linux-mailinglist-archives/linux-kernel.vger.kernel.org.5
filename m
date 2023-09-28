@@ -2,61 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 568A77B21C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10F77B2142
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjI1PvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
+        id S231851AbjI1P32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjI1PvH (ORCPT
+        with ESMTP id S231384AbjI1P3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:51:07 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 08:51:01 PDT
-Received: from 8.mo560.mail-out.ovh.net (8.mo560.mail-out.ovh.net [188.165.52.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BE2B7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:51:01 -0700 (PDT)
-Received: from director4.ghost.mail-out.ovh.net (unknown [10.108.16.31])
-        by mo560.mail-out.ovh.net (Postfix) with ESMTP id 5F14E23E38
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 15:31:21 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-xtrd6 (unknown [10.110.103.92])
-        by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id ADCE01FDB6;
-        Thu, 28 Sep 2023 15:31:20 +0000 (UTC)
-Received: from RCM-web4.webmail.mail.ovh.net ([176.31.235.81])
-        by ghost-submission-6684bf9d7b-xtrd6 with ESMTPSA
-        id cUnAJ0icFWWmLwAAgHucVw
-        (envelope-from <rafal@milecki.pl>); Thu, 28 Sep 2023 15:31:20 +0000
+        Thu, 28 Sep 2023 11:29:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDBDAC;
+        Thu, 28 Sep 2023 08:29:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21992C433C8;
+        Thu, 28 Sep 2023 15:29:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695914963;
+        bh=BwRgdNKeJxIJ5cr5vGTDyf7GQ4JC9jrjgb1r743JPlg=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=PcufRPF3oYqO7p9A49NFfI9TrSP5l1pdFXe4cJ988aZz++6Aa/6vLvjXmy/+eFu/v
+         9OGGSJmSq8O0P7jaSnGPmWbvWIc+lq5/fK3rcYDa4yDwttGRsmY/U5CawBTzd/fo4v
+         B/v5t3odugztw5Rm3k6wIBUxdhAxxNhu0uk/IlK+RHFjygZorfrnpFsyvonA95SgKQ
+         dQ6UIJt7TYaPDou5UW8tToBF0iu0sSMhkkRNLQ8daU1ftkPqcQP7pGgaSyVzhbSbfy
+         bF/hCFfsg6gDEhAdiwFfKd02qb9/ueyh25E2mxRLkkdEoaFhh3r3I38u7FFdEARFdH
+         JdSeRK2GtLOKw==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Christian Lamparter <chunkeey@gmail.com>
+Cc:     Wu Yunchuan <yunchuan@nfschina.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary
+ (void*) conversions
+References: <20230919044916.523308-1-yunchuan@nfschina.com>
+        <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com>
+Date:   Thu, 28 Sep 2023 18:31:28 +0300
+In-Reply-To: <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com> (Christian
+        Lamparter's message of "Wed, 20 Sep 2023 21:00:08 +0200")
+Message-ID: <87zg16iab3.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Date:   Thu, 28 Sep 2023 17:31:20 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v10 3/3] nvmem: core: Expose cells through sysfs
-In-Reply-To: <20230922174854.611975-4-miquel.raynal@bootlin.com>
-References: <20230922174854.611975-1-miquel.raynal@bootlin.com>
- <20230922174854.611975-4-miquel.raynal@bootlin.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <1a27a3341379b9679174f7c5143bbeb3@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 31.11.218.106
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 11261532344254573469
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdeitdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepjedvlefguedthfefleehgeeftdeludeluedvgfeffeevhfevtdehteejteefheegnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipddujeeirdefuddrvdefhedrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeitddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,42 +52,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-22 19:48, Miquel Raynal wrote:
-> The binary content of nvmem devices is available to the user so in the
-> easiest cases, finding the content of a cell is rather easy as it is
-> just a matter of looking at a known and fixed offset. However, nvmem
-> layouts have been recently introduced to cope with more advanced
-> situations, where the offset and size of the cells is not known in
-> advance or is dynamic. When using layouts, more advanced parsers are
-> used by the kernel in order to give direct access to the content of 
-> each
-> cell, regardless of its position/size in the underlying
-> device. Unfortunately, these information are not accessible by users,
-> unless by fully re-implementing the parser logic in userland.
-> 
-> Let's expose the cells and their content through sysfs to avoid these
-> situations. Of course the relevant NVMEM sysfs Kconfig option must be
-> enabled for this support to be available.
-> 
-> Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
-> group member will be filled at runtime only when relevant and will
-> remain empty otherwise. In this case, as the cells attribute group will
-> be empty, it will not lead to any additional folder/file creation.
-> 
-> Exposed cells are read-only. There is, in practice, everything in the
-> core to support a write path, but as I don't see any need for that, I
-> prefer to keep the interface simple (and probably safer). The interface
-> is documented as being in the "testing" state which means we can later
-> add a write attribute if though relevant.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Christian Lamparter <chunkeey@gmail.com> writes:
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
+> On 9/19/23 06:49, Wu Yunchuan wrote:
+>> No need cast (void *) to (struct ar9170 *), (u8 *) or (void*).
+>
+> hmm, your mail went into the spam folder. Good thing I checked.
+>
+> From what I remember: The reason why these casts were added in
+> carl9170 was because of compiler warnings/complaints.
+> Current gcc compilers should be OK (given that the kernel-bot
+> didn't react, or went your Mail to their spam-folder as well?)
+> but have you checked these older versions?
 
-# hexdump -C /sys/bus/nvmem/devices/u-boot-env0/cells/ipaddr@15c
-00000000  31 39 32 2e 31 36 38 2e  31 2e 31                 
-|192.168.1.1|
-0000000b
+Do you remember anything more about these warnings? I tried to check the
+git history and at least quickly couldn't find anything related to this.
+
+The changes look very safe to me, struct urb::context field and the out
+variable are both of type 'void *' so removing the explicit casts should
+change anything. I cannot really come up a reason why would this patch
+cause new warnings so I am inclined towards taking this patch. What do
+you think?
 
 -- 
-Rafał Miłecki
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
