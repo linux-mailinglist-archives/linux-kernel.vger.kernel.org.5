@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEE57B1B70
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C857F7B1B72
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbjI1LyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S232141AbjI1L4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbjI1LyJ (ORCPT
+        with ESMTP id S229980AbjI1L4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:54:09 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AF5F5;
-        Thu, 28 Sep 2023 04:54:07 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qlpah-0004NV-5c; Thu, 28 Sep 2023 13:53:59 +0200
-Date:   Thu, 28 Sep 2023 13:53:59 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     David Wang <00107082@163.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] uapi/netfilter: Change netfilter hook verdict code
- definition from macro to enum
-Message-ID: <20230928115359.GB27208@breakpoint.cc>
-References: <20230904130201.14632-1-00107082@163.com>
- <cc6e3tukgqhi5y4uhepntrpf272o652pytuynj4nijsf5bkgjq@rgnbhckr3p4w>
- <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
+        Thu, 28 Sep 2023 07:56:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C340121;
+        Thu, 28 Sep 2023 04:56:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0A9C433C8;
+        Thu, 28 Sep 2023 11:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695902163;
+        bh=5PvIM+aPegeroDXqiEYobGZebqOA/gpuCayaIxjoARI=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=mJze0tmckXpE2hS7/zgZt+kgVdUJNuTPtLBP6W0SJwZtDCyjkiB91BByiIrJJEhNQ
+         fOheUCuszQ+gEuL4tmEU1Quxs4YX62EY3W4ceqRw0YyHkTW2sQiWyvxkUiR9b097tr
+         7qiW58x700puSXlLKptdZbjPOx8dnNwzhYv8O+FJrp9uLy92AcDpmkdglxq0HC66E1
+         J4gIPCgfpPrhYBh7UzH1xuEG3j1tOmSm+QXq1T2bXQnkCZRsMyqYsRdOlZGqWwDOlf
+         WtkrSX9JAJCNB4YxrsfDm5A2E8fWdDYxPIdfve33d2GCXQUel9TLxMYpF6KeeruoqB
+         9d3swdJmnMynw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     dmaengine@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Sanjay Kumar <sanjay.k.kumar@intel.com>
+In-Reply-To: <20230924002347.1117757-1-fenghua.yu@intel.com>
+References: <20230924002347.1117757-1-fenghua.yu@intel.com>
+Subject: Re: [PATCH] dmaengine: idxd: rate limit printk in misc interrupt
+ thread
+Message-Id: <169590216160.152265.5018881395434400214.b4-ty@kernel.org>
+Date:   Thu, 28 Sep 2023 17:26:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19d2362f.5c85.18a6647817b.Coremail.00107082@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Wang <00107082@163.com> wrote:
 
-Hello,
-
-> At 2023-09-06 00:38:02, "Daniel Xu" <dxu@dxuuu.xyz> wrote:
-> >Hi David,
-> >
-> >On Mon, Sep 04, 2023 at 09:02:02PM +0800, David Wang wrote:
-> 
-> >>  #include <linux/in6.h>
-> >>  
-> >>  /* Responses from hook functions. */
-> >> -#define NF_DROP 0
-> >> -#define NF_ACCEPT 1
-> >> -#define NF_STOLEN 2
-> >> -#define NF_QUEUE 3
-> >> -#define NF_REPEAT 4
-> >> -#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
-> >> -#define NF_MAX_VERDICT NF_STOP
-> >> +enum {
-> >> +	NF_DROP        = 0,
-> >> +	NF_ACCEPT      = 1,
-> >> +	NF_STOLEN      = 2,
-> >> +	NF_QUEUE       = 3,
-> >> +	NF_REPEAT      = 4,
-> >> +	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
-> >> +	NF_MAX_VERDICT = NF_STOP,
-> >> +};
-> >
-> >Switching from macro to enum works for almost all use cases, but not
-> >all. If someone if #ifdefing the symbols (which is plausible) this
-> >change would break them.
-> >
-> >I think I've seen some other networking code define both enums and
-> >macros. But it was a little ugly. Not sure if that is acceptable here or
-> >not.
-> >
-> >[...]
-> >
-> >Thanks,
-> >Daniel
+On Sat, 23 Sep 2023 17:23:47 -0700, Fenghua Yu wrote:
+> Add rate limit to the dev_warn() call in the misc interrupt thread. This
+> limits dmesg getting spammed if a descriptor submitter is spamming bad
+> descriptors with invalid completion records and resulting the errors being
+> continuously reported by the misc interrupt handling thread.
 > 
 > 
-> Thanks for the review~
-> I do not have a strong reasoning to deny the possibility of breaking unexpected usage of this macros,
-> 
-> but I also agree that it is ugly to use both enum and macro at the same time.
-> 
-> Kind of don't know how to proceed from here now...
 
-I was about to apply this as-is, but Pablo Neira would prefer to
-keep the defines as well.
+Applied, thanks!
 
-So, as a compromise, I would suggest to just *add*
+[1/1] dmaengine: idxd: rate limit printk in misc interrupt thread
+      commit: 555921feb2ac03d88647ccc62015e68f157c30a2
 
-/* verdicts available to BPF are exported via vmlinux.h */
-enum {
-	NF_DROP = 0,
-	NF_ACCEPT = 1,
-};
+Best regards,
+-- 
+~Vinod
 
-#define NF_DROP 0
-...
 
-This way BTF won't have the other verdicts, but ATM those
-cannot be used in BPF programs anyway.
-
-Would you mind making a new version of the patch?
-Otherwise I can mangle it locally here as needed.
