@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A127B1457
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EF77B144C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbjI1HOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S231583AbjI1HNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbjI1HNw (ORCPT
+        with ESMTP id S231496AbjI1HMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:13:52 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F3A2101
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:10:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40572aeb673so97571475e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695885027; x=1696489827; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VkIBE+TCRLRjYetF+cyx1hJuGQDYf3kDYmaiNSOiVj8=;
-        b=ToJAxIDp6VFXWlWb9DUZLg5P7nRl9fmM4fKmYEhYvJCfiPil3rk7zNjn1yA8z1WpHc
-         gfT09oiqoHSOsb29kRx0tFs9gDqPCQ7PiR+S7rdgM/+BxJp7W+avKLgHFZ33STC14Q6Z
-         PVZZA/PTN6jS0DC/MCcjgEX5rkPK3YAwmkaT51xs03yu6MZKPxgtBx9mAK8G96voUFGd
-         tSAXJU6Pp8lswGLUf3f7Yhf2UQ+n2DEPz/6N5natsNnZvKF7+Sq7JGzAlJDvSs7bX+k7
-         O73fuvtNp0mNN666XKwMFE3zgV3GFG1JbkqHl3Tgyv6+4LnggB0CJ0rRTSKXpC1Hh7Vo
-         gkuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695885027; x=1696489827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VkIBE+TCRLRjYetF+cyx1hJuGQDYf3kDYmaiNSOiVj8=;
-        b=vR8PYy3qY5Q5BOHQtCbGotjTRVZQ4nrUsbu8/xes5EaOK2P/bztR39dgBS+e3U7FJg
-         al4Q5o667CBCsU90wpL1690NtHykNeO5id+WjWOvBanfOp6MPEPprqGen81DSfl14Aar
-         LrtSCVFJbDBh3rBUjZSwEF/B1Ui4joLSQVmLi5tRhgmDAPtrDPv5a89PCps21NRyeT+u
-         ZPLx8g8XJnvKYgFVC6+C/Y2Vt+2ouHObBGqq5VpDchbq+5vNPdshdieLmB2McHcwc3o7
-         bd174Sbtj5UrwlLIatkZL8+LDJR/oCkoYATB8HncLhrilAvZDa7HlJLsMpS+M5x2U7/D
-         q3yQ==
-X-Gm-Message-State: AOJu0Yw5Ah6pbjk/B+cFHD+9pTAJQs8rEi9Jg2h4NxoCtlO7YFHtDp5U
-        JfN4pJujtMQThBC0sQ5fdxFHIg==
-X-Google-Smtp-Source: AGHT+IGNaZcVgF8TWexpbmorAxSeNepOwNaCRGtwfaC9auOLiO/MLnnmv7ZMk5XMR5I+ZC87mTNoRQ==
-X-Received: by 2002:a05:600c:b4e:b0:402:95a0:b2ae with SMTP id k14-20020a05600c0b4e00b0040295a0b2aemr405295wmr.32.1695885027206;
-        Thu, 28 Sep 2023 00:10:27 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id a24-20020a05600c225800b004063c9f68f2sm5664262wmm.26.2023.09.28.00.10.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 00:10:26 -0700 (PDT)
-Message-ID: <065636fa-e6ac-4fcb-5d78-b3f281ac4609@linaro.org>
-Date:   Thu, 28 Sep 2023 09:10:26 +0200
+        Thu, 28 Sep 2023 03:12:48 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD3455AA
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:11:15 -0700 (PDT)
+Received: from verdu-eth.calcurco.cat.235.168.192.in-addr.arpa (unknown [93.176.144.0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sergi)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3E0DC6607327;
+        Thu, 28 Sep 2023 08:11:13 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1695885074;
+        bh=32T81fKvUycfKAhnCTiHsDbfmXmo2fIN4PHbMCuJ0bs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HuS2RykrdK0vM5nrbTCy64Xc2ZB6qNUhKxlqtqFcqXi8x3JpQb6FIfbQ0H9vhZkyU
+         cJJq2Lr8PSlC2GDs3B4TPSVCz0FZhgEn8wMU1PlUBd9MpQ0mLcDShZIdg392kv0Gk6
+         Lp0XceWupnpVs8OwCkKW8UNCEpAtA4swFiH16gr4CWm1TpV6/pQZav7gAfocw/ZY5k
+         Lz27QcV/QIPjtJdRhaNyOaYC8asYLqMCWcEyFgJ0YvVw1vGAdHaRTWzn0iHP/qhEl5
+         pb1S+7809Y8Ug6AFS3OYgXolpJpjoxtsayVRf6G6q9vpv00halZBmXLlyQWI6Ql72k
+         Y+sr/Y2h2o9XA==
+Message-ID: <c25165891e0628b3a3a50cc528a86b2b2a65b7ae.camel@collabora.com>
+Subject: Re: [RFC PATCH] drm/ci: add helper script update-xfails.py
+From:   Sergi Blanch Torne <sergi.blanch.torne@collabora.com>
+To:     Helen Koike <helen.koike@collabora.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     airlied@gmail.com, daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, daniel@fooishbar.org,
+        vignesh.raman@collabora.com, jani.nikula@linux.intel.com,
+        mripard@kernel.org, michel.daenzer@mailbox.org,
+        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
+        david.heidelberg@collabora.com, guilherme.gallo@collabora.com
+Date:   Thu, 28 Sep 2023 09:10:58 +0200
+In-Reply-To: <785cbfee-f4d3-3d53-a3e6-2f9af8fa05fb@collabora.com>
+References: <20230925195556.106090-1-helen.koike@collabora.com>
+         <8f946d0a5632d580b593cf731091126d59feb77f.camel@collabora.com>
+         <785cbfee-f4d3-3d53-a3e6-2f9af8fa05fb@collabora.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 10/13] thermal: core: Allow trip pointers to be used
- for cooling device binding
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1957441.PYKUYFuaPT@kreacher> <45837158.fMDQidcC6G@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <45837158.fMDQidcC6G@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 20:01, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Add new helper functions, thermal_bind_cdev_to_trip() and
-> thermal_unbind_cdev_from_trip(), to allow a trip pointer to be used for
-> binding a cooling device to a trip point and unbinding it, respectively,
-> and redefine the existing helpers, thermal_zone_bind_cooling_device()
-> and thermal_zone_unbind_cooling_device(), as wrappers around the new
-> ones, respectively.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Hi Helen,
+
+On Wed, 2023-09-27 at 19:28 -0300, Helen Koike wrote:
+> > > +def get_unit_test_name_and_results(unit_test):
+> > > +=C2=A0=C2=A0=C2=A0 if "Artifact results/failures.csv not found" in u=
+nit_test:
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return None, None
+> > > +=C2=A0=C2=A0=C2=A0 unit_test_name, unit_test_result =3D
+> > > unit_test.strip().split(",")
+> > > +=C2=A0=C2=A0=C2=A0 return unit_test_name, unit_test_result
+> >=20
+> > Suggestion: it is not managing empty lines or comments. By now,
+> > there
+> > aren't, but they could be found.
+>=20
+> Indeed.
+
+Just add a new if statement to discard if the strings start with # or
+strip the line and check the length. Perhaps we can think of other
+assertions to sanitise the string.
+
+> > Suggestion: Sometimes tests fails with different status ("Fail" to
+> > "Crash" for example) and the expectations should be updated with
+> > the
+> > newer status.
+>=20
+> The status is only present in the fails and not in the flakes list,
+> so I=20
+> update it with add_unit_test_or_update_result_to_fails_if_present()=20
+> function below, make sense?
+
+Absolutely, sorry that I didn't see this was a process included in the
+last if statement. If it is present in the fails' file (that includes
+the test name and its state) you do exactly what's necessary: add if
+not present, update if it was already in the file.
+
+>=20
+Regards,
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+- --=20
+Sergi Blanch Torn=C3=A9
+Senior Software Engineer
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Collabora Ltd.
+Platinum Building, St John's Innovation Park, Cambridge CB4 0DS, UK
+Registered in England & Wales, no. 5513718
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQQwWRK68l+taJfhwqAto5bHyTm9RwUCZRUnAgAKCRAto5bHyTm9
+R53NAP9T2OCiwbnEjv+H0CQg/eK1xGe7yS/3cqjaPFRvvZPp1wD/V1H9NuhpRR6M
+8+QZgbsS/swSPdwYABtcz+75CKpuJwo=3D
+=3DXRRO
+-----END PGP SIGNATURE-----
