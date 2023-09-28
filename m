@@ -2,49 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C767B167C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785A67B1687
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjI1IyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        id S231418AbjI1IzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjI1IyI (ORCPT
+        with ESMTP id S231343AbjI1IzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:54:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441B8195
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:54:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83FE2C433C7;
-        Thu, 28 Sep 2023 08:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695891244;
-        bh=/Y/YLIi4rLlaX9qo7IT6ffy1/nl+3oL3sxDtAxfHEfA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OVeH9GsQ2YHlWLStVAxAB54acZ+8Po4YcSanosrsAxxCnjITyEN9ACkQ8zuVI/C77
-         2V9P830OYSczHLweQIGfs82CgepJ5xDwX+np49sVdu/nXrBaTpsuJaysivFb+DxEGv
-         HNjl+aW1+YSIkLJCRWedIReKecqUnUnG4lOX+RMbocA0l60SXOb/rs6oggTJJ3J4Ed
-         0KQ6jpzt8zpc+y6BzB1bX9tY02I4Irz0bZ39kYGxBrQmaEpM/zdbDDfYe5xdYRbknd
-         FVKe9uoZXjHcX5944AWTIOjO9prwFw0+FU5mMUq+o85VwANmSGDNkJKtT89Bvpq7xq
-         dOxIQGBQ69jlQ==
-Date:   Thu, 28 Sep 2023 10:54:02 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Document that the NXP i.MX 8MQ DCSS driver
- goes thru drm-misc
-Message-ID: <nbb7m32cjtxxqnonouh6wl3qswfcuhkmycnkgvn4njxvjd76et@udnxb3lenbyi>
-References: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
+        Thu, 28 Sep 2023 04:55:10 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE853AC;
+        Thu, 28 Sep 2023 01:55:08 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx6kJ5PGTz4f3kkN;
+        Thu, 28 Sep 2023 16:55:04 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgAnt9ZnPxVlpvdfBg--.53473S3;
+        Thu, 28 Sep 2023 16:55:05 +0800 (CST)
+Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
+To:     Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     linan666@huaweicloud.com, josef@toxicpanda.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230911023308.3467802-1-linan666@huaweicloud.com>
+ <ZRT7cVFcE6QMHfie@fedora>
+ <47669fb6-3700-e327-11af-93a92b0984a0@huaweicloud.com>
+ <ZRUt/vAQNGNp6Ugx@fedora>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <41161d21-299c-3657-6020-0a3a9cf109ec@huaweicloud.com>
+Date:   Thu, 28 Sep 2023 16:55:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kayxkznrfb6sydgg"
-Content-Disposition: inline
-In-Reply-To: <20230925154929.1.I3287e895ce8e68d41b458494a49a1b5ec5c71013@changeid>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZRUt/vAQNGNp6Ugx@fedora>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAnt9ZnPxVlpvdfBg--.53473S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFWUGw4xZF15tF4fCFW8tFb_yoW5Gr13pF
+        WFyF1xCF4UJFySvwsYqw47WryFq34xK3yfu3yrA342yr909FZakr4xtFyFgF90vr17Xw40
+        vr4YgFyfAa48JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,43 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---kayxkznrfb6sydgg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
 Hi,
 
-On Mon, Sep 25, 2023 at 03:49:29PM -0700, Douglas Anderson wrote:
-> As per the discussion on the lists [1], changes to this driver
-> generally flow through drm-misc. Add a tag in MAINTAINERS to document
-> this
->=20
-> [1] https://lore.kernel.org/r/20230925054710.r3guqn5jzdl4giwd@fsr-ub1664-=
-121.ea.freescale.net
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+在 2023/09/28 15:40, Ming Lei 写道:
+> On Thu, Sep 28, 2023 at 02:03:28PM +0800, Yu Kuai wrote:
+>> Hi,
+>>
+>> 在 2023/09/28 12:05, Ming Lei 写道:
+>>> On Mon, Sep 11, 2023 at 10:33:08AM +0800, linan666@huaweicloud.com wrote:
+>>>> From: Li Nan <linan122@huawei.com>
+>>>>
+>>>> If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
+>>>> krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
+>>>> may occurs.
+>>>>
+>>>>     T1
+>>>>     nbd_ioctl
+>>>>      __nbd_ioctl
+>>>>       nbd_add_socket
+>>>>        blk_mq_freeze_queue
+>>>> 				T2
+>>>>     				recv_work
+>>>>     				 nbd_read_reply
+>>>>     				  sock_xmit
+>>>>        krealloc config->socks
+>>>> 				   def config->socks
+>>>>
+>>>> Pass nbd_sock to nbd_read_reply(). And introduce a new function
+>>>> sock_xmit_recv(), which differs from sock_xmit only in the way it get
+>>>> socket.
+>>>>
+>>>
+>>> I am wondering why not grab queue usage counter before calling nbd_read_reply()
+>>> for avoiding such issue, something like the following change:
+>>>
+>>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>>> index df1cd0f718b8..09215b605b12 100644
+>>> --- a/drivers/block/nbd.c
+>>> +++ b/drivers/block/nbd.c
+>>> @@ -837,9 +837,6 @@ static void recv_work(struct work_struct *work)
+>>>    	while (1) {
+>>>    		struct nbd_reply reply;
+>>> -		if (nbd_read_reply(nbd, args->index, &reply))
+>>> -			break;
+>>> -
+>>>    		/*
+>>>    		 * Grab .q_usage_counter so request pool won't go away, then no
+>>>    		 * request use-after-free is possible during nbd_handle_reply().
+>>> @@ -852,6 +849,9 @@ static void recv_work(struct work_struct *work)
+>>>    			break;
+>>>    		}
+>>
+>> This break how nbd works, if there is no reply yet, recv_work() will
+>> wait for reply in:
+>>
+>> nbd_read_reply
+>>   sock_xmit
+>>    sock_recvmsg
+>>
+>> After this change, recv_work() will just return if there is no io.
+> 
+> OK, got it, thanks for the input.
+> 
+> But I feel it isn't necessary & fragile to store one extra reference of nsock in
+> `recv_thread_args`.
+> 
+> Just run a quick look, the only potential UAF on config->socks should be recv_work(),
+> so you can retrieve the `nsock` reference at the entry of recv_work(),
 
+I don't understand what you mean retrieve the 'nsock', is following what
+you expected?
 
-Applied to drm-misc-next, thanks!
+blk_queue_enter() -> prevent concurrent with nbd_add_socket
+nsock = config->socks[args->index]
+blk_queue_exit()
 
-This was somewhat conflicting with
-https://lore.kernel.org/all/20230921105743.2611263-1-mripard@kernel.org/
+while (1) {
+	...
+	// pass nsock to nbd_read_reply() and nbd_handle_reply()
+}
 
-So I removed the imx exclusion from that patch too.
+> and just pass it(local variable) to nbd_read_reply() and nbd_handle_reply()
+> since `nsock` won't be freed.
+> 
+> 
+> Thanks,
+> Ming
+> 
+> .
+> 
 
-Maxime
-
---kayxkznrfb6sydgg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZRU/KgAKCRDj7w1vZxhR
-xWaNAPsHpEEbK5oADf0lboe90NZgx4zw6MmYBN7miPnJCZU1FgEAkt/61t0jhq5R
-9Tsudpyj4W8o3p2r9sifIQX1piXShg0=
-=mzDY
------END PGP SIGNATURE-----
-
---kayxkznrfb6sydgg--
