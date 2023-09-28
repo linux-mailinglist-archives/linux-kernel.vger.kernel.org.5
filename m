@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D48327B18C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68DA7B18D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbjI1K64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S231363AbjI1LBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbjI1K6y (ORCPT
+        with ESMTP id S231246AbjI1LBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:58:54 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0E412A;
-        Thu, 28 Sep 2023 03:58:41 -0700 (PDT)
-X-UUID: f773252a5ded11ee8051498923ad61e6-20230928
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/i9DeA8LdPwAdmE9HcBWTajPCE+8XABsIEkcwpo4eO4=;
-        b=d49GEh2VrxaOlvBDj1+tZy2FbyAuL6iiWb5iSzv5wRjFQIM9ulIwoV/FCTd890kWTmsQqxrfZRyfYfbIVf0/Ibh0ufHNOv1JmboF5shhlYfbtpP9b+rijl33WnIMLjlWV5/tdswR2oKajbe0IjdYTWU84lABp6p7YS/chxqJfsU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:caab4f31-088a-4cca-9bda-85747e10d72a,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:686b61bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: f773252a5ded11ee8051498923ad61e6-20230928
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <jian.yang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 933141708; Thu, 28 Sep 2023 18:58:33 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 28 Sep 2023 18:58:32 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 28 Sep 2023 18:58:31 +0800
-From:   Jian Yang <jian.yang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Rob Herring <robh@kernel.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <Chuanjia.Liu@mediatek.com>, <Jieyy.Yang@mediatek.com>,
-        <Qizhong.Cheng@mediatek.com>, <Jian.Yang@mediatek.com>,
-        Jian Yang <jian.yang@mediatek.com>
-Subject: [PATCH v3 0/2] PCI: mediatek-gen3: Support controlling power supplies
-Date:   Thu, 28 Sep 2023 18:58:18 +0800
-Message-ID: <20230928105819.5161-1-jian.yang@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 28 Sep 2023 07:01:20 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8DF180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:01:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-27758c8f579so6222620a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695898876; x=1696503676; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pYKgXq+vaQtmifoFDQlFohY9tqK1T0ZxxWc8ChkHqI8=;
+        b=VKJaIoo3f+J2KKwt4+zkY6b5vb2zo3hs8eiPzGy/CNYe4gkZoQFYz5ZYvA1AmxSdE8
+         RoW4+4phHBUuWyGeOvJjnfRxuXWnehboXkuLmUFlHOKt9Ohj+IwAcTWgWGgg64CPaJIP
+         eCVtKZstpYdjQCOpzDE/Z4MAUz67AQPO3X21wHIU8nPXwkD6VsNQW/r/rdP8AU/SHri0
+         3Nv45rgIZsdKNlyqPRJuOQwpaLKueF68gNqg8gVdWhLkcUU2ueGvNdFGVRtMNiLKZV3s
+         We3QHe3/Y7ulRjKthgRAe02x0AH4t0anehiegqgQ6PnKn3vevTxbfDO0m/jxClh9+UlT
+         dERQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695898876; x=1696503676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pYKgXq+vaQtmifoFDQlFohY9tqK1T0ZxxWc8ChkHqI8=;
+        b=YlcKXo0bec8isOQ8NxkZRwtYrAnVHA+JOTx/j6QOa/Q6y3a3dEtHj6bExynw6Us1SI
+         2JjUV+mzS9cQ5u+5rywadbdh8Sve3+lwoZxDv23D+RN42xx6F3IyEWSGRSkTos+ovcCC
+         QzYnb92Hnvr82TWsuIAPDS+uAB/G0qqxAEjk8Dkr7VFBXEgmv6frotzKrZkpzUPQlC08
+         Jpckf6VwZQooYKIAiS6dGN+7gQLJuRFLqWX3uuHJqZA2i+zvwcfs4iidnF9tZ3a25Aj7
+         MflgoNX0se8+ZhBLoIgKcOYXvQ64Ld/gJXtYPHgHy9xFcsvLhUekzpbNLrlruNr+BOXq
+         nUzw==
+X-Gm-Message-State: AOJu0YwV/pjtTktcjFcp/ykOE9ToTniUw0NNmdMnSEeIVNrYAoGTjR0E
+        FzLFdORnoPC69CNcnEUlwec=
+X-Google-Smtp-Source: AGHT+IGKmFLibatR4FFYGrusi8XPJ90Q0s0r/+1WccPyk/ovA3NHe2CD/0pMaNvfcLvXft2FoVz+Yw==
+X-Received: by 2002:a17:90a:e2c9:b0:271:9237:a07f with SMTP id fr9-20020a17090ae2c900b002719237a07fmr771526pjb.32.1695898875805;
+        Thu, 28 Sep 2023 04:01:15 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id jg19-20020a17090326d300b001b3bf8001a9sm10961499plb.48.2023.09.28.04.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 04:01:15 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3074E8222029; Thu, 28 Sep 2023 18:01:11 +0700 (WIB)
+Date:   Thu, 28 Sep 2023 18:01:11 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Victor Fries985 <freeze0985@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: kmalloc memory leak over time.
+Message-ID: <ZRVc9tjrED_2mWe0@debian.me>
+References: <4f01f302-9d59-4146-b7ff-0478c4bd94b1@gmail.com>
+ <CAAU1TwEFpEMkWMN3kJj-uOJtEK1X0kvBX7NjQ1djduZaP+AR-g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GeqDmjNMxRAUW/Iq"
+Content-Disposition: inline
+In-Reply-To: <CAAU1TwEFpEMkWMN3kJj-uOJtEK1X0kvBX7NjQ1djduZaP+AR-g@mail.gmail.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These series patches is based on linux-next, tag: next-20230921.
-Add support for controlling power supplies and reset GPIO of a downstream
-component in Mediatek's PCIe GEN3 controller driver.
 
-Changes in v3:
-1. Modify description of power supply properties in DT binding.
-2. Remove unused header files.
-3. Use 'device_wakeup_path' to determine whether the downstream component
-needs to skip the reset process in system suspend scenarios.
+--GeqDmjNMxRAUW/Iq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-jian.yang (2):
-  dt-bindings: PCI: mediatek-gen3: Add support for controlling power and
-    reset
-  PCI: mediatek-gen3: Add power and reset control feature for downstream
-    component
+On Thu, Sep 28, 2023 at 03:09:05PM +0530, Victor Fries985 wrote:
+> Hi, the regression started from 6.5.3, i failed to mention it in bugzilla.
+>=20
+> Original I made ticket on linux-zen, thinking it was their problem. But it
+> turned out to be problem from normal linux itself.
+>=20
 
- .../bindings/pci/mediatek-pcie-gen3.yaml      | 25 +++++
- drivers/pci/controller/pcie-mediatek-gen3.c   | 93 ++++++++++++++++++-
- 2 files changed, 117 insertions(+), 1 deletion(-)
+Please don't top-post; reply inline with appropriate context instead. This
+allows readers to easily follow conversation flow.
 
--- 
-2.18.0
+Anyway, does v6.5 mainline tag (not the stable tree) also have this
+regression?
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--GeqDmjNMxRAUW/Iq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRVc9gAKCRD2uYlJVVFO
+o0Y+AP9DW2gKFs6akR5UINM1DXr27W2z/r7K8GlADHMEfUofAAD+I6eEJaTRo247
+Qyz7yHo5jba27NQN5/U3+OMLhOI8XAE=
+=pRi+
+-----END PGP SIGNATURE-----
+
+--GeqDmjNMxRAUW/Iq--
