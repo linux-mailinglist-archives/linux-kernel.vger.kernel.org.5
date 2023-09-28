@@ -2,134 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C81E7B1256
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EE77B1258
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjI1GIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42038 "EHLO
+        id S230235AbjI1GJk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 02:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjI1GIP (ORCPT
+        with ESMTP id S229445AbjI1GJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:08:15 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B2299
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:08:11 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkBi-0004RI-IP; Thu, 28 Sep 2023 08:07:50 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkBh-009VzQ-G9; Thu, 28 Sep 2023 08:07:49 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkBh-005YUC-6U; Thu, 28 Sep 2023 08:07:49 +0200
-Date:   Thu, 28 Sep 2023 08:07:49 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        sorganov@gmail.com, festevam@gmail.com,
-        ilpo.jarvinen@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH RESEND] serial: imx: Fix potential deadlock on
- sport->port.lock
-Message-ID: <20230928060749.qzs6qgcesstclqqk@pengutronix.de>
-References: <20230927181939.60554-1-dg573847474@gmail.com>
+        Thu, 28 Sep 2023 02:09:38 -0400
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD7899;
+        Wed, 27 Sep 2023 23:09:36 -0700 (PDT)
+Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay02.hostedemail.com (Postfix) with ESMTP id E02EF1208E3;
+        Thu, 28 Sep 2023 06:09:34 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 3CF0520025;
+        Thu, 28 Sep 2023 06:09:32 +0000 (UTC)
+Message-ID: <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com>
+Subject: Re: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
+From:   Joe Perches <joe@perches.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org,
+        workflows@vger.kernel.org, mario.limonciello@amd.com
+Date:   Wed, 27 Sep 2023 23:09:31 -0700
+In-Reply-To: <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com>
+References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
+         <5707f3bef3ecd8220a8bf7c8b72c72c53e65b666.camel@perches.com>
+         <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f7bog4b3txnbhuoj"
-Content-Disposition: inline
-In-Reply-To: <20230927181939.60554-1-dg573847474@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Stat-Signature: d7fqwmokkq5kfxxtzgzn3gegcormsb3p
+X-Rspamd-Server: rspamout04
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
         autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 3CF0520025
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+FqDn4VJxmBi1YH6dCdp9LKcI52YXn62E=
+X-HE-Tag: 1695881372-161195
+X-HE-Meta: U2FsdGVkX1+tEvnQKoggFUWcmCpgX3G0a9W3Z4uVrc8hP+JwscwmhypG7KnHNpTKQWK3KRDNiZbfQf0QrO0d56XXW8uV9mfXUxcp4xsh+Ti+LeI3aTm6tQHCkVWLEsm9cqpdvzX9s1dDgRkTYWBQdeuXlj/SPhhbrCWXTx7UZfw48op9U8K1kGXsbP1jMT43dCDlNxWFz1MSWj4hwjqShexodnNUAkLIIGfoa7vNEgKuGT8Mpi0WXL/DF7853BMBZFPekFeofrB1CsUVP/6infi05vulObR/6tnusNeWlDgcWR4jNBy9hxcNgXAj/CFXbW0dmWeHRvaPHlpfaM2Y06nFdoGOSfXgl9tAOSBp66a+JoVsQPOsTDSRGd5VDCNC
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-09-28 at 14:31 +0900, Justin Stitt wrote:
+> On Thu, Sep 28, 2023 at 2:01 PM Joe Perches <joe@perches.com> wrote:
+> > 
+> > On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
+> > > Changes in v2:
+> > > - remove formatting pass (thanks Joe) (but seriously the formatting is
+> > >   bad, is there opportunity to get a formatting pass in here at some
+> > >   point?)
+> > 
+> > Why?  What is it that makes you believe the formatting is bad?
+> > 
+> 
+> Investigating further, it looked especially bad in my editor. There is
+> a mixture of
+> tabs and spaces and my vim tabstop is set to 4 for pl files. Setting this to
+> 8 is a whole lot better. But I still see some weird spacing
+> 
 
---f7bog4b3txnbhuoj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, it's a bit odd indentation.
+It's emacs default perl format.
+4 space indent with 8 space tabs, maximal tab fill.
 
-[Cc +=3D Vinod Koul, dmaengine@vger.kernel.org]
-
-Hello,
-
-On Wed, Sep 27, 2023 at 06:19:39PM +0000, Chengfeng Ye wrote:
-> As &sport->port.lock is acquired under irq context along the following
-> call chain from imx_uart_rtsint(), other acquisition of the same lock
-> inside process context or softirq context should disable irq avoid double
-> lock.
->=20
-> <deadlock #1>
->=20
-> imx_uart_dma_rx_callback()
-> --> spin_lock(&sport->port.lock)
-> <interrupt>
->    --> imx_uart_rtsint()
->    --> spin_lock(&sport->port.lock)
->=20
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-
-Ah, I understood before that you really experienced that deadlock (or a
-lockdep splat). I didn't test anything, but I think the
-imx_uart_dma_rx_callback() is called indirectly by
-sdma_update_channel_loop() which is called in irq context. I don't know
-if this is the case for all dma drivers?!
-
-@Vinod: Maybe you can chime in here: Is a dma callback always called in
-irq context?
-
-If yes, this patch isn't needed. Otherwise it might be a good idea to
-not use the special knowledge and switch to spin_lock_irqsave() as
-suggested.
-
-> To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-> on the &sport->port.lock inside imx_uart_dma_rx_callback() to prevent
-> the possible deadlock scenario.
->=20
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-
-If we agree this patch is a good idea, we can add:
-
-Fixes: 496a4471b7c3 ("serial: imx: work-around for hardware RX flood")
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---f7bog4b3txnbhuoj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUVGDQACgkQj4D7WH0S
-/k6Msgf+Nch+utVGLzdo/mRgW9Bdxbi16a03vlH2nAu50axg2kKLy3gztudaYrlj
-QarLJ7u8TsOWzkU+EP6ye3ubFGhApV/7ne+/QUeEdQmkuz8LHf35pk3+dCKenhkC
-NN2+l08DUIM/+uwjD2ESMQM2M/Td9fW+9PsMKgLNiiIlE/ZA5tOOGbSU6UUoS5uv
-R9BdzUY2c5/a3ANnyf/c9A2Df+yqoLcMBUXrhnoAXJSflSf3Z2GYTv7FyHotLJb5
-c4D6cClkyrMeGJ1VmgTTVOcz35ZDIhkprc4Q/SmqPj9IiuejavBjPmjJHNG1rcV3
-6zS7jDlI0tgIqSoz8PnJLK3AJzluTQ==
-=CCkc
------END PGP SIGNATURE-----
-
---f7bog4b3txnbhuoj--
