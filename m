@@ -2,542 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6C87B2414
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A389D7B2421
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjI1Rke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        id S232057AbjI1RlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjI1Rkc (ORCPT
+        with ESMTP id S229478AbjI1RlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:40:32 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2C1DD;
-        Thu, 28 Sep 2023 10:40:28 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32483535e51so1131194f8f.0;
-        Thu, 28 Sep 2023 10:40:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695922827; x=1696527627; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3JZDBA/8Pc4Dr+87oHFNU6cXwe4pXOmPmryPM6oar90=;
-        b=D6NORaH7vQbe6YskfbK+BcjrhKegCO8Tq6xhTMq6JklA0S8rqMgYBWV7pEyTbZfmBG
-         nofrlNiRghUsCMpU8trkrIgDHrznArkxnTGEnJEAF7XIRTv1H6dkBnQipJtB6AC79DHz
-         QVt4CELRl6HNyYNTi/OZ2P96vCv8pNentxgvFhAkXBKsAC4WbMoU5XQ/elvYUwPfWRg0
-         eHo7dlU4F6wOgkNpIoMV4g3TYnWutMSqm03f3FFKmr4qExMk89YHfxXeX13ir1Sgf5Zv
-         4Th1Ztqy/x7Q26Hdjnnu6Hk940/NRa/5LYlPGj7RtLZHFXVpLq6X0+FXuXed11BdDIMJ
-         c3KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695922827; x=1696527627;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3JZDBA/8Pc4Dr+87oHFNU6cXwe4pXOmPmryPM6oar90=;
-        b=DmssudV0+IxdoqtC+s0DRsPorpO6N9zkZxug4TvS7Tyn4Do3mHsDYTg1liZfJZQOje
-         9DtccKOumXfVS74vn+E+5TobJWvS3GhvQVYmfOapc8bKlZ+BDox7CgJ52v575Gm3uvck
-         0+1z6g4psZwD2kwv2jZaggeJaGSksA3GoA+/P7LMgNluM/ua0RwbGam8+fPiM38TJy+C
-         Z7XQnEys4tM4VJOVX34tFKk/eGV5uhNHFnGq5yHL9v0riNr2UBIST+zRvAm9mVPtd0fy
-         +p/dwSVrKYA3SEKFIz0NqTskf6Kw+t9FGzuKg+GSeRoLfdX0qDo+Y7zqaJr3O6lVCpG8
-         PmIQ==
-X-Gm-Message-State: AOJu0Yz5o78r6cj7zcmb3ZvGqnGzsR4oEtSX/2QZEwKTXYSmXtGZVXAy
-        79krdDDV3+Prl6RRLAgUNj0=
-X-Google-Smtp-Source: AGHT+IEHAV165RCcjAA6LQ0/PQ5U9fKuk2lxw+cuUqmE44d+PQBNtgHEq/2KzsaNxNwXPyHtbnwK7g==
-X-Received: by 2002:a5d:4cc3:0:b0:31f:ef77:67e4 with SMTP id c3-20020a5d4cc3000000b0031fef7767e4mr1506433wrt.37.1695922826104;
-        Thu, 28 Sep 2023 10:40:26 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d6b51000000b0031980294e9fsm19907065wrw.116.2023.09.28.10.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 10:40:25 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thu, 28 Sep 2023 13:41:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D1719E;
+        Thu, 28 Sep 2023 10:41:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D74F5C433C7;
+        Thu, 28 Sep 2023 17:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695922871;
+        bh=q4Y+iRhQNw28trXDtNOjgA21Uv+IbPAACk59LAWJmZQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Pt2knsyPVF5IN2LrEHFDhKXAMR+bUOcTlyAAG093ma8ffe9kH/u7HXG2g+Td0GQbU
+         dj6xCSvBaMeN3dkuuuxcxsY6aAAFekfxMF19xWrooSEMrmsfY/FrKOmIr30Ef9iwhy
+         6QfDCUZqE6k5rEywc5Ze8K4/SAUL1W/1QDmSbwueKYxqX2aaIVxDcPqg/lhskw8rFh
+         jOw/ARPQHq26NmwE3QZN+kwE0QI6+60XvzrrVfZo0ayZcNh/tBcZ410YuqL9+lmQQb
+         qZZexkDUvIABncMcV2ChnF/ASLiH8NqVr7NTUG7D+At/G4u0PnSWIbaDK60vBHhtw8
+         vViGtl0HWhtVQ==
+Message-ID: <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete
+ integers
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Mattia Dongili <malattia@linux.it>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ian Kent <raven@themaw.net>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vincent Shih <vincent.sunplus@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Anders Larsen <al@alarsen.net>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-rtc@vger.kernel.org,
-        Michael Walle <michael@walle.cc>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V5] nvmem: add explicit config option to read old syntax fixed OF
- cells
-Date:   Thu, 28 Sep 2023 19:40:22 +0200
-Message-ID: <4947329.31r3eYUQgx@jernej-laptop>
-In-Reply-To: <20230927204446.4231-1-zajec5@gmail.com>
-References: <20230927204446.4231-1-zajec5@gmail.com>
-MIME-Version: 1.0
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Date:   Thu, 28 Sep 2023 13:40:55 -0400
+In-Reply-To: <20230928171943.GK11439@frogsfrogsfrogs>
+References: <20230928110554.34758-1-jlayton@kernel.org>
+         <20230928110554.34758-2-jlayton@kernel.org>
+         <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
+         <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
+         <20230928171943.GK11439@frogsfrogsfrogs>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 27. september 2023 ob 22:44:46 CEST je Rafa=C5=82 Mi=C5=82ecki n=
-apisal(a):
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+On Thu, 2023-09-28 at 10:19 -0700, Darrick J. Wong wrote:
+> On Thu, Sep 28, 2023 at 01:06:03PM -0400, Jeff Layton wrote:
+> > On Thu, 2023-09-28 at 11:48 -0400, Arnd Bergmann wrote:
+> > > On Thu, Sep 28, 2023, at 07:05, Jeff Layton wrote:
+> > > > This shaves 8 bytes off struct inode, according to pahole.
+> > > >=20
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > >=20
+> > > FWIW, this is similar to the approach that Deepa suggested
+> > > back in 2016:
+> > >=20
+> > > https://lore.kernel.org/lkml/1452144972-15802-3-git-send-email-deepa.=
+kernel@gmail.com/
+> > >=20
+> > > It was NaKed at the time because of the added complexity,
+> > > though it would have been much easier to do it then,
+> > > as we had to touch all the timespec references anyway.
+> > >=20
+> > > The approach still seems ok to me, but I'm not sure it's worth
+> > > doing it now if we didn't do it then.
+> > >=20
+> >=20
+> > I remember seeing those patches go by. I don't remember that change
+> > being NaK'ed, but I wasn't paying close attention at the time=20
+> >=20
+> > Looking at it objectively now, I think it's worth it to recover 8 bytes
+> > per inode and open a 4 byte hole that Amir can use to grow the
+> > i_fsnotify_mask. We might even able to shave off another 12 bytes
+> > eventually if we can move to a single 64-bit word per timestamp.=20
 >=20
-> Binding for fixed NVMEM cells defined directly as NVMEM device subnodes
-> has been deprecated. It has been replaced by the "fixed-layout" NVMEM
-> layout binding.
+> I don't think you can, since btrfs timestamps utilize s64 seconds
+> counting in both directions from the Unix epoch.  They also support ns
+> resolution:
 >=20
-> New syntax is meant to be clearer and should help avoiding imprecise
-> bindings.
->=20
-> NVMEM subsystem already supports the new binding. It should be a good
-> idea to limit support for old syntax to existing drivers that actually
-> support & use it (we can't break backward compatibility!). That way we
-> additionally encourage new bindings & drivers to ignore deprecated
-> binding.
->=20
-> It wasn't clear (to me) if rtc and w1 code actually uses old syntax
-> fixed cells. I enabled them to don't risk any breakage.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> [for meson-{efuse,mx-efuse}.c]
-> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> [for mtk-efuse.c, nvmem/core.c, nvmem-provider.h]
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
-ora.com>
-> [MT8192, MT8195 Chromebooks]
-> Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabor=
-a.com>
-> [for microchip-otpc.c]
-> Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> [SAMA7G5-EK]
-> Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
-> V2: Fix stm32-romem.c typo breaking its compilation
->     Pick Martin's Acked-by
->     Add paragraph about layouts deprecating add_legacy_fixed_of_cells
-> V3: Update commit description:
->     1. Make it clear we're NOT dropping fixed cells support
->     2. Use nicer words (s/made sense/was totally safe/)
->     3. Explain fixed cells layout thing
->     4. Add paragraph with purpose of this commit
-> V4: Completely rewrite commit message.
->     Rename config option to "add_legacy_fixed_of_cells".
-> V5: Rebase patch
->     Cover sec-qfprom.c which uses legacy syntax
->=20
->  drivers/mtd/mtdcore.c          | 2 ++
->  drivers/nvmem/apple-efuses.c   | 1 +
->  drivers/nvmem/core.c           | 8 +++++---
->  drivers/nvmem/imx-ocotp-scu.c  | 1 +
->  drivers/nvmem/imx-ocotp.c      | 1 +
->  drivers/nvmem/meson-efuse.c    | 1 +
->  drivers/nvmem/meson-mx-efuse.c | 1 +
->  drivers/nvmem/microchip-otpc.c | 1 +
->  drivers/nvmem/mtk-efuse.c      | 1 +
->  drivers/nvmem/qcom-spmi-sdam.c | 1 +
->  drivers/nvmem/qfprom.c         | 1 +
->  drivers/nvmem/rave-sp-eeprom.c | 1 +
->  drivers/nvmem/rockchip-efuse.c | 1 +
->  drivers/nvmem/sc27xx-efuse.c   | 1 +
->  drivers/nvmem/sec-qfprom.c     | 1 +
->  drivers/nvmem/sprd-efuse.c     | 1 +
->  drivers/nvmem/stm32-romem.c    | 1 +
->  drivers/nvmem/sunplus-ocotp.c  | 1 +
->  drivers/nvmem/sunxi_sid.c      | 1 +
-
-=46or sunxi:
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
->  drivers/nvmem/uniphier-efuse.c | 1 +
->  drivers/nvmem/zynqmp_nvmem.c   | 1 +
->  drivers/rtc/nvmem.c            | 1 +
->  drivers/w1/slaves/w1_ds250x.c  | 1 +
->  include/linux/nvmem-provider.h | 2 ++
->  24 files changed, 30 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 9bd661be3ae9..fbf60d1364f0 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -552,6 +552,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
->  	config.dev =3D &mtd->dev;
->  	config.name =3D dev_name(&mtd->dev);
->  	config.owner =3D THIS_MODULE;
-> +	config.add_legacy_fixed_of_cells =3D of_device_is_compatible(node, "nvm=
-em-cells");
->  	config.reg_read =3D mtd_nvmem_reg_read;
->  	config.size =3D mtd->size;
->  	config.word_size =3D 1;
-> @@ -898,6 +899,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(st=
-ruct mtd_info *mtd,
->  	config.name =3D compatible;
->  	config.id =3D NVMEM_DEVID_AUTO;
->  	config.owner =3D THIS_MODULE;
-> +	config.add_legacy_fixed_of_cells =3D true;
->  	config.type =3D NVMEM_TYPE_OTP;
->  	config.root_only =3D true;
->  	config.ignore_wp =3D true;
-> diff --git a/drivers/nvmem/apple-efuses.c b/drivers/nvmem/apple-efuses.c
-> index 9b7c87102104..d3d49d22338b 100644
-> --- a/drivers/nvmem/apple-efuses.c
-> +++ b/drivers/nvmem/apple-efuses.c
-> @@ -36,6 +36,7 @@ static int apple_efuses_probe(struct platform_device *p=
-dev)
->  	struct resource *res;
->  	struct nvmem_config config =3D {
->  		.dev =3D &pdev->dev,
-> +		.add_legacy_fixed_of_cells =3D true,
->  		.read_only =3D true,
->  		.reg_read =3D apple_efuses_read,
->  		.stride =3D sizeof(u32),
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index eaf6a3fe8ca6..2710943f53c4 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -997,9 +997,11 @@ struct nvmem_device *nvmem_register(const struct nvm=
-em_config *config)
->  	if (rval)
->  		goto err_remove_cells;
-> =20
-> -	rval =3D nvmem_add_cells_from_legacy_of(nvmem);
-> -	if (rval)
-> -		goto err_remove_cells;
-> +	if (config->add_legacy_fixed_of_cells) {
-> +		rval =3D nvmem_add_cells_from_legacy_of(nvmem);
-> +		if (rval)
-> +			goto err_remove_cells;
-> +	}
-> =20
->  	rval =3D nvmem_add_cells_from_fixed_layout(nvmem);
->  	if (rval)
-> diff --git a/drivers/nvmem/imx-ocotp-scu.c b/drivers/nvmem/imx-ocotp-scu.c
-> index c38d9c1c3f48..517d83e11af2 100644
-> --- a/drivers/nvmem/imx-ocotp-scu.c
-> +++ b/drivers/nvmem/imx-ocotp-scu.c
-> @@ -220,6 +220,7 @@ static int imx_scu_ocotp_write(void *context, unsigne=
-d int offset,
-> =20
->  static struct nvmem_config imx_scu_ocotp_nvmem_config =3D {
->  	.name =3D "imx-scu-ocotp",
-> +	.add_legacy_fixed_of_cells =3D true,
->  	.read_only =3D false,
->  	.word_size =3D 4,
->  	.stride =3D 1,
-> diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-> index a223d9537f22..434f197e27bf 100644
-> --- a/drivers/nvmem/imx-ocotp.c
-> +++ b/drivers/nvmem/imx-ocotp.c
-> @@ -615,6 +615,7 @@ static int imx_ocotp_probe(struct platform_device *pd=
-ev)
->  		return PTR_ERR(priv->clk);
-> =20
->  	priv->params =3D of_device_get_match_data(&pdev->dev);
-> +	imx_ocotp_nvmem_config.add_legacy_fixed_of_cells =3D true;
->  	imx_ocotp_nvmem_config.size =3D 4 * priv->params->nregs;
->  	imx_ocotp_nvmem_config.dev =3D dev;
->  	imx_ocotp_nvmem_config.priv =3D priv;
-> diff --git a/drivers/nvmem/meson-efuse.c b/drivers/nvmem/meson-efuse.c
-> index d6b533497ce1..b922df99f9bc 100644
-> --- a/drivers/nvmem/meson-efuse.c
-> +++ b/drivers/nvmem/meson-efuse.c
-> @@ -93,6 +93,7 @@ static int meson_efuse_probe(struct platform_device *pd=
-ev)
-> =20
->  	econfig->dev =3D dev;
->  	econfig->name =3D dev_name(dev);
-> +	econfig->add_legacy_fixed_of_cells =3D true;
->  	econfig->stride =3D 1;
->  	econfig->word_size =3D 1;
->  	econfig->reg_read =3D meson_efuse_read;
-> diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efus=
-e.c
-> index d6d7aeda31f9..3ff04d5ca8f8 100644
-> --- a/drivers/nvmem/meson-mx-efuse.c
-> +++ b/drivers/nvmem/meson-mx-efuse.c
-> @@ -210,6 +210,7 @@ static int meson_mx_efuse_probe(struct platform_devic=
-e *pdev)
->  	efuse->config.owner =3D THIS_MODULE;
->  	efuse->config.dev =3D &pdev->dev;
->  	efuse->config.priv =3D efuse;
-> +	efuse->config.add_legacy_fixed_of_cells =3D true;
->  	efuse->config.stride =3D drvdata->word_size;
->  	efuse->config.word_size =3D drvdata->word_size;
->  	efuse->config.size =3D SZ_512;
-> diff --git a/drivers/nvmem/microchip-otpc.c b/drivers/nvmem/microchip-otp=
-c.c
-> index 436e0dc4f337..7cf81738a3e0 100644
-> --- a/drivers/nvmem/microchip-otpc.c
-> +++ b/drivers/nvmem/microchip-otpc.c
-> @@ -261,6 +261,7 @@ static int mchp_otpc_probe(struct platform_device *pd=
-ev)
->  		return ret;
-> =20
->  	mchp_nvmem_config.dev =3D otpc->dev;
-> +	mchp_nvmem_config.add_legacy_fixed_of_cells =3D true;
->  	mchp_nvmem_config.size =3D size;
->  	mchp_nvmem_config.priv =3D otpc;
->  	nvmem =3D devm_nvmem_register(&pdev->dev, &mchp_nvmem_config);
-> diff --git a/drivers/nvmem/mtk-efuse.c b/drivers/nvmem/mtk-efuse.c
-> index b36cd0dcc8c7..87c94686cfd2 100644
-> --- a/drivers/nvmem/mtk-efuse.c
-> +++ b/drivers/nvmem/mtk-efuse.c
-> @@ -83,6 +83,7 @@ static int mtk_efuse_probe(struct platform_device *pdev)
->  		return PTR_ERR(priv->base);
-> =20
->  	pdata =3D device_get_match_data(dev);
-> +	econfig.add_legacy_fixed_of_cells =3D true;
->  	econfig.stride =3D 1;
->  	econfig.word_size =3D 1;
->  	econfig.reg_read =3D mtk_reg_read;
-> diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sda=
-m.c
-> index 70f2d4f2efbf..9aa8f42faa4c 100644
-> --- a/drivers/nvmem/qcom-spmi-sdam.c
-> +++ b/drivers/nvmem/qcom-spmi-sdam.c
-> @@ -142,6 +142,7 @@ static int sdam_probe(struct platform_device *pdev)
->  	sdam->sdam_config.name =3D "spmi_sdam";
->  	sdam->sdam_config.id =3D NVMEM_DEVID_AUTO;
->  	sdam->sdam_config.owner =3D THIS_MODULE;
-> +	sdam->sdam_config.add_legacy_fixed_of_cells =3D true;
->  	sdam->sdam_config.stride =3D 1;
->  	sdam->sdam_config.word_size =3D 1;
->  	sdam->sdam_config.reg_read =3D sdam_read;
-> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-> index 525be03b7bba..116a39e804c7 100644
-> --- a/drivers/nvmem/qfprom.c
-> +++ b/drivers/nvmem/qfprom.c
-> @@ -357,6 +357,7 @@ static int qfprom_probe(struct platform_device *pdev)
->  {
->  	struct nvmem_config econfig =3D {
->  		.name =3D "qfprom",
-> +		.add_legacy_fixed_of_cells =3D true,
->  		.stride =3D 1,
->  		.word_size =3D 1,
->  		.id =3D NVMEM_DEVID_AUTO,
-> diff --git a/drivers/nvmem/rave-sp-eeprom.c b/drivers/nvmem/rave-sp-eepro=
-m.c
-> index df6a1c594b78..9ecf3873cbb7 100644
-> --- a/drivers/nvmem/rave-sp-eeprom.c
-> +++ b/drivers/nvmem/rave-sp-eeprom.c
-> @@ -328,6 +328,7 @@ static int rave_sp_eeprom_probe(struct platform_devic=
-e *pdev)
->  	of_property_read_string(np, "zii,eeprom-name", &config.name);
->  	config.priv		=3D eeprom;
->  	config.dev		=3D dev;
-> +	config.add_legacy_fixed_of_cells	=3D true;
->  	config.size		=3D size;
->  	config.reg_read		=3D rave_sp_eeprom_reg_read;
->  	config.reg_write	=3D rave_sp_eeprom_reg_write;
-> diff --git a/drivers/nvmem/rockchip-efuse.c b/drivers/nvmem/rockchip-efus=
-e.c
-> index 4004c5bece42..2b40978ddb18 100644
-> --- a/drivers/nvmem/rockchip-efuse.c
-> +++ b/drivers/nvmem/rockchip-efuse.c
-> @@ -205,6 +205,7 @@ static int rockchip_rk3399_efuse_read(void *context, =
-unsigned int offset,
-> =20
->  static struct nvmem_config econfig =3D {
->  	.name =3D "rockchip-efuse",
-> +	.add_legacy_fixed_of_cells =3D true,
->  	.stride =3D 1,
->  	.word_size =3D 1,
->  	.read_only =3D true,
-> diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-> index 2210da40dfbd..bff27011f4ff 100644
-> --- a/drivers/nvmem/sc27xx-efuse.c
-> +++ b/drivers/nvmem/sc27xx-efuse.c
-> @@ -247,6 +247,7 @@ static int sc27xx_efuse_probe(struct platform_device =
-*pdev)
->  	econfig.reg_read =3D sc27xx_efuse_read;
->  	econfig.priv =3D efuse;
->  	econfig.dev =3D &pdev->dev;
-> +	econfig.add_legacy_fixed_of_cells =3D true;
->  	nvmem =3D devm_nvmem_register(&pdev->dev, &econfig);
->  	if (IS_ERR(nvmem)) {
->  		dev_err(&pdev->dev, "failed to register nvmem config\n");
-> diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
-> index e48c2dc0c44b..19799b3fe00a 100644
-> --- a/drivers/nvmem/sec-qfprom.c
-> +++ b/drivers/nvmem/sec-qfprom.c
-> @@ -47,6 +47,7 @@ static int sec_qfprom_probe(struct platform_device *pde=
-v)
->  {
->  	struct nvmem_config econfig =3D {
->  		.name =3D "sec-qfprom",
-> +		.add_legacy_fixed_of_cells =3D true,
->  		.stride =3D 1,
->  		.word_size =3D 1,
->  		.id =3D NVMEM_DEVID_AUTO,
-> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-> index 7e6e31db4baa..bb3105f3291f 100644
-> --- a/drivers/nvmem/sprd-efuse.c
-> +++ b/drivers/nvmem/sprd-efuse.c
-> @@ -408,6 +408,7 @@ static int sprd_efuse_probe(struct platform_device *p=
-dev)
->  	econfig.read_only =3D false;
->  	econfig.name =3D "sprd-efuse";
->  	econfig.size =3D efuse->data->blk_nums * SPRD_EFUSE_BLOCK_WIDTH;
-> +	econfig.add_legacy_fixed_of_cells =3D true;
->  	econfig.reg_read =3D sprd_efuse_read;
->  	econfig.reg_write =3D sprd_efuse_write;
->  	econfig.priv =3D efuse;
-> diff --git a/drivers/nvmem/stm32-romem.c b/drivers/nvmem/stm32-romem.c
-> index 0f84044bd1ad..1541c20709d2 100644
-> --- a/drivers/nvmem/stm32-romem.c
-> +++ b/drivers/nvmem/stm32-romem.c
-> @@ -207,6 +207,7 @@ static int stm32_romem_probe(struct platform_device *=
-pdev)
->  	priv->cfg.priv =3D priv;
->  	priv->cfg.owner =3D THIS_MODULE;
->  	priv->cfg.type =3D NVMEM_TYPE_OTP;
-> +	priv->cfg.add_legacy_fixed_of_cells =3D true;
-> =20
->  	priv->lower =3D 0;
-> =20
-> diff --git a/drivers/nvmem/sunplus-ocotp.c b/drivers/nvmem/sunplus-ocotp.c
-> index f3a18aa0a6c7..38f5d9df39cd 100644
-> --- a/drivers/nvmem/sunplus-ocotp.c
-> +++ b/drivers/nvmem/sunplus-ocotp.c
-> @@ -145,6 +145,7 @@ static int sp_ocotp_read(void *priv, unsigned int off=
-set, void *value, size_t by
-> =20
->  static struct nvmem_config sp_ocotp_nvmem_config =3D {
->  	.name =3D "sp-ocotp",
-> +	.add_legacy_fixed_of_cells =3D true,
->  	.read_only =3D true,
->  	.word_size =3D 1,
->  	.size =3D QAC628_OTP_SIZE,
-> diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
-> index 5d364d85347f..ba14a76208ab 100644
-> --- a/drivers/nvmem/sunxi_sid.c
-> +++ b/drivers/nvmem/sunxi_sid.c
-> @@ -153,6 +153,7 @@ static int sunxi_sid_probe(struct platform_device *pd=
-ev)
->  	nvmem_cfg->dev =3D dev;
->  	nvmem_cfg->name =3D "sunxi-sid";
->  	nvmem_cfg->type =3D NVMEM_TYPE_OTP;
-> +	nvmem_cfg->add_legacy_fixed_of_cells =3D true;
->  	nvmem_cfg->read_only =3D true;
->  	nvmem_cfg->size =3D cfg->size;
->  	nvmem_cfg->word_size =3D 1;
-> diff --git a/drivers/nvmem/uniphier-efuse.c b/drivers/nvmem/uniphier-efus=
-e.c
-> index 0a1dbb80537e..6ad3295d3195 100644
-> --- a/drivers/nvmem/uniphier-efuse.c
-> +++ b/drivers/nvmem/uniphier-efuse.c
-> @@ -52,6 +52,7 @@ static int uniphier_efuse_probe(struct platform_device =
-*pdev)
->  	econfig.size =3D resource_size(res);
->  	econfig.priv =3D priv;
->  	econfig.dev =3D dev;
-> +	econfig.add_legacy_fixed_of_cells =3D true;
->  	nvmem =3D devm_nvmem_register(dev, &econfig);
-> =20
->  	return PTR_ERR_OR_ZERO(nvmem);
-> diff --git a/drivers/nvmem/zynqmp_nvmem.c b/drivers/nvmem/zynqmp_nvmem.c
-> index f49bb9a26d05..7f15aa89a9d0 100644
-> --- a/drivers/nvmem/zynqmp_nvmem.c
-> +++ b/drivers/nvmem/zynqmp_nvmem.c
-> @@ -58,6 +58,7 @@ static int zynqmp_nvmem_probe(struct platform_device *p=
-dev)
-> =20
->  	priv->dev =3D dev;
->  	econfig.dev =3D dev;
-> +	econfig.add_legacy_fixed_of_cells =3D true;
->  	econfig.reg_read =3D zynqmp_nvmem_read;
->  	econfig.priv =3D priv;
-> =20
-> diff --git a/drivers/rtc/nvmem.c b/drivers/rtc/nvmem.c
-> index 07ede21cee34..37df7e80525b 100644
-> --- a/drivers/rtc/nvmem.c
-> +++ b/drivers/rtc/nvmem.c
-> @@ -21,6 +21,7 @@ int devm_rtc_nvmem_register(struct rtc_device *rtc,
-> =20
->  	nvmem_config->dev =3D dev;
->  	nvmem_config->owner =3D rtc->owner;
-> +	nvmem_config->add_legacy_fixed_of_cells =3D true;
->  	nvmem =3D devm_nvmem_register(dev, nvmem_config);
->  	if (IS_ERR(nvmem))
->  		dev_err(dev, "failed to register nvmem device for RTC\n");
-> diff --git a/drivers/w1/slaves/w1_ds250x.c b/drivers/w1/slaves/w1_ds250x.c
-> index 7592c7050d1d..cb426f7dd23d 100644
-> --- a/drivers/w1/slaves/w1_ds250x.c
-> +++ b/drivers/w1/slaves/w1_ds250x.c
-> @@ -168,6 +168,7 @@ static int w1_eprom_add_slave(struct w1_slave *sl)
->  	struct nvmem_device *nvmem;
->  	struct nvmem_config nvmem_cfg =3D {
->  		.dev =3D &sl->dev,
-> +		.add_legacy_fixed_of_cells =3D true,
->  		.reg_read =3D w1_nvmem_read,
->  		.type =3D NVMEM_TYPE_OTP,
->  		.read_only =3D true,
-> diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provide=
-r.h
-> index dae26295e6be..1b81adebdb8b 100644
-> --- a/include/linux/nvmem-provider.h
-> +++ b/include/linux/nvmem-provider.h
-> @@ -82,6 +82,7 @@ struct nvmem_cell_info {
->   * @owner:	Pointer to exporter module. Used for refcounting.
->   * @cells:	Optional array of pre-defined NVMEM cells.
->   * @ncells:	Number of elements in cells.
-> + * @add_legacy_fixed_of_cells:	Read fixed NVMEM cells from old OF syntax.
->   * @keepout:	Optional array of keepout ranges (sorted ascending by start=
-).
->   * @nkeepout:	Number of elements in the keepout array.
->   * @type:	Type of the nvmem storage
-> @@ -112,6 +113,7 @@ struct nvmem_config {
->  	struct module		*owner;
->  	const struct nvmem_cell_info	*cells;
->  	int			ncells;
-> +	bool			add_legacy_fixed_of_cells;
->  	const struct nvmem_keepout *keepout;
->  	unsigned int		nkeepout;
->  	enum nvmem_type		type;
+> 	struct btrfs_timespec {
+> 		__le64 sec;
+> 		__le32 nsec;
+> 	} __attribute__ ((__packed__));
 >=20
 
+Correct. We'd lose some fidelity in currently stored timestamps, but as
+Linus and Ted pointed out, anything below ~100ns granularity is
+effectively just noise, as that's the floor overhead for calling into
+the kernel. It's hard to argue that any application needs that sort of
+timestamp resolution, at least with contemporary hardware.=20
 
+Doing that would mean that tests that store specific values in the
+atime/mtime and expect to be able to fetch exactly that value back would
+break though, so we'd have to be OK with that if we want to try it. The
+good news is that it's relatively easy to experiment with new ways to
+store timestamps with these wrappers in place.
 
-
+--=20
+Jeff Layton <jlayton@kernel.org>
