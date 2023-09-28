@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC157B275A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCE17B275C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjI1VVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S232288AbjI1VWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjI1VVu (ORCPT
+        with ESMTP id S231524AbjI1VWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:21:50 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199F119D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:21:49 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40651a72807so12066185e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:21:49 -0700 (PDT)
+        Thu, 28 Sep 2023 17:22:16 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A164F3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:22:14 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-405361bba99so132888255e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:22:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695936107; x=1696540907; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1695936133; x=1696540933; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tnlj5buARV5K+De726MAcMUSsObf2zWvSrCdA5fjTRg=;
-        b=cAfaGHn3ZicHCqs+p+ZUHl+Wi+BZPbppsCPwj62uw1f/QufmDRqA3Q6Ud1IpXoW7sx
-         9+Q8o2vTu5N7PSjI2nmB3uh9oEu0v8XsQirK7EMDUe7roW1w8tivHap3/Q90Ddlim3PG
-         QuOvHGIIDnVeE++gDZnGpjo4l0iZX/yEQxlMg=
+        bh=p64Lh0KYKTkJQWXOIkGLg/D/cgb34Imm7XyIRj++q/8=;
+        b=aO25GsIjTkPl1Uqg2thupWadU/6Ff9rsujhodxwWIHpbE96YTR7jRzoNEOzdtrWyi4
+         tLqJ6rqZriidkUADZTjCk/HYIUal4pTRimV+eZPGlTxTrcosDdOd0bJGP0RTRQonqSry
+         R5InTjunmc4PLJrtnCYvZGg0CnkjiM2Tyn4ZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695936107; x=1696540907;
+        d=1e100.net; s=20230601; t=1695936133; x=1696540933;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=tnlj5buARV5K+De726MAcMUSsObf2zWvSrCdA5fjTRg=;
-        b=heDWdBDH0dIcUoJOk969cFPt83u4kxhxJDsFJs+ROLSR199cDSxxqmiHwfgqcu4DZu
-         5t3PQH0ORdEs9keZHa8KaKCiyqXTzGdwcgmDSukbNK6JQiNeEYUXy2S/p3rmvdAlzVhe
-         Q07u1w7fmal/KObK00bewJ+fL+atEex1Vh10NPnZXg9OFSUVLFF2Rb9vS0Lt0es976Z2
-         Po5crfOvOzAg1aezBi7AC5ieqR+KAYEa5pYWBrDGxMAmWrcHycJbNNt4ZtmQMlowKfJ2
-         SI3LpVTqvwNuPdxPiUP1uycDLDeMVa8SL88QH7gwu2pEjYlUfuIqeS7jlfA7z2jC6bAP
-         PurQ==
-X-Gm-Message-State: AOJu0Yyb/t/jjQR3EMlwBcgtZiyvCwA85Fgbkxqlgy/usqSNG7nZnJa2
-        2RxFJOwYcUtX21RMCFeSVNhFVA==
-X-Google-Smtp-Source: AGHT+IFbQI678xXWVSVuZmU+JPwbcdg+bhhZOYvoeJmNin/3WRrxmISKRsbDJlvuR5lZ9jxDfxWA/g==
-X-Received: by 2002:a05:600c:2981:b0:405:4f78:e128 with SMTP id r1-20020a05600c298100b004054f78e128mr2202066wmd.4.1695936107412;
-        Thu, 28 Sep 2023 14:21:47 -0700 (PDT)
+        bh=p64Lh0KYKTkJQWXOIkGLg/D/cgb34Imm7XyIRj++q/8=;
+        b=a81EvjcBoiTopCr6K/HZzm/kO2qANJTMRU7TDLYN4WPumeNDsQO+78pzv1CTNkzoMw
+         MMyBeqsu/xn+RxvVwUiLl5xZYdDxaAEJT7Bf/y+3l/Hl+4nFrWEkOy2DO9+/slBEjOE+
+         DobcNFKcxVEXrUBlVmH9rk8cAaSLJSP8t4+zJJx8qrVWw+FotBjMpmGXvHV9/zkP7UU8
+         nBWIVvWrwz47JN0S2OQI93Z2sgcyfLrwNaT0UsM8Eb8aR5cs1iXRIWs/2yzgTLJYeoyj
+         L1FxrYPBabtRIGFTzMx6tbpe7i8PyB45x+v0drJHc4LJlCU6g+cY+NyC1lqRu7+JE9/2
+         WuOw==
+X-Gm-Message-State: AOJu0Yzx69qUEKHv9GK37b8GZk393wD3nv/vx6ZZ4dNoVMv5DKjLzrdL
+        nX07heE5a2/GZ9uqUrAmf0kt/Q==
+X-Google-Smtp-Source: AGHT+IHLELgA0LkJNAkSaWgqyo3+0Tw9UdCJeJ0+zfMeJ9eEy7lPcLO9BEIEXnIrUg0HyD/HXY3PSw==
+X-Received: by 2002:a05:600c:1c8b:b0:406:535a:f558 with SMTP id k11-20020a05600c1c8b00b00406535af558mr2129957wms.10.1695936132621;
+        Thu, 28 Sep 2023 14:22:12 -0700 (PDT)
 Received: from [192.168.244.133] ([37.175.77.39])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.21.45
+        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.22.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:21:46 -0700 (PDT)
-Message-ID: <a5aadd2b-6c88-4a7e-a0e5-580dfe604c68@broadcom.com>
-Date:   Thu, 28 Sep 2023 23:21:50 +0200
+        Thu, 28 Sep 2023 14:22:12 -0700 (PDT)
+Message-ID: <57bd57bb-cdb8-4ff5-90d2-48bf906b6735@broadcom.com>
+Date:   Thu, 28 Sep 2023 23:22:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: Fix Florian Fainelli's email address
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        soc@kernel.org, kernel@pengutronix.de
-References: <20230928070652.2290946-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 03/23] gpio: brcmstb: Convert to platform remove callback
+ returning void
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Doug Berger <opendmb@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
+ <20230928070706.2290137-4-u.kleine-koenig@pengutronix.de>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -89,19 +96,20 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20230928070652.2290946-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230928070706.2290137-4-u.kleine-koenig@pengutronix.de>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004534f7060671e586"
+        boundary="000000000000c58fcb060671e64f"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004534f7060671e586
+--000000000000c58fcb060671e64f
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -109,21 +117,26 @@ Content-Transfer-Encoding: 8bit
 
 
 On 9/28/2023 9:06 AM, Uwe Kleine-König wrote:
-> Commit 31345a0f5901 ("MAINTAINERS: Replace my email address") added 13
-> instances of ...@broadcom.com and one of only ...@broadcom. I didn't
-> double check if Broadcom really owns that TLD, but git send-email
-> doesn't accept it, so add ".com" to that one bogous(?) instance.
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
 > 
-> Fixes: 31345a0f5901 ("MAINTAINERS: Replace my email address")
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
 > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Embarrassing, thanks for fixing this Uwe!
-
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
 Florian
 
---0000000000004534f7060671e586
+--000000000000c58fcb060671e64f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -194,14 +207,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEhgb6B6LwGxVr8V
-+e8MP7X2GG9PWgROQaHOeTsBjvqzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDkyODIxMjE0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBF1SE19d/Sg0XTz
+akcUIWNNMpig3njCNVcbfpWnjg5SMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDkyODIxMjIxM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB9QKMt8tF7skY2cy014wJqZ41/6U+mErXk
-e8be+QwWovxA+evD0jm6ZJNmUuylfo6m3nZP/m3TwiMsBkhn8bGFcrC4yJmi9+iFjanxMGpj2PgY
-9EBzwrioLi8TjaJE3scDXqRc/GZBgz3mcuh9JfchGwNLii0ddb4QU38WSs8Vzh3/1bEG/NkzpBtx
-De5kPMT5MZIpeFh8Q43KHi5i6vlE6EcFN+wqN7+0GjKmMFlJHYx/JbrJZrhQE37Xn/WAlPJcEuCc
-rdZcfvwGPebCo0yOSaSHtxnntguNvvLEzT9hOFaCrk3yHM3zMB8NoOCFukjl3smMDhZYbjPul9sx
-NcvD
---0000000000004534f7060671e586--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAo3/6FxYAo7zcWFqn4e9TfzBqEQy6u7G7R
+crQFU3AUKEFzUTpW9rOwo4XkqV/Zfs7F9Ou5rC9iJEa3cpTsykp/FNn80ef6uX22naTl/xoFvUtU
+zdnltX4Ysk/FPc+G6OldkqlvF/IliQ4puWTuh6Mn1O9xpvSEfofUF82q/mtRlvs0bM7J0m1/ml23
+6qSk4sWsDlzOMryw1rRuX6AVjk/wMeLkHfPZF9Rj+tnRhkS6TmwKvNy+GzgJnQaWhXtcDS9TgFYr
+V3iy5W1dgetHFUStFnvHt5R7EoZmxz3ivJNg3GB+gehYcRk+tz3hCe7iupEjJa8b0GZeX/DEkuVf
+J0wh
+--000000000000c58fcb060671e64f--
