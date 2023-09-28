@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4466B7B141B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B2C7B141D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjI1HJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41688 "EHLO
+        id S230415AbjI1HJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjI1HJf (ORCPT
+        with ESMTP id S231612AbjI1HJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:09:35 -0400
+        Thu, 28 Sep 2023 03:09:37 -0400
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF4E1FD7;
-        Thu, 28 Sep 2023 00:07:59 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 6AC3720005;
-        Thu, 28 Sep 2023 07:07:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9982A1FFB;
+        Thu, 28 Sep 2023 00:08:03 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 95BC620009;
+        Thu, 28 Sep 2023 07:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1695884878;
+        t=1695884882;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6W9oVhEO6bMU8YfnlBol3aSpzYKADclXRgrQd2t+5FA=;
-        b=cw6UES8Ozo+nKRsAv4QbC/IyD2eYF2P5KPwVmKo0OvBCE8bhJBW5CDZvca3kln6SHfeAjK
-        E2ELgc/EBR6408+Y/IZuQ+eoy2NdD7dc028zQO7VPv2SMqAcH2cbfjgywl1nc6bBwv3TVu
-        VeR3AV9U1sqMLV1PVOJZbLV9zL0oaz4sDvxjlBmGpE5jgnPoe06x9/8UCThoCBbXPmShXa
-        Ao1s7XYsCNDNCswMKs/QDBXluhMhE9SaXEZu5XiatP8qIrqwRRQlQPaDLMhO+fQu8M8g3w
-        ntmUEgOAQ1XwNprPM17U2v9NEFowUayg2d/o/jMa+SPR7oSY1Hsk3mURT+jckA==
+        bh=o/xbDf8eMD5E6WB0NjH/5DUWVpmxRzR+EOenyt8frKM=;
+        b=dGICtuvRjk7Hddbz3PCOogHz/QjfDd/lv87e3QspmRSY6kGl5kuGhwwt689rRtqI31dnXA
+        t969wO06bCjVjzB2NI8Y6uj6lrbPoKKdpEnoZ4wWsUlbM+XGzrbB52F/VqQfLDc9qj+2ug
+        lbA98bHjc6Tp1Y5UuA5L33ew+c2LbVLHeORaeUMNgtYAR5+RvMpF8bn0FXbtUw4RET2SSK
+        Kus+UYWyxeZpLQU/wnFR8JkirfJU9TFXNMVe1Oe11nUK4JQnFhE+w7qFNivmWs8tzcjr/h
+        bk8JDXSJU56nwBEpuRsm1EbfTKlZkG0ekZ0dyc8GCYQLf5BW85X8RF2qR4/5bw==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v7 15/30] soc: fsl: cpm1: qmc: Remove no more needed checks from qmc_check_chans()
-Date:   Thu, 28 Sep 2023 09:06:33 +0200
-Message-ID: <20230928070652.330429-16-herve.codina@bootlin.com>
+Subject: [PATCH v7 16/30] soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
+Date:   Thu, 28 Sep 2023 09:06:34 +0200
+Message-ID: <20230928070652.330429-17-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928070652.330429-1-herve.codina@bootlin.com>
 References: <20230928070652.330429-1-herve.codina@bootlin.com>
@@ -75,70 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The newly introduced qmc_chan_setup_tsa* functions check that the
-channel entries are not already used.
-These checks are also performed by qmc_check_chans() and are no more
-needed.
+The timeslots checked in qmc_check_chans() are the timeslots used.
+With the introduction of the available timeslots, the used timeslots
+are a subset of the available timeslots. The timeslots checked during
+the qmc_check_chans() call should be the available ones.
 
-Remove them from qmc_check_chans().
+Simply update and check the available timeslots instead of the used
+timeslots in qmc_check_chans().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 8e8bd1942c08..1189e6076e37 100644
+index 1189e6076e37..269d10cd3c7a 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -884,10 +884,7 @@ EXPORT_SYMBOL(qmc_chan_reset);
- static int qmc_check_chans(struct qmc *qmc)
- {
- 	struct tsa_serial_info info;
--	bool is_one_table = false;
- 	struct qmc_chan *chan;
--	u64 tx_ts_mask = 0;
--	u64 rx_ts_mask = 0;
- 	u64 tx_ts_assigned_mask;
- 	u64 rx_ts_assigned_mask;
- 	int ret;
-@@ -911,7 +908,6 @@ static int qmc_check_chans(struct qmc *qmc)
- 			dev_err(qmc->dev, "Number of TSA Tx/Rx TS assigned are not equal\n");
+@@ -914,13 +914,13 @@ static int qmc_check_chans(struct qmc *qmc)
+ 	rx_ts_assigned_mask = info.nb_rx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_rx_ts) - 1;
+ 
+ 	list_for_each_entry(chan, &qmc->chan_head, list) {
+-		if (chan->tx_ts_mask > tx_ts_assigned_mask) {
+-			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
++		if (chan->tx_ts_mask_avail > tx_ts_assigned_mask) {
++			dev_err(qmc->dev, "chan %u can use TSA unassigned Tx TS\n", chan->id);
  			return -EINVAL;
  		}
--		is_one_table = true;
+ 
+-		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
+-			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
++		if (chan->rx_ts_mask_avail > rx_ts_assigned_mask) {
++			dev_err(qmc->dev, "chan %u can use TSA unassigned Rx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
  	}
- 
- 	tx_ts_assigned_mask = info.nb_tx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_tx_ts) - 1;
-@@ -922,27 +918,11 @@ static int qmc_check_chans(struct qmc *qmc)
- 			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
- 			return -EINVAL;
- 		}
--		if (tx_ts_mask & chan->tx_ts_mask) {
--			dev_err(qmc->dev, "chan %u uses an already used Tx TS\n", chan->id);
--			return -EINVAL;
--		}
- 
- 		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
- 			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
- 			return -EINVAL;
- 		}
--		if (rx_ts_mask & chan->rx_ts_mask) {
--			dev_err(qmc->dev, "chan %u uses an already used Rx TS\n", chan->id);
--			return -EINVAL;
--		}
--
--		if (is_one_table && (chan->tx_ts_mask != chan->rx_ts_mask)) {
--			dev_err(qmc->dev, "chan %u uses different Rx and Tx TS\n", chan->id);
--			return -EINVAL;
--		}
--
--		tx_ts_mask |= chan->tx_ts_mask;
--		rx_ts_mask |= chan->rx_ts_mask;
- 	}
- 
- 	return 0;
 -- 
 2.41.0
 
