@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E0E7B27C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F187B27C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbjI1Vyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S232382AbjI1V4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbjI1Vyp (ORCPT
+        with ESMTP id S231542AbjI1V4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:54:45 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71261A2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:54:41 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1dcead29b3eso5175458fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:54:41 -0700 (PDT)
+        Thu, 28 Sep 2023 17:56:33 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B9E19D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:56:31 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-405361bb93bso134013465e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695938081; x=1696542881; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naKczhcaLKU+Vpda4JS+O3EX4QsmtiJzh35tbmPshTc=;
-        b=PCoYjmI3V2mhldvpUW+BMjkQqBzbnB1MUYixpHBD7jG/BGRFx0x7Ioyq+Quh4FwsC2
-         vRNCmI/diDQ522VI74hzRphwWaXC+VKsTtO6dL8OhD1e1O9xjLnYADSewBOPWhpe5hXV
-         PTOZ5MPinrpU3FHWZoVqDDYeGV0dCk6ogAIh6Wh3NzXx0weZpMohxZvsuX97U5YIYeOt
-         M8j2fmiH11N6ABVKMx1IgsRXwuhCWI0BQvWQBjYCwmVNHOz4+OYMIj4bpfvwhkYvNFn+
-         +i9OdRJTF2EtQW/g/7t5AXdUE2GrIEh1BOiaEv8h0EhEvNrZUAjEDAck9X1IQfGw3J4r
-         X+/Q==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1695938190; x=1696542990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZ+JMo8V6Wz42802JHuPtu0Gp5ARsCgYfg45BA+tI/Y=;
+        b=0sB2IGOLjRg1hLzscJBhDhrIr1+NelfvTguJ8ITY4DhxQXiedFxClO0Vy1SvY46VDR
+         JU9J7hQyJy9Ar8QMlBOCnFBvpJBGEOuKr9Hecen1PGDly7R5iCZblRmKBnJTzSEiJB2I
+         ixOUmdySyQegyv9Hsb9qWSqzegndIyM7Ptc0wXsxT3rooyvUPshvmAvWEMNoKoEPpJgv
+         3vwDqR4MNvtRryBVsQ4XcJ3Qyd7qtaF442sB5Tj3HRtTLooQ9vxt94ZPai8RTuPzdFkL
+         pJX4l9fmBiJ94WCkXQ4FfgmEN/XccsN5iV0d658lt7pABkL14Tr7+GIs0LyXqgodtXJO
+         O8cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695938081; x=1696542881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=naKczhcaLKU+Vpda4JS+O3EX4QsmtiJzh35tbmPshTc=;
-        b=Ccfbv5GIYOZdFpAC2E0ctmrmRnUf17m6FjTpP39I5zHns8ktGi6r85GywSU7vcEMS5
-         +by7I2lQ4J3ipdw6SUiP2B8NE+elWaL2hPMpPOG3MAlst1uX6d5H//Qaih0/eOcocOSF
-         yaAwNfsYqMkzXo/QngqgrfJZ6rb+rnJ6wuK+AASBcOC5n+XAu47WHXPWL2gACbIo3UB6
-         y4XxoYBobz6XKzFtMykOgGBgde3Z4sWb2503YD9mE2ip7oUbPsYftF5tuUOjC8c7ON4z
-         3WPQYbKwN2cpyxTnem704itF6YMvZWE01whDy3aJxyIF7X9WzZ+oiMpsSEi4tRowDHy9
-         pNSA==
-X-Gm-Message-State: AOJu0YwGtvy1Bne0DJWYcwFvdYCcLR5ZL12zIwEdDX999XCChNucEHak
-        QxXh6THLIhMj4iuZoMFpisYBawz96LH291SEG+toHQ==
-X-Google-Smtp-Source: AGHT+IHOIrvsxrbfrHlW6R9fXJru9yxOJf/0wGCueRWD8DQMMhA/aXBY0UgxF6eu93B+pnrmI0ogQ+ibXsr5AvEap8U=
-X-Received: by 2002:a05:6870:e0c9:b0:1d5:ab82:c3b8 with SMTP id
- a9-20020a056870e0c900b001d5ab82c3b8mr2689976oab.53.1695938081084; Thu, 28 Sep
- 2023 14:54:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695938190; x=1696542990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZZ+JMo8V6Wz42802JHuPtu0Gp5ARsCgYfg45BA+tI/Y=;
+        b=KmWr2wrt5hXwKL7DfvvlvKcCU8P/SZwuAIJxviop8pUh43+VXHJXGAXTwuXaaXKLSS
+         fEm6/RJfg1VgFgWa7xkDHKUZoKYF5mX/GFxM3W7itZNdxO95KX9uqH1gfhvvBFg7iV/2
+         zU3gUhuBs5iuX//Hwk6cXNEkHFM2g2+hqrgBuot4J99rC9gT3HEAkqadvSRuteH4wNPA
+         fU2nUwX+scEEF5u/pHHt48yCz5YoRNVzDxqa1EsMkF3YwMXuYXwcYqDVhYtarFMkqe+c
+         4AOVDviQJ1xk38Y4LCIB02ZFuVVcBA9JFsAyknvu3CyUsgEdnRCVrlCFqJ7XkK5HInrl
+         3wow==
+X-Gm-Message-State: AOJu0YzrDhsngUjkHMAmAVvv/E0GAb605Rm+jduLFA/218cVh4a9oxr6
+        Wz5ugqMmglsljEyOPq1h7HMKrg==
+X-Google-Smtp-Source: AGHT+IFGAZs15eAB0nMhOS0SGwjaQr6z+YM1hrsVNfS7p5IbowMrlzFUDnG4zqCEElNL0h0Z752N2g==
+X-Received: by 2002:a5d:640d:0:b0:320:16b:167d with SMTP id z13-20020a5d640d000000b00320016b167dmr2398306wru.63.1695938190049;
+        Thu, 28 Sep 2023 14:56:30 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id bt14-20020a056000080e00b003200c918c81sm13825072wrb.112.2023.09.28.14.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 14:56:29 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 22:56:28 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rafael@kernel.org, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        wvw@google.com
+Subject: Re: [PATCH v4 00/18] Introduce runtime modifiable Energy Model
+Message-ID: <20230928215628.u53wmwlr6lm5qzpe@airbuntu>
+References: <20230925081139.1305766-1-lukasz.luba@arm.com>
 MIME-Version: 1.0
-References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Sep 2023 23:54:30 +0200
-Message-ID: <CACRpkdY+VgA773vbR_vAh7_YS47N1UBk_ae7ANZC5qim428Xpw@mail.gmail.com>
-Subject: Re: [PATCH 00/23] gpio: Convert to platform remove callback returning void
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Mun Yew Tham <mun.yew.tham@intel.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, linux-omap@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230925081139.1305766-1-lukasz.luba@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 9:07=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
+Hi Lukasz
 
-> this series converts all platform drivers below drivers/gpio to use
-> .remove_new(). The motivation is to get rid of an integer return code
-> that is (mostly) ignored by the platform driver core and error prone on
-> the driver side.
+On 09/25/23 09:11, Lukasz Luba wrote:
+> Hi all,
+> 
+> This patch set adds a new feature which allows to modify Energy Model (EM)
+> power values at runtime. It will allow to better reflect power model of
+> a recent SoCs and silicon. Different characteristics of the power usage
+> can be leveraged and thus better decisions made during task placement in EAS.
+> 
+> It's part of feature set know as Dynamic Energy Model. It has been presented
+> and discussed recently at OSPM2023 [3]. This patch set implements the 1st
+> improvement for the EM.
 
-The whole set looks good to me:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks for the series! I'm on CC this time :-) Unfortunately I have a planned
+holiday starting tomorrow, so won't get a chance to do proper review till I'm
+back which would be few weeks from now.
 
-Yours,
-Linus Walleij
+I just want to iterate that this is a real problem being seen in practice where
+it's hard to provide a single average EM for all workloads now. So we certainly
+need something like this.
+
+Hopefully I'll get a chance to help with review when I'm back from holidays.
+
+
+Thanks!
+
+--
+Qais Yousef
