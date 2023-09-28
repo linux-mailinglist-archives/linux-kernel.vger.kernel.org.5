@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DA57B1F2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25917B1F30
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjI1ODd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        id S232238AbjI1OFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbjI1ODb (ORCPT
+        with ESMTP id S231576AbjI1OFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:03:31 -0400
+        Thu, 28 Sep 2023 10:05:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6E311F;
-        Thu, 28 Sep 2023 07:03:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 974D9C433C8;
-        Thu, 28 Sep 2023 14:03:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C0E136;
+        Thu, 28 Sep 2023 07:05:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF12C433C7;
+        Thu, 28 Sep 2023 14:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695909809;
-        bh=n2bDHzk2s5pAtaibWAwFVOIL4i6SiOY2rnYokEWoql0=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=D95uGPuTGA8Y7UqNsKhGsRlqlnJe4RWQUvfGWgj2Oiqdg81cL0lj4N5/qOxosGS35
-         SvP2gCSX24agKDhZXJrfpkPsSjTQmB40EVJ4EVkP7NkUQsY4BPgIe3wQjm040jlvH9
-         7KSxZJJNEynr3A/CTsxG65POGEpaTUUPDoCUTNEwR/NYAWcWz7PjargFlC8bomS/07
-         QOmyZenXmNiowWfEP9W+UYLNLxGwU9ypIFHxP+chWW/UB+hylroPiHW6hC4VGjCd+g
-         vDRDnfukLR8pou+/HDi5fcl4NxQ441P417cyMETI6OtkQUj2dlOT1x39xCMx0u9ATA
-         5rE7iH3hJopKg==
-From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-In-Reply-To: <20230925122609.78849-1-f.suligoi@asem.it>
-References: <20230925122609.78849-1-f.suligoi@asem.it>
-Subject: Re: (subset) [PATCH v3 1/2] dt-bindings: backlight: Add MPS
- MP3309C
-Message-Id: <169590980634.1618521.3566617275020298182.b4-ty@kernel.org>
-Date:   Thu, 28 Sep 2023 15:03:26 +0100
+        s=k20201202; t=1695909913;
+        bh=6Dg6G5NYkGLr0eWe04c4RUxjLhdkFIrJohD7fivs7+I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eecH+hYNl1FzuaL1MIwHBXZB+0Mq+StxV0YlfEPwkHSesdnDkVhUnqueXXgDXND34
+         Vid4AiYpP2OEH2Kou6VCBofuWqZZVaDzjPayS9ZW+QuznbLqxQmqi9fvkKUW0I2TJu
+         htWysiynk9Al4HngkWulPoPWj1cEBduQ0g8fLoya4veWhesMEbRxFMhXwZMkIjIkBc
+         3tNy2OkYlBN5o+gSX97eaGkqBmbYMK9iHqum7M2dmni3Crkf68NWEdhJbRbNpMutS7
+         EVI2GNRrjrFggn2ZxUSpAmaOx2YLoia23tVyjMdH+nZRMM9b7A8zckQ/vpK+9oy4Ny
+         PMPduQjnfhKdA==
+Date:   Thu, 28 Sep 2023 16:05:08 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+Message-ID: <20230928-themen-dilettanten-16bf329ab370@brauner>
+References: <20230926162228.68666-1-mjguzik@gmail.com>
+ <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+ <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
+ <20230927-kosmetik-babypuppen-75bee530b9f0@brauner>
+ <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
+ <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+ <ZRR1Kc/dvhya7ME4@f>
+ <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+ <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,23 +58,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 14:26:08 +0200, Flavio Suligoi wrote:
-> The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
-> programmable switching frequency to optimize efficiency.
-> The brightness can be controlled either by I2C commands (called "analog"
-> mode) or by a PWM input signal (PWM mode).
-> This driver supports both modes.
-> 
-> For device driver details, please refer to:
-> - drivers/video/backlight/mp3309c_bl.c
-> 
-> [...]
+> So I spent a good chunk of time going through this patch.
 
-Applied, thanks!
+The main thing that makes me go "we shouldn't do this" is that KASAN
+isn't able to detect UAF issues as Jann pointed out so I'm getting
+really nervous about this.
 
-[1/2] dt-bindings: backlight: Add MPS MP3309C
-      commit: 02c4e661658f73d3c266c68f89f0b14bd8ba6bd8
-
---
-Lee Jones [李琼斯]
-
+And Jann also pointed out some potential issues with
+__fget_files_rcu() as well...
