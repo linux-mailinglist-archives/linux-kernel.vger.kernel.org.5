@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727347B11B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CC87B11C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjI1Et6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 00:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
+        id S230183AbjI1EwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjI1Ety (ORCPT
+        with ESMTP id S229920AbjI1EwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:49:54 -0400
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79FC13A;
-        Wed, 27 Sep 2023 21:49:51 -0700 (PDT)
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay09.hostedemail.com (Postfix) with ESMTP id 7D0898029B;
-        Thu, 28 Sep 2023 04:49:50 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id AA8A13B;
-        Thu, 28 Sep 2023 04:49:47 +0000 (UTC)
-Message-ID: <296cf67699ab7aefe378b6719230a50e2851fe7b.camel@perches.com>
-Subject: Re: [PATCH v2 2/2] MAINTAINERS: migrate some K to D
-From:   Joe Perches <joe@perches.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Date:   Wed, 27 Sep 2023 21:49:46 -0700
-In-Reply-To: <20230928-get_maintainer_add_d-v2-2-8acb3f394571@google.com>
-References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
-         <20230928-get_maintainer_add_d-v2-2-8acb3f394571@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 28 Sep 2023 00:52:13 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03983121;
+        Wed, 27 Sep 2023 21:52:11 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bffa8578feso212458131fa.2;
+        Wed, 27 Sep 2023 21:52:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695876729; x=1696481529; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=50CeIcBtyDTmcONQhSsmODzCCq0J0/waCFp836ioZfA=;
+        b=cxR7ksdCfDSCYmtYWqK0+53si0DWuCOdgEl9BP2mVllFOdb5VWr9jIw7tj59uA3G5g
+         unDKLX8xLKLvOlpCIQlJz+bwNh0TYkwVou0cfPX6QamUHO9UPmvKxbz3q7e1G/LB9Uq+
+         mtMKAtQro1ZlJpwVXxgCOLtWsC/BGx144yzNGKTGVjXlDhPGHyHcIKQkXX5t1T3wXSuO
+         6mgNtlDduj0oH4OwdOLLaB/E+HnFeEhVfii8fuHte54zWs7sRkKCmPx3Cbc1w7Bx6YKN
+         xRc03J/YDVCBnlUwFju6Zvm1N5seWi8Sa+1dD2OAVSy3n2zsqXoxve/5Gz5M/TtE6okC
+         cX6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695876729; x=1696481529;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=50CeIcBtyDTmcONQhSsmODzCCq0J0/waCFp836ioZfA=;
+        b=JQq34NWucYUAAszmhMRBOU+hIxc7YXW7GezdXk0wahyJt9wmDH3J7vBYb3h4dFLviL
+         uv23pVmmkVWuwNd7KJNg7ODhZ1yBfphMQHh5HjuF+3BvWNW0jw8UlEnfWbaDa5IKX5Gn
+         2PHscJ55uN222KVqYZeOab7A25wx6icHGHSvm9B6kyUE8JneSubK3aVu3gnw6oC3eaAw
+         iB3DvqAdx3tSqTaoUH6LNxq36/dephRdLKTuGEB7omcg1ZQQcEjRC840M0666qDk8I4w
+         lAfMkeobLPXNbNNqH6GikV2KyQH56twXoe84t9Fk/o87dKYtJO2Ky8UtOlIRLLuMOLuz
+         AlPg==
+X-Gm-Message-State: AOJu0YxWYU7E+y4KiRd6+9b9PHb8as0z4QZJ/BI7gQVJ5HuQ6pI23rZU
+        dajj/Dy8ArER3Pk/Lyp5jAc=
+X-Google-Smtp-Source: AGHT+IHRPWejVElofn9/9Ioro7bntPjotq0g/0Z86Cj+JgSnoqhwy1+TcB94wcEGwXXVrN0+igLJ0w==
+X-Received: by 2002:a2e:9854:0:b0:2bb:78ad:56cb with SMTP id e20-20020a2e9854000000b002bb78ad56cbmr85554ljj.37.1695876728814;
+        Wed, 27 Sep 2023 21:52:08 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
+        by smtp.gmail.com with ESMTPSA id v21-20020a2e7a15000000b002be5d222c60sm3321524ljc.102.2023.09.27.21.52.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 21:52:07 -0700 (PDT)
+Message-ID: <4f352a44-1fe2-f44a-20ba-efaed874b1b0@gmail.com>
+Date:   Thu, 28 Sep 2023 07:52:06 +0300
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: AA8A13B
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Stat-Signature: 69ieiws3y53ioe8ryg6onpcgzq5oqn5z
-X-Rspamd-Server: rspamout08
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/5VJjhIijyPfi+oXi/uXwj1ido5cqt1jY=
-X-HE-Tag: 1695876587-516273
-X-HE-Meta: U2FsdGVkX19eo0uOjCcm4mPH7s7d0Lw6X1PiL8S2be4QsQ4rx0FQOElQVxN2szfChbPT6lt5yBjBXi8j3YYJkmr538LqEbJDe5pRqYui56Jz9jk380QAFmM9EwcqlurPUaFwklLcP8OfNRL6YzX1d+uLNq59GcROf8e/4nQ1uz69Iq6Qr7jMbitVhLesRK/AfXzLhYQaa/7k/brdBq0lPa5b98kyqGfFVyQErrnijpuZQt+OprNhl+xEz/zdgajVF5hPgBj2i4xCq3cWOVSpyYPnMIffBpLF/dqVgbzZRhGc2AmI+PPKE5dzPbX74C1BU5riky1NmWHU1/7AKaR+sdovPCrhVqwuGjMm094EjmoOdKgKrGb3CsywLuGJBpAvZFns0SFm4iUAxjcT9dsblYMl/ZCcKBEgVDLsvME2em84mOFRlROP8U8IjSuWvbunrLfRjsFi7TjsPrPewOh4y3lvpTA7uYYC69THH0r6+n2tK+F5AjvIhex28voOXMYHhw1tUr5Fv0Cs/aAomT9fOCVD0JJChqJfcAjZ07Hl4wkusfSAc7R/61cm9Gz4Ge5knH5WVQOs9mdc3RJjYz505HZPtuHNXCL3A1EAvTrbmmzeyBH50r/ewA==
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] Support ROHM KX132ACR-LBZ Accelerometer
+Content-Language: en-US, en-GB
+To:     Mehdi Djait <mehdi.djait.k@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1695819243.git.mazziesaccount@gmail.com>
+ <CAFukWp0TM+v7Y93gFuHL2_ihefxxPmDkGT4R9nmruL70D7KNZA@mail.gmail.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <CAFukWp0TM+v7Y93gFuHL2_ihefxxPmDkGT4R9nmruL70D7KNZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
-> Let's get the ball rolling with some changes from K to D.
+On 9/27/23 17:30, Mehdi Djait wrote:
+> Hello Matti,
 > 
-> Ultimately, if it turns out that 100% of K users want to change to D
-> then really the behavior of K could just be changed.
+> On Wed, Sep 27, 2023 at 2:56 PM Matti Vaittinen
+> <mazziesaccount@gmail.com> wrote:
+>>
+>> The ROHM KX132ACR-LBZ is an accelerometer for industrial applications.
+>> It has a subset of KX022A (NOTE: Not KX132-1211) functionalities, dropping
+>> support for tap, free fall and tilt detection engines. Also, the register
+>> interface is an exact subset of what is found on KX022A (except the
+>> WHO_AM_I register value).
+>>
+>> This series adds own DT compatible for the KX132ACR-LBZ and also own
+>> chip-info in driver to allow handling the different 'WHO_AM_I' value.
+>> The separation of the Kionix KX022A and ROHM KX132ACR-LBZ does also
+>> allow adding support for the KX022A tilt/free fall/tap engines which are
+>> not present on KX132ACR-LBZ.
+>>
+>> Matti Vaittinen (2):
+>>    dt-bindings: iio: Add KX132ACR-LBZ accelerometer
+>>    iio: kx022a: Support ROHM KX132ACR-LBZ
+>>
+>>   .../bindings/iio/accel/kionix,kx022a.yaml     | 10 +++---
+>>   drivers/iio/accel/kionix-kx022a-i2c.c         |  4 ++-
+>>   drivers/iio/accel/kionix-kx022a-spi.c         |  4 ++-
+>>   drivers/iio/accel/kionix-kx022a.c             | 34 ++++++++++++++++++-
+>>   drivers/iio/accel/kionix-kx022a.h             |  2 ++
+>>   5 files changed, 47 insertions(+), 7 deletions(-)
+>>
+> 
+> You could also mention this device in the list of supported devices
+> under drivers/iio/accel/Kconfig
 
-Given my suggestion to 1/2, this would be unnecessary.
+Oh, indeed. Thanks Mehdi!
 
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> Original-author: Kees Cook <keescook@chromium.org>
-> ---
->  MAINTAINERS | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 94e431daa7c2..80ffdaa8f044 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5038,7 +5038,7 @@ F:	Documentation/kbuild/llvm.rst
->  F:	include/linux/compiler-clang.h
->  F:	scripts/Makefile.clang
->  F:	scripts/clang-tools/
-> -K:	\b(?i:clang|llvm)\b
-> +D:	\b(?i:clang|llvm)\b
->  
->  CLK API
->  M:	Russell King <linux@armlinux.org.uk>
-> @@ -8149,7 +8149,7 @@ F:	lib/strcat_kunit.c
->  F:	lib/strscpy_kunit.c
->  F:	lib/test_fortify/*
->  F:	scripts/test_fortify.sh
-> -K:	\b__NO_FORTIFY\b
-> +D:	\b__NO_FORTIFY\b
->  
->  FPGA DFL DRIVERS
->  M:	Wu Hao <hao.wu@intel.com>
-> @@ -11405,8 +11405,10 @@ F:	Documentation/ABI/testing/sysfs-kernel-warn_count
->  F:	include/linux/overflow.h
->  F:	include/linux/randomize_kstack.h
->  F:	mm/usercopy.c
-> -K:	\b(add|choose)_random_kstack_offset\b
-> -K:	\b__check_(object_size|heap_object)\b
-> +D:	\b(add|choose)_random_kstack_offset\b
-> +D:	\b__check_(object_size|heap_object)\b
-> +D:	\b__counted_by\b
-> +
->  
->  KERNEL JANITORS
->  L:	kernel-janitors@vger.kernel.org
-> @@ -17290,7 +17292,7 @@ F:	drivers/acpi/apei/erst.c
->  F:	drivers/firmware/efi/efi-pstore.c
->  F:	fs/pstore/
->  F:	include/linux/pstore*
-> -K:	\b(pstore|ramoops)
-> +D:	\b(pstore|ramoops)
->  
->  PTP HARDWARE CLOCK SUPPORT
->  M:	Richard Cochran <richardcochran@gmail.com>
-> @@ -19231,8 +19233,8 @@ F:	include/uapi/linux/seccomp.h
->  F:	kernel/seccomp.c
->  F:	tools/testing/selftests/kselftest_harness.h
->  F:	tools/testing/selftests/seccomp/*
-> -K:	\bsecure_computing
-> -K:	\bTIF_SECCOMP\b
-> +D:	\bsecure_computing
-> +D:	\bTIF_SECCOMP\b
->  
->  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) Broadcom BRCMSTB DRIVER
->  M:	Kamal Dasu <kamal.dasu@broadcom.com>
-> 
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
