@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E332D7B20CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950617B20DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjI1PRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
+        id S231809AbjI1PRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjI1PQw (ORCPT
+        with ESMTP id S231789AbjI1PRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:16:52 -0400
+        Thu, 28 Sep 2023 11:17:10 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25131CCD
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:16:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40752CE2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:16:56 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AE021476;
-        Thu, 28 Sep 2023 08:17:26 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C1E61FB;
+        Thu, 28 Sep 2023 08:17:34 -0700 (PDT)
 Received: from e127643.arm.com (unknown [10.57.3.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E7AD23F59C;
-        Thu, 28 Sep 2023 08:16:43 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E90AC3F59C;
+        Thu, 28 Sep 2023 08:16:50 -0700 (PDT)
 From:   James Clark <james.clark@arm.com>
 To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         kvmarm@lists.linux.dev, broonie@kernel.org, maz@kernel.org,
@@ -38,9 +38,9 @@ Cc:     James Clark <james.clark@arm.com>,
         Rob Herring <robh@kernel.org>,
         Jintack Lim <jintack.lim@linaro.org>,
         Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/5] arm64: KVM: Write TRFCR value on guest switch with nVHE
-Date:   Thu, 28 Sep 2023 16:16:08 +0100
-Message-Id: <20230928151611.3042443-5-james.clark@arm.com>
+Subject: [PATCH v1 5/5] coresight: Pass guest TRFCR value to KVM
+Date:   Thu, 28 Sep 2023 16:16:09 +0100
+Message-Id: <20230928151611.3042443-6-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230928151611.3042443-1-james.clark@arm.com>
 References: <20230928151611.3042443-1-james.clark@arm.com>
@@ -54,141 +54,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The guest value for TRFCR requested by the Coresight driver is saved
-in guest_trfcr_el1. On guest switch this value needs to be written to
-the register. Currently TRFCR is only modified when we want to disable
-trace completely in guests due to an issue with TRBE. Expand the
-__debug_save_trace() function to always write to the register if a
-different value for guests is required, but also keep the existing TRBE
-disable behavior if that's required.
+Currently the userspace and kernel filters for guests are never set, so
+no trace will be generated for them. Add support for tracing guests by
+passing the desired TRFCR value to KVM so it can be applied to the
+guest.
 
-The TRFCR restore function remains functionally the same, except a value
-of 0 doesn't mean "don't restore" anymore. Now that we save both guest
-and host values the register is restored any time the guest and host
-values differ.
+By writing either E1TRE or E0TRE, filtering on either guest kernel or
+guest userspace is also supported. And if both E1TRE and E0TRE are
+cleared when exclude_guest is set, that option is supported too. This
+change also brings exclude_host support which is difficult to add as a
+separate commit without excess churn and resulting in no trace at all.
+
+Testing
+=======
+
+The addresses were counted with the following:
+
+  $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
+
+Guest kernel only:
+
+  $ perf record -e cs_etm//Gk -a -- true
+    535 EL1
+      1 EL2
+
+Guest user only (only 5 addresses because the guest runs slowly in the
+model):
+
+  $ perf record -e cs_etm//Gu -a -- true
+    5 EL0
+
+Host kernel only:
+
+  $  perf record -e cs_etm//Hk -a -- true
+   3501 EL2
+
+Host userspace only:
+
+  $  perf record -e cs_etm//Hu -a -- true
+    408 EL0
+      1 EL2
 
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/arm64/kvm/debug.c             | 13 ++++++-
- arch/arm64/kvm/hyp/nvhe/debug-sr.c | 56 ++++++++++++++++++------------
- 2 files changed, 46 insertions(+), 23 deletions(-)
+ .../coresight/coresight-etm4x-core.c          | 42 ++++++++++++++++---
+ drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
+ 3 files changed, 40 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-index 379d2677961f..e39f2d535b25 100644
---- a/arch/arm64/kvm/debug.c
-+++ b/arch/arm64/kvm/debug.c
-@@ -332,10 +332,21 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
- 	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
- 		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
- 
--	/* Check if we have TRBE implemented and available at the host */
-+	/*
-+	 * Check if we have TRBE implemented and available at the host. If it's
-+	 * in use at the time of guest switch it will need to be disabled and
-+	 * then restored.
-+	 */
- 	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
- 	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
- 		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-+	/*
-+	 * Also save TRFCR on nVHE if FEAT_TRF (TraceFilt) exists. This will be
-+	 * done in cases where use of TRBE doesn't completely disable trace and
-+	 * handles the exclude_host/exclude_guest rules of the trace session.
-+	 */
-+	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT))
-+		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 77b0271ce6eb..292f9da6aeaf 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -6,6 +6,7 @@
+ #include <linux/acpi.h>
+ #include <linux/bitops.h>
+ #include <linux/kernel.h>
++#include <linux/kvm_host.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+ #include <linux/types.h>
+@@ -271,9 +272,22 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+ 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+ 	if (!drvdata->trfcr)
+ 		return;
++	kvm_etm_set_guest_trfcr(0);
+ 	cpu_prohibit_trace();
  }
  
- void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-index 55bc01e9808f..7ceb16be14cd 100644
---- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-+++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-@@ -51,32 +51,44 @@ static void __debug_restore_spe(u64 pmscr_el1)
- 	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
- }
- 
--static void __debug_save_trace(u64 *trfcr_el1)
-+/*
-+ * Save TRFCR and disable trace completely if TRBE is being used, otherwise
-+ * apply required guest TRFCR value.
-+ */
-+static void __debug_save_trace(struct kvm_vcpu *vcpu)
- {
--	*trfcr_el1 = 0;
-+	vcpu->arch.host_debug_state.host_trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
- 
- 	/* Check if the TRBE is enabled */
--	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
--		return;
--	/*
--	 * Prohibit trace generation while we are in guest.
--	 * Since access to TRFCR_EL1 is trapped, the guest can't
--	 * modify the filtering set by the host.
--	 */
--	*trfcr_el1 = read_sysreg_s(SYS_TRFCR_EL1);
--	write_sysreg_s(0, SYS_TRFCR_EL1);
--	isb();
--	/* Drain the trace buffer to memory */
--	tsb_csync();
-+	if (read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E) {
-+		/*
-+		 * Prohibit trace generation while we are in guest. Since access
-+		 * to TRFCR_EL1 is trapped, the guest can't modify the filtering
-+		 * set by the host.
-+		 */
-+		vcpu->arch.host_debug_state.guest_trfcr_el1 = 0;
-+		write_sysreg_s(0, SYS_TRFCR_EL1);
-+		isb();
-+		/* Drain the trace buffer to memory */
-+		tsb_csync();
-+	} else {
-+		/*
-+		 * Not using TRBE, so guest trace works. Apply the guest filters
-+		 * provided by the Coresight driver, if different.
-+		 */
-+		if (vcpu->arch.host_debug_state.guest_trfcr_el1 !=
-+		    vcpu->arch.host_debug_state.host_trfcr_el1)
-+			write_sysreg_s(vcpu->arch.host_debug_state.guest_trfcr_el1,
-+				       SYS_TRFCR_EL1);
-+	}
- }
- 
--static void __debug_restore_trace(u64 trfcr_el1)
-+static void __debug_restore_trace(struct kvm_vcpu *vcpu)
- {
--	if (!trfcr_el1)
--		return;
--
- 	/* Restore trace filter controls */
--	write_sysreg_s(trfcr_el1, SYS_TRFCR_EL1);
-+	if (vcpu->arch.host_debug_state.host_trfcr_el1 !=
-+	    vcpu->arch.host_debug_state.guest_trfcr_el1)
-+		write_sysreg_s(vcpu->arch.host_debug_state.host_trfcr_el1, SYS_TRFCR_EL1);
- }
- 
- void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
-@@ -84,9 +96,9 @@ void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
- 	/* Disable and flush SPE data generation */
- 	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
- 		__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
--	/* Disable and flush Self-Hosted Trace generation */
++static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
++{
++	u64 trfcr = drvdata->trfcr;
 +
- 	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
--		__debug_save_trace(&vcpu->arch.host_debug_state.host_trfcr_el1);
-+		__debug_save_trace(vcpu);
++	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
++		trfcr &= ~TRFCR_ELx_ExTRE;
++	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
++		trfcr &= ~TRFCR_ELx_E0TRE;
++
++	return trfcr;
++}
++
+ /*
+  * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
+  * as configured by the drvdata->config.mode for the current
+@@ -286,18 +300,28 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+  */
+ static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
+ {
+-	u64 trfcr = drvdata->trfcr;
++	u64 trfcr;
+ 
+ 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+-	if (!trfcr)
++	if (!drvdata->trfcr)
+ 		return;
+ 
+-	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
+-		trfcr &= ~TRFCR_ELx_ExTRE;
+-	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
+-		trfcr &= ~TRFCR_ELx_E0TRE;
++	if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
++		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
++	else
++		trfcr = etm4x_get_kern_user_filter(drvdata);
+ 
+ 	write_trfcr(trfcr);
++
++	/* Set filters for guests and pass to KVM */
++	if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
++		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
++	else
++		trfcr = etm4x_get_kern_user_filter(drvdata);
++
++	/* TRFCR_EL1 doesn't have CX so mask it out. */
++	trfcr &= ~TRFCR_EL2_CX;
++	kvm_etm_set_guest_trfcr(trfcr);
  }
  
- void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
-@@ -99,7 +111,7 @@ void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
- 	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
- 		__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
- 	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
--		__debug_restore_trace(vcpu->arch.host_debug_state.host_trfcr_el1);
-+		__debug_restore_trace(vcpu);
- }
+ #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+@@ -655,6 +679,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	if (attr->exclude_user)
+ 		config->mode = ETM_MODE_EXCL_USER;
  
- void __debug_switch_to_host(struct kvm_vcpu *vcpu)
++	if (attr->exclude_host)
++		config->mode |= ETM_MODE_EXCL_HOST;
++
++	if (attr->exclude_guest)
++		config->mode |= ETM_MODE_EXCL_GUEST;
++
+ 	/* Always start from the default config */
+ 	etm4_set_default_config(config);
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index 20e2e4cb7614..3f170599822f 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -841,7 +841,7 @@ enum etm_impdef_type {
+  * @s_ex_level: Secure ELs where tracing is supported.
+  */
+ struct etmv4_config {
+-	u32				mode;
++	u64				mode;
+ 	u32				pe_sel;
+ 	u32				cfg;
+ 	u32				eventctrl0;
+diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+index 767076e07970..727dd27ba800 100644
+--- a/drivers/hwtracing/coresight/coresight-priv.h
++++ b/drivers/hwtracing/coresight/coresight-priv.h
+@@ -39,6 +39,9 @@
+ 
+ #define ETM_MODE_EXCL_KERN	BIT(30)
+ #define ETM_MODE_EXCL_USER	BIT(31)
++#define ETM_MODE_EXCL_HOST	BIT(32)
++#define ETM_MODE_EXCL_GUEST	BIT(33)
++
+ struct cs_pair_attribute {
+ 	struct device_attribute attr;
+ 	u32 lo_off;
 -- 
 2.34.1
 
