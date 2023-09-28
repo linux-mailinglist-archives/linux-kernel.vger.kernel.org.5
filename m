@@ -2,212 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A37B107E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1397B108B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjI1Byo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 21:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        id S230028AbjI1CCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 22:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1Byn (ORCPT
+        with ESMTP id S229437AbjI1CCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 21:54:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B4AAC;
-        Wed, 27 Sep 2023 18:54:41 -0700 (PDT)
+        Wed, 27 Sep 2023 22:02:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DB4AC
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 19:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695866082; x=1727402082;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=VJc/QysescemoKOW+DykoXe9W/F3IUNeJe2VXQW9jbM=;
-  b=W960fF2Wzdg+/nXLuz87te7ULM2xlSM0F1NyEPZ3wDCpYKENtmmHP9Jy
-   01TrAVKJ3zvbBjePjoc4AOGrfWSPyXUqREpJlpUSGY2VYVF/gKzUBDUJi
-   Uj3jwQFi7WUEF4KhKdVSfWOU+ivysLuHudzYSCHfwK0JEFx8s/5u9HwHK
-   tUHGf33Kz41MIfNtkqEJ4Q1kJku6v8xq6ScIHe/su/s2NjIwfTsBUYkbc
-   T863seIwDPJd56LWpBVeLVqyDUPna/f73iwVJZdGuJKvxwQ7PDXTcXzI0
-   anLQzyaP3uLsQRgxw8VmLy7TfI3wz213oTx1BQUtDaAYEz15eWBrP+ZEL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="384766265"
+  t=1695866517; x=1727402517;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=iUKFS5GB5DGWZui7mOi3K/pjI1nunzjyIYlCw8LrZtM=;
+  b=fyycsusAAOfsXiPTuYuFnFExkK+8pq/npEA7BlfO9hCz9hXaPL3K4K4Q
+   A1rvb1CpwoInE4K3+YgpqU6/98ncHvc53Tb/bocKyRfrwLbuN0D/r6Wi6
+   Dzm/i+/2WFDlJScT215LLilm/I7KrIMayA2h7fTPrpqCwqH6up62mmTX0
+   /Ert+kIQbs793Sc/A72JgMpAC+mwSXOsFoE2BC25J7KRmDosHNebRjQuO
+   hyT8hD3JXT2u9P5k5xXxzEx7igAFaS4oU39PXH7MbX4ZJZFnu1uyUG3FI
+   64VfUKIvrqCOeb+modCPHVKxDq7ZkyymdCGFOYwmn8x5N0auGfNd4Xqzg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="367031668"
 X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="384766265"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 18:54:41 -0700
+   d="scan'208";a="367031668"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 19:01:56 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="752797537"
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="726062558"
 X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="752797537"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 18:54:41 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 18:54:40 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 18:54:40 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 18:54:40 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 18:54:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LYHTBf0HOveVlmiKy2pFbSIcYfh5YW3FGJ9hhWWHhajb1VkIQo/VlaWS9tQKPHwNds74vs8b3xZfA2d1FQWhsDDMQ+EjfK4R9CxTCz0uYuTjsncPZHGd1OsTfse8NJpOhzr1riYPgg25jaQTa5wEXdRNyCeivWwSvnHC4C0MmwBUAoYk2bhQnDNd41lbGXKiHUzmPTgU5u3qLIu1lV0dw2noBX2ysH6f8JgDWV/b6wyCiPn6VrJhvaxiaFk4GhlbAISuz1U6NXBbx+WzMMEQa9FNZx1QJW+ShdamKjLl/WxrRcX0Thj2ZwvRFFYYECx1ZfeX7KsxAG0h6fYsaGfKvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0aK28ax+ZXowixrapZriDFI3M1A1DKVT6AqPWpW7sKo=;
- b=HQa//sF2kn8sDOmgofmXoPoR7QnelzkTopJY8ElTkQOIe2LGq4VEUgxPOnjoWIEv45lJ0I/F311O6MriZOMZvfi5RYdq8nnzjJ4OyIaDFGWP3wOz2UWHRm1n6TEbjMwDk9apGCQwM0sCalKWBwBrN6OeklZi3X+cyU3RHnD5YqGx8pUiU41eVB3gKMZ9wbqF6jD6IZXAnNUCNXtpKreMzJ2S9LOoKeFJ9GJitrNCLGIZyKjXBEeESVN9TOWZlgTYuU4CEyAcdtdszgqQbMF0VWTWi3jTu7Un5wFAY4L3fV2MXhPlVboD4Pnm6PsV5ExUvY9pYK5s9w2VORQshn2+bQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by BN9PR11MB5467.namprd11.prod.outlook.com (2603:10b6:408:100::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Thu, 28 Sep
- 2023 01:54:36 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
- 01:54:36 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Baolu Lu <baolu.lu@linux.intel.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: RE: [RFC 3/8] iommufd: Support attach/replace hwpt per pasid
-Thread-Topic: [RFC 3/8] iommufd: Support attach/replace hwpt per pasid
-Thread-Index: AQHZ8Fuji0mclsZAxEygwByYUuBlHLAt+cCAgADYgwCAAKoZwA==
-Date:   Thu, 28 Sep 2023 01:54:36 +0000
-Message-ID: <BN9PR11MB5276FE438034E96DE3FC61988CC1A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230926092651.17041-1-yi.l.liu@intel.com>
- <20230926092651.17041-4-yi.l.liu@intel.com>
- <cd258ee3-52ca-f944-7553-6a1cd01c5f7a@linux.intel.com>
- <20230927154424.GC339126@nvidia.com>
-In-Reply-To: <20230927154424.GC339126@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|BN9PR11MB5467:EE_
-x-ms-office365-filtering-correlation-id: 2271ce48-dda3-4476-536c-08dbbfc5de45
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HIzss2ddhvB5BAHhcXTXVjFe6kg6nlbpakBzCZwyIHjiqekrg6/P+KcWfoL72RjKwC/4kvciS2P/Csx4aa1xryapUCuBEOHxxeUBLX8NjR1i+9AaaRrbN61KBNOHCUTC4t4GXnf8OyuZSwF7kAl/YI1ElNHEHAYB3CuzrVBJFTtuo4vDTBL3LSrG5oU7VHjln4DoEUrp0aI7+K5Tyb/XfWIYavhQc5XgMYkuSwUdp0QsMAfPpz9NFmlTpP2Wciapo94H3TMyXpnIBksZSDsYaH/hLFdTvDyCMyXyKUGCPM3b82apjNXlhrZwZUrhiWBPhuMkT7iZ/1tren6pHxLWlCKPTsfWYZU9N7FIA1STOZfN1pTlvBrSxLNLVvoPRlVO/8R6YriVpxSIhOwKOEOSCwTCzod58Dwoh5larf3yB9V1eHK7RaAK7RrkbPsOmENnfKC5MXFzTEdpbqvg3+6iM/PyFB+jmaSY9c13bSbP1I49wU5KvoaRfZFThyDd/B0SR2fxiKFYhKx7TXR81lAcS4R3vJyMM4jVgZZBN2UEZWfataD4I0vozSJO09KIeOeNkI+f1ulQ9heJCTsJip5YX8vzwhGB+v/CC08Y4sBCZceYK/yV4ZlDTTGEg0Okbvgg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(39860400002)(376002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(2906002)(7416002)(66476007)(41300700001)(4326008)(8676002)(52536014)(66446008)(5660300002)(8936002)(66556008)(54906003)(66946007)(316002)(64756008)(76116006)(110136005)(478600001)(71200400001)(6506007)(7696005)(53546011)(9686003)(26005)(55016003)(122000001)(38070700005)(38100700002)(33656002)(82960400001)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TDawYCPh6e5DVxIvKSL15CFVgYYEzHKoRc8HGN8AtgAYckGB4PB4k6obYxIg?=
- =?us-ascii?Q?pCZUvRQJy3aQvlzB/2psPf7IOj9kREQU9t5pzBnPfqKpehKZEN0cK5RVVbso?=
- =?us-ascii?Q?81gnlEwoEJZSFl53M5O6uNyb0VUgk9g+GfkRGcr2Wla1l0kC+rwtVyUH9fYT?=
- =?us-ascii?Q?XkCutSvGVm+XWobVPwMyC3NEkNacdgaGr7U05lbbk7KMqiaEHHO8fA2DI7Gw?=
- =?us-ascii?Q?n3lyJtnE6bENLRSab2qXEmXNShwHDrGwfWrUBpkzmlf063m8Z5qGHoH5KO0U?=
- =?us-ascii?Q?chYjz3hekKbOqLEWSPUIzmCus5YGF9CKQNu/9aMwAIEkGABv9obl4/f9pkjS?=
- =?us-ascii?Q?Mava5e9X4NrBVfcGOMVAItj6vWYxNPzSoTqTZ0mnptr4oJ/e/aniCU/7oh/E?=
- =?us-ascii?Q?3gLNXM7DE9D4U7AZ7RrRcp8symwNri2cKEnWdJgcFl5+F1D16Ux7902xJEE8?=
- =?us-ascii?Q?Kt6cvk73Xxrrh6Run29tpEtOIwEcCpmzZoqkQNR3guZ3Oo9Q/bcFs6fV/21v?=
- =?us-ascii?Q?TNzDl4tjDKB/Kr+UOEY6yN019VEKQ8xZ+NA7cszqRQV/XphAKvmoOzWZ4f77?=
- =?us-ascii?Q?M8ng0L1kZE4nzvALG4gCuEShuZ8bDsuMWXzSZbAVoLpS8XTVX96X7f27aGwN?=
- =?us-ascii?Q?IJQ388JXROpdKQ0RZ2AaFPmREd2MLxlVTG/DPaYh8FDr6WLJubPw4WYSuiMF?=
- =?us-ascii?Q?b4cuHoqulfgttxMnYr+ItPqnbtKigKN/U/4ucjYGJhEgDaS6vwZgU9EmtFn1?=
- =?us-ascii?Q?khiieMvY+2EWjt++U72hbIzKyoivnnm6wTK5iqnvX+p5sSYen+2qi27sJ61Z?=
- =?us-ascii?Q?BR002Ll4lP5ssUUwIp7NIzthV9B7CyqKGTIwcJyTWIBTVBTUiKfQcw7+Xr7E?=
- =?us-ascii?Q?ndP4JTGzXd1jHzIkh8ezSx8OpQ+BhefQkU1EFV9oWlHJHIkqYWpMdfcsifaQ?=
- =?us-ascii?Q?b6f2u30m3hnpPopxytJjwvM7WhfE4cqM+hw4pbRWvcpFziPTphXZbAhJ9BD8?=
- =?us-ascii?Q?l7802RWfzbKLZjcgCNXgKvFvWTG4R7oNsETQaS2Fp3Y00NiPuw/JICFCjeBv?=
- =?us-ascii?Q?g0qp9aNZ0rSEvXdqnWFcbi2rYXFnDW3M3aJiHHFjfumYMlvrWw51nam6+a2/?=
- =?us-ascii?Q?omstdhunOtWNpqwDusii+Kna5v8eL0Hb2P2wsw0oHpPlaK3qNL8bICosKj97?=
- =?us-ascii?Q?7W/5B/aod46InLACVIWlys2doTj+pxrNCdKe7/Pirm4GHub+fJJfVkvwB1tK?=
- =?us-ascii?Q?VvzvBFmEmRSGTtLWsx7CEvEkrtULLz/5Xq3DCdBCxESqlDu7/c6Px7GQBAS1?=
- =?us-ascii?Q?aPOugK2mJOkvsdJEKe+r7WgosbUf5hcdhl81/13vVQKcG+2lco/QqB2HdOd7?=
- =?us-ascii?Q?58ADmkWehTbcZ2dO7X3YhMp/aBEaF4HM4fVKISwb2zbQQK//vV4cat1C/tZN?=
- =?us-ascii?Q?huwgsWygoFPEVidZJbKaHZW6je2W8+HcTYZBJdffA0fxp3YlfPkNCCfSa4L/?=
- =?us-ascii?Q?dD6/XEF1x5yVHxLcC2Bp/NgK/9Yf8mvqaqJscIbNbGqnRZWApmvEIIEVKHl6?=
- =?us-ascii?Q?gmvFM5AOin6BC8rGIbdtIIiJd3ZvzOv4AF4xq+MD?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="726062558"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga006.jf.intel.com with ESMTP; 27 Sep 2023 19:01:54 -0700
+Message-ID: <8d931037-500f-1dff-5fb6-fe60d2e8af7d@linux.intel.com>
+Date:   Thu, 28 Sep 2023 09:58:38 +0800
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2271ce48-dda3-4476-536c-08dbbfc5de45
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 01:54:36.1406
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dn68Rc+V/L48SJVt5gqEZ8YfZC5ubjDM/710eo4zsZssej7p53i7M2BXZJ7SrfUPquSToAb5ps7EIjZYDhomBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5467
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATH v3 2/3] iommu/vt-d: debugfs: Create/remove debugfs file per
+ {device, pasid}
+Content-Language: en-US
+To:     Jingqi Liu <Jingqi.liu@intel.com>, iommu@lists.linux.dev,
+        Tian Kevin <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20230927151536.67319-1-Jingqi.liu@intel.com>
+ <20230927151536.67319-3-Jingqi.liu@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230927151536.67319-3-Jingqi.liu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, September 27, 2023 11:44 PM
->=20
-> On Wed, Sep 27, 2023 at 10:49:29AM +0800, Baolu Lu wrote:
-> > On 9/26/23 5:26 PM, Yi Liu wrote:
-> > > From: Kevin Tian<kevin.tian@intel.com>
-> > >
-> > > This introduces three APIs for device drivers to manage pasid attach/
-> > > replace/detach.
-> > >
-> > >      int iommufd_device_pasid_attach(struct iommufd_device *idev,
-> > > 				    u32 pasid, u32 *pt_id);
-> > >      int iommufd_device_pasid_replace(struct iommufd_device *idev,
-> > > 				     u32 pasid, u32 *pt_id);
-> > >      void iommufd_device_pasid_detach(struct iommufd_device *idev,
-> > > 				     u32 pasid);
-> >
-> > I am a bit puzzled. Do we really need both attach and replace interface=
-s
-> > to install a hwpt onto a pasid on device? The IOMMUFD already tracks th=
-e
-> > connections between hwpt and {device, pasid}, so it could easily call
-> > the right iommu interfaces (attach vs. replace). Perhaps I overlooked
-> > previous discussion on this.
->=20
-> It was a decision that attach will fail if something is already
-> attached..
->=20
-> But for this API we could go the way of the iommu code and have only
-> 'set' and 'unset' as the two operations.
->=20
+On 9/27/23 11:15 PM, Jingqi Liu wrote:
+> Add a debugfs directory per pair of {device, pasid} if the mappings of
+> its page table are created and destroyed by the iommu_map/unmap()
+> interfaces. i.e. /sys/kernel/debug/iommu/intel/<device source id>/<pasid>.
+> Create a debugfs file in the directory for users to dump the page
+> table corresponding to {device, pasid}. e.g.
+> /sys/kernel/debug/iommu/intel/0000:00:02.0/0/domain_translation_struct.
+> 
+> When attaching device without pasid, create a debugfs file with
+> PASID#0, i.e. RID_PASID. When attaching a domain to a pasid of device,
+> create a debugfs file with the specified pasid.
+> 
+> When detaching without pasid, remove the directory and file for
+> PASID#0. When detaching with pasid, remove the debugfs directory and
+> file of the specified pasid. Remove the entire debugfs directory of
+> the specified device for releasing device.
+> e.g. /sys/kernel/debug/iommu/intel/0000:00:01.0
+> 
+> Signed-off-by: Jingqi Liu <Jingqi.liu@intel.com>
+> ---
+>   drivers/iommu/intel/debugfs.c | 133 ++++++++++++++++++++++++++++++++--
+>   drivers/iommu/intel/iommu.c   |  29 ++++++++
+>   drivers/iommu/intel/iommu.h   |  12 +++
+>   3 files changed, 169 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/debugfs.c b/drivers/iommu/intel/debugfs.c
+> index e2a3c37943a0..50dea53ba87c 100644
+> --- a/drivers/iommu/intel/debugfs.c
+> +++ b/drivers/iommu/intel/debugfs.c
+> @@ -32,6 +32,11 @@ struct iommu_regset {
+>   	const char *regs;
+>   };
+>   
+> +struct show_domain_info {
+> +	struct device *dev;
+> +	ioasid_t pasid;
+> +};
+> +
+>   #define DEBUG_BUFFER_SIZE	1024
+>   static char debug_buf[DEBUG_BUFFER_SIZE];
+>   
+> @@ -111,6 +116,8 @@ static const struct iommu_regset iommu_regs_64[] = {
+>   	IOMMU_REGSET_ENTRY(VCRSP),
+>   };
+>   
+> +static struct dentry *intel_iommu_debug;
+> +
+>   static int iommu_regset_show(struct seq_file *m, void *unused)
+>   {
+>   	struct dmar_drhd_unit *drhd;
+> @@ -673,16 +680,12 @@ static const struct file_operations dmar_perf_latency_fops = {
+>   
+>   void __init intel_iommu_debugfs_init(void)
+>   {
+> -	struct dentry *intel_iommu_debug = debugfs_create_dir("intel",
+> -						iommu_debugfs_dir);
+> +	intel_iommu_debug = debugfs_create_dir("intel", iommu_debugfs_dir);
+>   
+>   	debugfs_create_file("iommu_regset", 0444, intel_iommu_debug, NULL,
+>   			    &iommu_regset_fops);
+>   	debugfs_create_file("dmar_translation_struct", 0444, intel_iommu_debug,
+>   			    NULL, &dmar_translation_struct_fops);
+> -	debugfs_create_file("domain_translation_struct", 0444,
+> -			    intel_iommu_debug, NULL,
+> -			    &domain_translation_struct_fops);
+>   	debugfs_create_file("invalidation_queue", 0444, intel_iommu_debug,
+>   			    NULL, &invalidation_queue_fops);
+>   #ifdef CONFIG_IRQ_REMAP
+> @@ -692,3 +695,123 @@ void __init intel_iommu_debugfs_init(void)
+>   	debugfs_create_file("dmar_perf_latency", 0644, intel_iommu_debug,
+>   			    NULL, &dmar_perf_latency_fops);
+>   }
+> +
+> +/* Create a debugfs directory for each device. */
+> +void intel_iommu_debugfs_create_dev(struct device *dev)
+> +{
+> +	struct dentry *dev_dir;
+> +
+> +	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
+> +	if (!dev_dir) {
+> +		dev_dir = debugfs_create_dir(dev_name(dev), intel_iommu_debug);
+> +		if (IS_ERR(dev_dir))
+> +			pr_info("%s: Failed to create debugfs directory.\n",
+> +				dev_name(dev));
+> +	} else
+> +		dput(dev_dir);
+> +}
 
-I'm not sure the benefit of doing so. Instead it makes the caller side
-vfio more confusing by using attach/replace/detach for device vs.
-using set/unset for pasid?
+Above could simply be like this:
+
+void intel_iommu_debugfs_create_dev(struct device *dev)
+{
+	struct device_domain_info *info = dev_iommu_priv_get(dev);
+
+	info->debugfs_entry = debugfs_create_dir(dev_name(dev),
+			intel_iommu_debug);
+}
+
+Isn't it?
+
+> +
+> +void intel_iommu_debugfs_remove_dev(struct device *dev)
+> +{
+> +	struct dentry *dev_dir, *sub_dir, *dentry;
+> +	struct list_head *plist;
+> +
+> +	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
+> +	if (!dev_dir)
+> +		return;
+> +
+> +	list_for_each(plist, &(dev_dir->d_subdirs)) {
+> +		sub_dir = list_entry(plist, struct dentry, d_child);
+> +		if(sub_dir) {
+> +			dentry = debugfs_lookup("domain_translation_struct",
+> +						sub_dir);
+> +			if (!dentry)
+> +				continue;
+> +
+> +			if (dentry->d_inode->i_private)
+> +				kfree(dentry->d_inode->i_private);
+> +
+> +			dput(dentry);
+> +		}
+> +	}
+> +
+> +	debugfs_remove_recursive(dev_dir);
+> +	dput(dev_dir);
+> +}
+
+And this could simply be like this:
+
+void intel_iommu_debugfs_remove_dev(struct device *dev)
+{
+	struct device_domain_info *info = dev_iommu_priv_get(dev);
+
+	debugfs_remove(info->debugfs_entry);
+}
+
+> +
+> +/*
+> + * Create a debugfs directory per pair of {device, pasid},
+> + * then create the corresponding debugfs file in this directory
+> + * for user to dump its page table. e.g.
+> + * /sys/kernel/debug/iommu/intel/0000:00:01.0/0/domain_translation_struct
+> + */
+> +void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
+> +					  struct device *dev, u32 pasid)
+> +{
+> +	struct dentry *dev_dir, *pasid_dir;
+> +	struct show_domain_info *sinfo;
+> +	char dir_name[10];
+> +
+> +	/*
+> +	 * The debugfs only dumps the page tables whose mappings are created
+> +	 * and destroyed by the iommu_map/unmap() interfaces. Check the
+> +	 * mapping type of the domain before creating debugfs directory.
+> +	 */
+> +	if (!domain || !(domain->type & __IOMMU_DOMAIN_PAGING))
+> +		return;
+> +
+> +	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
+> +	if (!dev_dir)
+> +		return;
+> +
+> +	sprintf(dir_name, "%x", pasid);
+> +	pasid_dir = debugfs_create_dir(dir_name, dev_dir);
+> +	if (IS_ERR(pasid_dir))
+> +		goto dput_out;
+> +
+> +	sinfo = kzalloc(sizeof(*sinfo), GFP_KERNEL);
+> +	if (!sinfo)
+> +		goto dput_out;
+> +
+> +	sinfo->dev = dev;
+> +	sinfo->pasid = pasid;
+> +	debugfs_create_file("domain_translation_struct", 0444,
+> +			    pasid_dir, sinfo,
+> +			    &domain_translation_struct_fops);
+> +dput_out:
+> +	dput(dev_dir);
+> +}
+
+And here,
+
+void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
+					  struct device *dev, u32 pasid)
+{
+	sprintf(dir_name, "%x", pasid);
+	dev_pasid->debugfs_entry = debugfs_create_dir(dir_name,
+			info->debugfs_entry);
+
+	debugfs_create_file("domain_translation_struct", 0444,
+			    dev_pasid->debugfs_entry, dev_pasid,
+			    &domain_translation_struct_fops);
+}
+
+> +
+> +/*
+> + * Remove the debugfs directory and file corresponding to each pair of
+> + * {device, pasid}.
+> + */
+> +void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid)
+> +{
+> +	struct dentry *dev_dir, *pasid_dir, *dentry;
+> +	char dir_name[10];
+> +
+> +	dev_dir = debugfs_lookup(dev_name(dev), intel_iommu_debug);
+> +	if (!dev_dir)
+> +		return;
+> +
+> +	sprintf(dir_name, "%x", pasid);
+> +	pasid_dir = debugfs_lookup(dir_name, dev_dir);
+> +	if (!pasid_dir)
+> +		goto dput_dev;
+> +
+> +	dentry = debugfs_lookup("domain_translation_struct", pasid_dir);
+> +	if (!dentry)
+> +		goto dput_pasid;
+> +
+> +	if (dentry->d_inode->i_private)
+> +		kfree(dentry->d_inode->i_private);
+> +
+> +	debugfs_remove_recursive(pasid_dir);
+> +
+> +	dput(dentry);
+> +dput_pasid:
+> +	dput(pasid_dir);
+> +dput_dev:
+> +	dput(dev_dir);
+> +}
+
+The same thing here:
+
+	debugfs_remove(dev_pasid->debugfs_entry);
+
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index dd8ff358867d..af9c989035a2 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -2488,6 +2488,13 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
+>   
+>   	iommu_enable_pci_caps(info);
+>   
+> +	/*
+> +	 * Create a debugfs directory specified by RID_PASID
+> +	 * in the debugfs device directory.
+> +	 */
+> +	intel_iommu_debugfs_create_dev_pasid(&info->domain->domain,
+> +			                     dev, IOMMU_NO_PASID);
+
+The function name is self-explained. So no need to add comments. Ditto
+to all other places.
+
+> +
+>   	return 0;
+>   }
+>   
+> @@ -3997,6 +4004,12 @@ static void device_block_translation(struct device *dev)
+>   
+>   	domain_detach_iommu(info->domain, iommu);
+>   	info->domain = NULL;
+> +
+> +	/*
+> +	 * Remove the debugfs directory specified by RID_PASID
+> +	 * in the device debugfs directory.
+> +	 */
+> +	intel_iommu_debugfs_remove_dev_pasid(dev, IOMMU_NO_PASID);
+>   }
+>   
+>   static int md_domain_init(struct dmar_domain *domain, int guest_width)
+> @@ -4424,6 +4437,9 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
+>   		}
+>   	}
+>   
+> +	/* Create a debugfs directory per device. */
+> +	intel_iommu_debugfs_create_dev(dev);
+> +
+>   	return &iommu->iommu;
+>   }
+>   
+> @@ -4436,6 +4452,7 @@ static void intel_iommu_release_device(struct device *dev)
+>   	dev_iommu_priv_set(dev, NULL);
+>   	kfree(info);
+>   	set_dma_ops(dev, NULL);
+> +	intel_iommu_debugfs_remove_dev(dev);
+>   }
+>   
+>   static void intel_iommu_probe_finalize(struct device *dev)
+> @@ -4729,6 +4746,12 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
+>   out_tear_down:
+>   	intel_pasid_tear_down_entry(iommu, dev, pasid, false);
+>   	intel_drain_pasid_prq(dev, pasid);
+> +
+> +	/*
+> +	 * Remove the debugfs directory of the specified pasid
+> +	 * in the device debugfs directory.
+> +	 */
+> +	intel_iommu_debugfs_remove_dev_pasid(dev, pasid);
+>   }
+>   
+>   static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
+> @@ -4777,6 +4800,12 @@ static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
+>   	list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
+>   	spin_unlock_irqrestore(&dmar_domain->lock, flags);
+>   
+> +	/*
+> +	 * Create a debugfs directory with specified pasid
+> +	 * in the debugfs device directory.
+> +	 */
+> +	intel_iommu_debugfs_create_dev_pasid(domain, dev, pasid);
+> +
+>   	return 0;
+>   out_detach_iommu:
+>   	domain_detach_iommu(dmar_domain, iommu);
+> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+> index c18fb699c87a..f1c27e928886 100644
+> --- a/drivers/iommu/intel/iommu.h
+> +++ b/drivers/iommu/intel/iommu.h
+> @@ -883,8 +883,20 @@ static inline void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid
+>   
+>   #ifdef CONFIG_INTEL_IOMMU_DEBUGFS
+>   void intel_iommu_debugfs_init(void);
+> +void intel_iommu_debugfs_create_dev(struct device *dev);
+> +void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
+> +					  struct device *dev, u32 pasid);
+> +void intel_iommu_debugfs_remove_dev(struct device *dev);
+> +void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid);
+>   #else
+>   static inline void intel_iommu_debugfs_init(void) {}
+> +static inline void intel_iommu_debugfs_create_dev(struct device *dev) {}
+> +static inline
+> +void intel_iommu_debugfs_create_dev_pasid(struct iommu_domain *domain,
+> +					  struct device *dev, u32 pasid) {}
+> +static inline void intel_iommu_debugfs_remove_dev(struct device *dev) {}
+> +static inline
+> +void intel_iommu_debugfs_remove_dev_pasid(struct device *dev, u32 pasid) {}
+>   #endif /* CONFIG_INTEL_IOMMU_DEBUGFS */
+>   
+>   extern const struct attribute_group *intel_iommu_groups[];
+
+Best regards,
+baolu
