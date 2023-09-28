@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F32D7B1176
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB2F7B1177
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbjI1EXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        id S230152AbjI1EXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjI1EXJ (ORCPT
+        with ESMTP id S230017AbjI1EXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Sep 2023 00:23:09 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BBA114
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:23:06 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d814634fe4bso19615722276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:23:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21142121
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:23:08 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d814634fe4bso19615744276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695874986; x=1696479786; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I9BwMViTX8cfyxhxmLOd2Ac11XDedzRf29xVDKRKMs8=;
-        b=WvPCC02Po+M/wNO7s4F+l/gifobp+kOubbIQXxBCwkD0dLfhxj+26Rf6uqIFabaN4g
-         iKwD9S6pxCvOXSThBTs9bzApyzv9CHTDC93t8aaXtneABhuR+CWlH69wwziYby3nVvTF
-         wxePDNsQ/NlQzQM+RV7HzHABqgORdfrn6dtnz6fc9K1U2m63+smuyFux3APDyYPiBmTh
-         aIqxgGXvsB8oa41Zj+ISHrTOftTdkP6Wdc9eeouod+NKuu7YWqI0LmEih4m09N8nVKdp
-         19txcR0SRgXO04m2nTgbST9zZoY95eVEiERSEKP29yHJeXGIU3P11k5ZAe2KJH8DT+/n
-         XyBA==
+        d=google.com; s=20230601; t=1695874987; x=1696479787; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=himG2EUevZ0nCD5wQ/EEtMYJiUF1xza4FD5wJPxrdQw=;
+        b=UWJbYQh9SIj1SpWpkWBWung+DQntfECaAY+ifuVegnN48ISUdFIWIY6/V2qUN2CBxu
+         P+BMtPamqHFFBP8hoZl+Zgodddm+A8FwCIVXp9EK40LU1lY7/lYLYvHbR/hUegd3gTzb
+         CmDyhhHN2sG7Vh36k5ZB7P9vuwwHyjSqptyzKA3F6Ze48FkuTFiUl4XtE7NHi/1OzOhU
+         l6F5EWT/FRyznsJjS3XkoNTzqrUboKSo5CIhv6mN1fMfmVRLprRL3aApyLDc3W2GWlgr
+         ZQ5ifCvTb5vhCSsgk25z4mVOm5AGfMh2jAaLR+fQObinTGk/Rm13Fe0SnyItM3CKLHMH
+         gACA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695874986; x=1696479786;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I9BwMViTX8cfyxhxmLOd2Ac11XDedzRf29xVDKRKMs8=;
-        b=w6IIGdWDRIwaaok6JWz0bUjcaYkyMVTXoMx9jDB0SlQIn62N9rNtrttglziinWLTtF
-         Va7W1+WGjGLOKQNLjCuWxkZWC1sNk/1eYQkyjC8wyktHMgHHwdNkps+WI2C8FH3huRD4
-         T8x0YWIGEEaF6c+4V8IBAeJEPGmMGUtELw42Q03ITRU8ae74RNku7Ly/RThubSOvOiAi
-         bvYzbIqstjkG7Txwv/e7oyxC5sXaeiEOBwmC+ZiokbPMiJHQ96qMR2HcJs/7baslmi7f
-         UqLr+sZySEchq07UKltffnp5Xg4L8V5eIQVlxDgvWl6hGvynHZeJCZMMuKlFeLEBlMMp
-         oB8Q==
-X-Gm-Message-State: AOJu0YyP0sbzEhxOuothx9HuN3EwDBtF8DDy6+O/afZdZcbI4Z0bmdW8
-        O9xwkvPTtN67kgIgWrg91Fmd/yBfhUVSI1g6Ag==
-X-Google-Smtp-Source: AGHT+IE2Ao+SFPQtgEEZ6maQf+v00aN/badqSm7geGWZeDb2K4zAIisJ3qbNnNiA/mG1hWXq56MeB2hAxPZeh0qI3A==
+        d=1e100.net; s=20230601; t=1695874987; x=1696479787;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=himG2EUevZ0nCD5wQ/EEtMYJiUF1xza4FD5wJPxrdQw=;
+        b=rDKY8JCYzj0DfgyDCcZud7GuEu3LlZHRyk7EaUbrQYWWTEAWLYjm0x1kEzd1xJ4JOU
+         Q3jIQCSSP7aXp07Wd0pN8+b04+t6YCsA4SO53VmEBLxZiQNBMyURErev8fvWp2o4oU7U
+         mDDTDTVCAvMF0yEadph8L0NwKS/UC3SfbzN5GA2ittrz8H/GiweBom51HLV198Nq1bJk
+         p1TVBzRhO5AAjSJQDzkIBgtyLtsvGuNmxbzRds9w7Eslb6BlPLrMt/kRrg3tR0kyRG3A
+         iJNcFsWC1+FrHwmHoLE/3pMPFSaQGVAB+77fy7VPIMVN4ZiBqQdrB6CZ4q6CRCRYW+Qj
+         cw1w==
+X-Gm-Message-State: AOJu0YygqH52BfPEeuDTvoy9rcY7v1AzHPxwrItwT64qg9EY5WhPa6CZ
+        Gj7z332ywUGWSjbl0HJ1gUYR/WFRk+CRx3PXjw==
+X-Google-Smtp-Source: AGHT+IFrIVKw2+EmPNZNHezNbm1WiVv0NLjoNor2pjdg9EKmdrqDih2JZzJ1TzIHqg97E8RGR0YgmBNwAHrmGwOrwA==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:fc26:0:b0:d80:1391:1f1 with SMTP
- id v38-20020a25fc26000000b00d80139101f1mr1476ybd.1.1695874986047; Wed, 27 Sep
- 2023 21:23:06 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 04:23:04 +0000
+ (user=justinstitt job=sendgmr) by 2002:a25:aa8a:0:b0:d80:eb4:9ca with SMTP id
+ t10-20020a25aa8a000000b00d800eb409camr1562ybi.0.1695874987336; Wed, 27 Sep
+ 2023 21:23:07 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 04:23:05 +0000
+In-Reply-To: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKj/FGUC/22NwQrCMBBEf6Xs2Ui6FtN68j+klJCs6YJtJAlBK
- fl3Y8Gbhzm8gXmzQaTAFOHSbBAoc2S/VsBDA2bWqyPBtjKgxJMc8CwcpWnRvKYaCpO2drJCqg4
- 73bcdKYQ6fQa682vX3sbKM8fkw3t/ye23/QnVf2FuhRTYG5QKcajWq/PePeho/AJjKeUDDj6BM rkAAAA=
+References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1695874985; l=1991;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1695874985; l=2683;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=RL0cLxaMLKz5FSJbcqYyGpT9mQvf/e8HzhwcC6bZRuQ=; b=f8qTBGJkKuArzWwVhoBvcVTfbkZXHZE5J2T1+RXxVYW+pq4zN1gTs0dyX1rAssYngtpTk/odr
- 4z/a9pgd5myDkB9WYnaT6DcWjK+oWZvDlLMiZP2Mcwsk/0WklmQe515
+ bh=8gNirzReiW8c5pSV52GSSvvpxk3c6q7GcY+X85S9HH4=; b=xwcKdSmbabKVDWwN+jZOMEgT7h6u6HvkFc9xKfMjjlkxx7J0S4QweUye920eCS7CHIZHGABKT
+ kfvh7sj8MklDQvVoXOoPCKfTde7bv3D+NNiE6uIQI/EhZTcGx27HCsJ
 X-Mailer: b4 0.12.3
-Message-ID: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
-Subject: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
+Message-ID: <20230928-get_maintainer_add_d-v2-1-8acb3f394571@google.com>
+Subject: [PATCH v2 1/2] get_maintainer: add patch-only keyword-matching
 From:   Justin Stitt <justinstitt@google.com>
 To:     Joe Perches <joe@perches.com>
 Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
@@ -80,50 +79,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series aims to add "D:" which behaves exactly the same as "K:" but
-works only on patch files.
+Add the "D:" type which behaves the same as "K:" but will only match
+content present in a patch file.
 
-The goal of this is to reduce noise when folks use get_maintainer on
-tree files as opposed to patches. "D:" should help maintainers reduce
-noise in their inboxes, especially when matching omnipresent
-keywords like [1]. In the event of [1] Kees would be to/cc'd from folks
-running get_maintainer on _any_ file containing "__counted_by". The
-number of these files is rising and I fear for his inbox as his goal, as
-I understand it, is to simply monitor the introduction of new
-__counted_by annotations to ensure accurate semantics.
+To illustrate:
 
-Joe mentioned in v1 that perhaps K: should be reworked to only consider
-patch files. I wonder, though, if folks are intentionally using the
-current behavior of K: and thus would be peeved from a change there. I
-see this series as, at the very least, a gentle migration in behavior
-which is purely opt-in and at some point could eagerly be merged with
-K:.
+Imagine this entry in MAINTAINERS:
 
-[1]: https://lore.kernel.org/all/20230925172037.work.853-kees@kernel.org/
+NEW REPUBLIC
+M: Han Solo <hansolo@rebelalliance.co>
+W: https://www.jointheresistance.org
+D: \bstrncpy\b
+
+Our maintainer, Han, will only be added to the recipients if a patch
+file is passed to get_maintainer (like what b4 does):
+$ ./scripts/get_maintainer.pl 0004-some-change.patch
+
+If the above patch has a `strncpy` present in the subject, commit log or
+diff then Han will be to/cc'd.
+
+However, in the event of a file from the tree given like:
+$ ./scripts/get_maintainer.pl ./lib/string.c
+
+Han will not be noisily to/cc'd (like a K: type would in this
+circumstance)
 
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-Changes in v2:
-- remove bits about non-patch usage being bad (thanks Greg, Kees, et al.)
-- remove formatting pass (thanks Joe) (but seriously the formatting is
-  bad, is there opportunity to get a formatting pass in here at some
-  point?)
-- add some migration from K to D (thanks Kees, Nick)
-- Link to v1: https://lore.kernel.org/r/20230927-get_maintainer_add_d-v1-0-28c207229e72@google.com
-
----
-Justin Stitt (2):
-      get_maintainer: add patch-only keyword-matching
-      MAINTAINERS: migrate some K to D
-
- MAINTAINERS               | 21 ++++++++++++++-------
+ MAINTAINERS               |  5 +++++
  scripts/get_maintainer.pl | 12 ++++++++++--
- 2 files changed, 24 insertions(+), 9 deletions(-)
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230926-get_maintainer_add_d-07424a814e72
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b19995690904..94e431daa7c2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -59,6 +59,11 @@ Descriptions of section entries and preferred order
+ 	      matches patches or files that contain one or more of the words
+ 	      printk, pr_info or pr_err
+ 	   One regex pattern per line.  Multiple K: lines acceptable.
++  D: *Diff content regex* (perl extended) pattern match that applies only to
++     patches and not entire files (e.g. when using the get_maintainers.pl
++     script).
++     Usage same as K:.
++
+ 
+ Maintainers List
+ ----------------
+diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+index ab123b498fd9..a3e697926ddd 100755
+--- a/scripts/get_maintainer.pl
++++ b/scripts/get_maintainer.pl
+@@ -342,6 +342,7 @@ if ($tree && !top_of_kernel_tree($lk_path)) {
+ 
+ my @typevalue = ();
+ my %keyword_hash;
++my %patch_keyword_hash;
+ my @mfiles = ();
+ my @self_test_info = ();
+ 
+@@ -369,8 +370,10 @@ sub read_maintainer_file {
+ 		    $value =~ s@([^/])$@$1/@;
+ 		}
+ 	    } elsif ($type eq "K") {
+-		$keyword_hash{@typevalue} = $value;
+-	    }
++          $keyword_hash{@typevalue} = $value;
++	    } elsif ($type eq "D") {
++          $patch_keyword_hash{@typevalue} = $value;
++      }
+ 	    push(@typevalue, "$type:$value");
+ 	} elsif (!(/^\s*$/ || /^\s*\#/)) {
+ 	    push(@typevalue, $line);
+@@ -607,6 +610,11 @@ foreach my $file (@ARGV) {
+ 			push(@keyword_tvi, $line);
+ 		    }
+ 		}
++    foreach my $line(keys %patch_keyword_hash) {
++      if ($patch_line =~ m/${patch_prefix}$patch_keyword_hash{$line}/x) {
++        push(@keyword_tvi, $line);
++      }
++    }
+ 	    }
+ 	}
+ 	close($patch);
+
+-- 
+2.42.0.582.g8ccd20d70d-goog
 
