@@ -2,87 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DABD7B246E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F4A7B247B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjI1Rxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S230483AbjI1R6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1Rx3 (ORCPT
+        with ESMTP id S229870AbjI1R6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:53:29 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A083ADD;
-        Thu, 28 Sep 2023 10:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+2NeppKoPOd4YQz6nJcEifAHl4BALODLgDqAjaWDWoI=; b=hrdrym07dNmzgGqtwMAO60ISgD
-        BlYZHtJj4WC2/8gMiEeDgWqc2qtFqVwDKDBO59FFnyAql0YQCGHRMEyJjJflbIpTwvjXwNS4TITuM
-        N3IrZ7HVlXMZwqLIWthKUGWgamXkjw9uV9uImyFa54FeOcueBja9Wr5QSo2a9SXxdflk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qlvCG-007leL-E5; Thu, 28 Sep 2023 19:53:08 +0200
-Date:   Thu, 28 Sep 2023 19:53:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christophe Roullier <christophe.roullier@foss.st.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
+        Thu, 28 Sep 2023 13:58:33 -0400
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 10:58:24 PDT
+Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601A019E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:58:24 -0700 (PDT)
+Received: from localhost.localdomain ([146.241.127.78])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id lvGJqRkNrbrLalvGJqINWv; Thu, 28 Sep 2023 19:57:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1695923841; bh=W26aS+AEwmr6PQiOcPGzMXEAcfiPOUrQ2EpC+Nm6EpI=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=mj/kkz4Nrd3UabDB+nyN4rgAjMW3yKV+LcWLUR7LeoKIsZJlBjXNvTzf84OA11tQf
+         6JIb6jf3bv3oxDxiw4OuyT8GzUNM5UsT5K3d8He+fso6eT9FjPsc9x69yaucUsswjn
+         3wg+lRezKzRAac/YghKjWAsXXonL3BYnRiFN4Zsw+BMoZ59OPU43arrl8rPt6MlEQH
+         v/o+9etR+qMve/x5q5jR6QY3VkBJbGLF5vnwQdQdH7St7jtFXBzKOmXdaK8pSOh/J0
+         tGwpk3RMYB+uVFnJjKbcCuATmcFfPoG9wtmaCsbSJVzpl0Za5gm7r8xxKx4fbEouHb
+         f2sKAO83SRNMg==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/12] net: ethernet: stmmac: stm32: support the
- phy-supply regulator binding
-Message-ID: <12332a87-e8c3-4cf3-849a-080e4e3f4521@lunn.ch>
-References: <20230928122427.313271-1-christophe.roullier@foss.st.com>
- <20230928122427.313271-9-christophe.roullier@foss.st.com>
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>,
+        Jim Reinhart <jimr@tekvox.com>,
+        James Autry <jautry@tekvox.com>,
+        Matthew Maron <matthewm@tekvox.com>
+Subject: [PATCH v2] net: phy: broadcom: add support for BCM5221 phy
+Date:   Thu, 28 Sep 2023 19:57:18 +0200
+Message-Id: <20230928175718.1729663-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928122427.313271-9-christophe.roullier@foss.st.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfEtVQI+8AswZVM7FBMIiT663AomCA+jyxGTyH5WEGFNtNARxp0taB4lgjfgtjVhvS82aDRmQ+OwDTTmNoYOcavwqKM92r54ONmRc0u51dEtbkOHe/w8P
+ UmnLedEw2stXHFH9ZPexR/FCvfXKn5tBj2Mtek2gdictfnHqmutQIyMWxwsa8GnDNQ4JmhXnKXpa0YFfrvyQLxP+46aHjnfxi6jroTyEl03CtESf+Y6yzT3W
+ 8TRvDsrq1P2ZfwP7o3IoZyoxQ1RQd7q8drdoQyRpMFzb79RqM+N6N3/AQj045ioyTIfbHqkCWsCxiBAwfyR4+iI90VCMeVZR/ec2GvQPDoKwn+XEajsnYCXr
+ geRoaFEvrRxf0/IHMlUGy8PqZjlLjG4j+9OfBPayodxi6A/r5Wd+Di86N6lBQ1UfUMnzbII4opO8G03cGvxQ2ysk9ISnOzTaBjny9bsLOVCpK8yphNXDck2w
+ /Wk2Asbn9/h1+w9qwg74VQI+Bv0O7rpwsNJCoM8aF4ncjU+uZqjZv8v4Z90h/d06GaoNHACMFY9oWho67Vmu9KrZbmlrbEMZYLcAlXZ0pCk2Y8cUH+8mqc7s
+ Ur/Ezz5IalO2uPsnkZi9NXI+CIXTBvBlCVEsaVchEfDjMz+aDkDKG0zau3nkKhIt7nPATqIVVSNiRmWtzjhqUnTyUr9YYGPpb2qQLDgSqL7PBU+i0Q3kxH7r
+ efNxEdBxbX0=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int phy_power_on(struct stm32_dwmac *bsp_priv, bool enable)
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
 
-I find this function name confusing, since 50% of the time it does not
-actually power the PHY on. You never call it with anything other than
-a static true/false value. So it might was well be two functions,
-phy_power_on() and phy_power_off().
+This patch adds the BCM5221 PHY support by reusing brcm_fet_*()
+callbacks and adding quirks for BCM5221 when needed.
 
-> +{
-> +	int ret;
-> +	struct device *dev = bsp_priv->dev;
-> +
-> +	if (!bsp_priv->regulator)
-> +		return 0;
-> +
-> +	if (enable) {
-> +		ret = regulator_enable(bsp_priv->regulator);
-> +		if (ret)
-> +			dev_err(dev, "fail to enable phy-supply\n");
+Cc: Jim Reinhart <jimr@tekvox.com>
+Cc: James Autry <jautry@tekvox.com>
+Cc: Matthew Maron <matthewm@tekvox.com>
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+V1->V2:
+Suggested by Andrew Lunn:
+* handle mdix_ctrl adding bcm5221_config_aneg() and bcm5221_read_status()
+* reorder PHY_ID_BCM5241 in broadcom_tbl[]
+Suggested by Russell King:
+* add comment on phy_read(..., MII_BRCM_FET_INTREG)
+* lock mdio bus when in shadow mode
+Suggested by Florian Fainelli:
+* reuse brcm_fet_*() callbacks checking for phy_id == PHY_ID_BCM5221
+---
+ drivers/net/phy/broadcom.c | 155 +++++++++++++++++++++++++++++--------
+ include/linux/brcmphy.h    |  10 +++
+ 2 files changed, 132 insertions(+), 33 deletions(-)
 
-Not all PHYs are usable in 0 picoseconds. You probably want a delay
-here. Otherwise the first few accesses to it might not work.
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 6f5e8be73d9a..4b71207037d0 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -648,16 +648,21 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 	if (err < 0 && err != -EIO)
+ 		return err;
+ 
++	/* Read to clear status bits */
+ 	reg = phy_read(phydev, MII_BRCM_FET_INTREG);
+ 	if (reg < 0)
+ 		return reg;
+ 
+ 	/* Unmask events we are interested in and mask interrupts globally. */
+-	reg = MII_BRCM_FET_IR_DUPLEX_EN |
+-	      MII_BRCM_FET_IR_SPEED_EN |
+-	      MII_BRCM_FET_IR_LINK_EN |
+-	      MII_BRCM_FET_IR_ENABLE |
+-	      MII_BRCM_FET_IR_MASK;
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		reg = MII_BRCM_FET_IR_ENABLE |
++		MII_BRCM_FET_IR_MASK;
++	else
++		reg = MII_BRCM_FET_IR_DUPLEX_EN |
++		MII_BRCM_FET_IR_SPEED_EN |
++		MII_BRCM_FET_IR_LINK_EN |
++		MII_BRCM_FET_IR_ENABLE |
++		MII_BRCM_FET_IR_MASK;
+ 
+ 	err = phy_write(phydev, MII_BRCM_FET_INTREG, reg);
+ 	if (err < 0)
+@@ -670,42 +675,50 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
+-		return err;
++	phy_lock_mdio_bus(phydev);
+ 
+-	/* Set the LED mode */
+-	reg = phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
+-	if (reg < 0) {
+-		err = reg;
+-		goto done;
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
++		return err;
+ 	}
+ 
+-	reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
+-	reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
++	if (phydev->phy_id != PHY_ID_BCM5221) {
++		/* Set the LED mode */
++		reg = __phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
++		if (reg < 0) {
++			err = reg;
++			goto done;
++		}
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+-	if (err < 0)
+-		goto done;
++		reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
++		reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
+ 
+-	/* Enable auto MDIX */
+-	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
+-			   MII_BRCM_FET_SHDW_MC_FAME);
+-	if (err < 0)
+-		goto done;
++		err = __phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
++		if (err < 0)
++			goto done;
++
++		/* Enable auto MDIX */
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
++				     MII_BRCM_FET_SHDW_MC_FAME);
++		if (err < 0)
++			goto done;
++	}
+ 
+ 	if (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE) {
+ 		/* Enable auto power down */
+-		err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
+-				   MII_BRCM_FET_SHDW_AS2_APDE);
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
++				     MII_BRCM_FET_SHDW_AS2_APDE);
+ 	}
+ 
+ done:
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
+@@ -784,23 +797,86 @@ static int brcm_fet_suspend(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
++	phy_lock_mdio_bus(phydev);
++
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
+ 		return err;
++	}
++
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		/* Force Low Power Mode with clock enabled */
++		reg = BCM5221_SHDW_AM4_EN_CLK_LPM | BCM5221_SHDW_AM4_FORCE_LPM;
++	else
++		/* Set standby mode */
++		reg = MII_BRCM_FET_SHDW_AM4_STANDBY;
+ 
+-	/* Set standby mode */
+-	err = phy_modify(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY);
++	err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+ 
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
++static int bcm5221_config_aneg(struct phy_device *phydev)
++{
++	int ret, val;
++
++	ret = genphy_config_aneg(phydev);
++	if (ret)
++		return ret;
++
++	switch (phydev->mdix_ctrl) {
++	case ETH_TP_MDI:
++		val = BCM5221_AEGSR_MDIX_DIS;
++		break;
++	case ETH_TP_MDI_X:
++		val = BCM5221_AEGSR_MDIX_DIS | BCM5221_AEGSR_MDIX_MAN_SWAP;
++		break;
++	case ETH_TP_MDI_AUTO:
++		val = 0;
++		break;
++	default:
++		return 0;
++	}
++
++	return phy_modify(phydev, BCM5221_AEGSR, BCM5221_AEGSR_MDIX_MAN_SWAP |
++						 BCM5221_AEGSR_MDIX_DIS,
++						 val);
++}
++
++static int bcm5221_read_status(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Read MDIX status */
++	ret = phy_read(phydev, BCM5221_AEGSR);
++	if (ret < 0)
++		return ret;
++
++	if (ret & BCM5221_AEGSR_MDIX_DIS) {
++		if (ret & BCM5221_AEGSR_MDIX_MAN_SWAP)
++			phydev->mdix_ctrl = ETH_TP_MDI_X;
++		else
++			phydev->mdix_ctrl = ETH_TP_MDI;
++	} else {
++		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
++	}
++
++	if (ret & BCM5221_AEGSR_MDIX_STATUS)
++		phydev->mdix = ETH_TP_MDI_X;
++	else
++		phydev->mdix = ETH_TP_MDI;
++
++	return genphy_read_status(phydev);
++}
++
+ static int bcm54xx_phy_probe(struct phy_device *phydev)
+ {
+ 	struct bcm54xx_phy_priv *priv;
+@@ -1082,6 +1158,18 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.handle_interrupt = brcm_fet_handle_interrupt,
+ 	.suspend	= brcm_fet_suspend,
+ 	.resume		= brcm_fet_config_init,
++}, {
++	.phy_id		= PHY_ID_BCM5221,
++	.phy_id_mask	= 0xfffffff0,
++	.name		= "Broadcom BCM5221",
++	/* PHY_BASIC_FEATURES */
++	.config_init	= brcm_fet_config_init,
++	.config_intr	= brcm_fet_config_intr,
++	.handle_interrupt = brcm_fet_handle_interrupt,
++	.suspend	= brcm_fet_suspend,
++	.resume		= brcm_fet_config_init,
++	.config_aneg	= bcm5221_config_aneg,
++	.read_status	= bcm5221_read_status,
+ }, {
+ 	.phy_id		= PHY_ID_BCM5395,
+ 	.phy_id_mask	= 0xfffffff0,
+@@ -1154,6 +1242,7 @@ static struct mdio_device_id __maybe_unused broadcom_tbl[] = {
+ 	{ PHY_ID_BCM50610M, 0xfffffff0 },
+ 	{ PHY_ID_BCM57780, 0xfffffff0 },
+ 	{ PHY_ID_BCMAC131, 0xfffffff0 },
++	{ PHY_ID_BCM5221, 0xfffffff0 },
+ 	{ PHY_ID_BCM5241, 0xfffffff0 },
+ 	{ PHY_ID_BCM5395, 0xfffffff0 },
+ 	{ PHY_ID_BCM53125, 0xfffffff0 },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index 9e77165f3ef6..ee1c8160e4d5 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -12,6 +12,7 @@
+ #define PHY_ID_BCM50610			0x0143bd60
+ #define PHY_ID_BCM50610M		0x0143bd70
+ #define PHY_ID_BCM5241			0x0143bc30
++#define PHY_ID_BCM5221			0x004061e0
+ #define PHY_ID_BCMAC131			0x0143bc70
+ #define PHY_ID_BCM5481			0x0143bca0
+ #define PHY_ID_BCM5395			0x0143bcf0
+@@ -272,6 +273,15 @@
+ #define BCM54612E_EXP_SPARE0		(MII_BCM54XX_EXP_SEL_ETC + 0x34)
+ #define BCM54612E_LED4_CLK125OUT_EN	(1 << 1)
+ 
++/* BCM5221 Registers */
++#define BCM5221_AEGSR			0x1C
++#define BCM5221_AEGSR_MDIX_STATUS	BIT(13)
++#define BCM5221_AEGSR_MDIX_MAN_SWAP	BIT(12)
++#define BCM5221_AEGSR_MDIX_DIS		BIT(11)
++
++#define BCM5221_SHDW_AM4_EN_CLK_LPM	BIT(2)
++#define BCM5221_SHDW_AM4_FORCE_LPM	BIT(1)
++
+ /*****************************************************************************/
+ /* Fast Ethernet Transceiver definitions. */
+ /*****************************************************************************/
+-- 
+2.34.1
 
-      Andrew
