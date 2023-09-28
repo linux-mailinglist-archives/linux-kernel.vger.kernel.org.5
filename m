@@ -2,45 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A157B1BF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5C37B1BF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbjI1MRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        id S232408AbjI1MRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbjI1MRX (ORCPT
+        with ESMTP id S229581AbjI1MRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:17:23 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB49319C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:17:21 -0700 (PDT)
+        Thu, 28 Sep 2023 08:17:53 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934ED136
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:17:51 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e207:8adb:af22:7f1e])
-        by andre.telenet-ops.be with bizsmtp
-        id rQHK2A00S3w8i7m01QHKuZ; Thu, 28 Sep 2023 14:17:19 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id rQHp2A00L3w8i7m01QHpbZ; Thu, 28 Sep 2023 14:17:50 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qlpwt-004mRT-3u;
-        Thu, 28 Sep 2023 14:17:19 +0200
+        id 1qlpxN-004mRZ-6w;
+        Thu, 28 Sep 2023 14:17:49 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qlpxH-001OBp-IL;
-        Thu, 28 Sep 2023 14:17:19 +0200
+        id 1qlpxl-001OCa-NE;
+        Thu, 28 Sep 2023 14:17:49 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     "Darrick J . Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] iomap: Spelling s/preceeding/preceding/g
-Date:   Thu, 28 Sep 2023 14:17:18 +0200
-Message-Id: <46f1ca7817b5febb90c0f1f9881a1c2397b827d0.1695903391.git.geert+renesas@glider.be>
+Subject: [PATCH] [net-next] sctp: Spelling s/preceeding/preceding/g
+Date:   Thu, 28 Sep 2023 14:17:48 +0200
+Message-Id: <663b14d07d6d716ddc34482834d6b65a2f714cfb.1695903447.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -51,22 +56,22 @@ Fix a misspelling of "preceding".
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- fs/iomap/buffered-io.c | 2 +-
+ net/sctp/sm_make_chunk.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 644479ccefbd0f18..5db54ca29a35acf3 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1049,7 +1049,7 @@ static int iomap_write_delalloc_punch(struct inode *inode, struct folio *folio,
+diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
+index 08527d882e56ef79..f80208edd6a5c67d 100644
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -3303,7 +3303,7 @@ struct sctp_chunk *sctp_process_asconf(struct sctp_association *asoc,
  
- /*
-  * Scan the data range passed to us for dirty page cache folios. If we find a
-- * dirty folio, punch out the preceeding range and update the offset from which
-+ * dirty folio, punch out the preceding range and update the offset from which
-  * the next punch will start from.
-  *
-  * We can punch out storage reservations under clean pages because they either
+ 	/* Process the TLVs contained within the ASCONF chunk. */
+ 	sctp_walk_params(param, addip) {
+-		/* Skip preceeding address parameters. */
++		/* Skip preceding address parameters. */
+ 		if (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
+ 		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)
+ 			continue;
 -- 
 2.34.1
 
