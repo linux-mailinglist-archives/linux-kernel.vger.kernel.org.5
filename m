@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F97B0FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2137B0FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjI1AUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S229910AbjI1AUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjI1AUJ (ORCPT
+        with ESMTP id S229848AbjI1AUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:20:09 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651C0F5
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:04 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f4f2b6de8so201175537b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:04 -0700 (PDT)
+        Wed, 27 Sep 2023 20:20:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B79139
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:06 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d817775453dso18199030276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695860403; x=1696465203; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695860405; x=1696465205; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=i6Py+ACdvl5qdIki/mVRt+DdjK10J7Lfr08DhLsqDcA=;
-        b=NOfvqPavBdoSw9hxoZwK+Sx1zCwPZSVkE8XSyB6iJ2tyTOs4Y17H1XrPwDyRUDaSyl
-         ySDs3YiBTb6F1Q7flZaBX5OI6O76jpGiuuGDNvIsYq4Wbblhwl/nl7bV1ZOBFraJGq8f
-         TfwzZUv6XNKYOFrFPPgYnWPuI9qR/dy+0RF8dTiE4W/ZVFcrkkBq3k+g3F1Uwi1pIgfP
-         JCP+2lqeVGdZgzbH1XX2WY38wOLLo367wBFF2xmWAHcP4FSRrUwgcCXQHe1hrdPSMkh+
-         /lYW+nmmYJMtW7jKPYCwkZHZn3QmhG/hCktyAxRUghI7w8eB5wDwk4znW98WLOaEDSMn
-         ombQ==
+        bh=4QGGNsUnXbHlm2535h1KbmRwKOI34J8NkE8WwWAmRM0=;
+        b=jalgCVa0URnqS6ZdjQTQqUbxwtvLy67ddZSgc0ZR01/k9PcOmHDUgW1i5RxcyiCC/5
+         qFoySJhtbebxR+RPfU32HdJQ44E4P7cSl9Rmc7WA5IHcZrHue7c/kyhy0KECBfD39i22
+         5gZbIRFQLgEyZUeBY+ji2mUEZMy5bWMLCVicHWczfr2ia2TZ6EhftmlxJAOnNG/tklxP
+         7FPocL34negDqydY7dMtm3PldAUB/NWY4OEEbYX/wWgiJJjKV8aRuB/IEQ8t54PE8NFA
+         HNFC7sGBmJtphRY5si9fOJX+TqS4QbpdnVBq6T/8mRmlepY+jjrN/YnhbRxEOkkNl53A
+         5VMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695860403; x=1696465203;
+        d=1e100.net; s=20230601; t=1695860405; x=1696465205;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=i6Py+ACdvl5qdIki/mVRt+DdjK10J7Lfr08DhLsqDcA=;
-        b=T6naKOLL1PuUbg+OgZon1pWxlIJB6mCFmjBselnd9Tr+JNXJrBwvSSyy1v6uvHKVLz
-         JCDiyE683IsRYNhsl7xcLHg4HCshxqbWC+DERfXKDNEM0fB+SytKaUP4dXdVCFohX7RX
-         JvehhdiCfZkbmpGNlURGPiLt180MMT4mGN4u6xkPNBW5q6cg85Z+QanoeM+/DT+wErgZ
-         BGL1pf+7n4xZtAYJN/8PgX+cZ19fyyjFApippgiYE4i3yGnpxmtNjIDCpD1rcF4ld+rq
-         iWY2qJTe4FKLrHriBKNs6ZDChWrjlSm6F95KRkjQF2ADZkiRwjqzs4duIQrnx7WaF1tr
-         O1/A==
-X-Gm-Message-State: AOJu0Yye/sGofTkBtwus8QyCGejDWyjhNk113OddAj9Eydgb6QuNtnbO
-        TvacJMVnxFX+WeqRHOdH4Bd8aHOx/iM=
-X-Google-Smtp-Source: AGHT+IHUrcVz15+j+5HECYlp3Pgaiq4UBfegTD1MqSW66kU3ut2BpeebBPZckxrdcj0LzX6zbXVIBR34wfg=
+        bh=4QGGNsUnXbHlm2535h1KbmRwKOI34J8NkE8WwWAmRM0=;
+        b=qU5GRtlAVrnzs3tswpuHDobLPz7hxtV3bG/XCB46w+J4rGY49Glggf1Y/ZH+afRFmJ
+         oT7IPEW+zjQYmuqLzwxs93ZP2CisJ1m4oWzncUegjz3FOy/ZDE7932JEhZt9G+GrrXo/
+         v+/NSTSUofGL6T3C3eogWasC/Dz01CfDlH1F2fIc+/ZH39qcpj5WVuiKDrcK6IYNMR1D
+         ES3mTT1k+j9lmRHm7BBh5VM9S0u+u70u40AVZB5mWyWbQKsiHVc4+nnH6EG37r/H6Rtj
+         6DariVs51d/qrhh7owNa+yAhMVmJzq/pv+isu62WNyI7Hh89gffTvJeRQu8vipQ6dvNN
+         e1LQ==
+X-Gm-Message-State: AOJu0YxLvnvKCvnH08B8F+4k7/EeA59od8OAuxU26QQGIx2RrOwh7BCW
+        +ZHOkssWR749/6eqfKbrlWVADuy+38Y=
+X-Google-Smtp-Source: AGHT+IEBfyu8iwbl726nGZ0r1f2jWkIfXapTcl/HjZ1vtmHkcySW81vMihJO8Ki3Dn5u2RZ7E2kBPhAtGdk=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4316:0:b0:58c:8c9f:c05a with SMTP id
- q22-20020a814316000000b0058c8c9fc05amr53375ywa.9.1695860403653; Wed, 27 Sep
- 2023 17:20:03 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1613:b0:d80:ff9:d19e with SMTP id
+ bw19-20020a056902161300b00d800ff9d19emr55418ybb.9.1695860405485; Wed, 27 Sep
+ 2023 17:20:05 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 27 Sep 2023 17:19:53 -0700
+Date:   Wed, 27 Sep 2023 17:19:54 -0700
 In-Reply-To: <20230928001956.924301-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230928001956.924301-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230928001956.924301-3-seanjc@google.com>
-Subject: [PATCH 2/5] KVM: x86: Constrain guest-supported xfeatures only at KVM_GET_XSAVE{2}
+Message-ID: <20230928001956.924301-4-seanjc@google.com>
+Subject: [PATCH 3/5] KVM: selftests: Touch relevant XSAVE state in guest for
+ state test
 From:   Sean Christopherson <seanjc@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -72,121 +73,153 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mask off xfeatures that aren't exposed to the guest only when saving guest
-state via KVM_GET_XSAVE{2} instead of modifying user_xfeatures directly.
-Preserving the maximal set of xfeatures in user_xfeatures restores KVM's
-ABI for KVM_SET_XSAVE, which prior to commit ad856280ddea ("x86/kvm/fpu:
-Limit guest user_xfeatures to supported bits of XCR0") allowed userspace
-to load xfeatures that are supported by the host, irrespective of what
-xfeatures are exposed to the guest.
+Modify support XSAVE state in the "state test's" guest code so that saving
+and loading state via KVM_{G,S}ET_XSAVE actually does something useful,
+i.e. so that xstate_bv in XSAVE state isn't empty.
 
-There is no known use case where userspace *intentionally* loads xfeatures
-that aren't exposed to the guest, but the bug fixed by commit ad856280ddea
-was specifically that KVM_GET_SAVE{2} would save xfeatures that weren't
-exposed to the guest, e.g. would lead to userspace unintentionally loading
-guest-unsupported xfeatures when live migrating a VM.
+Punt on BNDCSR for now, it's easier to just stuff that xfeature from the
+host side.
 
-Restricting KVM_SET_XSAVE to guest-supported xfeatures is especially
-problematic for QEMU-based setups, as QEMU has a bug where instead of
-terminating the VM if KVM_SET_XSAVE fails, QEMU instead simply stops
-loading guest state, i.e. resumes the guest after live migration with
-incomplete guest state, and ultimately results in guest data corruption.
-
-Note, letting userspace restore all host-supported xfeatures does not fix
-setups where a VM is migrated from a host *without* commit ad856280ddea,
-to a target with a subset of host-supported xfeatures.  However there is
-no way to safely address that scenario, e.g. KVM could silently drop the
-unsupported features, but that would be a clear violation of KVM's ABI and
-so would require userspace to opt-in, at which point userspace could
-simply be updated to sanitize the to-be-loaded XSAVE state.
-
-Reported-by: Tyler Stachecki <stachecki.tyler@gmail.com>
-Closes: https://lore.kernel.org/all/20230914010003.358162-1-tstachecki@bloomberg.net
-Fixes: ad856280ddea ("x86/kvm/fpu: Limit guest user_xfeatures to supported bits of XCR0")
-Cc: stable@vger.kernel.org
-Cc: Leonardo Bras <leobras@redhat.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kernel/fpu/xstate.c |  5 +----
- arch/x86/kvm/cpuid.c         |  8 --------
- arch/x86/kvm/x86.c           | 18 ++++++++++++++++--
- 3 files changed, 17 insertions(+), 14 deletions(-)
+ .../selftests/kvm/include/x86_64/processor.h  | 14 ++++
+ .../testing/selftests/kvm/x86_64/state_test.c | 77 +++++++++++++++++++
+ 2 files changed, 91 insertions(+)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 76408313ed7f..ef6906107c54 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1539,10 +1539,7 @@ static int fpstate_realloc(u64 xfeatures, unsigned int ksize,
- 		fpregs_restore_userregs();
+diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
+index 4fd042112526..6f66861175ad 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/processor.h
++++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+@@ -68,6 +68,12 @@ struct xstate {
+ #define XFEATURE_MASK_OPMASK		BIT_ULL(5)
+ #define XFEATURE_MASK_ZMM_Hi256		BIT_ULL(6)
+ #define XFEATURE_MASK_Hi16_ZMM		BIT_ULL(7)
++#define XFEATURE_MASK_PT		BIT_ULL(8)
++#define XFEATURE_MASK_PKRU		BIT_ULL(9)
++#define XFEATURE_MASK_PASID		BIT_ULL(10)
++#define XFEATURE_MASK_CET_USER		BIT_ULL(11)
++#define XFEATURE_MASK_CET_KERNEL	BIT_ULL(12)
++#define XFEATURE_MASK_LBR		BIT_ULL(15)
+ #define XFEATURE_MASK_XTILE_CFG		BIT_ULL(17)
+ #define XFEATURE_MASK_XTILE_DATA	BIT_ULL(18)
  
- 	newfps->xfeatures = curfps->xfeatures | xfeatures;
--
--	if (!guest_fpu)
--		newfps->user_xfeatures = curfps->user_xfeatures | xfeatures;
--
-+	newfps->user_xfeatures = curfps->user_xfeatures | xfeatures;
- 	newfps->xfd = curfps->xfd & ~xfeatures;
- 
- 	/* Do the final updates within the locked region */
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 0544e30b4946..773132c3bf5a 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -360,14 +360,6 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	vcpu->arch.guest_supported_xcr0 =
- 		cpuid_get_supported_xcr0(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
- 
--	/*
--	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
--	 * XSAVE/XCRO are not exposed to the guest, and even if XSAVE isn't
--	 * supported by the host.
--	 */
--	vcpu->arch.guest_fpu.fpstate->user_xfeatures = vcpu->arch.guest_supported_xcr0 |
--						       XFEATURE_MASK_FPSSE;
--
- 	kvm_update_pv_runtime(vcpu);
- 
- 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 41d8e6c8570c..1e645f5b1e2c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5386,12 +5386,26 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
- 					  u8 *state, unsigned int size)
- {
-+	/*
-+	 * Only copy state for features that are enabled for the guest.  The
-+	 * state itself isn't problematic, but setting bits in the header for
-+	 * features that are supported in *this* host but not exposed to the
-+	 * guest can result in KVM_SET_XSAVE failing when live migrating to a
-+	 * compatible host without the features that are NOT exposed to the
-+	 * guest.
-+	 *
-+	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
-+	 * XSAVE/XCRO are not exposed to the guest, and even if XSAVE isn't
-+	 * supported by the host.
-+	 */
-+	u64 supported_xcr0 = vcpu->arch.guest_supported_xcr0 |
-+			     XFEATURE_MASK_FPSSE;
-+
- 	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return;
- 
- 	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
--				       vcpu->arch.guest_fpu.fpstate->user_xfeatures,
--				       vcpu->arch.pkru);
-+				       supported_xcr0, vcpu->arch.pkru);
+@@ -147,6 +153,7 @@ struct kvm_x86_cpu_feature {
+ #define	X86_FEATURE_CLWB		KVM_X86_CPU_FEATURE(0x7, 0, EBX, 24)
+ #define	X86_FEATURE_UMIP		KVM_X86_CPU_FEATURE(0x7, 0, ECX, 2)
+ #define	X86_FEATURE_PKU			KVM_X86_CPU_FEATURE(0x7, 0, ECX, 3)
++#define	X86_FEATURE_OSPKE		KVM_X86_CPU_FEATURE(0x7, 0, ECX, 4)
+ #define	X86_FEATURE_LA57		KVM_X86_CPU_FEATURE(0x7, 0, ECX, 16)
+ #define	X86_FEATURE_RDPID		KVM_X86_CPU_FEATURE(0x7, 0, ECX, 22)
+ #define	X86_FEATURE_SGX_LC		KVM_X86_CPU_FEATURE(0x7, 0, ECX, 30)
+@@ -553,6 +560,13 @@ static inline void xsetbv(u32 index, u64 value)
+ 	__asm__ __volatile__("xsetbv" :: "a" (eax), "d" (edx), "c" (index));
  }
  
- static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
++static inline void wrpkru(u32 pkru)
++{
++	/* Note, ECX and EDX are architecturally required to be '0'. */
++	asm volatile(".byte 0x0f,0x01,0xef\n\t"
++		     : : "a" (pkru), "c"(0), "d"(0));
++}
++
+ static inline struct desc_ptr get_gdt(void)
+ {
+ 	struct desc_ptr gdt;
+diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
+index 4c4925a8ab45..df3e93df4343 100644
+--- a/tools/testing/selftests/kvm/x86_64/state_test.c
++++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+@@ -139,6 +139,83 @@ static void vmx_l1_guest_code(struct vmx_pages *vmx_pages)
+ static void __attribute__((__flatten__)) guest_code(void *arg)
+ {
+ 	GUEST_SYNC(1);
++
++	if (this_cpu_has(X86_FEATURE_XSAVE)) {
++		uint64_t supported_xcr0 = this_cpu_supported_xcr0();
++		uint8_t buffer[4096];
++
++		memset(buffer, 0xcc, sizeof(buffer));
++
++		set_cr4(get_cr4() | X86_CR4_OSXSAVE);
++		GUEST_ASSERT(this_cpu_has(X86_FEATURE_OSXSAVE));
++
++		xsetbv(0, xgetbv(0) | supported_xcr0);
++
++		/*
++		 * Modify state for all supported xfeatures to take them out of
++		 * their "init" state, i.e. to make them show up in XSTATE_BV.
++		 *
++		 * Note off-by-default features, e.g. AMX, are out of scope for
++		 * this particular testcase as they have a different ABI.
++		 */
++		GUEST_ASSERT(supported_xcr0 & XFEATURE_MASK_FP);
++		asm volatile ("fincstp");
++
++		GUEST_ASSERT(supported_xcr0 & XFEATURE_MASK_SSE);
++		asm volatile ("vmovdqu %0, %%xmm0" :: "m" (buffer));
++
++		if (supported_xcr0 & XFEATURE_MASK_YMM)
++			asm volatile ("vmovdqu %0, %%ymm0" :: "m" (buffer));
++
++		if (supported_xcr0 & XFEATURE_MASK_AVX512) {
++			asm volatile ("kmovq %0, %%k1" :: "r" (-1ull));
++			asm volatile ("vmovupd %0, %%zmm0" :: "m" (buffer));
++			asm volatile ("vmovupd %0, %%zmm16" :: "m" (buffer));
++		}
++
++		if (this_cpu_has(X86_FEATURE_MPX)) {
++			uint64_t bounds[2] = { 10, 0xffffffffull };
++			uint64_t output[2] = { };
++
++			GUEST_ASSERT(supported_xcr0 & XFEATURE_MASK_BNDREGS);
++			GUEST_ASSERT(supported_xcr0 & XFEATURE_MASK_BNDCSR);
++
++			/*
++			 * Don't bother trying to get BNDCSR into the INUSE
++			 * state.  MSR_IA32_BNDCFGS doesn't count as it isn't
++			 * managed via XSAVE/XRSTOR, and BNDCFGU can only be
++			 * modified by XRSTOR.  Stuffing XSTATE_BV in the host
++			 * is simpler than doing XRSTOR here in the guest.
++			 *
++			 * However, temporarily enable MPX in BNDCFGS so that
++			 * BNDMOV actually loads BND1.  If MPX isn't *fully*
++			 * enabled, all MPX instructions are treated as NOPs.
++			 *
++			 * Hand encode "bndmov (%rax),%bnd1" as support for MPX
++			 * mnemonics/registers has been removed from gcc and
++			 * clang (and was never fully supported by clang).
++			 */
++			wrmsr(MSR_IA32_BNDCFGS, BIT_ULL(0));
++			asm volatile (".byte 0x66,0x0f,0x1a,0x08" :: "a" (bounds));
++			/*
++			 * Hand encode "bndmov %bnd1, (%rax)" to sanity check
++			 * that BND1 actually got loaded.
++			 */
++			asm volatile (".byte 0x66,0x0f,0x1b,0x08" :: "a" (output));
++			wrmsr(MSR_IA32_BNDCFGS, 0);
++
++			GUEST_ASSERT_EQ(bounds[0], output[0]);
++			GUEST_ASSERT_EQ(bounds[1], output[1]);
++		}
++		if (this_cpu_has(X86_FEATURE_PKU)) {
++			GUEST_ASSERT(supported_xcr0 & XFEATURE_MASK_PKRU);
++			set_cr4(get_cr4() | X86_CR4_PKE);
++			GUEST_ASSERT(this_cpu_has(X86_FEATURE_OSPKE));
++
++			wrpkru(-1u);
++		}
++	}
++
+ 	GUEST_SYNC(2);
+ 
+ 	if (arg) {
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
