@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49667B1247
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3748A7B124B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjI1GDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
+        id S229460AbjI1GEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1GDf (ORCPT
+        with ESMTP id S230150AbjI1GEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:03:35 -0400
+        Thu, 28 Sep 2023 02:04:43 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4230999;
-        Wed, 27 Sep 2023 23:03:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DD2E5;
+        Wed, 27 Sep 2023 23:04:41 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx2wH6dFdz4f3l1M;
-        Thu, 28 Sep 2023 14:03:27 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx2xc3qj1z4f3k5s;
+        Thu, 28 Sep 2023 14:04:36 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgD3jd0wFxVlIupVBg--.64905S3;
-        Thu, 28 Sep 2023 14:03:30 +0800 (CST)
-Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
-To:     Ming Lei <ming.lei@redhat.com>, linan666@huaweicloud.com
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230911023308.3467802-1-linan666@huaweicloud.com>
- <ZRT7cVFcE6QMHfie@fedora>
+        by APP4 (Coremail) with SMTP id gCh0CgD3jd10FxVlJPtVBg--.64960S3;
+        Thu, 28 Sep 2023 14:04:37 +0800 (CST)
+Subject: Re: [PATCH -next] nbd: get config_lock before sock_shutdown
+To:     Jens Axboe <axboe@kernel.dk>,
+        Zhong Jinghua <zhongjinghua@huaweicloud.com>,
+        josef@toxicpanda.com
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230707062256.1271948-1-zhongjinghua@huaweicloud.com>
+ <1b67a9dd-c28a-661a-3a46-dab509d4c34e@kernel.dk>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <47669fb6-3700-e327-11af-93a92b0984a0@huaweicloud.com>
-Date:   Thu, 28 Sep 2023 14:03:28 +0800
+Message-ID: <ae49487b-9aa8-fe37-792b-676f7e70b23b@huaweicloud.com>
+Date:   Thu, 28 Sep 2023 14:04:36 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <ZRT7cVFcE6QMHfie@fedora>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <1b67a9dd-c28a-661a-3a46-dab509d4c34e@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3jd0wFxVlIupVBg--.64905S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4ftry5Aw17Xry5XFykAFb_yoW8Aw4fpF
-        4Fy3WSkF4UJF1Skan5Xw47ur9Yqw48KFWFk34rJ34ayr9xuFsakrs7KFyavFyDKr18Ww1v
-        9Fn8WFsIyw4UArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID: gCh0CgD3jd10FxVlJPtVBg--.64960S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw1fKw4xWFWfWF17Aw4kXrb_yoW8tw1UpF
+        W5CF4qkr4UXw4Sva9xC347Wr1UK342grW7Gry8Zwn0vr95uryI9FyDKa4fCryUtrnrCF4F
+        qFWFgasYk3y3JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
         vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
         0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -68,75 +68,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-ÔÚ 2023/09/28 12:05, Ming Lei Ð´µÀ:
-> On Mon, Sep 11, 2023 at 10:33:08AM +0800, linan666@huaweicloud.com wrote:
->> From: Li Nan <linan122@huawei.com>
+åœ¨ 2023/08/01 8:27, Jens Axboe å†™é“:
+> On 7/7/23 12:22?AM, Zhong Jinghua wrote:
+>> Config->socks in sock_shutdown may trigger a UAF problem.
+>> The reason is that sock_shutdown does not hold the config_lock,
+>> so that nbd_ioctl can release config->socks at this time.
 >>
->> If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
->> krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
->> may occurs.
+>> T0: NBD_SET_SOCK
+>> T1: NBD_DO_IT
 >>
->>    T1
->>    nbd_ioctl
->>     __nbd_ioctl
->>      nbd_add_socket
->>       blk_mq_freeze_queue
->> 				T2
->>    				recv_work
->>    				 nbd_read_reply
->>    				  sock_xmit
->>       krealloc config->socks
->> 				   def config->socks
+>> T0						T1
 >>
->> Pass nbd_sock to nbd_read_reply(). And introduce a new function
->> sock_xmit_recv(), which differs from sock_xmit only in the way it get
->> socket.
+>> nbd_ioctl
+>>    mutex_lock(&nbd->config_lock)
+>>    // get lock
+>>    __nbd_ioctl
+>>      nbd_start_device_ioctl
+>>        nbd_start_device
+>>         mutex_unlock(&nbd->config_lock)
+>>           // relase lock
+>>           wait_event_interruptible
+>>           (kill, enter sock_shutdown)
+>>           sock_shutdown
+>> 					nbd_ioctl
+>> 					  mutex_lock(&nbd->config_lock)
+>> 					  // get lock
+>> 					  __nbd_ioctl
+>> 					    nbd_add_socket
+>> 					      krealloc
+>> 						kfree(p)
+>> 					        //config->socks is NULL
+>>             nbd_sock *nsock = config->socks // error
 >>
+>> Fix it by moving config_lock up before sock_shutdown.
+>>
+>> Signed-off-by: Zhong Jinghua <zhongjinghua@huaweicloud.com>
+>> ---
+>>   drivers/block/nbd.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+>> index c410cf29fb0c..accbe99ebb7e 100644
+>> --- a/drivers/block/nbd.c
+>> +++ b/drivers/block/nbd.c
+>> @@ -1428,13 +1428,18 @@ static int nbd_start_device_ioctl(struct nbd_device *nbd)
+>>   	mutex_unlock(&nbd->config_lock);
+>>   	ret = wait_event_interruptible(config->recv_wq,
+>>   					 atomic_read(&config->recv_threads) == 0);
+>> +
+>> +	/*
+>> +	 * recv_work in flush_workqueue will not get this lock, because nbd_open
+>> +	 * will hold nbd->config_refs
+>> +	 */
+>> +	mutex_lock(&nbd->config_lock);
+>>   	if (ret) {
+>>   		sock_shutdown(nbd);
+>>   		nbd_clear_que(nbd);
+>>   	}
+>>   
+>>   	flush_workqueue(nbd->recv_workq);
+>> -	mutex_lock(&nbd->config_lock);
 > 
-> I am wondering why not grab queue usage counter before calling nbd_read_reply()
-> for avoiding such issue, something like the following change:
+> Feels pretty iffy to hold config_lock over the flush. If anything off
+> recv_work() ever grabs it, we'd be stuck. Your comment assumes that the
+> only case this will currently happen is if we drop the last ref, or at
+> least that's the case that'd do it even if you don't mention it
+> explicitly.
 > 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index df1cd0f718b8..09215b605b12 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -837,9 +837,6 @@ static void recv_work(struct work_struct *work)
->   	while (1) {
->   		struct nbd_reply reply;
->   
-> -		if (nbd_read_reply(nbd, args->index, &reply))
-> -			break;
-> -
->   		/*
->   		 * Grab .q_usage_counter so request pool won't go away, then no
->   		 * request use-after-free is possible during nbd_handle_reply().
-> @@ -852,6 +849,9 @@ static void recv_work(struct work_struct *work)
->   			break;
->   		}
->   
+> Maybe this is all fine, but recv_work() should have a comment matching
+> this one, and this comment should be more descriptive as well.
 
-This break how nbd works, if there is no reply yet, recv_work() will
-wait for reply in:
+Jinghua,
 
-nbd_read_reply
-  sock_xmit
-   sock_recvmsg
-
-After this change, recv_work() will just return if there is no io.
+Please add comment as Jens suggested, and resend this patch.
 
 Thanks,
 Kuai
 
-> +		if (nbd_read_reply(nbd, args->index, &reply))
-> +			break;
-> +
->   		cmd = nbd_handle_reply(nbd, args->index, &reply);
->   		if (IS_ERR(cmd)) {
->   			percpu_ref_put(&q->q_usage_counter);
-> 
-> Thanks,
-> Ming
-> 
-> .
 > 
 
