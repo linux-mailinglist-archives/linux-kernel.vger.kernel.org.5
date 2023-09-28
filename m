@@ -2,125 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368287B26BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B617B268E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjI1Uk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S232153AbjI1U0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbjI1Uk4 (ORCPT
+        with ESMTP id S230251AbjI1U0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:40:56 -0400
-X-Greylist: delayed 1005 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 13:40:52 PDT
-Received: from 10.mo575.mail-out.ovh.net (10.mo575.mail-out.ovh.net [46.105.79.203])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E364519D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:40:52 -0700 (PDT)
-Received: from director8.ghost.mail-out.ovh.net (unknown [10.109.146.175])
-        by mo575.mail-out.ovh.net (Postfix) with ESMTP id 3DEFA2766C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:06 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-tq497 (unknown [10.110.208.152])
-        by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id C499A1FDBA;
-        Thu, 28 Sep 2023 20:24:04 +0000 (UTC)
-Received: from RCM-web4.webmail.mail.ovh.net ([176.31.235.81])
-        by ghost-submission-6684bf9d7b-tq497 with ESMTPSA
-        id vKH/K+TgFWX2QwYA45+jXQ
-        (envelope-from <rafal@milecki.pl>); Thu, 28 Sep 2023 20:24:04 +0000
+        Thu, 28 Sep 2023 16:26:03 -0400
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E024E19C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:25:59 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id lxa7qtM09s3p2lxa7qE71e; Thu, 28 Sep 2023 22:25:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1695932758;
+        bh=WB4u7hJNotn/oO7SrKl1RiTvC7V6GdDk62G1wtVmWy0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=GWNgLpt2DZbKBZdKA9Z6Yt3WX9L2sKCs6nrUlWb1jd8Njmh7h6DblzBn92oVSfD4j
+         HyHBQazZS7p61N+qFbjxAMMlkn0SYwKGGOlKFELi4WjjPUmy98LozLi2dUBB7StWcI
+         9llHIuly0UHHL92lDfHq39MzWEJwTsOi1ghEF/I/iW5HEbiLpqA18slMmUkukA+ZZI
+         rYj2ytv9vb0VKrb/z9kswE9Zr/N9OJwbwykja9wpYBHEM/XjINz8qKCryL07B/BSHa
+         /hIc+mJFXcPmERsxC9mQTHjT6G5rPcni0jC5cgC2JY4+6qN0HXqg8JbjezANa/ITN5
+         WyNCIJ4KmEakQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 28 Sep 2023 22:25:57 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <1712d776-2170-3a48-3bce-b39128edd4ab@wanadoo.fr>
+Date:   Thu, 28 Sep 2023 22:25:55 +0200
 MIME-Version: 1.0
-Date:   Thu, 28 Sep 2023 22:24:04 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v10 1/3] nvmem: core: Rework layouts to become platform
- devices
-In-Reply-To: <20230922174854.611975-2-miquel.raynal@bootlin.com>
-References: <20230922174854.611975-1-miquel.raynal@bootlin.com>
- <20230922174854.611975-2-miquel.raynal@bootlin.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <1982d29ccb4e8c82cddfe0d86edc6072@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 31.11.218.106
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RESEND v19] clk: npcm8xx: add clock controller
+Content-Language: fr
+To:     Tomer Maimon <tmaimon77@gmail.com>, mturquette@baylibre.com,
+        sboyd@kernel.org, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com
+Cc:     openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230928194508.141138-1-tmaimon77@gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230928194508.141138-1-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 16205640309849697181
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdduudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlucfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejvdelgfeutdfhfeelheegfedtleduleeuvdfgfeefvefhvedtheetjeetfeehgeenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudejiedrfedurddvfeehrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehrrghfrghlsehmihhlvggtkhhirdhplheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-22 19:48, Miquel Raynal wrote:
-> Current layout support was initially written without modules support in
-> mind. When the requirement for module support rose, the existing base
-> was improved to adopt modularization support, but kind of a design flaw
-> was introduced. With the existing implementation, when a storage device
-> registers into NVMEM, the core tries to hook a layout (if any) and
-> populates its cells immediately. This means, if the hardware 
-> description
-> expects a layout to be hooked up, but no driver was provided for that,
-> the storage medium will fail to probe and try later from
-> scratch. Technically, the layouts are more like a "plus" and, even we
-> consider that the hardware description shall be correct, we could still
-> probe the storage device (especially if it contains the rootfs).
+Le 28/09/2023 à 21:45, Tomer Maimon a écrit :
+> Nuvoton Arbel BMC NPCM8XX contains an integrated clock controller which
+> generates and supplies clocks to all modules within the BMC.
 > 
-> One way to overcome this situation is to consider the layouts as
-> devices, and leverage the existing notifier mechanism. When a new NVMEM
-> device is registered, we can:
-> - populate its nvmem-layout child, if any
-> - try to modprobe the relevant driver, if relevant
-> - try to hook the NVMEM device with a layout in the notifier
-> And when a new layout is registered:
-> - try to hook all the existing NVMEM devices which are not yet hooked 
-> to
->   a layout with the new layout
-> This way, there is no strong order to enforce, any NVMEM device 
-> creation
-> or NVMEM layout driver insertion will be observed as a new event which
-> may lead to the creation of additional cells, without disturbing the
-> probes with costly (and sometimes endless) deferrals.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> Acked-by: Joel Stanley <joel@jms.id.au>
+> ---
 
-I rebased & tested my patch converting U-Boot NVMEM device to NVMEM
-layout on top of this. It worked!
+...
 
-Tested-by: Rafał Miłecki <rafal@milecki.pl>
 
-For reference what I used:
+> +static struct clk_hw *
+> +npcm8xx_clk_register_pll(struct device *dev, void __iomem *pllcon,
+> +			 const char *name, const struct clk_parent_data *parent,
+> +			 unsigned long flags)
+> +{
+> +	struct npcm8xx_clk_pll *pll;
+> +	struct clk_init_data init = {};
+> +	int ret;
+> +
+> +	pll = devm_kzalloc(dev, sizeof(*pll), GFP_KERNEL);
+> +	if (!pll)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	init.name = name;
+> +	init.ops = &npcm8xx_clk_pll_ops;
+> +	init.parent_data = parent;
+> +	init.num_parents = 1;
+> +	init.flags = flags;
+> +
+> +	pll->pllcon = pllcon;
+> +	pll->hw.init = &init;
+> +
+> +	ret = devm_clk_hw_register(dev, &pll->hw);
+> +	if (ret) {
+> +		kfree(pll);
 
-partitions {
-	partition-loader {
-		compatible = "brcm,u-boot";
+Double free. pll is devm_kzalloc()'ed.
 
-		partition-u-boot-env {
-			compatible = "nvmem-cells";
+> +		return ERR_PTR(ret);
+> +	}
+> +
+> +	return &pll->hw;
+> +}
+> +
+> +static DEFINE_SPINLOCK(npcm8xx_clk_lock);
+> +
+> +static int npcm8xx_clk_probe(struct platform_device *pdev)
+> +{
+> +	struct clk_hw_onecell_data *npcm8xx_clk_data;
+> +	struct device *dev = &pdev->dev;
+> +	void __iomem *clk_base;
+> +	struct resource *res;
+> +	struct clk_hw *hw;
+> +	unsigned int i;
+> +	int err;
+> +
+> +	npcm8xx_clk_data = devm_kzalloc(dev, struct_size(npcm8xx_clk_data, hws,
+> +							 NPCM8XX_NUM_CLOCKS),
+> +					GFP_KERNEL);
+> +	if (!npcm8xx_clk_data)
+> +		return -ENOMEM;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	clk_base = devm_ioremap(dev, res->start, resource_size(res));
+> +	if (!clk_base) {
+> +		dev_err(&pdev->dev, "Failed to remap I/O memory\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	npcm8xx_clk_data->num = NPCM8XX_NUM_CLOCKS;
+> +
+> +	for (i = 0; i < NPCM8XX_NUM_CLOCKS; i++)
+> +		npcm8xx_clk_data->hws[i] = ERR_PTR(-EPROBE_DEFER);
+> +
+> +	/* Register plls */
+> +	for (i = 0; i < ARRAY_SIZE(npcm8xx_pll_clks); i++) {
+> +		struct npcm8xx_pll_data *pll_clk = &npcm8xx_pll_clks[i];
+> +
+> +		hw = npcm8xx_clk_register_pll(dev, clk_base + pll_clk->reg,
+> +					      pll_clk->name, &pll_clk->parent,
+> +					      pll_clk->flags);
+> +		if (IS_ERR(hw)) {
+> +			dev_err(dev, "npcm8xx_clk: Can't register pll\n");
 
-			nvmem-layout {
-				compatible = "brcm,env";
+Defining pr_fmt() would simplify the error message.
 
-				base_mac_addr: ethaddr {
-					#nvmem-cell-cells = <1>;
-				};
-			};
-		};
-	};
-};
+Also dev_err_probe() could save a few LoC and log the error codes.
 
--- 
-Rafał Miłecki
+> +			return PTR_ERR(hw);
+> +		}
+> +		pll_clk->hw = *hw;
+> +	}
+> +
+> +	/* Register fixed dividers */
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL1_DIV2,
+> +					       NPCM8XX_CLK_S_PLL1, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register fixed div\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	hw_pll1_div2 = *hw;
+> +
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL2_DIV2,
+> +					       NPCM8XX_CLK_S_PLL2, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register pll2 div2\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	hw_pll2_div2 = *hw;
+> +
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL_GFX_DIV2,
+> +					       NPCM8XX_CLK_S_PLL_GFX, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register gfx div2\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	hw_gfx_div2 = *hw;
+> +
+> +	/* Register muxes */
+> +	for (i = 0; i < ARRAY_SIZE(npcm8xx_muxes); i++) {
+> +		struct npcm8xx_clk_mux_data *mux_data = &npcm8xx_muxes[i];
+> +
+> +		hw = devm_clk_hw_register_mux_parent_data_table(dev,
+> +								mux_data->name,
+> +								mux_data->parent_data,
+> +								mux_data->num_parents,
+> +								mux_data->flags,
+> +								clk_base + NPCM8XX_CLKSEL,
+> +								mux_data->shift,
+> +								mux_data->mask,
+> +								0,
+> +								mux_data->table,
+> +								&npcm8xx_clk_lock);
+> +		if (IS_ERR(hw)) {
+> +			dev_err(dev, "npcm8xx_clk: Can't register mux\n");
+> +			return PTR_ERR(hw);
+> +		}
+> +		mux_data->hw = *hw;
+> +	}
+> +
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PRE_CLK,
+> +					       NPCM8XX_CLK_S_CPU_MUX, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register pre clk div2\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	hw_pre_clk = *hw;
+> +
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_AXI,
+> +					       NPCM8XX_CLK_S_TH, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register axi div2\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	npcm8xx_clk_data->hws[NPCM8XX_CLK_AXI] = hw;
+> +
+> +	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_ATB,
+> +					       NPCM8XX_CLK_S_AXI, 0, 1, 2);
+> +	if (IS_ERR(hw)) {
+> +		dev_err(dev, "npcm8xx_clk: Can't register atb div2\n");
+> +		return PTR_ERR(hw);
+> +	}
+> +	npcm8xx_clk_data->hws[NPCM8XX_CLK_ATB] = hw;
+> +
+> +	/* Register clock dividers specified in npcm8xx_divs */
+> +	for (i = 0; i < ARRAY_SIZE(npcm8xx_divs); i++) {
+> +		const struct npcm8xx_clk_div_data *div_data = &npcm8xx_divs[i];
+> +
+> +		hw = clk_hw_register_divider_parent_data(dev, div_data->name,
+> +							 &div_data->parent_data,
+> +							 div_data->flags,
+> +							 clk_base + div_data->reg,
+> +							 div_data->shift,
+> +							 div_data->width,
+> +							 div_data->clk_divider_flags,
+> +							 &npcm8xx_clk_lock);
+> +		if (IS_ERR(hw)) {
+> +			dev_err(dev, "npcm8xx_clk: Can't register div table\n");
+> +			goto err_div_clk;
+> +		}
+> +
+> +		if (div_data->onecell_idx >= 0)
+> +			npcm8xx_clk_data->hws[div_data->onecell_idx] = hw;
+> +	}
+> +
+> +	err = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+> +					  npcm8xx_clk_data);
+> +	if (err) {
+> +		dev_err(dev, "unable to add clk provider\n");
+> +		hw = ERR_PTR(err);
+> +		goto err_div_clk;
+> +	}
+> +
+> +	return err;
+
+return 0 is the same but more explicit.
+
+> +
+> +err_div_clk:
+> +	while (i--)
+> +		if (npcm8xx_divs[i].onecell_idx >= 0)
+> +			clk_hw_unregister_divider(npcm8xx_clk_data->hws[npcm8xx_divs[i].onecell_idx]);
+> +
+> +	return PTR_ERR(hw);
+> +}
+> +
+> +static const struct of_device_id npcm8xx_clk_dt_ids[] = {
+> +	{ .compatible = "nuvoton,npcm845-clk", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, npcm8xx_clk_dt_ids);
+> +
+> +static struct platform_driver npcm8xx_clk_driver = {
+> +	.probe  = npcm8xx_clk_probe,
+> +	.driver = {
+> +		.name = "npcm8xx_clk",
+> +		.of_match_table = npcm8xx_clk_dt_ids,
+> +	},
+> +};
+> +
+> +static int __init npcm8xx_clk_driver_init(void)
+> +{
+> +	return platform_driver_register(&npcm8xx_clk_driver);
+> +}
+> +arch_initcall(npcm8xx_clk_driver_init);
+> +
+> +static void __exit npcm8xx_clk_exit(void)
+> +{
+> +	platform_driver_unregister(&npcm8xx_clk_driver);
+> +}
+> +module_exit(npcm8xx_clk_exit);
+> +
+> +MODULE_DESCRIPTION("Clock driver for Nuvoton NPCM8XX BMC SoC");
+> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
+> +MODULE_LICENSE("GPL v2");
+> +
+
