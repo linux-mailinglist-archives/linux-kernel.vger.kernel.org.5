@@ -2,239 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7814D7B2308
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310077B2305
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjI1Q4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        id S231488AbjI1Qz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjI1Q4X (ORCPT
+        with ESMTP id S231263AbjI1Qzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:56:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC19298
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695920134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=db4LuX+cyuFVDjWljKNDIps/ix54Zu0j3S8rKzmKS9g=;
-        b=DbE4CDFCMdbX3w+Q9T50smcOZp1/+XAaQjYG0Itl7D8JCeI6JN+Dbe8pD1D1ZWaJcgano6
-        eJ428oHk273KSImKZFcMB6Rs1gJE/cYDjIjFoZebqrZXjm9hOl9zMGxWHc8h6Zc2VSQ3vk
-        i3IZFCoAnjfbIBag3w5iB47giaCQYYY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-38-zE3PqVvWN4mAHulTihU_Uw-1; Thu, 28 Sep 2023 12:55:32 -0400
-X-MC-Unique: zE3PqVvWN4mAHulTihU_Uw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4054016ff33so66407275e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:55:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695920131; x=1696524931;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=db4LuX+cyuFVDjWljKNDIps/ix54Zu0j3S8rKzmKS9g=;
-        b=cSRMLnoL2wsDfw8GCKsQ03/pYYrqE0nXlgRnVXQ6eozJQmndXy+IfPrJ58HDUFjnMa
-         QoCGqit6NwRqC3qcank678aksbSj4B5j9/L+ElUe98zMX15atP3V/1xdAK3s2HNcjrze
-         mukg1YIKPLvQZKLo22LOtPbC9IKiF6cw1kPTPF17cAAF/+CihIwPU/yhG3KGQK3v6tLk
-         n3QtGWWzgIrtKpGTfmsa604Grs/iQvyfedndNl0jaYID/Kkc7c0VptNQILb/Ypwc/Dgr
-         4CPfdWBvRS6RrXi0rXBTT7rRXhQs3kLtZBJnzL2x4leSSCRLOh5DYWjPTztXD0Y9nPzI
-         jy2w==
-X-Gm-Message-State: AOJu0YxvbU/1TJVGD6iiyA7osBlYaCWurS0z+mSkL63mvTZML4wgaPii
-        A28bd06J7Y1LveFgk2PKnUEWEt3TD1KSIDyk7KzBsT/0lfUcqOUOz5ZajP8FT1oRcrZxNy5/s4i
-        F9odST5iVmPsLrSyWwEk6EoNu
-X-Received: by 2002:a7b:cbc6:0:b0:401:b307:7ba8 with SMTP id n6-20020a7bcbc6000000b00401b3077ba8mr1739812wmi.13.1695920131329;
-        Thu, 28 Sep 2023 09:55:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEIh6DPgfjKsJwbVKkFhgslwFjC0g1VAZsEHPUuFPkQ1hV8Yizc8jo5QvaABlkfrvTNdEruPw==
-X-Received: by 2002:a7b:cbc6:0:b0:401:b307:7ba8 with SMTP id n6-20020a7bcbc6000000b00401b3077ba8mr1739797wmi.13.1695920130954;
-        Thu, 28 Sep 2023 09:55:30 -0700 (PDT)
-Received: from starship ([89.237.96.178])
-        by smtp.gmail.com with ESMTPSA id u8-20020a7bc048000000b003fe2b081661sm23214122wmc.30.2023.09.28.09.55.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 09:55:30 -0700 (PDT)
-Message-ID: <6bc63f82495501f9664b7d19bd8c7ba64329d37b.camel@redhat.com>
-Subject: Re: [PATCH 2/3] KVM: x86/mmu: remove unnecessary "bool shared"
- argument from iterators
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Date:   Thu, 28 Sep 2023 19:55:28 +0300
-In-Reply-To: <20230928162959.1514661-3-pbonzini@redhat.com>
-References: <20230928162959.1514661-1-pbonzini@redhat.com>
-         <20230928162959.1514661-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Thu, 28 Sep 2023 12:55:54 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F6F71A3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:55:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 829881FB;
+        Thu, 28 Sep 2023 09:56:30 -0700 (PDT)
+Received: from [10.1.32.180] (e126864.cambridge.arm.com [10.1.32.180])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 90DAA3F5A1;
+        Thu, 28 Sep 2023 09:55:49 -0700 (PDT)
+Message-ID: <6687f58c-0da9-0583-2dc1-2089f292b745@arm.com>
+Date:   Thu, 28 Sep 2023 17:55:39 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy
+ instructions in KVM guests
+Content-Language: en-US
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+ <ZRPE9OcB9ndgFxbs@linux.dev>
+From:   Kristina Martsenko <kristina.martsenko@arm.com>
+In-Reply-To: <ZRPE9OcB9ndgFxbs@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У чт, 2023-09-28 у 12:29 -0400, Paolo Bonzini пише:
-> The "bool shared" argument is more or less unnecessary in the
-> for_each_*_tdp_mmu_root_yield_safe() macros.  Many users check for
-> the lock before calling it; all of them either call small functions
-> that do the check, or end up calling tdp_mmu_set_spte_atomic() and
-> tdp_mmu_iter_set_spte().  Add a few assertions to make up for the
-> lost check in for_each_*_tdp_mmu_root_yield_safe(), but even this
-> is probably overkill and mostly for documentation reasons.
+On 27/09/2023 07:00, Oliver Upton wrote:
+> Hi Kristina,
 
-Why not to leave the 'kvm_lockdep_assert_mmu_lock_held' but drop the shared argument from it?
-and then use lockdep_assert_held. If I am not mistaken, lockdep_assert_held should assert
-if the lock is held for read or write.
-
-Best regards,
-	Maxim Levitsky
+Hi Oliver,
 
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 42 +++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 21 deletions(-)
+> On Fri, Sep 22, 2023 at 12:25:06PM +0100, Kristina Martsenko wrote:
+>> Hi,
+>>
+>> This is v2 of the series to allow using the new Arm memory copy instructions
+>> in KVM guests. See v1 for more information [1].
 > 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index ab0876015be7..b9abfa78808a 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -155,23 +155,20 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
->   * If shared is set, this function is operating under the MMU lock in read
->   * mode.
->   */
-> -#define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, _only_valid)\
-> +#define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _only_valid)\
->  	for (_root = tdp_mmu_next_root(_kvm, NULL, _only_valid);	\
->  	     _root;							\
->  	     _root = tdp_mmu_next_root(_kvm, _root, _only_valid))	\
-> -		if (kvm_lockdep_assert_mmu_lock_held(_kvm, _shared) &&		\
-> -		    kvm_mmu_page_as_id(_root) != _as_id) {			\
-> +		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
->  		} else
->  
-> -#define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared)	\
-> -	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
-> +#define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)	\
-> +	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, true)
->  
-> -#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
-> +#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)			\
->  	for (_root = tdp_mmu_next_root(_kvm, NULL, false);		\
->  	     _root;							\
->  	     _root = tdp_mmu_next_root(_kvm, _root, false))
-> -		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
-> -		} else
->  
->  /*
->   * Iterate over all TDP MMU roots.  Requires that mmu_lock be held for write,
-> @@ -840,7 +837,8 @@ bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush)
->  {
->  	struct kvm_mmu_page *root;
->  
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
-> +	lockdep_assert_held_write(&kvm->mmu_lock);
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root)
->  		flush = tdp_mmu_zap_leafs(kvm, root, start, end, true, flush);
->  
->  	return flush;
-> @@ -862,7 +860,8 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
->  	 * is being destroyed or the userspace VMM has exited.  In both cases,
->  	 * KVM_RUN is unreachable, i.e. no vCPUs will ever service the request.
->  	 */
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, false)
-> +	lockdep_assert_held_write(&kvm->mmu_lock);
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root)
->  		tdp_mmu_zap_root(kvm, root, false);
->  }
->  
-> @@ -876,7 +875,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
->  
->  	read_lock(&kvm->mmu_lock);
->  
-> -	for_each_tdp_mmu_root_yield_safe(kvm, root, true) {
-> +	for_each_tdp_mmu_root_yield_safe(kvm, root) {
->  		if (!root->tdp_mmu_scheduled_root_to_zap)
->  			continue;
->  
-> @@ -899,7 +898,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
->  		 * the root must be reachable by mmu_notifiers while it's being
->  		 * zapped
->  		 */
-> -		kvm_tdp_mmu_put_root(kvm, root, true);
-> +		kvm_tdp_mmu_put_root(kvm, root);
->  	}
->  
->  	read_unlock(&kvm->mmu_lock);
-> @@ -1133,7 +1132,9 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
->  {
->  	struct kvm_mmu_page *root;
->  
-> -	__for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false, false)
-> +	lockdep_assert_held_write(&kvm->mmu_lock);
-> +
-> +	__for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false)
->  		flush = tdp_mmu_zap_leafs(kvm, root, range->start, range->end,
->  					  range->may_block, flush);
->  
-> @@ -1322,7 +1323,7 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
->  
->  	lockdep_assert_held_read(&kvm->mmu_lock);
->  
-> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
->  		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
->  			     slot->base_gfn + slot->npages, min_level);
->  
-> @@ -1354,6 +1355,8 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
->  {
->  	struct kvm_mmu_page *sp;
->  
-> +	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-> +
->  	/*
->  	 * Since we are allocating while under the MMU lock we have to be
->  	 * careful about GFP flags. Use GFP_NOWAIT to avoid blocking on direct
-> @@ -1504,11 +1507,10 @@ void kvm_tdp_mmu_try_split_huge_pages(struct kvm *kvm,
->  	int r = 0;
->  
->  	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-> -
-> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, shared) {
-> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id) {
->  		r = tdp_mmu_split_huge_pages_root(kvm, root, start, end, target_level, shared);
->  		if (r) {
-> -			kvm_tdp_mmu_put_root(kvm, root, shared);
-> +			kvm_tdp_mmu_put_root(kvm, root);
->  			break;
->  		}
->  	}
-> @@ -1568,8 +1570,7 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
->  	bool spte_set = false;
->  
->  	lockdep_assert_held_read(&kvm->mmu_lock);
-> -
-> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
->  		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
->  				slot->base_gfn + slot->npages);
->  
-> @@ -1703,8 +1704,7 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
->  	struct kvm_mmu_page *root;
->  
->  	lockdep_assert_held_read(&kvm->mmu_lock);
-> -
-> -	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id, true)
-> +	for_each_valid_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
->  		zap_collapsible_spte_range(kvm, root, slot);
->  }
->  
+> 
+> Thanks for sending out the series. I've been thinking about what the
+> architecture says for MOPS, and I wonder if what's currently in the
+> Arm ARM is clear enough for EL1 software to be written robustly.
+> 
+> While HCRX_EL2.MCE2 allows the hypervisor to intervene on MOPS
+> exceptions from EL1, there's no such control for EL0. So when vCPU
+> migration occurs EL1 could get an unexpected MOPS exception, even for a
+> process that was pinned to a single (virtual) CPU implementation.
+> 
+> Additionally, the wording of I_NXHPS seems to suggest that EL2 handling
+> of MOPS exceptions is only expected in certain circumstances where EL1 is
+> incapable of handling an exception. Is the unwritten expectation then
+> that EL1 software should tolerate 'unexpected' MOPS exceptions from EL1
+> and EL0, even if EL1 did not migrate the PE context?
+> 
+> Perhaps I'm being pedantic, but I'd really like for there to be some
+> documentation that suggests MOPS exceptions can happen due to context
+> migration done by a higher EL as that is the only option in the context
+> of virtualization.
 
+That's a good point. This shouldn't affect Linux guests as Linux is
+always able to handle a MOPS exception coming from EL0. But it would
+affect any non-Linux guest that pins all its EL0 tasks and doesn't
+implement a handler. It's not clear to me what the expectation for
+guests is, I'll ask the architects to clarify and get back to you.
 
+Thanks for the feedback!
+
+Kristina
