@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C017B1C5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BC47B1C6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjI1M12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
+        id S232448AbjI1Man (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjI1M1Y (ORCPT
+        with ESMTP id S230354AbjI1Mak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:27:24 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A0B19B;
-        Thu, 28 Sep 2023 05:27:22 -0700 (PDT)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38S8F5w3017039;
-        Thu, 28 Sep 2023 14:27:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=zemeS+BhI32ZF8QdJ+UdBB3Jn6cezmIxj3rwJwlzC0U=; b=y5
-        pbBMOy/hgkjB7Pu7dCU5UnBQI2yzPT4j3PJf1QYrbHhILPFT3M9wJAtr35JBnQQg
-        fNQKjKEvCfH8XwK66OpYBdIbHQ5r9uoHpYxlogP5+rHHrxQR5o1x022uItlinxeR
-        kr+x+vYrFVjFKtTeb+6gL3kUf3nSHy7p0nNlnqMZmdu10OJINgerP0x4I3R3rA+l
-        cXsXQ3CyQtFWqC+Bg18/Q4YUv4qgDIXUCL2MWLBRz5L9BnJobVqTySoTGGovD/Of
-        YyqDg3Pmb8mSHPKniQU8Q780jOLzq/ZsfbZ9C98ZOSACgQOCy33UukxEvKqalE0Z
-        s15xU7KHEtAM78Y9wUhQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t9nefxq7f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 14:27:02 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 30F38100058;
-        Thu, 28 Sep 2023 14:27:02 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 292012309ED;
-        Thu, 28 Sep 2023 14:27:02 +0200 (CEST)
-Received: from localhost (10.201.21.249) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 28 Sep
- 2023 14:27:01 +0200
-From:   Christophe Roullier <christophe.roullier@foss.st.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Christophe Roullier <christophe.roullier@foss.st.com>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 12/12] ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
-Date:   Thu, 28 Sep 2023 14:24:27 +0200
-Message-ID: <20230928122427.313271-13-christophe.roullier@foss.st.com>
+        Thu, 28 Sep 2023 08:30:40 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B6D199;
+        Thu, 28 Sep 2023 05:30:38 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c189dabcc3so33321561fa.1;
+        Thu, 28 Sep 2023 05:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695904236; x=1696509036; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Gm1ISeW+idItfKS/eOu6/qm0WSJn6LCWGU5CplrSsM=;
+        b=Mcn7UZf45YydsOftHEbbCaznMR0zaIZ+HyxLUuexvSTQrdrBFL0sg9i1rxdLVD/MfH
+         FFqwnNw4McXKT8x9m+jnM+DpEhec3TT9JWA0ZZb711cfFk4eKpGqTq88dFKQ2bbWaQYl
+         YGa4PvHzrycDh5B/BvVVo9sJj3PpXJ1BPvLXxdyg24N6+aRbEvqX5jlc++qS7renb0kX
+         2EJxl92ezjKY1iokT7DzBNaOKd0OhY9b2qFreixfSjiX4J8N9s9qpQdwtiTpUJghu6eM
+         Uz9aWgJNbPDXw/2nep1ic261Jhz365BnYy7FvbBbdWdnb7SxPDdDkm/7g3wzP0ROv6dk
+         B9+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695904236; x=1696509036;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Gm1ISeW+idItfKS/eOu6/qm0WSJn6LCWGU5CplrSsM=;
+        b=YagYAsY2peD+Ouvas8ju6FLyJs+er2HN1qC4EgTdJP/PF20aX3i1gA8U8b27+k/pux
+         1Apoz9wBy6RotOnmF1FW5aTQLCM6i0u3XNuAMD/HqDX8HeNuS/wcdvqBC7QrCbaQRmzY
+         1ItFG+m64xx4HLUjC7GePeVL5esHQ74fhupd2Lb3LxKfRHRWeNbRXgRPG2VWsAqOgDKk
+         yT0C8/XXI66Y/z/FoZZHDj/RwvVUF0V2S4oEqYygfMXo3queFguCz8Oq5UHZqQXjw801
+         j5ABbaHjH65jXgV8iUHJAt8hnyC2YOQoeaaARUr0HZKxabFDoqfPslB5jRILU56R5QBe
+         v1kA==
+X-Gm-Message-State: AOJu0YzxW8JnojEh/r/thSPhMvVfnxI5K8aWZGOM5hRd59pH6ag6Msud
+        jFvqcpxggskm8cprA96ZIG0=
+X-Google-Smtp-Source: AGHT+IELWBzD5+DshFb82aU+91c6MxU621XWEWP2vB5rQd9UYeEMJrPISaje63D4gQs+E+MgoEPD8w==
+X-Received: by 2002:a2e:2c16:0:b0:2bf:ff17:811e with SMTP id s22-20020a2e2c16000000b002bfff17811emr1044718ljs.14.1695904235857;
+        Thu, 28 Sep 2023 05:30:35 -0700 (PDT)
+Received: from PC10319.67 ([82.97.198.254])
+        by smtp.googlemail.com with ESMTPSA id x6-20020a2e9c86000000b002ba045496d0sm3588724lji.125.2023.09.28.05.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 05:30:35 -0700 (PDT)
+From:   Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc:     minyard@acm.org, joel@jms.id.au, andrew@aj.id.au,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        aladyshev22@gmail.com, jk@codeconstruct.com.au,
+        matt@codeconstruct.com.au, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 0/3] Add MCTP-over-KCS transport binding
+Date:   Thu, 28 Sep 2023 15:30:06 +0300
+Message-Id: <20230928123009.2913-1-aladyshev22@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230928122427.313271-1-christophe.roullier@foss.st.com>
-References: <20230928122427.313271-1-christophe.roullier@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.21.249]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-28_11,2023-09-28_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Need to enable MCP23S08 I/O expanders to manage Ethernet phy
-reset in STM32MP135F-DK board
-STMMAC driver defer is not silent, need to put this config in
-built-in to avoid huge of Ethernet messages
+This change adds a MCTP KCS transport binding, as defined by the DMTF
+specificiation DSP0254 - "MCTP KCS Transport Binding".
+A MCTP protocol network device is created for each KCS channel found in
+the system.
+The interrupt code for the KCS state machine is based on the current
+IPMI KCS driver.
+Since the KCS subsystem code is now used both in IPMI and MCTP drivers
+the separate patchsets move KCS subsystem includes to a common folder.
 
-Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Tested:
+PLDM communication between the HOST and BMC was tested with both
+components implemented via open-source software:
+- The HOST (UEFI firmware) part was based one the edk2 [1] and
+edk2-platforms [2] code,
+- The BMC part was based on the openbmc [3] distribution.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 23fc49f23d255..373f58f2d5b98 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -458,6 +458,7 @@ CONFIG_SPI_XILINX=y
- CONFIG_SPI_SPIDEV=y
- CONFIG_SPMI=y
- CONFIG_PINCTRL_AS3722=y
-+CONFIG_PINCTRL_MCP23S08=y
- CONFIG_PINCTRL_MICROCHIP_SGPIO=y
- CONFIG_PINCTRL_OCELOT=y
- CONFIG_PINCTRL_PALMAS=y
+The testing process and all the necessary utilities are described in
+the [4] repository.
+
+[1]: https://github.com/tianocore/edk2
+[2]: https://github.com/tianocore/edk2-platforms
+[3]: https://github.com/openbmc/openbmc
+[4]: https://github.com/Kostr/PLDM
+
+Konstantin Aladyshev (3):
+  ipmi: Move KCS headers to common include folder
+  ipmi: Create header with KCS interface defines
+  mctp: Add MCTP-over-KCS transport binding
+
+ drivers/char/ipmi/kcs_bmc.c                   |   8 +-
+ drivers/char/ipmi/kcs_bmc_aspeed.c            |   3 +-
+ drivers/char/ipmi/kcs_bmc_cdev_ipmi.c         |  73 +-
+ drivers/char/ipmi/kcs_bmc_npcm7xx.c           |   2 +-
+ drivers/char/ipmi/kcs_bmc_serio.c             |   2 +-
+ drivers/net/mctp/Kconfig                      |   8 +
+ drivers/net/mctp/Makefile                     |   1 +
+ drivers/net/mctp/mctp-kcs.c                   | 624 ++++++++++++++++++
+ include/linux/ipmi_kcs.h                      |  80 +++
+ .../char/ipmi => include/linux}/kcs_bmc.h     |   0
+ .../ipmi => include/linux}/kcs_bmc_client.h   |   3 +-
+ .../ipmi => include/linux}/kcs_bmc_device.h   |   3 +-
+ 12 files changed, 723 insertions(+), 84 deletions(-)
+ create mode 100644 drivers/net/mctp/mctp-kcs.c
+ create mode 100644 include/linux/ipmi_kcs.h
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc.h (100%)
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc_client.h (97%)
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc_device.h (96%)
+
 -- 
 2.25.1
 
