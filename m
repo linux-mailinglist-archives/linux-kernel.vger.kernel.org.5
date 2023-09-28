@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2709B7B1D11
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8767B1D24
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjI1Mzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        id S232559AbjI1M5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjI1Mzk (ORCPT
+        with ESMTP id S231542AbjI1M5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:55:40 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F6B19B
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:55:38 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qlqYK-0002Ga-Bp; Thu, 28 Sep 2023 14:55:36 +0200
-Message-ID: <8343dcf3-96e9-4601-aaac-e0a80686586b@leemhuis.info>
-Date:   Thu, 28 Sep 2023 14:55:35 +0200
+        Thu, 28 Sep 2023 08:57:34 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B11B180;
+        Thu, 28 Sep 2023 05:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=/gAK+0HU4BRJbpDbE0lx3+xHhzKN8MJD+iMJ8Z2LG5c=; b=6YfhPlsRClQsXgn5a+7EhGiYL0
+        rgJ66LHggseErlxf/K8GhMXe6ioHrM10HSWjXgR/gcwhFrEZcicF6lyOEoacQvPLGXoHtzecVDmZ3
+        kxuNJVwfiu/96/A5Ne/4JJdIAAYHOMwVkwqx87ZIaQhiNhRmor9XxUYeljFSPjW0b1QQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qlqZt-007k9v-14; Thu, 28 Sep 2023 14:57:13 +0200
+Date:   Thu, 28 Sep 2023 14:57:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Lai <justinlai0215@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pkshih@realtek.com, larry.chiu@realtek.com
+Subject: Re: [PATCH net-next v9 02/13] net:ethernet:realtek:rtase: Implement
+ the .ndo_open function
+Message-ID: <714dbb7d-3fb8-481e-aba1-01a1be992950@lunn.ch>
+References: <20230928104920.113511-1-justinlai0215@realtek.com>
+ <20230928104920.113511-3-justinlai0215@realtek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: kmalloc memory leak over time.
-Content-Language: en-US, de-DE
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, freeze0985@gmail.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <4f01f302-9d59-4146-b7ff-0478c4bd94b1@gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <4f01f302-9d59-4146-b7ff-0478c4bd94b1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695905738;b6543d0d;
-X-HE-SMSGID: 1qlqYK-0002Ga-Bp
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928104920.113511-3-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.23 10:40, Bagas Sanjaya wrote:
-> 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
+> diff --git a/drivers/net/ethernet/realtek/rtase/rtase.h b/drivers/net/ethernet/realtek/rtase/rtase.h
+> index bae04cfea060..5314fceb72a2 100644
+> --- a/drivers/net/ethernet/realtek/rtase/rtase.h
+> +++ b/drivers/net/ethernet/realtek/rtase/rtase.h
+> @@ -51,8 +51,6 @@
+>  
+>  #define RX_BUF_SIZE (1522 + 1)
+>  
+> -#define IVEC_NAME_SIZE IFNAMSIZ + 10
+> -
+>  /*****************************************************************************/
+>  enum rtase_registers {
+>  	RTASE_MAC0   = 0x0000,
+> @@ -261,6 +259,8 @@ union rx_desc {
+>  #define RTASE_IDLESLOPE_INT_SHIFT 25
+>  #define RTASE_IDLESLOPE_INT_MASK  GENMASK(31, 25)
+>  
+> +#define IVEC_NAME_SIZE IFNAMSIZ + 10
+> +
 
-@mm developers: feel free to ignore this, the user has Nvidia's driver
-loaded (see bugzilla; I'll ask to reproduce without it).
+Please try to avoid moving things around which you just added in the
+previous patch.
 
-Ciao, Thorsten
+> +static int rtase_open(struct net_device *dev)
+> +{
+> +	struct rtase_private *tp = netdev_priv(dev);
+> +	struct rtase_int_vector *ivec = &tp->int_vector[0];
+> +	const struct pci_dev *pdev = tp->pdev;
+> +	int ret;
+> +	u16 i;
+> +
 
->> Since 1st weak of Sept I have been observing memory leak in my system, so after doing a little big of digging I found out that the leak is caused by kmalloc. In Linux 6.5.3 memory leak would increase  to nearly 50% of my ram over a period of 6-9 hours. In the Newer Linux 6.5.4 I am yet to observe that much memory leak(Haven't used my laptop for that long till now) but over a period of 3 hours I see 2.2GB reserved and it is not used by any program at all. this is just after 3 hours of usage on Linux 6.5.4.
-> 
-> Later, the reporter (Cc'ed) narrowed down the version range, with
-> memory statistics:
-> 
->> 6.4 works fine I down graded to it before linux 6.5.4 was released. no memory leak.
->>
->> today i ran my laptop for 6 hours and 40 mins and this memory leak is still happening at same rate.
->>
->>               total        used        free      shared  buff/cache   available
->> Mem:            15Gi       7.2Gi       2.8Gi       797Mi       6.4Gi       8.1Gi
->> Swap:             0B          0B          0B
->> Total:          15Gi       7.2Gi       2.8Gi
-> 
-> See Bugzilla for the full thread.
-> 
-> Anyway, I'm adding this regression to be tracked by regzbot:
-> 
-> #regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217943
-> 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217943
-> 
+> +	netif_carrier_on(dev);
+> +	netif_wake_queue(dev);
+> +	netdev_info(dev, "link up\n");
+
+No need to spam the log with this. Given the hardware architecture,
+the link is always going to be up.
+
+    Andrew
