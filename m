@@ -2,154 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5837B0FE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3A47B0FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjI1AUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S229736AbjI1AYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjI1AUM (ORCPT
+        with ESMTP id S229445AbjI1AYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:20:12 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D60126
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:10 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59c12d31d04so240600377b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695860409; x=1696465209; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=apwOiyl24ZAzh9ksVSTWSskudG0FdMibqgJzxKGTzAQ=;
-        b=Zze5OchnMhY/xpYjX8HB/FriVX6nu+cRHKXB4vZY7gxJR3iPIPmqih7gNJ4BXITsmA
-         ceEJtB+pIiM2mmIU6ErKSr65I4vDLO1zY7uxe0vE9L2YMttnem4Ib3Jo3z2M7Ju+pPz8
-         YD6Zq2x56OMgXe/GKQfXOsNEFXWgMjVxZD5xz5DLZs7liJIKDUY8Uas7E8OguTdZRLLW
-         SWptk3wTbS1K/mmQwdQb9iMOAytZ5Cnjak5CQu/CgZ9MDf0JiO+I+zrMCYBYyucb1XLM
-         vA+715O0al/OePUImkKVPLPJULnRZj1WbmYUuiPAU88J8LG9CvfXiJ53yrymyuObbysT
-         BAQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695860409; x=1696465209;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=apwOiyl24ZAzh9ksVSTWSskudG0FdMibqgJzxKGTzAQ=;
-        b=LKxsAUWcRxnZ1VGLiVuo+IIl+5H3t+W7YnQEXRHc+qRngEtWWoRpduO7IwNJ1Evl74
-         Rrk63k1Ec2059/I+iIuFZZkW7P3i6VlgL/oTSsao+Ph3LRMqL64Jecp5Kcb6IsWXs69S
-         leuziFfWTimADWn708fUwHdwQ/ba78IXIds7MQccEjVQUcXa1n9oCPAZ/zk389Q1QmZo
-         7cpy1Jje6cI54405MFTpg0kmDMDCtLohG5y/zdL4SvsTG7SzgEDnj6bqPVEaFkxY3zOi
-         uoSIF5kdi0TpKIyst2IIBbg1swRvveSG9Cz4UdHu3xnEeNFmDKSMbnB0zz9I1QXEuUtc
-         ZxJA==
-X-Gm-Message-State: AOJu0Yz+I+r+kE30cjM6Gm7BRf7pnj3Ok2V+i1G738hU7xetZUXrunzA
-        GHCJHJrdk59wbCPSh3bdfEZ8y6Uf56g=
-X-Google-Smtp-Source: AGHT+IFjrvJ2npDBahfPzbZd3vwTKZ6Cm9AffU0wGAefuUEwJ5h8tV0U/szmpVbKu6qLaPMbte7BjNX86SI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b65e:0:b0:586:a58d:2e24 with SMTP id
- h30-20020a81b65e000000b00586a58d2e24mr63304ywk.5.1695860409338; Wed, 27 Sep
- 2023 17:20:09 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 27 Sep 2023 17:19:56 -0700
-In-Reply-To: <20230928001956.924301-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230928001956.924301-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230928001956.924301-6-seanjc@google.com>
-Subject: [PATCH 5/5] KVM: selftests: Force load all supported XSAVE state in
- state test
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev,
-        Tyler Stachecki <stachecki.tyler@gmail.com>,
-        Leonardo Bras <leobras@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 27 Sep 2023 20:24:40 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979FABF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:24:39 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id C761632002D8;
+        Wed, 27 Sep 2023 20:24:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 27 Sep 2023 20:24:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1695860678; x=1695947078; bh=UZsdvMhzyA
+        6QvPkUPhas+SEiSuLod/Pr9jY7SWB1/7Y=; b=iGaFaHDk3j+Q1lqh6df3AG0wSw
+        lRRLbyEzonfxTo/IjcCIN0mu6Y0XWcObg+L6eQK+KHbjCNkh+XYGB2zN5aPtgHP6
+        NAgsgBt8Wfv6sputjVwEIVM42mY2Qcoi+RGqMhVrza8JFpnT7CxM6qE4rziTufwq
+        tqi59u4g4FLS8O8mTyNR1r9N3lLwoM8Id0qCIgghqsT2z2qrM1MugheCxGTnxuhV
+        JsbJuh4eBS2yGzhoAS6ns5fTxL6FrzMexorY7vMZJZjKyBeBYwLS9IrEQNqqyBrc
+        MhYtPydIC7xt7PCTDkZnZ3QQE3S/6W+6CoXabRI3SE5hVEaLwDsAfVN1+YYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695860678; x=1695947078; bh=UZsdvMhzyA6Qv
+        PkUPhas+SEiSuLod/Pr9jY7SWB1/7Y=; b=bRXrvbKBMp2Iq0phBBtZ1CclS7M3b
+        zOutbjqZ2XXPs02lPFScyNeWD/a3B87W7W4kvzcHV/Tdaa6I7oqCuchYkt6tp10y
+        FZ0KnKQFKCIEYSxqpqALA+VmYp3RtL4sY3vsVUZdReOAghuZRyYcjglSJHMF5c0P
+        eXwVVgJ/BM7G8IMNMVYSOspVagr4dAlHe98p8I+eHcRhpd4kHxD76t50ChKKFsNX
+        8cY+CqTn8KIXQpJQyYz7kSvhVKoZ79b1Al80XGKh8BNHAakxJVJrIDxUOdrSVSUg
+        Gy5J3Kb2sqCO+C/0jpt0bGxYGNZQn+uJX46Qd+B1ywNBaa9odiczC/Uaw==
+X-ME-Sender: <xms:xscUZeEJV4_jc2o8PsXAGJCve-iVuf6mNhUC6SeLX2nNQWxX4FNaKg>
+    <xme:xscUZfV2UbyZEs0tY_MzRzwbcrkR0B3tbQmjiMfaeEWqCjfulyVzAmxy26BBbU0gz
+    3tB3iMjJRt1jGNcBZs>
+X-ME-Received: <xmr:xscUZYIczHZj4ypUpeZ26R0makL3cSI96cj7ffXPGosaxEGSJbaqtsn6B7kYekhRc5tepCf0VBS5SEM1LJH_g-2Ki6OumS-xygYk6tpqeko>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgdefgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
+    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
+    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
+    hmrghilhdrohhrgh
+X-ME-Proxy: <xmx:xscUZYFbQD9ExpUy-p487SelNpwBrhYmUz9N9klK1E0Iou7AxmS1uw>
+    <xmx:xscUZUWgzDWc4xSSUgAy-T3atpssEefmEnQfzRt2QNQFLI0DSOWLMQ>
+    <xmx:xscUZbPXoNYVQ9pZdA6jDkwWPIkidhPXNE69CXAiOEARIonmwsl-oQ>
+    <xmx:xscUZRiRr8j45bLExy8DdmYaLxZvBHapUHeeTRZDm9YcoTGfY39-7A>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Sep 2023 20:24:37 -0400 (EDT)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH] staging: rtl8192u: ieee80211: renamed (3) variables
+Date:   Wed, 27 Sep 2023 20:23:56 -0400
+Message-ID: <20230928002356.28607-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend x86's state to forcefully load *all* host-supported xfeatures by
-modifying xstate_bv in the saved state.  Stuffing xstate_bv ensures that
-the selftest is verifying KVM's full ABI regardless of whether or not the
-guest code is successful in getting various xfeatures out of their INIT
-state, e.g. see the disaster that is/was MPX.
+This patch renames the variable in staging/rtl8192u
+HTUpdateDefaultSetting -> ht_update_default_setting
+in (3) files of staging/rtl8219u
+1) ieee80211.h
+2) ieee80211_module.c
+3) rtl819x_HtProc.c
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Linux Kernel coding Style "cleanup", no change in runtime,
+staging/rtl8192u builds before and after.
+
+Signed-off-on: Gary Rookard <garyrookard@fastmail.org>
 ---
- .../selftests/kvm/include/x86_64/processor.h       |  9 +++++++++
- tools/testing/selftests/kvm/x86_64/state_test.c    | 14 ++++++++++++++
- 2 files changed, 23 insertions(+)
+ drivers/staging/rtl8192u/ieee80211/ieee80211.h        | 2 +-
+ drivers/staging/rtl8192u/ieee80211/ieee80211_module.c | 2 +-
+ drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 6f66861175ad..25bc61dac5fb 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -922,6 +922,15 @@ static inline bool kvm_pmu_has(struct kvm_x86_pmu_feature feature)
- 	       !kvm_cpu_has(feature.anti_feature);
- }
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+index 694d1b18f81c..4e598c7f0d31 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+@@ -2293,7 +2293,7 @@ void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString);
  
-+static __always_inline uint64_t kvm_cpu_supported_xcr0(void)
-+{
-+	if (!kvm_cpu_has_p(X86_PROPERTY_SUPPORTED_XCR0_LO))
-+		return 0;
-+
-+	return kvm_cpu_property(X86_PROPERTY_SUPPORTED_XCR0_LO) |
-+	       ((uint64_t)kvm_cpu_property(X86_PROPERTY_SUPPORTED_XCR0_HI) << 32);
-+}
-+
- static inline size_t kvm_cpuid2_size(int nr_entries)
+ void HTSetConnectBwMode(struct ieee80211_device *ieee,
+ 			enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
+-void HTUpdateDefaultSetting(struct ieee80211_device *ieee);
++void ht_update_default_setting(struct ieee80211_device *ieee);
+ void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap,
+ 				  u8 *len, u8 isEncrypt);
+ void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo,
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+index 3f93939bc4ee..6f6813899e31 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
+@@ -146,7 +146,7 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
+ 		ieee80211_networks_free(ieee);
+ 		goto failed;
+ 	}
+-	HTUpdateDefaultSetting(ieee);
++	ht_update_default_setting(ieee);
+ 	HTInitializeHTInfo(ieee); /* may move to other place. */
+ 	TSInitialize(ieee);
+ 
+diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+index a93f09033d9d..cf9400859700 100644
+--- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
+@@ -56,7 +56,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
+  *  return:  none
+  *  notice:  These value need be modified if any changes.
+  */
+-void HTUpdateDefaultSetting(struct ieee80211_device *ieee)
++void ht_update_default_setting(struct ieee80211_device *ieee)
  {
- 	return sizeof(struct kvm_cpuid2) +
-diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
-index 115b2cdf9279..88b58aab7207 100644
---- a/tools/testing/selftests/kvm/x86_64/state_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/state_test.c
-@@ -230,6 +230,7 @@ static void __attribute__((__flatten__)) guest_code(void *arg)
- 
- int main(int argc, char *argv[])
- {
-+	uint64_t *xstate_bv, saved_xstate_bv;
- 	vm_vaddr_t nested_gva = 0;
- 	struct kvm_cpuid2 empty_cpuid = {};
- 	struct kvm_regs regs1, regs2;
-@@ -294,12 +295,25 @@ int main(int argc, char *argv[])
- 		 * allow KVM_SET_XSAVE regardless of guest CPUID.  Manually
- 		 * load only XSAVE state, MSRs in particular have a much more
- 		 * convoluted ABI.
-+		 *
-+		 * Load two versions of XSAVE state: one with the actual guest
-+		 * XSAVE state, and one with all supported features forced "on"
-+		 * in xstate_bv, e.g. to ensure that KVM allows loading all
-+		 * supported features, even if something goes awry in saving
-+		 * the original snapshot.
- 		 */
-+		xstate_bv = (void *)&((uint8_t *)state->xsave->region)[512];
-+		saved_xstate_bv = *xstate_bv;
-+
- 		vcpuN = __vm_vcpu_add(vm, vcpu->id + 1);
- 		vcpu_xsave_set(vcpuN, state->xsave);
-+		*xstate_bv = kvm_cpu_supported_xcr0();
-+		vcpu_xsave_set(vcpuN, state->xsave);
- 
- 		vcpu_init_cpuid(vcpuN, &empty_cpuid);
- 		vcpu_xsave_set(vcpuN, state->xsave);
-+		*xstate_bv = saved_xstate_bv;
-+		vcpu_xsave_set(vcpuN, state->xsave);
- 
- 		kvm_x86_state_cleanup(state);
- 
+ 	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
+ 	//const typeof( ((struct ieee80211_device *)0)->pHTInfo ) *__mptr = &pHTInfo;
 -- 
-2.42.0.582.g8ccd20d70d-goog
+2.41.0
 
