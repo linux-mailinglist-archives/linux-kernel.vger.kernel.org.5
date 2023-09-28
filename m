@@ -2,143 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD2D7B1F51
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607597B1F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjI1ORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        id S232591AbjI1OS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbjI1ORj (ORCPT
+        with ESMTP id S232425AbjI1OS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:17:39 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDF119D;
-        Thu, 28 Sep 2023 07:17:38 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c364fb8a4cso117291645ad.1;
-        Thu, 28 Sep 2023 07:17:38 -0700 (PDT)
+        Thu, 28 Sep 2023 10:18:27 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A3519D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:18:07 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c725fc32f5so6103525ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695910657; x=1696515457; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Abl3GLiCO/Mtwsa+rWPApo3TGuVO6fy8Q3QmwT9wZV8=;
-        b=EdfR6+i1yLmogZM55LPqiwSZlzmvABWwhxTyZ0wZ+9pOn5L10RYx17Yi4SB4mt6bGD
-         9+xK+MwSsSRf/JliwFOP5s+NONmi87CPwq76iUMuzKnc5pfSO+P/bBOksfFSbUL/M/aJ
-         ZqZenHJv0GfVwItxKV5AX4849Dm8J2L9q6Q7fV1WIzYg1aHVq5AcTe8zOrEGcMfjNXox
-         dKzYOusSNTfIx3TrLshu3kV46HhEpf/nvoLU+yu0ya/vCmfWaAvSgl87WSBA29XpxXxd
-         PDP9cMbEqeiG0wG9ZtakBXJqXmIYpWPLLi8RlY1yNYqtVFBI6RwcyNDqlUZiLSWw0a3f
-         nuVA==
+        d=bytedance.com; s=google; t=1695910687; x=1696515487; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YomJPH360iMASHFc0ge10/1k1MAdU+zIP9mG8pm9jOg=;
+        b=Ib/xOqNx6VeSfqCCFt0LrDm9nl6OOLQ4lK9L9aX/D59mKYvdE6N8s3CbPKNcVX4cY/
+         YJDVDp4KTLrEe62fQHIWYrJwbOvmNSWkdpo1yZeNnmNiwPCtnu9G4FWP2QlFFoO2IZZr
+         nEq+uRv8xl5gGsGRTrH4EZFAqmb5EQmNoIVs9M9+rFW3TJOexksuI42enqBx/rR+Drpx
+         lDmP4FTJXpdEjUhjZoEAPNNxX/iIIQL9iKuwTip+soJKKHriv7pIdlrMd/78QdG0pBbm
+         3nonUlHIB9Ys9eQ2kp1jqFwV2MOeXpJtMgj6Bfx1IRLJkr7WWBpjboB/coX79q7dRa5z
+         utiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695910657; x=1696515457;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Abl3GLiCO/Mtwsa+rWPApo3TGuVO6fy8Q3QmwT9wZV8=;
-        b=FUOjFqN93Pjkd6gDUqBx7aYQ/0lOLoz54Uz1foyT3NUURjp2t6UOqkVyLqgbH1j6c0
-         CgJ+mD5XkyNn0QQvpWHAtZjwzNMS/6mMwk1jqOcR9yYy4Wy9ujL1A9nxSdTB+reXDaqY
-         C7msw0d+PzVjMo2W1HqPETbs+vSsOiNpdyCcOeSZs3Ukhgo3WVz/c2hDJd6FOYzksHPH
-         nDjr03BY5hvAGIdIPf7degtBpq55+HRwEf14pCAkAm0XFxZ2yobjO9fmfFKo4ljLD0hQ
-         yqLvi5Hw2XgDNs5n60jYTpiy8G9D9c296+J34Tjcnq0NvpPqpgxW4k/mV5SpgyjRMx+k
-         p2ew==
-X-Gm-Message-State: AOJu0YyYkf5HHu/jZATpUz0iKUCa2HZnyffqSOd4HGdlmKdlsYAQZMiG
-        5u4th96to58cN4V7N1ejHZM=
-X-Google-Smtp-Source: AGHT+IF+54CXMfQ+KegfyNfYPCQfbgujDayDN5Ih9PV2WrUjTmhmZ/wltUv2wxe5crUaomwCXCsYBg==
-X-Received: by 2002:a17:90a:bb88:b0:269:46d7:f1db with SMTP id v8-20020a17090abb8800b0026946d7f1dbmr1335120pjr.32.1695910657391;
-        Thu, 28 Sep 2023 07:17:37 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id d7-20020a17090a2a4700b00278ff752eacsm3059079pjg.50.2023.09.28.07.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 07:17:36 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        john.g.garry@oracle.com, dlemoal@kernel.org, yanaijie@huawei.com,
-        jinpu.wang@ionos.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH] scsi: mvsas: fix potential deadlock on &task->task_state_lock
-Date:   Thu, 28 Sep 2023 14:17:27 +0000
-Message-Id: <20230928141727.22190-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1695910687; x=1696515487;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YomJPH360iMASHFc0ge10/1k1MAdU+zIP9mG8pm9jOg=;
+        b=VOI2vyfGeSUTRX95Xa7neM0pzW+jzUa1WQM12Kk8PLrmWJMltnoZn1dQ15m8p/JeES
+         ge598Wxk3NaUDfcIsFAvr1sLnc2ky3DEfcyvhWKZMQ588KFORKIAaL1ohRrxFDzMT8wl
+         Pz+EmpJaiccWRI0OhWxr32amH8wJfKVEyzrgxJBcG8+JFAiSrqicTp+n6vLiuKkpR2gM
+         XQbosXAQNnKlxVWohTE0brevJF/+4ffQ28voauwv5dVBJjatmE0Gw3aKq/HEwmuRKhpC
+         Ub8tbgAQlSMAQGD9K2LjM9aYvqS7fxCQuZLchXkwxaH5KKigL6fhyNaKNG8GczOj5/Gh
+         4Dnw==
+X-Gm-Message-State: AOJu0Yw3SzafKCHSza1rSDm7QNNwgThNmb1b84ZLdJ41gj1unjCH/UBU
+        b6AJqdzTLy0YsGfSYdHPz0OvLA==
+X-Google-Smtp-Source: AGHT+IGVwWQyqO2wf9CGPxLwLdRj0KOPVDXo9mh85L/XiM+jqCiUhdBr4+xsXsLxYM46GOI3pLpmGg==
+X-Received: by 2002:a17:902:e885:b0:1c0:bf60:ba4f with SMTP id w5-20020a170902e88500b001c0bf60ba4fmr1277405plg.4.1695910686732;
+        Thu, 28 Sep 2023 07:18:06 -0700 (PDT)
+Received: from [10.254.163.112] ([139.177.225.234])
+        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001b9e86e05b7sm15058062pld.0.2023.09.28.07.17.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 07:18:06 -0700 (PDT)
+Message-ID: <72d0e76f-2837-f2ca-6451-f8d808f3338a@bytedance.com>
+Date:   Thu, 28 Sep 2023 22:17:56 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] fixup: mm: shrinker: add a secondary array for
+ shrinker_info::{map, nr_deferred}
+Content-Language: en-US
+To:     akpm@linux-foundation.org
+Cc:     david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, dan.carpenter@linaro.org
+References: <20230911094444.68966-41-zhengqi.arch@bytedance.com>
+ <20230928141517.12164-1-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230928141517.12164-1-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-&mvi->lock and &task->task_state_lock could be acquired under irq
-context from mvs_64xx_isr(). As mvs_port_deformed() also acquire
-the lock, called from workqueue sas_suspend_devices() under process
-context, and without irq protection.
+Hi Andrew,
 
-<deadlock #1>
-mvs_port_deformed()
---> mvs_port_notify_deformed()
---> mvs_do_release_task()
---> mvs_int_rx()
---> mvs_slot_complete()
---> spin_lock(&mvi->lock)
-<interrupt>
-   --> mvs_64xx_isr()
-   --> spin_lock(&mvi->lock)
+After applying this fix patch, the following modifications also need to
+be applied to the "[PATCH v6 45/45] mm: shrinker: convert shrinker_rwsem
+to mutex".
 
-<deadlock #2>
-mvs_port_deformed()
---> mvs_port_notify_deformed()
---> mvs_do_release_task()
---> mvs_int_rx()
---> mvs_slot_complete()
---> spin_lock(&task->task_state_lock)
-<interrupt>
-   --> mvs_64xx_isr()
-   --> mvs_int_rx()
-   --> mvs_slot_complete()
-   --> spin_lock(&task->task_state_lock)
+diff --git a/mm/shrinker.c b/mm/shrinker.c
+index 6857cbb520ea..dd91eab43ed3 100644
+--- a/mm/shrinker.c
++++ b/mm/shrinker.c
+@@ -96,7 +96,7 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+         return ret;
 
-Another strange thing is that while inspecting the code I find
-mvs_do_release_task() should be called with phy->mvi locked held,
-but the call chain from mvs_port_notify_deformed() seems do not
-hold the lock.
+  err:
+-       up_write(&shrinker_rwsem);
++       mutex_unlock(&shrinker_mutex);
+         free_shrinker_info(memcg);
+         return -ENOMEM;
+  }
 
-The current patch just switch spin_lock(&task->task_state_lock)
-to spin_lock_irqsave(). If I didn't miss anything, seems the better
-way could be adding a spin_lock_irqsave() to protect mvi->lock at
-mvs_port_notify_deformed()?
+Or do I need to resend the entire patch set? If yes please let me know.
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
----
- drivers/scsi/mvsas/mv_sas.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Thanks,
+Qi
 
-diff --git a/drivers/scsi/mvsas/mv_sas.c b/drivers/scsi/mvsas/mv_sas.c
-index 1444b1f1c4c8..ddd283ae1b92 100644
---- a/drivers/scsi/mvsas/mv_sas.c
-+++ b/drivers/scsi/mvsas/mv_sas.c
-@@ -1534,6 +1534,7 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
- 	struct mvs_device *mvi_dev = NULL;
- 	struct task_status_struct *tstat;
- 	struct domain_device *dev;
-+	unsigned long flags;
- 	u32 aborted;
- 
- 	void *to;
-@@ -1546,12 +1547,12 @@ int mvs_slot_complete(struct mvs_info *mvi, u32 rx_desc, u32 flags)
- 	dev = task->dev;
- 	mvi_dev = dev->lldd_dev;
- 
--	spin_lock(&task->task_state_lock);
-+	spin_lock_irqsave(&task->task_state_lock, flags);
- 	task->task_state_flags &= ~SAS_TASK_STATE_PENDING;
- 	task->task_state_flags |= SAS_TASK_STATE_DONE;
- 	/* race condition*/
- 	aborted = task->task_state_flags & SAS_TASK_STATE_ABORTED;
--	spin_unlock(&task->task_state_lock);
-+	spin_unlock_irqrestore(&task->task_state_lock, flags);
- 
- 	memset(tstat, 0, sizeof(*tstat));
- 	tstat->resp = SAS_TASK_COMPLETE;
--- 
-2.17.1
-
+On 2023/9/28 22:15, Qi Zheng wrote:
+> Dan Carpenter reported the following bug:
+> 
+> ```
+> The patch b6884b5f15cf: "mm: shrinker: add a secondary array for
+> shrinker_info::{map, nr_deferred}" from Sep 11, 2023 (linux-next),
+> leads to the following Smatch static checker warning:
+> 
+> 	mm/shrinker.c:100 alloc_shrinker_info()
+> 	warn: inconsistent returns '&shrinker_mutex'.
+> ```
+> 
+> To fix it, unlock the &shrinker_rwsem before the call to
+> free_shrinker_info().
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-mm/f960ae49-078c-4c00-9516-da31fc1a17d6@moroto.mountain/
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>   mm/shrinker.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index 893079806553..e9644cda80b5 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -95,6 +95,7 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>   	return ret;
+>   
+>   err:
+> +	up_write(&shrinker_rwsem);
+>   	free_shrinker_info(memcg);
+>   	return -ENOMEM;
+>   }
