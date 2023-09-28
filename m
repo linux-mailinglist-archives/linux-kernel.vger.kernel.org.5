@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F93E7B252D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3A37B2530
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbjI1SXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        id S231670AbjI1SYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjI1SXu (ORCPT
+        with ESMTP id S230239AbjI1SYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:23:50 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3636AC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:23:48 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4527d436ddfso6307075137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:23:48 -0700 (PDT)
+        Thu, 28 Sep 2023 14:24:13 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9219BAC
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:24:10 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d81adf0d57fso15191094276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695925428; x=1696530228; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695925450; x=1696530250; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6lUaiAsD9uV0//FhVSk6Od3pR7CJd+sOtqQwhqcrEfk=;
-        b=xPCPSdZov6JOwl5X9QWXEoqop+2np/fyd6BkgmT+MIEYV8h5RElQ8q8crc8KQC5vr6
-         bC3Rbt1+11NIzI7QzTmG5skbCttfSHlrcnwTmTmWNWwDXnEiOiZ0EWwAwocs//OnkfR1
-         OQxdRZ4NfLGrHad0WUTNcok2txcRONeUSkxUfoJynysh2TUkIJJjM45+wEOSkplSkeIF
-         wRKIkHqT+nCyUXN6+gD5u2SkbiKACi+IE+elN3OQZ3FEvcryQyfAHfuHJK95DQ2xqVNy
-         HlMRmTdHctv5QsRvlPlYtzFNkm9FJEcGOpYnmHDVPTb6+NDCd6OHCOz1HIDtd93/RvfU
-         svJw==
+        bh=1vhyBKeJnmBSwRLvoT4DeJoFEAXgBsUcR1SJ8WjemY0=;
+        b=rAEqR7o5XM6BHFjY1AvZTytxI3xHdu+nj95vSbWTrpleM3bNzK+YRC0rBtIOdAzJNt
+         T2xSaTwi5WhRxjPIRku515BgD2IN0tjnGvdGyjs58TMvJG6Hwdp1F1e5GQiBtJFnWPew
+         EJyXjmVUnSPM41wio2WQBuiqA5XK0PecTfS7QBYbGtb+Ytz6Gdamcsjuv6G2v2ubMJzW
+         bnk3mcK46F+cKoDGvOycuZ510GaJcEHXh+RUWVQTleysigjGzfcOKvIaXn331K2tiUbf
+         CpMBMPvsozx0MvKdFaGhpAEfDC98VtWrC62fm+c30ucViZoGMV/IXthuXwoXOclcnpfg
+         9oCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695925428; x=1696530228;
+        d=1e100.net; s=20230601; t=1695925450; x=1696530250;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6lUaiAsD9uV0//FhVSk6Od3pR7CJd+sOtqQwhqcrEfk=;
-        b=ANAtv58fyAvVS3ybYpc1EZTZsLidWaYCcO3rbZk72NLskDZUuGd/uNcReAfyp0ujQj
-         NKz44FfuPNdjsb6y7oH5bGBNHAVY0onXv+WdiDaczm8Bhzj+xeRcbOQehHd23cv0pWtU
-         QPlODic9ejrYMfxyv9EDYQvZwBZDIuVcTnr85XkorBVkAbzIzRbV7S7yBKq/WY5Nyceb
-         rwC/LUwUC1SlTmsT3MAEp5KI/2jb4OBPbvx9r0sPwiP0yqRtL9GPc4Pljqd0iKc3cnKD
-         HXfBd9T+YGeIzpFvA/Wm8FbCxbHbDwpmjN2GOkK5ZqJk8P3kLbQVC+TapAxeOevTTLEG
-         /OVw==
-X-Gm-Message-State: AOJu0YxABFD6csvpv0O9Uorm3xqSAnj9plL3aQz7Dg/1oG8An3UmyC0o
-        UpZHaoSjLhdLRdgyN4FOJba62bkpettmR1niscNNsw==
-X-Google-Smtp-Source: AGHT+IGJDuok+EkGthTBLrhPMTIfi4D8car2cm/ywKltBjmQ+vwJOCAjivQg7Xfj8u0+3jc8LrVtBF53Amql/LCtMEo=
-X-Received: by 2002:a67:f754:0:b0:452:7f81:1502 with SMTP id
- w20-20020a67f754000000b004527f811502mr1905774vso.26.1695925427931; Thu, 28
- Sep 2023 11:23:47 -0700 (PDT)
+        bh=1vhyBKeJnmBSwRLvoT4DeJoFEAXgBsUcR1SJ8WjemY0=;
+        b=XlheTNkUUJQDK/1Umd8alzkMBNpTg2gvwCosMAKL/AqmS/eCrRuIan4L/EOeNqWYLL
+         x46Ibe497W3yClpJthHbdia04ZPITw87t4qG0UP9/0/4HbZH0MwyQgM9N48q28nqNiK3
+         gbOIUa4PHtnoqS7QxuyK548nIHeoKfsKBA8LAPaQcG7Ys+trX87r1CNYJUAMp8Kyxah/
+         sJQZh+q0tcIj73qxtlnCN+oD7UCGDqQu4oKiCKzdmx8wiVp5M/d+QXqMMjRl7NTqSfLs
+         xxKNdevl5IjezigTdmUMWPLfqevJI1abcHqHKff76R6Lqa8b6kHzC+G96+IMdvwBuqzI
+         /G2w==
+X-Gm-Message-State: AOJu0YyP0LjvPi7rvu+FID0YFnv4g1cIhAtRF2XHWuKT1Ov92eiGBbuX
+        cppAa13mc1W1Vfm4fxx8ETMJoVm6xdgD+IhqMZKk6Q==
+X-Google-Smtp-Source: AGHT+IGv7/JnHP+g4RMvNlkcVUMhLnaH6kkWzhnUyy+ImLvupMiRLcMeDIlTtElq7EXDBPYVG7DRDhahUfxYDLd4hv0=
+X-Received: by 2002:a5b:783:0:b0:d63:1d3b:9416 with SMTP id
+ b3-20020a5b0783000000b00d631d3b9416mr1684086ybq.2.1695925449438; Thu, 28 Sep
+ 2023 11:24:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230928092040.9420-1-brgl@bgdev.pl> <20230928092040.9420-3-brgl@bgdev.pl>
- <be27a31c-6c63-43cd-9857-f4b2a9568cf6@quicinc.com>
-In-Reply-To: <be27a31c-6c63-43cd-9857-f4b2a9568cf6@quicinc.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 28 Sep 2023 20:23:36 +0200
-Message-ID: <CAMRc=McCqDLQaDP_ordNgHi3-7bGH2Y6H-JU3Uwyh0SOe_BYkg@mail.gmail.com>
-Subject: Re: [PATCH v2 02/11] firmware: qcom: scm: add a dedicated SCM memory allocator
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
+ <ZRWzLC5yCypoPNk2@x1n>
+In-Reply-To: <ZRWzLC5yCypoPNk2@x1n>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 28 Sep 2023 11:23:55 -0700
+Message-ID: <CAJuCfpEMNCYt4O7EppO4STGLboKaSxpDwnxF+a_SMdOonUY38g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+To:     Peter Xu <peterx@redhat.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,71 +79,310 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 8:19=E2=80=AFPM Jeff Johnson <quic_jjohnson@quicinc=
-.com> wrote:
+On Thu, Sep 28, 2023 at 10:09=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote=
+:
 >
-> On 9/28/2023 2:20 AM, Bartosz Golaszewski wrote:
-> > +void *qcom_scm_mem_alloc(size_t size, gfp_t gfp)
+> On Fri, Sep 22, 2023 at 06:31:45PM -0700, Suren Baghdasaryan wrote:
+> > @@ -72,6 +73,7 @@
+> >  #define _UFFDIO_WAKE                 (0x02)
+> >  #define _UFFDIO_COPY                 (0x03)
+> >  #define _UFFDIO_ZEROPAGE             (0x04)
+> > +#define _UFFDIO_REMAP                        (0x05)
+> >  #define _UFFDIO_WRITEPROTECT         (0x06)
+> >  #define _UFFDIO_CONTINUE             (0x07)
+> >  #define _UFFDIO_POISON                       (0x08)
+>
+> Might be good to add a feature bit (UFFD_FEATURE_REMAP) for userspace to
+> probe?
+
+Ack.
+
+>
+> IIUC the whole remap feature was proposed at the birth of uffd even befor=
+e
+> COPY, but now we have tons of old kernels who will not support it.
+>
+> [...]
+>
+> > +int remap_pages_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *s=
+rc_mm,
+> > +                      pmd_t *dst_pmd, pmd_t *src_pmd, pmd_t dst_pmdval=
+,
+> > +                      struct vm_area_struct *dst_vma,
+> > +                      struct vm_area_struct *src_vma,
+> > +                      unsigned long dst_addr, unsigned long src_addr)
 > > +{
-> > +     struct qcom_scm_mem_chunk *chunk;
-> > +     unsigned long vaddr;
->
-> there are places below where you unnecessarily typecast this to its
-> given type
->
-
-Ah, it's a leftover from when this variable was of type void *. Thanks.
-
-> > +     int ret;
+> > +     pmd_t _dst_pmd, src_pmdval;
+> > +     struct page *src_page;
+> > +     struct folio *src_folio;
+> > +     struct anon_vma *src_anon_vma, *dst_anon_vma;
+> > +     spinlock_t *src_ptl, *dst_ptl;
+> > +     pgtable_t src_pgtable, dst_pgtable;
+> > +     struct mmu_notifier_range range;
+> > +     int err =3D 0;
 > > +
-> > +     if (!size)
-> > +             return ZERO_SIZE_PTR;
+> > +     src_pmdval =3D *src_pmd;
+> > +     src_ptl =3D pmd_lockptr(src_mm, src_pmd);
 > > +
-> > +     size =3D roundup(size, 1 << PAGE_SHIFT);
+> > +     BUG_ON(!spin_is_locked(src_ptl));
+> > +     mmap_assert_locked(src_mm);
+> > +     mmap_assert_locked(dst_mm);
 > > +
-> > +     chunk =3D kzalloc(sizeof(*chunk), gfp);
-> > +     if (!chunk)
-> > +             return NULL;
+> > +     BUG_ON(!pmd_trans_huge(src_pmdval));
+> > +     BUG_ON(!pmd_none(dst_pmdval));
+> > +     BUG_ON(src_addr & ~HPAGE_PMD_MASK);
+> > +     BUG_ON(dst_addr & ~HPAGE_PMD_MASK);
 > > +
-> > +     vaddr =3D gen_pool_alloc(qcom_scm_mem.pool, size);
-> > +     if (!vaddr) {
-> > +             kfree(chunk);
-> > +             return NULL;
+> > +     src_page =3D pmd_page(src_pmdval);
+> > +     if (unlikely(!PageAnonExclusive(src_page))) {
+> > +             spin_unlock(src_ptl);
+> > +             return -EBUSY;
 > > +     }
 > > +
-> > +     chunk->paddr =3D gen_pool_virt_to_phys(qcom_scm_mem.pool,
-> > +                                          (unsigned long)vaddr);
->
-> unnecessary typecast?
->
-> > +     chunk->size =3D size;
+> > +     src_folio =3D page_folio(src_page);
+> > +     folio_get(src_folio);
+> > +     spin_unlock(src_ptl);
 > > +
-> > +     scoped_guard(spinlock_irqsave, &qcom_scm_mem.lock) {
->
-> my first exposure to this infrastructure..very cool now that I've
-> wrapped my head around it! This helped for those also new to this:
-> https://lwn.net/Articles/934679/
->
-
-It's amazing but be careful with it. I used it wrong in one place and
-got yelled at by Linus Torvalds personally already. :)
-
-Bartosz
-
-> > +             ret =3D radix_tree_insert(&qcom_scm_mem.chunks, vaddr, ch=
-unk);
-> > +             if (ret) {
-> > +                     gen_pool_free(qcom_scm_mem.pool, (unsigned long)v=
-addr,
->
-> unnecessary typecast?
->
-> > +                                   chunk->size);
-> > +                     kfree(chunk);
-> > +                     return NULL;
+> > +     /* preallocate dst_pgtable if needed */
+> > +     if (dst_mm !=3D src_mm) {
+> > +             dst_pgtable =3D pte_alloc_one(dst_mm);
+> > +             if (unlikely(!dst_pgtable)) {
+> > +                     err =3D -ENOMEM;
+> > +                     goto put_folio;
 > > +             }
+> > +     } else {
+> > +             dst_pgtable =3D NULL;
 > > +     }
 > > +
-> > +     return (void *)vaddr;
+> > +     mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, src_mm, src_=
+addr,
+> > +                             src_addr + HPAGE_PMD_SIZE);
+> > +     mmu_notifier_invalidate_range_start(&range);
+> > +
+> > +     /* block all concurrent rmap walks */
+>
+> This is not accurate either I think.  Maybe we can do "s/all/most/", or
+> just drop it (assuming the detailed and accurate version of documentation
+> lies above remap_pages() regarding to REMAP locking)?
+
+Yes, comments from the original patch need to be rechecked and I'm
+sure I missed some new rules. Thanks for pointing this one out! I'll
+drop it.
+
+>
+> > +     folio_lock(src_folio);
+>
+> [...]
+>
+>
+> > +static int remap_anon_pte(struct mm_struct *dst_mm, struct mm_struct *=
+src_mm,
+> > +                       struct vm_area_struct *dst_vma,
+> > +                       struct vm_area_struct *src_vma,
+> > +                       unsigned long dst_addr, unsigned long src_addr,
+> > +                       pte_t *dst_pte, pte_t *src_pte,
+> > +                       pte_t orig_dst_pte, pte_t orig_src_pte,
+> > +                       spinlock_t *dst_ptl, spinlock_t *src_ptl,
+> > +                       struct folio *src_folio)
+>
+> remap_present_pte?
+
+Sounds good.
+
+>
+> [...]
+>
+> > +/**
+> > + * remap_pages - remap arbitrary anonymous pages of an existing vma
+> > + * @dst_start: start of the destination virtual memory range
+> > + * @src_start: start of the source virtual memory range
+> > + * @len: length of the virtual memory range
+> > + *
+> > + * remap_pages() remaps arbitrary anonymous pages atomically in zero
+> > + * copy. It only works on non shared anonymous pages because those can
+> > + * be relocated without generating non linear anon_vmas in the rmap
+> > + * code.
+> > + *
+> > + * It provides a zero copy mechanism to handle userspace page faults.
+> > + * The source vma pages should have mapcount =3D=3D 1, which can be
+> > + * enforced by using madvise(MADV_DONTFORK) on src vma.
+> > + *
+> > + * The thread receiving the page during the userland page fault
+> > + * will receive the faulting page in the source vma through the networ=
+k,
+> > + * storage or any other I/O device (MADV_DONTFORK in the source vma
+> > + * avoids remap_pages() to fail with -EBUSY if the process forks befor=
+e
+> > + * remap_pages() is called), then it will call remap_pages() to map th=
+e
+> > + * page in the faulting address in the destination vma.
+> > + *
+> > + * This userfaultfd command works purely via pagetables, so it's the
+> > + * most efficient way to move physical non shared anonymous pages
+> > + * across different virtual addresses. Unlike mremap()/mmap()/munmap()
+> > + * it does not create any new vmas. The mapping in the destination
+> > + * address is atomic.
+> > + *
+> > + * It only works if the vma protection bits are identical from the
+> > + * source and destination vma.
+> > + *
+> > + * It can remap non shared anonymous pages within the same vma too.
+> > + *
+> > + * If the source virtual memory range has any unmapped holes, or if
+> > + * the destination virtual memory range is not a whole unmapped hole,
+> > + * remap_pages() will fail respectively with -ENOENT or -EEXIST. This
+> > + * provides a very strict behavior to avoid any chance of memory
+> > + * corruption going unnoticed if there are userland race conditions.
+> > + * Only one thread should resolve the userland page fault at any given
+> > + * time for any given faulting address. This means that if two threads
+> > + * try to both call remap_pages() on the same destination address at t=
+he
+> > + * same time, the second thread will get an explicit error from this
+> > + * command.
+> > + *
+> > + * The command retval will return "len" is successful. The command
+> > + * however can be interrupted by fatal signals or errors. If
+> > + * interrupted it will return the number of bytes successfully
+> > + * remapped before the interruption if any, or the negative error if
+> > + * none. It will never return zero. Either it will return an error or
+> > + * an amount of bytes successfully moved. If the retval reports a
+> > + * "short" remap, the remap_pages() command should be repeated by
+> > + * userland with src+retval, dst+reval, len-retval if it wants to know
+> > + * about the error that interrupted it.
+> > + *
+> > + * The UFFDIO_REMAP_MODE_ALLOW_SRC_HOLES flag can be specified to
+> > + * prevent -ENOENT errors to materialize if there are holes in the
+> > + * source virtual range that is being remapped. The holes will be
+> > + * accounted as successfully remapped in the retval of the
+> > + * command. This is mostly useful to remap hugepage naturally aligned
+> > + * virtual regions without knowing if there are transparent hugepage
+> > + * in the regions or not, but preventing the risk of having to split
+> > + * the hugepmd during the remap.
+> > + *
+> > + * If there's any rmap walk that is taking the anon_vma locks without
+> > + * first obtaining the folio lock (for example split_huge_page and
+> > + * folio_referenced), they will have to verify if the folio->mapping
+>
+> Hmm, this sentence seems to be not 100% accurate, perhaps not anymore?
+>
+> As split_huge_page() should need the folio lock and it'll serialize with
+> REMAP with the folio lock too.  It seems to me only folio_referenced() is
+> the outlier so far, and that's covered by patch 1.
+>
+> I did also check other users of folio_get_anon_vma() (similar to use case
+> of split_huge_page()) and they're all with the folio lock held, so we
+> should be good.
+>
+> In summary, perhaps:
+>
+>   - Drop split_huge_page() example here?
+>
+>   - Should we document above folio_get_anon_vma() about this specialty du=
+e
+>     to UFFDIO_REMAP?  I'm thiking something like:
+>
+> + *
+> + * NOTE: the caller should normally hold folio lock when calling this.  =
+If
+> + * not, the caller needs to double check the anon_vma didn't change afte=
+r
+> + * taking the anon_vma lock for either read or write (UFFDIO_REMAP can
+> + * modify it concurrently without folio lock protection).  See
+> + * folio_lock_anon_vma_read() which has already covered that, and commen=
+t
+> + * above remap_pages().
+>   */
+>  struct anon_vma *folio_get_anon_vma(struct folio *folio)
+>  {
+>  ...
+>  }
+
+Ack. Will fix the remap_pages description and add the comment for
+folio_get_anon_vma.
+
+>
+> > + * has changed after taking the anon_vma lock. If it changed they
+> > + * should release the lock and retry obtaining a new anon_vma, because
+> > + * it means the anon_vma was changed by remap_pages() before the lock
+> > + * could be obtained. This is the only additional complexity added to
+> > + * the rmap code to provide this anonymous page remapping functionalit=
+y.
+> > + */
+> > +ssize_t remap_pages(struct mm_struct *dst_mm, struct mm_struct *src_mm=
+,
+> > +                 unsigned long dst_start, unsigned long src_start,
+> > +                 unsigned long len, __u64 mode)
+> > +{
+>
+> [...]
+>
+> > +             if (!err) {
+> > +                     dst_addr +=3D step_size;
+> > +                     src_addr +=3D step_size;
+> > +                     moved +=3D step_size;
+> > +             }
+> > +
+> > +             if ((!err || err =3D=3D -EAGAIN) &&
+> > +                 fatal_signal_pending(current))
+> > +                     err =3D -EINTR;
+> > +
+> > +             if (err && err !=3D -EAGAIN)
+> > +                     break;
+>
+> The err handling is slightly harder to read.  I tried to rewrite it like
+> this:
+>
+> switch (err) {
+>        case 0:
+>                 dst_addr +=3D step_size;
+>                 src_addr +=3D step_size;
+>                 moved +=3D step_size;
+>                 /* fall through */
+>        case -EAGAIN:
+>                 if (fatal_signal_pending(current)) {
+>                         err =3D -EINTR;
+>                         goto out;
+>                 }
+>                 /* Continue with the loop */
+>                 break;
+>        default:
+>                 goto out;
+> }
+>
+> Not super good but maybe slightly better?  No strong opinions, but if you
+> agree that looks better we can use it.
+
+Agree that this should be improved. Let me see if I can find a cleaner
+way to handle these errors.
+
+>
+> > +     }
+> > +
+> > +out:
+> > +     mmap_read_unlock(dst_mm);
+> > +     if (dst_mm !=3D src_mm)
+> > +             mmap_read_unlock(src_mm);
+> > +     BUG_ON(moved < 0);
+> > +     BUG_ON(err > 0);
+> > +     BUG_ON(!moved && !err);
+> > +     return moved ? moved : err;
 > > +}
+>
+> I think for the rest I'll read the new version (e.g. I saw discussion on
+> proper handling of pmd swap entries, which is not yet addressed, but
+> probably will in the next one).
+
+Appreciate your feedback!
+Thanks,
+Suren.
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
 >
