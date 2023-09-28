@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2A77B145C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A127B1457
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjI1HOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S231646AbjI1HOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbjI1HN6 (ORCPT
+        with ESMTP id S231590AbjI1HNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:13:58 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DEE527F
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=Gz38
-        FWoRozMk8ZqhH2Py9rFMLzQbTzA9Bq0tD+78bXY=; b=iSteBfY4PmQYZ/rE9MGE
-        Aa7HCszSBZXFnVBkVo1yAovhD+Md4Tww6/SrNRadqqVOku/NKM7Ma5t8Pf0CW3UN
-        SlSDE04gl5CDWYyUmRdYDb8fNCMKfsJLMLITu2x7ZukNZP/P4fwC3ygs9NslVZBs
-        1kuTKsbf41/pocd09vgLIaII7Vg4/aMuH6i1SXMIinXU/VKI8ucdtCaP+5aCj9Ke
-        cRpTBoIa1KDIeGLfeZcgheZGv8UZ8TRk0EO614DOdV4X3MkSryYEbO9uPfSPEYp1
-        kTNyZ7SykrGZc/g4Lg3Dw+SSlskYrvydEhWyRDpGDRar5CUDKj9DY5XO5Vj4gMIT
-        3w==
-Received: (qmail 3367098 invoked from network); 28 Sep 2023 09:10:25 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Sep 2023 09:10:25 +0200
-X-UD-Smtp-Session: l3s3148p1@rft/AGYGLOAujntX
-Date:   Thu, 28 Sep 2023 09:10:24 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 2/6] mtd: parsers: ar7: remove support
-Message-ID: <ZRUm4DS3qvRfcPox@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
- <20230922061530.3121-3-wsa+renesas@sang-engineering.com>
- <20230922163903.3f49ea2a@xps-13>
+        Thu, 28 Sep 2023 03:13:52 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F3A2101
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:10:29 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40572aeb673so97571475e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:10:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695885027; x=1696489827; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VkIBE+TCRLRjYetF+cyx1hJuGQDYf3kDYmaiNSOiVj8=;
+        b=ToJAxIDp6VFXWlWb9DUZLg5P7nRl9fmM4fKmYEhYvJCfiPil3rk7zNjn1yA8z1WpHc
+         gfT09oiqoHSOsb29kRx0tFs9gDqPCQ7PiR+S7rdgM/+BxJp7W+avKLgHFZ33STC14Q6Z
+         PVZZA/PTN6jS0DC/MCcjgEX5rkPK3YAwmkaT51xs03yu6MZKPxgtBx9mAK8G96voUFGd
+         tSAXJU6Pp8lswGLUf3f7Yhf2UQ+n2DEPz/6N5natsNnZvKF7+Sq7JGzAlJDvSs7bX+k7
+         O73fuvtNp0mNN666XKwMFE3zgV3GFG1JbkqHl3Tgyv6+4LnggB0CJ0rRTSKXpC1Hh7Vo
+         gkuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695885027; x=1696489827;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VkIBE+TCRLRjYetF+cyx1hJuGQDYf3kDYmaiNSOiVj8=;
+        b=vR8PYy3qY5Q5BOHQtCbGotjTRVZQ4nrUsbu8/xes5EaOK2P/bztR39dgBS+e3U7FJg
+         al4Q5o667CBCsU90wpL1690NtHykNeO5id+WjWOvBanfOp6MPEPprqGen81DSfl14Aar
+         LrtSCVFJbDBh3rBUjZSwEF/B1Ui4joLSQVmLi5tRhgmDAPtrDPv5a89PCps21NRyeT+u
+         ZPLx8g8XJnvKYgFVC6+C/Y2Vt+2ouHObBGqq5VpDchbq+5vNPdshdieLmB2McHcwc3o7
+         bd174Sbtj5UrwlLIatkZL8+LDJR/oCkoYATB8HncLhrilAvZDa7HlJLsMpS+M5x2U7/D
+         q3yQ==
+X-Gm-Message-State: AOJu0Yw5Ah6pbjk/B+cFHD+9pTAJQs8rEi9Jg2h4NxoCtlO7YFHtDp5U
+        JfN4pJujtMQThBC0sQ5fdxFHIg==
+X-Google-Smtp-Source: AGHT+IGNaZcVgF8TWexpbmorAxSeNepOwNaCRGtwfaC9auOLiO/MLnnmv7ZMk5XMR5I+ZC87mTNoRQ==
+X-Received: by 2002:a05:600c:b4e:b0:402:95a0:b2ae with SMTP id k14-20020a05600c0b4e00b0040295a0b2aemr405295wmr.32.1695885027206;
+        Thu, 28 Sep 2023 00:10:27 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id a24-20020a05600c225800b004063c9f68f2sm5664262wmm.26.2023.09.28.00.10.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 00:10:26 -0700 (PDT)
+Message-ID: <065636fa-e6ac-4fcb-5d78-b3f281ac4609@linaro.org>
+Date:   Thu, 28 Sep 2023 09:10:26 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vh1lYzYZNvhd1Ak5"
-Content-Disposition: inline
-In-Reply-To: <20230922163903.3f49ea2a@xps-13>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 10/13] thermal: core: Allow trip pointers to be used
+ for cooling device binding
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <1957441.PYKUYFuaPT@kreacher> <45837158.fMDQidcC6G@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <45837158.fMDQidcC6G@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/09/2023 20:01, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Add new helper functions, thermal_bind_cdev_to_trip() and
+> thermal_unbind_cdev_from_trip(), to allow a trip pointer to be used for
+> binding a cooling device to a trip point and unbinding it, respectively,
+> and redefine the existing helpers, thermal_zone_bind_cooling_device()
+> and thermal_zone_unbind_cooling_device(), as wrappers around the new
+> ones, respectively.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
---vh1lYzYZNvhd1Ak5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
 
-> I'm not sure it is wise to merge defconfig changes through mtd. Would
-> you mind sending this change aside to avoid potential conflicts? Each
-> patch can live on their own anyway.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-I checked pxa_defconfig history. Most commits in the last 7 years were
-just removing outdated Kconfig symbols from all kind of subsystems. Like
-what we want to do here. I think it is okay to keep it.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
-
---vh1lYzYZNvhd1Ak5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUVJuAACgkQFA3kzBSg
-KbYCyBAApP4Bff1yQaLcXDSSDNpNegd4Bl+v8pEZsBfyjf5J2xGfttFWrqWNM2ew
-NQ9sR5LIPA38eZEHIxl9UBFaC1npN58b+GU8I1OD/OCYLfSjfYeuUPP7GrnXz2nc
-EShRfOA6uELVpAWkf8nlIohp4MBrDvJk5Ut+VfG1xG3HE3Sk0Te6uXF3lgLWEU7r
-x2/KT/hRj6uJlk6dDb0JrQqbmCpyP4X7HrGGuVDJ4icTBCAAhBluqoVQXa217vJ3
-NAI+Q+/A8FWDJNu/jI+IQR68YxMD2juGlqXVNY+bJ80KtX12IgTDR9NWMYNVtTrf
-kwpBLAtYSHnaKD4WdfJcOP/2iARYo/e/WFqG/3f6xtJzmnP9+hqIRCPkHpTo/k9S
-GPtpeZnAPLjPHk32zQYV8I5b+XODXIw7C4zBB+XvSnx193A3yPHnMtVfhp7GQItT
-BeCBJDnMPIUC33wBpzT7ii7HN07d1Vto1mI90ELU1QK0W/sb/E7hokxEHQNM9/QR
-1DLh8m5dZCNRzU25gPnYp7MFbdCzqL8itPi5KwVMvoReFXq5Zl9/XK/VUK/yNTzq
-/zpymcbR5+zNZP2wKYdTz6vJBq2mr91isLDleuwccXCLLB2FwZ3/I6E8tAXgiWDq
-2rmVDN2m2E6/CFQMPUCYi3edterHoV9t9LESTkiY4zkExhhpQt8=
-=Si4u
------END PGP SIGNATURE-----
-
---vh1lYzYZNvhd1Ak5--
