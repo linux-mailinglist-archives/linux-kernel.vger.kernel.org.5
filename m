@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 275F17B26DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABAB7B26DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjI1UwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S232186AbjI1UxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjI1UwE (ORCPT
+        with ESMTP id S231822AbjI1UxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:52:04 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0B919D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:52:02 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c3c8adb27so1790481166b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:52:02 -0700 (PDT)
+        Thu, 28 Sep 2023 16:53:22 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17024180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:53:20 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99357737980so1745942766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695934320; x=1696539120; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695934398; x=1696539198; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gSD025Bd0l3//3cTjNFcOYkuWhfB01iv+rUbG/PQuH8=;
-        b=j+B71mT7aOXXO4nxQvMTDonv8QOBdTb+I/6nox1ampnFRNDGr0CUKQ3gYctAmA+IeU
-         ByycsUprHQDQZzBtkVA/WO7i8EZFLEk/hu8PoI5HRCW8pAJcqCxJupQujIODBG8pqUAJ
-         L6eSEqyQR2g21/JUbmW929kCxwm4UZm1XTkG93B2z9KfZQnDqi4+d5K4fOnokRIiR4gt
-         nOCn5LzRFPrAnAgAMZL/0++R/5OOWlwpivGpLg4z1IM43w507gF8gTel88yi3E3q3uxf
-         TcljVXx4v9aIZvGduxaw58rv4iQk1L0UL2PBcB4RyZHAbDmyfFO05s5s+OhuykyBTDOI
-         ngLg==
+        bh=oarHGigZ2g+kUjj4FbG0DTMQJe2n18jj+wl6eh8aRW0=;
+        b=d7n5v+uYkRr9OelsyVFl0SpyDbT4COd2UW4iW4JcF/Lqk/yZ5uco3Mf0uBD7b+2CKN
+         UzWhypsxX1ZUs31s2U798kR1/fZh2Gad9GdNuE3Z68TuG7HSCyCryOe2zGnXbRBFgG1o
+         bZLDCbYskCuYTPquDM3qr1iDRggKnG8Ox3CBXpZPkP3GNQJ/MxbkGt4JYjoGHlSqibWc
+         aYn8o4m2y5BvXMxagIPfV6Wa+TxfmGMi24T99Agi4H2C6wXUpNnDDdDCoYPbOmxE5KJt
+         gBotRN1MF9Lgp3B4zWx93/bQxoBblrg5I2a/oGXWuF5jZCDpHEJi2Ut5dFiQdcH5rE3y
+         2qfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695934320; x=1696539120;
+        d=1e100.net; s=20230601; t=1695934398; x=1696539198;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gSD025Bd0l3//3cTjNFcOYkuWhfB01iv+rUbG/PQuH8=;
-        b=q/gtaxiFx9e26l8fr4m0e58rIQjWiQ4/HXyfZIwkkL6C79AkWy1UufInbTV96KCGmD
-         fgcxGLTqNvRYgdZBPuiKaqrmgmCigE2x2Tz3huEvkVKy9VGYwWe7mZK5+iznwCx+2viI
-         XD29ly+YXt1QVQBoaes6rglIhAejh71nEt6RXFPKQ1Xv63Kdhggshkt3mSGPR8JBjV/V
-         C+zZ6n3Lr3Srmd7UV3d1IDudirQbZVQxwCRHWEyYyAxcOrmyemQpZdl83sOWtbadYlIU
-         YExvgubUPW/ueXGvhZLYn1fAv3Ub5/swmZYLP39An0oZJiutmXuLdlt991Uspe0v1O7T
-         +NwQ==
-X-Gm-Message-State: AOJu0Yxxh1hNmv/r3SXEkpy6IlstY0wSYtgcts0sWiSF+MZUF+Fc/8dz
-        VRdnuC2HN4FcgNRBlMCECjkBGVKXhkU=
-X-Google-Smtp-Source: AGHT+IFgIzQ/Xht3PFBOQhCSb6dyI1xES5ctX17cc1t2SebuaoJd618TVcGEt03dBfelV08dcCfjLA==
-X-Received: by 2002:a17:906:8a49:b0:99c:e38d:e484 with SMTP id gx9-20020a1709068a4900b0099ce38de484mr2302856ejc.6.1695934320315;
-        Thu, 28 Sep 2023 13:52:00 -0700 (PDT)
+        bh=oarHGigZ2g+kUjj4FbG0DTMQJe2n18jj+wl6eh8aRW0=;
+        b=NFo7lroIgko9zSIK+hnyMysex9VOk58ukM0VAEUPACTpL5V4Tats18Xh2lXB8MusXU
+         glfNeiAaPiJDDKcrpvmd8v/egtNs0kX6C02RYj9Pgu7uXCDxWQ1PgmZ932KH1NZg+Ax7
+         6VSsbKtbTumVrL2RXD6nJc1MNv9Rgoz88twXB8Y9OzYTprvCmtZNS1CLELQpyNFHGMip
+         62lomBZcGL8eoNSdN2TwYFn0s97LrddyVyVvWJIijzPp1kenbH1D261Wi0zrQkX8Cppn
+         AYQGWWBDB6SwdgWghF3IOqQtB4t0KaBAAvqqhyZCeXi+t3bVexwQKcipUGUyy4vLo8Zz
+         ph3g==
+X-Gm-Message-State: AOJu0YwrIViLMC20HiUfQ3K1oSm6NR3WKmvunv0I2kmBoF+/SGBuBtqI
+        bnhsLN6q9FylPLZ0gM+1Ndg=
+X-Google-Smtp-Source: AGHT+IFqC4PlKLBf9wG5aE9nBibQLVWC1Y+zxiLxuz1f3j13EOA9qJ4cYASg/H5Xz4LLfcISv3g3DA==
+X-Received: by 2002:a17:907:6c14:b0:9b2:8c37:82a with SMTP id rl20-20020a1709076c1400b009b28c37082amr1972785ejc.35.1695934398160;
+        Thu, 28 Sep 2023 13:53:18 -0700 (PDT)
 Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
-        by smtp.gmail.com with ESMTPSA id qk7-20020a1709077f8700b009b2b4385db7sm2935834ejc.92.2023.09.28.13.51.58
+        by smtp.gmail.com with ESMTPSA id lw13-20020a170906bccd00b0098884f86e41sm11214113ejb.123.2023.09.28.13.53.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 13:51:59 -0700 (PDT)
+        Thu, 28 Sep 2023 13:53:17 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 28 Sep 2023 22:51:57 +0200
+Date:   Thu, 28 Sep 2023 22:53:15 +0200
 From:   Ingo Molnar <mingo@kernel.org>
-To:     Adam Dunlap <acdunlap@google.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Khalid ElMously <khalid.elmously@canonical.com>,
-        Jacob Xu <jacobhxu@google.com>
-Subject: Re: [PATCH v2 0/2] x86/sev-es: Resolve early #VC handler UB
-Message-ID: <ZRXnbZB3oAijpiQY@gmail.com>
-References: <20230912002703.3924521-1-acdunlap@google.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RESEND PATCH 2/2] locking/x86: Wire up sync_try_cmpxchg
+Message-ID: <ZRXnu+8gQGVZVA79@gmail.com>
+References: <20230925150905.54842-1-ubizjak@gmail.com>
+ <20230925150905.54842-2-ubizjak@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912002703.3924521-1-acdunlap@google.com>
+In-Reply-To: <20230925150905.54842-2-ubizjak@gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
@@ -94,35 +79,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Adam Dunlap <acdunlap@google.com> wrote:
+* Uros Bizjak <ubizjak@gmail.com> wrote:
 
-> In v0 of this patch, I mistakenly claimed that
-> boot_cpu_data.x86_virt_bits was not getting set to 0 in some
-> configurations. However, it is in fact reliably being set to 0 because
-> it is specified to be in the .data..read_mostly section, and .data is
-> initialized at this point. The boot failures that we were seeing were
-> actually due to the gcc 12.3 compiler exploiting the undefined
-> behavior to return false from __is_canonical_address when
-> boot_cpu_data.x86_virt_bits is 0.
-> 
-> This patch set applies the 2 changes posted by Dave Hansen: remove the
-> UB by explicily checking for 0, and remove the period of time where
-> x86_virt_bits may be temporarily set to the wrong value where the #VC
-> handler could observe it.
-> 
-> 
-> Adam Dunlap (2):
->   x86/sev-es: Allow copy_from_kernel_nofault in earlier boot
->   x86/sev-es: Only set x86_virt_bits to correct value
+> Implement target specific support for sync_try_cmpxchg.
 
-I've applied these fixes to tip:x86/mm, thanks!
-
-Note that I switched around the order of patches: we first want
-to enhance x86_virt_bits to be reliable, only then do we want to
-change copy_from_kernel_nofault_allowed() to be able to rely on it,
-to fix early #VC accesses, right?
-
-I also improved the changelogs & titles a bit.
+Could you please provide a before/after description of how
+this improves things exactly?
 
 Thanks,
 
