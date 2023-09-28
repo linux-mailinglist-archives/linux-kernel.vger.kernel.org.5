@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2057B2313
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2207B230C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbjI1Q7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S231589AbjI1Q6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjI1Q7T (ORCPT
+        with ESMTP id S231263AbjI1Q6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:59:19 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0001BF;
-        Thu, 28 Sep 2023 09:59:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1695920340; x=1696525140; i=julian.ribbeck@gmx.de;
- bh=pgzYVMK04U11CH6h9Yble3k0HzNklkv+LW2WhvSCwtQ=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=f2lyhWCdspd+wKbQ75KGOgK9H2BAysh7G3H7H4q5NRsw1CDU59NrgcLOlyAuujx6cH2I7jSS+e5
- 48WASg0xe85trvfVvXAn2sSCq/G+xzSfWwjMNFl+D0wLAuTPnsZyWen0hsezQBx7oW4A23L98JoQi
- 5g6S9z1xG9B0PLKrHjk8nICYxEMPiZ0UussHPr3WtvBFSc4k+gfG399QM/j9x6Nicw/s9nUFeCWaa
- aIiL4sa7MClKDQPMNODqSz8IUcKXJZjaHk6t6pdXeyfcQf5iPmx7X0iBRIgF5UkwJkfqhYU8SF3KP
- XeqpuLXJ+wfXETjRSDSToPHmce9IV71/8jiQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([95.90.255.242]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MgvvT-1rHODW3xNt-00hPZq; Thu, 28 Sep 2023 18:59:00 +0200
-From:   Julian Ribbeck <julian.ribbeck@gmx.de>
-To:     samuel@sholland.org
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org, wens@csie.org,
-        jernej.skrabec@gmail.com, julian.ribbeck@gmx.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, robh+dt@kernel.org
-Subject: [PATCH v3 2/2] dt-bindings: arm: sunxi: Add itead,iteaduino-plus-a20
-Date:   Thu, 28 Sep 2023 18:57:02 +0200
-Message-ID: <20230928165803.30127-2-julian.ribbeck@gmx.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230928165803.30127-1-julian.ribbeck@gmx.de>
-References: <9730f21c-fd8e-9583-98c7-e5d923269f79@sholland.org>
- <20230928165803.30127-1-julian.ribbeck@gmx.de>
+        Thu, 28 Sep 2023 12:58:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F31A195
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695920248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=00QmXapohq3DPZCRHS2BR5NmKgg5YovRM/bSgGyBQuc=;
+        b=KnxzmCSlc8aMUNB8XkFZhoga/RP7ZVBcWQd9prrvVEpOWc9ZlweOljp7gxPZ69+cKM+hJ/
+        koNx4tPZvhV/Of1Tbzf9WvvxbwMS597fTwxbVnD4Xz/8pSGB1VDY+Q6qVlhhFz1nyWpfGC
+        4ytmPIKm3YtHFKPf+6sL/Csw94c5nV0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-367-llFTuxZNMbKesYBeP5OALQ-1; Thu, 28 Sep 2023 12:57:26 -0400
+X-MC-Unique: llFTuxZNMbKesYBeP5OALQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31fd48da316so10153423f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:57:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695920245; x=1696525045;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=00QmXapohq3DPZCRHS2BR5NmKgg5YovRM/bSgGyBQuc=;
+        b=Dwz3B7dPyN5ca3OIpyp2ASWnMrNf+P4opL0DzSIp2aElfpISc0jpifSrln2+8Bs+eT
+         8kg2vWoSPUtn6+cdxtE53gKgBG5wGzhwBmwpAfHM/asgmm2lt0dTeY4Z6PkdghjiwUxp
+         2ifwPIwds7oL50AbbAeWIkJDc7DTzbCl1/zrfAtieF7dVx+M4Uu+J2jEo2lVDyvvBvgr
+         9hKVLCbNExIvNuOGR15jwA8fN7ZSVpuk9ydXMOp0aYPCqFKmRXZetP9JtAnXZNAWevDP
+         U+L3yvJ/Nkne4gBq3XO5peRTDV72N74GwX/CCAR9mqzD6VerVI90XeEt8exl4Y5Hk3SD
+         b40g==
+X-Gm-Message-State: AOJu0YwzgmDbgzIsuXLSWGU6GqyCjCR5vbIlxEBPJDN/TPPJEym3ZNJZ
+        jd0gwYQ0WiPckhWb/4XN41K7pMDAeoOn9cUX5IDECxwrh3jfgIRoMousTPs0eHVElm0ZF2OIFRe
+        cL3NxWJAAZzvSMiF30RkPla4I
+X-Received: by 2002:a5d:5b17:0:b0:31f:a4fa:130a with SMTP id bx23-20020a5d5b17000000b0031fa4fa130amr2000429wrb.14.1695920245449;
+        Thu, 28 Sep 2023 09:57:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFdPFunf1e46tcllomSWe7BexIz1+NPtzsrILM3MPcQJWSlQc934AuWtqt00GJ12IWls8lktg==
+X-Received: by 2002:a5d:5b17:0:b0:31f:a4fa:130a with SMTP id bx23-20020a5d5b17000000b0031fa4fa130amr2000414wrb.14.1695920245057;
+        Thu, 28 Sep 2023 09:57:25 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id g25-20020a50d0d9000000b005361a6da384sm1474069edf.19.2023.09.28.09.57.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 09:57:24 -0700 (PDT)
+Message-ID: <b3ed3da7-ffa3-0d35-34c1-27b159af43bb@redhat.com>
+Date:   Thu, 28 Sep 2023 18:57:18 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:P+6Q2PWpdB5kQfCXWzv1Akg7Tgg17CXmpZMVE+xnoG+XKC+qYEi
- arn67oWwTWaLrbmV+qSM1U26dQhZ6tEXn2IjvF7izsPMlJp90eFa3U9e5ZJAEk+VgnG3TFq
- MjbYiExv0JQLwPVWANwRiAgH9NZ1mUwLkf8W7hiNIn0hOYpgqJDWLMvCGCH3Q3bd4V6oCiZ
- DPbZ9c5Cxhe96FPSsTlWg==
-UI-OutboundReport: notjunk:1;M01:P0:jrXD7kg4Rl4=;S7cWsOJDbzTL8AZvkaDGIhjFO8F
- tFNFLuD6f8DYj2qgfP007c09yMu8PnaJlGCiYtJCqdgZc0BqNxbt6aYQoj5IxhLWJDTUeWHj7
- Eqm8Dot5KEVyD1QkVUQMiJr6H6w3RqF5HjNy/B7MG0+3X1azI+nGi2yN2tdBxngXPjI4wWZ35
- CZhJIDQtyGE8mQWvwn2D8ns7lM7qVACqWxFW4dzs9uuRcc8HMJwD5DI3BYNdEYUOWlLfTSNdm
- 6Ax2GsKXazX789ncIkJjKJKSYTQaOyLikJ6lN3TqAa72FN5G+/CgZUkAQGEv+b2XzPPrIC6F4
- njn85hGp1Na8IwQ7jeW4AqyOaQXSdlpL3E5VmiX+rNB6Y5Ll0nPVOUY/LVfUIHKkFr7+w2sn8
- GMPeYZydMgtuA5VZqmwyvd5cs6B23gGyiN0itwcPlXNVgLlawss5qlc1jn/1MHKKQ5fftq9jn
- uyDGYQ0TF8GTdX09jrGPvOmzQ23j7FPpWv9g6rve5s6V59lYzn1xBR4zgjK/0vZ8fc77fA4C4
- 96d0zCYEAkQ1kEeoxm05m092ftSqi9vsT128Qn7c9LfXjmrd9z7TGN061RQZy1MwEIMKOobI5
- b353Eq7Iw8BzOHnzsafruZHk0qL6fbyLqEaMfTzzH+e3m6X8l6ulPm7qpo7W+2SGGw8XRM4kO
- /R4BgPcrzf/USwzroHzHOuIX78UjQj/Xif/pemb0kanZqx2nXBudESFZ6wX7fLj5J4nViJusx
- njWZyI/ynebBXwcYH0p9199+n94xaeWz9Ms7k3ao4CQ46Ytp7hjBymFE65avJF/SNPo/CWuWu
- e1s+1fc1GFxZkGx/zpjAc0xcCL3fxKhuLKl6IY2GJnoA7say/VzyF6R2lcod+i8g69xBt9z0c
- Yb0weX9jdO7fnnuSdwA9d+qj4PXh0we8A07TBuGOgz3z36hbWqfHIqtXI5LnfmDUOsyOgJQyh
- V6FiRQ==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/10] Fix confusion around MAX_ORDER
+Content-Language: en-US
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>, quic_jhugo@quicinc.com,
+        snitzer@kernel.org, dm <dm-devel@redhat.com>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230315113133.11326-1-kirill.shutemov@linux.intel.com>
+ <3c25ec6f-cd33-9445-a76f-6ec2c30755f5@redhat.com>
+ <86e7f97a-ac6b-873d-93b2-1121a464989a@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <86e7f97a-ac6b-873d-93b2-1121a464989a@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add itead,iteaduino-plus-a20 bindings
+On 9/28/23 09:50, Mikulas Patocka wrote:
+>>> Fix the bugs and then change the definition of MAX_ORDER to be
+>>> inclusive: the range of orders user can ask from buddy allocator is
+>>> 0..MAX_ORDER now.
+> I think that exclusive MAX_ORDER is more intuitive in the C language -
+> i.e. if you write "for (i = 0; i < MAX_ORDER; i++)", you are supposed to
+> loop over all allowed values. If you declare an array "void
+> *array[MAX_ORDER];" you are supposed to hold a value for each allowed
+> order.
+> 
+> Pascal has for loops and array dimensions with inclusive ranges - and it
+> is more prone to off-by-one errors.
 
-Signed-off-by: Julian Ribbeck <julian.ribbeck@gmx.de>
-=2D--
- Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+I agree it's somewhat confusing either way but the ship has sailed, the 
+patch has been included in Linux for several months.
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentat=
-ion/devicetree/bindings/arm/sunxi.yaml
-index e4dd678f4212..25251ce4b60d 100644
-=2D-- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -362,6 +362,11 @@ properties:
-           - const: itead,iteaduino-plus-a10
-           - const: allwinner,sun4i-a10
-
-+      - description: Itead Iteaduino Plus A20
-+        items:
-+          - const: itead,iteaduino-plus-a20
-+          - const: allwinner,sun7i-a20
-+
-       - description: Jesurun Q5
-         items:
-           - const: jesurun,q5
-=2D-
-2.42.0
+Paolo
 
