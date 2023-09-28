@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BA47B28A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1797B28A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjI1XE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 19:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
+        id S231535AbjI1XIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 19:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI1XE2 (ORCPT
+        with ESMTP id S229541AbjI1XIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:04:28 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A6319D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:04:25 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6c4deb5c9e3so100992a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 16:04:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695942265; x=1696547065;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NYVVwGnE6OPcQXW03l4khaOQttTM3qhI1jmlcZKWyoQ=;
-        b=dsnu3f55PsswC+7hRNJaXfmrcwSt8WpCPuyxz20UN+iTRv7I9eEblaM/q8fan8SWfc
-         9rKc6yJmAEvH3mTVJfLZoSOS/en5fJUq790Hu8vbvWm1sgoZ3gyrei1u8TUoOL+iTFAC
-         kmEKJaVCI/JQhxmDKtQJ7u9YDQULFjavtDNO2Thin6nJhLnYNZCSKJFbfsQkuzSAaNmC
-         uYPANxB1Jhn8+bX+6T+0d2YtpZLkWaRXtXRiFPHZuOEZKlevFJzFEbItdmRK/THs4sS7
-         Z9eaPunk3DTiSM5tLWUTwdGB+MQmvKuTZ8TiEzd8rOVWyKWXtY/zGgf+QRQQAfJ8DcXK
-         +vdw==
-X-Gm-Message-State: AOJu0Yxt9nJHmn5c2scxCnpYsIDbdM0Uv+Y89Nt38Mf+YTXjTGt83s8q
-        Gzt6HJhhA7rfunHn2Duko24j0KGPmYu8dkA5V9qmXFY0IWEV
-X-Google-Smtp-Source: AGHT+IE43VubC1rcbjPn94s2f6h7KBdiLEmKdkWzMURapibBforfO+pyngERA+u2+geoAAcbY0GUEDyK0WX3fCylws5aJncOx3Go
+        Thu, 28 Sep 2023 19:08:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D13CAC;
+        Thu, 28 Sep 2023 16:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695942524; x=1727478524;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bsdaHx5i6d0dQbRebscdJjGlFmzP3UXXQapI7gY5p/8=;
+  b=BZtgA3se+Ka89fvUu2cqJoGTzaF/DrIg3bIz4mCg0Zsk0POI6V/wHojH
+   Q67L6+XX/C+MU+nz6uIi767z1rB6bmaT0hXUT6G5fL6zsNdTcu62Re1SS
+   rNGBtsIsrt5fZ6+FAkjdjrf0Xwy0jmKwXEpN7V7lfXiPFuoAL7LJeFIJe
+   4mFa5HBz0zgm8GMhEFBiVfUvEDCPvPOacUwjR9jstL/OZPOBSL0GRI4IY
+   ZhNJSDYkz3dGmxSQRQItMZX06QO8HrS0TqiwxIqFwnJWtGCzkeD78Db4R
+   Rs0tiCbtatYtOfbDZWKODHmgRisx9g5dNjlXreiIIf3cpMqcl+WkBqZIZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="446357861"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="446357861"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 16:08:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749776304"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="749776304"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 28 Sep 2023 16:08:39 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qm07Y-00027h-33;
+        Thu, 28 Sep 2023 23:08:36 +0000
+Date:   Fri, 29 Sep 2023 07:08:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v6 07/11] KVM: arm64: PMU: Allow userspace to limit
+ PMCR_EL0.N for the guest
+Message-ID: <202309290607.Qgg05wKw-lkp@intel.com>
+References: <20230926234008.2348607-8-rananta@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:4617:b0:6c6:2b19:7270 with SMTP id
- ba23-20020a056830461700b006c62b197270mr769742otb.1.1695942265332; Thu, 28 Sep
- 2023 16:04:25 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 16:04:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048eddc06067354b1@google.com>
-Subject: [syzbot] [block?] possible deadlock in bd_prepare_to_claim
-From:   syzbot <syzbot+034076c3f2924132d327@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926234008.2348607-8-rananta@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,202 +79,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Raghavendra,
 
-syzbot found the following issue on:
+kernel test robot noticed the following build errors:
 
-HEAD commit:    8a511e7efc5a Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e16eb6680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e4ca82a1bedd37e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=034076c3f2924132d327
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+[auto build test ERROR on 6465e260f48790807eef06b583b38ca9789b6072]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+url:    https://github.com/intel-lab-lkp/linux/commits/Raghavendra-Rao-Ananta/KVM-arm64-PMU-Introduce-helpers-to-set-the-guest-s-PMU/20230927-095821
+base:   6465e260f48790807eef06b583b38ca9789b6072
+patch link:    https://lore.kernel.org/r/20230926234008.2348607-8-rananta%40google.com
+patch subject: [PATCH v6 07/11] KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
+config: arm64-randconfig-003-20230928 (https://download.01.org/0day-ci/archive/20230929/202309290607.Qgg05wKw-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309290607.Qgg05wKw-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ab9ab551228e/disk-8a511e7e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1e58e50b20cc/vmlinux-8a511e7e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9945a56f5461/bzImage-8a511e7e.xz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309290607.Qgg05wKw-lkp@intel.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+034076c3f2924132d327@syzkaller.appspotmail.com
+All errors (new ones prefixed by >>):
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc2-syzkaller-00414-g8a511e7efc5a #0 Not tainted
-------------------------------------------------------
-syz-executor.4/483 is trying to acquire lock:
-ffffffff8d0648e8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1b0/0x4c0 block/bdev.c:508
-
-but task is already holding lock:
-ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:847 [inline]
-ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: blk_ioctl_zeroout block/ioctl.c:184 [inline]
-ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: blkdev_common_ioctl+0x1711/0x2860 block/ioctl.c:510
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (mapping.invalidate_lock#2){++++}-{3:3}:
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1520
-       filemap_invalidate_lock_shared include/linux/fs.h:857 [inline]
-       filemap_fault+0x658/0x1710 mm/filemap.c:3283
-       __do_fault+0x133/0x4e0 mm/memory.c:4204
-       do_shared_fault mm/memory.c:4635 [inline]
-       do_fault mm/memory.c:4709 [inline]
-       do_pte_missing mm/memory.c:3669 [inline]
-       handle_pte_fault mm/memory.c:4978 [inline]
-       __handle_mm_fault mm/memory.c:5119 [inline]
-       handle_mm_fault+0x21d9/0x62b0 mm/memory.c:5284
-       do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
-       exc_page_fault+0x2ac/0x860 arch/x86/mm/fault.c:1561
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-
--> #3 (&mm->mmap_lock){++++}-{3:3}:
-       __might_fault+0xc1/0x120 mm/memory.c:5896
-       _copy_from_user+0x2a/0xe0 lib/usercopy.c:14
-       copy_from_user include/linux/uaccess.h:183 [inline]
-       quota_setinfo+0xb2/0x4f0 fs/quota/quota.c:152
-       __do_sys_quotactl_fd fs/quota/quota.c:1002 [inline]
-       __se_sys_quotactl_fd+0x29d/0x440 fs/quota/quota.c:973
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (&type->s_umount_key#30){++++}-{3:3}:
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1520
-       __super_lock fs/super.c:58 [inline]
-       super_lock+0x176/0x390 fs/super.c:117
-       super_lock_shared fs/super.c:146 [inline]
-       super_lock_shared_active fs/super.c:1431 [inline]
-       fs_bdev_sync+0xa5/0x170 fs/super.c:1466
-       blkdev_flushbuf block/ioctl.c:372 [inline]
-       blkdev_common_ioctl+0x889/0x2860 block/ioctl.c:502
-       blkdev_ioctl+0x520/0x730 block/ioctl.c:624
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:871 [inline]
-       __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (&bdev->bd_holder_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
-       bd_finish_claiming+0x231/0x3f0 block/bdev.c:566
-       blkdev_get_by_dev+0x481/0x620 block/bdev.c:799
-       setup_bdev_super+0x5d/0x600 fs/super.c:1484
-       mount_bdev+0x1e0/0x300 fs/super.c:1626
-       legacy_get_tree+0xef/0x190 fs/fs_context.c:638
-       vfs_get_tree+0x8c/0x280 fs/super.c:1750
-       do_new_mount+0x28f/0xae0 fs/namespace.c:3335
-       init_mount+0xd4/0x130 fs/init.c:25
-       do_mount_root+0x98/0x230 init/do_mounts.c:166
-       mount_root_generic+0x193/0x3b0 init/do_mounts.c:205
-       prepare_namespace+0xc2/0x100 init/do_mounts.c:489
-       kernel_init_freeable+0x46a/0x5c0 init/main.c:1560
-       kernel_init+0x1d/0x2a0 init/main.c:1437
-       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
--> #0 (bdev_lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5136
-       lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
-       bd_prepare_to_claim+0x1b0/0x4c0 block/bdev.c:508
-       truncate_bdev_range+0x4e/0x260 block/bdev.c:105
-       blk_ioctl_zeroout block/ioctl.c:185 [inline]
-       blkdev_common_ioctl+0x1723/0x2860 block/ioctl.c:510
-       blkdev_ioctl+0x520/0x730 block/ioctl.c:624
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:871 [inline]
-       __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  bdev_lock --> &mm->mmap_lock --> mapping.invalidate_lock#2
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(mapping.invalidate_lock#2);
-                               lock(&mm->mmap_lock);
-                               lock(mapping.invalidate_lock#2);
-  lock(bdev_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.4/483:
- #0: ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:847 [inline]
- #0: ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: blk_ioctl_zeroout block/ioctl.c:184 [inline]
- #0: ffff8881489f2040 (mapping.invalidate_lock#2){++++}-{3:3}, at: blkdev_common_ioctl+0x1711/0x2860 block/ioctl.c:510
-
-stack backtrace:
-CPU: 0 PID: 483 Comm: syz-executor.4 Not tainted 6.6.0-rc2-syzkaller-00414-g8a511e7efc5a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5136
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
- __mutex_lock_common kernel/locking/mutex.c:603 [inline]
- __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
- bd_prepare_to_claim+0x1b0/0x4c0 block/bdev.c:508
- truncate_bdev_range+0x4e/0x260 block/bdev.c:105
- blk_ioctl_zeroout block/ioctl.c:185 [inline]
- blkdev_common_ioctl+0x1723/0x2860 block/ioctl.c:510
- blkdev_ioctl+0x520/0x730 block/ioctl.c:624
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7faae827cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007faae8f980c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007faae839c050 RCX: 00007faae827cae9
-RDX: 0000000020000080 RSI: 000000000000127f RDI: 0000000000000005
-RBP: 00007faae82c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007faae839c050 R15: 00007ffef2852be8
- </TASK>
+   arch/arm64/kvm/sys_regs.c: In function 'set_pmcr':
+>> arch/arm64/kvm/sys_regs.c:1110:52: error: invalid use of undefined type 'struct arm_pmu'
+    1110 |                 u8 pmcr_n_limit = kvm->arch.arm_pmu->num_events - 1;
+         |                                                    ^~
+   arch/arm64/kvm/sys_regs.c: At top level:
+   arch/arm64/kvm/sys_regs.c:2207:66: warning: initialized field overwritten [-Woverride-init]
+    2207 |         { PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
+         |                                                                  ^~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:2207:66: note: (near initialization for 'sys_reg_descs[233].reset')
+   In file included from include/uapi/linux/posix_types.h:5,
+                    from include/uapi/linux/types.h:14,
+                    from include/linux/types.h:6,
+                    from include/linux/kasan-checks.h:5,
+                    from include/asm-generic/rwonce.h:26,
+                    from arch/arm64/include/asm/rwonce.h:71,
+                    from include/linux/compiler.h:246,
+                    from include/linux/build_bug.h:5,
+                    from include/linux/bitfield.h:10,
+                    from arch/arm64/kvm/sys_regs.c:12:
+   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2221:46: note: in expansion of macro 'NULL'
+    2221 |           .access = access_pmswinc, .reset = NULL },
+         |                                              ^~~~
+   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[237].reset')
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2221:46: note: in expansion of macro 'NULL'
+    2221 |           .access = access_pmswinc, .reset = NULL },
+         |                                              ^~~~
+   arch/arm64/kvm/sys_regs.c:2223:45: warning: initialized field overwritten [-Woverride-init]
+    2223 |           .access = access_pmselr, .reset = reset_pmselr, .reg = PMSELR_EL0 },
+         |                                             ^~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:2223:45: note: (near initialization for 'sys_reg_descs[238].reset')
+   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2225:45: note: in expansion of macro 'NULL'
+    2225 |           .access = access_pmceid, .reset = NULL },
+         |                                             ^~~~
+   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[239].reset')
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2225:45: note: in expansion of macro 'NULL'
+    2225 |           .access = access_pmceid, .reset = NULL },
+         |                                             ^~~~
+   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2227:45: note: in expansion of macro 'NULL'
+    2227 |           .access = access_pmceid, .reset = NULL },
+         |                                             ^~~~
+   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[240].reset')
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2227:45: note: in expansion of macro 'NULL'
+    2227 |           .access = access_pmceid, .reset = NULL },
+         |                                             ^~~~
+   arch/arm64/kvm/sys_regs.c:2229:49: warning: initialized field overwritten [-Woverride-init]
+    2229 |           .access = access_pmu_evcntr, .reset = reset_unknown,
+         |                                                 ^~~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:2229:49: note: (near initialization for 'sys_reg_descs[241].reset')
+   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2232:50: note: in expansion of macro 'NULL'
+    2232 |           .access = access_pmu_evtyper, .reset = NULL },
+         |                                                  ^~~~
+   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[242].reset')
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2232:50: note: in expansion of macro 'NULL'
+    2232 |           .access = access_pmu_evtyper, .reset = NULL },
+         |                                                  ^~~~
+   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2234:49: note: in expansion of macro 'NULL'
+    2234 |           .access = access_pmu_evcntr, .reset = NULL },
+         |                                                 ^~~~
+   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[243].reset')
+       8 | #define NULL ((void *)0)
+         |              ^
+   arch/arm64/kvm/sys_regs.c:2234:49: note: in expansion of macro 'NULL'
+    2234 |           .access = access_pmu_evcntr, .reset = NULL },
+         |                                                 ^~~~
+   arch/arm64/kvm/sys_regs.c:1162:20: warning: initialized field overwritten [-Woverride-init]
+    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
+         |                    ^~~~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:2330:9: note: in expansion of macro 'PMU_PMEVCNTR_EL0'
+    2330 |         PMU_PMEVCNTR_EL0(0),
+         |         ^~~~~~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:1162:20: note: (near initialization for 'sys_reg_descs[327].reset')
+    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
+         |                    ^~~~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:2330:9: note: in expansion of macro 'PMU_PMEVCNTR_EL0'
+    2330 |         PMU_PMEVCNTR_EL0(0),
+         |         ^~~~~~~~~~~~~~~~
+   arch/arm64/kvm/sys_regs.c:1162:20: warning: initialized field overwritten [-Woverride-init]
+    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
+         |                    ^~~~~~~~~~~~~~
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +1110 arch/arm64/kvm/sys_regs.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+  1090	
+  1091	static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+  1092			    u64 val)
+  1093	{
+  1094		struct kvm *kvm = vcpu->kvm;
+  1095		u64 new_n, mutable_mask;
+  1096	
+  1097		mutex_lock(&kvm->arch.config_lock);
+  1098	
+  1099		/*
+  1100		 * Make PMCR immutable once the VM has started running, but do
+  1101		 * not return an error (-EBUSY) to meet the existing expectations.
+  1102		 */
+  1103		if (kvm_vm_has_ran_once(vcpu->kvm)) {
+  1104			mutex_unlock(&kvm->arch.config_lock);
+  1105			return 0;
+  1106		}
+  1107	
+  1108		new_n = (val >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
+  1109		if (new_n != kvm->arch.pmcr_n) {
+> 1110			u8 pmcr_n_limit = kvm->arch.arm_pmu->num_events - 1;
+  1111	
+  1112			/*
+  1113			 * The vCPU can't have more counters than the PMU hardware
+  1114			 * implements. Ignore this error to maintain compatibility
+  1115			 * with the existing KVM behavior.
+  1116			 */
+  1117			if (new_n <= pmcr_n_limit)
+  1118				kvm->arch.pmcr_n = new_n;
+  1119		}
+  1120		mutex_unlock(&kvm->arch.config_lock);
+  1121	
+  1122		/*
+  1123		 * Ignore writes to RES0 bits, read only bits that are cleared on
+  1124		 * vCPU reset, and writable bits that KVM doesn't support yet.
+  1125		 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
+  1126		 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
+  1127		 * But, we leave the bit as it is here, as the vCPU's PMUver might
+  1128		 * be changed later (NOTE: the bit will be cleared on first vCPU run
+  1129		 * if necessary).
+  1130		 */
+  1131		mutable_mask = (ARMV8_PMU_PMCR_MASK |
+  1132				(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT));
+  1133		val &= mutable_mask;
+  1134		val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
+  1135	
+  1136		/* The LC bit is RES1 when AArch32 is not supported */
+  1137		if (!kvm_supports_32bit_el0())
+  1138			val |= ARMV8_PMU_PMCR_LC;
+  1139	
+  1140		__vcpu_sys_reg(vcpu, r->reg) = val;
+  1141		return 0;
+  1142	}
+  1143	
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
