@@ -2,154 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0867B22B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8BE7B22B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjI1QrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
+        id S231537AbjI1Qrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjI1QrL (ORCPT
+        with ESMTP id S231332AbjI1Qr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:47:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAB8BF
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695919628; x=1727455628;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZxG2rJQEKXbCOztnmBl7esNBXHe2Ob2LhOOkPTr6L0Y=;
-  b=CA3OTQJsh3XtczRKDndp2nDZSVaga2O7424R4+rLYrwoyQfviTNrXaob
-   2pGNA2boxrnXu9fVyrm62TZ86AJj3+ZFt4NihGZ1Y/ufy/xEwXch2ce9U
-   KmJ7uWJk2RG95iPZ+ezvrZYCrcBTToh8cgMPqGqeJBYIullGm5YitTnqQ
-   PYULk4Xxmk+7N0V5NZaFJQkWbPryglnEDkeHuSv0Z5fXEFuhIwKKaxFEs
-   f114c6jnijSgB9zCdUo3MCeTrJmwCAuDCrYPZQeY7j4RjLfOumYcDgm7w
-   cGTZ+VNks6ZJ0FsiPTG805ll0NTlD2y6u7vFAicwkJTaO7/jk1gTuT8LK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="379387364"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="379387364"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 09:47:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="778970454"
-X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
-   d="scan'208";a="778970454"
-Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.209.8.12])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 09:47:06 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Russ Weight <russell.h.weight@intel.com>,
-        Russ Weight <russ.weight@linux.dev>
-Subject: [PATCH 1/3] firmware_loader: Update contact emails for ABI docs
-Date:   Thu, 28 Sep 2023 09:46:23 -0700
-Message-Id: <20230928164623.278570-1-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 28 Sep 2023 12:47:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D4298
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695919600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e1nG43NAk1FHCA+ImOZ9oNANJUjy6sdGqu8LxM+SXvk=;
+        b=CmNq95lNy4RHZ/qLyEDmcKkE9EG++GFjFknslrRZQwp6OW1SN2KUaA7vx441Q4VXIhbHgP
+        Cpkc4GXdWe5GCnfY9kQgJ0YZFyvBukiDqLUPjHc+9g8RVllyox9czAF4DVgY+yKRd1gJih
+        FXZvpcg5JgJP6kuOKdJumTmpVZKZ7a8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-589-7_w0n77-PQK7_BRBWAzlag-1; Thu, 28 Sep 2023 12:46:39 -0400
+X-MC-Unique: 7_w0n77-PQK7_BRBWAzlag-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-315af0252c2so10571255f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:46:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695919598; x=1696524398;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=e1nG43NAk1FHCA+ImOZ9oNANJUjy6sdGqu8LxM+SXvk=;
+        b=pFz4rFmM9FD3l4RXExHu4IzooFoEjVn24aUMF1ZZgwXgqPFuxDBWWi6tUIEWs6FUsL
+         fM1EAUAj9/5BHM/j43p0qdma1yrV8ypzAmVJ424Pxaukqz+t78MeM2IcbP6u3uq2qDt7
+         xuOVSXaWfcXfg55xOHTnjRlcSui2Vp6WXarmHVukpYV4pgH8OUDaOfUOjDtH8h+eqaZ+
+         /nMyk5Nd7ULudshZLBR6oWg3ioPAinzusMXEQAenEaBePSdYsI5jTMMhKcIQ1NDMxKkY
+         DpzSJr/8Q6MTPy2V0Guge6vBQ5ZkcgFFBEkNDKXKJ63zmUygOQAv+n2If4LwzodU3524
+         +uPg==
+X-Gm-Message-State: AOJu0YzhKUf+5oeNX8qKjkzsEQ30WcJzq2Z6PQEvfPS/MuaP+rzm9u6A
+        zxMbU54tnoIdLIBpxYft2hZbWrte2YhhmKKPzPG9Wi1VTYjnT8TwwZz5sme+95QPHG2gRmEaP4q
+        dwi/+mAS9UPtQA4ODV5IimTwxNjXxjaUC
+X-Received: by 2002:a5d:5151:0:b0:31f:eb88:e3c8 with SMTP id u17-20020a5d5151000000b0031feb88e3c8mr1641085wrt.32.1695919597782;
+        Thu, 28 Sep 2023 09:46:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IECAhLGbnen61UUw8FpaxsVW7uCtdSfU9iZ7QE8TtuL/KJb16ImOsM03QIoWXomHtErupETRg==
+X-Received: by 2002:a5d:5151:0:b0:31f:eb88:e3c8 with SMTP id u17-20020a5d5151000000b0031feb88e3c8mr1641070wrt.32.1695919597459;
+        Thu, 28 Sep 2023 09:46:37 -0700 (PDT)
+Received: from starship ([89.237.96.178])
+        by smtp.gmail.com with ESMTPSA id ba6-20020a0560001c0600b003248a490e3asm1383100wrb.39.2023.09.28.09.46.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 09:46:36 -0700 (PDT)
+Message-ID: <0b5e476cd0a31376fbda4be62fb650a1caf004dd.camel@redhat.com>
+Subject: Re: [PATCH 1/3] KVM: x86/mmu: remove unnecessary "bool shared"
+ argument from functions
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Date:   Thu, 28 Sep 2023 19:46:35 +0300
+In-Reply-To: <20230928162959.1514661-2-pbonzini@redhat.com>
+References: <20230928162959.1514661-1-pbonzini@redhat.com>
+         <20230928162959.1514661-2-pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the firmware_loader documentation and corresponding section
-in the MAINTAINERs file with a new email address.
+У чт, 2023-09-28 у 12:29 -0400, Paolo Bonzini пише:
+> Neither tdp_mmu_next_root nor kvm_tdp_mmu_put_root need to know
+> if the lock is taken for read or write.  Either way, protection
+> is achieved via RCU and tdp_mmu_pages_lock.  Remove the argument
+> and just assert that the lock is taken.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c     |  2 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c | 34 +++++++++++++++++++++-------------
+>  arch/x86/kvm/mmu/tdp_mmu.h |  3 +--
+>  3 files changed, 23 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index f7901cb4d2fa..64b1bdba943e 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3548,7 +3548,7 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
+>  		return;
+>  
+>  	if (is_tdp_mmu_page(sp))
+> -		kvm_tdp_mmu_put_root(kvm, sp, false);
+> +		kvm_tdp_mmu_put_root(kvm, sp);
+>  	else if (!--sp->root_count && sp->role.invalid)
+>  		kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
+>  
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 6cd4dd631a2f..ab0876015be7 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -73,10 +73,13 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
+>  	tdp_mmu_free_sp(sp);
+>  }
+>  
+> -void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+> -			  bool shared)
+> +void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
+>  {
+> -	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
+> +	/*
+> +	 * Either read or write is okay, but the lock is needed because
+> +	 * writers might not take tdp_mmu_pages_lock.
+> +	 */
+> +	lockdep_assert_held(&kvm->mmu_lock);
 
-Signed-off-by: Russ Weight <russ.weight@linux.dev>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- Documentation/ABI/testing/sysfs-class-firmware | 14 +++++++-------
- MAINTAINERS                                    |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+I double checked all callers and indeed at least the read lock is held.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-firmware b/Documentation/ABI/testing/sysfs-class-firmware
-index 978d3d500400..fba87a55f3ca 100644
---- a/Documentation/ABI/testing/sysfs-class-firmware
-+++ b/Documentation/ABI/testing/sysfs-class-firmware
-@@ -1,7 +1,7 @@
- What: 		/sys/class/firmware/.../data
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	The data sysfs file is used for firmware-fallback and for
- 		firmware uploads. Cat a firmware image to this sysfs file
- 		after you echo 1 to the loading sysfs file. When the firmware
-@@ -13,7 +13,7 @@ Description:	The data sysfs file is used for firmware-fallback and for
- What: 		/sys/class/firmware/.../cancel
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	Write-only. For firmware uploads, write a "1" to this file to
- 		request that the transfer of firmware data to the lower-level
- 		device be canceled. This request will be rejected (EBUSY) if
-@@ -23,7 +23,7 @@ Description:	Write-only. For firmware uploads, write a "1" to this file to
- What: 		/sys/class/firmware/.../error
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	Read-only. Returns a string describing a failed firmware
- 		upload. This string will be in the form of <STATUS>:<ERROR>,
- 		where <STATUS> will be one of the status strings described
-@@ -37,7 +37,7 @@ Description:	Read-only. Returns a string describing a failed firmware
- What: 		/sys/class/firmware/.../loading
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	The loading sysfs file is used for both firmware-fallback and
- 		for firmware uploads. Echo 1 onto the loading file to indicate
- 		you are writing a firmware file to the data sysfs node. Echo
-@@ -49,7 +49,7 @@ Description:	The loading sysfs file is used for both firmware-fallback and
- What: 		/sys/class/firmware/.../remaining_size
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	Read-only. For firmware upload, this file contains the size
- 		of the firmware data that remains to be transferred to the
- 		lower-level device driver. The size value is initialized to
-@@ -62,7 +62,7 @@ Description:	Read-only. For firmware upload, this file contains the size
- What: 		/sys/class/firmware/.../status
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	Read-only. Returns a string describing the current status of
- 		a firmware upload. The string will be one of the following:
- 		idle, "receiving", "preparing", "transferring", "programming".
-@@ -70,7 +70,7 @@ Description:	Read-only. Returns a string describing the current status of
- What: 		/sys/class/firmware/.../timeout
- Date:		July 2022
- KernelVersion:	5.19
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Russ Weight <russ.weight@linux.dev>
- Description:	This file supports the timeout mechanism for firmware
- 		fallback.  This file has no affect on firmware uploads. For
- 		more information on timeouts please see the documentation
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6010aca09a7f..b97ee6f50679 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8147,7 +8147,7 @@ F:	include/linux/arm_ffa.h
- 
- FIRMWARE LOADER (request_firmware)
- M:	Luis Chamberlain <mcgrof@kernel.org>
--M:	Russ Weight <russell.h.weight@intel.com>
-+M:	Russ Weight <russ.weight@linux.dev>
- L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	Documentation/firmware_class/
--- 
-2.25.1
+>  
+>  	if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
+>  		return;
+> @@ -106,10 +109,16 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+>   */
+>  static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>  					      struct kvm_mmu_page *prev_root,
+> -					      bool shared, bool only_valid)
+> +					      bool only_valid)
+>  {
+>  	struct kvm_mmu_page *next_root;
+>  
+> +	/*
+> +	 * While the roots themselves are RCU-protected, fields such as
+> +	 * role.invalid are protected by mmu_lock.
+> +	 */
+> +	lockdep_assert_held(&kvm->mmu_lock);
+> +
+>  	rcu_read_lock();
+>  
+>  	if (prev_root)
+> @@ -132,7 +141,7 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>  	rcu_read_unlock();
+>  
+>  	if (prev_root)
+> -		kvm_tdp_mmu_put_root(kvm, prev_root, shared);
+> +		kvm_tdp_mmu_put_root(kvm, prev_root);
+>  
+>  	return next_root;
+>  }
+> @@ -144,13 +153,12 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>   * recent root. (Unless keeping a live reference is desirable.)
+>   *
+>   * If shared is set, this function is operating under the MMU lock in read
+> - * mode. In the unlikely event that this thread must free a root, the lock
+> - * will be temporarily dropped and reacquired in write mode.
+> + * mode.
+>   */
+>  #define __for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, _only_valid)\
+> -	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, _only_valid);	\
+> -	     _root;								\
+> -	     _root = tdp_mmu_next_root(_kvm, _root, _shared, _only_valid))	\
+> +	for (_root = tdp_mmu_next_root(_kvm, NULL, _only_valid);	\
+> +	     _root;							\
+> +	     _root = tdp_mmu_next_root(_kvm, _root, _only_valid))	\
+>  		if (kvm_lockdep_assert_mmu_lock_held(_kvm, _shared) &&		\
+>  		    kvm_mmu_page_as_id(_root) != _as_id) {			\
+>  		} else
+> @@ -159,9 +167,9 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>  	__for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared, true)
+>  
+>  #define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _shared)			\
+> -	for (_root = tdp_mmu_next_root(_kvm, NULL, _shared, false);		\
+> -	     _root;								\
+> -	     _root = tdp_mmu_next_root(_kvm, _root, _shared, false))		\
+> +	for (_root = tdp_mmu_next_root(_kvm, NULL, false);		\
+> +	     _root;							\
+> +	     _root = tdp_mmu_next_root(_kvm, _root, false))
+>  		if (!kvm_lockdep_assert_mmu_lock_held(_kvm, _shared)) {		\
+>  		} else
+>  
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index 733a3aef3a96..20d97aa46c49 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -17,8 +17,7 @@ __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
+>  	return refcount_inc_not_zero(&root->tdp_mmu_root_count);
+>  }
+>  
+> -void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+> -			  bool shared);
+> +void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root);
+>  
+>  bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, gfn_t start, gfn_t end, bool flush);
+>  bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp);
+
+
+I don't know all of the details of the kvm mmu, so I might have missed something,
+but still I need to get back to reviewing....
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+
+Best regards,
+	Maxim Levitsky
 
