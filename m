@@ -2,262 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7788F7B222C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BD67B2233
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjI1QX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S231276AbjI1QYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjI1QX1 (ORCPT
+        with ESMTP id S231384AbjI1QYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:23:27 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373C5EB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:23:24 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so17294a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695918202; x=1696523002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hoK7DrnkbZoEIlYmoBBEvLuBCh+s4Y05tdAexrGncuU=;
-        b=oP8tWTNcPnRfRpkBzt1652ESSkvNJRz+wQdzgf34Dck6WUPoqMN+FAg3xAYmuHZgGv
-         +8zy0V0TQiOp8kLzfk2+MGMIjnYUeDfm5ag9MSrG2in6ye+org/O/oUMolb9at2wZK/w
-         /A2J4skXgpYpCiDdQbJEj5+bXpsQp3C69RdnE/2F5+o44iA+en1EYO26X5tdTYASCveD
-         yJ3gs8P55VtHylKARuKbG/nWosuxnnx8BmNLjnwI4HLv2pwYjkDabWaERGiQCfpWbR/p
-         ueZxvT4+N3ZXIeNVyWaUcOdyi+c95JgwPzmJfxhJd6JRXSyV1iYoRQrHXcap5rU+g4p2
-         iyHg==
+        Thu, 28 Sep 2023 12:24:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16761BB
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695918215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X3MbseqfofQuHt4pLHARDa7jXnUI0dOG+j1Sy7M9elo=;
+        b=TMUlpF1ty890qukjEQKkovrhOWeBwtje5hRP12mV5V3p9QoQ2uug2viB0nS7VD1DOm9XxG
+        kcnWKLKj95ZcnAE3AHlC4qThiAB6QnB/ML7j/a0CqAUf90DrZNmjjcjpZEPY7FvfuykSLs
+        Q1M90NU/Hpvu+bEPCSrmfguvyznTsag=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-400-V28dA_snOsyXf3ym5otHEQ-1; Thu, 28 Sep 2023 12:23:33 -0400
+X-MC-Unique: V28dA_snOsyXf3ym5otHEQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4194e7f41e1so18098521cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:23:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695918202; x=1696523002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hoK7DrnkbZoEIlYmoBBEvLuBCh+s4Y05tdAexrGncuU=;
-        b=wqiO+bqpsJ1h4+cz5ulLUmRI9J6JpNC3R3qP/qrfUPVpdZpjv+hO/pkYzc/c2E597Q
-         X8SvMwxDctN1FBxYmPeOOFrYoPF2/8yDVcCma4jrHRl8iuraXz+L1wxjOMZEo9Um5ARe
-         k7HQikedX6pwmT1g4gdqNN4ci37a9qc2/nGa0Z3kKkTXQhcrMLibV7ZI1mUpURRc4Hf5
-         i/zaqxqVU/GKqAD/UwcQ4acUbMApETkAUCzovkOSiTFARUufh1w1o8KJbXNpezW4D+YG
-         6p7V0yxOVJgmOQmkJFTWTh3dkuFD2yVV/qKifMYFlmir6B41NHRMhVjfz+IXYNBdNtzL
-         jzfg==
-X-Gm-Message-State: AOJu0YzpTbKJJ9LZPYcZl4JjlTpPmdjbi1q1oF4RxGmPWilHl4boFfPQ
-        noUk6M/gUWkLOpy8kHAJTmRuY0OQvOhh2w5h4Is3cw==
-X-Google-Smtp-Source: AGHT+IEumrZROsYRljFMvmWsDaEhoXqgx+m159N959ENHjD39+fOqU50QyiAKiyxyjglBFOuLthC1CdYkxePel+rzzs=
-X-Received: by 2002:a50:aa93:0:b0:52e:f99a:b5f8 with SMTP id
- q19-20020a50aa93000000b0052ef99ab5f8mr418659edc.7.1695918202280; Thu, 28 Sep
- 2023 09:23:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695918213; x=1696523013;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X3MbseqfofQuHt4pLHARDa7jXnUI0dOG+j1Sy7M9elo=;
+        b=s98kO8xGIjQ7YWOyTtDMjBVepWnfeNC9eHbv+mdZfwyeBaI7nya+YfBAVZTF7cMuP1
+         7/ajMYOM0MiHB7qdWD4XLkKRl91nbb1JwMSuvbVdWAdoZgVKzxvzTWvyb7MC3NSy1qGO
+         iacrlnb+hS2vMigCPPB7h64WIurZFb2vo/RmpisGSQNCRbkK9Hfc+Nbey2jNYLFkQkBN
+         qUqqlBp84UQ3NvyB0ICJzi7cEDsRD1k0t7Cs+HFLY5aN72pB7/ePVEkaWdriPNzrqb5L
+         iA+lqfYf4q+twfzACH3lzYUqTdOhP5WKbqillNKR76MosOHeLiM/mhAPuo/bJ1W85WX3
+         gbvA==
+X-Gm-Message-State: AOJu0YxN+4oCrNh4YPvwi67P4avS/LL3P6vxAF74TeBS+iPOyPG5+Tjy
+        Ypf0b2cdA2D06DqgIEUPmW9rH8WbOi9TCKtFffoDrPFUcZLG8hHgG4pCJ9XEUzY4BC7BuOCYkUu
+        Ldlykfp2UZTFHpIFvhrdRI8kr
+X-Received: by 2002:a05:622a:1a0b:b0:411:ff8f:d5aa with SMTP id f11-20020a05622a1a0b00b00411ff8fd5aamr1620275qtb.3.1695918212861;
+        Thu, 28 Sep 2023 09:23:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGhws7KLpQsxWmAY8E3zXcIKtOKrYQ/GpK2ItdQp8TYckvr8XWrXOC2qrQiNhX2yyfLB1f44g==
+X-Received: by 2002:a05:622a:1a0b:b0:411:ff8f:d5aa with SMTP id f11-20020a05622a1a0b00b00411ff8fd5aamr1620257qtb.3.1695918212563;
+        Thu, 28 Sep 2023 09:23:32 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id l11-20020ac84ccb000000b004181441cb2dsm3585433qtv.34.2023.09.28.09.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 09:23:32 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 12:23:28 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
+Message-ID: <ZRWogK5s5/giHuGu@x1n>
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-2-surenb@google.com>
 MIME-Version: 1.0
-References: <20230928100418.521594-1-yajun.deng@linux.dev> <CANn89iL9uy58ZrZRPEtrvQ7ckv5hVTq8shx3OesQA6SWoUOP=g@mail.gmail.com>
- <c43a3dde-fa4d-4a87-6f96-397813db5bd6@linux.dev> <CANn89i+iT11qzCidTrHHRMQiYR-nXtbPNAUJGaEg0NQMCq_8CA@mail.gmail.com>
- <5d8e302c-a28d-d4f4-eb91-4b54eb89490b@linux.dev>
-In-Reply-To: <5d8e302c-a28d-d4f4-eb91-4b54eb89490b@linux.dev>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 28 Sep 2023 18:23:11 +0200
-Message-ID: <CANn89i+XQ_LKvr5LHd2QUgTMfZh9Nd1yQTYfRORHUt2_BCkxcg@mail.gmail.com>
-Subject: Re: [PATCH v6] net/core: Introduce netdev_core_stats_inc()
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230923013148.1390521-2-surenb@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 6:16=E2=80=AFPM Yajun Deng <yajun.deng@linux.dev> w=
-rote:
->
->
-> On 2023/9/28 23:44, Eric Dumazet wrote:
-> > On Thu, Sep 28, 2023 at 5:40=E2=80=AFPM Yajun Deng <yajun.deng@linux.de=
-v> wrote:
-> >>
-> >> On 2023/9/28 22:18, Eric Dumazet wrote:
-> >>> On Thu, Sep 28, 2023 at 12:04=E2=80=AFPM Yajun Deng <yajun.deng@linux=
-.dev> wrote:
-> >>>> Although there is a kfree_skb_reason() helper function that can be u=
-sed to
-> >>>> find the reason why this skb is dropped, but most callers didn't inc=
-rease
-> >>>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped=
-.
-> >>>>
-> >>>> For the users, people are more concerned about why the dropped in ip
-> >>>> is increasing.
-> >>>>
-> >>>> Introduce netdev_core_stats_inc() for trace the caller of the droppe=
-d
-> >>>> skb. Also, add __code to netdev_core_stats_alloc(), as it's called
-> >>>> unlinkly.
-> >>>>
-> >>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> >>>> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> >>>> ---
-> >>>> v6: merge netdev_core_stats and netdev_core_stats_inc together
-> >>>> v5: Access the per cpu pointer before reach the relevant offset.
-> >>>> v4: Introduce netdev_core_stats_inc() instead of export dev_core_sta=
-ts_*_inc()
-> >>>> v3: __cold should be added to the netdev_core_stats_alloc().
-> >>>> v2: use __cold instead of inline in dev_core_stats().
-> >>>> v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.de=
-ng@linux.dev/
-> >>>> ---
-> >>>>    include/linux/netdevice.h | 21 ++++-----------------
-> >>>>    net/core/dev.c            | 17 +++++++++++++++--
-> >>>>    2 files changed, 19 insertions(+), 19 deletions(-)
-> >>>>
-> >>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >>>> index 7e520c14eb8c..eb1fa04fbccc 100644
-> >>>> --- a/include/linux/netdevice.h
-> >>>> +++ b/include/linux/netdevice.h
-> >>>> @@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forward=
-able(const struct net_device *dev,
-> >>>>           return false;
-> >>>>    }
-> >>>>
-> >>>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(stru=
-ct net_device *dev);
-> >>>> -
-> >>>> -static inline struct net_device_core_stats __percpu *dev_core_stats=
-(struct net_device *dev)
-> >>>> -{
-> >>>> -       /* This READ_ONCE() pairs with the write in netdev_core_stat=
-s_alloc() */
-> >>>> -       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->=
-core_stats);
-> >>>> -
-> >>>> -       if (likely(p))
-> >>>> -               return p;
-> >>>> -
-> >>>> -       return netdev_core_stats_alloc(dev);
-> >>>> -}
-> >>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
-> >>>>
-> >>>>    #define DEV_CORE_STATS_INC(FIELD)                                =
-              \
-> >>>>    static inline void dev_core_stats_##FIELD##_inc(struct net_device=
- *dev)                \
-> >>>>    {                                                                =
-              \
-> >>>> -       struct net_device_core_stats __percpu *p;                   =
-            \
-> >>>> -                                                                   =
-            \
-> >>>> -       p =3D dev_core_stats(dev);                                  =
-              \
-> >>>> -       if (p)                                                      =
-            \
-> >>>> -               this_cpu_inc(p->FIELD);                             =
-            \
-> >>> Note that we were using this_cpu_inc() which implied :
-> >>> - IRQ safety, and
-> >>> - a barrier paired with :
-> >>>
-> >>> net/core/dev.c:10548:                   storage->rx_dropped +=3D
-> >>> READ_ONCE(core_stats->rx_dropped);
-> >>> net/core/dev.c:10549:                   storage->tx_dropped +=3D
-> >>> READ_ONCE(core_stats->tx_dropped);
-> >>> net/core/dev.c:10550:                   storage->rx_nohandler +=3D
-> >>> READ_ONCE(core_stats->rx_nohandler);
-> >>> net/core/dev.c:10551:                   storage->rx_otherhost_dropped
-> >>> +=3D READ_ONCE(core_stats->rx_otherhost_dropped);
-> >>>
-> >>>
-> >>>> +       netdev_core_stats_inc(dev,                                  =
-            \
-> >>>> +                       offsetof(struct net_device_core_stats, FIELD=
-));         \
-> >>>>    }
-> >>>>    DEV_CORE_STATS_INC(rx_dropped)
-> >>>>    DEV_CORE_STATS_INC(tx_dropped)
-> >>>>    DEV_CORE_STATS_INC(rx_nohandler)
-> >>>>    DEV_CORE_STATS_INC(rx_otherhost_dropped)
-> >>>> +#undef DEV_CORE_STATS_INC
-> >>>>
-> >>>>    static __always_inline int ____dev_forward_skb(struct net_device =
-*dev,
-> >>>>                                                  struct sk_buff *skb=
-,
-> >>>> diff --git a/net/core/dev.c b/net/core/dev.c
-> >>>> index 606a366cc209..88a32c392c1d 100644
-> >>>> --- a/net/core/dev.c
-> >>>> +++ b/net/core/dev.c
-> >>>> @@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_lin=
-k_stats64 *stats64,
-> >>>>    }
-> >>>>    EXPORT_SYMBOL(netdev_stats_to_stats64);
-> >>>>
-> >>>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(stru=
-ct net_device *dev)
-> >>>> +static __cold struct net_device_core_stats __percpu *netdev_core_st=
-ats_alloc(
-> >>>> +               struct net_device *dev)
-> >>>>    {
-> >>>>           struct net_device_core_stats __percpu *p;
-> >>>>
-> >>>> @@ -10510,7 +10511,19 @@ struct net_device_core_stats __percpu *netd=
-ev_core_stats_alloc(struct net_device
-> >>>>           /* This READ_ONCE() pairs with the cmpxchg() above */
-> >>>>           return READ_ONCE(dev->core_stats);
-> >>>>    }
-> >>>> -EXPORT_SYMBOL(netdev_core_stats_alloc);
-> >>>> +
-> >>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
-> >>>> +{
-> >>>> +       /* This READ_ONCE() pairs with the write in netdev_core_stat=
-s_alloc() */
-> >>>> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->=
-core_stats);
-> >>>> +
-> >>>> +       if (unlikely(!p))
-> >>>> +               p =3D netdev_core_stats_alloc(dev);
-> >>>> +
-> >>>> +       if (p)
-> >>>> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset=
-))++;
-> >>> While here you are using a ++ operation that :
-> >>>
-> >>> - is not irq safe
-> >>> - might cause store-tearing.
-> >>>
-> >>> I would suggest a preliminary patch converting the "unsigned long" fi=
-elds in
-> >>> struct net_device_core_stats to local_t
-> >> Do you mean it needs to revert the commit 6510ea973d8d ("net: Use
-> >> this_cpu_inc() to increment
-> >>
-> >> net->core_stats") first? But it would allocate memory which breaks on
-> >> PREEMPT_RT.
-> > I think I provided an (untested) alternative.
-> >
-> > unsigned long __percpu *field =3D (__force unsigned long __percpu *)
-> > ((__force u8 *)p + offset);
-> > this_cpu_inc(field);
->
-> unsigned long __percpu *field =3D (__force unsigned long __percpu *)
-> ((__force u8 *)p + offset);
-> this_cpu_inc(*(int *)field);
->
-> This would compiler success. But I didn't test it.
-> This cold look complex.
+Suren,
 
-Why exactly ? Not very different from the cast you already had.
+Sorry to review so late.
 
-> Shoud I base v3? Export dev_core_stats_*_inc() intead of introduce netdev=
-_core_stats_inc().
-> That would be easy.
+On Fri, Sep 22, 2023 at 06:31:44PM -0700, Suren Baghdasaryan wrote:
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index ec7f8e6c9e48..c1ebbd23fa61 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -542,6 +542,7 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
+>  	struct anon_vma *root_anon_vma;
+>  	unsigned long anon_mapping;
+>  
+> +repeat:
+>  	rcu_read_lock();
+>  	anon_mapping = (unsigned long)READ_ONCE(folio->mapping);
+>  	if ((anon_mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
+> @@ -586,6 +587,18 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
+>  	rcu_read_unlock();
+>  	anon_vma_lock_read(anon_vma);
+>  
+> +	/*
+> +	 * Check if UFFDIO_REMAP changed the anon_vma. This is needed
+> +	 * because we don't assume the folio was locked.
+> +	 */
+> +	if (unlikely((unsigned long) READ_ONCE(folio->mapping) !=
+> +		     anon_mapping)) {
+> +		anon_vma_unlock_read(anon_vma);
+> +		put_anon_vma(anon_vma);
+> +		anon_vma = NULL;
+> +		goto repeat;
+> +	}
 
-Well, you tell me, but this does not look incremental to me.
+We have an open-coded fast path above this:
 
-I do not think we need 4 different (and maybe more to come if struct
-net_device_core_stats
-grows in the future) functions for some hardly used path.
+	if (down_read_trylock(&root_anon_vma->rwsem)) {
+		/*
+		 * If the folio is still mapped, then this anon_vma is still
+		 * its anon_vma, and holding the mutex ensures that it will
+		 * not go away, see anon_vma_free().
+		 */
+		if (!folio_mapped(folio)) {
+			up_read(&root_anon_vma->rwsem);
+			anon_vma = NULL;
+		}
+		goto out;
+	}
+
+Would that also need such check?
+
+> +
+>  	if (atomic_dec_and_test(&anon_vma->refcount)) {
+>  		/*
+>  		 * Oops, we held the last refcount, release the lock
+> -- 
+> 2.42.0.515.g380fc7ccd1-goog
+> 
+
+-- 
+Peter Xu
+
