@@ -2,219 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21857B2156
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F37D7B215B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjI1Pak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S232405AbjI1PbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbjI1PaW (ORCPT
+        with ESMTP id S231983AbjI1Paj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:30:22 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283431A4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:30:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c6052422acso166535ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695915019; x=1696519819; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gW3bQkxv5ZlVvPDaRZ7GOUnQxOQtKH5unki4YKmOzgQ=;
-        b=pBn+H+ni9EOJ4jKn6TpZfhqkcqfY9Z3xCfaTO2FkB9Rr47Z3RVSxDst6po7Ai6tsZ0
-         OjxwbRaWaDzGUsiEcJzZn+NeDek3XxVqGI3wY7yXK/fwBCyLE0vriydhOpPUUL+3sFCN
-         PheLGrNP2ShN0JP5IMyXM2mL1HB7PpeE8epZJKr0YnmY6ezexGUiuhAw3HyZngrK2tbY
-         oRRsizqyE7PvQvOdqiKojUT0LSaASlXpV3hg6E5QH08Y/9Yp47+HfAkA+vNRPQ4c3N20
-         OMrVGTo8mV145JYxvRBnesRPr2Qzh9pLZZWvLu8djV3+OVOIBM8jXi6i1EApMS/rR5sI
-         GdPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695915019; x=1696519819;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gW3bQkxv5ZlVvPDaRZ7GOUnQxOQtKH5unki4YKmOzgQ=;
-        b=YA+6L9JO2E0JJpOIPVPbUi87pXTNhgg/6rqDF1QZdiFixmbu7kbg2GY4zmkwjcK7O7
-         1w/Og+pCudeyGyC7ZnalppBvl067du2I3ku4Z8m7Y8ysHpJhEerEsYVPnL23CdkP7MVT
-         mJPNRcRFkUWHoyRVdoBKmXJ1IrKBnMRBtd+lQGhupWfZqythpQACh10ghkgL0VnB51EM
-         lNBus1nHEJ0xcWijWuTU4chPxOheicoYnG1wgESuiMAPGFooJP5G24n3aHXBxAbUB/Az
-         FfO2SFxWwxf7+nkStSBrcIzQJdFh2VrUaN57gmm2oabCH/L69LY0kg0vw0nvUCJCjjkb
-         6pIA==
-X-Gm-Message-State: AOJu0Yyr2E7oB2PTLqGM5lx+rgj3Ox2m4JGEYxsKnfvXp/q6ioaklp65
-        FImZpEgMQa6Kecy91jSsI/hnCSyQ3tOvEa2yHSAxQA==
-X-Google-Smtp-Source: AGHT+IHHyfIM/7h2yPICm3uZHEnv53ZDC4+2b2+nBKsf/B6JPSxSiNPVillmryDthljWo4bey1UqJpEOBpTCWBBBy5E=
-X-Received: by 2002:a17:902:9a85:b0:1c4:1392:e4b5 with SMTP id
- w5-20020a1709029a8500b001c41392e4b5mr686821plp.21.1695915019275; Thu, 28 Sep
- 2023 08:30:19 -0700 (PDT)
+        Thu, 28 Sep 2023 11:30:39 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2067.outbound.protection.outlook.com [40.107.94.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78050CCB
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:30:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fZPqAWQKkeVHhWeOVQpYfth8LSREkHDe75NDyE39qd5tGxlsGBIHmw8569+lqG82NAyV0n7GRueFp5J4UbFtYgpuT3Za4j5SKOjuSLl0dCeRSGWp98mw4Ws5F7chWxaTlFOC0RmGC278r43fZ2RZb2QkEBWdEDSkladZWVJoQptErPjWdRZXYT+3/Zrj4s2T6flyd260Hmm6IPLDX/E71EMA8UdkHbeyILYThNZfie2dWMFNhYr7MPDeXWj0arFPrAZI7n9+nEjYYD0/sZKfg+GHkJCIaV9RlkWDz/NZItMwoEm3NG/K+Z7GDtozweOdKXJ5Qj7f/C+6gVmmjgmXOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N+8/QiH+/Ipe1z7QdoLgtU2ajQ9wiFwwhJXWTRxbm8g=;
+ b=UU+bWzlTBbdQ79jfm/Cg/F1Es0Shjsal3AJI1Td9MxW0bSj0jvQnxtJOPiNhea8c+5vhIQzPSQmXPPy//3hnHunEsqdGndiIl7+KRAL6HNwvYgGXg/3CMAlYEC2Oyahzafv9LrkS+D1+YoGUQyY82wwV/5GU2S4uqnisXPDLBsGXYkZlsJimpuf1RsJRcbl5M2tKwkaTo6CPlH91MDjMxoAxnHIbfTmjvWzrv17NKDizfYsEcSFl2eYG3YIrqIOB2kTO91MIpb6U5vsGWjJmKKJE3Pgn8ErSgvCNDfE1TTMpblwuW5Rj3guJKOgubqRy8jafOHiueRSC5YXPpWpqzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N+8/QiH+/Ipe1z7QdoLgtU2ajQ9wiFwwhJXWTRxbm8g=;
+ b=d0SpshFIOKvAuIfklu4ckaI7412kZ0N14ejL4OEHyDBL7Qlv/pDPfXCirdG5vkuYrhOq82X23g+whMaDmmjtQU1TZQVYqFCleXM4v2e7WtvUnVnYikksk37qDjyhQ2+0VvexqmLtdKRjg2I4Vnfq6K8cUvg/8gF5Ee0Lob9WshM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by IA0PR12MB8715.namprd12.prod.outlook.com (2603:10b6:208:487::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 28 Sep
+ 2023 15:30:26 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
+ 15:30:26 +0000
+Message-ID: <8cd0539d-5d5e-e670-9577-7db72393b784@amd.com>
+Date:   Thu, 28 Sep 2023 11:30:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
+ for gfx8
+Content-Language: en-US
+To:     "Joshi, Mukul" <Mukul.Joshi@amd.com>,
+        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+Cc:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
+ <20230928095427.4337-2-Arvind.Yadav@amd.com>
+ <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+In-Reply-To: <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQZPR01CA0134.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:87::11) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez11FdESrYYDLmtZEgZ7osDi-QDYpk+Z0p=qjpCks++7rg@mail.gmail.com> <CAJuCfpG1sjJdEoxtYFk9-r_5kutss_C3breJVFz99efsKKXzqg@mail.gmail.com>
-In-Reply-To: <CAJuCfpG1sjJdEoxtYFk9-r_5kutss_C3breJVFz99efsKKXzqg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 28 Sep 2023 17:29:43 +0200
-Message-ID: <CAG48ez2uMXLigojbF3HD20Q5jL4ZMSZf6GS-5Y7P=jiB7gibpQ@mail.gmail.com>
-Subject: Re: potential new userfaultfd vs khugepaged conflict [was: Re: [PATCH
- v2 2/3] userfaultfd: UFFDIO_REMAP uABI]
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, brauner@kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, willy@infradead.org,
-        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
-        Brian Geffon <bgeffon@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Nicolas Geoffray <ngeoffray@google.com>,
-        Jared Duke <jdduke@google.com>, Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|IA0PR12MB8715:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0a91899-cf05-4190-7ec2-08dbc037d6f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jq59IQcVO5GLHRWtCdRk42iNwa12DgolNpzSmZHnBfr7uIAzuloNfpSbc5jNjpo0pGJNpCChyLMX771eAlIuVgFRuWqxiSsotmcAKGd3L31SRn9Rz1PahE7EeplVKkKn0vLr1xcGdAckWGWRkl0PAQHMfEUkgqQA8Dwcl7rs+VA9yEJYonbH1eGeSAUWQYfouGdVj9u3NgduBtjRIqtaSKH2E+vP/DZGu+CL5RsjkdnWd07vHm0zvhI1hDd7lFqRRCFR6dWr/FPY9jI0NAxq0d7DC/xotevX7JEXOdM6P4kHl60U5zgT9m+sC9+NhYzE2i//AgEDJaAlYP9BiAFeVivjgSF70Fhx9KOKb2bTcTD/zbV8FxIl0FFhpSowNJ1JaqgkfPctqcq6zpwXavwVdMgKFITs/ken9Bm1JVPv6f9eGIEKnjgQmVz0HLv1ZcrL6h+AAkWrKZpVhCDMilO8XniBEAZXeIFFJ8rFTPL+0tPFdvMOVWjpHnvWpN1QVqEWPxllZckJPGaT8ZsmyUVxZdeNJ4SwuNT8Z3vlSLg714Z+v2M521TY4mYj+4uBX7SNkY0J67hVBJhZJ8cO268KL2hOgUFtNs31aRz8eSWNZkTfkvTR/wQurVWTAJg/Eqka7APDVMbUHdtBbBLo+/h7CPzrmErQ7MfIU081w/Hw264=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(39860400002)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(36756003)(31696002)(86362001)(8936002)(110136005)(26005)(66556008)(4326008)(5660300002)(8676002)(54906003)(41300700001)(44832011)(316002)(66476007)(83380400001)(2616005)(2906002)(6486002)(6506007)(478600001)(53546011)(6666004)(6512007)(36916002)(31686004)(66946007)(921005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEt2dXJJSHFXY3V6NlJaWjJuU1hUcE1UNTZXTGZYU1VrSlBaRnFOcFhFSHdL?=
+ =?utf-8?B?ZEhUSkJvcGtIbFFmTEFvbGc1R29rM1pBRXhYSWNldkMraXV4NkErWVhUeUkv?=
+ =?utf-8?B?QUI1SEFKcnhENytMemxTZjNjc3JPTkNKdmczd21jK3crTXMrbEtSem5NcmJ5?=
+ =?utf-8?B?cElyMnp5VHdlOEZla2JRMkdNV3VWcGRQWG50SVZGVUNXdVlpWW42T0F0Wnhp?=
+ =?utf-8?B?MGlubXhmNGxVY1dmeXUxcmN5R2FHZ0cxRVQ4Qk8rU3RyUWhCRmJSenZtNWVu?=
+ =?utf-8?B?aVVCY2F1VFVUTkZwQTR5YkUzZzdtVEp1NGwzNjQrK21sUWlXTFBjdC9EWkFq?=
+ =?utf-8?B?azNiTGFnR091ZWlpZFNnTUZvc0tIeTYyRTJUR3RZdStYRytUNmo0U3dJRXJP?=
+ =?utf-8?B?K3lrZTlNSERzSDYrMHdpczN3S1pGYXE2VkMvUzhqQ2JUT0NrMUx0MTlQek8z?=
+ =?utf-8?B?YkhDQittYStuWXdvV1JtWlBhWmhPVVcyekhtTXZ4S1lra3UzOG1DbmJvaDhz?=
+ =?utf-8?B?b1d4RFJSdkE0NVIyOVcvWWVnTjBqcHVTWVVrOVNMV1c4ckdHcEZtZzliTnA3?=
+ =?utf-8?B?TUo2b2pXN1ZOeVVUY09EUERZdFdyTXpabksrOXlvNlUwb290T1NUZWdaUGRN?=
+ =?utf-8?B?dERmditndytmbEVrcVk3a29NbGJlWHg4VmllbjBxWkFQRnNzbDczWkJBTlBF?=
+ =?utf-8?B?S21rSWZHNytVdmJtN2RmRjdMN1RMQURnMXBBVmw4bVdrYUQwUUtIR1plZ3NJ?=
+ =?utf-8?B?RjVkeHlaTnZpVXhkZkVkQ0IvenpZM3lCeFpnTFVuL0lrMHZwTmo3VWwxVVoz?=
+ =?utf-8?B?SkpwK3VSMHdtM3NUZHF4cGRiR2FrcFBPMkxYWTNMZHgwVmRjem5yNFNEalpI?=
+ =?utf-8?B?bVJXQWxxczczS2YxMjNOLzVtaVBmelRHcHUxN2dEQmJxWm1MR3hSazBGQ005?=
+ =?utf-8?B?aUtYRGZGYlFzMG9TdTdDbDhFbnFjR0FZWHphY3lDUW5yZm5LRmlpczd2d1Yw?=
+ =?utf-8?B?cjRKUmNtSytxeW9ianJSL3FIMk9PLzJEZkZOZVZOSW8wUE4rRDNrWlRBZFFx?=
+ =?utf-8?B?R0RvWHRibWFNQW10YmxXanNUTzNoblNNYzVGc0JXbFVKclNGRlRncjZ1NGwx?=
+ =?utf-8?B?SzRSaUlpcXJ5SkNZYjZoK1l3NW1qZ0FhK2pmNWVnWTBDS29SWjF4b1F3bTRP?=
+ =?utf-8?B?U25mazVjUkhUU2JxTUI3MHpaMHBWZG40VXR2TnViUU10dE5OMzBiYjkreGhu?=
+ =?utf-8?B?ZnhiYS9TYVQvY3JWR281cW5PU3NaUHBTTm9wOVdrSHIvRWRQQVgyb0NaamNp?=
+ =?utf-8?B?N2ROcXlKYWVoOE1ZTXl2cGxXUDdNZ2Zyc1VwUXc1djYxS2xFRC83ZlJnS3I2?=
+ =?utf-8?B?VGwyS0loNWZ3SDRRSXBQTXlab2ZKUXRqN2F5NVg3cXp4cS96K1VuWGlVM0dq?=
+ =?utf-8?B?RDNGRzlET2tENVZsU2crVVVSWFFpNUxna1VmcHNwdm1HejRaOWxQTXZMTWg3?=
+ =?utf-8?B?dWpYTmczSW9ubTh5M0Y3OUJySlQrd2M4a1hMdDFudVhnK3Q1dVdwTlBoenhG?=
+ =?utf-8?B?Ym16NGZVMkMvaHhRRDZxK0UvVzdSSHZGMjlJTCs4L3N0S1BvR3JneHo3TWZH?=
+ =?utf-8?B?K3FWL0Q1R0wwRVk1MnJzVy9hT04xSzdmdmVCMTNlam85TG9SUnN4QW1ZdXJY?=
+ =?utf-8?B?RWhRMFVzTk1Da1B2ZXR0TndieUZ3OEVaY2VoWTBkd25hYmpQWUQzREwvdnVN?=
+ =?utf-8?B?VzBkdnNNc3ZYVDlXRkZDb0tTN1ZZZWc3dThDT2JacUlKTCtDTloxQzA1ODY3?=
+ =?utf-8?B?eU93cWdHZmhHU1dtcFZGcFFjamt0WjRUTVF4S0Y5dTFCT2psZ3JJVXJGU25i?=
+ =?utf-8?B?c2txTGMzd1NOVE5hQWlDb2xqWDF6MGZHUTZqUEhnTEdYc2VSYjl3ckJsaVNk?=
+ =?utf-8?B?aytWZG1Pd2grdExPZG5aUnB1SVZjYzFwZlpZcWxJck92QVZPV1dlRjVtam1I?=
+ =?utf-8?B?N0xFTFlsNDlGUURKMkVFUktqTFQ5bHVhWlRrRHJxUWRZNGlBeEtJVHFDSDY1?=
+ =?utf-8?B?UHVyK3pOZVhONzc2aFRTNUtzQjZRR3ZqTmRNbzE1YnR5T2RoME1oUzUxRHVB?=
+ =?utf-8?Q?9OAj4yUuZXiku+3jPhRvFl/Bq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0a91899-cf05-4190-7ec2-08dbc037d6f0
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 15:30:26.6103
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dCfg5Q3xLww1nnE1R9TUnTPxUMBGGXgDZt+9FJaJoOeYddFoeZ5bjY8w8PhTsSIq9aIBCZBoXV56d5afEHe4vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8715
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 7:12=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On 2023-09-28 10:30, Joshi, Mukul wrote:
+> [AMD Official Use Only - General]
 >
-> On Wed, Sep 27, 2023 at 3:07=E2=80=AFAM Jann Horn <jannh@google.com> wrot=
-e:
-> >
-> > [moving Hugh into "To:" recipients as FYI for khugepaged interaction]
-> >
-> > On Sat, Sep 23, 2023 at 3:31=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > > From: Andrea Arcangeli <aarcange@redhat.com>
-> > >
-> > > This implements the uABI of UFFDIO_REMAP.
-> > >
-> > > Notably one mode bitflag is also forwarded (and in turn known) by the
-> > > lowlevel remap_pages method.
-> > >
-> > > Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > [...]
-> > > +/*
-> > > + * The mmap_lock for reading is held by the caller. Just move the pa=
-ge
-> > > + * from src_pmd to dst_pmd if possible, and return true if succeeded
-> > > + * in moving the page.
-> > > + */
-> > > +static int remap_pages_pte(struct mm_struct *dst_mm,
-> > > +                          struct mm_struct *src_mm,
-> > > +                          pmd_t *dst_pmd,
-> > > +                          pmd_t *src_pmd,
-> > > +                          struct vm_area_struct *dst_vma,
-> > > +                          struct vm_area_struct *src_vma,
-> > > +                          unsigned long dst_addr,
-> > > +                          unsigned long src_addr,
-> > > +                          __u64 mode)
-> > > +{
-> > > +       swp_entry_t entry;
-> > > +       pte_t orig_src_pte, orig_dst_pte;
-> > > +       spinlock_t *src_ptl, *dst_ptl;
-> > > +       pte_t *src_pte =3D NULL;
-> > > +       pte_t *dst_pte =3D NULL;
-> > > +
-> > > +       struct folio *src_folio =3D NULL;
-> > > +       struct anon_vma *src_anon_vma =3D NULL;
-> > > +       struct mmu_notifier_range range;
-> > > +       int err =3D 0;
-> > > +
-> > > +       mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, src_mm,
-> > > +                               src_addr, src_addr + PAGE_SIZE);
-> > > +       mmu_notifier_invalidate_range_start(&range);
-> > > +retry:
-> > > +       dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, =
-&dst_ptl);
-> > > +
-> > > +       /* If an huge pmd materialized from under us fail */
-> > > +       if (unlikely(!dst_pte)) {
-> > > +               err =3D -EFAULT;
-> > > +               goto out;
-> > > +       }
-> > > +
-> > > +       src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, src_addr, =
-&src_ptl);
-> > > +
-> > > +       /*
-> > > +        * We held the mmap_lock for reading so MADV_DONTNEED
-> > > +        * can zap transparent huge pages under us, or the
-> > > +        * transparent huge page fault can establish new
-> > > +        * transparent huge pages under us.
-> > > +        */
-> > > +       if (unlikely(!src_pte)) {
-> > > +               err =3D -EFAULT;
-> > > +               goto out;
-> > > +       }
-> > > +
-> > > +       BUG_ON(pmd_none(*dst_pmd));
-> > > +       BUG_ON(pmd_none(*src_pmd));
-> > > +       BUG_ON(pmd_trans_huge(*dst_pmd));
-> > > +       BUG_ON(pmd_trans_huge(*src_pmd));
-> >
-> > This works for now, but note that Hugh Dickins has recently been
-> > reworking khugepaged such that PTE-based mappings can be collapsed
-> > into transhuge mappings under the mmap lock held in *read mode*;
-> > holders of the mmap lock in read mode can only synchronize against
-> > this by taking the right page table spinlock and rechecking the pmd
-> > value. This is only the case for file-based mappings so far, not for
-> > anonymous private VMAs; and this code only operates on anonymous
-> > private VMAs so far, so it works out.
-> >
-> > But if either Hugh further reworks khugepaged such that anonymous VMAs
-> > can be collapsed under the mmap lock in read mode, or you expand this
-> > code to work on file-backed VMAs, then it will become possible to hit
-> > these BUG_ON() calls. I'm not sure what the plans for khugepaged going
-> > forward are, but the number of edgecases everyone has to keep in mind
-> > would go down if you changed this function to deal gracefully with
-> > page tables disappearing under you.
-> >
-> > In the newest version of mm/pgtable-generic.c, above
-> > __pte_offset_map_lock(), there is a big comment block explaining the
-> > current rules for page table access; in particular, regarding the
-> > helper pte_offset_map_nolock() that you're using:
-> >
-> >  * pte_offset_map_nolock(mm, pmd, addr, ptlp), above, is like pte_offse=
-t_map();
-> >  * but when successful, it also outputs a pointer to the spinlock in pt=
-lp - as
-> >  * pte_offset_map_lock() does, but in this case without locking it.  Th=
-is helps
-> >  * the caller to avoid a later pte_lockptr(mm, *pmd), which might by th=
-at time
-> >  * act on a changed *pmd: pte_offset_map_nolock() provides the correct =
-spinlock
-> >  * pointer for the page table that it returns.  In principle, the calle=
-r should
-> >  * recheck *pmd once the lock is taken; in practice, no callsite needs =
-that -
-> >  * either the mmap_lock for write, or pte_same() check on contents, is =
-enough.
-> >
-> > If this becomes hittable in the future, I think you will need to
-> > recheck *pmd, at least for dst_pte, to avoid copying PTEs into a
-> > detached page table.
->
-> Thanks for the warning, Jann. It sounds to me it would be better to
-> add this pmd check now even though it's not hittable. Does that sound
-> good to everyone?
+>> -----Original Message-----
+>> From: Yadav, Arvind <Arvind.Yadav@amd.com>
+>> Sent: Thursday, September 28, 2023 5:54 AM
+>> To: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander
+>> <Alexander.Deucher@amd.com>; Sharma, Shashank
+>> <Shashank.Sharma@amd.com>; Kuehling, Felix <Felix.Kuehling@amd.com>;
+>> Joshi, Mukul <Mukul.Joshi@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+>> airlied@gmail.com; daniel@ffwll.ch
+>> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
+>> kernel@vger.kernel.org; Yadav, Arvind <Arvind.Yadav@amd.com>; Koenig,
+>> Christian <Christian.Koenig@amd.com>
+>> Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
+>> for gfx8
+>>
+>> This patch is to adjust the absolute doorbell offset against the doorbell id
+>> considering the doorbell size of 32/64 bit.
+>>
+>> v2:
+>> - Addressed the review comment from Felix.
+>>
+>> Cc: Christian Koenig <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
+>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>> index 0d3d538b64eb..c54c4392d26e 100644
+>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
+>> @@ -407,7 +407,14 @@ static int allocate_doorbell(struct
+>> qcm_process_device *qpd,
+>>
+>>        q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev-
+>>> adev,
+>>                                                                  qpd-
+>>> proc_doorbells,
+>> -                                                               q-
+>>> doorbell_id);
+>> +                                                               0);
+>> +
+> It looks like amdgpu_doorbell_index_on_bar() works only for 64-bit doorbells.
+> Shouldn't it work for both 32-bit and 64-bit doorbells considering this is common
+> doorbell manager code?
 
-Sounds good to me.
+I could see this argument going either way. KFD is the only one that 
+cares about managing doorbells for user mode queues on GFXv8 GPUs. This 
+is not a use case that amdgpu cares about. So I'm OK with KFD doing its 
+own address calculations to make sure doorbells continue to work on GFXv8.
+
+It may not be worth adding complexity to the common doorbell manager 
+code to support legacy GPUs with 32-bit doorbells.
+
+Regards,
+   Felix
+
+
+>
+> Thanks,
+> Mukul
+>
+>> +     /* Adjust the absolute doorbell offset against the doorbell id
+>> considering
+>> +      * the doorbell size of 32/64 bit.
+>> +      */
+>> +     q->properties.doorbell_off += q->doorbell_id *
+>> +                                   dev->kfd->device_info.doorbell_size / 4;
+>> +
+>>        return 0;
+>>   }
+>>
+>> --
+>> 2.34.1
