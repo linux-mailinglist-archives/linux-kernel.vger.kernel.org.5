@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC7E7B267B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368287B26BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjI1UWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        id S232190AbjI1Uk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1UWu (ORCPT
+        with ESMTP id S231921AbjI1Uk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:22:50 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE531A2;
-        Thu, 28 Sep 2023 13:22:48 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c15463ddd4so155321311fa.3;
-        Thu, 28 Sep 2023 13:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695932567; x=1696537367; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lb3fNYZA0xAkN3i8NbRXfjT74VUbIMsYox0aoT4QY3k=;
-        b=lntd+c+HNdMXA0GR4+u8ipy3CCTxlvoMKAcN36+UgUYuYh8bOkv44GTY7Aal20zQvA
-         4M8/0hJC1bcM0utdEvznpxw6UjNxFNCRiZ+TbcGhr4LRQ64tw5avhs8AzmKQ0mUBJRQk
-         PNTskToK1vjcLhLPYSOVBDsAvMPvaTghGXxg6uyUT8hqAypbzKUKRMPhlVDr15Z1h8le
-         1CJgYBzLrmQtyD0TFe2FiyO9QPSn6rXz3HJxUkrWWryeoSvuDmrcVV2qVWpW6+JmWfKd
-         xRqwYbxekVX/ZtFSTRvaDcn2bkZ85oN1D4l6NbgIFIm40JuMa3Ax7eP97nPNzgONynXt
-         6Fcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695932567; x=1696537367;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lb3fNYZA0xAkN3i8NbRXfjT74VUbIMsYox0aoT4QY3k=;
-        b=iUEGtNcdt759RotFP1GxL3ligdjeVblZ+aceOZRZaEAIK8E0TeyoQ8DHL9StFFOXlr
-         O8o852wJU5yr+k4tf6DY1Hh22RXE8TCdU0I2CT5GQ8Ec34o5oLtAZq+uUJ9XJkUiGjch
-         56ECgX+6QZkT0OyaQy2QAEW8ZriuQJyoQo5IKyXoCdI3m0Lbz50xDjvH6zyoNOXSzavf
-         9nU9jEbDO25eBiQ9th5jxDsjQtGLr0P9HHWVR7yC/8djscZPzTP3c99S21OYzmiN4pns
-         NpufXqSk0vJ74gS4DMorrMripsL2vk8RFprJOhMBEgoyTgPl4T35Vwn98FicfyjP3DI9
-         nQOA==
-X-Gm-Message-State: AOJu0Yxziu3Qcy83hvo+08cBJh/lyFtTkAhkBh35yd9VBo1+J+Otn6eG
-        5/cqgch8qn38vTiaUu/j2I5xucY2r2U=
-X-Google-Smtp-Source: AGHT+IHJiNbVbCpmttVx9QirnoubmukF1zf4kFh8Hl2KM1YLJSELIPUO8XFg4gePbwCCcSNekFMN8w==
-X-Received: by 2002:a2e:a163:0:b0:2bc:e51d:89a3 with SMTP id u3-20020a2ea163000000b002bce51d89a3mr2249598ljl.29.1695932566639;
-        Thu, 28 Sep 2023 13:22:46 -0700 (PDT)
-Received: from [192.168.1.8] ([37.55.203.63])
-        by smtp.gmail.com with ESMTPSA id m25-20020a2e8719000000b002bcb9956a69sm3791155lji.41.2023.09.28.13.22.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 13:22:46 -0700 (PDT)
-Message-ID: <06e71bb8-370d-4b66-bedb-3041d6e3b2c6@gmail.com>
-Date:   Thu, 28 Sep 2023 23:22:42 +0300
+        Thu, 28 Sep 2023 16:40:56 -0400
+X-Greylist: delayed 1005 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 13:40:52 PDT
+Received: from 10.mo575.mail-out.ovh.net (10.mo575.mail-out.ovh.net [46.105.79.203])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E364519D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:40:52 -0700 (PDT)
+Received: from director8.ghost.mail-out.ovh.net (unknown [10.109.146.175])
+        by mo575.mail-out.ovh.net (Postfix) with ESMTP id 3DEFA2766C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:06 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-tq497 (unknown [10.110.208.152])
+        by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id C499A1FDBA;
+        Thu, 28 Sep 2023 20:24:04 +0000 (UTC)
+Received: from RCM-web4.webmail.mail.ovh.net ([176.31.235.81])
+        by ghost-submission-6684bf9d7b-tq497 with ESMTPSA
+        id vKH/K+TgFWX2QwYA45+jXQ
+        (envelope-from <rafal@milecki.pl>); Thu, 28 Sep 2023 20:24:04 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] input: generalize the Imagis touchscreen driver
-To:     Karel Balej <karelb@gimli.ms.mff.cuni.cz>,
-        Karel Balej <balejk@matfyz.cz>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jeff LaBundy <jeff@labundy.com>, linmengbo0689@protonmail.com
-References: <7b9864bf-2aa6-4510-ad98-276fbfaadc30@gmail.com>
- <72e02837-9a82-4007-8ba2-fa05f3c17670@gmail.com>
- <CVUR18U9FUME.XSF1MML0B1QN@gimli.ms.mff.cuni.cz>
-Content-Language: en-US
-From:   Markuss Broks <markuss.broks@gmail.com>
-In-Reply-To: <CVUR18U9FUME.XSF1MML0B1QN@gimli.ms.mff.cuni.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Thu, 28 Sep 2023 22:24:04 +0200
+From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Walle <michael@walle.cc>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v10 1/3] nvmem: core: Rework layouts to become platform
+ devices
+In-Reply-To: <20230922174854.611975-2-miquel.raynal@bootlin.com>
+References: <20230922174854.611975-1-miquel.raynal@bootlin.com>
+ <20230922174854.611975-2-miquel.raynal@bootlin.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <1982d29ccb4e8c82cddfe0d86edc6072@milecki.pl>
+X-Sender: rafal@milecki.pl
+X-Originating-IP: 31.11.218.106
+X-Webmail-UserID: rafal@milecki.pl
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 16205640309849697181
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdduudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlucfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejvdelgfeutdfhfeelheegfedtleduleeuvdfgfeefvefhvedtheetjeetfeehgeenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudejiedrfedurddvfeehrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehrrghfrghlsehmihhlvggtkhhirdhplheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Karel,
+On 2023-09-22 19:48, Miquel Raynal wrote:
+> Current layout support was initially written without modules support in
+> mind. When the requirement for module support rose, the existing base
+> was improved to adopt modularization support, but kind of a design flaw
+> was introduced. With the existing implementation, when a storage device
+> registers into NVMEM, the core tries to hook a layout (if any) and
+> populates its cells immediately. This means, if the hardware 
+> description
+> expects a layout to be hooked up, but no driver was provided for that,
+> the storage medium will fail to probe and try later from
+> scratch. Technically, the layouts are more like a "plus" and, even we
+> consider that the hardware description shall be correct, we could still
+> probe the storage device (especially if it contains the rootfs).
+> 
+> One way to overcome this situation is to consider the layouts as
+> devices, and leverage the existing notifier mechanism. When a new NVMEM
+> device is registered, we can:
+> - populate its nvmem-layout child, if any
+> - try to modprobe the relevant driver, if relevant
+> - try to hook the NVMEM device with a layout in the notifier
+> And when a new layout is registered:
+> - try to hook all the existing NVMEM devices which are not yet hooked 
+> to
+>   a layout with the new layout
+> This way, there is no strong order to enforce, any NVMEM device 
+> creation
+> or NVMEM layout driver insertion will be observed as a new event which
+> may lead to the creation of additional cells, without disturbing the
+> probes with costly (and sometimes endless) deferrals.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-On 9/28/23 21:07, Karel Balej wrote:
-> Hello, Markuss,
->
-> thank you for your response and please forgive that my original emails
-> didn't reach you - I am trying to see if I can get the SMTP server I use
-> for my primary address officially authorized to send emails in its name
-> so that Google does not reject them.
-Yeah, I have not received your first series, only knew of it when the 
-replies came. It's fine though :)
->
->> To be fair, this driver should work with all Imagis3 chips, which could
->> be a better name for it. However, I agree with Jeff here: the driver
->> doesn't necessarily need renaming.
-> I will be sure to drop the renaming for v2.
->
->> Additionally, there used to be my series [1] that generalized the
->> driver, but it never got applied. I will re-send it. It introduces
->> `struct imagis_properties`, which contains register addresses for the
->> registers that we use to read the touch input. In your specific case, I
->> believe it should be:
->>
->> static const struct imagis_properties imagis_3032c_data =
->> {
->> 	.interrupt_msg_cmd = IST3038C_REG_INTR_MESSAGE,
->> 	.touch_coord_cmd = IST3038C_REG_TOUCH_COORD,
->> 	.whoami_cmd = IST3038C_REG_CHIPID,
->> 	.whoami_val = IST3032C_WHOAMI, /* change it to your whoami */
->> };
-> I have come across your patch series and in fact my original experiments
-> were based on it. However I thought it was abandoned and decided not to
-> try to make any further generalizations to the driver for now, except
-> making it work with IST3032C. Should I then perhaps wait before your
-> series gets applied before sending v2 of my changes? Or should I send
-> you a patch on top of your series, where I would add the `struct
-> imagis_properties` for the IST3032C (which you surely could do yourself,
-> but I can at least test it with my device). Please let me know if and
-> how we should coordinate.
+I rebased & tested my patch converting U-Boot NVMEM device to NVMEM
+layout on top of this. It worked!
 
-If you don't mind the extra hassle, I'm all in for my generalization 
-thing going together with your series.
+Tested-by: Rafał Miłecki <rafal@milecki.pl>
 
-Alternatively, I can resend it myself, but I believe it would be better 
-if they go in bulk since they need to be applied together.
+For reference what I used:
 
->
->> As for the voltage set, I believe this does not belong in a kernel
->> driver. You should set it in device-tree with `regulator-max-microvolt`
->> and `regulator-min-microvolt`.
-> Please see my response to Jeff regarding this. I will be happy to hear
-> your thoughts on what I propose.
+partitions {
+	partition-loader {
+		compatible = "brcm,u-boot";
 
-Actually, the regulator values belong to the device-tree, because the 
-device-tree for the board is what describes the board's regulators, and 
-since you know what components are installed on that specific board you 
-can know which regulator values are supposed to be set for it. This 
-manual voltage setting can cause conflicts with other drivers for 
-example. Also some device can use a variable wide voltage range, and 
-some only specific narrow one, and e.g. the driver with wide range would 
-set it to voltage that isn't suitable for the narrow range device, so 
-it's much better to just specify it manually than have it resolved.
+		partition-u-boot-env {
+			compatible = "nvmem-cells";
 
-The actual min/max values for regulators or its voltage table is 
-provided by the regulator driver itself, so there's not much point in 
-specifying those again in the device-tree.
+			nvmem-layout {
+				compatible = "brcm,env";
 
->
-> Kind regards,
-> K. B.
-- Markuss
+				base_mac_addr: ethaddr {
+					#nvmem-cell-cells = <1>;
+				};
+			};
+		};
+	};
+};
+
+-- 
+Rafał Miłecki
