@@ -2,95 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76567B2107
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6502C7B211C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbjI1PVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
+        id S231559AbjI1PXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbjI1PVK (ORCPT
+        with ESMTP id S231710AbjI1PXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:21:10 -0400
+        Thu, 28 Sep 2023 11:23:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2A0EB;
-        Thu, 28 Sep 2023 08:21:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D63DC433CA;
-        Thu, 28 Sep 2023 15:21:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB7B99
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:23:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9EADC433C8;
+        Thu, 28 Sep 2023 15:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695914469;
-        bh=5QGsjlLA6+fSdsYbT2wgVXCyV5RBnz+gCDO8qtKxudM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RI64Z/ulZuV+NXvyr13D2r3WHJHjvYSEBhhBuHPNVt9kRWrPnmiOgF6ordWF6ikFR
-         xgtdSFzrXqfJBZ5kkT2lmvoB/s5AbaPtBp/tnANflqyoMu0vA4hG+/6XSSId9g12q6
-         KIYQ9idMZhFhYNIT33lFaQWWQ7LAYSXQCODt0fs3+ZcZjnlILWt1TgJuLubdaAGUFf
-         pPbIcFQgW/we/P2hsbBFA0b+8eMvcO7guEHDNRQNPbG/MNmCgntCxM58JaxdGUeun5
-         x06+lzhwwWzX9K72+s9pnzD78ZB62/lme4WNkHldmaYNuNQwSl3mlzfexfOEF6/wbI
-         ZAR46SSqA5oOw==
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40651a726acso8223865e9.1;
-        Thu, 28 Sep 2023 08:21:09 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxuxNKOgC4u1ePiFMlqKCEMP/zddERIvPni/8kcjiybUUC91JLy
-        RSxD/21B6vHM6Qp+/MI+x+UR1N8BGIs6V0/bc2U=
-X-Google-Smtp-Source: AGHT+IFGxnL1jLxRJ82JHSkotXT+AJQbGwcj+NsBF8Wdz/LihQ1gwaw7yDfPbhv4CL9qBIGKh5TUPhf228x9wFIkjTk=
-X-Received: by 2002:a05:6512:1595:b0:500:b828:7a04 with SMTP id
- bp21-20020a056512159500b00500b8287a04mr1542995lfb.18.1695914446757; Thu, 28
- Sep 2023 08:20:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
- <65157da7.5d0a0220.13b5e.9e95SMTPIN_ADDED_BROKEN@mx.google.com>
-In-Reply-To: <65157da7.5d0a0220.13b5e.9e95SMTPIN_ADDED_BROKEN@mx.google.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 28 Sep 2023 08:20:34 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6WRen7Udqc+O+haAH8PZXH2jYdpUj1X7UCuQYngVWxoA@mail.gmail.com>
-Message-ID: <CAPhsuW6WRen7Udqc+O+haAH8PZXH2jYdpUj1X7UCuQYngVWxoA@mail.gmail.com>
-Subject: Re: [PATCH 13/15] raid: Remove now superfluous sentinel element from
- ctl_table array
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        s=k20201202; t=1695914584;
+        bh=rcZ+yPGU6okKYD+rLigRTLFj0SWxtD4Qs2tvWAkbLxE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iY4F9BLerOAK76UmoDcIZx4ZmZUfptcUF+XovFro9utaD7rc1RloVIF/jGr4J1gfN
+         CKfbjowpbgX57d8+QhMSqFQjRIbTtnzwvNr90NGJ2C5W0h/bFd7P8bJpq9M7eSp4oH
+         3X9HKU3h+yBrY5IhhP2gelS7q9UxYHBnwE5WA3SqCDpg6H2t5zKy2rYossxo/Ib7Vw
+         bKdcgvuLZZK293u2iI86/TCrF/H/bd38+Wr6y4GsED51zkNUWbKaBoAPe/Ak406EHA
+         LYgsQc95936b4A/IH7ystFKFnH77SvrGMnAqSUOUx+6rjh7FLSGpROJqChxf6OU43w
+         s+YJTtBOMnH+g==
+Received: (nullmailer pid 532633 invoked by uid 1000);
+        Thu, 28 Sep 2023 15:23:01 -0000
+Date:   Thu, 28 Sep 2023 10:23:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Christophe Roullier <christophe.roullier@foss.st.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/12] dt-bindings: net: add new property
+ st,ext-phyclk in documentation for stm32
+Message-ID: <20230928152301.GA512899-robh@kernel.org>
+References: <20230928122427.313271-1-christophe.roullier@foss.st.com>
+ <20230928122427.313271-3-christophe.roullier@foss.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928122427.313271-3-christophe.roullier@foss.st.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -100,40 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 6:20=E2=80=AFAM Joel Granados via B4 Relay
-<devnull+j.granados.samsung.com@kernel.org> wrote:
->
-> From: Joel Granados <j.granados@samsung.com>
->
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
->
-> Remove sentinel from raid_table
->
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+On Thu, Sep 28, 2023 at 02:24:17PM +0200, Christophe Roullier wrote:
+> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
+> This property can be used with RMII phy without cristal 50Mhz and when we
+> want to select RCC clock instead of ETH_REF_CLK
+> Can be used also with RGMII phy with no cristal and we select RCC clock
+
+typo
+
+> instead of ETH_CLK125
+> This new property replace st,eth-clk-sel and st,eth-ref-clk-sel
+
+Certainly 1 property is better than 2 for me, but carrying 3 is not 
+great. I don't understand why the we need a new property. What can't be 
+supported with the existing properties?
+
+> 
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 > ---
->  drivers/md/md.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index a104a025084d..3866d8f754a0 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -304,8 +304,7 @@ static struct ctl_table raid_table[] =3D {
->                 .maxlen         =3D sizeof(int),
->                 .mode           =3D S_IRUGO|S_IWUSR,
->                 .proc_handler   =3D proc_dointvec,
-> -       },
-> -       { }
-> +       }
->  };
+>  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> index ca976281bfc22..54fda8b052abc 100644
+> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> @@ -78,12 +78,21 @@ properties:
+>        encompases the glue register, the offset of the control register and
+>        the mask to set bitfield in control register
+>  
+> +  st,ext-phyclk:
+> +     description:
+> +      set this property in RMII mode when you have PHY without crystal 50MHz and want to
+> +      select RCC clock instead of ETH_REF_CLK. or in RGMII mode when you want to select
+> +      RCC clock instead of ETH_CLK125.
+> +    type: boolean
 
-Please keep "}," as Greg suggested. Otherwise,
+It's not clear to me what 'external' (assuming that's what 'ext' is 
+short for) means. A crystal is external to the PHY too. So it means 'the 
+PHY has no crystal'? That's a property of the PHY though, so it should 
+be in the PHY's node. If you want this in the MAC node, then name the 
+property and make the description primarily about the MAC modes.
 
-Acked-by: Song Liu <song@kernel.org>
-
-Thanks,
-Song
+> +
+>    st,eth-clk-sel:
+> +    deprecated: true
+>      description:
+>        set this property in RGMII PHY when you want to select RCC clock instead of ETH_CLK125.
+>      type: boolean
+>  
+>    st,eth-ref-clk-sel:
+> +    deprecated: true
+>      description:
+>        set this property in RMII mode when you have PHY without crystal 50MHz and want to
+>        select RCC clock instead of ETH_REF_CLK.
+> -- 
+> 2.25.1
+> 
