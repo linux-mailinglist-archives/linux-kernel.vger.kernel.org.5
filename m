@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C89C7B106B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180E77B106E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjI1Bi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 21:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51572 "EHLO
+        id S229975AbjI1BjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 21:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1Bi5 (ORCPT
+        with ESMTP id S229437AbjI1BjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 21:38:57 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003E6AC;
-        Wed, 27 Sep 2023 18:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695865133;
-        bh=4W+f+ovUwsLwYCoWqlzJUOaeyo1Y7RbHKZd/nFecJsc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sHmfRKop1SLfuyaNmOCUBOr/Mug2foMiXa+vzAgnDhUN0pOmP4H13lamzM4dC5E9a
-         aYRrJ7pk0b1WLs+DosPpvcWAeuD9o0qNF1LxCbOqxgTfnQ7/QISrafJ5m4VadB+mLG
-         PxNa9DgYLNvbJHdUIEdlQCQ9s7HfxObz9bjU4pfwX4HFNr905qI0aIWoDt7wT1WhBh
-         ijyoJuCrWrCNw+HRSfJrNrpJUJ/Wu7T64WCpXDwCZCyG/EaoqHgfGfd3Jua48UbvRn
-         476pdDYYhMerxmbEQIfy2LlehWBzISBs/vdanNL06i4XFpPdU/oFhmDw0obN0yDBiT
-         Rbkj5PL/bGSiQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rwx306MN2z4xQg;
-        Thu, 28 Sep 2023 11:38:52 +1000 (AEST)
-Date:   Thu, 28 Sep 2023 11:38:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: linux-next: manual merge of the rdma tree with the rdma-fixes tree
-Message-ID: <20230928113851.5197a1ec@canb.auug.org.au>
+        Wed, 27 Sep 2023 21:39:02 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783BBAC;
+        Wed, 27 Sep 2023 18:38:59 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rwx0S45CdzrStx;
+        Thu, 28 Sep 2023 09:36:40 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 28 Sep 2023 09:38:56 +0800
+Message-ID: <382fe161-95fb-3249-32cf-07058f81a4bc@huawei.com>
+Date:   Thu, 28 Sep 2023 09:38:55 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=fDGhJ7S8ak69Dru.Q2TNgK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v5 01/10] scsi: scsi_debug: create scsi_debug directory in
+ the debugfs filesystem
+Content-Language: en-US
+To:     <dgilbert@interlog.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <open-iscsi@googlegroups.com>, <linux-scsi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
+References: <20230922092906.2645265-1-haowenchao2@huawei.com>
+ <20230922092906.2645265-2-haowenchao2@huawei.com>
+ <8c7cfe09-d145-4387-91cf-da9d4e2398e1@interlog.com>
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <8c7cfe09-d145-4387-91cf-da9d4e2398e1@interlog.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=fDGhJ7S8ak69Dru.Q2TNgK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2023/9/28 9:13, Douglas Gilbert wrote:
+> On 2023-09-22 05:28, Wenchao Hao wrote:
+>> Create directory scsi_debug in the root of the debugfs filesystem.
+>> Prepare to add interface for manage error injection.
+>>
+>> Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+>> ---
+>>   drivers/scsi/scsi_debug.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+>> index 9c0af50501f9..35c336271b13 100644
+>> --- a/drivers/scsi/scsi_debug.c
+>> +++ b/drivers/scsi/scsi_debug.c
+>> @@ -41,6 +41,7 @@
+>>   #include <linux/random.h>
+>>   #include <linux/xarray.h>
+>>   #include <linux/prefetch.h>
+>> +#include <linux/debugfs.h>
+>>   #include <net/checksum.h>
+>> @@ -862,6 +863,8 @@ static const int device_qfull_result =
+>>   static const int condition_met_result = SAM_STAT_CONDITION_MET;
+>> +static struct dentry *sdebug_debugfs_root;
+>> +
+>>   /* Only do the extra work involved in logical block provisioning if one or
+>>    * more of the lbpu, lbpws or lbpws10 parameters are given and we are doing
+>> @@ -7011,6 +7014,8 @@ static int __init scsi_debug_init(void)
+>>           goto driver_unreg;
+>>       }
+>> +    sdebug_debugfs_root = debugfs_create_dir("scsi_debug", NULL);
+> 
+> debugfs_create_dir() can fail and return NULL. Looking at other drivers, most
+> seem to assume it will work. Since the scsi_debug driver is often used to test
+> abnormal situations, perhaps adding something like:
+>      if (!sdebug_debugfs_root)
+>          pr_info("%s: failed to create initial debugfs directory\n", __func__);
+> 
+> might save someone a bit of time if a NULL dereference on sdebug_debugfs_root
+> follows later. That is what the mpt3sas driver does.
+> 
 
-Hi all,
+Yes, I would fix it by checking return value of debugfs related call
+after your review suggestions for other patches.
 
-Today's linux-next merge of the rdma tree got a conflict in:
+> Doug Gilbert
+> 
+>> +
+>>       for (k = 0; k < hosts_to_add; k++) {
+>>           if (want_store && k == 0) {
+>>               ret = sdebug_add_host_helper(idx);
+>> @@ -7057,6 +7062,7 @@ static void __exit scsi_debug_exit(void)
+>>       sdebug_erase_all_stores(false);
+>>       xa_destroy(per_store_ap);
+>> +    debugfs_remove(sdebug_debugfs_root);
+>>   }
+>>   device_initcall(scsi_debug_init);
+> 
+> 
 
-  drivers/infiniband/hw/mlx5/mr.c
-
-between commit:
-
-  374012b00457 ("RDMA/mlx5: Fix mkey cache possible deadlock on cleanup")
-
-from the rdma-fixes tree and commit:
-
-  57e7071683ef ("RDMA/mlx5: Implement mkeys management via LIFO queue")
-
-from the rdma tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/infiniband/hw/mlx5/mr.c
-index 433f96459246,b0fa2d644973..000000000000
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@@ -1025,21 -998,15 +999,21 @@@ void mlx5_mkey_cache_cleanup(struct mlx
-  	if (!dev->cache.wq)
-  		return;
- =20
- -	cancel_delayed_work_sync(&dev->cache.remove_ent_dwork);
-  	mutex_lock(&dev->cache.rb_lock);
- +	dev->cache.disable =3D true;
-  	for (node =3D rb_first(root); node; node =3D rb_next(node)) {
-  		ent =3D rb_entry(node, struct mlx5_cache_ent, node);
-- 		xa_lock_irq(&ent->mkeys);
-+ 		spin_lock_irq(&ent->mkeys_queue.lock);
-  		ent->disabled =3D true;
-- 		xa_unlock_irq(&ent->mkeys);
-+ 		spin_unlock_irq(&ent->mkeys_queue.lock);
- -		cancel_delayed_work_sync(&ent->dwork);
-  	}
- +	mutex_unlock(&dev->cache.rb_lock);
- +
- +	/*
- +	 * After all entries are disabled and will not reschedule on WQ,
- +	 * flush it and all async commands.
- +	 */
- +	flush_workqueue(dev->cache.wq);
- =20
-  	mlx5_mkey_cache_debugfs_cleanup(dev);
-  	mlx5_cmd_cleanup_async_ctx(&dev->async_ctx);
-
---Sig_/=fDGhJ7S8ak69Dru.Q2TNgK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUU2SsACgkQAVBC80lX
-0GxlKwf9GOM0/j7jLDM6oRP7xmR/7OTwq3Wqe0DCfc7my605pzw8TcAzxKmWECeG
-3GQJ4+1DZ+ynWMONgTwLdJFdPadtlGzKkZK1augN6YunUtgddawRUUXNy/JTW70z
-LwUTGrPbsLZGJC33UjehR4OymRspKENPisxT6klEgZ+ZWdZSNO7NTqCm3uhx5uiv
-0pzVof94F44jxorl8ED0K8T3Gmui9y16vWQHDJo1/JiX+jpKl7WQERe7s+mMH89I
-kaTQz/gR8Vmr2GfGCMFDhFdVdWK2ZtbZSkFYRyDCFQT2gUghzGAT2lpgEr+M7qTb
-UKO+WbEwo1YkiuAYqrp/3Wc//OAWVA==
-=7EBH
------END PGP SIGNATURE-----
-
---Sig_/=fDGhJ7S8ak69Dru.Q2TNgK--
