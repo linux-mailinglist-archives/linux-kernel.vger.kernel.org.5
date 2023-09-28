@@ -2,637 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D207B1CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F50F7B1CDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjI1Mqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S232574AbjI1MrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbjI1Mqk (ORCPT
+        with ESMTP id S232572AbjI1MrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:46:40 -0400
-Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29445180;
-        Thu, 28 Sep 2023 05:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8wlNEqqCPGGAxDFH+BSMz5YJUS9MQDd8NgzYtbZTESg=; b=VhkzjE2Y/Ncx3AHW2iBb8Yof5k
-        nb+mZxT0T1380izhGbsmh3di88M5wV6cOUhksoE++FLnH0fmID5xSx6D+InI/vF8N8P599k1avFdK
-        u07C9OLJ0saxlmflRPckj3V+reFqa+aFjivrRwKS7pw5Q1dzw5s6icn3VyHfmFOY7nZ0=;
-Received: from [195.192.57.194] (helo=[192.168.0.20])
-        by mx05lb.world4you.com with esmtpa (Exim 4.96)
-        (envelope-from <eas@sw-optimization.com>)
-        id 1qlqPY-0008Po-2z;
-        Thu, 28 Sep 2023 14:46:33 +0200
-Message-ID: <297e10af-43c8-8618-730a-48982aa77bdb@sw-optimization.com>
-Date:   Thu, 28 Sep 2023 14:46:32 +0200
+        Thu, 28 Sep 2023 08:47:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4037019E;
+        Thu, 28 Sep 2023 05:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695905229; x=1727441229;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Byl01cFrQx9oQOYesoBsrY936BxPxrlv+/gmqrA8pro=;
+  b=A2gvs3pp8XJr4OzyOrTTsJgs9NvhXalGOdoznjfk2Mri5Xze7bDtzueh
+   SWFRBvK7IxG5eXI/wz+dJlwiL4+I0mimtSlpVntqdqciGU+kM6Om9H8Ih
+   6F1XcFDDcrKOFsoTvRLpowTFzkADZhvNnQnAbR9tSleNURENdKvCZcQsX
+   wNijT2UWvUAxjjHk6hwNadjJUyKTHPqEt365d9jCX4UjKmPwAsDtDZ06U
+   WC6x5r1J1HZN/2x298t3/5uMJnIOZ70ZCoCbFzmaTl6zkveZTIz9bVgcy
+   lh+CYDd1ViGPli8HberYTyNexOZOiGuC8jygPkDSVMfisCg9kt3ygJ1rL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="372404717"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="372404717"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 05:47:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="752949843"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="752949843"
+Received: from vshampor-mobl2.ger.corp.intel.com ([10.249.33.15])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 05:47:05 -0700
+Date:   Thu, 28 Sep 2023 15:47:03 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] selftests/resctrl: Extend signal handler coverage
+ to unmount on receiving signal
+In-Reply-To: <d2d94def-742d-7661-3632-b9f7e4996415@intel.com>
+Message-ID: <19f893e4-45e3-4e8f-c22-13241d5ff467@linux.intel.com>
+References: <20230915154438.82931-1-ilpo.jarvinen@linux.intel.com> <20230915154438.82931-2-ilpo.jarvinen@linux.intel.com> <d2d94def-742d-7661-3632-b9f7e4996415@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 2/2] dmaengine: Loongson1: Add Loongson1 dmaengine
- driver
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230928121953.524608-1-keguang.zhang@gmail.com>
- <20230928121953.524608-3-keguang.zhang@gmail.com>
-Content-Language: de-DE
-From:   Eric Schwarz <eas@sw-optimization.com>
-In-Reply-To: <20230928121953.524608-3-keguang.zhang@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-677402910-1695905227=:1701"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-just a quick catch down below for now.
+--8323329-677402910-1695905227=:1701
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Am 28.09.2023 um 14:19 schrieb Keguang Zhang:
-> This patch adds DMA Engine driver for Loongson1 SoCs.
+On Tue, 26 Sep 2023, Reinette Chatre wrote:
+> On 9/15/2023 8:44 AM, Ilpo Järvinen wrote:
+> > Unmounting resctrl FS has been moved into the per test functions in
+> > resctrl_tests.c by commit caddc0fbe495 ("selftests/resctrl: Move
+> > resctrl FS mount/umount to higher level"). In case a signal (SIGINT,
+> > SIGTERM, or SIGHUP) is received, the running selftest is aborted by
+> > ctrlc_handler() which then unmounts resctrl fs before exiting. The
+> > current section between signal_handler_register() and
+> > signal_handler_unregister(), however, does not cover the entire
+> > duration when resctrl FS is mounted.
+> > 
+> > Move signal_handler_register() and signal_handler_unregister() calls
+> > from per test files into resctrl_tests.c to properly unmount resctrl
+> > fs. In order to not add signal_handler_register()/unregister() n times,
+> > create helpers test_prepare() and test_cleanup().
+> > 
+> > Adjust child process kill() call in ctrlc_handler() to only be invoked
+> > if the child was already forked.
+> > 
+> > Fixes: caddc0fbe495 ("selftests/resctrl: Move resctrl FS mount/umount to higher level")
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > Cc: <stable@vger.kernel.org>
+> > ---
+> >  tools/testing/selftests/resctrl/cat_test.c    |  8 ---
+> >  .../testing/selftests/resctrl/resctrl_tests.c | 65 +++++++++++--------
+> >  tools/testing/selftests/resctrl/resctrl_val.c | 22 +++----
+> >  3 files changed, 48 insertions(+), 47 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+> > index 97b87285ab2a..224ba8544d8a 100644
+> > --- a/tools/testing/selftests/resctrl/cat_test.c
+> > +++ b/tools/testing/selftests/resctrl/cat_test.c
+> > @@ -167,12 +167,6 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >  		strcpy(param.filename, RESULT_FILE_NAME1);
+> >  		param.num_of_runs = 0;
+> >  		param.cpu_no = sibling_cpu_no;
+> > -	} else {
+> > -		ret = signal_handler_register();
+> > -		if (ret) {
+> > -			kill(bm_pid, SIGKILL);
+> > -			goto out;
+> > -		}
+> >  	}
+> >  
+> >  	remove(param.filename);
+> > @@ -209,10 +203,8 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >  		}
+> >  		close(pipefd[0]);
+> >  		kill(bm_pid, SIGKILL);
+> > -		signal_handler_unregister();
+> >  	}
+> >  
+> > -out:
+> >  	cat_test_cleanup();
+> >  
+> >  	return ret;
+> > diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+> > index 823672a20a43..524ba83d7568 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+> > +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+> > @@ -67,21 +67,41 @@ void tests_cleanup(void)
+> >  	cat_test_cleanup();
+> >  }
+> >  
+> > -static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+> > +static int test_prepare()
+> >  {
+> >  	int res;
+> >  
+> > -	ksft_print_msg("Starting MBM BW change ...\n");
+> > +	res = signal_handler_register();
+> > +	if (res)
+> > +		return res;
+> >  	res = mount_resctrlfs();
+> >  	if (res) {
+> > +		signal_handler_unregister();
+> >  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> > -		return;
+> > +		return res;
+> >  	}
+> > +	return 0;
+> > +}
+> > +
+> > +static void test_cleanup()
+> > +{
+> > +	umount_resctrlfs();
+> > +	signal_handler_unregister();
+> > +}
 > 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> V4 -> V5:
->     Add DT support
->     Use DT data instead of platform data
->     Use chan_id of struct dma_chan instead of own id
->     Use of_dma_xlate_by_chan_id() instead of ls1x_dma_filter()
->     Update the author information to my official name
-> V3 -> V4:
->     Use dma_slave_map to find the proper channel.
->     Explicitly call devm_request_irq() and tasklet_kill().
->     Fix namespace issue.
->     Some minor fixes and cleanups.
-> V2 -> V3:
->     Rename ls1x_dma_filter_fn to ls1x_dma_filter.
-> V1 -> V2:
->     Change the config from 'DMA_LOONGSON1' to 'LOONGSON1_DMA',
->     and rearrange it in alphabetical order in Kconfig and Makefile.
->     Fix comment style.
+> Thank you for adding these.
 > 
->   drivers/dma/Kconfig         |   9 +
->   drivers/dma/Makefile        |   1 +
->   drivers/dma/loongson1-dma.c | 492 ++++++++++++++++++++++++++++++++++++
->   3 files changed, 502 insertions(+)
->   create mode 100644 drivers/dma/loongson1-dma.c
+> > +
+> > +static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+> > +{
+> > +	int res;
+> > +
+> > +	ksft_print_msg("Starting MBM BW change ...\n");
+> > +
+> > +	if (test_prepare())
+> > +		return;
+> >  
 > 
-> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> index 4ccae1a3b884..0b0d5c61b4a0 100644
-> --- a/drivers/dma/Kconfig
-> +++ b/drivers/dma/Kconfig
-> @@ -369,6 +369,15 @@ config K3_DMA
->   	  Support the DMA engine for Hisilicon K3 platform
->   	  devices.
->   
-> +config LOONGSON1_DMA
-> +	tristate "Loongson1 DMA support"
-> +	depends on MACH_LOONGSON32
-> +	select DMA_ENGINE
-> +	select DMA_VIRTUAL_CHANNELS
-> +	help
-> +	  This selects support for the DMA controller in Loongson1 SoCs,
-> +	  which is required by Loongson1 NAND and AC97 support.
-> +
->   config LPC18XX_DMAMUX
->   	bool "NXP LPC18xx/43xx DMA MUX for PL080"
->   	depends on ARCH_LPC18XX || COMPILE_TEST
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index 83553a97a010..887103db5ee3 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -47,6 +47,7 @@ obj-$(CONFIG_INTEL_IDMA64) += idma64.o
->   obj-$(CONFIG_INTEL_IOATDMA) += ioat/
->   obj-y += idxd/
->   obj-$(CONFIG_K3_DMA) += k3dma.o
-> +obj-$(CONFIG_LOONGSON1_DMA) += loongson1-dma.o
->   obj-$(CONFIG_LPC18XX_DMAMUX) += lpc18xx-dmamux.o
->   obj-$(CONFIG_MILBEAUT_HDMAC) += milbeaut-hdmac.o
->   obj-$(CONFIG_MILBEAUT_XDMAC) += milbeaut-xdmac.o
-> diff --git a/drivers/dma/loongson1-dma.c b/drivers/dma/loongson1-dma.c
-> new file mode 100644
-> index 000000000000..b589103d5ae0
-> --- /dev/null
-> +++ b/drivers/dma/loongson1-dma.c
-> @@ -0,0 +1,492 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * DMA Driver for Loongson-1 SoC
-> + *
-> + * Copyright (C) 2015-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +#include <linux/dmapool.h>
-> +#include <linux/init.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_dma.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#include "dmaengine.h"
-> +#include "virt-dma.h"
-> +
-> +/* Loongson 1 DMA Register Definitions */
-> +#define LS1X_DMA_CTRL		0x0
-> +
-> +/* DMA Control Register Bits */
-> +#define LS1X_DMA_STOP		BIT(4)
-> +#define LS1X_DMA_START		BIT(3)
-> +
-> +#define LS1X_DMA_ADDR_MASK	GENMASK(31, 6)
-> +
-> +/* DMA Command Register Bits */
-> +#define LS1X_DMA_RAM2DEV		BIT(12)
-> +#define LS1X_DMA_TRANS_OVER		BIT(3)
-> +#define LS1X_DMA_SINGLE_TRANS_OVER	BIT(2)
-> +#define LS1X_DMA_INT			BIT(1)
-> +#define LS1X_DMA_INT_MASK		BIT(0)
-> +
-> +#define LS1X_DMA_MAX_CHANNELS	3
-> +
-> +struct ls1x_dma_lli {
-> +	u32 next;		/* next descriptor address */
-> +	u32 saddr;		/* memory DMA address */
-> +	u32 daddr;		/* device DMA address */
-> +	u32 length;
-> +	u32 stride;
-> +	u32 cycles;
-> +	u32 cmd;
-> +} __aligned(64);
-> +
-> +struct ls1x_dma_hwdesc {
-> +	struct ls1x_dma_lli *lli;
-> +	dma_addr_t phys;
-> +};
-> +
-> +struct ls1x_dma_desc {
-> +	struct virt_dma_desc vdesc;
-> +	struct ls1x_dma_chan *chan;
-> +
-> +	enum dma_transfer_direction dir;
-> +	enum dma_transaction_type type;
-> +
-> +	unsigned int nr_descs;	/* number of descriptors */
-> +	unsigned int nr_done;	/* number of completed descriptors */
-> +	struct ls1x_dma_hwdesc hwdesc[];	/* DMA coherent descriptors */
-> +};
-> +
-> +struct ls1x_dma_chan {
-> +	struct virt_dma_chan vchan;
-> +	struct dma_pool *desc_pool;
-> +	struct dma_slave_config cfg;
-> +
-> +	void __iomem *reg_base;
-> +	int irq;
-> +
-> +	struct ls1x_dma_desc *desc;
-> +};
-> +
-> +struct ls1x_dma {
-> +	struct dma_device ddev;
-> +	void __iomem *reg_base;
-> +
-> +	unsigned int nr_chans;
-> +	struct ls1x_dma_chan chan[];
-> +};
-> +
-> +#define to_ls1x_dma_chan(dchan)		\
-> +	container_of(dchan, struct ls1x_dma_chan, vchan.chan)
-> +
-> +#define to_ls1x_dma_desc(vdesc)		\
-> +	container_of(vdesc, struct ls1x_dma_desc, vdesc)
-> +
-> +/* macros for registers read/write */
-> +#define chan_readl(chan, off)		\
-> +	readl((chan)->reg_base + (off))
-> +
-> +#define chan_writel(chan, off, val)	\
-> +	writel((val), (chan)->reg_base + (off))
-> +
-> +static inline struct device *chan2dev(struct dma_chan *chan)
-> +{
-> +	return &chan->dev->device;
-> +}
-> +
-> +static void ls1x_dma_free_chan_resources(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	vchan_free_chan_resources(&chan->vchan);
-> +	dma_pool_destroy(chan->desc_pool);
-> +	chan->desc_pool = NULL;
-> +}
-> +
-> +static int ls1x_dma_alloc_chan_resources(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	chan->desc_pool = dma_pool_create(dma_chan_name(dchan),
-> +					  dchan->device->dev,
-> +					  sizeof(struct ls1x_dma_lli),
-> +					  __alignof__(struct ls1x_dma_lli), 0);
-> +	if (!chan->desc_pool)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ls1x_dma_free_desc(struct virt_dma_desc *vdesc)
-> +{
-> +	struct ls1x_dma_desc *desc = to_ls1x_dma_desc(vdesc);
-> +
-> +	if (desc->nr_descs) {
-> +		unsigned int i = desc->nr_descs;
-> +		struct ls1x_dma_hwdesc *hwdesc;
-> +
-> +		do {
-> +			hwdesc = &desc->hwdesc[--i];
-> +			dma_pool_free(desc->chan->desc_pool, hwdesc->lli,
-> +				      hwdesc->phys);
-> +		} while (i);
-> +	}
-> +
-> +	kfree(desc);
-> +}
-> +
-> +static struct ls1x_dma_desc *ls1x_dma_alloc_desc(struct ls1x_dma_chan *chan,
-> +						 int sg_len)
-> +{
-> +	struct ls1x_dma_desc *desc;
-> +
-> +	desc = kzalloc(struct_size(desc, hwdesc, sg_len), GFP_NOWAIT);
-> +
-> +	return desc;
-> +}
-> +
-> +static struct dma_async_tx_descriptor *
-> +ls1x_dma_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
-> +		       unsigned int sg_len,
-> +		       enum dma_transfer_direction direction,
-> +		       unsigned long flags, void *context)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +	struct dma_slave_config *cfg = &chan->cfg;
-> +	struct ls1x_dma_desc *desc;
-> +	struct scatterlist *sg;
-> +	unsigned int dev_addr, bus_width, cmd, i;
-> +
-> +	if (!is_slave_direction(direction)) {
-> +		dev_err(chan2dev(dchan), "invalid DMA direction!\n");
-> +		return NULL;
-> +	}
-> +
-> +	dev_dbg(chan2dev(dchan), "sg_len=%d, dir=%s, flags=0x%lx\n", sg_len,
-> +		direction == DMA_MEM_TO_DEV ? "to device" : "from device",
-> +		flags);
-> +
-> +	switch (direction) {
-> +	case DMA_MEM_TO_DEV:
-> +		dev_addr = cfg->dst_addr;
-> +		bus_width = cfg->dst_addr_width;
-> +		cmd = LS1X_DMA_RAM2DEV | LS1X_DMA_INT;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		dev_addr = cfg->src_addr;
-> +		bus_width = cfg->src_addr_width;
-> +		cmd = LS1X_DMA_INT;
-> +		break;
-> +	default:
-> +		dev_err(chan2dev(dchan),
-> +			"unsupported DMA transfer direction! %d\n", direction);
-> +		return NULL;
-> +	}
-> +
-> +	/* allocate DMA descriptor */
-> +	desc = ls1x_dma_alloc_desc(chan, sg_len);
-> +	if (!desc)
-> +		return NULL;
-> +
-> +	for_each_sg(sgl, sg, sg_len, i) {
-> +		dma_addr_t buf_addr = sg_dma_address(sg);
-> +		size_t buf_len = sg_dma_len(sg);
-> +		struct ls1x_dma_hwdesc *hwdesc = &desc->hwdesc[i];
-> +		struct ls1x_dma_lli *lli;
-> +
-> +		if (!is_dma_copy_aligned(dchan->device, buf_addr, 0, buf_len)) {
-> +			dev_err(chan2dev(dchan), "%s: buffer is not aligned!\n",
-> +				__func__);
-> +			goto err;
-> +		}
-> +
-> +		/* allocate HW DMA descriptors */
-> +		lli = dma_pool_alloc(chan->desc_pool, GFP_NOWAIT,
-> +				     &hwdesc->phys);
-> +		if (!lli) {
-> +			dev_err(chan2dev(dchan),
-> +				"%s: failed to alloc HW DMA descriptor!\n",
-> +				__func__);
-> +			goto err;
-> +		}
-> +		hwdesc->lli = lli;
-> +
-> +		/* config HW DMA descriptors */
-> +		lli->saddr = buf_addr;
-> +		lli->daddr = dev_addr;
-> +		lli->length = buf_len / bus_width;
-> +		lli->stride = 0;
-> +		lli->cycles = 1;
-> +		lli->cmd = cmd;
-> +		lli->next = 0;
-> +
-> +		if (i)
-> +			desc->hwdesc[i - 1].lli->next = hwdesc->phys;
-> +
-> +		dev_dbg(chan2dev(dchan),
-> +			"hwdesc=%px, saddr=%08x, daddr=%08x, length=%u\n",
-> +			hwdesc, buf_addr, dev_addr, buf_len);
-> +	}
-> +
-> +	/* config DMA descriptor */
-> +	desc->chan = chan;
-> +	desc->dir = direction;
-> +	desc->type = DMA_SLAVE;
-> +	desc->nr_descs = sg_len;
-> +	desc->nr_done = 0;
-> +
-> +	return vchan_tx_prep(&chan->vchan, &desc->vdesc, flags);
-> +err:
-> +	desc->nr_descs = i;
-> +	ls1x_dma_free_desc(&desc->vdesc);
-> +	return NULL;
-> +}
-> +
-> +static int ls1x_dma_slave_config(struct dma_chan *dchan,
-> +				 struct dma_slave_config *config)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +
-> +	chan->cfg = *config;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1x_dma_terminate_all(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +	unsigned long flags;
-> +	LIST_HEAD(head);
-> +
-> +	spin_lock_irqsave(&chan->vchan.lock, flags);
-> +
-> +	chan_writel(chan, LS1X_DMA_CTRL,
-> +		    chan_readl(chan, LS1X_DMA_CTRL) | LS1X_DMA_STOP);
-> +	chan->desc = NULL;
-> +	vchan_get_all_descriptors(&chan->vchan, &head);
-> +
-> +	spin_unlock_irqrestore(&chan->vchan.lock, flags);
-> +
-> +	vchan_dma_desc_free_list(&chan->vchan, &head);
-> +
-> +	return 0;
-> +}
-> +
-> +static void ls1x_dma_trigger(struct ls1x_dma_chan *chan)
-> +{
-> +	struct dma_chan *dchan = &chan->vchan.chan;
-> +	struct ls1x_dma_desc *desc;
-> +	struct virt_dma_desc *vdesc;
-> +	unsigned int val;
-> +
-> +	vdesc = vchan_next_desc(&chan->vchan);
-> +	if (!vdesc) {
-> +		chan->desc = NULL;
-> +		return;
-> +	}
-> +	chan->desc = desc = to_ls1x_dma_desc(vdesc);
-> +
-> +	dev_dbg(chan2dev(dchan), "cookie=%d, %u descs, starting hwdesc=%px\n",
-> +		dchan->cookie, desc->nr_descs, &desc->hwdesc[0]);
-> +
-> +	val = desc->hwdesc[0].phys & LS1X_DMA_ADDR_MASK;
-> +	val |= dchan->chan_id;
-> +	val |= LS1X_DMA_START;
-> +	chan_writel(chan, LS1X_DMA_CTRL, val);
-> +}
-> +
-> +static void ls1x_dma_issue_pending(struct dma_chan *dchan)
-> +{
-> +	struct ls1x_dma_chan *chan = to_ls1x_dma_chan(dchan);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&chan->vchan.lock, flags);
-> +
-> +	if (vchan_issue_pending(&chan->vchan) && !chan->desc)
-> +		ls1x_dma_trigger(chan);
-> +
-> +	spin_unlock_irqrestore(&chan->vchan.lock, flags);
-> +}
-> +
-> +static irqreturn_t ls1x_dma_irq_handler(int irq, void *data)
-> +{
-> +	struct ls1x_dma_chan *chan = data;
-> +	struct dma_chan *dchan = &chan->vchan.chan;
-> +
-> +	dev_dbg(chan2dev(dchan), "DMA IRQ %d on channel %d\n", irq,
-> +		dchan->chan_id);
-> +	if (!chan->desc) {
-> +		dev_warn(chan2dev(dchan),
-> +			 "DMA IRQ with no active descriptor on channel %d\n",
-> +			 dchan->chan_id);
-> +		return IRQ_NONE;
-> +	}
-> +
-> +	spin_lock(&chan->vchan.lock);
-> +
-> +	if (chan->desc->type == DMA_CYCLIC) {
-> +		vchan_cyclic_callback(&chan->desc->vdesc);
-> +	} else {
-> +		list_del(&chan->desc->vdesc.node);
-> +		vchan_cookie_complete(&chan->desc->vdesc);
-> +		chan->desc = NULL;
-> +	}
-> +
-> +	ls1x_dma_trigger(chan);
-> +
-> +	spin_unlock(&chan->vchan.lock);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int ls1x_dma_chan_probe(struct platform_device *pdev,
-> +			       struct ls1x_dma *dma, int chan_id)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct ls1x_dma_chan *chan = &dma->chan[chan_id];
-> +	char pdev_irqname[4];
-> +	char *irqname;
-> +	int ret;
-> +
-> +	sprintf(pdev_irqname, "ch%u", chan_id);
-> +	chan->irq = platform_get_irq_byname(pdev, pdev_irqname);
-> +	if (chan->irq < 0)
-> +		return -ENODEV;
-> +
-> +	irqname = devm_kasprintf(dev, GFP_KERNEL, "%s:%s",
-> +				 dev_name(dev), pdev_irqname);
-> +	if (!irqname)
-> +		return -ENOMEM;
-> +
-> +	ret = devm_request_irq(dev, chan->irq, ls1x_dma_irq_handler,
-> +			       0, irqname, chan);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "failed to request IRQ %u!\n", chan->irq);
-> +
-> +	chan->reg_base = dma->reg_base;
-> +	chan->vchan.desc_free = ls1x_dma_free_desc;
-> +	vchan_init(&chan->vchan, &dma->ddev);
-> +	dev_info(dev, "%s (irq %d) initialized\n", pdev_irqname, chan->irq);
-> +
-> +	return 0;
-> +}
-> +
-> +static void ls1x_dma_chan_remove(struct ls1x_dma *dma, int chan_id)
-> +{
-> +	struct device *dev = dma->ddev.dev;
-> +	struct ls1x_dma_chan *chan = &dma->chan[chan_id];
-> +
-> +	devm_free_irq(dev, chan->irq, chan);
-> +	list_del(&chan->vchan.chan.device_node);
-> +	tasklet_kill(&chan->vchan.task);
-> +}
-> +
-> +static int ls1x_dma_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct dma_device *ddev;
-> +	struct ls1x_dma *dma;
-> +	int nr_chans, ret, i;
-> +
-> +	nr_chans = platform_irq_count(pdev);
-> +	if (nr_chans <= 0)
-> +		return nr_chans;
-> +	if (nr_chans > LS1X_DMA_MAX_CHANNELS)
-> +		return dev_err_probe(dev, -EINVAL,
-> +				     "nr_chans=%d exceeds the maximum\n",
-> +				     nr_chans);
-> +
-> +	dma = devm_kzalloc(dev, struct_size(dma, chan, nr_chans), GFP_KERNEL);
-> +	if (!dma)
-> +		return -ENOMEM;
-> +
-> +	/* initialize DMA device */
-> +	dma->reg_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(dma->reg_base))
-> +		return PTR_ERR(dma->reg_base);
-> +
-> +	ddev = &dma->ddev;
-> +	ddev->dev = dev;
-> +	ddev->copy_align = DMAENGINE_ALIGN_16_BYTES;
-> +	ddev->src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-> +	ddev->dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-> +	ddev->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
-> +	ddev->residue_granularity = DMA_RESIDUE_GRANULARITY_SEGMENT;
-> +	ddev->device_alloc_chan_resources = ls1x_dma_alloc_chan_resources;
-> +	ddev->device_free_chan_resources = ls1x_dma_free_chan_resources;
-> +	ddev->device_prep_slave_sg = ls1x_dma_prep_slave_sg;
-> +	ddev->device_config = ls1x_dma_slave_config;
-> +	ddev->device_terminate_all = ls1x_dma_terminate_all;
-> +	ddev->device_tx_status = dma_cookie_status;
-> +	ddev->device_issue_pending = ls1x_dma_issue_pending;
-> +
-> +	dma_cap_set(DMA_SLAVE, ddev->cap_mask);
-> +	INIT_LIST_HEAD(&ddev->channels);
-> +
-> +	/* initialize DMA channels */
-> +	for (i = 0; i < nr_chans; i++) {
-> +		ret = ls1x_dma_chan_probe(pdev, dma, i);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +	dma->nr_chans = nr_chans;
-> +
-> +	ret = dmaenginem_async_device_register(ddev);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register DMA device! %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret =
-> +	    of_dma_controller_register(dev->of_node, of_dma_xlate_by_chan_id,
-> +				       ddev);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register DMA controller! %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, dma);
-> +	dev_info(dev, "Loongson1 DMA driver registered\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1x_dma_remove(struct platform_device *pdev)
-> +{
-> +	struct ls1x_dma *dma = platform_get_drvdata(pdev);
-> +	int i;
-> +
-> +	of_dma_controller_free(pdev->dev.of_node);
-> +
-> +	for (i = 0; i < dma->nr_chans; i++)
-> +		ls1x_dma_chan_remove(dma, i);
-> +
-> +	return 0;
-> +}
+> I am not sure about this. With this exit the kselftest machinery is not
+> aware of the test passing or failing. I wonder if there should not rather
+> be a "goto" here that triggers ksft_test_result()?
 
-Please check recently submitted patchset from Uwe Kleine-König 
-<u.kleine-koenig@pengutronix.de> ("[PATCH 00/59] dma: Convert to 
-platform remove callback returning void"). (Almost) all DMA drivers are 
-now using void version of *_dma_remove().
-The function is then hooked in struct platform_driver w/ .remove_new. 
-The patchset was applied today by Vinod.
+Yes, ksft_test_result() is needed here (I forgot to add it).
 
-> +static const struct of_device_id ls1x_dma_match[] = {
-> +	{ .compatible = "loongson,ls1b-dma" },
-> +	{ .compatible = "loongson,ls1c-dma" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ls1x_dma_match);
-> +
-> +static struct platform_driver ls1x_dma_driver = {
-> +	.probe	= ls1x_dma_probe,
-> +	.remove	= ls1x_dma_remove,
+> This needs some more 
+> thought though. First, with this change test_prepare() officially gains
+> responsibility to determine if a failure is transient (just a single test
+> fails) or permanent (no use trying any other tests if this fails). For
+> the former it would then be up to the caller to call ksft_test_result()
+> and for the latter test_prepare() will call ksft_exit_fail_msg().
 
-Use .remove_new here.
+Well, I didn't initially have test_prepare() at all but all this was 
+within the test functions (which will be consolidated to a single function 
+by the series that comes after the two series are done + one patch from 
+Maciej).
 
-> +	.driver	= {
-> +		.name	= "ls1x-dma",
-> +		.of_match_table = ls1x_dma_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(ls1x_dma_driver);
-> +
-> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-> +MODULE_DESCRIPTION("Loongson-1 DMA driver");
-> +MODULE_LICENSE("GPL");
+I was just trying to do what was done previously but it seems I forgot to 
+handle the result status on signal reg fail path.
 
-Cheers
-Eric
+TBH, I wouldn't mind if also the signal reg fail is just up'ed to 
+ksft_exit_fail_msg(). I don't think it can ever fail with the parameters 
+given to it so its error handling feels pretty much dead-code (unless some 
+crazy thing such as apparmor does something out of the blue, I don't know 
+if apparmor has capability override sigaction() but I've seen apparmor to
+create errors that from the surface make no sense whatsoever comparable
+to this case).
+
+So basically this discussion is now about what to do with the mount 
+failing which already does _exit() before this patch (and possibly some
+hypotethical, new prepare code after the consolidation work which also
+will have some impact and I believe we might actually want to kill 
+test_prepare() at that point anyway).
+
+> Second, that SNC warning may be an inconvenience with a new goto. Here
+> it may be ok to print that message before the test failure?
+
+I don't follow what you're referring to with "that SNC warning". To the 
+"Intel CMT may be inaccurate ..." one?
+
+> >  	if (!validate_resctrl_feature_request(MBM_STR) || (get_vendor() != ARCH_INTEL)) {
+> >  		ksft_test_result_skip("Hardware does not support MBM or MBM is disabled\n");
+> > -		goto umount;
+> > +		goto cleanup;
+> >  	}
+> >  
+> >  	res = mbm_bw_change(cpu_no, benchmark_cmd);
+> > @@ -89,8 +109,8 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+> >  	if ((get_vendor() == ARCH_INTEL) && res)
+> >  		ksft_print_msg("Intel MBM may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
+> >  
+> > -umount:
+> > -	umount_resctrlfs();
+> > +cleanup:
+> > +	test_cleanup();
+> >  }
+> >  
+> >  static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+> > @@ -99,22 +119,19 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+> >  
+> >  	ksft_print_msg("Starting MBA Schemata change ...\n");
+> >  
+> > -	res = mount_resctrlfs();
+> > -	if (res) {
+> > -		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> > +	if (test_prepare())
+> >  		return;
+> > -	}
+> >  
+> >  	if (!validate_resctrl_feature_request(MBA_STR) || (get_vendor() != ARCH_INTEL)) {
+> >  		ksft_test_result_skip("Hardware does not support MBA or MBA is disabled\n");
+> > -		goto umount;
+> > +		goto cleanup;
+> >  	}
+> >  
+> >  	res = mba_schemata_change(cpu_no, benchmark_cmd);
+> >  	ksft_test_result(!res, "MBA: schemata change\n");
+> >  
+> > -umount:
+> > -	umount_resctrlfs();
+> > +cleanup:
+> > +	test_cleanup();
+> >  }
+> >  
+> >  static void run_cmt_test(const char * const *benchmark_cmd, int cpu_no)
+> > @@ -123,15 +140,12 @@ static void run_cmt_test(const char * const *benchmark_cmd, int cpu_no)
+> >  
+> >  	ksft_print_msg("Starting CMT test ...\n");
+> >  
+> > -	res = mount_resctrlfs();
+> > -	if (res) {
+> > -		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> > +	if (test_prepare())
+> >  		return;
+> > -	}
+> >  
+> >  	if (!validate_resctrl_feature_request(CMT_STR)) {
+> >  		ksft_test_result_skip("Hardware does not support CMT or CMT is disabled\n");
+> > -		goto umount;
+> > +		goto cleanup;
+> >  	}
+> >  
+> >  	res = cmt_resctrl_val(cpu_no, 5, benchmark_cmd);
+> > @@ -139,8 +153,8 @@ static void run_cmt_test(const char * const *benchmark_cmd, int cpu_no)
+> >  	if ((get_vendor() == ARCH_INTEL) && res)
+> >  		ksft_print_msg("Intel CMT may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
+> >  
+> > -umount:
+> > -	umount_resctrlfs();
+> > +cleanup:
+> > +	test_cleanup();
+> >  }
+> >  
+> >  static void run_cat_test(int cpu_no, int no_of_bits)
+> > @@ -149,22 +163,19 @@ static void run_cat_test(int cpu_no, int no_of_bits)
+> >  
+> >  	ksft_print_msg("Starting CAT test ...\n");
+> >  
+> > -	res = mount_resctrlfs();
+> > -	if (res) {
+> > -		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+> > +	if (test_prepare())
+> >  		return;
+> > -	}
+> >  
+> >  	if (!validate_resctrl_feature_request(CAT_STR)) {
+> >  		ksft_test_result_skip("Hardware does not support CAT or CAT is disabled\n");
+> > -		goto umount;
+> > +		goto cleanup;
+> >  	}
+> >  
+> >  	res = cat_perf_miss_val(cpu_no, no_of_bits, "L3");
+> >  	ksft_test_result(!res, "CAT: test\n");
+> >  
+> > -umount:
+> > -	umount_resctrlfs();
+> > +cleanup:
+> > +	test_cleanup();
+> >  }
+> >  
+> >  int main(int argc, char **argv)
+> > diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+> > index 51963a6f2186..a9fe61133119 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> > +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> > @@ -468,7 +468,9 @@ pid_t bm_pid, ppid;
+> >  
+> >  void ctrlc_handler(int signum, siginfo_t *info, void *ptr)
+> >  {
+> > -	kill(bm_pid, SIGKILL);
+> > +	/* Only kill child after bm_pid is set after fork() */
+> > +	if (bm_pid)
+> > +		kill(bm_pid, SIGKILL);
+> >  	umount_resctrlfs();
+> >  	tests_cleanup();
+> >  	ksft_print_msg("Ending\n\n");
+> > @@ -485,6 +487,8 @@ int signal_handler_register(void)
+> >  	struct sigaction sigact;
+> >  	int ret = 0;
+> >  
+> > +	bm_pid = 0;
+> > +
+> 
+> Since this is an initialization fix in this area ... what
+> do you think of also initializing sigact? It could just be
+> a change to
+> 	struct sigaction sigact = {};
+> 
+> This will prevent registering a signal handler with 
+> uninitialized sa_flags.
+
+Nice catch. It seems quite bad bug, I'll add another patch to fix it.
+
+Thanks once again for your reviews! I'll also address the changelog 
+improvements you mentioned against the other patches.
+
+
+-- 
+ i.
+
+--8323329-677402910-1695905227=:1701--
