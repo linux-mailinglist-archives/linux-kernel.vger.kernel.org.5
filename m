@@ -2,304 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381947B1BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAA87B1BB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbjI1MFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        id S232227AbjI1MH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjI1MFE (ORCPT
+        with ESMTP id S229980AbjI1MHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:05:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9FC121;
-        Thu, 28 Sep 2023 05:05:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1C5C433C7;
-        Thu, 28 Sep 2023 12:04:57 +0000 (UTC)
-Message-ID: <100ef77c-2343-4e73-8b89-748ae9697496@xs4all.nl>
-Date:   Thu, 28 Sep 2023 14:04:56 +0200
+        Thu, 28 Sep 2023 08:07:23 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B886711F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:07:20 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50433d8385cso20100646e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1695902839; x=1696507639; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ww4i/EH9x7ETGGTDSlcvzMB7TASiRo/EH4JNAEoqIjE=;
+        b=TkHeCWJF+u+6jdvYKX75PYj4QyuqUzbvuwl3NcJPJzQOkxdWfCmhCQ6YngiCARlE0v
+         34L5kosVthT3ggro4+0Hy9tdIeDoisKhQgAfWRunlauWKNfBTVqcAqLkK03OiAWD27Em
+         8TknuZGEXE9xubKEAYO+dhASRy4pcUl2gdkvc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695902839; x=1696507639;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ww4i/EH9x7ETGGTDSlcvzMB7TASiRo/EH4JNAEoqIjE=;
+        b=dDIDo9N3cK9eVwbIRZ6W1Wf4w8O0USAOGaD1No7iNw7k8PPEJv6XNFyk9pSSAXKamh
+         FRN6ebmBWg8CSzJkDmtZxj/nbFRcDBKprkEz7if6DWEBX9VcVuKuDfnk8VbCOaDwY1NL
+         f5aQr6OPW7e9obNjIiecdbvfgvR433jS7P5oi8zmSrypD03hoKVncV2UDHxZL+RfkmVm
+         4LnGcy7S9xSrRvyvCWxEGAlCzJKC49+sQD0PRzeR+zsnBxz/YzTJWheVhDrQssE0pzPI
+         TJMnn2UABd++tYneUGLXAlXO3tXgm2RvRz76Ndqa/NDKcMaOAIdhVMINCmhjGqpCA1yu
+         AHYw==
+X-Gm-Message-State: AOJu0YwKq6/iPb+KC+LJ77VIeYAJRIqnMe0IuJ5ABqDHWcQqWJQn0FZw
+        4SE1ncgFtBc24Rl5HFidWWgzKL7zNwQEW4bDqADmFg==
+X-Google-Smtp-Source: AGHT+IEvBIwgXVXKbkl0SSDzJIhhuaTcvweRiXnPTTdBCCJVxVhpIJm60RU37CrhkM1mI2SijGXU78xT3r+r7UThz8c=
+X-Received: by 2002:a05:6512:3f8:b0:503:1bb0:a658 with SMTP id
+ n24-20020a05651203f800b005031bb0a658mr966547lfq.32.1695902838854; Thu, 28 Sep
+ 2023 05:07:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
-Content-Language: en-US, nl
-To:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        "bryan.odonoghue@linaro.org" <bryan.odonoghue@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
- <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
- <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
- <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
- <9ac2d04c-ed0c-9940-53b4-b36d6df22afe@starfivetech.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <9ac2d04c-ed0c-9940-53b4-b36d6df22afe@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926175208.9298-1-james.quinlan@broadcom.com>
+ <20230926175208.9298-2-james.quinlan@broadcom.com> <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 28 Sep 2023 08:07:07 -0400
+Message-ID: <CA+-6iNwkegPBxeksgNntrP1Cr5Edk5Q4o660NCZjKo9s8z3OOQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Claire Chang <tientzu@chromium.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004e57c906066a26a8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jack,
+--0000000000004e57c906066a26a8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/09/2023 10:40, Jack Zhu wrote:
-> 
-> 
-> On 2023/9/28 16:22, Hans Verkuil wrote:
->> On 28/09/2023 10:12, Jack Zhu wrote:
->>>
->>>
->>> On 2023/9/15 17:26, Hans Verkuil wrote:
->>>> On 14/09/2023 05:15, Jack Zhu wrote:
->>>>> Hi,
->>>>>
->>>>> This series is the v9 series that attempts to support the Camera Subsystem
->>>>> found on StarFive JH7110 SoC.
->>>>>
->>>>> This series is based on top of the master branch of media_stage repository.
->>>>>
->>>>> The following are the media graph for the device and the v4l2-compliance
->>>>> output.
->>>>>
->>>>> ===========================================================================
->>>>> [the media graph]:
->>>>>
->>>>> digraph board {
->>>>> 	rankdir=TB
->>>>> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
->>>>> 	n00000001:port1 -> n00000008 [style=dashed]
->>>>> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
->>>>> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
->>>>> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
->>>>> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
->>>>> 	n0000000e:port1 -> n00000004 [style=dashed]
->>>>> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
->>>>> 	n00000018:port0 -> n0000000e:port0 [style=bold]
->>>>> }
->>>>>
->>>>> [the device topology]:
->>>>>
->>>>> Media controller API version 6.5.0
->>>>>
->>>>> Media device information
->>>>> ------------------------
->>>>> driver          starfive-camss
->>>>> model           Starfive Camera Subsystem
->>>>> serial          
->>>>> bus info        platform:19840000.camss
->>>>> hw revision     0x0
->>>>> driver version  6.5.0
->>>>>
->>>>> Device topology
->>>>> - entity 1: stf_isp (2 pads, 2 links)
->>>>>             type V4L2 subdev subtype Unknown flags 0
->>>>>             device node name /dev/v4l-subdev0
->>>>> 	pad0: Sink
->>>>> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
->>>>> 		 crop.bounds:(0,0)/1920x1080
->>>>> 		 crop:(0,0)/1920x1080]
->>>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>>> 	pad1: Source
->>>>> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
->>>>> 		 crop.bounds:(0,0)/1920x1080
->>>>> 		 crop:(0,0)/1920x1080]
->>>>> 		-> "capture_yuv":0 []
->>>>>
->>>>> - entity 4: capture_raw (1 pad, 1 link)
->>>>>             type Node subtype V4L flags 0
->>>>>             device node name /dev/video0
->>>>> 	pad0: Sink
->>>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>>>
->>>>> - entity 8: capture_yuv (1 pad, 1 link)
->>>>>             type Node subtype V4L flags 0
->>>>>             device node name /dev/video1
->>>>> 	pad0: Sink
->>>>> 		<- "stf_isp":1 []
->>>>>
->>>>> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
->>>>>              type V4L2 subdev subtype Unknown flags 0
->>>>> 	pad0: Sink
->>>>> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
->>>>> 	pad1: Source
->>>>> 		-> "stf_isp":0 []
->>>>> 		-> "capture_raw":0 []
->>>>> 	pad2: Source
->>>>> 	pad3: Source
->>>>> 	pad4: Source
->>>>>
->>>>> - entity 24: imx219 6-0010 (1 pad, 1 link)
->>>>>              type V4L2 subdev subtype Sensor flags 0
->>>>>              device node name /dev/v4l-subdev1
->>>>> 	pad0: Source
->>>>> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
->>>>> 		 crop.bounds:(8,8)/3280x2464
->>>>> 		 crop:(8,8)/3280x2464]
->>>>> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
->>>>>
->>>>> ===========================================================================
->>>>> [the v4l2-compliance output]:
->>>>>
->>>>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
->>>>
->>>> This v4l2-compliance version is from a distro. For driver acceptance you
->>>> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
->>>>
->>>> Also, since this driver uses the media controller, you must run v4l2-compliance
->>>> with the -m /dev/mediaX option. This will test the compliance of all devices
->>>> reported by the media controller.
->>>>
->>>>>
->>>>> Compliance test for stf camss device /dev/video1:
->>>>>
->>>>> Driver Info:
->>>>> 	Driver name      : stf camss
->>>>
->>>> The module is called starfive-camss, so shouldn't the driver name reported here
->>>> be the same?
->>>>
->>>>> 	Card type        : Starfive Camera Subsystem
->>>>> 	Bus info         : platform:19840000.camss
->>>>> 	Driver version   : 6.5.0
->>>>> 	Capabilities     : 0x84200001
->>>>> 		Video Capture
->>>>> 		Streaming
->>>>> 		Extended Pix Format
->>>>> 		Device Capabilities
->>>>> 	Device Caps      : 0x04200001
->>>>> 		Video Capture
->>>>> 		Streaming
->>>>> 		Extended Pix Format
->>>>> Media Driver Info:
->>>>> 	Driver name      : starfive-camss
->>>>
->>>> It's correct in the media controller information.
->>>>
->>>>> 	Model            : Starfive Camera Subsystem
->>>>> 	Serial           : 
->>>>> 	Bus info         : platform:19840000.camss
->>>>> 	Media version    : 6.5.0
->>>>> 	Hardware revision: 0x00000000 (0)
->>>>> 	Driver version   : 6.5.0
->>>>> Interface Info:
->>>>> 	ID               : 0x0300000a
->>>>> 	Type             : V4L Video
->>>>> Entity Info:
->>>>> 	ID               : 0x00000008 (8)
->>>>> 	Name             : capture_yuv
->>>>> 	Function         : V4L2 I/O
->>>>> 	Pad 0x01000009   : 0: Sink
->>>>> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
->>>>
->>>> Hmm, this reports "Unknown Function". I bet that when you run v4l2-compliance
->>>> with the -m option it will fail on this. If not, then that's likely a bug in
->>>> the compliance test, please let me know if that's the case.
->>>>
->>>
->>> Hi Hans,
->>>
->>> The following is the latest test log, which does not report a failure, but
->>> also reports "Unknown Function".
->>>
->>> I make the following settings in the stf-isp.c file:
->>> v4l2_subdev.entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
->>>
->>
->> Can you post the output of:
->>
->> v4l2-compliance --verbose -M /dev/media0
->>
-> 
-> Output log of the above command:
-> 
-> # 
-> # v4l2-compliance --verbose -M /dev/media0
-> v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
-> 
-> Compliance test for starfive-camss device /dev/media0:
-> 
-> Media Driver Info:
-> 	Driver name      : starfive-camss
-> 	Model            : Starfive Camera Subsystem
-> 	Serial           : 
-> 	Bus info         : platform:19840000.camss
-> 	Media version    : 6.5.0
-> 	Hardware revision: 0x00000000 (0)
-> 	Driver version   : 6.5.0
-> 
-> Required ioctls:
-> 	test MEDIA_IOC_DEVICE_INFO: OK
-> 	test invalid ioctls: OK
-> 
-> Allow for multiple opens:
-> 	test second /dev/media0 open: OK
-> 	test MEDIA_IOC_DEVICE_INFO: OK
-> 	test for unlimited opens: OK
-> 
-> Media Controller ioctls:
-> 		Entity: 0x00000001 (Name: 'stf_isp', Function: Unknown Function (00004009))
-> 		Entity: 0x00000004 (Name: 'capture_raw', Function: V4L2 I/O)
-> 		Entity: 0x00000008 (Name: 'capture_yuv', Function: V4L2 I/O)
-> 		Entity: 0x0000000e (Name: 'cdns_csi2rx.19800000.csi-bridge', Function: Video Interface Bridge)
-> 		Entity: 0x00000018 (Name: 'imx219 6-0010', Function: Camera Sensor)
-> 		Interface: 0x03000006 (Type: V4L Video, DevPath: /dev/video0)
-> 		Interface: 0x0300000a (Type: V4L Video, DevPath: /dev/video1)
-> 		Interface: 0x0300001c (Type: V4L Sub-Device, DevPath: /dev/v4l-subdev0)
-> 		Interface: 0x0300001e (Type: V4L Sub-Device, DevPath: /dev/v4l-subdev1)
-> 		Pad: 0x01000002 (0, stf_isp, Sink)
-> 		Pad: 0x01000003 (1, stf_isp, Source)
-> 		Pad: 0x01000005 (0, capture_raw, Sink)
-> 		Pad: 0x01000009 (0, capture_yuv, Sink)
-> 		Pad: 0x0100000f (0, cdns_csi2rx.19800000.csi-bridge, Sink)
-> 		Pad: 0x01000010 (1, cdns_csi2rx.19800000.csi-bridge, Source)
-> 		Pad: 0x01000011 (2, cdns_csi2rx.19800000.csi-bridge, Source)
-> 		Pad: 0x01000012 (3, cdns_csi2rx.19800000.csi-bridge, Source)
-> 		Pad: 0x01000013 (4, cdns_csi2rx.19800000.csi-bridge, Source)
-> 		Pad: 0x01000019 (0, imx219 6-0010, Source)
-> 		Interface Link: 0x02000007 (capture_raw to /dev/video0)
-> 		Interface Link: 0x0200000b (capture_yuv to /dev/video1)
-> 		Data Link: 0x0200000c (stf_isp:1 -> capture_yuv:0, Data, Enabled)
-> 		Data Link: 0x02000014 (cdns_csi2rx.19800000.csi-bridge:1 -> stf_isp:0, Data, Enabled)
-> 		Data Link: 0x02000016 (cdns_csi2rx.19800000.csi-bridge:1 -> capture_raw:0, Data)
-> 		Data Link: 0x0200001a (imx219 6-0010:0 -> cdns_csi2rx.19800000.csi-bridge:0, Data, Enabled, Immutable)
-> 		Interface Link: 0x0200001d (stf_isp to /dev/v4l-subdev0)
-> 		Interface Link: 0x0200001f (imx219 6-0010 to /dev/v4l-subdev1)
-> 	test MEDIA_IOC_G_TOPOLOGY: OK
-> 	Entities: 5 Interfaces: 4 Pads: 10 Links: 8
-> 		Entity: 0x00000001 (Name: 'stf_isp', Type: Unknown V4L2 Sub-Device, DevPath: /dev/v4l-subdev0)
-> 		Entity: 0x00000004 (Name: 'capture_raw', Type: V4L2 I/O, DevPath: /dev/video0)
-> 		Entity: 0x00000008 (Name: 'capture_yuv', Type: V4L2 I/O, DevPath: /dev/video1)
-> 		Entity: 0x0000000e (Name: 'cdns_csi2rx.19800000.csi-bridge', Type: Unknown V4L2 Sub-Device)
-> 		Entity: 0x00000018 (Name: 'imx219 6-0010', Type: Camera Sensor, DevPath: /dev/v4l-subdev1)
-> 	test MEDIA_IOC_ENUM_ENTITIES/LINKS: OK
-> 	test MEDIA_IOC_SETUP_LINK: OK
-> 
-> Total for starfive-camss device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+On Wed, Sep 27, 2023 at 7:10=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
+>
+> Hi Jim,
+>
+> thanks for your patch!
+>
+> On Tue, Sep 26, 2023 at 7:52=E2=80=AFPM Jim Quinlan <james.quinlan@broadc=
+om.com> wrote:
+>
+> > Without this commit, the use of dma_alloc_coherent() while
+> > using CONFIG_DMA_RESTRICTED_POOL=3Dy breaks devices from working.
+> > For example, the common Wifi 7260 chip (iwlwifi) works fine
+> > on arm64 with restricted memory but not on arm, unless this
+> > commit is applied.
+> >
+> > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+>
+> (...)
+> > +       select DMA_DIRECT_REMAP
+>
+> Christoph invented that symbol so he can certainly
+> explain what is missing to use this on ARM.
+>
+> This looks weird to me, because:
+> > git grep atomic_pool_init
+> arch/arm/mm/dma-mapping.c:static int __init atomic_pool_init(void)
+> kernel/dma/pool.c:static int __init dma_atomic_pool_init(void)
+>
+> Now you have two atomic DMA pools in the kernel,
+> and a lot more than that is duplicated. I'm amazed that it
+> compiles at all.
+>
+> Clearly if you want to do this, surely the ARM-specific
+> arch/arm/mm/dma-mapping.c and arch/arm/mm/dma-mapping-nommu.c
+> needs to be removed at the same time?
+>
+> However I don't think it's that simple, because Christoph would surely
+> had done this a long time ago if it was that simple.
 
-Much appreciated. I found several logic bugs in v4l-utils that hid this failure.
+Hello Linus,
 
-It is now fixed in the v4l-utils git repo: https://git.linuxtv.org/v4l-utils.git/log/
-This also adds the missing support for MEDIA_ENT_F_PROC_VIDEO_ISP.
+Yes, this is the reason I used "RFC" as the fix looked too easy to be viabl=
+e :-)
+I debugged it enough to see that the host driver's
+writes to the dma_alloc_coherent() region  were not appearing in
+memory, and that
+led me to DMA_DIRECT_REMAP.
 
-If you compile v4l2-compliance from the git repo, then this should now work fine.
+BTW, I tested "restricted-dma" on the master-tip the other day and it
+failed for both arm64 and arm.
+Please take this with a large grain of salt  as this was a quick test
+and  I won't  have time to
+confirm and bisect until  next week at the earliest.
 
 Regards,
+Jim Quinlan
+Broadcom STB/CM
 
-	Hans
+
+>
+> Yours,
+> Linus Walleij
+
+--0000000000004e57c906066a26a8
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
+uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
+BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
+VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
+z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
+b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
++R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
+AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
+75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
+AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
+AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAzfTR1mBWvUjLSA15H/AKofZ1wRDPb
+hkAo8+FlAhk0OTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA5
+MjgxMjA3MTlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
+AgEwDQYJKoZIhvcNAQEBBQAEggEAiNgQfEGKH0lKD0vsANwLClaG+JLiCW/8Aa9+PGox08n5we1W
+M2RsuCCfLvsX449WYjh2WeX8oTLl4G2rC3NUZOdXhQW+WMsn13mHG98mkTu+u2cz6OVhTuH8QLe/
+Fnr0TvyCnZHzMpmhDbWtM3d2FdYy2mCS16vm9lqjnhd6NmBYM/u2lrU5G0qnkWjZBZ2eMylMhyfF
+N2be+dd0AXHRbaKbqU4lq7Oq9zLSFZJkqsNvy44H0vg5sdNilKD+Cp5bxCiKhWRLLIog89MXSDNP
+rlzDcauH3xvMJuLoIMHpXrO6dA3xaROln9+bhL9PENPLQ8cEOIAeA/8Y4MUO6OHodA==
+--0000000000004e57c906066a26a8--
