@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704DC7B26C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3947B26C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbjI1UmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
+        id S231971AbjI1Uoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbjI1UmJ (ORCPT
+        with ESMTP id S229478AbjI1Uoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:42:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C820419C;
-        Thu, 28 Sep 2023 13:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Ounj1+uXd+VOP4zrK2phg+RjnwNWyqqQjfN2b+rvDes=; b=TmxnbLPx4XXYwmI1upPf32XSYB
-        TZn2i1I6Doptnl8FAfj4f/tQiRkRCfIpH845+OfdtWTyZSu4xfD7ci6GUeL7tsp+q2ODLPp+Yl5NC
-        ghmklItQMJIzbv6A5/4c7eP0GdAIxiISRxVSeUEqXfh4XNgAxnRFUxKQQcy98X9VB0H2BHFlPpXhq
-        +ViWew9yo3ydTBtj0fLN8QIaE4pfFJ5sD5zYze5Sx1feSi+EUaLtX8PYTikeF69Oru9BpOI1IAeu5
-        SzZZURscNsi1YrqhYV20T04LoJATGE6tmWYwcYKQEq18tWiyhWnDUIVNCJpYacesvgvsg6H33HyhF
-        uWCVMOaQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlxpk-006eoe-2y;
-        Thu, 28 Sep 2023 20:42:04 +0000
-Message-ID: <4731c8da-3dfa-47da-baf1-26df019d08ee@infradead.org>
-Date:   Thu, 28 Sep 2023 13:42:04 -0700
+        Thu, 28 Sep 2023 16:44:38 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D14919C;
+        Thu, 28 Sep 2023 13:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1695933874;
+        bh=9aw0BPEYNd90DJaMDLBC1QrPFfgdOGYswPNrGMMC+Jo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kQmhU7WCur4kGAIitZt1UW+sOUNw/tzQmiKAvbldPzHKscXuIsBVKfYXirPm52xus
+         6l6eDyNgM9JikY371xnNuMdP26JC6oE2AdONEKdObMimS7miq3g54V4R7846LyiDaK
+         9iKlDwZfwTOUIHbBZ2gDoaM8GPiXQjjSGcuo6MHW965pS8acdehV+Na+K4LPSmzxsN
+         i1qThFkuG24sKTtm9tTgR2WvSfg9P75FOYBMFJU2NSktfCYrfsUx5rFyI0z1M6Chvo
+         vCMjD/wlQNqhdJzabIeEaJ8aRzmdbcirwyQwPMMoopzU3/DCLhS+AzQ2ezo/Tzb6Zb
+         8E4LtfZqmK/AQ==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RxQSx6Qmbz1Qnb;
+        Thu, 28 Sep 2023 16:44:33 -0400 (EDT)
+Message-ID: <94c23850-265c-5d71-f0a3-e02b5dbc050e@efficios.com>
+Date:   Thu, 28 Sep 2023 16:43:58 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/2] Documentation: dpll: Fix code blocks
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
 Content-Language: en-US
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Jiri Pirko <jiri@resnulli.us>,
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+        Florian Weimer <fw@deneb.enyo.de>, David.Laight@ACULAB.COM,
+        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        libc-alpha@sourceware.org, Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20230928052708.44820-1-bagasdotme@gmail.com>
- <20230928052708.44820-2-bagasdotme@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230928052708.44820-2-bagasdotme@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+        Noah Goldstein <goldstein.w.n@gmail.com>,
+        Daniel Colascione <dancol@google.com>, longman@redhat.com,
+        Florian Weimer <fweimer@redhat.com>
+References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
+ <20230529191416.53955-2-mathieu.desnoyers@efficios.com> <87r0midp5u.ffs@tglx>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <87r0midp5u.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/28/23 16:21, Thomas Gleixner wrote:
+> On Mon, May 29 2023 at 15:14, Mathieu Desnoyers wrote:
+>> +void __rseq_set_sched_state(struct task_struct *t, unsigned int state);
+>> +
+>> +static inline void rseq_set_sched_state(struct task_struct *t, unsigned int state)
+>> +{
+>> +	if (t->rseq_sched_state)
+>> +		__rseq_set_sched_state(t, state);
+> 
+> This is invoked on every context switch and writes over that state
+> unconditionally even in the case that the state was already
+> cleared. There are enough situations where tasks are scheduled out
+> several times while being in the kernel.
 
+Right, if this becomes more than a PoC, I'll make sure to keep track of 
+the current state within the task struct, and only update userspace on 
+state transition.
 
-On 9/27/23 22:27, Bagas Sanjaya wrote:
-> kernel test robot and Stephen Rothwell report htmldocs warnings:
 > 
-> Documentation/driver-api/dpll.rst:427: WARNING: Error in "code-block" directive:
-> maximum 1 argument(s) allowed, 18 supplied.
+>>   /* rseq_preempt() requires preemption to be disabled. */
+>>   static inline void rseq_preempt(struct task_struct *t)
+>>   {
+>>   	__set_bit(RSEQ_EVENT_PREEMPT_BIT, &t->rseq_event_mask);
+>>   	rseq_set_notify_resume(t);
+>> +	rseq_set_sched_state(t, 0);
 > 
-> .. code-block:: c
-> 	<snipped>...
-> Documentation/driver-api/dpll.rst:444: WARNING: Error in "code-block" directive:
-> maximum 1 argument(s) allowed, 21 supplied.
-> 
-> .. code-block:: c
-> 	<snipped>...
-> Documentation/driver-api/dpll.rst:474: WARNING: Error in "code-block" directive:
-> maximum 1 argument(s) allowed, 12 supplied.
-> 
-> .. code-block:: c
-> 	<snipped>...
-> 
-> Fix these above by adding missing blank line separator after code-block
-> directive.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309180456.lOhxy9gS-lkp@intel.com/
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Closes: https://lore.kernel.org/linux-next/20230918131521.155e9e63@canb.auug.org.au/
-> Fixes: dbb291f19393b6 ("dpll: documentation on DPLL subsystem interface")
-> Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> This code is already stupid to begin with. __set_bit() is cheap, but
+> rseq_set_notify_resume() is not as it has a conditional and a locked
+> instruction
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+What alternative would you recommend to set a per-thread state that has 
+the same effect as TIF_NOTIFY_RESUME ? Indeed all it really needs to 
+synchronize with is the thread owning the flags, but AFAIU having this 
+flag part of the TIF flags requires use of an atomic instruction to 
+synchronize updates against concurrent threads.
 
-Thanks.
+If we move this thread flag into a separate field of struct thread_info, 
+then we could turn this atomic set bit into a more lightweight store, 
+but then we'd need to check against an extra field on return to userspace.
 
-> ---
->  Documentation/driver-api/dpll.rst | 3 +++
->  1 file changed, 3 insertions(+)
+And if we want to remove the conditional branch on the scheduler 
+fast-path, we could always load and test both the task struct's rseq 
+pointer and the thread_info "preempted" state on return to userspace.
+
+The tradeoff there would be to add extra loads and conditional branches 
+on return to userspace to speed up the scheduler fast-path.
+
+Is this what you have in mind or am I missing your point ?
+
+> and now you add two more conditionals into the context
+> switch path.
+
+I'm open to suggestions on how to improve this if this goes beyond PoC 
+stage and we observe measurable benefits on the userspace side.
+
+Thanks,
+
+Mathieu
+
 > 
-> diff --git a/Documentation/driver-api/dpll.rst b/Documentation/driver-api/dpll.rst
-> index bb52f1b8c0be31..01eb4de867036f 100644
-> --- a/Documentation/driver-api/dpll.rst
-> +++ b/Documentation/driver-api/dpll.rst
-> @@ -425,6 +425,7 @@ The simplest implementation is in the OCP TimeCard driver. The ops
->  structures are defined like this:
->  
->  .. code-block:: c
-> +
->  	static const struct dpll_device_ops dpll_ops = {
->  		.lock_status_get = ptp_ocp_dpll_lock_status_get,
->  		.mode_get = ptp_ocp_dpll_mode_get,
-> @@ -442,6 +443,7 @@ structures are defined like this:
->  The registration part is then looks like this part:
->  
->  .. code-block:: c
-> +
->          clkid = pci_get_dsn(pdev);
->          bp->dpll = dpll_device_get(clkid, 0, THIS_MODULE);
->          if (IS_ERR(bp->dpll)) {
-> @@ -472,6 +474,7 @@ The registration part is then looks like this part:
->  In the error path we have to rewind every allocation in the reverse order:
->  
->  .. code-block:: c
-> +
->          while (i) {
->                  --i;
->                  dpll_pin_unregister(bp->dpll, bp->sma[i].dpll_pin, &dpll_pins_ops, &bp->sma[i]);
+> Thanks,
+> 
+>          tglx
 
 -- 
-~Randy
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
