@@ -2,384 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F217B11E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCE57B11E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjI1FAx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 01:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        id S230141AbjI1FAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjI1FAv (ORCPT
+        with ESMTP id S229920AbjI1FAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:00:51 -0400
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905A7180;
-        Wed, 27 Sep 2023 22:00:49 -0700 (PDT)
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-79fe6da0095so147128239f.0;
-        Wed, 27 Sep 2023 22:00:49 -0700 (PDT)
+        Thu, 28 Sep 2023 01:00:42 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E70136
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:00:40 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a1bcc540c0so322383566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695877239; x=1696482039; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xm1G3DvjTPNMs8CaRtbq59OpemJU/fBRS7beruUP0HQ=;
+        b=NpzzH/xQdnwrmmD4j2lZXrM1daKaMWPs4Dn0z8boC/nmYJA0LhBvPXl5OPGQqAqovT
+         ycrFsKi9GAr2BPQTz4gC5XxmLjiu9I+mrDqHOLvjVVP/NEQZMpbgzQN6O3DkPd8ckYXj
+         EOn12nc5Q5QlpncX4MHjWLgLRjCipdEnVJbA8Zrp6KGermqw2qDx2n7ydVygV7FO3wl0
+         PBIrC5fUCZ/Gw6J5mJOm3yoba53TAyLNHNmSOWOUmaFkmOXGD3U8j9MXgwFfqIICnf1c
+         dWhO/AQ3/3O/dWlC4m3AW5quwwPzAQNHW9aHRxMwprQV1uVG8eZgVCdz6NljxWB95igZ
+         dLrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695877248; x=1696482048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SWn+eN+3137J1X9ZFpBev17uHRgqKvmTm2T8zksCQyg=;
-        b=SmFoFluwhXnrMsJvmuhWTOqiYHC3tncc47osw25ED6Q75zJlhsAv8zLiXSHCvOIGZ1
-         LZW0ab6H5kRPuoydYOzj/uoDseOMdhss3thx114sfOOT6lTrNeq1b5Sq9x10gchkkK16
-         K/czxLi5hCu716wZhxaPGbU3iO/UBD/fw8YuZ81RO/OBpiM70mhKpTx+1FFKnPZfo2kn
-         lZCZMPMB0k8ZeqaKsHgAX4RQIyru2N+Mffpo48QM584srmVSJF3ARvgvO1/MADVx2oiK
-         fTowg1szGYK6vwD6fHOANRltIEPViQYknYHN10OQbJKnZs1EP6+0mQynXhL1raibukRG
-         oqOg==
-X-Gm-Message-State: AOJu0YyOFsCSR4ZMdgTJEQeDDBPCMTm422CT9HE8oMIbrLGLAHkcrrM5
-        nWpagTD7hCl9OwQgpDLIHxMpkyvtG0UnOY2Xepc=
-X-Google-Smtp-Source: AGHT+IEDnKI0Uo5Oe0zFwupTSgGg6a0S44wu9mbykzvQSWcbG/9FazNTdataivn+nPeD8nD23UTGmgFKnCf7FDhsdPE=
-X-Received: by 2002:a5e:881a:0:b0:798:d82b:7b02 with SMTP id
- l26-20020a5e881a000000b00798d82b7b02mr170144ioj.4.1695877248368; Wed, 27 Sep
- 2023 22:00:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695877239; x=1696482039;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xm1G3DvjTPNMs8CaRtbq59OpemJU/fBRS7beruUP0HQ=;
+        b=PvZf7PKdq8GA4BbBDDt7kU+KXoPOHOPL2qrfi1dx5Vd8WzmbButN0vbCmKKiTs0Atw
+         RKsIBlSsG93BKVWSSMugRtcr8VgsSXZJaTad4akdrVh13HlkHyPVfG1Iqq5xJ7FlhAya
+         ZAHJIOOg++q0vFvHoCH/w5e4/xWO6PP4Mh1Ki5lM2z8keucx0IyPubV/rbFHm/aaE5Lu
+         HZbHKHiJBdGx6Zp9UYzX7rw5prmXx5MdZXCQ2hYlZoZCE81fRMiDC73IF9lF5cOaOF+1
+         9oqzgsc+J6LdG8cO9Np5TtMvMEwCl5z4oGFELEFFeRMzZCnKgsd45Qei2QFPzmnMHXT/
+         6eRw==
+X-Gm-Message-State: AOJu0Yw+nfhVG2MH1z2mu8YGVJZYYlFrEdOkQhVCCrnxqOdYQO0snicw
+        d3D0mfNUb/jbenjyAICfHEosgiDaAOQ=
+X-Google-Smtp-Source: AGHT+IHdYT/Fl1fz6xwU3ypHWI9rdN7yXdYZZ199/9bgje8Iy6Nr0bhkyyvy82y+xy/OcHD+04fS0A==
+X-Received: by 2002:a17:906:530b:b0:9ae:4492:df34 with SMTP id h11-20020a170906530b00b009ae4492df34mr143814ejo.6.1695877238888;
+        Wed, 27 Sep 2023 22:00:38 -0700 (PDT)
+Received: from [192.168.0.104] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm10233713ejc.153.2023.09.27.22.00.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 22:00:38 -0700 (PDT)
+Message-ID: <2cfa5c9b-f053-5832-4249-950250660339@gmail.com>
+Date:   Thu, 28 Sep 2023 07:00:37 +0200
 MIME-Version: 1.0
-References: <20230925062323.840799-1-irogers@google.com>
-In-Reply-To: <20230925062323.840799-1-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 27 Sep 2023 22:00:37 -0700
-Message-ID: <CAM9d7chaKGciJgDLyN1hhDXNuFuCHRFcYAjTHY0bEMKpfBDZBg@mail.gmail.com>
-Subject: Re: [PATCH v1] perf pmus: Make PMU alias name loading lazy
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] staging: rtl8192e: renamed (3) variables
+Content-Language: en-US
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230928000225.27912-1-garyrookard@fastmail.org>
+ <d9a089f9-c439-97bd-5abc-18390c3ec0cb@gmail.com>
+In-Reply-To: <d9a089f9-c439-97bd-5abc-18390c3ec0cb@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On 9/28/23 06:40, Philipp Hortmann wrote:
+> On 9/28/23 02:02, Gary Rookard wrote:
+>> This patch renames the vaiable in staging/rtl8192e
+>> HTUpdateDefaultSetting -> ht_update_default_setting
+>> in (3) files of rtl8192e:
+>> 1) rtl819x_HTProc.c
+>> 2) rtllib.h
+>> 3) rtllib_module.c >
+>> Linux Kernel Coding Style "cleanup", no change in runtime,
+>> staging/rtl8192e builds before and after.
+>>
+>> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> 
+> Hi Gary,
+> 
+> your subject is to general and also wrong as you change just one 
+> variable. Please find good examples in the in the kernel log.
+> Or here:
+> https://lore.kernel.org/linux-staging/20230921032515.96152-2-tdavies@darkphysics.net/T/#u
+> 
+> Omit the file names in the description as this is redundant.
+> 
+> You need a version history for all four versions of your patch.
+> See example:
+> https://lore.kernel.org/linux-staging/ZQGiqA2GoDp%2FWiPK@ubuntu.myguest.virtualbox.org/T/#u
+> 
+> Bye Philipp
+> 
 
-On Sun, Sep 24, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
->
-> PMU alias names were computed when the first perf_pmu is created,
-> scanning all PMUs in event sources for a file called alias that
-> generally doesn't exist. Switch to trying to load the file when all
-> PMU related files are loaded in lookup. This would cause a PMU name
-> lookup of an alias name to fail if no PMUs were loaded, so in that
-> case all PMUs are loaded and the find repeated. The overhead is
-> similar but in the (very) general case not all PMUs are scanned for
-> the alias file.
->
-> As the overhead occurs once per invocation it doesn't show in perf
-> bench internals pmu-scan. On a tigerlake machine, the number of openat
-> system calls for an event of cpu/cycles/ with perf stat reduces from
-> 94 to 69 (ie 25 fewer openat calls).
+Hi Gary,
 
-I think the pmu-scan bench could show the difference as it
-calls perf_pmu__destroy() in the loop body.  So every call to
-perf_pmu__scan() should start from nothing, right?
+this is not a variable. It is a function name. To keep the namespace 
+clean it is required to add a rtllib_ in front of the function name.
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Bye Philipp
 
-Maybe we can load event aliases and formats lazily later.
-Anyway, it looks good to me.
+> 
+>> ---
+>>   drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
+>>   drivers/staging/rtl8192e/rtllib.h         | 2 +-
+>>   drivers/staging/rtl8192e/rtllib_module.c  | 2 +-
+>>   3 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c 
+>> b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> index a7e356e90d0e..832f595d36c2 100644
+>> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+>> @@ -67,7 +67,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
+>>   static u8 LINKSYS_MARVELL_4400N[3] = {0x00, 0x14, 0xa4};
+>> -void HTUpdateDefaultSetting(struct rtllib_device *ieee)
+>> +void ht_update_default_setting(struct rtllib_device *ieee)
+>>   {
+>>       struct rt_hi_throughput *ht_info = ieee->ht_info;
+>> diff --git a/drivers/staging/rtl8192e/rtllib.h 
+>> b/drivers/staging/rtl8192e/rtllib.h
+>> index bdbd27e382b9..ec1eef7486a2 100644
+>> --- a/drivers/staging/rtl8192e/rtllib.h
+>> +++ b/drivers/staging/rtl8192e/rtllib.h
+>> @@ -1785,7 +1785,7 @@ int rtllib_wx_get_rts(struct rtllib_device 
+>> *ieee, struct iw_request_info *info,
+>>   void HTSetConnectBwMode(struct rtllib_device *ieee,
+>>               enum ht_channel_width bandwidth,
+>>               enum ht_extchnl_offset Offset);
+>> -void HTUpdateDefaultSetting(struct rtllib_device *ieee);
+>> +void ht_update_default_setting(struct rtllib_device *ieee);
+>>   void HTConstructCapabilityElement(struct rtllib_device *ieee,
+>>                     u8 *posHTCap, u8 *len,
+>>                     u8 isEncrypt, bool bAssoc);
+>> diff --git a/drivers/staging/rtl8192e/rtllib_module.c 
+>> b/drivers/staging/rtl8192e/rtllib_module.c
+>> index abd6bfd4dfa3..859241af617c 100644
+>> --- a/drivers/staging/rtl8192e/rtllib_module.c
+>> +++ b/drivers/staging/rtl8192e/rtllib_module.c
+>> @@ -126,7 +126,7 @@ struct net_device *alloc_rtllib(int sizeof_priv)
+>>       if (!ieee->ht_info)
+>>           goto free_softmac;
+>> -    HTUpdateDefaultSetting(ieee);
+>> +    ht_update_default_setting(ieee);
+>>       HTInitializeHTInfo(ieee);
+>>       rtllib_ts_init(ieee);
+>>       for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
+> 
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks,
-Namhyung
-
-
-> ---
->  tools/perf/arch/x86/util/pmu.c | 139 ---------------------------------
->  tools/perf/util/pmu.c          |  39 ++++-----
->  tools/perf/util/pmu.h          |   2 -
->  tools/perf/util/pmus.c         |  10 +++
->  4 files changed, 31 insertions(+), 159 deletions(-)
->
-> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-> index f428cffb0378..8b53ca468a50 100644
-> --- a/tools/perf/arch/x86/util/pmu.c
-> +++ b/tools/perf/arch/x86/util/pmu.c
-> @@ -17,15 +17,6 @@
->  #include "../../../util/pmus.h"
->  #include "env.h"
->
-> -struct pmu_alias {
-> -       char *name;
-> -       char *alias;
-> -       struct list_head list;
-> -};
-> -
-> -static LIST_HEAD(pmu_alias_name_list);
-> -static bool cached_list;
-> -
->  struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->  {
->  #ifdef HAVE_AUXTRACE_SUPPORT
-> @@ -41,136 +32,6 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
->         return NULL;
->  }
->
-> -static void pmu_alias__delete(struct pmu_alias *pmu_alias)
-> -{
-> -       if (!pmu_alias)
-> -               return;
-> -
-> -       zfree(&pmu_alias->name);
-> -       zfree(&pmu_alias->alias);
-> -       free(pmu_alias);
-> -}
-> -
-> -static struct pmu_alias *pmu_alias__new(char *name, char *alias)
-> -{
-> -       struct pmu_alias *pmu_alias = zalloc(sizeof(*pmu_alias));
-> -
-> -       if (pmu_alias) {
-> -               pmu_alias->name = strdup(name);
-> -               if (!pmu_alias->name)
-> -                       goto out_delete;
-> -
-> -               pmu_alias->alias = strdup(alias);
-> -               if (!pmu_alias->alias)
-> -                       goto out_delete;
-> -       }
-> -       return pmu_alias;
-> -
-> -out_delete:
-> -       pmu_alias__delete(pmu_alias);
-> -       return NULL;
-> -}
-> -
-> -static int setup_pmu_alias_list(void)
-> -{
-> -       int fd, dirfd;
-> -       DIR *dir;
-> -       struct dirent *dent;
-> -       struct pmu_alias *pmu_alias;
-> -       char buf[MAX_PMU_NAME_LEN];
-> -       FILE *file;
-> -       int ret = -ENOMEM;
-> -
-> -       dirfd = perf_pmu__event_source_devices_fd();
-> -       if (dirfd < 0)
-> -               return -1;
-> -
-> -       dir = fdopendir(dirfd);
-> -       if (!dir)
-> -               return -errno;
-> -
-> -       while ((dent = readdir(dir))) {
-> -               if (!strcmp(dent->d_name, ".") ||
-> -                   !strcmp(dent->d_name, ".."))
-> -                       continue;
-> -
-> -               fd = perf_pmu__pathname_fd(dirfd, dent->d_name, "alias", O_RDONLY);
-> -               if (fd < 0)
-> -                       continue;
-> -
-> -               file = fdopen(fd, "r");
-> -               if (!file)
-> -                       continue;
-> -
-> -               if (!fgets(buf, sizeof(buf), file)) {
-> -                       fclose(file);
-> -                       continue;
-> -               }
-> -
-> -               fclose(file);
-> -
-> -               /* Remove the last '\n' */
-> -               buf[strlen(buf) - 1] = 0;
-> -
-> -               pmu_alias = pmu_alias__new(dent->d_name, buf);
-> -               if (!pmu_alias)
-> -                       goto close_dir;
-> -
-> -               list_add_tail(&pmu_alias->list, &pmu_alias_name_list);
-> -       }
-> -
-> -       ret = 0;
-> -
-> -close_dir:
-> -       closedir(dir);
-> -       return ret;
-> -}
-> -
-> -static const char *__pmu_find_real_name(const char *name)
-> -{
-> -       struct pmu_alias *pmu_alias;
-> -
-> -       list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
-> -               if (!strcmp(name, pmu_alias->alias))
-> -                       return pmu_alias->name;
-> -       }
-> -
-> -       return name;
-> -}
-> -
-> -const char *pmu_find_real_name(const char *name)
-> -{
-> -       if (cached_list)
-> -               return __pmu_find_real_name(name);
-> -
-> -       setup_pmu_alias_list();
-> -       cached_list = true;
-> -
-> -       return __pmu_find_real_name(name);
-> -}
-> -
-> -static const char *__pmu_find_alias_name(const char *name)
-> -{
-> -       struct pmu_alias *pmu_alias;
-> -
-> -       list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
-> -               if (!strcmp(name, pmu_alias->name))
-> -                       return pmu_alias->alias;
-> -       }
-> -       return NULL;
-> -}
-> -
-> -const char *pmu_find_alias_name(const char *name)
-> -{
-> -       if (cached_list)
-> -               return __pmu_find_alias_name(name);
-> -
-> -       setup_pmu_alias_list();
-> -       cached_list = true;
-> -
-> -       return __pmu_find_alias_name(name);
-> -}
-> -
->  int perf_pmus__num_mem_pmus(void)
->  {
->         /* AMD uses IBS OP pmu and not a core PMU for perf mem/c2c */
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 0d81c059c91c..0f5c6ed257a8 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -937,16 +937,27 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
->         return NULL;
->  }
->
-> -const char * __weak
-> -pmu_find_real_name(const char *name)
-> +static char *pmu_find_alias_name(struct perf_pmu *pmu, int dirfd)
->  {
-> -       return name;
-> -}
-> +       FILE *file = perf_pmu__open_file_at(pmu, dirfd, "alias");
-> +       char *line = NULL;
-> +       size_t line_len = 0;
-> +       ssize_t ret;
->
-> -const char * __weak
-> -pmu_find_alias_name(const char *name __maybe_unused)
-> -{
-> -       return NULL;
-> +       if (!file)
-> +               return NULL;
-> +
-> +       ret = getline(&line, &line_len, file);
-> +       if (ret < 0) {
-> +               fclose(file);
-> +               return NULL;
-> +       }
-> +       /* Remove trailing newline. */
-> +       if (ret > 0 && line[ret - 1] == '\n')
-> +               line[--ret] = '\0';
-> +
-> +       fclose(file);
-> +       return line;
->  }
->
->  static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
-> @@ -957,12 +968,10 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
->         return max_precise;
->  }
->
-> -struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *lookup_name)
-> +struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
->  {
->         struct perf_pmu *pmu;
->         __u32 type;
-> -       const char *name = pmu_find_real_name(lookup_name);
-> -       const char *alias_name;
->
->         pmu = zalloc(sizeof(*pmu));
->         if (!pmu)
-> @@ -995,18 +1004,12 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
->         pmu->is_core = is_pmu_core(name);
->         pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
->
-> -       alias_name = pmu_find_alias_name(name);
-> -       if (alias_name) {
-> -               pmu->alias_name = strdup(alias_name);
-> -               if (!pmu->alias_name)
-> -                       goto err;
-> -       }
-> -
->         pmu->type = type;
->         pmu->is_uncore = pmu_is_uncore(dirfd, name);
->         if (pmu->is_uncore)
->                 pmu->id = pmu_id(name);
->         pmu->max_precise = pmu_max_precise(dirfd, pmu);
-> +       pmu->alias_name = pmu_find_alias_name(pmu, dirfd);
->         pmu->events_table = perf_pmu__find_events_table(pmu);
->         pmu_add_sys_aliases(pmu);
->         list_add_tail(&pmu->list, pmus);
-> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> index 04b317b17d66..bc807729a7cd 100644
-> --- a/tools/perf/util/pmu.h
-> +++ b/tools/perf/util/pmu.h
-> @@ -251,8 +251,6 @@ void perf_pmu__warn_invalid_formats(struct perf_pmu *pmu);
->
->  int perf_pmu__match(const char *pattern, const char *name, const char *tok);
->
-> -const char *pmu_find_real_name(const char *name);
-> -const char *pmu_find_alias_name(const char *name);
->  double perf_pmu__cpu_slots_per_cycle(void);
->  int perf_pmu__event_source_devices_scnprintf(char *pathname, size_t size);
->  int perf_pmu__pathname_scnprintf(char *buf, size_t size,
-> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> index 64e798e68a2d..ce4931461741 100644
-> --- a/tools/perf/util/pmus.c
-> +++ b/tools/perf/util/pmus.c
-> @@ -37,6 +37,8 @@ static LIST_HEAD(other_pmus);
->  static bool read_sysfs_core_pmus;
->  static bool read_sysfs_all_pmus;
->
-> +static void pmu_read_sysfs(bool core_only);
-> +
->  int pmu_name_len_no_suffix(const char *str, unsigned long *num)
->  {
->         int orig_len, len;
-> @@ -124,6 +126,14 @@ struct perf_pmu *perf_pmus__find(const char *name)
->         pmu = perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirfd, name);
->         close(dirfd);
->
-> +       if (!pmu) {
-> +               /*
-> +                * Looking up an inidividual PMU failed. This may mean name is
-> +                * an alias, so read the PMUs from sysfs and try to find again.
-> +                */
-> +               pmu_read_sysfs(core_pmu);
-> +               pmu = pmu_find(name);
-> +       }
->         return pmu;
->  }
->
-> --
-> 2.42.0.515.g380fc7ccd1-goog
->
