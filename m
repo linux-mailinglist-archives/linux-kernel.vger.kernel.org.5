@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB317B1FF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574917B2008
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjI1OrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
+        id S230522AbjI1Orc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjI1OrM (ORCPT
+        with ESMTP id S230430AbjI1OrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:47:12 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6CB180
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:47:10 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1CF7E40E0198;
-        Thu, 28 Sep 2023 14:47:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id N5pJ5cn_zyMK; Thu, 28 Sep 2023 14:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695912422; bh=tPU8iyjpgSIBCOSk7Wcxg0E9kh+miOLhLUIx3QkgCHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ll1gXe5e3fpQ+szMHmOHc//PTgpilvT7S57e0IhATDq6tDehQ1o2EgoeCSI3zAsOv
-         qLVwdxpZ+qYC/b7BX0RvHDqR/ZJh9mBvjVSE2WZv0pIlr84uYoOdc67yRLc+Eo+hE1
-         v2Pg11lRg/BSvQU3bFmybtXtMo0YECtYBA5cpNRoVipS9y1xGTtLH9BZr2Fi4ONlMb
-         uGYzpt3Yd+6AnMrLawD9QtPwfC8B0eRUH3Tpy50UTZZ8oFios1DjxXwX+3aeNWQku0
-         A10Gxc28sw7EpIUasKSPCHEj2tyXssapZOMiyrYxvAcxlDTGoD4imkyj0SWvJBtXjU
-         39xT6FcjXg2qgoS/js4We3RiaJNc6r+iQbhDT7RWlnU43MNPbtHmBHoY6I3YITtohr
-         VckEzdycdx+VfDUprobZdo3u3ga7ikM0rxh/prcT9/gqYvNnJbxVESsVIS8V/1lU2T
-         Q9WYW0nN+FHfenvuPDPLDmqaDZc2aDwRyUGhNMSRHdkIyfLEVzsgTxPl63Q1F73s7e
-         PDU3q6FHB8dJkwgh8Cp+rCpGcmtUdWoetVfw2wrus17tp0nL6mHg8Ei7V7KtFQrsFi
-         VV0DsvItSODlgmWqQajBBVIxGbjMw43m0FrOGyXk9cWLoO+8AGwt8PnhXmwH2QTvEQ
-         rI6+ntonm/tg4EWbBwe1M3T4=
-Received: from nazgul.tnic (unknown [88.128.88.93])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D96CC40E00B3;
-        Thu, 28 Sep 2023 14:46:41 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 16:47:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Subject: Re: [PATCH v7 02/12] iov_iter, x86: Be consistent about the __user
- tag on copy_mc_to_user()
-Message-ID: <20230928144707.GBZRWR693kYmj8Z0NX@fat_crate.local>
-References: <20230925120309.1731676-1-dhowells@redhat.com>
- <20230925120309.1731676-3-dhowells@redhat.com>
+        Thu, 28 Sep 2023 10:47:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0441A5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:47:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52D52C433CB;
+        Thu, 28 Sep 2023 14:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695912442;
+        bh=Yqv4ybBi58HnuL+bzF0z8/TsxzS8ktMKAJWJgCPHa+Q=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=lJ4cBFtg7YmRBEZR8ALXzGUBVrqqOpbJxcQjtUT1DP0DisNwZ186VdPe6bub9LfdZ
+         V0mf+YJ8aavSENSnoQtOw9GXAshtY/RTY0M82kiHXT5ppzE8//01JjL+JB/LJQHdgs
+         xgiVBYjq9B7KiB0SpzfWwMUx3wvnyvtdSKAdBsr+c6ZHyGSVStAcXmVLeojQnzO6F7
+         00ujCCgemOOPtG0dxZAJZBMObfJhJBHrfNUONyon8PwhIejB/pOamY8pFaqv3LCb+Z
+         Fq3gtpVwlv74tXzf+pONprrZ+D9iG2YAGfqMyFfHeBHlVbKfKIaegHI49kvrJyOLVO
+         JdpiW7S15zENg==
+Received: (nullmailer pid 408738 invoked by uid 1000);
+        Thu, 28 Sep 2023 14:47:11 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230925120309.1731676-3-dhowells@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Christophe Roullier <christophe.roullier@foss.st.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+In-Reply-To: <20230928122427.313271-3-christophe.roullier@foss.st.com>
+References: <20230928122427.313271-1-christophe.roullier@foss.st.com>
+ <20230928122427.313271-3-christophe.roullier@foss.st.com>
+Message-Id: <169591240912.408297.5448136157647549306.robh@kernel.org>
+Subject: Re: [PATCH v2 02/12] dt-bindings: net: add new property
+ st,ext-phyclk in documentation for stm32
+Date:   Thu, 28 Sep 2023 09:47:11 -0500
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 01:02:59PM +0100, David Howells wrote:
-> copy_mc_to_user() has the destination marked __user on powerpc, but not on
-> x86; the latter results in a sparse warning in lib/iov_iter.c.
+
+On Thu, 28 Sep 2023 14:24:17 +0200, Christophe Roullier wrote:
+> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
+> This property can be used with RMII phy without cristal 50Mhz and when we
+> want to select RCC clock instead of ETH_REF_CLK
+> Can be used also with RGMII phy with no cristal and we select RCC clock
+> instead of ETH_CLK125
+> This new property replace st,eth-clk-sel and st,eth-ref-clk-sel
 > 
-> Fix this by applying the tag on x86 too.
-> 
-> Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Dan Williams <dan.j.williams@intel.com>
-> cc: Thomas Gleixner <tglx@linutronix.de>
-> cc: Ingo Molnar <mingo@redhat.com>
-> cc: Borislav Petkov <bp@alien8.de>
-> cc: Dave Hansen <dave.hansen@linux.intel.com>
-> cc: "H. Peter Anvin" <hpa@zytor.com>
-> cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> cc: Jens Axboe <axboe@kernel.dk>
-> cc: Christoph Hellwig <hch@lst.de>
-> cc: Christian Brauner <christian@brauner.io>
-> cc: Matthew Wilcox <willy@infradead.org>
-> cc: Linus Torvalds <torvalds@linux-foundation.org>
-> cc: David Laight <David.Laight@ACULAB.COM>
-> cc: x86@kernel.org
-> cc: linux-block@vger.kernel.org
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 > ---
->  arch/x86/include/asm/uaccess.h | 2 +-
->  arch/x86/lib/copy_mc.c         | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
 
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
--- 
-Regards/Gruss,
-    Boris.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/stm32-dwmac.yaml:82:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
+./Documentation/devicetree/bindings/net/stm32-dwmac.yaml:83:7: [warning] wrong indentation: expected 7 but found 6 (indentation)
+./Documentation/devicetree/bindings/net/stm32-dwmac.yaml:86:5: [error] syntax error: expected <block end>, but found '<block mapping start>' (syntax)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/net/stm32-dwmac.example.dts'
+Documentation/devicetree/bindings/net/stm32-dwmac.yaml:86:5: did not find expected key
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/net/stm32-dwmac.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/net/stm32-dwmac.yaml:86:5: did not find expected key
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/stm32-dwmac.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230928122427.313271-3-christophe.roullier@foss.st.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
