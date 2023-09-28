@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3947B26C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047D47B26C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbjI1Uoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S232120AbjI1Uqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1Uoi (ORCPT
+        with ESMTP id S229478AbjI1Uqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:44:38 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D14919C;
-        Thu, 28 Sep 2023 13:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1695933874;
-        bh=9aw0BPEYNd90DJaMDLBC1QrPFfgdOGYswPNrGMMC+Jo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kQmhU7WCur4kGAIitZt1UW+sOUNw/tzQmiKAvbldPzHKscXuIsBVKfYXirPm52xus
-         6l6eDyNgM9JikY371xnNuMdP26JC6oE2AdONEKdObMimS7miq3g54V4R7846LyiDaK
-         9iKlDwZfwTOUIHbBZ2gDoaM8GPiXQjjSGcuo6MHW965pS8acdehV+Na+K4LPSmzxsN
-         i1qThFkuG24sKTtm9tTgR2WvSfg9P75FOYBMFJU2NSktfCYrfsUx5rFyI0z1M6Chvo
-         vCMjD/wlQNqhdJzabIeEaJ8aRzmdbcirwyQwPMMoopzU3/DCLhS+AzQ2ezo/Tzb6Zb
-         8E4LtfZqmK/AQ==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RxQSx6Qmbz1Qnb;
-        Thu, 28 Sep 2023 16:44:33 -0400 (EDT)
-Message-ID: <94c23850-265c-5d71-f0a3-e02b5dbc050e@efficios.com>
-Date:   Thu, 28 Sep 2023 16:43:58 -0400
+        Thu, 28 Sep 2023 16:46:35 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C43180;
+        Thu, 28 Sep 2023 13:46:33 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-504a7f9204eso3170888e87.3;
+        Thu, 28 Sep 2023 13:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695933992; x=1696538792; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hPgUe9lX4McMY8NXu/5cUyHU5+8iuToZI/13QzjOzwU=;
+        b=gHp6ZGRRyrpPAAIoIDqy4zR7OMQGU3m/Jz1PUvgLP5hVRJu16MZjlc14NefR/u530k
+         5ENoefhL7cs6vSyzQo5G3p/P8my8CpUeR+Az/wnpFwubWR3IBm/m+odzuZRI3tTFIbX1
+         z3rguvmSB2koYZHAbIWV71Ze1+WXZFSX0HzW2PmmTo7tBuJOD/wgtGyOcddUfUo6gFDG
+         hr5dt3RpmK+LHZdniTcFrcrpMlvIytv1oTQtvem0omLUwzJ9XD21Hw+mp4nDQMQ8sQ3L
+         PzEQEOpj8Aq2L76btCr6JAfNfInZMHbXx+OHCPFnf3QinQkq/jM7tUn9FpV+5bijaUYd
+         aJhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695933992; x=1696538792;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hPgUe9lX4McMY8NXu/5cUyHU5+8iuToZI/13QzjOzwU=;
+        b=eX6dxRTuhC48DTmWg0t4QfAc7L16+d+t2DXbwS50u76cWrfw16mFuDlpCxg7uWtQVQ
+         sruAs57Kj+5S9+1Qmt3iyjGvqy9ZkpyzRItdNpzEMmUCmNVXBdBkXVEsiM3NNllZnDR4
+         PRZFWBDNFt203jHV63brC22mZ/F/AQE5YW/pX4fGiuLtaZ5gIpj9mS8wM2VrvrFjQXTW
+         d9H9Ibk/UTeEU+IZwPhXCVgtaYoMPl3v54wn3Sb2dFoMZ/9arXjjmEGDnNYuFXC2uSKO
+         YXXMn+OIPEEqQUK5drWwNvzLlBK+Zoxr/E1C7rpUoUG8Eq5mulJ5uuXbAkzPyrdllXBY
+         ZPQw==
+X-Gm-Message-State: AOJu0Yy7erSpjaHWfladBs0kjgA5uFP0VTBgEeV91xunBKTka9VQM4KX
+        3gfUacqbaoSKwphZaoQm2OU=
+X-Google-Smtp-Source: AGHT+IEwlsak/7zZhDaoy1I+l4SeZz0Oi1OVAIyi21U3apsnncFv9qsbL+yC9kNOSWGBmjk+/qX2vA==
+X-Received: by 2002:a05:6512:3451:b0:500:8f65:c624 with SMTP id j17-20020a056512345100b005008f65c624mr1822930lfr.53.1695933991637;
+        Thu, 28 Sep 2023 13:46:31 -0700 (PDT)
+Received: from localhost.localdomain ([154.133.201.230])
+        by smtp.gmail.com with ESMTPSA id l23-20020a19c217000000b00501c77ad909sm3233139lfc.208.2023.09.28.13.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 13:46:31 -0700 (PDT)
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        Andrew Kanner <andrew.kanner@gmail.com>
+Subject: [PATCH net-next v1] net/xdp: fix zero-size allocation warning in xskq_create()
+Date:   Thu, 28 Sep 2023 23:44:40 +0300
+Message-Id: <20230928204440.543-1-andrew.kanner@gmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <000000000000c84b4705fb31741e@google.com>
+References: <000000000000c84b4705fb31741e@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>, David.Laight@ACULAB.COM,
-        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        libc-alpha@sourceware.org, Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>, longman@redhat.com,
-        Florian Weimer <fweimer@redhat.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
- <20230529191416.53955-2-mathieu.desnoyers@efficios.com> <87r0midp5u.ffs@tglx>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <87r0midp5u.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,72 +79,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 16:21, Thomas Gleixner wrote:
-> On Mon, May 29 2023 at 15:14, Mathieu Desnoyers wrote:
->> +void __rseq_set_sched_state(struct task_struct *t, unsigned int state);
->> +
->> +static inline void rseq_set_sched_state(struct task_struct *t, unsigned int state)
->> +{
->> +	if (t->rseq_sched_state)
->> +		__rseq_set_sched_state(t, state);
-> 
-> This is invoked on every context switch and writes over that state
-> unconditionally even in the case that the state was already
-> cleared. There are enough situations where tasks are scheduled out
-> several times while being in the kernel.
+Syzkaller reported the following issue:
+ ------------[ cut here ]------------
+ WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
+ Modules linked in:
+ CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
+ Hardware name: Generic DT based system
+ unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
+ show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+ dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
+ __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
+ warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
+ __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
+ vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
+ xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
+ xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
+ __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
 
-Right, if this becomes more than a PoC, I'll make sure to keep track of 
-the current state within the task struct, and only update userspace on 
-state transition.
+xskq_get_ring_size() uses struct_size() macro to safely calculate the
+size of struct xsk_queue and q->nentries of desc members. But the
+syzkaller repro was able to set q->nentries with the value initially
+taken from copy_from_sockptr() high enough to return SIZE_MAX by
+struct_size(). The next PAGE_ALIGN(size) is such case will overflow
+the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
+vmalloc_user() -> __vmalloc_node_range().
 
-> 
->>   /* rseq_preempt() requires preemption to be disabled. */
->>   static inline void rseq_preempt(struct task_struct *t)
->>   {
->>   	__set_bit(RSEQ_EVENT_PREEMPT_BIT, &t->rseq_event_mask);
->>   	rseq_set_notify_resume(t);
->> +	rseq_set_sched_state(t, 0);
-> 
-> This code is already stupid to begin with. __set_bit() is cheap, but
-> rseq_set_notify_resume() is not as it has a conditional and a locked
-> instruction
+The issue is reproducible on 32-bit arm kernel.
 
-What alternative would you recommend to set a per-thread state that has 
-the same effect as TIF_NOTIFY_RESUME ? Indeed all it really needs to 
-synchronize with is the thread owning the flags, but AFAIU having this 
-flag part of the TIF flags requires use of an atomic instruction to 
-synchronize updates against concurrent threads.
+Reported-and-tested-by: syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000c84b4705fb31741e@google.com/T/
+Link: https://syzkaller.appspot.com/bug?extid=fae676d3cf469331fc89
+Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+---
+RFC notes:
 
-If we move this thread flag into a separate field of struct thread_info, 
-then we could turn this atomic set bit into a more lightweight store, 
-but then we'd need to check against an extra field on return to userspace.
+It was found that net/xdp/xsk.c:xsk_setsockopt() uses
+copy_from_sockptr() to get the number of entries (int) for cases with
+XDP_RX_RING/XDP_TX_RING and XDP_UMEM_FILL_RING/XDP_UMEM_COMPLETION_RING.
 
-And if we want to remove the conditional branch on the scheduler 
-fast-path, we could always load and test both the task struct's rseq 
-pointer and the thread_info "preempted" state on return to userspace.
+Next in xsk_init_queue() there're 2 sanity checks (entries == 0) and
+(!is_power_of_2(entries)) for which -EINVAL will be returned.
 
-The tradeoff there would be to add extra loads and conditional branches 
-on return to userspace to speed up the scheduler fast-path.
+After that net/xdp/xsk_queue.c:xskq_create() will calculate the size
+multipling the number of entries (int) with the size of u64, at least.
 
-Is this what you have in mind or am I missing your point ?
+I wonder if there should be the upper bound (e.g. the 3rd sanity check
+inside xsk_init_queue()). It seems that without the upper limit it's
+quiet easy to overflow the allocated size (SIZE_MAX), especially for
+32-bit architectures, for example arm nodes which were used by the
+syzkaller.
 
-> and now you add two more conditionals into the context
-> switch path.
+In this patch I added a naive check for SIZE_MAX which helped to
+skip zero-size allocation after overflow, but maybe it's not quite
+right. Please, suggest if you have any thoughts about the appropriate
+limit for the size of these xdp rings.
 
-I'm open to suggestions on how to improve this if this goes beyond PoC 
-stage and we observe measurable benefits on the userspace side.
+PS: the initial number of entries is 0x20000000 in syzkaller repro:
+syscall(__NR_setsockopt, (intptr_t)r[0], 0x11b, 3, 0x20000040, 0x20);
 
-Thanks,
+Link: https://syzkaller.appspot.com/text?tag=ReproC&x=10910f18280000
 
-Mathieu
+ net/xdp/xsk_queue.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
-> Thanks,
-> 
->          tglx
-
+diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+index f8905400ee07..1bc7fb1f14ae 100644
+--- a/net/xdp/xsk_queue.c
++++ b/net/xdp/xsk_queue.c
+@@ -34,6 +34,9 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+ 	q->ring_mask = nentries - 1;
+ 
+ 	size = xskq_get_ring_size(q, umem_queue);
++	if (size == SIZE_MAX)
++		return NULL;
++
+ 	size = PAGE_ALIGN(size);
+ 
+ 	q->ring = vmalloc_user(size);
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.39.3
 
