@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C977B180C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B98C7B1811
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjI1KGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        id S230360AbjI1KHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1KGv (ORCPT
+        with ESMTP id S230341AbjI1KHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:06:51 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B0D95
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:06:50 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-690ba63891dso9915684b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:06:50 -0700 (PDT)
+        Thu, 28 Sep 2023 06:07:33 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BFA12A
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:07:30 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae75ece209so1462686966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695895610; x=1696500410; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JOLCDbuRg5WAvArGgdnVXPEciKhPCkovAWJeDLxP5T0=;
-        b=Ad+mMY4q3/dTW6qKr1K3CbkW+0IaU94Lgkh+kBSag9ihUAxGyHutKrj20uFZzkMCaU
-         5mzqIYyEEICi8gXkCaLCEn/GBi9YJFNPoEjzJ/zcc3DlXR4IPMGpettDxQvUMgGj3nWL
-         4fj/rgHjb1Vn3n0Wf43bS6YUWCj094Nb/CpOew2t++gL/bDxlM/z6wV+nxJ/2UPcMNpY
-         dDiFqJWjvepj9IsKN4v00wWH0XiwYIqNXW7YJtE++vKl5JyeeP714DDPdQdHHe0WUVdG
-         ELp0eCHApJk6m32goOf1j3J332wjyXbBg+rGvIzeP/EeOKMLa/eiC0/AsYRubNaK4M4b
-         z5ng==
+        d=szeredi.hu; s=google; t=1695895648; x=1696500448; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DtI3kB3DRHPB9DqqP0XY+HAtUyMDubLkneuHlzD3860=;
+        b=gYiPrQmN1jhYL+x8C0LEoXUdQcqshHo58gF2gKveAmY9rYqXs3JSyK6HSznIH6b1i8
+         iRV/Or2UlbUuiqfPM4vmn3DQyXSjSbZTph6iyrIYNSHjMThz1dVLZzjbULl05eZl8fp3
+         crc2xqIaMfNBcq1E1iWQx3ucLokdBXwTU7fJ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695895610; x=1696500410;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1695895648; x=1696500448;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JOLCDbuRg5WAvArGgdnVXPEciKhPCkovAWJeDLxP5T0=;
-        b=IWE1lL4pvT1WjL19m/3j4V8HwcKFzvUWzGvm7H2IRPESP/pYz4VESHHAuNlGwVX6yP
-         mrExTj+1uK5GK7WNd3JI1/i63FZct2sPNVwfvPr60QvEsl34z5x/at0tNFtTvuLtgz/5
-         /KzPCgFgwdKsuNEZZgcrLNpZvaqhN7YAdw8RMEZNKI55Q7x8R6uffk41vM1zjcrmfwIl
-         Qre4izSbfHFGRamzV7yXAF7I4bSakl1b1KznKKF+qcU86bMPSKQKtqKCelM02lLI6M0A
-         BHz96j6ITdA5D+2bakvzrWaCpmB3/a61trVyN4SfCpq6JD/TJeUDMcomipFhE3ZWV507
-         CPew==
-X-Gm-Message-State: AOJu0YyX4DrtZlfT+KkmrF6OY8TPHxbDVItlF1pRDrGfUnxYu++6VbCx
-        XIGh1aHb/tR5XbKG78/NPyRgkNR0EcnSnQ==
-X-Google-Smtp-Source: AGHT+IH2gUlVxLRrf6Rrd65xgA4UV3DNC/EmxkMzPW2TfP8DWpL9C4aw+kcv5q1ZskDKb/OppgUgCg==
-X-Received: by 2002:a05:6a20:dd85:b0:14c:4deb:7120 with SMTP id kw5-20020a056a20dd8500b0014c4deb7120mr485155pzb.62.1695895609617;
-        Thu, 28 Sep 2023 03:06:49 -0700 (PDT)
-Received: from localhost.localdomain ([111.108.111.133])
-        by smtp.gmail.com with ESMTPSA id z5-20020a1709027e8500b001c613b4aa33sm3166306pla.287.2023.09.28.03.06.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Sep 2023 03:06:49 -0700 (PDT)
-From:   Wei Gong <gongwei833x@gmail.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, Wei Gong <gongwei833x@gmail.com>
-Subject: [PATCH v3] genirq: avoid long loops in handle_edge_irq
-Date:   Thu, 28 Sep 2023 18:06:38 +0800
-Message-Id: <20230928100638.42116-1-gongwei833x@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+        bh=DtI3kB3DRHPB9DqqP0XY+HAtUyMDubLkneuHlzD3860=;
+        b=pB9LQaq4jYzMWkUaz3Ask9K+ruUGG/c2wZlojlsbgwh5cWRLbmN+QCRPnR7EjLhKEg
+         S8/cS4+cjXZ3GMn0iWPK43EbMid17PenMtOss2xWLa8Hcoa+98v2zEfy/Oyi3KUvr/UA
+         SWSvtpBKs2by99aINLZOCNc4Dvi6eES+/gKQGytlN3ZKE2hFodim6hLEX3FAXAxq2tSE
+         vgpCqL7AosEoedzZpPZT43fhnTcsWOIJx/8FxAzJJRH34MbMo+HJipuXCGXs+v+/XaZ6
+         UWSKqZibEMlJjA6tYdKyipyd/EkrNRyEapYzrEG1V0/F1PhXBgVL6YtcqbsuCUu8bhU8
+         3izg==
+X-Gm-Message-State: AOJu0Ywh3hGYu4Bi05IJfVn9JWg85y5kx7bFAhN2GKUzAfP396zp3bnd
+        /EcoDq4Q+oW4V2OLvR7mZhTrB595j5ACDZ2xbCHXog==
+X-Google-Smtp-Source: AGHT+IEDypM3eCKriTL3toxyQv8Q1keb6DT2jEmjFo0FJ1MxFnDwMp3fk9njVXSZqz8oyH0A9Xgaw9Xxa1l5dOcoVH0=
+X-Received: by 2002:a17:907:7609:b0:9a5:cf23:de5b with SMTP id
+ jx9-20020a170907760900b009a5cf23de5bmr846668ejc.38.1695895648586; Thu, 28 Sep
+ 2023 03:07:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230913152238.905247-1-mszeredi@redhat.com> <20230913152238.905247-4-mszeredi@redhat.com>
+ <20230917005419.397938-1-mattlloydhouse@gmail.com> <CAOssrKcECS_CvifP1vMM8YOyMW7dkGXTDTKY2CRr-fPrJk76ZA@mail.gmail.com>
+ <20230918-einblick-klaut-0a010e0abc70@brauner> <CAHC9VhQsChQO9aaY+NTtmvJgXBodvXO6rUN3d7ZyHGqitLBABw@mail.gmail.com>
+In-Reply-To: <CAHC9VhQsChQO9aaY+NTtmvJgXBodvXO6rUN3d7ZyHGqitLBABw@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 28 Sep 2023 12:07:17 +0200
+Message-ID: <CAJfpegtJwcS9=7dCAVCEoBwD_U2MX44a6B62iDsc78AZt6nM7Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] add listmnt(2) syscall
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are a large number of interrupts occurring on the tx
-queue(irq smp_affinity=1) of the network card, changing the CPU
-affinity of the tx queue (echo 2 > /proc/irq/xx/smp_affinity)
-will cause handle_edge_irq to loop for a long time in the
-do {} while() loop.
+On Tue, 19 Sept 2023 at 18:48, Paul Moore <paul@paul-moore.com> wrote:
 
-After setting the IRQ CPU affinity, the next interrupt will only
-be activated when it arrives. Therefore, the next interrupt will
-still be on CPU 0. When a new CPU affinity is activated on CPU 0,
-subsequent interrupts will be processed on CPU 1.
+> > Ideally we avoid multiple capable(CAP_SYS_ADMIN) calls by only doing it
+> > once and saving the return value. capable() call's aren't that cheap.
+>
+> Agreed.  The capability check doesn't do any subject/object
+> comparisons so calling it for each mount is overkill.  However, I
+> would think we would want the LSM hook called from inside the loop as
+> that could involve a subject (@current) and object (individual mount
+> point) comparison.
 
-       cpu 0                                cpu 1
-  - handle_edge_irq
-    - apic_ack_irq
-      - irq_do_set_affinity
-                                        - handle_edge_irq
-    - do {
-        - handle_irq_event
-          - istate &= ~IRQS_PENDIN
-          - IRQD_IRQ_INPROGRESS
-          - spin_unlock()
-                                          - spin_lock()
-                                          - istate |= IRQS_PENDIN
-          - handle_irq_event_percpu       - mask_ack_irq()
-                                          - spin_unlock()
-          - spin_unlock
+The security_sb_statfs() one?
 
-      } while(IRQS_PENDIN &&
-              !irq_disable)
+Should a single failure result in a complete failure?
 
-Therefore, when determining whether to continue looping, we add a check
-to see if the current CPU belongs to the affinity table of the interrupt.
+Why is it not enough to check permission on the parent?
 
-Signed-off-by: Wei Gong <gongwei833x@gmail.com>
----
- kernel/irq/chip.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index dc94e0bf2c94..a457490bd965 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -831,7 +831,9 @@ void handle_edge_irq(struct irq_desc *desc)
- 		handle_irq_event(desc);
- 
- 	} while ((desc->istate & IRQS_PENDING) &&
--		 !irqd_irq_disabled(&desc->irq_data));
-+		 !irqd_irq_disabled(&desc->irq_data) &&
-+		 cpumask_test_cpu(smp_processor_id(),
-+				   irq_data_get_effective_affinity_mask(&desc->irq_data)));
- 
- out_unlock:
- 	raw_spin_unlock(&desc->lock);
--- 
-2.32.1 (Apple Git-133)
-
+Thanks,
+Miklos
