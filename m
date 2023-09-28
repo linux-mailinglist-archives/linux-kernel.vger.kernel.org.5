@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DABA7B156F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3867D7B1571
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjI1Hyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        id S230159AbjI1H4e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 03:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjI1Hyo (ORCPT
+        with ESMTP id S229539AbjI1H4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:54:44 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916A392;
-        Thu, 28 Sep 2023 00:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695887682; x=1727423682;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5GpWFegTBp5yM6JLEFMqHTeSyrLm5zh8808vJewdHfc=;
-  b=yQEq1idp9y+oahrMJ+veUf6vEKAxoOP+JfR3c846FM/yEnenaQHy+uuh
-   CXWiUYhDoejOWmYjyOABQWVimZKgc48LUR/7P5WixPiT7FUt1W6UNk3FL
-   letKwz3ROPl7TYXhhKpZLbhdHuBj+o2s7X/etS1fmqG9Av7DO4ej9d7Ql
-   l1vyoJjsxzOXeRdm1c2NxSmEPt0Kqn6aUK/GS/xTV2WDzl0QzRhva5Jx4
-   mWCc0/mcF/H/I2jv4OFR6jI0c3ZWur/4HPOc2R/lOsHSgx2Km7q2b9VXP
-   SA5DICiG+z37rQg/OZTM91t2WKGjU5zO1jIVptWYDgeNxt/s51yJ26rMC
-   g==;
-X-CSE-ConnectionGUID: NCgEknYGQJG6l7MApLDYcw==
-X-CSE-MsgGUID: AmcurO+sTECrDbDybSnNWQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="asc'?scan'208";a="7033221"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Sep 2023 00:54:36 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 28 Sep 2023 00:54:35 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 28 Sep 2023 00:54:33 -0700
-Date:   Thu, 28 Sep 2023 08:54:14 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Chen Wang <unicornxw@gmail.com>
-CC:     Conor Dooley <conor@kernel.org>, <aou@eecs.berkeley.edu>,
-        <chao.wei@sophgo.com>, <devicetree@vger.kernel.org>,
-        <guoren@kernel.org>, <jszhang@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
-        <robh+dt@kernel.org>, <xiaoguang.xing@sophgo.com>,
-        <apatel@ventanamicro.com>
-Subject: Re: [PATCH v3 00/11] Add Milk-V Pioneer RISC-V board support
-Message-ID: <20230928-character-shelve-f772d9a1b493@wendy>
-References: <cover.1695804418.git.unicornxw@gmail.com>
- <20230927-ebony-duress-44ff45d3d253@spud>
- <CAHAQgRC2xeqUu4mDZRJd3brcPNT4KovX65rNE7YXm+ku0+eERg@mail.gmail.com>
- <CAHAQgRDz=Gp45ZkyW1fZiZW7+EyxDzbqKkc56XOpCpZ7x1rJeQ@mail.gmail.com>
+        Thu, 28 Sep 2023 03:56:33 -0400
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDCE92
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:31 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f6e6b206fso105937477b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695887790; x=1696492590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=///6BZDQGo/3wRvsKomS4kW8ql3SPch+OsrNejAumIA=;
+        b=GZVKuLLX/KflbPLdVKRDA5rN0lCj3vzpidGR4YhBSCjSF2I6X4oeXZzFTR4Tkz3Uf3
+         PJYfTNspdOQL8/aHqa9FQ9krfawn+zcPmR6MUMSOD3qceaImtYW+H5ZhjXrfzmfXKx3U
+         rYRG3egzECGRW5w4aOk2hCAq5Y1IF8HdMfVdMUZqoAo+ipRFU81XB+UBZHgZGYATUsIb
+         L5IPXtteGZqc3z/WWs0T8nAhlAHnjfzIOypaQTn8HOr0DJpdnwXqumVkgsJSajHhR1iS
+         kPmCkm3kQ9FXAiEMhlutj+hK2YU3dD+aOVAh4ykZsCl8WE3UbZ4zh4u5rgAbVu3ChPFH
+         Yvfw==
+X-Gm-Message-State: AOJu0Yyr7RrfS0QJ3qBH17T4R3UmONfLWq+6vnOj8B4YWb0Y0vyepK6q
+        /bOU/YKtSRhXfLwaBbvc9pn7YZy25RJXpw==
+X-Google-Smtp-Source: AGHT+IGK73Px8u7XEgpOJnaf4ntQxP5oTkr+DjzDxg2Iecemo9cICt8XW5bLbublL670CRAI64D1VQ==
+X-Received: by 2002:a81:5286:0:b0:59f:519e:3e98 with SMTP id g128-20020a815286000000b0059f519e3e98mr537972ywb.7.1695887790686;
+        Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id h67-20020a0dc546000000b00583b144fe51sm4380435ywd.118.2023.09.28.00.56.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59f6041395dso117361477b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
+X-Received: by 2002:a0d:ebd6:0:b0:592:9035:8356 with SMTP id
+ u205-20020a0debd6000000b0059290358356mr542647ywe.26.1695887790180; Thu, 28
+ Sep 2023 00:56:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5m1Bn1GZfbMYs4+k"
-Content-Disposition: inline
-In-Reply-To: <CAHAQgRDz=Gp45ZkyW1fZiZW7+EyxDzbqKkc56XOpCpZ7x1rJeQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
+ <6c02765f89eb4455806b895a6e0cb763@realtek.com> <ZN3CQ1Y3yC9p/01Y@matsya>
+In-Reply-To: <ZN3CQ1Y3yC9p/01Y@matsya>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Sep 2023 09:56:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWor=u72E_ZfERyH3dUw3r0dsd43VsVTkx2w+DiJvyLGA@mail.gmail.com>
+Message-ID: <CAMuHMdWor=u72E_ZfERyH3dUw3r0dsd43VsVTkx2w+DiJvyLGA@mail.gmail.com>
+Subject: Re: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---5m1Bn1GZfbMYs4+k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Vinod,
 
-On Thu, Sep 28, 2023 at 03:48:24PM +0800, Chen Wang wrote:
+On Thu, Aug 17, 2023 at 8:46 AM Vinod Koul <vkoul@kernel.org> wrote:
+> On 17-08-23, 02:06, Stanley Chang[昌育德] wrote:
+> > > diff --git a/drivers/phy/realtek/Kconfig b/drivers/phy/realtek/Kconfig index
+> > > 650e20ed69af41d2..75ac7e7c31aec6f2 100644
+> > > --- a/drivers/phy/realtek/Kconfig
+> > > +++ b/drivers/phy/realtek/Kconfig
+> > > @@ -2,6 +2,9 @@
+> > >  #
+> > >  # Phy drivers for Realtek platforms
+> > >  #
+> > > +
+> > > +if ARCH_REALTEK || COMPILE_TEST
+> > > +
+> > >  config PHY_RTK_RTD_USB2PHY
+> > >         tristate "Realtek RTD USB2 PHY Transceiver Driver"
+> > >         depends on USB_SUPPORT
+> > > @@ -25,3 +28,5 @@ config PHY_RTK_RTD_USB3PHY
+> > >           The DHC (digital home center) RTD series SoCs used the Synopsys
+> > >           DWC3 USB IP. This driver will do the PHY initialization
+> > >           of the parameters.
+> > > +
+> > > +endif # ARCH_REALTEK || COMPILE_TEST
+> >
+> > Thanks for your patch.
+> > Why not use "depends on"?
+> > depends on ARCH_MEDIATEK || COMPILE_TEST
+>
+> I think this patch is better, this way all future rtek drivers will be
+> fixed as well, no need to add for each driver
 
-> hi, Conor, one more question, what base should I take for next v4? I'm
-> still using 6.6-rc1 and I see 6.6-rc3 has been released out.
+Is there anything still blocking this patch?
+Do you want me to resend?
+Thanks!
 
--rc1 is fine :)
+Gr{oetje,eeting}s,
 
---5m1Bn1GZfbMYs4+k
-Content-Type: application/pgp-signature; name="signature.asc"
+                        Geert
 
------BEGIN PGP SIGNATURE-----
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRUxHAAKCRB4tDGHoIJi
-0oD/AP0Sg9cSFzJ4QG75QErZq87bCwS0txflO7nbtQ3XXqmgDAD7BSNsq/j/huEa
-GV3lZI3TpSoBOy8Hd1I0DnhdXqTPWQA=
-=z7qG
------END PGP SIGNATURE-----
-
---5m1Bn1GZfbMYs4+k--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
