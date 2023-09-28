@@ -2,121 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5077B127D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B357B128C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjI1GOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        id S230292AbjI1GTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjI1GOT (ORCPT
+        with ESMTP id S229453AbjI1GTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:14:19 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B14198
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:14:16 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3513fa06bafso25697545ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1695881655; x=1696486455; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LHuIvMJs8qzoPXhYXObNPxhAaUcGW9Ddxs7u6Di5I3s=;
-        b=SR2hHAEWA7zh1pp+sRV0ysuSdn9TadbN6mkXvh8yz76bZ8A2r7VqccOb/axxhLl1dQ
-         p/A0z2C2z+426E95uDfDJn5oGARpCN2RJX1+Osi2+1ex2S3ZgaH4LIvbe/pNBfrwWjQ3
-         iuJMzXG2gtJAAXYuCe9bzhhtKF191dDZLGCOeNb33IJbMFwgiPtk5maT4FP+qqcJK79w
-         a2P5rjvi6+/K6JSHLlVZdUGEJ7WoIsEa00lPCmfVDdD9JQyOV77f1C3qWzqL0zBborp+
-         E5Jj/Fe6cZ3xGU+2Goa7Uu4WB4eY8pVib4/50P4ghRWjCHJh7BUvhV6OMxmMmItOn0Yc
-         l4sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695881655; x=1696486455;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LHuIvMJs8qzoPXhYXObNPxhAaUcGW9Ddxs7u6Di5I3s=;
-        b=W+lvadfWrrVC14sj8OoovQ0npW9xOUwGdVqtR792JXrkRdmaq5Rdg6pB4uVpkucm1p
-         A6l5Lc7neXhCo+3ml9QJS5ps6do1yJLgfq5Ioaq4G/DFsnGu4FBGe01bxYGxGIYsJY7/
-         ZeV/RmchvJ0BorNoxRHIxavkPVW627NsN3U3qM/ScGIJbOC4dHIUOl9Vf6+fuliZp99i
-         1WPyJEe53TtDhegNkXpfHSZl7lfEZNQ21DZFnGlNECWnTnbemk04nrwwXnj8JNODZQj3
-         2fFhgQ8nfe4PO6sYdvzCOqHtevz2GdIGHsmccShEr8F+zPKVteoph6OU67ScTRpwbEk7
-         iWLw==
-X-Gm-Message-State: AOJu0YwijtHlLQ6HDB7Zt7SSOjPT6u6BMDQPhT0tw0VFhS6cpROBr+B/
-        Oi1CYExmcMZ2p5VtEs+1HUrmVg==
-X-Google-Smtp-Source: AGHT+IFTu6zFLWGG5N+HYwj83ugftb4GPLwahJWLeQeUPg4Ri/nzVup+T9WjH0TGUx0jYGkXS+msOA==
-X-Received: by 2002:a05:6e02:152e:b0:351:5acb:271 with SMTP id i14-20020a056e02152e00b003515acb0271mr335799ilu.1.1695881655365;
-        Wed, 27 Sep 2023 23:14:15 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
-        by smtp.gmail.com with ESMTPSA id x6-20020a92d306000000b003506f457d70sm4774467ila.63.2023.09.27.23.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 23:14:14 -0700 (PDT)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v9 15/15] MAINTAINERS: Add entry for RISC-V AIA drivers
-Date:   Thu, 28 Sep 2023 11:42:07 +0530
-Message-Id: <20230928061207.1841513-16-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230928061207.1841513-1-apatel@ventanamicro.com>
-References: <20230928061207.1841513-1-apatel@ventanamicro.com>
+        Thu, 28 Sep 2023 02:19:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4D899;
+        Wed, 27 Sep 2023 23:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695881946; x=1727417946;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=yPoRTff1W8kHOZj6MIgWTa4FPEtV7El2Duzf1zGYqoI=;
+  b=XCmh6lMezJrCbdiEj6brvfLLN+4eo4r0uPrIBptu38VyOV1oYDG6UJI9
+   do2V5wVo0YxP/em7YTb0rKomZqAHoHKP41Ccv47kW5MBFB+2yfnlkNq51
+   X92JODOz5PFxUzxfwKV8rpdrpjK8KZzBv2eRlgo1VElZIbBAVyVOKHmYF
+   qkCX1Ouz4f0JUTsZDmhFmI1J+5p6CkzjhiqQAp9t1Lp0lJ/hR+L1U1GN9
+   52bTwBaeQPbrzcJJwMlwZdlsNl3oLkQpDlY+EqhGSw1QFTmPb/9NvfYRw
+   yPYbFY6TUoFZOuJ9yQnlDf9U80BK6g7a25NLdazkyARnsmTJB3cvNAGIu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="446139326"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="446139326"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 23:19:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="726120975"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="726120975"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 23:19:00 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Ravi Jonnalagadda <ravis.opensrc@micron.com>
+Cc:     <linux-mm@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-api@vger.kernel.org>, <luto@kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dietmar.eggemann@arm.com>, <vincent.guittot@linaro.org>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
+        <akpm@linux-foundation.org>, <x86@kernel.org>,
+        <aneesh.kumar@linux.ibm.com>, <gregory.price@memverge.com>,
+        <jgroves@micron.com>, <sthanneeru@micron.com>,
+        <emirakhur@micron.com>, <vtanna@micron.com>
+Subject: Re: [RFC PATCH 0/2] mm: mempolicy: Multi-tier interleaving
+References: <20230927095002.10245-1-ravis.opensrc@micron.com>
+Date:   Thu, 28 Sep 2023 14:14:32 +0800
+In-Reply-To: <20230927095002.10245-1-ravis.opensrc@micron.com> (Ravi
+        Jonnalagadda's message of "Wed, 27 Sep 2023 15:20:00 +0530")
+Message-ID: <87v8burfhz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer for RISC-V AIA drivers including the
-RISC-V INTC driver which supports both AIA and non-AIA platforms.
+Hi, Ravi,
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
----
- MAINTAINERS | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Thanks for the patch!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7518be65d782..92b2b1e6a673 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18411,6 +18411,20 @@ S:	Maintained
- F:	drivers/mtd/nand/raw/r852.c
- F:	drivers/mtd/nand/raw/r852.h
- 
-+RISC-V AIA DRIVERS
-+M:	Anup Patel <anup@brainfault.org>
-+L:	linux-riscv@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
-+F:	Documentation/devicetree/bindings/interrupt-controller/riscv,imsics.yaml
-+F:	drivers/irqchip/irq-riscv-aplic-*.c
-+F:	drivers/irqchip/irq-riscv-aplic-*.h
-+F:	drivers/irqchip/irq-riscv-imsic-*.c
-+F:	drivers/irqchip/irq-riscv-imsic-*.h
-+F:	drivers/irqchip/irq-riscv-intc.c
-+F:	include/linux/irqchip/riscv-aplic.h
-+F:	include/linux/irqchip/riscv-imsic.h
-+
- RISC-V ARCHITECTURE
- M:	Paul Walmsley <paul.walmsley@sifive.com>
- M:	Palmer Dabbelt <palmer@dabbelt.com>
--- 
-2.34.1
+Ravi Jonnalagadda <ravis.opensrc@micron.com> writes:
 
+> From: Ravi Shankar <ravis.opensrc@micron.com>
+>
+> Hello,
+>
+> The current interleave policy operates by interleaving page requests
+> among nodes defined in the memory policy. To accommodate the
+> introduction of memory tiers for various memory types (e.g., DDR, CXL,
+> HBM, PMEM, etc.), a mechanism is needed for interleaving page requests
+> across these memory types or tiers.
+
+Why do we need interleaving page allocation among memory tiers?  I think
+that you need to make it more explicit.  I guess that it's to increase
+maximal memory bandwidth for workloads?
+
+> This can be achieved by implementing an interleaving method that
+> considers the tier weights.
+> The tier weight will determine the proportion of nodes to select from
+> those specified in the memory policy.
+> A tier weight can be assigned to each memory type within the system.
+
+What is the problem of the original interleaving?  I think you need to
+make it explicit too.
+
+> Hasan Al Maruf had put forth a proposal for interleaving between two
+> tiers, namely the top tier and the low tier. However, this patch was
+> not adopted due to constraints on the number of available tiers.
+>
+> https://lore.kernel.org/linux-mm/YqD0%2FtzFwXvJ1gK6@cmpxchg.org/T/
+>
+> New proposed changes:
+>
+> 1. Introducea sysfs entry to allow setting the interleave weight for each
+> memory tier.
+> 2. Each tier with a default weight of 1, indicating a standard 1:1
+> proportion.
+> 3. Distribute the weight of that tier in a uniform manner across all nodes.
+> 4. Modifications to the existing interleaving algorithm to support the
+> implementation of multi-tier interleaving based on tier-weights.
+>
+> This is inline with Huang, Ying's presentation in lpc22, 16th slide in
+> https://lpc.events/event/16/contributions/1209/attachments/1042/1995/\
+> Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+
+Thanks to refer to the original work about this.
+
+> Observed a significant increase (165%) in bandwidth utilization
+> with the newly proposed multi-tier interleaving compared to the
+> traditional 1:1 interleaving approach between DDR and CXL tier nodes,
+> where 85% of the bandwidth is allocated to DDR tier and 15% to CXL
+> tier with MLC -w2 option.
+
+It appears that "mlc" isn't an open source software.  Better to use a
+open source software to test.  And, even better to use a more practical
+workloads instead of a memory bandwidth/latency measurement tool.
+
+> Usage Example:
+>
+> 1. Set weights for DDR (tier4) and CXL(teir22) tiers.
+> echo 85 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
+> echo 15 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
+>
+> 2. Interleave between DRR(tier4, node-0) and CXL (tier22, node-1) using numactl
+> numactl -i0,1 mlc --loaded_latency W2
+>
+> Srinivasulu Thanneeru (2):
+>   memory tier: Introduce sysfs for tier interleave weights.
+>   mm: mempolicy: Interleave policy for tiered memory nodes
+>
+>  include/linux/memory-tiers.h |  27 ++++++++-
+>  include/linux/sched.h        |   2 +
+>  mm/memory-tiers.c            |  67 +++++++++++++++-------
+>  mm/mempolicy.c               | 107 +++++++++++++++++++++++++++++++++--
+>  4 files changed, 174 insertions(+), 29 deletions(-)
+
+--
+Best Regards,
+Huang, Ying
