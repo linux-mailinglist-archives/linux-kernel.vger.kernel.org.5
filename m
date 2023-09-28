@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 712777B27B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B266D7B27B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjI1Vrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S232504AbjI1VsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1Vrv (ORCPT
+        with ESMTP id S232328AbjI1VsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:47:51 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41EA199
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:47:48 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59f6767a15dso372917b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:47:48 -0700 (PDT)
+        Thu, 28 Sep 2023 17:48:17 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190CF1A1;
+        Thu, 28 Sep 2023 14:48:14 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so21295054e87.1;
+        Thu, 28 Sep 2023 14:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695937668; x=1696542468; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MEMGs1vgz/6gbs1d5dp2hfUQXzmFRliUSNIHCRqfXkY=;
-        b=xENC8+J50BNWsfKzEEQoEpZTdIeI6RtfZovqo82XF7hv9ktSxz9eUc0I/qXVHC1iaY
-         Fn8UY1wd9b/ymzcnvaKvE7HuVMdZM2GfmbizzhM+VUYWOUk361F7vzM8GA3espUWGJLq
-         +5JxUhns6EO6PzTPzNVGjwkom8aJEg1g8InEBsg3/IPwz0WtBm8h4YnJYIG92D968CIy
-         EtrrQ/yieRPQvPxOhpgCe/keqhfsY7+dBWhrW/uVFG250GP7sON7g3bJVIaNzImDtoKI
-         y8jNjylNjX6rS9KX1pu8zg8heEuQ9x0RxH8u4YjXWllBWpS1w99ftcijHhfNGypERbCJ
-         +w2g==
+        d=gmail.com; s=20230601; t=1695937692; x=1696542492; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CHFjIMlDbV5kSmnyZox+gz39Xi2GjyZylQuebCzLYHE=;
+        b=DCU1e3zP+IcFciXYKaLxq660eJI5QYAysG/L38frUwg3uk6Kw4MDvZ6W58hZCZXqZg
+         LVj9uwskdRZPaPO0fxeROUXN9vY9jlULMxS1o/0RAQEPtO7KvKi7kfT35DjNY3MKT1jQ
+         gbEB6wmtc/pSukR3V4w7LK0RcK0XUFsrvxRI8+DU9IpxIHgIlfPRWf/psE+WTTLlH+pg
+         v7doHc/8VGF/IH1g/mIQPY52T2L/JHCAm94OUtuR4ckipNGG3B2kdu+GFS+S46iz1opv
+         k+x6tiQCe4XBwQ0TLQVZbmHOs7nTBwC/kCrmedjHUhQoSNEII+auCbx5Xd/VihzXXuF0
+         vOwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695937668; x=1696542468;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MEMGs1vgz/6gbs1d5dp2hfUQXzmFRliUSNIHCRqfXkY=;
-        b=g1qJ4Njqyoi0ehv8fJ1voi0k5TLtKBy/clhDNj5FKl1jDJMhczGADZCuEpbUXX4vcv
-         d/r1RFLgxxOa8n94FWRa5ib4dNIE1L8DaI+Bp/O2QycoTL5WEI+gfnhQ3UQaeA1JMoPU
-         GOy2ZI9Tq9HEa5zitreA3gJdFT9yxliGzCahMGnpQr4dFIPq4c4+4oWMn8qt0HfW8BwU
-         ct8TA/dLSvJD2DkAsACvrc3hsmCYRbZPbgYZmY4xhNYnShLgcoDDQRu00jyiCN3E6M4o
-         Gn2F7i2lFFy6YZq9Mqjz+vu0j/6uh40fHuzl1NKkoBMNIaeFzg9THJ5jJZ+TyXxNkpkw
-         FCww==
-X-Gm-Message-State: AOJu0YzDC7KzMjku5VNmPkCx7wG9NQ3J0mqXlASKujohvkrl4fhsou06
-        mxSZ1XQ2oIajHGjChIDXY23FZnk51HcB7CnKxizfDg==
-X-Google-Smtp-Source: AGHT+IHyP8J/6Rmx6r1ZNaVyrqMkNMrbYuIY2xH56GVEGPTsv/gf0R7/crKLTYV4ka7wcvWF8IpCR3fLEPBoRV0lfRU=
-X-Received: by 2002:a25:ae96:0:b0:d86:5cb8:29e0 with SMTP id
- b22-20020a25ae96000000b00d865cb829e0mr2073234ybj.6.1695937668156; Thu, 28 Sep
- 2023 14:47:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695937692; x=1696542492;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CHFjIMlDbV5kSmnyZox+gz39Xi2GjyZylQuebCzLYHE=;
+        b=JSEQX5HFqm1SK9KJyp46vHNgmh1GxUxj7A6J/hpwo797Bkws/FtPoZLcFzZqB3SmFn
+         uUZLu5tBBjfeKuEKs3mvU/4GAVgmAq9AqjoGKezt0EHTjO9u/1wVIMdTczFGvUYmY58S
+         sXZvYbp572hBsbqNz5rFtrj+wngGhbahFuBJrrY5y3NbcXE0FqmCWKILNHxwHPzP3ayQ
+         lSDGO8x+KGK3AN620vYUhtLVa8kYZXZi5RQvaQnhpAYS0y/iTps5rwsOCh7fER62UJzB
+         w/Ec+VAT9VuT8+SYw1bFTrlj9WqKxsbZABwwlXvIZV7ZlBot/NPmr2odvIpjZstoi4CJ
+         mR2w==
+X-Gm-Message-State: AOJu0YxXBh/5tudx59x4jQ77XAPW+EcJDmc/z+KCtmJLJOuf9tJbpKrI
+        z0TPKc02vH05phFUotf+MpaUYknqS3E1jQ==
+X-Google-Smtp-Source: AGHT+IG+n6HpGdHLmIq/ZZ3U2mK8r7GpAKB/WgnmRMGFrG0wFGGhc5jQHmSGVPZDeV5lpSj7yE6GFA==
+X-Received: by 2002:ac2:4e85:0:b0:4fe:2d93:2b50 with SMTP id o5-20020ac24e85000000b004fe2d932b50mr1942084lfr.31.1695937691961;
+        Thu, 28 Sep 2023 14:48:11 -0700 (PDT)
+Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.googlemail.com with ESMTPSA id v2-20020a056512096200b00503189d8b8csm3246714lft.198.2023.09.28.14.48.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 14:48:11 -0700 (PDT)
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     lenb@kernel.org, rafael@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH 1/2] drivers: acpi: Fix label indentation and leading comma formatting issues
+Date:   Thu, 28 Sep 2023 23:48:07 +0200
+Message-Id: <20230928214807.43409-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230920085639.152441-1-brgl@bgdev.pl> <CACRpkdYtbGqmMqN7FNhjYJGG+e0jWQmozf9kpNHiUBJvd2c=7Q@mail.gmail.com>
- <CAMRc=McrXEQbwcsK3yrfROujezjMd1L4EcJj7GNTCE5L6zD1gw@mail.gmail.com>
- <CACRpkdYNA1rkG5wJ0+rAT9g4EyzfbN5VP2a9vuMMk_RD6bMLFA@mail.gmail.com>
- <CAMRc=MeaAG5w_JzgSNs-EC5HY=2izC4W1FHZ54trEW_PvA8Yfg@mail.gmail.com>
- <CAMRc=McuKNg5r7m6OPtwYc3er7i6JB2JN=H6QVJU_G9BVtnuAA@mail.gmail.com> <CAMRc=Md6=UNVt-HygYoaqwXXDdjrqsPvbyOrQcThjHOWAzLQ9w@mail.gmail.com>
-In-Reply-To: <CAMRc=Md6=UNVt-HygYoaqwXXDdjrqsPvbyOrQcThjHOWAzLQ9w@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 28 Sep 2023 23:47:37 +0200
-Message-ID: <CACRpkdbbkw=Dp054c5TLFuXaVK9q3+hco9cxrjW+M0hnSZrNdQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: extend the critical sections of lookup tables
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 9:01=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+Fixed the following formatting issues flagged by checkpatch
+in utils.c:
+ * Remove incorrect indentation before goto label
+ * Remove whitespace ahead of comma in parameter list
 
-> If there are no objections, I'd like to queue it this week.
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+---
+ drivers/acpi/utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Go ahead.
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 2ea14648a661..300646bf8ba7 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -399,7 +399,7 @@ acpi_evaluate_reference(acpi_handle handle,
+ 		acpi_handle_debug(list->handles[i], "Found in reference list\n");
+ 	}
+ 
+-      end:
++end:
+ 	if (ACPI_FAILURE(status)) {
+ 		list->count = 0;
+ 		//kfree(list->handles);
+@@ -523,7 +523,7 @@ acpi_handle_printk(const char *level, acpi_handle handle, const char *fmt, ...)
+ 	vaf.va = &args;
+ 
+ 	path = acpi_handle_path(handle);
+-	printk("%sACPI: %s: %pV", level, path ? path : "<n/a>" , &vaf);
++	printk("%sACPI: %s: %pV", level, path ? path : "<n/a>", &vaf);
+ 
+ 	va_end(args);
+ 	kfree(path);
+-- 
+2.34.1
 
-Kernel looks better after this patch than before =3D> queue it
-
-Yours,
-Linus Walleij
