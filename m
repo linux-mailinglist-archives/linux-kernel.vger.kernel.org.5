@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239B37B2024
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CFC7B2022
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjI1Ovf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S231248AbjI1Ovd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjI1Ov3 (ORCPT
+        with ESMTP id S231322AbjI1Ov3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Sep 2023 10:51:29 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA7A1AA
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:51:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36AC9C433A9;
-        Thu, 28 Sep 2023 14:51:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04651AE
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:51:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C585C43397;
+        Thu, 28 Sep 2023 14:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695912686;
-        bh=JRSsDtLzeKIy9n8963zFa9jQq53Jmt6jQUGB+nO+3dY=;
+        s=k20201202; t=1695912688;
+        bh=chePX/SYayvnhA9C26rs98NM+t613nF7ydh4AzYC8O8=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=KhbGXl685KDuzQMQKK4KmHyr+//v0EOw1ynKd8tpIaQUTBt/FLsLUQGAF3wnuO7F4
-         clilN7rRVCPqJszpWblnzRFq3F9LMannjpSmvgnruw/ALzEryN07eD0z+iTKKOSmok
-         jllSTmFRvrf3mpKFg7BMoC49YxjKfsL8TjZB/5WPfGTO5+2zvPVLsnVmmXiAjAuIPW
-         L/AvAFrrn+Mb0QCMWEXIOQcaJqRjMfMU+3Kzdcc6WReBBkU4IqPM7sHR3zKAM7FEM+
-         VeFnUMrVHX/JmS6NyJOgQG+Io0DyJ/lZYurUd/Z6jiXQZkORLvd7+Fzvmno++kSaSK
-         0qZ0NHK/9JORw==
+        b=ZYG51XpLTAQxCl3dQmuiHqqV5f1x/wwlk4hp8cdO5uo+sSITeMLwRS+fczhSYAP59
+         rxoP58+YlzvSjiBFda423UCh/bNTY/EaL2PmSKeNSTrTndEjDoFTxoKPscsMOuQDci
+         1ev0DhB0dq+0RyvgWKT0jkH42v9XEZXXnyzOcoQWi0+LMKzeU3/6q9J98d2zpvZ67e
+         O/QJX3SAL8ctmlJ95Mj1ctUkykrrglXUhY5i9M5zVZU6fI7phUIUxb1ygzwskuKZH6
+         P3SSaT6Zd/L/RorkaP1buhIsLBJz+QZX7imkHzBhQUoEoVCv+5a17xIcndUE0qrkSH
+         GPaGJP48Pbcyw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        cy_huang@richtek.com
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Allen Lin <allen_lin@richtek.com>, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1695872468-24433-1-git-send-email-cy_huang@richtek.com>
-References: <1695872468-24433-1-git-send-email-cy_huang@richtek.com>
-Subject: Re: [PATCH 0/2] ASoC: codecs: rtq9128: Add TDM input source select
-Message-Id: <169591268524.2776105.13245316160946357436.b4-ty@kernel.org>
-Date:   Thu, 28 Sep 2023 16:51:25 +0200
+To:     james.schulman@cirrus.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+In-Reply-To: <20230928085200.48635-1-jiapeng.chong@linux.alibaba.com>
+References: <20230928085200.48635-1-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] ASoC: cs42l43: Remove useless else
+Message-Id: <169591268759.2776105.1120997506461467883.b4-ty@kernel.org>
+Date:   Thu, 28 Sep 2023 16:51:27 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -55,16 +52,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 11:41:06 +0800, cy_huang@richtek.com wrote:
-> This patch series create a TDM source select property and use it to
-> decide which TDM data source is connected.
+On Thu, 28 Sep 2023 16:52:00 +0800, Jiapeng Chong wrote:
+> The assignment of the else and if branches is the same, so the else
+> here is redundant, so we remove it.
 > 
-> Following by the below patch disccuion
-> https://lore.kernel.org/lkml/1695780376-32301-1-git-send-email-cy_huang@richtek.com/#t
-> It may not be a good choice to add the user controlable mixer control
-> item. Since it follows the board design, make it as a device property.
+> ./sound/soc/codecs/cs42l43-sdw.c:35:1-3: WARNING: possible condition with no effect (if == else).
 > 
-> [...]
+> 
 
 Applied to
 
@@ -72,10 +66,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: rtq9128: Add TDM input source slect property
-      commit: bf38a0be7c57e43303600b5afc9b740882b3ed87
-[2/2] ASoC: codecs: rtq9128: Add TDM input source select
-      commit: 54ac512048c98b720a8fbf5899308788dff8def0
+[1/1] ASoC: cs42l43: Remove useless else
+      commit: 67fcdbfd9e133be69c9541a806f6ccfe594fa9a9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
