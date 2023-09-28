@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 768237B1FE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B4B7B1FF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjI1OoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        id S230372AbjI1Ool (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjI1On7 (ORCPT
+        with ESMTP id S230139AbjI1Ooj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:43:59 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFB219E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:43:58 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DDC0240E0176;
-        Thu, 28 Sep 2023 14:43:55 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id OWLQHTNbZWTX; Thu, 28 Sep 2023 14:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695912233; bh=h1/LDhE8fzT9yHzOAMn/O1uQcjI/GQRZwIc2SRP75FA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iZ5FRVunRWlEOnzVstKpLgxo9Pq1pLk58HzP++2IaqcTwzO8HrerFTvz+m0xvvPbA
-         /1OYLbkPTP8O7vAFVM23V3gaF/swxmTcjRGRnDzcX6HKQ60eDJ9lFFmZx8SRyOwt4a
-         gyyNnqRe+YgkZsoj+PJlVyCRJfSQBhxg8htG0sPi4XPKyx6hQkP8dikTsmct2e3Ifl
-         UJ5PpeYWN6IbaMlFA2mv5N6SgFZhyMzBJOB702tLvbSQLn0+99W7IZfuPRozvWtxmP
-         coGgcLA/k7hwojbNnq9oxY6uYA5481XGe2E0cDYK3VIVADW0p6WyVfAX8HuIcB+I2U
-         OUTKPKDwtS5d8g/bLwq4yVYAm7OcT+lIFK1fKgmdggeKQqkNdKeDSu+7hSork76W1n
-         B0xOU/+he+a/RqX6UyQyMS+kkfkQx7hIGxIeBZ9YgP8M1qEZJBd6Kl00RhuQRUBFV5
-         wx2Ec8ZQlHwYd/MA6hQ5QH8u/cCNug+w7aFQVWzPunz/Ay7xqRMpbM+b4qRSHZmN+k
-         RQig38hcXZ1IoLJa5xR1LXPxDFLcz61ZMbVx2/vem56E/luM49qcnwJQ5n6AMVJm2L
-         xOIu9TAw8C3ZOTYf4EpvJUp2GAXG7WSB1O0j8IKufzGudrIurXHvYjx4Iijzna35tD
-         I9qe4vVT+23x0C4PkzqztaUA=
-Received: from nazgul.tnic (unknown [88.128.88.93])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4AD0D40E00B3;
-        Thu, 28 Sep 2023 14:43:32 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 16:43:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        robert.moore@intel.com, linux-hardening@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org,
-        baolin.wang@linux.alibaba.com
-Subject: Re: [RFC PATCH v2 0/9] Use ERST for persistent storage of MCE and
- APEI errors
-Message-ID: <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
-References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
+        Thu, 28 Sep 2023 10:44:39 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAD31A1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:37 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-502f29ed596so5719e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695912275; x=1696517075; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BFwIpXTwL/lUKsUPWcI8rCYf21e0USndOV3VkIfXzr4=;
+        b=4aQV6YeY6iROW554n7rXB5howK8VsvKRNWX8a3DNmBIYMPkbBacwGWbnQob50OxIPN
+         snU2FUQ/wdeFDsL4rDUwnllZDQOasLaGkntz5J5tGQ117b5b2RUsVjhC5MkCLKyq+blv
+         HxRJsgB7cUxb7K80XelNxlktBfEtOg8KpweSQ5XMRRCQ4VqNff4rw0PsMxN8F/YO2zA/
+         x2SkKBE5lHVqfOJ97KFYJenZ4uMHX+kr0Ovxdrfj2CK3vX0WzrbDxJXK44B5mMOSQvEE
+         qYsnlWUG0FmvWfgfAorDxSohC8+WSWUsneaCdYuWW5ov7u6r1sWj+pVx/h7rN18O92e/
+         3kWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695912275; x=1696517075;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BFwIpXTwL/lUKsUPWcI8rCYf21e0USndOV3VkIfXzr4=;
+        b=tQFPKMiGh/HOFxH8tffrvgKoLaxwcETkxBKL0oJxK87V5LtDsnEGJOzIJRDBG/ybBt
+         VHS/8+atpBsoDEdICvnwwztkeEFob99tosd07UMYQBws0onZMeX2QYOt3wb61uCSK93w
+         jOp2aVNoNI3aAK+7d3pVkIjG/usdEQIv3fBcMSBnuqX0zIpGVxn+Emv9FAtFUAHPpCh4
+         bjPAeeqRYcdNKaQQZ0vAH5pzM1cdkq/7raeoxyPhmJ+Nf5aYrirsLGxJgAWUOBwyAJt8
+         Lk1owD1jeSmX74QQytAsIivsc31cyQcy93Drv86gb0SzuvHIw3vqT1A2hCiR9fCRCpx6
+         VKdw==
+X-Gm-Message-State: AOJu0YyphqeCDafG1ZMScUIPQ86rZ1Pjan7Lu1R8WDK7CCioFssFDaFu
+        y8CSAolHzQ2s5JQZ09pYpQB5ou5bfuTCbiw3WuP85Q==
+X-Google-Smtp-Source: AGHT+IF+k5c+rX4zUNgLUDd2nRwl2MXqWoD/9z4V0hFhg8SGKLIhAegXLUkZVGYDQSttL/WplGoCXnRj0bwajDSqRps=
+X-Received: by 2002:ac2:47f2:0:b0:502:a55e:fec0 with SMTP id
+ b18-20020ac247f2000000b00502a55efec0mr247781lfp.6.1695912274999; Thu, 28 Sep
+ 2023 07:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <2c421e36-a749-7dc3-3562-7a8cf256df3c@efficios.com>
+ <20230926205215.472650-1-dvyukov@google.com> <CACT4Y+beLh1qnHF9bxhMUcva8KyuvZs7Mg_31SGK5xSoR=3m1A@mail.gmail.com>
+ <875y3wp6au.fsf@oldenburg.str.redhat.com> <CACT4Y+aVY+KPmBXYDBpA+JmLHvk=o5bt9d4tV5L41e813e0SVw@mail.gmail.com>
+ <87bkdmznl6.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87bkdmznl6.fsf@oldenburg.str.redhat.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 28 Sep 2023 07:44:21 -0700
+Message-ID: <CACT4Y+Y4S7yicthk6ziFh_M53W3D_tbWFnLjcsT+szzLy4ZmYA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     mathieu.desnoyers@efficios.com, David.Laight@aculab.com,
+        alexander@mihalicyn.com, andrealmeid@igalia.com,
+        boqun.feng@gmail.com, brauner@kernel.org, carlos@redhat.com,
+        ckennelly@google.com, corbet@lwn.net, dave@stgolabs.net,
+        dvhart@infradead.org, goldstein.w.n@gmail.com, hpa@zytor.com,
+        libc-alpha@sourceware.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, longman@redhat.com, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, pjt@google.com,
+        posk@posk.io, rostedt@goodmis.org, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
-> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
-> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
-> serialized MCE error record, of previous boot in persistent storage is not
-> collected via APEI ERST.
+On Thu, 28 Sept 2023 at 01:52, Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Dmitry Vyukov:
+>
+> > On Tue, 26 Sept 2023 at 21:51, Florian Weimer <fweimer@redhat.com> wrote:
+> >>
+> >> * Dmitry Vyukov:
+> >>
+> >> > In reality it's a bit more involved since the field is actually 8
+> >> > bytes and only partially overlaps with rseq.cpu_id_start (it's an
+> >> > 8-byte pointer with high 4 bytes overlap rseq.cpu_id_start):
+> >> >
+> >> > https://github.com/google/tcmalloc/blob/229908285e216cca8b844c1781bf16b838128d1b/tcmalloc/internal/percpu.h#L101-L165
+> >>
+> >> This does not compose with other rseq users, as noted in the sources:
+> >>
+> >>   // Note: this makes __rseq_abi.cpu_id_start unusable for its original purpose.
+> >>
+> >> For a core library such a malloc replacement, that is a very bad trap.
+> >
+> > I agree. I wouldn't do this if there were other options. That's why I
+> > am looking for official kernel support for this.
+> > If we would have a separate 8 bytes that are overwritten with 0 when a
+> > thread is descheduled, that would be perfect.
+>
+> That only solves part of the problem because these fields would still
+> have to be locked to tcmalloc.  I think you'd need a rescheduling
+> counter, then every library could keep their reference values in
+> library-private thread-local storage.
 
-You lost me here. /dev/mcelog is deprecated but you can still use it and
-apei_write_mce() still happens.
+This unfortunatly won't work for tcmalloc.
+This data is accessed on the very hot path of malloc/free. We need a
+ready to use pointer in TLS, which is reset by the kernel to 0 (or
+some user-space specified value). Doing to separate loads for counters
+in different cache lines would be too expensive.
 
-Looking at your patches, you're adding this to ghes so how about you sit
-down first and explain your exact use case and what exactly you wanna
-do?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+It may be possible to make several libraries use this feature  with an
+array of notifications (see rseq_desched_notif_t in my previous
+email).
