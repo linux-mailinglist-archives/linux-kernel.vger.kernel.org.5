@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4A87B2290
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DECB7B229B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbjI1QiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49316 "EHLO
+        id S230225AbjI1Qkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjI1QiN (ORCPT
+        with ESMTP id S229581AbjI1Qkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:38:13 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37464193;
-        Thu, 28 Sep 2023 09:38:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6124EC433C7;
-        Thu, 28 Sep 2023 16:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1695919090;
-        bh=+pR8qTsnL2KdGPFPcXEQBLdZz545KfukXsurVyoKH7U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Byq60xxiXtkUaPao9CHLMM6/ZD4JUm1Fi51Ys170+hT7Jr9h8MLvsYenIUwL6QCLN
-         /pvKH0udwL+Ie7QkkNcK9vJa2M54GwBOUdm1ShpLMLiN6cXCjc6an8WrE1qnXZKhdD
-         6liogk84HhVpZdEcYrUxIpAzIjGuochwQdz0SCpA=
-Date:   Thu, 28 Sep 2023 09:38:09 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Yang Shi <yang@os.amperecomputing.com>, hughd@google.com,
-        willy@infradead.org, mhocko@suse.com, vbabka@suse.cz,
-        osalvador@suse.de, aquini@redhat.com, kirill@shutemov.name,
-        rientjes@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mm: mempolicy: keep VMA walk if both MPOL_MF_STRICT and
- MPOL_MF_MOVE are specified
-Message-Id: <20230928093809.75de08561b0fa1af03bf4a89@linux-foundation.org>
-In-Reply-To: <CAJuCfpExMWXHfZjgZ=UKf4k=zxrNOLx2R-a_wQdZ3O_+JTOq4w@mail.gmail.com>
-References: <20230920223242.3425775-1-yang@os.amperecomputing.com>
-        <20230925084840.af05fefd19a101c71308a8cf@linux-foundation.org>
-        <90fc0e8d-f378-4d6f-5f52-c14583200a2e@os.amperecomputing.com>
-        <CAJuCfpExMWXHfZjgZ=UKf4k=zxrNOLx2R-a_wQdZ3O_+JTOq4w@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 28 Sep 2023 12:40:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4334599
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:40:49 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8b2eec15d3so433270276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:40:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695919248; x=1696524048; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3IyA4j5LRCjoh4Ka+kX4owAXyuP7hkypyJPhZH37Ck=;
+        b=3bubFcmdG7jBnEvf1IuozEET78ap/1E1rltb0TaGcK3Jcjv2GPLcqV4v4L1pQCPes5
+         q17PNTpzcwlFYRYieTa6jFoWMJ5iUe/9BArTQGb30HUh+ZwT9jKNcnG1ei0EodLG4/Uy
+         YehyKnea63sqdq0SueVxo0JDMsgKxBkP2m7rjiL8RFhK94dP0155YLn4seR25ArkptYI
+         tRexALClkv0PtY1jgSsrBbGcUMLFCuOWi7/R//02u3CJNJ/M9s1OJIsCR9DmlDumnFbO
+         8+7eEE6wBZeBiEuXRp3lm/kQDlMsMMt7erkX0r57oFAeO0XQq36X/EciaNc9A0p4sbL9
+         5ejA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695919248; x=1696524048;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3IyA4j5LRCjoh4Ka+kX4owAXyuP7hkypyJPhZH37Ck=;
+        b=qfh/BxN6EBNQU45RXKVhUEa0VtSjI4KTVnhnu9oUrqCjk7MQZbUWG/53LuqPpvr2+q
+         m9GMlYJidy9pxM7E71lPl1x8DXjknKy9+Ew0OOPexbA4fTjTP5XhlGLiRnyOquf5Jp8R
+         QM3TJ3HrIitglbbO/mwaIXKK8P94ZZyderFDP9i4aii2dW8a5BGF5B7Hees82TsfD4vM
+         ogDNaDgXUJefIhdp6ulGw+0zxpOvneK2/DIuRDflW8ZCPz8xRbK2GkoPcdQrNDzF7WFt
+         QPkXEjyeoZiblkxW47MwKRQOEWGKyk+0Up6pd5PysQk4hThtBIfkFivZVOa4XEAXACxH
+         erag==
+X-Gm-Message-State: AOJu0YwSUgK99CGNONCy+2lHxCxunYGtA/FVNEkZ87GT+L861rTeuzb3
+        aQloVbXQZj7sWHiiPMrAx8sSPzM9vO8=
+X-Google-Smtp-Source: AGHT+IEu2W2MHVe69US8d4pL7DITmeJTo7bFYFFaX72qfzDvR92vlvvhE0StfB20DsHIdO4xYChX2KBTdfM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:136b:b0:d81:4107:7a1 with SMTP id
+ bt11-20020a056902136b00b00d81410707a1mr25891ybb.2.1695919248462; Thu, 28 Sep
+ 2023 09:40:48 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 09:40:36 -0700
+In-Reply-To: <20230531075052.43239-1-cloudliang@tencent.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230531075052.43239-1-cloudliang@tencent.com>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <169591408296.965784.15552125307182012260.b4-ty@google.com>
+Subject: Re: [PATCH v3] KVM: x86/pmu: Add documentation for fixed ctr on PMU filter
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 14:39:21 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
-
-> > >
-> > >> The code should conceptually do:
-> > >>
-> > >>   if (MPOL_MF_MOVE|MOVEALL)
-> > >>       scan all vmas
-> > >>       try to migrate the existing pages
-> > >>       return success
-> > >>   else if (MPOL_MF_MOVE* | MPOL_MF_STRICT)
-> > >>       scan all vmas
-> > >>       try to migrate the existing pages
-> > >>       return -EIO if unmovable or migration failed
-> > >>   else /* MPOL_MF_STRICT alone */
-> > >>       break early if meets unmovable and don't call mbind_range() at all
-> > >>   else /* none of those flags */
-> > >>       check the ranges in test_walk, EFAULT without mbind_range() if discontig.
+On Wed, 31 May 2023 15:50:52 +0800, Jinrong Liang wrote:
+> Update the documentation for the KVM_SET_PMU_EVENT_FILTER ioctl
+> to include a detailed description of how fixed performance events
+> are handled in the pmu filter. The action and fixed_counter_bitmap
+> members of the pmu filter to determine whether fixed performance
+> events can be programmed by the guest. This information is helpful
+> for correctly configuring the fixed_counter_bitmap and action fields
+> to filter fixed performance events.
 > 
-> With this change I think my temporary fix at
-> https://lore.kernel.org/all/20230918211608.3580629-1-surenb@google.com/
-> can be removed because we either scan all vmas (which means we locked
-> them all) or we break early and do not call mbind_range() at all (in
-> which case we don't need vmas to be locked).
+> [...]
 
-Thanks, I dropped "mm: lock VMAs skipped by a failed queue_pages_range()"
+Applied to kvm-x86 docs, thanks!
+
+[1/1] KVM: x86/pmu: Add documentation for fixed ctr on PMU filter
+      https://github.com/kvm-x86/linux/commit/b35babd3abea
+
+--
+https://github.com/kvm-x86/linux/tree/next
