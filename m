@@ -2,234 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DADDA7B224A
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511FA7B224D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 18:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjI1Q1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 12:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        id S230081AbjI1Q2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 12:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjI1Q1E (ORCPT
+        with ESMTP id S229605AbjI1Q2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 12:27:04 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D478EB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:27:02 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A668A66071F8;
-        Thu, 28 Sep 2023 17:27:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1695918421;
-        bh=7iFYQrUTq7idgt18OEix94cfK90qh9UDM4zHDUrw1bU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jTfmVn4GINVymXF6QWC/4KNIYnq/Gw84MXNaPWsWD8XltylpTnLga/Kxga61Ho12D
-         qs2QDRz2Q8TcHRwArRQiHNFVz3hYpnLaUn5xLmSODbewBK0PAus+wCeizBbE4FALpE
-         drrGeK59ad7wG3briZ+C/aXhKrShRsfuKNRU5OZqLe0Vy9pw286QzgRnNJObYP2dj2
-         nuA8dGJvv/1hL2YY7etpljqMSvNw9v2yZ1+LN8yNg+b+E9K8G4mrbU4a9uhfHACNqL
-         vxffiFHWp7zDw97ZDrW322TjbC2wo6fXbht+G63B6jEWdN/ARngwjwAzaFi7lTyb+L
-         d1AQJIvbY6orQ==
-Date:   Thu, 28 Sep 2023 18:26:57 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Luben Tuikov <luben.tuikov@amd.com>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Donald Robson <Donald.Robson@imgtec.com>,
-        Frank Binns <Frank.Binns@imgtec.com>,
-        Sarah Walker <sarah.walker@imgtec.com>
-Subject: Re: [PATCH drm-misc-next 1/3] drm/sched: implement dynamic job flow
- control
-Message-ID: <20230928182657.4e663e7c@collabora.com>
-In-Reply-To: <1c0b9e1d-c990-437c-a8ba-5bb58e5872a0@amd.com>
-References: <20230924224555.15595-1-dakr@redhat.com>
-        <20230925145513.49abcc52@collabora.com>
-        <c6ec9ab4-d63b-0a72-4abf-682b94739877@amd.com>
-        <20230926091129.2d7d7472@collabora.com>
-        <390db8af-1510-580b-133c-dacf5adc56d1@amd.com>
-        <20230928100209.37df66f3@collabora.com>
-        <1c0b9e1d-c990-437c-a8ba-5bb58e5872a0@amd.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 28 Sep 2023 12:28:49 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2041.outbound.protection.outlook.com [40.107.101.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C7BBE
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 09:28:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKzBqxX5l5bKW35nbF5OV7bBP8Wpk+2q0mUsRE/ECqPVWkUCcJy8qpWAGVAQJU7aka5ddazoIRpkkIUYbxfnYXHQ7rAJK9RRbINLdK8A++uI0ZjWgXhVsMxhK7G4hU6TmaiwC190T9Q93wKjW1iGfLC2aQzjV/JIjheez8YLHBv5c52DTXmFZRQKvTNVdpVNGceKzTAi9JmCDoMI4FwiRRZxgzlMS3wz5PDZ3yPur6ogenuOd/yI+Ckya9fqHAQ4zs4lkrZTVx+KalrTPS/WBn5VAKgTg0ZDUdL0ufETbYS7RataBrC0ONXtuGALZi1mu+B92bSOXhJ42VFT5Dl97A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZC7kiMioeCu3S5BReciTSAl2QvN+urVQDSpV2/Tasyc=;
+ b=KVHumo8xJgQezryJQWpI1ebsgUo4yxFW/eJ+QMk5+4GTZqVkT4eNj75mzKmrD0qVzDXsL19stIoFmcnigiZhv40f3TgNlMxG8YPA5fTGReGnp3mZVXDv2gBPVeHOpnhA9CSJrRqdAV+HANFVwshbbpUPuWhMhK+x5UEUc5ebRONgu/svwuj8hKYpZmGw9UisUDaRLDUuid3OLoJFLGB9xR6DEiEIDTg7G5GRvCcVYy+IqzAf6uFRAXeMNlXF3tHpPRFZpyLi0NsMQ11yZ5fz/mPSaQK6Fda1eOepRN4eK/z7kfSZ1u9RWmnDzRwGtKIoZnoQq5NMHkIODVm4Swygqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZC7kiMioeCu3S5BReciTSAl2QvN+urVQDSpV2/Tasyc=;
+ b=A/fzERdpzeeAAzmF0021Hm9pcMffoeWyzlMlMDCr3o3l7o8/td6Zg7Ct8+pmz5uRKys7UnuEZd+iuxoUeDHgvypqEu5n4t/4ZajT1TmzALF1dFdxJphnxXvSf9NzYc7BY2yMT9FWSp5wGOpayYGJVpNS7/AOetH05jnAYdK8slc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by SJ0PR12MB5421.namprd12.prod.outlook.com (2603:10b6:a03:3bb::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Thu, 28 Sep
+ 2023 16:28:44 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::fbfe:ec9c:b106:437e%5]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
+ 16:28:44 +0000
+Message-ID: <92d152f7-d7f5-0a41-b933-008f0fd03754@amd.com>
+Date:   Thu, 28 Sep 2023 11:28:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v2 1/4] x86/resctrl: Enable non-contiguous bits in Intel
+ CAT
+Content-Language: en-US
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        =?UTF-8?Q?Maciej_Wiecz=c3=b3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <cover.1695371055.git.maciej.wieczor-retman@intel.com>
+ <918e147601697b1d4b8f8589f5751e05d6ceccdf.1695371055.git.maciej.wieczor-retman@intel.com>
+ <9751cbaf-8653-d32a-6058-13c251c59b3d@amd.com>
+ <4sxjxe4cgvookcobwbrmsoeszjordi3bpjg22zxut3lanjc46j@xpqt6nblx6uc>
+ <13b360ac-4292-5056-6d00-6eb1d4186b11@amd.com>
+ <8a5d1211-8acb-762d-ae36-bf508b082ef4@intel.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <8a5d1211-8acb-762d-ae36-bf508b082ef4@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM6PR01CA0014.prod.exchangelabs.com (2603:10b6:5:296::19)
+ To MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SJ0PR12MB5421:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16e5c5b3-40f1-4ceb-3273-08dbc03ffc01
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: We8Ty07xnWFfJhrPWkm2MNw7Pv/Jlnh7afIFAxum0oZmJegI+oWghO/gAPYHp2gPJS5n39P3pJQiZvTjv5tYUuSO5zlrOpiYDq+8WO4E1xoLPhRa3CFvRfyjYwehpaz+/sWLBzUxwtN+YkjjN7oI4QdYv6wzTfwwqrFFN7gcIQ3uxnc1x/FfnDOtFVOGr4Lc3yZhRuKlEwFf/ll9gyNjeX34k9+S2fVDwYyv/gQY2wBZhhMt+pWHzbQYUnIXq2yJcyOFL+kSNkD2W/cobpubI855rGbJ50BW7mutu7XO+7NXbHhdAZgm2ZilJQGDFlu5QAXbakolFeook6XCzTmBP2DSIKOW30p0ZGNpe0OlccDJquZ8AFM97mMKQbn8eQvEf6sk1N4sOSpLn31xv0VTgJLF46skcw8H3jSevoRQGK+9p9zvA+VFINGIu2YRrhgWClB92p+YLjLGU+E6bSvmcksdtsjPHCNF0G+DbFzNoemXTpYbRB/88cPZwR/lNXzSx7YECUvPQDm65zDDEhXpeRK+umAY3t06mZgk4rrtn3Za8Uooz3HuJF1UtSPZMBiVfzmGsfrCaufdvHNcfY8w/iJJeVG6ue5XjO15/LWT4VN/wgppTdwZiNW3A2/QZctq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(39860400002)(366004)(136003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(66574015)(6512007)(6506007)(53546011)(83380400001)(86362001)(31696002)(38100700002)(36756003)(2616005)(26005)(2906002)(5660300002)(316002)(7416002)(41300700001)(54906003)(3450700001)(66476007)(66556008)(66946007)(110136005)(966005)(6486002)(31686004)(8936002)(478600001)(8676002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SzFFTXhLaEZpSTlEeGlRU0habkhOMFRTVGlFTzN2dEpKMFoxdHg4Wk5NdHY1?=
+ =?utf-8?B?dVNrUVNGMWwzRzJJYSt5N2ZuR0hqclBkMitKL1E3c1dBYUtJcUJPQ1VnaENO?=
+ =?utf-8?B?aUV5ZjJFQ2UxRmZWRXpLUXIrYWpvaUxJUy9nd0c4NGs1Q3VwcXJTS05HSnh1?=
+ =?utf-8?B?N1BkdWNZUEVOYXQwbVJpaTlvUlI5U0UraitMSmFqdGo1NG1ObXhJTkFoQ3c0?=
+ =?utf-8?B?VnpXM3NRdmZzQnVTc2tBVXRWLzhjTmhtc04wSWE1ZmxKeUU5a2ZnYTQ4ZWFX?=
+ =?utf-8?B?cWkxK0FROXFYdlVTMmZRWm9oNWVTcmV4MnB5OVY0aFgxSkk4aWNERmNUZFZa?=
+ =?utf-8?B?blN2VHhxaUd1N0RUTFBVVUdsK2djM3pqdmJiQjdiZmNSeGdyTGZTWFdBU3lS?=
+ =?utf-8?B?aFJkREowQi9XK0VXQlZEZ0h5N1RxemJjblVLVWtNczZPaG8vL3BqZFdwSEll?=
+ =?utf-8?B?Ymg2TVpvQzJha0RaMldhUDdwK0l4cmtFa0tDWi9FQjNLSDUxbTBORjlpUWp1?=
+ =?utf-8?B?QjFLUnBZNVYvb2NsR2pkdk1iZUhwVGVMYWhuVGdYZGRHbDhWelZCR1VweXlo?=
+ =?utf-8?B?UllKTWNtZkdsVStod2RxUmdYU1JzMWJzYzRndWY3bkEyelFJOGFuY2ZkTUxS?=
+ =?utf-8?B?ZmpSK3NYeldRVGkzUjE5WG1VUll0Rkg3Vlh0NjJTWHhHU2daMnNCWmVhQXhM?=
+ =?utf-8?B?UzUzZFM1SmdkZE1mdDBKMjRzeU1SaGlGVUxpMC81RFRvbmRRNVFFYi8zeWo4?=
+ =?utf-8?B?d2JPazRQL2FJMnl5eTVCYVRhd0VNMllCWDdJZWx1TXFHaHU3ekdJWDhmVXMw?=
+ =?utf-8?B?d1BVVHFJcmk5ekN5c0pRNEFDSDRsSjNXUEZMclNRTFJLUGZYajJqaVhZaCs2?=
+ =?utf-8?B?LzRmMnhJWTVhbjlxZXR5Y2U0WUoyQzBYcHVCdTQwRlN6SGZYcmhCdlVjd1o3?=
+ =?utf-8?B?OTNrcm5XOVNNdklZUVd4TC90REhqR2Z1enJFK0p2aXRPcm52MnRVZkNDdlZa?=
+ =?utf-8?B?VFlxL2tXdGxQVlRLZXo0Nlh0MnBPYjFqSm44QjdWS0pxSjNpVXZpU0FsZ014?=
+ =?utf-8?B?d1NKYy96OU5kdktsb0s0T2hpQVJ5MUhCSk1aN2JRZzczQTI5ZWFQTnVITE01?=
+ =?utf-8?B?emlZb1MzL25DbGpDaWZDdmdlUlFSK3U0QkpncTZWZThZbkd3NmRxQTZ5VEVF?=
+ =?utf-8?B?bm1JVmNjOFNGb2tMWXBlNlJmdU5YUkpJT2RERGMvV0FBNksxaU9KUzdHMzdp?=
+ =?utf-8?B?NFN0cjBkS0hJR1JkNkp1L29NWkRidktTblAwdEZqSEFpQ3RKUGkzZjR2K2Vr?=
+ =?utf-8?B?RFhlbGI1T0d2enRYQm8xM0h5YTJJN0hZUG1GYWlmT0JQQ1RDaDNmelFOQ0lC?=
+ =?utf-8?B?cUE3cG9HWnpSSEt6SldkcFdqekcwaEdKUjlHOXpHVEJ5b2MwUmRCS1RKNzVW?=
+ =?utf-8?B?T2FudUN1WCtVWDdvMkV1a05BYWRIVUI4UmpieCswcWFxZTM4TGVLV0NTekV2?=
+ =?utf-8?B?R3RpTld5ZzMvaldBK1UxN3kyZCtteFB3WExmS0t3Mk9BaFV4UzRGZGpkMWNP?=
+ =?utf-8?B?Ykk0KzBlWXZacC8yZjNQTkh6c3RtRnNuczhaNHgvNUx2WnJ5bWgrRm5rc0xq?=
+ =?utf-8?B?MTNPMGp3L1Z3VDFidk55MjdrUzR4bGJsbjJSNExRaXBiaVJmV2JZREhlMkFV?=
+ =?utf-8?B?a2xYUFlIVHR1clY1c3NQMVV5MWgzalMyYVhZdUluZUlaM2VyTFV0TmFOTk9T?=
+ =?utf-8?B?d0RtWVZyd1lzelgzOVc2Yk9QMStDbmRXSm1ZVUgrZ25GYS9wajhxNEtlaW9T?=
+ =?utf-8?B?ODEyaDdMTTBGaXh2M2NtanZlSXJFeWJsZzdoYkdoeHlVMG5mbHVoczJNTkx5?=
+ =?utf-8?B?RVZSSVg5VEo5dHFVUHA3NkcxalNzUTdLYitQUUVWQnUrV0VFaXh1NjJia09Q?=
+ =?utf-8?B?blJWUmorbitjeFdjZkptRmxOeHl0dXBXeERLMzk3TkJJK2s4bjRBajdwTFFX?=
+ =?utf-8?B?UXh6NXVpYWZRR3NaR0UzKzJWRVhYUDRVWDJDQkRGdEN6bDQvK2x1d212V1dQ?=
+ =?utf-8?B?Rm8yRHIzVXlqQy9KdUZmSm5yS1RFSkp3bkw0MCsreFF2Wm51K1NoR1E2ZEha?=
+ =?utf-8?Q?o2vrm22FmHzgTjMrc3wkl9LLM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16e5c5b3-40f1-4ceb-3273-08dbc03ffc01
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 16:28:44.7508
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MGPq8VlWVappjQkBZ7Z31yQdURX/HhiyzQRsB/Az7m6r/Rr9wDcEYFQkHb4/ZIqN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5421
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 10:44:47 -0400
-Luben Tuikov <luben.tuikov@amd.com> wrote:
+Hi Reinette,
 
-> >>
-> >> What we can do is the follow:
-> >> 1. The scheduler has some initial credits it can use to push jobs.
-> >> 2. Each scheduler fence (and *not* the job) has a credits field of how 
-> >> much it will use.  
-> > 
-> > When are the credits assigned to the scheduler fence? As said earlier,
-> > on PowerVR, we might start with N credits when the job is queued, and
-> > (N - M) when it gets submitted, so we need a hook to force a
-> > recalculation every time the scheduler is considering the job for
-> > submission.  
+On 9/28/23 10:53, Reinette Chatre wrote:
+> Hi Babu,
 > 
-> "Credits" is something the firmware/hardware engineers tell you. It's a
-> known fixed quantity at ASIC boot. It changes only as you submit jobs
-> into the hardware/firmware.
+> On 9/28/2023 8:08 AM, Moger, Babu wrote:
+>> On 9/28/23 02:06, Maciej Wieczór-Retman wrote:
+>>> On 2023-09-27 at 17:34:27 -0500, Moger, Babu wrote:
+>>>> On 9/22/2023 3:48 AM, Maciej Wieczor-Retman wrote:
+> ...
 > 
-> No hook, but rather a peek. You'd peek at the hardware to figure out
-> how many credits you have available to submit new jobs, or you'd keep
-> a running count of this quantity--depending on how the ASIC works.
+>>>>> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+>>>>> index 030d3b409768..c783a873147c 100644
+>>>>> --- a/arch/x86/kernel/cpu/resctrl/core.c
+>>>>> +++ b/arch/x86/kernel/cpu/resctrl/core.c
+>>>>> @@ -152,6 +152,7 @@ static inline void cache_alloc_hsw_probe(void)
+>>>>>   	r->cache.cbm_len = 20;
+>>>>>   	r->cache.shareable_bits = 0xc0000;
+>>>>>   	r->cache.min_cbm_bits = 2;
+>>>>> +	r->cache.arch_has_sparse_bitmaps = false;
+>>>>
+>>>> Is this change required?
+>>>>
+>>>> This is always set to false in rdt_init_res_defs_intel().
+>>>
+>>> The logic behind moving this variable initialization from
+>>> rdt_init_res_defs_intel() into both cache_alloc_hsw_probe() and
+>>> rdt_get_cache_alloc_cfg() is that the variable doesn't really have a
+>>> default value anymore. It used to when the CPUID.0x10.1:ECX[3] and
+>>> CPUID.0x10.2:ECX[3] bits were reserved.
+>>>
+>>> Now for the general case the variable is dependent on CPUID output.
+>>> And only for Haswell case it needs to be hardcoded to "false", so the
+>>> assignment makes more sense in Haswell probe rather than in the default
+>>> section.
+>>
+>> Here is the current sequence order with your change.
+>>
+>> 1.
+>> resctrl_late_init -> check_quirks -> __check_quirks_intel ->
+>> cache_alloc_hsw_probe
+>>    r->cache.arch_has_sparse_bitmaps = false; (new code)
+>>
+>> 2. resctrl_late_init -> rdt_init_res_defs -> rdt_init_res_defs_intel
+>>    r->cache.arch_has_sparse_bitmaps = false; (old code)
+>>
+>> 3. resctrl_late_init -> get_rdt_resources -> get_rdt_alloc_resources ->
+>> rdt_get_cache_alloc_cfg
+>>    r->cache.arch_has_sparse_bitmaps = ecx.split.noncont; (new code)
+>>
+>> The code in (3) is going to overwrite whatever is set in (1) or (2).
+>>
+>> I would say you can just remove initialization in both (1) and (2). That
+>> makes the code clearer to me. I assume reserved bits in Intel is always 0.
+>>
+> 
+> I believe Maciej already addressed this in his response to a similar question
+> from Peter. Please see:
+> https://lore.kernel.org/lkml/xnjmmsj5pjskbqeynor2ztha5dmkhxa44j764ohtjhtywy7idb@soobjiql4liy/
 
-Knowing how many 'credits' are available is not really a problem, and I
-don't need a hook for that. I need a hook to know how many 'credits' a
-job will consume, because that's the part being dynamic in PowerVR
-(signaled fences get evicted from the list of commands to issue when
-the job is pushed to the ring buffer).
-
-> 
-> When a job completes, you add it's credits to the available credit
-> count (or you may ask the hardware how many are available now),
-> and add/reset that amount to the available count kept in the scheduler
-> struct (for instance).
-
-Again, I have no problem with the available_credits tracking. It's the
-'how many credits do I need for this job?' that's dynamic.
-
-> Then, if the next job to be pushed--which has been
-> known from the outset as we use a job-FIFO--is using less than or equal
-> number of credits than the available ones, then you push the job, and
-> subtract from the availability count (or, again, peek at the hardware
-> for that count).
-> 
-> >   
-> >> 3. After letting a a job run the credits of it's fence are subtracted 
-> >> from the available credits of the scheduler.  
-> > 
-> > Uh, what happens if the job you picked make the scheduler
-> > available credits pass under zero? I guess that's relying on the
-> > fact you only expose half of the ring buffer capacity, thus enforcing
-> > that a job is never bigger than half the ring buffer. The latter is
-> > acceptable, but the fact your utilization is then half the maximum
-> > capacity is not great IMHO.  
-> 
-> The credit count you keep should never go negative from the action of pushing
-> jobs to the hardware. If it did, it tells you the software design is not
-> consistent.
-
-AFAICT, that's what Christian suggested: exposing half the ring buffer
-capacity so that any job can be queued even it means making the
-sched->available_credits value negative. In order to submit new jobs, we
-need to wait for sched->available_credits to become positive again.
-
-> 
-> Hardware/firmware engineers will not appreciate the fact that only 1/2 credits
-> are being exposed due to poor software design principles, nor would
-> the sales team.
-
-Exactly, and again, that's not something I suggested doing, I was
-replying to Christian's suggestion. Maybe I just misunderstood what he
-was suggesting.
-
-> 
-> (See also message-id: 61c0d884-b8d4-4109-be75-23927b61cb52@amd.com.)
-> 
-> >   
-> >> 4. The scheduler can keep running jobs as long as it has a positive 
-> >> credit count.  
-> > 
-> > Why not just check that 'next_job_credits < available_credits', and  
-> 
-> Yes, see message-id: 61c0d884-b8d4-4109-be75-23927b61cb52@amd.com.
-> 
-> > force the scheduler to go to sleep if that's not the case. When it's
-> > woken up because the parent fence of some previous job is signaled, we  
-> 
-> "pending job"
-> 
-> > re-evaluate the condition, and go back to sleep if we still don't have
-> > enough credits. In the PowerVR case, I'd need a wait to recalculate the
-> > number of credits every time the condition is re-evaluated, but that's
-> > just a matter of adding an optional hook to force the re-calculation.  
-> 
-> Right.
-> 
-> >   
-> >> 5. When the credit count becomes negative it goes to sleep until a 
-> >> scheduler fence signals and the count becomes positive again.
-> >>
-> >> This way jobs are handled equally, you can still push jobs up to at 
-> >> least halve your ring buffer size  
-> > 
-> > I think that's the aspect I'm not fond of. I don't see why we'd want to
-> > keep half of the ring buffer unused. I mean, there might be good  
-> 
-> We don't. We absolutely don't. Hardware engineers would absolutely
-> not appreciate this, and you shouldn't write the code to do that.
-
-Again, that's my understanding of Christian's suggestion.
-
-> 
-> > reasons to do so, if, for instance, the same ring buffer is used for
-> > some high-priority commands sent by the kernel or something like that.  
-> 
-> Ideally, you'd want a separate ring with its own credits for high-priority
-> jobs, since a high-priority job can be as large as the credit capacity,
-> which would force the code to insert it at the head of the FIFO. Anyway,
-> I digress. 
-
-Exactly.
-
-> 
-> > But it looks like a driver-specific decision to not fully use the ring
-> > buffer.  
-> 
-> The full potential of the hardware should be utilized at any point in time.
-> 
-> >   
-> >> and you should be able to handle your 
-> >> PowerVR case by calculating the credits you actually used in your 
-> >> run_job() callback.  
-> > 
-> > Hm, ideally the credits adjustment should happen every time the
-> > scheduler is considering a job for submission (every time it got
-> > unblocked because available credits got increased), otherwise you might
-> > wait longer than strictly needed if some native fences got signaled in
-> > the meantime.  
-> 
-> Ideally, at the time you're considering whether you can push a job to the hardware,
-> you should have the credit capacity ready
-
-I'm not after recalculating sched->available_credits here, but rather
-job->required_credits.
-
-I could recalculate job->required_credits when ->prepare_job() is
-called (AKA, your job is almost ready for submission), but this value
-might be slightly bigger than what needed when the job finally gets
-submitted (see below).
-
-
-> --i.e. you should just read it
-> off a variable/register/etc., possibly atomically. "Calculating" anything
-> might induce delays, and future temptation to add more code to do more things
-> there, thus degrading design.
-
-Evicting signaled fences is not something we can do without a trigger,
-so reading a variable won't help. I can recalculate the number of
-credits needed for a job in the ->prepare_job() hook, but that means
-credits will only be recalculated the first time the job is considered
-for submission, not when the scheduler is woken up to re-evaluate
-jobs waiting for ringbuf space. Given we're adding new infra to support
-dynamic job sizes, I thought it'd okay to add an optional hook to query
-the job required_credits value (the only overhead for other drivers is
-the 'if (hook_present)' test).
+The rdt_alloc_capable part is kind of hidden. Now it makes sense.
+Thanks
+Babu Moger
