@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489C27B25F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA567B25F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjI1T0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
+        id S231191AbjI1TbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1T0S (ORCPT
+        with ESMTP id S229864AbjI1TbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:26:18 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B87619F;
-        Thu, 28 Sep 2023 12:26:17 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SISQbA015355;
-        Thu, 28 Sep 2023 19:26:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ooAQqC9xWI1PCS2E+DEZfMn/7C9bplMAfccRyJkPlJk=;
- b=Hd66bLzENYH5cLyg9yLHt7Z5DSnu0WeilfkB5Av+Si2k/4gYn4+pEEZW3WpeM/Zt6UP7
- +7hsRLYGC21CGmOi+ouuanNXSL1i21cIvU0W2L9gSExAfC5kO1gmXGp7dpwmBEJcmXF3
- S2t26O08EvmdicxUNyJLtvoAjmjoSUDkYWmjMcK7Y5X8lcVH2AmEY6FaqvXGziJqhCjT
- W6S+6nxzX4q+fXwpiioXDoid7Ookgcfc03xRhc9A864/1nYpeEKiEQz1kbVGVtXb8JwU
- lnbW+eMuwuiS2Ff1nJLZsWEOPAyuhkHl2UdSD3MJUpJlWZiCspMHdwP3G1z1lqWUgZCa hQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tct5gty2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 19:26:07 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38SJQ6On015886
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 19:26:06 GMT
-Received: from [10.111.177.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 28 Sep
- 2023 12:26:06 -0700
-Message-ID: <712b1f74-72c3-4655-9e38-3138db74a1b7@quicinc.com>
-Date:   Thu, 28 Sep 2023 12:26:05 -0700
+        Thu, 28 Sep 2023 15:31:22 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5771A2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:31:20 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c736b00639so9345035ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695929480; x=1696534280; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yiM835Qdr8r3YY1MsttP3YD4WAnIIepGWpUnlhXauk8=;
+        b=qrRtX/iHC6Fhouk/Fk5b/cGsYjqc7q9ekjy1zaQAg8icBWDg+Ylf6qq/1fIt1iSMdB
+         LHprXqVC1daW8xqjH/FXTPU0pgfSe3h6m0mHUVdDKZ/oVwQoXca4INuLHoCPhhErflxj
+         u6Dz8c+yHn+2A3OuyrmyxdjPC+FbgvRAH0bNphzOVgfilEU0nqu6MgrUHbErGE9epNTe
+         F/bZ6WBwmGkGD+wr8JSnLz7bQrlL++3PFBKGPNzZhwW/BV0UWEGOBzwr+y3WG1+VuMBp
+         G4jkxYu1v7pIx7Ml1XWPCJpAEn/3bqTTXp8p2NsutIdptnkmbjS+gFyEwvJr/k8ugJlY
+         iPzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695929480; x=1696534280;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yiM835Qdr8r3YY1MsttP3YD4WAnIIepGWpUnlhXauk8=;
+        b=a57+waY4+hHLGBu3dJWiITWRfLT32i4X5PPRqQ0+e+Tbkq6CzFnkYCkPYZ8p3iXWXc
+         t1ZqeUNhpDbtVQKMHNIV6Xkvpyc1k1SOZxFE6zEW8R8j4YL2CL+NIzX8LcNcOQi67hAz
+         LMm4H1yYNSdyaFHs9xPOg31rXWNn2D53dyTbE7IzWknpUu/yvfBJUSav+Owl2EFBhrVz
+         Hl5V+ja+0zgBnT3OBhRN0+UQ7a7A3hnnqwJb1NjqWxtJjX7oxPCE/D1Z7CrybmUiCW/6
+         3nVAL48DV1x+VB6qU2vpeerwFO/wd359ZjOG4daqBeBXzz9F3nIOHDGe/SWDj80cAeHy
+         gncg==
+X-Gm-Message-State: AOJu0YxO6eYgKc5r6GtreU/kt/LU/VJvovNyx5DaTa5MwIPp9OTSH4t9
+        T2lGEdkNgq0Yo7m/Jb+9UozuoA==
+X-Google-Smtp-Source: AGHT+IE95MGmqksj4rnPsJlhQcIbTza6nvpDZ3jVQORmb3wxwujuxwIunVo313zxNSIjjCOnvIToSQ==
+X-Received: by 2002:a17:902:8649:b0:1c3:1f0c:fb82 with SMTP id y9-20020a170902864900b001c31f0cfb82mr1816980plt.41.1695929480038;
+        Thu, 28 Sep 2023 12:31:20 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:46f7:63a8:c7b8:44bb])
+        by smtp.gmail.com with ESMTPSA id c4-20020a170902c1c400b001bf8779e051sm7236931plc.289.2023.09.28.12.31.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 12:31:19 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 13:31:17 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: remoteproc: mtk,scp: Add missing
+ additionalProperties on child node schemas
+Message-ID: <ZRXUhSqHPt9R5Zd8@p14s>
+References: <20230926164513.101958-1-robh@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary (void*)
- conversions
-Content-Language: en-US
-To:     Kalle Valo <kvalo@kernel.org>,
-        Christian Lamparter <chunkeey@gmail.com>
-CC:     Wu Yunchuan <yunchuan@nfschina.com>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20230919044916.523308-1-yunchuan@nfschina.com>
- <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com> <87zg16iab3.fsf@kernel.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <87zg16iab3.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _B7Ky4Z_Shdw0MgsMykdd17s1DKnzkXl
-X-Proofpoint-GUID: _B7Ky4Z_Shdw0MgsMykdd17s1DKnzkXl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-28_18,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=676 impostorscore=0 phishscore=0 adultscore=0
- suspectscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309280166
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926164513.101958-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/2023 8:31 AM, Kalle Valo wrote:
-> Christian Lamparter <chunkeey@gmail.com> writes:
-> 
->> On 9/19/23 06:49, Wu Yunchuan wrote:
->>> No need cast (void *) to (struct ar9170 *), (u8 *) or (void*).
->>
->> hmm, your mail went into the spam folder. Good thing I checked.
->>
->>  From what I remember: The reason why these casts were added in
->> carl9170 was because of compiler warnings/complaints.
->> Current gcc compilers should be OK (given that the kernel-bot
->> didn't react, or went your Mail to their spam-folder as well?)
->> but have you checked these older versions?
-> 
-> Do you remember anything more about these warnings? I tried to check the
-> git history and at least quickly couldn't find anything related to this.
-> 
-> The changes look very safe to me, struct urb::context field and the out
-> variable are both of type 'void *' so removing the explicit casts should
-> change anything. I cannot really come up a reason why would this patch
-> cause new warnings so I am inclined towards taking this patch. What do
-> you think?
+Hi Rob,
 
-Anything that would have had issue would have predated C99.
-This change is safe.
+On Tue, Sep 26, 2023 at 11:45:08AM -0500, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+> index 895415772d1d..24422fd56e83 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
+> @@ -91,6 +91,7 @@ allOf:
+>  
+>  additionalProperties:
+>    type: object
+> +  additionalProperties: false
 
+Things have changed in the remoteproc tree [1] and this patch doesn't apply.
+Please see if it is still needed.
+
+Thanks,
+Mathieu
+
+[1]. https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git/tree/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml?h=rproc-next#n80
+
+>    description:
+>      Subnodes of the SCP represent rpmsg devices. The names of the devices
+>      are not important. The properties of these nodes are defined by the
+> -- 
+> 2.40.1
+> 
