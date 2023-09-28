@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B997B1B53
+	by mail.lfdr.de (Postfix) with ESMTP id 719B07B1B54
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbjI1Lml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S232008AbjI1Lmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbjI1Lmg (ORCPT
+        with ESMTP id S231963AbjI1Lmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:42:36 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2418B139
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:34 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3af59142cfaso6902521b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:34 -0700 (PDT)
+        Thu, 28 Sep 2023 07:42:35 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D530DB7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:33 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af602b6512so5282557b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1695901353; x=1696506153;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qTaDubZXEWSEPslgclOxwc7+Ad3m/lBvUqQUG3lQH1U=;
-        b=E6w2E118UHs1P6NnbD5upuYBQj32jJ7sP+1TC1anoHRG/89MCyBg5EYBYd58NSD3td
-         V970l4WWUOy4Gs9jE5xsu7CRBWItq9m3UooNUGaDFaOCT0ozmyh0uQ/P+gyp6p7fBYGc
-         GuI8lTvXRfFJXqVvAd3D17dfM/0raGvOrozCoe85RNpAn+/2NpcrgPFUXs85C5fdHsOy
-         4F8Pr+4xR1qNHJmBo7UPAOMbAQCh7r/k8JnhzMLii0MTfyYc9sdkud+SSA4zyVDrUZEG
-         FjwRGOHhza33tCj6L21Fjli6EsLWdDYKrY/lGfUbqqddFoBzXkdwEMPFVLHef82S7i23
-         o78A==
-X-Gm-Message-State: AOJu0Yypbjkupep8+tn6nnz51vIHi8m5TZ6rXNIro6U62HGwre6TOcxv
-        TSQwo1GZ7tPmIWXeEJACqlP8V+k5pcLZY/iSmIVVYb8+9D/Jrtw=
-X-Google-Smtp-Source: AGHT+IGzJDdL7CGRqLCO9dfIof4cK7XxRZfPS6R1Yj25M96dgd53FV7gcHWycFeFD3YcwU49Wd3DOxR7JcS43H35tFBpUrBbu5Nt
+        bh=YgOvUFNigM03Dttay+D3LBcni9VLrCqqV772iFLDhQs=;
+        b=sVqCuqemyDeVLCU006DOnSLHtNsU3X8zNxGcJj6vayyLCD6Vf0vH+LbOlFNB42JkGa
+         50bI4O9MqlfMvN/acutGee0W61YroVeMnZUZcr37rjq61R6ZF5qJhe5XSJCt6C+Q9KYb
+         HrNmbcnFrWDL+h/VDEEXYm0pRWNWhLtqM2oRzXDofcJ9leAc0WrCQKagI1NZTj6Jzqcq
+         yeOLJrgAScw7zRV+VVlCcDEXtFDUcup5q4dKK0Du+cPAgi6aZ2qa3noswkM4/E/cPGX5
+         abjKjpSv6PRqLU0sVcz98gKA9OSdpF0PCwYmBvSLm+nhb6RtydQBriXnoOwikeXUz+vO
+         DNZQ==
+X-Gm-Message-State: AOJu0YwMAyDjcU75W22ROQrhfZwxoyvCC7H4O8g5KHiIw8i5+HzTF4vy
+        UDDdijUP0YbjgPLrj39i/3vu9z+M3rmcnJ78Lufn+8PhBerV
+X-Google-Smtp-Source: AGHT+IEjfaQWZSq7L2fKVkZwPwmWxgjkpfI4iAkEHGRhEhrwh76+TIvWuBwuIIIcfnXM5M8hT/iUF2aE32gjb/hBHNCzFe/twLx6
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3086:b0:3a7:3ced:532a with SMTP id
- bl6-20020a056808308600b003a73ced532amr381328oib.7.1695901353486; Thu, 28 Sep
+X-Received: by 2002:a05:6808:238c:b0:3a9:8394:1625 with SMTP id
+ bp12-20020a056808238c00b003a983941625mr368796oib.9.1695901353257; Thu, 28 Sep
  2023 04:42:33 -0700 (PDT)
 Date:   Thu, 28 Sep 2023 04:42:33 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bfaf33060669cd6b@google.com>
-Subject: [syzbot] Monthly wireless report (Sep 2023)
-From:   syzbot <syzbot+liste709cb91ac7b8a619720@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+Message-ID: <000000000000bc2f34060669cd42@google.com>
+Subject: [syzbot] Monthly dri report (Sep 2023)
+From:   syzbot <syzbot+listda85cc61a885dfed433b@syzkaller.appspotmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
@@ -53,38 +53,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello wireless maintainers/developers,
+Hello dri maintainers/developers,
 
-This is a 31-day syzbot report for the wireless subsystem.
+This is a 31-day syzbot report for the dri subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireless
+https://syzkaller.appspot.com/upstream/s/dri
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 28 issues are still open and 115 have been fixed so far.
+During the period, 3 new issues were detected and 0 were fixed.
+In total, 14 issues are still open and 30 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  5399    Yes   WARNING in __ieee80211_beacon_get
-                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
-<2>  4322    Yes   WARNING in __cfg80211_ibss_joined (2)
-                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-<3>  3473    Yes   WARNING in ieee80211_rx_list
-                   https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
-<4>  2422    Yes   WARNING in ieee80211_link_info_change_notify (2)
-                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
-<5>  2066    No    WARNING in ieee80211_ibss_csa_beacon (2)
-                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
-<6>  870     Yes   WARNING in __rate_control_send_low
-                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
-<7>  816     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
-<8>  693     Yes   WARNING in ieee80211_start_next_roc
-                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
-<9>  475     No    INFO: task hung in ath9k_hif_usb_firmware_cb (2)
-                   https://syzkaller.appspot.com/bug?extid=d5635158fb0281b27bff
-<10> 55      Yes   WARNING in ieee80211_free_ack_frame (2)
-                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
+Ref Crashes Repro Title
+<1> 361     Yes   WARNING in drm_wait_one_vblank
+                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+<2> 83      Yes   WARNING in vkms_get_vblank_timestamp (2)
+                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
+<3> 43      Yes   WARNING in drm_syncobj_array_find
+                  https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
+<4> 6       No    linux-next boot error: WARNING: bad unlock balance in vkms_vblank_simulate
+                  https://syzkaller.appspot.com/bug?extid=204dd7e9a83cb8855b63
+<5> 5       Yes   divide error in drm_mode_vrefresh
+                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
+<6> 3       Yes   WARNING in drm_gem_object_handle_put_unlocked
+                  https://syzkaller.appspot.com/bug?extid=ef3256a360c02207a4cb
+<7> 2       Yes   memory leak in vma_node_allow
+                  https://syzkaller.appspot.com/bug?extid=58ea3177ba8bd0a5d8ee
 
 ---
 This report is generated by a bot. It may contain errors.
