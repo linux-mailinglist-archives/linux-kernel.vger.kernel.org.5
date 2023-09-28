@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BE87B1234
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182397B123B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjI1FpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
+        id S230180AbjI1Fw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1FpN (ORCPT
+        with ESMTP id S230139AbjI1Fwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:45:13 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16F1F9
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:45:11 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c63164a2b6so38096375ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:45:11 -0700 (PDT)
+        Thu, 28 Sep 2023 01:52:55 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CE4F9
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:52:52 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9b2b53e17feso326348566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695879911; x=1696484711; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1po4QCL/vfZvRXEI6cbnozLV6z7wkt57VPjtFFVRx+4=;
-        b=azIFbW7nBqPJ5JYqkp06XJlvhRQo7hQqTZD2Vv5sAtkd4GYVwxAa2aK3+9ftZ2rN1G
-         KOAb/KRqsyKNPFIIBOpmc4byY+BuuqvmTNTcCT4JoMlgek2F3SGgQnSYFA3YCLSKq6RL
-         MfWYuUjRbjTdQauL+3KHHA6wlxUsYUqB+kvjGW5KDeKytSTtn7Owwt9MqFjMDH3Spzx9
-         0klBMZ9NIheH8UxYnPQymHrUfOs3TK8bHukmG/v3FqIV66QmbdLQ1HYn2iYnp7FuZlK0
-         MSEqyO21GiLNVuglYmopFx3MS+76GX6awnDPrWsWlT0CRxmA0yjXGe50XX9OQgJLpD3Q
-         D33w==
+        d=linaro.org; s=google; t=1695880371; x=1696485171; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yiermC2FyF18zETaEZYprIWZt0kw0ddRV7cxIGTZIGU=;
+        b=ZT5dpyvHSQ5AuXMQyZk4/XuYSFtGVDD/UnZCmJsugKBQ0Wr1j+Y0BW+TpQB957l+sz
+         K8EOahnpOSA3X7WQefoWXNzvt4hA8L3e8LqpoY0PKko4QMLyHMbN6q3IOeW+KQWc8icG
+         k9DzJo9it56jcde5l4mY+IvIl2Mgwn2puO3/feAfJK/rXFQTysrpzSZiAtTosmI4s4rl
+         mYc8PCCyXCF2bMiPkpmLN41OT76oVl5jG+5mtnTx7rw44o/T50t7pS2Ylpv1mxToUklr
+         cj6M3eULbjHm7dumb/lIWIthZo6aQsAeZH2xVTGvbwvTR7KlS73gwDqbIjHmSw7igNs+
+         zbmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695879911; x=1696484711;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1po4QCL/vfZvRXEI6cbnozLV6z7wkt57VPjtFFVRx+4=;
-        b=BnMiV7Z0JjwIlLtmOvEAJjqdoo+A1p+V+XJu3lWwRRf2XVzi4Jwu84nBYa6NMGvgq/
-         U0mANZYhGjPqJSyXrwibP49w1pdv9WNxYKNSoP+rmnRNmGAPTSXd2zXjT22L9YpR544t
-         kCd/5GsPQqnfaFRR0QzXTak18mZG2IAWO8WeHl/2kfuyekmN7pZeksZbyi1zVZmSCp03
-         WhJGt+qv4RJC6CkdSYbBHqcgn9CrbhW0aGShnLHb3AGCYgFSPQrGD02iqEKQpYVldrrx
-         nHh8LZqIbeLYtowDTFoyhdtKjSDxFrVl4YzXLjH6cY29llbroDm6ZIYEvryoNB3cVpZB
-         +Bzg==
-X-Gm-Message-State: AOJu0Yx2M7jzn5m2e7Qjvq51I622Ema8IJoiEt6MKdlMjGLL6UjXsaAj
-        aP3yCWQHKzg6/JpwRigehTw=
-X-Google-Smtp-Source: AGHT+IELqje0FoM85hxwVlD34PuP+Nlgusq598wS6q3HJ7NppiBtH6Zwj3AAUJB3sL8cq8jwBinliA==
-X-Received: by 2002:a17:902:d4ce:b0:1c4:5a9:a45e with SMTP id o14-20020a170902d4ce00b001c405a9a45emr292775plg.27.1695879911271;
-        Wed, 27 Sep 2023 22:45:11 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id z20-20020a170902ee1400b001c61901ed37sm7634233plb.191.2023.09.27.22.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 22:45:10 -0700 (PDT)
-Message-ID: <d853c947-c939-440b-9dd1-063c70e16509@gmail.com>
-Date:   Thu, 28 Sep 2023 12:45:07 +0700
+        d=1e100.net; s=20230601; t=1695880371; x=1696485171;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yiermC2FyF18zETaEZYprIWZt0kw0ddRV7cxIGTZIGU=;
+        b=CB5C8EZQVmgBx6XX8XUHz94AdocUlx87/ya6fe/0GcVpFjUDQILFAb62ARdikugzEa
+         hqUQkTpGubKZ2kdf5vPhfpKBjntO5oFipsFIetrDWcj7pFMn+gJwE/o1adPaSOFHVGPb
+         yfwF0IVjrCC5DOhS/tpcNvNxBHS1PdvRV3F5oDHaG9CAHtY6qyri0flspB48g4ZD4cy1
+         nyJCmVcPQbXFB8H89qTm8ShSRb57Vn6oS8XsuCGAdptZyhmIvypQcHy2HNXexhuMsVRN
+         BOR88A6gXnopYANHA0Qk5ARR7GtCHj+qtK3GNbkjgBdSOSUGHmsBR/sAnSdi8S+aLtmr
+         gxwg==
+X-Gm-Message-State: AOJu0YzxQIv6W2qAKIF2Brb0yaoTDjkxBKH8Nl/fWztwGTS+v9X2m+vk
+        xErhLfVm/oj2wYmOuM/pQ+zq5A==
+X-Google-Smtp-Source: AGHT+IECXd2SHWusjF1ZvJH6wJsyg8mQKDkU8guO8NQ037K/NGiIVih0u3a06H3//Q6E4sdYH4h/lw==
+X-Received: by 2002:a17:906:1d2:b0:9b2:7657:87c0 with SMTP id 18-20020a17090601d200b009b2765787c0mr228675ejj.51.1695880371406;
+        Wed, 27 Sep 2023 22:52:51 -0700 (PDT)
+Received: from krzk-bin.homenet.telecomitalia.it (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
+        by smtp.gmail.com with ESMTPSA id gq23-20020a170906e25700b009ad75d318ffsm10394942ejb.17.2023.09.27.22.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 22:52:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: (subset) [PATCH 31/40] soc/samsung: exynos-chipid: Convert to platform remove callback returning void
+Date:   Thu, 28 Sep 2023 07:52:48 +0200
+Message-Id: <169588036457.9866.18271301259272655918.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925095532.1984344-32-u.kleine-koenig@pengutronix.de>
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de> <20230925095532.1984344-32-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: My brand new vivo V25 Pro 5G Android mobile phone is running on
- Linux kernel 4.19.191+
-To:     Turritopsis Dohrnii Teo En Ming <tdtem@protonmail.com>
-Cc:     Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ceo@teo-en-ming-corp.com
-References: <P8CgyFkx_9MPXgwLiaVhdarl-IlxfJVH1voL4ttdXP0yJcLyE5nw9y537LZceOC6BkXVxzuwXjQHmeGGUDI_VbPgfDXengI-5A9ua9csUqc=@protonmail.com>
- <ZQzlFgJTZzTVkKeN@debian.me>
- <BeZs4jBxhofIdjWavbuANlZ5zUrV2Wtdf9QMX5CPx_X_KT4PvKvD8c4Qc0LP_LPjKyvIy3SOjTMFgkq4xlrSKSubWZrzJLuudmSCo1Q9wLE=@protonmail.com>
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <BeZs4jBxhofIdjWavbuANlZ5zUrV2Wtdf9QMX5CPx_X_KT4PvKvD8c4Qc0LP_LPjKyvIy3SOjTMFgkq4xlrSKSubWZrzJLuudmSCo1Q9wLE=@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2023 22:40, Turritopsis Dohrnii Teo En Ming wrote:
-> 
-> 
-> 
-> 
-> 
-> Sent with Proton Mail secure email.
-> 
 
-When replying to public mailing lists (like LKML), use Reply-all
-button on your mail client. And also, don't top post; reply inline
-with appropriate context instead.
-
-See also Documentation/process/email-clients.rst for why you should
-not use Proton Mail (spoiler: encrypted mail lock-in).
-
-> ------- Original Message -------
-> On Friday, September 22nd, 2023 at 8:51 AM, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+On Mon, 25 Sep 2023 11:55:22 +0200, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new() which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
-> 
->> [trimming personal and obvious political info]
->>
->> On Thu, Sep 21, 2023 at 04:20:06PM +0000, Turritopsis Dohrnii Teo En Ming wrote:
->>
->>> My brand new vivo V25 Pro 5G Android mobile phone is running on Linux kernel 4.19.191+. Are there any severe/critical security vulnerabilities in Linux kernel 4.19.191+ that will allow government-sponsored or state-backed hackers or Advanced Persistent Threats (APTs) to take over absolute control of my brand new vivo mobile phone? Can I download, compile and install the latest Linux kernel 6.5.4 from sources on my brand new vivo mobile phone by myself? I would like to know how I can do it.
->>
->>
->> There are Android Security Bulletin listings on [1], with vivo-specific
->> bulletins can be found at [2].
->>
->> For building kernels, you can follow official Android guide [3]. Or
->> you can also visit XDA forums [4] where people posted their own custom
->> kernels. But usually your vendor (vivo) takes care of kernel updates
->> anyway.
-> 
-> So if I want to build the latest Linux kernel 6.5.4 for my vivo V25 Pro 5G mobile phone, I can follow the guides at link [3] and link [4].
-> 
+> [...]
 
-Good luck hacking Android kernel for your phone!
+Applied, thanks!
 
->>> Opening and using apps is now a slow and painful experience. The phone camera is even worse. Taking a photo or selfie takes 2-3 seconds. If you move the phone by a bit before the 3 seconds is up, your photo or selfie will turn out very blur. So you need to set a timer of 2 seconds when you take a selfie or photo. Taking videos with the phone camera is also very laggy and choppy. The recorded video will turn out to be choppy.
->>
->>
->> What is your Samsung phone specification then?
-> 
-> My Samsung phone is the Samsung Galaxy A32 5G. The specs can be found on gsmarena.com.
-> 
+[31/40] soc/samsung: exynos-chipid: Convert to platform remove callback returning void
+        https://git.kernel.org/krzk/linux/c/0da7c05d232dc015ab421771bb71cdbfb46e0d67
 
-Link please?
-
-Thanks.
-
+Best regards,
 -- 
-An old man doll... just what I always wanted! - Clara
-
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
