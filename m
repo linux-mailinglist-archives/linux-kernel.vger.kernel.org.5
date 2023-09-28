@@ -2,205 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289217B20A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B0B7B20AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbjI1PMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
+        id S231464AbjI1PPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbjI1PMe (ORCPT
+        with ESMTP id S231206AbjI1PPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:12:34 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D221AD
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:12:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40537481094so134075925e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:12:32 -0700 (PDT)
+        Thu, 28 Sep 2023 11:15:42 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84D5195
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:15:36 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-65afae9e51fso56757166d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695913951; x=1696518751; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1695914136; x=1696518936; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QbZ/IqNedSBPQT19iHqk9aJKTCqpT7A2JizGg5+9yTU=;
-        b=m12T7TE24TZURDentk80QMd+V7G3YPqvryJzAAsb5hmunjiM7f3/q8twNFhzsd/hPj
-         UebDk8tXlOvtteuTbffluBFdNDf1PBOORmY3eaJXBWCxn97cW9NuEDv0TjV5dcCuWRwZ
-         n7HEsAPb6wKYSOFlNkrMk9iZu1MbHqKPvXtsHBRUj9rsAv5XVUNtDEm2bTGb1CfmyIWa
-         l39BmLW1SP+DCsx/Tl/wSVw1VZ0dvPVe5bU7BR5+T1Uqd4VollgYVPAb2R2bciruNaRE
-         Wl60Q3t6TO8R8wt0igXQp91jnFK7AXurBkcD3FlV5ju92tL0c4xFIUu99mww42mJ/mvg
-         I7MQ==
+        bh=BQIXs+qq48cDvCc1t0NQ5MJGV2EjrkwfbJepFnNhtqs=;
+        b=Vg1l1V2Pwso3KfnK72QbKfGw+w7xCGXC8mffztVQe16pQsewCcuGhmoKS0wB++6SFb
+         kHhbmSaV3idtOBVklbx6X72kJWqV67Aw2q+o+dGlIYpJSzYhZv77ocfp1Pso+p4kxILn
+         tEF/voBrnIX4tT2FMPtfOSWVteX09YNAVMe2f7nuddBF4DoV76VWuqLoQgw7tP211Rwr
+         e+OGMVnkoUFJbLRC9IbCl7+rjRMKNPBQ+gDY+/Ufkb7SRHfTm0qWJJ2tZF6pizbSCJTB
+         47hmi6fskwT9zjivwa3BgLdpN6NyxPblgbD9ePX0EEReCYH6x0Y7MqLkvUTvZpAzLdo3
+         9+pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695913951; x=1696518751;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695914136; x=1696518936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QbZ/IqNedSBPQT19iHqk9aJKTCqpT7A2JizGg5+9yTU=;
-        b=df8i3qAi/JuJ9CkGXlrgtYH3hARV5KWATZftrLJ8Tg2+eA107Kb+VjSnE0PLYZ5rQa
-         3id/tFwn3a+8Pstxv5kvCDgmimITuPE/JiQ/b9SY76wp6KOcyg4QFZ0fB2Eq4h45kzRx
-         xAlK6QaPgDcCUMl/wBZE1O0Sb+upQgcK7SBqfK8dRU3KWDNi7C7yQ2VKO+oCO5CNHEDh
-         0MKS7Bg34gChI1NzKL5cD4ujZaFU0rjQnIQjl2FOPpYkyfumXoJT96N3xYsu87aiGQkq
-         QI8Ec3VW6g1xbzvjtOFnIldGrYuskz54MFCuL6HGOyQbp9+4nr4L6ocyTWHMnhcpebRv
-         aXLQ==
-X-Gm-Message-State: AOJu0YyhsBP6b8fk3YU/U/AGwdvq2g4wW3qg09byBqeXdVKA42fuxxZf
-        ssRAUCRWhlc/LNL2zTnBeKTqgQ==
-X-Google-Smtp-Source: AGHT+IGnch1UoBa2jDjMOtVTX2kWLxJsEK2B3q+kzsrdf7SdOiCY8CqOEICMXM1NQiFOJg/HOVKVMg==
-X-Received: by 2002:a7b:c5c6:0:b0:406:51a0:17fd with SMTP id n6-20020a7bc5c6000000b0040651a017fdmr1384997wmk.18.1695913950564;
-        Thu, 28 Sep 2023 08:12:30 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id p8-20020a7bcc88000000b004064cd71aa8sm2086981wma.34.2023.09.28.08.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 08:12:29 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 18:12:27 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev,
-        =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Xiubo Li <xiubli@redhat.com>,
-        Milind Changire <mchangir@redhat.com>
-Subject: fs/ceph/crypto.c:465 ceph_fname_to_usr() warn: variable dereferenced
- before IS_ERR check 'dir' (see line 403)
-Message-ID: <b5a0acdb-9c25-46f3-aa44-ac57da8efeee@kadam.mountain>
+        bh=BQIXs+qq48cDvCc1t0NQ5MJGV2EjrkwfbJepFnNhtqs=;
+        b=vgnIEzIV2YuEVViPQfnFBNwwk4tVHgeSSBxgpUBWONXCXvMN1Ozz3IHfnP0U2R1EnM
+         gDRViwS1eNS08IJus/Gxr5eIktZAqPu/Hy4cdgvKitTC9wuj6laoq2JF22K4RdvgoRGW
+         8De4riA1goWMRKkERbScU9MJMWWyWQ7NRS7jWy+l9QD4r3yfotFqufY+Nkgu05Y9DK8E
+         6hZezb2OiskJyLvxmjH7/o5+aUmPnN5C/Xk0YdK2B1CgJ9DbrR6aa+JhreHfQp61OxIm
+         a+pITJ+U3KqOcgCSrst4ncnJ6cTxUKIMWwguzpmm7CPBbs3LaXkYpGrPO1cQCMuOVFYY
+         A7qA==
+X-Gm-Message-State: AOJu0YybNlRVw8T13EP0GXchpyCFdmA5xlDWl/QcilGBXD7nE0SIROOV
+        uJiwnpIE01kGiy6HBy2Tup1kEF5i4gYUz+yuIlcbyA==
+X-Google-Smtp-Source: AGHT+IHnuIbgk51dz9A0cvjjUL3dAUoeN59yoVGxHqdk0D8LF9IE8x0Lfs+iBii3nAaP1Y2zGvWi4KRqtpiubqe0DxE=
+X-Received: by 2002:ad4:58ac:0:b0:65b:8ef:e4ea with SMTP id
+ ea12-20020ad458ac000000b0065b08efe4eamr1271556qvb.56.1695914135738; Thu, 28
+ Sep 2023 08:15:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230922080848.1261487-1-glider@google.com> <20230922080848.1261487-3-glider@google.com>
+ <CAG_fn=UeFoyhZvPJ7pGPrc5011D9h1e4ioffat4eUfVHP6Hd-Q@mail.gmail.com>
+ <ZRF7r0ZjxcL9C8U8@smile.fi.intel.com> <CAG_fn=V8Mx89dOfKf88nEq9V9i_kMYaOdGjd3DQVOWnYrandyA@mail.gmail.com>
+ <CAG_fn=WX+yAFHtbsxSvd41P61jjWtFEePqOs_1AKGJcgaWfVag@mail.gmail.com>
+ <3bc8fda47dc04e3b8cfd0e3f6fc7bbee@AcuMS.aculab.com> <CAG_fn=XCXYZhC+ER5mhMyE2YD-__1oj+uvPB4pyz4X7tmiq=3w@mail.gmail.com>
+ <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
+In-Reply-To: <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 28 Sep 2023 17:14:55 +0200
+Message-ID: <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/5] lib/test_bitmap: add tests for bitmap_{read,write}()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, pcc@google.com,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        eugenis@google.com, Syed Nayyar Waris <syednwaris@gmail.com>,
+        william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
-commit: dd66df0053ef84add5e684df517aa9b498342381 ceph: add support for encrypted snapshot names
-config: x86_64-randconfig-161-20230928 (https://download.01.org/0day-ci/archive/20230928/202309282202.xZxGdvS3-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230928/202309282202.xZxGdvS3-lkp@intel.com/reproduce)
+On Thu, Sep 28, 2023 at 4:43=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
+rote:
+>
+>
+>
+> On Thu, Sep 28, 2023, 10:20 AM Alexander Potapenko <glider@google.com> wr=
+ote:
+>>
+>> On Wed, Sep 27, 2023 at 9:51=E2=80=AFAM David Laight <David.Laight@acula=
+b.com> wrote:
+>> >
+>> > ...
+>> > > Overall, unless allocating and initializing bitmaps with size
+>> > > divisible by sizeof(long), most of bitmap.c is undefined behavior, s=
+o
+>> > > I don't think it makes much sense to specifically test this case her=
+e
+>> > > (given that we do not extend bitmap_equal() in the patch set).
+>> >
+>> > Bitmaps are arrays of unsigned long.
+>> > Using any of the APIs on anything else is a bug.
+>> > So it is always wrong to try to initialise 'a number of bytes'.
+>> > The size used in the definition need not be a multiple of 8 (on 64bit)
+>> > but the allocated data is always a multiple of 8.
+>> >
+>> > Any calls to the functions that have a cast of the bitmap
+>> > parameter are likely to be buggy.
+>> > And yes, there are loads of them, and many are buggy.
+>>
+>> I got rid of the casts in the bitmap test, but they remain in
+>> mtecomp.c, where 16-, 32-, 64-byte buffers allocated by
+>> kmem_cache_alloc() are treated as bitmaps:
+>> https://lore.kernel.org/linux-arm-kernel/20230922080848.1261487-6-glider=
+@google.com/T/#mdb0d636d2d357f8ffe6ac79cef1145df3440f659
+>>
+>> Having them allocated by bitmap_alloc() won't work, because on Android
+>> bitmap_alloc() will allocate the buffers from the kmalloc-64 cache,
+>> defeating the purpose of the compression.
+>>
+>> Would it be better to extend the bitmap.h API so that it is possible
+>> to allocate from a kmem cache (which would in turn require
+>> bitmap_kmem_cache_create() to ensure the alignment requirements)?
+>
+>
+> So all that is wrong then. Bad on me, I'd spend more time looking into yo=
+ur driver code...
+>
+> We already have bitmap_(from,to)_u(64,32),
+> And you can use them. For 16-bit you have to add helpers yourself. But it=
+'s not a rocket science.
+>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202309282202.xZxGdvS3-lkp@intel.com/
+So e.g. for compressing something into a 16-byte buffer using bitmaps
+I'd need to:
 
-smatch warnings:
-fs/ceph/crypto.c:465 ceph_fname_to_usr() warn: variable dereferenced before IS_ERR check 'dir' (see line 403)
+1) Allocate the buffer: buf =3D kmem_cache_alloc(...)
+2) Allocate the bitmap: bitmap =3D bitmap_alloc(16*8, ...)
+3) Fill the bitmap: mte_compress_to_buf(..., bitmap, 16)
+4) Copy the bitmap contents to the buffer: bitmap_to_arr64(buf, bitmap, 16*=
+8)
+5) Deallocate the bitmap: bitmap_free(bitmap)
 
-vim +/dir +465 fs/ceph/crypto.c
+instead of:
 
-457117f077c674 Jeff Layton    2021-03-26  380  int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
-457117f077c674 Jeff Layton    2021-03-26  381  		      struct fscrypt_str *oname, bool *is_nokey)
-457117f077c674 Jeff Layton    2021-03-26  382  {
-dd66df0053ef84 Luís Henriques 2022-08-25  383  	struct inode *dir = fname->dir;
-457117f077c674 Jeff Layton    2021-03-26  384  	struct fscrypt_str _tname = FSTR_INIT(NULL, 0);
-457117f077c674 Jeff Layton    2021-03-26  385  	struct fscrypt_str iname;
-dd66df0053ef84 Luís Henriques 2022-08-25  386  	char *name = fname->name;
-dd66df0053ef84 Luís Henriques 2022-08-25  387  	int name_len = fname->name_len;
-dd66df0053ef84 Luís Henriques 2022-08-25  388  	int ret;
-457117f077c674 Jeff Layton    2021-03-26  389  
-457117f077c674 Jeff Layton    2021-03-26  390  	/* Sanity check that the resulting name will fit in the buffer */
-457117f077c674 Jeff Layton    2021-03-26  391  	if (fname->name_len > NAME_MAX || fname->ctext_len > NAME_MAX)
-457117f077c674 Jeff Layton    2021-03-26  392  		return -EIO;
-457117f077c674 Jeff Layton    2021-03-26  393  
-dd66df0053ef84 Luís Henriques 2022-08-25  394  	/* Handle the special case of snapshot names that start with '_' */
-dd66df0053ef84 Luís Henriques 2022-08-25  395  	if ((ceph_snap(dir) == CEPH_SNAPDIR) && (name_len > 0) &&
-dd66df0053ef84 Luís Henriques 2022-08-25  396  	    (name[0] == '_')) {
-dd66df0053ef84 Luís Henriques 2022-08-25  397  		dir = parse_longname(dir, name, &name_len);
-dd66df0053ef84 Luís Henriques 2022-08-25  398  		if (IS_ERR(dir))
-dd66df0053ef84 Luís Henriques 2022-08-25  399  			return PTR_ERR(dir);
+buf =3D kmem_cache_alloc(...)
+mte_compress_to_buf(..., (unsigned long *)buf, 16)
 
-If dir is an error pointer, then we return directly.
+, correct?
 
-dd66df0053ef84 Luís Henriques 2022-08-25  400  		name++; /* skip initial '_' */
-dd66df0053ef84 Luís Henriques 2022-08-25  401  	}
-dd66df0053ef84 Luís Henriques 2022-08-25  402  
-dd66df0053ef84 Luís Henriques 2022-08-25 @403  	if (!IS_ENCRYPTED(dir)) {
-dd66df0053ef84 Luís Henriques 2022-08-25  404  		oname->name = fname->name;
-dd66df0053ef84 Luís Henriques 2022-08-25  405  		oname->len = fname->name_len;
-dd66df0053ef84 Luís Henriques 2022-08-25  406  		ret = 0;
-dd66df0053ef84 Luís Henriques 2022-08-25  407  		goto out_inode;
-dd66df0053ef84 Luís Henriques 2022-08-25  408  	}
-dd66df0053ef84 Luís Henriques 2022-08-25  409  
-dd66df0053ef84 Luís Henriques 2022-08-25  410  	ret = ceph_fscrypt_prepare_readdir(dir);
-dd66df0053ef84 Luís Henriques 2022-08-25  411  	if (ret)
-dd66df0053ef84 Luís Henriques 2022-08-25  412  		goto out_inode;
-457117f077c674 Jeff Layton    2021-03-26  413  
-457117f077c674 Jeff Layton    2021-03-26  414  	/*
-457117f077c674 Jeff Layton    2021-03-26  415  	 * Use the raw dentry name as sent by the MDS instead of
-457117f077c674 Jeff Layton    2021-03-26  416  	 * generating a nokey name via fscrypt.
-457117f077c674 Jeff Layton    2021-03-26  417  	 */
-dd66df0053ef84 Luís Henriques 2022-08-25  418  	if (!fscrypt_has_encryption_key(dir)) {
-af9ffa6df7e337 Xiubo Li       2022-03-14  419  		if (fname->no_copy)
-af9ffa6df7e337 Xiubo Li       2022-03-14  420  			oname->name = fname->name;
-af9ffa6df7e337 Xiubo Li       2022-03-14  421  		else
-457117f077c674 Jeff Layton    2021-03-26  422  			memcpy(oname->name, fname->name, fname->name_len);
-457117f077c674 Jeff Layton    2021-03-26  423  		oname->len = fname->name_len;
-457117f077c674 Jeff Layton    2021-03-26  424  		if (is_nokey)
-457117f077c674 Jeff Layton    2021-03-26  425  			*is_nokey = true;
-dd66df0053ef84 Luís Henriques 2022-08-25  426  		ret = 0;
-dd66df0053ef84 Luís Henriques 2022-08-25  427  		goto out_inode;
-457117f077c674 Jeff Layton    2021-03-26  428  	}
-457117f077c674 Jeff Layton    2021-03-26  429  
-457117f077c674 Jeff Layton    2021-03-26  430  	if (fname->ctext_len == 0) {
-457117f077c674 Jeff Layton    2021-03-26  431  		int declen;
-457117f077c674 Jeff Layton    2021-03-26  432  
-457117f077c674 Jeff Layton    2021-03-26  433  		if (!tname) {
-457117f077c674 Jeff Layton    2021-03-26  434  			ret = fscrypt_fname_alloc_buffer(NAME_MAX, &_tname);
-457117f077c674 Jeff Layton    2021-03-26  435  			if (ret)
-dd66df0053ef84 Luís Henriques 2022-08-25  436  				goto out_inode;
-457117f077c674 Jeff Layton    2021-03-26  437  			tname = &_tname;
-457117f077c674 Jeff Layton    2021-03-26  438  		}
-457117f077c674 Jeff Layton    2021-03-26  439  
-dd66df0053ef84 Luís Henriques 2022-08-25  440  		declen = ceph_base64_decode(name, name_len, tname->name);
-457117f077c674 Jeff Layton    2021-03-26  441  		if (declen <= 0) {
-457117f077c674 Jeff Layton    2021-03-26  442  			ret = -EIO;
-457117f077c674 Jeff Layton    2021-03-26  443  			goto out;
-457117f077c674 Jeff Layton    2021-03-26  444  		}
-457117f077c674 Jeff Layton    2021-03-26  445  		iname.name = tname->name;
-457117f077c674 Jeff Layton    2021-03-26  446  		iname.len = declen;
-457117f077c674 Jeff Layton    2021-03-26  447  	} else {
-457117f077c674 Jeff Layton    2021-03-26  448  		iname.name = fname->ctext;
-457117f077c674 Jeff Layton    2021-03-26  449  		iname.len = fname->ctext_len;
-457117f077c674 Jeff Layton    2021-03-26  450  	}
-457117f077c674 Jeff Layton    2021-03-26  451  
-dd66df0053ef84 Luís Henriques 2022-08-25  452  	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, oname);
-dd66df0053ef84 Luís Henriques 2022-08-25  453  	if (!ret && (dir != fname->dir)) {
-dd66df0053ef84 Luís Henriques 2022-08-25  454  		char tmp_buf[CEPH_BASE64_CHARS(NAME_MAX)];
-dd66df0053ef84 Luís Henriques 2022-08-25  455  
-dd66df0053ef84 Luís Henriques 2022-08-25  456  		name_len = snprintf(tmp_buf, sizeof(tmp_buf), "_%.*s_%ld",
-dd66df0053ef84 Luís Henriques 2022-08-25  457  				    oname->len, oname->name, dir->i_ino);
-dd66df0053ef84 Luís Henriques 2022-08-25  458  		memcpy(oname->name, tmp_buf, name_len);
-dd66df0053ef84 Luís Henriques 2022-08-25  459  		oname->len = name_len;
-dd66df0053ef84 Luís Henriques 2022-08-25  460  	}
-dd66df0053ef84 Luís Henriques 2022-08-25  461  
-457117f077c674 Jeff Layton    2021-03-26  462  out:
-457117f077c674 Jeff Layton    2021-03-26  463  	fscrypt_fname_free_buffer(&_tname);
-dd66df0053ef84 Luís Henriques 2022-08-25  464  out_inode:
-dd66df0053ef84 Luís Henriques 2022-08-25 @465  	if ((dir != fname->dir) && !IS_ERR(dir)) {
-                                                                           ^^^^^^^^^^^^
-Checking a second time, is harmless but annoys static analysis.  I think
-if you have the cross function database then this warning is not
-triggered because Smatch tries to not warn about unnecessary checks so
-long as we are sure they are harmless.  Without the cross function
-database we know that "dir" isn't an error pointer but it might still
-be an invalid pointer.  I guess I could make this more strict to only
-count dereferencing which are potentially error pointer dereferences
-instead of just potentially invalid.  With the cross function database
-we know that parse_longname() either returns valid or error pointers.
+Given that the buffer contents are opaque and its size is aligned on 8
+bytes, could it be possible to somehow adopt the `buf` pointer
+instead?
 
-dd66df0053ef84 Luís Henriques 2022-08-25  466  		if ((dir->i_state & I_NEW))
-dd66df0053ef84 Luís Henriques 2022-08-25  467  			discard_new_inode(dir);
-dd66df0053ef84 Luís Henriques 2022-08-25  468  		else
-dd66df0053ef84 Luís Henriques 2022-08-25  469  			iput(dir);
-dd66df0053ef84 Luís Henriques 2022-08-25  470  	}
-457117f077c674 Jeff Layton    2021-03-26  471  	return ret;
-457117f077c674 Jeff Layton    2021-03-26  472  }
+> I'm AFK at the moment. I'll take a close look at your machinery at the we=
+ekend.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Thanks and take your time!
