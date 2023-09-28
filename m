@@ -2,55 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663747B27AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F3D7B27AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbjI1Vom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S232452AbjI1VpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1Vol (ORCPT
+        with ESMTP id S230325AbjI1VpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:44:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7ED19D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:44:37 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695937476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jGjepNcDQZMCY4f7saBj8ug9eG8q1NjucB0xcANdtdw=;
-        b=UjCkVUuksRe89PS9UoXkC/hMfxp9JIrk3Amcnpzo7p5m/iS7rYEvxIrkm4DZpT5Qydq8In
-        WsVAGdIJaYRcfi+q4CfDY8m4pB1v5aOFqo1ijSRsgLKA5/fUNGwofDjmLq3PoGAvnE1UlD
-        G2wn+XSM5ReWhnoJ6+EphV8W4NmLp15rVXZIARFPGgO/Vs+Du9mcGN98nZ12b8pwkrKIbo
-        r9Jhgu8f+5BCel1CLsB5iGVkye1n8+4qJXLNNarSYr0x7UmLMRaJV4OY8tZ3Lhx1xNQ8aB
-        CiIoJxs/Axjftwjdx84ZAiDGjBl1BjXPF0nQmDdCK38/MNEmXwDTOv81kTlcUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695937476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jGjepNcDQZMCY4f7saBj8ug9eG8q1NjucB0xcANdtdw=;
-        b=2tiGWDP7CZydnFljXaVJKM7NWTHA4dAvaTN9YMJPLvcidp+8543NeoT6l9h5oTQXpd/M75
-        u2PD/bZ//ZHBgDAg==
-To:     =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@openvz.org>
-Subject: Re: Loosening time namespace restrictions
-In-Reply-To: <CAAi7L5c+7UoCOmKHAY4E1w_pwDS=qVOGsO+tfx6e3Zu+kyxHig@mail.gmail.com>
-References: <CAAi7L5c+7UoCOmKHAY4E1w_pwDS=qVOGsO+tfx6e3Zu+kyxHig@mail.gmail.com>
-Date:   Thu, 28 Sep 2023 23:44:35 +0200
-Message-ID: <87lecqdlbw.ffs@tglx>
+        Thu, 28 Sep 2023 17:45:07 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD61219D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:45:05 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59f1dff5298so156961747b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695937505; x=1696542305; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d53VmuoWKktNI02x/f4SVOnb4OpZ9AYZl6S7M2mENOQ=;
+        b=nzty1U2pWLvDqcpqJ94rU6HFEx3DmdPGnkI/X/B6+uoyETWQgoH7gxY4dLSiQ6D3qv
+         JXvoVUz/PkK8s601b7l6pG8fGZ0CYYPO3oet9Xycc8voX15G8ay6eh4f8WMRzxSGm/Vj
+         /InXsaVuxKp/ND3f4oxcHNTrw7okKArHQ/vsr+nmsvWc1EzZE4fdM1u8AeNtR8CvlR8J
+         udfTBaP3g9x7xgVfFe6al9fVs4XqCQPBj7iLuevmdt2IkO2TURezw6W24HHYlTHfqlUI
+         jhCIc+rSDKRxtaakqqic3q4Q+ZIYa0EIvbxonMWQf/dOSMjvyI9LCEzPJy8FcrpoPsam
+         6Oww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695937505; x=1696542305;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d53VmuoWKktNI02x/f4SVOnb4OpZ9AYZl6S7M2mENOQ=;
+        b=Gr4IALSOerTmSRwYo6IPIW75Rr3ieOnhfKVXSQu7OeZrnEizj/tnjc/EPLy0Pgw8hg
+         Z5JjCFB0FR8pZLmWFeY9btAhrpsHTTNJ65a9IayrAvvlWlqWOx6IVtWMcdycL64/z50G
+         uynZ/Rd+uXcBLR896fHRGAywfej2GlK6gRXuOHKrXO7iqIG5M1qdsi0Jlj9PTZCwwPbw
+         iK27SJS3me+EA4yFuwe2M5zdaQugD0oFOKqCBUa6q9CyqlwaxOaEPDqG/qggja6KnmbR
+         QZ0jXGkQndetG9uBD7CJJMQv3DvsC5sZ+PGzg7LJRgDpAOednxXC9QcwPqwjzmvINubz
+         KyGg==
+X-Gm-Message-State: AOJu0YwpShsNkYa4RNVbLo79uf/DThSNUjs+y4uC3rXbOmKfz+vO6N3G
+        YzKA2tsjh/Ld5B1BYJcA6GihOfD0BwrjP9UzegKqOw==
+X-Google-Smtp-Source: AGHT+IFmD0TeY/RAzzjpTHUvmIzABRZnRZfjdrG+rUh84QC2EVS0feP28y/RWjO81DOkItfuirnotVhBhAFKqW22Cd8=
+X-Received: by 2002:a81:72c5:0:b0:59b:2458:f612 with SMTP id
+ n188-20020a8172c5000000b0059b2458f612mr2417694ywc.28.1695937505000; Thu, 28
+ Sep 2023 14:45:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230927-strncpy-drivers-mfd-db8500-prcmu-c-v1-1-db9693f92a68@google.com>
+In-Reply-To: <20230927-strncpy-drivers-mfd-db8500-prcmu-c-v1-1-db9693f92a68@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 28 Sep 2023 23:44:53 +0200
+Message-ID: <CACRpkdaPvDFvxSVHeLZ3Bxx5yVH3LN1OOpGm78cJ+wp7q3C+Vw@mail.gmail.com>
+Subject: Re: [PATCH] mfd: db8500-prcmu: replace deprecated strncpy with strscpy
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Lee Jones <lee@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -61,96 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21 2023 at 18:39, Micha=C5=82 C=C5=82api=C5=84ski wrote:
-> I faced a problem with the current implementation of time ns while
-> using it for container migration. I'd like users of CLOCK_MONOTONIC to
-> notice as small of a jump as possible in the clock after migration,
-> since according to the documentation "this clock does not count time
-> that the system is suspended". In that case the formula for clock
-> monotonic offset is "m1_monotonic - m2_monotonic - migration_downtime"
-> where m<n>_monotonic is clock monotonic value on the n-th machine.
-> Unfortunately due to time ns restrictions, I have to set the offsets
-> before putting any process in the namespace. I also can't move
-> multithreaded processes between namespaces. So I would have to know
-> the migration downtime before the migration is close to done, which
-> seems impossible. For that reason I'd like to drop the requirement of
-> having to set the offsets before putting any processes in the
-> namespace. What do you think? Is it possible to implement this and get
-> it merged or should I forgo it? If you think it's possible, I'd
-> appreciate any pointers on how to get this done (or how to solve my
-> problem in another way).
+Hi Justin,
 
-Lots of word salad. Seems your newline key has an issue. Let me split
-that up for you.
+thanks for your patch!
 
-> I faced a problem with the current implementation of time ns while
-> using it for container migration.
+On Wed, Sep 27, 2023 at 7:10=E2=80=AFAM Justin Stitt <justinstitt@google.co=
+m> wrote:
+
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 >
-> I'd like users of CLOCK_MONOTONIC to notice as small of a jump as
-> possible in the clock after migration, since according to the
-> documentation "this clock does not count time that the system is
-> suspended".
+> We expect project_name to be NUL-terminated based on its use with
+> pr_info:
+> |       pr_info("PRCMU firmware: %s(%d), version %d.%d.%d\n",
+> |               fw_info.version.project_name,
+> |               fw_info.version.project,
+> |               fw_info.version.api_version,
+> |               fw_info.version.func_version,
+> |               fw_info.version.errata);
+>
+> Moreover, NUL-padding does not seem to be needed.
+>
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+>
+> Let's also change `PRCMU_FW_PROJECT_NAME_LEN` to just
+> sizeof(fw_info.version.project_name) as this is more idiomatic strscpy
+> usage.
+>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
+cpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
+tml [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-"I'd like" is not a technical term and the documentation reference
-to what clock MONOTONIC represents does not help either.
+Well analyzed, well patched, what can I say! Hats off.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> In that case the formula for clock monotonic offset is "m1_monotonic -
-> m2_monotonic - migration_downtime" where m<n>_monotonic is clock
-> monotonic value on the n-th machine.
-
-I which case?=20
-
-> Unfortunately due to time ns restrictions, I have to set the offsets
-> before putting any process in the namespace.
-
-That's obvious because how would you guarantee that the process cannot
-observe the wrong time or does not expire timers early?
-
-> I also can't move multithreaded processes between namespaces.
-
-I have no idea what you are trying to tell me here.
-
-  1) What has this to do with multi-threading?
-
-     Are you suggesting that having thread A of a process to be in a
-     different time domain than thread B of a process is something
-     useful?
-
-     Seriously this does not make any sense at all and if you think
-     that's something useful then you completely failed to explain the
-     use case.
-=20
-  2) How does moving a process from a time namespace A to a time
-     namespace B make sense at all?
-
-     That's simply impossible unless time namespace A and time namespace
-     B are identical. Otherwise you screw up time readouts and armed
-     timers in one go. If they are identical then there is no point to
-     move it, right?
-
-     Aside of that you fail again to describe which problem you are
-     trying to solve.
-
-> So I would have to know the migration downtime before the migration is
-> close to done, which seems impossible. For that reason I'd like to
-> drop the requirement of having to set the offsets before putting any
-> processes in the namespace.
-
-How do you guarantee that the process cannot observe time going
-backwards and timers firing early when you set the offset after you
-restored the process into the time name space and resumed it?
-
-The answer is: Not at all.=20
-
-> What do you think? Is it possible to implement this and get it merged
-> or should I forgo it? If you think it's possible, I'd appreciate any
-> pointers on how to get this done (or how to solve my problem in
-> another way).
-
-I still have not figured out which problem you are trying to solve, so
-giving advice would involve crystal balls. I misplaced mine and even if
-I could find it again I'd refuse to use it for giving techical advice.
-
-Thanks,
-
-        tglx
+Yours,
+Linus Walleij
