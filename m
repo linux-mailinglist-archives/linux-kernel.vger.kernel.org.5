@@ -2,255 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 468D47B1130
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BB17B1132
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjI1DaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 23:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        id S230128AbjI1DbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 23:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjI1D37 (ORCPT
+        with ESMTP id S229854AbjI1DbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 23:29:59 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F24122
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:29:58 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-7742da399a2so536436785a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1695871797; x=1696476597; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KuGpzWUz7WllqNPIiFw60y239AVC+GmSn3mdK28s17Q=;
-        b=MrUXHCgF6csYJaZtGtqH9CzwM3OyIVjou75BAKkQ7RG2fYn2Cc9EUExWhuAg9AaqqR
-         IxcdMpfsdTMEwpxA6MyixWsZJz396U9tPOM1dg5AT7p36t+J4XmG0BUqLjmNsQ5fOcrC
-         PYRbQsy5jvQJs8oKb3IbAn8fEgTdHwkaHo/Z8JLNd/eFE1Yzofz5R0O5MzyTgRL7WN6K
-         lr/Xk7dE+nbHRB9CUNW7Lca8J0UfWHSp8NmbIVx+ZkSn0D1CNyAKiM5P/M3NzJm08L1y
-         +MlOaRW4Baqwy/LOo+9oMwJnDCGh1Nj1bXVswS3HcFUPWDrD+6TDC6HeEZWdt7deUhYP
-         y1wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695871797; x=1696476597;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KuGpzWUz7WllqNPIiFw60y239AVC+GmSn3mdK28s17Q=;
-        b=DSSir+JGmu0hZiD2LCm66yYJfIiMnOgK3qqhlXhLnMfAyZlXvwGcIzWZ31Mk6ug17v
-         6Ua3vRC8u2JBdKU2Ok9kZTO3PnujD/dznBB1xLVxce7J4iFOteMzzPgCTxD6gfNwuCZd
-         GDKoz4zEKF1xUVVKvIvyGVEMtrT0bMGouO0sa9NM1mog5/80BFePnDO2T+i8ZRT1h8R6
-         9e+QPM45f+nP87pLwDVnKnoXy02i98hPtdO9OxMy40acXTabkONvWHzJWLZoBFHnaKdq
-         rr704EOyCcLLrI02Ej9HbYFc7Ct5ZdJHU3c8Hyd2G2Wa7r76TF6wsYLKyVyBKFynLxAP
-         pGGw==
-X-Gm-Message-State: AOJu0YxSALd5s1u5Kfo7mk9pn6Y9B7X1P8jUgNdHPJpH/v7JO5XHHEwW
-        OthzRPV35vngeGWYq8jzVnKG76iDj/cAw59wjic=
-X-Google-Smtp-Source: AGHT+IEyfMhyk45JsD3Dgb9LYtD3L+aE0Fq7RIPQuBa2iSA5NwdKFkK0qzCUM/UGwHr0VcmesJoAGA==
-X-Received: by 2002:a05:620a:221a:b0:774:f7b:f0a with SMTP id m26-20020a05620a221a00b007740f7b0f0amr44046qkh.76.1695871797184;
-        Wed, 27 Sep 2023 20:29:57 -0700 (PDT)
-Received: from [10.255.173.165] ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id j17-20020aa78dd1000000b0068c1ac1784csm12541842pfr.59.2023.09.27.20.29.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Sep 2023 20:29:56 -0700 (PDT)
-Message-ID: <716adfa5-bd5d-3fe2-108c-ff24b2e81420@bytedance.com>
-Date:   Thu, 28 Sep 2023 11:29:51 +0800
-MIME-Version: 1.0
+        Wed, 27 Sep 2023 23:31:05 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2075.outbound.protection.outlook.com [40.107.93.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ECB94
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:31:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WpJPdFfT3FhRCrsxjCqLqUim2yduQBM7ujv6hKFwzkp4hvSR9nSjx75wG/Ptw92x3Rv4AsAKfHaPp19Pt7MldQNmcCXpDiICKKeJqUFxD81ANeDzkwuJmvMsKp9RdLCOa11oKGiY4wSROn3eovXH/1vl0mTyWMLahTN26E31Gd+M3cM5K5x2vf+ek6CjjVtxQkyjvDxASuFnRvAcJzglHximSIdCcIqW9+LULxr9IJCyQP+/tAlhWwbnCmYNinYDwtVaWWBvEMCwb9GHWoWMym3+jj5m400f7mitO6wioGiQi8cQmazvc20PyyoKYaWGcDkcTAeUJEnB+3v0p5S2Hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DURj9obeP+3qvLHXlr6gOUJsVnzBRpSpSEOTbc7CqSw=;
+ b=oOBgptmMSnbtwqupdXuBp4pj/N57EZ5M8DZs4wyK5diF6ufd/C7hYs5rIjCXa4gUHYClZheIOP4o7OCjB8kuoysb8PMMGJg17uhaN54KRPFN+PCGvCE0wJRPRMLJiKZy6uMTTcRQuXmJdkjwMiE1XS6/x02Pz2urnjdu1U2EFeWomq6sm3Kc2nq6+F5TSGp5IaoybB5yI6GtKT3foPglx/AInj/fBGlR8c8N88JJnfvQzgUNRmpwIMRt69WQd1/LhRR9KErG8ZCKR2g9wMxuTGWFH8Y/iXT3dCxv9YLRBNNMKWvhSrRgjHtsToz4pT3/DsNxq63Nf3z6XIV50tAhqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DURj9obeP+3qvLHXlr6gOUJsVnzBRpSpSEOTbc7CqSw=;
+ b=Kr9mPhfx11w11TQ0Iw5W87bJODvtI+q28WwnHgbOMXZkw9oqx3voAtNlYEt8mXD6JMeKbCxwbsbSAUTUKzSXa3JPm9KQoANQ1bl9e4Aegml8Fc7J+itGCtDsaQytN8jBkzU193AOrICA0IhATEgwbyxWOgID02LnlZ08ipsycB1ixDsK/2nJvhzoUm0FrzC6chWDIIyGzDWYeryvDsJOUBns2OyVJS5i43FySChkgl276q+bLeoJOqzYhkY8Ki7uy5Mc7biFgZUSiHuCDeGBFhIf++WpZ6tmnAgqtTXuW7wFeWGMExS9q8bvxJmK+YrnpFiIEzEFGy7zHQp2fmJJbQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB6607.namprd12.prod.outlook.com (2603:10b6:8:d1::13) by
+ MW6PR12MB8913.namprd12.prod.outlook.com (2603:10b6:303:247::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Thu, 28 Sep
+ 2023 03:31:02 +0000
+Received: from DS0PR12MB6607.namprd12.prod.outlook.com
+ ([fe80::3ce8:e189:f31c:454]) by DS0PR12MB6607.namprd12.prod.outlook.com
+ ([fe80::3ce8:e189:f31c:454%3]) with mapi id 15.20.6792.021; Thu, 28 Sep 2023
+ 03:31:02 +0000
+Message-ID: <04e28f8a-1393-d991-264c-b0592746c123@nvidia.com>
+Date:   Wed, 27 Sep 2023 20:30:59 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: Introduce task open coded iterator
- kfuncs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
- <20230925105552.817513-4-zhouchuyi@bytedance.com>
- <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH] hte: allow building modules with COMPILE_TEST enabled
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     timestamp@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20230911094604.14179-1-brgl@bgdev.pl>
+ <CAMRc=Mc2Yo61uivOWHagR2Raxh11dBb=S6jtCDu8_-csX3ozvw@mail.gmail.com>
+From:   Dipen Patel <dipenp@nvidia.com>
+In-Reply-To: <CAMRc=Mc2Yo61uivOWHagR2Raxh11dBb=S6jtCDu8_-csX3ozvw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BYAPR11CA0096.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::37) To DS0PR12MB6607.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6607:EE_|MW6PR12MB8913:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2b95ed42-5b44-4818-e214-08dbbfd356f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mQObOIP3Uegsr6Tczngozj/8sqSEwIEd8AF5lsGGxyxGcvGOnUBED8BXHcxSi3cvT9YS/mq5yqdGkUCTpeei9uZQti30jCl+tArGxrukGyvKYIzeXTPgaIB2rnUzJTcHPY/D6gnvnDTwA0l19Tx4z4MyqZFMPS3FcJSoJU3QXzgoT4UV8f3U1wz/DHdOWsWHZXV9B8qb0DAabODj5kpjGq7sL/PqAxWwKXc8ijZWNMpBmmli3TFDmwSd0xNdLH5sa9BqR19r9eE9iE/IY9KWmO7nCtHYqKfODsdou848EPyBuA7iy3Ghr8DCz2SgM0QjM9M9o1hiSWdFnE+GtVQ25RUezJSkRDs3REYXHKoHtJ3xo3z68OOB+fftQK7OroK2R64usd4RvSX/1o9SBBBUg56YrWI7JIIZ4ELeRQxrwy788/kwo0/Sm4afFXeC0YTOpQBj6nWoKnCRKVkUsT3DoI3wbJ2JaanqrMsSHcLev4XWTFZEk9mzcKcDlp6tRmV8sbPbLICfGCDnNsnqcSOxVz4mdUfASQD1sHGCrshk2y1681WBFd2keBNYUMZjQlJNT+N3BkhT3B22qebNm/Ajb3s8+0/REmq+I7QTiAFkt+HaBhc8McK/rsRp/gGJOsepgwNLqJUVS2PEGuaKkl0h/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6607.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(136003)(346002)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(53546011)(6506007)(6512007)(2616005)(6486002)(478600001)(6666004)(8676002)(26005)(2906002)(54906003)(66946007)(66476007)(8936002)(66556008)(6916009)(316002)(5660300002)(4326008)(41300700001)(31696002)(86362001)(36756003)(38100700002)(83380400001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N25jVmJDaVEzMGlvVWJDZ0I5ZzhEYmo2OG5MN2RJaXJwSER4RlprcGF0ZXov?=
+ =?utf-8?B?cHQyMTdIS3NJeGM5T3Q1TFFJcXh0ejRiWDAvVlJJNUNMNzFydVgvSWZKU2o3?=
+ =?utf-8?B?djRyOG5ETkJZTWZqK1AyeExud3ZsY053VjlrZXBrSEl0Z3djVit2dFNkVUZW?=
+ =?utf-8?B?RHoxU1pMTHNxK0lSczFacnc4RThVV3dMZzE5Z1JxVmFvS0dxTmRuMkJwRXhn?=
+ =?utf-8?B?Ny9aTFpVR1lPRXFxZVZvU1NQNlVReHdERUtCNEhORk12ZWZDbnVjZy9rQW5V?=
+ =?utf-8?B?eFA5YUhoY29OOHRhb3JsQzdBRXl3a1hua0dBbmgzYjF1ZWdsR0EyajVLQzhW?=
+ =?utf-8?B?QzZhRit4b1ROMEVtdndsT1dKVDU5bFpLSU1oSzQzQ0ZhTWJWR2V1T1kwZFlQ?=
+ =?utf-8?B?bjdXcW9ld1l0WkgxQkN4WXVCUXp6Tjl3aWhWc3RCMWE0MzgvVkxPQlRiL1h2?=
+ =?utf-8?B?UkpQM01MbDBhN1hSSXZqSGtuYmhQM0VpWTltbStMRFowcUk3eDBlSzFuaTRR?=
+ =?utf-8?B?SGFkeGpGQy9xYXNTbEtsYmxuRm9YS2Z3S1AreE9UQUVhbDlGYXE2MWtvV2Jx?=
+ =?utf-8?B?K1YveUY2Zk1XUmQybnhPVWtKWGppZHp2Yk9CMC93eHVqc1ZYQWdKS3hRdHRC?=
+ =?utf-8?B?eS9zSVNwcUlqTThOZUlhUkpyVDBhUmFvMENoT3BheWp1UzF3WW01QmRXQzBJ?=
+ =?utf-8?B?UGVycGtwMGhQQ2MxaU1KV2Y4OXlhUFVWQ2hyWElTL29TVG9tWVJRcERVK0RH?=
+ =?utf-8?B?SEJwV3NqZFlPeVQ1YVhVTElNc3VYNTlWZ3dFNDRsWnVxTHVuWm9ETEI3dS9m?=
+ =?utf-8?B?K0pzdjAxU2Y3cDlQMGdCVGVSVmJjanh4dkRwcXpQMzQyQSt6YUY3ODdZaXBR?=
+ =?utf-8?B?Q1Z5QWI5UGJWaXFxSndZdlpVMFdLVVdOSHFVZ2kxMlBmb2tKNGdFSUhLaHFo?=
+ =?utf-8?B?Umo1UzV3NGJVT2cvbTFXOGZFajNXeGtNVmlPOE96b2lnVzB5U1lXM2pyVk9P?=
+ =?utf-8?B?UnYvenNudmpGcmwyQ293NEd6L3VRNm0rRHI4VTMxZmNacFNtNXRxUXhuQ0lI?=
+ =?utf-8?B?cmJKOHlIRmRYUnJrdFlmK0JxVGo2bVU5TzZTbEdyaWh4V3M4bnk0YUtJZmR0?=
+ =?utf-8?B?SkMzb29XbkRPdk1MRGdhOTdzbU1GaUhPWjlheHROazZ2Wmpab1NkNnQ1dHVS?=
+ =?utf-8?B?NEhrN0o0cVhrV05uVFFOUXZJQlQ3dDNpYUpyT1hhcnA5RUVzTGw0aXUxeDR5?=
+ =?utf-8?B?R2tVQlFJQjYvakVFQm1CQ2xSbVZ5T05vcHROUUVwb2RLQmUreE1DTEhkemtk?=
+ =?utf-8?B?M3FwY0FJdzRrdml4V0VTMWFkT3I5RnhHTXBsZnhFS2FnYVZDYkZwT1JGd0F6?=
+ =?utf-8?B?NnlXM25pRm1adkNRK0czYlhDWVF3emllNVN0QzdXb1MrKzZKZFJ0aTNzYmhj?=
+ =?utf-8?B?ZTZrMVVjSjk2bjNwTGxFanZhbUZoaGRFaENYSVlYdHRmUGFldTJ0dTNaYUUv?=
+ =?utf-8?B?OGQrenVoQUV3TFNNbE9tNSswREpzS0JKR2hVRU8rb3pFQ3p3SmVCYUtldExz?=
+ =?utf-8?B?RnRBY05zTE1hMVBjaUVzSEt6TVhiaThMNEJJd0llMnFJVGRIbTN3U1F6SFZy?=
+ =?utf-8?B?ODQvWFYyZmRCOWJhcm9TS2dveFBBYXRGMG9MM2lzVzJqZmFlOWdRRzlKUC9E?=
+ =?utf-8?B?WHdBMDJuVHhvMVZsZXRTZHFhdllnNjE4MDV6d1BWZ2lzUytYL29zQm9hZ2Ru?=
+ =?utf-8?B?UDVPeThsQ285K2F1dFQrb082WndwT21mTTZjUXp4ODB3YkFqdlFTREV3ODgw?=
+ =?utf-8?B?UXljeHY5cFA3dFFjUWpwRTZxaW9iMVhMU2xQb3crRFc2SWthTWcxVmpJamFz?=
+ =?utf-8?B?Y3lJemhUQ3pYbzRieVhSd2paSUFlZnRHL2tiWjlYWDh3d0sxTFJpclNWejkx?=
+ =?utf-8?B?YWU4aWJ0U0tLQ0gvVkwvNzZsZ0NpTEV1cE9PYXNxNWVvNFlVWGoxN1Vxc0Fr?=
+ =?utf-8?B?RWVTUk94M2lIQ1ZKbUVPVnVtcyszTzN1dTNmZ2RKUlAyMzNMLzRNQW82VjFQ?=
+ =?utf-8?B?bWFsajdtNDVWOVBpU3QvWW9GaVVxWjRCS3Z4ZXR6ZTNnVjhISGlBdm5tUmdp?=
+ =?utf-8?Q?jvhflzn3/HaRgLqzwWV1jf+su?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b95ed42-5b44-4818-e214-08dbbfd356f0
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6607.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 03:31:02.2168
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: atH8AXlsL8OsH/ICry0iShZ7og5Enp8ftrssKNd+K6RM8XTmw4nqsvbrEJsnSe734lpr5CQqmNRJxNAjTMWFyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8913
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-在 2023/9/28 07:20, Andrii Nakryiko 写道:
-> On Mon, Sep 25, 2023 at 3:56 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+On 9/25/23 1:37 AM, Bartosz Golaszewski wrote:
+> On Mon, Sep 11, 2023 at 11:46 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >>
->> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
->> creation and manipulation of struct bpf_iter_task in open-coded iterator
->> style. BPF programs can use these kfuncs or through bpf_for_each macro to
->> iterate all processes in the system.
+>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 >>
->> The API design keep consistent with SEC("iter/task"). bpf_iter_task_new()
->> accepts a specific task and iterating type which allows:
->> 1. iterating all process in the system
+>> Allow building all HTE modules with COMPILE_TEST Kconfig option enabled.
 >>
->> 2. iterating all threads in the system
->>
->> 3. iterating all threads of a specific task
->> Here we also resuse enum bpf_iter_task_type and rename BPF_TASK_ITER_TID
->> to BPF_TASK_ITER_THREAD, rename BPF_TASK_ITER_TGID to BPF_TASK_ITER_PROC.
->>
->> The newly-added struct bpf_iter_task has a name collision with a selftest
->> for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
->> renamed in order to avoid the collision.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 >> ---
->>   include/linux/bpf.h                           |  8 +-
->>   kernel/bpf/helpers.c                          |  3 +
->>   kernel/bpf/task_iter.c                        | 96 ++++++++++++++++---
->>   .../testing/selftests/bpf/bpf_experimental.h  |  5 +
->>   .../selftests/bpf/prog_tests/bpf_iter.c       | 18 ++--
->>   .../{bpf_iter_task.c => bpf_iter_tasks.c}     |  0
->>   6 files changed, 106 insertions(+), 24 deletions(-)
->>   rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
+>> This was part of a wider series but since this is independent, I'm sending
+>> it separately.
+>>
+>>  drivers/hte/Kconfig | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
+>> index cf29e0218bae..083e67492bf2 100644
+>> --- a/drivers/hte/Kconfig
+>> +++ b/drivers/hte/Kconfig
+>> @@ -16,7 +16,7 @@ if HTE
+>>
+>>  config HTE_TEGRA194
+>>         tristate "NVIDIA Tegra194 HTE Support"
+>> -       depends on ARCH_TEGRA_194_SOC
+>> +       depends on (ARCH_TEGRA_194_SOC || COMPILE_TEST)
+>>         help
+>>           Enable this option for integrated hardware timestamping engine also
+>>           known as generic timestamping engine (GTE) support on NVIDIA Tegra194
+>> @@ -25,7 +25,7 @@ config HTE_TEGRA194
+>>
+>>  config HTE_TEGRA194_TEST
+>>          tristate "NVIDIA Tegra194 HTE Test"
+>> -        depends on HTE_TEGRA194
+>> +        depends on (HTE_TEGRA194 || COMPILE_TEST)
+>>          help
+>>           The NVIDIA Tegra194 GTE test driver demonstrates how to use HTE
+>>           framework to timestamp GPIO and LIC IRQ lines.
+>> --
+>> 2.39.2
 >>
 > 
-> [...]
+> Hi Dipen!
 > 
->> @@ -692,9 +692,9 @@ static int bpf_iter_fill_link_info(const struct bpf_iter_aux_info *aux, struct b
->>   static void bpf_iter_task_show_fdinfo(const struct bpf_iter_aux_info *aux, struct seq_file *seq)
->>   {
->>          seq_printf(seq, "task_type:\t%s\n", iter_task_type_names[aux->task.type]);
->> -       if (aux->task.type == BPF_TASK_ITER_TID)
->> +       if (aux->task.type == BPF_TASK_ITER_THREAD)
->>                  seq_printf(seq, "tid:\t%u\n", aux->task.pid);
->> -       else if (aux->task.type == BPF_TASK_ITER_TGID)
->> +       else if (aux->task.type == BPF_TASK_ITER_PROC)
->>                  seq_printf(seq, "pid:\t%u\n", aux->task.pid);
->>   }
->>
->> @@ -856,6 +856,80 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
->>          bpf_mem_free(&bpf_global_ma, kit->css_it);
->>   }
->>
->> +struct bpf_iter_task {
->> +       __u64 __opaque[2];
->> +       __u32 __opaque_int[1];
+> Any comments on this, the other patch with a comment update as well as
+> the one addressing usage of gpiochip_find() in HTE drivers?
+Sorry for the late response, This looks good to me. I will review and test
+rest other patches.
+
 > 
-> this should be __u64 __opaque[3], because struct takes full 24 bytes
-> 
->> +} __attribute__((aligned(8)));
->> +
->> +struct bpf_iter_task_kern {
->> +       struct task_struct *task;
->> +       struct task_struct *pos;
->> +       unsigned int type;
->> +} __attribute__((aligned(8)));
->> +
->> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_struct *task, unsigned int type)
-> 
-> nit: type -> flags, so we can add a bit more stuff, if necessary
-> 
->> +{
->> +       struct bpf_iter_task_kern *kit = (void *)it;
-> 
-> empty line after variable declarations
-> 
->> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) != sizeof(struct bpf_iter_task));
->> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_kern) !=
->> +                                       __alignof__(struct bpf_iter_task));
-> 
-> and I'd add empty line here to keep BUILD_BUG_ON block separate
-> 
->> +       kit->task = kit->pos = NULL;
->> +       switch (type) {
->> +       case BPF_TASK_ITER_ALL:
->> +       case BPF_TASK_ITER_PROC:
->> +       case BPF_TASK_ITER_THREAD:
->> +               break;
->> +       default:
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (type == BPF_TASK_ITER_THREAD)
->> +               kit->task = task;
->> +       else
->> +               kit->task = &init_task;
->> +       kit->pos = kit->task;
->> +       kit->type = type;
->> +       return 0;
->> +}
->> +
->> +__bpf_kfunc struct task_struct *bpf_iter_task_next(struct bpf_iter_task *it)
->> +{
->> +       struct bpf_iter_task_kern *kit = (void *)it;
->> +       struct task_struct *pos;
->> +       unsigned int type;
->> +
->> +       type = kit->type;
->> +       pos = kit->pos;
->> +
->> +       if (!pos)
->> +               goto out;
->> +
->> +       if (type == BPF_TASK_ITER_PROC)
->> +               goto get_next_task;
->> +
->> +       kit->pos = next_thread(kit->pos);
->> +       if (kit->pos == kit->task) {
->> +               if (type == BPF_TASK_ITER_THREAD) {
->> +                       kit->pos = NULL;
->> +                       goto out;
->> +               }
->> +       } else
->> +               goto out;
->> +
->> +get_next_task:
->> +       kit->pos = next_task(kit->pos);
->> +       kit->task = kit->pos;
->> +       if (kit->pos == &init_task)
->> +               kit->pos = NULL;
-> 
-> I can't say I completely follow the logic (e.g., for
-> BPF_TASK_ITER_PROC, why do we do next_task() on first next() call)?
-> Can you elabore the expected behavior for various combinations of
-> types and starting task argument?
-> 
-
-Thanks for the review.
-
-The expected behavior of current implementation is:
-
-BPF_TASK_ITER_PROC:
-
-init_task->first_process->second_process->...->last_process->init_task
-
-We would exit before visiting init_task again.
-
-BPF_TASK_ITER_THREAD:
-
-group_task->first_thread->second_thread->...->last_thread->group_task
-
-We would exit before visiting group_task again.
-
-BPF_TASK_ITER_ALL:
-
-init_task -> first_process -> second_process -> ...
-                 |                    |
-		-> first_thread..    |
-				     -> first_thread
-
-Actually, every next() call, we would return the "pos" which was 
-prepared by previous next() call, and use next_task()/next_thread() to 
-update kit->pos. Once we meet the exit condition (next_task() return 
-init_task or next_thread() return group_task), we would update kit->pos 
-to NULL. In this way, when next() is called again, we will terminate the 
-iteration.
-
-Here "kit->pos = NULL;" means we would return the last valid "pos" and 
-will return NULL in next call to exit from the iteration.
-
-Am I miss something important?
-
-Thanks.
-
-
-
+> Bart
+Acked-by: Dipen Patel <dipenp@nvidia.com>
