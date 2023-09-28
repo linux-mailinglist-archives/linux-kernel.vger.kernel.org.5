@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5C37B1BF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B71E7B1BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjI1MRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
+        id S230458AbjI1MSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjI1MRx (ORCPT
+        with ESMTP id S230350AbjI1MSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:17:53 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934ED136
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:17:51 -0700 (PDT)
+        Thu, 28 Sep 2023 08:18:38 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7AA139
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:18:36 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e207:8adb:af22:7f1e])
-        by laurent.telenet-ops.be with bizsmtp
-        id rQHp2A00L3w8i7m01QHpbZ; Thu, 28 Sep 2023 14:17:50 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id rQJa2A0083w8i7m06QJa0y; Thu, 28 Sep 2023 14:18:34 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qlpxN-004mRZ-6w;
-        Thu, 28 Sep 2023 14:17:49 +0200
+        id 1qlpy5-004mRe-LC;
+        Thu, 28 Sep 2023 14:18:34 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qlpxl-001OCa-NE;
-        Thu, 28 Sep 2023 14:17:49 +0200
+        id 1qlpyU-001ODc-3r;
+        Thu, 28 Sep 2023 14:18:34 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] [net-next] sctp: Spelling s/preceeding/preceding/g
-Date:   Thu, 28 Sep 2023 14:17:48 +0200
-Message-Id: <663b14d07d6d716ddc34482834d6b65a2f714cfb.1695903447.git.geert+renesas@glider.be>
+Subject: [PATCH] vhost-scsi: Spelling s/preceeding/preceding/g
+Date:   Thu, 28 Sep 2023 14:18:33 +0200
+Message-Id: <b57b882675809f1f9dacbf42cf6b920b2bea9cba.1695903476.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -56,22 +55,22 @@ Fix a misspelling of "preceding".
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- net/sctp/sm_make_chunk.c | 2 +-
+ drivers/vhost/scsi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
-index 08527d882e56ef79..f80208edd6a5c67d 100644
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -3303,7 +3303,7 @@ struct sctp_chunk *sctp_process_asconf(struct sctp_association *asoc,
- 
- 	/* Process the TLVs contained within the ASCONF chunk. */
- 	sctp_walk_params(param, addip) {
--		/* Skip preceeding address parameters. */
-+		/* Skip preceding address parameters. */
- 		if (param.p->type == SCTP_PARAM_IPV4_ADDRESS ||
- 		    param.p->type == SCTP_PARAM_IPV6_ADDRESS)
- 			continue;
+diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+index abef0619c7901af0..2d689181bafef241 100644
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1158,7 +1158,7 @@ vhost_scsi_handle_vq(struct vhost_scsi *vs, struct vhost_virtqueue *vq)
+ 			/*
+ 			 * Set prot_iter to data_iter and truncate it to
+ 			 * prot_bytes, and advance data_iter past any
+-			 * preceeding prot_bytes that may be present.
++			 * preceding prot_bytes that may be present.
+ 			 *
+ 			 * Also fix up the exp_data_len to reflect only the
+ 			 * actual data payload length.
 -- 
 2.34.1
 
