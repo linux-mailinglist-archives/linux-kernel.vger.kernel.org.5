@@ -2,251 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D40A7B10FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3857B10FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 04:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbjI1Cwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 22:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S230096AbjI1Cxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 22:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1Cwd (ORCPT
+        with ESMTP id S230048AbjI1Cxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 22:52:33 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7291810A;
-        Wed, 27 Sep 2023 19:52:31 -0700 (PDT)
-X-UUID: 0f4aa9a05daa11eea33bb35ae8d461a2-20230928
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=7iiE32/p2gfnj+1YjvZanUcsnOB9PwnRuh4bvWbhxNY=;
-        b=HEGFhUcmiZprzk99ixtxcPDYiQyB2/KmHauR8AZ5cBffYwo49pq7PNDb6znC5fjnPV9TeLiHla4cWWYvkPltNe9M7bp2y/evnmtMTYjEz7QV3aNUBY7JP6tyMzeqd6UNOvsaDri2I4laBSonZvvhra1rGmfaMHToPPq+/CgIAew=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:8b64a6f8-a115-415c-9943-0d97acc53621,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:33f88cc3-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 0f4aa9a05daa11eea33bb35ae8d461a2-20230928
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1685660570; Thu, 28 Sep 2023 10:52:27 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 28 Sep 2023 10:52:26 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 28 Sep 2023 10:52:26 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SquclcbE12YzyqQ4SnAWkZHSetIETx20UjywVV1/ArHjGw7gMKNJb6JNY9tN/DXECvjD7FN1WPL6Q62voDbSm2i6gmM6jY78Dy5F7xiSC2lwMGFYvPCbiOqDS3rnUGBK72YXz5VaTPss9X8KHdAfD1MptiYxKqGbxlKS4v1sQIfdny/Ruiz/j/sN+d7qkwPo3Z1sfmVOWyhAqDR9PcBLuKz8fAZ0HhMv6+UjerY4cG0dbpgF5TNyoactZO0+QilNbiY2V+3PkO0Qpta6OYkLWI93IDC1FNNP4M+BXMjLtqp0JR3a/c6WMZsaFfv2tMq+PsftQhiMo+qVIqHudHyjDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7iiE32/p2gfnj+1YjvZanUcsnOB9PwnRuh4bvWbhxNY=;
- b=WQLH6UvP5CVeiYIW2gcJ6i3Baij//uVpthJt8u9TloQ2thovKtjOVkjAVZdJpjOQdprqYPMCWM1j6YxGsq5pS+yLhtyIcJo+Gc9Z5xGK4b1F2V8cuBLdEuYVRgVtwZ9GsuumIgKUe5NHsbJb0u8DVpthveI52mag7gc5toQWGb+tmm7q4vFEJun1Ob5AFAWhdR/JIhYNIl/fv2q22nXkyOKHpkxvH2dGpdxiKDA5RWmScowb5/wEnpHxtM1yGcIiyMwBa7C8djDpgOsK4dbuL9oW9Vr7hE4xG4mDJd/OFG8L6gCS7a2zkGiNSjomwri1Vn3QDeHFmirqOhVTETVJTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7iiE32/p2gfnj+1YjvZanUcsnOB9PwnRuh4bvWbhxNY=;
- b=MjPXtCxFNdvCifplsKTHS+UJuTzndpoW5rqZl0ltKhSjEanybMEPpvvGMbBNGfu/nSJ9ZZZ4kLGUEaQda6xVQfNEVTKTn4mwfCZAKbzwmt4XmzoweWw4qX4AtnwFTZ6i7ngRuYKtf+rBSJfLWa6erb8aCNH2d0RQ90TvVXueqFs=
-Received: from TY0PR03MB6356.apcprd03.prod.outlook.com (2603:1096:400:14c::9)
- by TYZPR03MB5438.apcprd03.prod.outlook.com (2603:1096:400:39::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Thu, 28 Sep
- 2023 02:52:24 +0000
-Received: from TY0PR03MB6356.apcprd03.prod.outlook.com
- ([fe80::2d8b:d64e:65cb:b7af]) by TY0PR03MB6356.apcprd03.prod.outlook.com
- ([fe80::2d8b:d64e:65cb:b7af%6]) with mapi id 15.20.6813.027; Thu, 28 Sep 2023
- 02:52:23 +0000
-From:   =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
-To:     "conor.dooley@microchip.com" <conor.dooley@microchip.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v6 12/16] dt-bindings: display: mediatek: color: add
- compatible for MT8195
-Thread-Topic: [PATCH v6 12/16] dt-bindings: display: mediatek: color: add
- compatible for MT8195
-Thread-Index: AQHZ7SWDmGuBlsrdL0eRbWKT0x+2ILAm/mEAgAAAgACAB0y5gIAAKWwAgAEeSgA=
-Date:   Thu, 28 Sep 2023 02:52:23 +0000
-Message-ID: <825ac03b692043d48563620ad9542a4ee43211e7.camel@mediatek.com>
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
-         <20230922072116.11009-13-moudy.ho@mediatek.com>
-         <20230922-zebra-modify-87ff23c70bb3@spud>
-         <20230922-overhung-deception-e9b461ba0372@spud>
-         <7c445195e17e15d5af5fcb30ae53f76c713e958b.camel@mediatek.com>
-         <20230927-crunching-prancing-36fe3eb79607@wendy>
-In-Reply-To: <20230927-crunching-prancing-36fe3eb79607@wendy>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY0PR03MB6356:EE_|TYZPR03MB5438:EE_
-x-ms-office365-filtering-correlation-id: 989c91a1-6d36-485d-d2a3-08dbbfcdf116
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HSbgUUSA6p1Z+niVg/sMH1GAMqCjdBjDr/LgkmLe99exb9o4L/UNj6lTK1VxQ3v26878+kaKo44R1LAQ9n2zrlcFp5jW2yAGg/0ICG2CtE8boi7XBI6jvKYKthgNrFqfM+JLJ8cS9me2vz+bOsqZiim8738XcUBrQhzytRjeHmtRaBrIcg9kTC2inZKi7QqcgkbpBRStWx1tV2HHCHZZgwvJ+EqVEFcW+lo09wLpu67uEbGfhm6z7RVpQj6VAtcMsaFyAGgSYyBw+yOs+cb0yYXVvbEmiFIz2U962gUL5eSTRzVfgUKkV3kSP+xzLprnJbODfJGqp5Ahk+0b1nzD0rntE8dgZQP33R6CMUTozQq7/L/Z/Zy5z7pvkvcPWoY7nxYvNc/t80/wZABuijOz8KeABDTgdCNkSqJwhA1R60Z/QLPiFh18UlWwUUu132NLSrbiHY9htH9UXgG1VanVaMFy2tISsOVL/pZSkimkiAX2cqM5Dq7RxQc1N3LLjavQyAVgwvxmqB6OGM1UuZWmGkMhIz8rxldGZIYP8GBIDXzeXctYERsucPNdydvg5qliB7Vqon2g9ezb+597kZQLVDsIlWJV8vo6YKLm3sx7/L/rHC+vfLu639IS4tXKYXSRZIKHM8yPEZhjg6TklwE3YS8lNbWNvbjFGTED/txUeNQBqb6W/aC0kbKIyIpx82Lt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY0PR03MB6356.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(7416002)(8936002)(4326008)(5660300002)(8676002)(316002)(41300700001)(6916009)(6512007)(66476007)(64756008)(66556008)(76116006)(54906003)(66946007)(66446008)(2616005)(86362001)(71200400001)(478600001)(26005)(38100700002)(36756003)(38070700005)(85182001)(6486002)(6506007)(83380400001)(122000001)(99106002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?THQyQWRBK28zZGplbHdoSmdYQXRobDRlTHJNeFhWR3ZSc0N6SzAyN29NNlJp?=
- =?utf-8?B?cVJmSzk1N1d3MjRZUlE3N09mYzl2WnkxZkUxWjNIVnNlNHdKU0hLN21IQzFj?=
- =?utf-8?B?NGtMMlV2djZPZldlRWdrWW1QZGd6OEZxdm43dW9tdmtuaTQwRGxrWVdsdm54?=
- =?utf-8?B?MExyY1AvN0luUlZtZEYya3MwVkI3VkZEaW1oNzNYeVl6STRLaVFTTEppWUxY?=
- =?utf-8?B?S1ZXTnBRSEZid1JOeWM4czdseUt3Uk1QY2l0SzhmbEhhc1N4RCsxbEJZOFZx?=
- =?utf-8?B?UUVMOXBUL1FXcEtMOFlBUFI4S3NQNS9idXVTMFhNUm5zUE5QeHY0STVFUDA2?=
- =?utf-8?B?a0VBSjBkYjF3cXArLzhYTFpwUE96dlZ3ZDNCWXg3VGhVRWlseUltL211K0p0?=
- =?utf-8?B?NHBsNTJiRUhiNm9hTERJRm55enJMaEdEWkxCZjdBdG5ObzNFUnRUYVYzb3hL?=
- =?utf-8?B?bVMzVmx6cHZuQXdCcGVZSktnb3hqZ1pndk5FdnlQb1FyOXIyMjJyUWNjSjVB?=
- =?utf-8?B?MEZMRXg5STIwWUNuMVFNSVZwTEhzK2xBRW9HaXVpdlNTTTRpYy9hNGJtNjR6?=
- =?utf-8?B?UHdqV2JTeHRiV1pRWUI1dmpjSWJVZFhRc0o4OS9zWi83bjIycDFndnFsazNt?=
- =?utf-8?B?S0VKTVJXK1pKK2RYV2NpVGgvelNGWk1jUEwxcXp3U0xyZ3lPK0VtZzRQUXpG?=
- =?utf-8?B?OGFyQmZ2T1RlY3F1V0RjbXgrWUdFV0VpQVE1MFZUWXJGY3hBVjBpL3NEUmtN?=
- =?utf-8?B?ektoWVdudjZJalk1UDdwekxMTCtJZ3VBUnpYQmxFTTl0ZHEwY3Y4OG5CclJl?=
- =?utf-8?B?d2tDay9nam9sWGVUajRYVnNDYmVwTDAremhwSnM5WkowRDlUT3U5b1dhbEtm?=
- =?utf-8?B?K3V2R2hQR0RSdWJsUkIrQ2MwMnlhOTVhV0d2WXNORHpKMGVXT0NaZGxuOWtY?=
- =?utf-8?B?MWxQRlNMTTBPdDM4bnZ4S3VCREM5RFdJNG1QQzVWMG8rUmxUUTR6MUlnMTV1?=
- =?utf-8?B?eXl0WSsvajM3M1lSQXRrWXVPV3Vsb0hpaHVNY0ZCRytaSFlkVkxOcVNOakVE?=
- =?utf-8?B?S0xvMEZxbWVTV0RZd1p6Q1hDWU0yMmtINlNLeGtwbkFuczRBZVdFRFpkTUQ4?=
- =?utf-8?B?cFNsRTFNSzExSllMclJCOEptdTliL3FzY0p5a2NVaW1OU21hMS9JQkhPbjVh?=
- =?utf-8?B?Q2NOY05qaWZSdnZ4NWhoRHZWZEFPajdxa3VGOW96UmowODMrL0MyWWFWbjA4?=
- =?utf-8?B?ejRIOC9hL1FWditycDlrNkNnMGNmQlZBN015alRzeGVKeGlkRWdQLzFrSUhO?=
- =?utf-8?B?d0NRYysxT3MxS1NBTXJxNlFtY3RDa3I1KytwMkc3R2tZZkNFSEc5eXhKTWhF?=
- =?utf-8?B?U3hDeUZTU2R1bkYrNDFhSkIyU0o2ak9ySWpPdVIrc1NxUmVKcS9YdGxUdzBO?=
- =?utf-8?B?M2t2bXV1QlR1cEMySXBWVzh5bE52OVBCWVc3eGI3VDBlRnlmZnQxdUhwS01R?=
- =?utf-8?B?K25GOExmRnBlVXZTc2pWM0h5TUhWQnJiVE5KcnhZRkZRSWhvZXpMTmIva0hn?=
- =?utf-8?B?M3JPcVhDVXJORnN4MjV4WUtNWlVyRFZDeGMzY25ycEpzRDM3UFVBRTRlMGdi?=
- =?utf-8?B?c29wY2FveS9mT2t2MXNpQXFxeVh1bU5CanVnaERrMnhrTG5kSlNPSkpSUXZW?=
- =?utf-8?B?VExCa2ZxYmZzbW1KNm5XQTlrZldFTks2WHFXdTIrMzVRTGtTUGxBN0tCTXA5?=
- =?utf-8?B?Yzg1dVFySXpaeXVlTVlwajl3TXhaVUk4KzFQQzZMYm5nQWNiM2V1Q0lza0Vn?=
- =?utf-8?B?TzBGOXR2MlAzK1NZNXFQbmtybFNZNjBVc3NpcHo4RkcvNFpScUdYV0g1bW9p?=
- =?utf-8?B?THMrcXh6QSs1TUJsOUlvdGMvQlVDeW92S010MVZ4U2NZTzZjNldFVS9lSlRJ?=
- =?utf-8?B?eU9YNDY0QlJMTlA1VHo1c05tWklTR25ONVFkZENQUi9ETjNDVStyUDFjeWVi?=
- =?utf-8?B?VmQ0TDRXK3BIQlhlSVlycHdLNlI5cEdrSmtwMjllSnpCcUNSend6cTZ0V01l?=
- =?utf-8?B?LzVZL0FDMmNLRVBiWTdQN2NGeE5OZnBxMXBoeE51VG1DV1RNREhXNzBJVTlT?=
- =?utf-8?B?cFlUeU02ZGJPNzRETld5WkhuckNDc2Q5cnJIS01aaThxUXZtZDZqVVpuOXR1?=
- =?utf-8?B?bWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A1865A6E6995F743B3F0E1709584A871@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 27 Sep 2023 22:53:34 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C9B13A;
+        Wed, 27 Sep 2023 19:53:33 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38RK0P9J019297;
+        Wed, 27 Sep 2023 19:52:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=+/OkfC5lqv0bLlYWc53KteeUHo0RD5aQCVAd8eijLR0=;
+ b=JFGBSq0Kmtxbqsb/tUikNt6XhVRn13ls3awEU0PNvj94OAx+8U0utuT3s6ImS6MZAhQE
+ yHqypv4dxcsRxLpawUbA8aXFdx5jrl8JMGZUZ5Y/AZi4OgpurZFDzMffU063aiwLB1iM
+ /QtavJLSxz+BncX5VtEeCLL6hljIQo7k4AHeZ6e5Jk3T2cmfmSir0mPAW/PdDwRq/oRT
+ v6+9SgG9GRfQNfM7bXbWZcYj4yCWHJu+AGhMM2LmqgBkHL4BtG0/oASUPRji8763NxVU
+ CwXKqjXqIJpWarJas/Pk/JmiGVG4J/7Vb2yZWI6iqAXKVczgH4JQ/TAk44PiVVxZrS1h Xw== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tcu1qs7mu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 27 Sep 2023 19:52:48 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 27 Sep
+ 2023 19:52:47 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 27 Sep 2023 19:52:47 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id 858C33F703F;
+        Wed, 27 Sep 2023 19:52:41 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <rkannoth@marvell.com>, <hawk@kernel.org>,
+        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
+        <linyunsheng@huawei.com>, <bigeasy@linutronix.de>
+Subject: [PATCH net] octeontx2-pf: Fix page pool frag allocation failure.
+Date:   Thu, 28 Sep 2023 08:22:36 +0530
+Message-ID: <20230928025236.3051774-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY0PR03MB6356.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 989c91a1-6d36-485d-d2a3-08dbbfcdf116
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 02:52:23.6455
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZcPaDG+DcXL43iKZmFahE+7itqoVmtJ8K05NpD9FmpqUaF8deTNEETyKgBEN03p6oTRswiLxqODUYxcd6qR8uQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB5438
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--15.921800-8.000000
-X-TMASE-MatchedRID: 3FtKTYP2XG7UL3YCMmnG4ia1MaKuob8Pt3aeg7g/usCe9toQ6h6LE9yi
-        JF4Y8A5b0W/jG0/KDRLxHXxxAO/d2Ws/tFw6ZTQWeUyVZX4ivrvg/EG5TeijVbUpYagt6jzoNE7
-        kMskA+NvTRtQAQ4mUj3NRC/B3kD0DT8iNcToosvz0mf9msa5zwQKdh+kSDJQ4VUwmVL0cK7OE6G
-        Ij3Iz11XZVUWe9wUukMuf7R1rpdO68IKanJHvnZrMjW/sniEQKQa2sDHLkQ05OY9DrDI/ROi+8O
-        xujShyxWsDmTSqMTwf3vf+ggwV/depLXJKeenhQEroQVzSW9XTUqhJbkmLVe7c6v3/B0U2Do8WM
-        kQWv6iUVR7DQWX/WkT3Al4zalJpFvECLuM+h4RB+3BndfXUhXQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--15.921800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: E9B1A1EFC326B34E404C03AD89A2CFEC42C457F453B30E485512A079595C256B2000:8
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Ghpz7UGbsI-ltTwm7vY0sg7-qgatM1Bh
+X-Proofpoint-ORIG-GUID: Ghpz7UGbsI-ltTwm7vY0sg7-qgatM1Bh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-27_17,2023-09-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTA5LTI3IGF0IDEwOjQ3ICswMTAwLCBDb25vciBEb29sZXkgd3JvdGU6DQo+
-IE9uIFdlZCwgU2VwIDI3LCAyMDIzIGF0IDA3OjE5OjI4QU0gKzAwMDAsIE1vdWR5IEhvICjkvZXl
-rpfljp8pIHdyb3RlOg0KPiA+IE9uIEZyaSwgMjAyMy0wOS0yMiBhdCAxNjo1MSArMDEwMCwgQ29u
-b3IgRG9vbGV5IHdyb3RlOg0KPiA+ID4gT24gRnJpLCBTZXAgMjIsIDIwMjMgYXQgMDQ6NDk6MTRQ
-TSArMDEwMCwgQ29ub3IgRG9vbGV5IHdyb3RlOg0KPiA+ID4gPiBPbiBGcmksIFNlcCAyMiwgMjAy
-MyBhdCAwMzoyMToxMlBNICswODAwLCBNb3VkeSBIbyB3cm90ZToNCj4gPiA+ID4gPiBBZGQgYSBj
-b21wYXRpYmxlIHN0cmluZyBmb3IgdGhlIENPTE9SIGJsb2NrIGluIE1lZGlhVGVrDQo+ID4gPiA+
-ID4gTVQ4MTk1DQo+ID4gPiA+ID4gdGhhdA0KPiA+ID4gPiA+IGlzIGNvbnRyb2xsZWQgYnkgTURQ
-My4NCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBNb3VkeSBIbyA8bW91ZHku
-aG9AbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ICAuLi4vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGNvbG9yLnlhbWwNCj4gPiA+ID4g
-PiAgICAgDQo+ID4gPiA+ID4gIHwgMSArDQo+ID4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKQ0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IGRpZmYgLS1naXQNCj4gPiA+ID4gPiBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlh
-dGVrDQo+ID4gPiA+ID4gLGNvbA0KPiA+ID4gPiA+IG9yLnlhbWwNCj4gPiA+ID4gPiBiL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrDQo+
-ID4gPiA+ID4gLGNvbA0KPiA+ID4gPiA+IG9yLnlhbWwNCj4gPiA+ID4gPiBpbmRleCBmMjFlNDQw
-OTIwNDMuLmI4ODZjYTBkODllYSAxMDA2NDQNCj4gPiA+ID4gPiAtLS0NCj4gPiA+ID4gPiBhL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVr
-DQo+ID4gPiA+ID4gLGNvbA0KPiA+ID4gPiA+IG9yLnlhbWwNCj4gPiA+ID4gPiArKysNCj4gPiA+
-ID4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVr
-L21lZGlhdGVrDQo+ID4gPiA+ID4gLGNvbA0KPiA+ID4gPiA+IG9yLnlhbWwNCj4gPiA+ID4gPiBA
-QCAtMjYsNiArMjYsNyBAQCBwcm9wZXJ0aWVzOg0KPiA+ID4gPiA+ICAgICAgICAgICAgLSBtZWRp
-YXRlayxtdDI3MDEtZGlzcC1jb2xvcg0KPiA+ID4gPiA+ICAgICAgICAgICAgLSBtZWRpYXRlayxt
-dDgxNjctZGlzcC1jb2xvcg0KPiA+ID4gPiA+ICAgICAgICAgICAgLSBtZWRpYXRlayxtdDgxNzMt
-ZGlzcC1jb2xvcg0KPiA+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDgxOTUtbWRwMy1j
-b2xvcg0KPiA+ID4gPiANCj4gPiA+ID4gSG93IGNvbWUgdGhpcyBvbmUgaXMgYSAibWRwMyIgbm90
-IGEgImRpc3AiPw0KPiA+ID4gDQo+ID4gPiBJIGRvbid0IGtub3cgd2hhdCBtZHAzIG1lYW5zICYg
-Z29vZ2xpbmcgZ2l2ZXMgbWUgbm8gYW5zd2Vycy4NCj4gPiA+IFdoYXQncw0KPiA+ID4gdGhlDQo+
-ID4gPiAiZGlzcCIgb25lIGNvbnRyb2xsZWQgYnksIHNpbmNlIGl0IGlzbid0IGNvbnRyb2xsZWQg
-YnkgbWRwMz8NCj4gPiA+IA0KPiA+IA0KPiA+IEhpIENvbm9yLA0KPiA+IA0KPiA+IE1lZGlhdGVr
-J3MgTWVkaWEgRGF0YSBQYXRoIHZlci4zIChNRFAzKSBpcyBhc3NvY2lhdGVkIHdpdGggTU1TWVMN
-Cj4gPiBhbmQNCj4gPiBhY3RzIGFzIGFuIGluZGVwZW5kZW50IGRyaXZlciB0aGF0IG9wZXJhdGVz
-IGJldHdlZW4gVkRFQyBhbmQgRElTUC4NCj4gPiBCeSBjb250cm9sbGluZyBtdWx0aXBsZSBjb21w
-b25lbnRzLCBpdCBjYXJyaWVzIG91dCB0YXNrcyBsaWtlDQo+ID4gY29udmVydGluZyBjb2xvciBm
-b3JtYXRzLCByZXNpemluZywgYW5kIGFwcGx5aW5nIHNwZWNpZmljIFBpY3R1cmUNCj4gPiBRdWFs
-aXR5IChQUSkgZWZmZWN0cy4NCj4gPiBUaGUgZHJpdmVyIGNhbiBiZSBmb3VuZCBhdCAiZHJpdmVy
-L21lZGlhL3BsYXRmb3JtL21lZGlhdGVrL21kcDMiLg0KPiA+IFNpbmNlIHRoZSBzYW1lIGhhcmR3
-YXJlIGNvbXBvbmVudHMgYXJlIGNvbmZpZ3VyZWQgaW4gYm90aCBNRFAzIGFuZA0KPiA+IERJU1As
-IGNvbnNpZGVyaW5nIHByZXZpb3VzIGRpc2N1c3Npb25zLCBJIGF0dGVtcGVkIHRvIGludGVncmF0
-ZQ0KPiA+IGludG8gYQ0KPiA+IHNpbmdsZSBiaW5kaW5nLCBuYW1lZCBhZnRlciB0aGUgY29udHJv
-bGxpbmcgdXNlci4NCj4gDQo+IEknbSBzdGlsbCBraW5kYSBzdHJ1Z2dsaW5nIHRvIHVuZGVyc3Rh
-bmQgdGhpcy4gRG8geW91IG1lYW4gdGhhdCB0aGUNCj4gaGFyZHdhcmUgY2FuIGJlIGNvbnRyb2xs
-ZWQgYnkgZWl0aGVyIG9mIHRoZSBkaXNwIGFuZCBtZHAzIGRyaXZlcnMsDQo+IGFuZA0KPiBhIGNv
-bXBhdGlibGUgY29udGFpbmluZyAiZGlzcCIgd291bGQgdXNlIG9uZSBkcml2ZXIsIGFuZCBvbmUN
-Cj4gY29udGFpbmluZw0KPiAibWRwMyIgd291bGQgdXNlIGFub3RoZXI/DQo+IA0KDQpIaSBDb25v
-ciwNCg0KU29ycnkgZm9yIGFueSBjb25mdXNpb24gY2F1c2VkIGJ5IHRoZSBzb2Z0d2FyZSBpbmZv
-cm1hdGlvbi4gSW4gdGhlDQp2aWRlbyBwaXBlbGluZSwgYWZ0ZXIgZGVjb2RpbmcsIHRoZSBkYXRh
-IGZsb3dzIHNlcXVlbnRpYWxseSB0aHJvdWdoIHR3bw0Kc3Vic3lzdGVtczogTURQIGFuZCBESVNQ
-LiBFYWNoIHN1YnN5c3RlbXMgaGFzIG11bHRpcGxlIElQcywgd2l0aCBzb21lDQpzZXJ2aW5nIHRo
-ZSBzYW1lIGZ1bmN0aW9uYWxpdHkgYXMgQ09MT1IgbWVudGlvbmVkIGhlcmUuIEhvd2V2ZXIsIHRo
-ZXNlDQpJUHMgY2Fubm90IGJlIGNvbnRyb2xsZWQgYnkgZGlmZmVyZW50IHN1YnN5c3RlbXMuIFRo
-ZXJlZm9yZSwgSSBpbmNsdWRlZA0KdGhlIG5hbWUgb2YgdGhlIHN1YnN5c3RlbSBhZnRlciBTb0Mg
-dG8gaWRlbnRpZnkgdGhlIGNvbmZpZ3VyYXRpb24ncw0KbG9jYXRpb24uIElzIHRoaXMgYXBwcm9h
-Y2ggZmVhc2libGU/DQoNClNpbmNlcmVseSwNCk1vdWR5DQo=
+Since page pool param's "order" is set to 0, will result
+in below crash if interface is configured higher rx buffer
+length.
+
+Steps to reproduce the issue.
+1. devlink dev param set pci/0002:04:00.0 name receive_buffer_size \
+   value 8196 cmode runtime
+2. ifconfig eth0 up
+
+[   19.901356] ------------[ cut here ]------------
+[   19.901361] WARNING: CPU: 11 PID: 12331 at net/core/page_pool.c:567 page_pool_alloc_frag+0x3c/0x230
+[   19.901449] pstate: 82401009 (Nzcv daif +PAN -UAO +TCO -DIT +SSBS BTYPE=--)
+[   19.901451] pc : page_pool_alloc_frag+0x3c/0x230
+[   19.901453] lr : __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901460] sp : ffff80000f66b970
+[   19.901461] x29: ffff80000f66b970 x28: 0000000000000000 x27: 0000000000000000
+[   19.901464] x26: ffff800000d15b68 x25: ffff000195b5c080 x24: ffff0002a5a32dc0
+[   19.901467] x23: ffff0001063c0878 x22: 0000000000000100 x21: 0000000000000000
+[   19.901469] x20: 0000000000000000 x19: ffff00016f781000 x18: 0000000000000000
+[   19.901472] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[   19.901474] x14: 0000000000000000 x13: ffff0005ffdc9c80 x12: 0000000000000000
+[   19.901477] x11: ffff800009119a38 x10: 4c6ef2e3ba300519 x9 : ffff800000d13844
+[   19.901479] x8 : ffff0002a5a33cc8 x7 : 0000000000000030 x6 : 0000000000000030
+[   19.901482] x5 : 0000000000000005 x4 : 0000000000000000 x3 : 0000000000000a20
+[   19.901484] x2 : 0000000000001080 x1 : ffff80000f66b9d4 x0 : 0000000000001000
+[   19.901487] Call trace:
+[   19.901488]  page_pool_alloc_frag+0x3c/0x230
+[   19.901490]  __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901494]  otx2_rq_aura_pool_init+0x1c4/0x240 [rvu_nicpf]
+[   19.901498]  otx2_open+0x228/0xa70 [rvu_nicpf]
+[   19.901501]  otx2vf_open+0x20/0xd0 [rvu_nicvf]
+[   19.901504]  __dev_open+0x114/0x1d0
+[   19.901507]  __dev_change_flags+0x194/0x210
+[   19.901510]  dev_change_flags+0x2c/0x70
+[   19.901512]  devinet_ioctl+0x3a4/0x6c4
+[   19.901515]  inet_ioctl+0x228/0x240
+[   19.901518]  sock_ioctl+0x2ac/0x480
+[   19.901522]  __arm64_sys_ioctl+0x564/0xe50
+[   19.901525]  invoke_syscall.constprop.0+0x58/0xf0
+[   19.901529]  do_el0_svc+0x58/0x150
+[   19.901531]  el0_svc+0x30/0x140
+[   19.901533]  el0t_64_sync_handler+0xe8/0x114
+[   19.901535]  el0t_64_sync+0x1a0/0x1a4
+[   19.901537] ---[ end trace 678c0bf660ad8116 ]---
+
+Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
+Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 997fedac3a98..78a4547e7001 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1357,7 +1357,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 	struct page_pool_params pp_params = { 0 };
+ 	struct npa_aq_enq_req *aq;
+ 	struct otx2_pool *pool;
+-	int err;
++	int err, sz;
+ 
+ 	pool = &pfvf->qset.pool[pool_id];
+ 	/* Alloc memory for stack which is used to store buffer pointers */
+@@ -1403,6 +1403,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 		return 0;
+ 	}
+ 
++	sz = ALIGN(ALIGN(SKB_DATA_ALIGN(buf_size), OTX2_ALIGN), PAGE_SIZE);
++	pp_params.order = (sz / PAGE_SIZE) - 1;
+ 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+ 	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
+ 	pp_params.nid = NUMA_NO_NODE;
+-- 
+2.25.1
+
