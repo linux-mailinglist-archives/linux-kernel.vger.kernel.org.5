@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42E37B207E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5557B2082
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbjI1PGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
+        id S231494AbjI1PHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjI1PGq (ORCPT
+        with ESMTP id S231422AbjI1PHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:06:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48431194;
-        Thu, 28 Sep 2023 08:06:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C6AED1F45A;
-        Thu, 28 Sep 2023 15:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695913601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvZ2+lVVGC6fG0+TRC9F7fERAgSpJyW4xAyt96q+Vxc=;
-        b=ptCb4TYC9YIVqfS0D/JnTThCt0sxx34Ez/BPz+d/vIoTaGgsjrQt9CHdoYPmKnDl6Vmarh
-        E4TWTAqwhEKcx3Mg9zxMQ/fkC/GEZFnUJc3gt0AwVkiRzV4Et26KMisDfjIUj0eEo9FEPq
-        8rYjoRH1uiAzlHqCWAM6+cTZRR7IloI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695913601;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvZ2+lVVGC6fG0+TRC9F7fERAgSpJyW4xAyt96q+Vxc=;
-        b=eZXGn5WYGpuUYBxLrc2R6x3cywtFddiSOY5dU3T2qpkP9eTjacRpEkSU0VKcnupuj1aUVM
-        g+4hX5BouSriSZAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5FC8E138E9;
-        Thu, 28 Sep 2023 15:06:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ygAfFIGWFWUkIwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 28 Sep 2023 15:06:41 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 55947dc4;
-        Thu, 28 Sep 2023 15:06:40 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: fix possible extra iput() in do_unlinkat()
-In-Reply-To: <20230928134513.l2y3eknt2hfq3qgx@f> (Mateusz Guzik's message of
-        "Thu, 28 Sep 2023 15:45:13 +0200")
-References: <20230928131129.14961-1-lhenriques@suse.de>
-        <20230928134513.l2y3eknt2hfq3qgx@f>
-Date:   Thu, 28 Sep 2023 16:06:40 +0100
-Message-ID: <878r8q1gn3.fsf@suse.de>
+        Thu, 28 Sep 2023 11:07:52 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA061AC;
+        Thu, 28 Sep 2023 08:07:51 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5780040cb81so10379247a12.1;
+        Thu, 28 Sep 2023 08:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695913670; x=1696518470; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Qz6HI6jlkhdd2Zf0WXt7AO/8I8qoc77cV4VvCrPgng=;
+        b=eNrGGvPuVYbfM4US8wNefBav7a1ihh6tvRHodl3YLk7WO4RFIPiz+xwyUToDWIc0no
+         FWgkk+GOXN4ZiLzOjB8yM1XFw+AdoQF8y/TkCbea+/tRndub07Wz1T8IECloqg0YbC2P
+         om73C07p0FNaZyH4pfy85nmgtoM/vkdPnu5gE5YhTJUi+IUoxMPe9c77LWIfvp8JJDx9
+         SP5uGhsolMxkfK8qw86GpdkRp+ahfZlEEccpXa6yPQ1zxadAhejOjLXbn4NSPyzxEVgN
+         4rb+cca6kTVxXvVtk+qSlw5QKnh/9QFntmbwlfrHmCtK+ZRORCyAVu5nDJ2xnrThEmtQ
+         YwOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695913670; x=1696518470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Qz6HI6jlkhdd2Zf0WXt7AO/8I8qoc77cV4VvCrPgng=;
+        b=mtTPH1Rc88NOA4p9nQd4E3UfxamQsCqQm7ogp72M11JDb1a2eXYzojtE7WP4wuqRKP
+         j0yeR6aMth72NCmyP1uIHSYb9HQUywc3CXi8MuuJ24jv4TGIZu1OVtHfhFRltw7dHhjr
+         NeHr1EyvoObs6SLqFCEbfNqiTetz7vdDEfF5BN0x7Wx10mnD6L5k7qzTKnK9jq0kI+Om
+         nuWUnQY+LomTmLJfITF6gyacn0C0ULMbDxP6brIfUwN+Kzf87jKvM5j4BltZ4Xj+rihE
+         Uc62qDJ/oZ/AjezA/n5qR4GuiMn5P5hUSNsuHZaXpnaHe45fF11m7KzaIjNUZZtAhBrP
+         J7GA==
+X-Gm-Message-State: AOJu0YztPmdfXIpteT2L+thkgLmxYGcIqvaH3boxCpt1gLG/hAhCYgVJ
+        z3wYglDjeguNiwfYWzoxDXGL5P6t+lkbuBDyaFhjUPe+
+X-Google-Smtp-Source: AGHT+IESmof8pQRREMh16diAI2K+Cue3aE5DFelWF1s3vxtAYM/mobog5IUcgN2D4wJRkJwCpcKftD02v+jf0rONjTU=
+X-Received: by 2002:a17:90b:1d86:b0:26b:59b7:edb with SMTP id
+ pf6-20020a17090b1d8600b0026b59b70edbmr1409193pjb.33.1695913670652; Thu, 28
+ Sep 2023 08:07:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230920022644.2712651-1-jcmvbkbc@gmail.com> <20230920022644.2712651-2-jcmvbkbc@gmail.com>
+ <2023092835-applied-shakable-f5dc@gregkh>
+In-Reply-To: <2023092835-applied-shakable-f5dc@gregkh>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 28 Sep 2023 08:07:38 -0700
+Message-ID: <CAMo8Bf+fKpvb5DgN3P847qKNxUa5Y3Q+e4AOikHGrhyZiDCWSQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] serial: core: tidy invalid baudrate handling in uart_get_baud_rate
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mateusz Guzik <mjguzik@gmail.com> writes:
-
-> On Thu, Sep 28, 2023 at 02:11:29PM +0100, Lu=C3=ADs Henriques wrote:
->> Because inode is being initialised before checking if dentry is negative,
->> and the ihold() is only done if the dentry is *not* negative, the cleanup
->> code may end-up doing an extra iput() on that inode.
->>=20
->> Fixes: b18825a7c8e3 ("VFS: Put a small type field into struct dentry::d_=
-flags")
->> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
->> ---
->> Hi!
->>=20
->> I was going to also remove the 'if (inode)' before the 'iput(inode)',
->> because 'iput()' already checks for NULL anyway.  But since I probably
->> wouldn't have caught this bug if it wasn't for that 'if', I decided to
->> keep it there.  But I can send v2 with that change too if you prefer.
->>=20
->> Cheers,
->> --
->> Lu=C3=ADs
->>=20
->>  fs/namei.c | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
->>=20
->> diff --git a/fs/namei.c b/fs/namei.c
->> index 567ee547492b..156a570d7831 100644
->> --- a/fs/namei.c
->> +++ b/fs/namei.c
->> @@ -4386,11 +4386,9 @@ int do_unlinkat(int dfd, struct filename *name)
->>  	if (!IS_ERR(dentry)) {
->>=20=20
->>  		/* Why not before? Because we want correct error value */
->> -		if (last.name[last.len])
->> +		if (last.name[last.len] || d_is_negative(dentry))
->>  			goto slashes;
->>  		inode =3D dentry->d_inode;
->> -		if (d_is_negative(dentry))
->> -			goto slashes;
->>  		ihold(inode);
->>  		error =3D security_path_unlink(&path, dentry);
->>  		if (error)
+On Thu, Sep 28, 2023 at 1:17=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Tue, Sep 19, 2023 at 07:26:40PM -0700, Max Filippov wrote:
+> > @@ -539,6 +537,7 @@ uart_get_divisor(struct uart_port *port, unsigned i=
+nt baud)
+> >  {
+> >       unsigned int quot;
+> >
+> > +     WARN_ON(baud =3D=3D 0);
 >
-> I ran into this myself, but I'm pretty sure there is no bug here. The
-> code is just incredibly misleading and it became this way from the
-> sweeping change introducing d_is_negative. I could not be bothered to
-> argue about patching it so I did not do anything. ;)
->
-> AFAICS it is an invariant that d_is_negative passes iff d_inode is NULL.
+> Why is this needed?  If this isn't happening today, then there's no need
+> to check for this here.
 
-Ah! yes, of course.  Makes sense.  Thanks for your review.
+I'll drop it then.
 
-> Personally I support the patch, but commit message needs to stop
-> claiming a bug.
-
-OK, I'll rephrase the commit message for v2 so that it's clear it's not
-really fixing anything, it just helps clarifying some misleading code
-paths.  (Although, to be fair, the commit message doesn't really
-explicitly call it a bug :-) ).
-
-Cheers,
 --=20
-Lu=C3=ADs
+Thanks.
+-- Max
