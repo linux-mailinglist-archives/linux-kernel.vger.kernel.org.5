@@ -2,50 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB1B7B2601
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A4D7B260C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjI1Tlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S231567AbjI1Tok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1Tlh (ORCPT
+        with ESMTP id S229478AbjI1Toj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:41:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68761A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:41:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE9AC433C7;
-        Thu, 28 Sep 2023 19:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695930095;
-        bh=+f/LROZgFTPzcFy5/y8VtrXLG8LIcts2Ik8CzlQ3RsM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GS04NkNVwjZ5aAvctflC98Uo4+fIaRixp/S7KhAw1pj6pKgWEnR6iDPnRHcMrbxWk
-         GDRgbrpFlHSnG52T5EMZagd0oohD+/xcuCf4IvfL4xylZ6RTNK1drD97IFlFBhvAYe
-         rMlWf9Os5/p+g+hY6SnSR+EjfGnV8WR42DL5Bu6SarRJs1I73kT6nkyt2N6xugHotX
-         DZjlqz/z04UMNuNoCQsaclN3jzUEiyc2uE39Ahqx7ekUBFq46WzlKbD3tNmilxO26P
-         x6jbj8r7HxHo4ukR3juucsPsAq1CpDdnM/+vHzKqpvc1t4NAi6L8MkFv3DsG1aPtw7
-         SevonLnDNfLVg==
-Received: (nullmailer pid 1147011 invoked by uid 1000);
-        Thu, 28 Sep 2023 19:41:33 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: Simplify referencing dai-params.yaml
-Date:   Thu, 28 Sep 2023 14:41:16 -0500
-Message-Id: <20230928194126.1146622-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Thu, 28 Sep 2023 15:44:39 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9956319F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:44:37 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5032a508e74so49e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695930276; x=1696535076; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JRyUr6UVl7FFC/RDg2+bKaNhZoV26yTOAqV73hVeW/I=;
+        b=LbOsSbTuw5n0/FarXkmcOgDBifQ6lNhwbkdCZ21Zkh2xtonszR0l6rlWpeDPmrV26i
+         qotrtrCIlkt65aEYrhiv6f1nFC1zSRfhyfiCA4fhIvq+rYsrsl68H6+c1uinevSbhS8R
+         njDt661GddSFYrU8qjSQMb7fyWh+MoS7e46LSUnOup9w12KZKi28tICehsUBbNuRp4Fh
+         mlapBVzBPHyVJovntvmRMeQ5IewZ7TBe8NuRGyYOBD+OKYSnX3aGezOdTTHSEgsizlZY
+         iodoqA0g3gf2QtF9kbyoEL2gjKJQPXJf+NB8qZUt1z32fQfQxxS5aVwzg8pG354D+fs9
+         qpUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695930276; x=1696535076;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JRyUr6UVl7FFC/RDg2+bKaNhZoV26yTOAqV73hVeW/I=;
+        b=M+MPTiwoerYIzhOTqUHjhxFzVmqIyGDArRchtgTsTPLi5dyAk/T7X0CJfqcUqoC7lh
+         xFOBXeLc0UFTexDhfwILO1APTm1fZlVKayt5aVlCH31IohxwDTvQULuQ4Giuqj+65nG7
+         qf9emK3YTKr8vo8VnQPL3hL8UsRaq7lEYWqcCCwAio9BQRhNFSvKpo/2M4Dz9cKwaMhQ
+         AoIb4vXTZ59V1Fu6SFO5zhNlN4xcJBOsP+Munw4Y8MpDeqewjAsMGh4e6C7p+z5kbfom
+         88P2nmpDxOKhPcNU2YF1M5d5WMHIm+eFNFlX28EcY3R3KiiWPh3VhV11hAyXHafgEoK9
+         NSBg==
+X-Gm-Message-State: AOJu0Yyx6BSJEJnv8zlA5Zll20O1XOf9MG3BVbS2deziBbyxuoavElmU
+        OF/4RihiZKmC6EvwmYUcgmkPYFee9zaXaiX9rMadig==
+X-Google-Smtp-Source: AGHT+IFKlbBKVnPaqgfeKYB1Ca18yK3GM5PEyM10qfeD3UfU7Tifq5GZfWfclUM1vEGRG8VhRzADV8ZSB+r3FpENcj0=
+X-Received: by 2002:ac2:55ac:0:b0:501:ba53:a4f7 with SMTP id
+ y12-20020ac255ac000000b00501ba53a4f7mr252243lfg.0.1695930275610; Thu, 28 Sep
+ 2023 12:44:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <4d6c9b19-cdbb-4a00-9a40-5ed5c36332e5@arm.com> <ZRVbV6yJ-zFzRoas@debian.me>
+ <54e5accf-1a56-495a-a4f5-d57504bc2fc8@arm.com>
+In-Reply-To: <54e5accf-1a56-495a-a4f5-d57504bc2fc8@arm.com>
+From:   "Zach O'Keefe" <zokeefe@google.com>
+Date:   Thu, 28 Sep 2023 12:43:57 -0700
+Message-ID: <CAAa6QmRbDbEamFgEDbgVhwKOf1GHNa90COuyz29BmduOAjbmyA@mail.gmail.com>
+Subject: Re: BUG: MADV_COLLAPSE doesn't work for XFS files
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,124 +79,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's generally no need to use definitions to reference from
-individual properties. All the property names are the same, and all the
-defined properties are used by all the users.
+Hey Ryan,
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/sound/audio-graph-port.yaml      | 20 ++++++-------------
- .../bindings/sound/audio-graph.yaml           |  9 +++------
- .../devicetree/bindings/sound/dai-params.yaml | 11 ++++------
- 3 files changed, 13 insertions(+), 27 deletions(-)
+Thanks for bringing this up.
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-index fa9f9a853365..60b5e3fd1115 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-@@ -13,19 +13,17 @@ select: false
- 
- definitions:
-   port-base:
--    $ref: /schemas/graph.yaml#/$defs/port-base
-+    allOf:
-+      - $ref: /schemas/graph.yaml#/$defs/port-base
-+      - $ref: /schemas/sound/dai-params.yaml#
-     properties:
--      convert-rate:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-rate
--      convert-channels:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-channels
--      convert-sample-format:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-format
-       mclk-fs:
-         $ref: simple-card.yaml#/definitions/mclk-fs
- 
-   endpoint-base:
--    $ref: /schemas/graph.yaml#/$defs/endpoint-base
-+    allOf:
-+      - $ref: /schemas/graph.yaml#/$defs/endpoint-base
-+      - $ref: /schemas/sound/dai-params.yaml#
-     properties:
-       mclk-fs:
-         $ref: simple-card.yaml#/definitions/mclk-fs
-@@ -68,12 +66,6 @@ definitions:
-             - pdm
-             - msb
-             - lsb
--      convert-rate:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-rate
--      convert-channels:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-channels
--      convert-sample-format:
--        $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-format
- 
-       dai-tdm-slot-num:
-         description: Number of slots in use.
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph.yaml b/Documentation/devicetree/bindings/sound/audio-graph.yaml
-index ed31e04ff6a6..71f52f7e55f6 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph.yaml
-+++ b/Documentation/devicetree/bindings/sound/audio-graph.yaml
-@@ -9,6 +9,9 @@ title: Audio Graph
- maintainers:
-   - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
- 
-+allOf:
-+  - $ref: /schemas/sound/dai-params.yaml#
-+
- properties:
-   dais:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-@@ -30,12 +33,6 @@ properties:
-       widget ("Microphone", "Line", "Headphone", "Speaker"), the
-       second being the machine specific name for the widget.
-     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--  convert-rate:
--    $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-rate
--  convert-channels:
--    $ref: /schemas/sound/dai-params.yaml#/$defs/dai-channels
--  convert-sample-format:
--    $ref: /schemas/sound/dai-params.yaml#/$defs/dai-sample-format
- 
-   pa-gpios:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/sound/dai-params.yaml b/Documentation/devicetree/bindings/sound/dai-params.yaml
-index f5fb71f9b603..cd8508175564 100644
---- a/Documentation/devicetree/bindings/sound/dai-params.yaml
-+++ b/Documentation/devicetree/bindings/sound/dai-params.yaml
-@@ -11,15 +11,14 @@ maintainers:
- 
- select: false
- 
--$defs:
--
--  dai-channels:
-+properties:
-+  convert-channels:
-     description: Number of audio channels used by DAI
-     $ref: /schemas/types.yaml#/definitions/uint32
-     minimum: 1
-     maximum: 32
- 
--  dai-sample-format:
-+  convert-sample-format:
-     description: Audio sample format used by DAI
-     $ref: /schemas/types.yaml#/definitions/string
-     enum:
-@@ -29,12 +28,10 @@ $defs:
-       - s24_3le
-       - s32_le
- 
--  dai-sample-rate:
-+  convert-rate:
-     description: Audio sample rate used by DAI
-     $ref: /schemas/types.yaml#/definitions/uint32
-     minimum: 8000
-     maximum: 192000
- 
--properties: {}
--
- additionalProperties: true
--- 
-2.40.1
+On Thu, Sep 28, 2023 at 4:59=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> On 28/09/2023 11:54, Bagas Sanjaya wrote:
+> > On Thu, Sep 28, 2023 at 10:55:17AM +0100, Ryan Roberts wrote:
+> >> Hi all,
+> >>
+> >> I've just noticed that when applied to a file mapping for a file on xf=
+s, MADV_COLLAPSE returns EINVAL. The same test case works fine if the file =
+is on ext4.
+> >>
+> >> I think the root cause is that the implementation bails out if it find=
+s a (non-PMD-sized) large folio in the page cache for any part of the file =
+covered by the region. XFS does readahead into large folios so we hit this =
+issue. See khugepaged.h:collapse_file():
+> >>
+> >>              if (PageTransCompound(page)) {
+> >>                      struct page *head =3D compound_head(page);
+> >>
+> >>                      result =3D compound_order(head) =3D=3D HPAGE_PMD_=
+ORDER &&
+> >>                                      head->index =3D=3D start
+> >>                                      /* Maybe PMD-mapped */
+> >>                                      ? SCAN_PTE_MAPPED_HUGEPAGE
+> >>                                      : SCAN_PAGE_COMPOUND;
+> >>                      goto out_unlock;
+> >>              }
+> >
 
+Ya, non-PMD-sized THPs were just barely visible in my peripherals when
+writing this, and I'm still woefully behind on your work on them now
+(sorry!).
+
+I'd like to eventually make collapse (not just MADV_COLLAPSE, but
+khugepaged too) support arbitrary-sized large folios in general, but
+I'm very pressed for time right now. I think M. Wilcox is also
+interested in this, given he left the TODO to support it :P
+
+Thank you for the reproducer though! I haven't run it, but I'll
+probably come back here to steal it when the time comes.
+
+> > I don't see any hint to -EINVAL above. Am I missing something?
+>
+> The SCAN_PAGE_COMPOUND result ends up back at madvise_collapse() where it
+> eventually gets converted to -EINVAL by madvise_collapse_errno().
+>
+> >
+> >>
+> >> I'm not sure if this is already a known issue? I don't have time to wo=
+rk on a fix for this right now, so thought I would highlight it at least. I=
+ might get around to it at some point in the future if nobody else tackles =
+it.
+
+My guess is Q1 2024 is when I'd be able to look into this, at the
+current level of urgency. It doesn't sound like it's blocking anything
+for your work right now -- lmk if that changes though!
+
+Thanks,
+Zach
+
+
+
+> >>
+> >> Thanks,
+> >> Ryan
+> >>
+> >>
+> >> Test case I've been using:
+> >>
+> >> -->8--
+> >>
+> >> #include <stdio.h>
+> >> #include <stdlib.h>
+> >> #include <sys/mman.h>
+> >> #include <sys/types.h>
+> >> #include <sys/stat.h>
+> >> #include <fcntl.h>
+> >> #include <unistd.h>
+> >>
+> >> #ifndef MADV_COLLAPSE
+> >> #define MADV_COLLAPSE                25
+> >> #endif
+> >>
+> >> #define handle_error(msg)    do { perror(msg); exit(EXIT_FAILURE); } w=
+hile (0)
+> >>
+> >> #define SZ_1K                        1024
+> >> #define SZ_1M                        (SZ_1K * SZ_1K)
+> >> #define ALIGN(val, align)    (((val) + ((align) - 1)) & ~((align) - 1)=
+)
+> >>
+> >> #if 1
+> >> // ext4
+> >> #define DATA_FILE            "/home/ubuntu/data.txt"
+> >> #else
+> >> // xfs
+> >> #define DATA_FILE            "/boot/data.txt"
+> >> #endif
+> >>
+> >> int main(void)
+> >> {
+> >>      int fd;
+> >>      char *mem;
+> >>      int ret;
+> >>
+> >>      fd =3D open(DATA_FILE, O_RDONLY);
+> >>      if (fd =3D=3D -1)
+> >>              handle_error("open");
+> >>
+> >>      mem =3D mmap(NULL, SZ_1M * 4, PROT_READ | PROT_EXEC, MAP_PRIVATE,=
+ fd, 0);
+> >>      close(fd);
+> >>      if (mem =3D=3D MAP_FAILED)
+> >>              handle_error("mmap");
+> >>
+> >>      printf("1: pid=3D%d, mem=3D%p\n", getpid(), mem);
+> >>      getchar();
+> >>
+> >>      mem =3D (char *)ALIGN((unsigned long)mem, SZ_1M * 2);
+> >>      ret =3D madvise(mem, SZ_1M * 2, MADV_COLLAPSE);
+> >>      if (ret)
+> >>              handle_error("madvise");
+> >>
+> >>      printf("2: pid=3D%d, mem=3D%p\n", getpid(), mem);
+> >>      getchar();
+> >>
+> >>      return 0;
+> >> }
+> >>
+> >> -->8--
+> >>
+> >
+> > Confused...
+>
+> This is a user space test case that shows the problem; data.txt needs to =
+be at
+> least 4MB and on a mounted ext4 and xfs filesystem. By toggling the '#if =
+1' to
+> 0, you can see the different behaviours for ext4 and xfs -
+> handle_error("madvise") fires with EINVAL in the xfs case. The getchar()s=
+ are
+> leftovers from me looking at the smaps file.
+>
