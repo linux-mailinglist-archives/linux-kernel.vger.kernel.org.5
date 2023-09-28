@@ -2,484 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A2D7B11F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1057B11F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjI1FVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        id S230149AbjI1FVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjI1FVe (ORCPT
+        with ESMTP id S229922AbjI1FVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:21:34 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3B3126
+        Thu, 28 Sep 2023 01:21:35 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BAFBF
         for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:21:29 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ljSlqFbLERAigljSlqPB4M; Thu, 28 Sep 2023 07:21:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1695878486;
-        bh=Qq/+0qhLjJW24ILoN1sDQ1g5q2A5YK960iOj7lPaxOc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=piDk27Q4uS2VS9NvUHCRIWX8Z/j4YURkBWsPUgfjildpTSeGRAdxexkNS63fw7uQs
-         BLszkPyXgqa7FMeFhjfkaFZT5booJb1DLdXHP/7i8+3TyMp267BHSvdWosWochlHMR
-         u377Xe3GV6jhwzuQXpqrRuKFWU1Z6KLA31YVm3yegEZszuX1rdCrcURy4LYDTrxO8+
-         nf3O8F5NByE6Pt9tYSVDQqYusbiST+CE0uKh9QmNNfMFfD0dHGme1/mUi/S5n+33Ya
-         Ja8zCFwJuhK+L9D+ZemPMkfeGRmSUGS+AanJdbsZZTLCDDr0aBUPWrGRC+AiL3eFbd
-         BA3fUSqjUkQQQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 28 Sep 2023 07:21:26 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <73a189c9-6263-900e-ed6b-83a9d03fd855@wanadoo.fr>
-Date:   Thu, 28 Sep 2023 07:21:23 +0200
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ad8d47ef2fso1552812666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:21:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695878488; x=1696483288; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IctSNdmwP27jdIkRDHGtBl56HPuutEqsWQ3K1xwqCM0=;
+        b=aoEQP5Rjc5ZNYQNrei6cdSkuXyvUeU/pbQkvmZASAFNvoQgWSpFIT+KbZY73QWSpnd
+         If6dvXdScViqYtm46ZukiDxoagHulPcWw2sqQ68Eyg6AVEzB8gEcDUMgMpjiJ70SQdgy
+         Zq+49MIA4JRhOgrxkVYqXfFepCyu4/OuhBcylSNuTYz/vmQ67zloCOu36GM3q7gACIF5
+         8NZV9mjX2vpBKNoggeeyMU1pUn2aPlQqUMG2p2TJ5Gbmj0s21cAaoc0RtJfRAyXFZ0MF
+         yaOXbIAa0ehZVfPNp8xrk6qesS9/Bd1gtT6BOBCjy1RdgmK/ZoDYOjaRKdoERZB0xg8C
+         sTgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695878488; x=1696483288;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IctSNdmwP27jdIkRDHGtBl56HPuutEqsWQ3K1xwqCM0=;
+        b=GjN7VC1+elYpirODCtE8+sHfvPHXJl3tI5WTFeJNVpvEhTi6EyzGQDuoxv4N15Pxym
+         joJrHk6H9FFSFnQn8xYK4wfC2fvPe+zPGcoFe8nQ+zK3ohvxfCjUnQIzSuzguGmJ5iPj
+         pq9u6QznCNRWD6z2F8Umz6uM9+frZizddGQuaW/gKsLREY6Lsm/Gfl16zKyYEDyBSJzQ
+         yi6AJ1d+Dg8Nq8PbOmxK9D57IO/64935AS+9axnrC/y++DPYfp3TK70UVSxOxdVfj0LD
+         EylEjATSeK/miRIfoXs8DLamBDhBdZ33qg9YBNulsNDr0zpLJX75NTC+z/LQT0ivYZyc
+         FLFQ==
+X-Gm-Message-State: AOJu0Ywhck2OYqwwdD/rmOV7E6JT+urY0Ep8TX4xM/wWoxBsNfamkv0g
+        Kt+mgU9zNrIwudxpjO7dbqPlLw==
+X-Google-Smtp-Source: AGHT+IHCI6nP8GJrizsiycPqb9sumMYLwbNfauPQm9m/YdWVDylObm9wgRL27P0XVvBUJvRPacOxyA==
+X-Received: by 2002:a17:906:1dd:b0:9ae:6355:64bb with SMTP id 29-20020a17090601dd00b009ae635564bbmr200009ejj.73.1695878488360;
+        Wed, 27 Sep 2023 22:21:28 -0700 (PDT)
+Received: from [192.168.1.235] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
+        by smtp.gmail.com with ESMTPSA id v5-20020a1709064e8500b00993470682e5sm10174443eju.32.2023.09.27.22.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 22:21:27 -0700 (PDT)
+Message-ID: <5e453da1-91b6-4f55-8af7-c25e9d28be7a@linaro.org>
+Date:   Thu, 28 Sep 2023 07:21:25 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 2/5] power: supply: rt5033_charger: Add cable detection
- and USB OTG supply
-To:     Jakob Hauser <jahau@rocketmail.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Lee Jones <lee@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Raymond Hackley <raymondhackley@protonmail.com>,
-        Henrik Grimler <henrik@grimler.se>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <cover.1695844349.git.jahau@rocketmail.com>
- <efe3e6132216ff87a1643c0fdbf471a672a3f4f3.1695844349.git.jahau@rocketmail.com>
-Content-Language: fr
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <efe3e6132216ff87a1643c0fdbf471a672a3f4f3.1695844349.git.jahau@rocketmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] usb: dwc3: add T-HEAD TH1520 usb driver
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org
+References: <20230927164222.3505-1-jszhang@kernel.org>
+ <20230927164222.3505-3-jszhang@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230927164222.3505-3-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Le 27/09/2023 à 22:25, Jakob Hauser a écrit :
-> Implement cable detection by extcon and handle the driver according to the
-> connector type.
->
-> There are basically three types of action: "set_charging", "set_otg" and
-> "set_disconnect".
->
-> A forth helper function to "unset_otg" was added because this is used in both
-> "set_charging" and "set_disconnect". In the first case it covers the rather
-> rare event that someone changes from OTG to charging without disconnect. In
-> the second case, when disconnecting, the values are set back to the ones from
-> initialization to return into a defined state.
->
-> Additionally, there is "set_mivr". When connecting to e.g. a laptop/PC, the
-> minimum input voltage regulation (MIVR) shall prevent a voltage drop if the
-> cable or the supply is weak. The MIVR value is set to 4600MV, same as in the
-> Android driver [1]. When disconnecting, MIVR is set back to DISABLED.
->
-> In the function rt5033_get_charger_state(): When in OTG mode, the chip
-> reports status "charging". Change this to "discharging" because there is
-> no charging going on in OTG mode [2].
->
-> [1] https://github.com/msm8916-mainline/linux-downstream/blob/GT-I9195I/drivers/battery/rt5033_charger.c#L499
-> [2] https://github.com/msm8916-mainline/linux-downstream/blob/GT-I9195I/drivers/battery/rt5033_charger.c#L686-L687
->
-> Tested-by: Raymond Hackley <raymondhackley@protonmail.com>
-> Signed-off-by: Jakob Hauser <jahau@rocketmail.com>
-> Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+On 27/09/2023 18:42, Jisheng Zhang wrote:
+> Adds TH1520 Glue layer to support USB controller on T-HEAD TH1520 SoC.
+> There is a DesignWare USB3 DRD core in TH1520 SoCs, the dwc3 core is
+> the child of this USB wrapper module device.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->   drivers/power/supply/rt5033_charger.c | 276 +++++++++++++++++++++++++-
->   1 file changed, 274 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/power/supply/rt5033_charger.c b/drivers/power/supply/rt5033_charger.c
-> index 57a0dc631e85..2c2073b8979d 100644
-> --- a/drivers/power/supply/rt5033_charger.c
-> +++ b/drivers/power/supply/rt5033_charger.c
-> @@ -6,8 +6,11 @@
->    * Author: Beomho Seo <beomho.seo@samsung.com>
->    */
->   
-> +#include <linux/devm-helpers.h>
-> +#include <linux/extcon.h>
->   #include <linux/mod_devicetable.h>
->   #include <linux/module.h>
-> +#include <linux/mutex.h>
->   #include <linux/of.h>
->   #include <linux/platform_device.h>
->   #include <linux/power_supply.h>
-> @@ -27,6 +30,14 @@ struct rt5033_charger {
->   	struct regmap			*regmap;
->   	struct power_supply		*psy;
->   	struct rt5033_charger_data	*chg;
-> +	struct extcon_dev		*edev;
-> +	struct notifier_block		extcon_nb;
-> +	struct work_struct		extcon_work;
-> +	struct mutex			lock;
-> +	bool online;
-> +	bool otg;
-> +	bool mivr_enabled;
-> +	u8 cv_regval;
->   };
->   
->   static int rt5033_get_charger_state(struct rt5033_charger *charger)
-> @@ -57,6 +68,10 @@ static int rt5033_get_charger_state(struct rt5033_charger *charger)
->   		state = POWER_SUPPLY_STATUS_UNKNOWN;
->   	}
->   
-> +	/* For OTG mode, RT5033 would still report "charging" */
-> +	if (charger->otg)
-> +		state = POWER_SUPPLY_STATUS_DISCHARGING;
+>  MAINTAINERS                   |   1 +
+>  drivers/usb/dwc3/Kconfig      |   9 +++
+>  drivers/usb/dwc3/Makefile     |   1 +
+>  drivers/usb/dwc3/dwc3-thead.c | 119 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 130 insertions(+)
+>  create mode 100644 drivers/usb/dwc3/dwc3-thead.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 90f13281d297..d55e40060c46 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18481,6 +18481,7 @@ M:	Fu Wei <wefu@redhat.com>
+>  L:	linux-riscv@lists.infradead.org
+>  S:	Maintained
+>  F:	arch/riscv/boot/dts/thead/
+> +F:	drivers/usb/dwc3/dwc3-thead.c
+>  
+>  RNBD BLOCK DRIVERS
+>  M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
+> diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+> index 98efcbb76c88..1b02f4f55b47 100644
+> --- a/drivers/usb/dwc3/Kconfig
+> +++ b/drivers/usb/dwc3/Kconfig
+> @@ -178,4 +178,13 @@ config USB_DWC3_OCTEON
+>  	  Only the host mode is currently supported.
+>  	  Say 'Y' or 'M' here if you have one such device.
+>  
+> +config USB_DWC3_THEAD
+> +	tristate "T-HEAD Platform"
+> +	depends on ARCH_THEAD || COMPILE_TEST
+> +	default USB_DWC3
+> +	help
+> +	  Support T-HEAD platform with DesignWare Core USB3 IP.
+> +	  Only the host mode is currently supported.
+> +	  Say 'Y' or 'M' here if you have one such device.
 > +
->   	return state;
->   }
->   
-> @@ -148,6 +163,9 @@ static inline int rt5033_init_const_charge(struct rt5033_charger *charger)
->   		return -EINVAL;
->   	}
->   
-> +	/* Store that value for later usage */
-> +	charger->cv_regval = reg_data;
+>  endif
+> diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
+> index fe1493d4bbe5..9523a51dd279 100644
+> --- a/drivers/usb/dwc3/Makefile
+> +++ b/drivers/usb/dwc3/Makefile
+> @@ -55,3 +55,4 @@ obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
+>  obj-$(CONFIG_USB_DWC3_IMX8MP)		+= dwc3-imx8mp.o
+>  obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
+>  obj-$(CONFIG_USB_DWC3_OCTEON)		+= dwc3-octeon.o
+> +obj-$(CONFIG_USB_DWC3_THEAD)		+= dwc3-thead.o
+> diff --git a/drivers/usb/dwc3/dwc3-thead.c b/drivers/usb/dwc3/dwc3-thead.c
+> new file mode 100644
+> index 000000000000..999b1e319c72
+> --- /dev/null
+> +++ b/drivers/usb/dwc3/dwc3-thead.c
+> @@ -0,0 +1,119 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * dwc3-thead.c - T-HEAD platform specific glue layer
+> + *
+> + * Inspired by dwc3-of-simple.c
+> + *
+> + * Copyright (C) 2021 Alibaba Group Holding Limited.
+> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+> + */
 > +
->   	/* Set end of charge current */
->   	if (chg->eoc_uamp < RT5033_CHARGER_EOC_MIN ||
->   	    chg->eoc_uamp > RT5033_CHARGER_EOC_MAX) {
-> @@ -331,6 +349,152 @@ static int rt5033_charger_reg_init(struct rt5033_charger *charger)
->   	return 0;
->   }
->   
-> +static int rt5033_charger_set_otg(struct rt5033_charger *charger)
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "core.h"
+> +
+> +#define USB_SSP_EN		0x34
+> +#define  REF_SSP_EN		BIT(0)
+> +#define USB_SYS			0x3c
+> +#define  COMMONONN		BIT(0)
+> +
+> +#define USB3_DRD_SWRST		0x14
+> +#define  USB3_DRD_PRST		BIT(0)
+> +#define  USB3_DRD_PHYRST	BIT(1)
+> +#define  USB3_DRD_VCCRST	BIT(2)
+> +#define  USB3_DRD_RSTMASK	(USB3_DRD_PRST | USB3_DRD_PHYRST | USB3_DRD_VCCRST)
+> +
+> +struct dwc3_thead {
+> +	void __iomem		*base;
+> +	struct regmap		*misc_sysreg;
+> +	struct regulator	*vbus;
+> +};
+> +
+> +static void dwc3_thead_optimize_power(struct dwc3_thead *thead)
 > +{
-> +	int ret;
+> +	u32 val;
 > +
-> +	mutex_lock(&charger->lock);
-> +
-> +	/* Set OTG boost v_out to 5 volts */
-> +	ret = regmap_update_bits(charger->regmap, RT5033_REG_CHG_CTRL2,
-> +			RT5033_CHGCTRL2_CV_MASK,
-> +			0x37 << RT5033_CHGCTRL2_CV_SHIFT);
-> +	if (ret) {
-> +		dev_err(charger->dev, "Failed set OTG boost v_out\n");
-
-
-unlock
-
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Set operation mode to OTG */
-> +	ret = regmap_update_bits(charger->regmap, RT5033_REG_CHG_CTRL1,
-> +			RT5033_CHGCTRL1_MODE_MASK, RT5033_BOOST_MODE);
-> +	if (ret) {
-> +		dev_err(charger->dev, "Failed to update OTG mode.\n");
-
-
-unlock
-
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* In case someone switched from charging to OTG directly */
-> +	if (charger->online)
-> +		charger->online = false;
-> +
-> +	charger->otg = true;
-> +
-> +	mutex_unlock(&charger->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rt5033_charger_unset_otg(struct rt5033_charger *charger)
-> +{
-> +	int ret;
-> +	u8 data;
-> +
-> +	/* Restore constant voltage for charging */
-> +	data = charger->cv_regval;
-> +	ret = regmap_update_bits(charger->regmap, RT5033_REG_CHG_CTRL2,
-> +			RT5033_CHGCTRL2_CV_MASK,
-> +			data << RT5033_CHGCTRL2_CV_SHIFT);
-> +	if (ret) {
-> +		dev_err(charger->dev, "Failed to restore constant voltage\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Set operation mode to charging */
-> +	ret = regmap_update_bits(charger->regmap, RT5033_REG_CHG_CTRL1,
-> +			RT5033_CHGCTRL1_MODE_MASK, RT5033_CHARGER_MODE);
-> +	if (ret) {
-> +		dev_err(charger->dev, "Failed to update charger mode.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	charger->otg = false;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rt5033_charger_set_charging(struct rt5033_charger *charger)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&charger->lock);
-> +
-> +	/* In case someone switched from OTG to charging directly */
-> +	if (charger->otg) {
-> +		ret = rt5033_charger_unset_otg(charger);
-> +		if (ret)
-
-
-unlock
-
-
-> +			return -EINVAL;
-> +	}
-> +
-> +	charger->online = true;
-> +
-> +	mutex_unlock(&charger->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rt5033_charger_set_mivr(struct rt5033_charger *charger)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&charger->lock);
+> +	/* config usb top within USB ctrl & PHY reset */
+> +	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
+> +			   USB3_DRD_RSTMASK, USB3_DRD_PRST);
 > +
 > +	/*
-> +	 * When connected via USB connector type SDP (Standard Downstream Port),
-> +	 * the minimum input voltage regulation (MIVR) should be enabled. It
-> +	 * prevents an input voltage drop due to insufficient current provided
-> +	 * by the adapter or USB input. As a downside, it may reduces the
-> +	 * charging current and thus slows the charging.
+> +	 * dwc reg also need to be configed to save power
+> +	 * 1. set USB_SYS[COMMONONN]
+> +	 * 2. set DWC3_GCTL[SOFITPSYNC](done by core.c)
+> +	 * 3. set GUSB3PIPECTL[SUSPENDEN] (done by core.c)
 > +	 */
-> +	ret = regmap_update_bits(charger->regmap, RT5033_REG_CHG_CTRL4,
-> +			RT5033_CHGCTRL4_MIVR_MASK, RT5033_CHARGER_MIVR_4600MV);
-> +	if (ret) {
-> +		dev_err(charger->dev, "Failed to set MIVR level.\n");
-
-
-unlock
-
-
-> +		return -EINVAL;
-> +	}
+> +	val = readl(thead->base + USB_SYS);
+> +	val |= COMMONONN;
+> +	writel(val, thead->base + USB_SYS);
+> +	val = readl(thead->base + USB_SSP_EN);
+> +	val |= REF_SSP_EN;
+> +	writel(val, thead->base + USB_SSP_EN);
 > +
-> +	charger->mivr_enabled = true;
-> +
-> +	mutex_unlock(&charger->lock);
-> +
-> +	/* Beyond this, do the same steps like setting charging */
-> +	rt5033_charger_set_charging(charger);
-> +
-> +	return 0;
+> +	regmap_update_bits(thead->misc_sysreg, USB3_DRD_SWRST,
+> +			   USB3_DRD_RSTMASK, USB3_DRD_RSTMASK);
 > +}
 > +
-> +static int rt5033_charger_set_disconnect(struct rt5033_charger *charger)
+> +static int dwc3_thead_probe(struct platform_device *pdev)
 > +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct dwc3_thead *thead;
 > +	int ret;
 > +
-> +	mutex_lock(&charger->lock);
+> +	thead = devm_kzalloc(&pdev->dev, sizeof(*thead), GFP_KERNEL);
+> +	if (!thead)
+> +		return -ENOMEM;
 > +
-> +	/* Disable MIVR if enabled */
-> +	if (charger->mivr_enabled) {
-> +		ret = regmap_update_bits(charger->regmap,
-> +				RT5033_REG_CHG_CTRL4,
-> +				RT5033_CHGCTRL4_MIVR_MASK,
-> +				RT5033_CHARGER_MIVR_DISABLE);
-> +		if (ret) {
-> +			dev_err(charger->dev, "Failed to disable MIVR.\n");
-
-
-unlock
-
-
-> +			return -EINVAL;
-> +		}
+> +	platform_set_drvdata(pdev, thead);
 > +
-> +		charger->mivr_enabled = false;
-> +	}
-> +
-> +	if (charger->otg) {
-> +		ret = rt5033_charger_unset_otg(charger);
-> +		if (ret)
-
-
-unlock
-
-
-> +			return -EINVAL;
-> +	}
-> +
-> +	if (charger->online)
-> +		charger->online = false;
-> +
-> +	mutex_unlock(&charger->lock);
-> +
-> +	return 0;
-> +}
-> +
->   static enum power_supply_property rt5033_charger_props[] = {
->   	POWER_SUPPLY_PROP_STATUS,
->   	POWER_SUPPLY_PROP_CHARGE_TYPE,
-> @@ -367,8 +531,7 @@ static int rt5033_charger_get_property(struct power_supply *psy,
->   		val->strval = RT5033_MANUFACTURER;
->   		break;
->   	case POWER_SUPPLY_PROP_ONLINE:
-> -		val->intval = (rt5033_get_charger_state(charger) ==
-> -				POWER_SUPPLY_STATUS_CHARGING);
-> +		val->intval = charger->online;
->   		break;
->   	default:
->   		return -EINVAL;
-> @@ -403,6 +566,86 @@ static struct rt5033_charger_data *rt5033_charger_dt_init(
->   	return chg;
->   }
->   
-> +static void rt5033_charger_extcon_work(struct work_struct *work)
-> +{
-> +	struct rt5033_charger *charger =
-> +		container_of(work, struct rt5033_charger, extcon_work);
-> +	struct extcon_dev *edev = charger->edev;
-> +	int connector, state;
-> +	int ret;
-> +
-> +	for (connector = EXTCON_USB_HOST; connector <= EXTCON_CHG_USB_PD;
-> +	     connector++) {
-> +		state = extcon_get_state(edev, connector);
-> +		if (state == 1)
-> +			break;
-> +	}
-> +
-> +	/*
-> +	 * Adding a delay between extcon notification and extcon action. This
-> +	 * makes extcon action execution more reliable. Without the delay the
-> +	 * execution sometimes fails, possibly because the chip is busy or not
-> +	 * ready.
-> +	 */
-> +	msleep(100);
-> +
-> +	switch (connector) {
-> +	case EXTCON_CHG_USB_SDP:
-> +		ret = rt5033_charger_set_mivr(charger);
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set USB mode\n");
-> +			break;
-> +		}
-> +		dev_info(charger->dev, "USB mode. connector type: %d\n",
-> +			 connector);
-> +		break;
-> +	case EXTCON_CHG_USB_DCP:
-> +	case EXTCON_CHG_USB_CDP:
-> +	case EXTCON_CHG_USB_ACA:
-> +	case EXTCON_CHG_USB_FAST:
-> +	case EXTCON_CHG_USB_SLOW:
-> +	case EXTCON_CHG_WPT:
-> +	case EXTCON_CHG_USB_PD:
-> +		ret = rt5033_charger_set_charging(charger);
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set charging\n");
-> +			break;
-> +		}
-> +		dev_info(charger->dev, "charging. connector type: %d\n",
-> +			 connector);
-> +		break;
-> +	case EXTCON_USB_HOST:
-> +		ret = rt5033_charger_set_otg(charger);
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set OTG\n");
-> +			break;
-> +		}
-> +		dev_info(charger->dev, "OTG enabled\n");
-> +		break;
-> +	default:
-> +		ret = rt5033_charger_set_disconnect(charger);
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set disconnect\n");
-> +			break;
-> +		}
-> +		dev_info(charger->dev, "disconnected\n");
-> +		break;
-> +	}
-> +
-> +	power_supply_changed(charger->psy);
-> +}
-> +
-> +static int rt5033_charger_extcon_notifier(struct notifier_block *nb,
-> +					  unsigned long event, void *param)
-> +{
-> +	struct rt5033_charger *charger =
-> +		container_of(nb, struct rt5033_charger, extcon_nb);
-> +
-> +	schedule_work(&charger->extcon_work);
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
->   static const struct power_supply_desc rt5033_charger_desc = {
->   	.name = "rt5033-charger",
->   	.type = POWER_SUPPLY_TYPE_USB,
-> @@ -415,6 +658,7 @@ static int rt5033_charger_probe(struct platform_device *pdev)
->   {
->   	struct rt5033_charger *charger;
->   	struct power_supply_config psy_cfg = {};
-> +	struct device_node *np_conn, *np_edev;
->   	int ret;
->   
->   	charger = devm_kzalloc(&pdev->dev, sizeof(*charger), GFP_KERNEL);
-> @@ -424,6 +668,7 @@ static int rt5033_charger_probe(struct platform_device *pdev)
->   	platform_set_drvdata(pdev, charger);
->   	charger->dev = &pdev->dev;
->   	charger->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +	mutex_init(&charger->lock);
->   
->   	psy_cfg.of_node = pdev->dev.of_node;
->   	psy_cfg.drv_data = charger;
-> @@ -443,6 +688,33 @@ static int rt5033_charger_probe(struct platform_device *pdev)
->   	if (ret)
->   		return ret;
->   
-> +	/*
-> +	 * Extcon support is not vital for the charger to work. If no extcon
-> +	 * is available, just emit a warning and leave the probe function.
-> +	 */
-> +	np_conn = of_parse_phandle(pdev->dev.of_node, "richtek,usb-connector", 0);
-> +	np_edev = of_get_parent(np_conn);
-> +	charger->edev = extcon_find_edev_by_node(np_edev);
-> +	if (IS_ERR(charger->edev)) {
-> +		dev_warn(&pdev->dev, "no extcon device found in device-tree\n");
-> +		goto out;
-> +	}
-> +
-> +	ret = devm_work_autocancel(&pdev->dev, &charger->extcon_work,
-> +				   rt5033_charger_extcon_work);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to initialize extcon work\n");
+> +	ret = devm_regulator_get_enable_optional(dev, "vbus");
+> +	if (ret < 0 && ret != -ENODEV)
 > +		return ret;
-> +	}
 > +
-> +	charger->extcon_nb.notifier_call = rt5033_charger_extcon_notifier;
-> +	ret = devm_extcon_register_notifier_all(&pdev->dev, charger->edev,
-> +						&charger->extcon_nb);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "failed to register extcon notifier\n");
-> +		return ret;
-> +	}
-> +out:
->   	return 0;
->   }
->   
+> +	thead->misc_sysreg = syscon_regmap_lookup_by_phandle(np, "thead,misc-sysreg");
+
+NAK. Test your DTS first. You do not have such property.
+
+> +	if (IS_ERR(thead->misc_sysreg))
+> +		return PTR_ERR(thead->misc_sysreg);
+> +
+> +	thead->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(thead->base))
+> +		return PTR_ERR(thead->base);
+> +
+> +	dwc3_thead_optimize_power(thead);
+> +
+> +	return of_platform_populate(np, NULL, NULL, dev);
+> +}
+> +
+> +static void dwc3_thead_remove(struct platform_device *pdev)
+> +{
+> +	of_platform_depopulate(&pdev->dev);
+> +}
+> +
+> +static const struct of_device_id dwc3_thead_of_match[] = {
+> +	{ .compatible = "thead,th1520-usb" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, dwc3_thead_of_match);
+> +
+> +static struct platform_driver dwc3_thead_driver = {
+> +	.probe		= dwc3_thead_probe,
+> +	.remove_new	= dwc3_thead_remove,
+> +	.driver		= {
+> +		.name	= "dwc3-thead",
+> +		.of_match_table	= dwc3_thead_of_match,
+> +	},
+> +};
+> +module_platform_driver(dwc3_thead_driver);
+> +
+> +MODULE_ALIAS("platform:dwc3-thead");
+
+No, you do not need this. If you need, your device ID table is wrong.
+
+Best regards,
+Krzysztof
+
