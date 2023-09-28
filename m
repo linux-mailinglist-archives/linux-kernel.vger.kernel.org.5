@@ -2,346 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F4A7B247B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745117B2487
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjI1R6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S231437AbjI1SAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjI1R6d (ORCPT
+        with ESMTP id S230139AbjI1SAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:58:33 -0400
-X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 10:58:24 PDT
-Received: from smtpcmd0986.aruba.it (smtpcmd0986.aruba.it [62.149.156.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601A019E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:58:24 -0700 (PDT)
-Received: from localhost.localdomain ([146.241.127.78])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id lvGJqRkNrbrLalvGJqINWv; Thu, 28 Sep 2023 19:57:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1695923841; bh=W26aS+AEwmr6PQiOcPGzMXEAcfiPOUrQ2EpC+Nm6EpI=;
-        h=From:To:Subject:Date:MIME-Version;
-        b=mj/kkz4Nrd3UabDB+nyN4rgAjMW3yKV+LcWLUR7LeoKIsZJlBjXNvTzf84OA11tQf
-         6JIb6jf3bv3oxDxiw4OuyT8GzUNM5UsT5K3d8He+fso6eT9FjPsc9x69yaucUsswjn
-         3wg+lRezKzRAac/YghKjWAsXXonL3BYnRiFN4Zsw+BMoZ59OPU43arrl8rPt6MlEQH
-         v/o+9etR+qMve/x5q5jR6QY3VkBJbGLF5vnwQdQdH7St7jtFXBzKOmXdaK8pSOh/J0
-         tGwpk3RMYB+uVFnJjKbcCuATmcFfPoG9wtmaCsbSJVzpl0Za5gm7r8xxKx4fbEouHb
-         f2sKAO83SRNMg==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
+        Thu, 28 Sep 2023 14:00:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4648619D;
+        Thu, 28 Sep 2023 11:00:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23BE2C433C8;
+        Thu, 28 Sep 2023 18:00:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695924003;
+        bh=1lv56bKtGw1pYnYpPtTxK1Jkak4VU5tZbqNoAxuBsmc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iqDztv6tYQX35VFPb/By+mVjJrGOoyFOVPD0I5YYCgruSHmAYXCNtOXvbu/vj61/Y
+         A3SESbsKVrGSMbckj1cPvT0e+OmhReQcU9hSrQRHu68hVdoZlAr/jVV4DeQD9HvgzI
+         XkMkIQ/luLw8TUATz4TMDohiG9TAyLNEmqXwBglbLWL1elakCiCrXD51RihjRiGBvm
+         H78CZo29Ak/VEHRgBLlCFw3UIWKapuSbJComxlsffkYIrBAnDLrbhAOoIGOfM3WPDt
+         RShODiGdbLqEIUq44JzXYKtdYxKLrqHcB/nrAhERmYRJQo4noMsnmoQ4kN6jT+ez7t
+         TrroPrZFKim4g==
+Date:   Thu, 28 Sep 2023 20:59:59 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>,
-        Jim Reinhart <jimr@tekvox.com>,
-        James Autry <jautry@tekvox.com>,
-        Matthew Maron <matthewm@tekvox.com>
-Subject: [PATCH v2] net: phy: broadcom: add support for BCM5221 phy
-Date:   Thu, 28 Sep 2023 19:57:18 +0200
-Message-Id: <20230928175718.1729663-1-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.34.1
+        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net/mlx5: fix calling mlx5_cmd_init() before DMA
+ mask is set
+Message-ID: <20230928175959.GU1642130@unreal>
+References: <20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfEtVQI+8AswZVM7FBMIiT663AomCA+jyxGTyH5WEGFNtNARxp0taB4lgjfgtjVhvS82aDRmQ+OwDTTmNoYOcavwqKM92r54ONmRc0u51dEtbkOHe/w8P
- UmnLedEw2stXHFH9ZPexR/FCvfXKn5tBj2Mtek2gdictfnHqmutQIyMWxwsa8GnDNQ4JmhXnKXpa0YFfrvyQLxP+46aHjnfxi6jroTyEl03CtESf+Y6yzT3W
- 8TRvDsrq1P2ZfwP7o3IoZyoxQ1RQd7q8drdoQyRpMFzb79RqM+N6N3/AQj045ioyTIfbHqkCWsCxiBAwfyR4+iI90VCMeVZR/ec2GvQPDoKwn+XEajsnYCXr
- geRoaFEvrRxf0/IHMlUGy8PqZjlLjG4j+9OfBPayodxi6A/r5Wd+Di86N6lBQ1UfUMnzbII4opO8G03cGvxQ2ysk9ISnOzTaBjny9bsLOVCpK8yphNXDck2w
- /Wk2Asbn9/h1+w9qwg74VQI+Bv0O7rpwsNJCoM8aF4ncjU+uZqjZv8v4Z90h/d06GaoNHACMFY9oWho67Vmu9KrZbmlrbEMZYLcAlXZ0pCk2Y8cUH+8mqc7s
- Ur/Ezz5IalO2uPsnkZi9NXI+CIXTBvBlCVEsaVchEfDjMz+aDkDKG0zau3nkKhIt7nPATqIVVSNiRmWtzjhqUnTyUr9YYGPpb2qQLDgSqL7PBU+i0Q3kxH7r
- efNxEdBxbX0=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+On Thu, Sep 28, 2023 at 03:55:47PM +0200, Niklas Schnelle wrote:
+> Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
+> reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
+> called in probe_one() before mlx5_pci_init(). This is a problem because
+> mlx5_pci_init() is where the DMA and coherent mask is set but
+> mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
+> allocation is done during probe before the correct mask is set. This
+> causes probe to fail initialization of the cmdif SW structs on s390x
+> after that is converted to the common dma-iommu code. This is because on
+> s390x DMA addresses below 4 GiB are reserved on current machines and
+> unlike the old s390x specific DMA API implementation common code
+> enforces DMA masks. Fix this by switching the order of the
+> mlx5_mdev_init() and mlx5_pci_init() in probe_one().
+> 
+> Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com/
+> Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload routines")
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+> Note: I ran into this while testing the linked series for converting
+> s390x to use dma-iommu. The existing s390x specific DMA API
+> implementation doesn't respect DMA masks and is thus not affected
+> despite of course also only supporting DMA addresses above 4 GiB.
+> That said ConnectX VFs are the primary users of native PCI on s390x and
+> we'd really like to get the DMA API conversion into v6.7 so this has
+> high priority for us.
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/main.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> index 15561965d2af..06744dedd928 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> @@ -1908,10 +1908,6 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>  		goto adev_init_err;
+>  	}
+>  
+> -	err = mlx5_mdev_init(dev, prof_sel);
+> -	if (err)
+> -		goto mdev_init_err;
+> -
+>  	err = mlx5_pci_init(dev, pdev, id);
+>  	if (err) {
+>  		mlx5_core_err(dev, "mlx5_pci_init failed with error code %d\n",
+> @@ -1919,6 +1915,10 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>  		goto pci_init_err;
+>  	}
+>  
+> +	err = mlx5_mdev_init(dev, prof_sel);
+> +	if (err)
+> +		goto mdev_init_err;
+> +
 
-This patch adds the BCM5221 PHY support by reusing brcm_fet_*()
-callbacks and adding quirks for BCM5221 when needed.
+I had something different in mind as I'm worry that call to pci_enable_device()
+in mlx5_pci_init() before we finished FW command interface initialization is a bit
+premature.
 
-Cc: Jim Reinhart <jimr@tekvox.com>
-Cc: James Autry <jautry@tekvox.com>
-Cc: Matthew Maron <matthewm@tekvox.com>
-Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
----
-V1->V2:
-Suggested by Andrew Lunn:
-* handle mdix_ctrl adding bcm5221_config_aneg() and bcm5221_read_status()
-* reorder PHY_ID_BCM5241 in broadcom_tbl[]
-Suggested by Russell King:
-* add comment on phy_read(..., MII_BRCM_FET_INTREG)
-* lock mdio bus when in shadow mode
-Suggested by Florian Fainelli:
-* reuse brcm_fet_*() callbacks checking for phy_id == PHY_ID_BCM5221
----
- drivers/net/phy/broadcom.c | 155 +++++++++++++++++++++++++++++--------
- include/linux/brcmphy.h    |  10 +++
- 2 files changed, 132 insertions(+), 33 deletions(-)
+What about the following patch?
 
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 6f5e8be73d9a..4b71207037d0 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -648,16 +648,21 @@ static int brcm_fet_config_init(struct phy_device *phydev)
- 	if (err < 0 && err != -EIO)
- 		return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 15561965d2af..31f1d701116a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -905,12 +905,6 @@ static int mlx5_pci_init(struct mlx5_core_dev *dev, struct pci_dev *pdev,
  
-+	/* Read to clear status bits */
- 	reg = phy_read(phydev, MII_BRCM_FET_INTREG);
- 	if (reg < 0)
- 		return reg;
+        pci_set_master(pdev);
  
- 	/* Unmask events we are interested in and mask interrupts globally. */
--	reg = MII_BRCM_FET_IR_DUPLEX_EN |
--	      MII_BRCM_FET_IR_SPEED_EN |
--	      MII_BRCM_FET_IR_LINK_EN |
--	      MII_BRCM_FET_IR_ENABLE |
--	      MII_BRCM_FET_IR_MASK;
-+	if (phydev->phy_id == PHY_ID_BCM5221)
-+		reg = MII_BRCM_FET_IR_ENABLE |
-+		MII_BRCM_FET_IR_MASK;
-+	else
-+		reg = MII_BRCM_FET_IR_DUPLEX_EN |
-+		MII_BRCM_FET_IR_SPEED_EN |
-+		MII_BRCM_FET_IR_LINK_EN |
-+		MII_BRCM_FET_IR_ENABLE |
-+		MII_BRCM_FET_IR_MASK;
+-       err = set_dma_caps(pdev);
+-       if (err) {
+-               mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
+-               goto err_clr_master;
+-       }
+-
+        if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
+            pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
+            pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+@@ -1908,9 +1902,15 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+                goto adev_init_err;
+        }
  
- 	err = phy_write(phydev, MII_BRCM_FET_INTREG, reg);
- 	if (err < 0)
-@@ -670,42 +675,50 @@ static int brcm_fet_config_init(struct phy_device *phydev)
- 
- 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
- 
--	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
--	if (err < 0)
--		return err;
-+	phy_lock_mdio_bus(phydev);
- 
--	/* Set the LED mode */
--	reg = phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
--	if (reg < 0) {
--		err = reg;
--		goto done;
-+	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-+	if (err < 0) {
-+		phy_unlock_mdio_bus(phydev);
-+		return err;
- 	}
- 
--	reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
--	reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
-+	if (phydev->phy_id != PHY_ID_BCM5221) {
-+		/* Set the LED mode */
-+		reg = __phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
-+		if (reg < 0) {
-+			err = reg;
-+			goto done;
-+		}
- 
--	err = phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
--	if (err < 0)
--		goto done;
-+		reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
-+		reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
- 
--	/* Enable auto MDIX */
--	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
--			   MII_BRCM_FET_SHDW_MC_FAME);
--	if (err < 0)
--		goto done;
-+		err = __phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
-+		if (err < 0)
-+			goto done;
++       err = set_dma_caps(pdev);
++       if (err) {
++               mlx5_core_err(dev, "Failed setting DMA capabilities mask, aborting\n");
++               goto dma_cap_err;
++       }
 +
-+		/* Enable auto MDIX */
-+		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
-+				     MII_BRCM_FET_SHDW_MC_FAME);
-+		if (err < 0)
-+			goto done;
-+	}
+        err = mlx5_mdev_init(dev, prof_sel);
+        if (err)
+-               goto mdev_init_err;
++               goto dma_cap_err;
  
- 	if (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE) {
- 		/* Enable auto power down */
--		err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
--				   MII_BRCM_FET_SHDW_AS2_APDE);
-+		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
-+				     MII_BRCM_FET_SHDW_AS2_APDE);
- 	}
- 
- done:
- 	/* Disable shadow register access */
--	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
-+	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
- 	if (!err)
- 		err = err2;
- 
-+	phy_unlock_mdio_bus(phydev);
-+
- 	return err;
- }
- 
-@@ -784,23 +797,86 @@ static int brcm_fet_suspend(struct phy_device *phydev)
- 
- 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
- 
--	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
--	if (err < 0)
-+	phy_lock_mdio_bus(phydev);
-+
-+	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-+	if (err < 0) {
-+		phy_unlock_mdio_bus(phydev);
- 		return err;
-+	}
-+
-+	if (phydev->phy_id == PHY_ID_BCM5221)
-+		/* Force Low Power Mode with clock enabled */
-+		reg = BCM5221_SHDW_AM4_EN_CLK_LPM | BCM5221_SHDW_AM4_FORCE_LPM;
-+	else
-+		/* Set standby mode */
-+		reg = MII_BRCM_FET_SHDW_AM4_STANDBY;
- 
--	/* Set standby mode */
--	err = phy_modify(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
--			 MII_BRCM_FET_SHDW_AM4_STANDBY,
--			 MII_BRCM_FET_SHDW_AM4_STANDBY);
-+	err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
- 
- 	/* Disable shadow register access */
--	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
-+	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
- 	if (!err)
- 		err = err2;
- 
-+	phy_unlock_mdio_bus(phydev);
-+
- 	return err;
- }
- 
-+static int bcm5221_config_aneg(struct phy_device *phydev)
-+{
-+	int ret, val;
-+
-+	ret = genphy_config_aneg(phydev);
-+	if (ret)
-+		return ret;
-+
-+	switch (phydev->mdix_ctrl) {
-+	case ETH_TP_MDI:
-+		val = BCM5221_AEGSR_MDIX_DIS;
-+		break;
-+	case ETH_TP_MDI_X:
-+		val = BCM5221_AEGSR_MDIX_DIS | BCM5221_AEGSR_MDIX_MAN_SWAP;
-+		break;
-+	case ETH_TP_MDI_AUTO:
-+		val = 0;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return phy_modify(phydev, BCM5221_AEGSR, BCM5221_AEGSR_MDIX_MAN_SWAP |
-+						 BCM5221_AEGSR_MDIX_DIS,
-+						 val);
-+}
-+
-+static int bcm5221_read_status(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* Read MDIX status */
-+	ret = phy_read(phydev, BCM5221_AEGSR);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret & BCM5221_AEGSR_MDIX_DIS) {
-+		if (ret & BCM5221_AEGSR_MDIX_MAN_SWAP)
-+			phydev->mdix_ctrl = ETH_TP_MDI_X;
-+		else
-+			phydev->mdix_ctrl = ETH_TP_MDI;
-+	} else {
-+		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
-+	}
-+
-+	if (ret & BCM5221_AEGSR_MDIX_STATUS)
-+		phydev->mdix = ETH_TP_MDI_X;
-+	else
-+		phydev->mdix = ETH_TP_MDI;
-+
-+	return genphy_read_status(phydev);
-+}
-+
- static int bcm54xx_phy_probe(struct phy_device *phydev)
- {
- 	struct bcm54xx_phy_priv *priv;
-@@ -1082,6 +1158,18 @@ static struct phy_driver broadcom_drivers[] = {
- 	.handle_interrupt = brcm_fet_handle_interrupt,
- 	.suspend	= brcm_fet_suspend,
- 	.resume		= brcm_fet_config_init,
-+}, {
-+	.phy_id		= PHY_ID_BCM5221,
-+	.phy_id_mask	= 0xfffffff0,
-+	.name		= "Broadcom BCM5221",
-+	/* PHY_BASIC_FEATURES */
-+	.config_init	= brcm_fet_config_init,
-+	.config_intr	= brcm_fet_config_intr,
-+	.handle_interrupt = brcm_fet_handle_interrupt,
-+	.suspend	= brcm_fet_suspend,
-+	.resume		= brcm_fet_config_init,
-+	.config_aneg	= bcm5221_config_aneg,
-+	.read_status	= bcm5221_read_status,
- }, {
- 	.phy_id		= PHY_ID_BCM5395,
- 	.phy_id_mask	= 0xfffffff0,
-@@ -1154,6 +1242,7 @@ static struct mdio_device_id __maybe_unused broadcom_tbl[] = {
- 	{ PHY_ID_BCM50610M, 0xfffffff0 },
- 	{ PHY_ID_BCM57780, 0xfffffff0 },
- 	{ PHY_ID_BCMAC131, 0xfffffff0 },
-+	{ PHY_ID_BCM5221, 0xfffffff0 },
- 	{ PHY_ID_BCM5241, 0xfffffff0 },
- 	{ PHY_ID_BCM5395, 0xfffffff0 },
- 	{ PHY_ID_BCM53125, 0xfffffff0 },
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index 9e77165f3ef6..ee1c8160e4d5 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -12,6 +12,7 @@
- #define PHY_ID_BCM50610			0x0143bd60
- #define PHY_ID_BCM50610M		0x0143bd70
- #define PHY_ID_BCM5241			0x0143bc30
-+#define PHY_ID_BCM5221			0x004061e0
- #define PHY_ID_BCMAC131			0x0143bc70
- #define PHY_ID_BCM5481			0x0143bca0
- #define PHY_ID_BCM5395			0x0143bcf0
-@@ -272,6 +273,15 @@
- #define BCM54612E_EXP_SPARE0		(MII_BCM54XX_EXP_SEL_ETC + 0x34)
- #define BCM54612E_LED4_CLK125OUT_EN	(1 << 1)
- 
-+/* BCM5221 Registers */
-+#define BCM5221_AEGSR			0x1C
-+#define BCM5221_AEGSR_MDIX_STATUS	BIT(13)
-+#define BCM5221_AEGSR_MDIX_MAN_SWAP	BIT(12)
-+#define BCM5221_AEGSR_MDIX_DIS		BIT(11)
-+
-+#define BCM5221_SHDW_AM4_EN_CLK_LPM	BIT(2)
-+#define BCM5221_SHDW_AM4_FORCE_LPM	BIT(1)
-+
- /*****************************************************************************/
- /* Fast Ethernet Transceiver definitions. */
- /*****************************************************************************/
--- 
-2.34.1
+        err = mlx5_pci_init(dev, pdev, id);
+        if (err) {
+@@ -1942,7 +1942,7 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+        mlx5_pci_close(dev);
+ pci_init_err:
+        mlx5_mdev_uninit(dev);
+-mdev_init_err:
++dma_cap_err:
+        mlx5_adev_idx_free(dev->priv.adev_idx);
+ adev_init_err:
+        mlx5_devlink_free(devlink);
 
+Thanks
