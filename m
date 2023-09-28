@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7187B1B50
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B997B1B53
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjI1Lmg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 07:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S232048AbjI1Lml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjI1Lme (ORCPT
+        with ESMTP id S231952AbjI1Lmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:42:34 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9087CBF;
-        Thu, 28 Sep 2023 04:42:32 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a22eaafd72so3500917b3.3;
-        Thu, 28 Sep 2023 04:42:32 -0700 (PDT)
+        Thu, 28 Sep 2023 07:42:36 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2418B139
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:34 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3af59142cfaso6902521b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695901351; x=1696506151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P126arM5ynAe8A5WRmgE6i+j3G1VPUvbv1KSB/lujvw=;
-        b=U9Tsw9I+/hJAHiwX5rJP7tfL8mP4bEdpdd/wK8AWvfjcxWcLnXbndgCJTiVbOU9EfH
-         kNTJS3vHimopWW/B30GuvIgotb3+ELtw0UE1C4tBz54awoLkAWHNJGPLJyMraA7Z2lsF
-         f9LpafrzNOGDYYTSa+3mv0yzRg3Ugl4gopglFU4E7dJCiA3OQFkv23vcKQVFqUWHbzeo
-         iQcdvP1nNmN9Q8ab4IFHKnGiwFfn3cSB7D3MJ3LxPTzASiNPOUOCqQ+FPCXWAhJoIRUn
-         yiYU5ubVty5uGA25y0WGISS5h5SALMIC4KLbt23GXwEEukmH/VKilB6WDrtQ/2Woyzm/
-         E4kQ==
-X-Gm-Message-State: AOJu0YyItzA+XP94Zm7Ly2eZaqfOBvJjTdTSca98gqUdMjXShoatfqg8
-        kKKzGZZDFKGneIpHA2YfmD9RA1wPpLzklQ==
-X-Google-Smtp-Source: AGHT+IHNbZvCK0c0fmSWnYmtO+xansmq/ubt2bkNf+ZT7ysUMByM/p9n3U4/t+JPdM2X8RogS7QJlQ==
-X-Received: by 2002:a81:a0d2:0:b0:57a:9b2c:51f1 with SMTP id x201-20020a81a0d2000000b0057a9b2c51f1mr893964ywg.1.1695901351437;
-        Thu, 28 Sep 2023 04:42:31 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id m131-20020a817189000000b005a1f7231cf5sm1236375ywc.142.2023.09.28.04.42.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 04:42:30 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d8673a90f56so11098073276.0;
-        Thu, 28 Sep 2023 04:42:30 -0700 (PDT)
-X-Received: by 2002:a25:e00a:0:b0:d86:357:e314 with SMTP id
- x10-20020a25e00a000000b00d860357e314mr805399ybg.47.1695901349832; Thu, 28 Sep
- 2023 04:42:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695901353; x=1696506153;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qTaDubZXEWSEPslgclOxwc7+Ad3m/lBvUqQUG3lQH1U=;
+        b=E6w2E118UHs1P6NnbD5upuYBQj32jJ7sP+1TC1anoHRG/89MCyBg5EYBYd58NSD3td
+         V970l4WWUOy4Gs9jE5xsu7CRBWItq9m3UooNUGaDFaOCT0ozmyh0uQ/P+gyp6p7fBYGc
+         GuI8lTvXRfFJXqVvAd3D17dfM/0raGvOrozCoe85RNpAn+/2NpcrgPFUXs85C5fdHsOy
+         4F8Pr+4xR1qNHJmBo7UPAOMbAQCh7r/k8JnhzMLii0MTfyYc9sdkud+SSA4zyVDrUZEG
+         FjwRGOHhza33tCj6L21Fjli6EsLWdDYKrY/lGfUbqqddFoBzXkdwEMPFVLHef82S7i23
+         o78A==
+X-Gm-Message-State: AOJu0Yypbjkupep8+tn6nnz51vIHi8m5TZ6rXNIro6U62HGwre6TOcxv
+        TSQwo1GZ7tPmIWXeEJACqlP8V+k5pcLZY/iSmIVVYb8+9D/Jrtw=
+X-Google-Smtp-Source: AGHT+IGzJDdL7CGRqLCO9dfIof4cK7XxRZfPS6R1Yj25M96dgd53FV7gcHWycFeFD3YcwU49Wd3DOxR7JcS43H35tFBpUrBbu5Nt
 MIME-Version: 1.0
-References: <20230928104520.24768-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230928104520.24768-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Sep 2023 13:42:15 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUCc=M0khCyipEBFF+52OvgFQD4bOw=+bo564DvQZTUKA@mail.gmail.com>
-Message-ID: <CAMuHMdUCc=M0khCyipEBFF+52OvgFQD4bOw=+bo564DvQZTUKA@mail.gmail.com>
-Subject: Re: [PATCH] clocksource/drivers/riscv: Increase the clock_event rating
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        Anup Patel <anup@brainfault.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Received: by 2002:a05:6808:3086:b0:3a7:3ced:532a with SMTP id
+ bl6-20020a056808308600b003a73ced532amr381328oib.7.1695901353486; Thu, 28 Sep
+ 2023 04:42:33 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 04:42:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bfaf33060669cd6b@google.com>
+Subject: [syzbot] Monthly wireless report (Sep 2023)
+From:   syzbot <syzbot+liste709cb91ac7b8a619720@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 12:45 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Renesas RZ/Five SoC has OSTM blocks which can be used for clock_event and
-> clocksource [0]. The clock_event rating for the OSTM is set 300 but
-> whereas the rating for riscv-timer clock_event is set to 100 due to which
-> the kernel is choosing OSTM for clock_event.
->
-> As riscv-timer is much more efficient than MMIO clock_event, increase the
-> rating to 400 so that the kernel prefers riscv-timer over the MMIO based
-> clock_event.
->
-> [0] drivers/clocksource/renesas-ostm.c
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
-> Note, Ive set the rating similar to RISC-V clocksource, on ARM architecture
-> the rating for clk_event is set to 450.
+Hello wireless maintainers/developers,
 
-Makes sense.
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+This is a 31-day syzbot report for the wireless subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/wireless
 
-Gr{oetje,eeting}s,
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 28 issues are still open and 115 have been fixed so far.
 
-                        Geert
+Some of the still happening issues:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Ref  Crashes Repro Title
+<1>  5399    Yes   WARNING in __ieee80211_beacon_get
+                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
+<2>  4322    Yes   WARNING in __cfg80211_ibss_joined (2)
+                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+<3>  3473    Yes   WARNING in ieee80211_rx_list
+                   https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
+<4>  2422    Yes   WARNING in ieee80211_link_info_change_notify (2)
+                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
+<5>  2066    No    WARNING in ieee80211_ibss_csa_beacon (2)
+                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
+<6>  870     Yes   WARNING in __rate_control_send_low
+                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
+<7>  816     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
+                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
+<8>  693     Yes   WARNING in ieee80211_start_next_roc
+                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
+<9>  475     No    INFO: task hung in ath9k_hif_usb_firmware_cb (2)
+                   https://syzkaller.appspot.com/bug?extid=d5635158fb0281b27bff
+<10> 55      Yes   WARNING in ieee80211_free_ack_frame (2)
+                   https://syzkaller.appspot.com/bug?extid=ac648b0525be1feba506
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
