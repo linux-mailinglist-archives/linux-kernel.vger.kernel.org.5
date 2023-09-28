@@ -2,119 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3867D7B1571
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFF17B1576
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjI1H4e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 03:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        id S230254AbjI1H5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjI1H4d (ORCPT
+        with ESMTP id S229539AbjI1H53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:56:33 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDCE92
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:31 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f6e6b206fso105937477b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695887790; x=1696492590;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=///6BZDQGo/3wRvsKomS4kW8ql3SPch+OsrNejAumIA=;
-        b=GZVKuLLX/KflbPLdVKRDA5rN0lCj3vzpidGR4YhBSCjSF2I6X4oeXZzFTR4Tkz3Uf3
-         PJYfTNspdOQL8/aHqa9FQ9krfawn+zcPmR6MUMSOD3qceaImtYW+H5ZhjXrfzmfXKx3U
-         rYRG3egzECGRW5w4aOk2hCAq5Y1IF8HdMfVdMUZqoAo+ipRFU81XB+UBZHgZGYATUsIb
-         L5IPXtteGZqc3z/WWs0T8nAhlAHnjfzIOypaQTn8HOr0DJpdnwXqumVkgsJSajHhR1iS
-         kPmCkm3kQ9FXAiEMhlutj+hK2YU3dD+aOVAh4ykZsCl8WE3UbZ4zh4u5rgAbVu3ChPFH
-         Yvfw==
-X-Gm-Message-State: AOJu0Yyr7RrfS0QJ3qBH17T4R3UmONfLWq+6vnOj8B4YWb0Y0vyepK6q
-        /bOU/YKtSRhXfLwaBbvc9pn7YZy25RJXpw==
-X-Google-Smtp-Source: AGHT+IGK73Px8u7XEgpOJnaf4ntQxP5oTkr+DjzDxg2Iecemo9cICt8XW5bLbublL670CRAI64D1VQ==
-X-Received: by 2002:a81:5286:0:b0:59f:519e:3e98 with SMTP id g128-20020a815286000000b0059f519e3e98mr537972ywb.7.1695887790686;
-        Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id h67-20020a0dc546000000b00583b144fe51sm4380435ywd.118.2023.09.28.00.56.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59f6041395dso117361477b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:56:30 -0700 (PDT)
-X-Received: by 2002:a0d:ebd6:0:b0:592:9035:8356 with SMTP id
- u205-20020a0debd6000000b0059290358356mr542647ywe.26.1695887790180; Thu, 28
- Sep 2023 00:56:30 -0700 (PDT)
+        Thu, 28 Sep 2023 03:57:29 -0400
+Received: from mx06lb.world4you.com (mx06lb.world4you.com [81.19.149.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC50495;
+        Thu, 28 Sep 2023 00:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sw-optimization.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:References:Cc:To:Subject:From:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DYJJ/f0DO0/HVh4TKtQmLwk9LeGhEBV9geBo5ZsEPos=; b=kJwk5jdgnw0aONE3O2JP7Xa6o8
+        368m9vVnBvjhbMbeRLJbj7oFXvyGxH1muv6shFLiN9RNfkz05Zea8BO5dWIDyWcI2A4LU+SpBKBaK
+        qaJKLogcmuDRELYNN8sdnWyPGXoSKto2vB0bXo8421s7TMhO9sKXm7DN/tOUt5qw0kqI=;
+Received: from [195.192.57.194] (helo=[192.168.0.20])
+        by mx06lb.world4you.com with esmtpa (Exim 4.96)
+        (envelope-from <eas@sw-optimization.com>)
+        id 1qlltl-00021o-1q;
+        Thu, 28 Sep 2023 09:57:25 +0200
+Message-ID: <5e2404d4-f36c-7718-c0fc-d226aefdf2f6@sw-optimization.com>
+Date:   Thu, 28 Sep 2023 09:57:23 +0200
 MIME-Version: 1.0
-References: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
- <6c02765f89eb4455806b895a6e0cb763@realtek.com> <ZN3CQ1Y3yC9p/01Y@matsya>
-In-Reply-To: <ZN3CQ1Y3yC9p/01Y@matsya>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Sep 2023 09:56:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWor=u72E_ZfERyH3dUw3r0dsd43VsVTkx2w+DiJvyLGA@mail.gmail.com>
-Message-ID: <CAMuHMdWor=u72E_ZfERyH3dUw3r0dsd43VsVTkx2w+DiJvyLGA@mail.gmail.com>
-Subject: Re: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Eric Schwarz <eas@sw-optimization.com>
+Subject: Re: [PATCH] dmaengine: altera-msgdma: fix descriptors freeing logic
+To:     Olivier Dautricourt <olivierdautricourt@gmail.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Stefan Roese <sr@denx.de>
+References: <20230920200636.32870-3-olivierdautricourt@gmail.com>
+ <22402987-305b-024b-044e-53db17037d90@sw-optimization.com>
+ <ZQyWsvcQCJgmG5aO@freebase>
+ <8d18106d-444e-9346-26cc-3767540df5d8@sw-optimization.com>
+ <ZQ3B9NWVmLvaVhJX@freebase>
+Content-Language: de-DE
+In-Reply-To: <ZQ3B9NWVmLvaVhJX@freebase>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hello Olivier,
 
-On Thu, Aug 17, 2023 at 8:46 AM Vinod Koul <vkoul@kernel.org> wrote:
-> On 17-08-23, 02:06, Stanley Chang[昌育德] wrote:
-> > > diff --git a/drivers/phy/realtek/Kconfig b/drivers/phy/realtek/Kconfig index
-> > > 650e20ed69af41d2..75ac7e7c31aec6f2 100644
-> > > --- a/drivers/phy/realtek/Kconfig
-> > > +++ b/drivers/phy/realtek/Kconfig
-> > > @@ -2,6 +2,9 @@
-> > >  #
-> > >  # Phy drivers for Realtek platforms
-> > >  #
-> > > +
-> > > +if ARCH_REALTEK || COMPILE_TEST
-> > > +
-> > >  config PHY_RTK_RTD_USB2PHY
-> > >         tristate "Realtek RTD USB2 PHY Transceiver Driver"
-> > >         depends on USB_SUPPORT
-> > > @@ -25,3 +28,5 @@ config PHY_RTK_RTD_USB3PHY
-> > >           The DHC (digital home center) RTD series SoCs used the Synopsys
-> > >           DWC3 USB IP. This driver will do the PHY initialization
-> > >           of the parameters.
-> > > +
-> > > +endif # ARCH_REALTEK || COMPILE_TEST
-> >
-> > Thanks for your patch.
-> > Why not use "depends on"?
-> > depends on ARCH_MEDIATEK || COMPILE_TEST
->
-> I think this patch is better, this way all future rtek drivers will be
-> fixed as well, no need to add for each driver
+Am 22.09.2023 um 18:33 schrieb Olivier Dautricourt:
+> Hi Eric,
+> 
+> On Fri, Sep 22, 2023 at 09:49:59AM +0200, Eric Schwarz wrote:
+>> Hello Olivier,
+>>
+>>>> Am 20.09.2023 um 21:58 schrieb Olivier Dautricourt:
+>>>>> Sparse complains because we first take the lock in msgdma_tasklet -> move
+>>>>> locking to msgdma_chan_desc_cleanup.
+>>>>> In consequence, move calling of msgdma_chan_desc_cleanup outside of the
+>>>>> critical section of function msgdma_tasklet.
+>>>>>
+>>>>> Use spin_unlock_irqsave/restore instead of just spinlock/unlock to keep
+>>>>> state of irqs while executing the callbacks.
+>>>>
+>>>> What about the locking in the IRQ handler msgdma_irq_handler() itself? -
+>>>> Shouldn't spin_unlock_irqsave/restore() be used there as well instead of
+>>>> just spinlock/unlock()?
+>>>
+>>> IMO no:
+>>> It is covered by [1]("Locking Between Hard IRQ and Softirqs/Tasklets")
+>>> The irq handler cannot be preempted by the tasklet, so the
+>>> spin_lock/unlock version is ok. However the tasklet could be interrupted
+>>> by the Hard IRQ hence the disabling of irqs with save/restore when
+>>> entering critical section.
+>>>
+>>> It should not be needed to keep interrupts locally disabled while invoking
+>>> callbacks, will add this to the commit description.
+>>>
+>>> [1] https://www.kernel.org/doc/Documentation/kernel-hacking/locking.rst
+>>
+>> Thanks for the link. I have read differently here [2] w/ special emphasis on
+>> "Lesson 3: spinlocks revisited.".
+>>
+>> [2] https://www.kernel.org/doc/Documentation/locking/spinlocks.txt
+>>
+> 
+> This chapter [2] says that our code must use irq versions of spin_lock
+> because our handler does indeed play with the lock. However this
+> requirement does not apply to the irq handler itself, as we know that the
+> interrupt line is disabled during the execution of the handler (and our
+> handler is not shared with another irq).
 
-Is there anything still blocking this patch?
-Do you want me to resend?
-Thanks!
+"... as we know that the interrupt line is disabled during the execution 
+of the handler (and our handler is not shared with another irq)."
 
-Gr{oetje,eeting}s,
+That was the point I wanted to be sure about. So if the IRQ handler 
+cannot be called twice ensured by architecture neither on single or 
+multi CPU systems (SMP or others) I am fine.
+Thanks for your response on that. Appreciated.
 
-                        Geert
+Because you take the effort to set up hardware and environment again you 
+may also test following fixes/improvements from zynqmp driver which 
+could then be merged into altera-msgdma driver. Please check yourself:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+f2b816a1dfb8 ("dmaengine: zynqmp_dma: Add device_synchronize support")
+# Caught by your patchset
+#9558cf4ad07e ("dmaengine: zynqmp_dma: fix lockdep warning in tasklet")
+# Caught by your patchset
+#16ed0ef3e931 ("dmaengine: zynqmp_dma: cleanup after completing all 
+descriptors")
+# Caught by your patchset - For the altera-msgdma driver it is a real 
+fix not an optimization.
+#48594dbf793a ("dmaengine: zynqmp_dma: Use list_move_tail instead of 
+list_del/list_add_tail")
+5ba080aada5e ("dmaengine: zynqmp_dma: Fix race condition in the probe")
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Note: If the sequence is applied in reverse order the log would be 
+comparable to zynqmp driver's log.
+
+IMHO your patchset could/should be extended by two more patches and 
+split into small junks as mentioned. Then history would stay intact to 
+be compared to zynqmp driver.
+
+Note: Take care about "Developer’s Certificate of Origin 1.1". IMHO 
+"Signed-off-by" tags from the other patches might/must be copied at 
+least for most of the patches then, which would make it easier to get it 
+into mainline.
+
+Btw, some cosmetic changes could be made in the mainlined driver:
+
+30s/implements/Implements/
+31s/data/Data/
+32s/data/Data/
+33s/the/The/
+39s/data/Data/
+40s/data/Data/
+41s/characteristics/Characteristics/
+109s/response/Response/
+154s/implements/Implements/
+154s/sw\ /SW\ /
+155s/support/Support/
+155s/api/API/
+156s/assosiated/Associated/
+157s/node\ /Node\ /
+158s/transmit/Transmit/
+259s/Hw/HW/
+291s/Hw/HW/
+322s/prepare/Prepare/
+327s/transfer/Transfer/
+378s/prepare/Prepare/
+384s/transfer/Transfer/
+385s/transfer/Transfer/
+502s/its/it\'s/
+514s/oder/order/
+530s/copy\ /Copy\ /
+680s/sSGDMA/mSGDMA/
+723s/Interrupt/interrupt/
+752s/\(\)//
+921s/\(\)//
+
+... and another patch, if that is taken into account.
+
+Cheers
+Eric
