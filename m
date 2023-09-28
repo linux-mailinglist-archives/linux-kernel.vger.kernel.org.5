@@ -2,135 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21F87B1164
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0BE7B1166
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbjI1EEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
+        id S230131AbjI1EGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1EEd (ORCPT
+        with ESMTP id S229453AbjI1EGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:04:33 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 568E110A;
-        Wed, 27 Sep 2023 21:04:30 -0700 (PDT)
-Received: from loongson.cn (unknown [10.40.46.158])
-        by gateway (Coremail) with SMTP id _____8Cx77tM+xRljawtAA--.28291S3;
-        Thu, 28 Sep 2023 12:04:28 +0800 (CST)
-Received: from [192.168.124.126] (unknown [10.40.46.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxvi9K+xRlXwEVAA--.43483S3;
-        Thu, 28 Sep 2023 12:04:28 +0800 (CST)
-Subject: Re: [PATCH v2 3/4] KVM: selftests: Add ucall test support for
- LoongArch
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
-References: <20230807065137.3408970-1-zhaotianrui@loongson.cn>
- <20230807065137.3408970-4-zhaotianrui@loongson.cn>
- <ZRSWlqS3zQBSLFVK@google.com>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <8ac800d7-144d-22f4-fe2c-206aecc9a5dd@loongson.cn>
-Date:   Thu, 28 Sep 2023 12:04:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 28 Sep 2023 00:06:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9714510A
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695873922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZrLjkHF0/HwoOXQ2UetFuy9QaHx8cXgataUvrO0ObDQ=;
+        b=SRIkcUZ3sLmLgGjlfkYqbTTGqGBq6ub9qudt/0+6Rg5eN4kZwIfU+U+x4ODyO/BTPmXCMt
+        jVBgMVTA/Z98fR3pfXqwy1fqiSHemjabro7rDxbxsHCVXXxGuNkeZ2cHx5MWFcYF/glOjS
+        FKCV1gHo2h0ZNUgSJTnpZ28zz031+gU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-657-T1n3Zf0xOJ-gjUrloG85LQ-1; Thu, 28 Sep 2023 00:05:17 -0400
+X-MC-Unique: T1n3Zf0xOJ-gjUrloG85LQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F85E85A5BD;
+        Thu, 28 Sep 2023 04:05:17 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E6A03C15BB8;
+        Thu, 28 Sep 2023 04:05:10 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 12:05:05 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linan666@huaweicloud.com
+Cc:     josef@toxicpanda.com, axboe@kernel.dk, linux-block@vger.kernel.org,
+        nbd@other.debian.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com, ming.lei@redhat.com
+Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
+Message-ID: <ZRT7cVFcE6QMHfie@fedora>
+References: <20230911023308.3467802-1-linan666@huaweicloud.com>
 MIME-Version: 1.0
-In-Reply-To: <ZRSWlqS3zQBSLFVK@google.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf8Dxvi9K+xRlXwEVAA--.43483S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxurW7Kw4Uur43uF1ktF4UZFc_yoW5Jw4kpa
-        4kC3W5Kr4rKry7AasxXw1vq3WSyrZ7KF4rZr1ayryF9wsFyr1fAr1fKF1jkFy5ua4vgr1k
-        ZFn2gwnIkF1qk3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jOa93UUU
-        UU=
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911023308.3467802-1-linan666@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 10:33:08AM +0800, linan666@huaweicloud.com wrote:
+> From: Li Nan <linan122@huawei.com>
+> 
+> If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
+> krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
+> may occurs.
+> 
+>   T1
+>   nbd_ioctl
+>    __nbd_ioctl
+>     nbd_add_socket
+>      blk_mq_freeze_queue
+> 				T2
+>   				recv_work
+>   				 nbd_read_reply
+>   				  sock_xmit
+>      krealloc config->socks
+> 				   def config->socks
+> 
+> Pass nbd_sock to nbd_read_reply(). And introduce a new function
+> sock_xmit_recv(), which differs from sock_xmit only in the way it get
+> socket.
+> 
 
-ÔÚ 2023/9/28 ÉÏÎç4:54, Sean Christopherson Ð´µÀ:
-> On Mon, Aug 07, 2023, Tianrui Zhao wrote:
->> Add ucall test support for LoongArch. A ucall is a "hypercall to
->> userspace".
-> Nit, can you explain why LoongArch uses MMIO to trigger ucall, and what alternatives
-> were considred (if any)?  The main reason for the ask is because we've tossed
-> around the idea of converting all architectures (except s390) to MMIO-based ucall
-> in order to reduce the number of "flavors" of ucall we have to worry about it.
-> If MMIO is the only reasonable choice for LoongArch, that's another reason to
-> double down on MMIO as the primary choice for ucall.
-Thanks for your reminding about ucall, and our guest can also use 
-hypercall instruction to trigger ucall, so this change will not affect us.
+I am wondering why not grab queue usage counter before calling nbd_read_reply()
+for avoiding such issue, something like the following change:
 
-Thanks
-Tianrui Zhao
->
->> Based-on: <20230803022138.2736430-1-zhaotianrui@loongson.cn>
->> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->> ---
->>   .../selftests/kvm/lib/loongarch/ucall.c       | 43 +++++++++++++++++++
->>   1 file changed, 43 insertions(+)
->>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
->>
->> diff --git a/tools/testing/selftests/kvm/lib/loongarch/ucall.c b/tools/testing/selftests/kvm/lib/loongarch/ucall.c
->> new file mode 100644
->> index 000000000000..72868ddec313
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/lib/loongarch/ucall.c
->> @@ -0,0 +1,43 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * ucall support. A ucall is a "hypercall to userspace".
->> + *
->> + */
->> +#include "kvm_util.h"
->> +
->> +/*
->> + * ucall_exit_mmio_addr holds per-VM values (global data is duplicated by each
->> + * VM), it must not be accessed from host code.
->> + */
->> +static vm_vaddr_t *ucall_exit_mmio_addr;
->> +
->> +void ucall_arch_init(struct kvm_vm *vm, vm_paddr_t mmio_gpa)
->> +{
->> +	vm_vaddr_t mmio_gva = vm_vaddr_unused_gap(vm, vm->page_size, KVM_UTIL_MIN_VADDR);
->> +
->> +	virt_map(vm, mmio_gva, mmio_gpa, 1);
->> +
->> +	vm->ucall_mmio_addr = mmio_gpa;
->> +
->> +	write_guest_global(vm, ucall_exit_mmio_addr, (vm_vaddr_t *)mmio_gva);
->> +}
->> +
->> +void ucall_arch_do_ucall(vm_vaddr_t uc)
->> +{
->> +	WRITE_ONCE(*ucall_exit_mmio_addr, uc);
-> Another uber nit, you might want to put this in the header as a static inline to
-> avoid function calls.  I doubt it'll actually matter, but we've had enough weird,
-> hard-to-debug issues with ucall that minimizing the amount of generated code might
-> save some future pain.
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index df1cd0f718b8..09215b605b12 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -837,9 +837,6 @@ static void recv_work(struct work_struct *work)
+ 	while (1) {
+ 		struct nbd_reply reply;
+ 
+-		if (nbd_read_reply(nbd, args->index, &reply))
+-			break;
+-
+ 		/*
+ 		 * Grab .q_usage_counter so request pool won't go away, then no
+ 		 * request use-after-free is possible during nbd_handle_reply().
+@@ -852,6 +849,9 @@ static void recv_work(struct work_struct *work)
+ 			break;
+ 		}
+ 
++		if (nbd_read_reply(nbd, args->index, &reply))
++			break;
++
+ 		cmd = nbd_handle_reply(nbd, args->index, &reply);
+ 		if (IS_ERR(cmd)) {
+ 			percpu_ref_put(&q->q_usage_counter);
+
+Thanks,
+Ming
 
