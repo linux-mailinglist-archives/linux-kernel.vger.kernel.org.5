@@ -2,231 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF667B17F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC747B17F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjI1J4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        id S230442AbjI1J41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbjI1J4B (ORCPT
+        with ESMTP id S229870AbjI1J40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:56:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D73180
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:55:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21997C433C8;
-        Thu, 28 Sep 2023 09:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695894956;
-        bh=+DSkHuvZmTOScbwhjWVKRNlUFglCaEELGK+8EY7Tp/I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NMXSWKElxk6xfVfY06vGjZCgODlqRzzee6ia03JW8afHrGDE771oQpZ3dPJehOEpH
-         OQejT+hMGdVDQRswZqSOuzET/BZgEYVLIPBjPveFZh1PxSwsS5rt8eEOsduy/vQONM
-         x5zAIKHBA6PpMj7zieC72VqN9I8Bmdlc0rEozi6tW9BN7iXDtmwU5I4xim7dAptRbX
-         OTbtbLZMwG0yy6Qx80iiHFfeobSHARVHw3MEEiC0aKYLJKwPBOdQkYY/ZUtRZK864h
-         HdJLTbIDJ9fg1yG3+e5b/vaZmxKHEnvdfnWwk0AxdKJeB6Xq41dIay69zk6PUw3M/w
-         hqTmjwuJcMDow==
-Date:   Thu, 28 Sep 2023 17:55:44 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
-        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] usb: chipidea: Add support for NPCM
-Message-ID: <20230928095544.GB2081690@nchen-desktop>
-References: <20230927095509.267029-1-tmaimon77@gmail.com>
- <20230927095509.267029-4-tmaimon77@gmail.com>
+        Thu, 28 Sep 2023 05:56:26 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABD818F;
+        Thu, 28 Sep 2023 02:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1695894983; x=1727430983;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gu41GdqWZpyGZbFQhinh3hZ49LqQBY/54l12OPAul68=;
+  b=mKWGgMvvwzF5tdBjLdxx3ukF2XebQJQhtzE0xH2/1frCD8/aukerNWKJ
+   Zwr2w+Id1ENEXOEShIONcqqMZW/DW2/tdJeu+T8hYXnHZG8OhCUQZiIwu
+   BeYJgycBfylcG4oUXaoZsxoP8mE0C96pavYiF/FT3z6eoBd0ykZAdoWkk
+   57+7cAV/WMN0D+yMeLUT2U6GMLGSp64XTizxL0OqohAjgTb/ymdJQrIzz
+   rds8C0dmvGEMrEV/g6PImcTfiibmtpag3qshQgka/E3gVdJuzk8FJRGa5
+   aPoOLmmBtMoi72dG2R0hES4wBmRHw455SIqxbP+B+khiNmrXWvPEv7Ws0
+   A==;
+X-CSE-ConnectionGUID: e6oGy2ElS9ywph8O/5SXfg==
+X-CSE-MsgGUID: Kkjy0IllSBuMt+urRxxNyQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="asc'?scan'208";a="6909572"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Sep 2023 02:56:22 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 28 Sep 2023 02:56:21 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 28 Sep 2023 02:56:18 -0700
+Date:   Thu, 28 Sep 2023 10:55:59 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Inochi Amaoto <inochiama@outlook.com>
+CC:     Conor Dooley <conor@kernel.org>, <aou@eecs.berkeley.edu>,
+        <chao.wei@sophgo.com>, <devicetree@vger.kernel.org>,
+        <emil.renner.berthing@canonical.com>, <guoren@kernel.org>,
+        <jszhang@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
+        <robh+dt@kernel.org>, <xiaoguang.xing@sophgo.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>
+Subject: Re: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT
+ timer
+Message-ID: <20230928-scorer-study-0de8672fca01@wendy>
+References: <20230928-winter-uranium-cc07496a49e3@wendy>
+ <IA1PR20MB495373BAA77A74C5EEB7BE49BBC1A@IA1PR20MB4953.namprd20.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SpJlgRxPBtmlA4kN"
 Content-Disposition: inline
-In-Reply-To: <20230927095509.267029-4-tmaimon77@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <IA1PR20MB495373BAA77A74C5EEB7BE49BBC1A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-09-27 12:55:09, Tomer Maimon wrote:
-> Add Nuvoton NPCM BMC SoCs support to USB ChipIdea driver.
-> NPCM SoC include ChipIdea IP block that used for USB device controller
-> mode.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+--SpJlgRxPBtmlA4kN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Peter Chen <peter.chen@kernel.org>
+On Thu, Sep 28, 2023 at 05:39:17PM +0800, Inochi Amaoto wrote:
+> >>>> If so, whether we should replace the "thead,c900-clint" with these s=
+eparate
+> >>>> DT to describe the thead clint?
+> >>>
+> >>> No, since that's a different device, right?
+> >>>
+> >>
+> >> Yes. It seems sophgo defined these by themselves, but the T-HEAD. Sorry
+> >> for my mistake.
+> >
+> >I'm sorry, I don't quite understand this. Do you mean that the IP is not
+> >T-Head, but rather designed by Sophgo? If the IP is made by T-Head, then
+> >I would expect to see something like
+> >
+> >compatible =3D "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
+> >
+> >in the dts.
+> >
+>=20
+> AFAIK, the clint IP is designed by T-HEAD, not Sophgo. Sophgo change this
+> IP layout to fit its weird cpu design. But in my test, the timer and mswi
+> of clint is compatible with the T-HEAD one.
 
-Peter
-> ---
->  drivers/usb/chipidea/Kconfig        |   4 +
->  drivers/usb/chipidea/Makefile       |   1 +
->  drivers/usb/chipidea/ci_hdrc_npcm.c | 117 ++++++++++++++++++++++++++++
->  3 files changed, 122 insertions(+)
->  create mode 100644 drivers/usb/chipidea/ci_hdrc_npcm.c
-> 
-> diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
-> index c815824a0b2d..bab45bc62361 100644
-> --- a/drivers/usb/chipidea/Kconfig
-> +++ b/drivers/usb/chipidea/Kconfig
-> @@ -43,6 +43,10 @@ config USB_CHIPIDEA_MSM
->  	tristate "Enable MSM hsusb glue driver" if EXPERT
->  	default USB_CHIPIDEA
->  
-> +config USB_CHIPIDEA_NPCM
-> +	tristate "Enable NPCM hsusb glue driver" if EXPERT
-> +	default USB_CHIPIDEA
-> +
->  config USB_CHIPIDEA_IMX
->  	tristate "Enable i.MX USB glue driver" if EXPERT
->  	depends on OF
-> diff --git a/drivers/usb/chipidea/Makefile b/drivers/usb/chipidea/Makefile
-> index 71afeab97e83..718cb24603dd 100644
-> --- a/drivers/usb/chipidea/Makefile
-> +++ b/drivers/usb/chipidea/Makefile
-> @@ -13,6 +13,7 @@ ci_hdrc-$(CONFIG_USB_OTG_FSM)		+= otg_fsm.o
->  
->  obj-$(CONFIG_USB_CHIPIDEA_GENERIC)	+= ci_hdrc_usb2.o
->  obj-$(CONFIG_USB_CHIPIDEA_MSM)		+= ci_hdrc_msm.o
-> +obj-$(CONFIG_USB_CHIPIDEA_NPCM)		+= ci_hdrc_npcm.o
->  obj-$(CONFIG_USB_CHIPIDEA_PCI)		+= ci_hdrc_pci.o
->  obj-$(CONFIG_USB_CHIPIDEA_IMX)		+= usbmisc_imx.o ci_hdrc_imx.o
->  obj-$(CONFIG_USB_CHIPIDEA_TEGRA)	+= ci_hdrc_tegra.o
-> diff --git a/drivers/usb/chipidea/ci_hdrc_npcm.c b/drivers/usb/chipidea/ci_hdrc_npcm.c
-> new file mode 100644
-> index 000000000000..4169855e7940
-> --- /dev/null
-> +++ b/drivers/usb/chipidea/ci_hdrc_npcm.c
-> @@ -0,0 +1,117 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2023 Nuvoton Technology corporation.
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/usb/chipidea.h>
-> +#include <linux/clk.h>
-> +#include <linux/io.h>
-> +#include <linux/reset-controller.h>
-> +#include <linux/of.h>
-> +
-> +#include "ci.h"
-> +
-> +struct npcm_udc_data {
-> +	struct platform_device	*ci;
-> +	struct clk		*core_clk;
-> +	struct ci_hdrc_platform_data pdata;
-> +};
-> +
-> +static int npcm_udc_notify_event(struct ci_hdrc *ci, unsigned event)
-> +{
-> +	struct device *dev = ci->dev->parent;
-> +
-> +	switch (event) {
-> +	case CI_HDRC_CONTROLLER_RESET_EVENT:
-> +		/* clear all mode bits */
-> +		hw_write(ci, OP_USBMODE, 0xffffffff, 0x0);
-> +		break;
-> +	default:
-> +		dev_dbg(dev, "unknown ci_hdrc event\n");
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int npcm_udc_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +	struct npcm_udc_data *ci;
-> +	struct platform_device *plat_ci;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
-> +	if (!ci)
-> +		return -ENOMEM;
-> +	platform_set_drvdata(pdev, ci);
-> +
-> +	ci->core_clk = devm_clk_get_optional(dev, NULL);
-> +	if (IS_ERR(ci->core_clk))
-> +		return PTR_ERR(ci->core_clk);
-> +
-> +	ret = clk_prepare_enable(ci->core_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable the clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ci->pdata.name = dev_name(dev);
-> +	ci->pdata.capoffset = DEF_CAPOFFSET;
-> +	ci->pdata.flags	= CI_HDRC_REQUIRES_ALIGNED_DMA |
-> +		CI_HDRC_FORCE_VBUS_ACTIVE_ALWAYS;
-> +	ci->pdata.phy_mode = USBPHY_INTERFACE_MODE_UTMI;
-> +	ci->pdata.notify_event = npcm_udc_notify_event;
-> +
-> +	plat_ci = ci_hdrc_add_device(dev, pdev->resource, pdev->num_resources,
-> +				     &ci->pdata);
-> +	if (IS_ERR(plat_ci)) {
-> +		ret = PTR_ERR(plat_ci);
-> +		dev_err(dev, "failed to register HDRC NPCM device: %d\n", ret);
-> +		goto clk_err;
-> +	}
-> +
-> +	pm_runtime_no_callbacks(dev);
-> +	pm_runtime_enable(dev);
-> +
-> +	return 0;
-> +
-> +clk_err:
-> +	clk_disable_unprepare(ci->core_clk);
-> +	return ret;
-> +}
-> +
-> +static int npcm_udc_remove(struct platform_device *pdev)
-> +{
-> +	struct npcm_udc_data *ci = platform_get_drvdata(pdev);
-> +
-> +	pm_runtime_disable(&pdev->dev);
-> +	ci_hdrc_remove_device(ci->ci);
-> +	clk_disable_unprepare(ci->core_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id npcm_udc_dt_match[] = {
-> +	{ .compatible = "nuvoton,npcm750-udc", },
-> +	{ .compatible = "nuvoton,npcm845-udc", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, npcm_udc_dt_match);
-> +
-> +static struct platform_driver npcm_udc_driver = {
-> +	.probe = npcm_udc_probe,
-> +	.remove = npcm_udc_remove,
-> +	.driver = {
-> +		.name = "npcm_udc",
-> +		.of_match_table = npcm_udc_dt_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(npcm_udc_driver);
-> +
-> +MODULE_DESCRIPTION("NPCM USB device controller driver");
-> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
-> +MODULE_ALIAS("platform:npcm-udc");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.33.0
-> 
+> So we should treat this as T-HEAD IP, not Sophgo?
 
--- 
+Yes, in the way I demonstrated above probably.
 
-Thanks,
-Peter Chen
+--SpJlgRxPBtmlA4kN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRVNrwAKCRB4tDGHoIJi
+0iMwAQC+tShSe2jUxLEY0+NJy2ORpiI7U6yahbJtQgYC6InsgAEAwWsdMan7OX7r
+7Cm33/K20+L8n6UV2uJ9Qgolx3/peA4=
+=CNXQ
+-----END PGP SIGNATURE-----
+
+--SpJlgRxPBtmlA4kN--
