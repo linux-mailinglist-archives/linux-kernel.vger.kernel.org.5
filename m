@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5077B17D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DBF7B17D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbjI1Jtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S231818AbjI1Jt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbjI1Jti (ORCPT
+        with ESMTP id S231784AbjI1Jtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:49:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD0D122;
-        Thu, 28 Sep 2023 02:49:37 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695894576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cwnfLlNEFXntJd663pl0BMeaT9w2sLT/CHutGXpU3Nw=;
-        b=2gcSdO9WC57MnMIy+RBiWphp569I6Uh8vvVSAyG2kDwkr5oRWKE/2X/kXBhpvxsualMGjX
-        oKxYedwMRWId7Z5v6pIB5mglz7JD4VETLU6q1/OFw6GVyzUbGsX+0g/TTs44yxAB8IbL0a
-        DpKq+0s/rMjgWVkq03fr0jvZjgKIIhE1kvQGTiMSG5pdMGx1u0uVAW0NmvrGsRGCwVQABg
-        IUr85WUvBe3n7/D5LZfLhaawdheJE5rRiKaDG+KAnyBhYPL86glUgr1rypUYzlsSGXVDk7
-        qlNds8fajtVMmjPFaOBGDEiLZYJK1j0uA1vE7b1hQo6TTuY4kfNWR1pK2uRcVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695894576;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cwnfLlNEFXntJd663pl0BMeaT9w2sLT/CHutGXpU3Nw=;
-        b=IN6NhWgQxgvkaS0koremfj2dASj7Hj37MXvle3TsZwgQp2E+2aNLCSOA7lCaLdhHFEW6q+
-        0YwQERzGTxkjhPCw==
-To:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] selftests: timers: Convert some more of the timers
- tests to KTAP
-In-Reply-To: <20230927-ktap-posix-timers-v1-0-399de1cbfbea@kernel.org>
-References: <20230927-ktap-posix-timers-v1-0-399de1cbfbea@kernel.org>
-Date:   Thu, 28 Sep 2023 11:49:35 +0200
-Message-ID: <8734yyfx00.ffs@tglx>
+        Thu, 28 Sep 2023 05:49:52 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F56194;
+        Thu, 28 Sep 2023 02:49:50 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40651a72807so4396205e9.1;
+        Thu, 28 Sep 2023 02:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695894589; x=1696499389; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vzfhqp3aHBxi81Dlx2RJN2eQ5TUPeumRybhgJy7nz4s=;
+        b=jTXnlIIimoLiBTes2sLrmrHf0KhC/1OFt8LSJ/SPAvL5nFWdFJghfFrqYBNs0fT4U5
+         fa21lAvpMFJ03h0mhtVulqlhHZDkoE4NRS+O+mqpNRz4Ok7mj4XGz6/a9Noirep/dErn
+         hXpeUwsvOzHTU3Hm+oWHh7zueOVo9xoMxnEPsv6XxmmnZm9fg1dHeJmGOEGD6+DZ9sqn
+         4ALVwf+/OwLcI5WK89A3xdlvQXlkb83tLs8o+fm66GfSy+wydFEV2agJUsoFjHqcf75P
+         HRmn2fz4n+ZMMbf71wj7RcI6xEf2z9pBnCtbp+ZOVD5GUkvS62GkssGco0eYLzW9Bi9O
+         Y5yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695894589; x=1696499389;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vzfhqp3aHBxi81Dlx2RJN2eQ5TUPeumRybhgJy7nz4s=;
+        b=Rh6Shdw5VkZ85PrKjlpkMs4M0+2HZcAI81w3HqqaIwZ9pdmnWVeCdskbFV/xQzviRS
+         4CdnwZA5EaenJ8o03VLSlg9LRCyn5p8cCVj901z6sZjTiYzwvnNcQtE/U64ZG9UbVEpW
+         smeLMfWKgQoZ6sNqoyjAvmYrfikl0+4KOIIgwwYQZFUQAAxwibwUIWjvOGQWq5ssKQsz
+         GjPWpDIH3HnbSuz05U8GEvxoFvLChugzxRfZxsHEW9WD4wUaDAosbqWlr8AhnSWuatEn
+         AXLv+WDJd8+tHUQPLm58h8DgL1L7BbbQ5QTnVtoCB4DLySuw+qn2/HOcAom3d1eW6azk
+         28ew==
+X-Gm-Message-State: AOJu0YwixslqEV+djnKeC5LcN2KdMN3bfFYCGjaPQHgb9x6FZix6EkDp
+        rIOoyoUJD0A5et3LaowC28PyZX7LMZlfc9w5S5/BjgrJ
+X-Google-Smtp-Source: AGHT+IFM4PTnzdKDMAZdpTUeZ4vH6tF04RpVIhp75XOkxAasu4tUiv50B6Fz/JnB2KYJW9ZqrDXJZEFQL86o44FX7II=
+X-Received: by 2002:a5d:49cd:0:b0:320:5ad:2b9c with SMTP id
+ t13-20020a5d49cd000000b0032005ad2b9cmr918984wrs.2.1695894589074; Thu, 28 Sep
+ 2023 02:49:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926102331.5095-1-dg573847474@gmail.com>
+In-Reply-To: <20230926102331.5095-1-dg573847474@gmail.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 28 Sep 2023 17:49:37 +0800
+Message-ID: <CAAo+4rURKSa5oQwGr2Pg7BjUbUSKL=SMBN0mHK9BZQTHvGb4ng@mail.gmail.com>
+Subject: Re: [PATCH] RDMA: Fix potential deadlock on &dev->rdi.pending_lock
+To:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27 2023 at 12:18, Mark Brown wrote:
+I just noticed the two callbacks already called with irq disabled,
+then the patch is unnecessary, sorry for the interruption.
 
-> KTAP is the standard output format for selftests, providing a method for
-> systems running the selftests to get results from individual tests
-> rather than just a pass/fail for the test program as a whole.  While
-> many of the timers tests use KTAP some have custom output formats, let's
-> convert a few more to KTAP to make them work better in automation.
->
-> The posix_timers test made use of perror(), I've added a generic helper
-> to kselftest.h for that since it seems like it'll be useful elsewhere.
->
-> There are more tests that don't use KTAP, several of them just run a
-> single test so don't really benefit from KTAP and there were a couple
-> where the conversion was a bit more complex so I've left them for now.
-
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Regards,
+Chengfeng
