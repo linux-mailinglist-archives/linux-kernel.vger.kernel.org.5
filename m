@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141EE7B2751
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C497B2756
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbjI1VQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        id S232084AbjI1VRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1VQ1 (ORCPT
+        with ESMTP id S230325AbjI1VRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:16:27 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D309119D;
-        Thu, 28 Sep 2023 14:16:25 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so17255907a12.0;
-        Thu, 28 Sep 2023 14:16:25 -0700 (PDT)
+        Thu, 28 Sep 2023 17:17:31 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B067AF3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:17:27 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ad8a822508so1779523666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:17:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695935784; x=1696540584; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5XZTix1Mf7XTs+tXTEEd3SF8eZQ4E+jmYLihpcH3rUo=;
-        b=GUdDkMllYJoTDklbC1QYJdVh/6BgtagQxPO+yFJbikVRioVr+R1IC8tpvTd9WZwxRY
-         +7AM8XlaDHD6U6K955823CAVDGLJA807NVCHJ+Z2cdLg7TjvLqUBblo+X7LyQJeJhMnp
-         87Ha2ygJfe4uyzoJG1FAhfFDeqSm5YYz1fvxF88EG89u6x4EQXC8V7z1qZmhaj1CD77n
-         /fROLarCrL6EBvBlSrQuigk3zU32BucXWhaaV5CejzJRsRY/lrEoCkzY2Y305mlL9Vr3
-         KsufM0j7AzcR19q5IDASkTGsAAf63ixiLsS5cIOUtlnX6EFYy41U1lQaLkO8Su9DIjNm
-         BbWA==
+        d=gmail.com; s=20230601; t=1695935846; x=1696540646; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YOLKD+dZ4eKUfIGgNxL5xyo6MXfu46Z0PMVOhkalApk=;
+        b=HWMcDsBhoC8OcpJzthYDv+JDLRXkUlAGuXWR3YIYy1c5pMm/pbmoeOMCQA8KnOv/rZ
+         pRDbrPFwUj8vQx22cPN5nbfSBcaYdt1Yg9IFm4YL26gqVHLezZ5grCyqLI8AZMnGwG2d
+         c58hSl4HiNCxF+JnaWcNY++cVmEXjQI/xbBPYN6GZPbzFXqKybOjv46ko/DTF5rFDGP5
+         3A38ETRrZAmYqq1JVoBomIuVRjtpaI+kV6DcGR6SsPFGwmdAyNv/o73CIiqvjTmhbwqg
+         Nc/3Ufjte3nh1i9YprM4ZkHW3iz9X0rC6LLnIa7OE8YiKxcj2sqkiBysxD41AMsHSXpN
+         phXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695935784; x=1696540584;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695935846; x=1696540646;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5XZTix1Mf7XTs+tXTEEd3SF8eZQ4E+jmYLihpcH3rUo=;
-        b=sOeAmHVqP/tHHowdfby2/L6KpRy63bzUFBTECwO2gkOAVOzEFCsknE3VGHJd/+yEDC
-         oXPfDMf/1uHxM4Glz8O7yRprCap8GzheHOYKs6eJk9cIS+wx/ocV5LVb0h/JuQ+06AuN
-         n1pBdxVvMO1QmpRP1WS1l6NUYDp7/FmoudCf5X+fgTBEgnsGK73iOpVVckDSh49mi8YH
-         kaorAveKkQ+nX5pzBqOTouD29e/LswJBfyzTe6IeumzqQEZnZL5ccrUybvNuK2j7Vwhh
-         Prw+bky3gFMzU72zVcbHgbMt4vmypGqpUwn03BWRkuTfOuO4CbS2fsZ71yxUeQNu7QYU
-         B/Yw==
-X-Gm-Message-State: AOJu0YwaJlMiae/LUYkjcLTQsE56YUtobXYogsqFzqu64v3QvyZjO+uZ
-        neTD7nO6s/136/gZGWnZzdk=
-X-Google-Smtp-Source: AGHT+IHbcaLWh47udGrDwolMOI1W/KhIeoJkTFxGfN/IKUTWR7QQARltc40jxhj+sDi2oFSAWY1UQg==
-X-Received: by 2002:a05:6402:1810:b0:52f:c073:9c37 with SMTP id g16-20020a056402181000b0052fc0739c37mr2135424edy.3.1695935784190;
-        Thu, 28 Sep 2023 14:16:24 -0700 (PDT)
-Received: from fedora.. (dh207-99-57.xnet.hr. [88.207.99.57])
-        by smtp.googlemail.com with ESMTPSA id o5-20020a50c905000000b0053448f23b33sm2933324edh.93.2023.09.28.14.16.23
+        bh=YOLKD+dZ4eKUfIGgNxL5xyo6MXfu46Z0PMVOhkalApk=;
+        b=FcsAEZZkB1tecAorzh+DiLZDYi5L409qYzbtaJgt8m9jgVqW6Y04P4HylVT2JsADwf
+         1jSAuXdyQvlRoTqpf7koeHKpTABk+2+UR11ZuCpJsxYUeM+U1HquFkNQH3ZjY+oVam9n
+         p8v0OcDqs2kU3r4Kvu/e3SdLLrquocvkR75yyuVGdJK7SCtZYpFzlrxK85mtnJs60/9k
+         pYpgdCEMznbInPXxMbwBGAkiyqrpPYIsvYst3RSzPfJOP9mkh7FRjNvsZVMxjCCnH/Lp
+         V09Q8Gob/Z4Zws8QFE6kW7G9jpsOineHno3PZ71YRLQW9Wbn2Uuk59Klfz2ZVsOwFLCL
+         tlzQ==
+X-Gm-Message-State: AOJu0Yx0IU1nm2i7+MYhdWHlFUuqi2Qi1ELjzFLDDg8QgMWGPi13nd1u
+        6cFt70KH3EAmH+g5FWFOUZI=
+X-Google-Smtp-Source: AGHT+IFiqFTKmdhbxuHnd0UkrdV7E62jBybvnImlXxobRDF3xRWcomLQKKackBEZSRbT9T+ehKcVlQ==
+X-Received: by 2002:a17:906:530c:b0:9a1:e941:6f49 with SMTP id h12-20020a170906530c00b009a1e9416f49mr2551299ejo.44.1695935845835;
+        Thu, 28 Sep 2023 14:17:25 -0700 (PDT)
+Received: from gmail.com (1F2EF49C.nat.pool.telekom.hu. [31.46.244.156])
+        by smtp.gmail.com with ESMTPSA id bu10-20020a170906a14a00b0099bd7b26639sm11455976ejb.6.2023.09.28.14.17.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 14:16:23 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_tdas@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Thu, 28 Sep 2023 14:17:25 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 28 Sep 2023 23:17:23 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Maulik Shah <quic_mkshah@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
         linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: ipq8074: pass QMP PCI PHY PIPE clocks to GCC
-Date:   Thu, 28 Sep 2023 23:15:21 +0200
-Message-ID: <20230928211620.1278054-2-robimarko@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928211620.1278054-1-robimarko@gmail.com>
-References: <20230928211620.1278054-1-robimarko@gmail.com>
+Subject: Re: [GIT PULL] irqchip fixes for 6.6, take #1
+Message-ID: <ZRXtYzIA5dK1iPVb@gmail.com>
+References: <20230924094105.2361754-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230924094105.2361754-1-maz@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass QMP PCI PHY PIPE clocks to the GCC controller so it does not have to
-find them by matching globaly by name.
 
-If not passed directly, driver maintains backwards compatibility by then
-falling back to global lookup.
+* Marc Zyngier <maz@kernel.org> wrote:
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Dmitry Baryshkov (1):
+>       arm64: dts: qcom: sm8150: extend the size of the PDC resource
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 643b586c0dec..1f108ee2e8ba 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -407,8 +407,8 @@ qpic_pins: qpic-state {
- 		gcc: gcc@1800000 {
- 			compatible = "qcom,gcc-ipq8074";
- 			reg = <0x01800000 0x80000>;
--			clocks = <&xo>, <&sleep_clk>;
--			clock-names = "xo", "sleep_clk";
-+			clocks = <&xo>, <&sleep_clk>, <&pcie_qmp0>, <&pcie_qmp1>;
-+			clock-names = "xo", "sleep_clk", "pcie0_pipe", "pcie1_pipe";
- 			#clock-cells = <1>;
- 			#power-domain-cells = <1>;
- 			#reset-cells = <1>;
--- 
-2.41.0
+This SOB chain, while valid, is a hodgepodge with no rhyme and reason:
 
+  Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
+  Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+  Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+  Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+  Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+  Signed-off-by: Marc Zyngier <maz@kernel.org>
+  Link: https://lore.kernel.org/r/20230905-topic-sm8x50-upstream-pdc-ver-v4-2-fc633c7df84b@linaro.org
+
+Besides the ordering, people in the SOB chain should not have a separate
+Reviewed-by tag: *of course* anyone who forwards a patch with a SOB has
+reviewed it, it's basically implicit.
+
+So the tags should be something like:
+
+  Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
+  Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+  Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+  Signed-off-by: Marc Zyngier <maz@kernel.org>
+  Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+  Link: https://lore.kernel.org/r/20230905-topic-sm8x50-upstream-pdc-ver-v4-2-fc633c7df84b@linaro.org
+
+Ie. we generally sort the tags not chronologically (or whatever the original idea
+was), but group them topically, sort the groups by importance, and only within
+the group is there chronological order.
+
+Thanks,
+
+	Ingo
