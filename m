@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426A37B1026
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F8A7B102A
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjI1Ayv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
+        id S229837AbjI1A51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjI1Ayu (ORCPT
+        with ESMTP id S229539AbjI1A50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:54:50 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0EFBF;
-        Wed, 27 Sep 2023 17:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1695862485;
-        bh=cWJWQLaCutW3/ihZakmlgvowJp6CyCO6KwVHcVIhhyo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=b5UO7KI/iUEwHzj7Iuu0bRBoMuSvMfVmVyWcToTFHAqxqnb0SU3UNdV32PE6Ks2u8
-         wleaKXlZTUmrgT4dgu77o6UVzOJ2yYTY4Ht7C9RekyxE63hTdMgRpU5fjUl2jTNo9s
-         IbL7PrcN67H6QK3Yord2QSM9JSapnTjlHa8g/q8ofKSxUrWM4bU4lcXVXl/OMCu5y8
-         VemF25oJg08X/+xlYoN99o9RJH7Pz8LijwQf0Yqk0Tfx3NfRykxZp3cSELErgRu90N
-         jdn1mAbM9O4iBFmM+e8k+25DsY2T4S/c5/JPD4vBnWSLIVDX/BY8XnrsAGv/V1ib1Y
-         i2wikRn4Of1pw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rww444zQlz4xQN;
-        Thu, 28 Sep 2023 10:54:44 +1000 (AEST)
-Date:   Thu, 28 Sep 2023 10:54:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Jan Kara <jack@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20230928105443.1b1ad98c@canb.auug.org.au>
+        Wed, 27 Sep 2023 20:57:26 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3CEBF;
+        Wed, 27 Sep 2023 17:57:24 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5827f6d60aaso5115715a12.3;
+        Wed, 27 Sep 2023 17:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695862644; x=1696467444; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sD2wWZIfPcmHhJT+GMtj+x1EEBi2NflbeYV6Occ/i+c=;
+        b=FVveHHzXpfOjGV2H1qN7CkdbKSJAZobytc4P6O3U2rvYHA4ei2/j4Zk3+rehgivJUM
+         /l9CR6unAngMyhGrfjVubf51UatzVmj9TF7qpsHzqr63X2VJv6ARMThjv1Af3X63ZsLH
+         YZEMMNq5BszHFA1rC3dIvAACk2jGKOmCoPZCt1bjb0Qv6JwiHj5/VEnh+pseeTNwk5WG
+         gcjroof8llK7wzNEtrcAFwJQe7p/ObmihT56Qnmo6lWW+NoXRBZi3dXjhLTmKQs1Jd3+
+         0tBsUjZWps+eD0CbyjeFS5ON77Xq8HN+9SwqgMf3Pb82NC6dGBlGiu8nr/pMKS2FlGLP
+         2Zig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695862644; x=1696467444;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sD2wWZIfPcmHhJT+GMtj+x1EEBi2NflbeYV6Occ/i+c=;
+        b=MpktOFvW71H+ZW4flGIy8atFUxuaqCttBmY/fEHXavQFxCUJbMbeLObrED4vqrKGJe
+         bFBWsEWTf6g5nY6oANd24aMJZDcrPfUCVUhxL+YA/O3p+RJ+ggoUP8WlSLlbT/cFSz0V
+         56LCj6e1iNdhTsdMhT18bMax7mqhdzjXZH9CLrdFB6ouG9ZYmuS0NsOI1kE4zwN374SJ
+         tIEDr7TgXMnU5mG6GjpmLx2yJ5EqF2dYpIh1J2dXnn2ZnAsfqYoo3F9MGe8ZoOKK9D0y
+         MQGS5VMWhNSzHv4490KNpnwVU7KX0wgeQMbGc+12lCn/3gZZrEkaT6+aOQ4bj9UaVr7c
+         s8WQ==
+X-Gm-Message-State: AOJu0YzqOaQ6Kp67kZwzZKcKkiFMfu2MBubXggCCLg3qqd8b8w8+v0Ab
+        t1Zul7h7GyHSdrOYROOCNG8=
+X-Google-Smtp-Source: AGHT+IEWHDi0IEBItUnMQNx/EOdHh7CuSW8OO48aHoTeVlPy/2yXozxQpgYza/XqHCnFi1KAOM7Ayg==
+X-Received: by 2002:a05:6a20:9147:b0:160:c1b9:a759 with SMTP id x7-20020a056a20914700b00160c1b9a759mr4043353pzc.20.1695862644240;
+        Wed, 27 Sep 2023 17:57:24 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-003.fbsv.net. [2a03:2880:ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z1-20020a170902708100b001bb0eebd90asm13684774plk.245.2023.09.27.17.57.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 17:57:23 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v2 0/2] hugetlb memcg accounting
+Date:   Wed, 27 Sep 2023 17:57:21 -0700
+Message-Id: <20230928005723.1709119-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/N+9XUcT7G25Ssnlk5N0mUyM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/N+9XUcT7G25Ssnlk5N0mUyM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Changelog:
+v2:
+	* Add a cgroup mount option to enable/disable the new hugetlb memcg
+	  accounting behavior (patch 1) (suggested by Johannes Weiner).
+	* Add a couple more ksft_print_msg() on error to aid debugging when
+	  the selftest fails. (patch 2)
 
-Hi all,
+Currently, hugetlb memory usage is not acounted for in the memory
+controller, which could lead to memory overprotection for cgroups with
+hugetlb-backed memory. This has been observed in our production system.
 
-After merging the vfs-brauner tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+This patch series rectifies this issue by charging the memcg when the
+hugetlb folio is allocated, and uncharging when the folio is freed. In
+addition, a new selftest is added to demonstrate and verify this new
+behavior.
 
-fs/bcachefs/super-io.c: In function 'bch2_free_super':
-fs/bcachefs/super-io.c:166:17: error: implicit declaration of function 'blk=
-dev_put'; did you mean 'bdi_put'? [-Werror=3Dimplicit-function-declaration]
-  166 |                 blkdev_put(sb->bdev, sb->holder);
-      |                 ^~~~~~~~~~
-      |                 bdi_put
-fs/bcachefs/super-io.c: In function 'bch2_read_super':
-fs/bcachefs/super-io.c:687:20: error: implicit declaration of function 'blk=
-dev_get_by_path'; did you mean 'bdev_open_by_path'? [-Werror=3Dimplicit-fun=
-ction-declaration]
-  687 |         sb->bdev =3D blkdev_get_by_path(path, sb->mode, sb->holder,=
- &bch2_sb_handle_bdev_ops);
-      |                    ^~~~~~~~~~~~~~~~~~
-      |                    bdev_open_by_path
-fs/bcachefs/super-io.c:687:18: error: assignment to 'struct block_device *'=
- from 'int' makes pointer from integer without a cast [-Werror=3Dint-conver=
-sion]
-  687 |         sb->bdev =3D blkdev_get_by_path(path, sb->mode, sb->holder,=
- &bch2_sb_handle_bdev_ops);
-      |                  ^
-fs/bcachefs/super-io.c:693:26: error: assignment to 'struct block_device *'=
- from 'int' makes pointer from integer without a cast [-Werror=3Dint-conver=
-sion]
-  693 |                 sb->bdev =3D blkdev_get_by_path(path, sb->mode, sb-=
->holder, &bch2_sb_handle_bdev_ops);
-      |                          ^
-cc1: all warnings being treated as errors
+Nhat Pham (2):
+  hugetlb: memcg: account hugetlb-backed memory in memory controller
+  selftests: add a selftest to verify hugetlb usage in memcg
 
-Caused by commit
+ Documentation/admin-guide/cgroup-v2.rst       |   9 +
+ MAINTAINERS                                   |   2 +
+ fs/hugetlbfs/inode.c                          |   2 +-
+ include/linux/cgroup-defs.h                   |   5 +
+ include/linux/hugetlb.h                       |   6 +-
+ include/linux/memcontrol.h                    |   8 +
+ kernel/cgroup/cgroup.c                        |  15 +-
+ mm/hugetlb.c                                  |  23 +-
+ mm/memcontrol.c                               |  41 +++
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ .../selftests/cgroup/test_hugetlb_memcg.c     | 234 ++++++++++++++++++
+ 12 files changed, 338 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_hugetlb_memcg.c
 
-  953863a5a2ff ("block: Remove blkdev_get_by_*() functions")
-
-interacting with commit(s) from the bcachefs tree.
-
-I would have reverted that commit for today, except I used the old
-vfs-brauner tree due to another build failure.  Can we just delay this
-one commit until after bcachefs has been converted (and any other
-references that may be added are fixed)?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/N+9XUcT7G25Ssnlk5N0mUyM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUUztMACgkQAVBC80lX
-0Gy3lwf/atqZzIZQKkVZG5fdRCS6ZvQsAf/YRhrKTDY23anQG0QXpv7706oZEz3M
-7R1j5rqk+LZnpLLfGRKD8wWnkVF47ACD/0I5lt2vmZV0X3v9zrttm1XfRANZJKnI
-/f+YUVTTdHKUH7jK1UvRgvkxg9yhPsQ4YbNxJl4PY5tGs+qi9OmRSFbZ1NlkHGo1
-QvBx0/oOqOV3yn6rWYWbz2LfPh99s9l1gbccoy8PkDZkSy9oUM0p6pbLpU7XDo1s
-9D7+Mo+8d8hcdwsVs/23F1EIUxttIkUcT6JR4tOVjT92lF8euHiGDkxDDNrdy5T+
-8mKUwauzTSV+Q9JrEOXqOH59TvILqg==
-=kZre
------END PGP SIGNATURE-----
-
---Sig_/N+9XUcT7G25Ssnlk5N0mUyM--
+-- 
+2.34.1
