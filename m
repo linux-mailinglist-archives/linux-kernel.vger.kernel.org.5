@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15EB7B24E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BDB7B24F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbjI1SJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        id S232033AbjI1SL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjI1SJr (ORCPT
+        with ESMTP id S231958AbjI1SL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:09:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057DE1B0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:09:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E394C433C8;
-        Thu, 28 Sep 2023 18:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695924584;
-        bh=PKCbG067dxLVfSBXY7LXY3siozP1w/bW3Ik0lSAKcHc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPu1YZ2rL4UkOp0m0H3259f38mALHnc/dHdick1bsXfEFyYEyr9ofNxJwmYjIqw5b
-         5zF8jQXPIzSfeVbQohQ3A5hP/aUUlDh7ynUvUG9IibFtXbpv2DJQfVuEZH5ZzFXBoD
-         UtZjKagtK8OBfkXuzFk67WStkB+7TA9hCWe3PXxelAuq4vPNrxocFPp5FCex8XLwzG
-         hy/mLT4HJAO4svKaX+tEWH7Yi74Jntotmp7eDyF8JhSnZrtf3cy+cq6zX6mDWJ7kOT
-         ov6rWiYq45CpS4+6RhqtEo2ciXYC+uNdGcuVMTYBcUyt9oMc0CbkY8VTE1wIv7Qbjz
-         BsB8S+j7TSJKA==
-Received: (nullmailer pid 996093 invoked by uid 1000);
-        Thu, 28 Sep 2023 18:09:42 -0000
-Date:   Thu, 28 Sep 2023 13:09:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rohan G Thomas <rohan.g.thomas@intel.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: snps,dwmac: Time Based
- Scheduling
-Message-ID: <20230928180942.GA932326-robh@kernel.org>
-References: <20230927130919.25683-1-rohan.g.thomas@intel.com>
- <20230927130919.25683-2-rohan.g.thomas@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927130919.25683-2-rohan.g.thomas@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 28 Sep 2023 14:11:28 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568D21AE
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:11:26 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c73637061eso11041545ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:11:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695924686; x=1696529486; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3K3OcXUIZlyHiQujf4H1r+veO7DYVI9kt+g/p8aiVWg=;
+        b=nPqAySzjXtovxpRtzSERHIs/5NPmEyF6CzwLhYIMoQ/GgojvijSn8Sz2dJIrOP3HZg
+         4yLOhyTQwAOoILTMt1WuKPFfXxGIQvriwCIwSTw8gw4RON+smGw3BLdBVMq1tLIeeEc9
+         uT4Cvm4davSBDuYWl9pcejUdYP/d3pNjyp1bDEzT8zBkvoZ6PWHXqYf9DQ8MD/VEr3nv
+         YbOQuRRL1I2CcbeA4/jno14MlAUJbvhi/qNmUwWKG7hco6MkHejz2tdAOjxL4XYA7Sv7
+         LtiJqgOKV6G4Q/VlUNtxoVTihIP6ElO3cW9mpOQOfbi09nEZLtbgFyybuDQqowXKKO56
+         GT3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695924686; x=1696529486;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3K3OcXUIZlyHiQujf4H1r+veO7DYVI9kt+g/p8aiVWg=;
+        b=D9/sdFzzPDR7piIn7qVyj1NmdGoMhe+iOX+qnRhCPGQ63JlZlcb0QuOZp1V10NjzjZ
+         J44sL2SyEv7DdE8UtRHBw6KdD6l5COFtqgzyljtHyBGFK5D7nfpcJNQK3vfX6ZrjvMBI
+         x9GijyZBeJn+hViUgbCiGqtWppjFdou65O1C5yoRJUUPsaCIg+h9Sbwn2ss8hUPV8KTt
+         QlQbb+glAK/P0aFOyWoDrwknao02+QTraZSKogtC37uV3aZVmV3kXZtsoOkP5CusgC7J
+         sW2yHZYQfYFiEPSfImaV9yNXJ3kcotAgyv/L9JhxdUkTidg5xz3RxKzF1qbxJNsRT4CM
+         s+AQ==
+X-Gm-Message-State: AOJu0YxV6Gk5x4n7s+E+SU1eqNF398xOar7JMEbQD3J2xB6qc1Psmtj+
+        bxmtHy1xVDVwpNdq2WJcXFaO+YsveVQ=
+X-Google-Smtp-Source: AGHT+IG/xeSKSWDrjUnSnauQhpFmESuw5TvE/OCLZlz0n2YcWK5OqQSKvR8fdO5LRdL28kr6xQ6xAMA1ruQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:32cf:b0:1c6:1e4e:b78f with SMTP id
+ i15-20020a17090332cf00b001c61e4eb78fmr26726plr.6.1695924685737; Thu, 28 Sep
+ 2023 11:11:25 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 11:11:24 -0700
+In-Reply-To: <7be47fe7-9587-dd1b-fac1-5c4d5c6e2ff6@linux.intel.com>
+Mime-Version: 1.0
+References: <20230921203331.3746712-1-seanjc@google.com> <20230921203331.3746712-5-seanjc@google.com>
+ <7be47fe7-9587-dd1b-fac1-5c4d5c6e2ff6@linux.intel.com>
+Message-ID: <ZRXBzEOfD93xwVg0@google.com>
+Subject: Re: [PATCH 04/13] KVM: WARN if there are danging MMU invalidations at
+ VM destruction
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Michael Roth <michael.roth@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 09:09:18PM +0800, Rohan G Thomas wrote:
-> Add new property tbs-enabled to enable Time Based Scheduling(TBS)
+On Wed, Sep 27, 2023, Binbin Wu wrote:
+>=20
+>=20
+> On 9/22/2023 4:33 AM, Sean Christopherson wrote:
+> > Add an assertion that there are no in-progress MMU invalidations when a
+> > VM is being destroyed, with the exception of the scenario where KVM
+> > unregisters its MMU notifier between an .invalidate_range_start() call =
+and
+> > the corresponding .invalidate_range_end().
+> >=20
+> > KVM can't detect unpaired calls from the mmu_notifier due to the above
+> > exception waiver, but the assertion can detect KVM bugs, e.g. such as t=
+he
+> > bug that *almost* escaped initial guest_memfd development.
+> >=20
+> > Link: https://lore.kernel.org/all/e397d30c-c6af-e68f-d18e-b4e3739c5389@=
+linux.intel.com
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   virt/kvm/kvm_main.c | 9 ++++++++-
+> >   1 file changed, 8 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 54480655bcce..277afeedd670 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -1381,9 +1381,16 @@ static void kvm_destroy_vm(struct kvm *kvm)
+> >   	 * No threads can be waiting in kvm_swap_active_memslots() as the
+> >   	 * last reference on KVM has been dropped, but freeing
+> >   	 * memslots would deadlock without this manual intervention.
+> > +	 *
+> > +	 * If the count isn't unbalanced, i.e. KVM did NOT unregister between
+> Nit: Readers can get it according to the code context, but is it better t=
+o
+> add "MMU notifier"=C2=A0 to tell what to "unregister" to make the comment=
+ easier
+> to understand?
 
-That's not the property you added.
-
-> support per Tx queues. TBS feature can be enabled later using ETF
-> qdisc but for only those queues that have TBS support enabled.
-
-This property defines capable or enabled? 
-
-Seems like OS configuration and policy.
-
-Doesn't eh DWMAC have capability registers for supported features? Or 
-did they forget per queue capabilities?
-
-> 
-> Commit 7eadf57290ec ("net: stmmac: pci: Enable TBS on GMAC5 IPK PCI
-> entry") enables similar support from the stmmac pci driver.
-
-Why does unconditionally enabling TBS work there, but not here?
-
-> 
-> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
-> ---
->  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> index 5c2769dc689a..db1eb0997602 100644
-> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -399,6 +399,14 @@ properties:
->              type: boolean
->              description: TX checksum offload is unsupported by the TX queue.
->  
-> +          snps,tbs-enabled:
-> +            type: boolean
-> +            description:
-> +              Enable Time Based Scheduling(TBS) support for the TX queue. TSO and
-> +              TBS cannot be supported by a queue at the same time. If TSO support
-> +              is enabled, then default TX queue 0 for TSO and in that case don't
-> +              enable TX queue 0 for TBS.
-> +
->          allOf:
->            - if:
->                required:
-> -- 
-> 2.26.2
-> 
+Agreed, I'll add that when applying.
