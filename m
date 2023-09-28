@@ -2,211 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D859E7B2077
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506C17B2074
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbjI1PGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        id S231391AbjI1PGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjI1PGK (ORCPT
+        with ESMTP id S231601AbjI1PGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:06:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD161B0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695913520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BNW1QOOJZvi4+G5BXUnncgpsE3RlMF02WmB0kRHObXg=;
-        b=gy1IeaU6C5+swcBiYoJklGwsalsl8KYtL94826stvQp5t65A9mcEXu2QL3jzEY0T3n6Ew8
-        N5IvEKiHWvWPBYRXiWrL9P/R/JGHBic9GDSvpK8JUcsK3b636J3fz6ZJgA3uEBYd2DThAB
-        YgxzVIx6pwpSBHbOtPK8UkSP9Vc7Ypc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-475-HDbD2tdKM2KB0zSaX0me8w-1; Thu, 28 Sep 2023 11:04:53 -0400
-X-MC-Unique: HDbD2tdKM2KB0zSaX0me8w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3B7C2101A550;
-        Thu, 28 Sep 2023 15:04:52 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.45.226.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E7DEB40C6E76;
-        Thu, 28 Sep 2023 15:04:48 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 5/5] x86: KVM: SVM: workaround for AVIC's errata #1235
-Date:   Thu, 28 Sep 2023 18:04:28 +0300
-Message-Id: <20230928150428.199929-6-mlevitsk@redhat.com>
-In-Reply-To: <20230928150428.199929-1-mlevitsk@redhat.com>
-References: <20230928150428.199929-1-mlevitsk@redhat.com>
+        Thu, 28 Sep 2023 11:06:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0F8F9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695913564; x=1727449564;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=eRDuK/qZW8dClwvIaLEX4zk2J7VwIwLJJ8gj2yIWAc4=;
+  b=fHnL4r9pvYcd17fN1Q8MebDnmviCcOE6pB0OCbDg5Pv9i93jX6dzw+qW
+   4dwz+a+esrwjMc3O/+lz3WfCogRBMLgYgMd6gB7E0wl6HWexjsQD/aIYr
+   lDdVas7K53gKe5Mp7qeL7pACkyp/wHDcp2HLPlxq3n08JQ4KqNae1fAKL
+   JSGleFpdcYdqdw5faygzCGIT/OgIhRhTL9Riu0cp56y9zE1wPF450HyCq
+   gzOUbv5Fakp9Rlvx4P2nYDwpw5LW2RvFVeZZGfg91WXK8Thcr0CyRRe1l
+   WDuke/MeGiB4pX4vn8FGRS1mDOxdqbBRvc0QRf7dIhgkOUZUUKGIs18BE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="446235840"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="446235840"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 08:06:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="873321350"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="873321350"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 28 Sep 2023 08:06:01 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qlsaV-0001aB-1e;
+        Thu, 28 Sep 2023 15:05:59 +0000
+Date:   Thu, 28 Sep 2023 23:05:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nathan Lynch <nathanl@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Andrew Donnellan <ajd@linux.ibm.com>
+Subject: arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or
+ member 'm' not described in 'ppc_rtas_rmo_buf_show'
+Message-ID: <202309282350.RxbSbVM5-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Zen2 (and likely on Zen1 as well), AVIC doesn't reliably detect a change
-in the 'is_running' bit during ICR write emulation and might skip a
-VM exit, if that bit was recently cleared.
+Hi Nathan,
 
-The absence of the VM exit, leads to the KVM not waking up / triggering
-nested vm exit on the target(s) of the IPI which can, in some cases,
-lead to an unbounded delays in the guest execution.
+FYI, the error/warning still remains.
 
-As I recently discovered, a reasonable workaround exists: make the KVM
-never set the is_running bit.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+commit: c13ff6f3251318f5e1ff5b1a6d05f76996db672a powerpc/rtas: improve ppc_rtas_rmo_buf_show documentation
+date:   2 years, 5 months ago
+config: powerpc-mgcoge_defconfig (https://download.01.org/0day-ci/archive/20230928/202309282350.RxbSbVM5-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309282350.RxbSbVM5-lkp@intel.com/reproduce)
 
-This workaround ensures that (*) all ICR writes always cause a VM exit
-and therefore correctly emulated, in expense of never enjoying VM exit-less
-ICR emulation.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309282350.RxbSbVM5-lkp@intel.com/
 
-This workaround does carry a performance penalty but according to my
-benchmarks is still much better than not using AVIC at all,
-because AVIC is still used for the receiving end of the IPIs, and for the
-posted interrupts.
+All warnings (new ones prefixed by >>):
 
-If the user is aware of the errata and it doesn't affect his workload,
-the user can disable the workaround with 'avic_zen2_errata_workaround=0'
+>> arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or member 'm' not described in 'ppc_rtas_rmo_buf_show'
+>> arch/powerpc/kernel/rtas-proc.c:771: warning: Function parameter or member 'v' not described in 'ppc_rtas_rmo_buf_show'
 
-(*) More correctly all ICR writes except when 'Self' shorthand is used:
 
-In this case AVIC skips reading physid table and just sets bits in IRR
-of local APIC. Thankfully in this case, the errata is not possible,
-therefore an extra workaround for this case is not needed.
+vim +771 arch/powerpc/kernel/rtas-proc.c
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/avic.c | 50 +++++++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 14 deletions(-)
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16  759  
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  760  /**
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  761   * ppc_rtas_rmo_buf_show() - Describe RTAS-addressable region for user space.
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  762   *
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  763   * Base + size description of a range of RTAS-addressable memory set
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  764   * aside for user space to use as work area(s) for certain RTAS
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  765   * functions. User space accesses this region via /dev/mem. Apart from
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  766   * security policies, the kernel does not arbitrate or serialize
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  767   * access to this region, and user space must ensure that concurrent
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  768   * users do not interfere with each other.
+c13ff6f3251318 arch/powerpc/kernel/rtas-proc.c Nathan Lynch   2021-04-08  769   */
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16  770  static int ppc_rtas_rmo_buf_show(struct seq_file *m, void *v)
+^1da177e4c3f41 arch/ppc64/kernel/rtas-proc.c   Linus Torvalds 2005-04-16 @771  {
 
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index c44b65af494e3ff..df9efa428f86aa9 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -62,6 +62,9 @@ static_assert(__AVIC_GATAG(AVIC_VM_ID_MASK, AVIC_VCPU_ID_MASK) == -1u);
- static bool force_avic;
- module_param_unsafe(force_avic, bool, 0444);
- 
-+static int avic_zen2_errata_workaround = -1;
-+module_param(avic_zen2_errata_workaround, int, 0444);
-+
- /* Note:
-  * This hash table is used to map VM_ID to a struct kvm_svm,
-  * when handling AMD IOMMU GALOG notification to schedule in
-@@ -1027,7 +1030,6 @@ avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- 
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
--	u64 entry;
- 	int h_physical_id = kvm_cpu_get_apicid(cpu);
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
-@@ -1056,14 +1058,18 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	 */
- 	spin_lock_irqsave(&svm->ir_list_lock, flags);
- 
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
--	WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-+	if (!avic_zen2_errata_workaround) {
-+		u64 entry = READ_ONCE(*(svm->avic_physical_id_cache));
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
--	entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
--	entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+		WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-+
-+		entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
-+		entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
-+		entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	}
- 
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
- 	avic_update_iommu_vcpu_affinity(vcpu, h_physical_id, true);
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
-@@ -1071,7 +1077,7 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- void avic_vcpu_put(struct kvm_vcpu *vcpu)
- {
--	u64 entry;
-+	u64 entry = 0;
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
- 
-@@ -1084,11 +1090,13 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
- 	 * can't be scheduled out and thus avic_vcpu_{put,load}() can't run
- 	 * recursively.
- 	 */
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
- 
--	/* Nothing to do if IsRunning == '0' due to vCPU blocking. */
--	if (!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
--		return;
-+	if (!avic_zen2_errata_workaround) {
-+		/* Nothing to do if IsRunning == '0' due to vCPU blocking. */
-+		entry = READ_ONCE(*(svm->avic_physical_id_cache));
-+		if (!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK))
-+			return;
-+	}
- 
- 	/*
- 	 * Take and hold the per-vCPU interrupt remapping lock while updating
-@@ -1102,8 +1110,10 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
- 
- 	avic_update_iommu_vcpu_affinity(vcpu, -1, 0);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	if (!avic_zen2_errata_workaround) {
-+		entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	}
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
- 
-@@ -1217,5 +1227,17 @@ bool avic_hardware_setup(void)
- 
- 	amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
- 
-+	if (avic_zen2_errata_workaround == -1) {
-+
-+		/* Assume that Zen1 and Zen2 have errata #1235 */
-+		if (boot_cpu_data.x86 == 0x17)
-+			avic_zen2_errata_workaround = 1;
-+		else
-+			avic_zen2_errata_workaround = 0;
-+	}
-+
-+	if (avic_zen2_errata_workaround)
-+		pr_info("Workaround for AVIC errata #1235 is enabled\n");
-+
- 	return true;
- }
+:::::: The code at line 771 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
 -- 
-2.26.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
