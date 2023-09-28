@@ -2,161 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC817B15FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749FC7B1604
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjI1IZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        id S231186AbjI1I3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjI1IZO (ORCPT
+        with ESMTP id S229605AbjI1I3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:25:14 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2033.outbound.protection.outlook.com [40.92.21.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EA5B7;
-        Thu, 28 Sep 2023 01:25:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I3B46QEFe+jNJei0hcYl5+tpCDNPGiC47fAs78gwWfHrHd06TKuMBLtxR2pX3aZDzkofT7ExDCVR3Rb1GyCf7/92/eJDutFzthQebCfKI7MER7YcvnyD6PWTrg/1zZV8ifRg4vsc2QHhjRoI3lESo30V7LskSAFMhlar1D5BMzrAaCSW/IXrP4qgzqz7d08L1GjQjWFqcO9R9lTWLPdQtIeu+KS4RW9vqjcWjMUuNKS+f+N0QNFIW5hFi+z42xMUKW1ePY1EmOM82xWJPDOVMLvYdbygQUUiJuldqevdkqExY2FW2YE1NCOenOWQ2SU64QYp/yLiMZiDyM6fAR1Bjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uqpKF6+PQNamG740LUokeS8o0bJiRZZ1dhN0YMAQOcI=;
- b=abuouaIosjy4/ZaZlJcQKWrxzZgbwUo7V+IITaybstcHY3DVljNVQias2deEfYXTql6kAXDUAawYirqyV9EFwzQnYgtbbBvCDCeJfQEb3HRkY8u5GBtPr814mBQUm6AHkiYvyZXu4whb0FxViKfTZxJJH82wDvWqfPejmT4TmiwCFBnjHhNI3b6BfNbnMEeX3TtoQyr3GF2rr185RKuGo+9cJY3FdDTyfUKTz+IK2Ef1gB37g5zdgSCLnIZRRCwckG39uHOOTsxJbmlKJbS97enqqIJyVVKLqKC802UN8TJMf32uOEx/41b57tD0LH8ljboaASbjdqdmW1ZTjbyq6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uqpKF6+PQNamG740LUokeS8o0bJiRZZ1dhN0YMAQOcI=;
- b=VEywPeHG9i96TY3mJAC+F8nrPqGdqHtU53Pzq9rNLdW6l2EAWjBCC7bEAZ7eHD3s45d+LaVOEWPFAIx1srZQvPFk1EZEcz/OiDLaz7HbNXrVGWMO5Rox+Uuc+y1a0o1tFOxEzvH5Axmwnvh0wcR5PQV7wWWF/6YIyEZPRh3SrSh+uuHmd+oq6dxSGxSLvraRFjxPHC88JydGPVXFXpcQzAcrMw4vMZFeCWShG+Yp/3Yz5kaNAUORsF0HuuxcVE/wM+qGV+eqUNwXNsnhce6sJwH84tjbR/mTAAOyvJ8DpIQamUe7uEa+e5ZlLgNG9uKixauAFI3/at1/rw4cAG9Yjg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by CH0PR20MB3820.namprd20.prod.outlook.com (2603:10b6:610:c1::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Thu, 28 Sep
- 2023 08:25:10 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
- 08:25:10 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
-        guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, Anup Patel <apatel@ventanamicro.com>,
-        Chen Wang <wangchen20@iscas.ac.cn>,
-        Inochi Amaoto <inochiama@outlook.com>
-Subject: Re: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT timer
-Date:   Thu, 28 Sep 2023 16:24:54 +0800
-Message-ID: <IA1PR20MB49537BCE9EF342B55174B829BBC1A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230928-bring-gnarly-05eeeb85f3c5@wendy>
-References: <20230928-bring-gnarly-05eeeb85f3c5@wendy>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [5xUgt+3pcnHcJEDvjjDhQqmfUVPx5AxrwhCl9uoQbV4=]
-X-ClientProxiedBy: SJ0PR03CA0266.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::31) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20230928082454.116682-1-inochiama@outlook.com>
+        Thu, 28 Sep 2023 04:29:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD79FAC;
+        Thu, 28 Sep 2023 01:29:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E34FC433C8;
+        Thu, 28 Sep 2023 08:29:31 +0000 (UTC)
+Message-ID: <a0a3d582-ee6f-441b-a5a5-2d7a79ad099c@xs4all.nl>
+Date:   Thu, 28 Sep 2023 10:29:30 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CH0PR20MB3820:EE_
-X-MS-Office365-Filtering-Correlation-Id: facd1a7c-dc9e-46c0-4433-08dbbffc6e29
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vdksl9y5f+LIf1CcR3RDlxEEetpNGMg1fH9FopsL9ZplguMZrxL5gTVNSmYN2Y/q5yFpbCdGR4MjFLq2NoKaP5wirD0S4+KjCRbBe+RdNKYsUv/btuSm38J2rOUGG40iK6fT3GLXF3g7cfIQnKhWz0RNDIU8w8GuOpJVH5pq1shH5C39ZTZF6WH3+YWSq9VBbFHwmiygl+xM53bOigP86QNihlArpkZBeguXutA5Td4qh6ozgRUxXXiBTTvMsv4gzHysjv/K5yrzTMCycmPIwGJPbEkFYsStzItJsxgbEHsDMffYIYDetN4lXBCTgZubPUUz+dQHxRQWuEmdMY/6k/I/88Byw/5PiPpUZKJKuvXnDqCzIXUZwAZlX8WO77CQNmxmO1QBVXsmNjqx3GpuW0Ky3wSOI4zVQrgHIKsC073k97OaCaMYJT4qpgl9+D3wDq+mishMuViI5/JYHEySS2n03tj15NrecaBaNmRSvL7GCYV+LTvhq73lohfjzRG7eo8xyofYCIbfjXUBWTZ4obnZp/t0rovi4/Go0UVGTLnh8LluK7F8pzzblT1KaC/Sl8iTLAWO6D9EgVhDdY9Okr/HfQ1lP8tn5GuIy3eJy2s=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uNi2MxSxOtbIfWhdhStknx9eFZEPz6PHObAuiXksJwpfesmq2Hf3Ro4K718a?=
- =?us-ascii?Q?bvfglwSB8dJOVWT1TcI0ATc0BvItQTn1d906NVWREMUkGj+cKpLkfZdDZUrU?=
- =?us-ascii?Q?pQj8X0cbbZ8Jtp+M0ONdrg1025DpUIICYR+GnRRK+Juufe/HYR8nDcWQkVua?=
- =?us-ascii?Q?KbOq/nxzD5RNI0nNqSAEoV/JUCL2oLP55q4WNSGfBhE0zJ0qLToN0mq9bwVn?=
- =?us-ascii?Q?MaqlVAQjs7VdyMYmRBnI/DF6kmrv1ZOK78gGhs+OLJ/qTug4zAmkvU9icdjX?=
- =?us-ascii?Q?XOXDfsl9n+GxECyKZFDH4RjShag3QqR8cI3pQo4SrxeIiI32CA7AQY4wq6yO?=
- =?us-ascii?Q?gl3GkO+JNFHvr4XgW16e3aVn2okNyppQvXfW7FhFhJzsdhIu5KB1Fm5pjSbE?=
- =?us-ascii?Q?LJWViYnxAN8Pd9cKVE7qi9V4MwNs8tmKq+6fxoMAVopdZ29+bwuWV8ff7DzZ?=
- =?us-ascii?Q?9OAjKomIL54j0eqJnmV6rGxtHS9mquilaCDka4q2jwnFsfLWF1WR0s86s4oy?=
- =?us-ascii?Q?KtJOHul8xb8Qk2sqaYZ5xXm+R02hF7CfIpR30MZYq9NvELsisr/j8v1wy5ui?=
- =?us-ascii?Q?YcQ+ZwY1VESLbFRmKo3dtSiAx5K9icEdtNWAUTMdPPsoFmtwhGf26IkvnXuJ?=
- =?us-ascii?Q?83CHDC6l6be1+DUrFgFXYj1IxzPkfpIH08oVxvIe/sfzdrrxJVmH0IhukR6k?=
- =?us-ascii?Q?YWL786Fx74gFjM7iL1ZF/wIqNoJno1btiTUJjnzO31v2jKpqS7Pdh2Qbpp2c?=
- =?us-ascii?Q?52PTFZUF6jGlWx86TG+bAhPGPIOttLUKbuT3EaInAftORmKrQcR349e8rr/s?=
- =?us-ascii?Q?ftzE1jH1CVvwSvYn7ux55Z1lthsZxHvF6rVL7iT/LO+pM3cutfCAZHF2IY23?=
- =?us-ascii?Q?yCcx+Btu7Hw5UN+Uw3allyP6o76RwOvbAWJSSP9wIEJOcbtTsqAMGszfbTha?=
- =?us-ascii?Q?V1juRHdKP/0Pc6NoCmPuGDXEgaGMYLw8kS0+IjccBGX+fhqg5JsmJd5ol3q+?=
- =?us-ascii?Q?61/IavHW3RAo0pCPUcvbbWr/yrfJg0zXrqvm8oTihNk/Jkioc//Ij/mIkI2B?=
- =?us-ascii?Q?LqXNUudbZPyFIHlRBn1rWgnl4so7bddCvcUXeHL2I4d/EW23ywKZvWNSPMbt?=
- =?us-ascii?Q?7qT40X1fYBgPtJevX6gH/6V4qyqDR6z6kVHNdsxgxhM2TAVdBX6CS0a3tDCg?=
- =?us-ascii?Q?gfEzzS+wlgHsakQnqoanSywxoydLS0xcGGq4p62doWEWyx/y0kv52xF6EnQ?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: facd1a7c-dc9e-46c0-4433-08dbbffc6e29
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 08:25:10.7451
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR20MB3820
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
+Content-Language: en-US, nl
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Jack Zhu <jack.zhu@starfivetech.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        "bryan.odonoghue@linaro.org" <bryan.odonoghue@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
+ <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
+ <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
+ <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
+In-Reply-To: <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
->On Thu, Sep 28, 2023 at 08:34:42AM +0800, Inochi Amaoto wrote:
->
->>>> +properties:
->>>> +  compatible:
->>>> +    oneOf:
->>>> +      - items:
->>>> +          - const: sophgo,sg2042-clint-mtimer
+On 28/09/2023 10:22, Hans Verkuil wrote:
+> On 28/09/2023 10:12, Jack Zhu wrote:
+>>
+>>
+>> On 2023/9/15 17:26, Hans Verkuil wrote:
+>>> On 14/09/2023 05:15, Jack Zhu wrote:
+>>>> Hi,
+>>>>
+>>>> This series is the v9 series that attempts to support the Camera Subsystem
+>>>> found on StarFive JH7110 SoC.
+>>>>
+>>>> This series is based on top of the master branch of media_stage repository.
+>>>>
+>>>> The following are the media graph for the device and the v4l2-compliance
+>>>> output.
+>>>>
+>>>> ===========================================================================
+>>>> [the media graph]:
+>>>>
+>>>> digraph board {
+>>>> 	rankdir=TB
+>>>> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
+>>>> 	n00000001:port1 -> n00000008 [style=dashed]
+>>>> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
+>>>> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
+>>>> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
+>>>> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
+>>>> 	n0000000e:port1 -> n00000004 [style=dashed]
+>>>> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
+>>>> 	n00000018:port0 -> n0000000e:port0 [style=bold]
+>>>> }
+>>>>
+>>>> [the device topology]:
+>>>>
+>>>> Media controller API version 6.5.0
+>>>>
+>>>> Media device information
+>>>> ------------------------
+>>>> driver          starfive-camss
+>>>> model           Starfive Camera Subsystem
+>>>> serial          
+>>>> bus info        platform:19840000.camss
+>>>> hw revision     0x0
+>>>> driver version  6.5.0
+>>>>
+>>>> Device topology
+>>>> - entity 1: stf_isp (2 pads, 2 links)
+>>>>             type V4L2 subdev subtype Unknown flags 0
+>>>>             device node name /dev/v4l-subdev0
+>>>> 	pad0: Sink
+>>>> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
+>>>> 		 crop.bounds:(0,0)/1920x1080
+>>>> 		 crop:(0,0)/1920x1080]
+>>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+>>>> 	pad1: Source
+>>>> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
+>>>> 		 crop.bounds:(0,0)/1920x1080
+>>>> 		 crop:(0,0)/1920x1080]
+>>>> 		-> "capture_yuv":0 []
+>>>>
+>>>> - entity 4: capture_raw (1 pad, 1 link)
+>>>>             type Node subtype V4L flags 0
+>>>>             device node name /dev/video0
+>>>> 	pad0: Sink
+>>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
+>>>>
+>>>> - entity 8: capture_yuv (1 pad, 1 link)
+>>>>             type Node subtype V4L flags 0
+>>>>             device node name /dev/video1
+>>>> 	pad0: Sink
+>>>> 		<- "stf_isp":1 []
+>>>>
+>>>> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
+>>>>              type V4L2 subdev subtype Unknown flags 0
+>>>> 	pad0: Sink
+>>>> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
+>>>> 	pad1: Source
+>>>> 		-> "stf_isp":0 []
+>>>> 		-> "capture_raw":0 []
+>>>> 	pad2: Source
+>>>> 	pad3: Source
+>>>> 	pad4: Source
+>>>>
+>>>> - entity 24: imx219 6-0010 (1 pad, 1 link)
+>>>>              type V4L2 subdev subtype Sensor flags 0
+>>>>              device node name /dev/v4l-subdev1
+>>>> 	pad0: Source
+>>>> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
+>>>> 		 crop.bounds:(8,8)/3280x2464
+>>>> 		 crop:(8,8)/3280x2464]
+>>>> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
+>>>>
+>>>> ===========================================================================
+>>>> [the v4l2-compliance output]:
+>>>>
+>>>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
 >>>
->>> There's only one of these, so you don't need the oneOf.
->>
->> Thanks
->>
->>> Also, is the clint here not a thead IP? In which case, you need to add a
->>
->> Yes, The clint is a thead IP, like that of th1520 and allwinner D1.
->>
->>> second compatible IMO. That second compatible then would be the one that
->>> appears in opensbi etc.
+>>> This v4l2-compliance version is from a distro. For driver acceptance you
+>>> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
+>>>
+>>> Also, since this driver uses the media controller, you must run v4l2-compliance
+>>> with the -m /dev/mediaX option. This will test the compliance of all devices
+>>> reported by the media controller.
+>>>
+>>>>
+>>>> Compliance test for stf camss device /dev/video1:
+>>>>
+>>>> Driver Info:
+>>>> 	Driver name      : stf camss
+>>>
+>>> The module is called starfive-camss, so shouldn't the driver name reported here
+>>> be the same?
+>>>
+>>>> 	Card type        : Starfive Camera Subsystem
+>>>> 	Bus info         : platform:19840000.camss
+>>>> 	Driver version   : 6.5.0
+>>>> 	Capabilities     : 0x84200001
+>>>> 		Video Capture
+>>>> 		Streaming
+>>>> 		Extended Pix Format
+>>>> 		Device Capabilities
+>>>> 	Device Caps      : 0x04200001
+>>>> 		Video Capture
+>>>> 		Streaming
+>>>> 		Extended Pix Format
+>>>> Media Driver Info:
+>>>> 	Driver name      : starfive-camss
+>>>
+>>> It's correct in the media controller information.
+>>>
+>>>> 	Model            : Starfive Camera Subsystem
+>>>> 	Serial           : 
+>>>> 	Bus info         : platform:19840000.camss
+>>>> 	Media version    : 6.5.0
+>>>> 	Hardware revision: 0x00000000 (0)
+>>>> 	Driver version   : 6.5.0
+>>>> Interface Info:
+>>>> 	ID               : 0x0300000a
+>>>> 	Type             : V4L Video
+>>>> Entity Info:
+>>>> 	ID               : 0x00000008 (8)
+>>>> 	Name             : capture_yuv
+>>>> 	Function         : V4L2 I/O
+>>>> 	Pad 0x01000009   : 0: Sink
+>>>> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
+>>>
+>>> Hmm, this reports "Unknown Function". I bet that when you run v4l2-compliance
+>>> with the -m option it will fail on this. If not, then that's likely a bug in
+>>> the compliance test, please let me know if that's the case.
 >>>
 >>
->> As this is a thead IP, maybe use thead,c900-clint-mtimer is fine?
->
->I would suggest calling it -aclint-mtimer instead of clint-mtimer.
->
+>> Hi Hans,
+>>
+>> The following is the latest test log, which does not report a failure, but
+>> also reports "Unknown Function".
+>>
+>> I make the following settings in the stf-isp.c file:
+>> v4l2_subdev.entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
+>>
+> 
+> Can you post the output of:
+> 
+> v4l2-compliance --verbose -M /dev/media0
+> 
+> I am beginning to suspect that utils/common/media-info.cpp is out-of-date:
+> it is missing MEDIA_ENT_F_PROC_VIDEO_ISP.
 
-It is OK for me. As I describe below, now use sophgo as vendor is better.
-Anyway, I will add a new second one in the next patch.
+Yes, this was missing. I've pushed a fix for this.
 
->> If so, whether we should replace the "thead,c900-clint" with these separate
->> DT to describe the thead clint?
->
->No, since that's a different device, right?
->
+Regards,
 
-Yes. It seems sophgo defined these by themselves, but the T-HEAD. Sorry
-for my mistake.
+	Hans
 
->> The DT binding said the thead clint is not
->> compatible with the sifive clint, so maybe this is a chance to just move
->> them out.
->
->I don't think that it really makes sense to do that.
->
->Thanks,
->Conor.
->
->
+> 
+> But I don't understand why v4l2-compliance didn't fail on this.
+> 
+> Regards,
+> 
+> 	Hans
+
