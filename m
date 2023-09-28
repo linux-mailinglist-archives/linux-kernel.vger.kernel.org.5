@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872A77B290A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8961E7B290D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbjI1XuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 19:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
+        id S232203AbjI1XxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 19:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI1XuY (ORCPT
+        with ESMTP id S229654AbjI1XxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:50:24 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688E195;
-        Thu, 28 Sep 2023 16:50:23 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-69101022969so12171605b3a.3;
-        Thu, 28 Sep 2023 16:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695945022; x=1696549822; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZMt+zIF+jw6oNrS3fj8y+UDRx1fAa1Xaxe11egraIX0=;
-        b=F/L+H3te0DOa1zgkD/6EoFeFcmW+jPQoU8wsdBX6a05Yiv3ptIk+595w4ay+fqx65c
-         AssjbP2gtw0v7ltH96He38aEqCuvm2Oz8LJnHlgxP7BIThxOsMxclGnj4RCICXFpMVdD
-         niB10JeLnM6577xagb/uDcxKsc8JThM3SE0ggFmdPQ3xrnDrNaghKeRR6rBxYRJdBiQ+
-         1pp6WT9AfN40+X5jYVcBNaVhTqXE2HN1NHpJHuLomvI6lv5ZjmPUt9y1cmkuTtJ9bwZp
-         CGaDPX8TpR62q7NWJRJo6O2j3LZvoDi2HUSzWlliOdJjOofG6Tj1PEmYL9NKA1p1y0zW
-         YCVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695945022; x=1696549822;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZMt+zIF+jw6oNrS3fj8y+UDRx1fAa1Xaxe11egraIX0=;
-        b=lHTD89W859J/SbUXi/XK0J8LTnpe0ePBKux5B3Bk+gUVvkWNPsDzHX1Kc2x7U2GAJT
-         8PtaAbJ++5IVtZ5YJ/RgMOpTwKUKVJ6FW6Z45w/qpiTtilyBV+nLxgUSsIwoahwviVTE
-         FNRdyDp/I+rCoydg2NT7Axk71hb7F5alJO93aGIA9j4g0F7JHrBLWnsR3rSTPeYnsijK
-         QnBw3q3dKvKcjHWdPdYLf6XyDIL/6XhA6dUs81zmxolDbmWf11xIi0097YA7U1DeJbpN
-         Pa2k/oNoRj4MLPZDTscKalgsIDPTx3FLlS79JVBZjaQj5hoHrnThgbMg5WpIqR3sArYE
-         KrVA==
-X-Gm-Message-State: AOJu0YwIKa9/5gMWSXkpEzEXEy+BRKTC7REd+HD//pFfWTHImCcro1mU
-        IKHKASreyYuTZcb91Q9QF9g=
-X-Google-Smtp-Source: AGHT+IGRDnRwQiG9v//BKw6nb7aCS4Jw4ppLdPdWJMf6lz4GXoevHprt6clbVpV4VVbMAoD4XT0Q9g==
-X-Received: by 2002:a05:6a00:c92:b0:68c:3f2:5ff7 with SMTP id a18-20020a056a000c9200b0068c03f25ff7mr2821852pfv.1.1695945022550;
-        Thu, 28 Sep 2023 16:50:22 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:819e:1876:98c3:2f15])
-        by smtp.gmail.com with ESMTPSA id q9-20020a639809000000b00573f82bb00esm13383482pgd.2.2023.09.28.16.50.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 16:50:22 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH] perf lock contention: Clear lock addr after use
-Date:   Thu, 28 Sep 2023 16:50:18 -0700
-Message-ID: <20230928235018.2136-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+        Thu, 28 Sep 2023 19:53:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D223199;
+        Thu, 28 Sep 2023 16:53:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C74C433C8;
+        Thu, 28 Sep 2023 23:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695945202;
+        bh=LgHeWUx0JGY5CAGIQsUbCEJNxNMNHJ6aWxCT60chWhs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ugY856GiT71C7tZvaYRtjifR7PXC7IzDlj//CbKQSWKBPCdrLnOdSVGEIN6/GYdAQ
+         G82ungix+sKip9fdsSTLvkHlkWsbG9jeyjTu6geZBya3De199c8BRzoNuwG6ZoYOcY
+         BlD3EGCUwslgVptUqiyGWfWXbSbgp9VZW+Ct8do87kBqTNozN9pfoi2sZmsmO7nLMN
+         hrPt1KNjBFldaHrvhLnbU2Tlzj3fNlN4k0/KqV+GOPP/8eCNe2LvEGeoEd6FgeqRwb
+         hvX21G+6jXMD8iu6TSG1XzF0V99CjmUehxzWtPbTfOiFb5G+YW/NGZRa3P0neO40H9
+         OcodqH8pMwcvg==
+Message-ID: <be6ec178bec389ee9094dc62692b7b07.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b6ded7b6-1818-402f-8826-2ab1ecd05056@linaro.org>
+References: <20230913175612.8685-1-danila@jiaxyga.com> <539752971c7a61ce7a5deddc1478686a.sboyd@kernel.org> <b6ded7b6-1818-402f-8826-2ab1ecd05056@linaro.org>
+Subject: Re: [PATCH] clk: qcom: gcc-sm8150: Fix gcc_sdcc2_apps_clk_src
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     adomerlee@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Danila Tikhonov <danila@jiaxyga.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, dkatraga@codeaurora.org,
+        mturquette@baylibre.com, quic_tdas@quicinc.com, vkoul@kernel.org
+Date:   Thu, 28 Sep 2023 16:53:19 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It checks the current lock to calculated the delta of contention time.
-The address is saved in the tstamp map which is allocated at begining of
-contention and released at end of contention.
+Quoting Konrad Dybcio (2023-09-15 05:04:41)
+> On 14.09.2023 18:20, Stephen Boyd wrote:
+> > Quoting Danila Tikhonov (2023-09-13 10:56:11)
+> >> Set .flags =3D CLK_OPS_PARENT_ENABLE to fix "gcc_sdcc2_apps_clk_src: r=
+cg
+> >> didn't update its configuration" error.
+> >>
+> >> Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driv=
+er for SM8150")
+> >> Tested-by: Arseniy Velikanov <adomerlee@gmail.com>
+> >> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+> >> ---
+> >>  drivers/clk/qcom/gcc-sm8150.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm81=
+50.c
+> >> index 41ab210875fb..05d115c52dfe 100644
+> >> --- a/drivers/clk/qcom/gcc-sm8150.c
+> >> +++ b/drivers/clk/qcom/gcc-sm8150.c
+> >> @@ -774,7 +774,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src =3D {
+> >>                 .name =3D "gcc_sdcc2_apps_clk_src",
+> >>                 .parent_data =3D gcc_parents_6,
+> >>                 .num_parents =3D ARRAY_SIZE(gcc_parents_6),
+> >> -               .flags =3D CLK_SET_RATE_PARENT,
+> >> +               .flags =3D CLK_OPS_PARENT_ENABLE,
+> >>                 .ops =3D &clk_rcg2_floor_ops,
+> >=20
+> > In what case are we getting the rcg stuck? I thought that you could
+> > write the rcg registers while the parent was off and switch to that
+> > parent if the parent isn't enabled and it wouldn't get stuck.
+> I think the better question here would be "why isn't
+> OPS_PARENT_ENABLE the default for all qc clocks on all
+> platforms" :/
+>=20
 
-But it's possible for bpf_map_delete_elem() to fail.  In that case, the
-element in the tstamp map kept for the current lock and it makes the
-next contention for the same lock tracked incorrectly.  Specificially
-the next contention begin will see the existing element for the task and
-it'd just return.  Then the next contention end will see the element and
-calculate the time using the timestamp for the previous begin.
+We don't need that flag because of how the hardware works and how the
+clk framework moves the enable of the parent from the old parent to the
+new parent when changing rates. The RCGs only get stuck if we change the
+parent of an RCG to a disabled parent when the current parent is enabled
+and the RCG is enabled. Otherwise we're free to change the parent of the
+RCG because it isn't trying to do a glitch free switch of clk frequency.
 
-This can result in a large value for two small contentions happened from
-time to time.  Let's clear the lock address so that it can be updated
-next time even if the bpf_map_delete_elem() failed.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 4900a5dfb4a4..b11179452e19 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -389,6 +389,7 @@ int contention_end(u64 *ctx)
- 
- 	duration = bpf_ktime_get_ns() - pelem->timestamp;
- 	if ((__s64)duration < 0) {
-+		pelem->lock = 0;
- 		bpf_map_delete_elem(&tstamp, &pid);
- 		__sync_fetch_and_add(&time_fail, 1);
- 		return 0;
-@@ -422,6 +423,7 @@ int contention_end(u64 *ctx)
- 	data = bpf_map_lookup_elem(&lock_stat, &key);
- 	if (!data) {
- 		if (data_map_full) {
-+			pelem->lock = 0;
- 			bpf_map_delete_elem(&tstamp, &pid);
- 			__sync_fetch_and_add(&data_fail, 1);
- 			return 0;
-@@ -445,6 +447,7 @@ int contention_end(u64 *ctx)
- 				data_map_full = 1;
- 			__sync_fetch_and_add(&data_fail, 1);
- 		}
-+		pelem->lock = 0;
- 		bpf_map_delete_elem(&tstamp, &pid);
- 		return 0;
- 	}
-@@ -458,6 +461,7 @@ int contention_end(u64 *ctx)
- 	if (data->min_time > duration)
- 		data->min_time = duration;
- 
-+	pelem->lock = 0;
- 	bpf_map_delete_elem(&tstamp, &pid);
- 	return 0;
- }
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+Is it possible that the clk is running out of boot on a parent that
+is enabled in the hardware but doesn't look enabled to the clk framework
+because of how we fail to hand off enable state? Maybe the mmc driver
+then calls clk_set_rate() to change the rate (rcg is still off) and that
+causes problems?
