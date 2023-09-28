@@ -2,129 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE8F7B2491
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1B37B249F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjI1SBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
+        id S231810AbjI1SBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjI1SB1 (ORCPT
+        with ESMTP id S230291AbjI1SBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:01:27 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A53319D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:01:25 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ad8a822508so1749510866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20230601.gappssmtp.com; s=20230601; t=1695924084; x=1696528884; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uiur2uBooxXQUwnNCRFKyJNY9Mbndh5Va49ZBRlBVnE=;
-        b=EQe67hE51E/a6VgfxXlBAzZCIDwxZJPDV2ZBN3AT9RwqBeUYxm8q69zZdJ0jEA/gNf
-         IirJYjKSyZUgJt1PVEw7QrLXIcCxUV+PSY5zKHYzggHDxp0gvCesEyMZKaIqE3bSk0oO
-         JpemQ1kLIjtcjLBQ+hM9p7gozeHe4O4tV1rVdoQBaceOU7yDyBixyslDIKOkp+6tI6zz
-         5Yo1CjTihKtDAhxhT+cM+5fkC2IWNMFApqpMm77AP8NdAB38ffhHQkP6oJu8ibCr78pt
-         BbkfnHJ3fZ84OxQ6HWGjHbjnjokI2oXg8vssBisDXNTinYXDkSHfXlp3Agym3+0bRDLh
-         PsJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695924084; x=1696528884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uiur2uBooxXQUwnNCRFKyJNY9Mbndh5Va49ZBRlBVnE=;
-        b=TBLcnrYe1PlNrwv8moPwmkwrtmrEf/Po5DxCFLCprlJj1BlVYPs/yBQrLMFnpEGhQ+
-         ugh/F9TjwdKm0JIeflhpKWAp4S2SSaZ4h2eQVpTLGe/kAtNih3dDBzpHmVsviU4rR1eF
-         9xLenFz2HwqU1w3BeZrSZSdzlMl6hMwmwcmRm9zHc3DM2E29sq/Uo7yCBZUZUGSbTEl6
-         bVypsNTDq7s2D3yCpmIA3hAY2XEnBixVTgKATEUizr3stR2EJ6y1v43P9atYTuAZMVIx
-         kh51PAYzhp7WIMg06GSWQB3l1xXACl9bnqq1lnQ7YYwMqFmHeELz4EYal8LNIYZbxa2n
-         lGcA==
-X-Gm-Message-State: AOJu0YzhEet2VObv+sfMaasBEMGTBdexnDhSwV0zWPDgsPyzesg/tDr6
-        U74Gn313sTXPL/Yu5n3mY5bATCVGx6kbyiBXXqoqOw==
-X-Google-Smtp-Source: AGHT+IGaXe8uTKz9Ra+54w7HxJaOzDdbmCsFVteQiYOGSh3tR/eEZ9h+AFAxYV1KjHvtL2mksRiQ52ceS6LkJ4KGNgY=
-X-Received: by 2002:a17:906:5393:b0:9a1:f73b:90ce with SMTP id
- g19-20020a170906539300b009a1f73b90cemr1949184ejo.54.1695924083992; Thu, 28
- Sep 2023 11:01:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230926194335.1451802-1-tharvey@gateworks.com> <a3b3d647-4995-4d55-b6f9-a93119caf86e@linaro.org>
-In-Reply-To: <a3b3d647-4995-4d55-b6f9-a93119caf86e@linaro.org>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Thu, 28 Sep 2023 11:01:11 -0700
-Message-ID: <CAJ+vNU0R_zU2wh1Om9wgLp4ZREAJia5uxBCgrO7MxNmcZf7uLw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mp-venice-gw73xx: add TPM device
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 28 Sep 2023 14:01:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D841A2;
+        Thu, 28 Sep 2023 11:01:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6C1DC433C7;
+        Thu, 28 Sep 2023 18:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695924109;
+        bh=EAdPFsmHcyWayc69u1pNQGVN/Od37LMkwOOQtSvFBiM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=bfK28RLdLGgKZCUgDzeWTBKaqWs6brrGRaSyPdFXskOVm0On6PlLojE5M/xCgEEY5
+         grpUMo2uaqDtijMvKbHWfOGFJG+vQA/tkSyBcl6qHWL3dn3aU/KYO5L4q/l83Nz1PF
+         rjm7ECl0slpI4oU4YRq3Il4iqcNMzLzfgVWdoz5lG6ZAiTp3N12KGI95ZvFcFMlTR+
+         jbG318WOr9JpuRBEryTb1XBxjEr4Jw9k8E4/FfV1BqWFd1k5jtZEs5n6naq0zoe6ze
+         HRJ/cpQFseJro5/YEKgl8SVwodWHkLRLpC8H6rkjRLoCIio3JUF68vh6UiBMp7cQEp
+         W7opbVnaB1VbA==
+Message-ID: <00ca2e3997cc86401f7fb65d936fe5403abd5627.camel@kernel.org>
+Subject: Re: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Mattia Dongili <malattia@linux.it>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ian Kent <raven@themaw.net>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Anders Larsen <al@alarsen.net>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Date:   Thu, 28 Sep 2023 14:01:33 -0400
+In-Reply-To: <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+References: <20230928110554.34758-1-jlayton@kernel.org>
+         <20230928110554.34758-3-jlayton@kernel.org>
+         <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 12:58=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 26/09/2023 21:43, Tim Harvey wrote:
-> > Add the TPM device found on the GW73xx revision F PCB.
-> >
-> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> > ---
-> >  .../boot/dts/freescale/imx8mp-venice-gw73xx.dtsi      | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi b/=
-arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-> > index 48a284478468..43e5e838cefa 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-> > @@ -95,8 +95,17 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
-> >  &ecspi2 {
-> >       pinctrl-names =3D "default";
-> >       pinctrl-0 =3D <&pinctrl_spi2>;
-> > -     cs-gpios =3D <&gpio5 13 GPIO_ACTIVE_LOW>;
-> > +     cs-gpios =3D <&gpio5 13 GPIO_ACTIVE_LOW>,
-> > +                <&gpio1 10 GPIO_ACTIVE_LOW>;
-> >       status =3D "okay";
-> > +
-> > +     tpm@1 {
-> > +             compatible =3D "tcg,tpm_tis-spi";
-> > +             #address-cells =3D <0x1>;
-> > +             #size-cells =3D <0x1>;
->
-> Why do you need these?
->
-> > +             reg =3D <0x1>;
->
-> reg is always after compatible
->
-> > +             spi-max-frequency =3D <36000000>;
-> > +     };
-> >  };
-> >
-> >  &gpio4 {
->
-> Best regards,
-> Krzysztof
->
+On Thu, 2023-09-28 at 10:41 -0700, Linus Torvalds wrote:
+> On Thu, 28 Sept 2023 at 04:06, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > Move i_blocks up above the i_lock, which moves the new 4 byte hole to
+> > just after the timestamps, without changing the size of the structure.
+>=20
+> I'm sure others have mentioned this, but 'struct inode' is marked with
+> __randomize_layout, so the actual layout may end up being very
+> different.
+>=20
+> I'm personally not convinced the whole structure randomization is
+> worth it - it's easy enough to figure out for any distro kernel since
+> the seed has to be the same across machines for modules to work, so
+> even if the seed isn't "public", any layout is bound to be fairly
+> easily discoverable.
+>=20
+> So the whole randomization only really works for private kernel
+> builds, and it adds this kind of pain where "optimizing" the structure
+> layout is kind of pointless depending on various options.
+>=20
+> I certainly *hope* no distro enables that pointless thing, but it's a wor=
+ry.
+>=20
 
-Krzysztof,
+I've never enabled struct randomization and don't know anyone who does.
+I figure if you turn that on, you get to keep all of the pieces when you
+start seeing weird performance problems.
 
-Thanks for the review - I will remove the unnecessary properties with a v2
+I think that we have to optimize for that being disabled. Even without
+that though, turning on and off options can change the layout...and then
+there are different arches, etc.
 
-Best Regards,
-
-Tim
+I'm using a config derived from the Fedora x86_64 kernel images and hope
+that represents a reasonably common configuration. The only conditional
+members before the timestamps are based on CONFIG_FS_POSIX_ACL and
+CONFIG_SECURITY, which are almost always turned on with most distros.
+--=20
+Jeff Layton <jlayton@kernel.org>
