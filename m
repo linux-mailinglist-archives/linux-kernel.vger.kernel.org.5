@@ -2,67 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 405CD7B1634
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9097B1639
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjI1IlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S231346AbjI1Ilj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjI1IlB (ORCPT
+        with ESMTP id S231345AbjI1Ild (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:41:01 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E4D180;
-        Thu, 28 Sep 2023 01:40:56 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 22C7724E03E;
-        Thu, 28 Sep 2023 16:40:55 +0800 (CST)
-Received: from EXMBX173.cuchost.com (172.16.6.93) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
- 2023 16:40:55 +0800
-Received: from [192.168.1.218] (180.164.60.184) by EXMBX173.cuchost.com
- (172.16.6.93) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 28 Sep
- 2023 16:40:54 +0800
-Message-ID: <9ac2d04c-ed0c-9940-53b4-b36d6df22afe@starfivetech.com>
-Date:   Thu, 28 Sep 2023 16:40:54 +0800
+        Thu, 28 Sep 2023 04:41:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FB2193
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695890491; x=1727426491;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=0FQJGbWXFcIP1Em3P9B6DCDr/8uj5UOIoKqYQl7Gmx8=;
+  b=GiCzv5KCwd6GTRVykNwuA1TMmofiIx8KyEJNQoRPAftILrafP3MgiXba
+   AD6+XnUM1bXVlLhRdDLZFKwzdaqs71ZoFgq5HT7f/kLoJZVR7zf8vVibA
+   stIIlMwT/QRPJAXYLerh4AF5jcnZDvK8qDa4nP2Wijy6ucih2MQbjs1h7
+   PHWJSA/tMwEN34CYvbLPrgv4sUwYTkA6Y6XuPg26W31U3hum6r/ITEy2O
+   kGU7uwa3mk/+YcBBYAxm10hzdU0i+DU74xwFa4TEFOpjKML1G631a1/bx
+   idAxrpAvxHSQKkQaJlNm0KExOTHRhrJamEURJsvaLdFDbxcCOfnJ98V/3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="361387961"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="361387961"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 01:41:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="892950441"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="892950441"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Sep 2023 01:40:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 28 Sep 2023 01:41:30 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 28 Sep 2023 01:41:30 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 28 Sep 2023 01:41:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IQ/UphG75oSfwC7OTLkXMPWeoLdZRYwHQEVPxvimO+7PWjGiu5nAxQN/X9XaDh4l4nEk92xnLF9eIu1blAL1i+oL3g2asXxBB7jn9DaWJeoJl0QwPtViSNBAvJrDXh7Ml8lxGcrCvSR/iGEEJ5CCpDJWzL5PFbqI4eLNKAq7zaqJ5dctrn5D0qw26wuLf97gAdI6rapozXZsMiGnhhgfpHfjkeHJjlh5v5I+z5TpFf0ge2dBz7t37bIM7ahKzXw1lhbGGuebB3JuofIKPuPHe+B8i8jeeoOq5xpiYYo9Y6m1rCZzpe75EHBG45aLiYZGoOiaL9wjEqLwz7ErWeS4jA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tYqmCHWXFwUS1/Wbg0s+lNGaj5aeUkBKjhryfCj1vro=;
+ b=dTFeH5HMam34t89sYKKmPnBA5UqWenwqOfzVN+s+yESCgPLaT7/x1Ok7SLfdxGPenr0u1U7Lx6+Un1aOEb5g0/y9pw60Hzw0FkJo5bEdGqjoZ9cKqDObC/20Fc54T6vzEfoWxgUf55YXVO1iHl5cNmysBEUvDUVMoyJ3jNbh0haiZ/yevcS7QDzksheKPnz9fYXV6udm3m8qntLJ/voxbaQby4lC3SFZnTl2ZWIGV1u6Uw9VbVAzgYnevekOEcHvZk/YPupgbFcoACLecdZDI/cvPi+XZ6XzyHXNWmGtCy3Bvkay2l9gffRpfLW6UKkPLG96YPE+zonGiq4I4uAh5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+ by CY8PR11MB7800.namprd11.prod.outlook.com (2603:10b6:930:72::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Thu, 28 Sep
+ 2023 08:41:27 +0000
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9]) by MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9%4]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
+ 08:41:27 +0000
+Date:   Thu, 28 Sep 2023 16:41:10 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     K Prateek Nayak <kprateek.nayak@amd.com>
+CC:     David Vernet <void@manifault.com>, <linux-kernel@vger.kernel.org>,
+        <peterz@infradead.org>, <mingo@redhat.com>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <vschneid@redhat.com>, <tj@kernel.org>, <roman.gushchin@linux.dev>,
+        <gautham.shenoy@amd.com>, <aaron.lu@intel.com>,
+        <wuyun.abel@bytedance.com>, <kernel-team@meta.com>
+Subject: Re: [RFC PATCH 3/3] sched/fair: Add a per-shard overload flag
+Message-ID: <ZRU8Jt1TzOD2pOxx@chenyu5-mobl2.ccr.corp.intel.com>
+References: <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
+ <20230831104508.7619-1-kprateek.nayak@amd.com>
+ <20230831104508.7619-4-kprateek.nayak@amd.com>
+ <20230831191103.GC531917@maniforge>
+ <258c9412-445a-04f5-dd0d-1f6699a257b6@amd.com>
+ <ZRPS0cQo0/XcbkOj@chenyu5-mobl2.ccr.corp.intel.com>
+ <d755d515-e5d6-b3fc-f7f5-9f8aebcf913a@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d755d515-e5d6-b3fc-f7f5-9f8aebcf913a@amd.com>
+X-ClientProxiedBy: SI2PR01CA0025.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::10) To MN0PR11MB6206.namprd11.prod.outlook.com
+ (2603:10b6:208:3c6::8)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v9 0/8] Add StarFive Camera Subsystem driver
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        "bryan.odonoghue@linaro.org" <bryan.odonoghue@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "Changhuang Liang" <changhuang.liang@starfivetech.com>
-References: <20230914031607.34877-1-jack.zhu@starfivetech.com>
- <11735008-1adf-4b84-9023-d295371caed5@xs4all.nl>
- <705f6143-169d-907e-9453-a5b384f921cd@starfivetech.com>
- <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
-From:   Jack Zhu <jack.zhu@starfivetech.com>
-In-Reply-To: <c9eb7857-896f-43dd-b8fe-4711ba202c81@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [180.164.60.184]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX173.cuchost.com
- (172.16.6.93)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|CY8PR11MB7800:EE_
+X-MS-Office365-Filtering-Correlation-Id: 51b93546-ddc2-4214-531c-08dbbffeb422
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gcgLi7F8Pw4pfIV1VMxSOoLLtd2RqZK89yFvJmYDpTPGvnU5VHeCAuPqBVOuzsvHKQRJB4kl7OtQssEPqWCWGHI/ySY0uk/Nv6dq7NhwKbSTQmouGxvKTCWZYueVrQcy2DBbpDfb5yObd1ykelsFY1BKyqW5kp5cNU9/VRdOpwbkFWjKgwSIJt3ATwtJye1Qs3fOg5qX0G2woJalpt2++srR6qpUunqG5ZW8wFpuKddgJHnFSi6wkXn+QULj72Ojvs9gPP5r+lQVM5frf62Vo89WunaoGMvJqyafOAjp2LhWQuDoQc50QoWu8qVZlywpY61KiTYKzkMOvcYptOFRzehWsTKEzIRpF3Kj/DQzqk1VQI3MCRxDpuWXwZtlTZpys0yPn08Qtt92NuJPl9q2HF0Le8mNvTKJV+RzZkfLRQ+FaHkvacMxIwl3inwheeIhbXEvhhGHCQK/LPiEB7IkQ6kC8GW09VPpB5wGfjlo6x21vYprobk1YgulBiqxSGB8wv+akWEEv6tR9iiax/nii6SUBQ3J+2ufPJXATvD1CNU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(366004)(136003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(41300700001)(6916009)(316002)(66476007)(66946007)(66556008)(8676002)(4326008)(8936002)(5660300002)(7416002)(53546011)(6666004)(478600001)(6486002)(6506007)(26005)(6512007)(83380400001)(82960400001)(38100700002)(86362001)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hesAEWAy70ljHnQRb6eXOCefqcd0ZPFKm6nJVmpDhQB9VHv6yBRdhbRy7K6c?=
+ =?us-ascii?Q?GZObxIr3cnmd0CUPy6p1JEUn+YYhACxmyYpBalNFeY1rKmDrpuBvER5UUrjh?=
+ =?us-ascii?Q?SiNURL7cFaje0yH3ioFTEpD5cxvIpPiFdIgWEPYQZybXeBFo75hJct0HRAyl?=
+ =?us-ascii?Q?bJA7LbZAG6v+pvlu8qsVigf2s5HMT2NPn/Cokz8V3Mm1k2pLWKmUxiphODZ2?=
+ =?us-ascii?Q?VuC7MEtYxwRsNkbFrulpEf39IWeE8z4jdXvJUCxq/Jt9oZDqsmCzfuVZnzVz?=
+ =?us-ascii?Q?DTy5CIQFno30CNuwl0iYkT5S2b7THx53gugiL0Fsfm8r1+RFVdt5uAN0h4dh?=
+ =?us-ascii?Q?KCaeTlVXkDN1OdUUeIZGrnT7hv/+HdR+pRzTCQS2BJdJGhMPgWdw5hNmPC0h?=
+ =?us-ascii?Q?7uGle9WAl7HHSx+Bfb5l3H/XA/N/R8Yvwxc0Pj9+fvyaZz5hjWA/j6psjB93?=
+ =?us-ascii?Q?teKlXVFFRCDhELrCMhVK1WRNZcsjWeYNwSlB2ERE7sCeBUmBuj4N2mpTEMQ8?=
+ =?us-ascii?Q?4KSXLZGZYx61QPBKys14wRbQndiL0C4+N4puFgimdlAWnrKXmU6nGcvhbXqK?=
+ =?us-ascii?Q?cHEjdRfe53p63HqRVnmxnNHK8huSoDLRYhp4S6A/3lO3JHaJfgL6plbMud8i?=
+ =?us-ascii?Q?Z60ID9858JcSPouAR9y7Ob/Fhgx5FiSjDaSp4XfBhRjDwxI4IeeBhjM5n9kf?=
+ =?us-ascii?Q?SUVspNvBFkZHXR8MbQPeam2M+iHGae/WAk/HkMr8BEvkoSyw8xFR2Y5anFDJ?=
+ =?us-ascii?Q?RA+9GRvSVR7D0SgXBQbmii24x5k6Q5eqMVWqwRZdM78FiBWvbgeiKgF1QEVd?=
+ =?us-ascii?Q?4+wFW1b4M4ccmyqEhcANdNKDPNwz4xF1piIPeh9OG5iVb49pg7/70TsCGk+m?=
+ =?us-ascii?Q?UctWYlX/Fq2alDA6crtXBFOUu72OVEwO8QfAuEVOGtOTi7Vah4W/QzfNyQqv?=
+ =?us-ascii?Q?8b3O8zka9cC+1PF4n4JnkE80ipgA5MjypoA0zM9NSzZkRemELESL5f00fbqv?=
+ =?us-ascii?Q?QuDZMiP1a7wiQnDcp+YejXzKNf/hCK17P2gWH5qKnk9b6MmeOSiRp5XD4Lyw?=
+ =?us-ascii?Q?2YQMa2LUB3IfHXlhnIjwvqMuOWlw7ieYebc6puf9eao4IL1Y/rTdZ+nbLiUu?=
+ =?us-ascii?Q?Bf2fdHZ9phZwsPaRrLIpW3OG+A3mXUBMMITCDfhQ3dQD7dkA/BwySl83tgIp?=
+ =?us-ascii?Q?yfAVXB50iw4do9SAPtc6A8zmXulqag/NGMD9yJTi1/1gaX2+ZMNWimjqDaKw?=
+ =?us-ascii?Q?LU+tPlrV/Vc4d9tnfmeRSxfa3KBcIDu2m/SW59DoRIMr7zRGj7NCFlTn79Fr?=
+ =?us-ascii?Q?3RCiDiroLDcVoCreLbQEGn9HGLJef52h/LHtntrIEQbj2hsbsap+vVgnuGal?=
+ =?us-ascii?Q?KX0E6dBes8ptvYOG9Tfmhni0AZs+wwi0Ei8sRRyFcQnVwj3TGcnm0xSOBZaF?=
+ =?us-ascii?Q?FKXv/n2leCjEKDG6UVdkwSxDn5d5HieNzmoszf0kA+rpkReN/bm6yaHgHPWV?=
+ =?us-ascii?Q?N099i9Ooi1M9dr+SxqG4Hknm7CEKvP+d9WDsimtvDwSj5eFjmLbAhM+sit8k?=
+ =?us-ascii?Q?exjIo4P8m56yksrEMdJM6L3mwnyNEpGq2hBaVvmH?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51b93546-ddc2-4214-531c-08dbbffeb422
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 08:41:26.9231
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vLAXmaagKffDRnt+drm+E1DQgv5Yafi5m9fN08Z63F2V+J/iMDqL0wRXcB/bIFgh48R/oAM92kyoxoQqhHZLmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7800
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,241 +156,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/9/28 16:22, Hans Verkuil wrote:
-> On 28/09/2023 10:12, Jack Zhu wrote:
->> 
->> 
->> On 2023/9/15 17:26, Hans Verkuil wrote:
->>> On 14/09/2023 05:15, Jack Zhu wrote:
->>>> Hi,
->>>>
->>>> This series is the v9 series that attempts to support the Camera Subsystem
->>>> found on StarFive JH7110 SoC.
->>>>
->>>> This series is based on top of the master branch of media_stage repository.
->>>>
->>>> The following are the media graph for the device and the v4l2-compliance
->>>> output.
->>>>
->>>> ===========================================================================
->>>> [the media graph]:
->>>>
->>>> digraph board {
->>>> 	rankdir=TB
->>>> 	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n00000001:port1 -> n00000008 [style=dashed]
->>>> 	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
->>>> 	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
->>>> 	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n0000000e:port1 -> n00000001:port0 [style=dashed]
->>>> 	n0000000e:port1 -> n00000004 [style=dashed]
->>>> 	n00000018 [label="{{} | imx219 6-0010\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
->>>> 	n00000018:port0 -> n0000000e:port0 [style=bold]
->>>> }
->>>>
->>>> [the device topology]:
->>>>
->>>> Media controller API version 6.5.0
->>>>
->>>> Media device information
->>>> ------------------------
->>>> driver          starfive-camss
->>>> model           Starfive Camera Subsystem
->>>> serial          
->>>> bus info        platform:19840000.camss
->>>> hw revision     0x0
->>>> driver version  6.5.0
->>>>
->>>> Device topology
->>>> - entity 1: stf_isp (2 pads, 2 links)
->>>>             type V4L2 subdev subtype Unknown flags 0
->>>>             device node name /dev/v4l-subdev0
->>>> 	pad0: Sink
->>>> 		[fmt:SRGGB10_1X10/1920x1080 field:none colorspace:srgb
->>>> 		 crop.bounds:(0,0)/1920x1080
->>>> 		 crop:(0,0)/1920x1080]
->>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>> 	pad1: Source
->>>> 		[fmt:YUYV8_1_5X8/1920x1080 field:none colorspace:srgb
->>>> 		 crop.bounds:(0,0)/1920x1080
->>>> 		 crop:(0,0)/1920x1080]
->>>> 		-> "capture_yuv":0 []
->>>>
->>>> - entity 4: capture_raw (1 pad, 1 link)
->>>>             type Node subtype V4L flags 0
->>>>             device node name /dev/video0
->>>> 	pad0: Sink
->>>> 		<- "cdns_csi2rx.19800000.csi-bridge":1 []
->>>>
->>>> - entity 8: capture_yuv (1 pad, 1 link)
->>>>             type Node subtype V4L flags 0
->>>>             device node name /dev/video1
->>>> 	pad0: Sink
->>>> 		<- "stf_isp":1 []
->>>>
->>>> - entity 14: cdns_csi2rx.19800000.csi-bridge (5 pads, 3 links)
->>>>              type V4L2 subdev subtype Unknown flags 0
->>>> 	pad0: Sink
->>>> 		<- "imx219 6-0010":0 [ENABLED,IMMUTABLE]
->>>> 	pad1: Source
->>>> 		-> "stf_isp":0 []
->>>> 		-> "capture_raw":0 []
->>>> 	pad2: Source
->>>> 	pad3: Source
->>>> 	pad4: Source
->>>>
->>>> - entity 24: imx219 6-0010 (1 pad, 1 link)
->>>>              type V4L2 subdev subtype Sensor flags 0
->>>>              device node name /dev/v4l-subdev1
->>>> 	pad0: Source
->>>> 		[fmt:SRGGB10_1X10/3280x2464 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range
->>>> 		 crop.bounds:(8,8)/3280x2464
->>>> 		 crop:(8,8)/3280x2464]
->>>> 		-> "cdns_csi2rx.19800000.csi-bridge":0 [ENABLED,IMMUTABLE]
->>>>
->>>> ===========================================================================
->>>> [the v4l2-compliance output]:
->>>>
->>>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
->>>
->>> This v4l2-compliance version is from a distro. For driver acceptance you
->>> must test with a v4l2-compliance compiled from the git repo (git://linuxtv.org/v4l-utils.git).
->>>
->>> Also, since this driver uses the media controller, you must run v4l2-compliance
->>> with the -m /dev/mediaX option. This will test the compliance of all devices
->>> reported by the media controller.
->>>
->>>>
->>>> Compliance test for stf camss device /dev/video1:
->>>>
->>>> Driver Info:
->>>> 	Driver name      : stf camss
->>>
->>> The module is called starfive-camss, so shouldn't the driver name reported here
->>> be the same?
->>>
->>>> 	Card type        : Starfive Camera Subsystem
->>>> 	Bus info         : platform:19840000.camss
->>>> 	Driver version   : 6.5.0
->>>> 	Capabilities     : 0x84200001
->>>> 		Video Capture
->>>> 		Streaming
->>>> 		Extended Pix Format
->>>> 		Device Capabilities
->>>> 	Device Caps      : 0x04200001
->>>> 		Video Capture
->>>> 		Streaming
->>>> 		Extended Pix Format
->>>> Media Driver Info:
->>>> 	Driver name      : starfive-camss
->>>
->>> It's correct in the media controller information.
->>>
->>>> 	Model            : Starfive Camera Subsystem
->>>> 	Serial           : 
->>>> 	Bus info         : platform:19840000.camss
->>>> 	Media version    : 6.5.0
->>>> 	Hardware revision: 0x00000000 (0)
->>>> 	Driver version   : 6.5.0
->>>> Interface Info:
->>>> 	ID               : 0x0300000a
->>>> 	Type             : V4L Video
->>>> Entity Info:
->>>> 	ID               : 0x00000008 (8)
->>>> 	Name             : capture_yuv
->>>> 	Function         : V4L2 I/O
->>>> 	Pad 0x01000009   : 0: Sink
->>>> 	  Link 0x0200000c: from remote pad 0x1000003 of entity 'stf_isp' (Unknown Function (00004009)): Data, Enabled
->>>
->>> Hmm, this reports "Unknown Function". I bet that when you run v4l2-compliance
->>> with the -m option it will fail on this. If not, then that's likely a bug in
->>> the compliance test, please let me know if that's the case.
->>>
->> 
->> Hi Hans,
->> 
->> The following is the latest test log, which does not report a failure, but
->> also reports "Unknown Function".
->> 
->> I make the following settings in the stf-isp.c file:
->> v4l2_subdev.entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
->> 
+On 2023-09-27 at 14:06:41 +0530, K Prateek Nayak wrote:
+> Hello Chenyu,
 > 
-> Can you post the output of:
+> On 9/27/2023 12:29 PM, Chen Yu wrote:
+> > Hi Prateek,
+> > 
+> > On 2023-09-27 at 09:53:13 +0530, K Prateek Nayak wrote:
+> >> Hello David,
+> >>
+> >> Some more test results (although this might be slightly irrelevant with
+> >> next version around the corner)
+> >>
+> >> On 9/1/2023 12:41 AM, David Vernet wrote:
+> >>> On Thu, Aug 31, 2023 at 04:15:08PM +0530, K Prateek Nayak wrote:
+> >>>
+
+[snip]
+
+> > This makes me wonder if we can let shared_runq skip the C/S tasks.
+> > The question would be how to define C/S tasks. At first thought:
+> > A only wakes up B, and B only wakes up A, then they could be regarded as a pair
+> > of C/S
+> >  (A->last_wakee == B && B->last_wakee == A &&
+> >   A->wakee_flips <= 1 && B->wakee_flips <= 1)
+> > But for netperf/tbench, this does not apply, because netperf client leverages kernel
+> > thread(workqueue) to wake up the netserver, that is A wakes up kthread T, then T
+> > wakes up B. Unless we have a chain, we can not detect this wakeup behavior.
 > 
-> v4l2-compliance --verbose -M /dev/media0
+> Yup, unless we have a notion of chain/flow, or until we can somehow
+> account the wakeup of client using the kthread to the server, this will
+> be hard to detect.
 > 
+> I can give it a try with the SIS_PAIR condition you shared above. Let
+> me know.
 
-Output log of the above command:
+Thanks Krateek, but I don't think SIS_PAIR could bring benefit to the netperf/tbench
+since SIS_PAIR can not detect the chain wakeup.
 
-# 
-# v4l2-compliance --verbose -M /dev/media0
-v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
-
-Compliance test for starfive-camss device /dev/media0:
-
-Media Driver Info:
-	Driver name      : starfive-camss
-	Model            : Starfive Camera Subsystem
-	Serial           : 
-	Bus info         : platform:19840000.camss
-	Media version    : 6.5.0
-	Hardware revision: 0x00000000 (0)
-	Driver version   : 6.5.0
-
-Required ioctls:
-	test MEDIA_IOC_DEVICE_INFO: OK
-	test invalid ioctls: OK
-
-Allow for multiple opens:
-	test second /dev/media0 open: OK
-	test MEDIA_IOC_DEVICE_INFO: OK
-	test for unlimited opens: OK
-
-Media Controller ioctls:
-		Entity: 0x00000001 (Name: 'stf_isp', Function: Unknown Function (00004009))
-		Entity: 0x00000004 (Name: 'capture_raw', Function: V4L2 I/O)
-		Entity: 0x00000008 (Name: 'capture_yuv', Function: V4L2 I/O)
-		Entity: 0x0000000e (Name: 'cdns_csi2rx.19800000.csi-bridge', Function: Video Interface Bridge)
-		Entity: 0x00000018 (Name: 'imx219 6-0010', Function: Camera Sensor)
-		Interface: 0x03000006 (Type: V4L Video, DevPath: /dev/video0)
-		Interface: 0x0300000a (Type: V4L Video, DevPath: /dev/video1)
-		Interface: 0x0300001c (Type: V4L Sub-Device, DevPath: /dev/v4l-subdev0)
-		Interface: 0x0300001e (Type: V4L Sub-Device, DevPath: /dev/v4l-subdev1)
-		Pad: 0x01000002 (0, stf_isp, Sink)
-		Pad: 0x01000003 (1, stf_isp, Source)
-		Pad: 0x01000005 (0, capture_raw, Sink)
-		Pad: 0x01000009 (0, capture_yuv, Sink)
-		Pad: 0x0100000f (0, cdns_csi2rx.19800000.csi-bridge, Sink)
-		Pad: 0x01000010 (1, cdns_csi2rx.19800000.csi-bridge, Source)
-		Pad: 0x01000011 (2, cdns_csi2rx.19800000.csi-bridge, Source)
-		Pad: 0x01000012 (3, cdns_csi2rx.19800000.csi-bridge, Source)
-		Pad: 0x01000013 (4, cdns_csi2rx.19800000.csi-bridge, Source)
-		Pad: 0x01000019 (0, imx219 6-0010, Source)
-		Interface Link: 0x02000007 (capture_raw to /dev/video0)
-		Interface Link: 0x0200000b (capture_yuv to /dev/video1)
-		Data Link: 0x0200000c (stf_isp:1 -> capture_yuv:0, Data, Enabled)
-		Data Link: 0x02000014 (cdns_csi2rx.19800000.csi-bridge:1 -> stf_isp:0, Data, Enabled)
-		Data Link: 0x02000016 (cdns_csi2rx.19800000.csi-bridge:1 -> capture_raw:0, Data)
-		Data Link: 0x0200001a (imx219 6-0010:0 -> cdns_csi2rx.19800000.csi-bridge:0, Data, Enabled, Immutable)
-		Interface Link: 0x0200001d (stf_isp to /dev/v4l-subdev0)
-		Interface Link: 0x0200001f (imx219 6-0010 to /dev/v4l-subdev1)
-	test MEDIA_IOC_G_TOPOLOGY: OK
-	Entities: 5 Interfaces: 4 Pads: 10 Links: 8
-		Entity: 0x00000001 (Name: 'stf_isp', Type: Unknown V4L2 Sub-Device, DevPath: /dev/v4l-subdev0)
-		Entity: 0x00000004 (Name: 'capture_raw', Type: V4L2 I/O, DevPath: /dev/video0)
-		Entity: 0x00000008 (Name: 'capture_yuv', Type: V4L2 I/O, DevPath: /dev/video1)
-		Entity: 0x0000000e (Name: 'cdns_csi2rx.19800000.csi-bridge', Type: Unknown V4L2 Sub-Device)
-		Entity: 0x00000018 (Name: 'imx219 6-0010', Type: Camera Sensor, DevPath: /dev/v4l-subdev1)
-	test MEDIA_IOC_ENUM_ENTITIES/LINKS: OK
-	test MEDIA_IOC_SETUP_LINK: OK
-
-Total for starfive-camss device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
-# 
-
---
-Regards,
-
-Jack Zhu
+thanks,
+Chenyu
