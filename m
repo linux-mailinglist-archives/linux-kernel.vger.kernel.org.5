@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6347B20A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289217B20A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjI1PMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47818 "EHLO
+        id S231639AbjI1PMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbjI1PMa (ORCPT
+        with ESMTP id S231607AbjI1PMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:12:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482E91A8;
+        Thu, 28 Sep 2023 11:12:34 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D221AD
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:12:32 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40537481094so134075925e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695913951; x=1696518751; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QbZ/IqNedSBPQT19iHqk9aJKTCqpT7A2JizGg5+9yTU=;
+        b=m12T7TE24TZURDentk80QMd+V7G3YPqvryJzAAsb5hmunjiM7f3/q8twNFhzsd/hPj
+         UebDk8tXlOvtteuTbffluBFdNDf1PBOORmY3eaJXBWCxn97cW9NuEDv0TjV5dcCuWRwZ
+         n7HEsAPb6wKYSOFlNkrMk9iZu1MbHqKPvXtsHBRUj9rsAv5XVUNtDEm2bTGb1CfmyIWa
+         l39BmLW1SP+DCsx/Tl/wSVw1VZ0dvPVe5bU7BR5+T1Uqd4VollgYVPAb2R2bciruNaRE
+         Wl60Q3t6TO8R8wt0igXQp91jnFK7AXurBkcD3FlV5ju92tL0c4xFIUu99mww42mJ/mvg
+         I7MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695913951; x=1696518751;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QbZ/IqNedSBPQT19iHqk9aJKTCqpT7A2JizGg5+9yTU=;
+        b=df8i3qAi/JuJ9CkGXlrgtYH3hARV5KWATZftrLJ8Tg2+eA107Kb+VjSnE0PLYZ5rQa
+         3id/tFwn3a+8Pstxv5kvCDgmimITuPE/JiQ/b9SY76wp6KOcyg4QFZ0fB2Eq4h45kzRx
+         xAlK6QaPgDcCUMl/wBZE1O0Sb+upQgcK7SBqfK8dRU3KWDNi7C7yQ2VKO+oCO5CNHEDh
+         0MKS7Bg34gChI1NzKL5cD4ujZaFU0rjQnIQjl2FOPpYkyfumXoJT96N3xYsu87aiGQkq
+         QI8Ec3VW6g1xbzvjtOFnIldGrYuskz54MFCuL6HGOyQbp9+4nr4L6ocyTWHMnhcpebRv
+         aXLQ==
+X-Gm-Message-State: AOJu0YyhsBP6b8fk3YU/U/AGwdvq2g4wW3qg09byBqeXdVKA42fuxxZf
+        ssRAUCRWhlc/LNL2zTnBeKTqgQ==
+X-Google-Smtp-Source: AGHT+IGnch1UoBa2jDjMOtVTX2kWLxJsEK2B3q+kzsrdf7SdOiCY8CqOEICMXM1NQiFOJg/HOVKVMg==
+X-Received: by 2002:a7b:c5c6:0:b0:406:51a0:17fd with SMTP id n6-20020a7bc5c6000000b0040651a017fdmr1384997wmk.18.1695913950564;
+        Thu, 28 Sep 2023 08:12:30 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id p8-20020a7bcc88000000b004064cd71aa8sm2086981wma.34.2023.09.28.08.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 28 Sep 2023 08:12:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 985B9C433C8;
-        Thu, 28 Sep 2023 15:12:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695913948;
-        bh=Hqro9VXE8P3Msf+mPt73qlFFXuWRyTwJYSf6N/jB9S8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hkvv3AjwF/FfBT73XOvjTQwBEZPy4TELmLlrWZAlrlcHVwS8LNs1grrP2kQvGs/sw
-         gJ5Jv9FIoREU7cFRso6OSBO1NQ5aJOLlkYXME2ONDicgTAIl1PEmk0qcfvQ5kcczep
-         Tptem295Ky7EmOX08ySvAU26pv0SH+rpmH2GiwFV/dZczgzkWZpn6GWVpVCURFQu33
-         5d0hr2TpiEV9SEhwWSuVeVXcG4Z8cQBqzsa6K14wZMI2zI6rfhf4TgzR+0yMxhULwp
-         4q3JK6jU17E+HsvgqmOH5XXBSWlDd03Zw+U1XrLYQG/qL0CKQwfrAvhSB6Oy4ndFk3
-         SVu7vsoJ3TpLg==
-Received: (nullmailer pid 512608 invoked by uid 1000);
-        Thu, 28 Sep 2023 15:12:26 -0000
-Date:   Thu, 28 Sep 2023 10:12:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jian Yang <jian.yang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Chuanjia.Liu@mediatek.com, Jieyy.Yang@mediatek.com,
-        Qizhong.Cheng@mediatek.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: mediatek-gen3: Add support for
- controlling power and reset
-Message-ID: <20230928151226.GA424754-robh@kernel.org>
-References: <20230928105819.5161-1-jian.yang@mediatek.com>
- <20230928105819.5161-2-jian.yang@mediatek.com>
+Date:   Thu, 28 Sep 2023 18:12:27 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev,
+        =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Xiubo Li <xiubli@redhat.com>,
+        Milind Changire <mchangir@redhat.com>
+Subject: fs/ceph/crypto.c:465 ceph_fname_to_usr() warn: variable dereferenced
+ before IS_ERR check 'dir' (see line 403)
+Message-ID: <b5a0acdb-9c25-46f3-aa44-ac57da8efeee@kadam.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230928105819.5161-2-jian.yang@mediatek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,68 +74,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 06:58:20PM +0800, Jian Yang wrote:
-> From: "jian.yang" <jian.yang@mediatek.com>
-> 
-> Add new properties to support control power supplies and reset pin of
-> a downstream component.
-> 
-> Signed-off-by: jian.yang <jian.yang@mediatek.com>
-> ---
->  .../bindings/pci/mediatek-pcie-gen3.yaml      | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> index 7e8c7a2a5f9b..32031362db58 100644
-> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> @@ -84,6 +84,26 @@ properties:
->      items:
->        enum: [ phy, mac ]
->  
-> +  pcie1v8-supply:
-> +    description:
-> +      The regulator phandle that provides 1.8V power from root port to a
-> +      downstream component.
-> +
-> +  pcie3v3-supply:
-> +    description:
-> +      The regulator phandle that provides 3.3V power from root port to a
-> +      downstream component.
-> +
-> +  pcie12v-supply:
-> +    description:
-> +      The regulator phandle that provides 12V power from root port to a
-> +      downstream component.
-> +
-> +  dsc-reset-gpios:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+commit: dd66df0053ef84add5e684df517aa9b498342381 ceph: add support for encrypted snapshot names
+config: x86_64-randconfig-161-20230928 (https://download.01.org/0day-ci/archive/20230928/202309282202.xZxGdvS3-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230928/202309282202.xZxGdvS3-lkp@intel.com/reproduce)
 
-This should be in the downstream component if it is something extra. So 
-not the root port node, but the next one down. 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202309282202.xZxGdvS3-lkp@intel.com/
 
-> +    description:
-> +      The extra reset pin other than PERST# required by a downstream component.
-> +    maxItems: 1
-> +
->    clocks:
->      minItems: 4
->      maxItems: 6
-> @@ -238,5 +258,10 @@ examples:
->                        #interrupt-cells = <1>;
->                        interrupt-controller;
->              };
-> +
-> +            pcie@0 {
+smatch warnings:
+fs/ceph/crypto.c:465 ceph_fname_to_usr() warn: variable dereferenced before IS_ERR check 'dir' (see line 403)
 
-Missing 'reg'.
+vim +/dir +465 fs/ceph/crypto.c
 
-> +              device_type = "pci";
-> +              pcie-3v3-supply = <&pcie3v3_regulator>;
+457117f077c674 Jeff Layton    2021-03-26  380  int ceph_fname_to_usr(const struct ceph_fname *fname, struct fscrypt_str *tname,
+457117f077c674 Jeff Layton    2021-03-26  381  		      struct fscrypt_str *oname, bool *is_nokey)
+457117f077c674 Jeff Layton    2021-03-26  382  {
+dd66df0053ef84 Luís Henriques 2022-08-25  383  	struct inode *dir = fname->dir;
+457117f077c674 Jeff Layton    2021-03-26  384  	struct fscrypt_str _tname = FSTR_INIT(NULL, 0);
+457117f077c674 Jeff Layton    2021-03-26  385  	struct fscrypt_str iname;
+dd66df0053ef84 Luís Henriques 2022-08-25  386  	char *name = fname->name;
+dd66df0053ef84 Luís Henriques 2022-08-25  387  	int name_len = fname->name_len;
+dd66df0053ef84 Luís Henriques 2022-08-25  388  	int ret;
+457117f077c674 Jeff Layton    2021-03-26  389  
+457117f077c674 Jeff Layton    2021-03-26  390  	/* Sanity check that the resulting name will fit in the buffer */
+457117f077c674 Jeff Layton    2021-03-26  391  	if (fname->name_len > NAME_MAX || fname->ctext_len > NAME_MAX)
+457117f077c674 Jeff Layton    2021-03-26  392  		return -EIO;
+457117f077c674 Jeff Layton    2021-03-26  393  
+dd66df0053ef84 Luís Henriques 2022-08-25  394  	/* Handle the special case of snapshot names that start with '_' */
+dd66df0053ef84 Luís Henriques 2022-08-25  395  	if ((ceph_snap(dir) == CEPH_SNAPDIR) && (name_len > 0) &&
+dd66df0053ef84 Luís Henriques 2022-08-25  396  	    (name[0] == '_')) {
+dd66df0053ef84 Luís Henriques 2022-08-25  397  		dir = parse_longname(dir, name, &name_len);
+dd66df0053ef84 Luís Henriques 2022-08-25  398  		if (IS_ERR(dir))
+dd66df0053ef84 Luís Henriques 2022-08-25  399  			return PTR_ERR(dir);
 
-This is in the root port (which is good), but you've defined the schema 
-to put them in the host bridge node. IOW, these need to go in a PCI 
-root-port or P2P bridge schema which doesn't yet exist. I have an 
-inprogress branch for dtschema to split up pci-bus.yaml for that 
-purpose. Will try to finish it up soon.
+If dir is an error pointer, then we return directly.
 
-Rob
+dd66df0053ef84 Luís Henriques 2022-08-25  400  		name++; /* skip initial '_' */
+dd66df0053ef84 Luís Henriques 2022-08-25  401  	}
+dd66df0053ef84 Luís Henriques 2022-08-25  402  
+dd66df0053ef84 Luís Henriques 2022-08-25 @403  	if (!IS_ENCRYPTED(dir)) {
+dd66df0053ef84 Luís Henriques 2022-08-25  404  		oname->name = fname->name;
+dd66df0053ef84 Luís Henriques 2022-08-25  405  		oname->len = fname->name_len;
+dd66df0053ef84 Luís Henriques 2022-08-25  406  		ret = 0;
+dd66df0053ef84 Luís Henriques 2022-08-25  407  		goto out_inode;
+dd66df0053ef84 Luís Henriques 2022-08-25  408  	}
+dd66df0053ef84 Luís Henriques 2022-08-25  409  
+dd66df0053ef84 Luís Henriques 2022-08-25  410  	ret = ceph_fscrypt_prepare_readdir(dir);
+dd66df0053ef84 Luís Henriques 2022-08-25  411  	if (ret)
+dd66df0053ef84 Luís Henriques 2022-08-25  412  		goto out_inode;
+457117f077c674 Jeff Layton    2021-03-26  413  
+457117f077c674 Jeff Layton    2021-03-26  414  	/*
+457117f077c674 Jeff Layton    2021-03-26  415  	 * Use the raw dentry name as sent by the MDS instead of
+457117f077c674 Jeff Layton    2021-03-26  416  	 * generating a nokey name via fscrypt.
+457117f077c674 Jeff Layton    2021-03-26  417  	 */
+dd66df0053ef84 Luís Henriques 2022-08-25  418  	if (!fscrypt_has_encryption_key(dir)) {
+af9ffa6df7e337 Xiubo Li       2022-03-14  419  		if (fname->no_copy)
+af9ffa6df7e337 Xiubo Li       2022-03-14  420  			oname->name = fname->name;
+af9ffa6df7e337 Xiubo Li       2022-03-14  421  		else
+457117f077c674 Jeff Layton    2021-03-26  422  			memcpy(oname->name, fname->name, fname->name_len);
+457117f077c674 Jeff Layton    2021-03-26  423  		oname->len = fname->name_len;
+457117f077c674 Jeff Layton    2021-03-26  424  		if (is_nokey)
+457117f077c674 Jeff Layton    2021-03-26  425  			*is_nokey = true;
+dd66df0053ef84 Luís Henriques 2022-08-25  426  		ret = 0;
+dd66df0053ef84 Luís Henriques 2022-08-25  427  		goto out_inode;
+457117f077c674 Jeff Layton    2021-03-26  428  	}
+457117f077c674 Jeff Layton    2021-03-26  429  
+457117f077c674 Jeff Layton    2021-03-26  430  	if (fname->ctext_len == 0) {
+457117f077c674 Jeff Layton    2021-03-26  431  		int declen;
+457117f077c674 Jeff Layton    2021-03-26  432  
+457117f077c674 Jeff Layton    2021-03-26  433  		if (!tname) {
+457117f077c674 Jeff Layton    2021-03-26  434  			ret = fscrypt_fname_alloc_buffer(NAME_MAX, &_tname);
+457117f077c674 Jeff Layton    2021-03-26  435  			if (ret)
+dd66df0053ef84 Luís Henriques 2022-08-25  436  				goto out_inode;
+457117f077c674 Jeff Layton    2021-03-26  437  			tname = &_tname;
+457117f077c674 Jeff Layton    2021-03-26  438  		}
+457117f077c674 Jeff Layton    2021-03-26  439  
+dd66df0053ef84 Luís Henriques 2022-08-25  440  		declen = ceph_base64_decode(name, name_len, tname->name);
+457117f077c674 Jeff Layton    2021-03-26  441  		if (declen <= 0) {
+457117f077c674 Jeff Layton    2021-03-26  442  			ret = -EIO;
+457117f077c674 Jeff Layton    2021-03-26  443  			goto out;
+457117f077c674 Jeff Layton    2021-03-26  444  		}
+457117f077c674 Jeff Layton    2021-03-26  445  		iname.name = tname->name;
+457117f077c674 Jeff Layton    2021-03-26  446  		iname.len = declen;
+457117f077c674 Jeff Layton    2021-03-26  447  	} else {
+457117f077c674 Jeff Layton    2021-03-26  448  		iname.name = fname->ctext;
+457117f077c674 Jeff Layton    2021-03-26  449  		iname.len = fname->ctext_len;
+457117f077c674 Jeff Layton    2021-03-26  450  	}
+457117f077c674 Jeff Layton    2021-03-26  451  
+dd66df0053ef84 Luís Henriques 2022-08-25  452  	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, oname);
+dd66df0053ef84 Luís Henriques 2022-08-25  453  	if (!ret && (dir != fname->dir)) {
+dd66df0053ef84 Luís Henriques 2022-08-25  454  		char tmp_buf[CEPH_BASE64_CHARS(NAME_MAX)];
+dd66df0053ef84 Luís Henriques 2022-08-25  455  
+dd66df0053ef84 Luís Henriques 2022-08-25  456  		name_len = snprintf(tmp_buf, sizeof(tmp_buf), "_%.*s_%ld",
+dd66df0053ef84 Luís Henriques 2022-08-25  457  				    oname->len, oname->name, dir->i_ino);
+dd66df0053ef84 Luís Henriques 2022-08-25  458  		memcpy(oname->name, tmp_buf, name_len);
+dd66df0053ef84 Luís Henriques 2022-08-25  459  		oname->len = name_len;
+dd66df0053ef84 Luís Henriques 2022-08-25  460  	}
+dd66df0053ef84 Luís Henriques 2022-08-25  461  
+457117f077c674 Jeff Layton    2021-03-26  462  out:
+457117f077c674 Jeff Layton    2021-03-26  463  	fscrypt_fname_free_buffer(&_tname);
+dd66df0053ef84 Luís Henriques 2022-08-25  464  out_inode:
+dd66df0053ef84 Luís Henriques 2022-08-25 @465  	if ((dir != fname->dir) && !IS_ERR(dir)) {
+                                                                           ^^^^^^^^^^^^
+Checking a second time, is harmless but annoys static analysis.  I think
+if you have the cross function database then this warning is not
+triggered because Smatch tries to not warn about unnecessary checks so
+long as we are sure they are harmless.  Without the cross function
+database we know that "dir" isn't an error pointer but it might still
+be an invalid pointer.  I guess I could make this more strict to only
+count dereferencing which are potentially error pointer dereferences
+instead of just potentially invalid.  With the cross function database
+we know that parse_longname() either returns valid or error pointers.
+
+dd66df0053ef84 Luís Henriques 2022-08-25  466  		if ((dir->i_state & I_NEW))
+dd66df0053ef84 Luís Henriques 2022-08-25  467  			discard_new_inode(dir);
+dd66df0053ef84 Luís Henriques 2022-08-25  468  		else
+dd66df0053ef84 Luís Henriques 2022-08-25  469  			iput(dir);
+dd66df0053ef84 Luís Henriques 2022-08-25  470  	}
+457117f077c674 Jeff Layton    2021-03-26  471  	return ret;
+457117f077c674 Jeff Layton    2021-03-26  472  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
