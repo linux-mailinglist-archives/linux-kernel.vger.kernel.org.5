@@ -2,68 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5C7B1316
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70927B1328
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjI1GeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
+        id S230469AbjI1GgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjI1Gd5 (ORCPT
+        with ESMTP id S229445AbjI1Gf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:33:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753FC99;
-        Wed, 27 Sep 2023 23:33:55 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 08:33:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695882832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jbKtaiDN0NbVfKqhqsxA6bvRSjMBbRA/u4q/d0oWGk8=;
-        b=Dew4TATPZv8Jvo5pNfwv4I1cTWrI8SfFyrMkhlvIlbuOAQi6FbDPmVY7USc93CVIAtM1Px
-        GBhE8FHvqZp5N1FttaoKiAiZMvG9xhpb3xiKpOEy3zWWyJFZ2QrMtdaPsc9TgtMYHMmZ3l
-        +I8bZVmrSnLteSygehPQORUffSLirzYftpYabn6O2DTNH/lX8YVfK21/f4wVET7HfSw2bL
-        d9QdSi7zpKVr2uV1I7jKY6jEVsr8Ymbx9lvLd5Utbo8RQLBq3Ow196w65vT4rXaVRE2Hw8
-        UGdUWsL/4Ix6kKxe26kzqwbcbQYP1ZVM0V8mBX2ObVd2cflUXpYpfUIhqVX1XQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695882832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jbKtaiDN0NbVfKqhqsxA6bvRSjMBbRA/u4q/d0oWGk8=;
-        b=jHcvqfm+BA/uMp0rvET7LREPx4dul9GF2CjfXUFjM9WZoS0C75Fj+HZae8OihnZGu0Z/zc
-        H2kqFzju2Pktj7CA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <20230928063350.KveBSZGg@linutronix.de>
-References: <20230927160231.XRCDDSK4@linutronix.de>
- <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
+        Thu, 28 Sep 2023 02:35:59 -0400
+Received: from mail-sh.amlogic.com (mail-sh.amlogic.com [58.32.228.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17EF99;
+        Wed, 27 Sep 2023 23:35:12 -0700 (PDT)
+Received: from droid01-cd.amlogic.com (10.98.11.200) by mail-sh.amlogic.com
+ (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Thu, 28 Sep 2023
+ 14:34:55 +0800
+From:   Xianwei Zhao <xianwei.zhao@amlogic.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>
+Subject: [PATCH 0/4]  Add C3 SoC PLLs and Peripheral clock
+Date:   Thu, 28 Sep 2023 14:34:44 +0800
+Message-ID: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.98.11.200]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,28 +47,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-27 23:06:09 [-0700], Boqun Feng wrote:
-> SRCU only has read lock usage from lockdep PoV, but after that commit,
-> we annotate synchronize_srcu() as a write lock usage, so that we can
-> detect deadlocks between *normal* srcu_read_lock() and
-> synchronize_srcu(), however the side effect is now SRCU has a write lock
-> usage from lockdep PoV.
+Add C3 SoC PLLs and Peripheral clock controller dt-bindings.
+Add PLLs and Peripheral clock controller driver for C3 SOC.
 
-Ach. There is a write annotation for SRCU and RCU has none. Okay that
-explains it.
+Xianwei Zhao (4):
+  dt-bindings: clock: add Amlogic C3 PLL clock controller bindings
+  dt-bindings: clock: add Amlogic C3 peripherals clock controller
+    bindings
+  clk: meson: C3: add support for the C3 SoC PLL clock
+  clk: meson: c3: add c3 clock peripherals controller driver
 
-> Actually in the above commit, I explicitly leave
-> srcu_read_lock_nmisafe() alone since its locking rules may be different
-> compared to srcu_read_lock(). In lockdep terms, srcu_read_lock_nmisafe()
-> is a !check read lock and srcu_read_lock() is a check read lock.
+ .../clock/amlogic,c3-peripherals-clkc.yaml    |   86 ++
+ .../bindings/clock/amlogic,c3-pll-clkc.yaml   |   53 +
+ drivers/clk/meson/Kconfig                     |   25 +
+ drivers/clk/meson/Makefile                    |    2 +
+ drivers/clk/meson/c3-peripherals.c            | 1372 +++++++++++++++++
+ drivers/clk/meson/c3-peripherals.h            |   48 +
+ drivers/clk/meson/c3-pll.c                    |  510 ++++++
+ drivers/clk/meson/c3-pll.h                    |   35 +
+ .../clock/amlogic,c3-peripherals-clkc.h       |  230 +++
+ .../dt-bindings/clock/amlogic,c3-pll-clkc.h   |   42 +
+ 10 files changed, 2403 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/amlogic,c3-peripherals-clkc.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/amlogic,c3-pll-clkc.yaml
+ create mode 100644 drivers/clk/meson/c3-peripherals.c
+ create mode 100644 drivers/clk/meson/c3-peripherals.h
+ create mode 100644 drivers/clk/meson/c3-pll.c
+ create mode 100644 drivers/clk/meson/c3-pll.h
+ create mode 100644 include/dt-bindings/clock/amlogic,c3-peripherals-clkc.h
+ create mode 100644 include/dt-bindings/clock/amlogic,c3-pll-clkc.h
 
-This was on v6.6-rc3 so it has the commit f0f44752f5f61 ("rcu: Annotate
-SRCU's update-side lockdep dependencies").
 
->                                                                  Maybe
-> instead of using the trylock trick, we change lockdep to igore !check
-> locks for NMI context detection? Untested code as below:
+base-commit: 57b55c76aaf1ba50ecc6dcee5cd6843dc4d85239
+-- 
+2.37.1
 
-Just tested, no splat for the SRCU-in-NMI usage.
-
-Sebastian
