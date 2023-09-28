@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D96D7B2764
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8167B2766
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjI1VXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S231524AbjI1VYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjI1VXw (ORCPT
+        with ESMTP id S231322AbjI1VY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:23:52 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80D21B0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:49 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3232be274a0so5518709f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:49 -0700 (PDT)
+        Thu, 28 Sep 2023 17:24:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3EC19E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:24:26 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405621baba7so107106235e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695936228; x=1696541028; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1695936265; x=1696541065; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YaWPyajjId09n77xwVF45ZQmmj2IMJSvqwowpZ4hhto=;
-        b=cfDiqShliOU7NX20fFmnuZM0zQ2wGztqoYJ1VGq7us1YLe/eoej3RT0V8pkLpcIk75
-         4oQ+82tJJyjrmNEkmmsX2BIeqR6prs1v5KlEDf6VB9lDoyLtdiggpQ4I4Ct6NQNUVlnn
-         T5QJkoWE3ALIgjmGPNtei2PXkloPuaSkpryqw=
+        bh=qSBDqdSI7tR5iZALcH4VULTj/23O1so3HSs9aU9R5j8=;
+        b=SNqPhFt6aBJBsMQSiRVzn3L2uRV00BA7dBC42h4nLrjiDa1mUBgforqT1C/x5Hr8fQ
+         i/gh/7GGXBwsvUvhWP9mzzEcHR2Pn0jwAh3kxIzT46fIBjtD1/m/DXLHhCy2mAqQEyr9
+         Kx60LRQtgdV22h+kjPJP17x6PUcPLhNTdTQh4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695936228; x=1696541028;
+        d=1e100.net; s=20230601; t=1695936265; x=1696541065;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=YaWPyajjId09n77xwVF45ZQmmj2IMJSvqwowpZ4hhto=;
-        b=MOAxDnlXEV/8uzDRerSNEiy6Y4IxkLu+hmT9NvE3aRUnrkr3BDNBDNiR/jqtB5pOOq
-         Gv3M1LZyLjnrVW233uGw4LwFM6iAsNiSR44S2S10bHZFyQ0PxdnvEYmD7kkoBSffjc80
-         KU8NyNuDwGGdtMMSPonc6rgYx/QI2nHY9AqqzxS4sfDHaTTScZceQ4I79JkEbHyGzwA0
-         AC3e8QyV9Dt53D7HnbftQqbqjp+rCNLZM+4oVq0cCQCAQ/QeGbYQv2cJ8VrNTtOtAyuu
-         BYsi7Mjm574iK6uXQOB/Fw2AEbjd2EQmK7xUKGgzubwhx8H/QQ31lVmZIpMRhMW0C5R3
-         P00g==
-X-Gm-Message-State: AOJu0YyOHvDWGfV4SaCJT3FVfwKbrE5o2VSpPPqCoyRwJkjHq6TvWQvG
-        +aVt9JylsJLTHDwVYybPTX50YQ==
-X-Google-Smtp-Source: AGHT+IEtcC8oNE7W4UIwUvqQiedUQr7RfbS0avGBv4QaGCpjynITItQ6TZZk6qwn1BM1v/qNAXgxOA==
-X-Received: by 2002:adf:db48:0:b0:31f:a15f:2cdc with SMTP id f8-20020adfdb48000000b0031fa15f2cdcmr2211506wrj.29.1695936228131;
-        Thu, 28 Sep 2023 14:23:48 -0700 (PDT)
+        bh=qSBDqdSI7tR5iZALcH4VULTj/23O1so3HSs9aU9R5j8=;
+        b=gxRI293DL6+kIzWx6uDlYPj3yWvLq7UNpv6OWsHokcW0889av8rxrK0Rot+9PM6sDS
+         C3cRrvEO+XfNLNstxY2Fx+CJGd7n6eoTYhMA4Q6FuX0k/VmHRN/zKgEI+GMtX/Hed2pl
+         OAtcYwZ+KpAnf5HnWstrEJ+R86h3A2FZ0bvrL7wZn7hHOZbN7wJZaou8a0PO0P5cajuS
+         sDnpk3KdFYmgULRP2+JvfrBDuVmU3IzGDN+g8cXxqY3i7wsubinmqVn/zdogUY7jvWCH
+         e4I86z426O3wpLw8T+akUZPYr1S0PXOIQRIfEfldcCpIkJrLTVeXlXCg+hS44McDxULO
+         8yNg==
+X-Gm-Message-State: AOJu0YzscHeWHo3WaksAuNF2dFFMnn8QBbxdYn36b2+5BQxbyWYMwKuW
+        9bYg4KmgFzHADYwHEB4Dd6ia/A==
+X-Google-Smtp-Source: AGHT+IGl5Fabye9VdtRvJpjW+0KClxb52Cez/GLB0qR1zxNGnrtZLoli5ADAPjPufQ60DBLMmbDncg==
+X-Received: by 2002:a7b:cd15:0:b0:401:c52c:5ed9 with SMTP id f21-20020a7bcd15000000b00401c52c5ed9mr2282452wmj.32.1695936264586;
+        Thu, 28 Sep 2023 14:24:24 -0700 (PDT)
 Received: from [192.168.244.133] ([37.175.77.39])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.23.45
+        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.24.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:23:46 -0700 (PDT)
-Message-ID: <9088c5f6-08e9-4cb9-81de-6739e93e8c70@broadcom.com>
-Date:   Thu, 28 Sep 2023 23:23:51 +0200
+        Thu, 28 Sep 2023 14:24:23 -0700 (PDT)
+Message-ID: <fa9219ff-efff-4b51-89d6-0c2221332624@broadcom.com>
+Date:   Thu, 28 Sep 2023 23:24:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: PCI: brcm,iproc-pcie: Drop common
- pci-bus properties
-To:     Rob Herring <robh@kernel.org>,
+Subject: Re: [PATCH 3/3] dt-bindings: PCI: brcm,iproc-pcie: Fix 'msi' child
+ node schema
+To:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
         =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Ray Jui <rjui@broadcom.com>,
@@ -68,7 +67,7 @@ Cc:     Ray Jui <ray.jui@broadcom.com>,
         linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20230926155351.31117-1-robh@kernel.org>
- <20230926155351.31117-2-robh@kernel.org>
+ <20230926155613.33904-3-robh@kernel.org>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -102,30 +101,35 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20230926155351.31117-2-robh@kernel.org>
+In-Reply-To: <20230926155613.33904-3-robh@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000076a283060671ecee"
+        boundary="000000000000a30f1d060671eec8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000076a283060671ecee
+--000000000000a30f1d060671eec8
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 9/26/2023 5:53 PM, Rob Herring wrote:
-> Drop the unnecessary listing of properties already defined in
-> pci-bus.yaml. Unless there are additional constraints, it is not
-> necessary.
+On 9/26/2023 5:56 PM, Rob Herring wrote:
+> The 'msi' child node schema is missing constraints on additional properties.
+> It turns out it is incomplete and properties for it are documented in the
+> parent node by mistake. Move the reference to msi-controller.yaml and
+> the custom properties to the 'msi' node. Adding 'unevaluatedProperties'
+> ensures all the properties in the 'msi' node are documented.
+> 
+> With the schema corrected, a minimal interrupt controller node is needed
+> to properly decode the interrupt properties since the example has
+> multiple interrupt parents.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 
@@ -133,7 +137,7 @@ Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
 Florian
 
---00000000000076a283060671ecee
+--000000000000a30f1d060671eec8
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -204,14 +208,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILWKBl6wojh3f4/E
-8wJUlEsw3tpo4huOztWXcLSJh+AmMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDkyODIxMjM0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIA9HavKY3cqX3xe7
+XBUO9Xwcn23Xr6QKfhZwtrjtHWO4MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDkyODIxMjQyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDpE2/rbop0DKh16cP8bKIqmdMWHil8F5rQ
-hDrqDQB3YbOpjypy8DOJQXn5TmpNgTdPxB1P4hi/qFjvH2cDfD7y6giRcOnuwQ6SdMli2QzFOp1y
-4pEcRE4AYWt6bOxH1x/eH2MPKUIhill6FgLDWRKqD7Z33rd3w7SZH6ogtRd7pdooWKX012rDgHE/
-XOcyD2ZDQlshEqgyP16zTlC+nS8M7AEgyhuArQH2mMaH+mAG89S1A5ojJB8YDmmT0kf2AA4iM6Qi
-IPwAxv7XaTcninpV08rE8P5A0jaXTbfuwdyFty73/qA/sNIGskS2pxvlYxrlfBQcTz/fnUnLI8FV
-8EXc
---00000000000076a283060671ecee--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCuvOPU/CJyCJCd0bcT2/XWaMuh5uDXY++R
+0XL09kO/G2FX4bfOmBBtm2Vh+7/28gepCey1qRDJxd0r7ROMprxdwj3ao8GE/KAjvgoqsn9wQkuI
+OYHaV3cZVwUwG0xWAugI667r9L8VqJA9SXgbiTQLX2OJwbTIVsG3Qm/jBkSW5DsdNcNTSLs94rZw
+AlBw0kQIGtYE1Wqff846ZtF6/gaX6tBxnaheo5xjUvYTsVp5CfwnkpHz4we5VHeuH9NuUNejxUyF
+harS5lRC3HrW4Qi3nwE0g5JvWyLHvGVt4BCtsepxlwoi3VY5JIlojbIxqL9USv/jjHFQ7+hQgRU4
++nr3
+--000000000000a30f1d060671eec8--
