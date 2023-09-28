@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CD47B2544
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9347B254B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbjI1S2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
+        id S230139AbjI1Sb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjI1S2x (ORCPT
+        with ESMTP id S229478AbjI1Sbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:28:53 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA8599
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:28:52 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7ab9ad973e6so4205428241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:28:52 -0700 (PDT)
+        Thu, 28 Sep 2023 14:31:55 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF599
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:31:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f6902dc8bso192224907b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695925731; x=1696530531; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S9om/ckVzu1BhXirEdAXOAM/NI9XSDzx9LPQqirOKE8=;
-        b=rQhA3anGPz22kMupp9q+zjND4NHBXYYo4uaXLSBsPsA2HaA1Q9yYRd852XGELPGp7w
-         Zs8Gg5fP8VEPlp3ILAXDW5Cce8HLEbjertovh7Z11x60lqUCdFRSNAVj2GbZmU/63OkO
-         ISOYMWNYbjIu0gzlNDbC/EpSGRCcpPOEHzv2RRKeIlkcTMOrX2RSbECaIfq0uFq+QPVg
-         qjrjuKfm3sEcUlvLlXb0d9MELROEmzp7LSF59v9/HpWbTJ8IMgoEdiiGYzbK+0NQSJZz
-         Fn86DiHDjYIGvkuO5qa3pwsqR45yqAywcAq1MP5g2dhFkzs29Y9C8KhX+DRVr3ol0/Dw
-         XZaA==
+        d=google.com; s=20230601; t=1695925913; x=1696530713; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2/8BgKxt0pmpt8+0WGKUzTJnRK7udqyBpxUOUSK21ys=;
+        b=o20930i+RwRtL68BBLJtpsotwQ2PZanntrJ3mjCBY5betS3AucdmMZPHk13K/IhZ6R
+         iKRCOoZNZe9kH285ZB1gCgu8cmqflIeTPnApeBk3UmHdnW+e4JHfZN5+kdu93tCt9k4T
+         ZXDMItK/a+gWSaDgO4bg4fOj05aH4pzF45L6D4pGlpbfdRfDw4lZez9at/aMPDQopipJ
+         QgZjtZ7T4MP6QfYHJERYDOMPwMdo7+iPPxUcPPBjtQ5gwlhnWEUlj/8Wpln74Szw4DlV
+         B121neJ7UJqVaKR77SqCwgTr/CdkBH3FW+HrrsE9fAS22/LLWeFxwDj1CuSMbYlcJxKq
+         H3eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695925731; x=1696530531;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S9om/ckVzu1BhXirEdAXOAM/NI9XSDzx9LPQqirOKE8=;
-        b=XZxFppjH+fdRYyagkFwX2b/lzVHS4oU+/FSA+LnIL74dxPftF+HCP9jTgeDO8BoNlD
-         S6nvKfGE2KTPc00fD8KaKncqHERJTToXuwyorXY7DYRhPlA8HhyEWTEhoT1FgutQ1cQh
-         fjyKtXjoHPpveSmwf+8Cz9VJPUtjOuR5m3iA7gnsOCtTb59oXZLOvgEs1LFhXEH0UNx0
-         Otd7kRZeyn8hnr1yvPsWYRo/GKHJoE5qAxbB0rNPOBVXu2u36+7626CI7mhUJCKr+Ox1
-         CwFCSdGfDsbPnPhLA9sxWBwCzwpXvA9fByCbzcyOC8DColVQh1CGHYwxGCpvA7JX90B+
-         8cCA==
-X-Gm-Message-State: AOJu0YyvK3zIbj8RmA0/T6T6asg0Kesicm2b0bnM7z3r2OExIQe06KFC
-        EEqUQcY9I/V0hnfPgleJj+sb1SdFsCWHQMUVV2zxWg==
-X-Google-Smtp-Source: AGHT+IExNLsGCshiEnWnkOn9rm4VKOCrckIERMzWbi8yYxtEZqjFp3axc5ckdLZshhUcJKUOliKxiH6PKLQwwxEe3Qw=
-X-Received: by 2002:a67:fd49:0:b0:452:7799:9d5a with SMTP id
- g9-20020a67fd49000000b0045277999d5amr1920245vsr.20.1695925731091; Thu, 28 Sep
- 2023 11:28:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230928092040.9420-1-brgl@bgdev.pl> <20230928092040.9420-12-brgl@bgdev.pl>
- <1160e239-b227-411d-8d64-a23fde014dd5@quicinc.com>
-In-Reply-To: <1160e239-b227-411d-8d64-a23fde014dd5@quicinc.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 28 Sep 2023 20:28:40 +0200
-Message-ID: <CAMRc=MdMd7CGWEvDbcYRTHZaLpAYdKyR6wEuFTKux6T+C3UU+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 11/11] firmware: qcom: scm: enable SHM bridge
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        d=1e100.net; s=20230601; t=1695925913; x=1696530713;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2/8BgKxt0pmpt8+0WGKUzTJnRK7udqyBpxUOUSK21ys=;
+        b=sJr1sCPArec/ZUUAMzoSIZOvT4ia/INod0IjzjJMlBi5/3wQ9E4pGw0pZkP54OFAhu
+         Ig6IKFQvXJEg/0PlfTbgO/Hmk336udEqgvcgkRzvNbqv+Vb/wbUA/KuzXehNkud0e9ZJ
+         P5BXl6WkTywfrxop4ZdkV7F7L4zlBAImD/aqtLahm5NdYYwAPmG3lCTbSmtC7NtCVUYk
+         CaejkP2MrWkj0PntVtt9gLlMI73HjVHEq5c2QjZl1H8O4zBUespRoPah5rk4uMbbNPoo
+         qp8zVJ40PcIVLlIrPhgvJ9Rf1cNsYfArqQb2llXNAZhB/inG43K8M1/B9anO/WMtqwQ3
+         eA8g==
+X-Gm-Message-State: AOJu0YxtPbYeeRiHuk+XiDNpCCoem41UR7su/0fvSp32k9tEMGciuoVH
+        LcXOl12Qd9GHy33uqXgsSoxrbgXspEQ=
+X-Google-Smtp-Source: AGHT+IGfVEgupQd2XwnlnnpG5qLgubn7xydVSelYD5RWBn46P+oeWmA6LKQrcSiItH4E8llJ5yjqZ7x6btE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:3412:b0:579:f832:74b with SMTP id
+ fn18-20020a05690c341200b00579f832074bmr32603ywb.10.1695925913160; Thu, 28 Sep
+ 2023 11:31:53 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 11:31:51 -0700
+In-Reply-To: <20230922224210.6klwbphnsk5j2wft@amd.com>
+Mime-Version: 1.0
+References: <20230921203331.3746712-1-seanjc@google.com> <20230921203331.3746712-7-seanjc@google.com>
+ <20230922224210.6klwbphnsk5j2wft@amd.com>
+Message-ID: <ZRXGl44g8oD-FtNy@google.com>
+Subject: Re: [PATCH 06/13] KVM: Disallow hugepages for incompatible gmem
+ bindings, but let 'em succeed
+From:   Sean Christopherson <seanjc@google.com>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Binbin Wu <binbin.wu@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,110 +69,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 7:10=E2=80=AFPM Elliot Berman <quic_eberman@quicinc=
-.com> wrote:
->
->
->
-> On 9/28/2023 2:20 AM, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Extens the SCM memory allocator with using the SHM Bridge feature if
-> > available on the platform. This makes the trustzone only use dedicated
-> > buffers for SCM calls. We map the entire SCM genpool as a bridge.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > ---
-> >  drivers/firmware/qcom/qcom_scm-mem.c | 42 ++++++++++++++++++++++++++--
-> >  1 file changed, 39 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/firmware/qcom/qcom_scm-mem.c b/drivers/firmware/qc=
-om/qcom_scm-mem.c
-> > index eafecbe23770..12b12b15f46f 100644
-> > --- a/drivers/firmware/qcom/qcom_scm-mem.c
-> > +++ b/drivers/firmware/qcom/qcom_scm-mem.c
-> > @@ -16,6 +16,8 @@
-> >
-> >  #include "qcom_scm.h"
-> >
-> > +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
-> > +
-> >  static size_t qcom_scm_mem_pool_size =3D SZ_2M;
-> >  module_param_named(qcom_scm_mem_pool_size, qcom_scm_mem_pool_size,
-> >                  ulong, 0400);
-> > @@ -108,8 +110,24 @@ phys_addr_t qcom_scm_mem_to_phys(void *vaddr)
-> >       return chunk->paddr;
-> >  }
-> >
-> > +static int qcom_scm_mem_shm_bridge_create(void)
-> > +{
-> > +     uint64_t pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_per=
-ms;
-> > +
-> > +     ns_perms =3D (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
-> > +     pfn_and_ns_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> > +     ipfn_and_s_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> > +     size_and_flags =3D qcom_scm_mem.size | (1 << QCOM_SHM_BRIDGE_NUM_=
-VM_SHIFT);
-> > +
-> > +     return qcom_scm_create_shm_bridge(qcom_scm_mem.dev, pfn_and_ns_pe=
-rm,
-> > +                                       ipfn_and_s_perm, size_and_flags=
-,
-> > +                                       QCOM_SCM_VMID_HLOS);
-> > +}
-> > +
-> >  int qcom_scm_mem_enable(struct device *dev)
-> >  {
-> > +     int ret;
-> > +
-> >       INIT_RADIX_TREE(&qcom_scm_mem.chunks, GFP_ATOMIC);
-> >       spin_lock_init(&qcom_scm_mem.lock);
-> >       qcom_scm_mem.dev =3D dev;
-> > @@ -128,7 +146,25 @@ int qcom_scm_mem_enable(struct device *dev)
-> >
-> >       gen_pool_set_algo(qcom_scm_mem.pool, gen_pool_best_fit, NULL);
-> >
-> > -     return gen_pool_add_virt(qcom_scm_mem.pool,
-> > -                              (unsigned long)qcom_scm_mem.vbase,
-> > -                              qcom_scm_mem.pbase, qcom_scm_mem.size, -=
-1);
-> > +     ret =3D gen_pool_add_virt(qcom_scm_mem.pool,
-> > +                             (unsigned long)qcom_scm_mem.vbase,
-> > +                             qcom_scm_mem.pbase, qcom_scm_mem.size, -1=
-);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D qcom_scm_enable_shm_bridge();
-> > +     if (ret) {
-> > +             if (ret =3D=3D EOPNOTSUPP)
-> > +                     dev_info(dev, "SHM Bridge not supported\n");
-> > +             else
-> > +                     return ret;
-> > +     } else {
-> > +             ret =3D qcom_scm_mem_shm_bridge_create();
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             dev_info(dev, "SHM Bridge enabled\n");
->
-> Do you need to add clean up (deletion) of the SHM bridge on driver remove=
-?
->
-> One easy approach I could think: implemnet devm_qcom_scm_mem_shm_bridge_c=
-reate
-> which calls qcom_scm_delete_shm_bridge on the clean up
-> (qcom_scm_delete_shm_bridge implemented in downstream, not in this series=
-).
->
+On Fri, Sep 22, 2023, Michael Roth wrote:
+> On Thu, Sep 21, 2023 at 01:33:23PM -0700, Sean Christopherson wrote:
+> > +	/*
+> > +	 * For simplicity, allow mapping a hugepage if and only if the entire
+> > +	 * binding is compatible, i.e. don't bother supporting mapping interior
+> > +	 * sub-ranges with hugepages (unless userspace comes up with a *really*
+> > +	 * strong use case for needing hugepages within unaligned bindings).
+> > +	 */
+> > +	if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
+> > +	    !IS_ALIGNED(slot->npages, 1ull << *max_order))
+> > +		*max_order = 0;
+> 
+> Thanks for working this in. Unfortunately on x86 the bulk of guest memory
+> ends up getting slotted directly above legacy regions at GFN 0x100, 
 
-There wouldn't be any user of these symbols yet so let's think about
-it when there's a valid use-case upstream.
+Can you provide an example?  I'm struggling to understand what the layout actually
+is.  I don't think it changes the story for the kernel, but it sounds like there
+might be room for optimization in QEMU?  Or more likely, I just don't understand
+what you're saying :-)
 
-Bart
+> so the associated slot still ends failing these alignment checks if it tries
+> to match the gmemfd offsets up with the shared RAM/memfd offsets.
+> 
+> I tried to work around it in userspace by padding the gmemfd offset of
+> each slot to the next 2M boundary, but that also requires dynamically
+> growing the gmemfd inode to account for the padding of each new slot and
+> it gets ugly enough that I'm not sure it's any better than your
+> suggested alternative of using a unique gmemfd for each slot.
+> 
+> But what if we relax the check to simply make sure that any large folio
+> must is fully-contained by the range of the slot is bound to? It *seems*
+> like that would still avoid stuff like mapping 2M pages in the NPT (or
+> setting up 2M RMP table entries) that aren't fully contained by a slot
+> while still allowing the bulk of guest memory to get mapped as 2M. Are
+> there other edge cases to consider?
+> 
+> The following seems to work for a basic 16GB SNP guest at least:
+> 
+> diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+> index 9109bf5751ee..e73128d4ebc2 100644
+> --- a/virt/kvm/guest_mem.c
+> +++ b/virt/kvm/guest_mem.c
+> @@ -618,6 +618,7 @@ int __kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>                        gfn_t gfn, kvm_pfn_t *pfn, int *max_order, bool prep)
+>  {
+>         pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
+> +       pgoff_t huge_index;
+>         struct kvm_gmem *gmem;
+>         struct folio *folio;
+>         struct page *page;
+> @@ -662,9 +663,12 @@ int __kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>          * sub-ranges with hugepages (unless userspace comes up with a *really*
+>          * strong use case for needing hugepages within unaligned bindings).
+>          */
+> -       if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
+> -           !IS_ALIGNED(slot->npages, 1ull << *max_order))
+> +       huge_index = round_down(index, 1ull << *max_order);
 
-> > +     }
-> > +
-> > +     return 0;
-> >  }
+Why not use ALIGN() here?  The size is obviously a power-of-2.  Or is my math
+even worse than I thought?
+
+> +       if (huge_index < ALIGN(slot->gmem.pgoff, 1ull << *max_order) ||
+> +           huge_index + (1ull << *max_order) > slot->gmem.pgoff + slot->npages) {
+
+Argh, I keep forgetting that the MMU is responsible for handling misaligned gfns.
+Yeah, this looks right.
+
+Can you post this as a proper patch, on top of my fixes?  And without the pr_debug().
+That'll be the easiest for me to apply+squash when the time comes.
+
+Thanks much!
