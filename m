@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3837B1BFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A157B1BF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjI1MR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S232409AbjI1MRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjI1MR4 (ORCPT
+        with ESMTP id S232340AbjI1MRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:17:56 -0400
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09DD139
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:17:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1695903439; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=l61lbAV5WIA/lUystlH8zmH7Uzi3IU0ZnNEHOv6GNSfZpWfJtU5/YuRsHSskWMZn5YD00JJSYwMzsg78lPMHFceN0hAptSPNbran57TtzfazgPjMhIlWEkfVFTOcY2RTGyiQ5LyPs+OqzBsw04DhY7OOyrdUy+LD5AOHsP3ep+8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1695903439; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=iZy+jCOWB/CWrGEZQBaHCz0SuWNHhtFFYK98f71cH0o=; 
-        b=VojAC7XxZhXHaKgSNBJV9FJ+bvvySuA+Qr7U+8NNyuIAs/P12vlxfK6x8aPYEY5Tn55uQ6sx8bFZPMuNAfEefWDjLsLLdYipPxyN3BxcYzrSd/CEQcenL5+F5wQ2l+Pye9owbXeX4j1Al4rI+g/7nBjW9UMiNzYQ9X9n5Us3UZM=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=marliere.net;
-        spf=pass  smtp.mailfrom=ricardo@marliere.net;
-        dmarc=pass header.from=<ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695903439;
-        s=zmail; d=marliere.net; i=ricardo@marliere.net;
-        h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
-        bh=iZy+jCOWB/CWrGEZQBaHCz0SuWNHhtFFYK98f71cH0o=;
-        b=cApQ+RoJq17IQHWxjFrDS2eutYSpM7TADoAsBhacHZDSJnWWvi4ChmwBXzGnU+ZS
-        huw4a73IQVD/SuuSrIaqay3258p1nQPEfA7XJH1UbmLmKHkoPK1VIdP6CZ2HOm22h2V
-        cNanxAIPSd85+SHGUUVhyeOeAGlrLfowQ8usoC48=
-Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
-        with SMTPS id 1695903436330272.35798225324527; Thu, 28 Sep 2023 05:17:16 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 09:17:11 -0300
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+621409285c4156a009b3@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [pvrusb2?] KASAN: slab-use-after-free Read in
- pvr2_context_set_notify
-Message-ID: <2qrcgpk54bcmtpwgzc7if5fb2u24d3wbgfwwzxb2fcjnwoxjtp@6owflexhzeri>
-References: <000000000000a71ad80606586122@google.com>
- <20230928112020.1277-1-hdanton@sina.com>
+        Thu, 28 Sep 2023 08:17:23 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB49319C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:17:21 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e207:8adb:af22:7f1e])
+        by andre.telenet-ops.be with bizsmtp
+        id rQHK2A00S3w8i7m01QHKuZ; Thu, 28 Sep 2023 14:17:19 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qlpwt-004mRT-3u;
+        Thu, 28 Sep 2023 14:17:19 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qlpxH-001OBp-IL;
+        Thu, 28 Sep 2023 14:17:19 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     "Darrick J . Wong" <djwong@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] iomap: Spelling s/preceeding/preceding/g
+Date:   Thu, 28 Sep 2023 14:17:18 +0200
+Message-Id: <46f1ca7817b5febb90c0f1f9881a1c2397b827d0.1695903391.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928112020.1277-1-hdanton@sina.com>
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good one, but make sure to test against Greg usb-testing tree!
+Fix a misspelling of "preceding".
 
-Thanks,
--	Ricardo
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ fs/iomap/buffered-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 644479ccefbd0f18..5db54ca29a35acf3 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1049,7 +1049,7 @@ static int iomap_write_delalloc_punch(struct inode *inode, struct folio *folio,
+ 
+ /*
+  * Scan the data range passed to us for dirty page cache folios. If we find a
+- * dirty folio, punch out the preceeding range and update the offset from which
++ * dirty folio, punch out the preceding range and update the offset from which
+  * the next punch will start from.
+  *
+  * We can punch out storage reservations under clean pages because they either
+-- 
+2.34.1
+
