@@ -2,61 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFD87B12C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01917B1286
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjI1GX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
+        id S230268AbjI1GRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbjI1GWZ (ORCPT
+        with ESMTP id S230220AbjI1GRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:22:25 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4350619F;
-        Wed, 27 Sep 2023 23:22:10 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kp4gr0z4f3jqc;
-        Thu, 28 Sep 2023 14:22:06 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S29;
-        Thu, 28 Sep 2023 14:22:07 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
-        dm-devel@redhat.com, song@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next v3 25/25] md: rename __mddev_suspend/resume() back to mddev_suspend/resume()
-Date:   Thu, 28 Sep 2023 14:15:43 +0800
-Message-Id: <20230928061543.1845742-26-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
-References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
+        Thu, 28 Sep 2023 02:17:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452D9A3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:17:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42109C433C7;
+        Thu, 28 Sep 2023 06:17:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695881833;
+        bh=ukat4gmI11KeKATmcvfP0ZvCM+9QAk5epXbZZWdQNfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eaKPAt1sY0P8Dj6RhjFZZXKiB73ZiPj1b1lm2m8PR8XRC42+M7Pc2GTSYp7wAo+rL
+         c0M/kcy/w/OSYXT9ZjF+s4WfpxwA1l3SDpUfg4pAUSEfz2cdxFsILqvfpfWXznUH77
+         icyk50oQLP4a+tcu41CxixgOzv161zjVzt+pbpNbyvor/r5nnpU4H+qPWeEBBCF/U7
+         lSV3CZXNeU+xIsD2BByogESSqUb7iQWP55I49Cv6iZoxaAiBe1j1H7qV54zsAGK6Ki
+         lgiWxAZjbbhkL4EaDy0tjQEFwjQseM+Ab1rVOK87YhUJTsYM73wSd9TMeAFJilv/Ni
+         TIYZETpht74GQ==
+Date:   Thu, 28 Sep 2023 09:16:19 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memblock: don't run loop in memblock_add_range() twice
+Message-ID: <20230928061619.GS3303@kernel.org>
+References: <20230927013752.2515238-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S29
-X-Coremail-Antispam: 1UD129KBjvJXoWxKrW7KrWrCw4UZFyUJr1DKFg_yoW7Ar4Upw
-        42qFWrZw48ZF95XryDJa1kCa45tw4rKrZFyrW7Z3s3GasIgwn5GF15WF45Xryqka4fXF1D
-        Ja1j9a48ZryxGrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUP214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-        xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-        IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
-        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-        xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
-        WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbmZ
-        X7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927013752.2515238-1-yajun.deng@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,182 +49,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Wed, Sep 27, 2023 at 09:37:52AM +0800, Yajun Deng wrote:
+> There is round twice in memblock_add_range(). The first counts the number
+> of regions needed to accommodate the new area. The second actually inserts
+> them. But the first round isn't really needed, we just need to check the
+> counts before inserting them.
+> 
+> Check the count before calling memblock_insert_region(). If the count is
+> equal to the maximum value, it needs to resize the array. Otherwise,
+> insert it directly.
+> 
+> To avoid nested calls to memblock_add_range(), we need to call
+> memblock_reserve() out of memblock_double_array().
 
-Now that the old apis are removed, __mddev_suspend/resume() can be
-renamed to their original names.
+memblock_add_range() does an extra loop once in a while, but I don't think
+removing it will have any actual effect on the boot time.
+ 
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  mm/memblock.c | 117 ++++++++++++++++++++++++--------------------------
+>  1 file changed, 57 insertions(+), 60 deletions(-)
+> 
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 5a88d6d24d79..3f44c84f5d0b 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -400,6 +400,8 @@ void __init memblock_discard(void)
+>   * @type: memblock type of the regions array being doubled
+>   * @new_area_start: starting address of memory range to avoid overlap with
+>   * @new_area_size: size of memory range to avoid overlap with
+> + * @new_reserve_base: starting address of new array
+> + * @new_reserve_size: size of new array
+>   *
+>   * Double the size of the @type regions array. If memblock is being used to
+>   * allocate memory for a new reserved regions array and there is a previously
+> @@ -412,7 +414,9 @@ void __init memblock_discard(void)
+>   */
+>  static int __init_memblock memblock_double_array(struct memblock_type *type,
+>  						phys_addr_t new_area_start,
+> -						phys_addr_t new_area_size)
+> +						phys_addr_t new_area_size,
+> +						phys_addr_t *new_reserve_base,
+> +						phys_addr_t *new_reserve_size)
+>  {
+>  	struct memblock_region *new_array, *old_array;
+>  	phys_addr_t old_alloc_size, new_alloc_size;
+> @@ -490,11 +494,13 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
+>  		memblock_free(old_array, old_alloc_size);
+>  
+>  	/*
+> -	 * Reserve the new array if that comes from the memblock.  Otherwise, we
+> -	 * needn't do it
+> +	 * Keep the address and size if that comes from the memblock. Otherwise,
+> +	 * we needn't do it.
+>  	 */
+> -	if (!use_slab)
+> -		BUG_ON(memblock_reserve(addr, new_alloc_size));
+> +	if (!use_slab) {
+> +		*new_reserve_base = addr;
+> +		*new_reserve_size = new_alloc_size;
+> +	}
+>  
+>  	/* Update slab flag */
+>  	*in_slab = use_slab;
+> @@ -588,11 +594,12 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+>  				phys_addr_t base, phys_addr_t size,
+>  				int nid, enum memblock_flags flags)
+>  {
+> -	bool insert = false;
+>  	phys_addr_t obase = base;
+>  	phys_addr_t end = base + memblock_cap_size(base, &size);
+> -	int idx, nr_new, start_rgn = -1, end_rgn;
+> +	phys_addr_t new_base = 0, new_size;
+> +	int idx, start_rgn = -1, end_rgn;
+>  	struct memblock_region *rgn;
+> +	unsigned long ocnt = type->cnt;
+>  
+>  	if (!size)
+>  		return 0;
+> @@ -608,25 +615,6 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+>  		return 0;
+>  	}
+>  
+> -	/*
+> -	 * The worst case is when new range overlaps all existing regions,
+> -	 * then we'll need type->cnt + 1 empty regions in @type. So if
+> -	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
+> -	 * that there is enough empty regions in @type, and we can insert
+> -	 * regions directly.
+> -	 */
+> -	if (type->cnt * 2 + 1 <= type->max)
+> -		insert = true;
+> -
+> -repeat:
+> -	/*
+> -	 * The following is executed twice.  Once with %false @insert and
+> -	 * then with %true.  The first counts the number of regions needed
+> -	 * to accommodate the new area.  The second actually inserts them.
+> -	 */
+> -	base = obase;
+> -	nr_new = 0;
+> -
+>  	for_each_memblock_type(idx, type, rgn) {
+>  		phys_addr_t rbase = rgn->base;
+>  		phys_addr_t rend = rbase + rgn->size;
+> @@ -644,15 +632,23 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+>  			WARN_ON(nid != memblock_get_region_node(rgn));
+>  #endif
+>  			WARN_ON(flags != rgn->flags);
+> -			nr_new++;
+> -			if (insert) {
+> -				if (start_rgn == -1)
+> -					start_rgn = idx;
+> -				end_rgn = idx + 1;
+> -				memblock_insert_region(type, idx++, base,
+> -						       rbase - base, nid,
+> -						       flags);
+> -			}
+> +
+> +			/*
+> +			 * If type->cnt is equal to type->max, it means there's
+> +			 * not enough empty region and the array needs to be
+> +			 * resized. Otherwise, insert it directly.
+> +			 */
+> +			if ((type->cnt == type->max) &&
+> +			    memblock_double_array(type, obase, size,
+> +						  &new_base, &new_size))
+> +				return -ENOMEM;
+> +
+> +			if (start_rgn == -1)
+> +				start_rgn = idx;
+> +			end_rgn = idx + 1;
+> +			memblock_insert_region(type, idx++, base,
+> +					       rbase - base, nid,
+> +					       flags);
+>  		}
+>  		/* area below @rend is dealt with, forget about it */
+>  		base = min(rend, end);
+> @@ -660,33 +656,28 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+>  
+>  	/* insert the remaining portion */
+>  	if (base < end) {
+> -		nr_new++;
+> -		if (insert) {
+> -			if (start_rgn == -1)
+> -				start_rgn = idx;
+> -			end_rgn = idx + 1;
+> -			memblock_insert_region(type, idx, base, end - base,
+> -					       nid, flags);
+> -		}
+> +		if ((type->cnt == type->max) &&
+> +		    memblock_double_array(type, obase, size,
+> +					  &new_base, &new_size))
+> +			return -ENOMEM;
+> +
+> +		if (start_rgn == -1)
+> +			start_rgn = idx;
+> +		end_rgn = idx + 1;
+> +		memblock_insert_region(type, idx, base, end - base,
+> +				       nid, flags);
+>  	}
+>  
+> -	if (!nr_new)
+> +	if (ocnt == type->cnt)
+>  		return 0;
+>  
+> -	/*
+> -	 * If this was the first round, resize array and repeat for actual
+> -	 * insertions; otherwise, merge and return.
+> -	 */
+> -	if (!insert) {
+> -		while (type->cnt + nr_new > type->max)
+> -			if (memblock_double_array(type, obase, size) < 0)
+> -				return -ENOMEM;
+> -		insert = true;
+> -		goto repeat;
+> -	} else {
+> -		memblock_merge_regions(type, start_rgn, end_rgn);
+> -		return 0;
+> -	}
+> +	memblock_merge_regions(type, start_rgn, end_rgn);
+> +
+> +	/* Reserve the new array */
+> +	if (new_base)
+> +		memblock_reserve(new_base, new_size);
+> +
+> +	return 0;
+>  }
+>  
+>  /**
+> @@ -755,6 +746,7 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+>  					int *start_rgn, int *end_rgn)
+>  {
+>  	phys_addr_t end = base + memblock_cap_size(base, &size);
+> +	phys_addr_t new_base = 0, new_size;
+>  	int idx;
+>  	struct memblock_region *rgn;
+>  
+> @@ -764,10 +756,15 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+>  		return 0;
+>  
+>  	/* we'll create at most two more regions */
+> -	while (type->cnt + 2 > type->max)
+> -		if (memblock_double_array(type, base, size) < 0)
+> +	if (type->cnt + 2 > type->max) {
+> +		if (memblock_double_array(type, base, size,
+> +					  &new_base, &new_size))
+>  			return -ENOMEM;
+>  
+> +		if (new_base)
+> +			memblock_reserve(new_base, new_size);
+> +	}
+> +
+>  	for_each_memblock_type(idx, type, rgn) {
+>  		phys_addr_t rbase = rgn->base;
+>  		phys_addr_t rend = rbase + rgn->size;
+> -- 
+> 2.25.1
+> 
 
-This is done by:
-
-sed -i "s/__mddev_suspend/mddev_suspend/g" *.[ch]
-sed -i "s/__mddev_resume/mddev_resume/g" *.[ch]
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/dm-raid.c     |  4 ++--
- drivers/md/md.c          | 18 +++++++++---------
- drivers/md/md.h          | 12 ++++++------
- drivers/md/raid5-cache.c |  4 ++--
- 4 files changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 05dd6ccf6f48..a4692f8f98ee 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3797,7 +3797,7 @@ static void raid_postsuspend(struct dm_target *ti)
- 		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
- 			md_stop_writes(&rs->md);
- 
--		__mddev_suspend(&rs->md, false);
-+		mddev_suspend(&rs->md, false);
- 	}
- }
- 
-@@ -4009,7 +4009,7 @@ static int raid_preresume(struct dm_target *ti)
- 	}
- 
- 	/* Check for any resize/reshape on @rs and adjust/initiate */
--	/* Be prepared for __mddev_resume() in raid_resume() */
-+	/* Be prepared for mddev_resume() in raid_resume() */
- 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
- 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 271d3f336026..b711eaf53e41 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -422,7 +422,7 @@ static void md_submit_bio(struct bio *bio)
-  * Make sure no new requests are submitted to the device, and any requests that
-  * have been submitted are completely handled.
-  */
--int __mddev_suspend(struct mddev *mddev, bool interruptible)
-+int mddev_suspend(struct mddev *mddev, bool interruptible)
- {
- 	int err = 0;
- 
-@@ -473,9 +473,9 @@ int __mddev_suspend(struct mddev *mddev, bool interruptible)
- 	mutex_unlock(&mddev->suspend_mutex);
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(__mddev_suspend);
-+EXPORT_SYMBOL_GPL(mddev_suspend);
- 
--void __mddev_resume(struct mddev *mddev)
-+void mddev_resume(struct mddev *mddev)
- {
- 	lockdep_assert_not_held(&mddev->reconfig_mutex);
- 
-@@ -486,7 +486,7 @@ void __mddev_resume(struct mddev *mddev)
- 		return;
- 	}
- 
--	/* entred the memalloc scope from __mddev_suspend() */
-+	/* entred the memalloc scope from mddev_suspend() */
- 	memalloc_noio_restore(mddev->noio_flag);
- 
- 	percpu_ref_resurrect(&mddev->active_io);
-@@ -498,7 +498,7 @@ void __mddev_resume(struct mddev *mddev)
- 
- 	mutex_unlock(&mddev->suspend_mutex);
- }
--EXPORT_SYMBOL_GPL(__mddev_resume);
-+EXPORT_SYMBOL_GPL(mddev_resume);
- 
- /*
-  * Generic flush handling for md
-@@ -5216,12 +5216,12 @@ suspend_lo_store(struct mddev *mddev, const char *buf, size_t len)
- 	if (new != (sector_t)new)
- 		return -EINVAL;
- 
--	err = __mddev_suspend(mddev, true);
-+	err = mddev_suspend(mddev, true);
- 	if (err)
- 		return err;
- 
- 	WRITE_ONCE(mddev->suspend_lo, new);
--	__mddev_resume(mddev);
-+	mddev_resume(mddev);
- 
- 	return len;
- }
-@@ -5247,12 +5247,12 @@ suspend_hi_store(struct mddev *mddev, const char *buf, size_t len)
- 	if (new != (sector_t)new)
- 		return -EINVAL;
- 
--	err = __mddev_suspend(mddev, true);
-+	err = mddev_suspend(mddev, true);
- 	if (err)
- 		return err;
- 
- 	WRITE_ONCE(mddev->suspend_hi, new);
--	__mddev_resume(mddev);
-+	mddev_resume(mddev);
- 
- 	return len;
- }
-diff --git a/drivers/md/md.h b/drivers/md/md.h
-index 4c5f3f032656..55d01d431418 100644
---- a/drivers/md/md.h
-+++ b/drivers/md/md.h
-@@ -804,8 +804,8 @@ extern int md_rdev_init(struct md_rdev *rdev);
- extern void md_rdev_clear(struct md_rdev *rdev);
- 
- extern void md_handle_request(struct mddev *mddev, struct bio *bio);
--extern int __mddev_suspend(struct mddev *mddev, bool interruptible);
--extern void __mddev_resume(struct mddev *mddev);
-+extern int mddev_suspend(struct mddev *mddev, bool interruptible);
-+extern void mddev_resume(struct mddev *mddev);
- 
- extern void md_reload_sb(struct mddev *mddev, int raid_disk);
- extern void md_update_sb(struct mddev *mddev, int force);
-@@ -853,27 +853,27 @@ static inline int mddev_suspend_and_lock(struct mddev *mddev)
- {
- 	int ret;
- 
--	ret = __mddev_suspend(mddev, true);
-+	ret = mddev_suspend(mddev, true);
- 	if (ret)
- 		return ret;
- 
- 	ret = mddev_lock(mddev);
- 	if (ret)
--		__mddev_resume(mddev);
-+		mddev_resume(mddev);
- 
- 	return ret;
- }
- 
- static inline void mddev_suspend_and_lock_nointr(struct mddev *mddev)
- {
--	__mddev_suspend(mddev, false);
-+	mddev_suspend(mddev, false);
- 	mutex_lock(&mddev->reconfig_mutex);
- }
- 
- static inline void mddev_unlock_and_resume(struct mddev *mddev)
- {
- 	mddev_unlock(mddev);
--	__mddev_resume(mddev);
-+	mddev_resume(mddev);
- }
- 
- struct mdu_array_info_s;
-diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-index 9909110262ee..6157f5beb9fe 100644
---- a/drivers/md/raid5-cache.c
-+++ b/drivers/md/raid5-cache.c
-@@ -699,9 +699,9 @@ static void r5c_disable_writeback_async(struct work_struct *work)
- 
- 	log = READ_ONCE(conf->log);
- 	if (log) {
--		__mddev_suspend(mddev, false);
-+		mddev_suspend(mddev, false);
- 		log->r5c_journal_mode = R5C_JOURNAL_MODE_WRITE_THROUGH;
--		__mddev_resume(mddev);
-+		mddev_resume(mddev);
- 	}
- }
- 
 -- 
-2.39.2
-
+Sincerely yours,
+Mike.
