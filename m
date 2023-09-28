@@ -2,144 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46ABD7B2137
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931887B213C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbjI1P0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S231817AbjI1P2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjI1P0X (ORCPT
+        with ESMTP id S231384AbjI1P2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:26:23 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40564B7;
-        Thu, 28 Sep 2023 08:26:21 -0700 (PDT)
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6c4a25f6390so7178653a34.2;
-        Thu, 28 Sep 2023 08:26:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695914779; x=1696519579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PYPUiAEm0lZNQbU6hKmoJKqPGRAnrTCwSSHfRdZ7LfA=;
-        b=D35ZnhvzMmw2WuYdeCJawE0603JXMboMFtqOwpQGEMiwgpDNmYh3h2L20CfGNw2pyr
-         nHtgHCu/RHLLu3IJt3mm2gkMQlgppdFTDbaLpSWjNy6EUk8+ZUWJM43q3HZXewZCvgEl
-         HJYiGyO3GdUW9SVMOjYhyOWQQprWBtY/0O3Ef0qfJtDVdMtQ3/Yd5wA/oDyXrKtM0tOi
-         HNmiJislJpx8eOAVRIr3ALu5F6W1zdr9isBJ+vlP8uXVuMoR9T5nWmh08tFybtgz/i3O
-         TKTKZebWmr87iSZUSTqA+IeHSuZCU4VofXJE1lWPTRhaySQy5tl/U+JGRg6v1y11agpE
-         FKtQ==
-X-Gm-Message-State: AOJu0Yw/INZPUbsTGC2B9p5kmnNHMMqkX4MszrP840JVtv1KlTSvxYOY
-        9LJoCF/wQjqo00jQjZSQry0=
-X-Google-Smtp-Source: AGHT+IEkFDTusLpYox11EoA1Tl2MJIdC5Ad7Ua286wH6ql8JYqDg2cQ1Wc6Zlzvv071aY+VufA88gQ==
-X-Received: by 2002:a9d:73d5:0:b0:6c4:b339:2528 with SMTP id m21-20020a9d73d5000000b006c4b3392528mr1632381otk.16.1695914778722;
-        Thu, 28 Sep 2023 08:26:18 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa78dce000000b006906aaf1e4dsm13514673pfr.150.2023.09.28.08.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 08:26:18 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 15:26:16 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 14/15] hyper-v/azure: Remove now superfluous sentinel
- element from ctl_table array
-Message-ID: <ZRWbGDlXCS4t8tMf@liuwe-devbox-debian-v2>
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
- <65157da8.050a0220.fb263.fdb1SMTPIN_ADDED_BROKEN@mx.google.com>
+        Thu, 28 Sep 2023 11:28:05 -0400
+Received: from smtp-bc0b.mail.infomaniak.ch (smtp-bc0b.mail.infomaniak.ch [IPv6:2001:1600:3:17::bc0b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBB3AC;
+        Thu, 28 Sep 2023 08:28:02 -0700 (PDT)
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RxHRg6mXXzMr3yF;
+        Thu, 28 Sep 2023 15:27:59 +0000 (UTC)
+Received: from unknown by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RxHRf70HvzMppDN;
+        Thu, 28 Sep 2023 17:27:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1695914879;
+        bh=5TbzNnbHjMBaw/hqLYXv0/YPa4xbm8wFAcwV61jhk4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=spWoM0mbRhMT5nzVdAn/x+LHYB1Jj7njxIUT6IcE5acIQ30gQlXV+o2IIEzE64pGX
+         6pxI++jHHiSfFtzHTzr8XS7txfAxpFMfUoEvnSGItvez3EgaTB8kteU8Vg2UE93QRW
+         dTTe90yMw7QhhE8jXssngHGNRjxj7mzulpthbxrc=
+Date:   Thu, 28 Sep 2023 17:27:46 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     Ben Scarlato <akhna@google.com>,
+        =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+        Jeff Xu <jeffxu@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/7] Landlock audit support
+Message-ID: <20230928.wae8Caitha7n@digikod.net>
+References: <20230921061641.273654-1-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <65157da8.050a0220.fb263.fdb1SMTPIN_ADDED_BROKEN@mx.google.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230921061641.273654-1-mic@digikod.net>
+X-Infomaniak-Routing: alpha
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please change the prefix to "Drivers: hv:" in the subject line in the
-two patches.
+I talked about this patch series at the Kernel Recipes conference, and
+you might want to take a look at the future work:
+https://landlock.io/talks/2023-09-25_landlock-audit-kr.pdf
 
-On Thu, Sep 28, 2023 at 03:21:39PM +0200, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel from hv_ctl_table
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  drivers/hv/hv_common.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
-> index ccad7bca3fd3..bc7d678030aa 100644
-> --- a/drivers/hv/hv_common.c
-> +++ b/drivers/hv/hv_common.c
-> @@ -147,8 +147,7 @@ static struct ctl_table hv_ctl_table[] = {
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_ONE
-> -	},
-> -	{}
-> +	}
+In a nutshell, new syscall flags:
+* For landlock_create_ruleset() to opt-in for logging ruleset-related
+  and domain-related use
+* For landlock_add_rule() to opt-in for logging this rule if it granted
+  the requested access
+* For landlock_restrict_self() to opt-in for:
+  * not log anything
+  * handle a permissive mode to log actions that would have been denied
+    (very useful to build a sandbox)
 
-Please keep the comma at the end.
 
->  };
->  
->  static int hv_die_panic_notify_crash(struct notifier_block *self,
+On Thu, Sep 21, 2023 at 08:16:34AM +0200, Mickaël Salaün wrote:
+> Hi,
 > 
+> This patch series adds basic audit support to Landlock for most actions.
+> Logging denied requests is useful for different use cases:
+> * app developers: to ease and speed up sandboxing support
+> * power users: to understand denials
+> * sysadmins: to look for users' issues
+> * tailored distro maintainers: to get usage metrics from their fleet
+> * security experts: to detect attack attempts
+> 
+> To make logs useful, they need to contain the most relevant Landlock
+> domain that denied an action, and the reason. This translates to the
+> latest nested domain and the related missing access rights.
+> 
+> Two "Landlock permissions" are used to describe mandatory restrictions
+> enforced on all domains:
+> * fs_layout: change the view of filesystem with mount operations.
+> * ptrace: tamper with a process.
+> 
+> Here is an example of logs, result of the sandboxer activity:
+> tid=267 comm="sandboxer" op=create-ruleset ruleset=1 handled_access_fs=execute,write_file,read_file,read_dir,remove_dir,remove_file,make_char,make_dir,make_reg,make_sock,make_fifo,make_block,make_sym,refer,truncate
+> tid=267 comm="sandboxer" op=restrict-self domain=2 ruleset=1 parent=0
+> op=release-ruleset ruleset=1
+> tid=267 comm="bash" domain=2 op=open errno=13 missing-fs-accesses=write_file,read_file missing-permission= path="/dev/tty" dev="devtmpfs" ino=9
+> tid=268 comm="ls" domain=2 op=open errno=13 missing-fs-accesses=read_dir missing-permission= path="/" dev="vda2" ino=256
+> tid=269 comm="touch" domain=2 op=mknod errno=13 missing-fs-accesses=make_reg missing-permission= path="/" dev="vda2" ino=256
+> tid=270 comm="umount" domain=2 op=umount errno=1 missing-fs-accesses= missing-permission=fs_layout name="/" dev="tmpfs" ino=1
+> tid=271 comm="strace" domain=2 op=ptrace errno=1 missing-fs-accesses= missing-permission=ptrace opid=1 ocomm="systemd"
+> 
+> As highlighted in comments, support for audit is not complete yet with
+> this series: some actions are not logged (e.g. file reparenting), and
+> rule additions are not logged neither.
+> 
+> I'm also not sure if we need to have seccomp-like features such as
+> SECCOMP_FILTER_FLAG_LOG, SECCOMP_RET_LOG, and
+> /proc/sys/kernel/seccomp/actions_logged
+> 
+> I'd like to get some early feedback on this proposal.
+> 
+> This series is based on v6.6-rc2
+> 
+> Regards,
+> 
+> Mickaël Salaün (7):
+>   lsm: Add audit_log_lsm_data() helper
+>   landlock: Factor out check_access_path()
+>   landlock: Log ruleset creation and release
+>   landlock: Log domain creation and enforcement
+>   landlock: Log file-related requests
+>   landlock: Log mount-related requests
+>   landlock: Log ptrace requests
+> 
+>  include/linux/lsm_audit.h    |   2 +
+>  include/uapi/linux/audit.h   |   1 +
+>  security/landlock/Makefile   |   2 +
+>  security/landlock/audit.c    | 283 +++++++++++++++++++++++++++++++++++
+>  security/landlock/audit.h    |  88 +++++++++++
+>  security/landlock/fs.c       | 169 ++++++++++++++++-----
+>  security/landlock/ptrace.c   |  47 +++++-
+>  security/landlock/ruleset.c  |   6 +
+>  security/landlock/ruleset.h  |  10 ++
+>  security/landlock/syscalls.c |  12 ++
+>  security/lsm_audit.c         |  26 ++--
+>  11 files changed, 595 insertions(+), 51 deletions(-)
+>  create mode 100644 security/landlock/audit.c
+>  create mode 100644 security/landlock/audit.h
+> 
+> 
+> base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
 > -- 
-> 2.30.2
+> 2.42.0
 > 
