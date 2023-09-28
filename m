@@ -2,191 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAE47B11DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F217B11E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjI1FAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
+        id S230236AbjI1FAx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 01:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjI1FAd (ORCPT
+        with ESMTP id S230229AbjI1FAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:00:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6B412A;
-        Wed, 27 Sep 2023 22:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695877232; x=1727413232;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=otslHa2ijOmNPFruTadTPpZw+PytYLIf0DwxeY7rzdk=;
-  b=QvNnmpzWoDiy12efWYyiFfqyDATQGUSYLDPn6h469LcnmC7Z+EXHfgtq
-   Hu/xtsFdkWY/aWvPbeOVQNEoHQyoggtDe3XPzTCGRYXAGH/LwHlqP7E2m
-   0diEYHE7vP+OM8gK3fcaDH31BcHFHtJAK/I6Wy6dzzzucA+zseIoX+aTP
-   uOQndLAow/CaWHqWk+OUKC7uoN6rObIQr4XAWg0q9t5AmYNZQ9WWQcD0X
-   YeVxhrbx873Sh65BCZg0cBE7oCE0DYzfsclUaulaQxT6cJJlzZZJtjU1E
-   jBzQcB+Tlbjl+RAtuELmdE+CeWNwcSEaAknNcBTTseDjkQ+51oR3+Ur05
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="412902665"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="412902665"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 22:00:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="699143014"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="699143014"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 22:00:31 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 22:00:31 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Wed, 27 Sep 2023 22:00:24 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 22:00:18 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Wed, 27 Sep 2023 22:00:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HjSrqqmYuKL1MlhIg6Q50uOLrqDj0RSfViSERoIhTIzYpAT9sSWfgcNeFll3MfPUQ7S3wt491yDd/WDBYSRzHTdfa2hc2h8s88d9mws0Yr72CynwQMgC1/83HTLA4IK7+zZp5bvAFaGL/YFvn4j61S07rgg2FvIIhbIiZJ/flY8ZQJ+ci8YtUY9Py77xVUQdm9oIAvllizLIkso9G8NP9b+gXKgoi8pZRp/6dp8qnygu4qJlzyw3tZWFjWn0wENtPT5PHlNEar5NbX3KUIE6NR13EKLjx9cTDcYkWliwxAW+JL9RLePJrESeoyhWnDc8/QmVpVWORpFZiGh/laOutg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=otslHa2ijOmNPFruTadTPpZw+PytYLIf0DwxeY7rzdk=;
- b=G7kVjMst0hmU5Si+uMVHqGNOePyvUbqZrXArsSs8ZLAGwqFI8iZHQGsi5iia99kjsJsu6w2gOeNFQfnGVzpg6cnBUO7KHM+9ahfEy3DO5mvPKWAmiOc6IbFG/FLrXZQD9MG46aQ2E0oIpvKy/Q0eEP4xoaqeDtsKWnaXzjR61kyURohVjpoaMvl456lQSkBoMrt5/AnOpst5soC/BkJ7/X0x55DKw8B7DDa3phgDNY4sJstuqKDzrBOwmTEVV+vzZh3MFvxgam1d0otNrHP5COQHS7npAv1M8bpzlbTwgkwSQPw7MsIuVb2d78AKev4Uy+/+uPMVdRuVw0DHXYLQEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA2PR11MB5003.namprd11.prod.outlook.com (2603:10b6:806:11e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 28 Sep
- 2023 05:00:16 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::1bfc:7af0:dc68:839d%4]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
- 05:00:16 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 12/12] iommu: Improve iopf_queue_flush_dev()
-Thread-Topic: [PATCH v6 12/12] iommu: Improve iopf_queue_flush_dev()
-Thread-Index: AQHZ8cSx3Wevaa1nu06TreuvqwoupbAvrbRg
-Date:   Thu, 28 Sep 2023 05:00:15 +0000
-Message-ID: <BN9PR11MB5276018DE2AC15B3538BBC008CC1A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230928042734.16134-1-baolu.lu@linux.intel.com>
- <20230928042734.16134-13-baolu.lu@linux.intel.com>
-In-Reply-To: <20230928042734.16134-13-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA2PR11MB5003:EE_
-x-ms-office365-filtering-correlation-id: 0bbde258-d032-4883-0a75-08dbbfdfcdd0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3c/pGWSQ1hfqBOYlIKOxih54lvvj6Y1fHrq9TnGKyKXXS2LHm7c0yAMTjucwHaDfU18QM60Thg39FCz2eqJEylqwRFGPIkhLn+qulB0wdHeUJ4pPiv2fVCXrElkzcPERNAljK8XqtoHGH/Ac0TxONXzY+AgQOODJ2dMibGmIljT/KeFEj8FJKZPwh7EFc+JwZP8Byi4w4J347EV8F+RCNshnRwmWXrZPAntEfQfP4MZrLffYIgb+sBxjXJ0JJD88lFCsW/450xAarIlwgAA33TsePGi5pQogyNyUUHAGn3Iw/yDUh0d0W2apZZ/gcX7CSRLrLDq+PPwWXhju9cTuRTgsASjcIhC2uIAG/mQhJkLsIBXEi5Q4goufpENPxZfwGO0WMXT9SrmiedhoCIE1rOAmtll5OEQV1/18ptz4cvIIzGOKwMG7biwoe+9olT9E1Yh4sdTZMigNq0dbsxfTX1PzAEYVrwt7AE5wAY9we+/hcwh5dNAEm28m/euP4hoch6zxgHdINF+27yWyfwQAW7lUJkUyi5muGjS8Mo0d88nRruWr5bdwEdN36zmhX0cssFsdzQhl8RMJaNlnN0H1kNDviFPpz+XlpNdKJZIiS4fm1yMrj1wWjjkukZ+YFEmc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(366004)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(5660300002)(2906002)(41300700001)(7416002)(122000001)(33656002)(38070700005)(82960400001)(4326008)(86362001)(55016003)(38100700002)(83380400001)(478600001)(26005)(6506007)(8676002)(9686003)(52536014)(316002)(66946007)(71200400001)(110136005)(64756008)(66556008)(66446008)(76116006)(66476007)(54906003)(7696005)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Qd1XRaLE0dVW1v/xEOhwI/SXsW4WoijXbK7XOiDsZt/kL4swbayh6N6RsZk6?=
- =?us-ascii?Q?TxqfKJ5FVR2eVRS3HjbDx8apvsfGxMvQxM9mLjFCaGyVPRQV3cE2ZMhIRgPZ?=
- =?us-ascii?Q?eyMUQ6vyL/iOxOrVOWpeE4mfzDZmUiRm9LkvUOswPWXURgw+y4qPDQFnx0YD?=
- =?us-ascii?Q?28MbPwukskCqqd5h1FfNuZK2yS5VZuRxpqZGkLVPKqNcbiMLodQtciTSgWTQ?=
- =?us-ascii?Q?Xt65M/yRmtr8lsTzMJL4QUlxsUKpbvYy8OSfX2jThrnszCbGn9sq/61U8eBl?=
- =?us-ascii?Q?sIY/GVJixEQMbjqh+haW6AhLEMjv6XKMHNW/AyK0BXu/oq94+5L2qiqBAvYR?=
- =?us-ascii?Q?z9QVrwSJIAgnyO9+7LKXq2FhvLSye+IA5mSBKYza1lCF5bgzYq/TlGL68Gcr?=
- =?us-ascii?Q?oMiGlrbY2H2UnZkFpAxXI9UIEdp80h88udI6muCXawcp2w2Jg4YFRsfsoTv+?=
- =?us-ascii?Q?ERTPVq1/NLjTyS68jYOU+rmaKU8u4mZatx+LxBDi2fPZrTuua2Hu9emkSYMN?=
- =?us-ascii?Q?JbQNvr7dTUKVsOQ+9F91DpEfswN9XCUm8uxGp1c/4Mul6gC2Li7c9Y3Jf4cX?=
- =?us-ascii?Q?TjVtinjvJ4RWqvgFubdoSnmGFQpbXGB3Dg2LQh8Ivu9eky9+8HX9XwLB9wey?=
- =?us-ascii?Q?H661REFen5nQmKMLic+6UkdJynTocrgp676mNSLXjDw3hW8ctWJkRgsMKOfU?=
- =?us-ascii?Q?GX2j94DILoVU/M77AdLEWz4KTPw3RgNMgbymXUDhWMxCvCLZgvCYBWaxQa6x?=
- =?us-ascii?Q?G3MtBiCOlUKHOSNXcs+spydtg2IAFXbQo7iwfryg8P1UVWWjDF+z3uM1MXpk?=
- =?us-ascii?Q?GOxXH3GXk6xAx4v4kDZOBVrOEL/qo0xFFBb3Yax4fTWWbFnq8zgBkgjZbJCS?=
- =?us-ascii?Q?n+0fsGlIF03IcrT0++iysFrV3Juo+R18fKefmjdOX2tu33S8uFqXgdSqAkk8?=
- =?us-ascii?Q?+IZcVDTGWGYS16j6ZmyH2fKq+xvPOz4wXvwQGyDVcQKnLt5IYu0D3owyvF5l?=
- =?us-ascii?Q?j6bXHusjcLGHO5/sDv3EmTlzeQJ6X6mn984Ag4ckdpFxXeMeGXSLJ142B39l?=
- =?us-ascii?Q?x+F0jfqLtaj0S6BXxuWwq4dZ+S0wFHvKCB+TWLnAc7m/jPuz5OgApKr32x2z?=
- =?us-ascii?Q?vCSpRJXxR8vkOTW8JtBHKAfaVnh/OoEBnbAqNzYNKg3/iFWu4ZN87rOMM5g8?=
- =?us-ascii?Q?WzDMTSyie9DuBEo4hKyAni1UjV48G5AGEYksLGX6Vf40o/kTVK9/WX408AJi?=
- =?us-ascii?Q?Wpi/QqrOc/HxhmyQE6+dNoDjZ6+bMG22l2LR7xr0qMRxp+StYsqml8zQLFJ5?=
- =?us-ascii?Q?V6waAppCb8bvzmSPAtMGDrjsZ0cl4TO87GoUDVRkHA+3xvtckzxS65zhLDTv?=
- =?us-ascii?Q?oOBJfTdyUS4f9Y8BGH0ZVyVYK5P+Np8oHl3pWdc/Pj6usL/0ZTKyJtdrzbEO?=
- =?us-ascii?Q?2//A7w7G42dfQ1Xs1CMptbYKtU4ICL5r32cuSvcwbqXHGUzrlFax1fthpFvh?=
- =?us-ascii?Q?kSHH8iPUPG33DlWLenebFWL1jSOhQgRkl9p/nRG/1DubBtPzTAHc1BXt1EDH?=
- =?us-ascii?Q?li0X/UV9JFujoaogExojEJLf5T93PHsksvek/z0u?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 28 Sep 2023 01:00:51 -0400
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905A7180;
+        Wed, 27 Sep 2023 22:00:49 -0700 (PDT)
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-79fe6da0095so147128239f.0;
+        Wed, 27 Sep 2023 22:00:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695877248; x=1696482048;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SWn+eN+3137J1X9ZFpBev17uHRgqKvmTm2T8zksCQyg=;
+        b=SmFoFluwhXnrMsJvmuhWTOqiYHC3tncc47osw25ED6Q75zJlhsAv8zLiXSHCvOIGZ1
+         LZW0ab6H5kRPuoydYOzj/uoDseOMdhss3thx114sfOOT6lTrNeq1b5Sq9x10gchkkK16
+         K/czxLi5hCu716wZhxaPGbU3iO/UBD/fw8YuZ81RO/OBpiM70mhKpTx+1FFKnPZfo2kn
+         lZCZMPMB0k8ZeqaKsHgAX4RQIyru2N+Mffpo48QM584srmVSJF3ARvgvO1/MADVx2oiK
+         fTowg1szGYK6vwD6fHOANRltIEPViQYknYHN10OQbJKnZs1EP6+0mQynXhL1raibukRG
+         oqOg==
+X-Gm-Message-State: AOJu0YyOFsCSR4ZMdgTJEQeDDBPCMTm422CT9HE8oMIbrLGLAHkcrrM5
+        nWpagTD7hCl9OwQgpDLIHxMpkyvtG0UnOY2Xepc=
+X-Google-Smtp-Source: AGHT+IEDnKI0Uo5Oe0zFwupTSgGg6a0S44wu9mbykzvQSWcbG/9FazNTdataivn+nPeD8nD23UTGmgFKnCf7FDhsdPE=
+X-Received: by 2002:a5e:881a:0:b0:798:d82b:7b02 with SMTP id
+ l26-20020a5e881a000000b00798d82b7b02mr170144ioj.4.1695877248368; Wed, 27 Sep
+ 2023 22:00:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bbde258-d032-4883-0a75-08dbbfdfcdd0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 05:00:15.4186
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wupYkfep7Sfy6Xe5L/uPWsS974TdW+9XQbaSL7rIaUYiIywDxdsnopG1L8kcwvOcFEGGid503GDNC+BFV6pxoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5003
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230925062323.840799-1-irogers@google.com>
+In-Reply-To: <20230925062323.840799-1-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 27 Sep 2023 22:00:37 -0700
+Message-ID: <CAM9d7chaKGciJgDLyN1hhDXNuFuCHRFcYAjTHY0bEMKpfBDZBg@mail.gmail.com>
+Subject: Re: [PATCH v1] perf pmus: Make PMU alias name loading lazy
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Thursday, September 28, 2023 12:28 PM
->=20
-> The iopf_queue_flush_dev() is called by the iommu driver before releasing
-> a PASID. It ensures that all pending faults for this PASID have been
-> handled or cancelled, and won't hit the address space that reuses this
-> PASID. The driver must make sure that no new fault is added to the queue.
->=20
-> The SMMUv3 driver doesn't use it because it only implements the
-> Arm-specific stall fault model where DMA transactions are held in the SMM=
-U
-> while waiting for the OS to handle iopf's. Since a device driver must
-> complete all DMA transactions before detaching domain, there are no
-> pending iopf's with the stall model. PRI support requires adding a call t=
-o
-> iopf_queue_flush_dev() after flushing the hardware page fault queue.
->=20
-> The current implementation of iopf_queue_flush_dev() is a simplified
-> version. It is only suitable for SVA case in which the processing of iopf
-> is implemented in the inner loop of the iommu subsystem.
->=20
-> Improve this interface to make it also work for handling iopf out of the
-> iommu core. Rename the function with a more meaningful name. Remove a
-> warning message in iommu_page_response() since the iopf queue might get
-> flushed before possible pending responses.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Hi Ian,
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+On Sun, Sep 24, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
+>
+> PMU alias names were computed when the first perf_pmu is created,
+> scanning all PMUs in event sources for a file called alias that
+> generally doesn't exist. Switch to trying to load the file when all
+> PMU related files are loaded in lookup. This would cause a PMU name
+> lookup of an alias name to fail if no PMUs were loaded, so in that
+> case all PMUs are loaded and the find repeated. The overhead is
+> similar but in the (very) general case not all PMUs are scanned for
+> the alias file.
+>
+> As the overhead occurs once per invocation it doesn't show in perf
+> bench internals pmu-scan. On a tigerlake machine, the number of openat
+> system calls for an event of cpu/cycles/ with perf stat reduces from
+> 94 to 69 (ie 25 fewer openat calls).
+
+I think the pmu-scan bench could show the difference as it
+calls perf_pmu__destroy() in the loop body.  So every call to
+perf_pmu__scan() should start from nothing, right?
+
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Maybe we can load event aliases and formats lazily later.
+Anyway, it looks good to me.
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
+
+
+> ---
+>  tools/perf/arch/x86/util/pmu.c | 139 ---------------------------------
+>  tools/perf/util/pmu.c          |  39 ++++-----
+>  tools/perf/util/pmu.h          |   2 -
+>  tools/perf/util/pmus.c         |  10 +++
+>  4 files changed, 31 insertions(+), 159 deletions(-)
+>
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+> index f428cffb0378..8b53ca468a50 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -17,15 +17,6 @@
+>  #include "../../../util/pmus.h"
+>  #include "env.h"
+>
+> -struct pmu_alias {
+> -       char *name;
+> -       char *alias;
+> -       struct list_head list;
+> -};
+> -
+> -static LIST_HEAD(pmu_alias_name_list);
+> -static bool cached_list;
+> -
+>  struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+>  {
+>  #ifdef HAVE_AUXTRACE_SUPPORT
+> @@ -41,136 +32,6 @@ struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu __mayb
+>         return NULL;
+>  }
+>
+> -static void pmu_alias__delete(struct pmu_alias *pmu_alias)
+> -{
+> -       if (!pmu_alias)
+> -               return;
+> -
+> -       zfree(&pmu_alias->name);
+> -       zfree(&pmu_alias->alias);
+> -       free(pmu_alias);
+> -}
+> -
+> -static struct pmu_alias *pmu_alias__new(char *name, char *alias)
+> -{
+> -       struct pmu_alias *pmu_alias = zalloc(sizeof(*pmu_alias));
+> -
+> -       if (pmu_alias) {
+> -               pmu_alias->name = strdup(name);
+> -               if (!pmu_alias->name)
+> -                       goto out_delete;
+> -
+> -               pmu_alias->alias = strdup(alias);
+> -               if (!pmu_alias->alias)
+> -                       goto out_delete;
+> -       }
+> -       return pmu_alias;
+> -
+> -out_delete:
+> -       pmu_alias__delete(pmu_alias);
+> -       return NULL;
+> -}
+> -
+> -static int setup_pmu_alias_list(void)
+> -{
+> -       int fd, dirfd;
+> -       DIR *dir;
+> -       struct dirent *dent;
+> -       struct pmu_alias *pmu_alias;
+> -       char buf[MAX_PMU_NAME_LEN];
+> -       FILE *file;
+> -       int ret = -ENOMEM;
+> -
+> -       dirfd = perf_pmu__event_source_devices_fd();
+> -       if (dirfd < 0)
+> -               return -1;
+> -
+> -       dir = fdopendir(dirfd);
+> -       if (!dir)
+> -               return -errno;
+> -
+> -       while ((dent = readdir(dir))) {
+> -               if (!strcmp(dent->d_name, ".") ||
+> -                   !strcmp(dent->d_name, ".."))
+> -                       continue;
+> -
+> -               fd = perf_pmu__pathname_fd(dirfd, dent->d_name, "alias", O_RDONLY);
+> -               if (fd < 0)
+> -                       continue;
+> -
+> -               file = fdopen(fd, "r");
+> -               if (!file)
+> -                       continue;
+> -
+> -               if (!fgets(buf, sizeof(buf), file)) {
+> -                       fclose(file);
+> -                       continue;
+> -               }
+> -
+> -               fclose(file);
+> -
+> -               /* Remove the last '\n' */
+> -               buf[strlen(buf) - 1] = 0;
+> -
+> -               pmu_alias = pmu_alias__new(dent->d_name, buf);
+> -               if (!pmu_alias)
+> -                       goto close_dir;
+> -
+> -               list_add_tail(&pmu_alias->list, &pmu_alias_name_list);
+> -       }
+> -
+> -       ret = 0;
+> -
+> -close_dir:
+> -       closedir(dir);
+> -       return ret;
+> -}
+> -
+> -static const char *__pmu_find_real_name(const char *name)
+> -{
+> -       struct pmu_alias *pmu_alias;
+> -
+> -       list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
+> -               if (!strcmp(name, pmu_alias->alias))
+> -                       return pmu_alias->name;
+> -       }
+> -
+> -       return name;
+> -}
+> -
+> -const char *pmu_find_real_name(const char *name)
+> -{
+> -       if (cached_list)
+> -               return __pmu_find_real_name(name);
+> -
+> -       setup_pmu_alias_list();
+> -       cached_list = true;
+> -
+> -       return __pmu_find_real_name(name);
+> -}
+> -
+> -static const char *__pmu_find_alias_name(const char *name)
+> -{
+> -       struct pmu_alias *pmu_alias;
+> -
+> -       list_for_each_entry(pmu_alias, &pmu_alias_name_list, list) {
+> -               if (!strcmp(name, pmu_alias->name))
+> -                       return pmu_alias->alias;
+> -       }
+> -       return NULL;
+> -}
+> -
+> -const char *pmu_find_alias_name(const char *name)
+> -{
+> -       if (cached_list)
+> -               return __pmu_find_alias_name(name);
+> -
+> -       setup_pmu_alias_list();
+> -       cached_list = true;
+> -
+> -       return __pmu_find_alias_name(name);
+> -}
+> -
+>  int perf_pmus__num_mem_pmus(void)
+>  {
+>         /* AMD uses IBS OP pmu and not a core PMU for perf mem/c2c */
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 0d81c059c91c..0f5c6ed257a8 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -937,16 +937,27 @@ perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+>         return NULL;
+>  }
+>
+> -const char * __weak
+> -pmu_find_real_name(const char *name)
+> +static char *pmu_find_alias_name(struct perf_pmu *pmu, int dirfd)
+>  {
+> -       return name;
+> -}
+> +       FILE *file = perf_pmu__open_file_at(pmu, dirfd, "alias");
+> +       char *line = NULL;
+> +       size_t line_len = 0;
+> +       ssize_t ret;
+>
+> -const char * __weak
+> -pmu_find_alias_name(const char *name __maybe_unused)
+> -{
+> -       return NULL;
+> +       if (!file)
+> +               return NULL;
+> +
+> +       ret = getline(&line, &line_len, file);
+> +       if (ret < 0) {
+> +               fclose(file);
+> +               return NULL;
+> +       }
+> +       /* Remove trailing newline. */
+> +       if (ret > 0 && line[ret - 1] == '\n')
+> +               line[--ret] = '\0';
+> +
+> +       fclose(file);
+> +       return line;
+>  }
+>
+>  static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+> @@ -957,12 +968,10 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
+>         return max_precise;
+>  }
+>
+> -struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *lookup_name)
+> +struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
+>  {
+>         struct perf_pmu *pmu;
+>         __u32 type;
+> -       const char *name = pmu_find_real_name(lookup_name);
+> -       const char *alias_name;
+>
+>         pmu = zalloc(sizeof(*pmu));
+>         if (!pmu)
+> @@ -995,18 +1004,12 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
+>         pmu->is_core = is_pmu_core(name);
+>         pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
+>
+> -       alias_name = pmu_find_alias_name(name);
+> -       if (alias_name) {
+> -               pmu->alias_name = strdup(alias_name);
+> -               if (!pmu->alias_name)
+> -                       goto err;
+> -       }
+> -
+>         pmu->type = type;
+>         pmu->is_uncore = pmu_is_uncore(dirfd, name);
+>         if (pmu->is_uncore)
+>                 pmu->id = pmu_id(name);
+>         pmu->max_precise = pmu_max_precise(dirfd, pmu);
+> +       pmu->alias_name = pmu_find_alias_name(pmu, dirfd);
+>         pmu->events_table = perf_pmu__find_events_table(pmu);
+>         pmu_add_sys_aliases(pmu);
+>         list_add_tail(&pmu->list, pmus);
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 04b317b17d66..bc807729a7cd 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -251,8 +251,6 @@ void perf_pmu__warn_invalid_formats(struct perf_pmu *pmu);
+>
+>  int perf_pmu__match(const char *pattern, const char *name, const char *tok);
+>
+> -const char *pmu_find_real_name(const char *name);
+> -const char *pmu_find_alias_name(const char *name);
+>  double perf_pmu__cpu_slots_per_cycle(void);
+>  int perf_pmu__event_source_devices_scnprintf(char *pathname, size_t size);
+>  int perf_pmu__pathname_scnprintf(char *buf, size_t size,
+> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> index 64e798e68a2d..ce4931461741 100644
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -37,6 +37,8 @@ static LIST_HEAD(other_pmus);
+>  static bool read_sysfs_core_pmus;
+>  static bool read_sysfs_all_pmus;
+>
+> +static void pmu_read_sysfs(bool core_only);
+> +
+>  int pmu_name_len_no_suffix(const char *str, unsigned long *num)
+>  {
+>         int orig_len, len;
+> @@ -124,6 +126,14 @@ struct perf_pmu *perf_pmus__find(const char *name)
+>         pmu = perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirfd, name);
+>         close(dirfd);
+>
+> +       if (!pmu) {
+> +               /*
+> +                * Looking up an inidividual PMU failed. This may mean name is
+> +                * an alias, so read the PMUs from sysfs and try to find again.
+> +                */
+> +               pmu_read_sysfs(core_pmu);
+> +               pmu = pmu_find(name);
+> +       }
+>         return pmu;
+>  }
+>
+> --
+> 2.42.0.515.g380fc7ccd1-goog
+>
