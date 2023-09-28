@@ -2,247 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650847B2451
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9BA7B244D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbjI1Rsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
+        id S232007AbjI1RsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbjI1Rsb (ORCPT
+        with ESMTP id S229478AbjI1RsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:48:31 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657111A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:48:28 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-3514ece5ed4so12545ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695923307; x=1696528107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+lc7tMjE9TqzKqjNwesj3iwB/DY3hf+maktURRWmeOo=;
-        b=CLApx2B1sstFFuZxuggrgMPgWwcF0mIuuyjkmycNUDvigE0qQB85X4LQm+hB3D7Lwh
-         597AFr9hg9Hgw3BkGVh4SoHDpV+Vho75UIbN4hlVH5UE+mkbbqpIfE/ofB+ihZuh8AaV
-         ySc3qXeA+wq+PVDY0Dd2P40GEGNRCLCWp9DBT0SKdFTQkBBgRbaoYI3iZu0ErYlfEgk+
-         cJkw3HaunBhPZ928XCEWefd8Q7lJA6R/acEbH6SP1lDBjU7M9CMu6cHN+eikmWxmXy5f
-         pEKH8Jbka8l3vpIv4GJYhV9nyeWgMjZNwVvUg/Vum6o6LhI/qJ+K2jHmeS2LDIffKprH
-         C58w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695923307; x=1696528107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+lc7tMjE9TqzKqjNwesj3iwB/DY3hf+maktURRWmeOo=;
-        b=eEentHUh276Ql89THfBAVdppQeR8TiYywTIEfJahN01JrWuNiRiwHENbzyX5qRTwmn
-         LsBnJFaKX54iMw8ilR9wKvWmy2cZI2BhqBCn0C2tEcqEk44fzVMzbinj+spi30U7OCPc
-         rPv5SsBHkpnWLEgo7ggBXGEd9P3j5HMZAMJpRgnBCd51elBEBYtrae6e+zH5BkBv4M7h
-         M885daI4M26E5PGloNjcXUD0sxdGI7sz8EY3QNTMx1nZ6Q94om1YW3RrEJ6SE095yJ8G
-         ojhoiD8taptCVs+Qx7LIeOcalOWEdrbG/reDtPMG2qpKPnD/1QgJ1lY0cikB1ZyHds2Y
-         ewiQ==
-X-Gm-Message-State: AOJu0YySZDHla4VvVqY1Ykbw1MA51v7Mk/aEa8bO6YDurzdgR5h8VBfr
-        3T2nugxs7fF9bWDoYf+/C+vYZY0TsL6I94y5LnXk
-X-Google-Smtp-Source: AGHT+IEKTkNfxDliwI/2EJS9nYa/IghQB0LorE6+1+ZjJfiK83nWSSutkNVwiV47LmZ4lKR2ji8rXU0JRU5ZMy5AJDw=
-X-Received: by 2002:a05:6e02:1486:b0:34f:5587:4353 with SMTP id
- n6-20020a056e02148600b0034f55874353mr1062211ilk.25.1695923307247; Thu, 28 Sep
- 2023 10:48:27 -0700 (PDT)
+        Thu, 28 Sep 2023 13:48:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3363219D;
+        Thu, 28 Sep 2023 10:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695923299; x=1727459299;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CanKWAodHiTu5WTKJSJfie0L+vqae9jyj3QHk3pesLA=;
+  b=T5kDwa2t87Ri/f20Q8Fyzaj2qjZ/Fozrd2oke7WUKtt9IKgJeAMWQEop
+   TJEuP0SFR6uH4EehhgwCSPRkUswc46dAFIHbPBwrT+n/C473WTZJpmj0R
+   +u+cG/2xBHVIME7RxFxM5HJ3IUZUKKPHqHKXfo/T1b6oaR6M9NRJN8cQ5
+   U8p2t5b5n/Pn04ewuQuouTEHp3nBPZmX67kQQuG+f4hGDAgSIiWkR0ZQ6
+   Mde0IiSIh6kPUiM5aONgUW46wJ5OjkIKXg8BYXUOcPYr+6f07Py3aoz99
+   57uB3YEALyXavWspA/F9ArgTIl7FMpao77y3b8Y3plyv1bPuVDqrEEcJV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="448621491"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="448621491"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:48:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="778995159"
+X-IronPort-AV: E=Sophos;i="6.03,184,1694761200"; 
+   d="scan'208";a="778995159"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 10:48:17 -0700
+Date:   Thu, 28 Sep 2023 10:48:16 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v5 5/8] x86/resctrl: Introduce snc_nodes_per_l3_cache
+Message-ID: <ZRW8YF5l0tdtLKmm@agluck-desk3>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-6-tony.luck@intel.com>
+ <80393c0e-29fd-dd02-75b4-f0640e162c8d@intel.com>
 MIME-Version: 1.0
-References: <20230911023038.30649-1-yong.wu@mediatek.com> <20230911023038.30649-6-yong.wu@mediatek.com>
- <d0373c02-9b22-661f-9930-ca720053c2a0@collabora.com> <a115a2a5d3ac218e6db65ccdb0a1876f9cfca02b.camel@mediatek.com>
- <d798b15b-6f35-96db-e3f7-5c0bcc5d46a2@collabora.com> <a4ecc2792f3a4d3159e34415be984ff7d5f5e263.camel@mediatek.com>
- <20230927134614.kp27moxdw72jiu4y@pop-os.localdomain> <3aaafe47-3733-a4d5-038d-a7e439309282@collabora.com>
- <CA+ddPcP4=p37cV5Tbn5zTUbiL4ou+Yqb=5rS+O_ff8ZUw64D3Q@mail.gmail.com> <80695726-1a98-12d4-ad7d-d731f2f3caeb@collabora.com>
-In-Reply-To: <80695726-1a98-12d4-ad7d-d731f2f3caeb@collabora.com>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Thu, 28 Sep 2023 10:48:15 -0700
-Message-ID: <CA+ddPcPES=4FcQRkvVnW=C9mL6hCxVfCcoLDJSjb58UiDmS_Mg@mail.gmail.com>
-Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     Joakim Bech <joakim.bech@linaro.org>,
-        =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80393c0e-29fd-dd02-75b4-f0640e162c8d@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 1:30=E2=80=AFAM Benjamin Gaignard
-<benjamin.gaignard@collabora.com> wrote:
->
->
-> Le 27/09/2023 =C3=A0 20:56, Jeffrey Kardatzke a =C3=A9crit :
-> > On Wed, Sep 27, 2023 at 8:18=E2=80=AFAM Benjamin Gaignard
-> > <benjamin.gaignard@collabora.com> wrote:
-> >>
-> >> Le 27/09/2023 =C3=A0 15:46, Joakim Bech a =C3=A9crit :
-> >>> On Mon, Sep 25, 2023 at 12:49:50PM +0000, Yong Wu (=E5=90=B4=E5=8B=87=
-) wrote:
-> >>>> On Tue, 2023-09-12 at 11:32 +0200, AngeloGioacchino Del Regno wrote:
-> >>>>> Il 12/09/23 08:17, Yong Wu (=E5=90=B4=E5=8B=87) ha scritto:
-> >>>>>> On Mon, 2023-09-11 at 11:29 +0200, AngeloGioacchino Del Regno
-> >>>>>> wrote:
-> >>>>>>> Il 11/09/23 04:30, Yong Wu ha scritto:
-> >>>>>>>> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't
-> >>>>>>>> work
-> >>>>>>>> here since this is not a platform driver, therefore initialise
-> >>>>>>>> the
-> >>>>>>>> TEE
-> >>>>>>>> context/session while we allocate the first secure buffer.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> >>>>>>>> ---
-> >>>>>>>>      drivers/dma-buf/heaps/mtk_secure_heap.c | 61
-> >>>>>>>> +++++++++++++++++++++++++
-> >>>>>>>>      1 file changed, 61 insertions(+)
-> >>>>>>>>
-> >>>>>>>> diff --git a/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>> b/drivers/dma-
-> >>>>>>>> buf/heaps/mtk_secure_heap.c
-> >>>>>>>> index bbf1c8dce23e..e3da33a3d083 100644
-> >>>>>>>> --- a/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>> +++ b/drivers/dma-buf/heaps/mtk_secure_heap.c
-> >>>>>>>> @@ -10,6 +10,12 @@
-> >>>>>>>>      #include <linux/err.h>
-> >>>>>>>>      #include <linux/module.h>
-> >>>>>>>>      #include <linux/slab.h>
-> >>>>>>>> +#include <linux/tee_drv.h>
-> >>>>>>>> +#include <linux/uuid.h>
-> >>>>>>>> +
-> >>>>>>>> +#define TZ_TA_MEM_UUID          "4477588a-8476-11e2-ad15-
-> >>>>>>>> e41f1390d676"
-> >>>>>>>> +
-> >>>>>>> Is this UUID the same for all SoCs and all TZ versions?
-> >>>>>> Yes. It is the same for all SoCs and all TZ versions currently.
-> >>>>>>
-> >>>>> That's good news!
-> >>>>>
-> >>>>> Is this UUID used in any userspace component? (example: Android
-> >>>>> HALs?)
-> >>>> No. Userspace never use it. If userspace would like to allocate this
-> >>>> secure buffer, it can achieve through the existing dmabuf IOCTL via
-> >>>> /dev/dma_heap/mtk_svp node.
-> >>>>
-> >>> In general I think as mentioned elsewhere in comments, that there isn=
-'t
-> >>> that much here that seems to be unique for MediaTek in this patch
-> >>> series, so I think it worth to see whether this whole patch set can b=
-e
-> >>> made more generic. Having said that, the UUID is always unique for a
-> >>> certain Trusted Application. So, it's not entirely true saying that t=
-he
-> >>> UUID is the same for all SoCs and all TrustZone versions. It might be
-> >>> true for a family of MediaTek devices and the TEE in use, but not
-> >>> generically.
-> >>>
-> >>> So, if we need to differentiate between different TA implementations,
-> >>> then we need different UUIDs. If it would be possible to make this pa=
-tch
-> >>> set generic, then it sounds like a single UUID would be sufficient, b=
-ut
-> >>> that would imply that all TA's supporting such a generic UUID would b=
-e
-> >>> implemented the same from an API point of view. Which also means that
-> >>> for example Trusted Application function ID's needs to be the same et=
-c.
-> >>> Not impossible to achieve, but still not easy (different TEE follows
-> >>> different specifications) and it's not typically something we've done=
- in
-> >>> the past.
-> >>>
-> >>> Unfortunately there is no standardized database of TA's describing wh=
-at
-> >>> they implement and support.
-> >>>
-> >>> As an alternative, we could implement a query call in the TEE answeri=
-ng,
-> >>> "What UUID does your TA have that implements secure unmapped heap?".
-> >>> I.e., something that reminds of a lookup table. Then we wouldn't have=
- to
-> >>> carry this in UAPI, DT or anywhere else.
-> >> Joakim does a TA could offer a generic API and hide the hardware speci=
-fic
-> >> details (like kernel uAPI does for drivers) ?
-> > It would have to go through another layer (like the tee driver) to be
-> > a generic API. The main issue with TAs is that they have UUIDs you
-> > need to connect to and specific codes for each function; so we should
-> > abstract at a layer above where those exist in the dma-heap code.
-> >> Aside that question I wonder what are the needs to perform a 'secure' =
-playback.
-> >> I have in mind 2 requirements:
-> >> - secure memory regions, which means configure the hardware to ensure =
-that only
-> >> dedicated hardware blocks and read or write into it.
-> >> - set hardware blocks in secure modes so they access to secure memory.
-> >> Do you see something else ?
-> > This is more or less what is required, but this is out of scope for
-> > the Linux kernel since it can't be trusted to do these things...this
-> > is all done in firmware or the TEE itself.
->
-> Yes kernel can't be trusted to do these things but know what we need coul=
-d help
-> to define a API for a generic TA.
->
-> Just to brainstorm on mailing list:
-> What about a TA API like
-> TA_secure_memory_region() and TA_unsecure_memory_region() with parameters=
- like:
-> - device identifier (an ID or compatible string maybe)
-> - memory region (physical address, size, offset)
-> - requested access rights (read, write)
->
-> and on kernel side a IOMMU driver because it basically have all this info=
-rmation already
-> (device attachment, kernel map/unmap).
->
-> In my mind it sound like a solution to limit the impact (new controls, ne=
-w memory type)
-> inside v4l2. Probably we won't need new heap either.
-> All hardware dedicated implementations could live inside the TA which can=
- offer a generic
-> API.
+On Mon, Sep 25, 2023 at 04:27:45PM -0700, Reinette Chatre wrote:
+> Hi Tony,
+> 
+> On 8/29/2023 4:44 PM, Tony Luck wrote:
+> 
+> Could the commit message please provide a brief overview of what SNC is
+> before jumping to the things needed to support it?
 
-The main problem with that type of design is the limitations of
-TrustZone memory protection. Usually there is a limit to the number of
-regions you can define for memory protection (and there is on
-Mediatek). So you can't pass an arbitrary memory region and mark it
-protected/unprotected at a given time. You need to establish these
-regions in the firmware instead and then configure those regions for
-protection in the firmware or the TEE.
+Ok. Added an overview.
 
->
-> >> Regards,
-> >> Benjamin
-> >>
+> 
+> > Intel Sub-NUMA Cluster mode requires several changes in resctrl
+> 
+> I think the intention is to introduce the acronym here so maybe:
+> "Intel Sub-NUMA Cluster (SNC) ..."
+
+Commit now starts with this definiton.
+
+> 
+> > behavior for correct operation.
+> > 
+> > Add a global integer "snc_nodes_per_l3_cache" that will show how many
+> > SNC nodes share each L3 cache. When this is "1", SNC mode is either
+> > not implemented, or not enabled.
+> > 
+> > A later patch will detect SNC mode and set snc_nodes_per_l3_cache to
+> > the appropriate value. For now it remains at the default "1" to
+> > indicate SNC mode is not active.
+> > 
+> > Code that needs to take action when SNC is enabled is:
+> > 1) The number of logical RMIDs available for use is the number of
+> >    physical RMIDs divided by the number of SNC nodes.
+> 
+> Could this maybe be "... number of SNC nodes per L3 cache" to be
+> specific? Even so, this jumps into supporting logical RMIDs and 
+> physical RMIDs without introducing what logical vs physical means.
+> Is this something that can be added to the intro of this commit message?
+
+Added that to be specific. Also added more preamble text to set
+up context.
+
+> 
+> > 2) Likewise the "mon_scale" value must be adjusted for the number
+> >    of SNC nodes.
+> > 3) When reading an RMID counter code must adjust from the logical
+> >    RMID used to the physical RMID value that must be loaded into
+> >    the IA32_QM_EVTSEL MSR.
+> > 4) The L3 cache is divided between the SNC nodes. So the value
+> >    reported in the resctrl "size" file is adjusted.
+> > 5) The "-o mba_MBps" mount option must be disabled in SNC mode
+> >    because the monitoring is being done per SNC node, while the
+> >    bandwidth allocation is still done at the L3 cache scope.
+> 
+> This motivation for disabling is not clear to me. Why is only
+> mba_MBps impacted? MBA is also at the L3 scope and it is not
+> disabled. Neither is cache allocation that remains at L3
+> scope with its monitoring moving to node scope.
+
+Added text for why (essentially the s/w feedback loop now has
+independent MBM inputs from each SNC node, but still only one
+MBA control at L3 cache scope. The feedback code can't do any
+thing useful if one SNC node says "I'm running too fast" while
+another node sharing same L3 says "I'm running too slow".
+
+> 
+> > 
+> > Signed-off-by: Tony Luck <tony.luck@intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/resctrl/internal.h |  2 ++
+> >  arch/x86/kernel/cpu/resctrl/core.c     |  7 +++++++
+> >  arch/x86/kernel/cpu/resctrl/monitor.c  | 16 +++++++++++++---
+> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c |  4 ++--
+> >  4 files changed, 24 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> > index c61fd6709730..326ca6b3688a 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> > +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> > @@ -446,6 +446,8 @@ DECLARE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
+> >  
+> >  extern struct dentry *debugfs_resctrl;
+> >  
+> > +extern int snc_nodes_per_l3_cache;
+> > +
+> >  enum resctrl_res_level {
+> >  	RDT_RESOURCE_L3,
+> >  	RDT_RESOURCE_L2,
+> > diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+> > index 9fcc264fac6c..ed4f55b3e5e4 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/core.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/core.c
+> > @@ -48,6 +48,13 @@ int max_name_width, max_data_width;
+> >   */
+> >  bool rdt_alloc_capable;
+> >  
+> > +/*
+> > + * Number of SNC nodes that share each L3 cache.
+> > + * Default is 1 for systems that do not support
+> > + * SNC, or have SNC disabled.
+> > + */
+> 
+> There is some extra space available to make the lines longer.
+
+Re-formatted to use longer lines.
+
+> 
+> > +int snc_nodes_per_l3_cache = 1;
+> > +
+> >  static void
+> >  mba_wrmsr_intel(struct rdt_domain *d, struct msr_param *m,
+> >  		struct rdt_resource *r);
+> > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > index 42262d59ef9b..b6b3fb0f9abe 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > @@ -148,8 +148,18 @@ static inline struct rmid_entry *__rmid_entry(u32 rmid)
+> >  
+> >  static int __rmid_read(u32 rmid, enum resctrl_event_id eventid, u64 *val)
+> >  {
+> > +	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+> > +	int cpu = smp_processor_id();
+> > +	int rmid_offset = 0;
+> >  	u64 msr_val;
+> >  
+> > +	/*
+> > +	 * When SNC mode is on, need to compute the offset to read the
+> > +	 * physical RMID counter for the node to which this CPU belongs
+> > +	 */
+> 
+> Please end sentence with a period.
+
+Added period.
+
+> 
+> > +	if (snc_nodes_per_l3_cache > 1)
+> > +		rmid_offset = (cpu_to_node(cpu) % snc_nodes_per_l3_cache) * r->num_rmid;
+> > +
+> >  	/*
+> >  	 * As per the SDM, when IA32_QM_EVTSEL.EvtID (bits 7:0) is configured
+> >  	 * with a valid event code for supported resource type and the bits
+> > @@ -158,7 +168,7 @@ static int __rmid_read(u32 rmid, enum resctrl_event_id eventid, u64 *val)
+> >  	 * IA32_QM_CTR.Error (bit 63) and IA32_QM_CTR.Unavailable (bit 62)
+> >  	 * are error bits.
+> >  	 */
+> > -	wrmsr(MSR_IA32_QM_EVTSEL, eventid, rmid);
+> > +	wrmsr(MSR_IA32_QM_EVTSEL, eventid, rmid + rmid_offset);
+> >  	rdmsrl(MSR_IA32_QM_CTR, msr_val);
+> >  
+> >  	if (msr_val & RMID_VAL_ERROR)
+> > @@ -783,8 +793,8 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+> >  	int ret;
+> >  
+> >  	resctrl_rmid_realloc_limit = boot_cpu_data.x86_cache_size * 1024;
+> > -	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale;
+> > -	r->num_rmid = boot_cpu_data.x86_cache_max_rmid + 1;
+> > +	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale / snc_nodes_per_l3_cache;
+> > +	r->num_rmid = (boot_cpu_data.x86_cache_max_rmid + 1) / snc_nodes_per_l3_cache;
+> >  	hw_res->mbm_width = MBM_CNTR_WIDTH_BASE;
+> >  
+> >  	if (mbm_offset > 0 && mbm_offset <= MBM_CNTR_WIDTH_OFFSET_MAX)
+> > diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > index 5feec2c33544..a8cf6251e506 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > @@ -1367,7 +1367,7 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
+> >  		}
+> >  	}
+> >  
+> > -	return size;
+> > +	return size / snc_nodes_per_l3_cache;
+> >  }
+> >  
+> >  /**
+> > @@ -2600,7 +2600,7 @@ static int rdt_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> >  		ctx->enable_cdpl2 = true;
+> >  		return 0;
+> >  	case Opt_mba_mbps:
+> > -		if (!supports_mba_mbps())
+> > +		if (!supports_mba_mbps() || snc_nodes_per_l3_cache > 1)
+> >  			return -EINVAL;
+> >  		ctx->enable_mba_mbps = true;
+> >  		return 0;
+> 
+> 
+> Reinette
