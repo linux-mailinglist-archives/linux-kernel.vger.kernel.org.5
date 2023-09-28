@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D358C7B2739
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09227B272F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbjI1VL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
+        id S232349AbjI1VLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbjI1VLu (ORCPT
+        with ESMTP id S232052AbjI1VLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:11:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC0A19D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:11:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695935465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 28 Sep 2023 17:11:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A101A2;
+        Thu, 28 Sep 2023 14:11:12 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 21:11:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695935470;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4Gf4p1uEJwB77Lm6SIy/Ej2I7eFhDlgmjpD+naFs9dg=;
-        b=jTvKB0kE15oDzn/PL9XS+2gjA/+t4GEXLrt9JsOf/9FTfRKQ6z1h78bDs7SbZewJzvpEqX
-        3WWytU9k+JxKhcesI41UtpBIKiTxmuWn+KaRCHD5xTLWIdytiRl1hxybTS9dp5PXMshf/5
-        1BSOLRWfUuPxv7aywZAOQx6RKStJdLU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-110-l9WMQy0xNBq9AP_Gzya2nw-1; Thu, 28 Sep 2023 17:11:04 -0400
-X-MC-Unique: l9WMQy0xNBq9AP_Gzya2nw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32006e08483so10308575f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:11:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695935462; x=1696540262;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Gf4p1uEJwB77Lm6SIy/Ej2I7eFhDlgmjpD+naFs9dg=;
-        b=FGn3F2F5MwvIVjejvX65rzQVyG2Idmjd6uMuKYsmGaA9VbEElesGed//EsgqhejMNH
-         HgdqFj6MdTdCstgwlCFcrYDAwaENLxHTB0lFpxQ1cNqMGLZAk8eTrql2s07hpfJfIdZj
-         GEpnjggzXtaAnxkDd825aPKXqIv+c0ed0p6/U5CfTlr0LM3Bm/tI7QHRNb48Byo9Hc6z
-         bOI8XzZHJ9W5D4oOntcdOyb5rNhQ4suYoisWhDZJZUrt62qPFQGK1Z2eQsO/jbOIRP2g
-         KfLB+fNcw4C8yNmwB74O/hYnxZ24+FxYyAWsssBgk8c3F0iDR4UMKqWUgifDZ7+SivZE
-         Sw7A==
-X-Gm-Message-State: AOJu0YyZs8TicFhvBRGD8Bs8qvNhKFBOMBahi/3fsQevYQWVipidmFCF
-        5kYW1r4pui2GBszxSjYAj8pOIqmDaSzevFxczthe29kGayS30BXf3Hf1w/nGOHr79APGzOWpYz/
-        PdlGzSOGUWrKzmnwe7wKJZp0DWhTahT5QrTU=
-X-Received: by 2002:a5d:54ca:0:b0:314:748:d59d with SMTP id x10-20020a5d54ca000000b003140748d59dmr2212291wrv.27.1695935462481;
-        Thu, 28 Sep 2023 14:11:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFTcZDViznOS+Z5kDGH34AfAZ0fPb2Xiok4ghYy5tNixFUnuBdOf7r8LmYNPrNGXn3bR/aJjQ==
-X-Received: by 2002:a5d:54ca:0:b0:314:748:d59d with SMTP id x10-20020a5d54ca000000b003140748d59dmr2212275wrv.27.1695935462140;
-        Thu, 28 Sep 2023 14:11:02 -0700 (PDT)
-Received: from [10.10.158.202] ([213.144.205.82])
-        by smtp.gmail.com with ESMTPSA id o5-20020a056000010500b0031ddf6cc89csm20014940wrx.98.2023.09.28.14.11.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:11:01 -0700 (PDT)
-Message-ID: <c95d672e-1ec1-c901-602c-f472f57b65c3@redhat.com>
-Date:   Thu, 28 Sep 2023 23:11:00 +0200
+        bh=oe1hnQ8O830GEjIaYbkhYp049qinjisAloma8VEM6yo=;
+        b=n1L6U/qBJfah3tECd9qQQtOPJ+fbVsqTdcwU2zV/XnQ7PJhm1HpvstxL/bdNGrvU3LpLCp
+        0Z7j3OTQWQA+ZdcNE9qlqci2n1BvGRz7c9kPeACQ5F4G+WUdTEqJYKlkLlwIVORZ8VFaUV
+        j3NZmYknkZI/JpUmrtKTMeEefd/fAGtdv8s9u+IYGY4+U3ZwDJ2RDXZx71kO25ykOTlacS
+        e5sE7ZQ5roOsoKMIIVU1ZqoEUeg2lAK+t+nDL2Jyb63UYQ88HPbCv02sH2Ej/2f6e2S6FB
+        54thRvmJ9AmxP6z36/UMP/S8fjHY2mhqHukHyprqtLLKBfFuPE1kkZEECfUh3w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695935470;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oe1hnQ8O830GEjIaYbkhYp049qinjisAloma8VEM6yo=;
+        b=sI/kCc2n9pPftBQJdDM20sOsXVUVhVgFlQ3QPrc5vTCLEJTzlwu5PNMezk5JTeugJIViH6
+        bH12Y2/z35QR52Dw==
+From:   "tip-bot2 for Joel Fernandes (Google)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/rt: Fix live lock between
+ select_fallback_rq() and RT push
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230923011409.3522762-1-joel@joelfernandes.org>
+References: <20230923011409.3522762-1-joel@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm: panel-orientation-quirks: Add quirk for One Mix 2S
-Content-Language: en-US
-To:     Kai Uwe Broulik <foss-linux@broulik.de>,
-        linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-References: <20230928193558.2228730-1-foss-linux@broulik.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230928193558.2228730-1-foss-linux@broulik.de>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <169593547011.27769.15927547566549866294.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following commit has been merged into the sched/urgent branch of tip:
 
-On 9/28/23 21:35, Kai Uwe Broulik wrote:
-> The One Mix 2S is a mini laptop with a 1200x1920 portrait screen
-> mounted in a landscape oriented clamshell case. Because of the too
-> generic DMI strings this entry is also doing bios-date matching.
-> 
-> Signed-off-by: Kai Uwe Broulik <foss-linux@broulik.de>
+Commit-ID:     fc09027786c900368de98d03d40af058bcb01ad9
+Gitweb:        https://git.kernel.org/tip/fc09027786c900368de98d03d40af058bcb01ad9
+Author:        Joel Fernandes (Google) <joel@joelfernandes.org>
+AuthorDate:    Sat, 23 Sep 2023 01:14:08 
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 28 Sep 2023 22:58:13 +02:00
 
-Thanks, patch looks good to me:
+sched/rt: Fix live lock between select_fallback_rq() and RT push
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+During RCU-boost testing with the TREE03 rcutorture config, I found that
+after a few hours, the machine locks up.
 
-drm-misc maintainers, I'm currently traveling can
-one of you push this to drm-misc-fixes please?
+On tracing, I found that there is a live lock happening between 2 CPUs.
+One CPU has an RT task running, while another CPU is being offlined
+which also has an RT task running.  During this offlining, all threads
+are migrated. The migration thread is repeatedly scheduled to migrate
+actively running tasks on the CPU being offlined. This results in a live
+lock because select_fallback_rq() keeps picking the CPU that an RT task
+is already running on only to get pushed back to the CPU being offlined.
 
-Regards,
+It is anyway pointless to pick CPUs for pushing tasks to if they are
+being offlined only to get migrated away to somewhere else. This could
+also add unwanted latency to this task.
 
-Hans
+Fix these issues by not selecting CPUs in RT if they are not 'active'
+for scheduling, using the cpu_active_mask. Other parts in core.c already
+use cpu_active_mask to prevent tasks from being put on CPUs going
+offline.
 
+With this fix I ran the tests for days and could not reproduce the
+hang. Without the patch, I hit it in a few hours.
 
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20230923011409.3522762-1-joel@joelfernandes.org
+---
+ kernel/sched/cpupri.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-> ---
->  drivers/gpu/drm/drm_panel_orientation_quirks.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> index 0cb646cb04ee..cc9a9099faaf 100644
-> --- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> +++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> @@ -38,6 +38,14 @@ static const struct drm_dmi_panel_orientation_data gpd_micropc = {
->  	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
->  };
->  
-> +static const struct drm_dmi_panel_orientation_data gpd_onemix2s = {
-> +	.width = 1200,
-> +	.height = 1920,
-> +	.bios_dates = (const char * const []){ "03/04/2019",
-> +		NULL },
-> +	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-> +};
-> +
->  static const struct drm_dmi_panel_orientation_data gpd_pocket = {
->  	.width = 1200,
->  	.height = 1920,
-> @@ -401,6 +409,14 @@ static const struct dmi_system_id orientation_data[] = {
->  		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "LTH17"),
->  		},
->  		.driver_data = (void *)&lcd800x1280_rightside_up,
-> +	}, {	/* One Mix 2S (generic strings, also match on bios date) */
-> +		.matches = {
-> +		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Default string"),
-> +		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Default string"),
-> +		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
-> +		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Default string"),
-> +		},
-> +		.driver_data = (void *)&gpd_onemix2s,
->  	},
->  	{}
->  };
-
+diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
+index a286e72..42c40cf 100644
+--- a/kernel/sched/cpupri.c
++++ b/kernel/sched/cpupri.c
+@@ -101,6 +101,7 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
+ 
+ 	if (lowest_mask) {
+ 		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
++		cpumask_and(lowest_mask, lowest_mask, cpu_active_mask);
+ 
+ 		/*
+ 		 * We have to ensure that we have at least one bit
