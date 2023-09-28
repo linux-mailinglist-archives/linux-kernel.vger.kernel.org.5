@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662947B2797
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF6E7B27A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbjI1VfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
+        id S232369AbjI1VmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjI1Ve6 (ORCPT
+        with ESMTP id S230246AbjI1VmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:34:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D7DF3;
-        Thu, 28 Sep 2023 14:34:57 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 21:34:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695936896;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UXcf9j5duowdCJmXyGkOIvtZ8RYMFnwjC9B4CpJMimQ=;
-        b=QOFiEDIhrjXJoupgnvXj5owFU+2LDhzVV0iQLm6R6M9cV8e8wvV6DL1+emi8PmRrTQ6n8Y
-        uM4l7Er9m0yccvKOKGA2KgjI9nEGxNGcsxi7Qj+G2xXC6B2LC2h1CCKzbamCEEif3wB0oj
-        TOwYnzQg4FjAVkidbsMW12KvhjaBTrb3w+lowf0WzeY//XF/E7eHywWLV+euGCaUubG15j
-        tOWmfocgf7rCzk+aQGlY70X5Z42Dv48BCiebprfsCpfn2zjKjpCDyf7ijPPx7eEeeKKwv5
-        qkbUKBPxJYF40yYJc5SsfHEeieG+ZjJF9EZJvCJiaQ5pkCzSENSjSYP3fszP+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695936896;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UXcf9j5duowdCJmXyGkOIvtZ8RYMFnwjC9B4CpJMimQ=;
-        b=gLR4ovGG04dQjR3ZxJfmSSAhqXDMq7h/mVKO6RVuG75ywnwvy7xBTOiBe5F3e4A4pDVw35
-        rtwa/j3pjck9KoBQ==
-From:   "tip-bot2 for Yang Li" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Remove unnecessary semicolon
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230810010550.25733-1-yang.lee@linux.alibaba.com>
-References: <20230810010550.25733-1-yang.lee@linux.alibaba.com>
+        Thu, 28 Sep 2023 17:42:16 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293E819D;
+        Thu, 28 Sep 2023 14:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695937328;
+        bh=7d/AAHZO5NDYV5Xp/mzgKQmg52pq5fBtsuv+HaGjUU0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gaFFl3Mx/AKahHhi8lqUpkg37QKpQVKNmnqGxkj7gFIM9IwEmF9k5TdVL7YcDeQyz
+         GMoCapZFZU4yFDrmuYwOCBKzGPdMbEmuC8smG7ciI/zi6n9tiuEiMR27BNJzPcN/ai
+         Yhf6NTJHfVezjWO+5UK89FK8pwy8Q9tci929Be/bfkyItotGxPoMQoJdYeCJ6ylJaS
+         9g7pwwfsoZO+0H4zXDB/d2mhJYShkMZTH9NqRF5aw5Uw/8ZPtYYNXlnPT0DEZ0WbOd
+         uTEP+a2/ouA+ub2YY/TnsrSRSN6WHnwHMBo1TUP/fS6Lqv78/1h7znEl8uv2rTo+sf
+         EzIBn9QnGQqGw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RxRlN036Dz4xPL;
+        Fri, 29 Sep 2023 07:42:07 +1000 (AEST)
+Date:   Fri, 29 Sep 2023 07:41:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the sound-asoc tree
+Message-ID: <20230929074146.329da983@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <169593689515.27769.18026785773995918589.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/PZVY+wS=hrUQI1xxUngES5=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+--Sig_/PZVY+wS=hrUQI1xxUngES5=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Commit-ID:     5c44836dd1451c754c58cea5179d2fa5cbd9fc85
-Gitweb:        https://git.kernel.org/tip/5c44836dd1451c754c58cea5179d2fa5cbd9fc85
-Author:        Yang Li <yang.lee@linux.alibaba.com>
-AuthorDate:    Thu, 10 Aug 2023 09:05:50 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 28 Sep 2023 23:28:21 +02:00
+Hi all,
 
-x86/srso: Remove unnecessary semicolon
+In commit
 
-scripts/coccinelle/misc/semicolon.cocci reports:
+  6d925797304e ("sh: boards: Fix Sound Simple-Card struct name")
 
-  arch/x86/kernel/cpu/bugs.c:713:2-3: Unneeded semicolon
+Fixes tag
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230810010550.25733-1-yang.lee@linux.alibaba.com
----
- arch/x86/kernel/cpu/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  Fixes: ad484cc98f2 ("ASoC: remove asoc_xxx() compatible macro")
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 016a326..bb0ab84 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -717,7 +717,7 @@ void update_gds_msr(void)
- 	case GDS_MITIGATION_UCODE_NEEDED:
- 	case GDS_MITIGATION_HYPERVISOR:
- 		return;
--	};
-+	}
- 
- 	wrmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
- 
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    This can be fixed for the future by setting core.abbrev to 12 (or
+    more) or (for git v2.11 or later) just making sure it is not set
+    (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/PZVY+wS=hrUQI1xxUngES5=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUV8xoACgkQAVBC80lX
+0GyTdwf/SR92jV4DI/kfhLbP8MXPvHovlVj/sCthsxdsgNHr5qstW82wl7ug0HPT
+/SJQZfXnuozi8hF0TUb3EiwgPYqbUsVqbHwYF6+breKyfflhUjqXzMw4DMMp8luM
+CDlRUZqEqX2UD/+Owpen/KMyr9YoeALeILli/ReE6aI5ONHyG1opxbYN1ZkP6LLj
+RShnt7sZfGULBN3npPbRup9k30GSmHP2hseQ++ryx3IyoDRXPRIEogqg0NnGokkT
+yfgwBegr7knOhdOFztOaPBIKe/xFz/z9SDPRWxN3BhI64k73uuKx6TxAJXavxCo4
+bVokjVudG9Ih2Z3Wgj8FIznaiRxssA==
+=JpSV
+-----END PGP SIGNATURE-----
+
+--Sig_/PZVY+wS=hrUQI1xxUngES5=--
