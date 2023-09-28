@@ -2,46 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E517B1C1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0D07B1C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjI1MXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S231655AbjI1MX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjI1MXM (ORCPT
+        with ESMTP id S231206AbjI1MX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:23:12 -0400
+        Thu, 28 Sep 2023 08:23:57 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A0A139
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:23:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68D49C433C7;
-        Thu, 28 Sep 2023 12:23:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1695903790;
-        bh=FhiCLuXE8xs5g1A7GLVUNFyMEugHawIxGqltKFYikQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C4LSdgPYPgVEwS6xsCENhOeWsGBpCMYKUdabc/3c0vS1/50rScD+6wB+OtF/r1KdN
-         Z1cAaMCwTV97ZYYwDussm0Y8XhNQL29pqDaCYkkjg/ptMiJ1WjSu65DOFhGq22KTyR
-         AAkZSqOcJH16/b5tgVyhPoYPQy7sYDvadILrgqbQ=
-Date:   Thu, 28 Sep 2023 14:23:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Eliza Balas <eliza.balas@analog.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drivers: misc: adi-axi-tdd: Add TDD engine
-Message-ID: <2023092835-educator-cardigan-1ae0@gregkh>
-References: <20230928092804.22612-1-eliza.balas@analog.com>
- <20230928092804.22612-3-eliza.balas@analog.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73D5193;
+        Thu, 28 Sep 2023 05:23:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC5EC433C8;
+        Thu, 28 Sep 2023 12:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695903834;
+        bh=92GqEjcHHhcC9aZp0W6/CZRTL9qlQhm0KTV043dHYEw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=XTDkH57PssUlUSv0Jvyc9SagCGzcvMhOd4sBi8/QI9pAZAkZL9pATSA8bz+eSBJqG
+         Uq8Nt392fjdttgOX2VLl8WesPHwtMj+6fto7C7j0lma6SMc6RTT/1Piq4K0c4F2cjL
+         t70KI5J5u5sIvmT0HnKLOfoXJupZadpM+v3CcxJoTrJ+w88it+lFS4KqVZyRxyOpOk
+         Gxcvklo4ZteTiJT6phKWH1fT+sWg3BDdkE0XjX8hPtQwNlvx1mMN/TXgWlTwkhY8+H
+         2JDFfoGaxBK1qmcln+umq9NCP+faplkR088tMcQHWTcN5N8pSgqwaYG9LouGPqudWg
+         phcVgA2T5s2dQ==
+Message-ID: <e8d37c74110251f59ecb78ce64834ac46234d2df.camel@kernel.org>
+Subject: Re: [PATCH 11/87] drivers/tty: convert to new inode {a,m}time
+ accessors
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Date:   Thu, 28 Sep 2023 08:23:52 -0400
+In-Reply-To: <2023092858-paparazzi-budding-6c35@gregkh>
+References: <20230928110300.32891-1-jlayton@kernel.org>
+         <20230928110413.33032-1-jlayton@kernel.org>
+         <20230928110413.33032-10-jlayton@kernel.org>
+         <2023092858-paparazzi-budding-6c35@gregkh>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928092804.22612-3-eliza.balas@analog.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,26 +55,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 12:28:04PM +0300, Eliza Balas wrote:
-> --- /dev/null
-> +++ b/drivers/misc/adi-axi-tdd.c
-> @@ -0,0 +1,780 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+On Thu, 2023-09-28 at 14:13 +0200, Greg KH wrote:
+> On Thu, Sep 28, 2023 at 07:02:20AM -0400, Jeff Layton wrote:
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> As much difficulty muti-subsystem patches are, we do need a changelog
+> entry please.  Maybe some maintainers are nicer, but I can't ack a patch
+> without any text here at all, sorry.
+>=20
+Ahh yes -- my bad. I'll add a boilerplate commit log for all of the
+"convert to new inode {a,m}time accessors" patches.
 
-License comment, why is this dual licensed?  You are calling
-gpl-only-marked functions in this driver so attempting to say it is also
-BSD is quite odd, how are you going to resolve that?
-
-Has a lawyer agreed with this licensing?
-
-Please get a lawyer to sign off on your next contribution of this with a
-dual license to ensure that they agree and that you all fully understand
-the legal issues and complexity of attempting to have dual-licensed
-Linux kernel code (hint, it's not as simple as you might think...)
-
-And document in the changelog _why_ you want this to be dual licensed so
-that we can all review that as well.
-
-thanks,
-
-greg k-h
+Thanks,
+--=20
+Jeff Layton <jlayton@kernel.org>
