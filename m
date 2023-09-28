@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DE07B26EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF7A7B26F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjI1VAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        id S232342AbjI1VAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbjI1VAe (ORCPT
+        with ESMTP id S232355AbjI1VAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:00:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918B21A2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:00:32 -0700 (PDT)
+        Thu, 28 Sep 2023 17:00:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8A21BE
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695934832; x=1727470832;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=plQZm9Gqmd4pF5S/4ppKbvpUSTgXLph+LF2jDBbgCl0=;
-  b=mh1D9NnPkTwe4Nh5VK1y47FbqrCdk28i/K3kjFFseiBWmet7LIZANAWI
-   9ESWsTQwwRTgFDGsoSrLEr0RubNpM34AFXKi+2dckxFUQI0trdM9SgbF/
-   D7E/AtQvh6IPJAJECrL2josT6owedARTaQ7FAB/sKQauTT6Qkn+RdLAKV
-   IyIUAq2sN/pjXH+XW7wfTrvS5nyTJF2nYBxJP1pZrNnOgvu5OS0iLwQxh
-   8x2IgpwgUGqd6rL1at2/Nps2q76815bojkVOUTFipNaQCobhdOIIZrvZ1
-   Fur3uEg4HkQaqN+XBfMe0MDYyCIyC2Ak77JUpeBI0yy5UVcxm75cgAdkv
+  t=1695934847; x=1727470847;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RNNJTecZe3lDDdVUo90WNnnwhRxRi0q1fo0uq18yMDg=;
+  b=KSHNBqSgOcPlmyLpj1fR47IABofOWBGQWcIiGQHqYADFMg8c5iUxxXiT
+   3soXryCyxFdlZ5WKMKDYUnnVJo+lMAYwc/Qnq1LpG8BoYzTJJn8L/ZBbD
+   EiNAKbfePDOKjON6ZExNYh2uGDAJCl1ZB4aO1kLm70jdx9Mhduv0Vwie2
+   Ty5RcixshIOxityC79SnCKB1TefotxNsg8IsDozYnxMBd4V9B3SaoTQhV
+   2Q4KhdFOXc3icZ57gH5OLzG+HwD+IErxm1k55Qwu/nWUlPiAFhXvFM7o6
+   tdbGtWQQluZdnx3LQFJLvBhhxi5VpE8PAIQNWDBHMDPB4pXZWAMmbHba1
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="386040035"
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="782270"
 X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="386040035"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 14:00:32 -0700
+   d="scan'208";a="782270"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 14:00:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="873436157"
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="699431537"
 X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="873436157"
+   d="scan'208";a="699431537"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 28 Sep 2023 14:00:30 -0700
+  by orsmga003.jf.intel.com with ESMTP; 28 Sep 2023 14:00:30 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qly7Y-0001xS-0K;
+        id 1qly7Y-0001xL-04;
         Thu, 28 Sep 2023 21:00:28 +0000
-Date:   Fri, 29 Sep 2023 05:00:15 +0800
+Date:   Fri, 29 Sep 2023 05:00:16 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>
-Subject: arch/x86/kernel/hpet.c:520:46: error: invalid use of incomplete
- typedef 'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
-Message-ID: <202309290439.8R8jcHz5-lkp@intel.com>
+To:     Earl Chew <earl.chew@yahoo.ca>, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, peter@hurleysoftware.com,
+        earl.chew@yahoo.ca
+Subject: Re: [PATCH 2/3] tty: Serialise racing tiocspgrp() callers
+Message-ID: <202309290422.8TLHGj3t-lkp@intel.com>
+References: <20230901015030.2469062-3-earl.chew@yahoo.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230901015030.2469062-3-earl.chew@yahoo.ca>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -63,155 +66,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
-commit: 70afdab904d2d1e68bffe75fe08e7e48e0b0ff8e irqchip: Add IMX MU MSI controller driver
-date:   12 months ago
-config: i386-buildonly-randconfig-003-20230915 (https://download.01.org/0day-ci/archive/20230929/202309290439.8R8jcHz5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309290439.8R8jcHz5-lkp@intel.com/reproduce)
+Hi Earl,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on tty/tty-testing]
+[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.6-rc3 next-20230928]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Earl-Chew/tty-Serialise-racing-tiocspgrp-callers/20230929-010844
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20230901015030.2469062-3-earl.chew%40yahoo.ca
+patch subject: [PATCH 2/3] tty: Serialise racing tiocspgrp() callers
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230929/202309290422.8TLHGj3t-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309290422.8TLHGj3t-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309290439.8R8jcHz5-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309290422.8TLHGj3t-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   arch/x86/kernel/hpet.c: In function 'hpet_msi_init':
->> arch/x86/kernel/hpet.c:520:46: error: invalid use of incomplete typedef 'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
-     520 |         irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
-         |                                              ^~
-   arch/x86/kernel/hpet.c:521:49: error: invalid use of incomplete typedef 'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
-     521 |                             handle_edge_irq, arg->data, "edge");
-         |                                                 ^~
-   arch/x86/kernel/hpet.c: In function 'hpet_create_irq_domain':
->> arch/x86/kernel/hpet.c:550:13: error: 'x86_vector_domain' undeclared (first use in this function)
-     550 |         if (x86_vector_domain == NULL)
-         |             ^~~~~~~~~~~~~~~~~
-   arch/x86/kernel/hpet.c:550:13: note: each undeclared identifier is reported only once for each function it appears in
-   arch/x86/kernel/hpet.c: In function 'hpet_assign_irq':
->> arch/x86/kernel/hpet.c:598:31: error: storage size of 'info' isn't known
-     598 |         struct irq_alloc_info info;
-         |                               ^~~~
->> arch/x86/kernel/hpet.c:600:9: error: implicit declaration of function 'init_irq_alloc_info' [-Werror=implicit-function-declaration]
-     600 |         init_irq_alloc_info(&info, NULL);
-         |         ^~~~~~~~~~~~~~~~~~~
->> arch/x86/kernel/hpet.c:601:21: error: 'X86_IRQ_ALLOC_TYPE_HPET' undeclared (first use in this function)
-     601 |         info.type = X86_IRQ_ALLOC_TYPE_HPET;
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/kernel/hpet.c:598:31: warning: unused variable 'info' [-Wunused-variable]
-     598 |         struct irq_alloc_info info;
-         |                               ^~~~
-   arch/x86/kernel/hpet.c:607:1: error: control reaches end of non-void function [-Werror=return-type]
-     607 | }
-         | ^
-   cc1: some warnings being treated as errors
+>> drivers/tty/tty_jobctrl.c:35: warning: Function parameter or member 'ctrl_lock' not described in '__tty_check_change_locked'
+>> drivers/tty/tty_jobctrl.c:35: warning: expecting prototype for __tty_check_change(). Prototype was for __tty_check_change_locked() instead
 
 
-vim +520 arch/x86/kernel/hpet.c
+vim +35 drivers/tty/tty_jobctrl.c
 
-3d7295eb3003aea David Woodhouse 2020-10-24  514  
-3d7295eb3003aea David Woodhouse 2020-10-24  515  static int hpet_msi_init(struct irq_domain *domain,
-3d7295eb3003aea David Woodhouse 2020-10-24  516  			 struct msi_domain_info *info, unsigned int virq,
-3d7295eb3003aea David Woodhouse 2020-10-24  517  			 irq_hw_number_t hwirq, msi_alloc_info_t *arg)
-3d7295eb3003aea David Woodhouse 2020-10-24  518  {
-3d7295eb3003aea David Woodhouse 2020-10-24  519  	irq_set_status_flags(virq, IRQ_MOVE_PCNTXT);
-3d7295eb3003aea David Woodhouse 2020-10-24 @520  	irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
-3d7295eb3003aea David Woodhouse 2020-10-24  521  			    handle_edge_irq, arg->data, "edge");
-3d7295eb3003aea David Woodhouse 2020-10-24  522  
-3d7295eb3003aea David Woodhouse 2020-10-24  523  	return 0;
-3d7295eb3003aea David Woodhouse 2020-10-24  524  }
-3d7295eb3003aea David Woodhouse 2020-10-24  525  
-3d7295eb3003aea David Woodhouse 2020-10-24  526  static void hpet_msi_free(struct irq_domain *domain,
-3d7295eb3003aea David Woodhouse 2020-10-24  527  			  struct msi_domain_info *info, unsigned int virq)
-3d7295eb3003aea David Woodhouse 2020-10-24  528  {
-3d7295eb3003aea David Woodhouse 2020-10-24  529  	irq_clear_status_flags(virq, IRQ_MOVE_PCNTXT);
-3d7295eb3003aea David Woodhouse 2020-10-24  530  }
-3d7295eb3003aea David Woodhouse 2020-10-24  531  
-3d7295eb3003aea David Woodhouse 2020-10-24  532  static struct msi_domain_ops hpet_msi_domain_ops = {
-3d7295eb3003aea David Woodhouse 2020-10-24  533  	.msi_init	= hpet_msi_init,
-3d7295eb3003aea David Woodhouse 2020-10-24  534  	.msi_free	= hpet_msi_free,
-3d7295eb3003aea David Woodhouse 2020-10-24  535  };
-3d7295eb3003aea David Woodhouse 2020-10-24  536  
-3d7295eb3003aea David Woodhouse 2020-10-24  537  static struct msi_domain_info hpet_msi_domain_info = {
-3d7295eb3003aea David Woodhouse 2020-10-24  538  	.ops		= &hpet_msi_domain_ops,
-3d7295eb3003aea David Woodhouse 2020-10-24  539  	.chip		= &hpet_msi_controller,
-3d7295eb3003aea David Woodhouse 2020-10-24  540  	.flags		= MSI_FLAG_USE_DEF_DOM_OPS,
-3d7295eb3003aea David Woodhouse 2020-10-24  541  };
-3d7295eb3003aea David Woodhouse 2020-10-24  542  
-3d7295eb3003aea David Woodhouse 2020-10-24  543  static struct irq_domain *hpet_create_irq_domain(int hpet_id)
-3d7295eb3003aea David Woodhouse 2020-10-24  544  {
-3d7295eb3003aea David Woodhouse 2020-10-24  545  	struct msi_domain_info *domain_info;
-3d7295eb3003aea David Woodhouse 2020-10-24  546  	struct irq_domain *parent, *d;
-3d7295eb3003aea David Woodhouse 2020-10-24  547  	struct fwnode_handle *fn;
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  548  	struct irq_fwspec fwspec;
-3d7295eb3003aea David Woodhouse 2020-10-24  549  
-3d7295eb3003aea David Woodhouse 2020-10-24 @550  	if (x86_vector_domain == NULL)
-3d7295eb3003aea David Woodhouse 2020-10-24  551  		return NULL;
-3d7295eb3003aea David Woodhouse 2020-10-24  552  
-3d7295eb3003aea David Woodhouse 2020-10-24  553  	domain_info = kzalloc(sizeof(*domain_info), GFP_KERNEL);
-3d7295eb3003aea David Woodhouse 2020-10-24  554  	if (!domain_info)
-3d7295eb3003aea David Woodhouse 2020-10-24  555  		return NULL;
-3d7295eb3003aea David Woodhouse 2020-10-24  556  
-3d7295eb3003aea David Woodhouse 2020-10-24  557  	*domain_info = hpet_msi_domain_info;
-3d7295eb3003aea David Woodhouse 2020-10-24  558  	domain_info->data = (void *)(long)hpet_id;
-3d7295eb3003aea David Woodhouse 2020-10-24  559  
-3d7295eb3003aea David Woodhouse 2020-10-24  560  	fn = irq_domain_alloc_named_id_fwnode(hpet_msi_controller.name,
-3d7295eb3003aea David Woodhouse 2020-10-24  561  					      hpet_id);
-3d7295eb3003aea David Woodhouse 2020-10-24  562  	if (!fn) {
-3d7295eb3003aea David Woodhouse 2020-10-24  563  		kfree(domain_info);
-3d7295eb3003aea David Woodhouse 2020-10-24  564  		return NULL;
-3d7295eb3003aea David Woodhouse 2020-10-24  565  	}
-3d7295eb3003aea David Woodhouse 2020-10-24  566  
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  567  	fwspec.fwnode = fn;
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  568  	fwspec.param_count = 1;
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  569  	fwspec.param[0] = hpet_id;
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  570  
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  571  	parent = irq_find_matching_fwspec(&fwspec, DOMAIN_BUS_ANY);
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  572  	if (!parent) {
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  573  		irq_domain_free_fwnode(fn);
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  574  		kfree(domain_info);
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  575  		return NULL;
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  576  	}
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  577  	if (parent != x86_vector_domain)
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  578  		hpet_msi_controller.name = "IR-HPET-MSI";
-c2a5881c28e5bb4 David Woodhouse 2020-10-24  579  
-3d7295eb3003aea David Woodhouse 2020-10-24  580  	d = msi_create_irq_domain(fn, domain_info, parent);
-3d7295eb3003aea David Woodhouse 2020-10-24  581  	if (!d) {
-3d7295eb3003aea David Woodhouse 2020-10-24  582  		irq_domain_free_fwnode(fn);
-3d7295eb3003aea David Woodhouse 2020-10-24  583  		kfree(domain_info);
-3d7295eb3003aea David Woodhouse 2020-10-24  584  	}
-3d7295eb3003aea David Woodhouse 2020-10-24  585  	return d;
-3d7295eb3003aea David Woodhouse 2020-10-24  586  }
-3d7295eb3003aea David Woodhouse 2020-10-24  587  
-3d7295eb3003aea David Woodhouse 2020-10-24  588  static inline int hpet_dev_id(struct irq_domain *domain)
-3d7295eb3003aea David Woodhouse 2020-10-24  589  {
-3d7295eb3003aea David Woodhouse 2020-10-24  590  	struct msi_domain_info *info = msi_get_domain_info(domain);
-3d7295eb3003aea David Woodhouse 2020-10-24  591  
-3d7295eb3003aea David Woodhouse 2020-10-24  592  	return (int)(long)info->data;
-3d7295eb3003aea David Woodhouse 2020-10-24  593  }
-3d7295eb3003aea David Woodhouse 2020-10-24  594  
-3d7295eb3003aea David Woodhouse 2020-10-24  595  static int hpet_assign_irq(struct irq_domain *domain, struct hpet_channel *hc,
-3d7295eb3003aea David Woodhouse 2020-10-24  596  			   int dev_num)
-3d7295eb3003aea David Woodhouse 2020-10-24  597  {
-3d7295eb3003aea David Woodhouse 2020-10-24 @598  	struct irq_alloc_info info;
-3d7295eb3003aea David Woodhouse 2020-10-24  599  
-3d7295eb3003aea David Woodhouse 2020-10-24 @600  	init_irq_alloc_info(&info, NULL);
-3d7295eb3003aea David Woodhouse 2020-10-24 @601  	info.type = X86_IRQ_ALLOC_TYPE_HPET;
-3d7295eb3003aea David Woodhouse 2020-10-24  602  	info.data = hc;
-3d7295eb3003aea David Woodhouse 2020-10-24  603  	info.devid = hpet_dev_id(domain);
-3d7295eb3003aea David Woodhouse 2020-10-24  604  	info.hwirq = dev_num;
-3d7295eb3003aea David Woodhouse 2020-10-24  605  
-3d7295eb3003aea David Woodhouse 2020-10-24  606  	return irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info);
-3d7295eb3003aea David Woodhouse 2020-10-24  607  }
-3d7295eb3003aea David Woodhouse 2020-10-24  608  
-
-:::::: The code at line 520 was first introduced by commit
-:::::: 3d7295eb3003aea9f89de35304b3a88ae4d5036b x86/hpet: Move MSI support into hpet.c
-
-:::::: TO: David Woodhouse <dwmw@amazon.co.uk>
-:::::: CC: Thomas Gleixner <tglx@linutronix.de>
+a1235b3eb10086 Nicolas Pitre 2017-04-12  21  
+a1235b3eb10086 Nicolas Pitre 2017-04-12  22  /**
+6ef6785d781e9c Lee Jones     2021-05-20  23   *	__tty_check_change	-	check for POSIX terminal changes
+a1235b3eb10086 Nicolas Pitre 2017-04-12  24   *	@tty: tty to check
+bc38fe241bc320 Lee Jones     2020-11-04  25   *	@sig: signal to send
+a1235b3eb10086 Nicolas Pitre 2017-04-12  26   *
+a1235b3eb10086 Nicolas Pitre 2017-04-12  27   *	If we try to write to, or set the state of, a terminal and we're
+a1235b3eb10086 Nicolas Pitre 2017-04-12  28   *	not in the foreground, send a SIGTTOU.  If the signal is blocked or
+a1235b3eb10086 Nicolas Pitre 2017-04-12  29   *	ignored, go ahead and perform the operation.  (POSIX 7.2)
+a1235b3eb10086 Nicolas Pitre 2017-04-12  30   *
+64d608db38ffc0 Jiri Slaby    2021-05-05  31   *	Locking: ctrl.lock
+a1235b3eb10086 Nicolas Pitre 2017-04-12  32   */
+99d6f12e388e7a Earl Chew     2023-08-31  33  static int __tty_check_change_locked(struct tty_struct *tty, int sig,
+99d6f12e388e7a Earl Chew     2023-08-31  34  				     spinlock_t *ctrl_lock)
+a1235b3eb10086 Nicolas Pitre 2017-04-12 @35  {
+a1235b3eb10086 Nicolas Pitre 2017-04-12  36  	unsigned long flags;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  37  	struct pid *pgrp, *tty_pgrp;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  38  	int ret = 0;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  39  
+99d6f12e388e7a Earl Chew     2023-08-31  40  	BUG_ON(ctrl_lock && (
+99d6f12e388e7a Earl Chew     2023-08-31  41  	       ctrl_lock != &tty->ctrl.lock || !spin_is_locked(ctrl_lock)));
+99d6f12e388e7a Earl Chew     2023-08-31  42  
+a1235b3eb10086 Nicolas Pitre 2017-04-12  43  	if (current->signal->tty != tty)
+a1235b3eb10086 Nicolas Pitre 2017-04-12  44  		return 0;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  45  
+a1235b3eb10086 Nicolas Pitre 2017-04-12  46  	rcu_read_lock();
+a1235b3eb10086 Nicolas Pitre 2017-04-12  47  	pgrp = task_pgrp(current);
+a1235b3eb10086 Nicolas Pitre 2017-04-12  48  
+99d6f12e388e7a Earl Chew     2023-08-31  49  	if (!ctrl_lock)
+64d608db38ffc0 Jiri Slaby    2021-05-05  50  		spin_lock_irqsave(&tty->ctrl.lock, flags);
+64d608db38ffc0 Jiri Slaby    2021-05-05  51  	tty_pgrp = tty->ctrl.pgrp;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  52  
+cf90c06f811501 David Emett   2019-03-10  53  	if (tty_pgrp && pgrp != tty_pgrp) {
+a1235b3eb10086 Nicolas Pitre 2017-04-12  54  		if (is_ignored(sig)) {
+a1235b3eb10086 Nicolas Pitre 2017-04-12  55  			if (sig == SIGTTIN)
+a1235b3eb10086 Nicolas Pitre 2017-04-12  56  				ret = -EIO;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  57  		} else if (is_current_pgrp_orphaned())
+a1235b3eb10086 Nicolas Pitre 2017-04-12  58  			ret = -EIO;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  59  		else {
+a1235b3eb10086 Nicolas Pitre 2017-04-12  60  			kill_pgrp(pgrp, sig, 1);
+a1235b3eb10086 Nicolas Pitre 2017-04-12  61  			set_thread_flag(TIF_SIGPENDING);
+a1235b3eb10086 Nicolas Pitre 2017-04-12  62  			ret = -ERESTARTSYS;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  63  		}
+a1235b3eb10086 Nicolas Pitre 2017-04-12  64  	}
+99d6f12e388e7a Earl Chew     2023-08-31  65  	if (!ctrl_lock)
+95d3590fbe7aed Earl Chew     2023-08-31  66  		spin_unlock_irqrestore(&tty->ctrl.lock, flags);
+a1235b3eb10086 Nicolas Pitre 2017-04-12  67  	rcu_read_unlock();
+a1235b3eb10086 Nicolas Pitre 2017-04-12  68  
+a1235b3eb10086 Nicolas Pitre 2017-04-12  69  	if (!tty_pgrp)
+a1235b3eb10086 Nicolas Pitre 2017-04-12  70  		tty_warn(tty, "sig=%d, tty->pgrp == NULL!\n", sig);
+a1235b3eb10086 Nicolas Pitre 2017-04-12  71  
+a1235b3eb10086 Nicolas Pitre 2017-04-12  72  	return ret;
+a1235b3eb10086 Nicolas Pitre 2017-04-12  73  }
+a1235b3eb10086 Nicolas Pitre 2017-04-12  74  
 
 -- 
 0-DAY CI Kernel Test Service
