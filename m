@@ -2,263 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE7E7B20FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76567B2107
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjI1PUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S231841AbjI1PVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbjI1PUV (ORCPT
+        with ESMTP id S231620AbjI1PVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:20:21 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC95BC0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:20:18 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5334f9a56f6so15890313a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695914416; x=1696519216; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NhGCCrTPz3qD815DrUTz3QFvoilWcLj84jeEgBAbn4g=;
-        b=RQ2FPrFYjacQNvGdOlD75otTCmHvrF1Ybu5BwIbkEwy/0WPLPBJ+0J62RXmfkdETIx
-         gBZOUDhhBxWjalQacJipdaRmkDvXzbX3Ir/mBHVdRIvSh/6zZxe+dhu4O4jl23Dlri1z
-         9sAC0gnWrxGiVRpATaZf4sy/SS4qIQdILJlJM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695914416; x=1696519216;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NhGCCrTPz3qD815DrUTz3QFvoilWcLj84jeEgBAbn4g=;
-        b=IRRq+bqPruAh+6fIYwKXNaw1Rth09X4BasnqPRkg/wxjsLIdQ497DdOz83fCMomGnC
-         G7D+XvoXCXuQ2C+1Sf4Q7hOUqr26YgXqxBSPWhHmkt4aFf6AbitQwAqP8MOXAW4P0/nL
-         XUGJV0hSCXKlhD0pUQcoSvNxIgse+T6CJHWKJLvbpbxPeoJ/HJhyaoCGJjp6pi6e4W7N
-         KLIttPug1jRDhrDnoYO3oeccAC+Izin75N/pAeRZn/bw+eoDh7lfMlnrcNxaspkKvDxF
-         ujWGlvhjxo7yNvVN8Xqi3gOgufESZPdfp7qLewG1Ythjv+gM3UTh7D5EPlEA91t/BaAT
-         sv6Q==
-X-Gm-Message-State: AOJu0YxBY4OQ4/wNv8aJUPLbOeyoN+p32UcKkdECfzDRQ9zCjoMUVfkb
-        6ZQv8YYKr2l9TQTNdmzOtnB2hlfDdKGAm9hYpyWL5w==
-X-Google-Smtp-Source: AGHT+IGCrTzWYKPGz8+625kDs0eQi51Ow82elgipH2Qu5W+6QmLi6g4eOr361Yni2q+KJAEShzSViau1oDvFTplMmIU=
-X-Received: by 2002:aa7:c1ca:0:b0:533:926:da9d with SMTP id
- d10-20020aa7c1ca000000b005330926da9dmr1505968edp.18.1695914416372; Thu, 28
- Sep 2023 08:20:16 -0700 (PDT)
+        Thu, 28 Sep 2023 11:21:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2A0EB;
+        Thu, 28 Sep 2023 08:21:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D63DC433CA;
+        Thu, 28 Sep 2023 15:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695914469;
+        bh=5QGsjlLA6+fSdsYbT2wgVXCyV5RBnz+gCDO8qtKxudM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RI64Z/ulZuV+NXvyr13D2r3WHJHjvYSEBhhBuHPNVt9kRWrPnmiOgF6ordWF6ikFR
+         xgtdSFzrXqfJBZ5kkT2lmvoB/s5AbaPtBp/tnANflqyoMu0vA4hG+/6XSSId9g12q6
+         KIYQ9idMZhFhYNIT33lFaQWWQ7LAYSXQCODt0fs3+ZcZjnlILWt1TgJuLubdaAGUFf
+         pPbIcFQgW/we/P2hsbBFA0b+8eMvcO7guEHDNRQNPbG/MNmCgntCxM58JaxdGUeun5
+         x06+lzhwwWzX9K72+s9pnzD78ZB62/lme4WNkHldmaYNuNQwSl3mlzfexfOEF6/wbI
+         ZAR46SSqA5oOw==
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40651a726acso8223865e9.1;
+        Thu, 28 Sep 2023 08:21:09 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxuxNKOgC4u1ePiFMlqKCEMP/zddERIvPni/8kcjiybUUC91JLy
+        RSxD/21B6vHM6Qp+/MI+x+UR1N8BGIs6V0/bc2U=
+X-Google-Smtp-Source: AGHT+IFGxnL1jLxRJ82JHSkotXT+AJQbGwcj+NsBF8Wdz/LihQ1gwaw7yDfPbhv4CL9qBIGKh5TUPhf228x9wFIkjTk=
+X-Received: by 2002:a05:6512:1595:b0:500:b828:7a04 with SMTP id
+ bp21-20020a056512159500b00500b8287a04mr1542995lfb.18.1695914446757; Thu, 28
+ Sep 2023 08:20:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230921124459.1.I91ddcfacf9b234af5cc3eabea4b62edb31153317@changeid>
- <CAL_Jsq+WuYDU+yY98opTHr1PT-J9mFYJQBjVMnk+FSWLDUO33w@mail.gmail.com>
- <CAPnjgZ1pfxaMG1n5yOBhiOhsNrRjck1K92U7Ga=+VTY_jjjrVg@mail.gmail.com>
- <20230922174649.GA3320366-robh@kernel.org> <CAPnjgZ3ojfAv=BHqOhM=-NnYqCm81Ny=PsGKiNphKTmw++fk9w@mail.gmail.com>
- <CAL_JsqJqvyP=c93DHDO8A5RXv7Lz_Z7eEHSbJQ=JCo+qPVhSfg@mail.gmail.com>
- <CAPnjgZ3BnD9aX3cNNPiGRKTOj+YeurHCLv6K0TRFhAtY21Qufw@mail.gmail.com>
- <20230925092122.0b615f25@xps-13> <CAPnjgZ0Z5J_33HuQF-5XgDFmZim0nHHzvZJOOZobWw_cOJd=9g@mail.gmail.com>
- <20230925164736.5efbf4c0@xps-13> <CAPnjgZ3YCQHJ-eXuX8rYx2Qb6QEL+XviFmXYTON6M-sGPWSBBg@mail.gmail.com>
- <20230925172447.43dcef88@xps-13> <CAPnjgZ20c9FsYVjSrQ9qbFy9Y67BqDP2zxMyATx===PFhO69Ew@mail.gmail.com>
- <CAL_JsqJfjHqtTB2qfLmNxmQtn1rZewNyNe+Knu_Z4UCdPoPhSQ@mail.gmail.com>
- <CAPnjgZ1npHPpwPmw2f4=E3U5=RH0m4R+W_MZ7+oXdmDF=EeUjg@mail.gmail.com>
- <20230926094815.5802e184@xps-13> <CAL_JsqL_8bhHkHOFL8a8=g1dYL4OY8hGuNDyc0Jz22rEuJzXtQ@mail.gmail.com>
- <CAPnjgZ3TJLaRzv_cXyLdpRBtc2-FBYQ=gk-_MhEDH47HvO71FQ@mail.gmail.com>
-In-Reply-To: <CAPnjgZ3TJLaRzv_cXyLdpRBtc2-FBYQ=gk-_MhEDH47HvO71FQ@mail.gmail.com>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Thu, 28 Sep 2023 09:20:05 -0600
-Message-ID: <CAPnjgZ2eUcgevpS7Ak5p=7bhm0aHW3taLO8Fq_EcpDDQidJFVA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: Add a schema for binman
-To:     Rob Herring <robh@kernel.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        devicetree@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
+References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
+ <65157da7.5d0a0220.13b5e.9e95SMTPIN_ADDED_BROKEN@mx.google.com>
+In-Reply-To: <65157da7.5d0a0220.13b5e.9e95SMTPIN_ADDED_BROKEN@mx.google.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 28 Sep 2023 08:20:34 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6WRen7Udqc+O+haAH8PZXH2jYdpUj1X7UCuQYngVWxoA@mail.gmail.com>
+Message-ID: <CAPhsuW6WRen7Udqc+O+haAH8PZXH2jYdpUj1X7UCuQYngVWxoA@mail.gmail.com>
+Subject: Re: [PATCH 13/15] raid: Remove now superfluous sentinel element from
+ ctl_table array
+To:     j.granados@samsung.com
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Doug Gilbert <dgilbert@interlog.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Corey Minyard <minyard@acm.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-rdma@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again Rob,
+On Thu, Sep 28, 2023 at 6:20=E2=80=AFAM Joel Granados via B4 Relay
+<devnull+j.granados.samsung.com@kernel.org> wrote:
+>
+> From: Joel Granados <j.granados@samsung.com>
+>
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+>
+> Remove sentinel from raid_table
+>
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  drivers/md/md.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index a104a025084d..3866d8f754a0 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -304,8 +304,7 @@ static struct ctl_table raid_table[] =3D {
+>                 .maxlen         =3D sizeof(int),
+>                 .mode           =3D S_IRUGO|S_IWUSR,
+>                 .proc_handler   =3D proc_dointvec,
+> -       },
+> -       { }
+> +       }
+>  };
 
-On Wed, 27 Sept 2023 at 10:43, Simon Glass <sjg@chromium.org> wrote:
->
-> Hi Rob,
->
-> On Tue, 26 Sept 2023 at 11:29, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Tue, Sep 26, 2023 at 2:48=E2=80=AFAM Miquel Raynal <miquel.raynal@bo=
-otlin.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > > > > > > These are firmware bindings, as indicated, but I
-> > > > > > > > took them out of the /firmware node since that is for a dif=
-ferent
-> > > > > > > > purpose. Rob suggested that partitions was a good place. We=
- have fwupd
-> > > > > > > > using DT to hold the firmware-update information, so I expe=
-ct it will
-> > > > > > > > move to use these bindings too.
-> > > > > > >
-> > > > > > > I would definitely use fixed partitions as that's what you ne=
-ed then:
-> > > > > > > registering where everything starts and ends. If you have "in=
--band"
-> > > > > > > meta data you might require a compatible, but I don't think y=
-ou
-> > > > > > > do, in this case you should probably carry the content throug=
-h a label
-> > > > > > > (which will become the partition name) and we can discuss add=
-itional
-> > > > > > > properties if needed.
-> > > > > >
-> > > > > > I believe I am going to need a compatible string at the 'partit=
-ions'
-> > > > > > level to indicate that this is the binman scheme. But we can le=
-ave
-> > > > > > that until later.
-> > > > >
-> > > > > Perhaps:
-> > > > >
-> > > > > compatible =3D "binman", "fixed-partitions";
-> > > > >
-> > > > > Though I don't understand why binman couldn't just understand wha=
-t
-> > > > > "fixed-partitions" means rather than "binman".
-> > > >
-> > > > Well so long as we don't add any binman things in here, you are rig=
-ht.
-> > > >
-> > > > But the eventual goal is parity with current Binman functionality,
-> > > > which writes the entire (augmented) description to the DT, allowing
-> > > > tools to rebuild / repack / replace pieces later, maintaining the s=
-ame
-> > > > alignment constraints, etc. I am assuming that properties like 'ali=
-gn
-> > > > =3D <16>' would not fit with fixed-partitions.
-> > >
-> > > I am personally not bothered by this kind of properties. But if we pl=
-an
-> > > on adding too much properties, I will advise to indeed use another na=
-me
-> > > than fixed-partitions (or add the "binman" secondary compatible)
-> > > otherwise it's gonna be hard to support in the code while still
-> > > restraining as much as we can the other partition schema.
-> >
-> > Agreed. It's a trade off. I think we need enough to understand the
-> > problem (not just presented with a solution), agree on the general
-> > solution/direction, and then discuss specific additions.
-> >
-> > > > But if we don't preserve
-> > > > these properties then Binman cannot do repacking reliably. Perhaps =
-for
-> > > > now I could put the augmented DT in its own section somewhere, but =
-I
-> > > > am just not sure if that will work in a real system. E.g. with VBE =
-the
-> > > > goal is to use the DT to figure out how to access the firmware, upd=
-ate
-> > > > it, etc.
-> >
-> > VBE?
+Please keep "}," as Greg suggested. Otherwise,
 
-Verified Boot for Embedded, an EFI alternative with no callbacks.
+Acked-by: Song Liu <song@kernel.org>
 
-> >
-> > > > Is it not possible to have my own node with whatever things Binman
-> > > > needs in it (subject to review of course)? i.e. could we discuss ho=
-w
-> > > > to encode it, but argue less about whether things are needed? I
-> > > > kind-of feel I know what is needed, since I wrote the tool.
-> >
-> > What we don't need is the same information in 2 places for the DTB
-> > used at runtime. If the binman node is removed, do whatever you want.
-> > If you want to keep it at runtime, then it's got to extend what we
-> > already have.
-> >
-> > I don't think anyone is disagreeing about whether specific information
-> > is needed or not.
-> >
-> > > > > > So you are suggesting 'label' for the contents. Rob suggested
-> > > > > > 'compatible' [1], so what should I do?
-> > > > >
-> > > > > "label" is for consumption by humans, not tools/software. Compati=
-ble
-> > > > > values are documented, label values are not. Though the partition
-> > > > > stuff started out using label long ago and it's evolved to prefer=
-ring
-> > > > > compatible.
-> > > >
-> > > > OK so we are agreed that we are going with 'compatible'.
-> > >
-> > > Still strongly disagree here.
-> >
-> > Miquel is right. I was confused here. "label" is still pretty much
-> > used for what the image is. Though we do have "u-boot,env" for both it
-> > seems.
-> >
-> > My position on "label" stands. To the extent we have images for common
-> > components, I think we should standardize the names. Certainly if
-> > tools rely on the names, then they should be documented.
->
-> OK thanks for clearing that up.
->
-> But at present 'label' is free-form text. If I change it to an enum,
-> won't that break things? If not, how do I actually do it?
->
-> There is a u-boot.yaml but it doesn't actually have a "u-boot" label
-> in the schema. In fact it seems that the label is not validated at
-> all?
-
-It looks like I can just add it to a separate schema file, which is
-what I did in the latest version.
-
->
-> >
-> >
-> > > My understanding is that a compatible carries how the content is
-> > > organized, and how this maybe specific (like you have in-band meta da=
-ta
-> > > data that needs to be parsed in a specific way or in your case
-> > > additional specific properties in the DT which give more context abou=
-t
-> > > how the data is stored). But the real content of the partition, ie. i=
-f
-> > > it contains a firmware, the kernel or some user data does not belong =
-to
-> > > the compatible.
-> > >
-> > > I.e:
-> > > - The first byte of my partition gives the compression algorithm:
-> > >   -> compatible =3D "compressed-partition-foo";
-> > >      or
-> > >   -> compatible =3D "fixed-partitions" + compression-algorithm =3D "f=
-oo";
-> > > - The partition contains a picture of my dog:
-> > >   -> label =3D "my dog is beautiful"
-> > >   but certainly not
-> > >   -> compatible =3D "my-dog";
-> >
-> > IMO, compatible in this case should convey "JPEG image" or similar.
-> >
-> > > I don't see why, for the binman schema, we could not constrain the
-> > > labels?
-> >
-> > Yes, but those should follow what we already have. "u-boot" for
-> > example rather than "data,u-boot" which I think Simon had in some
-> > version of this.
->
-> Yes, don't worry, I had some feedback from Alper but have given up on
-> that approach.
-
-Regards,
-Simon
+Thanks,
+Song
