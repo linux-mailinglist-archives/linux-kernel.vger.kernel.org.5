@@ -2,79 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A61E7B2656
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438C47B2658
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbjI1UOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
+        id S232075AbjI1UOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1UOD (ORCPT
+        with ESMTP id S230246AbjI1UOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:14:03 -0400
-Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC63194;
-        Thu, 28 Sep 2023 13:14:01 -0700 (PDT)
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1qlxOW-009Hee-Iu; Thu, 28 Sep 2023 20:13:56 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH v2] arm64: dts: imx8mp-venice-gw73xx: add TPM device
-Date:   Thu, 28 Sep 2023 13:13:54 -0700
-Message-Id: <20230928201354.1946035-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 28 Sep 2023 16:14:33 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F58180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:14:31 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-594e1154756so267620497b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695932071; x=1696536871; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CTdQf6t/tIUqszi45qXCPEPknJtrj/I7M7O29HIYM8Q=;
+        b=TyZTB3/yvWlPDeRljW7Xh6F0FDIoPIEPeFKOJ/tE56R0eKxZ2N7jm00ZTvk71AyOew
+         PYg5D8FfiOSwXr8iOgkTK399ix6tLk837RYMQxpf+e1Adr6GS0rmJszG37jbr1FnV/DO
+         7/wcQDdt34FC6cjGy4skTMaXXnTW7tn88TlCHfQRWkdZiM4QVAzEINYufVEhMwVzFqLK
+         8UEEysAE2hYHUvjav4xLe62FxdMquud+qweH873Wgmc89FQIs6nXv9TBxDCptQkS7MmZ
+         4vjTflm2g6QdRUJjMuYVmO+qi7mqwKeHN4rcjQ6F6khcFqDk/D84aTG6i4RIiR6y9dvO
+         s86w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695932071; x=1696536871;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CTdQf6t/tIUqszi45qXCPEPknJtrj/I7M7O29HIYM8Q=;
+        b=ob3nvA5pWMevJRvncRBGw00JH5R1PmQUUgw0Wh9NfcN2ouE3H8MHgD9zNNu7tb2kFL
+         XMQS8emh7qPXjQwssBPijtDVk0wcCeKb1zJAT0I51cFavskZ9Eg2u9cSQGUQ1NNhcHtf
+         Fgllyvhe1R60D58XCByIo+YBS/34oF4Yw/+BdkxIB4sl6+Z/61f8DwedLVUN1R/pV/Ce
+         /hZAy17Io7Vbbwga3FtMXlqCc4tnpe2UcxjQw3BMaTHI7+Ty/PcR4WxyurPdpBKsgmCc
+         d/wNTO5XfCHGyj7RRfedn+pJ8BuS2tIeKrMM1GWtChq86Mz3HlhIxAp1q3C5k+T6vsIF
+         YARg==
+X-Gm-Message-State: AOJu0YzKU4hf/zSwl1oy2xlMCnv1ZsYCUd4Vky/wYRHYmDT7zrqR/MBQ
+        3bEH75SPp5qtvJC4Q1BKiq6Ov7YHwY1p
+X-Google-Smtp-Source: AGHT+IHwnWlji7i78BHxj4CXH0kvSLPKwNCO7+9R1dUjCa+jZFHR9zgNynredWd08boGwsZq0hGACq/j8rap
+X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
+ (user=mmaurer job=sendgmr) by 2002:a5b:a4b:0:b0:d84:bf67:c76c with SMTP id
+ z11-20020a5b0a4b000000b00d84bf67c76cmr32506ybq.10.1695932071020; Thu, 28 Sep
+ 2023 13:14:31 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 20:14:20 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20230928201421.2296518-1-mmaurer@google.com>
+Subject: [PATCH] rust: Use grep -Ev rather than relying on GNU grep
+From:   Matthew Maurer <mmaurer@google.com>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the TPM device found on the GW73xx revision F PCB.
+While GNU grep supports '\|' when in basic regular expression mode, not
+all grep implementations do (notably toybox grep, used to build the
+Android kernel, does not). Switching to grep -Ev enables extended
+regular expresions which includes support for the '|' operator.
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Matthew Maurer <mmaurer@google.com>
 ---
-v2: removed uncessary properties
----
- arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ rust/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-index 48a284478468..b0d42b18c5ce 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw73xx.dtsi
-@@ -95,8 +95,15 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
- &ecspi2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_spi2>;
--	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>,
-+		   <&gpio1 10 GPIO_ACTIVE_LOW>;
- 	status = "okay";
-+
-+	tpm@1 {
-+		compatible = "tcg,tpm_tis-spi";
-+		reg = <0x1>;
-+		spi-max-frequency = <36000000>;
-+	};
- };
+diff --git a/rust/Makefile b/rust/Makefile
+index 87958e864be0..e6fb7cafc0bc 100644
+--- a/rust/Makefile
++++ b/rust/Makefile
+@@ -336,13 +336,13 @@ quiet_cmd_bindgen = BINDGEN $@
+ 		$(bindgen_target_cflags) $(bindgen_target_extra)
  
- &gpio4 {
+ $(obj)/bindings/bindings_generated.rs: private bindgen_target_flags = \
+-    $(shell grep -v '^#\|^$$' $(srctree)/$(src)/bindgen_parameters)
++    $(shell grep -Ev '^#|^$$' $(srctree)/$(src)/bindgen_parameters)
+ $(obj)/bindings/bindings_generated.rs: $(src)/bindings/bindings_helper.h \
+     $(src)/bindgen_parameters FORCE
+ 	$(call if_changed_dep,bindgen)
+ 
+ $(obj)/uapi/uapi_generated.rs: private bindgen_target_flags = \
+-    $(shell grep -v '^#\|^$$' $(srctree)/$(src)/bindgen_parameters)
++    $(shell grep -Ev '^#|^$$' $(srctree)/$(src)/bindgen_parameters)
+ $(obj)/uapi/uapi_generated.rs: $(src)/uapi/uapi_helper.h \
+     $(src)/bindgen_parameters FORCE
+ 	$(call if_changed_dep,bindgen)
 -- 
-2.25.1
+2.42.0.582.g8ccd20d70d-goog
 
