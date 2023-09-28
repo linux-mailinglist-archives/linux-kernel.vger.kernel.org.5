@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6947B1796
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3509C7B179D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjI1JjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
+        id S231928AbjI1Jjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbjI1JjA (ORCPT
+        with ESMTP id S231845AbjI1JjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:39:00 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5231BDC;
-        Thu, 28 Sep 2023 02:38:32 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38S9cC0c122014;
-        Thu, 28 Sep 2023 04:38:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695893892;
-        bh=f0aP2zPIw8Ww5POXs3VDmPWZE2QQ78JrFXN3YNREGPQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=NJeMxpLwda8cYHiIQzS3875RkjSFCXY6u/66nuL5s0NjOBlHClSw9o9ZkrTqgiU4X
-         Yqg8H/usOo8tGXdNfYiAFqTBAkqNw0XYQGicReW30fPp/Xlh/lgoo1s3JAf+Yn1KZ5
-         KAZWwYlhR3De2XjtVeB8jOTvbljh916YvkDW/b4g=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38S9cCqO022484
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Sep 2023 04:38:12 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
- Sep 2023 04:38:12 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 28 Sep 2023 04:38:12 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38S9cBvR101747;
-        Thu, 28 Sep 2023 04:38:11 -0500
-Date:   Thu, 28 Sep 2023 15:08:10 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Muhammed Efe Cetin <efectn@6tel.net>
-CC:     <linux-rockchip@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <heiko@sntech.de>, <sebastian.reichel@collabora.com>,
-        <jonas@kwiboo.se>, <megi@xff.cz>
-Subject: Re: [PATCH v3 2/3] arm64: dts: rockchip: Add sfc node to rk3588s
-Message-ID: <20230928093810.iwz52glco2ywy2kc@dhruva>
-References: <cover.1692632346.git.efectn@6tel.net>
- <70557b7843994a57c6d3422e00643cb75a698d0b.1692632346.git.efectn@6tel.net>
+        Thu, 28 Sep 2023 05:39:19 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01593CD9
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:38:59 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-323168869daso9890724f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1695893938; x=1696498738; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9DgaQdL1mkt6AjgMQAIJbcwnwZB2QgHQP1PAcp2gZrY=;
+        b=Al2ZTuBpmCd0Jaq48qpIzRb37H2hz0AxyMzIATjaa8+jqb2oxsi+JfGdSTPsLE4BTJ
+         e1kDXgjQXCPS9WzHBu2d33MkbqBZTtp2Gmp52lOGPk9tCfd3mUsguqZXBlwqI5MIvdca
+         FATkG1y2lixypu+HHlzF07oFOOqy/ObrZKeF/L0BuHMYf0dwQr62gpCeDFp927LrSQsE
+         7vLIn8yKBkWztoiUV2Ccj7qNYCnwvjkAPGViTFw9opuhujcE5flwmZg9Znp5p2utFO6P
+         2wnAKLOdSgK4uph2NHtwb3ZixYUT/dt11oJkiyPsxMRUz77UWH/ykTzP34jAif81q/FB
+         EfvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695893938; x=1696498738;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9DgaQdL1mkt6AjgMQAIJbcwnwZB2QgHQP1PAcp2gZrY=;
+        b=CfvZYqWzpxUGb94keHdHhu59EiObMRZ73CiGzs9VES4jX2fWJELZ6pc3BcuBOnsvyM
+         icsREF4ENho9InuQCnNxu6/7aSuBWQ+Upvg48Sdh/bUcEY2V8rfuEXZ6PSSx/EM+/tqt
+         DraKmjHjbD7R/Hc8xwZh/tgeC6985TpjZiGrIi18bVHA9LPWw/ncPOfS9ysHoM3k8Ft8
+         CjOYOZGgbXD/gmqOari97hprOV/dv5K85e07nRvK6017mRO3hdlZQWoYl7ZVbaYkgzXP
+         Jlx4X/igZ7tKzjCdsNc72+76sUd/MGzETseBCQrXKVNoRC6j61Sdv7m5rZjZBqjCQtj1
+         OVXA==
+X-Gm-Message-State: AOJu0Yzmhohg8j9b0bC2d50XDrm6kM3Ku6w+6IuqTwEYLmrYHzAvoNhZ
+        wx9vNoLUJ4DjZtgiFp9LECuaSQ==
+X-Google-Smtp-Source: AGHT+IFoFu//qWf+2YKVQsH9YQI2JLonYDwjIcCmCaPKPhTJZjW9JQmcHydqb1bvOIeqR+dHCuqbtQ==
+X-Received: by 2002:adf:e78d:0:b0:317:ef76:b778 with SMTP id n13-20020adfe78d000000b00317ef76b778mr801971wrm.63.1695893938243;
+        Thu, 28 Sep 2023 02:38:58 -0700 (PDT)
+Received: from localhost.localdomain (213-225-13-130.nat.highway.a1.net. [213.225.13.130])
+        by smtp.gmail.com with ESMTPSA id f4-20020a5d50c4000000b0031fa870d4b3sm18931449wrt.60.2023.09.28.02.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 02:38:57 -0700 (PDT)
+From:   =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars@linbit.com>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Joel Colledge <joel.colledge@linbit.com>,
+        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>
+Subject: [PATCH 0/5] drbd: rename worker to sender
+Date:   Thu, 28 Sep 2023 11:38:47 +0200
+Message-ID: <20230928093852.676786-1-christoph.boehmwalder@linbit.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <70557b7843994a57c6d3422e00643cb75a698d0b.1692632346.git.efectn@6tel.net>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 21, 2023 at 18:47:58 +0300, Muhammed Efe Cetin wrote:
-> Add sfc node to rk3588s.dtsi from downstream kernel.
+Some more refactoring commits from out-of-tree drbd.
+Intended for 6.7.
 
-For those with lesser context, can you please mention what SFC means? I
-did a quick grep on the compatible and that's how I got to know it's a
-Serial Flash Controller
+Christoph Böhmwalder (5):
+  drbd: Rename per-connection "worker" thread to "sender"
+  drbd: Add new per-resource "worker" thread
+  drbd: Move connection independent work from "sender" to "worker"
+  drbd: Keep connection threads running while connection is up only
+  drbd: Get rid of conn_reconfig_start() and conn_reconfig_done()
 
-Also, not sure what you mean by downstream kernel, where is it located?
-Why did you feel the need to mention it while upstreaming this patch?
-Please can you provide more context or drop the downstream part
-altogether?
+ drivers/block/drbd/Makefile                   |  2 +-
+ drivers/block/drbd/drbd_int.h                 | 12 ++--
+ drivers/block/drbd/drbd_main.c                | 21 +++---
+ drivers/block/drbd/drbd_nl.c                  | 48 +++-----------
+ drivers/block/drbd/drbd_receiver.c            |  2 +-
+ drivers/block/drbd/drbd_req.c                 |  7 +-
+ .../drbd/{drbd_worker.c => drbd_sender.c}     | 64 ++++++++++++++++---
+ drivers/block/drbd/drbd_state.c               | 31 ++-------
+ drivers/block/drbd/drbd_state.h               |  1 -
+ 9 files changed, 95 insertions(+), 93 deletions(-)
+ rename drivers/block/drbd/{drbd_worker.c => drbd_sender.c} (97%)
 
-> 
-> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> index 5544f66c6ff4..1a820a5a51eb 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-> @@ -1424,6 +1424,17 @@ sata-port@0 {
->  		};
->  	};
->  
-> +	sfc: spi@fe2b0000 {
-> +		compatible = "rockchip,sfc";
-> +		reg = <0x0 0xfe2b0000 0x0 0x4000>;
-> +		interrupts = <GIC_SPI 206 IRQ_TYPE_LEVEL_HIGH 0>;
-> +		clocks = <&cru SCLK_SFC>, <&cru HCLK_SFC>;
-> +		clock-names = "clk_sfc", "hclk_sfc";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		status = "disabled";
-> +	};
-> +
 
-Otherwise, looks okay.
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
->  	sdmmc: mmc@fe2c0000 {
->  		compatible = "rockchip,rk3588-dw-mshc", "rockchip,rk3288-dw-mshc";
->  		reg = <0x0 0xfe2c0000 0x0 0x4000>;
-> -- 
-> 2.41.0
-> 
-> 
-
+base-commit: aa511ff8218b3fb328181fbaac48aa5e9c5c6d93
 -- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+2.41.0
+
