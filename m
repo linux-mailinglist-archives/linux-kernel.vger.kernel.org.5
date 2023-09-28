@@ -2,203 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 592347B2636
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ED97B2635
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbjI1UCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S231717AbjI1UBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjI1UCK (ORCPT
+        with ESMTP id S229864AbjI1UBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:02:10 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A90C193
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:02:08 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57b5f0d658dso6668273eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 13:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695931327; x=1696536127; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0V247y8yeLoBjWDsuqch/JlEyLUSRAVzGZC74cFQUw8=;
-        b=Gtd/uqYFdfbnnkqe7bPqN3jvk9AtZdismsRhWA0B1AVjC/3yrjP4KJqt9cBBOaZVgd
-         1ff9QA6X4sxI/NU8YmWOK3PXY1TVklQm4G6uhYNPBRBK85cif9pWR7+eLtRrXOrVgVKk
-         JzIGTWBAgDB7ybyk+QVq+071Vm5q5/ZUOHDoTYENO5hyPrpX2rUAxL4RZigX58cssnuC
-         aUsNWh1wAOYlSaUaT7RPWz1JlwAh7QLrinyMT9tr+C3ciJDtaZxgn43MWJBMlSKJwfqi
-         CNeF5qvdJJgy8VAUoexU6s3RCaqR2h4avDxfL+jwCx05RKLudMUDq9m32nlV9yyOan0r
-         9OQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695931327; x=1696536127;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0V247y8yeLoBjWDsuqch/JlEyLUSRAVzGZC74cFQUw8=;
-        b=kxn3lBk9kOjubPhLckUgWnrryDnfsspYzXwy5gM70bE30asCSUUwXelOKB4b/VVkep
-         jPE+eGwF+27bSc5g1yxs5dTeVzBW3wP2ZNOSO9+2N7eotAQPx4AgUaNGtFtncDSsog6W
-         JasXevtF9EpKUWlDhdlPssa/LjU2/V3Mkix/HeoRZsidTvBjtPF7V16+PaPO+i85ivfP
-         TeErQj3XXmj4SSPNtWWaZIRQAtueKqm1+NEpdDmoiZ0462p0cZfQkAnUgVOQz9nti60z
-         v3EoBf293I95di7WmQEHd2Wk0InzXDtkq8zdnKnSCR81MHd506tztRGppkQSSOa7FZCd
-         j4Zw==
-X-Gm-Message-State: AOJu0YzEd/VwDBY1BJj/aiv7jCway7jKL4Fsszw+rFlm0Ftp7N+pausc
-        kTvT1CZfOvYEjby2il10yy8=
-X-Google-Smtp-Source: AGHT+IF33Ob533HQwv9+K0z/hvoiedzYKpGG5mNhW5Qso0gt8HHPBZK6D5+ab++F8DIMh63M1yfaIg==
-X-Received: by 2002:a05:6358:3406:b0:141:d2d:6da7 with SMTP id h6-20020a056358340600b001410d2d6da7mr2291314rwd.17.1695931327490;
-        Thu, 28 Sep 2023 13:02:07 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id p19-20020a639513000000b00578afd8e012sm12517132pgd.92.2023.09.28.13.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 13:02:07 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 12:59:54 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, pcc@google.com,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        eugenis@google.com, Syed Nayyar Waris <syednwaris@gmail.com>,
-        william.gray@linaro.org
-Subject: Re: [PATCH v5 2/5] lib/test_bitmap: add tests for
- bitmap_{read,write}()
-Message-ID: <ZRXbOoKHHafCWQCW@yury-ThinkPad>
-References: <20230922080848.1261487-1-glider@google.com>
- <20230922080848.1261487-3-glider@google.com>
- <CAG_fn=UeFoyhZvPJ7pGPrc5011D9h1e4ioffat4eUfVHP6Hd-Q@mail.gmail.com>
- <ZRF7r0ZjxcL9C8U8@smile.fi.intel.com>
- <CAG_fn=V8Mx89dOfKf88nEq9V9i_kMYaOdGjd3DQVOWnYrandyA@mail.gmail.com>
- <CAG_fn=WX+yAFHtbsxSvd41P61jjWtFEePqOs_1AKGJcgaWfVag@mail.gmail.com>
- <3bc8fda47dc04e3b8cfd0e3f6fc7bbee@AcuMS.aculab.com>
- <CAG_fn=XCXYZhC+ER5mhMyE2YD-__1oj+uvPB4pyz4X7tmiq=3w@mail.gmail.com>
- <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
- <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Thu, 28 Sep 2023 16:01:30 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A0E180;
+        Thu, 28 Sep 2023 13:01:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GX4Hh6pYeXaENZBRduHnZ+twWBAxgsarJQAzaLrdRc8X9UCzibo9OBheY3x/oQC3FNSRbqXvxtOy0QKWRtPuBFnhlK8KY7/eMHOmk02nWBrZ03iLmSSih4xYLMlEQ6/Fte2DiaBpVMWkulAPHrJgKKMjbwHjpvZNoUYY8hkdf4ZA270cB/XcCd2Q7nUgqtMC0PfoAqmdlC5zQzgQq61BDdAXZOXlEvNkxQXKV2E1YS3EtGrwvdkebtzsOBU2owfj8MqVOsOz7sPIT2WFcWgRRjzFzjOU4SySxZFrO1Jk+PGE+f+hQJhxsMGqG9lGcTUJfdS7rbstGod//ZLOfVPjnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p0zKZOFNa9DDlVYoFzJBaoQ65W1IEx880uL0m2ztPsg=;
+ b=EnDBdqH52DWzp+HkmBje3IZkt9wPKKktgghsUWs5w08POwOiLjw+oNyPdgZBx07dWRvXMfKtjvxkrseD5F8TfSYayzDDc+02eyOad+BcBwCTXPaa+PzpncB3xrYXm4Orjp3gBa5W/T9dqiemhJaZ2XXt48HmZKdio4voUKsM517YEVJ++AkB4YGMCt0j+ZtxKZ7WkQaIeKHtju7AMQCBixZEsGJFpUOOhWGLAv9o4gif2De53dvxFIOU+s5Gj+Nd49U+4zR8jtQHZ9pRrqHXGWOqWHaBampaD06GrNH8vOCHq/fnufWvo9n/PwsdDDwf6OcCjd8hjeK/liJQh41vDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p0zKZOFNa9DDlVYoFzJBaoQ65W1IEx880uL0m2ztPsg=;
+ b=c0ECV3WHpYnYKMItXf+QSIcdF30OB8ac3RLmEfQLISskgn//biwZk6wJ+iwyPduxkrlslSFB4QmsA7Z0waShTaEfSmifS+AEO6DUEscOgBMgdpZ5nw+rQ89LCNazlPM+lsI4NIFCoo/oD0fHjL/FHk6khunxwXe6/3WlCEQDRMQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SJ2PR12MB8133.namprd12.prod.outlook.com (2603:10b6:a03:4af::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.33; Thu, 28 Sep
+ 2023 20:01:20 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::3e65:d396:58fb:27d4%3]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
+ 20:01:20 +0000
+Message-ID: <8cae7afb-3e6d-42cd-925f-4ee3af920178@amd.com>
+Date:   Thu, 28 Sep 2023 15:01:16 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] Fix Navi3x boot and hotplug problems
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>, Jun.ma2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20230926225955.386553-1-mario.limonciello@amd.com>
+ <CADnq5_NHQhUZ9DzNtOy67Hx1g2_ZeBfKPC6O22YY_bzSJsMiUw@mail.gmail.com>
+Content-Language: en-US
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <CADnq5_NHQhUZ9DzNtOy67Hx1g2_ZeBfKPC6O22YY_bzSJsMiUw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: DM6PR14CA0070.namprd14.prod.outlook.com
+ (2603:10b6:5:18f::47) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SJ2PR12MB8133:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ddef2ed-3e5f-4a92-9c68-08dbc05dae9f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /aj4RWTLaLJyAu/6sA8RJUQO3TW+2VDbMZwWlj/gyFwLFjPJx4ELiB1oH3EH9owdIjdOdNRFAQ7NxGmDzDpEcAcL5d/8H4e6Q04Sq4w9z0NFVp+rwvCcyDdeffeS1C6ryoJgKkeuVdoQ5cfDyjCgo+Ia6FVnnQJdT1CByKGUazFZ4iWVgtHHf2VEMm5WJb6lg182Nai1b07VZvDvGfUYzvmm+fpS8xbmkMM/2gQVd4BaJSlVHfZJ1AJApfQnPdZJVmQABrgXOmiOgw18ghlMS3xeXFF3ilPpnz1hNPGaiug/UnCGErhIJ0n7QmxIOvrJqdS0i9sJ3NCSj1dnwFbakHr/dZKm+H2RxMHNu9gcv0lIf+foUgtb+oNCN3Ww06/Gd84FQE0t+MwXzGShzlqYJsiJe481c730i7f0BdG8az+1J4pdaW0OF5Fwg9RidvjqUnhpEOrNgg6ITzUQ6iNjHsLBUT/WatPjMCfWa6KOjNCZ3781g7yDxRfUf9PFU4xBELk0ORlN6o8+ejD16COQG3bEYggV3saeTJsLrw0iuQyrFtmY47dTibHCqLh3/vZIE4+/mZGhXknIL//3uWvAxXwLjftfXg6hFm6RLBz/Qwn+NRR32LNd6VlA6/emUf3ZkpbrOcNzSp01z3Sg1JULgpzfJ4tpV7HJjwiT0n0yQZY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(53546011)(2616005)(26005)(5660300002)(38100700002)(36756003)(478600001)(86362001)(31696002)(6512007)(66556008)(83380400001)(6666004)(110136005)(6486002)(4326008)(6506007)(316002)(41300700001)(66476007)(8676002)(8936002)(44832011)(2906002)(66946007)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rm1uTmpwTXBoaXpzV1NudW0wdlhhSjdKVWFDcXEvYXZQanoyVXkxWnRGSjI2?=
+ =?utf-8?B?Y3JKQnFESENQVnh6RTI0SmR0SllDMUpReDFoVGVDN0VxWmkvQmhNVWt0dGhB?=
+ =?utf-8?B?a1kyazgyQjMvL3QxUmRwK2lnYjZUNVpyeGlvckZnYzJobGpiVVl3M0xkeVRJ?=
+ =?utf-8?B?bVU2Sjl1cjJ2cFMxaCtMQW1yai8yZllVcDhNUUp5eGpoOUNjN1dUbDRabTdT?=
+ =?utf-8?B?SG9GdkprWHZQY3RONGgxYndsVFE2MVBsbFJ1Zk9QeUJSdVhpWXlveFlYeGhk?=
+ =?utf-8?B?bVNnM1FLVjE3OUU2aFZ5K1NOdFFNaUNpMTBBcGJ0eDdZOW81N21EZlVpYTBC?=
+ =?utf-8?B?MU00MStpSi9ocWx0NkFFRXIxNGJyVVJyWno1RkdDYi96Sk8vdC90Y0hRMjMr?=
+ =?utf-8?B?SGp6MjJHZXk1eXRJUTFXeCtNRktrSUh2SytOQUFMQjFmcTFrZXNpYUtVbWdx?=
+ =?utf-8?B?U0pIMk9qbk9aRWRhbVZYTGtINHF3SGJBVWhndE1mZlMxR1ZTNzgxdk1nU1Vk?=
+ =?utf-8?B?ZlVUbnlmL1Z2S1ZBdThoYklkUFkzclIwYTEwNGNwdVZ0VjYvLzdscXJOYTdZ?=
+ =?utf-8?B?eCtuUStRL3ZlbWlJQ2UvWE5lSjNWTzZsMGVkZldqUVpldUo3dExBNzI2aFUr?=
+ =?utf-8?B?cFdQSENMVjVpYVg0NlZWVzJsV2FPRnBTREVyK20wVXRmcTRMb2Q3Z0RhSk1H?=
+ =?utf-8?B?b1V5a2NKMFduQ3R2MzdzdktLZ3ZqbnVySHF2aUNNaDlSRjRGeXlpTzJLUGZW?=
+ =?utf-8?B?cDZ5cGtwTTZ4bThmem5xL1JML1UyazR2OHVqRVhvNVNBYVBBL2dlU2JPZlU1?=
+ =?utf-8?B?VWxMSVhHSTFQRnVCYytRa1VRRmhMRThVclVQTTFjQk9RMzNLRmJWa2pEN2pJ?=
+ =?utf-8?B?Y0RKUmFLeTB4K29hVUYzUU5EcHpLcDIzK2dzSUh1QVVDeTRrQ0orQXhxL1Ft?=
+ =?utf-8?B?VkgzWEZkcTZnQWloU3ZiZjZSWS8zM3JiS3V3d21SYTJVM25OdkEvaitMRERO?=
+ =?utf-8?B?U1REMDVPNGJUWlhFclh5Q0g3NG9SN2k2Yk1ZRTM4K01jbk1CUkthL0NNZFpN?=
+ =?utf-8?B?ZUZXMlg1Y0xaQ0d1dW5vU2hkMUNYcHFXbGZJRmtNbEZhSFlkcG14NmJIZE14?=
+ =?utf-8?B?MmcrRmJrUCtGcExpT2FXTkVXUUxTVjZDTUtTMUI5ckYyS2dHdEN4SXhNc0V0?=
+ =?utf-8?B?WDVUTWFYQkVlT3pQOGJhay9jc2hNaFZ5NjN2R2U1dUF2bXB0NzVsSE5od3do?=
+ =?utf-8?B?WkRyeVJhUElsdUhSMlFGRnlMbnJpTVlrZ2doNWk3ZmIrTW12UGFtK3BvTHQz?=
+ =?utf-8?B?K3ZJU2tqZ2s0WFpkazd3T0h2WVEzY1NKdEdmN1BrQUJ5UVVlWHZKeFVYSEcv?=
+ =?utf-8?B?dHZGSnhPNVlydG82MjhOZ1FzNG5VVVh6RmdqS2tWeFBTWWxPR3ZMNGkxUGpp?=
+ =?utf-8?B?Tk1NbVBUTFMvZjdTblhmNHpTU2FxeTNweXVqdnhNeVR4UWFmYnQzNEZ1Qk8r?=
+ =?utf-8?B?Wm5LN0d0cy8zdUljRUxHSVNpRHJPVVNZOHZwVStjWFFRa2xrS2JsbEMrbFRy?=
+ =?utf-8?B?blo5bGhtd2NmZGRKUUV4bU8yZG0vdHZvdjZVTGtFTmtGR05OdUliRWdiemFK?=
+ =?utf-8?B?S1dTWlpEWW9NWU1vUUx6S2JrTlp3K1NtMDV0dTNOTldGMWdHaUMvb080YjVm?=
+ =?utf-8?B?UmY2QWxqWis1VE5wUWlSMkxsdTV1Y3gxK0RlRXp6RXcrSHlxRzhIN1FQRURQ?=
+ =?utf-8?B?bU1FNjQ4YTU3Sk5BajlsaUxsMkZSdFc2MnlkblJiN2ZQTmRZWjZLUW5iczEz?=
+ =?utf-8?B?TE90ei9nbitTR1MyNTdPNkhzRXEza0JCeUU2eG5pazVldTQrSDJWc2UxeWNC?=
+ =?utf-8?B?TXBPcFFWOTlPQWkvZ1RlQnlwaWVZVlZnUTduRGZ2TzNseUtjMG1jT3p1RGtn?=
+ =?utf-8?B?R2R5RUFRdTJ3bks0RUhGdjMyNlhCQmpiNEl4eGhGcFBub3hTWkRMTGZEd2tm?=
+ =?utf-8?B?b3BCK0U5L2VSNm1TQ08vRGtxMjRuS1F0RXE2bjA1VXM5WjFOL2dXSkNkSVZv?=
+ =?utf-8?B?bXlkNThRYTF1VWhza3M3M3BQeHR3MllQVklCdjVpc1UycWRVTDIySkEyMVAz?=
+ =?utf-8?Q?m0ivzvP3Si/muwl61xjwxQaCO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ddef2ed-3e5f-4a92-9c68-08dbc05dae9f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 20:01:19.9416
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H4qIB8o6fLJxSg98DWVc+c5xYczSAgpefQOkj1y6kcspLA5OCPUR1TBEApHl3Z6NzQ7fCfm1X5UlBpR5k7Upuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8133
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 05:14:55PM +0200, Alexander Potapenko wrote:
-> On Thu, Sep 28, 2023 at 4:43 PM Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> >
-> >
-> > On Thu, Sep 28, 2023, 10:20 AM Alexander Potapenko <glider@google.com> wrote:
-> >>
-> >> On Wed, Sep 27, 2023 at 9:51 AM David Laight <David.Laight@aculab.com> wrote:
-> >> >
-> >> > ...
-> >> > > Overall, unless allocating and initializing bitmaps with size
-> >> > > divisible by sizeof(long), most of bitmap.c is undefined behavior, so
-> >> > > I don't think it makes much sense to specifically test this case here
-> >> > > (given that we do not extend bitmap_equal() in the patch set).
-> >> >
-> >> > Bitmaps are arrays of unsigned long.
-> >> > Using any of the APIs on anything else is a bug.
-> >> > So it is always wrong to try to initialise 'a number of bytes'.
-> >> > The size used in the definition need not be a multiple of 8 (on 64bit)
-> >> > but the allocated data is always a multiple of 8.
-> >> >
-> >> > Any calls to the functions that have a cast of the bitmap
-> >> > parameter are likely to be buggy.
-> >> > And yes, there are loads of them, and many are buggy.
-> >>
-> >> I got rid of the casts in the bitmap test, but they remain in
-> >> mtecomp.c, where 16-, 32-, 64-byte buffers allocated by
-> >> kmem_cache_alloc() are treated as bitmaps:
-> >> https://lore.kernel.org/linux-arm-kernel/20230922080848.1261487-6-glider@google.com/T/#mdb0d636d2d357f8ffe6ac79cef1145df3440f659
-> >>
-> >> Having them allocated by bitmap_alloc() won't work, because on Android
-> >> bitmap_alloc() will allocate the buffers from the kmalloc-64 cache,
-> >> defeating the purpose of the compression.
-> >>
-> >> Would it be better to extend the bitmap.h API so that it is possible
-> >> to allocate from a kmem cache (which would in turn require
-> >> bitmap_kmem_cache_create() to ensure the alignment requirements)?
-> >
-> >
-> > So all that is wrong then. Bad on me, I'd spend more time looking into your driver code...
-> >
-> > We already have bitmap_(from,to)_u(64,32),
-> > And you can use them. For 16-bit you have to add helpers yourself. But it's not a rocket science.
-> >
+On 9/28/2023 13:00, Alex Deucher wrote:
+> On Thu, Sep 28, 2023 at 12:41 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>>
+>> On some OEM systems multiple navi3x dGPUS are triggering RAS errors
+>> and BACO errors.
+>>
+>> These errors come from elements of the OEM system that weren't part of
+>> original test environment.  This series addresses those problems.
+>>
+>> NOTE: Although this series touches two subsystems, I would prefer to
+>> take this all through DRM because there is a workaround in linux-next
+>> that I would like to be reverted at the same time as picking up the first
+>> two patches.
 > 
-> So e.g. for compressing something into a 16-byte buffer using bitmaps
-> I'd need to:
+> FWIW, the workaround is not in linux-next yet.  At the time I thought
+> it was already fixed by the fixes in ucsi and power supply when we
+> first encountered this.
+
+I looked yesterday and I did see it there, but I think it was 
+specifically because it had merged the amd-staging-drm-next tree.
+It's not there today..
+
+If Sebastian is OK, I'd still rather keep it all together so that people 
+testing amd-staging-drm-next get the fixes.
+
 > 
-> 1) Allocate the buffer: buf = kmem_cache_alloc(...)
-> 2) Allocate the bitmap: bitmap = bitmap_alloc(16*8, ...)
-> 3) Fill the bitmap: mte_compress_to_buf(..., bitmap, 16)
-> 4) Copy the bitmap contents to the buffer: bitmap_to_arr64(buf, bitmap, 16*8)
-> 5) Deallocate the bitmap: bitmap_free(bitmap)
+> Alex
 > 
-> instead of:
-> 
-> buf = kmem_cache_alloc(...)
-> mte_compress_to_buf(..., (unsigned long *)buf, 16)
-> 
-> , correct?
-> 
-> Given that the buffer contents are opaque and its size is aligned on 8
-> bytes, could it be possible to somehow adopt the `buf` pointer
-> instead?
+>>
+>> Mario Limonciello (3):
+>>    drm/amd: Fix detection of _PR3 on the PCIe root port
+>>    power: supply: Don't count 'unknown' scope power supplies
+>>    Revert "drm/amd/pm: workaround for the wrong ac power detection on smu
+>>      13.0.0"
+>>
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c           | 2 +-
+>>   drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c       | 3 ++-
+>>   drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c | 1 +
+>>   drivers/power/supply/power_supply_core.c             | 2 +-
+>>   4 files changed, 5 insertions(+), 3 deletions(-)
+>>
+>> --
+>> 2.34.1
+>>
 
-I didn't find an explicit typecasting where you're using
-mte_compress_to_buf(), but now after hard 2nd look I see...
-
-Firstly, now that in the documentation you are explicitly describing the
-return value of mte_compress() as 64-bit frame, the right way to go would
-be declaring the function as: u64 mte_compress(u8 *tags).
-
-And the general pattern should be like this:
-
-  unsigned long mte_compress(u8 *tags)
-  {
-          DECLARE_BITMAP(tmp, MTECOMP_CACHES_MAXBITS);
-          void *storage;
-          ...
-          if (alloc_size < MTE_PAGE_TAG_STORAGE) {
-                  storage = kmem_cache_alloc(cache, GFP_KERNEL);
-                  mte_compress_to_buf(r_len, r_tags, r_sizes, tmp, alloc_size);
-        
-                  switch (alloc_size) {
-                  case 16:
-                          bitmap_to_arr16(storage, tmp, 16);
-                          break;
-                  case 32:
-                          bitmap_to_arr32(storage, tmp, 32);
-                          break;
-                  case 64:
-                          bitmap_to_arr64(storage, tmp, 64);
-                          break;
-                  default:
-                          pr_err("error\n");
-                  }
-                  result = ((u64)storage | cache_id) & MTE_HANDLE_MASK;
-                  goto ret;
-          }
-          ...
-  }
-        
-Yeah, it looks cumbersome, but this is the right way to go if you need a
-reliable BE-compatible driver. I think it will be less scary if you wrap
-the switch with a helper, and/or move it inside mte_compress_to_buf(),
-so that the mte_compress will stay unchanged.
-
-Anyways, hope the above helped.
-
-Thanks,
-Yury
