@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FBB7B12B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B667B12B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjI1GWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S230504AbjI1GWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjI1GWR (ORCPT
+        with ESMTP id S230375AbjI1GWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:22:17 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56E5C0;
-        Wed, 27 Sep 2023 23:22:05 -0700 (PDT)
+        Thu, 28 Sep 2023 02:22:19 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0A4AF;
+        Wed, 27 Sep 2023 23:22:06 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kf6mhKz4f3jY7;
-        Thu, 28 Sep 2023 14:21:58 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kj605gz4f3mHk;
+        Thu, 28 Sep 2023 14:22:01 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S20;
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S21;
         Thu, 28 Sep 2023 14:22:03 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
@@ -27,18 +27,18 @@ To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v3 16/25] md/raid5: use new apis to suspend array for raid5_change_consistency_policy()
-Date:   Thu, 28 Sep 2023 14:15:34 +0800
-Message-Id: <20230928061543.1845742-17-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v3 17/25] md/raid5: replace suspend with quiesce() callback
+Date:   Thu, 28 Sep 2023 14:15:35 +0800
+Message-Id: <20230928061543.1845742-18-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S20
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4DuF4rCw4UKrW8KFyDJrb_yoW8ur48pa
-        nI9as3ur1Uury5Xryjya1DKFy8Jw17KrZ7KrW7Xws3X3Wft34xGFyrXrZrWry8Aa4fJ345
-        Ja15K3W8CF4UJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S21
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFykZr18Cry7tr1kGFWfZrb_yoW5Xr4Dpw
+        s0gFsrXr4UWF9xu34DZa1kWFyrK3yUKrWkKryxW39Yva47Gr4kurWfJw45ZFy7G34FyFs7
+        t3y5J34kZFWvqrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,78 +66,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Convert to use new apis, the old apis will be removed eventually.
+raid5 is the only personality to suspend array in check_reshape() and
+start_reshape() callback, suspend and quiesce() callback can both wait
+for all normal io to be done, and prevent new io to be dispatched, the
+difference is that suspend is implemented in common layer, and quiesce()
+callback is implemented in raid5.
 
-This is not hot path, so performance is not concerned.
+In order to cleanup all the usage of mddev_suspend(), the new apis
+__mddev_suspend() need to be called before 'reconfig_mutex' is held,
+and it's not good to affect all the personalities in common layer just
+for raid5. Hence replace suspend with quiesce() callaback, prepare to
+reomove all the users of mddev_suspend().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ drivers/md/raid5.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 8060d29e99d2..e6b8c0145648 100644
+index e6b8c0145648..d6de084a85e5 100644
 --- a/drivers/md/raid5.c
 +++ b/drivers/md/raid5.c
-@@ -8967,12 +8967,12 @@ static int raid5_change_consistency_policy(struct mddev *mddev, const char *buf)
- 	struct r5conf *conf;
- 	int err;
+@@ -70,6 +70,8 @@ MODULE_PARM_DESC(devices_handle_discard_safely,
+ 		 "Set to Y if all devices in each array reliably return zeroes on reads from discarded regions");
+ static struct workqueue_struct *raid5_wq;
  
--	err = mddev_lock(mddev);
-+	err = mddev_suspend_and_lock(mddev);
- 	if (err)
- 		return err;
- 	conf = mddev->private;
- 	if (!conf) {
--		mddev_unlock(mddev);
-+		mddev_unlock_and_resume(mddev);
- 		return -ENODEV;
++static void raid5_quiesce(struct mddev *mddev, int quiesce);
++
+ static inline struct hlist_head *stripe_hash(struct r5conf *conf, sector_t sect)
+ {
+ 	int hash = (sect >> RAID5_STRIPE_SHIFT(conf)) & HASH_MASK;
+@@ -2492,15 +2494,12 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
+ 	unsigned long cpu;
+ 	int err = 0;
+ 
+-	/*
+-	 * Never shrink. And mddev_suspend() could deadlock if this is called
+-	 * from raid5d. In that case, scribble_disks and scribble_sectors
+-	 * should equal to new_disks and new_sectors
+-	 */
++	/* Never shrink. */
+ 	if (conf->scribble_disks >= new_disks &&
+ 	    conf->scribble_sectors >= new_sectors)
+ 		return 0;
+-	mddev_suspend(conf->mddev);
++
++	raid5_quiesce(conf->mddev, true);
+ 	cpus_read_lock();
+ 
+ 	for_each_present_cpu(cpu) {
+@@ -2514,7 +2513,8 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
  	}
  
-@@ -8982,19 +8982,14 @@ static int raid5_change_consistency_policy(struct mddev *mddev, const char *buf)
- 			err = log_init(conf, NULL, true);
- 			if (!err) {
- 				err = resize_stripes(conf, conf->pool_size);
--				if (err) {
--					mddev_suspend(mddev);
-+				if (err)
- 					log_exit(conf);
--					mddev_resume(mddev);
--				}
- 			}
- 		} else
- 			err = -EINVAL;
- 	} else if (strncmp(buf, "resync", 6) == 0) {
- 		if (raid5_has_ppl(conf)) {
--			mddev_suspend(mddev);
- 			log_exit(conf);
--			mddev_resume(mddev);
- 			err = resize_stripes(conf, conf->pool_size);
- 		} else if (test_bit(MD_HAS_JOURNAL, &conf->mddev->flags) &&
- 			   r5l_log_disk_error(conf)) {
-@@ -9007,11 +9002,9 @@ static int raid5_change_consistency_policy(struct mddev *mddev, const char *buf)
- 					break;
- 				}
+ 	cpus_read_unlock();
+-	mddev_resume(conf->mddev);
++	raid5_quiesce(conf->mddev, false);
++
+ 	if (!err) {
+ 		conf->scribble_disks = new_disks;
+ 		conf->scribble_sectors = new_sectors;
+@@ -8551,8 +8551,8 @@ static int raid5_start_reshape(struct mddev *mddev)
+ 	 * the reshape wasn't running - like Discard or Read - have
+ 	 * completed.
+ 	 */
+-	mddev_suspend(mddev);
+-	mddev_resume(mddev);
++	raid5_quiesce(mddev, true);
++	raid5_quiesce(mddev, false);
  
--			if (!journal_dev_exists) {
--				mddev_suspend(mddev);
-+			if (!journal_dev_exists)
- 				clear_bit(MD_HAS_JOURNAL, &mddev->flags);
--				mddev_resume(mddev);
--			} else  /* need remove journal device first */
-+			else  /* need remove journal device first */
- 				err = -EBUSY;
- 		} else
- 			err = -EINVAL;
-@@ -9022,7 +9015,7 @@ static int raid5_change_consistency_policy(struct mddev *mddev, const char *buf)
- 	if (!err)
- 		md_update_sb(mddev, 1);
- 
--	mddev_unlock(mddev);
-+	mddev_unlock_and_resume(mddev);
- 
- 	return err;
- }
+ 	/* Add some new drives, as many as will fit.
+ 	 * We know there are enough to make the newly sized array work.
 -- 
 2.39.2
 
