@@ -2,75 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1797B28A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272147B28A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 01:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbjI1XIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 19:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S231992AbjI1XJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 19:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI1XIq (ORCPT
+        with ESMTP id S231584AbjI1XJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:08:46 -0400
+        Thu, 28 Sep 2023 19:09:09 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D13CAC;
-        Thu, 28 Sep 2023 16:08:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2271AA;
+        Thu, 28 Sep 2023 16:09:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695942524; x=1727478524;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bsdaHx5i6d0dQbRebscdJjGlFmzP3UXXQapI7gY5p/8=;
-  b=BZtgA3se+Ka89fvUu2cqJoGTzaF/DrIg3bIz4mCg0Zsk0POI6V/wHojH
-   Q67L6+XX/C+MU+nz6uIi767z1rB6bmaT0hXUT6G5fL6zsNdTcu62Re1SS
-   rNGBtsIsrt5fZ6+FAkjdjrf0Xwy0jmKwXEpN7V7lfXiPFuoAL7LJeFIJe
-   4mFa5HBz0zgm8GMhEFBiVfUvEDCPvPOacUwjR9jstL/OZPOBSL0GRI4IY
-   ZhNJSDYkz3dGmxSQRQItMZX06QO8HrS0TqiwxIqFwnJWtGCzkeD78Db4R
-   Rs0tiCbtatYtOfbDZWKODHmgRisx9g5dNjlXreiIIf3cpMqcl+WkBqZIZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="446357861"
+  t=1695942546; x=1727478546;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uDZD5hP+FnmvHSuQUfoiNYdEM5mMHp5qJqC4vsiOhA4=;
+  b=Lu8UAU+wS/Rn6ScVu0LQ3S2HWms2mQ/GCNfHptGlZb6ZRryURG+3bKpW
+   zayi3v73yb4YAFVs6CtD6jwcFuBJUl4bviWvMkxmjIpHTGuz5uh/Rn6zD
+   03Ps8qp8hHd1/4pTJGssQCvb+CNoE0/YJ/w3Iv4c+qr5+JF0PWqdGUGjd
+   YwYXjt0GJdDCOnP41kVYaTIESKIrGfWs4j1QbuRdgUqnaE5Pik96kF+h4
+   5TK8kpmWOgddsdqUoxJXf/b7uqNGMI8GJ/uzU5i+poIfjKshaLDwF6nDB
+   PdYcFUn45t3FCwRg9UZulhyahH/6izgc5EAoPIbNajHrJBMlyqgCQYdhp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="446357917"
 X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="446357861"
+   d="scan'208";a="446357917"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 16:08:43 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 16:09:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749776304"
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749776421"
 X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
-   d="scan'208";a="749776304"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 28 Sep 2023 16:08:39 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qm07Y-00027h-33;
-        Thu, 28 Sep 2023 23:08:36 +0000
-Date:   Fri, 29 Sep 2023 07:08:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v6 07/11] KVM: arm64: PMU: Allow userspace to limit
- PMCR_EL0.N for the guest
-Message-ID: <202309290607.Qgg05wKw-lkp@intel.com>
-References: <20230926234008.2348607-8-rananta@google.com>
+   d="scan'208";a="749776421"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Sep 2023 16:09:01 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 28 Sep 2023 16:08:59 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 28 Sep 2023 16:08:59 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Thu, 28 Sep 2023 16:08:59 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.47) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Thu, 28 Sep 2023 16:08:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E261w4WKXd5UELs3tix+hv2gqVcAxA8LML/Ahl6lUFBDk4fpuMTYAg2L5N3KRPWuAouNdYy/nitbwVGo6021br395s/n0u15b5SkYDYD3guMvFNT4vIQ/8veFLqZnctKM1TWfJqpwfaVxlHyrUWM3uShhvcvA5JaVgtN1sZxNlyQUTT75eTosF59GHXBN+GuOqL1p4aV0lTOvkNUhHi2zJdPFPjHY5MhQSYCsRkr2iwxIPUZ3ErkJiCnvM8qPTRF6+a4UEVaFfXJB3YvSw8svlTx3y+0VM1BHXKD6JZtNXm1vG9oh1+5/VbSwq/4Bk1fs5A9dnlsAjn3mpNkx0x6QQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Kmx78P8NyZIbJW9IGHss9lNCE0/63ixxGdNzg/uO78=;
+ b=mUYO/rUHNWiC34Tv85EVRbPdN4jKVb878eBBorm7h/eDuFEBLShSqle0EHZyZZy0mApzMu+0qZy/EwLMEd6bWNP8d6Gk4fTKPL9GWbnJ6MQSOo+2H1tmpHhAhsWH22/OghneCgbormGhwFOzC1M46FL3Y+LihxAS3YskD0VwMmu7O4jLWmYue2pcdDFR/07qmS6gqPJk/uQc4zAWHecVSGrXRHnlUAXeXTHwI/GKtnay5PPeGFzYlk27llpSxydFO5OAOHseZENd/nxRawZiJD8RDrHD5LH8AY+W4iVnbgSOWcWq8rgAMORK86EENp4EtROVZoe7mY5XcnkN/s4aXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by CY8PR11MB6915.namprd11.prod.outlook.com (2603:10b6:930:59::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 28 Sep
+ 2023 23:08:56 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
+ 23:08:56 +0000
+Message-ID: <f2b00069-e837-ff1e-2d03-b446df49bff0@intel.com>
+Date:   Thu, 28 Sep 2023 16:08:53 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v6] x86/sgx: Resolves SECS reclaim vs. page fault for EAUG
+ race
+Content-Language: en-US
+To:     Haitao Huang <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <kai.huang@intel.com>,
+        <jarkko@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-sgx@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+CC:     <dave.hansen@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <stable@vger.kernel.org>,
+        <sohil.mehta@intel.com>
+References: <20230728051024.33063-1-haitao.huang@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20230728051024.33063-1-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWH0EPF00056D19.namprd21.prod.outlook.com
+ (2603:10b6:30f:fff2:0:1:0:1a) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926234008.2348607-8-rananta@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CY8PR11MB6915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7daa3103-b15d-40f8-ecc5-08dbc077e3de
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vVdJOBe7w1KYKwvA/U4m2NzPMp/Pl0ycw5OHJr6AyNa9KbwSAGsEz8POpxxlsgD0H3KimtiBz5XBNlFuZEfXvtAwR9fTOQXT6K+AYJ7VlutUnLM8BGvUyeNqa88sJpZl6aI9eU7SBT7jt0L+q+ZEE/mzkYZuE6rGdS0GIezNg3KdmAv2VzoENCZUGj3T++4UQLdiLfmF1udMK3a0B6Uhu56teNnDw724wIug2pu+seMqWWB8fVCgnYWCtWHCXrLYjaXrTJRutDeA9u0nCuPTUIz5TOS/+dZ/P35N9fGLB8jzeBiwr1wTld52ZJLc0MHN85sJSE4zAw3fkKShGgMhGWb8QVM0YEIaSEDnkSyayeuhraySrrXVnfSxVaCkzkU3kKQnAf2/emRG506yUYI/56rq6smICAhvGQz1VeiviKtpiXNT/FktTCor7HQtNf+cN2UcveUIoDtbNvIDAbskHIhmUX5S8TDHInIs/PZgVIktfTUzeD1YSH+c66zf0t6nOmwwcD+XhHRVohdEIi6nTz09Zw/thqIzJSykxtZ2LOTey6eSCzGk1HkXX4zQn31OD+vjC00RS5BVuehDQZaPe26G7ZMfou7xEtMadYiWARXOBuML124xuIeDYORMIN3Yhb5Q0PPcx2T715fX6xaee5SquuQDIHt5mrgH3hd4eeo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(346002)(366004)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(478600001)(53546011)(44832011)(8936002)(8676002)(66556008)(110136005)(66476007)(31686004)(66946007)(316002)(6666004)(6506007)(6512007)(83380400001)(6486002)(38100700002)(5660300002)(921005)(31696002)(4326008)(86362001)(41300700001)(2906002)(26005)(2616005)(82960400001)(7416002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjlRS2d2Y3ZyYllDbk1EWDVMM2xxT1M4elBBUk1PNHhGOVFlWEt2cHgxalM5?=
+ =?utf-8?B?QzgzQVRiVy9LSVFTbS9PeFZ2a1lMZVBza05jNTdQNmVQVXpqYkZWcVh6Szdz?=
+ =?utf-8?B?NWx6YytvdGhEbEkxblpBcUg3M0ovV0lwSm9SUHJlL0tmVkdNQlN4dFJpN21x?=
+ =?utf-8?B?ZHUwZzlvMkNOTW5DUm85RjdiSko5OWJpd1lNWG9uY2hVeWhERC9scjU1TWRD?=
+ =?utf-8?B?YlRjTnRkZGw2c3BQSE45NCtkL3pCQU5WZmgyTzNSa0xCRm15cksrcUdZdy9q?=
+ =?utf-8?B?SndRTmFBRUNDSmcvNS8xT0hYU0k4NGRCWUpRY2lwdDVQUm5rbnMvOGthN09C?=
+ =?utf-8?B?Qkw3UW9xV05oZTFZa1VvYmF4L2hNT3ltbnFqVkRkRytxbmYvQXJEUzEzZDh4?=
+ =?utf-8?B?M0h6OVNkeEZBSkpNMy9yQmZSb3R1K1p3bkNQZ05vaHZOdEwyNi9EaWJzTHlK?=
+ =?utf-8?B?bkoxTXJQaHNtQXAvU0ZXSTZDaGxlYXMyVENJaVNWeWNPUldPOXdmOEpPdyt6?=
+ =?utf-8?B?T0RXOFRGTjl3L0ttZ2I4T1VGVW0yTFhJN2N5YjRIcE9kOFphTUhPT1lrK0Q2?=
+ =?utf-8?B?alJyRW9UTTAzYUxpNnd2YUpNZk15bVdubjk4VEtRbmtMTVNxT1FTVGhTSnk2?=
+ =?utf-8?B?VTBKVWk0cUo4emNPUGdhT1V6cEIrUzNPaldTUWVseUJzTlQrZGlCQzdKWUV6?=
+ =?utf-8?B?QXRjUFBpd3l2MXpMeWsybi9PM3RheGFiS1RhMCt4U3lEbXJXT21wZW1vWjlp?=
+ =?utf-8?B?RXJjYkVhSnprWWR5QmxXTGU4ekZwZlo2TXZnYkNXdU5oTXB4bzVxNUtGMWxj?=
+ =?utf-8?B?TjBNZEVTbEk2TVlFQm14V2lCMk5xNGxtZVFYTUhrSlFsbnlBbGdyL3pwcU5p?=
+ =?utf-8?B?SUZFQXk3c2RYeTlMUXgrbHNBR0dkYVVwSXdZOHJLeXNlT1lhek9uRjNNZ2pF?=
+ =?utf-8?B?OTA0T3dSTEVCRHRFaXdKeGhkbnN3dVhWVUcrM0dKSGRLSnBqSHMyRVl5TWpN?=
+ =?utf-8?B?Z1pEWFJMSUg4VU1MQlBYdDUvaW80ZzY2NjdqcW9KUFNZQjR1bENqNnFQL1I1?=
+ =?utf-8?B?Mzd3cjhienBOK0M1TElIeGdKSFR4ZC9oYmFEUVR0YnVLYk10emc0T01kMUpZ?=
+ =?utf-8?B?ejZXVFNZaUkyL0JMNzRtWEozK2RKeFF1ZzVwa2pDTWpFd0EzeE8rLzRXZG9J?=
+ =?utf-8?B?ZXVnZ1lrK0FlRUdZVUV0SDg2c0JmSlhoU1pOTXFZRWg2c2wza21pcDNQUjQv?=
+ =?utf-8?B?S2pIMFB5NFJmajZTVUlad2NESHNUY1YvZEhxWUpFNUhxcTE2Y3lqeHR2RUVq?=
+ =?utf-8?B?dStRY1FWWFlxbWxIL1B1R1ZsVVlBVHZpMDNndEVLR203U0ZScllHemVsNW1l?=
+ =?utf-8?B?Y0lTWk1INjhGdkhiK0JVZm9KWXF2emZBcGN2akpCUjczUG5pSFkrNUlaWWdl?=
+ =?utf-8?B?Zmk2N0l2V05oWkJnbXgrbElpOWJENDAyMFBNK2orNkNGK3kvczAyZHVpeUpt?=
+ =?utf-8?B?WjlwbUxBd1ExQU82dGt5Mk9XMCs2R0xLRWI0NjRlaE5kWXM2ak9tMUNNdnUw?=
+ =?utf-8?B?K3lBdllQWFZxNyt1dmRtYzV6SFR6ZG5LUmxQWUF0ZmdwT2taTHlSSFhaWnBx?=
+ =?utf-8?B?NFQrUEhoMlBBYTh3dGJDRU5WN2hOTGMrY1FXMUNyZnh1bnQ0M2dxeDUyODR2?=
+ =?utf-8?B?d3ZIUWlWUklrYzFTckNkSmxFbTZlbVVVcEljbHFXYTFqYnZFWG1LakpmMmpo?=
+ =?utf-8?B?RXRUbVlSbTZaMnJWNkgzZzJBSzN2NDgvZnI0VFVFa2dyT2FaMXR2Z1huVHFL?=
+ =?utf-8?B?WjkxMWYxYUU1TXM2ZWN4NDE4Mzg5TVkxLzQwSER6MEdkejB5VE9raWc1Ukox?=
+ =?utf-8?B?NTQ3Y2VCVGJjL0VrbUxndnFNeDlmN2ZZTTBCZVNnRUFmaEFSK010Z1diZDVv?=
+ =?utf-8?B?NjhObTJZMFJhZVowRzluc2pNdWV0R2kwNWhlVWI1ZlFPVVBVelAwUldubmZs?=
+ =?utf-8?B?Q04yUFBOVU16bXMrNzlsc3VaWldLWmc0TTNVU1RFYU81R1h6THo0TjFJVnht?=
+ =?utf-8?B?TlNmZGgzeVFueEsydmthTHFCRlVlais5SEllVmh4THUzVHFoQlcrMzZjcHZp?=
+ =?utf-8?B?T05jaEFPVDUwNjRtZGtqS2hhb29WelNwSGdSRmROZ3c2bnpKak9WRWhudWNW?=
+ =?utf-8?B?eEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7daa3103-b15d-40f8-ecc5-08dbc077e3de
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 23:08:56.1336
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qc7mSKe3+4qM6P3wunFIJCKkVbk5bn4mLCtC1Kshwp5Mn6z6Vh8r0wMJ4lL9jOaWnPttAht2I/tROt1HU/cZQffWly26sKHyquM/TQWbPxo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6915
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,188 +169,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
+Hi Everybody,
 
-kernel test robot noticed the following build errors:
+I'd like to check in on the status of this patch. This two month old
+patch looks to be a needed fix and has Jarkko and Kai's review tags,
+but I am not able to find it queued or merged in tip or upstream.
+Apologies if I did not look in the right spot, I just want to make
+sure it did not fall through the cracks if deemed needed.
 
-[auto build test ERROR on 6465e260f48790807eef06b583b38ca9789b6072]
+Reinette
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Raghavendra-Rao-Ananta/KVM-arm64-PMU-Introduce-helpers-to-set-the-guest-s-PMU/20230927-095821
-base:   6465e260f48790807eef06b583b38ca9789b6072
-patch link:    https://lore.kernel.org/r/20230926234008.2348607-8-rananta%40google.com
-patch subject: [PATCH v6 07/11] KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
-config: arm64-randconfig-003-20230928 (https://download.01.org/0day-ci/archive/20230929/202309290607.Qgg05wKw-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309290607.Qgg05wKw-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309290607.Qgg05wKw-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/arm64/kvm/sys_regs.c: In function 'set_pmcr':
->> arch/arm64/kvm/sys_regs.c:1110:52: error: invalid use of undefined type 'struct arm_pmu'
-    1110 |                 u8 pmcr_n_limit = kvm->arch.arm_pmu->num_events - 1;
-         |                                                    ^~
-   arch/arm64/kvm/sys_regs.c: At top level:
-   arch/arm64/kvm/sys_regs.c:2207:66: warning: initialized field overwritten [-Woverride-init]
-    2207 |         { PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
-         |                                                                  ^~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:2207:66: note: (near initialization for 'sys_reg_descs[233].reset')
-   In file included from include/uapi/linux/posix_types.h:5,
-                    from include/uapi/linux/types.h:14,
-                    from include/linux/types.h:6,
-                    from include/linux/kasan-checks.h:5,
-                    from include/asm-generic/rwonce.h:26,
-                    from arch/arm64/include/asm/rwonce.h:71,
-                    from include/linux/compiler.h:246,
-                    from include/linux/build_bug.h:5,
-                    from include/linux/bitfield.h:10,
-                    from arch/arm64/kvm/sys_regs.c:12:
-   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2221:46: note: in expansion of macro 'NULL'
-    2221 |           .access = access_pmswinc, .reset = NULL },
-         |                                              ^~~~
-   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[237].reset')
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2221:46: note: in expansion of macro 'NULL'
-    2221 |           .access = access_pmswinc, .reset = NULL },
-         |                                              ^~~~
-   arch/arm64/kvm/sys_regs.c:2223:45: warning: initialized field overwritten [-Woverride-init]
-    2223 |           .access = access_pmselr, .reset = reset_pmselr, .reg = PMSELR_EL0 },
-         |                                             ^~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:2223:45: note: (near initialization for 'sys_reg_descs[238].reset')
-   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2225:45: note: in expansion of macro 'NULL'
-    2225 |           .access = access_pmceid, .reset = NULL },
-         |                                             ^~~~
-   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[239].reset')
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2225:45: note: in expansion of macro 'NULL'
-    2225 |           .access = access_pmceid, .reset = NULL },
-         |                                             ^~~~
-   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2227:45: note: in expansion of macro 'NULL'
-    2227 |           .access = access_pmceid, .reset = NULL },
-         |                                             ^~~~
-   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[240].reset')
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2227:45: note: in expansion of macro 'NULL'
-    2227 |           .access = access_pmceid, .reset = NULL },
-         |                                             ^~~~
-   arch/arm64/kvm/sys_regs.c:2229:49: warning: initialized field overwritten [-Woverride-init]
-    2229 |           .access = access_pmu_evcntr, .reset = reset_unknown,
-         |                                                 ^~~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:2229:49: note: (near initialization for 'sys_reg_descs[241].reset')
-   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2232:50: note: in expansion of macro 'NULL'
-    2232 |           .access = access_pmu_evtyper, .reset = NULL },
-         |                                                  ^~~~
-   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[242].reset')
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2232:50: note: in expansion of macro 'NULL'
-    2232 |           .access = access_pmu_evtyper, .reset = NULL },
-         |                                                  ^~~~
-   include/linux/stddef.h:8:14: warning: initialized field overwritten [-Woverride-init]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2234:49: note: in expansion of macro 'NULL'
-    2234 |           .access = access_pmu_evcntr, .reset = NULL },
-         |                                                 ^~~~
-   include/linux/stddef.h:8:14: note: (near initialization for 'sys_reg_descs[243].reset')
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/sys_regs.c:2234:49: note: in expansion of macro 'NULL'
-    2234 |           .access = access_pmu_evcntr, .reset = NULL },
-         |                                                 ^~~~
-   arch/arm64/kvm/sys_regs.c:1162:20: warning: initialized field overwritten [-Woverride-init]
-    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
-         |                    ^~~~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:2330:9: note: in expansion of macro 'PMU_PMEVCNTR_EL0'
-    2330 |         PMU_PMEVCNTR_EL0(0),
-         |         ^~~~~~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:1162:20: note: (near initialization for 'sys_reg_descs[327].reset')
-    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
-         |                    ^~~~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:2330:9: note: in expansion of macro 'PMU_PMEVCNTR_EL0'
-    2330 |         PMU_PMEVCNTR_EL0(0),
-         |         ^~~~~~~~~~~~~~~~
-   arch/arm64/kvm/sys_regs.c:1162:20: warning: initialized field overwritten [-Woverride-init]
-    1162 |           .reset = reset_pmevcntr, .get_user = get_pmu_evcntr,          \
-         |                    ^~~~~~~~~~~~~~
-
-
-vim +1110 arch/arm64/kvm/sys_regs.c
-
-  1090	
-  1091	static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-  1092			    u64 val)
-  1093	{
-  1094		struct kvm *kvm = vcpu->kvm;
-  1095		u64 new_n, mutable_mask;
-  1096	
-  1097		mutex_lock(&kvm->arch.config_lock);
-  1098	
-  1099		/*
-  1100		 * Make PMCR immutable once the VM has started running, but do
-  1101		 * not return an error (-EBUSY) to meet the existing expectations.
-  1102		 */
-  1103		if (kvm_vm_has_ran_once(vcpu->kvm)) {
-  1104			mutex_unlock(&kvm->arch.config_lock);
-  1105			return 0;
-  1106		}
-  1107	
-  1108		new_n = (val >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
-  1109		if (new_n != kvm->arch.pmcr_n) {
-> 1110			u8 pmcr_n_limit = kvm->arch.arm_pmu->num_events - 1;
-  1111	
-  1112			/*
-  1113			 * The vCPU can't have more counters than the PMU hardware
-  1114			 * implements. Ignore this error to maintain compatibility
-  1115			 * with the existing KVM behavior.
-  1116			 */
-  1117			if (new_n <= pmcr_n_limit)
-  1118				kvm->arch.pmcr_n = new_n;
-  1119		}
-  1120		mutex_unlock(&kvm->arch.config_lock);
-  1121	
-  1122		/*
-  1123		 * Ignore writes to RES0 bits, read only bits that are cleared on
-  1124		 * vCPU reset, and writable bits that KVM doesn't support yet.
-  1125		 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
-  1126		 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
-  1127		 * But, we leave the bit as it is here, as the vCPU's PMUver might
-  1128		 * be changed later (NOTE: the bit will be cleared on first vCPU run
-  1129		 * if necessary).
-  1130		 */
-  1131		mutable_mask = (ARMV8_PMU_PMCR_MASK |
-  1132				(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT));
-  1133		val &= mutable_mask;
-  1134		val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
-  1135	
-  1136		/* The LC bit is RES1 when AArch32 is not supported */
-  1137		if (!kvm_supports_32bit_el0())
-  1138			val |= ARMV8_PMU_PMCR_LC;
-  1139	
-  1140		__vcpu_sys_reg(vcpu, r->reg) = val;
-  1141		return 0;
-  1142	}
-  1143	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 7/27/2023 10:10 PM, Haitao Huang wrote:
+> The SGX EPC reclaimer (ksgxd) may reclaim the SECS EPC page for an
+> enclave and set secs.epc_page to NULL. The SECS page is used for EAUG
+> and ELDU in the SGX page fault handler. However, the NULL check for
+> secs.epc_page is only done for ELDU, not EAUG before being used.
+> 
+> Fix this by doing the same NULL check and reloading of the SECS page as
+> needed for both EAUG and ELDU.
+> 
+> The SECS page holds global enclave metadata. It can only be reclaimed
+> when there are no other enclave pages remaining. At that point,
+> virtually nothing can be done with the enclave until the SECS page is
+> paged back in.
+> 
+> An enclave can not run nor generate page faults without a resident SECS
+> page. But it is still possible for a #PF for a non-SECS page to race
+> with paging out the SECS page: when the last resident non-SECS page A
+> triggers a #PF in a non-resident page B, and then page A and the SECS
+> both are paged out before the #PF on B is handled.
+> 
+> Hitting this bug requires that race triggered with a #PF for EAUG.
+> Following is a trace when it happens.
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> RIP: 0010:sgx_encl_eaug_page+0xc7/0x210
+> Call Trace:
+>  ? __kmem_cache_alloc_node+0x16a/0x440
+>  ? xa_load+0x6e/0xa0
+>  sgx_vma_fault+0x119/0x230
+>  __do_fault+0x36/0x140
+>  do_fault+0x12f/0x400
+>  __handle_mm_fault+0x728/0x1110
+>  handle_mm_fault+0x105/0x310
+>  do_user_addr_fault+0x1ee/0x750
+>  ? __this_cpu_preempt_check+0x13/0x20
+>  exc_page_fault+0x76/0x180
+>  asm_exc_page_fault+0x27/0x30
+> 
+> Fixes: 5a90d2c3f5ef ("x86/sgx: Support adding of pages to an initialized enclave")
+> Cc: stable@vger.kernel.org # v6.0+
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+> ---
+> v6:
+> - Removed 'Under heavy load' as it is not the required condition though
+> it makes the bug more likely happen. (Kai)
+> - Added mentioning of the NULL check and reloading already done for ELDU (Kai)
+> - Added Reviewed-by (Kai)
+> 
+> v5:
+> - Trimmed trace and added Acked-by (Reinette)
+> 
+> v4:
+> - Refined the title (Kai, Dave)
+> - Added a trace to commit meesage (Kai)
+> - Added a few details for the race.
+> 
+> v3:
+> - Added comments on sgx_encl_load_secs(). (Dave)
+> - Added theory of the race condition to hit the bug. (Dave)
+> - Added Reviewed-by, and applicable stable release. (Jarkko)
+> 
+> v2:
+> - Fixes for style, commit message (Jarkko, Kai)
+> - Removed unneeded WARN_ON (Kai)
+> ---
+>  arch/x86/kernel/cpu/sgx/encl.c | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> index 91fa70e51004..279148e72459 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -235,6 +235,21 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+>  	return epc_page;
+>  }
+>  
+> +/*
+> + * Ensure the SECS page is not swapped out.  Must be called with encl->lock
+> + * to protect the enclave states including SECS and ensure the SECS page is
+> + * not swapped out again while being used.
+> + */
+> +static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
+> +{
+> +	struct sgx_epc_page *epc_page = encl->secs.epc_page;
+> +
+> +	if (!epc_page)
+> +		epc_page = sgx_encl_eldu(&encl->secs, NULL);
+> +
+> +	return epc_page;
+> +}
+> +
+>  static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
+>  						  struct sgx_encl_page *entry)
+>  {
+> @@ -248,11 +263,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
+>  		return entry;
+>  	}
+>  
+> -	if (!(encl->secs.epc_page)) {
+> -		epc_page = sgx_encl_eldu(&encl->secs, NULL);
+> -		if (IS_ERR(epc_page))
+> -			return ERR_CAST(epc_page);
+> -	}
+> +	epc_page = sgx_encl_load_secs(encl);
+> +	if (IS_ERR(epc_page))
+> +		return ERR_CAST(epc_page);
+>  
+>  	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
+>  	if (IS_ERR(epc_page))
+> @@ -339,6 +352,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
+>  
+>  	mutex_lock(&encl->lock);
+>  
+> +	epc_page = sgx_encl_load_secs(encl);
+> +	if (IS_ERR(epc_page)) {
+> +		if (PTR_ERR(epc_page) == -EBUSY)
+> +			vmret = VM_FAULT_NOPAGE;
+> +		goto err_out_unlock;
+> +	}
+> +
+>  	epc_page = sgx_alloc_epc_page(encl_page, false);
+>  	if (IS_ERR(epc_page)) {
+>  		if (PTR_ERR(epc_page) == -EBUSY)
+> 
+> base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
