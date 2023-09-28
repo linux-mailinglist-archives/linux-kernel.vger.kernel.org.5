@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A5D7B11A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42A87B11AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbjI1Em6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S230169AbjI1EpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjI1Emx (ORCPT
+        with ESMTP id S229445AbjI1EpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:42:53 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A31A19F
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:42:51 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a64619d8fbso1613542166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:42:51 -0700 (PDT)
+        Thu, 28 Sep 2023 00:45:16 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49220121
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:45:15 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40652e5718cso390135e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:45:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695876170; x=1696480970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mtW2DaDex4/qq5KYNshzbiXk1ZKdWPIH7i0eyiB1QPA=;
-        b=i6y1Vu0sfJHLPXfDGY7n6wdXFNbO7UmkAyHcECjLix6U9u/lEnkbRJsaDQqVDc9da2
-         1JlcNfxTwVnct1seNlZ2w1MSd+ZpvW7VT4pXGlnUZ+7bDWQmcPZTfC3+5+syXO3lnXeC
-         wzaa5BLaAkBuozg+9J5eWe3RIv9Q16nr933238SEFy++aJ2Ga/FgMabys9HN3vnU3E/j
-         aal5HLei0ANKgQxpaQqM6BXC8i4qyFIZ3Bl7EfR4HR6C9iX+r6E4lyb266zTYkiNsEVy
-         IcsGyNcv9lGKIxhaIXGV/p+KyOyISTFLZgZRlDirJ1lpWnF0meK8JoFXF9wRdB/tjYSg
-         0afg==
+        d=linaro.org; s=google; t=1695876314; x=1696481114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AcXbSw9sTgnfH+W7z4t4vq2SV8G0kIJTK37nKEDOZg8=;
+        b=Fk9A+J/iNTcG5mmZaxn119zdBOQLgH3bJiCSG58CoPQ6hmHplkqESLxZ6Vdvsz8IT+
+         3tpJFpvMrXOQMQ/p9IWLNGJEmvhwCSzUiN309inHaj4FQEAnIhelMCeAju7v22IQdLnj
+         92fqaNgLqii/rNOEOv+wxPSyOMUUHN7PkCmG8+sQHPKqC72SEWk9ojW3Wb+JJbXREeSQ
+         CCDmPg9xenS3xd+sXGNtnCud+YfdskJTd2R7QcDNPn7+xtUNF8VVHKtMTAmNYzcflv2W
+         yKCpdoEughQXDB/OVrFDKBe0suD+ZGw/etpSEqjHAgcNBKkJIqCb04xi+CBumWr8Leyh
+         p9IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695876170; x=1696480970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mtW2DaDex4/qq5KYNshzbiXk1ZKdWPIH7i0eyiB1QPA=;
-        b=O6cZLXoRpK2gWLOqH2p7/cBD7D5Cw7lyMzmMcA9rQr3877OhEOqGogBR5j60Gbri3y
-         cL2DYFjCNW1sfOYedTOipSc//S7+1Ky3qgIJSM2tp3gjm42/TFcILpmQ/66VNXw+nSgn
-         XHnHQJWK9upsXVzRisu20F8t0y+VqaRHZolCIj4jb+WgvlKd17CiSvzGSEBe4U4TTcSg
-         ZNVE55P0V/P+VUe6UqRfW2YQtpjsMyGTtBzS21ciVW4O1OKrJonTXk5ovnlDsZO0kYpy
-         aguFIh9t/Iv1MdsgxmgpbjF/zoQuTrukfHSWINUShZbViPr4VkvkCzidJpKwnnyeftgy
-         ShOQ==
-X-Gm-Message-State: AOJu0Yw3L7KanBRXORMIE5Z64tvf6A8PdOVYySpZpV5m79QeyZHgTcgF
-        99FM/5df7qZCZh2JvlU115loH6MdQXNVAtS2P4rmBA==
-X-Google-Smtp-Source: AGHT+IHPBAmhx+er6QkuJRIUAhKqf0BCJK7e+59Jegd3S5xW+6aqnkbAfNHzBG5wu6mzEd52bNAKmrbIN7pJkCOCyI0=
-X-Received: by 2002:a17:907:78d4:b0:9ae:588e:cdde with SMTP id
- kv20-20020a17090778d400b009ae588ecddemr163330ejc.11.1695876169938; Wed, 27
- Sep 2023 21:42:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695876314; x=1696481114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AcXbSw9sTgnfH+W7z4t4vq2SV8G0kIJTK37nKEDOZg8=;
+        b=ctaYGuEzfShUvqqNVWoF3uEUR3sXAazFbOXwewL5TtODesiMCZgr0J1aVJVDQzVzpL
+         iVXVmiCpjMcSDCLwx/JBVSRKfhcnpmQsgZBw6o18HCO78bRYDKg8gZqVcoS9a2d6zuGx
+         4GZrmiyfACBUSrs8txTmjSjKLeRhf6wN+rF9wvcS36cEOieCpBWsF51zmgkQIWV9WaLi
+         E4nqRWkP/qON9oyowOlqO07inxndbwzr7S8hBDxkS8VbuwWZS0eJ0dm0OcJRAKdBTa36
+         +MWZVa6YlfaJRgZnPnk7G3hbwk7KIEAiVg8JNMQdZYOekjqMhwYZx0xMvC1Z2tTdIk2B
+         6nsQ==
+X-Gm-Message-State: AOJu0YxYN+rr0gmmkDyIydSWmuW4ZcY2QUWA5S/QKJxowzULoOTDTmcO
+        uJooork8I0p9nCr+HauymFLlMbCockKMhwamwTk=
+X-Google-Smtp-Source: AGHT+IEj2dreycHkxBbNtsaNblGI5+CWZlWjlbetRiCdKoxnqgfqJnEdezRsuB/1ahQnef8LORtuww==
+X-Received: by 2002:a05:600c:3b22:b0:406:5301:4320 with SMTP id m34-20020a05600c3b2200b0040653014320mr81206wms.16.1695876313748;
+        Wed, 27 Sep 2023 21:45:13 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id v14-20020a05600c444e00b0040535648639sm18988603wmn.36.2023.09.27.21.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 21:45:13 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 07:45:11 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ovl: avoid possible NULL dereference
+Message-ID: <91ae5901-fae3-42b8-8c82-dc5c2683b4ce@kadam.mountain>
+References: <f929f35e-2599-48e4-a77f-f2002bc94482@kadam.mountain>
+ <b1a6134d-f976-ed9d-aac0-06f3c93fc1c6@nfschina.com>
 MIME-Version: 1.0
-References: <20230922175344.work.987-kees@kernel.org>
-In-Reply-To: <20230922175344.work.987-kees@kernel.org>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 28 Sep 2023 13:42:39 +0900
-Message-ID: <CAFhGd8oz9zTVacJMEWv4-hpNeXbPLYQ6fnb2z_2Y++rWyVSUow@mail.gmail.com>
-Subject: Re: [PATCH] hte: Annotate struct hte_device with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dipen Patel <dipenp@nvidia.com>, timestamp@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1a6134d-f976-ed9d-aac0-06f3c93fc1c6@nfschina.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 2:54=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
->
-> As found with Coccinelle[1], add __counted_by for struct hte_device.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
->
-> Cc: Dipen Patel <dipenp@nvidia.com>
-> Cc: timestamp@lists.linux.dev
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Thu, Sep 28, 2023 at 09:12:01AM +0800, Su Hui wrote:
+> Got it, I'm so careless that make this wrong patch.
 
-Yep, this flexible array member is counted by @nlines which
-is evident throughout hte.c:
+Not at all.  Your patch didn't break anything and this stuff is subtle.
+I've done the same thing myself.
 
-        gdev =3D kzalloc(struct_size(gdev, ei, chip->nlines), GFP_KERNEL);
-        ...
-        gdev->nlines =3D chip->nlines;
-        ...
-        for (i =3D 0; i < chip->nlines; i++) {
-          gdev->ei[i].gdev =3D gdev;
-        ...
-
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-
-> ---
->  drivers/hte/hte.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hte/hte.c b/drivers/hte/hte.c
-> index 598a716b7364..1fd8d2d4528b 100644
-> --- a/drivers/hte/hte.c
-> +++ b/drivers/hte/hte.c
-> @@ -88,7 +88,7 @@ struct hte_device {
->         struct list_head list;
->         struct hte_chip *chip;
->         struct module *owner;
-> -       struct hte_ts_info ei[];
-> +       struct hte_ts_info ei[] __counted_by(nlines);
->  };
->
->  #ifdef CONFIG_DEBUG_FS
-> --
-> 2.34.1
->
->
+regards,
+dan carpenter
