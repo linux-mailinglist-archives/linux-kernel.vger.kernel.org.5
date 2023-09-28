@@ -2,245 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 657C87B1250
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288677B1252
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjI1GGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
+        id S229691AbjI1GHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjI1GGT (ORCPT
+        with ESMTP id S229758AbjI1GG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:06:19 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CE199;
-        Wed, 27 Sep 2023 23:06:17 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b2b53e17feso327861466b.3;
-        Wed, 27 Sep 2023 23:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695881176; x=1696485976; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGpUFaLfaaSllZ7CWKk+QI4sn9XcFVatmo3TMonjq5c=;
-        b=GV87FQ1W4WeoQEFKSVYqGzCohMid+jS95vtNZYrx3cmTPVU9yQDG/YDwoK+ZrQAI8z
-         McqLoGCnPDyL3VObwbB3vkLz5rkT8giXUiOHF0eRnnNmhYx24zcHStgo6a8b1bsLPpoE
-         41+dEK3tIL0RTd9fRezUyiv24+OU2ToZzBaRP7CQ8xEUuSo4v611YxjF44ITDhEoDyxd
-         JIa/7yMD+Pod09xqJuy+nbSzd4syvPkqdUl4ZlCmjpFSFOsCulEeJE7FVBuqxyvcij2f
-         YrA6E9gSKfIr0TXENMVAVKPBqFGihJ5ak6ws3qb7+HNvyQ+dBNr2FbRkbIsOkiF/dKo3
-         4phg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695881176; x=1696485976;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TGpUFaLfaaSllZ7CWKk+QI4sn9XcFVatmo3TMonjq5c=;
-        b=fRrZOFXtEz0af2DAmmr439WleZDpODvhj7p4SW0ckbCGsG0w+VCBew8aIIEAv8Mtkp
-         ry/dy4ktCRlywj3lk6Qt5m45reCvTierWeUK68SKEdpDbQZmuP7t2grOlsAtRmQNdUSa
-         BttM/1DKamHxWU0EWSQyDIXeS4S+G3OHlbpZfSdPElpxM58LBjGroV+8a+dY7LkO/rhg
-         hnThMtcKA32I88m7doQQAV3CMO8LsCidiNnfdk++aOO0Yuu7hWTmaBgJ3YnU6eQIMtr7
-         O23p0AZxAp05r+YGAnGOFDU8MhbIhJSy9GSi73PAK6i6cdcM4l43frSnD5SwhILXjG/G
-         GvZA==
-X-Gm-Message-State: AOJu0YwpFctLlwmZPhiDMe44rbQx/GitNyvXypLJ9P+WdTmIiQGFCwkB
-        ey7k5mYJ7DrdxN2Oc4wTSxGWJeB8aWE=
-X-Google-Smtp-Source: AGHT+IE3YfH/wn9WpyaNFGWQVilUtmvnlYiuOXCT6kIQyI7K87BGo2x0aO+Y//gkDHBn5VT1maVoPA==
-X-Received: by 2002:a17:906:cc5a:b0:9aa:2c5b:6591 with SMTP id mm26-20020a170906cc5a00b009aa2c5b6591mr291165ejb.9.1695881176195;
-        Wed, 27 Sep 2023 23:06:16 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id zg22-20020a170907249600b009a5f1d15642sm10256169ejb.158.2023.09.27.23.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 23:06:15 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id DB01427C0054;
-        Thu, 28 Sep 2023 02:06:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 28 Sep 2023 02:06:12 -0400
-X-ME-Sender: <xms:1BcVZSmaJ1e_IlmAFDf_4YBqGN5g0Ia7KkbjImd5wrwjWf_NpfCjGw>
-    <xme:1BcVZZ2VH6TutTKog4YPfDixlO1w9ug0iNrZIySfoP1MoBB3X7Dq2g6lezdPdnojQ
-    RFsb3erb0mGgX7ToQ>
-X-ME-Received: <xmr:1BcVZQoa-ktDV5DZLE2nrcYcXUabwE78R9LE6jhdA06D5MHFbDEvNWVxqJw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddutdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
-    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:1BcVZWl-_f5Hv8lRF4rvHtNQ6Hv5hK5UBj7EXQC2Q-79WLubFFN7bg>
-    <xmx:1BcVZQ3tkCQrO8wK96gDhqqXrig2oM7WDX7KSVzdyAP6HNkLDzKY2A>
-    <xmx:1BcVZds4kRVsopHaoGYrvumNkjPtA5zWeGa4fFJv_8cq_xIxi9yvRw>
-    <xmx:1BcVZY7oKvlyM3cq4mdlAOS78a61Bhn7Dbp2eVQ4cM0_diPzFzG8tQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Sep 2023 02:06:11 -0400 (EDT)
-Date:   Wed, 27 Sep 2023 23:06:09 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
-References: <20230927160231.XRCDDSK4@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Thu, 28 Sep 2023 02:06:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D8899;
+        Wed, 27 Sep 2023 23:06:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695881217; x=1727417217;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=M7wn6LXMmoSpzSb3GzjxCu7+xb86xCRFUDpq1irD7rc=;
+  b=bOAgbbJbP/R9EOTLC9LoVf4OY9VxTtRxjhLl0dzHEykt+S/kEg46lAoJ
+   CuHmrh3pEsi+iuAqe5a7gl3oy0BIR4ZosLkVNSijMtg9y5hnz5td70bfv
+   eNdcItAZmkJsrvZBsLSZkjwUKs0fsIvWyn8Bsuhn9/ANUDkpXDiT+RCKG
+   4FudVZkkJmUZYoE4XvKO4reLOk7HmfT6nDL1WQw9OXkbAJAlneVo/oYrD
+   NrZW5j2IWaRVqNHsdj65ZDKkXN6m52MwvAa5ZuB49lsiRTAwXenwLGcC4
+   bJeKz7MHbyGZ+yNOhl+9+0WKESCJcVdd3knOu6PMQ5ZbyYwEPN3fu4Xs8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="468276554"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="468276554"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 23:06:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="815128296"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="815128296"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Sep 2023 23:06:55 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 27 Sep 2023 23:06:56 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 27 Sep 2023 23:06:56 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 27 Sep 2023 23:06:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BkUUZHLsyYFakmlq4tYDL+ZzrZE62U6BmZ1PUHCpdtS4gGRwE06TTLfLtYv/EAUJglQWYZ1HtkVuwooVvv1YnH6mWccA7q1QuUKu49ntnMs/H9Mf03N4KOy4h6kVGm4yQ3eqlchYb3ZNmTAnnm8DOBYuP/bZZhMoRX2rvp6YGw3SAbVlt9AM0NZW91emxpcqxE5XSbJL0h5BlOR6PIusaKNHNTSBq+uOu+MKXPpbg9OFqqVSH4S7YgoozZo++mi78FAhVJDNQUO4txIwUihbDaQIum0ig4AdStcQbP7X6n3hSsNAjzsfsyRdb9tW5LG2P2Sh+2NGXXa/C9oODicUMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JnI5ZNPBi4uOllgdg01XOULPVD5yKSvAcI8l/PsaqsE=;
+ b=eCgwn/luV/nAuIOR2CO97T/JxVvCyMSQRsD2xB8ZzqikEgRYETNOHlQ9KVuZy8ciyx8glYCMStwodRnaX3DGrsuX2wYZTXiv+4UNpOw8PB6CpKBZNaCqzo9u+8Ze08Mrg3wv7K+JR9E79LeWgO0jXK+NqTDZIO2oU173tE9s3iAqWm7FQ/5QK7Y2nxDFmeXzC+y488nnHC+6Q/0TXSn1GsegxyYLBOnfDXY+/YRfxvEnGePviKPICEmeZ9qFTNI81ysEzL/Mbi4/nsSMMeUNjsia8lqpkLVZsIRn45iub+KGHSelZL1uwOWgywAzPbuSyfL9/9aTjxFOp8KHHE0GIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by CH3PR11MB7389.namprd11.prod.outlook.com (2603:10b6:610:14d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Thu, 28 Sep
+ 2023 06:06:54 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3%5]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
+ 06:06:54 +0000
+Date:   Thu, 28 Sep 2023 08:06:47 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+CC:     <shuah@kernel.org>, <fenghua.yu@intel.com>,
+        <ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v4 0/2] selftests/resctrl: Bug fix and optimization
+Message-ID: <kisdkc4pa4fbmkhartsmwbg2lhxl2co3ude7bzrbpubn6r3a5a@xtki2amirkhx>
+References: <cover.1695369120.git.maciej.wieczor-retman@intel.com>
+ <ec0a63fc-081a-a4bf-8ebf-d501b1d44cc0@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927160231.XRCDDSK4@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ec0a63fc-081a-a4bf-8ebf-d501b1d44cc0@intel.com>
+X-ClientProxiedBy: FR2P281CA0145.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::17) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|CH3PR11MB7389:EE_
+X-MS-Office365-Filtering-Correlation-Id: e1fc7a3b-98ef-416a-87dd-08dbbfe91bff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cbJqLj7r5J05IcjJvTgiB9qt9/GW4MmSOZPqMebbZuyCbcs0b5sDNIxqdw/U9q5MeJHLyKbX9bpmIs2J65alG6S68Fij9yZOqF2qmRRXx06MBtkYme918TCwSK3jLzxRoOC5UjrychKdAvuf01QOvICf+oK4eTrWl7nX45l3XC6ZXXqbeo4Dvuy8eb5kSzuV39sQlWhSFwM1pl0bEcBpMUSbf92v/+5dv9c2IegVRpRFJc18jPEe9aOZcN0vN/gNJdDerTOmDJ7vdSX9abrc+nTNwVck7ZHw6qP94xDnPRBmTAIyUK/r65t4M7hk8xCPZzqXY1i6826AnTsRQR6Mc0CZtUqP1o6PjHi8GQAbSsHXahCRTD2jkmsSy6jWrFNs31q4rkaxB4hogrNiSGYthWnmiX4iTj7VJCmRe+WfQmXv0IVbAg7zq4YlUFha7jMDQsLE8dexQUKqvFeAKdyPr8JwRPV1efy2cjeIxNq5dN8kghrqs5A60KLPrR+t/CaoDr9A6rWCIg+CjOAwfl5IaQeZOAvAGfN1OR5eWu8/uLBay/5u3O7VviwgcZHPoqCb
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(39860400002)(346002)(396003)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(316002)(6506007)(6486002)(53546011)(8676002)(6666004)(38100700002)(6512007)(82960400001)(86362001)(9686003)(26005)(33716001)(6636002)(4326008)(6862004)(478600001)(66476007)(5660300002)(66946007)(66556008)(2906002)(41300700001)(8936002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?nI9rFmJTOX5+tT/F/PkH4RkE1sve5n2vx4nuk8+SjUc9935MgjqrI93qHF?=
+ =?iso-8859-1?Q?YpmAju+MNJlXb1PCHBwDBP6T4xq3SSvtmXCv0YU1/j9EtRTViu4Saj1eNn?=
+ =?iso-8859-1?Q?RbLDmHDp3secKMmfRVFgD1eHR1NNdWwoFgC0HsnX2rAAt1tZ4s7Xsx8Oy6?=
+ =?iso-8859-1?Q?rJQsPBM0vNKcg5wyKNStpc8+EJ7wOeKZI1ckghoJrn8e9/heqjBto90ToK?=
+ =?iso-8859-1?Q?9ZsDME6Tzq6SWA99EVBgkP/kZmuyFKPIs4f8Cx+KuEM9n6aIljpiPVcD6W?=
+ =?iso-8859-1?Q?XN7Q6mLI35X3VvQxNIzzVBdhv0NpYvhjz+2w2D+ZadVErF9daSEykxc5EP?=
+ =?iso-8859-1?Q?p7EdZ+cetsACzlfame1mwACglSsqvsSJLa7NwiawCK1VfW9JIAGHbLFBj+?=
+ =?iso-8859-1?Q?PV/P6MZ/oG1LDkFwHM/uUGljkkS/hlqggY59NjEghFudZWfiSAzqolU0Kz?=
+ =?iso-8859-1?Q?IX/t/ybaQnQXdA3Dpd1QU+ZRJarPdPax5i+NpEVPJz1lbizHRmbVtLnfep?=
+ =?iso-8859-1?Q?GkmQ4NCy3FWCYGTXDQfU3m+vnpKeMewFLh4gcIS0LZNzPiqsPdXtqBn6NU?=
+ =?iso-8859-1?Q?wGo5LVOsAgDCb4o2TkCZY/mqDWDqAheO64vukbZwdX2xFPKkGUpJfphcoM?=
+ =?iso-8859-1?Q?pjheF8K1lFXzZxjtsv+bqRAUT99nZBxnh6yRB7VF63gDUdmQQma0WPOAWR?=
+ =?iso-8859-1?Q?OwPlQkLpkmRsTemAQRs1/2f159o296CS9VSPEkEUGMHjvx9cKiz8onzGxz?=
+ =?iso-8859-1?Q?ewie0GNyr00bp2R2or8PH+4RXg/1cpd8wDwCpWd6Xwrrm1LeAp8pWKVU9H?=
+ =?iso-8859-1?Q?cWJFvxqMVbMA6cjCEHSqA6bqMtIBsBuWYANyKwTAX+JnJvASdO6athwlGB?=
+ =?iso-8859-1?Q?aZrQbZOQ7Vzs/S72ANWcuo7zo1qUQuESkRYTV/0v0rQD71zY0SJJSIQaaj?=
+ =?iso-8859-1?Q?/f2eAPSYL3lWOZ9XxTAqodZIh7v/RmVS6xe/QlOm2ysMOSgXphAeKxr7U6?=
+ =?iso-8859-1?Q?Z6AaOsweKPV9E6hRhMcknTR7wDLDL6lfW6l4j9P9wRah8rqlVPmzP1Ox6O?=
+ =?iso-8859-1?Q?hu1bbijSkNFtfn7dj91pc1MQ2uWItctHp6JqpiMsAE+ubZJTiBwAMGYgaP?=
+ =?iso-8859-1?Q?RfhX9hEGp6FfjqpttHzhPfcWGo3amj+IU56DKWe90XLpCso8cKDu9afMM8?=
+ =?iso-8859-1?Q?HRL002gRh8GfPAlk1klsrhuB1ECWJq7Z+IlWfH9x+iE4FMlDNpN6iz011T?=
+ =?iso-8859-1?Q?7p5lVDzShRnvR/fxJItgQ16//IkhfzXKy8XRSi2tUgiRtzqJ17NQTuIz4n?=
+ =?iso-8859-1?Q?F4E9RaTAXk6MZY2mb3QplTx10d0+iejFHkFF6SBOvN+bBAce6CNRlZm1Vr?=
+ =?iso-8859-1?Q?VEt2m/2reDDaTzE5H45eGclJ7nzHfIMJycGLy8cwmW29VroAydJQRX87RX?=
+ =?iso-8859-1?Q?drSPFf0Ib/uLG/xCu7wWF4qgzfuavH1HAbkOlnjCPeQH67YQlN50n/dHrf?=
+ =?iso-8859-1?Q?6Ou98F6orx5Bk6o9qMf/Kbj9viOE/aYzxs7JpHXNwqSJRXTjMUpA+xPGKt?=
+ =?iso-8859-1?Q?fWS3qpCVRN2qQkQCSlaBQQo78CedyHwjdsWq4hxXCrIwu/9taqEMKnJ98E?=
+ =?iso-8859-1?Q?I4uJJTeyFc5WnETQHqKZUB9SgMXApr4ycIyNQRU18N27c5rH/RYq12YXNB?=
+ =?iso-8859-1?Q?6Tr87s2/L+mQWhJ2Vs8=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1fc7a3b-98ef-416a-87dd-08dbbfe91bff
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 06:06:52.6281
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3tlU3jJF29M0cp1PR83it6MOfGfemoh9Y85LkY3CO5bQzQZ159WHZUBqArX2jmvYsOAKD3JXi0xr39AvQEJe5/QGSlUcOjX2152wFcgUc94=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7389
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 06:02:31PM +0200, Sebastian Andrzej Siewior wrote:
-> It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
-> triggers a lockdep if used from NMI because lockdep expects a deadlock
-> since nothing disables NMIs while the lock is acquired.
-> 
-> Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
-> complains if used from NMI.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> 
-> The splat:
-> | ================================
-> | WARNING: inconsistent lock state
-> | 6.6.0-rc3-rt5+ #85 Not tainted
-> | --------------------------------
-> | inconsistent {INITIAL USE} -> {IN-NMI} usage.
-> | swapper/0/0 [HC1[1]:SC0[0]:HE0:SE1] takes:
-> | ffffffff828e6c90 (console_srcu){....}-{0:0}, at: console_srcu_read_lock+0x3a/0x50
-> | {INITIAL USE} state was registered at:
-> â€¦
-> |        CPU0
-> |        ----
-> |   lock(console_srcu);
-> |   <Interrupt>
-> |     lock(console_srcu);
-> |
-> |  *** DEADLOCK ***
-> |
-> 
-> My guess is that trylock annotation should not apply to
-> rcu_lock_acquire(). This would distinguish it from from non-NMI safe
-> srcu_read_lock_nmisafe() and NMI check in rcu_read_unlock() is only
-> there to survive if accidentally used in-NMI.
+Thanks for catching these, I'll remember to do that the next time.
 
-I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
-SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
-the checking for NMI lock usages, the logic is that
+On 2023-09-27 at 15:16:18 -0700, Reinette Chatre wrote:
+>Hi Maciej,
+>
+>On 9/22/2023 1:09 AM, Maciej Wieczor-Retman wrote:
+>> The resctrlfs.c file defines functions that interact with the resctrl FS
+>> while resctrl_val.c file defines functions that perform measurements on
+>> the cache. Run_benchmark() fits logically into the second file before
+>> resctrl_val() function that uses it.
+>
+>nitpick ... if there are comments in one patch of the series please consider
+>if it applies to other places in the series.
+>
+>> 
+>> Move run_benchmark() from resctrlfs.c to resctrl_val.c and remove
+>> redundant part of the kernel-doc comment. Make run_benchmark() static
+>> and remove it from the header file.
+>> 
+>> Patch series is based on [1] which is based on [2] which are based on
+>> ksefltest next branch.
+>
+>ksefltest -> kselftest
+>
+>Reinette
 
-1)	read lock usages in NMI conflicts with write lock usage in
-	normal context (i.e. LOCKF_USED)
-
-2)	write lock usage in NMI conflicts with read and write lock usage
-	in normal context (i.e. LOCKF_USED | LOCKF_USED_READ)
-
-before that commit, only read-side of SRCU is annotated, in other words,
-SRCU only has read lock usage from lockdep PoV, but after that commit,
-we annotate synchronize_srcu() as a write lock usage, so that we can
-detect deadlocks between *normal* srcu_read_lock() and
-synchronize_srcu(), however the side effect is now SRCU has a write lock
-usage from lockdep PoV.
-
-Actually in the above commit, I explicitly leave
-srcu_read_lock_nmisafe() alone since its locking rules may be different
-compared to srcu_read_lock(). In lockdep terms, srcu_read_lock_nmisafe()
-is a !check read lock and srcu_read_lock() is a check read lock. Maybe
-instead of using the trylock trick, we change lockdep to igore !check
-locks for NMI context detection? Untested code as below:
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index e85b5ad3e206..1af8d44e5eb4 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5727,8 +5727,9 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-                return;
-
-        if (unlikely(!lockdep_enabled())) {
-+               /* Only do NMI context checking if it's a check lock */
-                /* XXX allow trylock from NMI ?!? */
--               if (lockdep_nmi() && !trylock) {
-+               if (check && lockdep_nmi() && !trylock) {
-                        struct held_lock hlock;
-
-                        hlock.acquire_ip = ip;
-
-Peter, thoughts?
-
-Of course, either way, we need
-
-Fixes: f0f44752f5f6 ("rcu: Annotate SRCU's update-side lockdep dependencies")
-
-Regards,
-Boqun
-
-> 
->  include/linux/rcupdate.h | 6 ++++++
->  include/linux/srcu.h     | 2 +-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 5e5f920ade909..44aab5c0bd2c1 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -303,6 +303,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
->  	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
->  }
->  
-> +static inline void rcu_try_lock_acquire(struct lockdep_map *map)
-> +{
-> +	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
-> +}
-> +
->  static inline void rcu_lock_release(struct lockdep_map *map)
->  {
->  	lock_release(map, _THIS_IP_);
-> @@ -317,6 +322,7 @@ int rcu_read_lock_any_held(void);
->  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->  
->  # define rcu_lock_acquire(a)		do { } while (0)
-> +# define rcu_try_lock_acquire(a)	do { } while (0)
->  # define rcu_lock_release(a)		do { } while (0)
->  
->  static inline int rcu_read_lock_held(void)
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index 127ef3b2e6073..236610e4a8fa5 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
-> @@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
->  
->  	srcu_check_nmi_safety(ssp, true);
->  	retval = __srcu_read_lock_nmisafe(ssp);
-> -	rcu_lock_acquire(&ssp->dep_map);
-> +	rcu_try_lock_acquire(&ssp->dep_map);
->  	return retval;
->  }
->  
-> -- 
-> 2.40.1
-> 
+-- 
+Kind regards
+Maciej Wieczór-Retman
