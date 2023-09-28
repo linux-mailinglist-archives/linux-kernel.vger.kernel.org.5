@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37887B248C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A6C7B248F
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbjI1SAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        id S231598AbjI1SBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjI1SAb (ORCPT
+        with ESMTP id S230239AbjI1SA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:00:31 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB19D1A1;
-        Thu, 28 Sep 2023 11:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3Kii1aeNG97UODm5w9OWMw3tlJL4IA97qoMR/+Jykp0=; b=YL+mCeE+l4aSztqVURlp6Oe9tW
-        9wz/zf8bdKx1SmykX3JGV4+xErRhLTmZxwbrCFg2bohsYD3/Ho2lAJM7vqv/HI1l0sLdHWV2DDUft
-        0IxTbDc1gNd3Krr6uFGboheaDK4bkRXYqqVEN0rz6RWh5DxqqAT1CGXpvAhv64d1uSKo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qlvJ8-007lhB-Ft; Thu, 28 Sep 2023 20:00:14 +0200
-Date:   Thu, 28 Sep 2023 20:00:14 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christophe Roullier <christophe.roullier@foss.st.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/12] Series to deliver Ethernets for STM32MP13
-Message-ID: <b44859a8-14a8-4100-a249-ca1d615fecdf@lunn.ch>
-References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
+        Thu, 28 Sep 2023 14:00:58 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E88A19E;
+        Thu, 28 Sep 2023 11:00:57 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3af3ecdf047so2137829b6e.0;
+        Thu, 28 Sep 2023 11:00:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695924056; x=1696528856; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jf7ScwygjQ2jf4AqpxHi4jRt6wSUGgNirGCrHubekSk=;
+        b=eBM+HaW+8NHFYnM+pwTN/5C53OeQIaz/kd7BkO1yO9WKSYd7/lVoQJDvbqWw/GITm6
+         3U+gx1BIrEy0QUvyjtsOBUXYNm+/YBCFieoKOPzC4tAYLI4/eIitbJddf/MJIoL9tmQQ
+         9B+X0pe5tMt0lzN3F10mIbM+crIkrltzQQmQezIhgkHgNqhY5Jp58veDeAgQaUcmH2sk
+         a+SyqdBII4qKJ+0myg/nKOtPAFfge4tqrBKgj86lGa86oBiymGqts1ZIFAbf5MhloC6Q
+         aclFOpft12afSJxy0Wm+ON1z+mlfyTVPBSPv5YfTd7S9UkvsEhkAIZQR/9C+YgwTpWzy
+         IFsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695924056; x=1696528856;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jf7ScwygjQ2jf4AqpxHi4jRt6wSUGgNirGCrHubekSk=;
+        b=i0Dlf51qUoofPTp5QE8CVAqO8PqSPjQQ9+Evw39yHY53U0nlGmJVHtGMxbffMaGDfU
+         nJM4xGaM8NjACqoHr5Y/VJocnqDUHIbrgdwJZzmPAMbZ/7UgDqQsRBOTWFdzuwrAjfRQ
+         eQ5F623H49ct/lZThvQftkZu+Wkccrmq0WNhyMKzzbkMd15cDKWmtTXHiId1JJVxkilz
+         Nv50oFclfPCNjeOjuzoxW8nv9na7ldFLHd4ZWMOAqZXKiuqVuYtgo0LynUh4Tk7zrRcO
+         5KRJ8nTWUWwUKg78SEi7kwq10DG4e2DfkIWufjILMbyAevrsd4dS9Vd3Gfgl3Q0T7KAf
+         /zQQ==
+X-Gm-Message-State: AOJu0Yz7VudPeZyuXfkSBiOMDM124/oSPMvWDkU691akWDrDmAOwQS2i
+        oV3glp+o7z/zH9D6dYs5iZBrXxCIaZORfph0cuU=
+X-Google-Smtp-Source: AGHT+IGKXt0xSHlAm601LvV0qT4645pgVZtZMWe+PMCSak1LUkBPD86q1BCqTMAlzzAuU4scAQtW/iNbQ4E95L/JjDg=
+X-Received: by 2002:a05:6808:b28:b0:3a4:225d:82c0 with SMTP id
+ t8-20020a0568080b2800b003a4225d82c0mr1924328oij.31.1695924056416; Thu, 28 Sep
+ 2023 11:00:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928151512.322016-1-christophe.roullier@foss.st.com>
+References: <20230926225955.386553-1-mario.limonciello@amd.com>
+In-Reply-To: <20230926225955.386553-1-mario.limonciello@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 28 Sep 2023 14:00:45 -0400
+Message-ID: <CADnq5_NHQhUZ9DzNtOy67Hx1g2_ZeBfKPC6O22YY_bzSJsMiUw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Fix Navi3x boot and hotplug problems
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, Sebastian Reichel <sre@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>, Jun.ma2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 05:15:00PM +0200, Christophe Roullier wrote:
+On Thu, Sep 28, 2023 at 12:41=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> On some OEM systems multiple navi3x dGPUS are triggering RAS errors
+> and BACO errors.
+>
+> These errors come from elements of the OEM system that weren't part of
+> original test environment.  This series addresses those problems.
+>
+> NOTE: Although this series touches two subsystems, I would prefer to
+> take this all through DRM because there is a workaround in linux-next
+> that I would like to be reverted at the same time as picking up the first
+> two patches.
 
-You sent v2 at "Thu, 28 Sep 2023 14:24:15 +0200"
+FWIW, the workaround is not in linux-next yet.  At the time I thought
+it was already fixed by the fixes in ucsi and power supply when we
+first encountered this.
 
-The netdev FAQ
+Alex
 
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html#netdev-faq
-
-says:
-
-don't repost your patches within one 24h period
-
-There is a danger you ignore comments made on version N-1 because you
-post version N too fast. It can also waste reviewer time.
-
-     Andrew
+>
+> Mario Limonciello (3):
+>   drm/amd: Fix detection of _PR3 on the PCIe root port
+>   power: supply: Don't count 'unknown' scope power supplies
+>   Revert "drm/amd/pm: workaround for the wrong ac power detection on smu
+>     13.0.0"
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c           | 2 +-
+>  drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c       | 3 ++-
+>  drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c | 1 +
+>  drivers/power/supply/power_supply_core.c             | 2 +-
+>  4 files changed, 5 insertions(+), 3 deletions(-)
+>
+> --
+> 2.34.1
+>
