@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5931A7B1FF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB317B1FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbjI1OqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S230307AbjI1OrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjI1OqT (ORCPT
+        with ESMTP id S229469AbjI1OrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:46:19 -0400
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B9E180;
-        Thu, 28 Sep 2023 07:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-        s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-        In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=mRqhWMIMcGuvyFgNpvTVrYcSiIxSRbOQ0ouvdqRZILs=; b=XiqIRxPYnpAo2sfITfIEUqafxd
-        cjdvaUDYFEbJUZriPNSmHqwWzxKACw8HZBiZeT2uusVp30pN6f8AMuDarmvegbrPaB4AejY6aHV2P
-        B7ZS03wjXKqeqMr1JDhYaNihI+GdNLNWCNfYpRtu5H/MnWr1i/i7LLJd+HzgggD8+mdgqvG7HD5J9
-        3aUzpecuqYRaeF2h0WyJa/I9bSjoxHAfE+zZ+6I+x/x40RNIsZpV1Qjwk6um9VGm6kATE2gekVBOi
-        YbUbG9uQuWHFHtEmBPmr4oa1x3kOBnvjUV50gvd+yI+/lW38YFzLljKzFHKoDm24kWqD9Foso497B
-        0jK3PSEg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <esben@geanix.com>)
-        id 1qlsHN-000BGU-Fc; Thu, 28 Sep 2023 16:46:13 +0200
-Received: from [185.17.218.86] (helo=localhost)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <esben@geanix.com>)
-        id 1qlsHM-0002Zw-PQ; Thu, 28 Sep 2023 16:46:12 +0200
-From:   esben@geanix.com
-To:     Harini Katakam <harini.katakam@amd.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <jsc@umbraculum.org>,
-        <christophe.jaillet@wanadoo.fr>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <harinikatakamlinux@gmail.com>,
-        <michal.simek@amd.com>, <radhey.shyam.pandey@amd.com>
-Subject: Re: [PATCH net-next] MAINTAINERS: Add an obsolete entry for LL
- TEMAC driver
-In-Reply-To: <20230920115047.31345-1-harini.katakam@amd.com> (Harini Katakam's
-        message of "Wed, 20 Sep 2023 17:20:47 +0530")
-References: <20230920115047.31345-1-harini.katakam@amd.com>
-Date:   Thu, 28 Sep 2023 16:46:12 +0200
-Message-ID: <878r8qxsnf.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 28 Sep 2023 10:47:12 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6CB180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:47:10 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1CF7E40E0198;
+        Thu, 28 Sep 2023 14:47:08 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id N5pJ5cn_zyMK; Thu, 28 Sep 2023 14:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695912422; bh=tPU8iyjpgSIBCOSk7Wcxg0E9kh+miOLhLUIx3QkgCHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ll1gXe5e3fpQ+szMHmOHc//PTgpilvT7S57e0IhATDq6tDehQ1o2EgoeCSI3zAsOv
+         qLVwdxpZ+qYC/b7BX0RvHDqR/ZJh9mBvjVSE2WZv0pIlr84uYoOdc67yRLc+Eo+hE1
+         v2Pg11lRg/BSvQU3bFmybtXtMo0YECtYBA5cpNRoVipS9y1xGTtLH9BZr2Fi4ONlMb
+         uGYzpt3Yd+6AnMrLawD9QtPwfC8B0eRUH3Tpy50UTZZ8oFios1DjxXwX+3aeNWQku0
+         A10Gxc28sw7EpIUasKSPCHEj2tyXssapZOMiyrYxvAcxlDTGoD4imkyj0SWvJBtXjU
+         39xT6FcjXg2qgoS/js4We3RiaJNc6r+iQbhDT7RWlnU43MNPbtHmBHoY6I3YITtohr
+         VckEzdycdx+VfDUprobZdo3u3ga7ikM0rxh/prcT9/gqYvNnJbxVESsVIS8V/1lU2T
+         Q9WYW0nN+FHfenvuPDPLDmqaDZc2aDwRyUGhNMSRHdkIyfLEVzsgTxPl63Q1F73s7e
+         PDU3q6FHB8dJkwgh8Cp+rCpGcmtUdWoetVfw2wrus17tp0nL6mHg8Ei7V7KtFQrsFi
+         VV0DsvItSODlgmWqQajBBVIxGbjMw43m0FrOGyXk9cWLoO+8AGwt8PnhXmwH2QTvEQ
+         rI6+ntonm/tg4EWbBwe1M3T4=
+Received: from nazgul.tnic (unknown [88.128.88.93])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D96CC40E00B3;
+        Thu, 28 Sep 2023 14:46:41 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 16:47:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@aculab.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Subject: Re: [PATCH v7 02/12] iov_iter, x86: Be consistent about the __user
+ tag on copy_mc_to_user()
+Message-ID: <20230928144707.GBZRWR693kYmj8Z0NX@fat_crate.local>
+References: <20230925120309.1731676-1-dhowells@redhat.com>
+ <20230925120309.1731676-3-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27045/Thu Sep 28 09:39:25 2023)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230925120309.1731676-3-dhowells@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -65,41 +78,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Harini Katakam <harini.katakam@amd.com> writes:
-
-> LL TEMAC IP is no longer supported. Hence add an entry marking the
-> driver as obsolete.
-
-Ok. But while that might mean that no new designs should use LL TEMAC
-IP, why do we need to declare the driver for it obsolete?
-
-Existing designs using LL TEMAC IP might need to upgrade Linux kernel
-also.
-
-/Esben
-
->
-> Signed-off-by: Harini Katakam <harini.katakam@amd.com>
+On Mon, Sep 25, 2023 at 01:02:59PM +0100, David Howells wrote:
+> copy_mc_to_user() has the destination marked __user on powerpc, but not on
+> x86; the latter results in a sparse warning in lib/iov_iter.c.
+> 
+> Fix this by applying the tag on x86 too.
+> 
+> Fixes: ec6347bb4339 ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, kernel}()")
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Dan Williams <dan.j.williams@intel.com>
+> cc: Thomas Gleixner <tglx@linutronix.de>
+> cc: Ingo Molnar <mingo@redhat.com>
+> cc: Borislav Petkov <bp@alien8.de>
+> cc: Dave Hansen <dave.hansen@linux.intel.com>
+> cc: "H. Peter Anvin" <hpa@zytor.com>
+> cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: Christoph Hellwig <hch@lst.de>
+> cc: Christian Brauner <christian@brauner.io>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: Linus Torvalds <torvalds@linux-foundation.org>
+> cc: David Laight <David.Laight@ACULAB.COM>
+> cc: x86@kernel.org
+> cc: linux-block@vger.kernel.org
+> cc: linux-fsdevel@vger.kernel.org
+> cc: linux-mm@kvack.org
 > ---
-> This is an old driver with no bindings doc and hence the maintainers
-> entry does not contain a link to documentation.
-> ---
->  MAINTAINERS | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3dde038545d8..820a7817f02f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23696,6 +23696,11 @@ F:	Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml
->  F:	drivers/gpio/gpio-xilinx.c
->  F:	drivers/gpio/gpio-zynq.c
->  
-> +XILINX LL TEMAC ETHERNET DRIVER
-> +L:	netdev@vger.kernel.org
-> +S:	Obsolete
-> +F:	drivers/net/ethernet/xilinx/ll_temac*
-> +
->  XILINX PWM DRIVER
->  M:	Sean Anderson <sean.anderson@seco.com>
->  S:	Maintained
+>  arch/x86/include/asm/uaccess.h | 2 +-
+>  arch/x86/lib/copy_mc.c         | 8 ++++----
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
