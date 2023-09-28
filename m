@@ -2,458 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD577B25E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDF47B25D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbjI1TR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        id S231293AbjI1TRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbjI1TRl (ORCPT
+        with ESMTP id S229478AbjI1TRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:17:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD7F1A2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695928615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Eq7RwYw7vpfr3h67DRocDXJnZj3fX/pXAzh+FlTFe4=;
-        b=TrEr82uID01pLs1hRCvVVQNTXtohvkYlukCR+cooPML2ldYGU7WJA+VHH31YYN/mPi90I0
-        dZkVnMsbBz5ySfe+4JjK5ZD44xnoMeo8OYN59MMClpXPn2A+tMs3Fw6ger054k8IjWFLpU
-        ywnkxdYF6n8Ok8c0CynKBaUlGC7oCQ0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-0f__uPWPOY-i3k2v-cDP9Q-1; Thu, 28 Sep 2023 15:16:53 -0400
-X-MC-Unique: 0f__uPWPOY-i3k2v-cDP9Q-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ae12311183so1151325666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695928612; x=1696533412;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Eq7RwYw7vpfr3h67DRocDXJnZj3fX/pXAzh+FlTFe4=;
-        b=lv0gQY+4HwI8xSW+pk95PoD4xwxLoZwOAEKlAB0QfEaQd27FNuQ5TabjPbmnTxfpDt
-         C2nmVXLHfByOrDeAPFuZdmadl2FVXmfrpV3KsGmlZAfY21iuJuBDDBeUDA1oQvlTg0wT
-         Uu9WemUUZyOPdkJADUGjh4OkWlR8KYRZNVkzcE2QbQrRwJZ0t8uA0orG76lQFpcE7Qas
-         QkGE+QA3gA6DbueZc0elQTyfpl9wTl0j4e6F0wMF61GIk6nyMSTQZmlzZveQ7ZQdwxgC
-         oyLT3E6A8VkZQkmLjkO8DvLpwsGH0JJyWwk9Iv5SDXuIa06LuusQ/sKDcovlIIxXyJFm
-         2GMA==
-X-Gm-Message-State: AOJu0YzoeTjOqGkg4F13kjVjzLjXGRogRJfqlAuo7tMKJcdjZ846lfAg
-        pPuxQBHWDjTyAtIX5Hlz0xODdYYLd4y+sW0U3vkRXaXuiajxREfFgC4LT+WeJY3FKXRPHcoEd53
-        gdw8OrO9VHJD7S0Xt3G8VUQcQ
-X-Received: by 2002:a17:906:1da9:b0:9b2:ccd8:2d2b with SMTP id u9-20020a1709061da900b009b2ccd82d2bmr709986ejh.77.1695928611745;
-        Thu, 28 Sep 2023 12:16:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFalNGKfH1oRkKZO1uB5QveZ25lbpWgAYnBiatQIQkauttoTCoBnG/RXviUupss9sKad5p08Q==
-X-Received: by 2002:a17:906:1da9:b0:9b2:ccd8:2d2b with SMTP id u9-20020a1709061da900b009b2ccd82d2bmr709971ejh.77.1695928611441;
-        Thu, 28 Sep 2023 12:16:51 -0700 (PDT)
-Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id ce21-20020a170906b25500b009ad850d4760sm11198069ejb.219.2023.09.28.12.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 12:16:50 -0700 (PDT)
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next v5 6/6] drm/nouveau: use GPUVM common infrastructure
-Date:   Thu, 28 Sep 2023 21:16:20 +0200
-Message-ID: <20230928191624.13703-7-dakr@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928191624.13703-1-dakr@redhat.com>
-References: <20230928191624.13703-1-dakr@redhat.com>
+        Thu, 28 Sep 2023 15:17:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663131A5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695928616; x=1727464616;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=s0Bd48FJIq/CzYjG5JiO8X9ToDofegyMVutfzhDHe34=;
+  b=hTLHjaErDxPN6BW9MZic78jubAhk1u5TR5nTAokfdWAaBVLGJbLstM7v
+   JuMCGUHHWKNaUNhTp0HxtT0/GxvWRbfhXl1cXz/kqypuGDyOs7uNumaEx
+   dOAqVCuUIEJ3zJZp3VO2fO8D3pzkV16W0qUG0HY2gEoqItrnGswIfZx7l
+   qB/BEFzinoZATDe+SSXyl9DFS/+tpde4rtAKEFJXyO65n6omQIN5/NYYW
+   v2X6XHFCfZCfDcOI7Takdzgxn34vbpz1vio9EXdy71rTHUkuDBCLMaLPq
+   +QVPqXCroxtMw+cEJtLwBkU6BMSAAOx1S9Khnm+jxDR/IKxU/p4moSgbM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="386017750"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="386017750"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:16:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="819954401"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="819954401"
+Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 12:16:32 -0700
+Message-ID: <340596c9-d55d-5f8a-fa27-d95b0e10b20a@intel.com>
+Date:   Thu, 28 Sep 2023 12:16:31 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 0/7] Introduce persistent memory pool
+Content-Language: en-US
+To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+Cc:     Baoquan He <bhe@redhat.com>, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, ebiederm@xmission.com, akpm@linux-foundation.org,
+        stanislav.kinsburskii@gmail.com, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-mm@kvack.org, kys@microsoft.com, jgowans@amazon.com,
+        wei.liu@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+        graf@amazon.de, pbonzini@redhat.com,
+        "Shutemov, Kirill" <kirill.shutemov@intel.com>
+References: <01828.123092517290700465@us-mta-156.us.mimecast.lan>
+ <ZRPBRkXrYvbw8+Lt@MiWiFi-R3L-srv> <20230927161319.GA19976@skinsburskii.>
+ <ee1907a1-2f04-cfa3-9f09-75b94994e88b@intel.com>
+ <20230927232548.GA20221@skinsburskii.>
+ <b684d339-991d-be85-692c-75f21679ca69@intel.com>
+ <20230928000230.GA20259@skinsburskii.>
+ <760bbb08-83b4-7bb1-822f-2ceba26278a6@intel.com>
+ <20230928003831.GA20366@skinsburskii.>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230928003831.GA20366@skinsburskii.>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPUVM provides common infrastructure to track external and evicted GEM
-objects as well as locking and validation helpers.
+On 9/27/23 17:38, Stanislav Kinsburskii wrote:
+> On Thu, Sep 28, 2023 at 11:00:12AM -0700, Dave Hansen wrote:
+>> On 9/27/23 17:02, Stanislav Kinsburskii wrote:
+>>> On Thu, Sep 28, 2023 at 10:29:32AM -0700, Dave Hansen wrote:
+>> ...
+>>> Well, not exactly. That's something I'd like to have indeed, but from my
+>>> POV this goal is out of scope of discussion at the moment.
+>>> Let me try to express it the same way you did above:
+>>>
+>>> 1. Boot some kernel
+>>> 2. Grow the deposited memory a bunch
+>>> 5. Kexec
+>>> 4. Kernel panic due to GPF upon accessing the memory deposited to
+>>> hypervisor.
+>>
+>> I basically consider this a bug in the first kernel.  It *can't* kexec
+>> when it's left RAM in shambles.  It doesn't know what features the new
+>> kernel has and whether this is even safe.
+>>
+> 
+> Could you elaborate more on why this is a bug in the first kernel?
+> Say, kernel memory can be allocated in big physically consequitive
+> chunks by the first kernel for depositing. The information about these
+> chunks is then passed the the second kernel via FDT or even command
+> line, so the seconds kernel can reserve this region during booting.
+> What's wrong with this approach?
 
-Especially external and evicted object tracking is a huge improvement
-compared to the current brute force approach of iterating all mappings
-in order to lock and validate the GPUVM's GEM objects. Hence, make us of
-it.
+How do you know the second kernel can parse the FDT entry or the
+command-line you pass to it?
 
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_bo.c    |  4 +-
- drivers/gpu/drm/nouveau/nouveau_exec.c  | 52 +++----------
- drivers/gpu/drm/nouveau/nouveau_exec.h  |  4 -
- drivers/gpu/drm/nouveau/nouveau_sched.h |  4 +-
- drivers/gpu/drm/nouveau/nouveau_uvmm.c  | 99 ++++++++++++++++---------
- 5 files changed, 80 insertions(+), 83 deletions(-)
+>> Can the new kernel even read the new device tree data?
+> 
+> I'm not sure I understand the question, to be honest.
+> Why can't it? This series contains code parts for both first and seconds
+> kernels.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouveau/nouveau_bo.c
-index dbb3facfd23d..62371fe39e96 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-@@ -1067,17 +1067,18 @@ nouveau_bo_move(struct ttm_buffer_object *bo, bool evict,
- {
- 	struct nouveau_drm *drm = nouveau_bdev(bo->bdev);
- 	struct nouveau_bo *nvbo = nouveau_bo(bo);
-+	struct drm_gem_object *obj = &bo->base;
- 	struct ttm_resource *old_reg = bo->resource;
- 	struct nouveau_drm_tile *new_tile = NULL;
- 	int ret = 0;
- 
--
- 	if (new_reg->mem_type == TTM_PL_TT) {
- 		ret = nouveau_ttm_tt_bind(bo->bdev, bo->ttm, new_reg);
- 		if (ret)
- 			return ret;
- 	}
- 
-+	drm_gpuvm_bo_gem_evict(obj, evict);
- 	nouveau_bo_move_ntfy(bo, new_reg);
- 	ret = ttm_bo_wait_ctx(bo, ctx);
- 	if (ret)
-@@ -1142,6 +1143,7 @@ nouveau_bo_move(struct ttm_buffer_object *bo, bool evict,
- out_ntfy:
- 	if (ret) {
- 		nouveau_bo_move_ntfy(bo, bo->resource);
-+		drm_gpuvm_bo_gem_evict(obj, !evict);
- 	}
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.c b/drivers/gpu/drm/nouveau/nouveau_exec.c
-index b4239af29e5a..ba6913a3efb6 100644
---- a/drivers/gpu/drm/nouveau/nouveau_exec.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_exec.c
-@@ -1,7 +1,5 @@
- // SPDX-License-Identifier: MIT
- 
--#include <drm/drm_exec.h>
--
- #include "nouveau_drv.h"
- #include "nouveau_gem.h"
- #include "nouveau_mem.h"
-@@ -91,9 +89,6 @@ nouveau_exec_job_submit(struct nouveau_job *job)
- 	struct nouveau_exec_job *exec_job = to_nouveau_exec_job(job);
- 	struct nouveau_cli *cli = job->cli;
- 	struct nouveau_uvmm *uvmm = nouveau_cli_uvmm(cli);
--	struct drm_exec *exec = &job->exec;
--	struct drm_gem_object *obj;
--	unsigned long index;
- 	int ret;
- 
- 	ret = nouveau_fence_new(&exec_job->fence);
-@@ -101,52 +96,29 @@ nouveau_exec_job_submit(struct nouveau_job *job)
- 		return ret;
- 
- 	nouveau_uvmm_lock(uvmm);
--	drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
--			    DRM_EXEC_IGNORE_DUPLICATES);
--	drm_exec_until_all_locked(exec) {
--		struct drm_gpuva *va;
--
--		drm_gpuvm_for_each_va(va, &uvmm->base) {
--			if (unlikely(va == &uvmm->base.kernel_alloc_node))
--				continue;
--
--			ret = drm_exec_prepare_obj(exec, va->gem.obj, 1);
--			drm_exec_retry_on_contention(exec);
--			if (ret)
--				goto err_uvmm_unlock;
--		}
-+	job->vm_exec.vm = &uvmm->base;
-+	ret = drm_gpuvm_exec_lock(&job->vm_exec, 1, false);
-+	if (ret) {
-+		nouveau_uvmm_unlock(uvmm);
-+		return ret;
- 	}
- 	nouveau_uvmm_unlock(uvmm);
- 
--	drm_exec_for_each_locked_object(exec, index, obj) {
--		struct nouveau_bo *nvbo = nouveau_gem_object(obj);
--
--		ret = nouveau_bo_validate(nvbo, true, false);
--		if (ret)
--			goto err_exec_fini;
-+	ret = drm_gpuvm_exec_validate(&job->vm_exec);
-+	if (ret) {
-+		drm_gpuvm_exec_unlock(&job->vm_exec);
-+		return ret;
- 	}
- 
- 	return 0;
--
--err_uvmm_unlock:
--	nouveau_uvmm_unlock(uvmm);
--err_exec_fini:
--	drm_exec_fini(exec);
--	return ret;
--
- }
- 
- static void
- nouveau_exec_job_armed_submit(struct nouveau_job *job)
- {
--	struct drm_exec *exec = &job->exec;
--	struct drm_gem_object *obj;
--	unsigned long index;
--
--	drm_exec_for_each_locked_object(exec, index, obj)
--		dma_resv_add_fence(obj->resv, job->done_fence, job->resv_usage);
--
--	drm_exec_fini(exec);
-+	drm_gpuvm_exec_resv_add_fence(&job->vm_exec, job->done_fence,
-+				      job->resv_usage, job->resv_usage);
-+	drm_gpuvm_exec_unlock(&job->vm_exec);
- }
- 
- static struct dma_fence *
-diff --git a/drivers/gpu/drm/nouveau/nouveau_exec.h b/drivers/gpu/drm/nouveau/nouveau_exec.h
-index 778cacd90f65..b815de2428f3 100644
---- a/drivers/gpu/drm/nouveau/nouveau_exec.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_exec.h
-@@ -3,16 +3,12 @@
- #ifndef __NOUVEAU_EXEC_H__
- #define __NOUVEAU_EXEC_H__
- 
--#include <drm/drm_exec.h>
--
- #include "nouveau_drv.h"
- #include "nouveau_sched.h"
- 
- struct nouveau_exec_job_args {
- 	struct drm_file *file_priv;
- 	struct nouveau_sched_entity *sched_entity;
--
--	struct drm_exec exec;
- 	struct nouveau_channel *chan;
- 
- 	struct {
-diff --git a/drivers/gpu/drm/nouveau/nouveau_sched.h b/drivers/gpu/drm/nouveau/nouveau_sched.h
-index 27ac19792597..54379af6f925 100644
---- a/drivers/gpu/drm/nouveau/nouveau_sched.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_sched.h
-@@ -5,7 +5,7 @@
- 
- #include <linux/types.h>
- 
--#include <drm/drm_exec.h>
-+#include <drm/drm_gpuvm.h>
- #include <drm/gpu_scheduler.h>
- 
- #include "nouveau_drv.h"
-@@ -54,7 +54,7 @@ struct nouveau_job {
- 	struct drm_file *file_priv;
- 	struct nouveau_cli *cli;
- 
--	struct drm_exec exec;
-+	struct drm_gpuvm_exec vm_exec;
- 	enum dma_resv_usage resv_usage;
- 	struct dma_fence *done_fence;
- 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-index 436b0ac74ffe..ba0f7fcb6f7c 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-@@ -438,8 +438,9 @@ nouveau_uvma_region_complete(struct nouveau_uvma_region *reg)
- static void
- op_map_prepare_unwind(struct nouveau_uvma *uvma)
- {
-+	struct drm_gpuva *va = &uvma->va;
- 	nouveau_uvma_gem_put(uvma);
--	drm_gpuva_remove(&uvma->va);
-+	drm_gpuva_remove(va);
- 	nouveau_uvma_free(uvma);
- }
- 
-@@ -468,6 +469,7 @@ nouveau_uvmm_sm_prepare_unwind(struct nouveau_uvmm *uvmm,
- 			break;
- 		case DRM_GPUVA_OP_REMAP: {
- 			struct drm_gpuva_op_remap *r = &op->remap;
-+			struct drm_gpuva *va = r->unmap->va;
- 
- 			if (r->next)
- 				op_map_prepare_unwind(new->next);
-@@ -475,7 +477,7 @@ nouveau_uvmm_sm_prepare_unwind(struct nouveau_uvmm *uvmm,
- 			if (r->prev)
- 				op_map_prepare_unwind(new->prev);
- 
--			op_unmap_prepare_unwind(r->unmap->va);
-+			op_unmap_prepare_unwind(va);
- 			break;
- 		}
- 		case DRM_GPUVA_OP_UNMAP:
-@@ -634,6 +636,7 @@ nouveau_uvmm_sm_prepare(struct nouveau_uvmm *uvmm,
- 					goto unwind;
- 				}
- 			}
-+
- 			break;
- 		}
- 		case DRM_GPUVA_OP_REMAP: {
-@@ -1146,13 +1149,44 @@ bind_link_gpuvas(struct bind_job_op *bop)
- 	}
- }
- 
-+static int
-+bind_lock_extra(struct drm_gpuvm_exec *vm_exec, unsigned int num_fences)
-+{
-+	struct nouveau_uvmm_bind_job *bind_job = vm_exec->extra.priv;
-+	struct drm_exec *exec = &vm_exec->exec;
-+	struct bind_job_op *op;
-+	int ret;
-+
-+	list_for_each_op(op, &bind_job->ops) {
-+		struct drm_gpuva_op *va_op;
-+
-+		if (IS_ERR_OR_NULL(op->ops))
-+			continue;
-+
-+		drm_gpuva_for_each_op(va_op, op->ops) {
-+			struct drm_gem_object *obj = op_gem_obj(va_op);
-+
-+			if (unlikely(!obj))
-+				continue;
-+
-+			if (va_op->op != DRM_GPUVA_OP_UNMAP)
-+				continue;
-+
-+			ret = drm_exec_prepare_obj(exec, obj, num_fences);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int
- nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- {
- 	struct nouveau_uvmm *uvmm = nouveau_cli_uvmm(job->cli);
- 	struct nouveau_uvmm_bind_job *bind_job = to_uvmm_bind_job(job);
- 	struct nouveau_sched_entity *entity = job->entity;
--	struct drm_exec *exec = &job->exec;
- 	struct bind_job_op *op;
- 	int ret;
- 
-@@ -1170,6 +1204,8 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- 			dma_resv_unlock(obj->resv);
- 			if (IS_ERR(op->vm_bo))
- 				return PTR_ERR(op->vm_bo);
-+
-+			drm_gpuvm_bo_extobj_add(op->vm_bo);
- 		}
- 
- 		ret = bind_validate_op(job, op);
-@@ -1192,6 +1228,7 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- 	 * unwind all GPU VA space changes on failure.
- 	 */
- 	nouveau_uvmm_lock(uvmm);
-+
- 	list_for_each_op(op, &bind_job->ops) {
- 		switch (op->op) {
- 		case OP_MAP_SPARSE:
-@@ -1303,30 +1340,13 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- 		}
- 	}
- 
--	drm_exec_init(exec, DRM_EXEC_INTERRUPTIBLE_WAIT |
--			    DRM_EXEC_IGNORE_DUPLICATES);
--	drm_exec_until_all_locked(exec) {
--		list_for_each_op(op, &bind_job->ops) {
--			struct drm_gpuva_op *va_op;
-+	job->vm_exec.vm = &uvmm->base;
-+	job->vm_exec.extra.fn = bind_lock_extra;
-+	job->vm_exec.extra.priv = bind_job;
- 
--			if (IS_ERR_OR_NULL(op->ops))
--				continue;
--
--			drm_gpuva_for_each_op(va_op, op->ops) {
--				struct drm_gem_object *obj = op_gem_obj(va_op);
--
--				if (unlikely(!obj))
--					continue;
--
--				ret = drm_exec_prepare_obj(exec, obj, 1);
--				drm_exec_retry_on_contention(exec);
--				if (ret) {
--					op = list_last_op(&bind_job->ops);
--					goto unwind;
--				}
--			}
--		}
--	}
-+	ret = drm_gpuvm_exec_lock(&job->vm_exec, 1, false);
-+	if (ret)
-+		goto unwind_continue;
- 
- 	list_for_each_op(op, &bind_job->ops) {
- 		struct drm_gpuva_op *va_op;
-@@ -1426,21 +1446,16 @@ nouveau_uvmm_bind_job_submit(struct nouveau_job *job)
- 	}
- 
- 	nouveau_uvmm_unlock(uvmm);
--	drm_exec_fini(exec);
-+	drm_gpuvm_exec_unlock(&job->vm_exec);
- 	return ret;
- }
- 
- static void
- nouveau_uvmm_bind_job_armed_submit(struct nouveau_job *job)
- {
--	struct drm_exec *exec = &job->exec;
--	struct drm_gem_object *obj;
--	unsigned long index;
--
--	drm_exec_for_each_locked_object(exec, index, obj)
--		dma_resv_add_fence(obj->resv, job->done_fence, job->resv_usage);
--
--	drm_exec_fini(exec);
-+	drm_gpuvm_exec_resv_add_fence(&job->vm_exec, job->done_fence,
-+				      job->resv_usage, job->resv_usage);
-+	drm_gpuvm_exec_unlock(&job->vm_exec);
- }
- 
- static struct dma_fence *
-@@ -1832,6 +1847,18 @@ nouveau_uvmm_bo_unmap_all(struct nouveau_bo *nvbo)
- 	}
- }
- 
-+static int
-+nouveau_uvmm_bo_validate(struct drm_gpuvm_bo *vm_bo, struct drm_exec *exec)
-+{
-+	struct nouveau_bo *nvbo = nouveau_gem_object(vm_bo->obj);
-+
-+	return nouveau_bo_validate(nvbo, true, false);
-+}
-+
-+static const struct drm_gpuvm_ops gpuvm_ops = {
-+	.vm_bo_validate = nouveau_uvmm_bo_validate,
-+};
-+
- int
- nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
- 		  u64 kernel_managed_addr, u64 kernel_managed_size)
-@@ -1874,7 +1901,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
- 		       NOUVEAU_VA_SPACE_START,
- 		       NOUVEAU_VA_SPACE_END,
- 		       kernel_managed_addr, kernel_managed_size,
--		       NULL);
-+		       &gpuvm_ops);
- 	/* GPUVM takes care from here on. */
- 	drm_gem_object_put(r_obj);
- 
--- 
-2.41.0
+How do you know the second kernel isn't the version *before* this series
+gets merged?
 
+...
+>> I still think the only way this will possibly work when kexec'ing both
+>> old and new kernels is to do it with the memory maps that *all* kernels
+>> can read.
+> 
+> Could you elaborate more on this?
+> The avaiable memory map actually stays the same for both kernels. The
+> difference here can be in a different list of memory regions to reserve,
+> when the first kernel allocated and deposited another chunk, and thus
+> the second kernel needs to reserve this memory as a new region upon
+> booting.
+
+Please take a step back from your implementation for a moment.  There
+are two basic design points that need to be considered.
+
+First, *must* "System RAM" (according to the memory map) be persisted
+across kexec?  If no, then there's no problem to solve and we can stop
+this thread.  If yes, then some mechanism must be used to tell the new
+kernel that the "System RAM" in the memory map is not normal RAM.
+
+Second, *if* we agree that some data must communicate across kexec, then
+what mechanism should be used?  You're arguing for a new mechanism that
+only new kernels can use.  I'm arguing that you should likely reuse an
+existing mechanism (probably the UEFI/e820 maps) so that *ALL* kernels
+can consume the information, old and new.
+
+I'm not convinced that this series is going in the right direction on
+either of those points.
+
+> Can all this considered, as, say, the first kernel uses device tree to
+> inform the second kernel about the memory regions to reserve?
+> In this case the first kernel behaves a bit like a firmware piece for
+> the second one.
+> 
+>> Can the hypervisor be improved to make this release operation faster?
+> 
+> I guess it can, but shutting down guests contributes to downtime the
+> most. And without shutting down the guests the deposited memory can't be
+> withdrawn.
+
+Do you really need to fully shut down each guest?  Or do you just need
+to get them to a quiescent state where the hypervisor and devices aren't
+writing to the deposited memory?
