@@ -2,220 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376237B1FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768237B1FE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjI1OoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
+        id S230228AbjI1OoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjI1OoU (ORCPT
+        with ESMTP id S230207AbjI1On7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:44:20 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7900319E
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:19 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c6052422acso157345ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695912259; x=1696517059; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9qvi2mkKPCAws2hfkWmM7tfPaBJGsA62IYTCfBAyQTE=;
-        b=mBlb0mORjrI8zgKBJUp/nqVn2IxlkdEoH0SsETqnqgwjX2FyS1Hbl2VGfiiqHPVSE0
-         cDYApN5UNG0eneQkVtzNVfoMW9D124v6IpaAOf309tLIrWkRD4dsSNEUAhhwpKhABdj/
-         AyJPhtYfMqnpUlTcbxrnXs2o01BP0X0cewnsfiCmcqGrNxpjogf4VX478lNN2vM2hSXU
-         EmkB0PTagYZimJB8li5MA1/mdFE/35asF5uvGFpCiIt4wicmi+paLgns4GxtuNBD1o0B
-         1a6M4N3P1mX1buyiCyyVXOoiT321pCeSkzZ/1JL6CsJuZIbVZL4WtULYvuN+855WSUoI
-         L0cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695912259; x=1696517059;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qvi2mkKPCAws2hfkWmM7tfPaBJGsA62IYTCfBAyQTE=;
-        b=VZjzYAVxKPO5UXv/S/h5bj0cSIrNUIrBOi/CZm6lOApxEqgTlFoxmQWxaa2a/ypEdv
-         Fm/H0zZrsm039Jlhtu0Hpn4FTPs0EzZfCPFogxL+eNkNrkzIGmNPdLIbnjr9mB3eWhWW
-         DsGsFAMPE5BHweRjPX7zBoQVZI7YI2GIM0MXIiUO3ojyJpUAielEhyrYgSbBUzUsRycd
-         uzVjbr/YHZxNEoyfQltDfTmYkRYwRY+OLbquNY/VrBTdlh49qpvtegL46I5REypeSweB
-         ESDjOmQyI1YMvcumfqTLGFsb1hqncg5tCKAFz6+AI16XpvUiPtByfFSU2JzllmkNfoUA
-         hGjA==
-X-Gm-Message-State: AOJu0YyJXwTll/fkzMmhw1Mi77I8CBugvBfRi/8OyyQKqZ7yXYrMy0YT
-        SE8WgyCpqbXo524MDkjmAwHD6w6X95VnTlpvLNWupnkuf/0dzjCtAFbtZg==
-X-Google-Smtp-Source: AGHT+IHNVH8eIpIeXF8BSMRijlmgWijQPUek08k5OnwkliBTC9hDO4zqY1E2fjrhmT60W3kssnGULoeyjCmg+QFWfww=
-X-Received: by 2002:a17:902:e751:b0:1c6:112f:5ceb with SMTP id
- p17-20020a170902e75100b001c6112f5cebmr678306plf.25.1695912258487; Thu, 28 Sep
- 2023 07:44:18 -0700 (PDT)
+        Thu, 28 Sep 2023 10:43:59 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFB219E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:43:58 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DDC0240E0176;
+        Thu, 28 Sep 2023 14:43:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OWLQHTNbZWTX; Thu, 28 Sep 2023 14:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695912233; bh=h1/LDhE8fzT9yHzOAMn/O1uQcjI/GQRZwIc2SRP75FA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iZ5FRVunRWlEOnzVstKpLgxo9Pq1pLk58HzP++2IaqcTwzO8HrerFTvz+m0xvvPbA
+         /1OYLbkPTP8O7vAFVM23V3gaF/swxmTcjRGRnDzcX6HKQ60eDJ9lFFmZx8SRyOwt4a
+         gyyNnqRe+YgkZsoj+PJlVyCRJfSQBhxg8htG0sPi4XPKyx6hQkP8dikTsmct2e3Ifl
+         UJ5PpeYWN6IbaMlFA2mv5N6SgFZhyMzBJOB702tLvbSQLn0+99W7IZfuPRozvWtxmP
+         coGgcLA/k7hwojbNnq9oxY6uYA5481XGe2E0cDYK3VIVADW0p6WyVfAX8HuIcB+I2U
+         OUTKPKDwtS5d8g/bLwq4yVYAm7OcT+lIFK1fKgmdggeKQqkNdKeDSu+7hSork76W1n
+         B0xOU/+he+a/RqX6UyQyMS+kkfkQx7hIGxIeBZ9YgP8M1qEZJBd6Kl00RhuQRUBFV5
+         wx2Ec8ZQlHwYd/MA6hQ5QH8u/cCNug+w7aFQVWzPunz/Ay7xqRMpbM+b4qRSHZmN+k
+         RQig38hcXZ1IoLJa5xR1LXPxDFLcz61ZMbVx2/vem56E/luM49qcnwJQ5n6AMVJm2L
+         xOIu9TAw8C3ZOTYf4EpvJUp2GAXG7WSB1O0j8IKufzGudrIurXHvYjx4Iijzna35tD
+         I9qe4vVT+23x0C4PkzqztaUA=
+Received: from nazgul.tnic (unknown [88.128.88.93])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4AD0D40E00B3;
+        Thu, 28 Sep 2023 14:43:32 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 16:43:45 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+Cc:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        robert.moore@intel.com, linux-hardening@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org,
+        baolin.wang@linux.alibaba.com
+Subject: Re: [RFC PATCH v2 0/9] Use ERST for persistent storage of MCE and
+ APEI errors
+Message-ID: <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
+References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20230926162228.68666-1-mjguzik@gmail.com> <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
- <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
- <20230927-kosmetik-babypuppen-75bee530b9f0@brauner> <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
- <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
- <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
- <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
- <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
-In-Reply-To: <20230928-themen-dilettanten-16bf329ab370@brauner>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 28 Sep 2023 16:43:42 +0200
-Message-ID: <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 4:05=E2=80=AFPM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> > So I spent a good chunk of time going through this patch.
->
-> The main thing that makes me go "we shouldn't do this" is that KASAN
-> isn't able to detect UAF issues as Jann pointed out so I'm getting
-> really nervous about this.
+On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
+> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
+> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
+> serialized MCE error record, of previous boot in persistent storage is not
+> collected via APEI ERST.
 
-(FWIW there is an in-progress patch to address this that I sent a few
-weeks ago but that is not landed yet,
-<https://lore.kernel.org/linux-mm/20230825211426.3798691-1-jannh@google.com=
-/>.
-So currently KASAN can only detect UAF in SLAB_TYPESAFE_BY_RCU slabs
-when the slab allocator has given them back to the page allocator.)
+You lost me here. /dev/mcelog is deprecated but you can still use it and
+apei_write_mce() still happens.
 
-> And Jann also pointed out some potential issues with
-> __fget_files_rcu() as well...
+Looking at your patches, you're adding this to ghes so how about you sit
+down first and explain your exact use case and what exactly you wanna
+do?
 
-The issue I see with the current __fget_files_rcu() is that the
-"file->f_mode & mask" is no longer effective in its current position,
-it would have to be moved down below the get_file_rcu() call.
-That's a semantic difference between manually RCU-freeing and
-SLAB_TYPESAFE_BY_RCU - we no longer have the guarantee that an object
-can't be freed and reallocated within a single RCU grace period.
-With the current patch, we could race like this:
+Thx.
 
-```
-static inline struct file *__fget_files_rcu(struct files_struct *files,
-        unsigned int fd, fmode_t mask)
-{
-        for (;;) {
-                struct file *file;
-                struct fdtable *fdt =3D rcu_dereference_raw(files->fdt);
-                struct file __rcu **fdentry;
+-- 
+Regards/Gruss,
+    Boris.
 
-                if (unlikely(fd >=3D fdt->max_fds))
-                        return NULL;
-
-                fdentry =3D fdt->fd + array_index_nospec(fd, fdt->max_fds);
-                file =3D rcu_dereference_raw(*fdentry);
-                if (unlikely(!file))
-                        return NULL;
-
-                if (unlikely(file->f_mode & mask))
-                        return NULL;
-
-                [in another thread:]
-                [file is removed from fd table and freed]
-                [file is reallocated as something like an O_PATH file,
-                 which the check above would not permit]
-                [reallocated file is inserted in the fd table in the
-same position]
-
-                /*
-                 * Ok, we have a file pointer. However, because we do
-                 * this all locklessly under RCU, we may be racing with
-                 * that file being closed.
-                 *
-                 * Such a race can take two forms:
-                 *
-                 *  (a) the file ref already went down to zero,
-                 *      and get_file_rcu() fails. Just try again:
-                 */
-                if (unlikely(!get_file_rcu(file))) [succeeds]
-                        continue;
-
-                /*
-                 *  (b) the file table entry has changed under us.
-                 *       Note that we don't need to re-check the 'fdt->fd'
-                 *       pointer having changed, because it always goes
-                 *       hand-in-hand with 'fdt'.
-                 *
-                 * If so, we need to put our ref and try again.
-                 */
-                [recheck succeeds because the new file was inserted in
-the same position]
-                if (unlikely(rcu_dereference_raw(files->fdt) !=3D fdt) ||
-                    unlikely(rcu_dereference_raw(*fdentry) !=3D file)) {
-                        fput(file);
-                        continue;
-                }
-
-                /*
-                 * Ok, we have a ref to the file, and checked that it
-                 * still exists.
-                 */
-                [a file incompatible with the supplied mask is returned]
-                return file;
-        }
-}
-```
-
-There are also some weird get_file_rcu() users in other places like
-BPF's task_file_seq_get_next and in gfs2_glockfd_next_file that do
-weird stuff without the recheck, especially gfs2_glockfd_next_file
-even looks at the inodes of files without taking a reference (which
-seems a little dodgy but maybe actually currently works because inodes
-are also RCU-freed?). So I think you'd have to clean all of that up
-before you can make this change.
-
-Similar thing with get_mm_exe_file(), that relies on get_file_rcu()
-success meaning that the file was not reallocated. And tid_fd_mode()
-in procfs assumes that task_lookup_fd_rcu() returns a file* whose mode
-can be inspected under RCU.
-
-As Linus already mentioned, release_empty_file() is also broken now,
-because it assumes that nobody will grab references to unopened files,
-but actually that can now happen spuriously when a concurrent fget()
-has called get_file_rcu() on a recycled file and not yet hit the
-recheck fput(). Kinda like the thing with "struct page" where GUP can
-randomly spuriously bump up the refcount of any page including ones
-that are not mapped into userspace. So that would have to go through
-the same fput() path as every other file freeing.
-
-We also now rely on the "f_count" initialization in init_file()
-happening after the point of no return, which is currently the case,
-but that'd have to be documented to avoid someone adding a later
-bailout in the future, and maybe could be clarified by actually moving
-the count initialization after the bailout?
-
-Heh, I grepped for `__rcu.*file`, and BPF has a thing in
-kernel/bpf/verifier.c that seems to imply it would be safe for some
-types of BPF programs to follow the mm->exe_file reference solely
-protected by RCU, which already seems a little dodgy now but more
-after this change:
-
-```
-/* RCU trusted: these fields are trusted in RCU CS and can be NULL */
-BTF_TYPE_SAFE_RCU_OR_NULL(struct mm_struct) {
-        struct file __rcu *exe_file;
-};
-```
-
-(To be clear: This is not intended to be an exhaustive list.)
-
-
-So I think conceptually this is something you can do but it would
-require a bit of cleanup all around the kernel to make sure you really
-just have one or two central functions that make use of the limited
-RCU-ness of "struct file", and that nothing else relies on that or
-makes assumptions about how non-zero refcounts move.
+https://people.kernel.org/tglx/notes-about-netiquette
