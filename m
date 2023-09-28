@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B7E7B2760
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D96D7B2764
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbjI1VXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S232399AbjI1VXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjI1VXf (ORCPT
+        with ESMTP id S231524AbjI1VXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:23:35 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F9719D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:33 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4054f790190so124866485e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:33 -0700 (PDT)
+        Thu, 28 Sep 2023 17:23:52 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80D21B0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:49 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3232be274a0so5518709f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695936212; x=1696541012; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1695936228; x=1696541028; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=O6CcwisXQBadco6xD/4qnma7wUpiVVQTFZBRyy3vwm4=;
-        b=OCv3lC8ASxbkLLHyssLPNHcoZcqTqeTW15x+8ZrFSrUrQwZFY9CVBsVZku8RhcK09Z
-         vBP9vsSfSIJcEfHvX0bX8CaqY1/IXXUZi+CgDD8EfktBhBXAX4B8i117sb6L5ox9IMbl
-         Dd0T4DeAh89KRNj/URTRTafn2FldfK+3rLJMs=
+        bh=YaWPyajjId09n77xwVF45ZQmmj2IMJSvqwowpZ4hhto=;
+        b=cfDiqShliOU7NX20fFmnuZM0zQ2wGztqoYJ1VGq7us1YLe/eoej3RT0V8pkLpcIk75
+         4oQ+82tJJyjrmNEkmmsX2BIeqR6prs1v5KlEDf6VB9lDoyLtdiggpQ4I4Ct6NQNUVlnn
+         T5QJkoWE3ALIgjmGPNtei2PXkloPuaSkpryqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695936212; x=1696541012;
+        d=1e100.net; s=20230601; t=1695936228; x=1696541028;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=O6CcwisXQBadco6xD/4qnma7wUpiVVQTFZBRyy3vwm4=;
-        b=sfcUD5jEigwpVLDuZAd77UgScXUbJPqYI7WfsOMUQmqTo63B9JkmhCyR882RRPjXyh
-         LlxWVHxsfseXq0sbB1rCNOBL+68ad6hs4rhowcvg6SscZiWfW3sAn1OFc6kByVCDshmh
-         ZVtv8YGMEPEdc06geEGBBG/hBkw8majVb9vT84CN7KGxA4C9nPOughJwsZkCnNOFkZle
-         RGBPsGzMIfzhDlqiskswzOat327XAS9k4qv4MfmigydrbEEqmLNuEjuW18yJ4wj5A5h2
-         50fsXtJmuSJSOv6+3OX2r1JqZ+WACz1GrmI1qd6khvBEktMCNm+GyzZS2JmOgyvNu6il
-         f9Og==
-X-Gm-Message-State: AOJu0YzlL4McNYc+TuRDQ0ylj9nXWR7ni64P5wnC8hKwZarTNvnAoXFJ
-        5/43pjgHYgnylveRCTb6qXEGPw==
-X-Google-Smtp-Source: AGHT+IEmnnGsPXbiCoqnKGGSEQZV5gKs3k95eQfu4KgNPhr+xI23ec3VFBNb6n3agvKLHAMbBKTb+Q==
-X-Received: by 2002:a05:600c:2215:b0:405:359a:c950 with SMTP id z21-20020a05600c221500b00405359ac950mr2637301wml.19.1695936211982;
-        Thu, 28 Sep 2023 14:23:31 -0700 (PDT)
+        bh=YaWPyajjId09n77xwVF45ZQmmj2IMJSvqwowpZ4hhto=;
+        b=MOAxDnlXEV/8uzDRerSNEiy6Y4IxkLu+hmT9NvE3aRUnrkr3BDNBDNiR/jqtB5pOOq
+         Gv3M1LZyLjnrVW233uGw4LwFM6iAsNiSR44S2S10bHZFyQ0PxdnvEYmD7kkoBSffjc80
+         KU8NyNuDwGGdtMMSPonc6rgYx/QI2nHY9AqqzxS4sfDHaTTScZceQ4I79JkEbHyGzwA0
+         AC3e8QyV9Dt53D7HnbftQqbqjp+rCNLZM+4oVq0cCQCAQ/QeGbYQv2cJ8VrNTtOtAyuu
+         BYsi7Mjm574iK6uXQOB/Fw2AEbjd2EQmK7xUKGgzubwhx8H/QQ31lVmZIpMRhMW0C5R3
+         P00g==
+X-Gm-Message-State: AOJu0YyOHvDWGfV4SaCJT3FVfwKbrE5o2VSpPPqCoyRwJkjHq6TvWQvG
+        +aVt9JylsJLTHDwVYybPTX50YQ==
+X-Google-Smtp-Source: AGHT+IEtcC8oNE7W4UIwUvqQiedUQr7RfbS0avGBv4QaGCpjynITItQ6TZZk6qwn1BM1v/qNAXgxOA==
+X-Received: by 2002:adf:db48:0:b0:31f:a15f:2cdc with SMTP id f8-20020adfdb48000000b0031fa15f2cdcmr2211506wrj.29.1695936228131;
+        Thu, 28 Sep 2023 14:23:48 -0700 (PDT)
 Received: from [192.168.244.133] ([37.175.77.39])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.23.29
+        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.23.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:23:30 -0700 (PDT)
-Message-ID: <3b67a78b-2246-4017-88a6-69a3458c31a3@broadcom.com>
-Date:   Thu, 28 Sep 2023 23:23:36 +0200
+        Thu, 28 Sep 2023 14:23:46 -0700 (PDT)
+Message-ID: <9088c5f6-08e9-4cb9-81de-6739e93e8c70@broadcom.com>
+Date:   Thu, 28 Sep 2023 23:23:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: PCI: brcm,iproc-pcie: Fix example
- indentation
+Subject: Re: [PATCH 2/3] dt-bindings: PCI: brcm,iproc-pcie: Drop common
+ pci-bus properties
 To:     Rob Herring <robh@kernel.org>,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
         =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
@@ -68,6 +68,7 @@ Cc:     Ray Jui <ray.jui@broadcom.com>,
         linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20230926155351.31117-1-robh@kernel.org>
+ <20230926155351.31117-2-robh@kernel.org>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -101,9 +102,9 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20230926155351.31117-1-robh@kernel.org>
+In-Reply-To: <20230926155351.31117-2-robh@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000807447060671eb8b"
+        boundary="00000000000076a283060671ecee"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -114,7 +115,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000807447060671eb8b
+--00000000000076a283060671ecee
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -122,9 +123,9 @@ Content-Transfer-Encoding: 7bit
 
 
 On 9/26/2023 5:53 PM, Rob Herring wrote:
-> The example's indentation is off. While fixing this, the 'bus' node
-> is unnecessary and can be dropped. It is also preferred to split up
-> unrelated examples to their own entries.
+> Drop the unnecessary listing of properties already defined in
+> pci-bus.yaml. Unless there are additional constraints, it is not
+> necessary.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 
@@ -132,7 +133,7 @@ Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
 Florian
 
---000000000000807447060671eb8b
+--00000000000076a283060671ecee
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -203,14 +204,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHh2xtHUaj8uoAEG
-RRy9HhonEBs1EOzd3h8xXEaKxEiUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDkyODIxMjMzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILWKBl6wojh3f4/E
+8wJUlEsw3tpo4huOztWXcLSJh+AmMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDkyODIxMjM0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAyFTCi5PTlNh9w+pwpVYZ29dAo0M/zvUo6
-JX2294mCMfwg954nBvkq1n5+T8y0SAW0uNTj9/IsipKf5LRaxfPanUmu6YSDswgWl6g15sXlIhUp
-F+A9YnEc9KvS9jbuNl6NXX/cmQfz88O688OcNezWDyiPQXNwASSeePl4xTlMoSsxgdbkfcWJAIap
-2DrBy17TglKBubJcc8hIGDgNiVj4JT9m/UVIEy6+cHFhsDteTMzBKJj2LheibIW5LmBCkWPUPjD5
-jsrF9MT0GelyeSf8XYvXvqXsxlEWjQGWnd8bOrO0UtBcfWRyjuAG+VlHHPqgAoeKvNx3dkewCuYi
-MYWm
---000000000000807447060671eb8b--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDpE2/rbop0DKh16cP8bKIqmdMWHil8F5rQ
+hDrqDQB3YbOpjypy8DOJQXn5TmpNgTdPxB1P4hi/qFjvH2cDfD7y6giRcOnuwQ6SdMli2QzFOp1y
+4pEcRE4AYWt6bOxH1x/eH2MPKUIhill6FgLDWRKqD7Z33rd3w7SZH6ogtRd7pdooWKX012rDgHE/
+XOcyD2ZDQlshEqgyP16zTlC+nS8M7AEgyhuArQH2mMaH+mAG89S1A5ojJB8YDmmT0kf2AA4iM6Qi
+IPwAxv7XaTcninpV08rE8P5A0jaXTbfuwdyFty73/qA/sNIGskS2pxvlYxrlfBQcTz/fnUnLI8FV
+8EXc
+--00000000000076a283060671ecee--
