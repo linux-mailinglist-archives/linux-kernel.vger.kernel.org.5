@@ -2,53 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DA17B1B87
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001A67B1B8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbjI1L4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S232080AbjI1L6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjI1L4i (ORCPT
+        with ESMTP id S229980AbjI1L6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:56:38 -0400
+        Thu, 28 Sep 2023 07:58:31 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7245A1A3;
-        Thu, 28 Sep 2023 04:56:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE456C433C7;
-        Thu, 28 Sep 2023 11:56:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77ECC11F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:58:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7B66C433C7;
+        Thu, 28 Sep 2023 11:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695902196;
-        bh=MqwQqZxSq+rYV16JRtX+1VS187fbXxKqzbTAVy7Reds=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pNv37D6C1Ezqi77ncDvQK5/6Z4Yn/nLr9/qrg5XNCC3rbFlduup7DQsOnAWZs8fA6
-         OXXBMVbxWJe4kwCXLfmaj6qCiu0wQCSekDH5ojmMX0WEQWaEAzteIYDAK8dYDxgWmE
-         lwkgInRQJ8ZZUxc4y9dfnSL9Su+sNDjgnwh/xu3ne3iwoTDN8uLoxriq1wFGm6+wcx
-         HZ8Fc/qfDrnTpCxWqSOad6Lp8DhvGytsZgyZA4oq2YoGirv//4ws56Tr4k3hYJPWqm
-         SsXJNTGbg7Jz2/e3/eq7q58y4rfYnxhPCqvp3IcHD7BmQ2Cufzcsbk8FQs7+upOcL8
-         6Stodsy49PM5g==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-In-Reply-To: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
-Subject: Re: (subset) [PATCH 0/7] 8550 dma coherent and more
-Message-Id: <169590219144.152265.4409423880312803371.b4-ty@kernel.org>
-Date:   Thu, 28 Sep 2023 17:26:31 +0530
+        s=k20201202; t=1695902309;
+        bh=u/+AGQZZm+SiM9ktB+jXaWA0khtFcUnQM0ytfHWXFVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JVJWBEPbmQ1AsrWdZbYoR0JX6ImPJMNyCHuGcXDB/8c6nnfANxbdTQxPQzz8Jfak/
+         dzGN0SzHJ4gjBDujvjVOyJmU1ygHBHcAkS5BspN9ld2AFtH7qwA9sfLwJINdS4Csqi
+         MuoNZEDFCWIVs8RDFNDnjyoiLhNs6WFFTv7d4lct10MV4LQJgh/253XvFse/7thAa7
+         4GWDJhaD2yd8MBVNJqs6JUTiEzA+RIInsxHSnthb7hGW9Z+c9x+X8lAl36D9KWgf9V
+         sOln0yEPivAuZDTbvwiiJITq2JTfNPmctiXerI914qVqX4/Lz9BDnGvKTfX/8ObkoI
+         y7r1HHp+x5Psw==
+Date:   Thu, 28 Sep 2023 13:57:13 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: add sw tx/rx irq
+ coalescing based on hrtimers
+Message-ID: <20230928115713.GG24230@kernel.org>
+References: <20230922121947.36403-1-rogerq@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230922121947.36403-1-rogerq@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,22 +51,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 30 Aug 2023 14:48:39 +0200, Konrad Dybcio wrote:
-> Qualcomm made some under-the-hood changes and made more peripherals
-> capable of coherent transfers with SM8550.
+On Fri, Sep 22, 2023 at 03:19:47PM +0300, Roger Quadros wrote:
+> From: Grygorii Strashko <grygorii.strashko@ti.com>
 > 
-> This series marks them as such and brings fixups to usb and psci-cpuidle.
+> Add SW IRQ coalescing based on hrtimers for TX and RX data path which
+> can be enabled by ethtool commands:
 > 
+> - RX coalescing
+>   ethtool -C eth1 rx-usecs 50
 > 
+> - TX coalescing can be enabled per TX queue
+> 
+>   - by default enables coalesing for TX0
+>   ethtool -C eth1 tx-usecs 50
+>   - configure TX0
+>   ethtool -Q eth0 queue_mask 1 --coalesce tx-usecs 100
+>   - configure TX1
+>   ethtool -Q eth0 queue_mask 2 --coalesce tx-usecs 100
+>   - configure TX0 and TX1
+>   ethtool -Q eth0 queue_mask 3 --coalesce tx-usecs 100 --coalesce tx-usecs 100
+> 
+>   show configuration for TX0 and TX1:
+>   ethtool -Q eth0 queue_mask 3 --show-coalesce
+> 
+> Comparing to gro_flush_timeout and napi_defer_hard_irqs, this patch
+> allows to enable IRQ coalesing for RX path separately.
+> 
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-Applied, thanks!
-
-[1/7] dt-bindings: dmaengine: qcom: gpi: Allow dma-coherent
-      commit: 10c060edf581fdd0d8f23cab84e6c8546c2df8fc
-
-Best regards,
--- 
-~Vinod
-
+Reviewed-by: Simon Horman <horms@kernel.org>
 
