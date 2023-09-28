@@ -2,89 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FBD7B2058
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3C47B2054
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjI1PEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S231394AbjI1PD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjI1PET (ORCPT
+        with ESMTP id S230430AbjI1PDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:04:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAF7194
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695913411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4bUPrdIKvWj+SjiVEtURjGS7hdKH8izlAOVqPCBjbUo=;
-        b=TtzXUAPNoOB5+MX1j05qSyg7vVZVWtgZxwWY80maou8Vw8KHhFIBSpLWgkH5VGSvb8YUld
-        9SBTWTlU8QAS8gjyqA2vAU2ErgZ5Cv+rW5RECVpyCrtc4ugS5xAp3w7d3SbU6dg9U2zQV0
-        6hZkdq3VSEi368O8eK1MyStQNyfB1hA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-401-LyjH_8K-MK-Uh8CbeOwP3Q-1; Thu, 28 Sep 2023 11:03:23 -0400
-X-MC-Unique: LyjH_8K-MK-Uh8CbeOwP3Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 28 Sep 2023 11:03:53 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AF419E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:03:52 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C068040E00B3;
+        Thu, 28 Sep 2023 15:03:50 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id BXXeFrxH1MTH; Thu, 28 Sep 2023 15:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1695913429; bh=36fJuoDKgrkFUfM/dN0U+p3MldqyXeYY9tSG7Iif6RQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kf1d46P6NbiNXiz4G+rZbKB1yeFksa5OgxP/CUXP6lYZvbIbqXq6VLB4xVrcLna1f
+         /ioLB//OjMPoYQ/Zx1f1lE87Bc3tfMvyBsxxncUAgtlcwrsdw9ppv84rsDuXptQV/H
+         GoC6I4wehfYUYboDBdFYG6MTPeS98YBd5HYeUuUXcKja7p8OiRrdHNtchdCK828vR3
+         1/CvqyLz/WVAFXpiEJBQSEx2hik1OLNZnN7wmk12E5N+Lkm+iwvXvKXrCZ0tP3R5Vr
+         55tNkhM1e0tnOR8aE9b+ywbOWqJt/Y6kHY20d2qjwmEPOFNW6I1tT40D7pIFeX/Skr
+         3E17MQugc9CmylNdXJBM4+2QHmEoOaVLRgg8UQ3kriKkxqir2Oi5Zv9vK0P0M/LkSf
+         S7FbOsryyZPgs5YkHBi5Wqipndkd6BxY6Iyc1kheYuXE7hpZ84+fHxoWiMD9IAejki
+         yb7yVpEpUqIgUcprMxue54DVw0uG4rxG5WZxeTrYNS900a77bkQ4QHXGE5ZzCH8CVG
+         bo3npKOWkmYBdx2bHvfRhzbIT1qh7RXCXHzvoCk/uMvy0vMo/guWT6UdMfJBJe5lv8
+         M5MIL8IoEvDsAM4YBJEC/j3f+3bfgbbf0eheGENNlc0znIr1y9sqT3N9bTUUKtPTqG
+         VmA8e7GzH3TpSp7iffCautrc=
+Received: from nazgul.tnic (unknown [88.128.88.93])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F3155811E88;
-        Thu, 28 Sep 2023 15:03:22 +0000 (UTC)
-Received: from redhat.com (unknown [10.22.10.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AE27940C2064;
-        Thu, 28 Sep 2023 15:03:22 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 10:03:21 -0500
-From:   Bill O'Donnell <bodonnel@redhat.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iomap: Spelling s/preceeding/preceding/g
-Message-ID: <ZRWVuQc7Fl+RKUeW@redhat.com>
-References: <46f1ca7817b5febb90c0f1f9881a1c2397b827d0.1695903391.git.geert+renesas@glider.be>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE3E540E0198;
+        Thu, 28 Sep 2023 15:03:45 +0000 (UTC)
+Date:   Thu, 28 Sep 2023 17:04:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Compostella, Jeremy" <jeremy.compostella@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 1/2] x86/cpu/intel: Fix MTRR verification for TME
+ enabled platforms
+Message-ID: <20230928150405.GCZRWV5bjjUuWof3HQ@fat_crate.local>
+References: <87il7xu7ki.fsf@jcompost-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <46f1ca7817b5febb90c0f1f9881a1c2397b827d0.1695903391.git.geert+renesas@glider.be>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <87il7xu7ki.fsf@jcompost-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 02:17:18PM +0200, Geert Uytterhoeven wrote:
-> Fix a misspelling of "preceding".
+On Mon, Sep 25, 2023 at 05:00:45PM -0700, Compostella, Jeremy wrote:
+> On TME enabled platform, BIOS publishes MTRR taking into account Total
+> Memory Encryption (TME) reserved bits.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Reviewed-by: Bill O'Donnell <bodonnel@redhat.com>
-
-> ---
->  fs/iomap/buffered-io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> generic_get_mtrr() performs a sanity check of the MTRRs relying on the
+> `phys_hi_rsvd' variable which is set using the cpuinfo_x86 structure
+> `x86_phys_bits' field.  But at the time the generic_get_mtrr()
+> function is ran the `x86_phys_bits' has not been updated by
+> detect_tme() when TME is enabled.
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 644479ccefbd0f18..5db54ca29a35acf3 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -1049,7 +1049,7 @@ static int iomap_write_delalloc_punch(struct inode *inode, struct folio *folio,
->  
->  /*
->   * Scan the data range passed to us for dirty page cache folios. If we find a
-> - * dirty folio, punch out the preceeding range and update the offset from which
-> + * dirty folio, punch out the preceding range and update the offset from which
->   * the next punch will start from.
->   *
->   * We can punch out storage reservations under clean pages because they either
-> -- 
-> 2.34.1
+> Since the x86_phys_bits does not reflect yet the real maximal physical
+> address size yet generic_get_mtrr() complains by logging the following
+> messages.
 > 
+>     mtrr: your BIOS has configured an incorrect mask, fixing it.
+>     mtrr: your BIOS has configured an incorrect mask, fixing it.
+>     [...]
+> 
+> For `x86_phys_bits' to be updated before generic_get_mtrr() runs, this
+> patch moves the detect_tme() call from init_intel() to
 
+Avoid having "This patch" or "This commit" in the commit message. It is
+tautologically useless.
+
+Also, do
+
+$ git grep 'This patch' Documentation/process
+
+for more details.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
