@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECC47B1C90
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA867B1C93
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjI1MfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        id S232200AbjI1MgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbjI1MfQ (ORCPT
+        with ESMTP id S231752AbjI1MgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:35:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71515198
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695904466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pz9+aLwO3boCmhUHkoiKHilkJ0jwAfADc/jLRJkriTs=;
-        b=ZFz0KjdLQBipMzZdpxMHI16GofcV+16JtpmiHCdKCyrmXMmB9F/TH0yrgNbq/2BuV+PT6/
-        bt9raNNpDNCZEXs8rbylRZTD4JLnPoJRD5gvatLFrETClpRqZBHpcddBwhaQv5upUmmtIV
-        /77L806kGQVMtQBq4ymYNF2L04AUKuQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-182-CVE6FknJM3KJXBBp0LPWFg-1; Thu, 28 Sep 2023 08:34:25 -0400
-X-MC-Unique: CVE6FknJM3KJXBBp0LPWFg-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-536294c9526so531885a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:34:24 -0700 (PDT)
+        Thu, 28 Sep 2023 08:36:00 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD858180
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:35:57 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-317c3ac7339so12317697f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695904556; x=1696509356; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OPk2ZzrID8Ruy/e6ubyOdQXDCXqUez+jUlvGZE9CHoc=;
+        b=DI6SzCmC+ik1/3gGJtZaaEQEZeBEH2IzH7xEn3xfdfCkGFJnUqILygvEr79HM2pY6W
+         n0ATXu30vKju6aYcfvas+ex9CBs/pyIN90PELqPIYlKxbx12rqdqFSJ2nJFM7aiHCNYX
+         ld/UMYHGLcsR2veCA1tEFrzC1YBJyn/nxygpi/vmC3sAdVtyyzNwydlxlZdrd4JNdYXB
+         uRapu+NpaTRv7Zu2FRiMV1Xwess9RIjl9oIGvWlsyWA32PJVa2ScA+KDlqjOd0wk8+Lc
+         sswWC1nEhS0ZmnKdMj83SoMJRbMjdTnxC9rDg0BUB0forlhaNErN7d2+kuOvIteyFuVq
+         qrYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695904463; x=1696509263;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20230601; t=1695904556; x=1696509356;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pz9+aLwO3boCmhUHkoiKHilkJ0jwAfADc/jLRJkriTs=;
-        b=aY3m/cJlncm0rp3y/ZHZcUwtKUXxEHPdi1uXLTxMwCc6458q9VwnbgP8GlEaVy0Oj/
-         9w+Ng+FrFFqHrXt7WJOv7ABDesrjyFpOwV7d8WLjbxOMjWbzgRwjmWfi6MwxGL4h+zea
-         8APK44tr1AjV2uwCBsE9qCMDtGhs2YFqtmTq8RjjJJ+3KqcBLzPmFv+h9IPKvTIhg9Pc
-         0RqSd/mJKRLExpAx0rybjDmFts4w+ma+sKXMbxDJmZ+T9Bnd5lZKRoy3Wf8JmdR8u9Cf
-         sK9rW28kHVmPFNXzqHgrPhTvk1pfyzJbBPod2chqCS3AEmcfUjU4Wn7A+HGRsRzPjuXe
-         +v6Q==
-X-Gm-Message-State: AOJu0YzSsIEwwmhh8/uR4Gs09HLVyyTdvZKZZ1rtXMu0wG5ho6uDPqZW
-        jyWXOThDXp7u4Yz7tV8ENu82c95nSHU5seytTZu2HOh9B+XXUmrnp0s80SwY3vn7xtOllugDarf
-        XVZrfuhgK/3QOuBvON+Dx/DcrY/F/KhTSuNc=
-X-Received: by 2002:aa7:d911:0:b0:531:1f3b:cb36 with SMTP id a17-20020aa7d911000000b005311f3bcb36mr1081152edr.9.1695904463610;
-        Thu, 28 Sep 2023 05:34:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFy3zTx63aKhEZOCz9dfuONcvcSvF95cloaLji0PzHkDKnjkBnlmZE+UKYx/FVQHCRDv8etkg==
-X-Received: by 2002:aa7:d911:0:b0:531:1f3b:cb36 with SMTP id a17-20020aa7d911000000b005311f3bcb36mr1081134edr.9.1695904463316;
-        Thu, 28 Sep 2023 05:34:23 -0700 (PDT)
-Received: from [192.168.1.217] ([109.36.138.103])
-        by smtp.gmail.com with ESMTPSA id d7-20020a056402516700b0052f3471ccf6sm9653815ede.6.2023.09.28.05.34.21
+        bh=OPk2ZzrID8Ruy/e6ubyOdQXDCXqUez+jUlvGZE9CHoc=;
+        b=F1xJYpDh2EvttVsKfP8/0a48ybeP0K41wbH4yhYIBF6FanMc7PS+9WvSBfHs2+RRRC
+         4ZbNxE2sKnpC/dYc3bR7gsBJk89HKVmSlCCfKz8InObkKXEiUwXV0eecFMEwt1ux/Aj/
+         M5W4BTXXByJAiBoCFUrClV1lM60LvmzRR12qb+13kA8hebbjI2u8U8eh7iE107YpkJiT
+         KvxL071+N6O52mQLhp4z6VMrDecQE4QYVRQI0TxYIM3h8jQhv8SrZ9Byhg29exbm1HnM
+         4Jv+iHeys1arg7KnFyVihzV+3p458M3KfrEiURzU4sAKkGzYZBK/79a+oZhRL8UHzpl3
+         kV0Q==
+X-Gm-Message-State: AOJu0YzBvHa3KropTXgKRP1iP2/FR7OvX/47CswB//dkgW5EG67c3nOK
+        hsr1zYT8A1PYlto0UVBe5HAgkzEUc5kRfPoYly7WUg==
+X-Google-Smtp-Source: AGHT+IG+ptZJRlwen4reypsH0+PwYcAGCXwddHDZkmlJP4KAaSG4l2LCo5phyY7HK5it2f8kKzCUsw==
+X-Received: by 2002:a05:6000:985:b0:320:9e7:d525 with SMTP id by5-20020a056000098500b0032009e7d525mr1391079wrb.46.1695904555860;
+        Thu, 28 Sep 2023 05:35:55 -0700 (PDT)
+Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
+        by smtp.gmail.com with ESMTPSA id iw7-20020a05600c54c700b003fc16ee2864sm18319287wmb.48.2023.09.28.05.35.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 05:34:22 -0700 (PDT)
-Message-ID: <7e492ce3-6955-af46-9588-1f803280afdf@redhat.com>
-Date:   Thu, 28 Sep 2023 14:34:20 +0200
+        Thu, 28 Sep 2023 05:35:55 -0700 (PDT)
+Message-ID: <2c985516-88a3-9fee-dbd1-134aecd323e5@blackwall.org>
+Date:   Thu, 28 Sep 2023 15:35:53 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 10/87] drivers/platform/x86: convert to new inode
- {a,m}time accessors
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] bridge: MTU auto tuning ignores IFLA_MTU on NEWLINK
 Content-Language: en-US
-To:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     platform-driver-x86@vger.kernel.org
-References: <20230928110300.32891-1-jlayton@kernel.org>
- <20230928110413.33032-1-jlayton@kernel.org>
- <20230928110413.33032-9-jlayton@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230928110413.33032-9-jlayton@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+To:     Trent Lloyd <trent.lloyd@canonical.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230927075713.1253681-1-trent.lloyd@canonical.com>
+ <3dccacd8-4249-87f8-690c-6083374dc9d1@blackwall.org>
+In-Reply-To: <3dccacd8-4249-87f8-690c-6083374dc9d1@blackwall.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
-
-On 9/28/23 13:02, Jeff Layton wrote:
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-Thanks, feel free to merge through one of the fs / vfs related trees:
-
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->  drivers/platform/x86/sony-laptop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 9/27/23 11:10, Nikolay Aleksandrov wrote:
+> On 9/27/23 10:57, Trent Lloyd wrote:
+>> Commit 804b854d374e ("net: bridge: disable bridge MTU auto tuning if it
+>> was set manually") disabled auto-tuning of the bridge MTU when the MTU
+>> was explicitly set by the user, however that would only happen when the
+>> MTU was set after creation. This commit ensures auto-tuning is also
+>> disabled when the MTU is set during bridge creation.
+>>
+>> Currently when the br_netdev_ops br_change_mtu function is called, the
+>> flag BROPT_MTU_SET_BY_USER is set. However this function is only called
+>> when the MTU is changed after interface creation and is not called if
+>> the MTU is specified during creation with IFLA_MTU (br_dev_newlink).
+>>
+>> br_change_mtu also does not get called if the MTU is set to the same
+>> value it currently has, which makes it difficult to work around this
+>> issue (especially for the default MTU of 1500) as you have to first
+>> change the MTU to some other value and then back to the desired value.
+>>
 > 
-> diff --git a/drivers/platform/x86/sony-laptop.c b/drivers/platform/x86/sony-laptop.c
-> index 9569f11dec8c..40878e327afd 100644
-> --- a/drivers/platform/x86/sony-laptop.c
-> +++ b/drivers/platform/x86/sony-laptop.c
-> @@ -4092,7 +4092,7 @@ static ssize_t sonypi_misc_read(struct file *file, char __user *buf,
->  
->  	if (ret > 0) {
->  		struct inode *inode = file_inode(file);
-> -		inode->i_atime = current_time(inode);
-> +		inode_set_atime_to_ts(inode, current_time(inode));
->  	}
->  
->  	return ret;
+> Yep, I think I also described this in the commit message of my patch.
+> 
+>> Add new selftests to ensure the bridge MTU is handled correctly:
+>>   - Bridge created with user-specified MTU (1500)
+>>   - Bridge created with user-specified MTU (2000)
+>>   - Bridge created without user-specified MTU
+>>   - Bridge created with user-specified MTU set after creation (2000)
+>>
+>> Regression risk: Any workload which erroneously specified an MTU during
+>> creation but accidentally relied upon auto-tuning to a different value
+>> may be broken by this change.
+>>
+> 
+> Hmm, you're right. There's a risk of regression. Also it acts 
+> differently when set to 1500 as you've mentioned. I think they should 
+> act the same, also bridge's fake rtable RTAX_MTU is not set.
+> 
+>> Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2034099
+>> Fixes: 804b854d374e ("net: bridge: disable bridge MTU auto tuning if 
+>> it was set manually")
+>> Signed-off-by: Trent Lloyd <trent.lloyd@canonical.com>
+>> ---
+> 
+
+So I've been thinking about this and to elaborate - my concerns are two
+first is inconsistency between setting MTU at create vs later when it's 
+the default (i.e. this way disables auto-tuning, while later it doesn't)
+and second is potential breakage as some network managers always set the 
+mtu when creating devices. That would suddenly start disabling 
+auto-tuning and that will surprise some people which expect it to work.
+
+I think if you make them both act the same and leave out that case with 
+a big comment why, this would be good for -net. To fully solve the 
+problem without breaking anyone I think we should add control over the 
+autotuning flag so it can be turned on/off by the users. That would be 
+explicit and will work for all cases, but that is net-next material.
+
+Thanks,
+  Nik
 
