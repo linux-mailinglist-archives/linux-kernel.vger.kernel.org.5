@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507B87B18B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344B87B18BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbjI1K6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S231382AbjI1K6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbjI1K6U (ORCPT
+        with ESMTP id S231841AbjI1K63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:58:20 -0400
-Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com [115.124.28.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1B019D;
-        Thu, 28 Sep 2023 03:58:17 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1038123|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00093891-0.000127708-0.998933;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH8d0_1695898685;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH8d0_1695898685)
+        Thu, 28 Sep 2023 06:58:29 -0400
+Received: from out28-195.mail.aliyun.com (out28-195.mail.aliyun.com [115.124.28.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238BA1A5;
+        Thu, 28 Sep 2023 03:58:25 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06714053|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0119606-0.00394247-0.984097;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH8mm_1695898693;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH8mm_1695898693)
           by smtp.aliyun-inc.com;
-          Thu, 28 Sep 2023 18:58:13 +0800
+          Thu, 28 Sep 2023 18:58:21 +0800
 From:   wangweidong.a@awinic.com
 To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -34,17 +34,18 @@ To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         dan.carpenter@linaro.org, colin.i.king@gmail.com,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V6 04/10] ASoC: codecs: Rename "sound-channel" to "awinic,audio-channel"
-Date:   Thu, 28 Sep 2023 18:57:21 +0800
-Message-ID: <20230928105727.47273-5-wangweidong.a@awinic.com>
+Subject: [PATCH V6 05/10] ASoC: codecs: Modify the transmission method of parameters
+Date:   Thu, 28 Sep 2023 18:57:22 +0800
+Message-ID: <20230928105727.47273-6-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928105727.47273-1-wangweidong.a@awinic.com>
 References: <20230928105727.47273-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,51 +54,98 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Rename "sound-channel" to "awinic,audio-channel",
-this is to be consistent with the "awinic,aw88395.yaml" file
+Change the transmission mode of the "aw88395_dev_get_prof_name"
+function parameter, Instead of using return values for data
+transfer, parameters are used
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88261.c                | 2 +-
- sound/soc/codecs/aw88395/aw88395_device.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/aw88395/aw88395.c        |  9 ++++-----
+ sound/soc/codecs/aw88395/aw88395_device.c | 12 ++++++++----
+ sound/soc/codecs/aw88395/aw88395_device.h |  2 +-
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
-index a697b5006b45..7df641592330 100644
---- a/sound/soc/codecs/aw88261.c
-+++ b/sound/soc/codecs/aw88261.c
-@@ -1189,7 +1189,7 @@ static void aw88261_parse_channel_dt(struct aw88261 *aw88261)
- 	u32 channel_value = AW88261_DEV_DEFAULT_CH;
- 	u32 sync_enable = false;
+diff --git a/sound/soc/codecs/aw88395/aw88395.c b/sound/soc/codecs/aw88395/aw88395.c
+index 9dcd75dd799a..77227c8f01f6 100644
+--- a/sound/soc/codecs/aw88395/aw88395.c
++++ b/sound/soc/codecs/aw88395/aw88395.c
+@@ -175,9 +175,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct aw88395 *aw88395 = snd_soc_component_get_drvdata(codec);
+-	const char *prof_name;
+-	char *name;
+-	int count;
++	char *prof_name, *name;
++	int count, ret;
  
--	of_property_read_u32(np, "sound-channel", &channel_value);
-+	of_property_read_u32(np, "awinic,audio-channel", &channel_value);
- 	of_property_read_u32(np, "sync-flag", &sync_enable);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -196,8 +195,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
+ 	name = uinfo->value.enumerated.name;
+ 	count = uinfo->value.enumerated.item;
  
- 	aw_dev->channel = channel_value;
+-	prof_name = aw88395_dev_get_prof_name(aw88395->aw_pa, count);
+-	if (!prof_name) {
++	ret = aw88395_dev_get_prof_name(aw88395->aw_pa, count, &prof_name);
++	if (ret) {
+ 		strscpy(uinfo->value.enumerated.name, "null",
+ 						strlen("null") + 1);
+ 		return 0;
 diff --git a/sound/soc/codecs/aw88395/aw88395_device.c b/sound/soc/codecs/aw88395/aw88395_device.c
-index 25b32cdceeec..5ca4172cb788 100644
+index 5ca4172cb788..fd1f67d5f22f 100644
 --- a/sound/soc/codecs/aw88395/aw88395_device.c
 +++ b/sound/soc/codecs/aw88395/aw88395_device.c
-@@ -1584,15 +1584,15 @@ static void aw88395_parse_channel_dt(struct aw_device *aw_dev)
- 	u32 channel_value;
- 	int ret;
- 
--	ret = of_property_read_u32(np, "sound-channel", &channel_value);
-+	ret = of_property_read_u32(np, "awinic,audio-channel", &channel_value);
- 	if (ret) {
- 		dev_dbg(aw_dev->dev,
--			"read sound-channel failed,use default 0");
-+			"read audio-channel failed,use default 0");
- 		aw_dev->channel = AW88395_DEV_DEFAULT_CH;
- 		return;
+@@ -1296,7 +1296,9 @@ int aw88395_dev_fw_update(struct aw_device *aw_dev, bool up_dsp_fw_en, bool forc
+ 		return -EPERM;
  	}
  
--	dev_dbg(aw_dev->dev, "read sound-channel value is: %d",
-+	dev_dbg(aw_dev->dev, "read audio-channel value is: %d",
- 			channel_value);
- 	aw_dev->channel = channel_value;
+-	prof_name = aw88395_dev_get_prof_name(aw_dev, aw_dev->prof_index);
++	ret = aw88395_dev_get_prof_name(aw_dev, aw_dev->prof_index, &prof_name);
++	if (ret)
++		return ret;
+ 
+ 	dev_dbg(aw_dev->dev, "start update %s", prof_name);
+ 
+@@ -1644,7 +1646,7 @@ int aw88395_dev_set_profile_index(struct aw_device *aw_dev, int index)
  }
+ EXPORT_SYMBOL_GPL(aw88395_dev_set_profile_index);
+ 
+-char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index)
++int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, char **prof_name)
+ {
+ 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
+ 	struct aw_prof_desc *prof_desc;
+@@ -1652,12 +1654,14 @@ char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index)
+ 	if ((index >= aw_dev->prof_info.count) || (index < 0)) {
+ 		dev_err(aw_dev->dev, "index[%d] overflow count[%d]",
+ 			index, aw_dev->prof_info.count);
+-		return NULL;
++		return -EINVAL;
+ 	}
+ 
+ 	prof_desc = &aw_dev->prof_info.prof_desc[index];
+ 
+-	return prof_info->prof_name_list[prof_desc->id];
++	*prof_name = prof_info->prof_name_list[prof_desc->id];
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(aw88395_dev_get_prof_name);
+ 
+diff --git a/sound/soc/codecs/aw88395/aw88395_device.h b/sound/soc/codecs/aw88395/aw88395_device.h
+index d32d16c89509..791c8c106557 100644
+--- a/sound/soc/codecs/aw88395/aw88395_device.h
++++ b/sound/soc/codecs/aw88395/aw88395_device.h
+@@ -181,7 +181,7 @@ int aw88395_dev_fw_update(struct aw_device *aw_dev, bool up_dsp_fw_en, bool forc
+ void aw88395_dev_set_volume(struct aw_device *aw_dev, unsigned short set_vol);
+ int aw88395_dev_get_prof_data(struct aw_device *aw_dev, int index,
+ 			struct aw_prof_desc **prof_desc);
+-char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index);
++int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, char **prof_name);
+ int aw88395_dev_set_profile_index(struct aw_device *aw_dev, int index);
+ int aw88395_dev_get_profile_index(struct aw_device *aw_dev);
+ int aw88395_dev_get_profile_count(struct aw_device *aw_dev);
 -- 
 2.41.0
 
