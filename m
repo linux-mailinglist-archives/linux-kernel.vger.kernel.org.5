@@ -2,151 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362557B1805
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34C47B1808
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbjI1KEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        id S230488AbjI1KFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjI1KEp (ORCPT
+        with ESMTP id S230455AbjI1KE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:04:45 -0400
-Received: from out-191.mta1.migadu.com (out-191.mta1.migadu.com [95.215.58.191])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DF895
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 03:04:41 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695895480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Aw98XHwV4z0PxcVRxJq+PgUKGG9cHNgr+8sDuBaS/1Q=;
-        b=TBb/rvo4iC5NqzUiXAVJQLeGsn6GGRPy0R0UkLLMRmkRNBF0HbzkNMfNirj/11yxliPIab
-        WfzLsmayk/t3sK6Udti6nVip0XT0zFJuEm8E3sZbMLPsAdA7EYG/SKUu4J53K58rxvBOYz
-        Dk4VQl/feq6BmK6XhRu5P+mXndxuwEk=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Subject: [PATCH v6] net/core: Introduce netdev_core_stats_inc()
-Date:   Thu, 28 Sep 2023 18:04:18 +0800
-Message-Id: <20230928100418.521594-1-yajun.deng@linux.dev>
+        Thu, 28 Sep 2023 06:04:57 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF20018F;
+        Thu, 28 Sep 2023 03:04:55 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38S80lWv010994;
+        Thu, 28 Sep 2023 05:04:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=i
+        Iyz/euTFeo8nmj3vOuQ+QOI6OinJLYiG51sJtcu8dU=; b=RhLKZs2VweWxTPB77
+        TPS4TCLNgJkA403UNnPBXbkY89b1KTLbDv/1ltmH325SM+8upyvx+i3mgJtXXUPB
+        sjFFA09Yvyu7xRlzlOkch/XlEvEYH2XACnsd0208Aqw/oR6pgksyfeI1TF8wVckg
+        9k+agfqULl2SgUYH/ZIt47B8MNJpi28H3iA0HOtPeRcArr+rwUZDEyUB3UHIWEKd
+        6nPF9YD4Id1m4pmY6g9bGaAE0AW37OTDpUETAubBEinazivr4oWFHzDp1L4L7Dkj
+        HVj0SaQDElfnAOciEVErVhlBYVuYV41WF3yhWa+aeWbH0Y4hnAL6oo0AhFf4+TiW
+        HmWFA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t9wdxq9ac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 05:04:34 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 28 Sep
+ 2023 11:04:32 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 28 Sep 2023 11:04:32 +0100
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.13])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 34CC011AB;
+        Thu, 28 Sep 2023 10:04:32 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
+        <rmoar@google.com>
+CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH v2] kunit: debugfs: Handle errors from alloc_string_stream()
+Date:   Thu, 28 Sep 2023 11:04:32 +0100
+Message-ID: <20230928100432.3831109-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: dwFo2pgjWhloPjvBqQYnewaTWwSV2Xga
+X-Proofpoint-GUID: dwFo2pgjWhloPjvBqQYnewaTWwSV2Xga
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although there is a kfree_skb_reason() helper function that can be used to
-find the reason why this skb is dropped, but most callers didn't increase
-one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+In kunit_debugfs_create_suite() give up and skip creating the debugfs
+file if any of the alloc_string_stream() calls return an error or NULL.
+Only put a value in the log pointer of kunit_suite and kunit_test if it
+is a valid pointer to a log.
 
-For the users, people are more concerned about why the dropped in ip
-is increasing.
+This prevents the potential invalid dereference reported by smatch:
 
-Introduce netdev_core_stats_inc() for trace the caller of the dropped
-skb. Also, add __code to netdev_core_stats_alloc(), as it's called
-unlinkly.
+ lib/kunit/debugfs.c:115 kunit_debugfs_create_suite() error: 'suite->log'
+	dereferencing possible ERR_PTR()
+ lib/kunit/debugfs.c:119 kunit_debugfs_create_suite() error: 'test_case->log'
+	dereferencing possible ERR_PTR()
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Fixes: 05e2006ce493 ("kunit: Use string_stream for test log")
+Reviewed-by: Rae Moar <rmoar@google.com>
 ---
-v6: merge netdev_core_stats and netdev_core_stats_inc together
-v5: Access the per cpu pointer before reach the relevant offset.
-v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
-v3: __cold should be added to the netdev_core_stats_alloc().
-v2: use __cold instead of inline in dev_core_stats().
-v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
----
- include/linux/netdevice.h | 21 ++++-----------------
- net/core/dev.c            | 17 +++++++++++++++--
- 2 files changed, 19 insertions(+), 19 deletions(-)
+Changes from V1:
+- If the alloc_string_stream() for the suite->log fails
+  just return. Nothing has been created at this point so
+  there's nothing to clean up.
+- Re-word the explanation of why the log pointers are only
+  set if they point to a valid log.
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 7e520c14eb8c..eb1fa04fbccc 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
- 	return false;
- }
- 
--struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
--
--static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
--{
--	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
--	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
--
--	if (likely(p))
--		return p;
--
--	return netdev_core_stats_alloc(dev);
--}
-+void netdev_core_stats_inc(struct net_device *dev, u32 offset);
- 
- #define DEV_CORE_STATS_INC(FIELD)						\
- static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
- {										\
--	struct net_device_core_stats __percpu *p;				\
--										\
--	p = dev_core_stats(dev);						\
--	if (p)									\
--		this_cpu_inc(p->FIELD);						\
-+	netdev_core_stats_inc(dev,						\
-+			offsetof(struct net_device_core_stats, FIELD));		\
- }
- DEV_CORE_STATS_INC(rx_dropped)
- DEV_CORE_STATS_INC(tx_dropped)
- DEV_CORE_STATS_INC(rx_nohandler)
- DEV_CORE_STATS_INC(rx_otherhost_dropped)
-+#undef DEV_CORE_STATS_INC
- 
- static __always_inline int ____dev_forward_skb(struct net_device *dev,
- 					       struct sk_buff *skb,
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc209..88a32c392c1d 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
- }
- EXPORT_SYMBOL(netdev_stats_to_stats64);
- 
--struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
-+static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
-+		struct net_device *dev)
+As these changes are trivial I've carried Rae Moar's
+Reviewed-by from V1.
+---
+ lib/kunit/debugfs.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+index 270d185737e6..9d167adfa746 100644
+--- a/lib/kunit/debugfs.c
++++ b/lib/kunit/debugfs.c
+@@ -109,14 +109,28 @@ static const struct file_operations debugfs_results_fops = {
+ void kunit_debugfs_create_suite(struct kunit_suite *suite)
  {
- 	struct net_device_core_stats __percpu *p;
+ 	struct kunit_case *test_case;
++	struct string_stream *stream;
  
-@@ -10510,7 +10511,19 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
- 	/* This READ_ONCE() pairs with the cmpxchg() above */
- 	return READ_ONCE(dev->core_stats);
+-	/* Allocate logs before creating debugfs representation. */
+-	suite->log = alloc_string_stream(GFP_KERNEL);
+-	string_stream_set_append_newlines(suite->log, true);
++	/*
++	 * Allocate logs before creating debugfs representation.
++	 * The suite->log and test_case->log pointer are expected to be NULL
++	 * if there isn't a log, so only set it if the log stream was created
++	 * successfully.
++	 */
++	stream = alloc_string_stream(GFP_KERNEL);
++	if (IS_ERR_OR_NULL(stream))
++		return;
++
++	string_stream_set_append_newlines(stream, true);
++	suite->log = stream;
+ 
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+-		test_case->log = alloc_string_stream(GFP_KERNEL);
+-		string_stream_set_append_newlines(test_case->log, true);
++		stream = alloc_string_stream(GFP_KERNEL);
++		if (IS_ERR_OR_NULL(stream))
++			goto err;
++
++		string_stream_set_append_newlines(stream, true);
++		test_case->log = stream;
+ 	}
+ 
+ 	suite->debugfs = debugfs_create_dir(suite->name, debugfs_rootdir);
+@@ -124,6 +138,12 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ 	debugfs_create_file(KUNIT_DEBUGFS_RESULTS, S_IFREG | 0444,
+ 			    suite->debugfs,
+ 			    suite, &debugfs_results_fops);
++	return;
++
++err:
++	string_stream_destroy(suite->log);
++	kunit_suite_for_each_test_case(suite, test_case)
++		string_stream_destroy(test_case->log);
  }
--EXPORT_SYMBOL(netdev_core_stats_alloc);
-+
-+void netdev_core_stats_inc(struct net_device *dev, u32 offset)
-+{
-+	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
-+	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
-+
-+	if (unlikely(!p))
-+		p = netdev_core_stats_alloc(dev);
-+
-+	if (p)
-+		(*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
-+}
-+EXPORT_SYMBOL_GPL(netdev_core_stats_inc);
  
- /**
-  *	dev_get_stats	- get network device statistics
+ void kunit_debugfs_destroy_suite(struct kunit_suite *suite)
 -- 
-2.25.1
+2.30.2
 
