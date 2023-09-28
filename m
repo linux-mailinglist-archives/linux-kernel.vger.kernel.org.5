@@ -2,135 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F57A7B1B4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22FA7B1B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbjI1LmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
+        id S231960AbjI1Lm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjI1LmO (ORCPT
+        with ESMTP id S231997AbjI1Lm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:42:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D7D136;
-        Thu, 28 Sep 2023 04:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695901332; x=1727437332;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fDPIHLcRgZN0dV5cFxZPZ18rZu5WNafEq2ZC+1rL2N0=;
-  b=VK9JSNLAWMr4Js8yikCInHbozYzUBzBJo3sNJoIk9sq3ly7PNITOKO8c
-   y0fwVGlBKkb/LnDADy9MrmBSHWNzeb0OCoxR/Iu5pPdk28ucnWZ7yJ0cO
-   NSyWgFFqKaoa+oTB0sXAB/53oKNrJnMEH94dLbLi3uBDyD44b4qVvMGIz
-   yE4vd/5DS7V4N0rBGDJsqbWXcjnWd95Lbl44XG8s+x1SomZ4k8hBKVJry
-   WZB5LWUwjs3L6HvK7xdxEeNuA/FQ7djwnaWVHJypZLRAMmFBFfdewiUAf
-   UX8u6xWJ7/GSGK1umIg1UjMAv0tpgYZd4Vury++J3xHEfykjlA5zSU0mq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="372396041"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="372396041"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 04:42:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="815195646"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="815195646"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Sep 2023 04:42:08 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qlpPC-0001PK-26;
-        Thu, 28 Sep 2023 11:42:06 +0000
-Date:   Thu, 28 Sep 2023 19:41:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wenchao Hao <haowenchao2@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        louhongxiang@huawei.com, Wenchao Hao <haowenchao2@huawei.com>
-Subject: Re: [PATCH v2 1/4] scsi: core: Add new helper to iterate all devices
- of host
-Message-ID: <202309281916.qy89onYp-lkp@intel.com>
-References: <20230928073543.3496394-2-haowenchao2@huawei.com>
+        Thu, 28 Sep 2023 07:42:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2254E12A;
+        Thu, 28 Sep 2023 04:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WcO5WAWfIvtIzSTbpV7mnsw65K9q7xXITWSXV5ekIVM=; b=aPI+3IIWiUEXyqacWz8LNwQTdU
+        jiU0KgpCQUeiv7akl8jtSSWydjexHGvtulP95OwDnIvJfjCjgQ3aH4wUVPElwj+OG9Py2bpITakQN
+        A96RCZTiTAml39rM5NmfLOnCNIiV9wQrNY6pVSKID+cRiTJDRdkNBADNmzV++Ufd/hFH/DKGKR+Oc
+        IRBGMF5LT23yrXPoVN1SgY2pDyWGfKcdhvhXaXp3Qfhnxyax/qxmCKHkMZbgJHP+N4Sy6ua0jz+kb
+        kP3EYJ8W4pI3xgP4zqV2cVEKNO5CH8QS6gFH5j4nwaQRiEDpjzoWt+fy4B2WyfP/uWNlZyW797jsB
+        2Bn6Umpw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qlpP6-002Gl2-DU; Thu, 28 Sep 2023 11:42:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 197BE3002E3; Thu, 28 Sep 2023 13:42:00 +0200 (CEST)
+Date:   Thu, 28 Sep 2023 13:41:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Hao Jia <jiahao.os@bytedance.com>
+Cc:     mingo@redhat.com, mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Igor Raits <igor.raits@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Re: [PATCH] sched/core: Fix wrong warning check in
+ rq_clock_start_loop_update()
+Message-ID: <20230928114159.GJ9829@noisy.programming.kicks-ass.net>
+References: <20230913082424.73252-1-jiahao.os@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928073543.3496394-2-haowenchao2@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230913082424.73252-1-jiahao.os@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wenchao,
+On Wed, Sep 13, 2023 at 04:24:24PM +0800, Hao Jia wrote:
+> Igor Raits and Bagas Sanjaya report a RQCF_ACT_SKIP leak warning.
+> Link: https://lore.kernel.org/all/a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com
+> 
+> Commit ebb83d84e49b54 ("sched/core: Avoid multiple
+> calling update_rq_clock() in __cfsb_csd_unthrottle()")
+> add RQCF_ACT_SKIP leak warning in rq_clock_start_loop_update().
+> But this warning is inaccurate and may be triggered
+> incorrectly in the following situations:
+> 
+>     CPU0                                      CPU1
+> 
+> __schedule()
+>   *rq->clock_update_flags <<= 1;*   unregister_fair_sched_group()
+>   pick_next_task_fair+0x4a/0x410      destroy_cfs_bandwidth()
+>     newidle_balance+0x115/0x3e0       for_each_possible_cpu(i) *i=0*
+>       rq_unpin_lock(this_rq, rf)      __cfsb_csd_unthrottle()
+	  if (rq->clock_update_flags > RQCF_ACT_SKIP)
+	    rf->clock_update_flags = RQCF_UPDATED;
 
-kernel test robot noticed the following build warnings:
+so that preserves all flags, but only stores UPDATED.
 
-[auto build test WARNING on mkp-scsi/for-next]
-[also build test WARNING on jejb-scsi/for-next linus/master v6.6-rc3 next-20230928]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>       raw_spin_rq_unlock(this_rq)
+>                                       rq_lock(*CPU0_rq*, &rf)
+					  rq_pin_lock()
+					    rq->clock_update_flags &= (REQ_SKIP|ACT_SKIP);
+					    rf->clock_update_flags = 0;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Wenchao-Hao/scsi-core-Add-new-helper-to-iterate-all-devices-of-host/20230928-153648
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-patch link:    https://lore.kernel.org/r/20230928073543.3496394-2-haowenchao2%40huawei.com
-patch subject: [PATCH v2 1/4] scsi: core: Add new helper to iterate all devices of host
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230928/202309281916.qy89onYp-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230928/202309281916.qy89onYp-lkp@intel.com/reproduce)
+				IOW, we preserve ACT_SKIP from CPU0
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309281916.qy89onYp-lkp@intel.com/
+>                                       rq_clock_start_loop_update()
+>                                       rq->clock_update_flags & RQCF_ACT_SKIP <--
 
-All warnings (new ones prefixed by >>):
+				And go SPLAT
 
->> drivers/scsi/scsi.c:762: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * helper for shost_for_each_device, see that for documentation
+> 
+>       raw_spin_rq_lock(this_rq)
+	rq_repin_lock()
+	  rq->clock_update_flags |= rf->clock_update_flags;
+
+which restores UPDATED, even though in reality time could have moved on
+quite significantly.
 
 
-vim +762 drivers/scsi/scsi.c
+Anyway....
 
-   760	
-   761	/**
- > 762	 * helper for shost_for_each_device, see that for documentation
-   763	 * @skip_deleted: if true, sdev in progress of removing would be skipped
-   764	 */
-   765	struct scsi_device *__scsi_iterate_devices(struct Scsi_Host *shost,
-   766						   struct scsi_device *prev,
-   767						   bool skip_deleted)
-   768	{
-   769		struct list_head *list = (prev ? &prev->siblings : &shost->__devices);
-   770		struct scsi_device *next = NULL;
-   771		unsigned long flags;
-   772	
-   773		spin_lock_irqsave(shost->host_lock, flags);
-   774		while (list->next != &shost->__devices) {
-   775			next = list_entry(list->next, struct scsi_device, siblings);
-   776			/* skip devices that we can't get a reference to */
-   777			if (!__scsi_device_get(next, skip_deleted))
-   778				break;
-   779			next = NULL;
-   780			list = list->next;
-   781		}
-   782		spin_unlock_irqrestore(shost->host_lock, flags);
-   783	
-   784		if (prev)
-   785			scsi_device_put(prev);
-   786		return next;
-   787	}
-   788	EXPORT_SYMBOL(__scsi_iterate_devices);
-   789	
+the purpose of ACT_SKIP is to skip the update (clue in name etc), but
+the update is very early in __schedule(), but we clear *_SKIP very late,
+causing it to span that gap above.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Going by the commits that put it there, the thinking was to clear
+clock_skip_update before unlock, but AFAICT we can clear SKIP flags
+right after the update_rq_clock() we're wanting to skip, no?
+
+That is, would not something like the below make more sense?
+
+---
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d8fd29d66b24..bfd2ab4b95da 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5357,8 +5357,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
+ 	/* switch_mm_cid() requires the memory barriers above. */
+ 	switch_mm_cid(rq, prev, next);
+ 
+-	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-
+ 	prepare_lock_switch(rq, next, rf);
+ 
+ 	/* Here we just switch the register state and the stack. */
+@@ -6596,6 +6594,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 	/* Promote REQ to ACT */
+ 	rq->clock_update_flags <<= 1;
+ 	update_rq_clock(rq);
++	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
++
+ 
+ 	switch_count = &prev->nivcsw;
+ 
+@@ -6675,8 +6675,6 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 		/* Also unlocks the rq: */
+ 		rq = context_switch(rq, prev, next, &rf);
+ 	} else {
+-		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-
+ 		rq_unpin_lock(rq, &rf);
+ 		__balance_callbacks(rq);
+ 		raw_spin_rq_unlock_irq(rq);
