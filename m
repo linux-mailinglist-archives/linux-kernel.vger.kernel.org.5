@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B357B128C
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A10E7B1283
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbjI1GTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        id S230273AbjI1GQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjI1GTJ (ORCPT
+        with ESMTP id S230265AbjI1GQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:19:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4D899;
-        Wed, 27 Sep 2023 23:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695881946; x=1727417946;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=yPoRTff1W8kHOZj6MIgWTa4FPEtV7El2Duzf1zGYqoI=;
-  b=XCmh6lMezJrCbdiEj6brvfLLN+4eo4r0uPrIBptu38VyOV1oYDG6UJI9
-   do2V5wVo0YxP/em7YTb0rKomZqAHoHKP41Ccv47kW5MBFB+2yfnlkNq51
-   X92JODOz5PFxUzxfwKV8rpdrpjK8KZzBv2eRlgo1VElZIbBAVyVOKHmYF
-   qkCX1Ouz4f0JUTsZDmhFmI1J+5p6CkzjhiqQAp9t1Lp0lJ/hR+L1U1GN9
-   52bTwBaeQPbrzcJJwMlwZdlsNl3oLkQpDlY+EqhGSw1QFTmPb/9NvfYRw
-   yPYbFY6TUoFZOuJ9yQnlDf9U80BK6g7a25NLdazkyARnsmTJB3cvNAGIu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="446139326"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="446139326"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 23:19:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="726120975"
-X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
-   d="scan'208";a="726120975"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 23:19:00 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Ravi Jonnalagadda <ravis.opensrc@micron.com>
-Cc:     <linux-mm@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, <luto@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dietmar.eggemann@arm.com>, <vincent.guittot@linaro.org>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
-        <akpm@linux-foundation.org>, <x86@kernel.org>,
-        <aneesh.kumar@linux.ibm.com>, <gregory.price@memverge.com>,
-        <jgroves@micron.com>, <sthanneeru@micron.com>,
-        <emirakhur@micron.com>, <vtanna@micron.com>
-Subject: Re: [RFC PATCH 0/2] mm: mempolicy: Multi-tier interleaving
-References: <20230927095002.10245-1-ravis.opensrc@micron.com>
-Date:   Thu, 28 Sep 2023 14:14:32 +0800
-In-Reply-To: <20230927095002.10245-1-ravis.opensrc@micron.com> (Ravi
-        Jonnalagadda's message of "Wed, 27 Sep 2023 15:20:00 +0530")
-Message-ID: <87v8burfhz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 28 Sep 2023 02:16:02 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D308A3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:16:00 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qlkIf-0005M7-3R; Thu, 28 Sep 2023 08:15:01 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qlkIT-009W0C-Oq; Thu, 28 Sep 2023 08:14:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qlkIT-005Ytu-DX; Thu, 28 Sep 2023 08:14:49 +0200
+Date:   Thu, 28 Sep 2023 08:14:49 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-tegra@vger.kernel.org,
+        "Conor.Dooley" <conor.dooley@microchip.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-riscv@lists.infradead.org,
+        Karol Gugala <kgugala@antmicro.com>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        Ruan Jinjie <ruanjinjie@huawei.com>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-rockchip@lists.infradead.org,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Huisong Li <lihuisong@huawei.com>,
+        Joel Stanley <joel@jms.id.au>, Sumit Gupta <sumitg@nvidia.com>,
+        "zhang.songyi" <zhang.songyi@zte.com.cn>,
+        Zev Weiss <zev@bewilderbeest.net>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Krzysztof Halasa <khalasa@piap.pl>, loongarch@lists.linux.dev,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michal Simek <michal.simek@amd.com>,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        linux-kernel@vger.kernel.org,
+        Shang XiaoJing <shangxiaojing@huawei.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-mediatek@lists.infradead.org,
+        Nick Alcock <nick.alcock@oracle.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 00/40] soc: Convert to platform remove callback returning
+ void
+Message-ID: <20230928061449.xxqhyyrg6e357dn2@pengutronix.de>
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+ <CACPK8XeROYz_XaB3TvUhdXm7Vm8fjC8yU+mfvA58=_FiDrBy-g@mail.gmail.com>
+ <1b2fddf8-c0a6-4afa-8ad0-f280dea1607f@app.fastmail.com>
+ <f4hvrslynlgmxu4a2gogc5idvumskhaalxgwildy56yqk2wz7d@lkh4swkv52mi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yfll6esgccshw4fu"
+Content-Disposition: inline
+In-Reply-To: <f4hvrslynlgmxu4a2gogc5idvumskhaalxgwildy56yqk2wz7d@lkh4swkv52mi>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,86 +102,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ravi,
 
-Thanks for the patch!
+--yfll6esgccshw4fu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ravi Jonnalagadda <ravis.opensrc@micron.com> writes:
+On Wed, Sep 27, 2023 at 04:01:58PM -0700, Bjorn Andersson wrote:
+> On Wed, Sep 27, 2023 at 10:43:16AM +0200, Arnd Bergmann wrote:
+> > On Wed, Sep 27, 2023, at 04:25, Joel Stanley wrote:
+> > > On Mon, 25 Sept 2023 at 09:55, Uwe Kleine-K=F6nig <u.kleine-koenig@pe=
+ngutronix.de> wrote:
+> > >>
+> > >> this series converts all platform drivers below drivers/soc to use
+> > >> .remove_new(). The motivation is to get rid of an integer return code
+> > >> that is (mostly) ignored by the platform driver core and error prone=
+ on
+> > >> the driver side.
+> > >>
+> > >> See commit 5c5a7680e67b ("platform: Provide a remove callback that
+> > >> returns no value") for an extended explanation and the eventual goal.
+> > >>
+> > >> As there is no single maintainer team for drivers/soc, I suggest the
+> > >> individual maintainers to pick up "their" patches.
+> > >
+> > > I'd be happy if Arnd merged the lot at once. Arnd, what do you think?
+> > >
+> > > If that will be too messy then I understand. I have queued the aspeed
+> > > ones locally and will push that out if we decide that's the best way
+> > > to go.
+> >=20
+> > The main downside of merging it all at once through the soc tree
+> > is that there may be patches that conflict with other work going on
+> > in individual drivers.
+> >=20
+> > What I'd suggest doing here is:
+> >=20
+> > - have platform maintainers pick up patches for their drivers
+> >   if that is their preference for any reason
+>=20
+> I'd prefer this for the qcom drivers at least, please let me know if you
+> would like me to proceed.
 
-> From: Ravi Shankar <ravis.opensrc@micron.com>
->
-> Hello,
->
-> The current interleave policy operates by interleaving page requests
-> among nodes defined in the memory policy. To accommodate the
-> introduction of memory tiers for various memory types (e.g., DDR, CXL,
-> HBM, PMEM, etc.), a mechanism is needed for interleaving page requests
-> across these memory types or tiers.
+I can send a pull request as Arnd suggested. So iff you want the qcom
+drivers not be a part of that PR, just make sure they appear in next
+during the next week. :-)
 
-Why do we need interleaving page allocation among memory tiers?  I think
-that you need to make it more explicit.  I guess that it's to increase
-maximal memory bandwidth for workloads?
+(I'm not sure if "this" in your last quoted sentence is "platform
+maintainers pick up" or "merging it all at once through the soc tree". I
+think you mean the former. Still if you don't want me to pick up the
+qcom patches and won't manage to make them appear in next via your tree,
+I ask you to tell me explicitly to skip these in my PR.)
 
-> This can be achieved by implementing an interleaving method that
-> considers the tier weights.
-> The tier weight will determine the proportion of nodes to select from
-> those specified in the memory policy.
-> A tier weight can be assigned to each memory type within the system.
+Best regards and thanks,
+Uwe
 
-What is the problem of the original interleaving?  I think you need to
-make it explicit too.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> Hasan Al Maruf had put forth a proposal for interleaving between two
-> tiers, namely the top tier and the low tier. However, this patch was
-> not adopted due to constraints on the number of available tiers.
->
-> https://lore.kernel.org/linux-mm/YqD0%2FtzFwXvJ1gK6@cmpxchg.org/T/
->
-> New proposed changes:
->
-> 1. Introducea sysfs entry to allow setting the interleave weight for each
-> memory tier.
-> 2. Each tier with a default weight of 1, indicating a standard 1:1
-> proportion.
-> 3. Distribute the weight of that tier in a uniform manner across all nodes.
-> 4. Modifications to the existing interleaving algorithm to support the
-> implementation of multi-tier interleaving based on tier-weights.
->
-> This is inline with Huang, Ying's presentation in lpc22, 16th slide in
-> https://lpc.events/event/16/contributions/1209/attachments/1042/1995/\
-> Live%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
+--yfll6esgccshw4fu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks to refer to the original work about this.
+-----BEGIN PGP SIGNATURE-----
 
-> Observed a significant increase (165%) in bandwidth utilization
-> with the newly proposed multi-tier interleaving compared to the
-> traditional 1:1 interleaving approach between DDR and CXL tier nodes,
-> where 85% of the bandwidth is allocated to DDR tier and 15% to CXL
-> tier with MLC -w2 option.
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUVGdgACgkQj4D7WH0S
+/k4H8ggAlzMNhL51l548JwUtvGIKaakJoHBLPcGIj/hsCvofuN0HLiMSEtj8Dg6K
+8y1eWVR1Yl+MqkggqjwkOCCy2eX7GYvKXYBRynjaryEtuaE5wSH09zlTWvWBc/ac
+XaBPBsvT6wrBDQBNG9hy4EuMwz7hTRZqp6r0nJV4SSrnor+Lh3EgudImNy82xdmh
+qewYGPdP1R2M1dIIvRSxcLGWHQike9Rti3B8LNTQOTOKB4RrnNfwmPZAk+6LSRAW
+ArlW9S66AzVOe1E5gY70pi4VTQ8AmegEFPOJf3ZqPVAr5s/FYfmxf7GUUM/j/BMh
+7vHOjZMrtO+JkBW/lzWwgV6oKIHgtA==
+=TaoJ
+-----END PGP SIGNATURE-----
 
-It appears that "mlc" isn't an open source software.  Better to use a
-open source software to test.  And, even better to use a more practical
-workloads instead of a memory bandwidth/latency measurement tool.
-
-> Usage Example:
->
-> 1. Set weights for DDR (tier4) and CXL(teir22) tiers.
-> echo 85 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
-> echo 15 > /sys/devices/virtual/memory_tiering/memory_tier22/interleave_weight
->
-> 2. Interleave between DRR(tier4, node-0) and CXL (tier22, node-1) using numactl
-> numactl -i0,1 mlc --loaded_latency W2
->
-> Srinivasulu Thanneeru (2):
->   memory tier: Introduce sysfs for tier interleave weights.
->   mm: mempolicy: Interleave policy for tiered memory nodes
->
->  include/linux/memory-tiers.h |  27 ++++++++-
->  include/linux/sched.h        |   2 +
->  mm/memory-tiers.c            |  67 +++++++++++++++-------
->  mm/mempolicy.c               | 107 +++++++++++++++++++++++++++++++++--
->  4 files changed, 174 insertions(+), 29 deletions(-)
-
---
-Best Regards,
-Huang, Ying
+--yfll6esgccshw4fu--
