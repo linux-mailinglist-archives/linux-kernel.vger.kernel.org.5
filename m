@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10317B1370
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AF77B1372
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjI1G7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        id S230347AbjI1G7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjI1G65 (ORCPT
+        with ESMTP id S230246AbjI1G7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:58:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163D1B4
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:58:55 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf55a81eeaso94096335ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:58:55 -0700 (PDT)
+        Thu, 28 Sep 2023 02:59:16 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06B2B7
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:59:14 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40566f8a093so95203035e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:59:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695884334; x=1696489134; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695884353; x=1696489153; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nwI6smVHd5UMaBia65XA0pC9Bo4/EoWiOYnQn85uIHg=;
-        b=PPbXQX/eAeR94mdeE3TLCv3fep00QImAa0B080BO3wpbTb5rPx71szKD5eaGnjh+mC
-         mlEfB3AF5h8bRn8poqpztouc9CPSkeU4ro3RFTuwr4hqkQBefP3pPc+IgDdpY7DyxE0j
-         ChEA7M3JCK4lBdrRkvHmHUcgqmdWLw8+7tXxJVW//KiFHEMRkLkiBK3qBMKcjMf3h18c
-         LDwB701dls7iAA47rbo66aFoOvp92igmexdAbylrKyYxMpSpuqcSXhQekzWLgVFk50qb
-         8WJbYxlgteP0F0sxmRnbkwmAOH0gHQXDwuFISvP0O3CyG1HqCsGcBh887oqZrfvSD91m
-         g0dw==
+        bh=IxtdkWUQyRUGTWll+i5PkjZHj3/ZutnR3Ko0Ft8Vpf4=;
+        b=cHWb7Q0X2rRfjh4LpqywXlpBBmOLku5nUK8F9Kk+CJyt5yfE7i4Qv4q/6/ITe87EeJ
+         8civ/5e2ldG7bCHJMdzJyc6yoVohBt5UpOIiJADA24NaQA+5sClB3rztOAYn3iS7XHD6
+         sfiUQDZ+agai70UpFpbjPBc13ojMT1sb2dRZE2r5a0oJOV6HHco8pueFAu97MYCRPehO
+         4UhtZUF2MdjwkaHF9pxjD9nojkZmvFNi2bNaBkEPgaEEFZqjbnlkkw7u66cjLbXDeKQe
+         wId9Ckxe9Xc0cvwmR7j2sa02Q+LLC7WvaJZIFL+b0CWjxilj4eR4nEvLv4gLk5ZKSwS4
+         yv1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695884334; x=1696489134;
+        d=1e100.net; s=20230601; t=1695884353; x=1696489153;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nwI6smVHd5UMaBia65XA0pC9Bo4/EoWiOYnQn85uIHg=;
-        b=iGzv1AoVGiNi8XKSE1/wBFZipChGYqPDUkNoguuPGB2mbrX/o6wxo0ampX6IdvcZO9
-         k1Qc/M6/flvvTGZkK8JhDMxjBQWKv1VJbdUCq3SrUdf1n+6habDTfJ9UCcj6T0csF+1d
-         S8CLGSaV1vr4O5TXnrhjSodU9MU2/jpgGQ10LjvsIZonmJ0E2ozkjUCU3fiH2Fx1DV/V
-         SloQ49zMIpWz1V3AGuwjn/cw9o9liMdP1sIKAB/c9KSQmQWRC0DpcPGbHAlMcx8XLuvs
-         c+p2cWXAzDdIOb/LuzxlIdQLn8fMCLrgOphRCGJa8T2qqbOwnWdYxB+kkKElSuFIeMuK
-         HXYg==
-X-Gm-Message-State: AOJu0YyP1gskk35loguSWTDQTGcmGAQK8AK9H4VUa7MxjnQXHWYHGoEM
-        9Rx8ryQ8DGCCXAEhGVtjCpoAAQ==
-X-Google-Smtp-Source: AGHT+IGrj7aiQMA4Uprf8SfQhI+1smIAVwuJN/uHYkcV4Vjv7Aer3HJ4iBpF4ZBfrRArUrRDEVF3Yw==
-X-Received: by 2002:a17:903:1109:b0:1c3:ed30:ce04 with SMTP id n9-20020a170903110900b001c3ed30ce04mr398860plh.25.1695884334495;
-        Wed, 27 Sep 2023 23:58:54 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id n12-20020a170902d2cc00b001c474d6a408sm14221518plc.201.2023.09.27.23.58.53
+        bh=IxtdkWUQyRUGTWll+i5PkjZHj3/ZutnR3Ko0Ft8Vpf4=;
+        b=c5VkBxT5GLLxjsTmx5LSI942/LbaavUmMdZ2aJCDVgh5CdSNopPq2Rglww0+stNSyM
+         UpYcs17HmO3w4YL6gmlGKBNSe9RRHBSpCloV/8mgXidi26FYPGE4hMkspxEmkrVVr5fB
+         O6rYSUV+hq8xm8wsSbCkg9xh3BBAB8kQ1gMw4wI1swTi5XrEvNAb3sqSX8I8fmrudb4y
+         u/vLow/t1XLnabNGjrwj7dCUigGM9d1dtEFwLt5VSDi0NsHsfROqCXJ+su2HjwJb7rwv
+         11FXaRykBw9xWozehiBw7kBi8s6mKKySziNAr2IwuBIh0oiVIj8j03p8EzjnJGhe12h/
+         34qQ==
+X-Gm-Message-State: AOJu0Yz5EgEVLan22jd5l4ZYL5bLeytdXZkMS5t1m7NGJgL5TiWkn+aC
+        elB/2l1UakRnjNAhmW73Jh32WQ==
+X-Google-Smtp-Source: AGHT+IGKeFwM5Om0OMVfRkBh1YdUioiRAuzKQMZJEqVhiuiiZ7tZD589pp+o//kNbzitL+JePrtmtw==
+X-Received: by 2002:a05:600c:3b22:b0:406:5303:9be2 with SMTP id m34-20020a05600c3b2200b0040653039be2mr304954wms.0.1695884353220;
+        Wed, 27 Sep 2023 23:59:13 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id z4-20020a05600c220400b003fe61c33df5sm6326296wml.3.2023.09.27.23.59.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 23:58:53 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 12:28:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: refactor deprecated strncpy
-Message-ID: <20230928065851.5zhqxjxd3vgdmbsd@vireshk-i7>
-References: <20230913-strncpy-drivers-cpufreq-cpufreq-c-v1-1-f1608bfeff63@google.com>
+        Wed, 27 Sep 2023 23:59:12 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 09:59:10 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     wangweidong.a@awinic.com
+Cc:     13916275206@139.com, alsa-devel@alsa-project.org, arnd@arndb.de,
+        broonie@kernel.org, ckeepax@opensource.cirrus.com,
+        colin.i.king@gmail.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, doug@schmorgal.com, fido_max@inbox.ru,
+        harshit.m.mogalapalli@oracle.com, herve.codina@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        liweilei@awinic.com, perex@perex.cz, rf@opensource.cirrus.com,
+        robh+dt@kernel.org, ryans.lee@analog.com, shumingf@realtek.com,
+        tiwai@suse.com, trix@redhat.com, u.kleine-koenig@pengutronix.de,
+        yang.lee@linux.alibaba.com, yijiangtao@awinic.com
+Subject: Re: [PATCH V5 8/8] ASoC: codecs: Add aw87390 amplifier driver
+Message-ID: <71f6bff0-c173-4de2-aed0-38ed2c15ec59@kadam.mountain>
+References: <464ada20-072d-48f8-a270-155dfd4a06b9@kadam.mountain>
+ <20230928064330.104265-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913-strncpy-drivers-cpufreq-cpufreq-c-v1-1-f1608bfeff63@google.com>
+In-Reply-To: <20230928064330.104265-1-wangweidong.a@awinic.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,53 +81,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-09-23, 00:07, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Sep 28, 2023 at 02:43:30PM +0800, wangweidong.a@awinic.com wrote:
+> Thank you very much for your review, but I have some questions
+> I would like to discuss with you
 > 
-> We should prefer more robust and less ambiguous string interfaces.
+> > On Wed, Sep 27, 2023 at 08:16:34PM +0800, wangweidong.a@awinic.com wrote:
+> >> @@ -668,6 +668,17 @@ config SND_SOC_AW88261
+> >>  	  boost converter can be adjusted smartly according to
+> >>  	  the input amplitude.
+> >>  
+> >> +config SND_SOC_AW87390
+> >> +	tristate "Soc Audio for awinic aw87390"
 > 
-> Both `policy->last_governor` and `default_governor` are expected to be
-> NUL-terminated which is shown by their heavy usage with other string
-> apis like `strcmp`.
+> > Capitalize A in Awinic.
 > 
-> A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-> NUL-termination on the destination buffer.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested
-> ---
->  drivers/cpufreq/cpufreq.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 50bbc969ffe5..3eb851a03fce 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1607,7 +1607,7 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
->  	}
->  
->  	if (has_target())
-> -		strncpy(policy->last_governor, policy->governor->name,
-> +		strscpy(policy->last_governor, policy->governor->name,
->  			CPUFREQ_NAME_LEN);
->  	else
->  		policy->last_policy = policy->policy;
-> @@ -2951,7 +2951,7 @@ static int __init cpufreq_core_init(void)
->  	BUG_ON(!cpufreq_global_kobject);
->  
->  	if (!strlen(default_governor))
-> -		strncpy(default_governor, gov->name, CPUFREQ_NAME_LEN);
-> +		strscpy(default_governor, gov->name, CPUFREQ_NAME_LEN);
->  
->  	return 0;
->  }
+> Thank you very much, but our company prefers to 
+> use awinic rather than Awinic
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Ah.  Fine.  I did Google the company name but hadn't scrolled down
+far enough.
 
--- 
-viresh
+regards,
+dan carpenter
+
