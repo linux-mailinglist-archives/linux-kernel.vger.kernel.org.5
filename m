@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32417B275E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B7E7B2760
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 23:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbjI1VWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 17:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S230251AbjI1VXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 17:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjI1VWd (ORCPT
+        with ESMTP id S231524AbjI1VXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 17:22:33 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B621A4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:22:30 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-405361bb94eso137535965e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:22:30 -0700 (PDT)
+        Thu, 28 Sep 2023 17:23:35 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F9719D
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:33 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4054f790190so124866485e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 14:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1695936147; x=1696540947; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1695936212; x=1696541012; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YSOFeyUBtofbn3lqfNgvJ0uMROkxVUAk+0qppK8QHuM=;
-        b=EQ0RaW/Y3a9csEIznMlb3h0FK+rgGuVaLsBvhQsxVBcTWV4YoyFGzLV0pzEoMoUSTX
-         iNdfDCDuJ8J87eqjfNTapF9ZDZWCo757qkkvEow4NM+Hg8UqUmXKbKpRFS+wxPUiq3XT
-         dFImhSePf/DwTFKXOB4qUxY/Yrvz/NjNeKbS0=
+        bh=O6CcwisXQBadco6xD/4qnma7wUpiVVQTFZBRyy3vwm4=;
+        b=OCv3lC8ASxbkLLHyssLPNHcoZcqTqeTW15x+8ZrFSrUrQwZFY9CVBsVZku8RhcK09Z
+         vBP9vsSfSIJcEfHvX0bX8CaqY1/IXXUZi+CgDD8EfktBhBXAX4B8i117sb6L5ox9IMbl
+         Dd0T4DeAh89KRNj/URTRTafn2FldfK+3rLJMs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695936147; x=1696540947;
+        d=1e100.net; s=20230601; t=1695936212; x=1696541012;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=YSOFeyUBtofbn3lqfNgvJ0uMROkxVUAk+0qppK8QHuM=;
-        b=UjEah8uvvK8klUi/3/lUna+2aJglonWU+vSic6KYizAR2UbPG91WnqTboXLp2cOV1U
-         R1rxjpvrVUzYmQU37lSahkv53GJeDisIU6+6WiwYhunRjQzHR2AivhvvHYnPKvbcM1YT
-         GkjOmmwK2lhnDH/smTPc4e33dQRrVWzyACihVfdzElbmx3iw/d8sSuHZQWHOCZ2osvPh
-         JjE4IcLNfLaz4+7YyNy2IHlbOSFso8eN89wIgMkLg2V4QNK5U3Knh6QajRSEUJmH8PGJ
-         SaVjNsJkWPB3Fqzkine9PS5k+FUk4j1C4rMov/EZSjYUZQcFRErQ5B7ZW36kQRwSmkJU
-         3dKg==
-X-Gm-Message-State: AOJu0Ywj4yNiwGdnsq8OkMSILIbXG6CN96+m5fb2J00pSvVXsN9JYmVn
-        TSlHvRa+s8bGPNBpnAw9UEStVQ==
-X-Google-Smtp-Source: AGHT+IEYh5QAAN0Tgls6TkBjndzgHBYZchVSYqyPkQEXo4Z7jlZFvfnfh1WJKkbxKczCRVd5uHSo8A==
-X-Received: by 2002:a7b:ca4d:0:b0:405:3d41:5641 with SMTP id m13-20020a7bca4d000000b004053d415641mr2375888wml.15.1695936147667;
-        Thu, 28 Sep 2023 14:22:27 -0700 (PDT)
+        bh=O6CcwisXQBadco6xD/4qnma7wUpiVVQTFZBRyy3vwm4=;
+        b=sfcUD5jEigwpVLDuZAd77UgScXUbJPqYI7WfsOMUQmqTo63B9JkmhCyR882RRPjXyh
+         LlxWVHxsfseXq0sbB1rCNOBL+68ad6hs4rhowcvg6SscZiWfW3sAn1OFc6kByVCDshmh
+         ZVtv8YGMEPEdc06geEGBBG/hBkw8majVb9vT84CN7KGxA4C9nPOughJwsZkCnNOFkZle
+         RGBPsGzMIfzhDlqiskswzOat327XAS9k4qv4MfmigydrbEEqmLNuEjuW18yJ4wj5A5h2
+         50fsXtJmuSJSOv6+3OX2r1JqZ+WACz1GrmI1qd6khvBEktMCNm+GyzZS2JmOgyvNu6il
+         f9Og==
+X-Gm-Message-State: AOJu0YzlL4McNYc+TuRDQ0ylj9nXWR7ni64P5wnC8hKwZarTNvnAoXFJ
+        5/43pjgHYgnylveRCTb6qXEGPw==
+X-Google-Smtp-Source: AGHT+IEmnnGsPXbiCoqnKGGSEQZV5gKs3k95eQfu4KgNPhr+xI23ec3VFBNb6n3agvKLHAMbBKTb+Q==
+X-Received: by 2002:a05:600c:2215:b0:405:359a:c950 with SMTP id z21-20020a05600c221500b00405359ac950mr2637301wml.19.1695936211982;
+        Thu, 28 Sep 2023 14:23:31 -0700 (PDT)
 Received: from [192.168.244.133] ([37.175.77.39])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.22.26
+        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b003fe23b10fdfsm2707wme.36.2023.09.28.14.23.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 14:22:27 -0700 (PDT)
-Message-ID: <1bec5afd-e17d-458b-9596-1d63e79646f2@broadcom.com>
-Date:   Thu, 28 Sep 2023 23:22:32 +0200
+        Thu, 28 Sep 2023 14:23:30 -0700 (PDT)
+Message-ID: <3b67a78b-2246-4017-88a6-69a3458c31a3@broadcom.com>
+Date:   Thu, 28 Sep 2023 23:23:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/23] gpio: xgs-iproc: Convert to platform remove
- callback returning void
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andy@kernel.org>, Ray Jui <rjui@broadcom.com>,
+Subject: Re: [PATCH 1/3] dt-bindings: PCI: brcm,iproc-pcie: Fix example
+ indentation
+To:     Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
         Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
- <20230928070706.2290137-22-u.kleine-koenig@pengutronix.de>
+        <bcm-kernel-feedback-list@broadcom.com>
+Cc:     Ray Jui <ray.jui@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230926155351.31117-1-robh@kernel.org>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -97,9 +101,9 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20230928070706.2290137-22-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230926155351.31117-1-robh@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a8eb21060671e7a3"
+        boundary="000000000000807447060671eb8b"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -110,34 +114,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a8eb21060671e7a3
+--000000000000807447060671eb8b
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 9/28/2023 9:07 AM, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
+On 9/26/2023 5:53 PM, Rob Herring wrote:
+> The example's indentation is off. While fixing this, the 'bus' node
+> is unnecessary and can be dropped. It is also preferred to split up
+> unrelated examples to their own entries.
 > 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
 Florian
 
---000000000000a8eb21060671e7a3
+--000000000000807447060671eb8b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -208,14 +203,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBvJkUz6jengVGJK
-ptaTsJ+HhUtpJXqGD/eynIOhryAEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDkyODIxMjIyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHh2xtHUaj8uoAEG
+RRy9HhonEBs1EOzd3h8xXEaKxEiUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDkyODIxMjMzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDau7cJEPT/DdacPiqhT2pjQk/KvytC6ZnY
-qwmk8AxZ5qeTmVa3CvyyyD/v9S8VwkvS75RNKEJH8Al/KmWY8Fv+oHc74KG+LcJlnezJpeOI7Q0X
-eELJvN9RuO8hMlu4E4WzzGk6dvY2ZUaw/lEDBwrTdXFdkGhzgBJpLC0aDjNunn+lavTgDR6XMpyM
-zo6tEZo48rWCWRkynC18z2rQTEcwmIZVFvA/Mcfg4zmOyDqBWzgqO2IXFpjaSuhP3VYT2w0C9VSV
-0mxOIQ7xNnlR4DMGHtWzvxlPULkA/rKU2RHRjaNdRq+c+tWMc/SnNfy58yBNmF5PwVqTq1HvInUr
-Lk20
---000000000000a8eb21060671e7a3--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAyFTCi5PTlNh9w+pwpVYZ29dAo0M/zvUo6
+JX2294mCMfwg954nBvkq1n5+T8y0SAW0uNTj9/IsipKf5LRaxfPanUmu6YSDswgWl6g15sXlIhUp
+F+A9YnEc9KvS9jbuNl6NXX/cmQfz88O688OcNezWDyiPQXNwASSeePl4xTlMoSsxgdbkfcWJAIap
+2DrBy17TglKBubJcc8hIGDgNiVj4JT9m/UVIEy6+cHFhsDteTMzBKJj2LheibIW5LmBCkWPUPjD5
+jsrF9MT0GelyeSf8XYvXvqXsxlEWjQGWnd8bOrO0UtBcfWRyjuAG+VlHHPqgAoeKvNx3dkewCuYi
+MYWm
+--000000000000807447060671eb8b--
