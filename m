@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719B07B1B54
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09507B1B58
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbjI1Lmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        id S232003AbjI1Lnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbjI1Lmf (ORCPT
+        with ESMTP id S231843AbjI1Lni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:42:35 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D530DB7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:33 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af602b6512so5282557b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:42:33 -0700 (PDT)
+        Thu, 28 Sep 2023 07:43:38 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C4B7;
+        Thu, 28 Sep 2023 04:43:37 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-79fa7e33573so362495139f.0;
+        Thu, 28 Sep 2023 04:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695901416; x=1696506216; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jhAcDN4K7D/vTmH1Qkl5/PH1ae9Q+7eDYlNx5SqvDps=;
+        b=JK4xMvO713wbZpuywukP4wEEYTKdVYapfpxMiGjToCMj01MA73F58KPa0y+ZhgLe6a
+         ZwbgSqFnhNvLDPZQeZtmBvyxZde/pNchhA35KL7+WFPm7SUWPGAqn0h0FIJhHOR02Z0Q
+         v8JrBePdqOfo8dKYgxDlo9wlKFotj4MfQZb+RFv9BxthldaaSe65cb59hpLFiF7gOc7A
+         jcyy+YMv4zlOMk7G7Q/OrjwvpQvMPc7TugVt+wj1et+7mbRt6Me4+loOlfSntTJecHXO
+         2BHREHuuqWBR09FSNR+xhH3tDzywYfaG4PQ4bb6yZHlrG9g7qJpYLW2IS/fH0SQuNBCg
+         Dowg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695901353; x=1696506153;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YgOvUFNigM03Dttay+D3LBcni9VLrCqqV772iFLDhQs=;
-        b=sVqCuqemyDeVLCU006DOnSLHtNsU3X8zNxGcJj6vayyLCD6Vf0vH+LbOlFNB42JkGa
-         50bI4O9MqlfMvN/acutGee0W61YroVeMnZUZcr37rjq61R6ZF5qJhe5XSJCt6C+Q9KYb
-         HrNmbcnFrWDL+h/VDEEXYm0pRWNWhLtqM2oRzXDofcJ9leAc0WrCQKagI1NZTj6Jzqcq
-         yeOLJrgAScw7zRV+VVlCcDEXtFDUcup5q4dKK0Du+cPAgi6aZ2qa3noswkM4/E/cPGX5
-         abjKjpSv6PRqLU0sVcz98gKA9OSdpF0PCwYmBvSLm+nhb6RtydQBriXnoOwikeXUz+vO
-         DNZQ==
-X-Gm-Message-State: AOJu0YwMAyDjcU75W22ROQrhfZwxoyvCC7H4O8g5KHiIw8i5+HzTF4vy
-        UDDdijUP0YbjgPLrj39i/3vu9z+M3rmcnJ78Lufn+8PhBerV
-X-Google-Smtp-Source: AGHT+IEjfaQWZSq7L2fKVkZwPwmWxgjkpfI4iAkEHGRhEhrwh76+TIvWuBwuIIIcfnXM5M8hT/iUF2aE32gjb/hBHNCzFe/twLx6
+        d=1e100.net; s=20230601; t=1695901416; x=1696506216;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jhAcDN4K7D/vTmH1Qkl5/PH1ae9Q+7eDYlNx5SqvDps=;
+        b=kg/IrXCwwqOqfQs66hzDfDUBY93y2hjP86VYmDp8773NCqvJUHydSw6VPAFmKoBnaI
+         /NZ1GhUeaHktbngm6wziOWU1a7AwzTv/GDc9iYdDJRuUdPhP07K+keCIfbsY0np52rjG
+         fr4Kn/sRGBfNrsl7I85oXsjoVwaIzZnXfR9bMD+EVJJCPIkOc5vdMZVobthpb2pD1TMY
+         32rmw572NQgRQI126URSQWbmzOxMD8vnPPu1pYn2IoSS+xlFNhm4nSq2duEhThMESwY8
+         w/Ezd9kRWXyrJFLsq4S6WiAG2yvGIZvReAIQVf22Lv2ePLdOGr+Jt/f9R2rfsKnjkj4F
+         BhxA==
+X-Gm-Message-State: AOJu0Yzyh++3jmxG9RP71o/TnvhwtQ2V8FDRbl5MhL8unIhm/M6OBZ15
+        m9IZvxPvyZ94IKmUPeAYmmA=
+X-Google-Smtp-Source: AGHT+IHv4Y+EOxcAPosS0sv0p0W1NVztEVlhV40SdyBD4tFtuVkRgoUeCMOYryXEi5Pq3F84FjIAmg==
+X-Received: by 2002:a6b:6608:0:b0:787:4f3c:730d with SMTP id a8-20020a6b6608000000b007874f3c730dmr752837ioc.18.1695901416583;
+        Thu, 28 Sep 2023 04:43:36 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id cg11-20020a0566381bcb00b0042b3dcb1106sm4596901jab.47.2023.09.28.04.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 04:43:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 28 Sep 2023 04:43:33 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Hal Feng <hal.feng@starfivetech.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        linux-hwmon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MAINTAINERS: Add Hal as one of the maintainers of
+ SFCTEMP HWMON DRIVER
+Message-ID: <dc5e9253-5d82-4def-b6ff-038b29bf99ab@roeck-us.net>
+References: <20230928075249.109459-1-hal.feng@starfivetech.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:238c:b0:3a9:8394:1625 with SMTP id
- bp12-20020a056808238c00b003a983941625mr368796oib.9.1695901353257; Thu, 28 Sep
- 2023 04:42:33 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 04:42:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc2f34060669cd42@google.com>
-Subject: [syzbot] Monthly dri report (Sep 2023)
-From:   syzbot <syzbot+listda85cc61a885dfed433b@syzkaller.appspotmail.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928075249.109459-1-hal.feng@starfivetech.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dri maintainers/developers,
+On Thu, Sep 28, 2023 at 03:52:49PM +0800, Hal Feng wrote:
+> As he is the submitter of this driver, add his mail so he can
+> maintain the driver and easily reply in the mailing list.
+> 
+> Acked-by: Emil Renner Berthing <kernel@esmil.dk>
+> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+> ---
+> 
+> History:
+> v1: https://lore.kernel.org/all/20230718034937.92999-4-hal.feng@starfivetech.com/
 
-This is a 31-day syzbot report for the dri subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dri
+The change log should describe your changes, not just point to earlier
+versions of your patch. Please do not expect maintainers to fetch old
+versions of your patches and compare them manually.
 
-During the period, 3 new issues were detected and 0 were fixed.
-In total, 14 issues are still open and 30 have been fixed so far.
+Did anything change besides the Acked-by: ?
 
-Some of the still happening issues:
+Guenter
 
-Ref Crashes Repro Title
-<1> 361     Yes   WARNING in drm_wait_one_vblank
-                  https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
-<2> 83      Yes   WARNING in vkms_get_vblank_timestamp (2)
-                  https://syzkaller.appspot.com/bug?extid=93bd128a383695391534
-<3> 43      Yes   WARNING in drm_syncobj_array_find
-                  https://syzkaller.appspot.com/bug?extid=95416f957d84e858b377
-<4> 6       No    linux-next boot error: WARNING: bad unlock balance in vkms_vblank_simulate
-                  https://syzkaller.appspot.com/bug?extid=204dd7e9a83cb8855b63
-<5> 5       Yes   divide error in drm_mode_vrefresh
-                  https://syzkaller.appspot.com/bug?extid=622bba18029bcde672e1
-<6> 3       Yes   WARNING in drm_gem_object_handle_put_unlocked
-                  https://syzkaller.appspot.com/bug?extid=ef3256a360c02207a4cb
-<7> 2       Yes   memory leak in vma_node_allow
-                  https://syzkaller.appspot.com/bug?extid=58ea3177ba8bd0a5d8ee
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> 
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b19995690904..2376272bbe20 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19402,6 +19402,7 @@ F:	drivers/net/ethernet/sfc/
+>  
+>  SFCTEMP HWMON DRIVER
+>  M:	Emil Renner Berthing <kernel@esmil.dk>
+> +M:	Hal Feng <hal.feng@starfivetech.com>
+>  L:	linux-hwmon@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
+> 
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> -- 
+> 2.38.1
+> 
