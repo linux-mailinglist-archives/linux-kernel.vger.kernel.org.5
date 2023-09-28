@@ -2,228 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA5D7B119E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F747B11A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 06:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjI1Ec1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 00:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
+        id S230049AbjI1EgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 00:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjI1Eb7 (ORCPT
+        with ESMTP id S229460AbjI1EgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 00:31:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644CE10FA;
-        Wed, 27 Sep 2023 21:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695875505; x=1727411505;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eeu8S/a5RFXcVTu8TVhpB6n955jAoFthdEXgEkNqByQ=;
-  b=C6pc3P1de2CCaXFU85l0Ls+1KF36TVmDhraNJgsRAQdgDUt4Y7xd1gMX
-   uh3L5kTT/T0Rw0JZK0ljg4+Z0VAdV4vz+41I1puohHFL89hmrN601s/t0
-   bxTr80UeOOE5Q7IEPYFWWKMXGDcpwtf2njZ8coi43z9lTC+ZkWZWGk8WI
-   /ltxlBVClklwD2SfEUzjIdHrhUMmsfJLQIOMovhd2tPS40qdzKZuRT0e6
-   dzPssHX5RHAvniT+TU4ZZ94uR4uri4/6RSW1t7nwQm1F3GnfZ+redNn8O
-   OE/WhTpjRX0vyb+T8yWLyBYcetHtmYbPKvB0z+/xES44OAnujbVnDw3/z
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="379260573"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="379260573"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2023 21:31:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="923069090"
-X-IronPort-AV: E=Sophos;i="6.03,182,1694761200"; 
-   d="scan'208";a="923069090"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga005.jf.intel.com with ESMTP; 27 Sep 2023 21:31:41 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v6 12/12] iommu: Improve iopf_queue_flush_dev()
-Date:   Thu, 28 Sep 2023 12:27:34 +0800
-Message-Id: <20230928042734.16134-13-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230928042734.16134-1-baolu.lu@linux.intel.com>
-References: <20230928042734.16134-1-baolu.lu@linux.intel.com>
+        Thu, 28 Sep 2023 00:36:21 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3C8114
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:36:19 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3248ac76acbso2998f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 21:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695875778; x=1696480578; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2bcLuLiz5kt9TeX+bNBG/mep7u1wIsN3ZLYP7gCuuA=;
+        b=YN75xvsv6MvgDQi7nxxXdq49AdWejQ3dD2SpVgOUwRoeR9l8b65CNdUN/l8GC7D4ph
+         EHOGsnhESeVJvOxEjFxraq077E5I60T3hw4RAh9qcmh3hueOEsq7r+NzUknXDvy/NySr
+         A3A4CeCFpP5WXaaT+A+gdho4jvg+wF1phhDjK/EN9P6NdxBVLbWyRVcNYrm9dc5cX1xT
+         c3zoFsBsQG7qk+qO4V+sXFF6EzQ5kr+1K0LwbGsLJsAlRvtHaF5SGOM+O5d6/N4tipID
+         s4/RMKRQfkPtoMACj1VKSuvnFTGrrrflVAPMlRLGBiVKdK8JRHistM10enZKJCcOnuqF
+         Pjwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695875778; x=1696480578;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y2bcLuLiz5kt9TeX+bNBG/mep7u1wIsN3ZLYP7gCuuA=;
+        b=N3noTYjK3IE8hhNnvHdgnL/XkFxntONC+JskzMS64mj7a1dPJl9MZs/jPR5GlN5+pH
+         hpeXa/Bn5kK0AcbYL5T6wftDleHYpxfatJLCBaoZmYGHucXXIMtmLGYtRTFnL/yiLpXT
+         7ZnWequZjg/wEGYN6wDRtc4863S0/opfE/X1e+puWdwm3XIn9TcwD+NNgWcRydpruec9
+         QcZy7Iq0WT+Fg2rJ0paTye0vQvORS1OcSynjtqpXlQoZGSucJ3Xt9VLbttdB9v0zKvpw
+         umIUbEQl50zuob82/Nm67gsjAnVBpNLxIb9zOzzR73y1RGDJiiLclxdb3gDP2aF/IpXN
+         c51A==
+X-Gm-Message-State: AOJu0YyOOP6rEWvMhDQxlUsTZ/bQzrH8KwHPsGcTBYSLpbrVIESeVLXV
+        koMG84h4pNyute3n3bQAYLVPSw==
+X-Google-Smtp-Source: AGHT+IEKQquHV5xUHZcRSr2EmP/MAa80mSZoGKUcYQEprN4XvYxeuyq9TeAwGMT3RBc8MSsAjuYg7Q==
+X-Received: by 2002:adf:e90e:0:b0:323:36f1:c256 with SMTP id f14-20020adfe90e000000b0032336f1c256mr154063wrm.11.1695875777785;
+        Wed, 27 Sep 2023 21:36:17 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id t16-20020a5d49d0000000b0031c5b380291sm18511301wrs.110.2023.09.27.21.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Sep 2023 21:36:17 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 07:36:14 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, davidgow@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kunit: debugfs: Handle errors from alloc_string_stream()
+Message-ID: <55e247b6-e3b2-44a8-89c2-3cca9340dba2@kadam.mountain>
+References: <20230927165058.29484-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927165058.29484-1-rf@opensource.cirrus.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iopf_queue_flush_dev() is called by the iommu driver before releasing
-a PASID. It ensures that all pending faults for this PASID have been
-handled or cancelled, and won't hit the address space that reuses this
-PASID. The driver must make sure that no new fault is added to the queue.
+On Wed, Sep 27, 2023 at 05:50:58PM +0100, Richard Fitzgerald wrote:
+> In kunit_debugfs_create_suite() give up and skip creating the debugfs
+> file if any of the alloc_string_stream() calls return an error or NULL.
+> Only put a value in the log pointer of kunit_suite and kunit_test if it
+> is a valid pointer to a log.
+> 
+> This prevents the potential invalid dereference reported by smatch:
+> 
+>  lib/kunit/debugfs.c:115 kunit_debugfs_create_suite() error: 'suite->log'
+> 	dereferencing possible ERR_PTR()
+>  lib/kunit/debugfs.c:119 kunit_debugfs_create_suite() error: 'test_case->log'
+> 	dereferencing possible ERR_PTR()
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: 05e2006ce493 ("kunit: Use string_stream for test log")
+> ---
+>  lib/kunit/debugfs.c | 29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+> index 270d185737e6..73075ca6e88c 100644
+> --- a/lib/kunit/debugfs.c
+> +++ b/lib/kunit/debugfs.c
+> @@ -109,14 +109,27 @@ static const struct file_operations debugfs_results_fops = {
+>  void kunit_debugfs_create_suite(struct kunit_suite *suite)
+>  {
+>  	struct kunit_case *test_case;
+> +	struct string_stream *stream;
+>  
+> -	/* Allocate logs before creating debugfs representation. */
+> -	suite->log = alloc_string_stream(GFP_KERNEL);
+> -	string_stream_set_append_newlines(suite->log, true);
+> +	/*
+> +	 * Allocate logs before creating debugfs representation.
+> +	 * The log pointer must be NULL if there isn't a log so only
+> +	 * set it if the log stream was created successfully.
+> +	 */
+> +	stream = alloc_string_stream(GFP_KERNEL);
+> +	if (IS_ERR_OR_NULL(stream))
+> +		goto err;
 
-The SMMUv3 driver doesn't use it because it only implements the
-Arm-specific stall fault model where DMA transactions are held in the SMMU
-while waiting for the OS to handle iopf's. Since a device driver must
-complete all DMA transactions before detaching domain, there are no
-pending iopf's with the stall model. PRI support requires adding a call to
-iopf_queue_flush_dev() after flushing the hardware page fault queue.
+So when you're programming, there is an aspect where you are telling the
+computer what to do, but there is also an aspect where you are
+communicating to other programmers.  Checking for IS_ERR_OR_NULL() works
+in terms of computers, but in terms of communicating to humans it's
+misleading.  And to be honest the comments are even more confusing
+because they suggest something complicated is happening so I had to
+review the code extra carefully.
 
-The current implementation of iopf_queue_flush_dev() is a simplified
-version. It is only suitable for SVA case in which the processing of iopf
-is implemented in the inner loop of the iommu subsystem.
+When a function returns both error pointers and NULL then it means
+it is an optional feature which can be disabled.  Error pointers means
+errors.  NULL means disabled.  So typically the IS_ERR_OR_NULL() or
+NULL check looks like this:
 
-Improve this interface to make it also work for handling iopf out of the
-iommu core. Rename the function with a more meaningful name. Remove a
-warning message in iommu_page_response() since the iopf queue might get
-flushed before possible pending responses.
+	blinky_lights = get_blinky();
+	if (IS_ERR_OR_NULL(blinky_lights))
+		return PTR_ERR(blinky_lights);
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- include/linux/iommu.h      |  4 +--
- drivers/iommu/intel/svm.c  |  2 +-
- drivers/iommu/io-pgfault.c | 60 ++++++++++++++++++++++++++++++--------
- 3 files changed, 51 insertions(+), 15 deletions(-)
+	blinky_lights->blink();
+	return 0;
 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index de35a5393f4f..bcec7e91dfc4 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -1282,7 +1282,7 @@ iommu_sva_domain_alloc(struct device *dev, struct mm_struct *mm)
- #ifdef CONFIG_IOMMU_IOPF
- int iopf_queue_add_device(struct iopf_queue *queue, struct device *dev);
- int iopf_queue_remove_device(struct iopf_queue *queue, struct device *dev);
--int iopf_queue_flush_dev(struct device *dev);
-+int iopf_queue_discard_dev_pasid(struct device *dev, ioasid_t pasid);
- struct iopf_queue *iopf_queue_alloc(const char *name);
- void iopf_queue_free(struct iopf_queue *queue);
- int iopf_queue_discard_partial(struct iopf_queue *queue);
-@@ -1302,7 +1302,7 @@ iopf_queue_remove_device(struct iopf_queue *queue, struct device *dev)
- 	return -ENODEV;
- }
- 
--static inline int iopf_queue_flush_dev(struct device *dev)
-+static inline int iopf_queue_discard_dev_pasid(struct device *dev, ioasid_t pasid)
- {
- 	return -ENODEV;
- }
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 780c5bd73ec2..659de9c16024 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -495,7 +495,7 @@ void intel_drain_pasid_prq(struct device *dev, u32 pasid)
- 		goto prq_retry;
- 	}
- 
--	iopf_queue_flush_dev(dev);
-+	iopf_queue_discard_dev_pasid(dev, pasid);
- 
- 	/*
- 	 * Perform steps described in VT-d spec CH7.10 to drain page
-diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
-index 59555dc5ac50..1dbacc4fdf72 100644
---- a/drivers/iommu/io-pgfault.c
-+++ b/drivers/iommu/io-pgfault.c
-@@ -254,10 +254,9 @@ int iommu_page_response(struct device *dev,
- 
- 	/* Only send response if there is a fault report pending */
- 	mutex_lock(&fault_param->lock);
--	if (list_empty(&fault_param->faults)) {
--		dev_warn_ratelimited(dev, "no pending PRQ, drop response\n");
-+	if (list_empty(&fault_param->faults))
- 		goto done_unlock;
--	}
-+
- 	/*
- 	 * Check if we have a matching page request pending to respond,
- 	 * otherwise return -EINVAL
-@@ -298,30 +297,67 @@ int iommu_page_response(struct device *dev,
- EXPORT_SYMBOL_GPL(iommu_page_response);
- 
- /**
-- * iopf_queue_flush_dev - Ensure that all queued faults have been processed
-- * @dev: the endpoint whose faults need to be flushed.
-+ * iopf_queue_discard_dev_pasid - Discard all pending faults for a PASID
-+ * @dev: the endpoint whose faults need to be discarded.
-+ * @pasid: the PASID of the endpoint.
-  *
-  * The IOMMU driver calls this before releasing a PASID, to ensure that all
-- * pending faults for this PASID have been handled, and won't hit the address
-- * space of the next process that uses this PASID. The driver must make sure
-- * that no new fault is added to the queue. In particular it must flush its
-- * low-level queue before calling this function.
-+ * pending faults for this PASID have been handled or dropped, and won't hit
-+ * the address space of the next process that uses this PASID. The driver
-+ * must make sure that no new fault is added to the queue. In particular it
-+ * must flush its low-level queue before calling this function.
-  *
-  * Return: 0 on success and <0 on error.
-  */
--int iopf_queue_flush_dev(struct device *dev)
-+int iopf_queue_discard_dev_pasid(struct device *dev, ioasid_t pasid)
- {
- 	struct iommu_fault_param *iopf_param = iopf_get_dev_fault_param(dev);
-+	const struct iommu_ops *ops = dev_iommu_ops(dev);
-+	struct iommu_page_response resp;
-+	struct iopf_fault *iopf, *next;
-+	int ret = 0;
- 
- 	if (!iopf_param)
- 		return -ENODEV;
- 
- 	flush_workqueue(iopf_param->queue->wq);
-+
-+	mutex_lock(&iopf_param->lock);
-+	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
-+		if (!(iopf->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) ||
-+		    iopf->fault.prm.pasid != pasid)
-+			break;
-+
-+		list_del(&iopf->list);
-+		kfree(iopf);
-+	}
-+
-+	list_for_each_entry_safe(iopf, next, &iopf_param->faults, list) {
-+		if (!(iopf->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) ||
-+		    iopf->fault.prm.pasid != pasid)
-+			continue;
-+
-+		memset(&resp, 0, sizeof(struct iommu_page_response));
-+		resp.pasid = iopf->fault.prm.pasid;
-+		resp.grpid = iopf->fault.prm.grpid;
-+		resp.code = IOMMU_PAGE_RESP_INVALID;
-+
-+		if (iopf->fault.prm.flags & IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID)
-+			resp.flags = IOMMU_PAGE_RESP_PASID_VALID;
-+
-+		ret = ops->page_response(dev, iopf, &resp);
-+		if (ret)
-+			break;
-+
-+		list_del(&iopf->list);
-+		kfree(iopf);
-+	}
-+	mutex_unlock(&iopf_param->lock);
- 	iopf_put_dev_fault_param(iopf_param);
- 
--	return 0;
-+	return ret;
- }
--EXPORT_SYMBOL_GPL(iopf_queue_flush_dev);
-+EXPORT_SYMBOL_GPL(iopf_queue_discard_dev_pasid);
- 
- /**
-  * iopf_queue_discard_partial - Remove all pending partial fault
--- 
-2.34.1
+This means that the function requires the blinky feature to continue.
+If blinky_lights is an error pointer then it returns an error.  If
+blinky_lights is NULL then PTR_ERR(NULL) is zero which is success.  We
+didn't blink the lights but only because the admin told us not to.  It's
+a no-op but it's not an error.
+
+In this case, alloc_string_stream() is not optional.  It only returns
+error pointers.  It can never return NULL.
+
+I have written a blog about this in more detail but already this email
+is probably longer than my blog was.
+https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
+
+regards,
+dan carpenter
 
