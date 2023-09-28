@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D017B2626
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58697B262D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbjI1Tus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 15:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S231556AbjI1Tzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjI1Tuq (ORCPT
+        with ESMTP id S229864AbjI1Tz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 15:50:46 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AE0194
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:50:45 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59c0d002081so164335437b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695930644; x=1696535444; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gP4BbdJTdcgYDV7Qx/mEWw5rQtFKtKyVqI/O28O5mPs=;
-        b=qCklHZGThcv0o4pW/DfbuF4e+E+zbDeZaAzVTwed5XuQQr1BNvp8X16nQWZ80TySrl
-         V/djSMyFV2glY2wrBUNkffcxNWtBK46APiVCHGwHMH7KayBXCV42sBIoKs9ozxDbnG72
-         Sp2Jhgyl/iKdt5+WtBUBmdJarcdn8p2XTuO6ItVcOrR3jCX3ElW6n/cwgXN2MXswGEFx
-         8AEASsrbEftrrnrzqB/EKVcxOc8JEE1wMVYqRrvhP3KgjzHtDiIs9k/oWqS+jO99FqNk
-         D/Ak/sMmrh4Qj/QRqO/zvFXOvNmr4nATY5HPl45FVt+/38RUeuGohbAC2L22+bDSBBwo
-         GAWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695930644; x=1696535444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gP4BbdJTdcgYDV7Qx/mEWw5rQtFKtKyVqI/O28O5mPs=;
-        b=DDXr6RFw6Z7oVZWQsYsFLro0NrDToOKxDaVv48LS0sEct05uZAD16tEHGYDB1ygcrb
-         mEOptmg/U+IpgRR0trTUINHoNaFkA36M4S36X5qAsw/d88abRTOgCo2o8iKzQAcQn4K5
-         oL+RYvpQPAKyhpo9XwS+XTr0TJBR4OSVPKo+hYdtcYm2tRfE7fNOv11UX1yovOJj7NxE
-         J/5ewMxE0x3bsnecs7jPunjl1a3PJykPvSnuAW4fCjIdpxqzzD4l3/jeSFA3u10WnwtD
-         E+lI9mfcD10IObUmOpM9n0zRnq5fiNhW7Lvf6Cx/4ZN8/o0pjKDpvGUC8jYT+bIhSEco
-         OL3g==
-X-Gm-Message-State: AOJu0YwyrOLNZ8Idb/FUzQBW7nHtSaA+p9GVXOsU8j2Jrz8nU+4K5qQS
-        ldw8XL1vPSQ8uhdmYUy7Y3Z+XJorXWIdxR1vSdYxKA==
-X-Google-Smtp-Source: AGHT+IG3Rb7Z0h/ROaA3hCrSRrRuw/6HH5fqObICNocBlKuL+ih7nn5iO35GIC3JuJEF8FbPK8kIVC0dF9VSiIqv+Jo=
-X-Received: by 2002:a81:848f:0:b0:584:61df:45e8 with SMTP id
- u137-20020a81848f000000b0058461df45e8mr2449845ywf.13.1695930644215; Thu, 28
- Sep 2023 12:50:44 -0700 (PDT)
+        Thu, 28 Sep 2023 15:55:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46214F7;
+        Thu, 28 Sep 2023 12:55:25 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695930921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dSvz8T6itr9FWR99Rys1NQjiPi4ExBzhoF5Qj7BihzY=;
+        b=mjs6qexrVugU8k/lQ/2ebrfLj20C51JXiWSJ8xPNBWzRCSwGzngkjmcR+JR/ONH6yw7ktS
+        hGkLzkBsJ7WgbYQw8ayPdfzxVmHzEoG9xKXR1ePgshxqAfopx8aOiuM3fbAqyeVrHcPI1l
+        WRSBf9pL0dkkVd8AQCQ2VEajkV98Hu3LtZ+9EldKhcP0F6V/qmkp4RKeTGzvCH9KJJ1sTT
+        Q2d1WG+LhtySbtafDxMHHxQFKeQh9v/sTaKKs2iVwgWNlo0j0hx9LshO5WJTKrWR6Q0oe5
+        fFqmFF3l+mYiUaIoxhJg4U374ZzOVbtDsKW5s3AlVUnwa7wHC+1sFy0vIX/K+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695930921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dSvz8T6itr9FWR99Rys1NQjiPi4ExBzhoF5Qj7BihzY=;
+        b=SpRahioNiaI5Gp8+sh8rdf76ZN2sFe6jyj/bug/FR6ZFkzyBWsAIB05ujDbsTrgCEkmVk7
+        jYB8I/j7gDCHzXBw==
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+        Florian Weimer <fw@deneb.enyo.de>, David.Laight@ACULAB.COM,
+        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?utf-8?Q?An?= =?utf-8?Q?dr=C3=A9?= Almeida 
+        <andrealmeid@igalia.com>, libc-alpha@sourceware.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Noah Goldstein <goldstein.w.n@gmail.com>,
+        Daniel Colascione <dancol@google.com>, longman@redhat.com,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [RFC PATCH v2 4/4] selftests/rseq: Implement rseq_mutex test
+ program
+In-Reply-To: <20230529191416.53955-5-mathieu.desnoyers@efficios.com>
+References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
+ <20230529191416.53955-5-mathieu.desnoyers@efficios.com>
+Date:   Thu, 28 Sep 2023 21:55:20 +0200
+Message-ID: <87v8budqdz.ffs@tglx>
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <ZRXJZyPMdVsQNt4h@x1n>
-In-Reply-To: <ZRXJZyPMdVsQNt4h@x1n>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 28 Sep 2023 12:50:33 -0700
-Message-ID: <CAJuCfpFttknDCAOaiR25Nw4_MS=YSpQNqzFPeEh41gtCVgCs0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     Peter Xu <peterx@redhat.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:43=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote=
-:
->
-> One more thing..
->
-> On Fri, Sep 22, 2023 at 06:31:45PM -0700, Suren Baghdasaryan wrote:
-> > +static int remap_pages_pte(struct mm_struct *dst_mm,
->
-> [...]
->
-> > +retry:
-> > +     dst_pte =3D pte_offset_map_nolock(dst_mm, dst_pmd, dst_addr, &dst=
-_ptl);
-> > +
-> > +     /* If an huge pmd materialized from under us fail */
-> > +     if (unlikely(!dst_pte)) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
-> > +
-> > +     src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, src_addr, &src=
-_ptl);
-> > +
-> > +     /*
-> > +      * We held the mmap_lock for reading so MADV_DONTNEED
-> > +      * can zap transparent huge pages under us, or the
-> > +      * transparent huge page fault can establish new
-> > +      * transparent huge pages under us.
-> > +      */
-> > +     if (unlikely(!src_pte)) {
-> > +             err =3D -EFAULT;
-> > +             goto out;
-> > +     }
->
-> For these two places: I know that thp collapse with mmap read lock hasn't
-> yet spread to anon (so I assume none of above could trigger yet on the
-> failure paths), but shall we constantly return -EAGAIN here just in case =
-we
-> forget that in the future?
->
-> For example, for UFFDIO_COPY over shmem which we can already hit similar
-> case, mfill_atomic_install_pte() has:
->
->         ret =3D -EAGAIN;
->         dst_pte =3D pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
->         if (!dst_pte)
->                 goto out;
->
-> Thanks,
+On Mon, May 29 2023 at 15:14, Mathieu Desnoyers wrote:
+> +static void rseq_lock_slowpath(struct rseq_mutex *lock)
+> +{
+> +	int i = 0;
+> +
+> +	for (;;) {
+> +		struct rseq_abi_sched_state *expected = NULL, *self = rseq_get_sched_state(rseq_get_abi());
+> +
+> +		if (__atomic_compare_exchange_n(&lock->owner, &expected, self, false,
+> +						__ATOMIC_ACQUIRE, __ATOMIC_RELAXED))
+> +			break;
+> +		//TODO: use rseq critical section to protect dereference of owner thread's
+> +		//rseq_abi_sched_state, combined with rseq fence at thread reclaim.
+> +		if ((RSEQ_READ_ONCE(expected->state) & RSEQ_ABI_SCHED_STATE_FLAG_ON_CPU) &&
 
-Retrying in this case makes sense to me. Will change.
+For robust and PI futexes the futex value is an ABI between kernel and
+user space. Sure, this is only meant for demonstration, but it's the
+wrong direction.
 
->
-> --
-> Peter Xu
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+Thanks,
+
+        tglx
+
+
+
+
+
+
