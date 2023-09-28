@@ -2,134 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF837B251B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98C27B251E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjI1STS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S231716AbjI1STt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjI1STR (ORCPT
+        with ESMTP id S230139AbjI1STs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:19:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE48F99;
-        Thu, 28 Sep 2023 11:19:14 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32488a22810so816718f8f.3;
-        Thu, 28 Sep 2023 11:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695925153; x=1696529953; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X/vYG8CJ/ewvJ2G4SHIfjDvp/E77tz/2UvBKFbRj/OM=;
-        b=lkEIwUBJcgz3w1n8+0KuwHDPVHp7o6QRATLJFyobfjPlx6EIplO8BHWk/OU2qHRtwg
-         LL+Zf3YzCmFTVO+pr6ZEQRvuI14qVOjnJVW6jw3gCzoNYxTpCagjHGBqMMj3WsGlrjtR
-         gqu5X1JI2VgwiuPyA+2R1z9UG80JYxg9D848eQz//o5dTjuzdtHR+er4ZyiF+3EBwe9Y
-         uMEyYpLmotHx1Li1GhiTtdfRgV9UxWO9x65POAP90j9zrin2beVZdATjGegiIAq00BAO
-         XaBApHbheo01iLQe5hlBxuF5b1tS0EUpILOus/Y8BcOEOIY+TG9QlftIDxoNs8r7FvX/
-         phUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695925153; x=1696529953;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X/vYG8CJ/ewvJ2G4SHIfjDvp/E77tz/2UvBKFbRj/OM=;
-        b=M+EOMdulBXJkZ/+do9BpmIrn5rvVEpdaO1DBNeuR0HUWeKKFPizH5/34pNurl/Z2Yq
-         GLdo7kZK5yza6kwlLTKfAxw6agZFNZixWCncSNkRrXgj1cOqO7hlTvhsQbsj+8+9ly93
-         ktgN4oMZ+iRF05MKx5FYp2DGRv6SdKAD8GZg1lbzgoz86NJlZscGTE1zmm1B2o4/4vtd
-         I56suwEi5akTeu3rA6UzQhjobJ5VpCYdierlEW/TNaXigrG4HFfuvdPStAWg/zU64OE5
-         T6tMF+8UX8OAO6muBpow9xNmXVDK7DQUuaYmPxK+dia55qmtceLcHZG6Qy39QunpsUgr
-         nExw==
-X-Gm-Message-State: AOJu0YxAlSeu1jfmqyzReXkJvuBE5agcrILuiJYrbyBoDHEF4Odjrbth
-        mg2pCiF0ygY8YwxqnDOQaLOroVeFk0PgY40pCqw=
-X-Google-Smtp-Source: AGHT+IEkXnAd53of4antYDJ+mebfWoU45tHrRpXzvuqB49hiREtfEaw/BcVrqDN2SzGAfN7vXbEQS6lOPaT+Cixw1HM=
-X-Received: by 2002:a05:6000:1006:b0:31f:9b4f:1910 with SMTP id
- a6-20020a056000100600b0031f9b4f1910mr1808253wrx.63.1695925152811; Thu, 28 Sep
- 2023 11:19:12 -0700 (PDT)
+        Thu, 28 Sep 2023 14:19:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0402099;
+        Thu, 28 Sep 2023 11:19:45 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SHkJBL015485;
+        Thu, 28 Sep 2023 18:19:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=jHZvQiOxHYcs4+bL8Soq5nh7GIkaD0yQT0HCRUww26g=;
+ b=iF+q9qHSLPhWgIP0M7OaSHObf/wZ4Cl18nr+lG0Qaek8AU2oFlNEiplxMZUBhjlPdXot
+ ly2eFBbHwCyi8+9K40ErE6rtFmSWaySJoBNBFw20muEHkjrzzu4GpMn8qBjYq4zU4q0O
+ OLqFynJtsckoEcJvzy9MHUvF28KKrL07aCGFNSTEDR0aZ6xF/cmOWFJHXKDjape5jdga
+ WU5zKOnfYeH6GIqTAEUTKnkHq8GTrskHSmDs9XFFcMuqXRRcgHrgLinJumrY4aYfj4nY
+ 2AAzyLwVZXvlfRksnIgLEsw4pG9V3L4KKw+HEcWTOJadOmJ63xHWrJRp6tS14qORbXOH SQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcvg9ae9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 18:19:39 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38SIJcQh018306
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 18:19:38 GMT
+Received: from [10.111.177.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 28 Sep
+ 2023 11:19:35 -0700
+Message-ID: <be27a31c-6c63-43cd-9857-f4b2a9568cf6@quicinc.com>
+Date:   Thu, 28 Sep 2023 11:19:34 -0700
 MIME-Version: 1.0
-References: <20230918080314.11959-1-jagathjog1996@gmail.com>
- <20230918080314.11959-3-jagathjog1996@gmail.com> <20230927095708.l57kmdc3mmrtaco7@pengutronix.de>
-In-Reply-To: <20230927095708.l57kmdc3mmrtaco7@pengutronix.de>
-From:   Jagath Jog J <jagathjog1996@gmail.com>
-Date:   Thu, 28 Sep 2023 23:49:01 +0530
-Message-ID: <CAM+2EuKb9-Wc+HAmsmPfmdM49k=7yoXboDF+swaMS_bgXbCOQA@mail.gmail.com>
-Subject: Re: [RFC 2/2] iio: imu: Add driver for BMI323 IMU
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     jic23@kernel.org, andriy.shevchenko@linux.intel.com,
-        lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/11] firmware: qcom: scm: add a dedicated SCM memory
+ allocator
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <kernel@quicinc.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230928092040.9420-1-brgl@bgdev.pl>
+ <20230928092040.9420-3-brgl@bgdev.pl>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230928092040.9420-3-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cN2kaxH8Uy7BnjdSVzcQD18GmrkARi9i
+X-Proofpoint-GUID: cN2kaxH8Uy7BnjdSVzcQD18GmrkARi9i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_17,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=803 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280157
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe Kleine-K=C3=B6nig,
+On 9/28/2023 2:20 AM, Bartosz Golaszewski wrote:
+> +void *qcom_scm_mem_alloc(size_t size, gfp_t gfp)
+> +{
+> +	struct qcom_scm_mem_chunk *chunk;
+> +	unsigned long vaddr;
 
-On Wed, Sep 27, 2023 at 3:27=E2=80=AFPM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Hello,
->
-> On Mon, Sep 18, 2023 at 01:33:14PM +0530, Jagath Jog J wrote:
-> > The Bosch BMI323 is a 6-axis low-power IMU that provide measurements fo=
-r
-> > acceleration, angular rate, and temperature. This sensor includes
-> > motion-triggered interrupt features, such as a step counter, tap detect=
-ion,
-> > and activity/inactivity interrupt capabilities.
-> >
-> > The driver supports various functionalities, including data ready, FIFO
-> > data handling, and events such as tap detection, step counting, and
-> > activity interrupts
-> >
-> > Datasheet: https://www.bosch-sensortec.com/media/boschsensortec/downloa=
-ds/datasheets/bst-bmi323-ds000.pdf
->
-> Maybe put this link better in the driver.
+there are places below where you unnecessarily typecast this to its 
+given type
 
-Yes, if there are multiple commits on the driver, the datasheet
-link will move further down with the initial commit. I will add
-datasheet link in the driver.
+> +	int ret;
+> +
+> +	if (!size)
+> +		return ZERO_SIZE_PTR;
+> +
+> +	size = roundup(size, 1 << PAGE_SHIFT);
+> +
+> +	chunk = kzalloc(sizeof(*chunk), gfp);
+> +	if (!chunk)
+> +		return NULL;
+> +
+> +	vaddr = gen_pool_alloc(qcom_scm_mem.pool, size);
+> +	if (!vaddr) {
+> +		kfree(chunk);
+> +		return NULL;
+> +	}
+> +
+> +	chunk->paddr = gen_pool_virt_to_phys(qcom_scm_mem.pool,
+> +					     (unsigned long)vaddr);
 
->
-> > +static struct i2c_driver bmi323_i2c_driver =3D {
-> > +     .driver =3D {
-> > +             .name =3D "bmi323",
-> > +             .of_match_table =3D bmi323_of_i2c_match,
-> > +     },
-> > +     .probe_new =3D bmi323_i2c_probe,
-> > +     .id_table =3D bmi323_i2c_ids,
-> > +};
-> > +module_i2c_driver(bmi323_i2c_driver);
->
-> If you want to compile this driver after v6.6-rc2 (which includes
-> commit 5eb1e6e459cf ("i2c: Drop legacy callback .probe_new()")) better
-> use .probe here instead of .probe_new().
+unnecessary typecast?
 
-Thanks for pointing it out.
-I switched to v6.6-rc3 and I will change to .probe.
+> +	chunk->size = size;
+> +
+> +	scoped_guard(spinlock_irqsave, &qcom_scm_mem.lock) {
 
-Regards
-Jagath
+my first exposure to this infrastructure..very cool now that I've 
+wrapped my head around it! This helped for those also new to this:
+https://lwn.net/Articles/934679/
 
-Jagath
+> +		ret = radix_tree_insert(&qcom_scm_mem.chunks, vaddr, chunk);
+> +		if (ret) {
+> +			gen_pool_free(qcom_scm_mem.pool, (unsigned long)vaddr,
 
->
-> Best regards
-> Uwe
->
-> --
-> Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig       =
-     |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
-|
+unnecessary typecast?
+
+> +				      chunk->size);
+> +			kfree(chunk);
+> +			return NULL;
+> +		}
+> +	}
+> +
+> +	return (void *)vaddr;
+> +}
+
