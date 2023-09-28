@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429C7B206B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1917B206D
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjI1PFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
+        id S231545AbjI1PFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbjI1PFi (ORCPT
+        with ESMTP id S231556AbjI1PFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:05:38 -0400
+        Thu, 28 Sep 2023 11:05:39 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5173F1A3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:04:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32D8195
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1695913489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/zSW4L47PrK+7DJbUcadmA8oL8chw/9RJFYn/fvmJlQ=;
-        b=Y35kKURBpMmvCUw+8sti1NrL94VIZ79XRgwzwhNLXrc9pwinAILrgzldGX51A20nqS6CwU
-        iC3EdPVBWxfYvQSGQfkZ7iEiTCqIug57OjcPDJXByZkZ9VWc7nGkurV9LU0idNcnXIdCjw
-        is9Rpvm+Dup8nme8Q4l93bT4yQv3V8s=
+        bh=+K85/eS/kylNQpLV/CXk6IqQwJPNNCcpLU6igIUXkXY=;
+        b=YXGNyiGkb0F/lL+tGSYsZHXrvXxE56muEtGNcWIv5r7pCi2qkZj4gHB/b+QSAhpMdzYDBS
+        NuOke5n6Oz1r/qHQ38wFfuOIMAyU+ucG0de/B+qvA5C1yunqE65jEHfTKXBvpZHGT2kCi1
+        Ay4R9aW8Xe4GDHrctugCq2oTbQuEh9M=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-627-UUxYy2WWNlqjcdm6QvOhzQ-1; Thu, 28 Sep 2023 11:04:42 -0400
-X-MC-Unique: UUxYy2WWNlqjcdm6QvOhzQ-1
+ us-mta-461-DDx6aR3LPmeCIbUCa9SEdA-1; Thu, 28 Sep 2023 11:04:45 -0400
+X-MC-Unique: DDx6aR3LPmeCIbUCa9SEdA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 187D438145AB;
-        Thu, 28 Sep 2023 15:04:41 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E8DBD3C1ACEE;
+        Thu, 28 Sep 2023 15:04:44 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.45.226.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E1A0540C6E76;
-        Thu, 28 Sep 2023 15:04:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E86A40C6E76;
+        Thu, 28 Sep 2023 15:04:41 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Borislav Petkov <bp@alien8.de>,
@@ -50,9 +50,9 @@ Cc:     Will Deacon <will@kernel.org>, Borislav Petkov <bp@alien8.de>,
         Sean Christopherson <seanjc@google.com>,
         "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
         Maxim Levitsky <mlevitsk@redhat.com>, stable@vger.kernel.org
-Subject: [PATCH 2/5] x86: KVM: SVM: add support for Invalid IPI Vector interception
-Date:   Thu, 28 Sep 2023 18:04:25 +0300
-Message-Id: <20230928150428.199929-3-mlevitsk@redhat.com>
+Subject: [PATCH 3/5] x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
+Date:   Thu, 28 Sep 2023 18:04:26 +0300
+Message-Id: <20230928150428.199929-4-mlevitsk@redhat.com>
 In-Reply-To: <20230928150428.199929-1-mlevitsk@redhat.com>
 References: <20230928150428.199929-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
@@ -69,59 +69,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In later revisions of AMD's APM, there is a new 'incomplete IPI' exit code:
+svm_leave_nested() similar to a nested VM exit, get the vCPU out of nested
+mode and thus should end the local inhibition of AVIC on this vCPU.
 
-"Invalid IPI Vector - The vector for the specified IPI was set to an
-illegal value (VEC < 16)"
+Failure to do so, can lead to hangs on guest reboot.
 
-Note that tests on Zen2 machine show that this VM exit doesn't happen and
-instead AVIC just does nothing.
+Raise the KVM_REQ_APICV_UPDATE request to refresh the AVIC state of the
+current vCPU in this case.
 
-Add support for this exit code by doing nothing, instead of filling
-the kernel log with errors.
-
-Also replace an unthrottled 'pr_err()' if another unknown incomplete
-IPI exit happens with WARN_ON_ONCE()
-
-(e.g in case AMD adds yet another 'Invalid IPI' exit reason)
-
-Cc: <stable@vger.kernel.org>
+Cc: stable@vger.kernel.org
 
 Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- arch/x86/include/asm/svm.h | 1 +
- arch/x86/kvm/svm/avic.c    | 5 ++++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kvm/svm/nested.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 19bf955b67e0da0..3ac0ffc4f3e202b 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -268,6 +268,7 @@ enum avic_ipi_failure_cause {
- 	AVIC_IPI_FAILURE_TARGET_NOT_RUNNING,
- 	AVIC_IPI_FAILURE_INVALID_TARGET,
- 	AVIC_IPI_FAILURE_INVALID_BACKING_PAGE,
-+	AVIC_IPI_FAILURE_INVALID_IPI_VECTOR,
- };
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index dd496c9e5f91f28..3fea8c47679e689 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1253,6 +1253,9 @@ void svm_leave_nested(struct kvm_vcpu *vcpu)
  
- #define AVIC_PHYSICAL_MAX_INDEX_MASK	GENMASK_ULL(8, 0)
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 2092db892d7d052..c44b65af494e3ff 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -529,8 +529,11 @@ int avic_incomplete_ipi_interception(struct kvm_vcpu *vcpu)
- 	case AVIC_IPI_FAILURE_INVALID_BACKING_PAGE:
- 		WARN_ONCE(1, "Invalid backing page\n");
- 		break;
-+	case AVIC_IPI_FAILURE_INVALID_IPI_VECTOR:
-+		/* Invalid IPI with vector < 16 */
-+		break;
- 	default:
--		pr_err("Unknown IPI interception\n");
-+		WARN_ONCE(1, "Unknown avic incomplete IPI interception\n");
+ 		nested_svm_uninit_mmu_context(vcpu);
+ 		vmcb_mark_all_dirty(svm->vmcb);
++
++		if (kvm_apicv_activated(vcpu->kvm))
++			kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
  	}
  
- 	return 1;
+ 	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
 -- 
 2.26.3
 
