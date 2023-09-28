@@ -2,127 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D796B7B1048
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550097B1049
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 03:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjI1BNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 21:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
+        id S229941AbjI1BN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 21:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1BNO (ORCPT
+        with ESMTP id S229437AbjI1BN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 21:13:14 -0400
-Received: from mp-relay-02.fibernetics.ca (mp-relay-02.fibernetics.ca [208.85.217.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107DEBF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 18:13:13 -0700 (PDT)
-Received: from mailpool-fe-01.fibernetics.ca (mailpool-fe-01.fibernetics.ca [208.85.217.144])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mp-relay-02.fibernetics.ca (Postfix) with ESMTPS id BF92876AA1;
-        Thu, 28 Sep 2023 01:13:09 +0000 (UTC)
-Received: from localhost (mailpool-mx-01.fibernetics.ca [208.85.217.140])
-        by mailpool-fe-01.fibernetics.ca (Postfix) with ESMTP id B269A457E4;
-        Thu, 28 Sep 2023 01:13:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at 
-X-Spam-Score: -0.199
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from mailpool-fe-01.fibernetics.ca ([208.85.217.144])
-        by localhost (mail-mx-01.fibernetics.ca [208.85.217.140]) (amavisd-new, port 10024)
-        with ESMTP id kEFzXDrP3_UU; Thu, 28 Sep 2023 01:13:08 +0000 (UTC)
-Received: from [192.168.48.17] (host-104-157-209-188.dyn.295.ca [104.157.209.188])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail.ca.inter.net (Postfix) with ESMTPSA id A4F4F457E2;
-        Thu, 28 Sep 2023 01:13:06 +0000 (UTC)
-Message-ID: <8c7cfe09-d145-4387-91cf-da9d4e2398e1@interlog.com>
-Date:   Wed, 27 Sep 2023 21:13:05 -0400
+        Wed, 27 Sep 2023 21:13:58 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049CCBF
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 18:13:55 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vt.c2tB_1695863632;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vt.c2tB_1695863632)
+          by smtp.aliyun-inc.com;
+          Thu, 28 Sep 2023 09:13:53 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] drm/amd/display: clean up some inconsistent indentings
+Date:   Thu, 28 Sep 2023 09:13:51 +0800
+Message-Id: <20230928011351.110093-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v5 01/10] scsi: scsi_debug: create scsi_debug directory in
- the debugfs filesystem
-Content-Language: en-CA
-To:     Wenchao Hao <haowenchao2@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, louhongxiang@huawei.com
-References: <20230922092906.2645265-1-haowenchao2@huawei.com>
- <20230922092906.2645265-2-haowenchao2@huawei.com>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-In-Reply-To: <20230922092906.2645265-2-haowenchao2@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-22 05:28, Wenchao Hao wrote:
-> Create directory scsi_debug in the root of the debugfs filesystem.
-> Prepare to add interface for manage error injection.
-> 
-> Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->   drivers/scsi/scsi_debug.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-> index 9c0af50501f9..35c336271b13 100644
-> --- a/drivers/scsi/scsi_debug.c
-> +++ b/drivers/scsi/scsi_debug.c
-> @@ -41,6 +41,7 @@
->   #include <linux/random.h>
->   #include <linux/xarray.h>
->   #include <linux/prefetch.h>
-> +#include <linux/debugfs.h>
->   
->   #include <net/checksum.h>
->   
-> @@ -862,6 +863,8 @@ static const int device_qfull_result =
->   
->   static const int condition_met_result = SAM_STAT_CONDITION_MET;
->   
-> +static struct dentry *sdebug_debugfs_root;
-> +
->   
->   /* Only do the extra work involved in logical block provisioning if one or
->    * more of the lbpu, lbpws or lbpws10 parameters are given and we are doing
-> @@ -7011,6 +7014,8 @@ static int __init scsi_debug_init(void)
->   		goto driver_unreg;
->   	}
->   
-> +	sdebug_debugfs_root = debugfs_create_dir("scsi_debug", NULL);
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn35/dcn35_fpu.c:261 dcn35_update_bw_bounding_box_fpu() warn: inconsistent indenting
 
-debugfs_create_dir() can fail and return NULL. Looking at other drivers, most
-seem to assume it will work. Since the scsi_debug driver is often used to test
-abnormal situations, perhaps adding something like:
-     if (!sdebug_debugfs_root)
-         pr_info("%s: failed to create initial debugfs directory\n", __func__);
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ .../drm/amd/display/dc/dml/dcn35/dcn35_fpu.c  | 144 +++++++++---------
+ 1 file changed, 72 insertions(+), 72 deletions(-)
 
-might save someone a bit of time if a NULL dereference on sdebug_debugfs_root
-follows later. That is what the mpt3sas driver does.
-
-Doug Gilbert
-
-> +
->   	for (k = 0; k < hosts_to_add; k++) {
->   		if (want_store && k == 0) {
->   			ret = sdebug_add_host_helper(idx);
-> @@ -7057,6 +7062,7 @@ static void __exit scsi_debug_exit(void)
->   
->   	sdebug_erase_all_stores(false);
->   	xa_destroy(per_store_ap);
-> +	debugfs_remove(sdebug_debugfs_root);
->   }
->   
->   device_initcall(scsi_debug_init);
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
+index 4d5ee2aad9e4..4f284c31de5d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
++++ b/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
+@@ -258,85 +258,85 @@ void dcn35_update_bw_bounding_box_fpu(struct dc *dc,
+ 
+ 	dc_assert_fp_enabled();
+ 
+-		dcn3_5_ip.max_num_otg =
+-			dc->res_pool->res_cap->num_timing_generator;
+-		dcn3_5_ip.max_num_dpp = dc->res_pool->pipe_count;
+-		dcn3_5_soc.num_chans = bw_params->num_channels;
+-
+-		ASSERT(clk_table->num_entries);
+-
+-		/* Prepass to find max clocks independent of voltage level. */
+-		for (i = 0; i < clk_table->num_entries; ++i) {
+-			if (clk_table->entries[i].dispclk_mhz > max_dispclk_mhz)
+-				max_dispclk_mhz = clk_table->entries[i].dispclk_mhz;
+-			if (clk_table->entries[i].dppclk_mhz > max_dppclk_mhz)
+-				max_dppclk_mhz = clk_table->entries[i].dppclk_mhz;
+-		}
++	dcn3_5_ip.max_num_otg =
++		dc->res_pool->res_cap->num_timing_generator;
++	dcn3_5_ip.max_num_dpp = dc->res_pool->pipe_count;
++	dcn3_5_soc.num_chans = bw_params->num_channels;
++
++	ASSERT(clk_table->num_entries);
++
++	/* Prepass to find max clocks independent of voltage level. */
++	for (i = 0; i < clk_table->num_entries; ++i) {
++		if (clk_table->entries[i].dispclk_mhz > max_dispclk_mhz)
++			max_dispclk_mhz = clk_table->entries[i].dispclk_mhz;
++		if (clk_table->entries[i].dppclk_mhz > max_dppclk_mhz)
++			max_dppclk_mhz = clk_table->entries[i].dppclk_mhz;
++	}
+ 
+-		for (i = 0; i < clk_table->num_entries; i++) {
+-			/* loop backwards*/
+-			for (closest_clk_lvl = 0, j = dcn3_5_soc.num_states - 1;
+-			     j >= 0; j--) {
+-				if (dcn3_5_soc.clock_limits[j].dcfclk_mhz <=
+-				    clk_table->entries[i].dcfclk_mhz) {
+-					closest_clk_lvl = j;
+-					break;
+-				}
+-			}
+-			if (clk_table->num_entries == 1) {
+-				/*smu gives one DPM level, let's take the highest one*/
+-				closest_clk_lvl = dcn3_5_soc.num_states - 1;
++	for (i = 0; i < clk_table->num_entries; i++) {
++		/* loop backwards*/
++		for (closest_clk_lvl = 0, j = dcn3_5_soc.num_states - 1;
++			j >= 0; j--) {
++			if (dcn3_5_soc.clock_limits[j].dcfclk_mhz <=
++				clk_table->entries[i].dcfclk_mhz) {
++				closest_clk_lvl = j;
++				break;
+ 			}
++		}
++		if (clk_table->num_entries == 1) {
++			/*smu gives one DPM level, let's take the highest one*/
++			closest_clk_lvl = dcn3_5_soc.num_states - 1;
++		}
+ 
+-			clock_limits[i].state = i;
+-
+-			/* Clocks dependent on voltage level. */
+-			clock_limits[i].dcfclk_mhz = clk_table->entries[i].dcfclk_mhz;
+-			if (clk_table->num_entries == 1 &&
+-			    clock_limits[i].dcfclk_mhz <
+-			    dcn3_5_soc.clock_limits[closest_clk_lvl].dcfclk_mhz) {
+-				/*SMU fix not released yet*/
+-				clock_limits[i].dcfclk_mhz =
+-					dcn3_5_soc.clock_limits[closest_clk_lvl].dcfclk_mhz;
+-			}
++		clock_limits[i].state = i;
+ 
+-			clock_limits[i].fabricclk_mhz =
+-				clk_table->entries[i].fclk_mhz;
+-			clock_limits[i].socclk_mhz =
+-				clk_table->entries[i].socclk_mhz;
+-
+-			if (clk_table->entries[i].memclk_mhz &&
+-			    clk_table->entries[i].wck_ratio)
+-				clock_limits[i].dram_speed_mts =
+-					clk_table->entries[i].memclk_mhz * 2 *
+-					clk_table->entries[i].wck_ratio;
+-
+-			/* Clocks independent of voltage level. */
+-			clock_limits[i].dispclk_mhz = max_dispclk_mhz ?
+-				max_dispclk_mhz :
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].dispclk_mhz;
+-
+-			clock_limits[i].dppclk_mhz = max_dppclk_mhz ?
+-				max_dppclk_mhz :
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].dppclk_mhz;
+-
+-			clock_limits[i].dram_bw_per_chan_gbps =
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].dram_bw_per_chan_gbps;
+-			clock_limits[i].dscclk_mhz =
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].dscclk_mhz;
+-			clock_limits[i].dtbclk_mhz =
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].dtbclk_mhz;
+-			clock_limits[i].phyclk_d18_mhz =
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_d18_mhz;
+-			clock_limits[i].phyclk_mhz =
+-				dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_mhz;
++		/* Clocks dependent on voltage level. */
++		clock_limits[i].dcfclk_mhz = clk_table->entries[i].dcfclk_mhz;
++		if (clk_table->num_entries == 1 &&
++			clock_limits[i].dcfclk_mhz <
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dcfclk_mhz) {
++			/*SMU fix not released yet*/
++			clock_limits[i].dcfclk_mhz =
++				dcn3_5_soc.clock_limits[closest_clk_lvl].dcfclk_mhz;
+ 		}
+ 
+-		memcpy(dcn3_5_soc.clock_limits, clock_limits,
+-		       sizeof(dcn3_5_soc.clock_limits));
++		clock_limits[i].fabricclk_mhz =
++			clk_table->entries[i].fclk_mhz;
++		clock_limits[i].socclk_mhz =
++			clk_table->entries[i].socclk_mhz;
++
++		if (clk_table->entries[i].memclk_mhz &&
++			clk_table->entries[i].wck_ratio)
++			clock_limits[i].dram_speed_mts =
++				clk_table->entries[i].memclk_mhz * 2 *
++				clk_table->entries[i].wck_ratio;
++
++		/* Clocks independent of voltage level. */
++		clock_limits[i].dispclk_mhz = max_dispclk_mhz ?
++			max_dispclk_mhz :
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dispclk_mhz;
++
++		clock_limits[i].dppclk_mhz = max_dppclk_mhz ?
++			max_dppclk_mhz :
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dppclk_mhz;
++
++		clock_limits[i].dram_bw_per_chan_gbps =
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dram_bw_per_chan_gbps;
++		clock_limits[i].dscclk_mhz =
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dscclk_mhz;
++		clock_limits[i].dtbclk_mhz =
++			dcn3_5_soc.clock_limits[closest_clk_lvl].dtbclk_mhz;
++		clock_limits[i].phyclk_d18_mhz =
++			dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_d18_mhz;
++		clock_limits[i].phyclk_mhz =
++			dcn3_5_soc.clock_limits[closest_clk_lvl].phyclk_mhz;
++	}
++
++	memcpy(dcn3_5_soc.clock_limits, clock_limits,
++		sizeof(dcn3_5_soc.clock_limits));
+ 
+-		if (clk_table->num_entries)
+-			dcn3_5_soc.num_states = clk_table->num_entries;
++	if (clk_table->num_entries)
++		dcn3_5_soc.num_states = clk_table->num_entries;
+ 
+ 	if (max_dispclk_mhz) {
+ 		dcn3_5_soc.dispclk_dppclk_vco_speed_mhz = max_dispclk_mhz * 2;
+-- 
+2.20.1.7.g153144c
 
