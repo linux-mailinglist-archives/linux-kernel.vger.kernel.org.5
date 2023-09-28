@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151437B255B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47187B2557
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbjI1SfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        id S232021AbjI1Seu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 14:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbjI1SfR (ORCPT
+        with ESMTP id S231954AbjI1Ses (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:35:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6744D1AC
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695926065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tHgQXBAFMtt2xjDagTnzi+QIWg4ufIaPSkBrUwwCR20=;
-        b=c+frV9aYUCZxINBBhgkusJi0oYAOXq/QDlqCjplcMjAbZarMLm6rahrVWGqcXqo5sdNLyU
-        UUtzw+NIkzajm2kpG1Jue4m8f1uk+zCO6mZLTpPuY/wbE67Z0DJdMTOCeQnmRjUJ1/g1mn
-        lmzTQ5xSBMn/el+6a6K4epwJR8kMp0U=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-0WQWASJUPGiOX-26Zh39hQ-1; Thu, 28 Sep 2023 14:34:24 -0400
-X-MC-Unique: 0WQWASJUPGiOX-26Zh39hQ-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-774292de453so295269985a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:34:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695926063; x=1696530863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 28 Sep 2023 14:34:48 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E3ABF
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:34:45 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7ae0da3a692so2238227241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695926085; x=1696530885; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tHgQXBAFMtt2xjDagTnzi+QIWg4ufIaPSkBrUwwCR20=;
-        b=G8cbZIH6Q5W2AsNIAXtH3GNjIczeDAkcT8YzhueX8QQ3xGZ2goEBj3qz8g/I7DKgyZ
-         xGAauhTw9RZK7M8JKxZWatkn/cPK4LkBORoBAuat+UOYAjoTo0zscUqRFeMRgVZEHY/a
-         244PLNiZBgrlJOmalxlEHP+pN22nsM7xvodcxRLNVpvhJx2QTx/R1NYrCmsdiF/j3uOw
-         fVbo3aDkNVQ/pQiZ4o2WYD3x+OghkAhxU66vnn7GIyy9tBGv6JZIz6pAsSVHRJOF6e7O
-         70QxjZwIYRjzmVkswlYDVhIA90w+/C+gasBaBtx9+oy4P3/nSwcqKPJhB7jofANPJLIm
-         rdIg==
-X-Gm-Message-State: AOJu0YztH72xDb3gIAfvHYRbUQiWgXe8yrjOBvy3gqeRjHVOwpi5c4Qy
-        DgZWxdzSpdKwKOuOt85v4Olcs82cec7RC9Nw+QfkvnTsge0NeObBjd7bswZrzWGgweOEb48BC7S
-        Fx3Kj0Mja0f1U1fw90ykNHwuv
-X-Received: by 2002:a05:620a:46a4:b0:773:ad1f:3d5b with SMTP id bq36-20020a05620a46a400b00773ad1f3d5bmr2297129qkb.0.1695926063523;
-        Thu, 28 Sep 2023 11:34:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEV57Cs3i99fylAO+fmIhSC7kjkZzQuC8SMTvaoqr4J38m/9B5Rlx8C4OeUA5D72OFiWkiufg==
-X-Received: by 2002:a05:620a:46a4:b0:773:ad1f:3d5b with SMTP id bq36-20020a05620a46a400b00773ad1f3d5bmr2297110qkb.0.1695926063230;
-        Thu, 28 Sep 2023 11:34:23 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id e15-20020a05620a12cf00b007756d233fbdsm1857612qkl.37.2023.09.28.11.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 11:34:22 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 14:34:19 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
-        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
-        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
-        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
-        jdduke@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-Message-ID: <ZRXHK3hbdjfQvCCp@x1n>
-References: <20230923013148.1390521-1-surenb@google.com>
- <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
- <ZRWo1daWBnwNz0/O@x1n>
- <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com>
- <ZRW2CBUDNks9RGQJ@x1n>
- <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com>
+        bh=eHIi3+QPsqXjSO/wlLFP4QrQOZ0gG9LZj95iau1h3Hk=;
+        b=WmJSO95BvZlz/TDfhBvT52BQSJpsUaz/lsN2mmwZgmSv/CukQ5obBBgPa97KNgKAez
+         UHBzMOHDGjBQ+rjEm1wRbbeYZeaVcIpf8JYJDgX8cJSR8pc6rGaXabWgitfx0hLtfBLm
+         03CEUNktbIcNjgC85hOyMI8SMrWkx4M5qVSTFaLZL/55GdoU2LKB8wkhEsJi+q1Qds0v
+         x4tLy8t7y6eV2bobU3g7IbOAHrO+fp7X5wRWitULdvIzm640y3fHQkongNQdEXRig/2z
+         tY+5bQCACwvqHshQ09fTP25u+CoV0+R8R7O+jxzvtHo/lei2yPg2pjMoLmE5VWVXDM21
+         vPtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695926085; x=1696530885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eHIi3+QPsqXjSO/wlLFP4QrQOZ0gG9LZj95iau1h3Hk=;
+        b=JvOxvpmlLzjnbo8cTP3kfimcetwOG30gnm84j3ED3aP90/yF1uD8C2+cTgWwcmlFnC
+         nwOqppPXU5cuLGteANGJSrFeA6eY/7H+gwmwRv3t3xVCi13UOfRCIzDtWjgALfXieVxJ
+         xqdUqs7esMlOGeyxgjgzO1WjhhPqPdVpKdo6UCAU5+Rl0Xd24Nc/glpHI8BGRbGXTQSt
+         ql8p9Nn5ik0Rudzovsgh8X0jBcrynpZS4+3GiCsWcI1ybsESb3lz8lLe9UqSQ3zJTE+S
+         c/9A7L8Zv3omnxwQ9u6GwIhoUPTosjvCuL3o9DGkAYJDBSeR2Obrd7SL1L8zln4ltnXQ
+         8N4g==
+X-Gm-Message-State: AOJu0Yzj1bHerQO/UU8WgQ8FNYHKTPW3+IaFAecpklc9Uk6Z0MpqBPxY
+        yM81Trm99oW8u+ct71ehEXCa0V/JkvdG3sLx1NLwFQ==
+X-Google-Smtp-Source: AGHT+IFfrPviHFnqrsRkwxjM9DAezDyiIX28xKmpqMoiafFuHKCE4W2aBDxuAO+GvkGaHwv1eHIWt8Ff6Dq8HvmxDMM=
+X-Received: by 2002:a05:6102:212:b0:44e:9113:ac58 with SMTP id
+ z18-20020a056102021200b0044e9113ac58mr1677855vsp.6.1695926084825; Thu, 28 Sep
+ 2023 11:34:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
+References: <20230911094604.14179-1-brgl@bgdev.pl> <CAMRc=Mc2Yo61uivOWHagR2Raxh11dBb=S6jtCDu8_-csX3ozvw@mail.gmail.com>
+ <04e28f8a-1393-d991-264c-b0592746c123@nvidia.com> <CAMRc=MfMdMJXS1Yh_T-Ke+0U3ZC-oZhb2hJqb_g1wgO2s+7JAQ@mail.gmail.com>
+ <2fd6d2a4-d8a4-f763-2f31-00709c7d3603@nvidia.com>
+In-Reply-To: <2fd6d2a4-d8a4-f763-2f31-00709c7d3603@nvidia.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 28 Sep 2023 20:34:34 +0200
+Message-ID: <CAMRc=Me+k1UbjF6Hn1+gOGiNoZb4UZ444S7me4AOiw2VOLMp1g@mail.gmail.com>
+Subject: Re: [PATCH] hte: allow building modules with COMPILE_TEST enabled
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     timestamp@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,73 +71,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 07:51:18PM +0200, David Hildenbrand wrote:
-> On 28.09.23 19:21, Peter Xu wrote:
-> > On Thu, Sep 28, 2023 at 07:05:40PM +0200, David Hildenbrand wrote:
-> > > As described as reply to v1, without fork() and KSM, the PAE bit should
-> > > stick around. If that's not the case, we should investigate why.
-> > > 
-> > > If we ever support the post-fork case (which the comment above remap_pages()
-> > > excludes) we'll need good motivation why we'd want to make this
-> > > overly-complicated feature even more complicated.
-> > 
-> > The problem is DONTFORK is only a suggestion, but not yet restricted.  If
-> > someone reaches on top of some !PAE page on src it'll never gonna proceed
-> > and keep failing, iiuc.
-> 
-> Yes. It won't work if you fork() and not use DONTFORK on the src VMA. We
-> should document that as a limitation.
-> 
-> For example, you could return an error to the user that can just call
-> UFFDIO_COPY. (or to the UFFDIO_COPY from inside uffd code, but that's
-> probably ugly as well).
+On Thu, Sep 28, 2023 at 7:36=E2=80=AFPM Dipen Patel <dipenp@nvidia.com> wro=
+te:
+>
+> On 9/27/23 11:53 PM, Bartosz Golaszewski wrote:
+> > On Thu, Sep 28, 2023 at 5:31=E2=80=AFAM Dipen Patel <dipenp@nvidia.com>=
+ wrote:
+> >>
+> >> On 9/25/23 1:37 AM, Bartosz Golaszewski wrote:
+> >>> On Mon, Sep 11, 2023 at 11:46=E2=80=AFAM Bartosz Golaszewski <brgl@bg=
+dev.pl> wrote:
+> >>>>
+> >>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>>
+> >>>> Allow building all HTE modules with COMPILE_TEST Kconfig option enab=
+led.
+> >>>>
+> >>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> >>>> ---
+> >>>> This was part of a wider series but since this is independent, I'm s=
+ending
+> >>>> it separately.
+> >>>>
+> >>>>  drivers/hte/Kconfig | 4 ++--
+> >>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
+> >>>> index cf29e0218bae..083e67492bf2 100644
+> >>>> --- a/drivers/hte/Kconfig
+> >>>> +++ b/drivers/hte/Kconfig
+> >>>> @@ -16,7 +16,7 @@ if HTE
+> >>>>
+> >>>>  config HTE_TEGRA194
+> >>>>         tristate "NVIDIA Tegra194 HTE Support"
+> >>>> -       depends on ARCH_TEGRA_194_SOC
+> >>>> +       depends on (ARCH_TEGRA_194_SOC || COMPILE_TEST)
+> >>>>         help
+> >>>>           Enable this option for integrated hardware timestamping en=
+gine also
+> >>>>           known as generic timestamping engine (GTE) support on NVID=
+IA Tegra194
+> >>>> @@ -25,7 +25,7 @@ config HTE_TEGRA194
+> >>>>
+> >>>>  config HTE_TEGRA194_TEST
+> >>>>          tristate "NVIDIA Tegra194 HTE Test"
+> >>>> -        depends on HTE_TEGRA194
+> >>>> +        depends on (HTE_TEGRA194 || COMPILE_TEST)
+> >>>>          help
+> >>>>           The NVIDIA Tegra194 GTE test driver demonstrates how to us=
+e HTE
+> >>>>           framework to timestamp GPIO and LIC IRQ lines.
+> >>>> --
+> >>>> 2.39.2
+> >>>>
+> >>>
+> >>> Hi Dipen!
+> >>>
+> >>> Any comments on this, the other patch with a comment update as well a=
+s
+> >>> the one addressing usage of gpiochip_find() in HTE drivers?
+> >> Sorry for the late response, This looks good to me. I will review and =
+test
+> >> rest other patches.
+> >>
+> >>>
+> >>> Bart
+> >> Acked-by: Dipen Patel <dipenp@nvidia.com>
+> >
+> > Do you want me to take it through the GPIO tree or your own? Either
+> > way no GPIO patches depend on it.
+> This patch I should be able to push, assuming it is for 6.7 timeframe. Do=
+ other HTE patches depend on
+> any of your GPIO patches?
+>
+> >
+> > Bart
+>
 
-We could indeed provide some special errno perhaps upon the PAE check, then
-document it explicitly in the man page and suggest resolutions (like
-DONTFORK) when user hit it.
+Only this one needs GPIO changes:
 
-> 
-> > 
-> > do_wp_page() doesn't have that issue of accuracy only because one round of
-> > CoW will just allocate a new page with PAE set guaranteed, which is pretty
-> > much self-heal and unnoticed.
-> 
-> Yes. But it might have to copy, at which point the whole optimization of
-> remap is gone :)
+    https://lore.kernel.org/lkml/20230905185309.131295-15-brgl@bgdev.pl/
 
-Right, but that's fine IMHO because it should still be very corner case,
-definitely not expected to be the majority to start impact the performance
-results.
-
-> 
-> > 
-> > So it'll be great if we can have similar self-heal way for PAE.  If not, I
-> > think it's still fine we just always fail on !PAE src pages, but then maybe
-> > we should let the user know what's wrong, e.g., the user can just forgot to
-> > apply DONTFORK then forked.  And then the user hits error and don't know
-> > what happened.  Probably at least we should document it well in man pages.
-> > 
-> Yes, exactly.
-> 
-> > Another option can be we keep using folio_mapcount() for pte, and another
-> > helper (perhaps: _nr_pages_mapped==COMPOUND_MAPPED && _entire_mapcount==1)
-> > for thp.  But I know that's not ideal either.
-> 
-> As long as we only set the pte writable if PAE is set, we're good from a CVE
-> perspective. The other part is just simplicity of avoiding all these
-> mapcount+swapcount games where possible.
-> 
-> (one day folio_mapcount() might be faster -- I'm still working on that patch
-> in the bigger picture of handling PTE-mapped THP better)
-
-Sure.
-
-For now as long as we're crystal clear on the possibility of inaccuracy of
-PAE, it never hits besides fork() && !DONTFORK, and properly document it,
-then sounds good here.
-
-Thanks,
-
--- 
-Peter Xu
-
+Bart
