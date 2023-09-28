@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8E67B26BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704DC7B26C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 22:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbjI1UmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 16:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S232269AbjI1UmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 16:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjI1UmI (ORCPT
+        with ESMTP id S231822AbjI1UmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 16:42:08 -0400
+        Thu, 28 Sep 2023 16:42:09 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DDC180;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C820419C;
         Thu, 28 Sep 2023 13:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
         Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=uohcHr7u7pMqM2o2/Gx8STvthCVsA+nnKExQdSb2SQA=; b=Jbd1Wr9A2d72D1He73iGyRdglY
-        w5qbirxdbvXC5fM+xibzmTrblxHY9GH6BEP/AaDrvPFqlJr/I7+lMN9+NZOdkKCjBurK7wnAxV264
-        0uZk1B1QndRMTADHIwU8Su/zr6Q6VtfXPYH1nj4/H8f3QFvUcsaSf6T54JXe+joFOrYPfZJDW75cO
-        lF785VE2gWN9EeaAs4LAtN7IEmYXUwqHdwa6ONXrDQYYjG2eAdXMBZ6UHyiCT8giKJAwDAFeh9axT
-        Hg2snf7rnfZPgVemOW5W8nIDsVCmcSAxIVTA9hhsv4fMCoAG3CSYE97tPPCbBsZs+zNLXMAR7wybj
-        rxT61bvg==;
+        bh=Ounj1+uXd+VOP4zrK2phg+RjnwNWyqqQjfN2b+rvDes=; b=TmxnbLPx4XXYwmI1upPf32XSYB
+        TZn2i1I6Doptnl8FAfj4f/tQiRkRCfIpH845+OfdtWTyZSu4xfD7ci6GUeL7tsp+q2ODLPp+Yl5NC
+        ghmklItQMJIzbv6A5/4c7eP0GdAIxiISRxVSeUEqXfh4XNgAxnRFUxKQQcy98X9VB0H2BHFlPpXhq
+        +ViWew9yo3ydTBtj0fLN8QIaE4pfFJ5sD5zYze5Sx1feSi+EUaLtX8PYTikeF69Oru9BpOI1IAeu5
+        SzZZURscNsi1YrqhYV20T04LoJATGE6tmWYwcYKQEq18tWiyhWnDUIVNCJpYacesvgvsg6H33HyhF
+        uWCVMOaQ==;
 Received: from [50.53.46.231] (helo=[192.168.254.15])
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qlxpi-006eoe-19;
-        Thu, 28 Sep 2023 20:42:02 +0000
-Message-ID: <830fb2f0-7965-4156-82e4-5328df0c612c@infradead.org>
-Date:   Thu, 28 Sep 2023 13:42:01 -0700
+        id 1qlxpk-006eoe-2y;
+        Thu, 28 Sep 2023 20:42:04 +0000
+Message-ID: <4731c8da-3dfa-47da-baf1-26df019d08ee@infradead.org>
+Date:   Thu, 28 Sep 2023 13:42:04 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/2] Documentation: dpll: wrap
- DPLL_CMD_PIN_GET output in a code block
+Subject: Re: [PATCH net-next v2 1/2] Documentation: dpll: Fix code blocks
 Content-Language: en-US
 To:     Bagas Sanjaya <bagasdotme@gmail.com>,
         Linux Networking <netdev@vger.kernel.org>,
@@ -44,11 +43,13 @@ Cc:     Vadim Fedorenko <vadim.fedorenko@linux.dev>,
         Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
         Jiri Pirko <jiri@resnulli.us>,
         Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>
+        "David S. Miller" <davem@davemloft.net>,
+        kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 References: <20230928052708.44820-1-bagasdotme@gmail.com>
- <20230928052708.44820-3-bagasdotme@gmail.com>
+ <20230928052708.44820-2-bagasdotme@gmail.com>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230928052708.44820-3-bagasdotme@gmail.com>
+In-Reply-To: <20230928052708.44820-2-bagasdotme@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -63,9 +64,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 9/27/23 22:27, Bagas Sanjaya wrote:
-> DPLL_CMD_PIN_GET netlink command output for mux-type pins looks ugly
-> with normal paragraph formatting. Format it as a code block instead.
+> kernel test robot and Stephen Rothwell report htmldocs warnings:
 > 
+> Documentation/driver-api/dpll.rst:427: WARNING: Error in "code-block" directive:
+> maximum 1 argument(s) allowed, 18 supplied.
+> 
+> .. code-block:: c
+> 	<snipped>...
+> Documentation/driver-api/dpll.rst:444: WARNING: Error in "code-block" directive:
+> maximum 1 argument(s) allowed, 21 supplied.
+> 
+> .. code-block:: c
+> 	<snipped>...
+> Documentation/driver-api/dpll.rst:474: WARNING: Error in "code-block" directive:
+> maximum 1 argument(s) allowed, 12 supplied.
+> 
+> .. code-block:: c
+> 	<snipped>...
+> 
+> Fix these above by adding missing blank line separator after code-block
+> directive.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202309180456.lOhxy9gS-lkp@intel.com/
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Closes: https://lore.kernel.org/linux-next/20230918131521.155e9e63@canb.auug.org.au/
+> Fixes: dbb291f19393b6 ("dpll: documentation on DPLL subsystem interface")
 > Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
@@ -75,45 +99,37 @@ Tested-by: Randy Dunlap <rdunlap@infradead.org>
 Thanks.
 
 > ---
->  Documentation/driver-api/dpll.rst | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+>  Documentation/driver-api/dpll.rst | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 > diff --git a/Documentation/driver-api/dpll.rst b/Documentation/driver-api/dpll.rst
-> index 01eb4de867036f..69670deb8c4e09 100644
+> index bb52f1b8c0be31..01eb4de867036f 100644
 > --- a/Documentation/driver-api/dpll.rst
 > +++ b/Documentation/driver-api/dpll.rst
-> @@ -119,19 +119,19 @@ with.
->  If a pin was registered with multiple parent pins, they behave like a
->  multiple output multiplexer. In this case output of a
->  ``DPLL_CMD_PIN_GET`` would contain multiple pin-parent nested
-> -attributes with current state related to each parent, like:
-> +attributes with current state related to each parent, like::
+> @@ -425,6 +425,7 @@ The simplest implementation is in the OCP TimeCard driver. The ops
+>  structures are defined like this:
 >  
-> -'pin': [{{
-> -  'clock-id': 282574471561216,
-> -  'module-name': 'ice',
-> -  'capabilities': 4,
-> -  'id': 13,
-> -  'parent-pin': [
-> -  {'parent-id': 2, 'state': 'connected'},
-> -  {'parent-id': 3, 'state': 'disconnected'}
-> -  ],
-> -  'type': 'synce-eth-port'
-> -  }}]
-> +        'pin': [{{
-> +          'clock-id': 282574471561216,
-> +          'module-name': 'ice',
-> +          'capabilities': 4,
-> +          'id': 13,
-> +          'parent-pin': [
-> +          {'parent-id': 2, 'state': 'connected'},
-> +          {'parent-id': 3, 'state': 'disconnected'}
-> +          ],
-> +          'type': 'synce-eth-port'
-> +          }}]
+>  .. code-block:: c
+> +
+>  	static const struct dpll_device_ops dpll_ops = {
+>  		.lock_status_get = ptp_ocp_dpll_lock_status_get,
+>  		.mode_get = ptp_ocp_dpll_mode_get,
+> @@ -442,6 +443,7 @@ structures are defined like this:
+>  The registration part is then looks like this part:
 >  
->  Only one child pin can provide its signal to the parent MUX-type pin at
->  a time, the selection is done by requesting change of a child pin state
+>  .. code-block:: c
+> +
+>          clkid = pci_get_dsn(pdev);
+>          bp->dpll = dpll_device_get(clkid, 0, THIS_MODULE);
+>          if (IS_ERR(bp->dpll)) {
+> @@ -472,6 +474,7 @@ The registration part is then looks like this part:
+>  In the error path we have to rewind every allocation in the reverse order:
+>  
+>  .. code-block:: c
+> +
+>          while (i) {
+>                  --i;
+>                  dpll_pin_unregister(bp->dpll, bp->sma[i].dpll_pin, &dpll_pins_ops, &bp->sma[i]);
 
 -- 
 ~Randy
