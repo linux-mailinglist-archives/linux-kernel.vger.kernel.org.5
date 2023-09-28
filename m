@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA1E7B123E
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D673A7B1244
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbjI1FzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S230127AbjI1GBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjI1FzD (ORCPT
+        with ESMTP id S229453AbjI1GBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:55:03 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B2FBF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:55:01 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b29186e20aso896260466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:55:01 -0700 (PDT)
+        Thu, 28 Sep 2023 02:01:51 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58F999
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:01:48 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so29882412a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:01:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695880500; x=1696485300; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=54qiU08t2GpO/MWMIDTzBVyjApX/CcNuywPfrqlHKm4=;
-        b=dJJZ4Guq+CFyIZwye+WyoJz8yQA22E8NlyN7hLBGCCtKxxhthNm843CeRamKazmdlb
-         pKlwy6K6kRaw4TkqO3W66slIQgoVI8khOQGNLxCgnC7K17JVgy9rbJCNJhzUfmOJGVVa
-         koPzX/scSfQf0RNyrkG87kL8/TTI5Hf9fm4/nJb89c080ZfZB3eSfFoUNDCRSq+oMytH
-         KqQteGlx70HTxuQFtF7kecnrRcHCbk+RLxQsYHvkSuvaMdtsGsNx8ZnqQj8QWz+TF74/
-         e7DbmPr0vY2UGPmkhz+RAcrSdBEyO7TI3m9vTHQ3cKiVhqMhcK/m1Zu3FSm+HCCGBS7C
-         LiDA==
+        d=tuxon.dev; s=google; t=1695880907; x=1696485707; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/un9SCO8NQAaFwwS/v5Hgk7wmnwT4tzJzG9xCDorHU4=;
+        b=b1OPzff8n8AGO3PBCOcMOxF7bUMqvNP0Kewoi2wg0LeFv17aTzdgGpKSYb0Qwmg8ok
+         H+P1rF/jp4XOhM2fQEQPnPS1Mq442N3Zb7prKcfce8pnbrWVbUCW3AzhJCBPxkBgPahI
+         cc7ClMSgn2Cm0afBZpDFNfEzELKSxExOoTIpp9oDngfWQf1pxzQ/9bMAy0lFJ1G5uyxH
+         De/8UjI2AIgRyv0bRzSU5UPD6g+juUUUw0WH71nx69MuXpXwlMkA+krpjJyqqYiT00eS
+         iTTw+Ra6TD2EYEGrc0CYXYv/XiLzZs9ShHhNAe38ae5bwL6JmobOkYM4dPv+1imv5Lr0
+         EWwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695880500; x=1696485300;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=54qiU08t2GpO/MWMIDTzBVyjApX/CcNuywPfrqlHKm4=;
-        b=wbY8Vh4MDAoTO91N22Sr5R8+MxZh5uygYYgZHkVjGOt0a+WR8Ta0naM/vgkMczkZvp
-         2wkcxDMIe24KzzlcNsdmbP+rMnXbVQhcg5T1xVpSZrq3qKgKOGlSzUpS7+V3ZpEzL67B
-         v5uWbquqk3iEUqiHV/Ip23nthVhgbVkDUD+aNEaKoFuTvvdvjfEtnKnKsG4YaXxYagzc
-         5TcyDu4O28b/ZuNkoy/cKD1k0pDGqbYosv5ndh4vNIS1GzVZiFPGtulkjXLfU7nW4FwA
-         L1d89EwPSDs4/vojk+UEa/Vu6VYEGst06wevwbbRtntBb2dwsKBJDM2JcsgaH/9kryP6
-         90+g==
-X-Gm-Message-State: AOJu0YwVgoeZf5NgjvBIvOr9DKGjosWYb7YW1m8KEs+jMzp7SQAOfOae
-        0r1Eb6MhlbO9YQalf6V6KRD0sQ==
-X-Google-Smtp-Source: AGHT+IEzM4GVvXhhGjAdh17D1G62ZiQP9XY8Q28w1XdHkASHmuCPrX5v/hiOPIopi46147BEe3T8Hg==
-X-Received: by 2002:a17:906:769a:b0:9b2:982e:339a with SMTP id o26-20020a170906769a00b009b2982e339amr259099ejm.22.1695880499957;
-        Wed, 27 Sep 2023 22:54:59 -0700 (PDT)
-Received: from krzk-bin.homenet.telecomitalia.it (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
-        by smtp.gmail.com with ESMTPSA id k17-20020a170906681100b00992b50fbbe9sm10355749ejr.90.2023.09.27.22.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 22:54:59 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: memory-controllers: Make "additionalProperties: true" explicit
-Date:   Thu, 28 Sep 2023 07:54:53 +0200
-Message-Id: <169588049053.10364.12898939958860054639.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230925212626.1974676-1-robh@kernel.org>
-References: <20230925212626.1974676-1-robh@kernel.org>
+        d=1e100.net; s=20230601; t=1695880907; x=1696485707;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/un9SCO8NQAaFwwS/v5Hgk7wmnwT4tzJzG9xCDorHU4=;
+        b=XLjjy9BE1v4smf5KT2I+kD+g30RwNZLzdbX7l5ynSw57rl/CybnWoYpJZ0ptIE6ogf
+         AquDWM4ADfxM3WuX6q9CnXOQmB4UwFZJs521ZLHIuMaO/1tzbTR2EJnS3xG7vIFi/a1M
+         wQcxkC8Ql19Qid4g6Liijp7V3CtmT7itPKAPDTyQQvBpmLhcXlR0ztH2+16rsDvCRk1b
+         eOnSoy3jiuoedz+OQMXvv+HWuZb8EiehNmJoVMaEDtxSJX2i9rrBTZPUtI3BfzbkkfxI
+         PciW7P/NOh5t6nO2Aon+ExhptNtSiXGxLN33/7eHi/1SkvPcnv6BUhIReKI/OvkjBPs1
+         MYMA==
+X-Gm-Message-State: AOJu0Yz0vGE+g9MwFz1hPx5Qo5hW6aPoDkdTW4H73Z5dSINPR/qefApC
+        CgNop0CZ3ivO+oKgXoVSDZ4hZg==
+X-Google-Smtp-Source: AGHT+IHXb9MrwailC9Z16pLKAsLb2LIAcdlIDi/yek1TmJBbg8D2/I0CLSC9kn/rBKIYcrF5oG47zQ==
+X-Received: by 2002:a05:6402:26c2:b0:533:5d3d:7efe with SMTP id x2-20020a05640226c200b005335d3d7efemr300757edd.6.1695880907095;
+        Wed, 27 Sep 2023 23:01:47 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id n26-20020a056402061a00b005313c60165asm9195535edv.77.2023.09.27.23.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 23:01:46 -0700 (PDT)
+Message-ID: <35d861b5-eca0-c817-684c-e39a841f17db@tuxon.dev>
+Date:   Thu, 28 Sep 2023 09:01:44 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 1/7] drm: atmel-hlcdc: add flag and driver ops to
+ differentiate XLCDC and HLCDC IP
+Content-Language: en-US
+To:     Manikandan Muralidharan <manikandan.m@microchip.com>,
+        sam@ravnborg.org, bbrezillon@kernel.org, airlied@gmail.com,
+        daniel@ffwll.ch, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, lee@kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Hari.PrasathGE@microchip.com,
+        Balamanikandan.Gunasundar@microchip.com,
+        Durai.ManickamKR@microchip.com, Nayabbasha.Sayed@microchip.com,
+        Dharma.B@microchip.com, Varshini.Rajendran@microchip.com,
+        Balakrishnan.S@microchip.com
+References: <20230927094732.490228-1-manikandan.m@microchip.com>
+ <20230927094732.490228-2-manikandan.m@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230927094732.490228-2-manikandan.m@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Manikandan,
 
-On Mon, 25 Sep 2023 16:26:21 -0500, Rob Herring wrote:
-> Make it explicit that child nodes have additional properties and the
-> child node schema is not complete. The complete schemas are applied
-> separately based the compatible strings.
-> 
-> 
+On 27.09.2023 12:47, Manikandan Muralidharan wrote:
+> +void atmel_hlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
+> +				    struct atmel_hlcdc_plane_state *state);
+> +void atmel_xlcdc_plane_setup_scaler(struct atmel_hlcdc_plane *plane,
+> +				    struct atmel_hlcdc_plane_state *state);
+> +void update_hlcdc_buffers(struct atmel_hlcdc_plane *plane,
+> +			  struct atmel_hlcdc_plane_state *state,
+> +			  u32 sr, int i);
+> +void update_xlcdc_buffers(struct atmel_hlcdc_plane *plane,
+> +			  struct atmel_hlcdc_plane_state *state,
+> +			  u32 sr, int i);
+> +void hlcdc_atomic_disable(struct atmel_hlcdc_plane *plane);
+> +void xlcdc_atomic_disable(struct atmel_hlcdc_plane *plane);
+> +void
+> +atmel_hlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
+> +					  struct atmel_hlcdc_plane_state *state);
+> +void
+> +atmel_xlcdc_plane_update_general_settings(struct atmel_hlcdc_plane *plane,
+> +					  struct atmel_hlcdc_plane_state *state);
+> +void hlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
+> +			 struct atmel_hlcdc_dc *dc);
+> +void xlcdc_atomic_update(struct atmel_hlcdc_plane *plane,
+> +			 struct atmel_hlcdc_dc *dc);
+> +void hlcdc_csc_init(struct atmel_hlcdc_plane *plane,
+> +		    const struct atmel_hlcdc_layer_desc *desc);
+> +void xlcdc_csc_init(struct atmel_hlcdc_plane *plane,
+> +		    const struct atmel_hlcdc_layer_desc *desc);
+> +void hlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
+> +		   const struct atmel_hlcdc_layer_desc *desc);
+> +void xlcdc_irq_dbg(struct atmel_hlcdc_plane *plane,
+> +		   const struct atmel_hlcdc_layer_desc *desc);
+> +
 
-Applied, thanks!
+These are still here... Isn't the solution I proposed to you in the
+previous version good enough?
 
-[1/1] dt-bindings: memory-controllers: Make "additionalProperties: true" explicit
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/387bb6fdd0af1f853deeb1cdd8331c07b6a66b32
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thank you,
+Claudiu Beznea
