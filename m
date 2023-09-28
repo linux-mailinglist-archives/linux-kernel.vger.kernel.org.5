@@ -2,50 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC2A7B219F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB187B21A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbjI1PqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S231922AbjI1Pqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbjI1PqE (ORCPT
+        with ESMTP id S231821AbjI1Pqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:46:04 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B77AC;
-        Thu, 28 Sep 2023 08:46:02 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 80c322cf61eba005; Thu, 28 Sep 2023 17:46:00 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 1EEE56655D6;
-        Thu, 28 Sep 2023 17:46:00 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v1] ACPI: thermal: Mark uninitialized active trips as invalid
-Date:   Thu, 28 Sep 2023 17:45:59 +0200
-Message-ID: <5738410.DvuYhMxLoT@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrtddtgdeivdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgv
- rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 28 Sep 2023 11:46:33 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC574B7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:46:31 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81486a0382so20598363276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695915991; x=1696520791; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UkV6DJLEp14NQoEGpYmTcHsFBbLNhclSblSFOKPN4t4=;
+        b=bcCmjl+EprAvjn1eZIfev+s5ctSXE3a39Ncr6++juAnghiOXv2Qlact2Hyll1lFRRS
+         Kmj/SzC8F9qnZJoJMlpP9/Oo1grFz3Pxpys6yxsh0MaWGe3UUpzHN+Sf7iV9AhDKjoxE
+         INpSsKiyyyVMY0iSZyFkrSA764NGY/lXnlBsUOiCfmA4DFisVv3nMg8jeY0xP4QisesH
+         JTnBLXZgDKJCU17I4l+eZ6ELoHj5yZZLk0i4Y0IOa1ycwWUJzw9Ulo5syLYveXlDCPFG
+         U0MeOAsaZmoXPPokgmVIRF9TmFDc5nt2NFR8lEWfr7ZunFn1C9zzY2HHPji43YrNdmJG
+         ttrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695915991; x=1696520791;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UkV6DJLEp14NQoEGpYmTcHsFBbLNhclSblSFOKPN4t4=;
+        b=GNUspS3VD52ZQAKmjE+pWtzgRrN2j0HsmVfTqQFobyb3SWc7861DME8xDqWJRBwmcz
+         tt6jCwsNOfMOozyFA1XBCDNpnMoSybKclUxzZmob1yEUHRyAv8xdPPi1YPzp6TGmOm5O
+         MbynjMnFAZ9ERxog6cjMgw6aXwwmdBLEw6GcGloQuBLOWHiZBdk2QMfJKeN7OX+CGNaE
+         t7z+viRFao09YUEF3fu21X0R3JKwD35GIkN34cFzA2/aBVitiCIm1MhQbOqOdugMlHFf
+         hNY/Tx4Q+un7rMKJNXQTw/93j8/TAgAUeQjCzl2qnKvEkhcGZ9iMwnBrpizqutWFy14u
+         wMxQ==
+X-Gm-Message-State: AOJu0YxA+bsDvxFF8DsHAvfFdKEdcd44LvOIrBdFUCfBi8kC+F8yIIy1
+        C5yWSI4PT0ECL38frutcwANNMisROu0=
+X-Google-Smtp-Source: AGHT+IEWX4T56HPfxAmtAicLu3EcKVpChcE7iMMF3BlcUKBkp8bJf66fPphCxJhGyetbdNcj2NdIprAzUe8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:5f4d:0:b0:d7b:8acc:beb8 with SMTP id
+ h13-20020a255f4d000000b00d7b8accbeb8mr24990ybm.2.1695915990966; Thu, 28 Sep
+ 2023 08:46:30 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 08:46:29 -0700
+In-Reply-To: <20230928150428.199929-3-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928150428.199929-1-mlevitsk@redhat.com> <20230928150428.199929-3-mlevitsk@redhat.com>
+Message-ID: <ZRWf1Z7JCMUT92zt@google.com>
+Subject: Re: [PATCH 2/5] x86: KVM: SVM: add support for Invalid IPI Vector interception
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,45 +75,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> In later revisions of AMD's APM, there is a new 'incomplete IPI' exit code:
+> 
+> "Invalid IPI Vector - The vector for the specified IPI was set to an
+> illegal value (VEC < 16)"
+> 
+> Note that tests on Zen2 machine show that this VM exit doesn't happen and
+> instead AVIC just does nothing.
+> 
+> Add support for this exit code by doing nothing, instead of filling
+> the kernel log with errors.
+> 
+> Also replace an unthrottled 'pr_err()' if another unknown incomplete
+> IPI exit happens with WARN_ON_ONCE()
+> 
+> (e.g in case AMD adds yet another 'Invalid IPI' exit reason)
+> 
+> Cc: <stable@vger.kernel.org>
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/include/asm/svm.h | 1 +
+>  arch/x86/kvm/svm/avic.c    | 5 ++++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+> index 19bf955b67e0da0..3ac0ffc4f3e202b 100644
+> --- a/arch/x86/include/asm/svm.h
+> +++ b/arch/x86/include/asm/svm.h
+> @@ -268,6 +268,7 @@ enum avic_ipi_failure_cause {
+>  	AVIC_IPI_FAILURE_TARGET_NOT_RUNNING,
+>  	AVIC_IPI_FAILURE_INVALID_TARGET,
+>  	AVIC_IPI_FAILURE_INVALID_BACKING_PAGE,
+> +	AVIC_IPI_FAILURE_INVALID_IPI_VECTOR,
+>  };
+>  
+>  #define AVIC_PHYSICAL_MAX_INDEX_MASK	GENMASK_ULL(8, 0)
+> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> index 2092db892d7d052..c44b65af494e3ff 100644
+> --- a/arch/x86/kvm/svm/avic.c
+> +++ b/arch/x86/kvm/svm/avic.c
+> @@ -529,8 +529,11 @@ int avic_incomplete_ipi_interception(struct kvm_vcpu *vcpu)
+>  	case AVIC_IPI_FAILURE_INVALID_BACKING_PAGE:
+>  		WARN_ONCE(1, "Invalid backing page\n");
+>  		break;
+> +	case AVIC_IPI_FAILURE_INVALID_IPI_VECTOR:
+> +		/* Invalid IPI with vector < 16 */
+> +		break;
+>  	default:
+> -		pr_err("Unknown IPI interception\n");
+> +		WARN_ONCE(1, "Unknown avic incomplete IPI interception\n");
 
-After removing the valid flag from struct acpi_thermal_trip, the trip
-temperature value is used in validity checks, so it must be
-THERMAL_TEMP_INVALID for the active trip entries in struct acpi_thermal_trips
-that are not going to be used (because the corresponding objects are not
-present in the ACPI tables, for example).
+Hrm, I'm not sure KVM should WARN here.  E.g. if someone runs with panic_on_warn=1,
+running on new hardware might crash the host.  I hope that AMD is smart enough to
+make any future failure types "optional" in the sense that they're either opt-in,
+or are largely informational-only (like AVIC_IPI_FAILURE_INVALID_IPI_VECTOR).
 
-Accordingly, modify acpi_thermal_get_trip_points() to set the temperature
-value to THERMAL_TEMP_INVALID for trip point entries skipped by it after
-acpi_thermal_init_trip() has returned 'false' for an active trip.
-
-Fixes: 058f5e407deb ("ACPI: thermal: Drop valid flag from struct acpi_thermal_trip")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-Commit 058f5e407deb mentioned above is present in the linux-next branch
-of linux-pm.git and acpi_thermal_init_trip() is introduced by
-
-https://patchwork.kernel.org/project/linux-pm/patch/1785516.VLH7GnMWUR@kreacher/
-
----
- drivers/acpi/thermal.c |    3 +++
- 1 file changed, 3 insertions(+)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -480,6 +480,9 @@ static int acpi_thermal_get_trip_points(
- 
- 	}
- 
-+	while (++i < ACPI_THERMAL_MAX_ACTIVE)
-+		tz->trips.active[i].trip.temperature = THERMAL_TEMP_INVALID;
-+
- 	return count;
- }
- 
-
-
-
+I think switching to vcpu_unimpl(), or maybe even pr_err_once(), is more appropriate.
