@@ -2,254 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E804C7B2595
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 20:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3FE7B259C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 21:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjI1Sxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 14:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        id S231593AbjI1TBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 15:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbjI1Sxg (ORCPT
+        with ESMTP id S231684AbjI1TBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 14:53:36 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2048.outbound.protection.outlook.com [40.107.101.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997F119D
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 11:53:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oR1R2DAR/QqaTvpid49tZewWfNOh1ccPI101JPgb6KxK96OKAjXheo9vTFW8aNYNb8/5tYSjTSiTQAdWR3UKAe6OTrScNhv8Q9EI/0Y7PAqu5dX6+I8riHfcahroxm9XwhxLzYwIwHTxibNBD5hXuIg/n5FqcwHxrFIgRQeCdLUFncqN9U5Ao4y/PwC7mRviNZZmoIS9lE/G2wjxBqMe5CbF8MRaawY89fla8N3SFTeMF0gVgv/M8lUbEiKpgHJ1+NGSrpC6lbCngtGcHEVZafwWjOyLqltWeKUYikZrQbyLLaODKzMmWod1mgz4N1DzOJflMW1RVAr+eDFnd1l1Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CNll4Let09F7CJcRI9yjdJ5Bbn0Vx18tRKrxMbx7kzs=;
- b=euxVuDCJnHBxFO3j04r82ewfpMxBRifoychze019951M4O2SuKeUqBIxM7VHC3Q9E2t0uNBiC7hV/bqVUOYlAjt1q2HloiTdcJKlR/0Q8uHV+/mR5bkoNEFJfN4fK/34JLnznqR0AGnITicJUrTvq4WWGxXymzE7NUs1l4Aya1qUNPBgMBO4HdAwHqbJF9WUnr3xDsr9MMOQ1SDzG7Kj2wYMpme/3WDZ0cfpDSwhsft95RpUQyBiy7oSmTF6tSgc7iNXQj24KPIaT9bLKzU8zov6JvqejRdxAsLCN9hcm+Yb8aLqP/W35PiPhHWxvNNzL+g9NYc9IWIrghAUA0eJJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CNll4Let09F7CJcRI9yjdJ5Bbn0Vx18tRKrxMbx7kzs=;
- b=SZrajnv8yStKk8lgqasdaJ1uyMd66W0u8cMzrDw4XER2UzBoNNpjK6qBxR04fNdfdsPeVwewSjOo4cZ41xcWGoi2Rr8+9wtf50cg967bXPDgxm3mXgADktJ7DvYdK608vaE/xG3LXnmsnU3bR7DHhtEGfpYeeI5t6PFuiU3Nb3Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by BY5PR12MB4100.namprd12.prod.outlook.com (2603:10b6:a03:200::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Thu, 28 Sep
- 2023 18:53:32 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::2e40:ffd7:e752:644f%6]) with mapi id 15.20.6838.024; Thu, 28 Sep 2023
- 18:53:32 +0000
-Message-ID: <2f56333d-4549-3118-5cd0-3ad2be025b66@amd.com>
-Date:   Thu, 28 Sep 2023 14:53:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
- for gfx8
-Content-Language: en-US
-To:     Shashank Sharma <shashank.sharma@amd.com>,
-        "Joshi, Mukul" <Mukul.Joshi@amd.com>,
-        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
- <20230928095427.4337-2-Arvind.Yadav@amd.com>
- <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
- <8cd0539d-5d5e-e670-9577-7db72393b784@amd.com>
- <8c9c3b5b-ba1e-ba07-3001-242eab9ca1a6@amd.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-In-Reply-To: <8c9c3b5b-ba1e-ba07-3001-242eab9ca1a6@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0032.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:86::12) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+        Thu, 28 Sep 2023 15:01:06 -0400
+X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Sep 2023 12:01:01 PDT
+Received: from smtpcmd04131.aruba.it (smtpcmd04131.aruba.it [62.149.158.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E291B2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 12:01:01 -0700 (PDT)
+Received: from localhost.localdomain ([146.241.127.78])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id lwEvqjxBnB8oFlwEwqJ8i9; Thu, 28 Sep 2023 20:59:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1695927599; bh=4xdOQg7MDYwZ2y9dKQ+Rh978lhEO6IHpjzsezpTDiS0=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=NWAsZt/EAfhYGHfJRZT7J3qqLCAjU5gF5AG932SxcSpSvER5Rlls8jP2gqe0eMZHY
+         75cY224qfiEr0MxqJEir8Qfz4qpyzIgCpl3vor2omxwspmmALqSW6kUztQr3nrIBWk
+         8cKx8D4VthLudqzTy7DIkEB5sVUaNQ4m7WIXW4z9n/xwpl2d8gWwPCpi/og6ZqRI8O
+         xpphZM6HohBB9f84AaLQAmltGgf8kHFP5jPPqIx8K9F0+yj8N+nd8cWoTHL93E/cT3
+         esin5MepzuVtCMO720nHWVke/gcJnbysdXJVUiRJT38JLiGNDljEgkNy8yoqbvXQ+j
+         GmYv3vw6VWwuA==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>,
+        Jim Reinhart <jimr@tekvox.com>,
+        James Autry <jautry@tekvox.com>,
+        Matthew Maron <matthewm@tekvox.com>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>
+Subject: [PATCH v3] net: phy: broadcom: add support for BCM5221 phy
+Date:   Thu, 28 Sep 2023 20:59:49 +0200
+Message-Id: <20230928185949.1731477-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|BY5PR12MB4100:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5168708-810b-4812-e102-08dbc05435ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3f1cm9pyrUD3VbgurN9e+eqW3E2GkCLBKtUBfhQOi4kyL6xxMwvEvBBu6Orlv32m1x/74h6kDW55PGEkFvvfORyIWAaQ57L5Or1q6Ol1ik4s8ZLgkfUcIFScSIIUpJB1dc3hQ7BpVmb/Mlk/xb1p9Uo5ECF4twsLFhKykNKfVQ7/3YzzQqa7W4vt4HFYyl74ribKX16Y4jQivUcyUuMhAwxbADKIM9TgEaosMuepqz7nzjtF8tUqKDzhzNlkeIXgSBQXjSYQpafiiY7XkwCPSFez8J3PqBjY3DksE2nz6pctf6PwgsaI18fieSn57WRdqgreIxSlV9aIU6oeskJRWsISOYGIRYf03Wox+zrOVv7gWxJX7RssJR01NNXpJkh6TNvCivWT0ye31q3jdpJiDr7rPOLnDD+Rm9vElF9r1r0xmSjPfizoSGb1OC57jELYP/z67P4rOUMkp/ctt9Uvh1GOZLOu6CxnaKF0dLBXzKwq4cG3exyslRPywLgk4sr2okXeQVI9K0RFZyqjdWkxpmFUlaypp5Hbfww9ZrVpRsLdw+DVXmp+k8L7fRAXjXHPQJyrUZUj4DIfNlvQNwVedK0ElQkjvcRWFhPkTLfQ2ELx6Axxs6izNn2Q8tGOKRyzIIwj3k31cK7wjIhenXayEBclkTKr93ctHhx3TGpYcRs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(376002)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(31686004)(36916002)(6486002)(6506007)(6666004)(478600001)(53546011)(2616005)(38100700002)(31696002)(86362001)(921005)(41300700001)(83380400001)(2906002)(26005)(6512007)(66946007)(110136005)(66556008)(36756003)(66476007)(5660300002)(316002)(44832011)(54906003)(8676002)(8936002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dzBiMitsMlhpK2p6bE8zalg0enV6Q2h4UHZWUndUa0lYeHhxWmhrZmU0dEla?=
- =?utf-8?B?M01KWThWUjdlY0lSOXdUeTN0eGd4cUVKZlBLR3JGK0wwYm9kbmJqVkRjZUxQ?=
- =?utf-8?B?N3hQL3VKQlZudjRZMWord3JwNDI3WTgyZHBIcjRsUVRkQlBtZ1QxWlpZdDZY?=
- =?utf-8?B?eWRPS2JQamtwc2N5NllFTHFUMGV5MjZsWkRGQ09hbjZrSVpGMDlDOUZOSlN6?=
- =?utf-8?B?OUd0SnE5SXo5bDQ3U2xiWlVoWFlDY3gxMWZueUhEMWQwcjlJOXplNnZTYlM3?=
- =?utf-8?B?TmtNVm9RYXR0UGdKOXl6SHhGU1k1N0VCTTlYeXFucjFPTUdJMS9VTUpUcXQ3?=
- =?utf-8?B?NEE3YkxjSytkU254czNvOThFa1VVeCtGeUhxbDNNRUlYc2lqd0dlODUyUUpP?=
- =?utf-8?B?N2ZwVXlYZVllVm1vRWZwNER0cFBudmdqMnRwOVErNDFrdDlCK2FwK1hhd21S?=
- =?utf-8?B?RElPUlcrSXJPa2ZuVE1RZ3FpdGtXelIvV0s0MUE5MDMzRzNZZGU1TURoS1A3?=
- =?utf-8?B?U3BuTldXeVRXdFJmVG1hNlVVUllMM1BHSlpKRjFpRXZxMjBidHF1d25ISDlp?=
- =?utf-8?B?Ti9FVjVYOTltZHUzdWo2Q1pLVm9LMnNkVWd4OFpmeTlod0FhUW5HRHp0b1dl?=
- =?utf-8?B?c2g3bUorNDk4TkVXMlorNUtMaFp1UzcrR2JOMGVpcnpidDcvbmpRNzQ2c3Vk?=
- =?utf-8?B?VStBRFFEYlE1RzBFYkdFUWcxNWRMRlhyeERiRktpSGE0S2tobXcyTzJjUzg3?=
- =?utf-8?B?MnUzeG1GZHliM3E5SjlOQVVhWGxYYTIzaWRtcGJLRmlRUkNTd3QxSitPbmN0?=
- =?utf-8?B?UmdJM0dERzJDYUlVUm5HNnlhUnpJZ1RDMFE2SnNIVmRWM0t1YkFEVjVXTG5I?=
- =?utf-8?B?UE1NNXNGTWZEaVkyRlkwT3d1Q21ZT0V2VktoM3BuRCtMazhzdnRwUHdVZ2NY?=
- =?utf-8?B?Q0o2S01wM1FQd3dOdlFiVUVpRTI2NENlT2FCa2w0LzliYkxqL1phUE1oTC93?=
- =?utf-8?B?K1VnT0E0bmtuVFMvRW5rS1lyYnZMU3drcEplczVTclliTktlNzhud0FJTTZw?=
- =?utf-8?B?MFdzTmh1K1dJK3Y3VnlqME8yRk5qM0w2WFZCUkRTRlorWXZTM1lBUXJ5Tnly?=
- =?utf-8?B?bnNZMWtrLzUwRG5neTdPOXkvVVAvSFB4TmVXc010cGliYjllWUdjYkVDL3o5?=
- =?utf-8?B?SUh3cUZpMzN2eWNxMnhjNDVWdlltcHQ2YXp2L0lsTlRxQjdaekxwK0FWVVhU?=
- =?utf-8?B?c3dJUGJaWHRQcUJrRUpyajkycXZKSGVQcldld3lwZlRHZkRyaURDUzh0K2VF?=
- =?utf-8?B?bXVBMU9kM1RKWHorOVFYUjQ5QThkVVhjYVlNTG90ZVkvSTd6QzloYW1Xays1?=
- =?utf-8?B?SVFkNytkK2NzN2JaY0NmaGUvdUo2QWxoRGhPZEJPUjg3OTNuQVdQYlZvckQ2?=
- =?utf-8?B?ajlTamVIZENzMjJoelhyeHNiempqMEZOdHoyVmZFS0lLVmc1V3J4QUdGN0pk?=
- =?utf-8?B?NFRtSElxZG95UmcxSDJmRXBzeGlpVzh0OVdQZnFBSXl3VVlhRnUzclhhQVhL?=
- =?utf-8?B?U2ZYdTdMN0RnU1IwbEhlM0FrOUtpcFNNejZEUExNRmwxZ280bUFCaDFGTit0?=
- =?utf-8?B?WGgvSi9PVWxXVG9vMDVIdHUrcExNRW5yRlp6Q014cnM0RXdUaWJqaDZrQ1JQ?=
- =?utf-8?B?d0U0amREbUJYZ014UmM5NXBTRVIrblhOelV1MmdEemxUMUQxZmMrVmVIV3lj?=
- =?utf-8?B?YVpXLytCMVZ2VnhuQ1pKZFBNWVVaV1FmTHcvSHJrVGpkZGNuUFdpaFhSL2ty?=
- =?utf-8?B?YS9ZVmZybXhGSmJna210TjlSd3k3a2RZTk5vdFVtdWgzTW9aR3YvM0hEZVF1?=
- =?utf-8?B?WlJ1YmFTY0VGZmd1WmZDZWxCcTAvQUNDU2dWekw5ZmxYVDVMWjk4Sjh1ODhr?=
- =?utf-8?B?RUI1MkVSR1lreTZsNHRqWDN6UUcwMGtRdzlMRGJyRG5OQVp5Y3k1SWJ0WDVM?=
- =?utf-8?B?bzRmOTRZSm1jMDc0ZFZIUVFpZmxHWFlpcXpwVkg0L1pYTnk5eHh2ejIvMUdU?=
- =?utf-8?B?dGJNeS96YVVxazJtbFpSZG5NUmt4d0lxMzBQREVSMVJRb2ZSV29LcHFqeFcv?=
- =?utf-8?Q?COT/jhLE6/W6qPuyWv2CmOba4?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5168708-810b-4812-e102-08dbc05435ef
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 18:53:31.9895
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FSgoMJdDAbtBof+PnkvKFfOX1Tx0oPjuHyMars1bsGziwFrsLb3WXGhUOVPRDTcbAmGZqHh/DwNil0zOwD88JA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4100
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfGNhlyIlAF1rlmtib+3YdkgEiW/g3l4lzFyRuIFPI6ujXrPScA9Lq+127dtMhuyk6Bva2ZayooKWCn7Mwr7GqmQBhXrVpFCvW0NPA8TpGkq4JXTbxnvR
+ a3mv3kqWPyerrq4Br9e/lmieHvZt2MwVfGINXUebtJ70Lqvc2t4+9SETz5UrJXHHN7tNdD7BlsgNpGwBd4FDuzbchwV51YPNuyzRe5MQAUFdw47TYiMnF0rd
+ nCZkXGtGSytVQnP6ZCFAL/5cNFVCgNDv8fly2/tJ+pwOhkVocyVquMpxFE3rfuuzwKEoeq2n30F9IXQF/tgFnN9ZrUUvsvV8o/Wy6Ncle0TiAlL95oNWbdo2
+ i3hRE9S4vSEHWcTpJPPdLHFjoT1Q/XtUrQzHVzrBhKodFDMkX2WlP+PT/NdymACcJBv36l7cLt5lecSE+fu83wx1OGYTcUPOuR54GJvOHQWgWvOCsg3eOR0w
+ bFtWrGR6GK9qwGY2kXpZpcgT5kwpGUBpGgfTWsOt0hE2N5iPZj6pm38vednRFkdMfNwGCJbUm6L/4nc2M2UFsqpId+y8z3YRlHmV40Fr6d6pmIFnMQvGOKHZ
+ EpDIwoZEId3E7icBLnZYVFc1hM6GSPmamJzPRr/4KCYYtqw7P4kMkRxtcYs5wYelstvmTqigQhs+Pv8oG0zzWIbtSRxv7tFuJU0JXvICnTiUJH6Zkf2L9sX2
+ faAwKcjC45Z2YL4qbQ1uUlfDm4RVb9f3MaslHzrYxJTz7aFyedKkdg==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-28 11:38, Shashank Sharma wrote:
-> Hello Felix, Mukul,
->
-> On 28/09/2023 17:30, Felix Kuehling wrote:
->> On 2023-09-28 10:30, Joshi, Mukul wrote:
->>> [AMD Official Use Only - General]
->>>
->>>> -----Original Message-----
->>>> From: Yadav, Arvind <Arvind.Yadav@amd.com>
->>>> Sent: Thursday, September 28, 2023 5:54 AM
->>>> To: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander
->>>> <Alexander.Deucher@amd.com>; Sharma, Shashank
->>>> <Shashank.Sharma@amd.com>; Kuehling, Felix <Felix.Kuehling@amd.com>;
->>>> Joshi, Mukul <Mukul.Joshi@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
->>>> airlied@gmail.com; daniel@ffwll.ch
->>>> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; 
->>>> linux-
->>>> kernel@vger.kernel.org; Yadav, Arvind <Arvind.Yadav@amd.com>; Koenig,
->>>> Christian <Christian.Koenig@amd.com>
->>>> Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute 
->>>> offset
->>>> for gfx8
->>>>
->>>> This patch is to adjust the absolute doorbell offset against the 
->>>> doorbell id
->>>> considering the doorbell size of 32/64 bit.
->>>>
->>>> v2:
->>>> - Addressed the review comment from Felix.
->>>>
->>>> Cc: Christian Koenig <christian.koenig@amd.com>
->>>> Cc: Alex Deucher <alexander.deucher@amd.com>
->>>> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
->>>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->>>> ---
->>>>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
->>>>   1 file changed, 8 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>> index 0d3d538b64eb..c54c4392d26e 100644
->>>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>> @@ -407,7 +407,14 @@ static int allocate_doorbell(struct
->>>> qcm_process_device *qpd,
->>>>
->>>>        q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev-
->>>>> adev,
->>>>                                                                  qpd-
->>>>> proc_doorbells,
->>>> -                                                               q-
->>>>> doorbell_id);
->>>> +                                                               0);
->>>> +
->>> It looks like amdgpu_doorbell_index_on_bar() works only for 64-bit 
->>> doorbells.
->>> Shouldn't it work for both 32-bit and 64-bit doorbells considering 
->>> this is common
->>> doorbell manager code?
->
->
-> Yes, You are right that the calculations to find a particular doorbell 
-> in the doorbell page considers a doorbell width of 64-bit.
->
->>
->> I could see this argument going either way. KFD is the only one that 
->> cares about managing doorbells for user mode queues on GFXv8 GPUs. 
->> This is not a use case that amdgpu cares about. So I'm OK with KFD 
->> doing its own address calculations to make sure doorbells continue to 
->> work on GFXv8.
->>
->> It may not be worth adding complexity to the common doorbell manager 
->> code to support legacy GPUs with 32-bit doorbells.
->
->
-> I was thinking about adding an additional input parameter which will 
-> indicate if the doorbell width is 32-bit vs 64-bit (like 
-> is_doorbell_64_bit), and doorbell manager can alter the multiplier 
-> while calculating the final offset. Please let me know if that will 
-> work for both the cases.
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
 
-Yes, that would work for KFD because we already have the doorbell size 
-in our device-info structure. Instead of making it a boolean flag, you 
-could make it a doorbell_size parameter, in byte or dword units to 
-simplify the pointer math.
+This patch adds the BCM5221 PHY support by reusing brcm_fet_*()
+callbacks and adding quirks for BCM5221 when needed.
 
-Regards,
-   Felix
+Cc: Jim Reinhart <jimr@tekvox.com>
+Cc: James Autry <jautry@tekvox.com>
+Cc: Matthew Maron <matthewm@tekvox.com>
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+V1->V2:
+Suggested by Andrew Lunn:
+* handle mdix_ctrl adding bcm5221_config_aneg() and bcm5221_read_status()
+* reorder PHY_ID_BCM5241 in broadcom_tbl[]
+Suggested by Russell King:
+* add comment on phy_read(..., MII_BRCM_FET_INTREG)
+* lock mdio bus when in shadow mode
+Suggested by Florian Fainelli:
+* reuse brcm_fet_*() callbacks checking for phy_id == PHY_ID_BCM5221
 
+V2->V3:
+* rebase on master branch
+---
+ drivers/net/phy/broadcom.c | 155 +++++++++++++++++++++++++++++--------
+ include/linux/brcmphy.h    |  10 +++
+ 2 files changed, 132 insertions(+), 33 deletions(-)
 
->
-> - Shashank
->
->>
->>
->> Regards,
->>   Felix
->>
->>
->>>
->>> Thanks,
->>> Mukul
->>>
->>>> +     /* Adjust the absolute doorbell offset against the doorbell id
->>>> considering
->>>> +      * the doorbell size of 32/64 bit.
->>>> +      */
->>>> +     q->properties.doorbell_off += q->doorbell_id *
->>>> + dev->kfd->device_info.doorbell_size / 4;
->>>> +
->>>>        return 0;
->>>>   }
->>>>
->>>> -- 
->>>> 2.34.1
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 04b2e6eeb195..328236cab897 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -704,16 +704,21 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 	if (err < 0 && err != -EIO)
+ 		return err;
+ 
++	/* Read to clear status bits */
+ 	reg = phy_read(phydev, MII_BRCM_FET_INTREG);
+ 	if (reg < 0)
+ 		return reg;
+ 
+ 	/* Unmask events we are interested in and mask interrupts globally. */
+-	reg = MII_BRCM_FET_IR_DUPLEX_EN |
+-	      MII_BRCM_FET_IR_SPEED_EN |
+-	      MII_BRCM_FET_IR_LINK_EN |
+-	      MII_BRCM_FET_IR_ENABLE |
+-	      MII_BRCM_FET_IR_MASK;
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		reg = MII_BRCM_FET_IR_ENABLE |
++		MII_BRCM_FET_IR_MASK;
++	else
++		reg = MII_BRCM_FET_IR_DUPLEX_EN |
++		MII_BRCM_FET_IR_SPEED_EN |
++		MII_BRCM_FET_IR_LINK_EN |
++		MII_BRCM_FET_IR_ENABLE |
++		MII_BRCM_FET_IR_MASK;
+ 
+ 	err = phy_write(phydev, MII_BRCM_FET_INTREG, reg);
+ 	if (err < 0)
+@@ -726,42 +731,50 @@ static int brcm_fet_config_init(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
+-		return err;
++	phy_lock_mdio_bus(phydev);
+ 
+-	/* Set the LED mode */
+-	reg = phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
+-	if (reg < 0) {
+-		err = reg;
+-		goto done;
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
++		return err;
+ 	}
+ 
+-	reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
+-	reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
++	if (phydev->phy_id != PHY_ID_BCM5221) {
++		/* Set the LED mode */
++		reg = __phy_read(phydev, MII_BRCM_FET_SHDW_AUXMODE4);
++		if (reg < 0) {
++			err = reg;
++			goto done;
++		}
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+-	if (err < 0)
+-		goto done;
++		reg &= ~MII_BRCM_FET_SHDW_AM4_LED_MASK;
++		reg |= MII_BRCM_FET_SHDW_AM4_LED_MODE1;
+ 
+-	/* Enable auto MDIX */
+-	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
+-			   MII_BRCM_FET_SHDW_MC_FAME);
+-	if (err < 0)
+-		goto done;
++		err = __phy_write(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
++		if (err < 0)
++			goto done;
++
++		/* Enable auto MDIX */
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_MISCCTRL,
++				     MII_BRCM_FET_SHDW_MC_FAME);
++		if (err < 0)
++			goto done;
++	}
+ 
+ 	if (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE) {
+ 		/* Enable auto power down */
+-		err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
+-				   MII_BRCM_FET_SHDW_AS2_APDE);
++		err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXSTAT2,
++				     MII_BRCM_FET_SHDW_AS2_APDE);
+ 	}
+ 
+ done:
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
+@@ -840,23 +853,86 @@ static int brcm_fet_suspend(struct phy_device *phydev)
+ 
+ 	reg = brcmtest | MII_BRCM_FET_BT_SRE;
+ 
+-	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
+-	if (err < 0)
++	phy_lock_mdio_bus(phydev);
++
++	err = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
++	if (err < 0) {
++		phy_unlock_mdio_bus(phydev);
+ 		return err;
++	}
++
++	if (phydev->phy_id == PHY_ID_BCM5221)
++		/* Force Low Power Mode with clock enabled */
++		reg = BCM5221_SHDW_AM4_EN_CLK_LPM | BCM5221_SHDW_AM4_FORCE_LPM;
++	else
++		/* Set standby mode */
++		reg = MII_BRCM_FET_SHDW_AM4_STANDBY;
+ 
+-	/* Set standby mode */
+-	err = phy_modify(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY,
+-			 MII_BRCM_FET_SHDW_AM4_STANDBY);
++	err = __phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4, reg);
+ 
+ 	/* Disable shadow register access */
+-	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
++	err2 = __phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
+ 	if (!err)
+ 		err = err2;
+ 
++	phy_unlock_mdio_bus(phydev);
++
+ 	return err;
+ }
+ 
++static int bcm5221_config_aneg(struct phy_device *phydev)
++{
++	int ret, val;
++
++	ret = genphy_config_aneg(phydev);
++	if (ret)
++		return ret;
++
++	switch (phydev->mdix_ctrl) {
++	case ETH_TP_MDI:
++		val = BCM5221_AEGSR_MDIX_DIS;
++		break;
++	case ETH_TP_MDI_X:
++		val = BCM5221_AEGSR_MDIX_DIS | BCM5221_AEGSR_MDIX_MAN_SWAP;
++		break;
++	case ETH_TP_MDI_AUTO:
++		val = 0;
++		break;
++	default:
++		return 0;
++	}
++
++	return phy_modify(phydev, BCM5221_AEGSR, BCM5221_AEGSR_MDIX_MAN_SWAP |
++						 BCM5221_AEGSR_MDIX_DIS,
++						 val);
++}
++
++static int bcm5221_read_status(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Read MDIX status */
++	ret = phy_read(phydev, BCM5221_AEGSR);
++	if (ret < 0)
++		return ret;
++
++	if (ret & BCM5221_AEGSR_MDIX_DIS) {
++		if (ret & BCM5221_AEGSR_MDIX_MAN_SWAP)
++			phydev->mdix_ctrl = ETH_TP_MDI_X;
++		else
++			phydev->mdix_ctrl = ETH_TP_MDI;
++	} else {
++		phydev->mdix_ctrl = ETH_TP_MDI_AUTO;
++	}
++
++	if (ret & BCM5221_AEGSR_MDIX_STATUS)
++		phydev->mdix = ETH_TP_MDI_X;
++	else
++		phydev->mdix = ETH_TP_MDI;
++
++	return genphy_read_status(phydev);
++}
++
+ static void bcm54xx_phy_get_wol(struct phy_device *phydev,
+ 				struct ethtool_wolinfo *wol)
+ {
+@@ -1221,6 +1297,18 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.handle_interrupt = brcm_fet_handle_interrupt,
+ 	.suspend	= brcm_fet_suspend,
+ 	.resume		= brcm_fet_config_init,
++}, {
++	.phy_id		= PHY_ID_BCM5221,
++	.phy_id_mask	= 0xfffffff0,
++	.name		= "Broadcom BCM5221",
++	/* PHY_BASIC_FEATURES */
++	.config_init	= brcm_fet_config_init,
++	.config_intr	= brcm_fet_config_intr,
++	.handle_interrupt = brcm_fet_handle_interrupt,
++	.suspend	= brcm_fet_suspend,
++	.resume		= brcm_fet_config_init,
++	.config_aneg	= bcm5221_config_aneg,
++	.read_status	= bcm5221_read_status,
+ }, {
+ 	.phy_id		= PHY_ID_BCM5395,
+ 	.phy_id_mask	= 0xfffffff0,
+@@ -1296,6 +1384,7 @@ static struct mdio_device_id __maybe_unused broadcom_tbl[] = {
+ 	{ PHY_ID_BCM50610M, 0xfffffff0 },
+ 	{ PHY_ID_BCM57780, 0xfffffff0 },
+ 	{ PHY_ID_BCMAC131, 0xfffffff0 },
++	{ PHY_ID_BCM5221, 0xfffffff0 },
+ 	{ PHY_ID_BCM5241, 0xfffffff0 },
+ 	{ PHY_ID_BCM5395, 0xfffffff0 },
+ 	{ PHY_ID_BCM53125, 0xfffffff0 },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index c55810a43541..1394ba302367 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -11,6 +11,7 @@
+ 
+ #define PHY_ID_BCM50610			0x0143bd60
+ #define PHY_ID_BCM50610M		0x0143bd70
++#define PHY_ID_BCM5221			0x004061e0
+ #define PHY_ID_BCM5241			0x0143bc30
+ #define PHY_ID_BCMAC131			0x0143bc70
+ #define PHY_ID_BCM5481			0x0143bca0
+@@ -331,6 +332,15 @@
+ 
+ #define BCM54XX_WOL_INT_STATUS		(MII_BCM54XX_EXP_SEL_WOL + 0x94)
+ 
++/* BCM5221 Registers */
++#define BCM5221_AEGSR			0x1C
++#define BCM5221_AEGSR_MDIX_STATUS	BIT(13)
++#define BCM5221_AEGSR_MDIX_MAN_SWAP	BIT(12)
++#define BCM5221_AEGSR_MDIX_DIS		BIT(11)
++
++#define BCM5221_SHDW_AM4_EN_CLK_LPM	BIT(2)
++#define BCM5221_SHDW_AM4_FORCE_LPM	BIT(1)
++
+ /*****************************************************************************/
+ /* Fast Ethernet Transceiver definitions. */
+ /*****************************************************************************/
+-- 
+2.34.1
+
