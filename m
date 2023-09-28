@@ -2,41 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7E27B1019
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44D57B101B
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjI1AjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S229846AbjI1AkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjI1AjH (ORCPT
+        with ESMTP id S229500AbjI1Aj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:39:07 -0400
-Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DE8F5;
-        Wed, 27 Sep 2023 17:39:04 -0700 (PDT)
-Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
-        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4RwvgT1zx1z9y75B;
-        Thu, 28 Sep 2023 08:36:53 +0800 (CST)
-Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
- (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 28 Sep
- 2023 08:38:54 +0800
-Date:   Thu, 28 Sep 2023 08:38:53 +0800
-From:   Wang Jinchao <wangjinchao@xfusion.com>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] padata: Fix the UAF issue related to parallel_data
-Message-ID: <ZRTLHY5A+VqIKhA2@fedora>
+        Wed, 27 Sep 2023 20:39:59 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2756110A;
+        Wed, 27 Sep 2023 17:39:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695861595;
+        bh=FDGB4csrUsfR2IX+TgcOAJbRJr9AaNa4usEGCtv9UM0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=anEhgZaibKLYk351TCxuH2pphaLhMqCdVVHZHRWXLTDiypTe5VhNBfcSexoB63rzw
+         z1WZF3dpofsvjUzE3hQJgkPxy4GOOKpMWzGJaZT0UmRE32g0tnQ4yV3EkzP9rHKU+g
+         lc4VfI5WPWx5rjToHa8bjghwjhEFyMr0EXua80pSswpweah2mraMFGhwjcad6EHLuW
+         3e0+Kd1kLsOgzFtuh/YFJ3WyvwV2FPuTdvmMlfbWpOBsN7qypyO3nfsmLh6jaXFoHo
+         uWdd9TpN8HaUZX0ms23kAln8y0Od5rV8M3Vc9X1xmojjv0YaRSZ+38354By3KzNVRg
+         1PXyf4CEhS1FA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rwvkz5lxRz4xQ4;
+        Thu, 28 Sep 2023 10:39:55 +1000 (AEST)
+Date:   Thu, 28 Sep 2023 10:39:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20230928103954.78444923@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-Originating-IP: [10.82.147.3]
-X-ClientProxiedBy: wuxshcsitd00600.xfusion.com (10.32.133.213) To
- wuxshcsitd00600.xfusion.com (10.32.133.213)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/iMPLItn/uOFZjavHpQTX0.U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,96 +51,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a high-load arm64 environment, the pcrypt_aead01 test in LTP can lead to
-system UAF (Use-After-Free) issues. Due to the lengthy analysis of the
-pcrypt_aead01 function call, I'll describe the problem scenario using a
-simplified model:
+--Sig_/iMPLItn/uOFZjavHpQTX0.U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Suppose there's a user of padata named `user_function` that adheres to
-the padata requirement of calling `padata_free_shell` after `serial()`
-has been invoked, as demonstrated in the following code:
+Hi all,
 
-```c
-struct request {
-    struct padata_priv padata;
-    struct completion *done;
-};
+After merging the vfs-brauner tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-void parallel(struct padata_priv *padata) {
-    do_something();
-}
+drivers/md/md.c: In function 'md_import_device':
+drivers/md/md.c:3635:25: error: unused variable 'holder' [-Werror=3Dunused-=
+variable]
+ 3635 |         struct md_rdev *holder;
+      |                         ^~~~~~
+cc1: all warnings being treated as errors
 
-void serial(struct padata_priv *padata) {
-    struct request *request = container_of(padata, struct request, padata);
-    complete(request->done);
-}
+Caused by commit
 
-void user_function() {
-    DECLARE_COMPLETION(done)
-    padata->parallel = parallel;
-    padata->serial = serial;
-    padata_do_parallel();
-    wait_for_completion(&done);
-    padata_free_shell();
-}
-```
+  15db36126ca6 ("md: Convert to bdev_open_by_dev()")
 
-In the corresponding padata.c file, there's the following code:
+I have used the vfs-brauner tree from next-20230927 for today.
+--=20
+Cheers,
+Stephen Rothwell
 
-```c
-static void padata_serial_worker(struct work_struct *serial_work) {
-    ...
-    cnt = 0;
+--Sig_/iMPLItn/uOFZjavHpQTX0.U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-    while (!list_empty(&local_list)) {
-        ...
-        padata->serial(padata);
-        cnt++;
-    }
+-----BEGIN PGP SIGNATURE-----
 
-    local_bh_enable();
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUUy1oACgkQAVBC80lX
+0GynqwgAlHT2iw31F0AJ+pwo3223pLmmtmecLpbJbw2XHpXrD/vVs74ooT9LLC4e
+gJRliCkIhpoD1aCV2VHXI8if7Q7a8gMLfI1XRpIA42+fgyk82YW+yWXV2zX6s+Rh
+OYfvexn6jrTA1q6sG3wg67wLx+aL28K1SPEdmWI+/XfjxM5sNrnzbA3ABC9gMu3Y
+yOCI9Xn4ep3ro0FS6uOxHGN3hrKezAzWMQx1/7G3XHF9tkUKYRp0oqlat8zaGo8v
+WgvhCv+0tSole3TMejeHl4Ju/97gPen/KpcSadw8Rg8GFGtoDC6gUofwmUEw1gYK
+2js4w5K5FtIZ5GVRRXuPE4NIyMY2vg==
+=llvo
+-----END PGP SIGNATURE-----
 
-    if (refcount_sub_and_test(cnt, &pd->refcnt))
-        padata_free_pd(pd);
-}
-```
-
-Because of the high system load and the accumulation of unexecuted
-softirq at this moment, `local_bh_enable()` in padata takes longer
-to execute than usual. Subsequently, when accessing `pd->refcnt`,
-`pd` has already been released by `padata_free_shell()`, resulting
-in a UAF issue with `pd->refcnt`.
-
-The fix is straightforward: add `refcount_dec_and_test` before calling
-`padata_free_pd` in `padata_free_shell`.
-
-Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
----
-V2:
-    To satisfy Sparse, use rcu_dereference_protected.
-    Reported-by: kernel test robot <lkp@intel.com>
-    Closes: https://lore.kernel.org/oe-kbuild-all/202309270829.xHgTOMKw-lkp@intel.com/
-
-V1: https://lore.kernel.org/all/ZRE4XvOOhz4HSOgR@fedora/
-
- kernel/padata.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 222d60195de6..acef1e703a8b 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -1107,7 +1107,9 @@ void padata_free_shell(struct padata_shell *ps)
- 
- 	mutex_lock(&ps->pinst->lock);
- 	list_del(&ps->list);
--	padata_free_pd(rcu_dereference_protected(ps->pd, 1));
-+	struct parallel_data *pd = rcu_dereference_protected(ps->pd, 1);
-+	if (refcount_dec_and_test(&pd->refcnt))
-+		padata_free_pd(pd);
- 	mutex_unlock(&ps->pinst->lock);
- 
- 	kfree(ps);
--- 
-2.40.0
-
+--Sig_/iMPLItn/uOFZjavHpQTX0.U--
