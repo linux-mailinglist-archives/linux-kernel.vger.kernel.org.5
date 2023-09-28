@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A10E7B1283
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5197B1290
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjI1GQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        id S230310AbjI1GWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjI1GQC (ORCPT
+        with ESMTP id S229453AbjI1GWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:16:02 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D308A3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 23:16:00 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkIf-0005M7-3R; Thu, 28 Sep 2023 08:15:01 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkIT-009W0C-Oq; Thu, 28 Sep 2023 08:14:49 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qlkIT-005Ytu-DX; Thu, 28 Sep 2023 08:14:49 +0200
-Date:   Thu, 28 Sep 2023 08:14:49 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-tegra@vger.kernel.org,
-        "Conor.Dooley" <conor.dooley@microchip.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-riscv@lists.infradead.org,
-        Karol Gugala <kgugala@antmicro.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        Ruan Jinjie <ruanjinjie@huawei.com>,
-        Yinbo Zhu <zhuyinbo@loongson.cn>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-rockchip@lists.infradead.org,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Huisong Li <lihuisong@huawei.com>,
-        Joel Stanley <joel@jms.id.au>, Sumit Gupta <sumitg@nvidia.com>,
-        "zhang.songyi" <zhang.songyi@zte.com.cn>,
-        Zev Weiss <zev@bewilderbeest.net>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Krzysztof Halasa <khalasa@piap.pl>, loongarch@lists.linux.dev,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        linux-kernel@vger.kernel.org,
-        Shang XiaoJing <shangxiaojing@huawei.com>,
-        Leo Li <leoyang.li@nxp.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        Nick Alcock <nick.alcock@oracle.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 00/40] soc: Convert to platform remove callback returning
- void
-Message-ID: <20230928061449.xxqhyyrg6e357dn2@pengutronix.de>
-References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
- <CACPK8XeROYz_XaB3TvUhdXm7Vm8fjC8yU+mfvA58=_FiDrBy-g@mail.gmail.com>
- <1b2fddf8-c0a6-4afa-8ad0-f280dea1607f@app.fastmail.com>
- <f4hvrslynlgmxu4a2gogc5idvumskhaalxgwildy56yqk2wz7d@lkh4swkv52mi>
+        Thu, 28 Sep 2023 02:22:01 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6103E9C;
+        Wed, 27 Sep 2023 23:21:59 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3KZ0F6vz4f3jLv;
+        Thu, 28 Sep 2023 14:21:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S4;
+        Thu, 28 Sep 2023 14:21:56 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
+        dm-devel@redhat.com, song@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next v3 00/25] md: synchronize io with array reconfiguration
+Date:   Thu, 28 Sep 2023 14:15:18 +0800
+Message-Id: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yfll6esgccshw4fu"
-Content-Disposition: inline
-In-Reply-To: <f4hvrslynlgmxu4a2gogc5idvumskhaalxgwildy56yqk2wz7d@lkh4swkv52mi>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFy7Xw47tF45tryfAFyrZwb_yoWrJw4Dp3
+        9FqFZIvw48JFy5Ar4xX34DWF93Jw4FkrZFkr9xWw4rC3W3GryrCrW8Jr98Xr9YkFyfAr9r
+        Ja48Xw1rCr18AFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        fUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,78 +61,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yu Kuai <yukuai3@huawei.com>
 
---yfll6esgccshw4fu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v3:
+ - rebase with latest md-next;
+ - remove patch 2 from v2, and replace it with a new patch;
+ - fix a null-ptr-derefrence in rdev_attr_store() that mddev is used
+ before checking;
+ - merge patch 20-22 from v1 into one patch;
+ - mddev_lock() used to be called first and can be interruptted, allow new
+ api, which is called before mddev_lock() now, to be interruptted as well;
+ - improve some comments and coding;
 
-On Wed, Sep 27, 2023 at 04:01:58PM -0700, Bjorn Andersson wrote:
-> On Wed, Sep 27, 2023 at 10:43:16AM +0200, Arnd Bergmann wrote:
-> > On Wed, Sep 27, 2023, at 04:25, Joel Stanley wrote:
-> > > On Mon, 25 Sept 2023 at 09:55, Uwe Kleine-K=F6nig <u.kleine-koenig@pe=
-ngutronix.de> wrote:
-> > >>
-> > >> this series converts all platform drivers below drivers/soc to use
-> > >> .remove_new(). The motivation is to get rid of an integer return code
-> > >> that is (mostly) ignored by the platform driver core and error prone=
- on
-> > >> the driver side.
-> > >>
-> > >> See commit 5c5a7680e67b ("platform: Provide a remove callback that
-> > >> returns no value") for an extended explanation and the eventual goal.
-> > >>
-> > >> As there is no single maintainer team for drivers/soc, I suggest the
-> > >> individual maintainers to pick up "their" patches.
-> > >
-> > > I'd be happy if Arnd merged the lot at once. Arnd, what do you think?
-> > >
-> > > If that will be too messy then I understand. I have queued the aspeed
-> > > ones locally and will push that out if we decide that's the best way
-> > > to go.
-> >=20
-> > The main downside of merging it all at once through the soc tree
-> > is that there may be patches that conflict with other work going on
-> > in individual drivers.
-> >=20
-> > What I'd suggest doing here is:
-> >=20
-> > - have platform maintainers pick up patches for their drivers
-> >   if that is their preference for any reason
->=20
-> I'd prefer this for the qcom drivers at least, please let me know if you
-> would like me to proceed.
+Changes in v2:
+ - rebase with latest md-next;
+ - remove some follow up cleanup patches, these patches will be sent
+ later after this patchset.
 
-I can send a pull request as Arnd suggested. So iff you want the qcom
-drivers not be a part of that PR, just make sure they appear in next
-during the next week. :-)
+After previous four patchset of preparatory work, this patchset impelement
+a new version of mddev_suspend(), the new apis:
+ - reconfig_mutex is not required;
+ - the weird logical that suspend array hold 'reconfig_mutex' for
+   mddev_check_recovery() to update superblock is not needed;
+ - the special handling, 'pers->prepare_suspend', for raid456 is not
+   needed;
+ - It's safe to be called at any time once mddev is allocated, and it's
+   designed to be used from slow path where array configuration is changed;
 
-(I'm not sure if "this" in your last quoted sentence is "platform
-maintainers pick up" or "merging it all at once through the soc tree". I
-think you mean the former. Still if you don't want me to pick up the
-qcom patches and won't manage to make them appear in next via your tree,
-I ask you to tell me explicitly to skip these in my PR.)
+And use the new api to replace:
 
-Best regards and thanks,
-Uwe
+mddev_lock
+mddev_suspend or not
+// array reconfiguration
+mddev_resume or not
+mddev_unlock
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+With:
 
---yfll6esgccshw4fu
-Content-Type: application/pgp-signature; name="signature.asc"
+mddev_suspend
+mddev_lock
+// array reconfiguration
+mddev_unlock
+mddev_resume
 
------BEGIN PGP SIGNATURE-----
+However, the above change is not possible for raid5 and raid-cluster in
+some corner cases, and mddev_suspend/resume() is replaced with quiesce()
+callback, which will suspend the array as well.
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUVGdgACgkQj4D7WH0S
-/k4H8ggAlzMNhL51l548JwUtvGIKaakJoHBLPcGIj/hsCvofuN0HLiMSEtj8Dg6K
-8y1eWVR1Yl+MqkggqjwkOCCy2eX7GYvKXYBRynjaryEtuaE5wSH09zlTWvWBc/ac
-XaBPBsvT6wrBDQBNG9hy4EuMwz7hTRZqp6r0nJV4SSrnor+Lh3EgudImNy82xdmh
-qewYGPdP1R2M1dIIvRSxcLGWHQike9Rti3B8LNTQOTOKB4RrnNfwmPZAk+6LSRAW
-ArlW9S66AzVOe1E5gY70pi4VTQ8AmegEFPOJf3ZqPVAr5s/FYfmxf7GUUM/j/BMh
-7vHOjZMrtO+JkBW/lzWwgV6oKIHgtA==
-=TaoJ
------END PGP SIGNATURE-----
+This patchset is tested in my VM with mdadm testsuite with loop device
+except for 10ddf tests(they always fail before this patchset).
 
---yfll6esgccshw4fu--
+A lot of cleanups will be started after this patchset.
+
+Yu Kuai (25):
+  md: use READ_ONCE/WRITE_ONCE for 'suspend_lo' and 'suspend_hi'
+  md: replace is_md_suspended() with 'mddev->suspended' in
+    md_check_recovery()
+  md: add new helpers to suspend/resume array
+  md: add new helpers to suspend/resume and lock/unlock array
+  md: use new apis to suspend array for suspend_lo/hi_store()
+  md: use new apis to suspend array for level_store()
+  md: use new apis to suspend array for serialize_policy_store()
+  md/dm-raid: use new apis to suspend array
+  md/md-bitmap: use new apis to suspend array for location_store()
+  md/raid5-cache: use READ_ONCE/WRITE_ONCE for 'conf->log'
+  md/raid5-cache: use new apis to suspend array for
+    r5c_disable_writeback_async()
+  md/raid5-cache: use new apis to suspend array for
+    r5c_journal_mode_store()
+  md/raid5: use new apis to suspend array for raid5_store_stripe_size()
+  md/raid5: use new apis to suspend array for raid5_store_skip_copy()
+  md/raid5: use new apis to suspend array for
+    raid5_store_group_thread_cnt()
+  md/raid5: use new apis to suspend array for
+    raid5_change_consistency_policy()
+  md/raid5: replace suspend with quiesce() callback
+  md: use new apis to suspend array for ioctls involed array
+    reconfiguration
+  md: use new apis to suspend array for adding/removing rdev from
+    state_store()
+  md: use new apis to suspend array before
+    mddev_create/destroy_serial_pool
+  md: cleanup mddev_create/destroy_serial_pool()
+  md/md-linear: cleanup linear_add()
+  md: suspend array in md_start_sync() if array need reconfiguration
+  md: remove old apis to suspend the array
+  md: rename __mddev_suspend/resume() back to mddev_suspend/resume()
+
+ drivers/md/dm-raid.c       |  10 +-
+ drivers/md/md-autodetect.c |   4 +-
+ drivers/md/md-bitmap.c     |  18 ++-
+ drivers/md/md-linear.c     |   2 -
+ drivers/md/md.c            | 233 ++++++++++++++++++++-----------------
+ drivers/md/md.h            |  43 +++++--
+ drivers/md/raid5-cache.c   |  64 +++++-----
+ drivers/md/raid5.c         |  56 ++++-----
+ 8 files changed, 226 insertions(+), 204 deletions(-)
+
+-- 
+2.39.2
+
