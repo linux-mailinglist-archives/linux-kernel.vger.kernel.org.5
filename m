@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F957B15BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DF17B15BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbjI1IJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
+        id S231160AbjI1IKd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Sep 2023 04:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjI1IJP (ORCPT
+        with ESMTP id S229639AbjI1IKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:09:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF5192;
-        Thu, 28 Sep 2023 01:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J3atQWxYv516rGAsTWQWrekcnTVWQgdCD2qn0DOCtlc=; b=pnCohN7+ceUcVO2SKAY4uzXR4q
-        PveV2LWQXH1JKKnR/ndaTmVoZU3f+wvfurcG7U2LfGyhbLVUQ+2FlP2QXjvRT/fpyurrD3BnEda5T
-        1EaaBdh7E0fgn2kheitEvLZsz0cNEFE4Z7q851G/8R6MMjU0Q/IQKadQxPnynTAl9jy5k5vRUazPX
-        nmW8NZGimlnEMJlZhrE+IuWSuwCIzaluTo0hB0PA/BD+lM2bRdbf3v54/0K0Au3QK6Yenm2cR1nxR
-        kBhWQU5XukCwGfbbaLFEFXeesTiTHAR4aWr6SPIeNZR9FG90bnUcm0206qXQB2aBnBfLgxVwhyIZy
-        /RARU8/g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qlm4z-001K5l-AM; Thu, 28 Sep 2023 08:09:01 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F36B1300288; Thu, 28 Sep 2023 10:09:00 +0200 (CEST)
-Date:   Thu, 28 Sep 2023 10:09:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [RFC PATCH] srcu: Use try-lock lockdep annotation for NMI-safe
- access.
-Message-ID: <20230928080900.GF9829@noisy.programming.kicks-ass.net>
-References: <20230927160231.XRCDDSK4@linutronix.de>
- <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
+        Thu, 28 Sep 2023 04:10:31 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0486398
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 01:10:28 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-62-3tc3rinCOTiYPv2jxlrRfw-1; Thu, 28 Sep 2023 09:10:10 +0100
+X-MC-Unique: 3tc3rinCOTiYPv2jxlrRfw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 28 Sep
+ 2023 09:10:09 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 28 Sep 2023 09:10:09 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Morton' <akpm@linux-foundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+Subject: RE: [PATCH next v4 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v4 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnqB/CwAvMQ3gkdSO607JUF4aSKdgHV/OwAACCvOXA=
+Date:   Thu, 28 Sep 2023 08:10:09 +0000
+Message-ID: <0b03cbd61c104b1db0848f3ad900a2ea@AcuMS.aculab.com>
+References: <b97faef60ad24922b530241c5d7c933c@AcuMS.aculab.com>
+ <20230927103014.683e41b855cb2cd4ea163fa5@linux-foundation.org>
+In-Reply-To: <20230927103014.683e41b855cb2cd4ea163fa5@linux-foundation.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRUX0YUrXfepRGKE@Boquns-Mac-mini.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 11:06:09PM -0700, Boqun Feng wrote:
+From: Andrew Morton
+> Sent: 27 September 2023 18:30
+> 
+> On Mon, 18 Sep 2023 08:14:40 +0000 David Laight <David.Laight@ACULAB.COM> wrote:
+> 
+> > A quick grep shows 5734 min() and 4597 min_t().
+> > Having the casts on almost half of the calls shows that something
+> > is clearly wrong.
 
-> I think this is a "side-effect" of commit f0f44752f5f6 ("rcu: Annotate
-> SRCU's update-side lockdep dependencies"). In verify_lock_unused(), i.e.
-> the checking for NMI lock usages, the logic is that
+Thanks for taking these.
+I had a horrid thought they were languishing again.
 
-I think I'm having a problem with this commit -- that is, by adding
-lockdep you're adding tracepoint, which rely on RCU being active.
+> My preferred approach to fixing min() warnings is "the types are wrong".
+> But often getting the types better is hard.
+> 
+> Is there a plan afoot to go around existing code doing some
+> min_t()->min() conversions?
 
-The result is that SRCU is now no longer usable from !RCU regions.
+Could get tedious given there are 4500+ min_t() out there.
+Also every one needs looking at just to check it isn't relying
+on the cast - a few do,
 
-Was this considered and intended?
+But they could get reduced slowly.
+Not adding more would be a bonus!
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
