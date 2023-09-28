@@ -2,633 +2,621 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D9D7B1846
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968EE7B1840
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjI1KbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S231173AbjI1K37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjI1KbO (ORCPT
+        with ESMTP id S230215AbjI1K3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:31:14 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D82126;
-        Thu, 28 Sep 2023 03:31:10 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38SAU9pY033037;
-        Thu, 28 Sep 2023 05:30:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1695897009;
-        bh=4MYgZL/v0SY2zszXGXkMEoGiEC3tmZ+vWgShu2LXlgI=;
-        h=From:To:CC:Subject:Date;
-        b=WgJi8uNyA3YGsqcGePz9FATOP/uhV9aDktdyoTqWqvT9JKysninNxxyJbqYrzfTtk
-         W5wE/HQW45wT1Jy1BNHd9AzXdmUfA9uZYB9TsXKUapzTRzhNvMvVocNxIVZEHIe9P1
-         YZV041XPyS4Jjr8BxW/dqOo5yaMuujWU+NpOHURs=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38SAU9K3020496
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 28 Sep 2023 05:30:09 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 28
- Sep 2023 05:30:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 28 Sep 2023 05:30:08 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38SAU8mW076858;
-        Thu, 28 Sep 2023 05:30:08 -0500
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.199])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 38SAU72G025231;
-        Thu, 28 Sep 2023 05:30:07 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        MD Danish Anwar <danishanwar@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <vladimir.oltean@nxp.com>,
-        Simon Horman <horms@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <srk@ti.com>, <r-gunasekaran@ti.com>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Subject: [PATCH net-next v3] net: ti: icssg_prueth: add TAPRIO offload support
-Date:   Thu, 28 Sep 2023 16:00:00 +0530
-Message-ID: <20230928103000.186304-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 28 Sep 2023 06:29:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C85126;
+        Thu, 28 Sep 2023 03:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695896992; x=1727432992;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=2yMn5+Aal1AyzHwX7Lz+DeiOvPM1N33O3Mi4jmDJtgw=;
+  b=iSYDn7FiK3Drr+9XrbLpYNTiDB54P4n+ZMMmBYCJ3uvgg4t/PVGOspq3
+   IlJKQJbcJB090mhda2yHRQYsWYFuCvV2mvG8iC2u8zgd5dhNxSUzhM7Zw
+   mKlGQswRmdnrB9hO5W8z46pIC6ffanydpB4sWXScJw9JZBTvUbblEpfX3
+   iMozh2oXjVCvXvJdvXLhBYhkR0xGSdasdG2QXq9kOZa/uJxX1vND4Buxg
+   q2P5bq+593LDv+hqaZSs8t8coJAXI6GOaDhJOtoClYZID8W4pvlnzwREr
+   QOBhJNDQBtrQfzqZ75qM+VKQIhG0ktR7uMfOQkGmO/8tmCPYPaT8eTL+u
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="384826794"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="384826794"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 03:29:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10846"; a="749563062"
+X-IronPort-AV: E=Sophos;i="6.03,183,1694761200"; 
+   d="scan'208";a="749563062"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga002.jf.intel.com with ESMTP; 28 Sep 2023 03:29:46 -0700
+Message-ID: <10ad0613-7e88-dbe8-c5a2-d535f8e9db03@linux.intel.com>
+Date:   Thu, 28 Sep 2023 13:31:09 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
+        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230921214843.18450-1-quic_wcheng@quicinc.com>
+ <20230921214843.18450-2-quic_wcheng@quicinc.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v7 01/33] xhci: add support to allocate several
+ interrupters
+In-Reply-To: <20230921214843.18450-2-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@ti.com>
+On 22.9.2023 0.48, Wesley Cheng wrote:
+> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+> 
+> Modify the XHCI drivers to accommodate for handling multiple event rings in
+> case there are multiple interrupters.  Add the required APIs so clients are
+> able to allocate/request for an interrupter ring, and pass this information
+> back to the client driver.  This allows for users to handle the resource
+> accordingly, such as passing the event ring base address to an audio DSP.
+> There is no actual support for multiple MSI/MSI-X vectors.
+> 
+> Factoring out XHCI interrupter APIs and structures done by Wesley Cheng, in
+> order to allow for USB class drivers to utilze them.
+> 
+> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+> Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>   drivers/usb/host/xhci-debugfs.c |  2 +-
+>   drivers/usb/host/xhci-mem.c     | 93 ++++++++++++++++++++++++++++++---
+>   drivers/usb/host/xhci-ring.c    |  2 +-
+>   drivers/usb/host/xhci.c         | 49 ++++++++++-------
+>   drivers/usb/host/xhci.h         | 77 +--------------------------
+>   include/linux/usb/xhci-intr.h   | 86 ++++++++++++++++++++++++++++++
+>   6 files changed, 207 insertions(+), 102 deletions(-)
+>   create mode 100644 include/linux/usb/xhci-intr.h
+> 
+> diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
+> index 99baa60ef50f..15a8402ee8a1 100644
+> --- a/drivers/usb/host/xhci-debugfs.c
+> +++ b/drivers/usb/host/xhci-debugfs.c
+> @@ -693,7 +693,7 @@ void xhci_debugfs_init(struct xhci_hcd *xhci)
+>   				     "command-ring",
+>   				     xhci->debugfs_root);
+>   
+> -	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupter->event_ring,
+> +	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupters[0]->event_ring,
+>   				     "event-ring",
+>   				     xhci->debugfs_root);
+>   
+> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+> index 8714ab5bf04d..2f9228d7d22d 100644
+> --- a/drivers/usb/host/xhci-mem.c
+> +++ b/drivers/usb/host/xhci-mem.c
+> @@ -1837,6 +1837,26 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+>   	kfree(ir);
+>   }
+>   
+> +void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir)
+> +{
+> +	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+> +	unsigned int intr_num;
+> +
+> +	/* interrupter 0 is primary interrupter, don't touch it */
+> +	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters) {
+> +		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
+> +		return;
+> +	}
+> +
+> +	/* fixme, should we check xhci->interrupter[intr_num] == ir */
+> +	spin_lock(&xhci->lock);
 
-ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
-in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
-configuration. EST allows express queue traffic to be scheduled
-(placed) on the wire at specific repeatable time intervals. In
-Linux kernel, EST configuration is done through tc command and
-the taprio scheduler in the net core implements a software only
-scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
-user indicate "flag 2" in the command which is then parsed by
-taprio scheduler in net core and indicate that the command is to
-be offloaded to h/w. taprio then offloads the command to the
-driver by calling ndo_setup_tc() ndo ops. This patch implements
-ndo_setup_tc() to offload EST configuration to ICSSG.
+Needs to be spin_lock_irq() ir spin_lock_irqsave() as xhci->lock is used in interrupt handler.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
-Cc: Roger Quadros <rogerq@ti.com>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-Changes from v2 to v3:
-*) Rebased on the latest next-20230828 linux-next.
-*) Retained original authorship of the patch.
-*) Addressed Roger's comments and modified emac_setup_taprio() and
-   emac_set_taprio() APIs accordingly.
-*) Removed netif_running() check from emac_setup_taprio().
-*) Addressed Vinicius' comments and added check for MIN and MAX cycle time.
-*) Added check for allocation failure of est_new in emac_setup_taprio().
+> +	intr_num = ir->intr_num;
+> +	xhci_free_interrupter(xhci, ir);
+> +	xhci->interrupters[intr_num] = NULL;
+> +	spin_unlock(&xhci->lock);
 
-Changes from v1 to v2:
-*) Rebased on the latest next-20230821 linux-next.
-*) Dropped the RFC tag as merge window is open now.
-*) Splitted this patch from the switch mode series [v1].
-*) Removed TODO comment as asked by Andrew and Roger.
-*) Changed Copyright to 2023 as asked by Roger.
+likewise
 
-v2: https://lore.kernel.org/all/20230921070031.795788-1-danishanwar@ti.com/
-v1: https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.com/
+> +}
+> +EXPORT_SYMBOL_GPL(xhci_remove_secondary_interrupter);
+> +
+>   void xhci_mem_cleanup(struct xhci_hcd *xhci)
+>   {
+>   	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
+> @@ -1844,9 +1864,13 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+>   
+>   	cancel_delayed_work_sync(&xhci->cmd_timer);
+>   
+> -	xhci_free_interrupter(xhci, xhci->interrupter);
+> -	xhci->interrupter = NULL;
+> -	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed primary event ring");
+> +	for (i = 0; i < xhci->max_interrupters; i++) {
+> +		if (xhci->interrupters[i]) {
+> +			xhci_free_interrupter(xhci, xhci->interrupters[i]);
+> +			xhci->interrupters[i] = NULL;
+> +		}
+> +	}
+> +	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed interrupters");
+>   
+>   	if (xhci->cmd_ring)
+>   		xhci_ring_free(xhci, xhci->cmd_ring);
+> @@ -1916,6 +1940,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+>   	for (i = 0; i < xhci->num_port_caps; i++)
+>   		kfree(xhci->port_caps[i].psi);
+>   	kfree(xhci->port_caps);
+> +	kfree(xhci->interrupters);
+>   	xhci->num_port_caps = 0;
+>   
+>   	xhci->usb2_rhub.ports = NULL;
+> @@ -1924,6 +1949,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+>   	xhci->rh_bw = NULL;
+>   	xhci->ext_caps = NULL;
+>   	xhci->port_caps = NULL;
+> +	xhci->interrupters = NULL;
+>   
+>   	xhci->page_size = 0;
+>   	xhci->page_shift = 0;
+> @@ -2276,6 +2302,13 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+>   		return -EINVAL;
+>   	}
+>   
+> +	if (xhci->interrupters[intr_num]) {
+> +		xhci_warn(xhci, "Interrupter %d\n already set up", intr_num);
+> +		return -EINVAL;
+> +	}
+> +
+> +	xhci->interrupters[intr_num] = ir;
+> +	ir->intr_num = intr_num;
+>   	ir->ir_set = &xhci->run_regs->ir_set[intr_num];
+>   
+>   	/* set ERST count with the number of entries in the segment table */
+> @@ -2295,10 +2328,53 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
+>   	return 0;
+>   }
+>   
+> +struct xhci_interrupter *
+> +xhci_create_secondary_interrupter(struct usb_hcd *hcd)
+> +{
+> +	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+> +	struct xhci_interrupter *ir;
+> +	unsigned int i;
+> +	int err = -ENOSPC;
+> +
+> +	if (!xhci->interrupters)
+> +		return NULL;
+> +
+> +	ir = xhci_alloc_interrupter(xhci, GFP_KERNEL);
+> +	if (!ir)
+> +		return NULL;
+> +
+> +	spin_lock_irq(&xhci->lock);
+> +
+> +	/* Find available secondary interrupter, interrupter 0 is reserverd for primary */
 
- drivers/net/ethernet/ti/Makefile             |   3 +-
- drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
- drivers/net/ethernet/ti/icssg/icssg_prueth.h |   6 +
- drivers/net/ethernet/ti/icssg/icssg_qos.c    | 295 +++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icssg_qos.h    | 124 ++++++++
- 5 files changed, 431 insertions(+), 2 deletions(-)
- create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
- create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
+reserved
 
-diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-index 34fd7a716ba6..0df60ded1b2d 100644
---- a/drivers/net/ethernet/ti/Makefile
-+++ b/drivers/net/ethernet/ti/Makefile
-@@ -37,5 +37,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
- 		  icssg/icssg_config.o \
- 		  icssg/icssg_mii_cfg.o \
- 		  icssg/icssg_stats.o \
--		  icssg/icssg_ethtool.o
-+		  icssg/icssg_ethtool.o \
-+		  icssg/icssg_qos.o
- obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 6635b28bc672..89c301716926 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -1166,7 +1166,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
- 	return 0;
- }
- 
--static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
-+u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
- {
- 	u32 hi_rollover_count, hi_rollover_count_r;
- 	struct prueth_emac *emac = clockops_data;
-@@ -1403,6 +1403,8 @@ static int emac_ndo_open(struct net_device *ndev)
- 		napi_enable(&emac->tx_chns[i].napi_tx);
- 	napi_enable(&emac->napi_rx);
- 
-+	icssg_qos_tas_init(ndev);
-+
- 	/* start PHY */
- 	phy_start(ndev->phydev);
- 
-@@ -1669,6 +1671,7 @@ static const struct net_device_ops emac_netdev_ops = {
- 	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
- 	.ndo_eth_ioctl = emac_ndo_ioctl,
- 	.ndo_get_stats64 = emac_ndo_get_stats64,
-+	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
- };
- 
- /* get emac_port corresponding to eth_node name */
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-index 8b6d6b497010..7cbf0e561905 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-@@ -37,6 +37,7 @@
- #include "icssg_config.h"
- #include "icss_iep.h"
- #include "icssg_switch_map.h"
-+#include "icssg_qos.h"
- 
- #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
- #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
-@@ -174,6 +175,8 @@ struct prueth_emac {
- 
- 	struct pruss_mem_region dram;
- 
-+	struct prueth_qos qos;
-+
- 	struct delayed_work stats_work;
- 	u64 stats[ICSSG_NUM_STATS];
- };
-@@ -285,4 +288,7 @@ u32 icssg_queue_level(struct prueth *prueth, int queue);
- void emac_stats_work_handler(struct work_struct *work);
- void emac_update_hardware_stats(struct prueth_emac *emac);
- int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
-+
-+u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
-+
- #endif /* __NET_TI_ICSSG_PRUETH_H */
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
-new file mode 100644
-index 000000000000..95a8b1902879
---- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
-@@ -0,0 +1,295 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Texas Instruments ICSSG PRUETH QoS submodule
-+ * Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
-+ */
-+
-+#include <linux/printk.h>
-+#include "icssg_prueth.h"
-+#include "icssg_switch_map.h"
-+
-+static void tas_update_fw_list_pointers(struct prueth_emac *emac)
-+{
-+	struct tas_config *tas = &emac->qos.tas.config;
-+
-+	if ((readb(tas->active_list)) == TAS_LIST0) {
-+		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST0;
-+		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST1;
-+	} else {
-+		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST1;
-+		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST0;
-+	}
-+}
-+
-+static void tas_update_maxsdu_table(struct prueth_emac *emac)
-+{
-+	struct tas_config *tas = &emac->qos.tas.config;
-+	u16 __iomem *max_sdu_tbl_ptr;
-+	u8 gate_idx;
-+
-+	/* update the maxsdu table */
-+	max_sdu_tbl_ptr = emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
-+
-+	for (gate_idx = 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
-+		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx]);
-+}
-+
-+static void tas_reset(struct prueth_emac *emac)
-+{
-+	struct tas_config *tas = &emac->qos.tas.config;
-+	int i;
-+
-+	for (i = 0; i < TAS_MAX_NUM_QUEUES; i++)
-+		tas->max_sdu_table.max_sdu[i] = 2048;
-+
-+	tas_update_maxsdu_table(emac);
-+
-+	writeb(TAS_LIST0, tas->active_list);
-+
-+	memset_io(tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
-+	memset_io(tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
-+}
-+
-+static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
-+{
-+	struct tas_config *tas = &emac->qos.tas.config;
-+	int ret;
-+
-+	if (tas->state == state)
-+		return 0;
-+
-+	switch (state) {
-+	case TAS_STATE_RESET:
-+		tas_reset(emac);
-+		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
-+		tas->state = TAS_STATE_RESET;
-+		break;
-+	case TAS_STATE_ENABLE:
-+		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
-+		tas->state = TAS_STATE_ENABLE;
-+		break;
-+	case TAS_STATE_DISABLE:
-+		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
-+		tas->state = TAS_STATE_DISABLE;
-+		break;
-+	default:
-+		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	if (ret)
-+		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
-+	return ret;
-+}
-+
-+static int tas_set_trigger_list_change(struct prueth_emac *emac)
-+{
-+	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
-+	struct tas_config *tas = &emac->qos.tas.config;
-+	struct ptp_system_timestamp sts;
-+	u32 change_cycle_count;
-+	u32 cycle_time;
-+	u64 base_time;
-+	u64 cur_time;
-+
-+	if (admin_list->cycle_time < TAS_MIN_CYCLE_TIME)
-+		return -EINVAL;
-+
-+	cycle_time = admin_list->cycle_time - 4; /* -4ns to compensate for IEP wraparound time */
-+	base_time = admin_list->base_time;
-+	cur_time = prueth_iep_gettime(emac, &sts);
-+
-+	if (base_time > cur_time)
-+		change_cycle_count = DIV_ROUND_UP_ULL(base_time - cur_time, cycle_time);
-+	else
-+		change_cycle_count = 1;
-+
-+	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
-+	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUNT);
-+	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
-+
-+	/* config_change cleared by f/w to ack reception of new shadow list */
-+	writeb(1, &tas->config_list->config_change);
-+	/* config_pending cleared by f/w when new shadow list is copied to active list */
-+	writeb(1, &tas->config_list->config_pending);
-+
-+	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
-+}
-+
-+static int tas_update_oper_list(struct prueth_emac *emac)
-+{
-+	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
-+	struct tas_config *tas = &emac->qos.tas.config;
-+	u32 tas_acc_gate_close_time = 0;
-+	u8 idx, gate_idx, val;
-+	int ret;
-+
-+	if (admin_list->cycle_time > TAS_MAX_CYCLE_TIME)
-+		return -EINVAL;
-+
-+	tas_update_fw_list_pointers(emac);
-+
-+	for (idx = 0; idx < admin_list->num_entries; idx++) {
-+		writeb(admin_list->entries[idx].gate_mask,
-+		       &tas->fw_shadow_list->gate_mask_list[idx]);
-+		tas_acc_gate_close_time += admin_list->entries[idx].interval;
-+
-+		/* extend last entry till end of cycle time */
-+		if (idx == admin_list->num_entries - 1)
-+			writel(admin_list->cycle_time,
-+			       &tas->fw_shadow_list->win_end_time_list[idx]);
-+		else
-+			writel(tas_acc_gate_close_time,
-+			       &tas->fw_shadow_list->win_end_time_list[idx]);
-+	}
-+
-+	/* clear remaining entries */
-+	for (idx = admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
-+		writeb(0, &tas->fw_shadow_list->gate_mask_list[idx]);
-+		writel(0, &tas->fw_shadow_list->win_end_time_list[idx]);
-+	}
-+
-+	/* update the Array of gate close time for each queue in each window */
-+	for (idx = 0 ; idx < admin_list->num_entries; idx++) {
-+		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
-+		for (gate_idx = 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
-+			u8 gate_mask_list_idx = readb(&tas->fw_shadow_list->gate_mask_list[idx]);
-+			u32 gate_close_time = 0;
-+
-+			if (gate_mask_list_idx & BIT(gate_idx))
-+				gate_close_time = readl(&tas->fw_shadow_list->win_end_time_list[idx]);
-+
-+			writel(gate_close_time,
-+			       &tas->fw_shadow_list->gate_close_time_list[idx][gate_idx]);
-+		}
-+	}
-+
-+	/* tell f/w to swap active & shadow list */
-+	ret = tas_set_trigger_list_change(emac);
-+	if (ret) {
-+		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Wait for completion */
-+	ret = readb_poll_timeout(&tas->config_list->config_change, val, !val,
-+				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
-+	if (ret) {
-+		netdev_err(emac->ndev, "TAS list change completion time out\n");
-+		return ret;
-+	}
-+
-+	tas_update_fw_list_pointers(emac);
-+
-+	return 0;
-+}
-+
-+static int emac_set_taprio(struct prueth_emac *emac)
-+{
-+	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
-+	int ret;
-+
-+	switch (taprio->cmd) {
-+	case TAPRIO_CMD_DESTROY:
-+		ret = tas_set_state(emac, TAS_STATE_DISABLE);
-+		break;
-+	case TAPRIO_CMD_REPLACE:
-+		ret = tas_update_oper_list(emac);
-+		if (ret)
-+			return ret;
-+		ret =  tas_set_state(emac, TAS_STATE_ENABLE);
-+		break;
-+	default:
-+		ret = -EOPNOTSUPP;
-+	}
-+
-+	return ret;
-+}
-+
-+static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
-+			   struct tc_taprio_qopt_offload *to)
-+{
-+	int i;
-+
-+	*to = *from;
-+	for (i = 0; i < from->num_entries; i++)
-+		to->entries[i] = from->entries[i];
-+}
-+
-+static int emac_setup_taprio(struct net_device *ndev, void *type_data)
-+{
-+	struct tc_taprio_qopt_offload *taprio = type_data;
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	struct tc_taprio_qopt_offload *est_new;
-+	int ret, idx;
-+
-+	if (taprio->cycle_time_extension) {
-+		netdev_err(ndev, "Failed to set cycle time extension");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (taprio->num_entries == 0 ||
-+	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
-+		NL_SET_ERR_MSG_FMT_MOD(taprio->extack, "unsupported num_entries %ld in taprio config\n",
-+				       taprio->num_entries);
-+		return -EINVAL;
-+	}
-+
-+	/* If any time_interval is 0 in between the list, then exit */
-+	for (idx = 0; idx < taprio->num_entries; idx++) {
-+		if (taprio->entries[idx].interval == 0) {
-+			NL_SET_ERR_MSG_MOD(taprio->extack, "0 interval in taprio config not supported\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (emac->qos.tas.taprio_admin)
-+		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
-+
-+	est_new = devm_kzalloc(&ndev->dev,
-+			       struct_size(est_new, entries, taprio->num_entries),
-+			       GFP_KERNEL);
-+	if (!est_new)
-+		return -ENOMEM;
-+
-+	emac_cp_taprio(taprio, est_new);
-+	emac->qos.tas.taprio_admin = est_new;
-+	ret = emac_set_taprio(emac);
-+	if (ret)
-+		devm_kfree(&ndev->dev, est_new);
-+
-+	return ret;
-+}
-+
-+int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
-+			   void *type_data)
-+{
-+	switch (type) {
-+	case TC_SETUP_QDISC_TAPRIO:
-+		return emac_setup_taprio(ndev, type_data);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+void icssg_qos_tas_init(struct net_device *ndev)
-+{
-+	struct prueth_emac *emac = netdev_priv(ndev);
-+	bool need_setup = false;
-+	struct tas_config *tas;
-+
-+	tas = &emac->qos.tas.config;
-+
-+	if (tas->state == TAS_STATE_ENABLE)
-+		need_setup = true;
-+
-+	tas->config_list = emac->dram.va + TAS_CONFIG_CHANGE_TIME;
-+	tas->active_list = emac->dram.va + TAS_ACTIVE_LIST_INDEX;
-+
-+	tas_update_fw_list_pointers(emac);
-+
-+	tas_set_state(emac, TAS_STATE_RESET);
-+
-+	if (need_setup)
-+		emac_set_taprio(emac);
-+}
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethernet/ti/icssg/icssg_qos.h
-new file mode 100644
-index 000000000000..c3d455adc0f8
---- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
-@@ -0,0 +1,124 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
-+ */
-+
-+#ifndef __NET_TI_ICSSG_QOS_H
-+#define __NET_TI_ICSSG_QOS_H
-+
-+#include <linux/atomic.h>
-+#include <linux/netdevice.h>
-+#include <net/pkt_sched.h>
-+
-+/**
-+ * Maximum number of gate command entries in each list.
-+ */
-+#define TAS_MAX_CMD_LISTS   (16)
-+
-+/**
-+ * Maximum number of transmit queues supported by implementation
-+ */
-+#define TAS_MAX_NUM_QUEUES  (8)
-+
-+/**
-+ * Minimum cycle time supported by implementation (in ns)
-+ */
-+#define TAS_MIN_CYCLE_TIME  (1000000)
-+
-+/**
-+ * Minimum cycle time supported by implementation (in ns)
-+ */
-+#define TAS_MAX_CYCLE_TIME  (4000000000)
-+
-+/**
-+ * Minimum TAS window duration supported by implementation (in ns)
-+ */
-+#define TAS_MIN_WINDOW_DURATION  (10000)
-+
-+/**
-+ * List number 0 or 1. Also the value at memory location TAS_ACTIVE_LIST_INDEX
-+ */
-+enum tas_list_num {
-+	TAS_LIST0 = 0,
-+	TAS_LIST1 = 1
-+};
-+
-+/**
-+ * state of TAS in f/w
-+ */
-+enum tas_state {
-+	/* PRU's are idle */
-+	TAS_STATE_DISABLE = 0,
-+	/* Enable TAS */
-+	TAS_STATE_ENABLE = 1,
-+	/* Firmware will reset the state machine */
-+	TAS_STATE_RESET = 2,
-+};
-+
-+/**
-+ * Config state machine variables. See IEEE Std 802.1Q-2018 8.6.8.4
-+ */
-+struct tas_config_list {
-+	/* New list is copied at this time */
-+	u64 config_change_time;
-+	/* config change error counter, incremented if
-+	 * admin->BaseTime < current time and TAS_enabled is true
-+	 */
-+	u32 config_change_error_counter;
-+	/* True if list update is pending */
-+	u8 config_pending;
-+	/* Set to true when application trigger updating of admin list
-+	 * to active list, cleared when configChangeTime is updated
-+	 */
-+	u8 config_change;
-+};
-+
-+/**
-+ * Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1
-+ */
-+struct tas_max_sdu_table {
-+	u16 max_sdu[TAS_MAX_NUM_QUEUES];
-+};
-+
-+/**
-+ * TAS List Structure based on firmware memory map
-+ */
-+struct tas_firmware_list {
-+	/* window gate mask list */
-+	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
-+	/* window end time list */
-+	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
-+	/* Array of gate close time for each queue in each window */
-+	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
-+};
-+
-+/**
-+ * Main Time Aware Shaper Handle
-+ */
-+struct tas_config {
-+	enum tas_state state;
-+	struct tas_max_sdu_table max_sdu_table;
-+	/* Config change variables */
-+	struct tas_config_list __iomem *config_list;
-+	/* Whether list 1 or list 2 is the operating list */
-+	u8 __iomem *active_list;
-+	/* active List pointer, used by firmware */
-+	struct tas_firmware_list __iomem *fw_active_list;
-+	/* shadow List pointer, used by driver */
-+	struct tas_firmware_list __iomem *fw_shadow_list;
-+};
-+
-+struct prueth_qos_tas {
-+	struct tc_taprio_qopt_offload *taprio_admin;
-+	struct tc_taprio_qopt_offload *taprio_oper;
-+	struct tas_config config;
-+};
-+
-+struct prueth_qos {
-+	/* IET data structure goes here */
-+	struct prueth_qos_tas tas;
-+};
-+
-+void icssg_qos_tas_init(struct net_device *ndev);
-+int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
-+			   void *type_data);
-+#endif /* __NET_TI_ICSSG_QOS_H */
--- 
-2.34.1
+> +	for (i = 1; i < xhci->max_interrupters; i++) {
+> +		if (xhci->interrupters[i] == NULL) {
+> +			err = xhci_add_interrupter(xhci, ir, i);
+> +			break;
+> +		}
+> +	}
+> +
+> +	spin_unlock_irq(&xhci->lock);
+> +	if (err) {
+> +		xhci_warn(xhci, "Failed to add secondary interrupter, max interrupters %d\n",
+> +			xhci->max_interrupters);
+> +		xhci_free_interrupter(xhci, ir);
+> +		ir = NULL;
+> +		goto out;
+> +	}
+> +
+> +	xhci_dbg(xhci, "Add secondary interrupter %d, max interrupters %d\n",
+> +		 i, xhci->max_interrupters);
+> +
+> +out:
+> +	return ir;
+> +}
+> +EXPORT_SYMBOL_GPL(xhci_create_secondary_interrupter);
+> +
+>   int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+>   {
+> -	dma_addr_t	dma;
+> +	struct xhci_interrupter *ir;
+>   	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
+> +	dma_addr_t	dma;
+>   	unsigned int	val, val2;
+>   	u64		val_64;
+>   	u32		page_size, temp;
+> @@ -2422,11 +2498,14 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+>   	/* Allocate and set up primary interrupter 0 with an event ring. */
+>   	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+>   		       "Allocating primary event ring");
+> -	xhci->interrupter = xhci_alloc_interrupter(xhci, flags);
+> -	if (!xhci->interrupter)
+> +	xhci->interrupters = kcalloc_node(xhci->max_interrupters, sizeof(*xhci->interrupters),
+> +					  flags, dev_to_node(dev));
+> +
+> +	ir = xhci_alloc_interrupter(xhci, flags);
+> +	if (!ir)
+>   		goto fail;
+>   
+> -	if (xhci_add_interrupter(xhci, xhci->interrupter, 0))
+> +	if (xhci_add_interrupter(xhci, ir, 0))
+>   		goto fail;
+>   
+>   	xhci->isoc_bei_interval = AVOID_BEI_INTERVAL_MAX;
+> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+> index 1dde53f6eb31..93233cf5ff21 100644
+> --- a/drivers/usb/host/xhci-ring.c
+> +++ b/drivers/usb/host/xhci-ring.c
+> @@ -3074,7 +3074,7 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
+>   	writel(status, &xhci->op_regs->status);
+>   
+>   	/* This is the handler of the primary interrupter */
+> -	ir = xhci->interrupter;
+> +	ir = xhci->interrupters[0];
+>   	if (!hcd->msi_enabled) {
+>   		u32 irq_pending;
+>   		irq_pending = readl(&ir->ir_set->irq_pending);
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index e1b1b64a0723..3fd2b58ee1d3 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -456,7 +456,7 @@ static int xhci_init(struct usb_hcd *hcd)
+>   
+>   static int xhci_run_finished(struct xhci_hcd *xhci)
+>   {
+> -	struct xhci_interrupter *ir = xhci->interrupter;
+> +	struct xhci_interrupter *ir = xhci->interrupters[0];
+>   	unsigned long	flags;
+>   	u32		temp;
+>   
+> @@ -508,7 +508,7 @@ int xhci_run(struct usb_hcd *hcd)
+>   	u64 temp_64;
+>   	int ret;
+>   	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+> -	struct xhci_interrupter *ir = xhci->interrupter;
+> +	struct xhci_interrupter *ir = xhci->interrupters[0];
+>   	/* Start the xHCI host controller running only after the USB 2.0 roothub
+>   	 * is setup.
+>   	 */
+> @@ -572,7 +572,7 @@ void xhci_stop(struct usb_hcd *hcd)
+>   {
+>   	u32 temp;
+>   	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+> -	struct xhci_interrupter *ir = xhci->interrupter;
+> +	struct xhci_interrupter *ir = xhci->interrupters[0];
+>   
+>   	mutex_lock(&xhci->mutex);
+>   
+> @@ -668,36 +668,49 @@ EXPORT_SYMBOL_GPL(xhci_shutdown);
+>   #ifdef CONFIG_PM
+>   static void xhci_save_registers(struct xhci_hcd *xhci)
+>   {
+> -	struct xhci_interrupter *ir = xhci->interrupter;
+> +	struct xhci_interrupter *ir;
+> +	unsigned int i;
+>   
+>   	xhci->s3.command = readl(&xhci->op_regs->command);
+>   	xhci->s3.dev_nt = readl(&xhci->op_regs->dev_notification);
+>   	xhci->s3.dcbaa_ptr = xhci_read_64(xhci, &xhci->op_regs->dcbaa_ptr);
+>   	xhci->s3.config_reg = readl(&xhci->op_regs->config_reg);
+>   
+> -	if (!ir)
+> -		return;
+> +	/* save both primary and all secondary interrupters */
+> +	for (i = 0; i < xhci->max_interrupters; i++) {
+> +		ir = xhci->interrupters[i];
+> +		if (!ir)
+> +			continue;
+>   
+> -	ir->s3_erst_size = readl(&ir->ir_set->erst_size);
+> -	ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
+> -	ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+> -	ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
+> -	ir->s3_irq_control = readl(&ir->ir_set->irq_control);
+> +		ir->s3_erst_size = readl(&ir->ir_set->erst_size);
+> +		ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
+> +		ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+> +		ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
+> +		ir->s3_irq_control = readl(&ir->ir_set->irq_control);
+> +	}
+>   }
+>   
+>   static void xhci_restore_registers(struct xhci_hcd *xhci)
+>   {
+> -	struct xhci_interrupter *ir = xhci->interrupter;
+> +	struct xhci_interrupter *ir;
+> +	unsigned int i;
+>   
+>   	writel(xhci->s3.command, &xhci->op_regs->command);
+>   	writel(xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
+>   	xhci_write_64(xhci, xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
+>   	writel(xhci->s3.config_reg, &xhci->op_regs->config_reg);
+> -	writel(ir->s3_erst_size, &ir->ir_set->erst_size);
+> -	xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
+> -	xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
+> -	writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
+> -	writel(ir->s3_irq_control, &ir->ir_set->irq_control);
+> +
+> +	for (i = 0; i < xhci->max_interrupters; i++) {
+> +		ir = xhci->interrupters[i];
+> +		if (!ir)
+> +			continue;
+> +
+> +		writel(ir->s3_erst_size, &ir->ir_set->erst_size);
+> +		xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
+> +		xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
+> +		writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
+> +		writel(ir->s3_irq_control, &ir->ir_set->irq_control);
+> +	}
+>   }
+>   
+>   static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
+> @@ -1059,7 +1072,7 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
+>   		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
+>   		temp = readl(&xhci->op_regs->status);
+>   		writel((temp & ~0x1fff) | STS_EINT, &xhci->op_regs->status);
+> -		xhci_disable_interrupter(xhci->interrupter);
+> +		xhci_disable_interrupter(xhci->interrupters[0]);
+>   
+>   		xhci_dbg(xhci, "cleaning up memory\n");
+>   		xhci_mem_cleanup(xhci);
 
+All code above looks like it should be its own patch.
+
+The header shuffling below part of somethine else.
+
+> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+> index 7e282b4522c0..d706a27ec0a3 100644
+> --- a/drivers/usb/host/xhci.h
+> +++ b/drivers/usb/host/xhci.h
+> @@ -17,6 +17,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/usb/hcd.h>
+>   #include <linux/io-64-nonatomic-lo-hi.h>
+> +#include <linux/usb/xhci-intr.h>
+>   
+>   /* Code sharing between pci-quirks and xhci hcd */
+>   #include	"xhci-ext-caps.h"
+> @@ -1541,18 +1542,6 @@ static inline const char *xhci_trb_type_string(u8 type)
+>   #define AVOID_BEI_INTERVAL_MIN	8
+>   #define AVOID_BEI_INTERVAL_MAX	32
+>   
+> -struct xhci_segment {
+> -	union xhci_trb		*trbs;
+> -	/* private to HCD */
+> -	struct xhci_segment	*next;
+> -	dma_addr_t		dma;
+> -	/* Max packet sized bounce buffer for td-fragmant alignment */
+> -	dma_addr_t		bounce_dma;
+> -	void			*bounce_buf;
+> -	unsigned int		bounce_offs;
+> -	unsigned int		bounce_len;
+> -};
+> -
+>   enum xhci_cancelled_td_status {
+>   	TD_DIRTY = 0,
+>   	TD_HALTED,
+> @@ -1585,16 +1574,6 @@ struct xhci_cd {
+>   	union xhci_trb		*cmd_trb;
+>   };
+>   
+> -enum xhci_ring_type {
+> -	TYPE_CTRL = 0,
+> -	TYPE_ISOC,
+> -	TYPE_BULK,
+> -	TYPE_INTR,
+> -	TYPE_STREAM,
+> -	TYPE_COMMAND,
+> -	TYPE_EVENT,
+> -};
+> -
+>   static inline const char *xhci_ring_type_string(enum xhci_ring_type type)
+>   {
+>   	switch (type) {
+> @@ -1615,46 +1594,6 @@ static inline const char *xhci_ring_type_string(enum xhci_ring_type type)
+>   	}
+>   
+>   	return "UNKNOWN";
+> -}
+> -
+> -struct xhci_ring {
+> -	struct xhci_segment	*first_seg;
+> -	struct xhci_segment	*last_seg;
+> -	union  xhci_trb		*enqueue;
+> -	struct xhci_segment	*enq_seg;
+> -	union  xhci_trb		*dequeue;
+> -	struct xhci_segment	*deq_seg;
+> -	struct list_head	td_list;
+> -	/*
+> -	 * Write the cycle state into the TRB cycle field to give ownership of
+> -	 * the TRB to the host controller (if we are the producer), or to check
+> -	 * if we own the TRB (if we are the consumer).  See section 4.9.1.
+> -	 */
+> -	u32			cycle_state;
+> -	unsigned int		stream_id;
+> -	unsigned int		num_segs;
+> -	unsigned int		num_trbs_free; /* used only by xhci DbC */
+> -	unsigned int		bounce_buf_len;
+> -	enum xhci_ring_type	type;
+> -	bool			last_td_was_short;
+> -	struct radix_tree_root	*trb_address_map;
+> -};
+> -
+> -struct xhci_erst_entry {
+> -	/* 64-bit event ring segment address */
+> -	__le64	seg_addr;
+> -	__le32	seg_size;
+> -	/* Set to zero */
+> -	__le32	rsvd;
+> -};
+> -
+> -struct xhci_erst {
+> -	struct xhci_erst_entry	*entries;
+> -	unsigned int		num_entries;
+> -	/* xhci->event_ring keeps track of segment dma addresses */
+> -	dma_addr_t		erst_dma_addr;
+> -	/* Num entries the ERST can contain */
+> -	unsigned int		erst_size;
+>   };
+>   
+>   struct xhci_scratchpad {
+> @@ -1707,18 +1646,6 @@ struct xhci_bus_state {
+>   	unsigned long		resuming_ports;
+>   };
+>   
+> -struct xhci_interrupter {
+> -	struct xhci_ring	*event_ring;
+> -	struct xhci_erst	erst;
+> -	struct xhci_intr_reg __iomem *ir_set;
+> -	unsigned int		intr_num;
+> -	/* For interrupter registers save and restore over suspend/resume */
+> -	u32	s3_irq_pending;
+> -	u32	s3_irq_control;
+> -	u32	s3_erst_size;
+> -	u64	s3_erst_base;
+> -	u64	s3_erst_dequeue;
+> -};
+>   /*
+>    * It can take up to 20 ms to transition from RExit to U0 on the
+>    * Intel Lynx Point LP xHCI host.
+> @@ -1799,7 +1726,7 @@ struct xhci_hcd {
+>   	struct reset_control *reset;
+>   	/* data structures */
+>   	struct xhci_device_context_array *dcbaa;
+> -	struct xhci_interrupter *interrupter;
+> +	struct xhci_interrupter **interrupters;
+>   	struct xhci_ring	*cmd_ring;
+>   	unsigned int            cmd_ring_state;
+>   #define CMD_RING_STATE_RUNNING         (1 << 0)
+> diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
+> new file mode 100644
+> index 000000000000..e0091ee2c73a
+> --- /dev/null
+> +++ b/include/linux/usb/xhci-intr.h
+> @@ -0,0 +1,86 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __LINUX_XHCI_INTR_H
+> +#define __LINUX_XHCI_INTR_H
+> +
+> +#include <linux/kernel.h>
+> +
+> +struct xhci_erst_entry {
+> +	/* 64-bit event ring segment address */
+> +	__le64	seg_addr;
+> +	__le32	seg_size;
+> +	/* Set to zero */
+> +	__le32	rsvd;
+> +};
+> +
+> +enum xhci_ring_type {
+> +	TYPE_CTRL = 0,
+> +	TYPE_ISOC,
+> +	TYPE_BULK,
+> +	TYPE_INTR,
+> +	TYPE_STREAM,
+> +	TYPE_COMMAND,
+> +	TYPE_EVENT,
+> +};
+> +
+> +struct xhci_erst {
+> +	struct xhci_erst_entry	*entries;
+> +	unsigned int		num_entries;
+> +	/* xhci->event_ring keeps track of segment dma addresses */
+> +	dma_addr_t		erst_dma_addr;
+> +	/* Num entries the ERST can contain */
+> +	unsigned int		erst_size;
+> +};
+> +
+> +struct xhci_segment {
+> +	union xhci_trb		*trbs;
+> +	/* private to HCD */
+> +	struct xhci_segment	*next;
+> +	dma_addr_t		dma;
+> +	/* Max packet sized bounce buffer for td-fragmant alignment */
+> +	dma_addr_t		bounce_dma;
+> +	void			*bounce_buf;
+> +	unsigned int		bounce_offs;
+> +	unsigned int		bounce_len;
+> +};
+> +
+> +struct xhci_ring {
+> +	struct xhci_segment	*first_seg;
+> +	struct xhci_segment	*last_seg;
+> +	union  xhci_trb		*enqueue;
+> +	struct xhci_segment	*enq_seg;
+> +	union  xhci_trb		*dequeue;
+> +	struct xhci_segment	*deq_seg;
+> +	struct list_head	td_list;
+> +	/*
+> +	 * Write the cycle state into the TRB cycle field to give ownership of
+> +	 * the TRB to the host controller (if we are the producer), or to check
+> +	 * if we own the TRB (if we are the consumer).  See section 4.9.1.
+> +	 */
+> +	u32			cycle_state;
+> +	unsigned int		stream_id;
+> +	unsigned int		num_segs;
+> +	unsigned int		num_trbs_free;
+> +	unsigned int		num_trbs_free_temp;
+> +	unsigned int		bounce_buf_len;
+> +	enum xhci_ring_type	type;
+> +	bool			last_td_was_short;
+> +	struct radix_tree_root	*trb_address_map;
+> +};
+> +
+> +struct xhci_interrupter {
+> +	struct xhci_ring	*event_ring;
+> +	struct xhci_erst	erst;
+> +	struct xhci_intr_reg __iomem *ir_set;
+> +	unsigned int		intr_num;
+> +	/* For interrupter registers save and restore over suspend/resume */
+> +	u32	s3_irq_pending;
+> +	u32	s3_irq_control;
+> +	u32	s3_erst_size;
+> +	u64	s3_erst_base;
+> +	u64	s3_erst_dequeue;
+> +};
+> +
+> +struct xhci_interrupter *
+> +xhci_create_secondary_interrupter(struct usb_hcd *hcd);
+> +void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
+> +#endif
+> 
+
+Not convinced we want to share all these xhci private structures in a separate
+header outside of the xhci code.
+
+As much as possible should be abstracted and added to the xhci sideband
+API in patch 3/33 instead of sharing these.
+  
+Thanks
+Mathias
