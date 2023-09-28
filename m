@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFF17B13F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2A77B145C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 09:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbjI1HIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 03:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
+        id S231289AbjI1HOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 03:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjI1HH2 (ORCPT
+        with ESMTP id S231602AbjI1HN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 03:07:28 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758E41B8
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:07:23 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qll7B-0002SM-8i; Thu, 28 Sep 2023 09:07:13 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qll7A-009WCl-Rv; Thu, 28 Sep 2023 09:07:12 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qll7A-005ZYM-Ih; Thu, 28 Sep 2023 09:07:12 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 23/23] gpio: zynq: Convert to platform remove callback returning void
-Date:   Thu, 28 Sep 2023 09:07:06 +0200
-Message-Id: <20230928070706.2290137-24-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
-References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
+        Thu, 28 Sep 2023 03:13:58 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DEE527F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 00:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=Gz38
+        FWoRozMk8ZqhH2Py9rFMLzQbTzA9Bq0tD+78bXY=; b=iSteBfY4PmQYZ/rE9MGE
+        Aa7HCszSBZXFnVBkVo1yAovhD+Md4Tww6/SrNRadqqVOku/NKM7Ma5t8Pf0CW3UN
+        SlSDE04gl5CDWYyUmRdYDb8fNCMKfsJLMLITu2x7ZukNZP/P4fwC3ygs9NslVZBs
+        1kuTKsbf41/pocd09vgLIaII7Vg4/aMuH6i1SXMIinXU/VKI8ucdtCaP+5aCj9Ke
+        cRpTBoIa1KDIeGLfeZcgheZGv8UZ8TRk0EO614DOdV4X3MkSryYEbO9uPfSPEYp1
+        kTNyZ7SykrGZc/g4Lg3Dw+SSlskYrvydEhWyRDpGDRar5CUDKj9DY5XO5Vj4gMIT
+        3w==
+Received: (qmail 3367098 invoked from network); 28 Sep 2023 09:10:25 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 Sep 2023 09:10:25 +0200
+X-UD-Smtp-Session: l3s3148p1@rft/AGYGLOAujntX
+Date:   Thu, 28 Sep 2023 09:10:24 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/6] mtd: parsers: ar7: remove support
+Message-ID: <ZRUm4DS3qvRfcPox@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+ <20230922061530.3121-3-wsa+renesas@sang-engineering.com>
+ <20230922163903.3f49ea2a@xps-13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1870; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=96k0kAmXLbqfVn+TrjpQXRYXe0bAG/EB7eGn8jOevJ4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlFSR4vNTmHvbNJyAE3nH8cjTQVbb/2RGswimTr 0m+7AOa+0qJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRUkeAAKCRCPgPtYfRL+ TvERB/9pENxPs7T+w2jw8MK2hBTIIJ5XfvoU/aqUYTUhDWsLBp/YIPkysQMnczpOCEMt7acRljX /BvcajQuvhsIDyPM82Ig7qC37kwr4cKk0E8BcEHGKYPrk4BnRVgoJpi8olM7A3eDE51tvDNsMOE VWVt2W1XHlXzkdQst3NXxkZ7XozMFh3OQFpAT3LeEFnkJQHGOrybr7vbCa5AEhq3wi7tZngpTQk MUjZNt1F0SVaB6APLwVf0RxI5yknWFEKOk9jZvDd0XAAiKqZUCBg3e94BZX7KPetDKmLhDgP3d8 pxbnrV3jLIEm18kFQbyDOUkvPx0MlXecw9ngkVkKkYPRaw6K
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vh1lYzYZNvhd1Ak5"
+Content-Disposition: inline
+In-Reply-To: <20230922163903.3f49ea2a@xps-13>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+--vh1lYzYZNvhd1Ak5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/gpio/gpio-zynq.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> I'm not sure it is wise to merge defconfig changes through mtd. Would
+> you mind sending this change aside to avoid potential conflicts? Each
+> patch can live on their own anyway.
 
-diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-index 324e942c0650..466e23031afc 100644
---- a/drivers/gpio/gpio-zynq.c
-+++ b/drivers/gpio/gpio-zynq.c
-@@ -1010,7 +1010,7 @@ static int zynq_gpio_probe(struct platform_device *pdev)
-  *
-  * Return: 0 always
-  */
--static int zynq_gpio_remove(struct platform_device *pdev)
-+static void zynq_gpio_remove(struct platform_device *pdev)
- {
- 	struct zynq_gpio *gpio = platform_get_drvdata(pdev);
- 	int ret;
-@@ -1022,7 +1022,6 @@ static int zynq_gpio_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(gpio->clk);
- 	device_set_wakeup_capable(&pdev->dev, 0);
- 	pm_runtime_disable(&pdev->dev);
--	return 0;
- }
- 
- static struct platform_driver zynq_gpio_driver = {
-@@ -1032,7 +1031,7 @@ static struct platform_driver zynq_gpio_driver = {
- 		.of_match_table = zynq_gpio_of_match,
- 	},
- 	.probe = zynq_gpio_probe,
--	.remove = zynq_gpio_remove,
-+	.remove_new = zynq_gpio_remove,
- };
- 
- module_platform_driver(zynq_gpio_driver);
--- 
-2.40.1
+I checked pxa_defconfig history. Most commits in the last 7 years were
+just removing outdated Kconfig symbols from all kind of subsystems. Like
+what we want to do here. I think it is okay to keep it.
 
+
+--vh1lYzYZNvhd1Ak5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUVJuAACgkQFA3kzBSg
+KbYCyBAApP4Bff1yQaLcXDSSDNpNegd4Bl+v8pEZsBfyjf5J2xGfttFWrqWNM2ew
+NQ9sR5LIPA38eZEHIxl9UBFaC1npN58b+GU8I1OD/OCYLfSjfYeuUPP7GrnXz2nc
+EShRfOA6uELVpAWkf8nlIohp4MBrDvJk5Ut+VfG1xG3HE3Sk0Te6uXF3lgLWEU7r
+x2/KT/hRj6uJlk6dDb0JrQqbmCpyP4X7HrGGuVDJ4icTBCAAhBluqoVQXa217vJ3
+NAI+Q+/A8FWDJNu/jI+IQR68YxMD2juGlqXVNY+bJ80KtX12IgTDR9NWMYNVtTrf
+kwpBLAtYSHnaKD4WdfJcOP/2iARYo/e/WFqG/3f6xtJzmnP9+hqIRCPkHpTo/k9S
+GPtpeZnAPLjPHk32zQYV8I5b+XODXIw7C4zBB+XvSnx193A3yPHnMtVfhp7GQItT
+BeCBJDnMPIUC33wBpzT7ii7HN07d1Vto1mI90ELU1QK0W/sb/E7hokxEHQNM9/QR
+1DLh8m5dZCNRzU25gPnYp7MFbdCzqL8itPi5KwVMvoReFXq5Zl9/XK/VUK/yNTzq
+/zpymcbR5+zNZP2wKYdTz6vJBq2mr91isLDleuwccXCLLB2FwZ3/I6E8tAXgiWDq
+2rmVDN2m2E6/CFQMPUCYi3edterHoV9t9LESTkiY4zkExhhpQt8=
+=Si4u
+-----END PGP SIGNATURE-----
+
+--vh1lYzYZNvhd1Ak5--
