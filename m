@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 023EF7B18C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B11E7B18C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 12:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbjI1K6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 06:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S231840AbjI1K7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 06:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbjI1K6t (ORCPT
+        with ESMTP id S231676AbjI1K7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 06:58:49 -0400
-Received: from out28-173.mail.aliyun.com (out28-173.mail.aliyun.com [115.124.28.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDC51B4;
-        Thu, 28 Sep 2023 03:58:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06715943|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0068788-0.000217375-0.992904;FP=9863284613152526578|1|1|20|0|-1|-1|-1;HT=ay29a033018047203;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH948_1695898710;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH948_1695898710)
+        Thu, 28 Sep 2023 06:59:01 -0400
+Received: from out28-148.mail.aliyun.com (out28-148.mail.aliyun.com [115.124.28.148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA40193;
+        Thu, 28 Sep 2023 03:58:51 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09813568|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.00100706-9.29909e-05-0.9989;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH9DX_1695898719;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UqYH9DX_1695898719)
           by smtp.aliyun-inc.com;
-          Thu, 28 Sep 2023 18:58:38 +0800
+          Thu, 28 Sep 2023 18:58:47 +0800
 From:   wangweidong.a@awinic.com
 To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -34,16 +34,16 @@ To:     girdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         dan.carpenter@linaro.org, colin.i.king@gmail.com,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V6 07/10] ASoC: codecs: Add code for bin parsing compatible with aw87390
-Date:   Thu, 28 Sep 2023 18:57:24 +0800
-Message-ID: <20230928105727.47273-8-wangweidong.a@awinic.com>
+Subject: [PATCH V6 08/10] ASoC: codecs: Rename "sync-flag" to "awinic,sync-flag"
+Date:   Thu, 28 Sep 2023 18:57:25 +0800
+Message-ID: <20230928105727.47273-9-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928105727.47273-1-wangweidong.a@awinic.com>
 References: <20230928105727.47273-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,104 +53,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Add aw87390 compatible code to the aw88395_lib.c file
-so that it can parse aw87390's bin file
+Rename "sync-flag" to "awinic,sync-flag", this is to be
+consistent with the "awinic,aw88395.yaml" file
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88395/aw88395_lib.c | 25 +++++++++++++++----------
- sound/soc/codecs/aw88395/aw88395_reg.h |  1 +
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ sound/soc/codecs/aw88261.c | 4 +---
+ sound/soc/codecs/aw88261.h | 2 +-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/aw88395/aw88395_lib.c b/sound/soc/codecs/aw88395/aw88395_lib.c
-index 87dd0ccade4c..a0a429ca9768 100644
---- a/sound/soc/codecs/aw88395/aw88395_lib.c
-+++ b/sound/soc/codecs/aw88395/aw88395_lib.c
-@@ -456,10 +456,12 @@ static int aw_dev_parse_reg_bin_with_hdr(struct aw_device *aw_dev,
- 		goto parse_bin_failed;
- 	}
+diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
+index 7df641592330..61179e235fbf 100644
+--- a/sound/soc/codecs/aw88261.c
++++ b/sound/soc/codecs/aw88261.c
+@@ -1187,13 +1187,11 @@ static void aw88261_parse_channel_dt(struct aw88261 *aw88261)
+ 	struct aw_device *aw_dev = aw88261->aw_pa;
+ 	struct device_node *np = aw_dev->dev->of_node;
+ 	u32 channel_value = AW88261_DEV_DEFAULT_CH;
+-	u32 sync_enable = false;
  
--	if (aw_bin->header_info[0].valid_data_len % 4) {
--		dev_err(aw_dev->dev, "bin data len get error!");
--		ret = -EINVAL;
--		goto parse_bin_failed;
-+	if (aw_dev->chip_id == AW88261_CHIP_ID) {
-+		if (aw_bin->header_info[0].valid_data_len % 4) {
-+			dev_err(aw_dev->dev, "bin data len get error!");
-+			ret = -EINVAL;
-+			goto parse_bin_failed;
-+		}
- 	}
+ 	of_property_read_u32(np, "awinic,audio-channel", &channel_value);
+-	of_property_read_u32(np, "sync-flag", &sync_enable);
++	aw88261->phase_sync = of_property_read_bool(np, "awinic,sync-flag");
  
- 	prof_desc->sec_desc[AW88395_DATA_TYPE_REG].data =
-@@ -581,9 +583,9 @@ static int aw_dev_parse_dev_default_type(struct aw_device *aw_dev,
+ 	aw_dev->channel = channel_value;
+-	aw88261->phase_sync = sync_enable;
  }
  
- static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
--				struct aw_all_prof_info all_prof_info)
-+				struct aw_all_prof_info *all_prof_info)
- {
--	struct aw_prof_desc *prof_desc = all_prof_info.prof_desc;
-+	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
- 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
- 	int num = 0;
- 	int i;
-@@ -623,9 +625,9 @@ static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
- }
+ static int aw88261_init(struct aw88261 **aw88261, struct i2c_client *i2c, struct regmap *regmap)
+diff --git a/sound/soc/codecs/aw88261.h b/sound/soc/codecs/aw88261.h
+index bd0841fa9b77..734d0f93ced9 100644
+--- a/sound/soc/codecs/aw88261.h
++++ b/sound/soc/codecs/aw88261.h
+@@ -453,7 +453,7 @@ struct aw88261 {
+ 	unsigned int mute_st;
+ 	unsigned int amppd_st;
  
- static int aw88395_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
--				struct aw_all_prof_info all_prof_info)
-+				struct aw_all_prof_info *all_prof_info)
- {
--	struct aw_prof_desc *prof_desc = all_prof_info.prof_desc;
-+	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
- 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
- 	struct aw_sec_data_desc *sec_desc;
- 	int num = 0;
-@@ -703,12 +705,13 @@ static int aw_dev_load_cfg_by_hdr(struct aw_device *aw_dev,
- 
- 	switch (aw_dev->chip_id) {
- 	case AW88395_CHIP_ID:
--		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
-+		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
- 		if (ret < 0)
- 			goto exit;
- 		break;
- 	case AW88261_CHIP_ID:
--		ret = aw88261_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
-+	case AW87390_CHIP_ID:
-+		ret = aw88261_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
- 		if (ret < 0)
- 			goto exit;
- 		break;
-@@ -801,6 +804,7 @@ static int aw_get_dev_scene_count_v1(struct aw_device *aw_dev, struct aw_contain
- 		ret = 0;
- 		break;
- 	case AW88261_CHIP_ID:
-+	case AW87390_CHIP_ID:
- 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
- 			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
- 			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
-@@ -841,6 +845,7 @@ static int aw_get_default_scene_count_v1(struct aw_device *aw_dev,
- 		ret = 0;
- 		break;
- 	case AW88261_CHIP_ID:
-+	case AW87390_CHIP_ID:
- 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
- 			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
- 			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
-diff --git a/sound/soc/codecs/aw88395/aw88395_reg.h b/sound/soc/codecs/aw88395/aw88395_reg.h
-index e7a7c02efaf3..d0a273387313 100644
---- a/sound/soc/codecs/aw88395/aw88395_reg.h
-+++ b/sound/soc/codecs/aw88395/aw88395_reg.h
-@@ -97,6 +97,7 @@
- enum aw88395_id {
- 	AW88395_CHIP_ID = 0x2049,
- 	AW88261_CHIP_ID = 0x2113,
-+	AW87390_CHIP_ID = 0x76,
+-	unsigned char phase_sync;
++	bool phase_sync;
  };
  
- #define AW88395_REG_MAX		(0x7D)
+ #endif
 -- 
 2.41.0
 
