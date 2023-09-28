@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 681917B12B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D807B12BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 08:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjI1GWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 02:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
+        id S230457AbjI1GXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 02:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjI1GWR (ORCPT
+        with ESMTP id S230338AbjI1GWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 02:22:17 -0400
+        Thu, 28 Sep 2023 02:22:08 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A8FBE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C11AB7;
         Wed, 27 Sep 2023 23:22:05 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kh53Wzz4f3k5f;
-        Thu, 28 Sep 2023 14:22:00 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S16;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rx3Kj13cZz4f3k6V;
         Thu, 28 Sep 2023 14:22:01 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdyCGxVl3v1WBg--.22861S17;
+        Thu, 28 Sep 2023 14:22:02 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
         dm-devel@redhat.com, song@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v3 12/25] md/raid5-cache: use new apis to suspend array for r5c_journal_mode_store()
-Date:   Thu, 28 Sep 2023 14:15:30 +0800
-Message-Id: <20230928061543.1845742-13-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v3 13/25] md/raid5: use new apis to suspend array for raid5_store_stripe_size()
+Date:   Thu, 28 Sep 2023 14:15:31 +0800
+Message-Id: <20230928061543.1845742-14-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S16
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fWr4rArWkGF15Ar15CFg_yoW8Gr43pa
-        nFgayru3409rWrA3WkXFWDuF95J3y8KrZF9r9xC3Z3uay5Xr17Gr1FgFyUWr92vFyfGa13
-        Jw4UJ3WkC348tr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAnvdyCGxVl3v1WBg--.22861S17
+X-Coremail-Antispam: 1UD129KBjvJXoWrZFWUZF4ftFWrKr4rGF45Jrb_yoW8Jr13pa
+        nFkFyfWr1UZryrX34DZw1q9Fy5Gw4qgrWqk3y7X3Z7Z3Z3Xry2gw4YgFy5Wry8Ja4ft395
+        Gwn8WF95JFy8JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,42 +66,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-r5c_journal_mode_set() will suspend array and it has only 2 caller, the
-other caller raid_ctl() already suspend the array with new apis.
+Convert to use new apis, the old apis will be removed eventually.
 
 This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5-cache.c | 6 ++----
+ drivers/md/raid5.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-index 01d33e5c19c1..9909110262ee 100644
---- a/drivers/md/raid5-cache.c
-+++ b/drivers/md/raid5-cache.c
-@@ -2585,9 +2585,7 @@ int r5c_journal_mode_set(struct mddev *mddev, int mode)
- 	    mode == R5C_JOURNAL_MODE_WRITE_BACK)
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 6383723468e5..f1c32b4d190f 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -7025,7 +7025,7 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 			new != roundup_pow_of_two(new))
  		return -EINVAL;
  
+-	err = mddev_lock(mddev);
++	err = mddev_suspend_and_lock(mddev);
+ 	if (err)
+ 		return err;
+ 
+@@ -7049,7 +7049,6 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 		goto out_unlock;
+ 	}
+ 
 -	mddev_suspend(mddev);
- 	conf->log->r5c_journal_mode = mode;
+ 	mutex_lock(&conf->cache_size_mutex);
+ 	size = conf->max_nr_stripes;
+ 
+@@ -7064,10 +7063,9 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 		err = -ENOMEM;
+ 	}
+ 	mutex_unlock(&conf->cache_size_mutex);
 -	mddev_resume(mddev);
  
- 	pr_debug("md/raid:%s: setting r5c cache mode to %d: %s\n",
- 		 mdname(mddev), mode, r5c_journal_mode_str[mode]);
-@@ -2612,11 +2610,11 @@ static ssize_t r5c_journal_mode_store(struct mddev *mddev,
- 		if (strlen(r5c_journal_mode_str[mode]) == len &&
- 		    !strncmp(page, r5c_journal_mode_str[mode], len))
- 			break;
--	ret = mddev_lock(mddev);
-+	ret = mddev_suspend_and_lock(mddev);
- 	if (ret)
- 		return ret;
- 	ret = r5c_journal_mode_set(mddev, mode);
+ out_unlock:
 -	mddev_unlock(mddev);
 +	mddev_unlock_and_resume(mddev);
- 	return ret ?: length;
+ 	return err ?: len;
  }
  
 -- 
